@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  nginx:
+    build: ./nginx
+    ports:
+      - "8080:80"
+
+  oauth-proxy:
+    build: ./oauth-proxy
+    ports:
+      - "80:8081"
+    env_file:
+      - .env
+
+# Run oauth on localhost.
+# 1. redirect_url = "http://localhost:8081/oauth2/callback"
+# 2. add redirect_url to Redirect URIs in Azure App Registrations -> <app> -> Authentication
+# 3. set CLIENT_ID in .env file.  (Azure App Registrations -> <app> -> Overview)
+# 4. set CLIENT_SECRET in .env file. (Azure App Registrations -> <app> -> Certificates & secrets)
+# 5. set cookie_secure false
+
+# Note that the oauth-proxy won't protect anything locally, radix will do this in the cluster by setting 8081 to public: true and everything else public: false.
+# from host (outside) nginx is on 8080 and proxy on 80.
+# from container (inside) nginx is on 80 and proxy on 8081

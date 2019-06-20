@@ -7,11 +7,45 @@ spec:
     - name: dev
       build:
         from: master
-    - name: prod
   components:
-    - name: main
-      src: "."
-      publicPort: http
+    - name: nginx
+      src: ./nginx
       ports:
         - name: http
           port: 80
+      public: false
+      environmentConfig:
+        - environment: dev
+          monitoring: false
+          resources:
+            requests:
+              memory: "50Mi"
+              cpu: "10m"
+            limits:
+              memory: "54Mi"
+              cpu: "20m"
+          replicas: 1
+    - name: oauth-proxy
+      src: ./oauth-proxy
+      ports:
+        - name: http
+          port: 8081
+      public: true
+      environmentConfig:
+        - environment: dev
+          monitoring: false
+          resources:
+            requests:
+              memory: "42Mi"
+              cpu: "10m"
+            limits:
+              memory: "50Mi"
+              cpu: "20m"
+          replicas: 1
+      secrets:
+        - OAUTH2_PROXY_CLIENT_ID
+        - OAUTH2_PROXY_CLIENT_SECRET
+  dnsAppAlias:
+    environment: dev
+    component: oauth-proxy
+
