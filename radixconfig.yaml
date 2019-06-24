@@ -8,8 +8,8 @@ spec:
       build:
         from: master
   components:
-    - name: nginx
-      src: ./nginx
+    - name: web
+      src: ./web
       ports:
         - name: http
           port: 80
@@ -48,4 +48,3 @@ spec:
   dnsAppAlias:
     environment: dev
     component: oauth-proxy
-
