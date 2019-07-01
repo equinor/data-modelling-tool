@@ -27,10 +27,22 @@ const NodeIcon = styled.div`
   margin-right: ${props => props.marginRight ? props.marginRight : 5}px;
 `;
 
+const NodeButton = styled.button`
+  background-color: whitesmoke;
+`;
+
 const getNodeLabel = (node) => last(node.path.split('/'));
 
 const TreeNode = (props) => {
-  const { node, getChildNodes, level, onToggle, onNodeSelect } = props;
+  const { 
+    node, 
+    getChildNodes, 
+    level, 
+    onToggle, 
+    onNodeSelect,
+    addPackage,
+    addFile,
+  } = props;
 
   return (
     <React.Fragment>
@@ -43,11 +55,12 @@ const TreeNode = (props) => {
           { node.type === 'file' && <FaFile /> }
           { node.type === 'folder' && node.isOpen === true && <FaFolderOpen /> }
           { node.type === 'folder' && !node.isOpen && <FaFolder /> }
-        </NodeIcon>
-        
+        </NodeIcon>        
 
         <span role="button" onClick={() => onNodeSelect(node)}>
-          { getNodeLabel(node) }
+          { getNodeLabel(node) } 
+          { node.type === 'folder' &&  <NodeButton onClick={() => addPackage(node) }>P</NodeButton> } 
+          { node.type === 'folder' &&  <NodeButton onClick={() => addFile(node) }>F</NodeButton> }
         </span>
       </StyledTreeNode>
 

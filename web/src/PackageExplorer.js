@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import Tree from './components/Tree';
 
@@ -18,61 +18,51 @@ const data = {
     path: '/root',
     type: 'folder',
     isRoot: true,
-    children: ['/root/david', '/root/jslancer'],
+    children: ['/root/subpackage'],
   },
-  '/root/david': {
-    path: '/root/david',
+  '/root/subpackage': {
+    path: '/root/subpackage',
     type: 'folder',
-    children: ['/root/david/readme.md'],
+    children: ['/root/subpackage/readme.md'],
   },
-  '/root/david/readme.md': {
-    path: '/root/david/readme.md',
+  '/root/subpackage/readme.md': {
+    path: '/root/subpackage/readme.md',
     type: 'file',
     content: 'Thanks for reading me me. But there is nothing here.'
   },
-  '/root/jslancer': {
-    path: '/root/jslancer',
+  '/geometries': {
+    path: '/geometries',
     type: 'folder',
-    children: ['/root/jslancer/projects', '/root/jslancer/vblogs'],
+    isRoot: true,
+    children: ['/geometries/box'],
   },
-  '/root/jslancer/projects': {
-    path: '/root/jslancer/projects',
+  '/geometries/box': {
+    path: '/geometries/box',
     type: 'folder',
-    children: ['/root/jslancer/projects/treeview'],
+    children: ['/geometries/box/box-blueprint.json'],
   },
-  '/root/jslancer/projects/treeview': {
-    path: '/root/jslancer/projects/treeview',
-    type: 'folder',
-    children: [],
-  },
-  '/root/jslancer/vblogs': {
-    path: '/root/jslancer/vblogs',
-    type: 'folder',
-    children: [],
+  '/geometries/box/box-blueprint.json': {
+    path: '/geometries/box/box-blueprint.json',
+    type: 'file',
+    content: 'this is a box',
   },
 };
 
-export default class FileExplorer extends Component { 
-  state = {
-    selectedFile: null,
-  };
+function FileExplorer(props) {
+  const [selectedFile, setSelectedFile] = useState(null);
 
-  onSelect = (file) => this.setState({ selectedFile: file });
-
-  render() {
-    const { selectedFile } = this.state;
-
-    return (
-      <StyledFileExplorer>
-        <TreeWrapper>
-          <Tree 
-          data={data} 
-          onSelect={this.onSelect} />
-        </TreeWrapper>
-        <div>
-          { selectedFile && selectedFile.type === 'file' && selectedFile.content }
-        </div>
-      </StyledFileExplorer>
-    )
-  }
+  return (
+    <StyledFileExplorer>
+      <TreeWrapper>
+        <Tree 
+        data={data} 
+        onSelect={setSelectedFile} />
+      </TreeWrapper>
+      <div>
+        { selectedFile && selectedFile.type === 'file' && selectedFile.content }
+      </div>
+    </StyledFileExplorer>
+  )
 }
+
+export default FileExplorer;

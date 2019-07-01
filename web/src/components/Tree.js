@@ -1,62 +1,99 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import values from 'lodash/values';
 import PropTypes from 'prop-types';
 
 import TreeNode from './TreeNode';
 
-export default class Tree extends Component {
+/*
+https://medium.com/@davidtranwd/implement-tree-view-component-with-reactjs-and-styled-components-5eea3b1603cf
+*/
 
-  state = {
-    nodes: [],
-  };
+function Tree(props) {
+  const { data, onSelect } = props;
+  const [ nodes, setNodes ] = useState({nodes: data});
 
-  constructor(props) {
-    super(props);
-    this.state = {
-      nodes: props.data
-    }
-  }
-
-
-  getRootNodes = () => {
-    const { nodes } = this.state;
-    return values(nodes).filter(node => node.isRoot === true);
-  }
-
-  getChildNodes = (node) => {
-    const { nodes } = this.state;
-    if (!node.children) return [];
-    return node.children.map(path => nodes[path]);
-  }  
-
-  onToggle = (node) => {
-    const { nodes } = this.state;
-    nodes[node.path].isOpen = !node.isOpen;
-    this.setState({ nodes });
-  }
-
-  onNodeSelect = node => {
-    const { onSelect } = this.props;
+  const onNodeSelect = node => {
     onSelect(node);
   }
 
-  render() {
-    const rootNodes = this.getRootNodes();
-    return (
-      <div>
-        { rootNodes.map(node => (
-          <TreeNode 
-            node={node}
-            getChildNodes={this.getChildNodes}
-            onToggle={this.onToggle}
-            onNodeSelect={this.onNodeSelect}
-          />
-        ))}
-      </div>
-    )
+  const getRootNodes = () => {
+    return values(nodes.nodes).filter(node => node.isRoot === true);
   }
+  
+  const getChildNodes = (node) => {
+    if (!node.children) return [];
+    return node.children.map(path => nodes.nodes[path]);
+  }  
+  
+  const onToggle = (node) => {
+    nodes.nodes[node.path].isOpen = !node.isOpen;
+    setNodes({nodes: nodes.nodes});
+  } 
+
+  const addRootPackage = () => {
+    let name = prompt("Please enter name of new package", "New Package");
+
+    nodes.nodes[`/${name}`] = {
+      path: `/${name}`,
+      type: 'folder',
+      children: [],
+      isRoot: true,
+    }
+    setNodes({nodes: nodes.nodes});
+  };
+
+  const addPackage = (node) => {
+    let name = prompt("Please enter name of new sub package", "subpackage");
+    let path = `${node.path}/${name}`;
+
+    nodes.nodes[path] = {
+      path: path,
+      type: 'folder',
+      children: [],
+    }
+
+    nodes.nodes[node.path].children.push(path);
+    setNodes({nodes: nodes.nodes});
+  };
+
+  const addFile = (node) => {
+    let name = prompt("Please enter name of new file", "newfile");
+    let path = `${node.path}/${name}`;
+
+    nodes.nodes[path] = {
+      path: path,
+      type: 'file',
+      children: [],
+      content: 'this is a awesome new file'
+    }
+
+    nodes.nodes[node.path].children.push(path);
+    setNodes({nodes: nodes.nodes});
+  };
+
+  const rootNodes = getRootNodes(nodes.nodes);
+  return (
+    <div>
+      <div>
+        <button onClick={() => addRootPackage()}>New Package</button>
+      </div>
+      { rootNodes.map(node => (
+        <TreeNode 
+          key={node.path}
+          node={node}
+          getChildNodes={getChildNodes}
+          onToggle={onToggle}
+          addPackage={addPackage}
+          addFile={addFile}
+          onNodeSelect={onNodeSelect}
+        />
+      ))}
+    </div>
+  )
 }
 
 Tree.propTypes = {
   onSelect: PropTypes.func.isRequired,
 };
+
+export default Tree;
