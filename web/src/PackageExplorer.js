@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import Tree from './components/Tree';
+import values from 'lodash/values';
 
 const StyledFileExplorer = styled.div`
   width: 800px;
@@ -50,7 +51,7 @@ const data = {
 
 function FileExplorer(props) {
   const [selectedFile, setSelectedFile] = useState(null);
-
+  
   return (
     <StyledFileExplorer>
       <TreeWrapper>
