@@ -8,7 +8,9 @@
     "react-contextmenu": "^2.11.0",
     "react-dom": "^16.8.6",
     "react-icons": "3.7.0",
+    "react-jsonschema-form" : "1.6.1",
     "react-scripts": "3.0.1",
+    "react-router-dom" : "5.0.1",
     "styled-components": "^3.4.5"
   },
   "scripts": {
@@ -45,7 +47,7 @@
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addons": "^5.1.9",
     "@storybook/react": "^5.1.9",
-    "babel-loader": "^8.0.6",
+    "babel-loader": "8.0.5",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "husky": "^3.0.0",
