@@ -3,7 +3,6 @@
   "version": "0.1.0",
   "private": true,
   "dependencies": {
-    "babel-loader": "8.0.5",
     "lodash": "^4.17.10",
     "react": "^16.8.6",
     "react-contextmenu": "^2.11.0",
@@ -21,6 +20,11 @@
   },
   "eslintConfig": {
     "extends": "react-app"
+  },
+  "husky": {
+    "hooks": {
+      "pre-commit": "pretty-quick --staged"
+    }
   },
   "browserslist": {
     "production": [
@@ -40,6 +44,11 @@
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addons": "^5.1.9",
     "@storybook/react": "^5.1.9",
-    "babel-loader": "^8.0.6"
+    "babel-loader": "^8.0.6",
+    "eslint-config-prettier": "^6.0.0",
+    "eslint-plugin-prettier": "^3.1.0",
+    "husky": "^3.0.0",
+    "prettier": "^1.18.2",
+    "pretty-quick": "^1.11.1"
   }
 }
