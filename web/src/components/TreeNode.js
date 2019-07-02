@@ -36,46 +36,51 @@ const NodeButton = styled.button`
 const getNodeLabel = (node) => last(node.path.split('/'));
 
 const TreeNode = (props) => {
-  const { 
-    node, 
-    getChildNodes, 
-    level, 
-    onToggle, 
+  const {
+    node,
+    getChildNodes,
+    level,
+    onToggle,
     onNodeSelect,
     addPackage,
     addFile,
   } = props;
-  
+
+  const path = `${node.path}`;
+
   return (
     <React.Fragment>
-      <StyledTreeNode level={level} type={node.type}>
-        <NodeIcon onClick={() => onToggle(node)}>
-          { node.type === 'folder' && (node.isOpen ? <FaChevronDown /> : <FaChevronRight />) }
+      <StyledTreeNode level={level} type={node.type} onClick={() => onToggle(node)}>
+        <NodeIcon>
+          {node.type === 'folder' && (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
         </NodeIcon>
-        
+
         <NodeIcon marginRight={10}>
-          { node.type === 'file' && <FaFile /> }
-          { node.type === 'folder' && node.isOpen === true && <FaFolderOpen /> }
-          { node.type === 'folder' && !node.isOpen && <FaFolder /> }
+          {node.type === 'file' && <FaFile />}
+          {node.type === 'folder' && node.isOpen === true && <FaFolderOpen />}
+          {node.type === 'folder' && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
         <span role="button" onClick={() => onNodeSelect(node)}>
-          <ContextMenu id="test1" menuItems={[
-            {action: 'add-package', onClick: () => addPackage(node), label: 'Add Package'},
-            {action: 'add-file', onClick: () => addFile(node), label: 'Add File'},
-          ]}>{ getNodeLabel(node)}</ContextMenu>
+          {node.type === 'folder' && <ContextMenu id={path} menuItems={[
+            { action: 'add-package', onClick: () => addPackage(node), label: 'Add Package' },
+            { action: 'add-file', onClick: () => addFile(node), label: 'Add File' },
+          ]}>{getNodeLabel(node)}</ContextMenu>}
+          {node.type === 'file' && getNodeLabel(node)}
           {/*{ node.type === 'folder' &&  <NodeButton onClick={() => addPackage(node) }>P</NodeButton> }*/}
           {/*{ node.type === 'folder' &&  <NodeButton onClick={() => addFile(node) }>F</NodeButton> }*/}
         </span>
       </StyledTreeNode>
 
-      { node.isOpen && getChildNodes(node).map(childNode => (
-        <TreeNode 
-          {...props}
-          node={childNode}          
-          level={level + 1}
-        />
-      ))}
+      {node.isOpen && getChildNodes(node).map(childNode => {
+        return (
+          <TreeNode
+            {...props}
+            node={childNode}
+            level={level + 1}
+          />
+        )
+      })}
     </React.Fragment>
   );
 }
