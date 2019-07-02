@@ -14,46 +14,6 @@ const getRootNodes = (nodes) => {
 };
 
 
-var defaultMatcher = (filterText, node) => {
-  return node && node.path.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
-}
-
-var nodeMatchesOrHasMatchingDescendants = (data, node, filter, matcher) => {
-  return matcher(filter, node) || // i match
-    (node && node.children && // or i have decendents and one of them match
-      node.children.length &&
-      !!node.children.find(childNode => nodeMatchesOrHasMatchingDescendants(data, data[childNode], filter, matcher)))
-}
-
-var expandNodesWithMatchingDescendants = (data, nodes, filter, matcher = defaultMatcher) => {
-  let tmp = nodes.map(node => {
-    let isOpen = false;
-    if (node.children && node.children.length) {
-      var childrenWithMatches = node.children.filter(child => nodeMatchesOrHasMatchingDescendants(data, node, filter, matcher))
-      isOpen = !!childrenWithMatches.length // i expand if any of my kids match
-    }
-    return Object.assign({}, node, { isOpen: isOpen })
-  });
-
-  return tmp;
-}
-
-const filterTree = (data, filter, matcher = defaultMatcher) => {
-  return values(data).filter(node => {
-    if (matcher(filter, node)) {
-      return true
-    } else { //if not then only keep the ones that match or have matching descendants
-      if (node.children) {
-        let filteredChildren = node.children.filter(child => nodeMatchesOrHasMatchingDescendants(data, data[child], filter, matcher));
-        if (filteredChildren && filteredChildren.length) {
-          return true;
-        }
-      }
-      return false;
-    }
-  });
-}
-
 function Tree(props) {
   const { data, onSelect } = props;
   const [ nodes, dispatch] = useReducer(treeReducer, data);
@@ -88,28 +48,23 @@ function Tree(props) {
     dispatch(Actions.addFile(node.path, name, content));
   };
 
-  const rootNodes = getRootNodes(nodes);
   const handleFilterMouseUp = (e) => {
     const filter = e.target.value.trim();
 
-    if (filter) {
-      let filteredNodes = filterTree(nodes.nodes, filter);
-      let expandedNodes = expandNodesWithMatchingDescendants(nodes.nodes, filteredNodes, filter)
-      let nodesAsObject = keyBy(expandedNodes, 'path');
-      setNodes({ nodes: nodesAsObject })
-    } else {
-      setNodes({ nodes: data })
-    }
-  }
+    dispatch(Actions.filterTree(filter))
+  };
 
-  const rootNodes = getRootNodes(nodes.nodes);
+  const rootNodes = getRootNodes(nodes);
 
   return (
     <div>
       <div>
         <button onClick={() => addRootPackage()}>New Package</button>
       </div>
-      { rootNodes.map(node => (
+      <div>
+        <input onKeyUp={handleFilterMouseUp} />
+      </div>
+      { rootNodes.filter(node => !node.isHidden).map(node => (
         <TreeNode
           key={node.path}
           node={node}
