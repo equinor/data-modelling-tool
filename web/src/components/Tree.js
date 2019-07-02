@@ -1,84 +1,60 @@
-import React, { useState } from 'react';
+import React, { useReducer } from 'react';
 import values from 'lodash/values';
 import PropTypes from 'prop-types';
 
 import TreeNode from './TreeNode';
+import treeReducer, {Actions} from "./tree-view/TreeReducer";
 
 /*
 https://medium.com/@davidtranwd/implement-tree-view-component-with-reactjs-and-styled-components-5eea3b1603cf
 */
+const getRootNodes = (nodes) => {
+  return values(nodes).filter(node => node.isRoot === true);
+};
+
 
 function Tree(props) {
   const { data, onSelect } = props;
-  const [ nodes, setNodes ] = useState({nodes: data});
+  const [ nodes, dispatch] = useReducer(treeReducer, data);
 
   const onNodeSelect = node => {
     onSelect(node);
-  }
-
-  const getRootNodes = () => {
-    return values(nodes.nodes).filter(node => node.isRoot === true);
-  }
+  };
   
   const getChildNodes = (node) => {
     if (!node.children) return [];
-    return node.children.map(path => nodes.nodes[path]);
-  }  
+    return node.children.map(path => nodes[path]);
+  };
   
   const onToggle = (node) => {
-    nodes.nodes[node.path].isOpen = !node.isOpen;
-    setNodes({nodes: nodes.nodes});
-  } 
+    dispatch(Actions.toggleNode(node.path));
+  };
 
   const addRootPackage = () => {
     let name = prompt("Please enter name of new package", "New Package");
-
-    nodes.nodes[`/${name}`] = {
-      path: `/${name}`,
-      type: 'folder',
-      children: [],
-      isRoot: true,
-    }
-    setNodes({nodes: nodes.nodes});
+    const newRootPath = `/${name}`;
+    dispatch(Actions.addRootPackage(newRootPath));
   };
 
   const addPackage = (node) => {
     let name = prompt("Please enter name of new sub package", "subpackage");
-    let path = `${node.path}/${name}`;
-
-    nodes.nodes[path] = {
-      path: path,
-      type: 'folder',
-      children: [],
-    }
-
-    nodes.nodes[node.path].children.push(path);
-    setNodes({nodes: nodes.nodes});
+    dispatch(Actions.addPackage(node.path, name));
   };
 
   const addFile = (node) => {
     let name = prompt("Please enter name of new file", "newfile");
-    let path = `${node.path}/${name}`;
-
-    nodes.nodes[path] = {
-      path: path,
-      type: 'file',
-      children: [],
-      content: 'this is a awesome new file'
-    }
-
-    nodes.nodes[node.path].children.push(path);
-    setNodes({nodes: nodes.nodes});
+    const content = 'this is a awesome new file';
+    dispatch(Actions.addFile(node.path, name, content));
   };
 
-  const rootNodes = getRootNodes(nodes.nodes);
+  const rootNodes = getRootNodes(nodes);
   return (
     <div>
       <div>
         <button onClick={() => addRootPackage()}>New Package</button>
       </div>
       { rootNodes.map(node => (
-        <TreeNode 
+        <TreeNode
           key={node.path}
           node={node}
           getChildNodes={getChildNodes}

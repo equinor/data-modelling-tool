@@ -11,7 +11,6 @@ const getPaddingLeft = (level, type) => {
   return paddingLeft;
 };
 
-//@todo fix hover when contextMenu is open. https://codepen.io/Iulius90/pen/oLaNoJ
 const StyledTreeNode = styled.div`
   display: flex;
   flex-direction: row;
@@ -29,10 +28,6 @@ const NodeIcon = styled.div`
   margin-right: ${props => props.marginRight ? props.marginRight : 5}px;
 `;
 
-const NodeButton = styled.button`
-  background-color: whitesmoke;
-`;
-
 const getNodeLabel = (node) => last(node.path.split('/'));
 
 const TreeNode = (props) => {
@@ -45,6 +40,16 @@ const TreeNode = (props) => {
     addPackage,
     addFile,
   } = props;
+  
+  const menuItemsFolder = [
+		{action: 'add-package', onClick: () => addPackage(node), label: 'Add Package'},
+		{action: 'add-file', onClick: () => addFile(node), label: 'Add File'},
+	];
+  
+  const menuItemsFile = [
+		{action: 'use-template', onClick: () => {alert('add template to blueprint')}, label: 'Add template to blueprint'},
+	];
+  const menuItems = node.type === 'folder' ? menuItemsFolder : menuItemsFile;
   
   return (
     <React.Fragment>
@@ -60,17 +65,15 @@ const TreeNode = (props) => {
         </NodeIcon>
 
         <span role="button" onClick={() => onNodeSelect(node)}>
-          <ContextMenu id="test1" menuItems={[
-            {action: 'add-package', onClick: () => addPackage(node), label: 'Add Package'},
-            {action: 'add-file', onClick: () => addFile(node), label: 'Add File'},
-          ]}>{ getNodeLabel(node)}</ContextMenu>
-          {/*{ node.type === 'folder' &&  <NodeButton onClick={() => addPackage(node) }>P</NodeButton> }*/}
-          {/*{ node.type === 'folder' &&  <NodeButton onClick={() => addFile(node) }>F</NodeButton> }*/}
+						<ContextMenu id={node.path} menuItems={menuItems}>
+							{ getNodeLabel(node)}
+						</ContextMenu>
         </span>
       </StyledTreeNode>
 
-      { node.isOpen && getChildNodes(node).map(childNode => (
-        <TreeNode 
+      { node.isOpen && getChildNodes(node).map((childNode) => (
+        <TreeNode
+					key={'treenode'+childNode.path}
           {...props}
           node={childNode}          
           level={level + 1}
