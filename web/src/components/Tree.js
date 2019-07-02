@@ -1,59 +1,59 @@
-import React, { useReducer } from "react";
-import values from "lodash/values";
-import keyBy from "lodash/keyBy";
-import PropTypes from "prop-types";
+import React, { useReducer } from 'react'
+import values from 'lodash/values'
+import keyBy from 'lodash/keyBy'
+import PropTypes from 'prop-types'
 
-import TreeNode from "./TreeNode";
-import treeReducer, { Actions } from "./tree-view/TreeReducer";
+import TreeNode from './TreeNode'
+import treeReducer, { Actions } from './tree-view/TreeReducer'
 
 /*
 https://medium.com/@davidtranwd/implement-tree-view-component-with-reactjs-and-styled-components-5eea3b1603cf
 */
 const getRootNodes = nodes => {
-  return values(nodes).filter(node => node.isRoot === true);
-};
+  return values(nodes).filter(node => node.isRoot === true)
+}
 
 function Tree(props) {
-  const { data, onSelect } = props;
-  const [nodes, dispatch] = useReducer(treeReducer, data);
+  const { data, onSelect } = props
+  const [nodes, dispatch] = useReducer(treeReducer, data)
 
   const onNodeSelect = node => {
-    onSelect(node);
-  };
+    onSelect(node)
+  }
 
   const getChildNodes = node => {
-    if (!node.children) return [];
-    return node.children.map(path => nodes[path]);
-  };
+    if (!node.children) return []
+    return node.children.map(path => nodes[path])
+  }
 
   const onToggle = node => {
-    dispatch(Actions.toggleNode(node.path));
-  };
+    dispatch(Actions.toggleNode(node.path))
+  }
 
   const addRootPackage = () => {
-    let name = prompt("Please enter name of new package", "New Package");
-    const newRootPath = `/${name}`;
-    dispatch(Actions.addRootPackage(newRootPath));
-  };
+    let name = prompt('Please enter name of new package', 'New Package')
+    const newRootPath = `/${name}`
+    dispatch(Actions.addRootPackage(newRootPath))
+  }
 
   const addPackage = node => {
-    let name = prompt("Please enter name of new sub package", "subpackage");
-    dispatch(Actions.addPackage(node.path, name));
-  };
+    let name = prompt('Please enter name of new sub package', 'subpackage')
+    dispatch(Actions.addPackage(node.path, name))
+  }
 
   const addFile = node => {
-    let name = prompt("Please enter name of new file", "newfile");
-    const content = "this is a awesome new file";
-    dispatch(Actions.addFile(node.path, name, content));
-  };
+    let name = prompt('Please enter name of new file', 'newfile')
+    const content = 'this is a awesome new file'
+    dispatch(Actions.addFile(node.path, name, content))
+  }
 
   const handleFilterMouseUp = e => {
-    const filter = e.target.value.trim();
+    const filter = e.target.value.trim()
 
-    dispatch(Actions.filterTree(filter));
-  };
+    dispatch(Actions.filterTree(filter))
+  }
 
-  const rootNodes = getRootNodes(nodes);
+  const rootNodes = getRootNodes(nodes)
 
   return (
     <div>
@@ -77,11 +77,11 @@ function Tree(props) {
           />
         ))}
     </div>
-  );
+  )
 }
 
 Tree.propTypes = {
-  onSelect: PropTypes.func.isRequired
-};
+  onSelect: PropTypes.func.isRequired,
+}
 
-export default Tree;
+export default Tree

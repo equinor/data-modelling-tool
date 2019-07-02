@@ -1,12 +1,12 @@
-import React from 'react';
-import PackageExplorer from './PackageExplorer';
+import React from 'react'
+import PackageExplorer from './PackageExplorer'
 
 function App() {
   return (
-    <div >
-        <PackageExplorer />        
+    <div>
+      <PackageExplorer />
     </div>
-  );
+  )
 }
 
-export default App;
+export default App
