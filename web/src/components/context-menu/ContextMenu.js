@@ -36,12 +36,13 @@ const App = (props) => {
 			{props.children}
 		</ContextMenuTrigger>
 		<ContextMenu id={id}>
-			{menuItems.map(menuItem => {
+			{menuItems.map((menuItem, index) => {
 				if (Object.keys(menuItem).length === 0) {
 					return (<MenuItem divider/>);
 				} else {
 					return (
 						<MenuItem
+							key={'menuitem'+index+id}
 							data={{ action: menuItem.action }}
 							onClick={menuItem.onClick}
 							attributes={attributes}

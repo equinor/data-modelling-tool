@@ -29,10 +29,6 @@ const NodeIcon = styled.div`
   margin-right: ${props => props.marginRight ? props.marginRight : 5}px;
 `;
 
-const NodeButton = styled.button`
-  background-color: whitesmoke;
-`;
-
 const getNodeLabel = (node) => last(node.path.split('/'));
 
 const TreeNode = (props) => {
@@ -46,41 +42,44 @@ const TreeNode = (props) => {
     addFile,
   } = props;
 
-  const path = `${node.path}`;
+  const menuItemsFolder = [
+		{action: 'add-package', onClick: () => addPackage(node), label: 'Add Package'},
+		{action: 'add-file', onClick: () => addFile(node), label: 'Add File'},
+	];
+
+  const menuItemsFile = [
+		{action: 'use-template', onClick: () => {alert('add template to blueprint')}, label: 'Add template to blueprint'},
+	];
+  const menuItems = node.type === 'folder' ? menuItemsFolder : menuItemsFile;
 
   return (
     <React.Fragment>
-      <StyledTreeNode level={level} type={node.type} onClick={() => onToggle(node)}>
-        <NodeIcon>
-          {node.type === 'folder' && (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
+      <StyledTreeNode level={level} type={node.type}>
+        <NodeIcon onClick={() => onToggle(node)}>
+          { node.type === 'folder' && (node.isOpen ? <FaChevronDown /> : <FaChevronRight />) }
         </NodeIcon>
 
         <NodeIcon marginRight={10}>
-          {node.type === 'file' && <FaFile />}
-          {node.type === 'folder' && node.isOpen === true && <FaFolderOpen />}
-          {node.type === 'folder' && !node.isOpen && <FaFolder />}
+          { node.type === 'file' && <FaFile /> }
+          { node.type === 'folder' && node.isOpen === true && <FaFolderOpen /> }
+          { node.type === 'folder' && !node.isOpen && <FaFolder /> }
         </NodeIcon>
 
         <span role="button" onClick={() => onNodeSelect(node)}>
-          {node.type === 'folder' && <ContextMenu id={path} menuItems={[
-            { action: 'add-package', onClick: () => addPackage(node), label: 'Add Package' },
-            { action: 'add-file', onClick: () => addFile(node), label: 'Add File' },
-          ]}>{getNodeLabel(node)}</ContextMenu>}
-          {node.type === 'file' && getNodeLabel(node)}
-          {/*{ node.type === 'folder' &&  <NodeButton onClick={() => addPackage(node) }>P</NodeButton> }*/}
-          {/*{ node.type === 'folder' &&  <NodeButton onClick={() => addFile(node) }>F</NodeButton> }*/}
+						<ContextMenu id={node.path} menuItems={menuItems}>
+							{ getNodeLabel(node)}
+						</ContextMenu>
         </span>
       </StyledTreeNode>
 
-      {node.isOpen && getChildNodes(node).map(childNode => {
-        return (
-          <TreeNode
-            {...props}
-            node={childNode}
-            level={level + 1}
-          />
-        )
-      })}
+      { node.isOpen && getChildNodes(node).map((childNode) => (
+        <TreeNode
+					key={'treenode'+childNode.path}
+          {...props}
+          node={childNode}
+          level={level + 1}
+        />
+      ))}
     </React.Fragment>
   );
 }
