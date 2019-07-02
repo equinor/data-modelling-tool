@@ -16,7 +16,8 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook"
+    "build-storybook": "build-storybook",
+    "prettier": "prettier --write '**/*.{ts,js,css,html}'"
   },
   "eslintConfig": {
     "extends": "react-app"

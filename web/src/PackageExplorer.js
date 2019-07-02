@@ -1,18 +1,18 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
-import Tree from './components/Tree';
-import values from 'lodash/values';
+import React, { useState } from 'react'
+import styled from 'styled-components'
+import Tree from './components/Tree'
+import values from 'lodash/values'
 
 const StyledFileExplorer = styled.div`
   width: 800px;
   max-width: 100%;
   margin: 0 auto;
-  display: flex;  
-`;
+  display: flex;
+`
 
 const TreeWrapper = styled.div`
   width: 250px;
-`;
+`
 
 const data = {
   '/root': {
@@ -29,7 +29,7 @@ const data = {
   '/root/subpackage/readme.md': {
     path: '/root/subpackage/readme.md',
     type: 'file',
-    content: 'Thanks for reading me me. But there is nothing here.'
+    content: 'Thanks for reading me me. But there is nothing here.',
   },
   '/geometries': {
     path: '/geometries',
@@ -47,23 +47,21 @@ const data = {
     type: 'file',
     content: 'this is a box',
   },
-};
+}
 
 function FileExplorer(props) {
-  const [selectedFile, setSelectedFile] = useState(null);
-  
+  const [selectedFile, setSelectedFile] = useState(null)
+
   return (
     <StyledFileExplorer>
       <TreeWrapper>
-        <Tree 
-        data={data} 
-        onSelect={setSelectedFile} />
+        <Tree data={data} onSelect={setSelectedFile} />
       </TreeWrapper>
       <div>
-        { selectedFile && selectedFile.type === 'file' && selectedFile.content }
+        {selectedFile && selectedFile.type === 'file' && selectedFile.content}
       </div>
     </StyledFileExplorer>
   )
 }
 
-export default FileExplorer;
+export default FileExplorer
