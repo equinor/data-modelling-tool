@@ -3,17 +3,12 @@ import { ContextMenu, MenuItem, ContextMenuTrigger } from 'react-contextmenu'
 import './react-contextmenu.css'
 import './custom.css'
 
-const styles = {
-  textAlign: 'center',
-  backgroundColor: '#CCC',
-  padding: 30,
-}
-
 const attributes = {
   className: 'custom-root',
-  disabledClassName: 'custom-disabled',
-  dividerClassName: 'custom-divider',
-  selectedClassName: 'custom-selected',
+  // remove warnings by comment out the following
+  // disabledClassName: 'custom-disabled',
+  // dividerClassName: 'custom-divider',
+  // selectedClassName: 'custom-selected',
 }
 
 /**

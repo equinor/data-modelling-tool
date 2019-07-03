@@ -18,9 +18,10 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "coverage": "react-scripts test --coverage --watchAll=false",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prettier": "prettier --write '**/*.{ts,js,css,html}'"
+    "prettier": "prettier --write './src/**/*.{ts,js,css,html,json}'"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -29,6 +30,11 @@
     "hooks": {
       "pre-commit": "pretty-quick --staged"
     }
+  },
+  "jest": {
+    "collectCoverageFrom": [
+      "./src/**/*.{js,jsx}"
+    ]
   },
   "browserslist": {
     "production": [

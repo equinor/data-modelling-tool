@@ -46,6 +46,7 @@ const TreeNode = props => {
     onNodeSelect,
     addPackage,
     addFile,
+    addAsset,
   } = props
 
   const menuItemsFolder = [
@@ -60,9 +61,7 @@ const TreeNode = props => {
   const menuItemsFile = [
     {
       action: 'use-template',
-      onClick: () => {
-        alert('add template to blueprint')
-      },
+      onClick: () => addAsset(node),
       label: 'Add template to blueprint',
     },
   ]

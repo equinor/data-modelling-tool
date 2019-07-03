@@ -68,3 +68,27 @@ export const hideNodesWithNoMatchingDescendants = (
     }
   })
 }
+
+export function filterNodes(nodes, filterPath) {
+  function filterRecursive(filterPath, nodes, filteredNodes) {
+    values(nodes).forEach(node => {
+      if (node.children) {
+        const isParent = node.children.includes(filterPath)
+        if (isParent) {
+          filteredNodes[node.path] = Object.assign({}, node)
+          if (!node.isRoot) {
+            filterRecursive(node.path, nodes, filteredNodes)
+          }
+        }
+      } else {
+        if (filterPath === node.path) {
+          filteredNodes[node.path] = Object.assign({}, node)
+        }
+      }
+    })
+  }
+
+  const filteredNodes = {}
+  filterRecursive(filterPath, nodes, filteredNodes)
+  return filteredNodes
+}

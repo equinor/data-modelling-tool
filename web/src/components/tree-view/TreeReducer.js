@@ -1,7 +1,7 @@
-import values from 'lodash/values'
 import keyBy from 'lodash/keyBy'
 import {
   expandNodesWithMatchingDescendants,
+  filterNodes,
   hideNodesWithNoMatchingDescendants,
 } from './Filters'
 
@@ -24,11 +24,13 @@ import {
  *
  */
 
+export const initialState = {}
 const ADD_ROOT_PACKAGE = 'ADD_ROOT_PACKAGE'
 const ADD_PACKAGE = 'ADD_PACKAGE'
 const ADD_FILE = 'ADD_FILE'
 const TOGGLE_NODE = 'TOGGLE_NODE'
 const FILTER_TREE = 'FILTER_TREE'
+const ADD_NODES = 'ADD_NODES'
 
 export const Actions = {
   filterTree: filter => ({
@@ -64,6 +66,11 @@ export const Actions = {
       children: [],
     },
   }),
+  addNodes: (nodes, path) => ({
+    type: ADD_NODES,
+    nodes,
+    path,
+  }),
   toggleNode: path => ({
     type: TOGGLE_NODE,
     path,
@@ -91,6 +98,10 @@ export default (state, action) => {
     case ADD_FILE:
       state[action.rootPath].children.push(action.node.path)
       return { ...state, [action.node.path]: action.node }
+
+    case ADD_NODES:
+      const filteredNodesClone = filterNodes(action.nodes, action.path)
+      return { ...state, ...filteredNodesClone }
 
     case TOGGLE_NODE:
       const newState = { ...state }

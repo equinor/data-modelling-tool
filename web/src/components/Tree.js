@@ -13,7 +13,7 @@ const getRootNodes = nodes => {
 }
 
 function Tree(props) {
-  const { data, dispatch, onSelect, createPackage } = props
+  const { data, dispatch, onSelect, createPackage, dispatchAddFile } = props
   const nodes = data
   const onNodeSelect = node => {
     onSelect(node)
@@ -45,9 +45,12 @@ function Tree(props) {
     dispatch(Actions.addFile(node.path, name, content))
   }
 
+  const addAsset = node => {
+    dispatchAddFile && dispatchAddFile(Actions.addNodes(nodes, node.path))
+  }
+
   const handleFilterMouseUp = e => {
     const filter = e.target.value.trim()
-
     dispatch(Actions.filterTree(filter))
   }
 
@@ -73,6 +76,7 @@ function Tree(props) {
             onToggle={onToggle}
             addPackage={addPackage}
             addFile={addFile}
+            addAsset={addAsset}
             onNodeSelect={onNodeSelect}
           />
         ))}
