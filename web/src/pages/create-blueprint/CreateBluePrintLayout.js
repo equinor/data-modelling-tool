@@ -3,6 +3,7 @@ import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import TreeViewExisting from './TreeViewExisting'
 import TreeViewNew from './TreeViewNew'
+import BlueprintPreview from './BlueprintPreview'
 
 export default props => {
   const { dataExistingModels, dispatchExistingModel } = props
@@ -42,7 +43,9 @@ export default props => {
         </Col>
 
         <Col xs={12} md={6}>
-          <Wrapper>Preview blueprint</Wrapper>
+          <Wrapper>
+            <BlueprintPreview data={dataNewBlueprint} />
+          </Wrapper>
         </Col>
       </Row>
     </Grid>
