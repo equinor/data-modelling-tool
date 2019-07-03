@@ -1,10 +1,9 @@
-import React, { useReducer } from 'react'
+import React from 'react'
 import values from 'lodash/values'
-import keyBy from 'lodash/keyBy'
 import PropTypes from 'prop-types'
 
 import TreeNode from './TreeNode'
-import treeReducer, { Actions } from './tree-view/TreeReducer'
+import { Actions } from './tree-view/TreeReducer'
 
 /*
 https://medium.com/@davidtranwd/implement-tree-view-component-with-reactjs-and-styled-components-5eea3b1603cf
@@ -14,9 +13,8 @@ const getRootNodes = nodes => {
 }
 
 function Tree(props) {
-  const { data, onSelect } = props
-  const [nodes, dispatch] = useReducer(treeReducer, data)
-
+  const { data, dispatch, onSelect, createPackage } = props
+  const nodes = data
   const onNodeSelect = node => {
     onSelect(node)
   }
@@ -57,9 +55,11 @@ function Tree(props) {
 
   return (
     <div>
-      <div>
-        <button onClick={() => addRootPackage()}>New Package</button>
-      </div>
+      {createPackage && (
+        <div>
+          <button onClick={() => addRootPackage()}>New Package</button>
+        </div>
+      )}
       <div>
         <input onKeyUp={handleFilterMouseUp} />
       </div>

@@ -1,7 +1,7 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer } from 'react'
 import styled from 'styled-components'
 import Tree from './components/Tree'
-import values from 'lodash/values'
+import treeReducer from './components/tree-view/TreeReducer'
 
 const StyledFileExplorer = styled.div`
   width: 800px;
@@ -49,13 +49,14 @@ const data = {
   },
 }
 
-function FileExplorer(props) {
+function FileExplorer() {
   const [selectedFile, setSelectedFile] = useState(null)
+  const [nodes, dispatch] = useReducer(treeReducer, data)
 
   return (
     <StyledFileExplorer>
       <TreeWrapper>
-        <Tree data={data} onSelect={setSelectedFile} />
+        <Tree data={nodes} dispatch={dispatch} onSelect={setSelectedFile} />
       </TreeWrapper>
       <div>
         {selectedFile && selectedFile.type === 'file' && selectedFile.content}
