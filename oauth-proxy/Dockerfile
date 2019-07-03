@@ -6,8 +6,8 @@ FROM  bitnami/oauth2-proxy:latest as base
 #ENV OAUTH2_PROXY_CLIENT_ID
 #ENV OAUTH2_PROXY_CLIENT_SECRET
 WORKDIR /opt/bitnami/oauth2-proxy
-USER 1001
 ENTRYPOINT [ "oauth2_proxy" ]
+USER 0
 CMD ["-config=/etc/oauth2_proxy.cfg"]
 
 
@@ -21,11 +21,13 @@ FROM base as local
 COPY ./oauth2_proxy.local.cfg /etc/oauth2_proxy.cfg
 COPY --from=cs /tmp/cs.txt /tmp/cs.txt
 RUN cat /tmp/cs.txt >> /etc/oauth2_proxy.cfg
-RUN cat /etc/oauth2_proxy.cfg
+RUN ls -lah /etc/
+RUN id
+USER 1001
 
 # Generating release image
 FROM base as release
 COPY ./oauth2_proxy.cfg /etc/oauth2_proxy.cfg
 COPY --from=cs /tmp/cs.txt /tmp/cs.txt
 RUN cat /tmp/cs.txt >> /etc/oauth2_proxy.cfg
-
+USER 1001
