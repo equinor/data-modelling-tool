@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useReducer, useState } from 'react'
 import CreateBluePrintLayout from './CreateBluePrintLayout'
 import treeReducer, {
   initialState,
@@ -15,12 +15,15 @@ export default () => {
     treeReducer,
     initialState
   )
+  const [selectedTemplate, setSelectedTemplate] = useState(null)
   return (
     <CreateBluePrintLayout
       dataExistingModels={dataExistingModels}
       dispatchExistingModel={dispatchExistingModel}
       dataNewBlueprint={dataNewBlueprint}
       dispatchNewBlueprint={dispatchNewBlueprint}
+      selectedTemplate={selectedTemplate}
+      onSelect={setSelectedTemplate}
     />
   )
 }

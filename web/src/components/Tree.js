@@ -16,7 +16,7 @@ function Tree(props) {
   const { data, dispatch, onSelect, createPackage, dispatchAddFile } = props
   const nodes = data
   const onNodeSelect = node => {
-    onSelect(node)
+    onSelect && onSelect(node)
   }
 
   const getChildNodes = node => {

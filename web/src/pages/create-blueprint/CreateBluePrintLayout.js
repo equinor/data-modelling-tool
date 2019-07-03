@@ -4,10 +4,17 @@ import styled from 'styled-components'
 import TreeViewExisting from './TreeViewExisting'
 import TreeViewNew from './TreeViewNew'
 import BlueprintPreview from './BlueprintPreview'
+import BlueprintForm from './BlueprintForm'
 
 export default props => {
-  const { dataExistingModels, dispatchExistingModel } = props
-  const { dataNewBlueprint, dispatchNewBlueprint } = props
+  const {
+    dataExistingModels,
+    dispatchExistingModel,
+    dataNewBlueprint,
+    dispatchNewBlueprint,
+    onSelect,
+    selectedTemplate,
+  } = props
   return (
     <Grid>
       <Row>
@@ -33,13 +40,19 @@ export default props => {
             <TreeViewNew
               data={dataNewBlueprint}
               dispatch={dispatchNewBlueprint}
+              onSelect={onSelect}
             />
           </Wrapper>
         </Col>
       </Row>
       <Row>
         <Col xs={12} md={6}>
-          <Wrapper>Edit model</Wrapper>
+          <Wrapper>
+            <BlueprintForm
+              data={dataNewBlueprint}
+              selectedTemplate={selectedTemplate}
+            />
+          </Wrapper>
         </Col>
 
         <Col xs={12} md={6}>

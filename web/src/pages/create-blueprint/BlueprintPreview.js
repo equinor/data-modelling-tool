@@ -9,12 +9,12 @@ const Pre = styled.pre`
   word-wrap: break-word; /* IE 5.5+ */
 `
 
-const HeaderWrapper = styled.div`
+export const HeaderWrapper = styled.div`
   display: flex;
   justify-content: space-between;
 `
 
-const HeaderItem = styled.div`
+export const HeaderItem = styled.div`
   display: inline-flex;
   align-self: center;
 `
