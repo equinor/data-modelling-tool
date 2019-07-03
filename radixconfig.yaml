@@ -28,6 +28,12 @@ spec:
               memory: "54Mi"
               cpu: "20m"
           replicas: 1
+    - name: api
+      src: ./api
+      ports:
+        - name: http
+          port: 5000
+      public: false
     - name: oauth-proxy
       src: ./oauth-proxy
       ports:
