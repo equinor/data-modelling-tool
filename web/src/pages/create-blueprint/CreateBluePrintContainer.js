@@ -1,16 +1,20 @@
 import React, { useReducer } from 'react'
 import CreateBluePrintLayout from './CreateBluePrintLayout'
-import treeReducer from '../../components/tree-view/TreeReducer'
+import treeReducer, {
+  initialState,
+} from '../../components/tree-view/TreeReducer'
 
-import existingModels from './ExistingModels'
+import models from './json/models'
 
 export default () => {
   const [dataExistingModels, dispatchExistingModel] = useReducer(
     treeReducer,
-    existingModels
+    models
   )
-  const [dataNewBlueprint, dispatchNewBlueprint] = useReducer(treeReducer, {})
-
+  const [dataNewBlueprint, dispatchNewBlueprint] = useReducer(
+    treeReducer,
+    initialState
+  )
   return (
     <CreateBluePrintLayout
       dataExistingModels={dataExistingModels}

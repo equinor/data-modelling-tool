@@ -21,6 +21,8 @@ export default props => {
             <TreeViewExisting
               data={dataExistingModels}
               dispatch={dispatchExistingModel}
+              //override dispatch
+              dispatchAddFile={dispatchNewBlueprint}
             />
           </Wrapper>
         </Col>
@@ -49,7 +51,8 @@ export default props => {
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 200px;
+  height: 300px;
+  overflow-y: scroll
   border: 1px solid;
   margin: 15px 10px;
 `

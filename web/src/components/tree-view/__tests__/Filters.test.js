@@ -1,4 +1,6 @@
-export default {
+import { filterNodes } from '../Filters'
+
+const data = {
   '/root': {
     path: '/root',
     type: 'folder',
@@ -32,3 +34,8 @@ export default {
     content: 'this is a box',
   },
 }
+
+it('filters leafnode and all parents', () => {
+  const filtered = filterNodes(data, '/root/subpackage/readme.md')
+  expect(Object.keys(filtered).length).toEqual(3)
+})

@@ -2,11 +2,11 @@ import React from 'react'
 import Tree from '../../components/Tree'
 
 export default props => {
-  const { data, dispatch } = props
+  console.log(props.data)
   return (
     <div>
       <h3>Blue print</h3>
-      <Tree data={data} dispatch={dispatch} onSelect={() => {}} />
+      <Tree {...props} onSelect={() => {}} />
     </div>
   )
 }
