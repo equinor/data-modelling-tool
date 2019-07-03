@@ -8,8 +8,8 @@ spec:
       build:
         from: master
     - name: feature
-        build:
-          from: feat-*
+      build:
+        from: feat-*
   components:
     - name: web
       src: ./web
