@@ -1,0 +1,37 @@
+{
+  "title": "Subpackage",
+  "description": "Contains models and other packages",
+  "type": "object",
+  "required": [
+    "name"
+  ],
+  "properties": {
+    "name": {
+      "type": "string",
+      "title": "Name",
+      "default": ""
+    },
+    "description": {
+      "type": "string",
+      "title": "Description",
+      "default": ""
+    },
+    "subpackages": {
+      "type": "array",
+      "title": "List of sub packages",
+      "items": {
+        "type": "string"
+      }
+    },
+    "models": {
+      "type": "array",
+      "title": "List of models",
+      "items": {
+        "type": "string"
+      }
+    },
+    "parent": {
+       "type": "string"
+    }
+  }
+}
