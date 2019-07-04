@@ -1,17 +1,27 @@
-version: '3'
+version: '3.4'
 
 services:
+  api:
+    build: ./api
+
+  web:
+    build: ./web
+
   nginx:
     build: ./nginx
     ports:
-      - "8080:80"
+      - "80:80"
 
-  oauth-proxy:
-    build: ./oauth-proxy
+  oauth2:
+    build:
+      context: ./oauth-proxy
+      target: local
     ports:
-      - "80:8081"
-    env_file:
-      - .env
+      - "8081:8081"
+    environment:
+      OAUTH2_PROXY_CLIENT_ID: 97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
+      OAUTH2_PROXY_CLIENT_SECRET: ${OAUTH2_PROXY_CLIENT_SECRET}
+      OAUTH2_REDIRECT_URL: http://localhost/oauth2/callback
 
 # Run oauth on localhost.
 # 1. redirect_url = "http://localhost:8081/oauth2/callback"

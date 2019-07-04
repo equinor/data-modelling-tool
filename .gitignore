@@ -1,3 +1,6 @@
+# Python virtualenv
+?venv/
+
 # Logs
 logs
 *.log
