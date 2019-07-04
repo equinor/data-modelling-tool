@@ -11,7 +11,7 @@ export default props => {
   return (
     <div>
       <Header selectedTemplate={selectedTemplate} />
-      <div style={{ marginTop: 20 }}>
+      <div style={{ marginTop: 20, maxWidth: 400, padding: 20 }}>
         <BluePrintTemplateForm {...props} />
       </div>
     </div>
