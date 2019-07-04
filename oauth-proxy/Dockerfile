@@ -1,8 +1,8 @@
 FROM  bitnami/oauth2-proxy:latest as base
 WORKDIR /opt/bitnami/oauth2-proxy
 USER 1001
-ENTRYPOINT echo "redirect_url = '$OAUTH2_REDIRECT_URL'" >> /etc/oauth2_proxy.cfg && \
-    oauth2_proxy -config=/etc/oauth2_proxy.cfg
+ENTRYPOINT sed -i 's@OAUTH2_REDIRECT_URL@'"$OAUTH2_REDIRECT_URL"''@g /tmp/oauth2_proxy.cfg && \
+    oauth2_proxy -config=/tmp/oauth2_proxy.cfg
 
 # Generating cookie secret
 FROM bitnami/python as cs
@@ -11,12 +11,12 @@ RUN set -e; \
 
 # Generating local-dev image
 FROM base as local
-COPY --chown=1001:1001 ./oauth2_proxy.local.cfg /etc/oauth2_proxy.cfg
+COPY --chown=1001:1001 ./oauth2_proxy.local.cfg /tmp/oauth2_proxy.cfg
 COPY --from=cs /tmp/cs.txt /tmp/cs.txt
-RUN cat /tmp/cs.txt >> /etc/oauth2_proxy.cfg
+RUN cat /tmp/cs.txt >> /tmp/oauth2_proxy.cfg
 
 # Generating release image
 FROM base as release
-COPY --chown=1001:1001 ./oauth2_proxy.cfg /etc/oauth2_proxy.cfg
+COPY --chown=1001:1001 ./oauth2_proxy.cfg /tmp/oauth2_proxy.cfg
 COPY --from=cs /tmp/cs.txt /tmp/cs.txt
-RUN cat /tmp/cs.txt >> /etc/oauth2_proxy.cfg
+RUN cat /tmp/cs.txt >> /tmp/oauth2_proxy.cfg

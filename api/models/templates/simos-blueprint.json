@@ -1,0 +1,26 @@
+{
+  "title": "SimosBlueprintTemplate",
+  "description": "Template for SIMOS type blueprints",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "string"
+    },
+    "description": {
+      "type": "string"
+    },
+    "BPProperties": {
+      "type": "array",
+      "items": {
+        "property": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  }
+}

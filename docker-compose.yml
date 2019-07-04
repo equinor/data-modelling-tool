@@ -3,6 +3,10 @@ version: '3.4'
 services:
   api:
     build: ./api
+    volumes:
+      - ./api/:/code
+    environment:
+      FLASK_DEBUG: 1
 
   web:
     build: ./web
