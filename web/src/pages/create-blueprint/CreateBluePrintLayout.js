@@ -16,7 +16,7 @@ export default props => {
     selectedTemplate,
   } = props
   return (
-    <Grid>
+    <Grid style={{ width: '90%' }}>
       <Row>
         <Col xs={12}>
           <h1>Create new blueprint</h1>
@@ -49,7 +49,8 @@ export default props => {
         <Col xs={12} md={6}>
           <Wrapper>
             <BlueprintForm
-              data={dataNewBlueprint}
+              state={dataNewBlueprint}
+              dispatch={dispatchNewBlueprint}
               selectedTemplate={selectedTemplate}
             />
           </Wrapper>
@@ -57,7 +58,7 @@ export default props => {
 
         <Col xs={12} md={6}>
           <Wrapper>
-            <BlueprintPreview data={dataNewBlueprint} />
+            <BlueprintPreview state={dataNewBlueprint} />
           </Wrapper>
         </Col>
       </Row>
@@ -67,8 +68,7 @@ export default props => {
 
 const Wrapper = styled.div`
   width: 100%;
-  height: 300px;
-  overflow-y: scroll
+  min-height: 300px;
   border: 1px solid;
   margin: 15px 10px;
 `

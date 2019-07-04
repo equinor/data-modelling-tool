@@ -1,16 +1,8 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
 import { HeaderItem, HeaderWrapper } from './BlueprintPreview'
-
-const schema = {
-  title: 'Todo',
-  type: 'object',
-  required: ['title'],
-  properties: {
-    title: { type: 'string', title: 'Title', default: 'A new task' },
-    done: { type: 'boolean', title: 'Done?', default: false },
-  },
-}
+import BasicBluePrintSchema from './json-templates/basic-blueprint-template'
+import { Actions } from '../../components/tree-view/TreeReducer'
 
 const log = type => console.log.bind(console, type)
 
@@ -20,7 +12,7 @@ export default props => {
     <div>
       <Header selectedTemplate={selectedTemplate} />
       <div style={{ marginTop: 20 }}>
-        <BluePrintTemplateForm selectedTemplate={selectedTemplate} />
+        <BluePrintTemplateForm {...props} />
       </div>
     </div>
   )
@@ -43,16 +35,33 @@ const Header = props => {
 }
 
 const BluePrintTemplateForm = props => {
-  const { selectedTemplate } = props
-  if (!selectedTemplate) {
+  let { selectedTemplate, state, dispatch } = props
+  if (selectedTemplate === null) {
     return null
   }
-  console.log(selectedTemplate)
+
+  if (selectedTemplate.path.indexOf('/templates/basic') === -1) {
+    return null
+  }
+
+  const jsonSchema = Object.assign({}, BasicBluePrintSchema, {
+    required: ['name', 'description', 'properties'],
+  })
+
+  let formData = {}
+  if (state[selectedTemplate.path] && state[selectedTemplate.path].formData) {
+    formData = state[selectedTemplate.path].formData
+  }
+  const onSubmit = schemas => {
+    dispatch(Actions.updateFormData(selectedTemplate.path, schemas.formData))
+  }
+
   return (
     <Form
-      schema={schema}
-      onChange={log('changed')}
-      onSubmit={log('submitted')}
+      formData={formData}
+      schema={jsonSchema}
+      onSubmit={onSubmit}
+      onChange={log('change')}
       onError={log('errors')}
     />
   )

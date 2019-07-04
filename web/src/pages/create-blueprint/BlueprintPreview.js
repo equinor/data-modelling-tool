@@ -1,5 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
+import toJsonSchema from 'to-json-schema'
+import values from 'lodash/values'
 
 const Pre = styled.pre`
   white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
@@ -20,7 +22,11 @@ export const HeaderItem = styled.div`
 `
 
 export default props => {
-  const { data } = props
+  const { state } = props
+  const json = values(state)
+    .filter(node => node.formData)
+    .map(node => node.formData)
+  const jsonSchema = toJsonSchema(json)
   return (
     <div>
       <HeaderWrapper>
@@ -34,7 +40,7 @@ export default props => {
         </HeaderItem>
       </HeaderWrapper>
       <div>
-        <Pre>{JSON.stringify(data, null, 2)}</Pre>
+        <Pre>{JSON.stringify(jsonSchema, null, 2)}</Pre>
       </div>
     </div>
   )

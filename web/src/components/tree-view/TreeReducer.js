@@ -31,6 +31,7 @@ const ADD_FILE = 'ADD_FILE'
 const TOGGLE_NODE = 'TOGGLE_NODE'
 const FILTER_TREE = 'FILTER_TREE'
 const ADD_NODES = 'ADD_NODES'
+const UPDATE_FORM_DATA = 'UPDATE_FORM_DATA'
 
 export const Actions = {
   filterTree: filter => ({
@@ -75,6 +76,11 @@ export const Actions = {
     type: TOGGLE_NODE,
     path,
   }),
+  updateFormData: (path, formData) => ({
+    type: UPDATE_FORM_DATA,
+    path,
+    formData,
+  }),
 }
 
 export default (state, action) => {
@@ -108,6 +114,13 @@ export default (state, action) => {
       newState[action.path].isOpen = !newState[action.path].isOpen
       return newState
 
+    case UPDATE_FORM_DATA:
+      const currentNode = state[action.path]
+      const updatedNode = Object.assign({}, currentNode, {
+        formData: action.formData,
+      })
+      const nState = { ...state, [action.path]: updatedNode }
+      return nState
     default:
       return state
   }
