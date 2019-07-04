@@ -28,12 +28,6 @@ function Tree(props) {
     dispatch(Actions.toggleNode(node.path))
   }
 
-  const addRootPackage = () => {
-    let name = prompt('Please enter name of new package', 'New Package')
-    const newRootPath = `/${name}`
-    dispatch(Actions.addRootPackage(newRootPath))
-  }
-
   const addPackage = node => {
     let name = prompt('Please enter name of new sub package', 'subpackage')
     dispatch(Actions.addPackage(node.path, name))
@@ -58,13 +52,8 @@ function Tree(props) {
 
   return (
     <div>
-      {createPackage && (
-        <div>
-          <button onClick={() => addRootPackage()}>New Package</button>
-        </div>
-      )}
       <div>
-        <input onKeyUp={handleFilterMouseUp} />
+        <input placeholder="Search" onKeyUp={handleFilterMouseUp} />
       </div>
       {rootNodes
         .filter(node => !node.isHidden)

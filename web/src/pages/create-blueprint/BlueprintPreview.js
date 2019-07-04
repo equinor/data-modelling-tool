@@ -1,5 +1,8 @@
 import React from 'react'
 import styled from 'styled-components'
+import toJsonSchema from 'to-json-schema'
+import values from 'lodash/values'
+import Header from '../../components/Header'
 
 const Pre = styled.pre`
   white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
@@ -9,32 +12,20 @@ const Pre = styled.pre`
   word-wrap: break-word; /* IE 5.5+ */
 `
 
-export const HeaderWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-`
-
-export const HeaderItem = styled.div`
-  display: inline-flex;
-  align-self: center;
-`
-
 export default props => {
-  const { data } = props
+  const { state } = props
+  const json = values(state)
+    .filter(node => node.formData)
+    .map(node => node.formData)
+  const jsonSchema = toJsonSchema(json)
   return (
     <div>
-      <HeaderWrapper>
-        <HeaderItem>
-          <h3>Preview Blueprint</h3>
-        </HeaderItem>
-        <HeaderItem>
-          <button disabled style={{ height: 20 }}>
-            Save
-          </button>
-        </HeaderItem>
-      </HeaderWrapper>
+      <Header>
+        <h3>Preview Blueprint</h3>
+        <button>Save</button>
+      </Header>
       <div>
-        <Pre>{JSON.stringify(data, null, 2)}</Pre>
+        <Pre>{JSON.stringify(jsonSchema, null, 2)}</Pre>
       </div>
     </div>
   )

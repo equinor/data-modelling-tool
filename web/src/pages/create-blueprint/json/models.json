@@ -1,19 +1,13 @@
 {
-  "/root": {
-    "path": "/root",
+  "/basic": {
+    "path": "/basic",
     "type": "folder",
     "isRoot": true,
-    "children": ["/root/subpackage"]
+    "children": ["/basic/NamedEntity.json"]
   },
-  "/root/subpackage": {
-    "path": "/root/subpackage",
-    "type": "folder",
-    "children": ["/root/subpackage/readme.md"]
-  },
-  "/root/subpackage/readme.md": {
-    "path": "/root/subpackage/readme.md",
-    "type": "file",
-    "content": "Thanks for reading me me. But there is nothing here."
+  "/basic/NamedEntity.json": {
+    "path": "/basic/NamedEntity.json",
+    "type": "file"
   },
   "/geometries": {
     "path": "/geometries",
@@ -28,7 +22,16 @@
   },
   "/geometries/box/box-blueprint.json": {
     "path": "/geometries/box/box-blueprint.json",
-    "type": "file",
-    "content": "this is a box"
+    "type": "file"
+  },
+  "/templates": {
+    "path": "/templates",
+    "type": "folder",
+    "isRoot": true,
+    "children": ["/templates/basic-blueprint-template.json"]
+  },
+  "/templates/basic-blueprint-template.json": {
+    "path": "/templates/basic-blueprint-template.json",
+    "type": "file"
   }
 }
