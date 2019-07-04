@@ -1,36 +1,26 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import { HeaderItem, HeaderWrapper } from './BlueprintPreview'
 import BasicBluePrintSchema from './json-templates/basic-blueprint-template'
 import { Actions } from '../../components/tree-view/TreeReducer'
+import Header from '../../components/Header'
 
 const log = type => console.log.bind(console, type)
 
 export default props => {
   const { selectedTemplate } = props
   return (
-    <div>
-      <Header selectedTemplate={selectedTemplate} />
-      <div style={{ marginTop: 20, maxWidth: 400, padding: 20 }}>
-        <BluePrintTemplateForm {...props} />
-      </div>
-    </div>
-  )
-}
-
-const Header = props => {
-  const { selectedTemplate } = props
-  return (
-    <HeaderWrapper>
-      <HeaderItem>
+    <React.Fragment>
+      <Header>
         <h3>Edit model</h3>
-      </HeaderItem>
-      <HeaderItem>
         <div style={{ paddingRight: 10 }}>
           {selectedTemplate && selectedTemplate.path}
         </div>
-      </HeaderItem>
-    </HeaderWrapper>
+      </Header>
+
+      <div style={{ marginTop: 20, maxWidth: 400, padding: 20 }}>
+        <BluePrintTemplateForm {...props} />
+      </div>
+    </React.Fragment>
   )
 }
 
