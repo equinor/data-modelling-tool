@@ -22,7 +22,8 @@
   },
   "/geometries/box/box-blueprint.json": {
     "path": "/geometries/box/box-blueprint.json",
-    "type": "file"
+    "type": "file",
+    "endpoint": "/api/blueprint"
   },
   "/templates": {
     "path": "/templates",

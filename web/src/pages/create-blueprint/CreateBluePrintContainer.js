@@ -5,6 +5,7 @@ import treeReducer, {
 } from '../../components/tree-view/TreeReducer'
 
 import models from './json/models'
+import ModelsReducer from '../../reducers/ModelsReducer'
 
 export default () => {
   const [dataExistingModels, dispatchExistingModel] = useReducer(
@@ -16,6 +17,7 @@ export default () => {
     initialState
   )
   const [selectedTemplate, setSelectedTemplate] = useState(null)
+  const [modelFiles, dispatchModelFiles] = useReducer(ModelsReducer, {})
   return (
     <CreateBluePrintLayout
       dataExistingModels={dataExistingModels}
@@ -24,6 +26,8 @@ export default () => {
       dispatchNewBlueprint={dispatchNewBlueprint}
       selectedTemplate={selectedTemplate}
       onSelect={setSelectedTemplate}
+      modelFiles={modelFiles}
+      dispatchModelFiles={dispatchModelFiles}
     />
   )
 }
