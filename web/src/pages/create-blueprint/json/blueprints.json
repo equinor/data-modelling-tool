@@ -3,10 +3,12 @@
     "path": "/basic",
     "type": "folder",
     "isRoot": true,
-    "children": ["/basic/NamedEntity.json"]
+    "children": ["/basic/NamedEntity.json"],
+    "endpoint": "api/blueprints"
   },
   "/basic/NamedEntity.json": {
     "path": "/basic/NamedEntity.json",
-    "type": "file"
+    "type": "file",
+    "endpoint": "api/blueprints"
   }
 }

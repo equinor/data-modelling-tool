@@ -1,5 +1,9 @@
-from flask import Blueprint
+from flask_restful import Api
 
-bp = Blueprint('rest', __name__)
+from rest.schema import Schema
 
-from rest import models
+
+def create_api(app):
+    api = Api(app)
+    api.add_resource(Schema, '/api/<path:path>')
+    return app
