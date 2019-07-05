@@ -13,11 +13,8 @@ const getRootNodes = nodes => {
 }
 
 function Tree(props) {
-  const { data, dispatch, onSelect, createPackage, dispatchAddFile } = props
+  const { data, dispatch, onSelect, existing, dispatchAddFile } = props
   const nodes = data
-  const onNodeSelect = node => {
-    onSelect && onSelect(node)
-  }
 
   const getChildNodes = node => {
     if (!node.children) return []
@@ -61,12 +58,13 @@ function Tree(props) {
           <TreeNode
             key={node.path}
             node={node}
+            existing={existing}
             getChildNodes={getChildNodes}
             onToggle={onToggle}
             addPackage={addPackage}
             addFile={addFile}
             addAsset={addAsset}
-            onNodeSelect={onNodeSelect}
+            onNodeSelect={onSelect}
           />
         ))}
     </div>

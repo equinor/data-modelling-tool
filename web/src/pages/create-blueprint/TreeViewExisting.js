@@ -17,7 +17,9 @@ export default props => {
       <Header>
         <h3>Models</h3>
         <div>
-          <button onClick={() => addRootPackage()}>New Package</button>
+          <button disabled onClick={() => addRootPackage()}>
+            New Package
+          </button>
         </div>
       </Header>
       <Tree onSelect={() => {}} {...props} />
