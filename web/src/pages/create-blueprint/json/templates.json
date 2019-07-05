@@ -1,0 +1,27 @@
+{
+  "/geometries": {
+    "path": "/geometries",
+    "type": "folder",
+    "isRoot": true,
+    "children": ["/geometries/box"]
+  },
+  "/geometries/box": {
+    "path": "/geometries/box",
+    "type": "folder",
+    "children": ["/geometries/box/box-blueprint.json"]
+  },
+  "/geometries/box/box-blueprint.json": {
+    "path": "/geometries/box/box-blueprint.json",
+    "type": "file"
+  },
+  "/root": {
+    "path": "/root",
+    "type": "folder",
+    "isRoot": true,
+    "children": ["/root/simos-blueprint.json"]
+  },
+  "/root/simos-blueprint.json": {
+    "path": "/root/simos-blueprint.json",
+    "type": "file"
+  }
+}

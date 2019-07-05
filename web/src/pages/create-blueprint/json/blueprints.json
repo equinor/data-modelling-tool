@@ -1,0 +1,12 @@
+{
+  "/basic": {
+    "path": "/basic",
+    "type": "folder",
+    "isRoot": true,
+    "children": ["/basic/NamedEntity.json"]
+  },
+  "/basic/NamedEntity.json": {
+    "path": "/basic/NamedEntity.json",
+    "type": "file"
+  }
+}

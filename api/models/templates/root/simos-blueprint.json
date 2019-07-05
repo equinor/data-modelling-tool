@@ -9,10 +9,10 @@
     "description": {
       "type": "string"
     },
-    "BPProperties": {
+    "properties": {
       "type": "array",
       "items": {
-        "property": {
+        "properties": {
           "name": {
             "type": "string"
           },
