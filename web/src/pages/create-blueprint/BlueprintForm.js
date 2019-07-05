@@ -4,6 +4,7 @@ import { Actions } from '../../components/tree-view/TreeReducer'
 import { Actions as ModelActions } from '../../reducers/ModelsReducer'
 import Header from '../../components/Header'
 import axios from 'axios'
+import toJsonSchema from 'to-json-schema'
 
 const log = type => console.log.bind(console, type)
 
@@ -56,29 +57,35 @@ const BluePrintTemplateForm = props => {
   if (selectedTemplate === null) {
     return null
   }
-  console.log(modelFiles)
   const modelSchema = modelFiles[selectedTemplate.path]
 
   if (!modelSchema) {
     return <div>schema not found. </div>
   }
 
-  const jsonSchema = Object.assign({}, modelSchema, {
-    required: ['name', 'description', 'properties'],
-  })
+  // need a ui-template.
+  // const jsonSchema = Object.assign({}, modelSchema, {
+  //   required: ['name', 'description', 'properties'],
+  // })
 
   let formData = {}
   if (state[selectedTemplate.path] && state[selectedTemplate.path].formData) {
     formData = state[selectedTemplate.path].formData
   }
   const onSubmit = schemas => {
-    dispatch(Actions.updateFormData(selectedTemplate.path, schemas.formData))
+    try {
+      toJsonSchema(schemas.formData)
+      dispatch(Actions.updateFormData(selectedTemplate.path, schemas.formData))
+    } catch (e) {
+      //todo fix validation. Set required on fields. And strip optional fields with null values from formdata.
+      alert('not valid jsonschema')
+    }
   }
 
   return (
     <Form
       formData={formData}
-      schema={jsonSchema}
+      schema={modelSchema}
       onSubmit={onSubmit}
       onChange={log('change')}
       onError={log('errors')}

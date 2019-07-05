@@ -14,9 +14,14 @@ const Pre = styled.pre`
 
 export default props => {
   const { state } = props
+
+  //merge the nodes with formData.
   const json = values(state)
     .filter(node => node.formData)
     .map(node => node.formData)
+    .reduce((acc, current) => {
+      return Object.assign(acc, current)
+    }, {})
   const jsonSchema = toJsonSchema(json)
   return (
     <div>

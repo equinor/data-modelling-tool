@@ -33,6 +33,7 @@ export default props => {
               dispatch={dispatchExistingModel}
               //override dispatch
               dispatchAddFile={dispatchNewBlueprint}
+              existing={true}
             />
           </Wrapper>
         </Col>
