@@ -20,7 +20,7 @@ server {
         }
 
     location /api/ {
-        proxy_pass http://api:5000/;
+        proxy_pass http://api:5000/api/;
         proxy_set_header X-User  $user;
         proxy_set_header X-Email $email;
 
