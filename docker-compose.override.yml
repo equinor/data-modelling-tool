@@ -1,0 +1,21 @@
+version: "3.4"
+
+services:
+  api:
+    build: ./api
+    volumes:
+      - ./api/:/code
+    environment:
+      FLASK_DEBUG: 1
+
+  web:
+    build:
+      target: dev
+    volumes:
+      - ./web/src:/code/src
+    environment:
+      - NODE_ENV=development
+# todo: replace proxy-pass with root and mount web/build to /usr/share/nginx/html
+#  nginx:
+#    volumes:
+#      - ./nginx/dev.nginx:/etc/nginx/conf.d/default.conf

@@ -1,9 +1,9 @@
 {
-  "title": "Basic Blueprint Template",
-  "description": "A basic blueprint template schema",
+  "title": "SimosBlueprintTemplate",
+  "description": "Template for SIMOS type blueprints",
   "type": "object",
   "properties": {
-    "name": {
+    "title": {
       "type": "string"
     },
     "description": {
@@ -17,12 +17,6 @@
             "type": "string"
           },
           "type": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
-          },
-          "description": {
             "type": "string"
           }
         }

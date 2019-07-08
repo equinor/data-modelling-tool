@@ -1,0 +1,20 @@
+{
+  "name": "NamedEntity",
+  "description": "a named entity",
+
+  "properties": [
+    {
+      "name": "name",
+      "type": "string",
+      "value": "none",
+      "description": "variable name for named accessing"
+    },
+
+    {
+      "name": "description",
+      "type": "string",
+      "value": "",
+      "description": "instance description"
+    }
+  ]
+}

@@ -1,14 +1,4 @@
 {
-  "/basic": {
-    "path": "/basic",
-    "type": "folder",
-    "isRoot": true,
-    "children": ["/basic/NamedEntity.json"]
-  },
-  "/basic/NamedEntity.json": {
-    "path": "/basic/NamedEntity.json",
-    "type": "file"
-  },
   "/geometries": {
     "path": "/geometries",
     "type": "folder",
@@ -24,14 +14,14 @@
     "path": "/geometries/box/box-blueprint.json",
     "type": "file"
   },
-  "/templates": {
-    "path": "/templates",
+  "/root": {
+    "path": "/root",
     "type": "folder",
     "isRoot": true,
-    "children": ["/templates/basic-blueprint-template.json"]
+    "children": ["/root/simos-blueprint.json"]
   },
-  "/templates/basic-blueprint-template.json": {
-    "path": "/templates/basic-blueprint-template.json",
+  "/root/simos-blueprint.json": {
+    "path": "/root/simos-blueprint.json",
     "type": "file"
   }
 }

@@ -37,6 +37,18 @@ const NodeIcon = styled.div`
 
 const getNodeLabel = node => last(node.path.split('/'))
 
+const WithContextMenu = props => {
+  const { id, label, menuItems } = props
+  if (menuItems.length === 0) {
+    return <span>{label}</span>
+  }
+  return (
+    <ContextMenu id={id} menuItems={menuItems}>
+      {label}
+    </ContextMenu>
+  )
+}
+
 const TreeNode = props => {
   const {
     node,
@@ -47,26 +59,27 @@ const TreeNode = props => {
     addPackage,
     addFile,
     addAsset,
+    existing,
   } = props
 
-  const menuItemsFolder = [
-    {
-      action: 'add-package',
-      onClick: () => addPackage(node),
-      label: 'Add Package',
-    },
-    { action: 'add-file', onClick: () => addFile(node), label: 'Add File' },
-  ]
-
-  const menuItemsFile = [
-    {
-      action: 'use-template',
-      onClick: () => addAsset(node),
-      label: 'Add template to blueprint',
-    },
-  ]
-  const menuItems = node.type === 'folder' ? menuItemsFolder : menuItemsFile
-
+  const menuItems = []
+  if (existing) {
+    if (node.type === 'file') {
+      menuItems.push({
+        action: 'use-template',
+        onClick: () => addAsset(node),
+        label: 'Add template to blueprint',
+      })
+    } else if (node.type === 'folder') {
+      // commented out until functionality is implemented.
+      // 	{
+      // 	  action: 'add-package',
+      // 	  onClick: () => addPackage(node),
+      // 	  label: 'Add Package',
+      // 	},
+      // 	{ action: 'add-file', onClick: () => addFile(node), label: 'Add File' },
+    }
+  }
   return (
     <React.Fragment>
       <StyledTreeNode level={level} type={node.type}>
@@ -82,9 +95,11 @@ const TreeNode = props => {
         </NodeIcon>
 
         <span role="button" onClick={() => onNodeSelect(node)}>
-          <ContextMenu id={node.path} menuItems={menuItems}>
-            {getNodeLabel(node)}
-          </ContextMenu>
+          <WithContextMenu
+            id={node.path}
+            menuItems={menuItems}
+            label={getNodeLabel(node)}
+          />
         </span>
       </StyledTreeNode>
 

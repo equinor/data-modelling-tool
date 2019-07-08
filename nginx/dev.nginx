@@ -20,7 +20,7 @@ server {
         }
 
     location /api/ {
-        proxy_pass http://api:5000/;
+        proxy_pass http://api:5000/api/;
         proxy_set_header X-User  $user;
         proxy_set_header X-Email $email;
 
@@ -36,7 +36,7 @@ server {
         add_header Set-Cookie $auth_cookie;
     }
     location / {
-        proxy_pass http://web:80/;
+        proxy_pass http://web:3000/;
         auth_request /oauth2/auth;
         error_page 401 = /oauth2/sign_in;
 

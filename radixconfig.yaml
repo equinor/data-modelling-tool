@@ -33,7 +33,7 @@ spec:
       ports:
         - name: http
           port: 5000
-      public: false
+      public: true
     - name: oauth-proxy
       src: ./oauth-proxy
       ports:

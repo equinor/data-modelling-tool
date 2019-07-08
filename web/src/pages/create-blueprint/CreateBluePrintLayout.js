@@ -14,6 +14,8 @@ export default props => {
     dispatchNewBlueprint,
     onSelect,
     selectedTemplate,
+    modelFiles,
+    dispatchModelFiles,
   } = props
   return (
     <Grid style={{ width: '90%' }}>
@@ -31,6 +33,7 @@ export default props => {
               dispatch={dispatchExistingModel}
               //override dispatch
               dispatchAddFile={dispatchNewBlueprint}
+              existing={true}
             />
           </Wrapper>
         </Col>
@@ -52,6 +55,8 @@ export default props => {
               state={dataNewBlueprint}
               dispatch={dispatchNewBlueprint}
               selectedTemplate={selectedTemplate}
+              modelFiles={modelFiles}
+              dispatchModelFiles={dispatchModelFiles}
             />
           </Wrapper>
         </Col>

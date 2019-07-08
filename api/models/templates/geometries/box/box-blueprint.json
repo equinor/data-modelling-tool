@@ -1,18 +1,18 @@
 {
-  "title": "SimosBlueprintTemplate",
-  "description": "Template for SIMOS type blueprints",
+  "title": "Box",
+  "description": "This is a cool box",
   "type": "object",
   "properties": {
-    "title": {
+    "name": {
       "type": "string"
     },
     "description": {
       "type": "string"
     },
-    "BPProperties": {
+    "properties": {
       "type": "array",
       "items": {
-        "property": {
+        "properties": {
           "name": {
             "type": "string"
           },
