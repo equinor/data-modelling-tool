@@ -16,9 +16,8 @@ export default props => {
   const { state } = props
 
   //merge the nodes with formData.
-  const json = values(state)
-    .filter(node => node.formData)
-    .map(node => node.formData)
+  const json = values(state.formData)
+    .filter(item => item)
     .reduce((acc, current) => {
       return Object.assign(acc, current)
     }, {})

@@ -9,7 +9,7 @@ import {
 import styled from 'styled-components'
 import last from 'lodash/last'
 import PropTypes from 'prop-types'
-import ContextMenu from '../components/context-menu/ContextMenu'
+import ContextMenu from '../context-menu/ContextMenu'
 
 const getPaddingLeft = (level, type) => {
   let paddingLeft = level * 20
@@ -49,37 +49,14 @@ const WithContextMenu = props => {
   )
 }
 
-const TreeNode = props => {
-  const {
-    node,
-    getChildNodes,
-    level,
-    onToggle,
-    onNodeSelect,
-    addPackage,
-    addFile,
-    addAsset,
-    existing,
-  } = props
+const getChildNodes = (node, nodes) => {
+  if (!node.children) return []
+  return node.children.map(path => nodes[path])
+}
 
-  const menuItems = []
-  if (existing) {
-    if (node.type === 'file') {
-      menuItems.push({
-        action: 'use-template',
-        onClick: () => addAsset(node),
-        label: 'Add template to blueprint',
-      })
-    } else if (node.type === 'folder') {
-      // commented out until functionality is implemented.
-      // 	{
-      // 	  action: 'add-package',
-      // 	  onClick: () => addPackage(node),
-      // 	  label: 'Add Package',
-      // 	},
-      // 	{ action: 'add-file', onClick: () => addFile(node), label: 'Add File' },
-    }
-  }
+const TreeNode = props => {
+  const { node, nodes, level, onToggle, onNodeSelect, menuItems } = props
+
   return (
     <React.Fragment>
       <StyledTreeNode level={level} type={node.type}>
@@ -97,14 +74,21 @@ const TreeNode = props => {
         <span role="button" onClick={() => onNodeSelect(node)}>
           <WithContextMenu
             id={node.path}
-            menuItems={menuItems}
+            menuItems={menuItems
+              .filter(item => item.type === node.type)
+              .map(item => {
+                //need to give the correct node to item's onClick function.
+                return Object.assign(item, {
+                  onClick: () => item.onExecute(node),
+                })
+              })}
             label={getNodeLabel(node)}
           />
         </span>
       </StyledTreeNode>
 
       {node.isOpen &&
-        getChildNodes(node)
+        getChildNodes(node, nodes)
           .filter(node => !node.isHidden)
           .map(childNode => (
             <TreeNode
@@ -120,7 +104,6 @@ const TreeNode = props => {
 
 TreeNode.propTypes = {
   node: PropTypes.object.isRequired,
-  getChildNodes: PropTypes.func.isRequired,
   level: PropTypes.number.isRequired,
   onToggle: PropTypes.func.isRequired,
   onNodeSelect: PropTypes.func.isRequired,
