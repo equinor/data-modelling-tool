@@ -15,7 +15,7 @@ const initialState = Object.assign(
 )
 
 export default props => {
-  const { addAsset } = props
+  const { addAsset, onSelect } = props
 
   const [state, dispatch] = useReducer(treeViewExistingReducer, initialState)
 
@@ -46,7 +46,7 @@ export default props => {
   return (
     <React.Fragment>
       <Header>
-        <h3>Models</h3>
+        <h3>Files</h3>
         <div>
           <button disabled onClick={() => addRootPackage()}>
             New Package
@@ -85,7 +85,7 @@ export default props => {
                 existing={true}
                 onToggle={onToggle}
                 menuItems={menuItems}
-                onNodeSelect={() => {}}
+                onNodeSelect={onSelect}
               />
             )
           })}

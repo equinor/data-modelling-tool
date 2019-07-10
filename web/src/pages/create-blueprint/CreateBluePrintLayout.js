@@ -2,48 +2,47 @@ import React from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import TreeViewExisting from './existing/TreeViewExisting'
-import TreeViewNew from './blueprint/TreeViewNew'
+// import TreeViewNew from './blueprint/TreeViewNew'
 import BlueprintPreview from './BlueprintPreview'
 import BlueprintForm from './BlueprintForm'
+import { Actions } from './blueprint/CreateBluePrintReducer'
 
 export default props => {
-  const { dispatch, state, onSelect, addAsset } = props
+  const { dispatch, state, addAsset } = props
   return (
     <Grid style={{ width: '90%' }}>
       <Row>
         <Col xs={12}>
           <h1>Create new blueprint</h1>
         </Col>
-      </Row>
-
-      <Row>
-        <Col xs={12} md={6}>
+        <Col xs={12} md={4}>
           <Wrapper>
             <TreeViewExisting
               //override dispatch
+              onSelect={node => {
+                dispatch(Actions.setSelectedTemplatePath(node.path))
+              }}
               addAsset={addAsset}
             />
           </Wrapper>
         </Col>
 
-        <Col xs={12} md={6}>
-          <Wrapper>
-            <TreeViewNew
-              nodes={state.nodes}
-              dispatch={dispatch}
-              onSelect={onSelect}
-            />
-          </Wrapper>
-        </Col>
-      </Row>
-      <Row>
-        <Col xs={12} md={6}>
+        {/*<Col xs={12} md={6}>*/}
+        {/*<Wrapper>*/}
+        {/*<TreeViewNew*/}
+        {/*nodes={state.nodes}*/}
+        {/*dispatch={dispatch}*/}
+        {/*onSelect={onSelect}*/}
+        {/*/>*/}
+        {/*</Wrapper>*/}
+        {/*</Col>*/}
+        <Col xs={12} md={4}>
           <Wrapper>
             <BlueprintForm state={state} dispatch={dispatch} />
           </Wrapper>
         </Col>
 
-        <Col xs={12} md={6}>
+        <Col xs={12} md={4}>
           <Wrapper>
             <BlueprintPreview state={state} />
           </Wrapper>
@@ -55,7 +54,7 @@ export default props => {
 
 const Wrapper = styled.div`
   width: 100%;
-  min-height: 300px;
+  min-height: 600px;
   border: 1px solid;
   margin: 15px 10px;
   padding: 10px;

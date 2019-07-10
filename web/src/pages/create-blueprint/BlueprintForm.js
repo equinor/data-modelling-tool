@@ -14,7 +14,7 @@ export default props => {
   return (
     <React.Fragment>
       <Header>
-        <h3>Edit model</h3>
+        <h3>Edit blueprint</h3>
         <div style={{ paddingRight: 10 }}>{selectedTemplatePath}</div>
       </Header>
 
@@ -27,7 +27,7 @@ export default props => {
 
 const BluePrintTemplateForm = props => {
   let { state, dispatch } = props
-  const { selectedTemplatePath, nodes, modelFiles, formData } = state
+  const { selectedTemplatePath, modelFiles, formData } = state
   useEffect(() => {
     // Update the document title using the browser API
     if (selectedTemplatePath) {
