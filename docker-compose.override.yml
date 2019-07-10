@@ -13,7 +13,6 @@ services:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
       MONGO_INITDB_DATABASE: maf
-      REMOTE_DEBUG:
     ports:
       - "5000:5000"
 
