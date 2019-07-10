@@ -56,7 +56,10 @@ const BluePrintTemplateForm = props => {
     return <div>schema not found. </div>
   }
 
-  if (modelSchema.endpoint && modelSchema.endpoint.indexOf('/templates') === -1) {
+  if (
+    modelSchema.endpoint &&
+    modelSchema.endpoint.indexOf('/templates') === -1
+  ) {
     return <div>Display preview of blueprint. </div>
   }
   // need a ui-template.

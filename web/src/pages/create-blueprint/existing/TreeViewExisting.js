@@ -2,14 +2,16 @@ import React, { useReducer } from 'react'
 import values from 'lodash/values'
 import Header from '../../../components/Header'
 import treeViewExistingReducer, { Actions } from './TreeViewExistingReducer'
-import templatesJson from '../json/templates'
-import blueprintsJson from '../json/blueprints'
+import templatesIndex from '../json/index_templates'
+import blueprintsIndex from '../json/index_blueprints'
 import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
+import { generateTreeview } from '../../../util/generateTreeview'
 
 const initialState = Object.assign(
   {},
-  templatesJson, blueprintsJson
+  generateTreeview(templatesIndex, 'api/templates'),
+  generateTreeview(blueprintsIndex, 'api/templates')
 )
 
 export default props => {
