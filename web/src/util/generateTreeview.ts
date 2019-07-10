@@ -26,7 +26,6 @@ export function generateTreeview(index: TreeviewIndex[], endpoint: string) {
       //add isRoot
       const isRoot = (path.match(/\//g) || []).length === 1
       if (isRoot) {
-        console.log(path)
         newNode.isRoot = true
       }
 

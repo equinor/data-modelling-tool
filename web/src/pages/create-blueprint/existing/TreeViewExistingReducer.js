@@ -1,6 +1,7 @@
 import TreeReducer, {
   Actions as CommonTreeActions,
 } from '../../../components/tree-view/TreeReducer'
+import { generateTreeview } from '../../../util/generateTreeview'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
@@ -29,15 +30,10 @@ export const Actions = {
       children: [],
     },
   }),
-  addFile: (rootPath, name, content) => ({
+  addFile: (indexItem, endpoint) => ({
     type: ADD_FILE,
-    rootPath,
-    node: {
-      path: `${rootPath}/${name}`,
-      type: 'file',
-      content,
-      children: [],
-    },
+    indexItem,
+    endpoint,
   }),
 }
 
@@ -47,9 +43,11 @@ export default (state, action) => {
       return { ...state, [action.node.path]: action.node }
 
     case ADD_PACKAGE:
+      return state
     case ADD_FILE:
-      state[action.rootPath].children.push(action.node.path)
-      return { ...state, [action.node.path]: action.node }
+      //fix children recursive.
+      const newState = generateTreeview([action.indexItem], action.endpoint)
+      return mergeStatesNewFile(state, newState, action.indexItem)
 
     case FILTER_TREE:
     case TOGGLE_NODE:
@@ -58,4 +56,13 @@ export default (state, action) => {
     default:
       console.error('not supported: ', action.type)
   }
+}
+
+function mergeStatesNewFile(oldState, newState, indexItem) {
+  const state = { ...newState, ...oldState }
+  const parentPath = indexItem.path.substr(0, indexItem.path.lastIndexOf('/'))
+  if (!state[parentPath].children.includes(indexItem.path)) {
+    state[parentPath].children.push(indexItem.path)
+  }
+  return state
 }

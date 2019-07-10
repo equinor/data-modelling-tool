@@ -8,18 +8,9 @@ import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import { generateTreeview } from '../../../util/generateTreeview'
 
-const initialState = Object.assign(
-  {},
-  generateTreeview(templatesIndex, 'api/templates'),
-  generateTreeview(blueprintsIndex, 'api/templates')
-)
-
 export default props => {
-  const { addAsset, onSelect } = props
+  const { addAsset, onSelect, dispatch, state } = props
 
-  const [state, dispatch] = useReducer(treeViewExistingReducer, initialState)
-
-  console.log(state)
   const addRootPackage = () => {
     let name = prompt('Please enter name of new package', 'New Package')
     const newRootPath = `/${name}`

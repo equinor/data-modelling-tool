@@ -4,6 +4,7 @@ import Header from '../../../components/Header'
 import axios from 'axios'
 import toJsonSchema from 'to-json-schema'
 import { Actions } from '../blueprint/CreateBluePrintReducer'
+import { Pre } from '../preview/BlueprintPreview'
 
 const log = type => console.log.bind(console, type)
 
@@ -50,17 +51,20 @@ const BluePrintTemplateForm = props => {
   if (selectedTemplatePath === null) {
     return null
   }
+
   const modelSchema = modelFiles[selectedTemplatePath]
 
   if (!modelSchema) {
     return <div>schema not found. </div>
   }
 
-  if (
-    modelSchema.endpoint &&
-    modelSchema.endpoint.indexOf('/templates') === -1
-  ) {
-    return <div>Display preview of blueprint. </div>
+  const node = state.nodes[selectedTemplatePath]
+  if (node && node.endpoint.indexOf('/templates') === -1) {
+    return (
+      <div>
+        <Pre>{JSON.stringify(modelSchema, null, 2)}</Pre>
+      </div>
+    )
   }
   // need a ui-template.
   // const jsonSchema = Object.assign({}, modelSchema, {
