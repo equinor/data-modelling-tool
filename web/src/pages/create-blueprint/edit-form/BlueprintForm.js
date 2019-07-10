@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react'
 import Form from 'react-jsonschema-form'
-import Header from '../../components/Header'
+import Header from '../../../components/Header'
 import axios from 'axios'
 import toJsonSchema from 'to-json-schema'
-import { Actions } from './blueprint/CreateBluePrintReducer'
+import { Actions } from '../blueprint/CreateBluePrintReducer'
 
 const log = type => console.log.bind(console, type)
 

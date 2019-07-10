@@ -3,9 +3,8 @@ import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import TreeViewExisting from './existing/TreeViewExisting'
 // import TreeViewNew from './blueprint/TreeViewNew'
-import BlueprintPreview from './BlueprintPreview'
-import BlueprintForm from './BlueprintForm'
-import { Actions } from './blueprint/CreateBluePrintReducer'
+import BlueprintPreview from './preview/BlueprintPreview'
+import BlueprintForm from './edit-form/BlueprintForm'
 
 export default props => {
   const { dispatch, state, addAsset } = props
@@ -19,10 +18,8 @@ export default props => {
           <Wrapper>
             <TreeViewExisting
               //override dispatch
-              onSelect={node => {
-                dispatch(Actions.setSelectedTemplatePath(node.path))
-              }}
               addAsset={addAsset}
+              onSelect={() => {}}
             />
           </Wrapper>
         </Col>

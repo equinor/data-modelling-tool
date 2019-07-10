@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 import toJsonSchema from 'to-json-schema'
 import values from 'lodash/values'
-import Header from '../../components/Header'
+import Header from '../../../components/Header'
 
 const Pre = styled.pre`
   white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
@@ -26,11 +26,15 @@ export default props => {
     <div>
       <Header>
         <h3>Preview Blueprint</h3>
-        <button disabled={true}>Save</button>
+        <SaveButton />
       </Header>
       <div>
         <Pre>{JSON.stringify(jsonSchema, null, 2)}</Pre>
       </div>
     </div>
   )
+}
+
+const SaveButton = () => {
+  return <button disabled={true}>Save</button>
 }

@@ -1,10 +1,10 @@
 [
   {
     "path": "/geometries/box/box-blueprint.json",
-    "title": "Geometries Blueprint"
+    "title": "Geometries Blueprint Template"
   },
   {
     "path": "/root/simos-blueprint.json",
-    "title": "Simos Blueprint"
+    "title": "Simos Blueprint Template"
   }
 ]

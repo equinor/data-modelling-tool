@@ -10,6 +10,7 @@ export default () => {
 
   const addAsset = node => {
     dispatch(Actions.addNodes(node))
+    dispatch(Actions.setSelectedTemplatePath(node.path))
   }
 
   return (
