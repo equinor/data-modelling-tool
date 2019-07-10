@@ -26,7 +26,7 @@ export default props => {
     <div>
       <Header>
         <h3>Preview Blueprint</h3>
-        <button>Save</button>
+        <button disabled={true}>Save</button>
       </Header>
       <div>
         <Pre>{JSON.stringify(jsonSchema, null, 2)}</Pre>

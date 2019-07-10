@@ -35,7 +35,13 @@ const NodeIcon = styled.div`
   margin-right: ${props => (props.marginRight ? props.marginRight : 5)}px;
 `
 
-const getNodeLabel = node => last(node.path.split('/'))
+const getNodeLabel = node => {
+  if (node.title) {
+    return node.title
+  } else {
+    return last(node.path.split('/'))
+  }
+}
 
 const WithContextMenu = props => {
   const { id, label, menuItems } = props
