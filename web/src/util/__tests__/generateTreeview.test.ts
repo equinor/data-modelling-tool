@@ -1,18 +1,33 @@
 import { generateTreeview, TreeviewIndex } from '../generateTreeview'
 
 describe('Generate Treeview', () => {
+  let firstState: any
+  const templatesIndex: TreeviewIndex[] = [
+    {
+      _id: 'subpackage.json',
+      title: 'Subpackage',
+    },
+    {
+      _id: 'geometries/box/box-blueprint.json',
+      title: 'Box Blueprint',
+    },
+    {
+      _id: 'root/simos-blueprint.json',
+      title: 'Simos Blueprint Template',
+    },
+  ]
+
+  beforeEach(() => {
+    firstState = generateTreeview({}, templatesIndex, 'api/templates')
+  })
+
   it('should generate treeview', () => {
-    const templatesIndex: TreeviewIndex[] = [
-      {
-        path: '/geometries/box/box-blueprint.json',
-        title: 'Box Blueprint',
+    expect(firstState).toMatchObject({
+      '/subpackage.json': {
+        path: '/subpackage.json',
+        type: 'file',
+        endpoint: 'api/templates',
       },
-      {
-        path: '/root/simos-blueprint.json',
-        title: 'Simos Blueprint Template',
-      },
-    ]
-    expect(generateTreeview(templatesIndex, 'api/templates')).toMatchObject({
       '/geometries': {
         path: '/geometries',
         type: 'folder',
@@ -43,5 +58,25 @@ describe('Generate Treeview', () => {
         endpoint: 'api/templates',
       },
     })
+  })
+
+  it('should add new file', () => {
+    const newIndex = [{ _id: 'root/test.json', title: 'Test Blueprint' }]
+    const updatedState = generateTreeview(
+      firstState,
+      newIndex,
+      'api/blueprints'
+    )
+    expect(updatedState['/root'].children).toEqual([
+      '/root/simos-blueprint.json',
+      '/root/test.json',
+    ])
+    expect(updatedState['/root/test.json']).toEqual({
+      title: 'Test Blueprint',
+      endpoint: 'api/blueprints',
+      path: '/root/test.json',
+      type: 'file',
+    })
+    expect(updatedState['/root/simos-blueprint.json']).toBeDefined()
   })
 })

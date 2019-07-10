@@ -1,6 +1,7 @@
 import TreeReducer, {
   Actions as CommonTreeActions,
 } from '../../../components/tree-view/TreeReducer'
+import { generateTreeview } from '../../../util/generateTreeview'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
@@ -29,15 +30,15 @@ export const Actions = {
       children: [],
     },
   }),
-  addFile: (rootPath, name, content) => ({
+  addFile: (indexItem, endpoint) => ({
     type: ADD_FILE,
-    rootPath,
-    node: {
-      path: `${rootPath}/${name}`,
-      type: 'file',
-      content,
-      children: [],
-    },
+    indexItem,
+    endpoint,
+  }),
+  addAssets: (data, endpoint) => ({
+    type: 'ADD_ASSET',
+    data,
+    endpoint,
   }),
 }
 
@@ -47,9 +48,14 @@ export default (state, action) => {
       return { ...state, [action.node.path]: action.node }
 
     case ADD_PACKAGE:
+      return state
     case ADD_FILE:
-      state[action.rootPath].children.push(action.node.path)
-      return { ...state, [action.node.path]: action.node }
+      //fix children recursive.
+      return generateTreeview(state, [action.indexItem], action.endpoint)
+
+    case 'ADD_ASSET':
+      const newState = generateTreeview(state, action.data, action.endpoint)
+      return newState
 
     case FILTER_TREE:
     case TOGGLE_NODE:

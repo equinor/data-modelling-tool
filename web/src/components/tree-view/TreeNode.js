@@ -63,6 +63,7 @@ const getChildNodes = (node, nodes) => {
 const TreeNode = props => {
   const { node, nodes, level, onToggle, onNodeSelect, menuItems } = props
 
+  console.log(props)
   return (
     <React.Fragment>
       <StyledTreeNode level={level} type={node.type}>

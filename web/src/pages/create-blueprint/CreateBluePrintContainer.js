@@ -4,9 +4,11 @@ import newBluePrintReducer, {
   initialState,
   Actions,
 } from './blueprint/CreateBluePrintReducer'
+import treeViewExistingReducer from './existing/TreeViewExistingReducer'
 
 export default () => {
   const [state, dispatch] = useReducer(newBluePrintReducer, initialState)
+  const [filesState, filesDispatch] = useReducer(treeViewExistingReducer, {})
 
   const addAsset = node => {
     dispatch(Actions.addNodes(node))
@@ -17,6 +19,8 @@ export default () => {
     <CreateBluePrintLayout
       state={state}
       dispatch={dispatch}
+      filesState={filesState}
+      filesDispatch={filesDispatch}
       addAsset={addAsset}
     />
   )

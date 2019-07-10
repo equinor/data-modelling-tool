@@ -7,7 +7,7 @@ import BlueprintPreview from './preview/BlueprintPreview'
 import BlueprintForm from './edit-form/BlueprintForm'
 
 export default props => {
-  const { dispatch, state, addAsset } = props
+  const { dispatch, state, addAsset, filesDispatch, filesState } = props
   return (
     <Grid style={{ width: '90%' }}>
       <Row>
@@ -17,6 +17,8 @@ export default props => {
         <Col xs={12} md={4}>
           <Wrapper>
             <TreeViewExisting
+              dispatch={filesDispatch}
+              state={filesState}
               //override dispatch
               addAsset={addAsset}
               onSelect={() => {}}
@@ -41,7 +43,7 @@ export default props => {
 
         <Col xs={12} md={4}>
           <Wrapper>
-            <BlueprintPreview state={state} />
+            <BlueprintPreview state={state} filesDispatch={filesDispatch} />
           </Wrapper>
         </Col>
       </Row>
