@@ -1,12 +1,19 @@
-import React, { useEffect } from 'react'
+import React from 'react'
 import Form from 'react-jsonschema-form'
 import Header from '../../../components/Header'
-import axios from 'axios'
+import useAxios, { configure } from 'axios-hooks'
+import Axios from 'axios'
+import LRU from 'lru-cache'
 import toJsonSchema from 'to-json-schema'
 import { Actions } from '../blueprint/CreateBluePrintReducer'
 import { Pre } from '../preview/BlueprintPreview'
 
 const log = type => console.log.bind(console, type)
+
+//avoid request if the file is cached.
+const cache = new LRU({ max: 10 })
+const axios = Axios.create()
+configure({ axios, cache })
 
 export default props => {
   const {
@@ -20,60 +27,52 @@ export default props => {
       </Header>
 
       <div style={{ marginTop: 20, maxWidth: 400, padding: 20 }}>
-        <BluePrintTemplateForm {...props} />
+        {// check selectedTemplate to avoid having a conditional before a hook in BluePrintTemplateForm.
+        selectedTemplatePath && <BluePrintTemplateFormContainer {...props} />}
       </div>
     </React.Fragment>
   )
 }
 
-const BluePrintTemplateForm = props => {
-  let { state, dispatch } = props
-  const { selectedTemplatePath, modelFiles, formData } = state
-  useEffect(() => {
-    // Update the document title using the browser API
-    if (selectedTemplatePath) {
-      const node = state.nodes[selectedTemplatePath]
-      const url = node.endpoint + node.path
-      axios({
-        method: 'get',
-        url,
-        responseType: 'json',
-      })
-        .then(function(response) {
-          dispatch(Actions.fetchModel(node.path, response.data))
-        })
-        .catch(e => {
-          console.error(e)
-        })
-    }
-  }, [selectedTemplatePath])
-
-  if (selectedTemplatePath === null) {
-    return null
-  }
-
-  const modelSchema = modelFiles[selectedTemplatePath]
-
-  if (!modelSchema) {
-    return <div>schema not found. </div>
-  }
+const BluePrintTemplateFormContainer = props => {
+  let { state } = props
+  const { selectedTemplatePath } = state
 
   const node = state.nodes[selectedTemplatePath]
-  if (node && node.endpoint.indexOf('/templates') === -1) {
+  const url = node.endpoint + node.path
+  const [params, refetch] = useAxios(url)
+  const { data, loading, error } = params
+
+  if (loading) return <p>Loading...</p>
+  // Need to lookup cache since error is not reset.
+  // https://github.com/simoneb/axios-hooks/issues/8
+  const cacheHasKey = cache.keys().filter(key => key.indexOf(url) > -1).length
+  if (!cacheHasKey && error) {
+    return <p>Error!</p>
+  }
+
+  const isTemplate = node && node.endpoint.indexOf('/templates') === -1
+  if (isTemplate) {
     return (
       <div>
-        <Pre>{JSON.stringify(modelSchema, null, 2)}</Pre>
+        <Pre>{JSON.stringify(props.formData, null, 2)}</Pre>
       </div>
     )
   }
-  // need a ui-template.
-  // const jsonSchema = Object.assign({}, modelSchema, {
-  //   required: ['name', 'description', 'properties'],
-  // })
+  const stateFormData = state.formData[selectedTemplatePath]
+  const formData = stateFormData || {}
 
-  const stateFormData = formData[selectedTemplatePath]
-  const data = stateFormData || {}
+  return (
+    <BluePrintTemplateFormComponent
+      {...props}
+      schema={data}
+      formData={formData}
+    />
+  )
+}
 
+const BluePrintTemplateFormComponent = props => {
+  const { formData, schema, selectedTemplatePath, dispatch } = props
   const onSubmit = schemas => {
     try {
       //validate jsonSchema.
@@ -84,11 +83,15 @@ const BluePrintTemplateForm = props => {
       alert('not valid jsonschema')
     }
   }
+  // need a ui-template.
+  // const jsonSchema = Object.assign({}, modelSchema, {
+  //   required: ['name', 'description', 'properties'],
+  // })
 
   return (
     <Form
-      formData={data}
-      schema={modelSchema}
+      formData={formData}
+      schema={schema}
       onSubmit={onSubmit}
       onChange={log('change')}
       onError={log('errors')}

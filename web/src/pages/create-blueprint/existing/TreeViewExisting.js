@@ -1,12 +1,10 @@
-import React, { useReducer } from 'react'
+import React from 'react'
 import values from 'lodash/values'
 import Header from '../../../components/Header'
-import treeViewExistingReducer, { Actions } from './TreeViewExistingReducer'
-import templatesIndex from '../json/index_templates'
-import blueprintsIndex from '../json/index_blueprints'
+import { Actions } from './TreeViewExistingReducer'
 import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
-import { generateTreeview } from '../../../util/generateTreeview'
+import { CreatePackageButton } from './CreatePackageButton'
 
 export default props => {
   const { addAsset, onSelect, dispatch, state } = props
@@ -33,16 +31,11 @@ export default props => {
   }
 
   const rootNodes = values(state).filter(n => n.isRoot)
-
   return (
-    <React.Fragment>
+    <div>
       <Header>
         <h3>Files</h3>
-        <div>
-          <button disabled onClick={() => addRootPackage()}>
-            New Package
-          </button>
-        </div>
+        <CreatePackageButton />
       </Header>
 
       <div>
@@ -81,6 +74,6 @@ export default props => {
             )
           })}
       </div>
-    </React.Fragment>
+    </div>
   )
 }
