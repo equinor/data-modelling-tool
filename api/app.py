@@ -16,7 +16,7 @@ def create_app(config):
     return app
 
 
-if Config.REMOTE_DEBUG == '1' or Config.REMOTE_DEBUG == 'True':
+if Config.REMOTE_DEBUG in (1, 'True', '1', True):
     enable_remote_debugging()
 
 app = create_app(Config)
@@ -24,10 +24,17 @@ app = create_app(Config)
 
 @app.cli.command()
 def init_import():
-    for file in getListOfFiles('/code/models'):
-        id = file.split('/', 3)[-1]
-        print(f'Importing {file} as schema with id: {id}.')
-        with open(file) as json_file:
-            document = json.load(json_file)
-            document['_id'] = id
-            db.documents.replace_one({'_id': id}, document, upsert=True)
+    import_file_dict = {
+        "blueprints": getListOfFiles('/code/schemas/blueprint'),
+        "templates": getListOfFiles('/code/schemas/templates'),
+        "entities": getListOfFiles('/code/schemas/entities')
+    }
+
+    for collection, file_list in import_file_dict.items():
+        for file in file_list:
+                id = file.split('/', 4)[-1]
+                print(f'Importing {file} as {collection} with id: {id}.')
+                with open(file) as json_file:
+                    document = json.load(json_file)
+                    document['_id'] = id
+                    db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)

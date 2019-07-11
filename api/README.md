@@ -33,4 +33,4 @@ To to be able to debug Python running in a docker-compose environment, we use a 
 2. Copy your debug-egg to the project root.  
 For a JetBrains Toolbox installation;  
 `cp ~/.local/share/JetBrains/Toolbox/apps/PyCharm-P/ch-0/191.7479.30/debug-eggs/pydevd-pycharm.egg .`
-3. Enable the env var REMOTE_DEBUG in the docker-compose file.
+3. Now it get's a bit weird, because of the way flask handles processes and threads, you first have to start the application with REMOTE_DEBUG = 0 in the config.py file, and then set it to 1. Hot-reloading will then enable debugging in the container.
