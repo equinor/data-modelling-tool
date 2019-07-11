@@ -1,25 +1,38 @@
-import React, { useReducer } from 'react'
+import React, { useEffect } from 'react'
 import values from 'lodash/values'
 import Header from '../../../components/Header'
-import treeViewExistingReducer, { Actions } from './TreeViewExistingReducer'
-import templatesIndex from '../json/index_templates'
-import blueprintsIndex from '../json/index_blueprints'
+import { Actions } from './TreeViewExistingReducer'
 import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
-import { generateTreeview } from '../../../util/generateTreeview'
-
-const initialState = Object.assign(
-  {},
-  generateTreeview(templatesIndex, 'api/templates'),
-  generateTreeview(blueprintsIndex, 'api/templates')
-)
+import { CreatePackageButton } from './CreatePackageButton'
+import axios from 'axios'
 
 export default props => {
-  const { addAsset, onSelect } = props
+  const { addAsset, onSelect, dispatch, state } = props
 
-  const [state, dispatch] = useReducer(treeViewExistingReducer, initialState)
+  useEffect(() => {
+    async function fetchData() {
+      const urlTemplates = '/api/index/templates'
+      const responseTemplates = await axios(urlTemplates)
+      dispatch(
+        Actions.addAssets(
+          responseTemplates.data,
+          urlTemplates.replace('/index', '')
+        )
+      )
 
-  console.log(state)
+      const urlBluePrints = '/api/index/blueprints'
+      const responseBlueprints = await axios(urlBluePrints)
+      dispatch(
+        Actions.addAssets(
+          responseBlueprints.data,
+          urlBluePrints.replace('/index', '')
+        )
+      )
+    }
+    fetchData()
+  }, []) // empty array
+
   const addRootPackage = () => {
     let name = prompt('Please enter name of new package', 'New Package')
     const newRootPath = `/${name}`
@@ -42,16 +55,11 @@ export default props => {
   }
 
   const rootNodes = values(state).filter(n => n.isRoot)
-
   return (
-    <React.Fragment>
+    <div>
       <Header>
         <h3>Files</h3>
-        <div>
-          <button disabled onClick={() => addRootPackage()}>
-            New Package
-          </button>
-        </div>
+        <CreatePackageButton />
       </Header>
 
       <div>
@@ -90,6 +98,6 @@ export default props => {
             )
           })}
       </div>
-    </React.Fragment>
+    </div>
   )
 }
