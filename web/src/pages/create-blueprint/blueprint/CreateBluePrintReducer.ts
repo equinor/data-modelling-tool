@@ -82,6 +82,7 @@ export default (state: CreateBluePrintState, action: CreateBluePrintAction) => {
       return { ...state, ...{ nodes: newNodes } }
 
     case UPDATE_FORM_DATA:
+      console.log(action)
       const newFormData = state.formData
       newFormData[action.path] = action.formData
       return { ...state, ...newFormData }

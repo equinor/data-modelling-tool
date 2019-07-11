@@ -37,7 +37,6 @@ export default props => {
 const BluePrintTemplateFormContainer = props => {
   let { state } = props
   const { selectedTemplatePath } = state
-
   const node = state.nodes[selectedTemplatePath]
   const url = node.endpoint + node.path
   const [params, refetch] = useAxios(url)
@@ -52,6 +51,7 @@ const BluePrintTemplateFormContainer = props => {
   }
 
   const isTemplate = node && node.endpoint.indexOf('/templates') === -1
+  console.log(node.endpoint, isTemplate)
   if (isTemplate) {
     return (
       <div>
@@ -72,7 +72,13 @@ const BluePrintTemplateFormContainer = props => {
 }
 
 const BluePrintTemplateFormComponent = props => {
-  const { formData, schema, selectedTemplatePath, dispatch } = props
+  const {
+    formData,
+    schema,
+    state: { selectedTemplatePath },
+    dispatch,
+  } = props
+  console.log(selectedTemplatePath)
   const onSubmit = schemas => {
     try {
       //validate jsonSchema.
