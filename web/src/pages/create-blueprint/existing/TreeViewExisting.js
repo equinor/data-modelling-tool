@@ -8,19 +8,10 @@ import { CreatePackageButton } from './CreatePackageButton'
 import axios from 'axios'
 
 export default props => {
-  const { addAsset, onSelect, dispatch, state } = props
+  const { createBluePrint, onSelect, dispatch, state } = props
 
   useEffect(() => {
     async function fetchData() {
-      const urlTemplates = '/api/index/templates'
-      const responseTemplates = await axios(urlTemplates)
-      dispatch(
-        Actions.addAssets(
-          responseTemplates.data,
-          urlTemplates.replace('/index', '')
-        )
-      )
-
       const urlBluePrints = '/api/index/blueprints'
       const responseBlueprints = await axios(urlBluePrints)
       dispatch(
@@ -33,12 +24,6 @@ export default props => {
     fetchData()
   }, []) // empty array
 
-  const addRootPackage = () => {
-    let name = prompt('Please enter name of new package', 'New Package')
-    const newRootPath = `/${name}`
-    dispatch(Actions.addRootPackage(newRootPath))
-  }
-
   const onToggle = node => {
     dispatch(Actions.toggleNode(node.path))
   }
@@ -48,18 +33,12 @@ export default props => {
     dispatch(Actions.addPackage(node.path, name))
   }
 
-  const addFile = node => {
-    let name = prompt('Please enter name of new file', 'newfile')
-    const content = 'this is a awesome new file'
-    dispatch(Actions.addFile(node.path, name, content))
-  }
-
   const rootNodes = values(state).filter(n => n.isRoot)
   return (
     <div>
       <Header>
         <h3>Files</h3>
-        <CreatePackageButton />
+        <CreatePackageButton dispatch={dispatch} />
       </Header>
 
       <div>
@@ -71,17 +50,18 @@ export default props => {
           .map(node => {
             const menuItems = [
               {
-                type: 'file',
-                action: 'use-template',
-                onExecute: addAsset,
-                label: 'Add template to blueprint',
+                type: 'folder',
+                action: 'create-blueprint',
+                onClick: () => createBluePrint(node),
+                label: 'Create blueprint',
               },
               // commented out until functionality is implemented.
-              // 	{
-              // 	  action: 'add-package',
-              // 	  onClick: () => addPackage(node),
-              // 	  label: 'Add Package',
-              // 	},
+              {
+                type: 'folder',
+                action: 'add-package',
+                onClick: () => addPackage(node),
+                label: 'Create Package',
+              },
               // 	{ action: 'add-file', onClick: () => addFile(node), label: 'Add File' },
             ]
 

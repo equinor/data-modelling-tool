@@ -31,6 +31,7 @@ export default props => {
         <h3>Preview Blueprint</h3>
         <SaveButton
           jsonSchema={previewJson}
+          state={state}
           path={state.selectedTemplatePath}
           filesDispatch={filesDispatch}
         />
@@ -43,8 +44,7 @@ export default props => {
 }
 
 const SaveButton = props => {
-  const { jsonSchema, path, filesDispatch } = props
-  const newPath = path.substr(0, path.lastIndexOf('/'))
+  const { jsonSchema, path, filesDispatch, state } = props
   const title =
     jsonSchema.properties &&
     jsonSchema.properties.title &&
@@ -58,7 +58,7 @@ const SaveButton = props => {
           alert('jsonschema has no title.')
           return
         }
-        const url = `api/blueprints${newPath}/${title}.json`
+        const url = `api/blueprints${path}/${title}.json`
         axios({
           method: 'put',
           url,

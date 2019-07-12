@@ -36,11 +36,11 @@ const NodeIcon = styled.div`
 `
 
 const getNodeLabel = node => {
-  if (node.title) {
-    return node.title
-  } else {
-    return last(node.path.split('/'))
-  }
+  //@todo use title in treeview?
+  // if (node.title) {
+  //   return node.title
+  // }
+  return last(node.path.split('/'))
 }
 
 const WithContextMenu = props => {
@@ -63,7 +63,6 @@ const getChildNodes = (node, nodes) => {
 const TreeNode = props => {
   const { node, nodes, level, onToggle, onNodeSelect, menuItems } = props
 
-  console.log(props)
   return (
     <React.Fragment>
       <StyledTreeNode level={level} type={node.type}>
@@ -81,14 +80,7 @@ const TreeNode = props => {
         <span role="button" onClick={() => onNodeSelect(node)}>
           <WithContextMenu
             id={node.path}
-            menuItems={menuItems
-              .filter(item => item.type === node.type)
-              .map(item => {
-                //need to give the correct node to item's onClick function.
-                return Object.assign(item, {
-                  onClick: () => item.onExecute(node),
-                })
-              })}
+            menuItems={menuItems.filter(item => item.type === node.type)}
             label={getNodeLabel(node)}
           />
         </span>

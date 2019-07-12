@@ -1,7 +1,10 @@
 import TreeReducer, {
   Actions as CommonTreeActions,
 } from '../../../components/tree-view/TreeReducer'
-import { generateTreeview } from '../../../util/generateTreeview'
+import {
+  generateTreeview,
+  generateTreeViewItem,
+} from '../../../util/generateTreeview'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
@@ -51,7 +54,7 @@ export default (state, action) => {
       return state
     case ADD_FILE:
       //fix children recursive.
-      return generateTreeview(state, [action.indexItem], action.endpoint)
+      return generateTreeViewItem(state, action.indexItem, action.endpoint)
 
     case 'ADD_ASSET':
       const newState = generateTreeview(state, action.data, action.endpoint)

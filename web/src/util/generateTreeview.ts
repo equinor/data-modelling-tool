@@ -3,6 +3,17 @@ export interface TreeviewIndex {
   title: string
 }
 
+export function generateTreeViewItem(
+  state: any,
+  indexItem: TreeviewIndex,
+  endpoint: string
+) {
+  const newState = generateTreeview(state, [indexItem], endpoint)
+  const rootPath = '/' + indexItem._id.substr(0, indexItem._id.indexOf('/'))
+  newState[rootPath].isOpen = true
+  return newState
+}
+
 export function generateTreeview(
   state: any,
   index: TreeviewIndex[],
@@ -39,7 +50,6 @@ export function generateTreeview(
           node.isRoot = true
         }
 
-        console.log()
         if (node.children && node.children.length > 0) {
           node.children.push(previousPath)
         } else {
@@ -53,7 +63,7 @@ export function generateTreeview(
         } else {
           previousPath = path
         }
-        console.log(path)
+
         if (path) {
           acc[path] = node
           path = getParentPath(path)
