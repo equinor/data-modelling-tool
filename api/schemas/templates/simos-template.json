@@ -4,10 +4,12 @@
   "type": "object",
   "properties": {
     "title": {
-      "type": "string"
+      "type": "string",
+      "value": "Simos Template"
     },
     "description": {
-      "type": "string"
+      "type": "string",
+      "value": ""
     },
     "properties": {
       "type": "array",
@@ -17,6 +19,9 @@
             "type": "string"
           },
           "type": {
+            "type": "string"
+          },
+          "value": {
             "type": "string"
           }
         }

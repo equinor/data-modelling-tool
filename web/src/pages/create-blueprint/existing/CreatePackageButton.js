@@ -3,7 +3,7 @@ import React from 'react'
 import Modal from '../../../components/modal/Modal'
 import useAxios from 'axios-hooks'
 import Form from 'react-jsonschema-form'
-import { Actions } from './TreeViewExistingReducer'
+import { FilesActions } from './TreeViewExistingReducer'
 import toJsonSchema from 'to-json-schema'
 
 export const CreatePackageButton = props => {
@@ -44,7 +44,7 @@ const CreatePackageForm = ({ jsonSchema, dispatch, setOpen }) => {
           //validate jsonSchema.
           const jsonSchema = toJsonSchema(formData)
           //todo send formData to api, which adds it to db.
-          dispatch(Actions.addRootPackage('/' + formData.name))
+          dispatch(FilesActions.addRootPackage('/' + formData.name))
           setOpen(false)
         } catch (e) {
           //todo fix validation. Set required on fields. And strip optional fields with null values from formdata.

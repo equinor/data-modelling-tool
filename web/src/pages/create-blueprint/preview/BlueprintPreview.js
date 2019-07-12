@@ -1,8 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import toJsonSchema from 'to-json-schema'
 import Header from '../../../components/Header'
-import { Actions } from '../existing/TreeViewExistingReducer'
 import axios from 'axios'
 
 export const Pre = styled.pre`
@@ -15,40 +13,28 @@ export const Pre = styled.pre`
 
 export default props => {
   const { state, filesDispatch } = props
-  //merge the nodes with formData.
-  // const json = values(state.formData)
-  //   .filter(item => item)
-  //   .reduce((acc, current) => {
-  //     return Object.assign(acc, current)
-  //   }, {})
   const formData = state.formData[state.selectedTemplatePath]
-  const jsonSchema = toJsonSchema(formData || null)
-
-  const previewJson = fillInFormData(formData, jsonSchema)
   return (
     <div>
       <Header>
         <h3>Preview Blueprint</h3>
         <SaveButton
-          jsonSchema={previewJson}
+          formData={formData}
           state={state}
           path={state.selectedTemplatePath}
           filesDispatch={filesDispatch}
         />
       </Header>
       <div>
-        <Pre>{JSON.stringify(previewJson, null, 2)}</Pre>
+        <Pre>{JSON.stringify(formData, null, 2)}</Pre>
       </div>
     </div>
   )
 }
 
 const SaveButton = props => {
-  const { jsonSchema, path, filesDispatch, state } = props
-  const title =
-    jsonSchema.properties &&
-    jsonSchema.properties.title &&
-    jsonSchema.properties.title.value.trim()
+  const { formData, path } = props
+  const title = formData && formData.title
   const disabled = title === undefined
   return (
     <button
@@ -62,13 +48,12 @@ const SaveButton = props => {
         axios({
           method: 'put',
           url,
-          data: jsonSchema,
+          data: formData,
           responseType: 'json',
         })
           .then(function(response) {
-            filesDispatch(
-              Actions.addFile({ _id: response.data, title }, 'api/blueprints')
-            )
+            console.log(response)
+            //@todo refetch blueprints
           })
           .catch(e => {
             console.error(e)
@@ -78,16 +63,4 @@ const SaveButton = props => {
       Save
     </button>
   )
-}
-
-export function fillInFormData(formData, jsonSchema) {
-  if (Object.keys(jsonSchema).length > 1) {
-    if (jsonSchema.properties) {
-      if (jsonSchema.properties.title) {
-        jsonSchema.properties.title.value = formData.title
-      }
-    }
-    jsonSchema.properties.description.value = formData.description
-  }
-  return jsonSchema
 }

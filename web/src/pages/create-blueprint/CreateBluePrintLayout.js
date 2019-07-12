@@ -23,13 +23,13 @@ export default props => {
         <Col xs={12} md={4}>
           <Wrapper>
             <TreeViewExisting
-              dispatch={filesDispatch}
-              state={filesState}
+              dispatch={dispatch}
+              filesDispatch={filesDispatch}
+              filesState={filesState}
               //override dispatch
               addAsset={addAsset}
               createBluePrint={createBluePrint}
               // onSelect should allow editing of a existing blueprint
-              onSelect={() => {}}
             />
           </Wrapper>
         </Col>

@@ -1,21 +1,28 @@
 import React, { useEffect } from 'react'
 import values from 'lodash/values'
 import Header from '../../../components/Header'
-import { Actions } from './TreeViewExistingReducer'
+import { FilesActions } from './TreeViewExistingReducer'
+import { Actions } from '../blueprint/CreateBluePrintReducer'
 import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import { CreatePackageButton } from './CreatePackageButton'
 import axios from 'axios'
 
 export default props => {
-  const { createBluePrint, onSelect, dispatch, state } = props
+  const {
+    createBluePrint,
+    onSelect,
+    dispatch,
+    filesDispatch,
+    filesState,
+  } = props
 
   useEffect(() => {
     async function fetchData() {
       const urlBluePrints = '/api/index/blueprints'
       const responseBlueprints = await axios(urlBluePrints)
-      dispatch(
-        Actions.addAssets(
+      filesDispatch(
+        FilesActions.addAssets(
           responseBlueprints.data,
           urlBluePrints.replace('/index', '')
         )
@@ -25,25 +32,27 @@ export default props => {
   }, []) // empty array
 
   const onToggle = node => {
-    dispatch(Actions.toggleNode(node.path))
+    filesDispatch(FilesActions.toggleNode(node.path))
   }
 
   const addPackage = node => {
     let name = prompt('Please enter name of new sub package', 'subpackage')
-    dispatch(Actions.addPackage(node.path, name))
+    filesDispatch(FilesActions.addPackage(node.path, name))
   }
 
-  const rootNodes = values(state).filter(n => n.isRoot)
+  const rootNodes = values(filesState).filter(n => n.isRoot)
   return (
     <div>
       <Header>
         <h3>Files</h3>
-        <CreatePackageButton dispatch={dispatch} />
+        <CreatePackageButton dispatch={filesDispatch} />
       </Header>
 
       <div>
         <div>
-          <SearchTree onChange={value => dispatch(Actions.filterTree(value))} />
+          <SearchTree
+            onChange={value => filesDispatch(FilesActions.filterTree(value))}
+          />
         </div>
         {rootNodes
           .filter(node => !node.isHidden)
@@ -69,11 +78,13 @@ export default props => {
               <TreeNode
                 key={node.path}
                 node={node}
-                nodes={state}
+                nodes={filesState}
                 existing={true}
                 onToggle={onToggle}
                 menuItems={menuItems}
-                onNodeSelect={onSelect}
+                onNodeSelect={node => {
+                  dispatch(Actions.setSelectedTemplatePath(node.path))
+                }}
               />
             )
           })}

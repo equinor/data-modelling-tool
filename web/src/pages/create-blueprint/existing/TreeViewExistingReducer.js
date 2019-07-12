@@ -12,7 +12,7 @@ const ADD_ROOT_PACKAGE = 'ADD_ROOT_PACKAGE'
 const ADD_PACKAGE = 'ADD_PACKAGE'
 const ADD_FILE = 'ADD_FILE'
 
-export const Actions = {
+export const FilesActions = {
   ...CommonTreeActions,
   addRootPackage: path => ({
     type: ADD_ROOT_PACKAGE,
