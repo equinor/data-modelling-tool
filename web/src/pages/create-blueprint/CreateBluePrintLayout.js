@@ -2,12 +2,18 @@ import React from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import TreeViewExisting from './existing/TreeViewExisting'
-// import TreeViewNew from './blueprint/TreeViewNew'
 import BlueprintPreview from './preview/BlueprintPreview'
 import BlueprintForm from './edit-form/BlueprintForm'
 
 export default props => {
-  const { dispatch, state, addAsset, filesDispatch, filesState } = props
+  const {
+    dispatch,
+    state,
+    addAsset,
+    createBluePrint,
+    filesDispatch,
+    filesState,
+  } = props
   return (
     <Grid style={{ width: '90%' }}>
       <Row>
@@ -21,6 +27,8 @@ export default props => {
               state={filesState}
               //override dispatch
               addAsset={addAsset}
+              createBluePrint={createBluePrint}
+              // onSelect should allow editing of a existing blueprint
               onSelect={() => {}}
             />
           </Wrapper>
@@ -37,7 +45,11 @@ export default props => {
         {/*</Col>*/}
         <Col xs={12} md={4}>
           <Wrapper>
-            <BlueprintForm state={state} dispatch={dispatch} />
+            <BlueprintForm
+              state={state}
+              dispatch={dispatch}
+              formSchema={null}
+            />
           </Wrapper>
         </Col>
 

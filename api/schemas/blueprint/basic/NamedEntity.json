@@ -1,7 +1,6 @@
 {
   "name": "NamedEntity",
   "description": "a named entity",
-
   "properties": [
     {
       "name": "name",

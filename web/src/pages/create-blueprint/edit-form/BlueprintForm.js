@@ -1,19 +1,19 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
 import Header from '../../../components/Header'
-import useAxios, { configure } from 'axios-hooks'
-import Axios from 'axios'
-import LRU from 'lru-cache'
+
 import toJsonSchema from 'to-json-schema'
 import { Actions } from '../blueprint/CreateBluePrintReducer'
 import { Pre } from '../preview/BlueprintPreview'
 
-const log = type => console.log.bind(console, type)
-
+import useAxios, { configure } from 'axios-hooks'
+import Axios from 'axios'
+import LRU from 'lru-cache'
 //avoid request if the file is cached.
 const cache = new LRU({ max: 10 })
 const axios = Axios.create()
 configure({ axios, cache })
+const log = type => console.log.bind(console, type)
 
 export default props => {
   const {
@@ -35,23 +35,15 @@ export default props => {
 }
 
 const BluePrintTemplateFormContainer = props => {
-  let { state } = props
-  const { selectedTemplatePath } = state
-  const node = state.nodes[selectedTemplatePath]
-  const url = node.endpoint + node.path
-  const [params, refetch] = useAxios(url)
-  const { data, loading, error } = params
-
-  if (loading) return <p>Loading...</p>
-  // Need to lookup cache since error is not reset.
-  // https://github.com/simoneb/axios-hooks/issues/8
-  const cacheHasKey = cache.keys().filter(key => key.indexOf(url) > -1).length
-  if (!cacheHasKey && error) {
-    return <p>Error!</p>
+  // not expecting a lot different templates. Consider using a dropdown in the form, to choose different template.
+  const [params] = useAxios('/api/templates/simos-template.json')
+  const { data, loading } = params
+  if (loading) {
+    return <div>Loading...</div>
   }
-
-  const isTemplate = node && node.endpoint.indexOf('/templates') === -1
-  console.log(node.endpoint, isTemplate)
+  // const node = state.nodes[selectedTemplatePath]
+  // const isTemplate = node && node.endpoint.indexOf('/templates') === -1
+  const isTemplate = false
   if (isTemplate) {
     return (
       <div>
@@ -59,26 +51,16 @@ const BluePrintTemplateFormContainer = props => {
       </div>
     )
   }
-  const stateFormData = state.formData[selectedTemplatePath]
-  const formData = stateFormData || {}
 
-  return (
-    <BluePrintTemplateFormComponent
-      {...props}
-      schema={data}
-      formData={formData}
-    />
-  )
+  return <BluePrintTemplateFormComponent {...props} schema={data} />
 }
 
 const BluePrintTemplateFormComponent = props => {
   const {
-    formData,
     schema,
     state: { selectedTemplatePath },
     dispatch,
   } = props
-  console.log(selectedTemplatePath)
   const onSubmit = schemas => {
     try {
       //validate jsonSchema.
@@ -94,6 +76,9 @@ const BluePrintTemplateFormComponent = props => {
   //   required: ['name', 'description', 'properties'],
   // })
 
+  const formData = {
+    properties: [],
+  }
   return (
     <Form
       formData={formData}

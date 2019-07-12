@@ -12,6 +12,9 @@ export default () => {
 
   const addAsset = node => {
     dispatch(Actions.addNodes(node))
+  }
+
+  const createBluePrint = node => {
     dispatch(Actions.setSelectedTemplatePath(node.path))
   }
 
@@ -22,6 +25,7 @@ export default () => {
       filesState={filesState}
       filesDispatch={filesDispatch}
       addAsset={addAsset}
+      createBluePrint={createBluePrint}
     />
   )
 }

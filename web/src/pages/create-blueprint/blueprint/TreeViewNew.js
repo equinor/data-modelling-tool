@@ -21,7 +21,6 @@ export default props => {
         {rootNodes
           .filter(node => !node.isHidden)
           .map(node => {
-            console.log(node)
             return (
               <TreeNode
                 key={'createBlueprint' + node.path}
