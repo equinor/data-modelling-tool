@@ -5,6 +5,7 @@ import useAxios from 'axios-hooks'
 import Form from 'react-jsonschema-form'
 import { FilesActions } from './TreeViewExistingReducer'
 import toJsonSchema from 'to-json-schema'
+import axios from 'axios'
 
 export const CreatePackageButton = props => {
   const [open, setOpen] = useToggle(false)
@@ -44,8 +45,25 @@ const CreatePackageForm = ({ jsonSchema, dispatch, setOpen }) => {
           //validate jsonSchema.
           const jsonSchema = toJsonSchema(formData)
           //todo send formData to api, which adds it to db.
-          dispatch(FilesActions.addRootPackage('/' + formData.name))
-          setOpen(false)
+          console.log(formData)
+          const url = `api/entities-root-packages/${formData.name}/${formData.name}.json`
+          axios({
+            method: 'put',
+            url,
+            data: formData,
+            responseType: 'json',
+          })
+            .then(function(response) {
+              console.log(response)
+              //@todo refetch blueprints
+              dispatch(FilesActions.addRootPackage('/' + formData.name))
+              setOpen(false)
+            })
+            .catch(e => {
+              console.error(e)
+              // @todo use react-alert from npm.
+              alert('failed to save root package.')
+            })
         } catch (e) {
           //todo fix validation. Set required on fields. And strip optional fields with null values from formdata.
           alert('not valid jsonschema')

@@ -2,9 +2,11 @@ import TreeReducer, {
   Actions as CommonTreeActions,
 } from '../../../components/tree-view/TreeReducer'
 import {
-  generateTreeview,
+  generateRootPackageNodes,
+  generateTreeView,
   generateTreeViewItem,
-} from '../../../util/generateTreeview'
+  generateTreeViewNodes,
+} from '../../../util/generateTreeView'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
@@ -57,8 +59,10 @@ export default (state, action) => {
       return generateTreeViewItem(state, action.indexItem, action.endpoint)
 
     case 'ADD_ASSET':
-      const newState = generateTreeview(state, action.data, action.endpoint)
-      return newState
+      if (action.endpoint.indexOf('root_package') > -1) {
+        return generateRootPackageNodes(state, action.data, action.endpoint)
+      }
+      return generateTreeViewNodes(state, action.data, action.endpoint)
 
     case FILTER_TREE:
     case TOGGLE_NODE:

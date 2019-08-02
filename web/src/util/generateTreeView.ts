@@ -1,6 +1,7 @@
 export interface TreeviewIndex {
   _id: string
-  title: string
+  title?: string
+  name?: string
 }
 
 export function generateTreeViewItem(
@@ -8,26 +9,37 @@ export function generateTreeViewItem(
   indexItem: TreeviewIndex,
   endpoint: string
 ) {
-  const newState = generateTreeview(state, [indexItem], endpoint)
+  const newState = generateTreeViewNodes(state, [indexItem], endpoint)
   const rootPath = '/' + indexItem._id.substr(0, indexItem._id.indexOf('/'))
   newState[rootPath].isOpen = true
   return newState
 }
 
-export function generateTreeview(
+export function generateRootPackageNodes(
   state: any,
   index: TreeviewIndex[],
   endpoint: string
 ) {
-  const treeViewLeafNodes = index.map((node: any) => {
-    return {
-      path: '/' + node['_id'],
-      title: node.title,
-      endpoint,
-      type: 'file',
-    }
-  })
-  return treeViewLeafNodes.reduce(
+  return index.map(generateTreeViewLeafNodes(endpoint)).reduce(
+    (acc, currentNode) => {
+      acc[getParentPath(currentNode.path)] = {
+        path: getParentPath(currentNode.path),
+        type: 'folder',
+        isRoot: true,
+        children: [],
+      }
+      return acc
+    },
+    { ...state }
+  )
+}
+
+export function generateTreeViewNodes(
+  state: any,
+  index: TreeviewIndex[],
+  endpoint: string
+) {
+  return index.map(generateTreeViewLeafNodes(endpoint)).reduce(
     (acc: any, currentNode: any) => {
       //add leaf node.
       acc[currentNode.path] = currentNode
@@ -78,7 +90,18 @@ export function generateTreeview(
   )
 }
 
-function getParentPath(path: string) {
+export function getParentPath(path: string) {
   const indexOfLastPath = path.lastIndexOf('/')
   return path.substr(0, indexOfLastPath)
+}
+
+function generateTreeViewLeafNodes(endpoint: string) {
+  return (node: any) => {
+    return {
+      path: '/' + node['_id'],
+      title: node.title,
+      endpoint,
+      type: 'file',
+    }
+  }
 }
