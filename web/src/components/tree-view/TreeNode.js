@@ -11,19 +11,12 @@ import last from 'lodash/last'
 import PropTypes from 'prop-types'
 import ContextMenu from '../context-menu/ContextMenu'
 
-const getPaddingLeft = (level, type) => {
-  let paddingLeft = level * 20
-  if (type === 'file') paddingLeft += 20
-  return paddingLeft
-}
-
-//@todo fix hover when contextMenu is open. https://codepen.io/Iulius90/pen/oLaNoJ
 const StyledTreeNode = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
   padding: 5px 8px;
-  padding-left: ${props => getPaddingLeft(props.level, props.type)}px;
+  padding-left: ${props => props.level * 20}px;
 
   &:hover {
     background: lightgray;
@@ -44,15 +37,11 @@ const getNodeLabel = node => {
 }
 
 const WithContextMenu = props => {
-  const { id, label, menuItems } = props
+  const { label, menuItems } = props
   if (menuItems.length === 0) {
     return <span>{label}</span>
   }
-  return (
-    <ContextMenu id={id} menuItems={menuItems}>
-      {label}
-    </ContextMenu>
-  )
+  return <ContextMenu {...props}>{label}</ContextMenu>
 }
 
 const getChildNodes = (node, nodes) => {
@@ -61,8 +50,15 @@ const getChildNodes = (node, nodes) => {
 }
 
 const TreeNode = props => {
-  const { node, nodes, level, onToggle, onNodeSelect, menuItems } = props
-
+  const {
+    node,
+    nodes,
+    level,
+    onToggle,
+    onNodeSelect,
+    onClickContextMenu,
+    menuItems,
+  } = props
   return (
     <React.Fragment>
       <StyledTreeNode level={level} type={node.type}>
@@ -71,16 +67,27 @@ const TreeNode = props => {
             (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
         </NodeIcon>
 
-        <NodeIcon marginRight={10}>
+        <NodeIcon marginLeft={-10}>
           {node.type === 'file' && <FaFile />}
           {node.type === 'folder' && node.isOpen === true && <FaFolderOpen />}
           {node.type === 'folder' && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
-        <span role="button" onClick={() => onNodeSelect(node)}>
+        <span
+          role="button"
+          onClick={() => {
+            onNodeSelect(node)
+          }}
+        >
           <WithContextMenu
             id={node.path}
-            menuItems={menuItems.filter(item => item.type === node.type)}
+            onClickContextMenu={onClickContextMenu}
+            menuItems={menuItems.filter(item => {
+              const equalType = item.type === node.type
+              const equalLevel =
+                item.isRoot === undefined || item.isRoot === node.isRoot
+              return equalLevel && equalType
+            })}
             label={getNodeLabel(node)}
           />
         </span>

@@ -1,7 +1,7 @@
 import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
-import CreateBluePrintContainer from './pages/create-blueprint/CreateBluePrintContainer'
+import BluePrintPage from './pages/blueprint/BluePrintPage'
 import { ALMOST_BLACK, PRIMARY_COLOR } from './components/styles'
 import { H1 } from './components/Headers'
 
@@ -88,7 +88,7 @@ function App() {
         </InnerHeader>
       </AppHeader>
 
-      <Route path="/blueprints" component={CreateBluePrintContainer} />
+      <Route path="/blueprints" component={BluePrintPage} />
     </Router>
   )
 }

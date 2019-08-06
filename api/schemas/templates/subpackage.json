@@ -2,9 +2,7 @@
   "title": "Subpackage",
   "description": "Contains models and other packages",
   "type": "object",
-  "required": [
-    "name"
-  ],
+  "required": ["name"],
   "properties": {
     "name": {
       "type": "string",
@@ -31,7 +29,7 @@
       }
     },
     "parent": {
-       "type": "string"
+      "type": "string"
     }
   }
 }
