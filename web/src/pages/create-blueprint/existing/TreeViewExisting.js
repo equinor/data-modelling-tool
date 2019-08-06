@@ -27,6 +27,14 @@ export default props => {
           urlBluePrints.replace('/index', '')
         )
       )
+      const urlRootEntities = '/api/index/entities_root_packages'
+      const responseRootEntities = await axios(urlRootEntities)
+      filesDispatch(
+        FilesActions.addAssets(
+          responseRootEntities.data,
+          urlRootEntities.replace('/index', '')
+        )
+      )
     }
     fetchData()
   }, []) // empty array
@@ -71,8 +79,18 @@ export default props => {
                 onClick: () => addPackage(node),
                 label: 'Create Package',
               },
+
               // 	{ action: 'add-file', onClick: () => addFile(node), label: 'Add File' },
             ]
+            if (node.isRoot) {
+              menuItems.push({
+                type: 'folder',
+                action: ' edit-root-package',
+                // todo set existing root package in form.
+                onClick: () => alert('edit root package'),
+                label: 'Edit root package',
+              })
+            }
 
             return (
               <TreeNode
@@ -83,7 +101,9 @@ export default props => {
                 onToggle={onToggle}
                 menuItems={menuItems}
                 onNodeSelect={node => {
-                  dispatch(Actions.setSelectedTemplatePath(node.path))
+                  if (node.type === 'file') {
+                    dispatch(Actions.setSelectedTemplatePath(node.path))
+                  }
                 }}
               />
             )
