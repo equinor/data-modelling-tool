@@ -1,13 +1,47 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+@font-face {
+  font-family: 'Equinor-Bold';
+  src: url('./fonts/equinor/Equinor-Bold.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-Bold.woff') format('woff');
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: 'Equinor-BoldItalic';
+  src: url('./fonts/equinor/Equinor-BoldItalic.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-BoldItalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Equinor-Italic';
+  src: url('./fonts/equinor/Equinor-Italic.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-Italic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Equinor-Light';
+  src: url('./fonts/equinor/Equinor-Light.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-Light.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Equinor-LightItalic';
+  src: url('./fonts/equinor/Equinor-LightItalic.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-LightItalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Equinor-Medium';
+  src: url('./fonts/equinor/Equinor-Medium.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-Medium.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Equinor-MediumItalic';
+  src: url('./fonts/equinor/Equinor-MediumItalic.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-MediumItalic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Equinor-Regular';
+  src: url('./fonts/equinor/Equinor-Regular.woff2') format('woff2'),
+    url('./fonts/equinor/Equinor-Regular.woff') format('woff');
 }
