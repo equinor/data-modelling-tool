@@ -34,6 +34,8 @@ spec:
         - name: http
           port: 5000
       public: true
+      secrets:
+        - MONGO_AZURE_URI
     - name: oauth-proxy
       src: ./oauth-proxy
       ports:
