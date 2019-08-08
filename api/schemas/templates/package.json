@@ -2,7 +2,9 @@
   "title": "Root Package",
   "description": "Contains models and other packages",
   "type": "object",
-  "required": ["name"],
+  "required": [
+    "name"
+  ],
   "properties": {
     "name": {
       "type": "string",
@@ -26,16 +28,16 @@
         "type": "string"
       }
     },
-    "models": {
+    "entity": {
       "type": "array",
-      "title": "List of models",
+      "title": "List of entities",
       "items": {
         "type": "string"
       }
     },
     "dependencies": {
       "type": "array",
-      "title": "Depended packages",
+      "title": "Dependencies",
       "items": {
         "type": "string"
       }

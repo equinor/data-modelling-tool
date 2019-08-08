@@ -11,7 +11,7 @@
       "type": "string",
       "value": ""
     },
-    "properties": {
+    "attributes": {
       "type": "array",
       "title": "Attributes",
       "items": {

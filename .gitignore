@@ -5,6 +5,7 @@ __pycache__/
 pydevd-pycharm.egg
 
 data/
+h5/
 
 react-app-env.d.ts
 

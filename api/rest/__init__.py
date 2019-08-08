@@ -3,7 +3,7 @@ from flask_restful import Api
 from rest.blueprint import Blueprint
 from rest.blueprint_to_json_schema import BlueprintToJsonSchema
 from rest.entity import Entity
-from rest.entity_root_packages import EntityRootPackages
+from rest.packages import EntityRootPackages
 from rest.template import Template
 from rest.index import Index
 
