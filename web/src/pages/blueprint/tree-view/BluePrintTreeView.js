@@ -25,6 +25,7 @@ export default props => {
         )
       )
     }
+
     fetchData()
   }, [urlBluePrints, dispatch]) // empty array
 
@@ -52,40 +53,24 @@ export default props => {
         </button>
       </Header>
 
-      <Modal
-        toggle={() => setOpenRootPackage(!openRootPackage)}
+      <CreatePackageModal
+        {...props}
         open={openRootPackage}
-      >
-        <Form
-          schemaUrl="/api/templates/root-package.json"
-          endpoint="/api/blueprints"
-          isRoot={true}
-          path=""
-          type="folder"
-          onSubmit={path => {
-            dispatch(FilesActions.addRootPackage(path))
-            setOpenRootPackage(false)
-            setEditMode(false)
-          }}
-        ></Form>
-      </Modal>
+        setOpen={setOpenRootPackage}
+        callback={path => dispatch(FilesActions.addRootPackage(path))}
+      />
 
-      <Modal toggle={() => setOpen(!open)} open={open}>
-        {nodeIdModal && (
-          <Form
-            schemaUrl="/api/templates/subpackage.json"
-            endpoint="/api/blueprints"
-            path={nodeIdModal}
-            type="folder"
-            onSubmit={path => {
-              setOpen(false)
-              setEditMode(false)
-              setNodeIdModal(null)
-              dispatch(FilesActions.addPackage(path))
-            }}
-          ></Form>
-        )}
-      </Modal>
+      <CreateSubPackageModal
+        {...props}
+        open={open}
+        path={nodeIdModal}
+        setOpen={setOpen}
+        callback={path => {
+          setNodeIdModal(null)
+          dispatch(FilesActions.addPackage(path))
+        }}
+      />
+
       <div>
         <div>
           <SearchTree
@@ -101,7 +86,6 @@ export default props => {
                 action: 'create-blueprint',
                 label: 'Create Blueprint',
               },
-              // commented out until functionality is implemented.
               {
                 type: 'folder',
                 action: 'add-package',
@@ -155,5 +139,46 @@ export default props => {
           })}
       </div>
     </div>
+  )
+}
+
+const CreatePackageModal = props => {
+  const { setEditMode, open, setOpen, callback } = props
+  return (
+    <Modal toggle={() => setOpen(!open)} open={open}>
+      <Form
+        schemaUrl="/api/templates/root-package.json"
+        endpoint="/api/blueprints"
+        isRoot={true}
+        path=""
+        type="folder"
+        onSubmit={path => {
+          callback(path)
+          setOpen(false)
+          setEditMode(false)
+        }}
+      ></Form>
+    </Modal>
+  )
+}
+
+const CreateSubPackageModal = props => {
+  const { setEditMode, open, path, setOpen, callback } = props
+  return (
+    <Modal toggle={() => setOpen(!open)} open={open}>
+      {path && (
+        <Form
+          schemaUrl="/api/templates/subpackage.json"
+          endpoint="/api/blueprints"
+          path={path}
+          type="folder"
+          onSubmit={path => {
+            setOpen(false)
+            setEditMode(false)
+            callback(path)
+          }}
+        ></Form>
+      )}
+    </Modal>
   )
 }

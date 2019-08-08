@@ -16,13 +16,13 @@ export default props => {
 
       <div style={{ marginTop: 20, maxWidth: 400, padding: 20 }}>
         {// check selectedTemplate to avoid having a conditional before a hook in BluePrintTemplateForm.
-        selectedTemplateId && <BluePrintTemplateFormContainer {...props} />}
+        selectedTemplateId && <BluePrintForm {...props} />}
       </div>
     </React.Fragment>
   )
 }
 
-const BluePrintTemplateFormContainer = props => {
+const BluePrintForm = props => {
   const { selectedTemplateId, editMode, setPreviewData } = props
   const [template, setTemplate] = useState({})
   const [formData, setFormData] = useState({})
@@ -51,25 +51,7 @@ const BluePrintTemplateFormContainer = props => {
   if (loading) {
     return <div>Loading...</div>
   }
-  return (
-    <BluePrintTemplateFormComponent
-      {...props}
-      schema={template}
-      formData={formData}
-      setFormData={setFormData}
-    />
-  )
-}
 
-const BluePrintTemplateFormComponent = props => {
-  const {
-    schema,
-    formData,
-    selectedTemplateId,
-    setPreviewData,
-    setFormData,
-    editMode,
-  } = props
   const onSubmit = schemas => {
     const title = schemas.formData.title
 
@@ -108,7 +90,7 @@ const BluePrintTemplateFormComponent = props => {
   return (
     <Form
       formData={formData || { properties: [] }}
-      schema={schema}
+      schema={template}
       onSubmit={onSubmit}
       onChange={schemas => {
         setFormData(schemas.formData)
