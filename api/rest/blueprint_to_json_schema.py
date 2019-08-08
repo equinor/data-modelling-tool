@@ -12,9 +12,19 @@ class BlueprintToJsonSchema(Resource):
             return abort(404)
         properties = {}
         for attribute in document['properties']:
-            properties[attribute["name"]] = {
-                "type": attribute["type"]
-            }
+            if attribute["attributeType"] == "Array/Matrix":
+                properties[attribute["name"]] = {
+                    "type": "array",
+                    "items": {
+                        "type": attribute["type"]
+                    }
+                }
+            if attribute["attributeType"] == "Single":
+                properties[attribute["name"]] = {
+                    "type": attribute["type"]
+                }
         return jsonify({
             "properties": properties
         })
+
+

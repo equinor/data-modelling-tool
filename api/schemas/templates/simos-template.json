@@ -1,6 +1,6 @@
 {
-  "title": "SimosBlueprintTemplate",
-  "description": "Template for SIMOS type blueprints",
+  "title": "BlueprintTemplate",
+  "description": "Template for blueprints",
   "type": "object",
   "properties": {
     "title": {
@@ -13,16 +13,71 @@
     },
     "properties": {
       "type": "array",
+      "title": "Attributes",
       "items": {
         "properties": {
           "name": {
+            "title": "Name",
             "type": "string"
           },
-          "type": {
-            "type": "string"
-          },
-          "value": {
-            "type": "string"
+          "attributeType": {
+            "type": "string",
+            "title": "Attribute Type",
+            "enum": ["Single", "Array/Matrix"],
+            "default": "Single"
+          }
+        },
+        "required": ["attributeType"],
+        "dependencies": {
+          "attributeType": {
+            "oneOf": [
+              {
+                "properties": {
+                  "attributeType": {
+                    "enum": ["Single"]
+                  },
+                  "type": {
+                    "title": "Type",
+                    "type": "string",
+                    "enum": ["string", "integer", "number", "boolean"],
+                    "enumNames": ["String", "Integer", "Number", "Boolean"],
+                    "default": "string"
+                  },
+                  "value": {
+                    "title": "Default Value",
+                    "type": "string",
+                    "default": ""
+                  }
+                }
+              },
+              {
+                "properties": {
+                  "attributeType": {
+                    "enum": ["Array/Matrix"]
+                  },
+                  "type": {
+                    "title": "Type",
+                    "type": "string",
+                    "enum": ["string", "integer", "number", "boolean"],
+                    "enumNames": ["String", "Integer", "Number", "Boolean"],
+                    "default": "string"
+                  },
+                  "value": {
+                    "title": "Default Value",
+                    "type": "string",
+                    "default": ""
+                  },
+                  "dimensions": {
+                    "title": "Dimensions",
+                    "type": "array",
+                    "items": {
+                      "title": "Size",
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            ]
           }
         }
       }
