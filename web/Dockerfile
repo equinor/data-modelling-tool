@@ -11,7 +11,7 @@ CMD ["yarn", "start"]
 FROM base as test
 ENV CI=true
 RUN yarn test --ci --color --coverage
-RUN yarn audit
+#RUN yarn audit
 
 FROM base as prod
 EXPOSE 80
