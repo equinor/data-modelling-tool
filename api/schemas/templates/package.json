@@ -1,6 +1,6 @@
 {
   "title": "Package",
-  "description": "Contains models and other packages",
+  "description": "A package contains blueprints",
   "type": "object",
   "required": [
     "name"
