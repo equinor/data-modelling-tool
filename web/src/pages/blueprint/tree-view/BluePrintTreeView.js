@@ -58,7 +58,6 @@ export default props => {
         {...props}
         open={openRootPackage}
         setOpen={setOpenRootPackage}
-        callback={path => dispatch(FilesActions.addRootPackage(path))}
       />
 
       <CreateSubPackageModal
@@ -144,17 +143,23 @@ export default props => {
 }
 
 const CreatePackageModal = props => {
-  const { setEditMode, open, setOpen, callback } = props
+  const { setEditMode, open, setOpen, dispatch } = props
   return (
     <Modal toggle={() => setOpen(!open)} open={open}>
       <Form
         schemaUrl="/api/templates/package.json"
-        endpoint="/api/blueprints"
-        isRoot={true}
-        path=""
-        type="folder"
-        onSubmit={path => {
-          callback(path)
+        onSubmit={formData => {
+          axios
+            .put(
+              `/api/blueprints/${formData.title}/${formData.version}/package.json`,
+              formData
+            )
+            .then(res => {
+              dispatch(FilesActions.addRootPackage(res.data))
+            })
+            .catch(err => {
+              console.log(err)
+            })
           setOpen(false)
           setEditMode(false)
         }}
@@ -170,13 +175,21 @@ const CreateSubPackageModal = props => {
       {path && (
         <Form
           schemaUrl="/api/templates/subpackage.json"
-          endpoint="/api/blueprints"
-          path={path}
-          type="folder"
-          onSubmit={path => {
-            setOpen(false)
-            setEditMode(false)
-            callback(path)
+          onSubmit={formData => {
+            const parent = path.replace('/package.json', '')
+            axios
+              .put(
+                `/api/blueprints/${parent}/${formData.title}/package.json`,
+                formData
+              )
+              .then(res => {
+                setOpen(false)
+                setEditMode(false)
+                callback(res.data)
+              })
+              .catch(err => {
+                console.log(err)
+              })
           }}
         ></Form>
       )}

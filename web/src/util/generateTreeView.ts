@@ -18,75 +18,75 @@ const toObject = (acc: any, current: Node) => {
   return acc
 }
 
-const filterPackages = (item: TreeviewIndex) => isRoot(item._id)
-const filterSubPackages = (item: TreeviewIndex) =>
-  !isRoot(item._id) && item._id.indexOf('package.json') > -1
-const filterFiles = (item: TreeviewIndex) =>
-  item._id.indexOf('package.json') === -1 //cover bot package.json and subpackage.json
+//
+// interface SortableType {
+//   isRoot: boolean;
+//   type: 'folder'|'file';
+// }
+const sortIsRoot = (a: any, b: any) => (b.isRoot ? 1 : -1) - (a.isRoot ? 1 : -1)
+const sortType = (a: any, b: any) =>
+  (b.type === 'folder' ? 1 : -1) - (a.type === 'folder' ? 1 : -1)
 
-export function generateTreeViewNodes(index: TreeviewIndex[]) {
-  const packages: any = index
-    .filter(filterPackages)
-    .map((current: TreeviewIndex) => {
+export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
+  index
+    .map(node => ({
+      ...node,
+      type: node._id.indexOf('package.json') > -1 ? 'folder' : 'file',
+      isRoot: node._id.split('/').length === 2,
+    }))
+    //sort boolean
+    .sort(sortIsRoot)
+    .sort(sortType)
+    .forEach((current: any) => {
       // const parentPath = getParentPath(current._id)
-      return {
-        path: current._id,
-        isRoot: true,
-        type: 'folder',
-        title: current.title || '',
-        children: [],
+      const path = current._id
+      const { type, isRoot } = current
+      if (type === 'folder') {
+        if (isRoot) {
+          //root package
+          ;(nodes as any)[path] = {
+            isRoot,
+            type,
+            path,
+            title: current.title,
+            children: getChildren(path, nodes),
+          }
+        } else {
+          const parentPath = getParentPath(path)
+          const useVersion = parentPath.split('/').length == 2
+          ;(nodes as any)[parentPath].children.push(path)
+          ;(nodes as any)[path] = {
+            isRoot,
+            type,
+            path,
+            title: useVersion ? current.version : current.title,
+            children: getChildren(path, nodes),
+          }
+        }
+      }
+      if (type === 'file') {
+        const parentPath = getParentPath(path)
+        ;(nodes as any)[parentPath].children.push(path)
+        ;(nodes as any)[path] = {
+          isRoot,
+          type,
+          path,
+          title: current.title,
+        }
       }
     })
-    .reduce(toObject, {})
-
-  const subPackages: Node[] = index
-    .filter(filterSubPackages)
-    .map((item: TreeviewIndex) => {
-      const parentPath = getParentPath(item._id) + 'package.json'
-      ;(packages as any)[parentPath].children.push(item._id)
-      return {
-        path: item._id,
-        isRoot: false,
-        type: 'folder',
-        title: item.version || '',
-        children: [],
-      }
-    })
-    .reduce(toObject, {})
-
-  const files: Node[] = index
-    .filter(filterFiles)
-    .map((item: TreeviewIndex) => {
-      const parentPath =
-        item._id.substring(0, item._id.lastIndexOf('/')) + '/package.json'
-      ;(subPackages as any)[parentPath].children.push(item._id)
-      return {
-        path: item._id,
-        isRoot: false,
-        type: 'file',
-        title: item.title || item.name || '',
-      }
-    })
-    .reduce(toObject, {})
-
-  return {
-    ...packages,
-    ...subPackages,
-    ...files,
-  }
+  return nodes
 }
 
-function isRoot(path: string) {
-  return path.split('/').length === 2 && path.indexOf('package.json') > -1
+function getChildren(path: string, nodes: any) {
+  if (nodes && (nodes as any)[path]) {
+    return (nodes as any)[path].children
+  }
+  return []
 }
 
-export function getParentPath(path: string) {
-  const match = path.match(/\d.\d.\d/gi)
-  if (match) {
-    const lastVersion = match[match.length - 1]
-    const indexOfLastPath = path.indexOf(lastVersion)
-    const parentPath = path.substr(0, indexOfLastPath)
-    return parentPath
-  }
-  throw Error('failed to get parent path: ' + path)
+export function getParentPath(path: string): string {
+  // remove /package.json to simplify grabbing parent path.
+  const paths = path.replace('/package.json', '')
+  return paths.substring(0, paths.lastIndexOf('/')) + '/package.json'
 }

@@ -4,12 +4,13 @@
     "description": "A package contains blueprints",
     "type": "object",
     "required": [
-      "name"
+      "title",
+      "version"
     ],
     "properties": {
-      "name": {
+      "title": {
         "type": "string",
-        "title": "Name",
+        "title": "Title",
         "default": ""
       },
       "description": {
@@ -29,7 +30,7 @@
       "ui:widget": "textarea"
     },
     "ui:order": [
-      "name",
+      "title",
       "description",
       "version"
     ]

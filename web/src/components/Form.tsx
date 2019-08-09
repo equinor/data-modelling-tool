@@ -1,26 +1,15 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Form from 'react-jsonschema-form'
-//@ts-ignore
-import toJsonSchema from 'to-json-schema'
-
-type Node = {
-  isRoot: boolean
-  path: string
-  endpoint: string
-  type: string
-}
 
 interface FormProps extends Node {
-  schemaUrl: 'string'
-  dataUrl: 'string'
-  submitUrl: 'string'
-  onSubmit: (name: string) => {}
+  schemaUrl: string
+  onSubmit: (formData: any) => {}
 }
 
 const log = (type: any) => console.log.bind(console, type)
 export default (props: FormProps) => {
-  const { schemaUrl, onSubmit } = props
+  const { schemaUrl } = props
   const [schema, setSchema] = useState({})
 
   useEffect(() => {
@@ -38,42 +27,15 @@ export default (props: FormProps) => {
       uiSchema={'uiSchema' in schema ? schema['uiSchema'] : {}}
       onSubmit={schemas => {
         const formData: any = schemas.formData
-        const url = generateUrl(props, formData.name, formData.version)
         try {
-          //validate jsonSchema.d
-          toJsonSchema(formData)
-
-          axios({
-            method: 'put',
-            url,
-            data: formData,
-            responseType: 'json',
-          })
-            .then(function(response) {
-              onSubmit(response.data)
-            })
-            .catch(e => {
-              console.error(e)
-              // @todo use react-alert from npm.
-              alert('failed to save root package.')
-            })
+          props.onSubmit(formData)
         } catch (e) {
           //todo fix validation. Set required on fields. And strip optional fields with null values from formdata.
-          alert('not valid jsonschema')
+          console.error(e)
         }
       }}
       onChange={log('change')}
       onError={log('errors')}
     />
   )
-}
-
-function generateUrl(node: Node, name: string, version: string) {
-  if (node.type === 'folder') {
-    //generate package url
-    return `${node.endpoint}${node.path}/${version}/${name}`
-  } else {
-    // genereate file url
-    return `${node.endpoint}/${node.path}/${name}/${version}/${name}.json`
-  }
 }

@@ -3,11 +3,11 @@
     "title": "Subpackage",
     "description": "Contains models and other packages",
     "type": "object",
-    "required": ["name"],
+    "required": ["title"],
     "properties": {
-      "name": {
+      "title": {
         "type": "string",
-        "title": "Name",
+        "title": "Title",
         "default": ""
       },
       "description": {
@@ -21,6 +21,6 @@
     "description": {
       "ui:widget": "textarea"
     },
-    "ui:order": ["name", "description"]
+    "ui:order": ["title", "description"]
   }
 }
