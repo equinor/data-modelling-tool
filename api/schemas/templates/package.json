@@ -1,5 +1,5 @@
 {
-  "title": "Root Package",
+  "title": "Package",
   "description": "Contains models and other packages",
   "type": "object",
   "required": [
