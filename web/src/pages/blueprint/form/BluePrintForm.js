@@ -42,7 +42,7 @@ const BluePrintForm = props => {
     }
     setLoading(true)
     fetchSchema()
-    if (editMode && selectedTemplateId.indexOf('.') > -1) {
+    if (editMode && selectedTemplateId.indexOf('.json') > -1) {
       fetchData()
     }
     setLoading(false)

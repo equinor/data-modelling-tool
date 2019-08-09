@@ -2,50 +2,91 @@ export interface TreeviewIndex {
   _id: string
   title?: string
   name?: string
+  version?: string
 }
 
-function isRootNode(_id: string) {
-  return _id.indexOf('/') === -1
+type Node = {
+  path: string
+  type: string
+  title: string
+  isRoot: boolean
+  children?: string[]
 }
 
-function getType(_id: string) {
-  return _id.indexOf('.') > -1 ? 'file' : 'folder'
+const toObject = (acc: any, current: Node) => {
+  acc[current.path] = current
+  return acc
 }
+
+const filterPackages = (item: TreeviewIndex) => isRoot(item._id)
+const filterSubPackages = (item: TreeviewIndex) =>
+  !isRoot(item._id) && item._id.indexOf('package.json') > -1
+const filterFiles = (item: TreeviewIndex) =>
+  item._id.indexOf('package.json') === -1 //cover bot package.json and subpackage.json
 
 export function generateTreeViewNodes(index: TreeviewIndex[]) {
-  const nodes = {}
+  const packages: any = index
+    .filter(filterPackages)
+    .map((current: TreeviewIndex) => {
+      // const parentPath = getParentPath(current._id)
+      return {
+        path: current._id,
+        isRoot: true,
+        type: 'folder',
+        title: current.title || '',
+        children: [],
+      }
+    })
+    .reduce(toObject, {})
 
-  index.forEach(current => {
-    const id = current._id
-    const isRoot = isRootNode(id)
-    const type = getType(id)
-    const path = '/' + id
+  const subPackages: Node[] = index
+    .filter(filterSubPackages)
+    .map((item: TreeviewIndex) => {
+      const parentPath = getParentPath(item._id) + 'package.json'
+      ;(packages as any)[parentPath].children.push(item._id)
+      return {
+        path: item._id,
+        isRoot: false,
+        type: 'folder',
+        title: item.version || '',
+        children: [],
+      }
+    })
+    .reduce(toObject, {})
 
-    // @ts-ignore
-    const node = {
-      isRoot,
-      path,
-      type,
-      title: current.title || current.name,
-    }
-    if (type === 'folder') {
-      // @ts-ignore
-      node.children = []
-    }
+  const files: Node[] = index
+    .filter(filterFiles)
+    .map((item: TreeviewIndex) => {
+      const parentPath =
+        item._id.substring(0, item._id.lastIndexOf('/')) + '/package.json'
+      ;(subPackages as any)[parentPath].children.push(item._id)
+      return {
+        path: item._id,
+        isRoot: false,
+        type: 'file',
+        title: item.title || item.name || '',
+      }
+    })
+    .reduce(toObject, {})
 
-    if (!isRoot) {
-      //fix children.
-      const parentPath = getParentPath(id)
-      // @ts-ignore
-      nodes[parentPath].children.push(path)
-    }
-    //@ts-ignore
-    nodes[path] = node
-  })
-  return nodes
+  return {
+    ...packages,
+    ...subPackages,
+    ...files,
+  }
+}
+
+function isRoot(path: string) {
+  return path.split('/').length === 2 && path.indexOf('package.json') > -1
 }
 
 export function getParentPath(path: string) {
-  const indexOfLastPath = path.lastIndexOf('/')
-  return '/' + path.substr(0, indexOfLastPath)
+  const match = path.match(/\d.\d.\d/gi)
+  if (match) {
+    const lastVersion = match[match.length - 1]
+    const indexOfLastPath = path.indexOf(lastVersion)
+    const parentPath = path.substr(0, indexOfLastPath)
+    return parentPath
+  }
+  throw Error('failed to get parent path: ' + path)
 }

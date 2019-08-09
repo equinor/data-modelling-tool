@@ -12,6 +12,6 @@ class Index(Resource):
         if schema_type not in VALID_TYPES:
             return abort(500, f'Error: Valid index types are {VALID_TYPES}')
         documents = []
-        for document in db[f'{schema_type}'].find({}, {'title': '1', 'name': '2'}):
+        for document in db[f'{schema_type}'].find({}, {'title': '1', 'name': '2', 'version': '3'}):
             documents.append(document)
         return jsonify(documents)

@@ -1,90 +1,102 @@
 import { generateTreeViewNodes, TreeviewIndex } from '../generateTreeView'
 
 describe('Generate Treeview', () => {
-  describe('Treeview', () => {
-    it('should generate root node treeview', () => {
-      const state = generateTreeViewNodes([
-        {
-          _id: 'root',
-          title: 'Root',
-        },
-      ])
-      expect(state).toEqual({
-        '/root': {
-          path: '/root',
-          type: 'folder',
-          title: 'Root',
-          isRoot: true,
-          children: [],
-        },
-      })
-    })
+  const blueprints = [
+    {
+      _id: 'propellers/1.0.0/propeller.json',
+      title: 'Propeller',
+    },
+    {
+      _id: 'propellers/1.0.0/package.json',
+      title: 'Propeller',
+      version: '1.0.0',
+    },
+    {
+      _id: 'propellers/1.0.1/propeller.json',
+      title: 'Propeller',
+    },
+    {
+      _id: 'propellers/1.0.1/package.json',
+      title: 'Propeller',
+      version: '1.0.1',
+    },
+    {
+      _id: 'snorre_ship/2.3.1/package.json',
+      title: 'Snorre Ship',
+      version: '2.3.1',
+    },
+    {
+      _id: 'snorre_ship/2.3.1/ship.json',
+      title: 'Ship',
+    },
+    {
+      _id: 'propellers/package.json',
+      title: 'Propeller',
+    },
+    {
+      _id: 'snorre_ship/package.json',
+      title: 'Ship',
+    },
+  ]
 
-    it('should generate root with file node treeview', () => {
-      const state = generateTreeViewNodes([
-        {
-          _id: 'root',
-          title: 'Root',
-        },
-        {
-          _id: 'root/box.json',
-          title: 'Box',
-        },
-      ])
-      expect(state).toEqual({
-        '/root': {
-          path: '/root',
-          type: 'folder',
-          title: 'Root',
-          isRoot: true,
-          children: ['/root/box.json'],
-        },
-        '/root/box.json': {
-          isRoot: false,
-          path: '/root/box.json',
-          type: 'file',
-          title: 'Box',
-        },
-      })
-    })
+  it('should generate treeview', () => {
+    const state = generateTreeViewNodes(blueprints)
+    expect(state).toMatchObject({
+      //packages
+      'propellers/package.json': {
+        isRoot: true,
+        type: 'folder',
+        path: 'propellers/package.json',
+        title: 'Propeller',
+        children: [
+          'propellers/1.0.0/package.json',
+          'propellers/1.0.1/package.json',
+        ],
+      },
+      'snorre_ship/package.json': {
+        isRoot: true,
+        type: 'folder',
+        path: 'snorre_ship/package.json',
+        title: 'Ship',
+        children: ['snorre_ship/2.3.1/package.json'],
+      },
+      //subpackage
+      'propellers/1.0.0/package.json': {
+        path: 'propellers/1.0.0/package.json',
+        type: 'folder',
+        isRoot: false,
+        title: '1.0.0',
+      },
+      'propellers/1.0.1/package.json': {
+        isRoot: false,
+        title: '1.0.1',
+      },
+      'snorre_ship/2.3.1/package.json': {
+        path: 'snorre_ship/2.3.1/package.json',
+        type: 'folder',
+        isRoot: false,
+        title: '2.3.1',
+      },
 
-    it('should generate package with file node treeview', () => {
-      const state = generateTreeViewNodes([
-        {
-          _id: 'geometries',
-          name: 'Geometries',
-        },
-        {
-          _id: 'geometries/box',
-          name: 'Box',
-        },
-        {
-          _id: 'geometries/box/box-blueprint.json',
-          title: 'Box Blueprint',
-        },
-      ])
-      expect(state).toEqual({
-        '/geometries': {
-          path: '/geometries',
-          type: 'folder',
-          isRoot: true,
-          title: 'Geometries',
-          children: ['/geometries/box'],
-        },
-        '/geometries/box': {
-          isRoot: false,
-          path: '/geometries/box',
-          type: 'folder',
-          title: 'Box',
-          children: ['/geometries/box/box-blueprint.json'],
-        },
-        '/geometries/box/box-blueprint.json': {
-          isRoot: false,
-          title: 'Box Blueprint',
-          path: '/geometries/box/box-blueprint.json',
-          type: 'file',
-        },
-      })
+      //files
+      'snorre_ship/2.3.1/ship.json': {
+        path: 'snorre_ship/2.3.1/ship.json',
+        type: 'file',
+        isRoot: false,
+        title: 'Ship',
+      },
+      'propellers/1.0.0/propeller.json': {
+        path: 'propellers/1.0.0/propeller.json',
+        type: 'file',
+        isRoot: false,
+        title: 'Propeller',
+      },
+      'propellers/1.0.1/propeller.json': {
+        path: 'propellers/1.0.1/propeller.json',
+        type: 'file',
+        isRoot: false,
+        title: 'Propeller',
+      },
     })
   })
 })

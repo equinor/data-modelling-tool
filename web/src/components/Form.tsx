@@ -38,7 +38,7 @@ export default (props: FormProps) => {
       uiSchema={'uiSchema' in schema ? schema['uiSchema'] : {}}
       onSubmit={schemas => {
         const formData: any = schemas.formData
-        const url = generateUrl(props, formData.name)
+        const url = generateUrl(props, formData.name, formData.version)
         try {
           //validate jsonSchema.d
           toJsonSchema(formData)
@@ -68,12 +68,12 @@ export default (props: FormProps) => {
   )
 }
 
-function generateUrl(node: Node, name: string) {
+function generateUrl(node: Node, name: string, version: string) {
   if (node.type === 'folder') {
     //generate package url
-    return `${node.endpoint}${node.path}/${name}`
+    return `${node.endpoint}${node.path}/${version}/${name}`
   } else {
     // genereate file url
-    return `${node.endpoint}/${node.path}/${name}/${name}.json`
+    return `${node.endpoint}/${node.path}/${name}/${version}/${name}.json`
   }
 }
