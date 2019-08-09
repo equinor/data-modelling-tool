@@ -19,28 +19,6 @@
     "version": {
       "type": "string",
       "title": "Version"
-    },
-    "subpackages": {
-      "type": "array",
-      "title": "List of sub packages",
-      "default": [],
-      "items": {
-        "type": "string"
-      }
-    },
-    "entity": {
-      "type": "array",
-      "title": "List of entities",
-      "items": {
-        "type": "string"
-      }
-    },
-    "dependencies": {
-      "type": "array",
-      "title": "Dependencies",
-      "items": {
-        "type": "string"
-      }
     }
   }
 }
