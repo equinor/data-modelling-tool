@@ -24,8 +24,8 @@ const attributes = {
  * @constructor
  */
 
-const App = props => {
-  const { id, menuItems } = props
+export default props => {
+  const { id, menuItems, onClickContextMenu } = props
   return (
     <span style={{ fontFamily: 'sans-serif' }}>
       <ContextMenuTrigger id={id} style={{ display: 'inline-block' }}>
@@ -40,7 +40,9 @@ const App = props => {
               <MenuItem
                 key={'menuitem' + index + id}
                 data={{ action: menuItem.action }}
-                onClick={menuItem.onClick}
+                onClick={() => {
+                  onClickContextMenu(id, menuItem.action)
+                }}
                 attributes={attributes}
               >
                 {menuItem.label}
@@ -52,5 +54,3 @@ const App = props => {
     </span>
   )
 }
-
-export default App

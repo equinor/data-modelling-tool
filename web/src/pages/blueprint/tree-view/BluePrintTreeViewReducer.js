@@ -2,10 +2,8 @@ import TreeReducer, {
   Actions as CommonTreeActions,
 } from '../../../components/tree-view/TreeReducer'
 import {
-  generateRootPackageNodes,
-  generateTreeView,
-  generateTreeViewItem,
   generateTreeViewNodes,
+  getParentPath,
 } from '../../../util/generateTreeView'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
@@ -13,6 +11,7 @@ export const FILTER_TREE = 'FILTER_TREE'
 const ADD_ROOT_PACKAGE = 'ADD_ROOT_PACKAGE'
 const ADD_PACKAGE = 'ADD_PACKAGE'
 const ADD_FILE = 'ADD_FILE'
+const ADD_ASSET = 'ADD_ASSET'
 
 export const FilesActions = {
   ...CommonTreeActions,
@@ -25,23 +24,25 @@ export const FilesActions = {
       children: [],
     },
   }),
-  addPackage: (rootPath, name) => ({
+  addPackage: path => ({
     type: ADD_PACKAGE,
-    rootPath,
     node: {
-      path: `${rootPath}/${name}`,
+      path,
       type: 'folder',
       isRoot: false,
       children: [],
     },
   }),
-  addFile: (indexItem, endpoint) => ({
+  addFile: path => ({
     type: ADD_FILE,
-    indexItem,
-    endpoint,
+    node: {
+      path,
+      type: 'file',
+      isRoot: false,
+    },
   }),
   addAssets: (data, endpoint) => ({
-    type: 'ADD_ASSET',
+    type: ADD_ASSET,
     data,
     endpoint,
   }),
@@ -53,16 +54,20 @@ export default (state, action) => {
       return { ...state, [action.node.path]: action.node }
 
     case ADD_PACKAGE:
-      return state
-    case ADD_FILE:
-      //fix children recursive.
-      return generateTreeViewItem(state, action.indexItem, action.endpoint)
+      return addChild(state, action.node)
 
-    case 'ADD_ASSET':
-      if (action.endpoint.indexOf('root_package') > -1) {
-        return generateRootPackageNodes(state, action.data, action.endpoint)
+    case ADD_FILE:
+      const newNode = !state[`/${action.node.path}`]
+      if (newNode) {
+        return addChild(state, action.node)
+      } else {
+        //already added.
+        return state
       }
-      return generateTreeViewNodes(state, action.data, action.endpoint)
+
+    case ADD_ASSET:
+      const nodes = generateTreeViewNodes(action.data)
+      return { ...state, ...nodes }
 
     case FILTER_TREE:
     case TOGGLE_NODE:
@@ -71,4 +76,11 @@ export default (state, action) => {
     default:
       console.error('not supported: ', action.type)
   }
+}
+
+function addChild(state, childNode) {
+  const newState = { ...state }
+  newState[childNode.path] = childNode
+  newState[getParentPath(childNode.path)].children.push(childNode.path)
+  return { ...state, ...newState }
 }

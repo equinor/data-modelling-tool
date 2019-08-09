@@ -1,27 +1,40 @@
-import useToggle from '../../../components/hooks/useToggle'
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from '../../../components/modal/Modal'
-import useAxios from 'axios-hooks'
+//@ts-ignore
 import Form from 'react-jsonschema-form'
-import { FilesActions } from './TreeViewExistingReducer'
+import { FilesActions } from './BluePrintTreeViewReducer'
+//@ts-ignore
 import toJsonSchema from 'to-json-schema'
 import axios from 'axios'
 
-export const CreatePackageButton = props => {
-  const [open, setOpen] = useToggle(false)
+export default (props: any) => {
+  const [open, setOpen] = useState(false)
+  const [data, setData] = useState()
   const url = '/api/templates/root-package.json'
-  const [{ data, error }] = useAxios(url)
+  const error = null //@todo
+  useEffect(() => {
+    async function fetch() {
+      const response = await axios(url)
+      setData(response.data)
+    }
+    fetch()
+  }, [url]) // empty array
   return (
     <React.Fragment>
-      <button type="button" onClick={() => setOpen()}>
-        Create Root Package
+      <button type="button" onClick={() => setOpen(true)}>
+        Create Package
       </button>
 
       {open && (
-        <Modal open={open} toggle={setOpen}>
+        <Modal open={open} toggle={() => setOpen(!open)}>
           {error && <div>Failed to load jsonschema.</div>}
           {!error && (
-            <CreatePackageForm jsonSchema={data} {...props} setOpen={setOpen} />
+            //@ts-ignore
+            <CreateRootPackageForm
+              jsonSchema={data}
+              {...props}
+              setOpen={setOpen}
+            />
           )}
         </Modal>
       )}
@@ -29,8 +42,15 @@ export const CreatePackageButton = props => {
   )
 }
 
-const CreatePackageForm = ({ jsonSchema, dispatch, setOpen }) => {
-  const log = type => console.log.bind(console, type)
+type CreatePackageFormProps = {
+  jsonSchema: any
+  dispatch: any
+  setOpen: any
+}
+
+const CreateRootPackageForm = (props: CreatePackageFormProps) => {
+  const { jsonSchema, dispatch, setOpen } = props
+  const log = (type: any) => console.log.bind(console, type)
   return (
     <Form
       formData={{
@@ -40,12 +60,11 @@ const CreatePackageForm = ({ jsonSchema, dispatch, setOpen }) => {
         version: '1',
       }}
       schema={jsonSchema}
-      onSubmit={({ formData }) => {
+      onSubmit={form => {
+        const formData: any = form.formData
         try {
-          //validate jsonSchema.
-          const jsonSchema = toJsonSchema(formData)
-          //todo send formData to api, which adds it to db.
-          console.log(formData)
+          //validate jsonSchema.d
+          toJsonSchema(formData)
           const url = `api/entities-root-packages/${formData.name}/${formData.name}.json`
           axios({
             method: 'put',
@@ -54,8 +73,6 @@ const CreatePackageForm = ({ jsonSchema, dispatch, setOpen }) => {
             responseType: 'json',
           })
             .then(function(response) {
-              console.log(response)
-              //@todo refetch blueprints
               dispatch(FilesActions.addRootPackage('/' + formData.name))
               setOpen(false)
             })
