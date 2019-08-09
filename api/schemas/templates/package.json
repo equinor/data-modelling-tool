@@ -1,25 +1,37 @@
 {
-  "title": "Package",
-  "description": "A package contains blueprints",
-  "type": "object",
-  "required": [
-    "name"
-  ],
-  "properties": {
-    "name": {
-      "type": "string",
-      "title": "Name",
-      "default": ""
-    },
-    "description": {
-      "type": "string",
-      "title": "Description",
-      "default": ""
-    },
-    "version": {
-      "type": "string",
-      "title": "Version",
-      "default": ""
+  "schema": {
+    "title": "Package",
+    "description": "A package contains blueprints",
+    "type": "object",
+    "required": [
+      "name"
+    ],
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Name",
+        "default": ""
+      },
+      "description": {
+        "type": "string",
+        "title": "Description",
+        "default": ""
+      },
+      "version": {
+        "type": "string",
+        "title": "Version",
+        "default": ""
+      }
     }
+  },
+  "uiSchema": {
+    "description": {
+      "ui:widget": "textarea"
+    },
+    "ui:order": [
+      "name",
+      "description",
+      "version"
+    ]
   }
 }
