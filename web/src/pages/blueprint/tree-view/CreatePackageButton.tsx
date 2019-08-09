@@ -10,7 +10,7 @@ import axios from 'axios'
 export default (props: any) => {
   const [open, setOpen] = useState(false)
   const [data, setData] = useState()
-  const url = '/api/templates/root-package.json'
+  const url = '/api/templates/package.json'
   const error = null //@todo
   useEffect(() => {
     async function fetch() {

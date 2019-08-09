@@ -147,7 +147,7 @@ const CreatePackageModal = props => {
   return (
     <Modal toggle={() => setOpen(!open)} open={open}>
       <Form
-        schemaUrl="/api/templates/root-package.json"
+        schemaUrl="/api/templates/package.json"
         endpoint="/api/blueprints"
         isRoot={true}
         path=""
