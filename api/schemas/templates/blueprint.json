@@ -1,15 +1,14 @@
 {
-  "title": "BlueprintTemplate",
-  "description": "Template for blueprints",
+  "title": "Blueprint",
   "type": "object",
   "properties": {
     "title": {
       "type": "string",
-      "value": "Simos Template"
+      "default": ""
     },
     "description": {
       "type": "string",
-      "value": ""
+      "default": ""
     },
     "attributes": {
       "type": "array",

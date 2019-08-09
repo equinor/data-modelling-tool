@@ -18,7 +18,8 @@
     },
     "version": {
       "type": "string",
-      "title": "Version"
+      "title": "Version",
+      "default": ""
     }
   }
 }

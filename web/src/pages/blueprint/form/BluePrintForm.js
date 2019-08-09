@@ -28,7 +28,7 @@ const BluePrintForm = props => {
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(false)
 
-  const templateUrl = '/api/templates/simos-template.json'
+  const templateUrl = '/api/templates/blueprint.json'
   const dataUrl = '/api/blueprints/' + selectedTemplateId
   useEffect(() => {
     async function fetchSchema() {
