@@ -7,6 +7,7 @@ import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
+import Button from '../../../components/Button'
 
 export default props => {
   const { state, dispatch, setEditMode, setSelectedTemplateId } = props
@@ -43,14 +44,14 @@ export default props => {
     <div>
       <Header>
         <h3>Blueprints</h3>
-        <button
+        <Button
           type="button"
           onClick={() => {
             setOpenRootPackage(true)
           }}
         >
           Create Package
-        </button>
+        </Button>
       </Header>
 
       <CreatePackageModal
