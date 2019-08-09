@@ -1,7 +1,7 @@
 import React, { useReducer, useState } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
-import TreeViewExisting from './tree-view/BluePrintTreeView'
+import BluePrintTreeView from './tree-view/BluePrintTreeView'
 import BlueprintPreview from './preview/BluePrintPreview'
 import BlueprintForm from './form/BluePrintForm'
 import treeViewExistingReducer, {
@@ -22,7 +22,7 @@ export default () => {
       <Row>
         <Col xs={12} md={4}>
           <Wrapper>
-            <TreeViewExisting
+            <BluePrintTreeView
               dispatch={dispatchTreeView}
               state={stateTreeView}
               setSelectedTemplateId={setSelectedTemplateId}
