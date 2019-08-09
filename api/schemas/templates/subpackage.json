@@ -1,18 +1,26 @@
 {
-  "title": "Subpackage",
-  "description": "Contains models and other packages",
-  "type": "object",
-  "required": ["name"],
-  "properties": {
-    "name": {
-      "type": "string",
-      "title": "Name",
-      "default": ""
-    },
-    "description": {
-      "type": "string",
-      "title": "Description",
-      "default": ""
+  "schema": {
+    "title": "Subpackage",
+    "description": "Contains models and other packages",
+    "type": "object",
+    "required": ["name"],
+    "properties": {
+      "name": {
+        "type": "string",
+        "title": "Name",
+        "default": ""
+      },
+      "description": {
+        "type": "string",
+        "title": "Description",
+        "default": ""
+      }
     }
+  },
+  "uiSchema": {
+    "description": {
+      "ui:widget": "textarea"
+    },
+    "ui:order": ["name", "description"]
   }
 }

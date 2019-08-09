@@ -90,7 +90,8 @@ const BluePrintForm = props => {
   return (
     <Form
       formData={formData || { properties: [] }}
-      schema={template}
+      schema={'schema' in template ? template['schema'] : template}
+      uiSchema={'uiSchema' in template ? template['uiSchema'] : {}}
       onSubmit={onSubmit}
       onChange={schemas => {
         setFormData(schemas.formData)

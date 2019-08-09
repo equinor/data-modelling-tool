@@ -34,7 +34,8 @@ export default (props: FormProps) => {
   return (
     <Form
       formData={{}}
-      schema={schema}
+      schema={'schema' in schema ? schema['schema'] : schema}
+      uiSchema={'uiSchema' in schema ? schema['uiSchema'] : {}}
       onSubmit={schemas => {
         const formData: any = schemas.formData
         const url = generateUrl(props, formData.name)
