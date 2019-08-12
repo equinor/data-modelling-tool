@@ -20,7 +20,7 @@ export default () => {
   return (
     <Grid fluid>
       <Row>
-        <Col xs={12} md={4}>
+        <Col xs={12} md={4} lg={4}>
           <Wrapper>
             <BluePrintTreeView
               dispatch={dispatchTreeView}
@@ -31,7 +31,7 @@ export default () => {
           </Wrapper>
         </Col>
 
-        <Col xs={12} md={4}>
+        <Col xs={12} md={4} lg={4}>
           <Wrapper>
             <BlueprintForm
               state={stateTreeView}
@@ -47,7 +47,7 @@ export default () => {
           </Wrapper>
         </Col>
 
-        <Col xs={12} md={4}>
+        <Col xs={12} md={4} lg={4}>
           <Wrapper>
             <BlueprintPreview data={previewData} />
           </Wrapper>

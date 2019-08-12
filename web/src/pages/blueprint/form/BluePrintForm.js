@@ -14,7 +14,7 @@ export default props => {
         <div style={{ paddingRight: 10 }}>{selectedTemplateId}</div>
       </Header>
 
-      <div style={{ marginTop: 20, maxWidth: 400, padding: 20 }}>
+      <div style={{ marginTop: 20, padding: 20 }}>
         {// check selectedTemplate to avoid having a conditional before a hook in BluePrintTemplateForm.
         selectedTemplateId && <BluePrintForm {...props} />}
       </div>
