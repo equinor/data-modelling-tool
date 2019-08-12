@@ -88,6 +88,11 @@
     "description": {
       "ui:widget": "textarea"
     },
-    "ui:order": ["title", "description", "*"]
+    "ui:order": ["title", "description", "*"],
+    "attributes": {
+      "items": {
+        "ui:order": ["name", "attributeType", "*"]
+      }
+    }
   }
 }
