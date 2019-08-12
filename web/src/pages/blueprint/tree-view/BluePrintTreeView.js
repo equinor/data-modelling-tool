@@ -65,9 +65,9 @@ export default props => {
         open={open}
         path={nodeIdModal}
         setOpen={setOpen}
-        callback={path => {
+        callback={(path, title) => {
           setNodeIdModal(null)
-          dispatch(FilesActions.addPackage(path))
+          dispatch(FilesActions.addPackage(path, title))
         }}
       />
 
@@ -190,7 +190,7 @@ const CreateSubPackageModal = props => {
               .then(res => {
                 setOpen(false)
                 setEditMode(false)
-                callback(res.data)
+                callback(res.data, formData.title)
               })
               .catch(err => {
                 console.log(err)

@@ -21,12 +21,9 @@ export const FilesActions = {
   }),
   addPackage: (path, title) => ({
     type: ADD_PACKAGE,
-    node: {
-      path,
-      type: 'folder',
-      isRoot: false,
+    indexNode: {
+      _id: path,
       title,
-      children: [],
     },
   }),
   addFile: (path, title) => ({
@@ -64,8 +61,6 @@ export default (state, action) => {
       return generateTreeViewNodes(index, { ...state })
 
     case ADD_PACKAGE:
-      return addChild(state, action.node)
-
     case ADD_FILE:
       return generateTreeViewNodes([action.indexNode], { ...state })
 
@@ -80,11 +75,4 @@ export default (state, action) => {
     default:
       console.error('not supported: ', action.type)
   }
-}
-
-function addChild(state, childNode) {
-  const newState = { ...state }
-  newState[childNode.path] = childNode
-  newState[getParentPath(childNode.path)].children.push(childNode.path)
-  return { ...state, ...newState }
 }
