@@ -90,6 +90,9 @@
     },
     "ui:order": ["title", "description", "*"],
     "attributes": {
+      "ui:options": {
+        "orderable": false
+      },
       "items": {
         "ui:order": ["name", "attributeType", "*"]
       }
