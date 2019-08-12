@@ -9,14 +9,14 @@ const GlobalStyle = createGlobalStyle`
   body {
     padding: 0;
     margin: 0 auto 25px;
-    max-width: 1200px;
+    max-width: 1600px;
     font-family: Equinor-Regular, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   
   #root {
-    max-width: 1200px;
+    max-width: 1600px;
   }
 `
 

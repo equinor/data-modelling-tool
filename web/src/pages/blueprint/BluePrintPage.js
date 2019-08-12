@@ -18,7 +18,7 @@ export default () => {
   const [editMode, setEditMode] = useState(false)
 
   return (
-    <Grid style={{ width: '90%' }}>
+    <Grid fluid>
       <Row>
         <Col xs={12} md={4}>
           <Wrapper>
