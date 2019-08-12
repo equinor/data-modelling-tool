@@ -1,10 +1,7 @@
 import TreeReducer, {
   Actions as CommonTreeActions,
 } from '../../../components/tree-view/TreeReducer'
-import {
-  generateTreeViewNodes,
-  getParentPath,
-} from '../../../util/generateTreeView'
+import { generateTreeViewNodes } from '../../../util/generateTreeView'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'

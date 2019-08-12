@@ -7,7 +7,6 @@ import {
   FaChevronRight,
 } from 'react-icons/fa'
 import styled from 'styled-components'
-import last from 'lodash/last'
 import PropTypes from 'prop-types'
 import ContextMenu from '../context-menu/ContextMenu'
 
@@ -74,17 +73,10 @@ const TreeNode = props => {
           <WithContextMenu
             id={node.path}
             onClickContextMenu={onClickContextMenu}
-            menuItems={menuItems.filter(item => {
-              const equalType = item.type === node.type
-              const equalLevel =
-                item.isRoot === undefined || item.isRoot === node.isRoot
-              let filterVersion = true //pass everything if version is not set on item.
-              if (item.version !== undefined) {
-                const isVersion = node.version && node.version.indexOf('.') > -1
-                filterVersion = isVersion === item.version
-              }
-              return equalLevel && equalType && filterVersion
-            })}
+            menuItems={menuItems
+              .filter(filterLevel(node.isRoot))
+              .filter(filterVersion(node))
+              .filter(item => item.type === node.type)}
             label={node.title}
           />
         </span>
@@ -103,6 +95,31 @@ const TreeNode = props => {
           ))}
     </React.Fragment>
   )
+}
+
+function filterLevel(isNodeRoot) {
+  return item => {
+    if (item.onlyRoot && !isNodeRoot) {
+      return false
+    }
+    if (item.hideRoot && isNodeRoot) {
+      return false
+    }
+    return true //bypass.
+  }
+}
+
+function filterVersion(node) {
+  const isVersion = node.title.indexOf('.') > -1
+  return item => {
+    if (item.onlyVersion && !isVersion) {
+      return false
+    }
+    if (item.hideVersion && isVersion) {
+      return false
+    }
+    return true //bypass, filter is not needed.
+  }
 }
 
 TreeNode.propTypes = {

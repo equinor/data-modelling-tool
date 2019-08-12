@@ -13,16 +13,6 @@ type Node = {
   children?: string[]
 }
 
-const toObject = (acc: any, current: Node) => {
-  acc[current.path] = current
-  return acc
-}
-
-//
-// interface SortableType {
-//   isRoot: boolean;
-//   type: 'folder'|'file';
-// }
 const sortIsRoot = (a: any, b: any) => (b.isRoot ? 1 : -1) - (a.isRoot ? 1 : -1)
 const sortType = (a: any, b: any) =>
   (b.type === 'folder' ? 1 : -1) - (a.type === 'folder' ? 1 : -1)
@@ -53,7 +43,7 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
           }
         } else {
           const parentPath = getParentPath(path)
-          const useVersion = parentPath.split('/').length == 2
+          const useVersion = parentPath.split('/').length === 2
           ;(nodes as any)[parentPath].children.push(path)
           ;(nodes as any)[path] = {
             isRoot,
@@ -85,7 +75,7 @@ function getChildren(path: string, nodes: any) {
   return []
 }
 
-export function getParentPath(path: string): string {
+function getParentPath(path: string): string {
   // remove /package.json to simplify grabbing parent path.
   const paths = path.replace('/package.json', '')
   return paths.substring(0, paths.lastIndexOf('/')) + '/package.json'

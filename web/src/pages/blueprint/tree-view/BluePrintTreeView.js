@@ -80,31 +80,37 @@ export default props => {
         {rootNodes
           .filter(node => !node.isHidden)
           .map(node => {
+            /**
+             * The properies hide* and only* controls when choices are visible.
+             *
+             * @type {*[]}
+             */
             const menuItems = [
               {
-                isRoot: false,
                 type: 'folder',
                 action: 'create-blueprint',
                 label: 'Create Blueprint',
+                hideRoot: true,
               },
               {
-                isRoot: false,
                 type: 'folder',
                 action: 'add-package',
                 label: 'Create SubPackage',
+                hideRoot: true,
               },
               {
-                isRoot: false,
                 type: 'folder',
                 action: 'edit-package',
                 label: 'Edit Package',
+                hideRoot: true,
+                onlyVersion: true,
               },
               {
-                isRoot: false,
                 type: 'folder',
                 action: 'edit-sub-package',
                 label: 'Edit Sub Package',
-                version: false,
+                hideRoot: true,
+                hideVersion: true,
               },
             ]
 
@@ -124,11 +130,11 @@ export default props => {
                     case 'create-blueprint':
                       setSelectedTemplateId(id)
                       break
-                    case 'edit-package':
-                      //@todo use modal.
-                      // console.warn('not implemented.');
-                      setSelectedTemplateId(id)
-                      break
+                    // case 'edit-package':
+                    //@todo use modal.
+                    // console.warn('not implemented.');
+                    // setSelectedTemplateId(id)
+                    // break
                     default:
                       console.error('action not supported: ', action, id)
                   }

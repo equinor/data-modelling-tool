@@ -1,7 +1,6 @@
 import React from 'react'
 //@ts-ignore
 import styled from 'styled-components'
-import { WORKING_COLOR } from './../styles'
 
 type SearchTreeProps = {
   value: string
