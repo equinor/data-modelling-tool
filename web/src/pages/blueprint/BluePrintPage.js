@@ -38,8 +38,11 @@ export default () => {
               selectedTemplateId={selectedTemplateId}
               dispatch={dispatchTreeView}
               editMode={editMode}
-              onSubmit={path => {
-                dispatchTreeView(FilesActions.addFile(path))
+              onSubmit={(path, title) => {
+                if (!editMode) {
+                  dispatchTreeView(FilesActions.addFile(path, title))
+                }
+                alert('updated ' + path)
               }}
               setPreviewData={setPreviewData}
               formSchema={null}

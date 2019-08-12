@@ -63,21 +63,16 @@ const BluePrintForm = props => {
         return
       }
 
-      let url = `api/blueprints${selectedTemplateId}/${title}.json`
+      let url = `api/blueprints/${selectedTemplateId.replace('package', title)}`
       if (editMode) {
         //editing, filename exists.
-        url = `api/blueprints${selectedTemplateId}`
+        url = `api/blueprints/${selectedTemplateId}`
       }
 
-      axios({
-        method: 'put',
-        url,
-        data: schemas.formData,
-        responseType: 'json',
-      })
+      axios
+        .put(url, schemas.formData)
         .then(function(response) {
-          props.onSubmit(response.data)
-          //@todo refetch blueprints
+          props.onSubmit(response.data, formData.title)
         })
         .catch(e => {
           console.error(e)

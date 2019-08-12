@@ -82,17 +82,19 @@ export default props => {
           .map(node => {
             const menuItems = [
               {
+                isRoot: false,
                 type: 'folder',
                 action: 'create-blueprint',
                 label: 'Create Blueprint',
               },
               {
+                isRoot: false,
                 type: 'folder',
                 action: 'add-package',
                 label: 'Create SubPackage',
               },
               {
-                isRoot: true,
+                isRoot: false,
                 type: 'folder',
                 action: 'edit-package',
                 label: 'Edit Package',
@@ -102,6 +104,7 @@ export default props => {
                 type: 'folder',
                 action: 'edit-sub-package',
                 label: 'Edit Sub Package',
+                version: false,
               },
             ]
 
@@ -122,6 +125,8 @@ export default props => {
                       setSelectedTemplateId(id)
                       break
                     case 'edit-package':
+                      //@todo use modal.
+                      // console.warn('not implemented.');
                       setSelectedTemplateId(id)
                       break
                     default:

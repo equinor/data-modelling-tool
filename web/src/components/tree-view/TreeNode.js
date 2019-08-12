@@ -78,7 +78,12 @@ const TreeNode = props => {
               const equalType = item.type === node.type
               const equalLevel =
                 item.isRoot === undefined || item.isRoot === node.isRoot
-              return equalLevel && equalType
+              let filterVersion = true //pass everything if version is not set on item.
+              if (item.version !== undefined) {
+                const isVersion = node.version && node.version.indexOf('.') > -1
+                filterVersion = isVersion === item.version
+              }
+              return equalLevel && equalType && filterVersion
             })}
             label={node.title}
           />

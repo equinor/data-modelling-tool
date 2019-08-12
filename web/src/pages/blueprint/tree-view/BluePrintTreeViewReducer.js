@@ -29,12 +29,11 @@ export const FilesActions = {
       children: [],
     },
   }),
-  addFile: path => ({
+  addFile: (path, title) => ({
     type: ADD_FILE,
-    node: {
-      path,
-      type: 'file',
-      isRoot: false,
+    indexNode: {
+      _id: path,
+      title,
     },
   }),
   addAssets: (data, endpoint) => ({
@@ -68,13 +67,7 @@ export default (state, action) => {
       return addChild(state, action.node)
 
     case ADD_FILE:
-      const newNode = !state[`/${action.node.path}`]
-      if (newNode) {
-        return addChild(state, action.node)
-      } else {
-        //already added.
-        return state
-      }
+      return generateTreeViewNodes([action.indexNode], { ...state })
 
     case ADD_ASSET:
       const nodes = generateTreeViewNodes(action.data)
