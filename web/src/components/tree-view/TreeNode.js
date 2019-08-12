@@ -28,14 +28,6 @@ const NodeIcon = styled.div`
   margin-right: ${props => (props.marginRight ? props.marginRight : 5)}px;
 `
 
-const getNodeLabel = node => {
-  //@todo use title in treeview?
-  // if (node.title) {
-  //   return node.title
-  // }
-  return last(node.path.split('/'))
-}
-
 const WithContextMenu = props => {
   const { label, menuItems } = props
   if (menuItems.length === 0) {
@@ -88,7 +80,7 @@ const TreeNode = props => {
                 item.isRoot === undefined || item.isRoot === node.isRoot
               return equalLevel && equalType
             })}
-            label={getNodeLabel(node)}
+            label={node.title}
           />
         </span>
       </StyledTreeNode>

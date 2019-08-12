@@ -17,19 +17,15 @@ export const FilesActions = {
   ...CommonTreeActions,
   addRootPackage: path => ({
     type: ADD_ROOT_PACKAGE,
-    node: {
-      path,
-      type: 'folder',
-      isRoot: true,
-      children: [],
-    },
+    path,
   }),
-  addPackage: path => ({
+  addPackage: (path, title) => ({
     type: ADD_PACKAGE,
     node: {
       path,
       type: 'folder',
       isRoot: false,
+      title,
       children: [],
     },
   }),
@@ -51,7 +47,22 @@ export const FilesActions = {
 export default (state, action) => {
   switch (action.type) {
     case ADD_ROOT_PACKAGE:
-      return { ...state, [action.node.path]: action.node }
+      const version = action.path.split('/')[1]
+      const rootTitle = action.path.split('/')[0]
+
+      //emulate reponse from api.
+      const index = [
+        {
+          _id: `${rootTitle}/package.json`,
+          title: rootTitle,
+        },
+        {
+          _id: action.path,
+          title: rootTitle,
+          version,
+        },
+      ]
+      return generateTreeViewNodes(index, { ...state })
 
     case ADD_PACKAGE:
       return addChild(state, action.node)

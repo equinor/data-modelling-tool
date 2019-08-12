@@ -2,50 +2,91 @@ export interface TreeviewIndex {
   _id: string
   title?: string
   name?: string
+  version?: string
 }
 
-function isRootNode(_id: string) {
-  return _id.indexOf('/') === -1
+type Node = {
+  path: string
+  type: string
+  title: string
+  isRoot: boolean
+  children?: string[]
 }
 
-function getType(_id: string) {
-  return _id.indexOf('.') > -1 ? 'file' : 'folder'
+const toObject = (acc: any, current: Node) => {
+  acc[current.path] = current
+  return acc
 }
 
-export function generateTreeViewNodes(index: TreeviewIndex[]) {
-  const nodes = {}
+//
+// interface SortableType {
+//   isRoot: boolean;
+//   type: 'folder'|'file';
+// }
+const sortIsRoot = (a: any, b: any) => (b.isRoot ? 1 : -1) - (a.isRoot ? 1 : -1)
+const sortType = (a: any, b: any) =>
+  (b.type === 'folder' ? 1 : -1) - (a.type === 'folder' ? 1 : -1)
 
-  index.forEach(current => {
-    const id = current._id
-    const isRoot = isRootNode(id)
-    const type = getType(id)
-    const path = '/' + id
-
-    // @ts-ignore
-    const node = {
-      isRoot,
-      path,
-      type,
-      title: current.title || current.name,
-    }
-    if (type === 'folder') {
-      // @ts-ignore
-      node.children = []
-    }
-
-    if (!isRoot) {
-      //fix children.
-      const parentPath = getParentPath(id)
-      // @ts-ignore
-      nodes[parentPath].children.push(path)
-    }
-    //@ts-ignore
-    nodes[path] = node
-  })
+export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
+  index
+    .map(node => ({
+      ...node,
+      type: node._id.indexOf('package.json') > -1 ? 'folder' : 'file',
+      isRoot: node._id.split('/').length === 2,
+    }))
+    //sort boolean
+    .sort(sortIsRoot)
+    .sort(sortType)
+    .forEach((current: any) => {
+      // const parentPath = getParentPath(current._id)
+      const path = current._id
+      const { type, isRoot } = current
+      if (type === 'folder') {
+        if (isRoot) {
+          //root package
+          ;(nodes as any)[path] = {
+            isRoot,
+            type,
+            path,
+            title: current.title,
+            children: getChildren(path, nodes),
+          }
+        } else {
+          const parentPath = getParentPath(path)
+          const useVersion = parentPath.split('/').length == 2
+          ;(nodes as any)[parentPath].children.push(path)
+          ;(nodes as any)[path] = {
+            isRoot,
+            type,
+            path,
+            title: useVersion ? current.version : current.title,
+            children: getChildren(path, nodes),
+          }
+        }
+      }
+      if (type === 'file') {
+        const parentPath = getParentPath(path)
+        ;(nodes as any)[parentPath].children.push(path)
+        ;(nodes as any)[path] = {
+          isRoot,
+          type,
+          path,
+          title: current.title,
+        }
+      }
+    })
   return nodes
 }
 
-export function getParentPath(path: string) {
-  const indexOfLastPath = path.lastIndexOf('/')
-  return '/' + path.substr(0, indexOfLastPath)
+function getChildren(path: string, nodes: any) {
+  if (nodes && (nodes as any)[path]) {
+    return (nodes as any)[path].children
+  }
+  return []
+}
+
+export function getParentPath(path: string): string {
+  // remove /package.json to simplify grabbing parent path.
+  const paths = path.replace('/package.json', '')
+  return paths.substring(0, paths.lastIndexOf('/')) + '/package.json'
 }
