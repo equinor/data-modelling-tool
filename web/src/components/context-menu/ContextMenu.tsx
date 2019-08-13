@@ -24,15 +24,15 @@ const attributes = {
  * @constructor
  */
 
-export default props => {
+export default (props: any) => {
   const { id, menuItems, onClickContextMenu } = props
   return (
     <span style={{ fontFamily: 'sans-serif' }}>
-      <ContextMenuTrigger id={id} style={{ display: 'inline-block' }}>
-        {props.children}
-      </ContextMenuTrigger>
+      <div>
+        <ContextMenuTrigger id={id}>{props.children}</ContextMenuTrigger>
+      </div>
       <ContextMenu id={id}>
-        {menuItems.map((menuItem, index) => {
+        {menuItems.map((menuItem: any, index: number) => {
           if (Object.keys(menuItem).length === 0) {
             return <MenuItem divider />
           } else {

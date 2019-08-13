@@ -32,7 +32,7 @@ export const Button = styled.button`
     box-shadow: 0 0 2px gray;
   }
   
-  ${props =>
+  ${(props: any) =>
     props.primary &&
     css`
       color: #fff;
@@ -40,7 +40,7 @@ export const Button = styled.button`
       border-color: #0275d8;
     `}
   
-  ${props =>
+  ${(props: any) =>
     props.success &&
     css`
       color: #fff;
@@ -48,7 +48,7 @@ export const Button = styled.button`
       border-color: #5cb85c;
     `}
   
-  ${props =>
+  ${(props: any) =>
     props.info &&
     css`
       color: #fff;
@@ -56,7 +56,7 @@ export const Button = styled.button`
       border-color: #5bc0de;
     `}
   
-  ${props =>
+  ${(props: any) =>
     props.warning &&
     css`
       color: #fff;
@@ -64,7 +64,7 @@ export const Button = styled.button`
       border-color: #f0ad4e;
     `}
   
-   ${props =>
+   ${(props: any) =>
      props.danger &&
      css`
        color: #fff;

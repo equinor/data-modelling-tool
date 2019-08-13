@@ -11,7 +11,7 @@ const HeaderItem = styled.div`
   align-self: center;
 `
 
-export default props => {
+export default (props: any) => {
   return (
     <HeaderWrapper>
       <HeaderItem>{props.children[0]}</HeaderItem>

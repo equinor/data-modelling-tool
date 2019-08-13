@@ -4,17 +4,22 @@ import { createPortal } from 'react-dom'
 import { StyledModal } from './style'
 
 // Creates a portal outside the DOM hierarchy
-function Portal({ children }) {
+function Portal(props: any) {
+  const { children } = props
   const modalRoot = document.getElementById('modal-root') // A div with id=modal-root in the index.html
   const [element] = useState(document.createElement('div')) // Create a div element which will be mounted within modal-root
 
   // useEffect bible: https://overreacted.io/a-complete-guide-to-useeffect/
   useEffect(() => {
-    modalRoot.appendChild(element)
+    if (modalRoot) {
+      modalRoot.appendChild(element)
+    }
 
     // cleanup method to remove the appended child
     return function cleanup() {
-      modalRoot.removeChild(element)
+      if (modalRoot) {
+        modalRoot.removeChild(element)
+      }
     }
   }, [modalRoot, element])
 
@@ -22,7 +27,8 @@ function Portal({ children }) {
 }
 
 // A modal component which will be used by other components / pages
-function Modal({ children, toggle, open }) {
+function Modal(props: any) {
+  const { children, toggle, open } = props
   return (
     <Portal>
       {open && (
