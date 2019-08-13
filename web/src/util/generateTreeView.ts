@@ -67,6 +67,7 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
         }
       }
     })
+  console.log(nodes)
   return nodes
 }
 

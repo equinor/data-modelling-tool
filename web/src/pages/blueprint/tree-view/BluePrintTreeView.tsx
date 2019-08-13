@@ -13,7 +13,7 @@ import Button from '../../../components/Button'
 import FormModal from './FormModal'
 
 interface PropTypes {
-  dispatch: (action: {}) => {}
+  dispatch: (action: {}) => void
   state: object
   setEditMode: (editMode: boolean) => void
   setSelectedTemplateId: (id: string | null) => void

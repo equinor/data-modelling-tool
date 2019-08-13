@@ -10,7 +10,7 @@ export const Pre = styled.pre`
   word-wrap: break-word; /* IE 5.5+ */
 `
 
-export default props => {
+export default (props: any) => {
   const { data } = props
   return (
     <div>

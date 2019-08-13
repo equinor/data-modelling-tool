@@ -9,7 +9,7 @@ type FormModalProps = {
   path: string
   open: boolean
   setOpen: (open: boolean) => void
-  dispatch: (action: {}) => {}
+  dispatch: (action: {}) => void
 }
 
 export default (props: FormModalProps) => {
@@ -50,7 +50,7 @@ function getConfigByAction(props: GetActionConfigType) {
 }
 
 interface ActionConfigType {
-  dispatch: (action: {}) => {}
+  dispatch: (action: {}) => void
   path: string
   setOpen: (open: boolean) => void
 }

@@ -2,10 +2,20 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Form from 'react-jsonschema-form'
 import Header from '../../../components/Header'
+//@ts-ignore
 import toJsonSchema from 'to-json-schema'
-const log = type => console.log.bind(console, type)
+import { FilesActions } from '../tree-view/BluePrintTreeViewReducer'
+const log = (type: any) => console.log.bind(console, type)
 
-export default props => {
+interface Props {
+  state: any
+  dispatch: (action: {}) => void
+  selectedTemplateId: string | null
+  editMode: boolean
+  setPreviewData: (data: any) => void
+}
+
+export default (props: Props) => {
   const { selectedTemplateId, editMode } = props
   return (
     <React.Fragment>
@@ -22,8 +32,8 @@ export default props => {
   )
 }
 
-const BluePrintForm = props => {
-  const { selectedTemplateId, editMode, setPreviewData } = props
+const BluePrintForm = (props: Props) => {
+  const { dispatch, selectedTemplateId, editMode, setPreviewData } = props
   const [template, setTemplate] = useState({})
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(false)
@@ -54,7 +64,7 @@ const BluePrintForm = props => {
     return <div>Loading...</div>
   }
 
-  const onSubmit = schemas => {
+  const onSubmit = (schemas: any) => {
     const title = schemas.formData.title
 
     try {
@@ -65,20 +75,25 @@ const BluePrintForm = props => {
         return
       }
 
-      let url = `api/blueprints/${selectedTemplateId.replace('package', title)}`
-      if (editMode) {
-        //editing, filename exists.
-        url = `api/blueprints/${selectedTemplateId}`
-      }
+      if (selectedTemplateId) {
+        let url = `api/blueprints/${selectedTemplateId.replace(
+          'package',
+          title
+        )}`
+        if (editMode) {
+          //editing, filename exists.
+          url = `api/blueprints/${selectedTemplateId}`
+        }
 
-      axios
-        .put(url, schemas.formData)
-        .then(function(response) {
-          props.onSubmit(response.data, formData.title)
-        })
-        .catch(e => {
-          console.error(e)
-        })
+        axios
+          .put(url, schemas.formData)
+          .then(function(response) {
+            dispatch(FilesActions.addFile(response.data, title))
+          })
+          .catch(e => {
+            console.error(e)
+          })
+      }
     } catch (e) {
       //todo fix validation. Set required on fields. And strip optional fields with null values from formdata.
       alert('not valid jsonschema')

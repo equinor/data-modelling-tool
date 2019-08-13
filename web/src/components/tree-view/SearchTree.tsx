@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 
 type SearchTreeProps = {
-  onChange: (value: string) => {}
+  onChange: (value: string) => void
 }
 
 const Input = styled.input`

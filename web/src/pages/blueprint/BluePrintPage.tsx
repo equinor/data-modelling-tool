@@ -13,7 +13,9 @@ export default () => {
     treeViewExistingReducer,
     {}
   )
-  const [selectedTemplateId, setSelectedTemplateId] = useState('')
+  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+    null
+  )
   const [previewData, setPreviewData] = useState(null)
   const [editMode, setEditMode] = useState(false)
 
@@ -35,17 +37,10 @@ export default () => {
           <Wrapper>
             <BlueprintForm
               state={stateTreeView}
-              selectedTemplateId={selectedTemplateId}
               dispatch={dispatchTreeView}
+              selectedTemplateId={selectedTemplateId}
               editMode={editMode}
-              onSubmit={(path, title) => {
-                if (!editMode) {
-                  dispatchTreeView(FilesActions.addFile(path, title))
-                }
-                alert('updated ' + path)
-              }}
               setPreviewData={setPreviewData}
-              formSchema={null}
             />
           </Wrapper>
         </Col>

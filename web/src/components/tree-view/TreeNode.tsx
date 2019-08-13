@@ -97,6 +97,7 @@ const TreeNode = (props: TreeNodeProps) => {
     onClickContextMenu,
     menuItems,
   } = props
+  console.log(props)
   return (
     <React.Fragment>
       <StyledTreeNode level={level}>
@@ -156,7 +157,7 @@ function filterLevel(isNodeRoot: any) {
   }
 }
 
-function filterVersion(node: any) {
+function filterVersion(node: TreeNodeType) {
   const isVersion = node.title.indexOf('.') > -1
   return (item: any) => {
     if (item.onlyVersion && !isVersion) {
