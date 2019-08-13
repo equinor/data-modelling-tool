@@ -29,6 +29,7 @@ export const FilesActions: FilesActionsTypes = {
     indexNode: {
       _id: path,
       title,
+      isOpen: true,
     },
   }),
   addFile: (path: string, title: string) => ({
@@ -56,11 +57,13 @@ export default (state: any, action: any) => {
         {
           _id: `${rootTitle}/package.json`,
           title: rootTitle,
+          isOpen: true,
         },
         {
           _id: action.path,
           title: rootTitle,
           version,
+          isOpen: true,
         },
       ]
       return generateTreeViewNodes(index, { ...state })

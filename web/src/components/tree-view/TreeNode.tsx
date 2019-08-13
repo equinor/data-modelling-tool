@@ -97,7 +97,6 @@ const TreeNode = (props: TreeNodeProps) => {
     onClickContextMenu,
     menuItems,
   } = props
-  console.log(props)
   return (
     <React.Fragment>
       <StyledTreeNode level={level}>

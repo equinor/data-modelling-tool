@@ -40,6 +40,7 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
             isRoot,
             type,
             path,
+            isOpen: current.isOpen || false,
             title: current.title,
             children: getChildren(path, nodes),
           }
@@ -51,6 +52,7 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
             isRoot,
             type,
             path,
+            isOpen: current.isOpen || false,
             title: useVersion ? current.version : current.title,
             children: getChildren(path, nodes),
           }
