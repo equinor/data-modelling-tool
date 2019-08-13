@@ -59,6 +59,7 @@ export default (state, action) => {
 
     case ADD_PACKAGE:
     case ADD_FILE:
+      //@todo check if package exists on given path.
       return generateTreeViewNodes([action.indexNode], { ...state })
 
     case ADD_ASSET:
