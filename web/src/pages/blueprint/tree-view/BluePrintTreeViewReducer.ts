@@ -51,7 +51,6 @@ export default (state: any, action: any) => {
     case ADD_ROOT_PACKAGE:
       const version = action.path.split('/')[1]
       const rootTitle = action.path.split('/')[0]
-
       //emulate reponse from api.
       const index = [
         {
@@ -66,11 +65,23 @@ export default (state: any, action: any) => {
           isOpen: true,
         },
       ]
-      return generateTreeViewNodes(index, { ...state })
+      // only add root-package if it does not exist.
+      const newItems = index.filter(node => {
+        return !isDuplicate(state, node._id)
+      })
+      if (newItems.length) {
+        return generateTreeViewNodes(newItems, { ...state })
+      } else {
+        alert(`${index[1]._id} is not unique.`)
+        return state
+      }
 
     case ADD_PACKAGE:
     case ADD_FILE:
-      //@todo check if package exists on given path.
+      if (isDuplicate(state, action.indexNode)) {
+        alert(action.indexNode._id + ' is not unique.')
+        return state
+      }
       return generateTreeViewNodes([action.indexNode], { ...state })
 
     case ADD_ASSET:
@@ -85,3 +96,18 @@ export default (state: any, action: any) => {
       console.error('not supported: ', action.type)
   }
 }
+
+type IndexNode = {
+  _id: string
+  title: string
+  isOpen?: boolean
+  version?: string
+}
+
+function isDuplicate(state: any, id: string): boolean {
+  return !!(state as any)[id]
+}
+
+// function notify(_id: string) {
+//   alert(`${_id} is not unique. Please edit the existing one or create new.`)
+// }

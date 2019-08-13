@@ -5,14 +5,6 @@ export interface TreeviewIndex {
   version?: string
 }
 
-type Node = {
-  path: string
-  type: string
-  title: string
-  isRoot: boolean
-  children?: string[]
-}
-
 const sortIsRoot = (a: any, b: any) => (b.isRoot ? 1 : -1) - (a.isRoot ? 1 : -1)
 const sortType = (a: any, b: any) =>
   (b.type === 'folder' ? 1 : -1) - (a.type === 'folder' ? 1 : -1)
@@ -69,7 +61,6 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
         }
       }
     })
-  console.log(nodes)
   return nodes
 }
 
