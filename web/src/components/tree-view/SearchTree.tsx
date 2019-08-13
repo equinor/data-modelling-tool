@@ -1,9 +1,7 @@
 import React from 'react'
-//@ts-ignore
 import styled from 'styled-components'
 
 type SearchTreeProps = {
-  value: string
   onChange: (value: string) => {}
 }
 

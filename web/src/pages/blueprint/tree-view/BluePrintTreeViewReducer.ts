@@ -1,5 +1,6 @@
 import TreeReducer, {
   Actions as CommonTreeActions,
+  TreeActions,
 } from '../../../components/tree-view/TreeReducer'
 import { generateTreeViewNodes } from '../../../util/generateTreeView'
 
@@ -10,34 +11,41 @@ const ADD_PACKAGE = 'ADD_PACKAGE'
 const ADD_FILE = 'ADD_FILE'
 const ADD_ASSET = 'ADD_ASSET'
 
-export const FilesActions = {
+export interface FilesActionsTypes extends TreeActions {
+  addRootPackage: (path: string) => any
+  addPackage: (path: string, title: string) => any
+  addFile: (path: string, title: string) => any
+  addAssets: (path: string, title: string) => any
+}
+
+export const FilesActions: FilesActionsTypes = {
   ...CommonTreeActions,
-  addRootPackage: path => ({
+  addRootPackage: (path: string) => ({
     type: ADD_ROOT_PACKAGE,
     path,
   }),
-  addPackage: (path, title) => ({
+  addPackage: (path: string, title: string) => ({
     type: ADD_PACKAGE,
     indexNode: {
       _id: path,
       title,
     },
   }),
-  addFile: (path, title) => ({
+  addFile: (path: string, title: string) => ({
     type: ADD_FILE,
     indexNode: {
       _id: path,
       title,
     },
   }),
-  addAssets: (data, endpoint) => ({
+  addAssets: (data: any, endpoint: string) => ({
     type: ADD_ASSET,
     data,
     endpoint,
   }),
 }
 
-export default (state, action) => {
+export default (state: any, action: any) => {
   switch (action.type) {
     case ADD_ROOT_PACKAGE:
       const version = action.path.split('/')[1]

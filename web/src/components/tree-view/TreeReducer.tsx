@@ -27,16 +27,16 @@ export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
 
 export interface TreeActions {
-  filterTree: (filter: string) => {}
-  toggleNode: (path: string) => {}
+  filterTree: (filter: string) => object
+  toggleNode: (path: string) => object
 }
 
 export const Actions: TreeActions = {
-  filterTree: (filter: string) => ({
+  filterTree: (filter: string): object => ({
     type: FILTER_TREE,
     filter: filter,
   }),
-  toggleNode: (path: string) => ({
+  toggleNode: (path: string): object => ({
     type: TOGGLE_NODE,
     path,
   }),
