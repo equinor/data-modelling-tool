@@ -6,17 +6,17 @@ import toJsonSchema from 'to-json-schema'
 const log = type => console.log.bind(console, type)
 
 export default props => {
-  const { selectedTemplateId, editMode } = props
+  const { selectedBlueprintId, editMode } = props
   return (
     <React.Fragment>
       <Header>
         <h3>{editMode ? 'Edit' : 'Create'} blueprint</h3>
-        <div style={{ paddingRight: 10 }}>{selectedTemplateId}</div>
+        <div style={{ paddingRight: 10 }}>{selectedBlueprintId}</div>
       </Header>
 
       <div style={{ marginTop: 20, padding: 20 }}>
         {// check selectedTemplate to avoid having a conditional before a hook in BluePrintTemplateForm.
-        selectedTemplateId && <BluePrintForm {...props} />}
+        selectedBlueprintId && <BluePrintForm {...props} />}
       </div>
     </React.Fragment>
   )

@@ -10,7 +10,7 @@ const ADD_PACKAGE = 'ADD_PACKAGE'
 const ADD_FILE = 'ADD_FILE'
 const ADD_ASSET = 'ADD_ASSET'
 
-export const FilesActions = {
+export const BlueprintTreeViewActions = {
   ...CommonTreeActions,
   addRootPackage: path => ({
     type: ADD_ROOT_PACKAGE,

@@ -2,36 +2,38 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import values from 'lodash/values'
 import Header from '../../../components/Header'
-import { FilesActions } from './BluePrintTreeViewReducer'
+import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
 import Button from '../../../components/Button'
+import CreatePackageModal from './modals/CreatePackageModal'
+import CreateSubPackageModal from './modals/CreateSubpackageModal'
 
 export default props => {
-  const { state, dispatch, setEditMode, setSelectedTemplateId } = props
+  const { state, dispatch, setEditMode, setSelectedBlueprintId } = props
   const [open, setOpen] = useState(false)
   const [nodeIdModal, setNodeIdModal] = useState(false)
   const [openRootPackage, setOpenRootPackage] = useState(false)
 
-  const urlBluePrints = '/api/index/blueprints'
+  const urlBlueprints = '/api/index/blueprints'
   useEffect(() => {
     async function fetchData() {
-      const responseBlueprints = await axios(urlBluePrints)
+      const responseBlueprints = await axios(urlBlueprints)
       dispatch(
-        FilesActions.addAssets(
+        BlueprintTreeViewActions.addAssets(
           responseBlueprints.data,
-          urlBluePrints.replace('/index', '')
+          urlBlueprints.replace('/index', '')
         )
       )
     }
 
     fetchData()
-  }, [urlBluePrints, dispatch]) // empty array
+  }, [urlBlueprints, dispatch]) // empty array
 
   const onToggle = node => {
-    dispatch(FilesActions.toggleNode(node.path))
+    dispatch(BlueprintTreeViewActions.toggleNode(node.path))
   }
 
   const addPackage = nodeId => {
@@ -67,14 +69,16 @@ export default props => {
         setOpen={setOpen}
         callback={(path, title) => {
           setNodeIdModal(null)
-          dispatch(FilesActions.addPackage(path, title))
+          dispatch(BlueprintTreeViewActions.addPackage(path, title))
         }}
       />
 
       <div>
         <div>
           <SearchTree
-            onChange={value => dispatch(FilesActions.filterTree(value))}
+            onChange={value =>
+              dispatch(BlueprintTreeViewActions.filterTree(value))
+            }
           />
         </div>
         {rootNodes
@@ -128,12 +132,12 @@ export default props => {
                       addPackage(id)
                       break
                     case 'create-blueprint':
-                      setSelectedTemplateId(id)
+                      setSelectedBlueprintId(id)
                       break
                     // case 'edit-package':
                     //@todo use modal.
                     // console.warn('not implemented.');
-                    // setSelectedTemplateId(id)
+                    // setSelectedBlueprintId(id)
                     // break
                     default:
                       console.error('action not supported: ', action, id)
@@ -141,7 +145,7 @@ export default props => {
                 }}
                 onNodeSelect={node => {
                   if (node.type === 'file') {
-                    setSelectedTemplateId(node.path)
+                    setSelectedBlueprintId(node.path)
                     setEditMode(true)
                   }
                 }}
@@ -150,60 +154,5 @@ export default props => {
           })}
       </div>
     </div>
-  )
-}
-
-const CreatePackageModal = props => {
-  const { setEditMode, open, setOpen, dispatch } = props
-  return (
-    <Modal toggle={() => setOpen(!open)} open={open}>
-      <Form
-        schemaUrl="/api/templates/package.json"
-        onSubmit={formData => {
-          axios
-            .put(
-              `/api/blueprints/${formData.title}/${formData.version}/package.json`,
-              formData
-            )
-            .then(res => {
-              dispatch(FilesActions.addRootPackage(res.data))
-            })
-            .catch(err => {
-              console.log(err)
-            })
-          setOpen(false)
-          setEditMode(false)
-        }}
-      ></Form>
-    </Modal>
-  )
-}
-
-const CreateSubPackageModal = props => {
-  const { setEditMode, open, path, setOpen, callback } = props
-  return (
-    <Modal toggle={() => setOpen(!open)} open={open}>
-      {path && (
-        <Form
-          schemaUrl="/api/templates/subpackage.json"
-          onSubmit={formData => {
-            const parent = path.replace('/package.json', '')
-            axios
-              .put(
-                `/api/blueprints/${parent}/${formData.title}/package.json`,
-                formData
-              )
-              .then(res => {
-                setOpen(false)
-                setEditMode(false)
-                callback(res.data, formData.title)
-              })
-              .catch(err => {
-                console.log(err)
-              })
-          }}
-        ></Form>
-      )}
-    </Modal>
   )
 }
