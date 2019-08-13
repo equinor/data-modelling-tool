@@ -11,7 +11,7 @@ interface Props {
   state: any
   dispatch: (action: {}) => void
   selectedTemplateId: string | null
-  editMode: boolean
+  editMode: boolean | null
   setPreviewData: (data: any) => void
 }
 

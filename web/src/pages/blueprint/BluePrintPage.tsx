@@ -17,7 +17,7 @@ export default () => {
     null
   )
   const [previewData, setPreviewData] = useState(null)
-  const [editMode, setEditMode] = useState(false)
+  const [editMode, setEditMode] = useState<boolean | null>(false)
 
   return (
     <Grid fluid>

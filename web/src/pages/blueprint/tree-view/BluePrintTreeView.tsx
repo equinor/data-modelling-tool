@@ -15,7 +15,7 @@ import FormModal from './FormModal'
 interface PropTypes {
   dispatch: (action: {}) => void
   state: object
-  setEditMode: (editMode: boolean) => void
+  setEditMode: (editMode: boolean | null) => void
   setSelectedTemplateId: (id: string | null) => void
 }
 
@@ -126,7 +126,7 @@ export default (props: PropTypes) => {
                   switch (action) {
                     case 'create-blueprint':
                       setSelectedTemplateId(id)
-                      setEditMode(false)
+                      setEditMode(null)
                       break
                     case 'add-package':
                       setNodePath(id)
