@@ -19,6 +19,8 @@ const sortType = (a: any, b: any) =>
 
 export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
   index
+    // bug in radix dev.
+    .filter(node => node._id !== 'undefined' && node._id)
     .map(node => ({
       ...node,
       type: node._id.indexOf('package.json') > -1 ? 'folder' : 'file',
