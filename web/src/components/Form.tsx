@@ -2,10 +2,10 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Form from 'react-jsonschema-form'
 
-interface FormProps extends Node {
+interface FormProps {
   schemaUrl: string
   dataUrl: string
-  onSubmit: (formData: any) => {}
+  onSubmit: (formData: any) => any
 }
 
 const log = (type: any) => console.log.bind(console, type)
