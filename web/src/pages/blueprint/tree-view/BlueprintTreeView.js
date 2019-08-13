@@ -2,43 +2,36 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import values from 'lodash/values'
 import Header from '../../../components/Header'
-import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
+import { FilesActions } from './BluePrintTreeViewReducer'
 import TreeNode from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
 import Button from '../../../components/Button'
-import CreatePackageModal from './modals/CreatePackageModal'
-import CreateSubPackageModal from './modals/CreateSubpackageModal'
 
 export default props => {
-  const { state, dispatch, setEditMode, setSelectedBlueprintId } = props
+  const { state, dispatch, setEditMode, setSelectedTemplateId } = props
   const [open, setOpen] = useState(false)
-  const [nodeIdModal, setNodeIdModal] = useState(false)
-  const [openRootPackage, setOpenRootPackage] = useState(false)
+  const [action, setAction] = useState('clear')
+  const [nodePath, setNodePath] = useState('')
 
-  const urlBlueprints = '/api/index/blueprints'
+  const urlBluePrints = '/api/index/blueprints'
   useEffect(() => {
     async function fetchData() {
-      const responseBlueprints = await axios(urlBlueprints)
+      const responseBlueprints = await axios(urlBluePrints)
       dispatch(
-        BlueprintTreeViewActions.addAssets(
+        FilesActions.addAssets(
           responseBlueprints.data,
-          urlBlueprints.replace('/index', '')
+          urlBluePrints.replace('/index', '')
         )
       )
     }
 
     fetchData()
-  }, [urlBlueprints, dispatch]) // empty array
+  }, [urlBluePrints, dispatch]) // empty array
 
   const onToggle = node => {
-    dispatch(BlueprintTreeViewActions.toggleNode(node.path))
-  }
-
-  const addPackage = nodeId => {
-    setNodeIdModal(nodeId)
-    setOpen(true)
+    dispatch(FilesActions.toggleNode(node.path))
   }
 
   const rootNodes = values(state).filter(n => n.isRoot)
@@ -49,36 +42,24 @@ export default props => {
         <Button
           type="button"
           onClick={() => {
-            setOpenRootPackage(true)
+            setAction('add-package')
+            setOpen(true)
           }}
         >
           Create Package
         </Button>
       </Header>
 
-      <CreatePackageModal
-        {...props}
-        open={openRootPackage}
-        setOpen={setOpenRootPackage}
-      />
-
-      <CreateSubPackageModal
-        {...props}
-        open={open}
-        path={nodeIdModal}
-        setOpen={setOpen}
-        callback={(path, title) => {
-          setNodeIdModal(null)
-          dispatch(BlueprintTreeViewActions.addPackage(path, title))
-        }}
-      />
+      <Modal toggle={() => setOpen(!open)} open={open}>
+        <Form
+          {...getConfigByAction({ action, dispatch, setOpen, nodePath })}
+        ></Form>
+      </Modal>
 
       <div>
         <div>
           <SearchTree
-            onChange={value =>
-              dispatch(BlueprintTreeViewActions.filterTree(value))
-            }
+            onChange={value => dispatch(FilesActions.filterTree(value))}
           />
         </div>
         {rootNodes
@@ -98,7 +79,7 @@ export default props => {
               },
               {
                 type: 'folder',
-                action: 'add-package',
+                action: 'add-subpackage',
                 label: 'Create SubPackage',
                 hideRoot: true,
               },
@@ -111,7 +92,7 @@ export default props => {
               },
               {
                 type: 'folder',
-                action: 'edit-sub-package',
+                action: 'edit-subpackage',
                 label: 'Edit Sub Package',
                 hideRoot: true,
                 hideVersion: true,
@@ -128,24 +109,37 @@ export default props => {
                 menuItems={menuItems}
                 onClickContextMenu={(id, action) => {
                   switch (action) {
-                    case 'add-package':
-                      addPackage(id)
-                      break
                     case 'create-blueprint':
-                      setSelectedBlueprintId(id)
+                      setSelectedTemplateId(id)
                       break
-                    // case 'edit-package':
-                    //@todo use modal.
-                    // console.warn('not implemented.');
-                    // setSelectedBlueprintId(id)
-                    // break
+                    case 'add-package':
+                      setNodePath(id)
+                      setAction(action)
+                      setOpen(true)
+                      break
+                    case 'add-subpackage':
+                      setAction(action)
+                      setNodePath(id)
+                      setOpen(true)
+                      break
+                    case 'edit-package':
+                      setAction(action)
+                      setNodePath(id)
+                      setOpen(true)
+                      break
+                    case 'edit-subpackage':
+                      setAction(action)
+                      setNodePath(id)
+                      setOpen(true)
+                      break
                     default:
+                      setAction('clear')
                       console.error('action not supported: ', action, id)
                   }
                 }}
                 onNodeSelect={node => {
                   if (node.type === 'file') {
-                    setSelectedBlueprintId(node.path)
+                    setSelectedTemplateId(node.path)
                     setEditMode(true)
                   }
                 }}
@@ -155,4 +149,110 @@ export default props => {
       </div>
     </div>
   )
+}
+
+function getConfigByAction(props) {
+  switch (props.action) {
+    case 'add-package':
+      return addPackageConfig(props)
+    case 'add-subpackage':
+      return addSubPackageConfig(props)
+    case 'edit-package':
+      return editPackageConfig(props)
+    case 'edit-subpackage':
+      return editSubPackageConfig(props)
+    case 'clear':
+      break
+    default:
+      console.warn(props.action + ' is not supported.')
+      return null
+  }
+}
+
+function addPackageConfig(props) {
+  const { dispatch, setOpen } = props
+  return {
+    schemaUrl: '/api/templates/package.json',
+    dataUrl: '',
+    onSubmit: formData => {
+      console.log(formData)
+      axios
+        .put(
+          `/api/blueprints/${formData.title}/${formData.version}/package.json`,
+          formData
+        )
+        .then(res => {
+          dispatch(FilesActions.addRootPackage(res.data))
+          setOpen(false)
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+  }
+}
+
+function editPackageConfig(props) {
+  const { setOpen, path } = props
+  const dataUrl = '/api/blueprints/' + path
+  return {
+    schemaUrl: '/api/templates/package.json',
+    dataUrl,
+    onSubmit: formData => {
+      axios
+        .put(dataUrl, formData)
+        .then(res => {
+          // @todo use notification.
+          // @todo editing title or version is not updating the tree.
+          console.log(res.data + ' is updated.')
+          setOpen(false)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
+  }
+}
+
+function addSubPackageConfig(props) {
+  const { dispatch, setOpen, nodePath } = props
+  return {
+    schemaUrl: '/api/templates/subpackage.json',
+    dataUrl: '',
+    onSubmit: formData => {
+      const url = `/api/blueprints/${nodePath.replace(
+        'package.json',
+        formData.title + '/package.json'
+      )}`
+      console.log(url)
+      axios
+        .put(url, formData)
+        .then(res => {
+          setOpen(false)
+          dispatch(FilesActions.addPackage(res.data, formData.title))
+        })
+        .catch(err => {
+          console.log(err)
+        })
+    },
+  }
+}
+
+function editSubPackageConfig(props) {
+  const { setOpen, nodePath } = props
+  const dataUrl = '/api/blueprints/' + nodePath
+  return {
+    schemaUrl: '/api/templates/subpackage.json',
+    dataUrl,
+    onSubmit: formData => {
+      axios
+        .put(dataUrl, formData)
+        .then(res => {
+          setOpen(false)
+        })
+        .catch(err => {
+          console.error(err)
+        })
+    },
+  }
 }
