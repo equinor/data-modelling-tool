@@ -53,25 +53,27 @@ exports[`Storyshots ContextMenu test 1`] = `
     }
   }
 >
-  <div
-    className="react-contextmenu-wrapper"
-    onContextMenu={[Function]}
-    onMouseDown={[Function]}
-    onMouseOut={[Function]}
-    onMouseUp={[Function]}
-    onTouchEnd={[Function]}
-    onTouchStart={[Function]}
-  >
-    <span
-      style={
-        Object {
-          "border": "1px solid",
-          "padding": 5,
-        }
-      }
+  <div>
+    <div
+      className="react-contextmenu-wrapper"
+      onContextMenu={[Function]}
+      onMouseDown={[Function]}
+      onMouseOut={[Function]}
+      onMouseUp={[Function]}
+      onTouchEnd={[Function]}
+      onTouchStart={[Function]}
     >
-      Right click me
-    </span>
+      <span
+        style={
+          Object {
+            "border": "1px solid",
+            "padding": 5,
+          }
+        }
+      >
+        Right click me
+      </span>
+    </div>
   </div>
   <nav
     className="react-contextmenu"
