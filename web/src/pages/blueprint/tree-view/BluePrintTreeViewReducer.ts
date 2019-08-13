@@ -1,9 +1,10 @@
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 import TreeReducer, {
   Actions as CommonTreeActions,
   TreeActions,
 } from '../../../components/tree-view/TreeReducer'
 import { generateTreeViewNodes } from '../../../util/generateTreeView'
-
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
 const ADD_ROOT_PACKAGE = 'ADD_ROOT_PACKAGE'
@@ -37,6 +38,7 @@ export const FilesActions: FilesActionsTypes = {
     indexNode: {
       _id: path,
       title,
+      isOpen: true,
     },
   }),
   addAssets: (data: any, endpoint: string) => ({
@@ -70,19 +72,31 @@ export default (state: any, action: any) => {
         return !isDuplicate(state, node._id)
       })
       if (newItems.length) {
+        NotificationManager.success(index[1]._id, 'New package created')
         return generateTreeViewNodes(newItems, { ...state })
       } else {
-        alert(`${index[1]._id} is not unique.`)
+        NotificationManager.error(
+          `${rootTitle}/package.json exists.`,
+          'Duplicate package'
+        )
         return state
       }
 
     case ADD_PACKAGE:
     case ADD_FILE:
       if (isDuplicate(state, action.indexNode)) {
-        alert(action.indexNode._id + ' is not unique.')
+        NotificationManager.error(
+          `${action.indexNode._id} exists.`,
+          'Duplicate file'
+        )
         return state
+      } else {
+        NotificationManager.success(
+          `${action.indexNode._id}`,
+          'New file created'
+        )
+        return generateTreeViewNodes([action.indexNode], { ...state })
       }
-      return generateTreeViewNodes([action.indexNode], { ...state })
 
     case ADD_ASSET:
       const nodes = generateTreeViewNodes(action.data)

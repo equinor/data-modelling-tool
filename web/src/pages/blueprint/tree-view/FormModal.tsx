@@ -1,4 +1,6 @@
 import React from 'react'
+//@ts-ignore
+import { NotificationContainer, NotificationManager } from 'react-notifications'
 import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
 import axios from 'axios'
@@ -16,9 +18,12 @@ export default (props: FormModalProps) => {
   const { setOpen, open, dispatch, action, path } = props
   const formConfig = getConfigByAction({ action, dispatch, setOpen, path })
   return (
-    <Modal toggle={() => setOpen(!open)} open={open}>
-      <Form {...formConfig}></Form>
-    </Modal>
+    <>
+      <NotificationContainer timeout={5000} />
+      <Modal toggle={() => setOpen(!open)} open={open}>
+        <Form {...formConfig}></Form>
+      </Modal>
+    </>
   )
 }
 
@@ -61,7 +66,6 @@ function addPackageConfig(props: ActionConfigType) {
     schemaUrl: '/api/templates/package.json',
     dataUrl: '',
     onSubmit: (formData: any) => {
-      console.log(formData)
       axios
         .put(
           `/api/blueprints/${formData.title}/${formData.version}/package.json`,
@@ -72,6 +76,10 @@ function addPackageConfig(props: ActionConfigType) {
           setOpen(false)
         })
         .catch(err => {
+          NotificationManager.error(
+            `${formData.title}.json`,
+            'Failed to create new package'
+          )
           console.log(err)
         })
     },
@@ -88,12 +96,13 @@ function editPackageConfig(props: ActionConfigType) {
       axios
         .put(dataUrl, formData)
         .then(res => {
-          // @todo use notification.
-          // @todo editing title or version is not updating the tree.
-          console.log(res.data + ' is updated.')
           setOpen(false)
         })
         .catch(err => {
+          NotificationManager.error(
+            `${formData.title}.json`,
+            'Failed to edit new package'
+          )
           console.error(err)
         })
     },
@@ -117,6 +126,10 @@ function addSubPackageConfig(props: ActionConfigType) {
           dispatch(FilesActions.addPackage(res.data, formData.title))
         })
         .catch(err => {
+          NotificationManager.error(
+            `${formData.title}.json`,
+            'Failed to create new subpackage'
+          )
           console.log(err)
         })
     },
@@ -136,6 +149,10 @@ function editSubPackageConfig(props: ActionConfigType) {
           setOpen(false)
         })
         .catch(err => {
+          NotificationManager.error(
+            `${formData.title}.json`,
+            'Failed to edit subpackage'
+          )
           console.error(err)
         })
     },

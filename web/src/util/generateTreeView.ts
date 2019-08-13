@@ -52,6 +52,9 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
       }
       if (type === 'file') {
         const parentPath = getParentPath(path)
+        if (current.isOpen) {
+          ;(nodes as any)[parentPath].isOpen = true
+        }
         ;(nodes as any)[parentPath].children.push(path)
         ;(nodes as any)[path] = {
           isRoot,
