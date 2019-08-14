@@ -10,36 +10,36 @@ const log = (type: any) => console.log.bind(console, type)
 interface Props {
   state: any
   dispatch: (action: {}) => void
-  selectedTemplateId: string | null
+  selectedBlueprintId: string | null
   editMode: boolean | null
   setPreviewData: (data: any) => void
 }
 
 export default (props: Props) => {
-  const { selectedTemplateId, editMode } = props
+  const { selectedBlueprintId, editMode } = props
   return (
     <React.Fragment>
       <Header>
         <h3>{editMode ? 'Edit' : 'Create'} blueprint</h3>
-        <div style={{ paddingRight: 10 }}>{selectedTemplateId}</div>
+        <div style={{ paddingRight: 10 }}>{selectedBlueprintId}</div>
       </Header>
 
       <div style={{ marginTop: 20, padding: 20 }}>
         {// check selectedTemplate to avoid having a conditional before a hook in BluePrintTemplateForm.
-        selectedTemplateId && <BlueprintForm {...props} />}
+        selectedBlueprintId && <BlueprintForm {...props} />}
       </div>
     </React.Fragment>
   )
 }
 
 const BlueprintForm = (props: Props) => {
-  const { dispatch, selectedTemplateId, editMode, setPreviewData } = props
+  const { dispatch, selectedBlueprintId, editMode, setPreviewData } = props
   const [template, setTemplate] = useState({})
   const [formData, setFormData] = useState({})
   const [loading, setLoading] = useState(false)
 
   const templateUrl = '/api/templates/blueprint.json'
-  const dataUrl = '/api/blueprints/' + selectedTemplateId
+  const dataUrl = '/api/blueprints/' + selectedBlueprintId
   useEffect(() => {
     async function fetchSchema() {
       const response = await axios(templateUrl)
@@ -52,13 +52,13 @@ const BlueprintForm = (props: Props) => {
     }
     setLoading(true)
     fetchSchema()
-    if (selectedTemplateId && editMode) {
+    if (selectedBlueprintId && editMode) {
       fetchData()
     } else {
       setFormData({})
     }
     setLoading(false)
-  }, [templateUrl, dataUrl, selectedTemplateId, editMode, setPreviewData])
+  }, [templateUrl, dataUrl, selectedBlueprintId, editMode, setPreviewData])
 
   if (loading) {
     return <div>Loading...</div>
@@ -75,14 +75,14 @@ const BlueprintForm = (props: Props) => {
         return
       }
 
-      if (selectedTemplateId) {
-        let url = `api/blueprints/${selectedTemplateId.replace(
+      if (selectedBlueprintId) {
+        let url = `api/blueprints/${selectedBlueprintId.replace(
           'package',
           title
         )}`
         if (editMode) {
           //editing, filename exists.
-          url = `api/blueprints/${selectedTemplateId}`
+          url = `api/blueprints/${selectedBlueprintId}`
         }
 
         axios

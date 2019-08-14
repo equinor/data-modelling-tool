@@ -16,11 +16,11 @@ interface PropTypes {
   dispatch: (action: {}) => void
   state: object
   setEditMode: (editMode: boolean | null) => void
-  setSelectedTemplateId: (id: string | null) => void
+  setSelectedBlueprintId: (id: string | null) => void
 }
 
 export default (props: PropTypes) => {
-  const { state, dispatch, setEditMode, setSelectedTemplateId } = props
+  const { state, dispatch, setEditMode, setSelectedBlueprintId } = props
   const [open, setOpen] = useState(false)
   const [action, setAction] = useState('clear')
   const [nodePath, setNodePath] = useState('')
@@ -125,7 +125,7 @@ export default (props: PropTypes) => {
                 onClickContextMenu={(id, action) => {
                   switch (action) {
                     case 'create-blueprint':
-                      setSelectedTemplateId(id)
+                      setSelectedBlueprintId(id)
                       setEditMode(null)
                       break
                     case 'add-package':
@@ -155,7 +155,7 @@ export default (props: PropTypes) => {
                 }}
                 onNodeSelect={(node: TreeNodeType) => {
                   if (node.type === 'file') {
-                    setSelectedTemplateId(node.path)
+                    setSelectedBlueprintId(node.path)
                     setEditMode(true)
                   }
                 }}

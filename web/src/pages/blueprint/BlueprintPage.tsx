@@ -13,7 +13,7 @@ export default () => {
     treeViewExistingReducer,
     {}
   )
-  const [selectedTemplateId, setSelectedTemplateId] = useState<string | null>(
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string | null>(
     null
   )
   const [previewData, setPreviewData] = useState(null)
@@ -27,7 +27,7 @@ export default () => {
             <BlueprintTreeView
               dispatch={dispatchTreeView}
               state={stateTreeView}
-              setSelectedTemplateId={setSelectedTemplateId}
+              setSelectedBlueprintId={setSelectedBlueprintId}
               setEditMode={setEditMode}
             />
           </Wrapper>
@@ -38,7 +38,7 @@ export default () => {
             <BlueprintForm
               state={stateTreeView}
               dispatch={dispatchTreeView}
-              selectedTemplateId={selectedTemplateId}
+              selectedBlueprintId={selectedBlueprintId}
               editMode={editMode}
               setPreviewData={setPreviewData}
             />
