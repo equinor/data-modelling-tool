@@ -3,7 +3,7 @@ import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
 import BlueprintPreview from './preview/BlueprintPreview'
-import BlueprintForm from './form/BlueprintForm'
+import { EditBlueprintForm, CreateBlueprintForm } from './form/BlueprintForm'
 import blueprintTreeViewReducer, {
   BlueprintTreeViewActions,
 } from './tree-view/BlueprintTreeViewReducer'
@@ -16,7 +16,7 @@ export default () => {
   const [selectedBlueprintId, setSelectedBlueprintId] = useState<string | null>(
     null
   )
-  const [previewData, setPreviewData] = useState(null)
+  // const [previewData, setPreviewData] = useState(null)
   const [editMode, setEditMode] = useState<boolean | null>(false)
 
   return (
@@ -33,21 +33,19 @@ export default () => {
           </Wrapper>
         </Col>
 
-        <Col xs={12} md={4} lg={4}>
+        <Col xs={12} md={8} lg={8}>
           <Wrapper>
-            <BlueprintForm
-              state={stateTreeView}
-              dispatch={dispatchTreeView}
-              selectedBlueprintId={selectedBlueprintId}
-              editMode={editMode}
-              setPreviewData={setPreviewData}
-            />
-          </Wrapper>
-        </Col>
-
-        <Col xs={12} md={4} lg={4}>
-          <Wrapper>
-            <BlueprintPreview data={previewData} />
+            {editMode ? (
+              <EditBlueprintForm
+                dispatch={dispatchTreeView}
+                selectedBlueprintId={selectedBlueprintId}
+              />
+            ) : (
+              <CreateBlueprintForm
+                dispatch={dispatchTreeView}
+                selectedBlueprintId={selectedBlueprintId}
+              />
+            )}
           </Wrapper>
         </Col>
       </Row>
