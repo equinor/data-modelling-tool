@@ -4,7 +4,7 @@ import Form from 'react-jsonschema-form'
 import Header from '../../../components/Header'
 //@ts-ignore
 import toJsonSchema from 'to-json-schema'
-import { FilesActions } from '../tree-view/BluePrintTreeViewReducer'
+import { BlueprintTreeViewActions } from '../tree-view/BlueprintTreeViewReducer'
 const log = (type: any) => console.log.bind(console, type)
 
 interface Props {
@@ -26,13 +26,13 @@ export default (props: Props) => {
 
       <div style={{ marginTop: 20, padding: 20 }}>
         {// check selectedTemplate to avoid having a conditional before a hook in BluePrintTemplateForm.
-        selectedTemplateId && <BluePrintForm {...props} />}
+        selectedTemplateId && <BlueprintForm {...props} />}
       </div>
     </React.Fragment>
   )
 }
 
-const BluePrintForm = (props: Props) => {
+const BlueprintForm = (props: Props) => {
   const { dispatch, selectedTemplateId, editMode, setPreviewData } = props
   const [template, setTemplate] = useState({})
   const [formData, setFormData] = useState({})
@@ -88,7 +88,7 @@ const BluePrintForm = (props: Props) => {
         axios
           .put(url, schemas.formData)
           .then(function(response) {
-            dispatch(FilesActions.addFile(response.data, title))
+            dispatch(BlueprintTreeViewActions.addFile(response.data, title))
           })
           .catch(e => {
             console.error(e)

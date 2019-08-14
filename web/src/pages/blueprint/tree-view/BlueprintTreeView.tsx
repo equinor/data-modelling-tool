@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import values from 'lodash/values'
 import Header from '../../../components/Header'
-import { FilesActions } from './BluePrintTreeViewReducer'
+import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 import TreeNode, {
   MenuItem,
   TreeNodeType,
@@ -30,7 +30,7 @@ export default (props: PropTypes) => {
     async function fetchData() {
       const responseBlueprints = await axios(urlBluePrints)
       dispatch(
-        FilesActions.addAssets(
+        BlueprintTreeViewActions.addAssets(
           responseBlueprints.data,
           urlBluePrints.replace('/index', '')
         )
@@ -41,7 +41,7 @@ export default (props: PropTypes) => {
   }, [urlBluePrints, dispatch]) // empty array
 
   const onToggle = (node: TreeNodeType): void => {
-    dispatch(FilesActions.toggleNode(node.path))
+    dispatch(BlueprintTreeViewActions.toggleNode(node.path))
   }
 
   const rootNodes = values(state).filter((n: TreeNodeType) => n.isRoot)
@@ -73,7 +73,7 @@ export default (props: PropTypes) => {
         <div>
           <SearchTree
             onChange={(value: string) =>
-              dispatch(FilesActions.filterTree(value))
+              dispatch(BlueprintTreeViewActions.filterTree(value))
             }
           />
         </div>

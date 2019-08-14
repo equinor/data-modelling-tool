@@ -12,14 +12,14 @@ const ADD_PACKAGE = 'ADD_PACKAGE'
 const ADD_FILE = 'ADD_FILE'
 const ADD_ASSET = 'ADD_ASSET'
 
-export interface FilesActionsTypes extends TreeActions {
+export interface BlueprintTreeViewActionsTypes extends TreeActions {
   addRootPackage: (path: string) => any
   addPackage: (path: string, title: string) => any
   addFile: (path: string, title: string) => any
   addAssets: (path: string, title: string) => any
 }
 
-export const FilesActions: FilesActionsTypes = {
+export const BlueprintTreeViewActions: BlueprintTreeViewActionsTypes = {
   ...CommonTreeActions,
   addRootPackage: (path: string) => ({
     type: ADD_ROOT_PACKAGE,
