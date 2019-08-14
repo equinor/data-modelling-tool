@@ -4,13 +4,13 @@ import styled from 'styled-components'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
 import BlueprintPreview from './preview/BlueprintPreview'
 import BlueprintForm from './form/BlueprintForm'
-import treeViewExistingReducer, {
+import blueprintTreeViewReducer, {
   BlueprintTreeViewActions,
 } from './tree-view/BlueprintTreeViewReducer'
 
 export default () => {
   const [stateTreeView, dispatchTreeView] = useReducer(
-    treeViewExistingReducer,
+    blueprintTreeViewReducer,
     {}
   )
   const [selectedBlueprintId, setSelectedBlueprintId] = useState<string | null>(
