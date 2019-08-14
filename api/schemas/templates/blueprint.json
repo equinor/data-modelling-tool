@@ -4,10 +4,12 @@
     "type": "object",
     "properties": {
       "title": {
+        "title": "Title",
         "type": "string",
         "default": ""
       },
       "description": {
+        "title": "Description",
         "type": "string",
         "default": ""
       },
@@ -20,66 +22,29 @@
               "title": "Name",
               "type": "string"
             },
-            "attributeType": {
+            "type": {
+              "title": "Type",
               "type": "string",
-              "title": "Attribute Type",
-              "enum": ["Single", "Array/Matrix"],
-              "default": "Single"
+              "enum": ["string", "integer", "number", "boolean"],
+              "enumNames": ["String", "Integer", "Number", "Boolean"],
+              "default": "string"
+            },
+            "value": {
+              "title": "Default Value",
+              "type": "string",
+              "default": ""
+            },
+            "dimensions": {
+              "title": "Dimensions",
+              "type": "array",
+              "items": {
+                "title": "Size",
+                "type": "string",
+                "default": "*"
+              }
             }
           },
-          "required": ["attributeType"],
-          "dependencies": {
-            "attributeType": {
-              "oneOf": [
-                {
-                  "properties": {
-                    "attributeType": {
-                      "enum": ["Single"]
-                    },
-                    "type": {
-                      "title": "Type",
-                      "type": "string",
-                      "enum": ["string", "integer", "number", "boolean"],
-                      "enumNames": ["String", "Integer", "Number", "Boolean"],
-                      "default": "string"
-                    },
-                    "value": {
-                      "title": "Default Value",
-                      "type": "string",
-                      "default": ""
-                    }
-                  }
-                },
-                {
-                  "properties": {
-                    "attributeType": {
-                      "enum": ["Array/Matrix"]
-                    },
-                    "type": {
-                      "title": "Type",
-                      "type": "string",
-                      "enum": ["string", "integer", "number", "boolean"],
-                      "enumNames": ["String", "Integer", "Number", "Boolean"],
-                      "default": "string"
-                    },
-                    "value": {
-                      "title": "Default Value",
-                      "type": "string",
-                      "default": ""
-                    },
-                    "dimensions": {
-                      "title": "Dimensions",
-                      "type": "array",
-                      "items": {
-                        "title": "Size",
-                        "type": "string"
-                      }
-                    }
-                  }
-                }
-              ]
-            }
-          }
+          "required": ["name", "type"]
         }
       }
     }
@@ -94,7 +59,7 @@
         "orderable": false
       },
       "items": {
-        "ui:order": ["name", "attributeType", "*"]
+        "ui:order": ["name", "type", "value", "dimensions"]
       }
     }
   }
