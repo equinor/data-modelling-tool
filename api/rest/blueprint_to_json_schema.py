@@ -4,6 +4,7 @@ from flask_restful import Resource
 from services.database import db
 
 
+
 class BlueprintToJsonSchema(Resource):
     @staticmethod
     def get(path):
@@ -11,7 +12,7 @@ class BlueprintToJsonSchema(Resource):
         if not document:
             return abort(404)
         properties = {}
-        for attribute in document['properties']:
+        for attribute in document['attributes']:
             if attribute["attributeType"] == "Array/Matrix":
                 properties[attribute["name"]] = {
                     "type": "array",
