@@ -16,12 +16,12 @@ import { PageMode } from '../BlueprintPage'
 interface PropTypes {
   dispatch: (action: {}) => void
   state: object
-  setEditMode: (pageMode: PageMode) => void
+  setPageMode: (pageMode: PageMode) => void
   setSelectedBlueprintId: (id: string) => void
 }
 
 export default (props: PropTypes) => {
-  const { state, dispatch, setEditMode, setSelectedBlueprintId } = props
+  const { state, dispatch, setPageMode, setSelectedBlueprintId } = props
   const [open, setOpen] = useState(false)
   const [action, setAction] = useState('clear')
   const [nodePath, setNodePath] = useState('')
@@ -127,7 +127,7 @@ export default (props: PropTypes) => {
                   switch (action) {
                     case 'create-blueprint':
                       setSelectedBlueprintId(id)
-                      setEditMode(PageMode.create)
+                      setPageMode(PageMode.create)
                       break
                     case 'add-package':
                       setNodePath(id)
@@ -157,7 +157,7 @@ export default (props: PropTypes) => {
                 onNodeSelect={(node: TreeNodeType) => {
                   if (node.type === 'file') {
                     setSelectedBlueprintId(node.path)
-                    setEditMode(PageMode.view)
+                    setPageMode(PageMode.view)
                   }
                 }}
               />

@@ -5,6 +5,7 @@ import BlueprintTreeView from './tree-view/BlueprintTreeView'
 import EditBlueprintForm from './form/EditBlueprintForm'
 import blueprintTreeViewReducer from './tree-view/BlueprintTreeViewReducer'
 import CreateBlueprintForm from './form/CreateBlueprintForm'
+import ViewBlueprintForm from './form/ViewBlueprintForm'
 
 export enum PageMode {
   create,
@@ -18,7 +19,7 @@ export default () => {
     {}
   )
   const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('')
-  const [editMode, setEditMode] = useState<PageMode>(PageMode.view)
+  const [pageMode, setPageMode] = useState<PageMode>(PageMode.view)
 
   return (
     <Grid fluid>
@@ -29,28 +30,24 @@ export default () => {
               dispatch={dispatchTreeView}
               state={stateTreeView}
               setSelectedBlueprintId={setSelectedBlueprintId}
-              setEditMode={setEditMode}
+              setPageMode={setPageMode}
             />
           </Wrapper>
         </Col>
 
         <Col xs={12} md={8} lg={8}>
           <Wrapper>
-            {editMode === PageMode.view && (
-              <div>
-                View mode
-                {selectedBlueprintId && (
-                  <button onClick={() => setEditMode(PageMode.edit)}>
-                    Edit
-                  </button>
-                )}
-              </div>
+            {pageMode === PageMode.view && (
+              <ViewBlueprintForm
+                setPageMode={setPageMode}
+                selectedBlueprintId={selectedBlueprintId}
+              />
             )}
-            {editMode === PageMode.edit && (
+            {pageMode === PageMode.edit && (
               <EditBlueprintForm selectedBlueprintId={selectedBlueprintId} />
             )}
 
-            {editMode === PageMode.create && (
+            {pageMode === PageMode.create && (
               <CreateBlueprintForm
                 dispatch={dispatchTreeView}
                 selectedBlueprintId={selectedBlueprintId}
