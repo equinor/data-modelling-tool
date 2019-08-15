@@ -49,6 +49,15 @@
       }
     }
   },
+  "view": [
+    { "display": "basic", "keys": ["title", "description"] },
+    {
+      "display": "table",
+      "keys": "properties.attributes.items",
+      "rowHeader": ["Name", "Type", "Unit", "$ref"],
+      "rowValues": ["name", "type", "unit", "ref"]
+    }
+  ],
   "uiSchema": {
     "description": {
       "ui:widget": "textarea"

@@ -17,7 +17,9 @@ export default (url: string): any => {
           setLoading(false)
         })
         .catch(e => {
-          setError(e.response.statusText)
+          if (e.response && e.response.statusText) {
+            setError(e.response.statusText)
+          }
           setLoading(false)
         })
     }
