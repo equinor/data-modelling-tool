@@ -3,19 +3,18 @@ import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
 import BlueprintPreview from './preview/BlueprintPreview'
-import { EditBlueprintForm, CreateBlueprintForm } from './form/BlueprintForm'
+import EditBlueprintForm from './form/EditBlueprintForm'
 import blueprintTreeViewReducer, {
   BlueprintTreeViewActions,
 } from './tree-view/BlueprintTreeViewReducer'
+import CreateBlueprintForm from './form/CreateBlueprintForm'
 
 export default () => {
   const [stateTreeView, dispatchTreeView] = useReducer(
     blueprintTreeViewReducer,
     {}
   )
-  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string | null>(
-    null
-  )
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>(null)
   // const [previewData, setPreviewData] = useState(null)
   const [editMode, setEditMode] = useState<boolean | null>(false)
 
