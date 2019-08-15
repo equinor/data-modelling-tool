@@ -8,6 +8,7 @@
     "react": "^16.8.6",
     "react-contextmenu": "^2.11.0",
     "react-dom": "^16.8.6",
+    "@use-hooks/axios": "^1.3.0",
     "react-icons": "3.7.0",
     "react-jsonschema-form": "^1.7.0",
     "react-notifications": "^1.4.3",
