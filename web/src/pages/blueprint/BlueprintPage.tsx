@@ -2,21 +2,23 @@ import React, { useReducer, useState } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
-import BlueprintPreview from './preview/BlueprintPreview'
 import EditBlueprintForm from './form/EditBlueprintForm'
-import blueprintTreeViewReducer, {
-  BlueprintTreeViewActions,
-} from './tree-view/BlueprintTreeViewReducer'
+import blueprintTreeViewReducer from './tree-view/BlueprintTreeViewReducer'
 import CreateBlueprintForm from './form/CreateBlueprintForm'
+
+export enum PageMode {
+  create,
+  edit,
+  view,
+}
 
 export default () => {
   const [stateTreeView, dispatchTreeView] = useReducer(
     blueprintTreeViewReducer,
     {}
   )
-  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>(null)
-  // const [previewData, setPreviewData] = useState(null)
-  const [editMode, setEditMode] = useState<boolean | null>(false)
+  const [selectedBlueprintId, setSelectedBlueprintId] = useState<string>('')
+  const [editMode, setEditMode] = useState<PageMode>(PageMode.view)
 
   return (
     <Grid fluid>
@@ -34,12 +36,21 @@ export default () => {
 
         <Col xs={12} md={8} lg={8}>
           <Wrapper>
-            {editMode ? (
-              <EditBlueprintForm
-                dispatch={dispatchTreeView}
-                selectedBlueprintId={selectedBlueprintId}
-              />
-            ) : (
+            {editMode === PageMode.view && (
+              <div>
+                View mode
+                {selectedBlueprintId && (
+                  <button onClick={() => setEditMode(PageMode.edit)}>
+                    Edit
+                  </button>
+                )}
+              </div>
+            )}
+            {editMode === PageMode.edit && (
+              <EditBlueprintForm selectedBlueprintId={selectedBlueprintId} />
+            )}
+
+            {editMode === PageMode.create && (
               <CreateBlueprintForm
                 dispatch={dispatchTreeView}
                 selectedBlueprintId={selectedBlueprintId}

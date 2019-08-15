@@ -1,38 +1,29 @@
 import axios from 'axios'
-import { BlueprintTreeViewActions } from '../tree-view/BlueprintTreeViewReducer'
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import BlueprintForm from './BlueprintForm'
+//@ts-ignore
 import toJsonSchema from 'to-json-schema'
-import useAxios from '@use-hooks/axios'
+//@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import useFetch from '../../../components/useFetch'
 
 interface Props {
-  dispatch: (action: {}) => void
   selectedBlueprintId: string
 }
 
 const EditBlueprintForm = (props: Props) => {
-  const { dispatch, selectedBlueprintId } = props
+  const { selectedBlueprintId } = props
 
-  const { response, loading } = useAxios({
-    url: `/api/blueprints/${selectedBlueprintId}`,
-    method: 'GET',
-    trigger: selectedBlueprintId,
-    customHandler: error => {
-      if (error) {
-        NotificationManager.error(
-          `${selectedBlueprintId}`,
-          'Failed to fetch blueprint'
-        )
-      }
-    },
-  })
+  const [loading, formData, error] = useFetch(
+    `/api/blueprints/${selectedBlueprintId}`
+  )
+  if (error) {
+    NotificationManager.error(``, 'Failed to fetch blueprint template')
+  }
 
   if (loading) {
     return <div>Loading...</div>
   }
-
-  const { data } = response || { data: {} }
 
   const onSubmit = (schemas: any) => {
     const title = schemas.formData.title
@@ -49,8 +40,8 @@ const EditBlueprintForm = (props: Props) => {
 
       axios
         .put(url, schemas.formData)
-        .then(function(response) {
-          dispatch(BlueprintTreeViewActions.addFile(response.data, title))
+        .then(response => {
+          NotificationManager.success(response.data, 'Updated blueprint')
         })
         .catch(e => {
           console.error(e)
@@ -64,7 +55,7 @@ const EditBlueprintForm = (props: Props) => {
   return (
     <>
       <h3>Edit Blueprint</h3>
-      <BlueprintForm formData={data} onSubmit={onSubmit} />
+      <BlueprintForm formData={formData} onSubmit={onSubmit} />
     </>
   )
 }
