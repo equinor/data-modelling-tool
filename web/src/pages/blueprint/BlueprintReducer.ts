@@ -77,14 +77,14 @@ export default (state: BlueprintState, action: BlueprintAction) => {
         ...state,
         selectedDatasource: action.value,
         templateUrl: generateTemplateUrl(state),
-        dataUrl: generateDataUrl(state),
+        dataUrl: generateDataUrl(state, ''),
       }
     case SET_SELECTED_BLUEPRINT_ID:
       return {
         ...state,
         selectedBlueprintId: action.value,
         templateUrl: generateTemplateUrl(state),
-        dataUrl: generateDataUrl(state),
+        dataUrl: generateDataUrl(state, action.value),
       }
     case SET_OPEN:
       return { ...state, openModal: action.value }
@@ -107,8 +107,7 @@ function generateTemplateUrl(state: BlueprintState) {
   return `/api${getDatasourceSubPath(state)}/templates/blueprint.json`
 }
 
-function generateDataUrl(state: BlueprintState) {
-  return `/api/${getDatasourceSubPath(state)}/blueprints/${
-    state.selectedBlueprintId
-  }`
+function generateDataUrl(state: BlueprintState, selectedBlueprintId: string) {
+  const path = selectedBlueprintId ? '/' + selectedBlueprintId : ''
+  return `/api/${getDatasourceSubPath(state)}/blueprints${path}`
 }

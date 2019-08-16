@@ -20,7 +20,7 @@ export default (props: Props) => {
     dispatch,
   } = props
   const isDisabled = selectedBlueprintId === ''
-  const [loading, data] = useFetch(dataUrl + selectedBlueprintId)
+  const [loading, data] = useFetch(dataUrl)
   const [loadingTemplate, dataTemplate] = useFetch(
     '/api/templates/blueprint.json'
   )
