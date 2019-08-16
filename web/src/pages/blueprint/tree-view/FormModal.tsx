@@ -64,7 +64,7 @@ interface ActionConfigType {
 }
 
 function addPackageConfig(props: ActionConfigType) {
-  const { dispatch } = props
+  const { dispatch, dispatchTreeview } = props
   return {
     schemaUrl: '/api/templates/package.json',
     dataUrl: '',
@@ -75,7 +75,7 @@ function addPackageConfig(props: ActionConfigType) {
           formData
         )
         .then(res => {
-          dispatch(BlueprintTreeViewActions.addRootPackage(res.data))
+          dispatchTreeview(BlueprintTreeViewActions.addRootPackage(res.data))
           dispatch(BlueprintActions.setOpen(false))
         })
         .catch(err => {
@@ -113,7 +113,7 @@ function editPackageConfig(props: ActionConfigType) {
 }
 
 function addSubPackageConfig(props: ActionConfigType) {
-  const { dispatch, state } = props
+  const { dispatch, dispatchTreeview, state } = props
   return {
     schemaUrl: '/api/templates/subpackage.json',
     dataUrl: '',
@@ -126,7 +126,7 @@ function addSubPackageConfig(props: ActionConfigType) {
         .put(url, formData)
         .then(res => {
           dispatch(BlueprintActions.setOpen(false))
-          dispatch(
+          dispatchTreeview(
             BlueprintTreeViewActions.addPackage(res.data, formData.title)
           )
         })
