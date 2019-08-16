@@ -115,6 +115,7 @@ const TreeNode = (props: TreeNodeProps) => {
           role="button"
           onClick={() => {
             onNodeSelect(node)
+            onToggle(node)
           }}
         >
           <WithContextMenu
