@@ -1,12 +1,10 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
-import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import BlueprintPreview from '../preview/BlueprintPreview'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import useFetch from '../../../components/useFetch'
-
-const log = (type: any) => console.log.bind(console, type)
+import Tabs, { Tab, TabPanel, TabList } from '../../../components/Tabs'
 
 interface Props {
   formData: any
@@ -28,24 +26,25 @@ export default (props: Props) => {
   }
 
   return (
-    <Grid fluid>
-      <Row>
-        <Col xs={12} md={6} lg={6}>
-          <Form
-            formData={data}
-            schema={'schema' in template ? template['schema'] : template}
-            uiSchema={'uiSchema' in template ? template['uiSchema'] : {}}
-            onSubmit={onSubmit}
-            onChange={schemas => {
-              setData(schemas.formData)
-            }}
-            onError={log('errors')}
-          />
-        </Col>
-        <Col xs={12} md={6} lg={6}>
-          <BlueprintPreview data={data} />
-        </Col>
-      </Row>
-    </Grid>
+    <Tabs>
+      <TabList>
+        <Tab>Form</Tab>
+        <Tab>Schema</Tab>
+      </TabList>
+      <TabPanel>
+        <Form
+          formData={data}
+          schema={'schema' in template ? template['schema'] : template}
+          uiSchema={'uiSchema' in template ? template['uiSchema'] : {}}
+          onSubmit={onSubmit}
+          onChange={schemas => {
+            setData(schemas.formData)
+          }}
+        />
+      </TabPanel>
+      <TabPanel>
+        <BlueprintPreview data={data} />
+      </TabPanel>
+    </Tabs>
   )
 }
