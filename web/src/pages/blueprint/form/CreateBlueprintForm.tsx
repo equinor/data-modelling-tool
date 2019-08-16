@@ -4,14 +4,18 @@ import axios from 'axios'
 import { NotificationManager } from 'react-notifications'
 import { BlueprintTreeViewActions } from '../tree-view/BlueprintTreeViewReducer'
 import BlueprintForm from './BlueprintForm'
+import { BlueprintState } from '../BlueprintReducer'
 
 interface Props {
-  dispatch: (action: {}) => void
-  selectedBlueprintId: string
+  dispatchTreeview: (action: {}) => void
+  state: BlueprintState
 }
 
-const CreateBlueprintForm = (props: Props) => {
-  const { dispatch, selectedBlueprintId } = props
+export default (props: Props) => {
+  const {
+    dispatchTreeview,
+    state: { selectedBlueprintId },
+  } = props
 
   const onSubmit = (schemas: any) => {
     const title = schemas.formData.title
@@ -22,7 +26,7 @@ const CreateBlueprintForm = (props: Props) => {
       .put(url, schemas.formData)
       .then(function(response) {
         NotificationManager.success(response.data, 'Created blueprint')
-        dispatch(BlueprintTreeViewActions.addFile(response.data, title))
+        dispatchTreeview(BlueprintTreeViewActions.addFile(response.data, title))
       })
       .catch(e => {
         NotificationManager.error(
@@ -39,5 +43,3 @@ const CreateBlueprintForm = (props: Props) => {
     </>
   )
 }
-
-export default CreateBlueprintForm

@@ -5,7 +5,7 @@ import {
 } from './Filters'
 
 /**
- * Using a flat state.
+ * Using a flat stateTreeview.
  * Example:
  * {
 		'/root': {
