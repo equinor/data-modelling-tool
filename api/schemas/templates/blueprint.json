@@ -47,7 +47,8 @@
           "required": ["name", "type"]
         }
       }
-    }
+    },
+    "required": ["title"]
   },
   "view": [
     { "display": "basic", "keys": ["title", "description"] },

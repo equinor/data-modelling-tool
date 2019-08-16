@@ -2,8 +2,6 @@ import axios from 'axios'
 import React from 'react'
 import BlueprintForm from './BlueprintForm'
 //@ts-ignore
-import toJsonSchema from 'to-json-schema'
-//@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import useFetch from '../../../components/useFetch'
 
@@ -26,30 +24,19 @@ const EditBlueprintForm = (props: Props) => {
   }
 
   const onSubmit = (schemas: any) => {
-    const title = schemas.formData.title
+    const url = `api/blueprints/${selectedBlueprintId}`
 
-    try {
-      //validate jsonSchema.
-      toJsonSchema(schemas.formData)
-      if (!title) {
-        alert('jsonschema has no title.')
-        return
-      }
-
-      const url = `api/blueprints/${selectedBlueprintId}`
-
-      axios
-        .put(url, schemas.formData)
-        .then(response => {
-          NotificationManager.success(response.data, 'Updated blueprint')
-        })
-        .catch(e => {
-          console.error(e)
-        })
-    } catch (e) {
-      //todo fix validation. Set required on fields. And strip optional fields with null values from formdata.
-      alert('not valid jsonschema')
-    }
+    axios
+      .put(url, schemas.formData)
+      .then(response => {
+        NotificationManager.success(response.data, 'Updated blueprint')
+      })
+      .catch(e => {
+        NotificationManager.error(
+          'Failed to update blueprint',
+          'Updated blueprint'
+        )
+      })
   }
 
   return (
