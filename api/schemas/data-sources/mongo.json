@@ -1,0 +1,11 @@
+{
+  "type": "mongodb",
+  "host": "db",
+  "port": 27017,
+  "username": "maf",
+  "password": "maf",
+  "tls": false,
+  "name": "sds-form-store",
+  "database": "maf",
+  "collection": "blueprints"
+}

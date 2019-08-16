@@ -2,19 +2,31 @@
 
 ## API
 
-Endpoint:  
-`/api/what/ever/path/you/like.json`
+### Endpoints
+```
+'/api/transformer/json-schema'
+Methods: POST 
+Data: 
+    POST: form as json
+Returns: 
+    POST: json-schema
 
-The URI after **/api** is the only argument the api accepts. 
-This part of the URI is also used as the **_id** for that document in the MongoDB and must be unique.
-Different actions are determent by the HTTP verb.
-
-`HTTP GET`:  
-Returns the document matching the path.  
-`HTTP PUT`:  
-Creates or replaces the document matching the path.  
-Requires a json-object in the request data.
-
+'/api/data-sources/
+Methods: POST, GET 
+Data: 
+    POST: json data-source object
+    GET: None
+Returns: 
+    POST: data-source id
+    GET: List of data-source
+    
+'/api/data-sources/<string:_id>'
+Methods: PUT
+Data:
+    PUT: New data-source json object
+Returns:
+    PUT: Boolean
+```
 
 ## Python packages
 

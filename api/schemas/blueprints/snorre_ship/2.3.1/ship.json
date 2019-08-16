@@ -4,7 +4,7 @@
   "attributes": [
     {
       "name": "length",
-      "type": "int",
+      "type": "integer",
       "unit": "feet"
     },
     {
@@ -14,8 +14,10 @@
     },
     {
       "name": "freight capacity",
-      "type": "int",
+      "type": "integer",
       "unit": "tonnes"
     }
   ]
+
+
 }

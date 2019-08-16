@@ -4,7 +4,7 @@
   "attributes": [
     {
       "name": "radius",
-      "type": "int",
+      "type": "integer",
       "unit": "millimeters"
     },
     {
