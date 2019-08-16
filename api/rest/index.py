@@ -1,7 +1,7 @@
 from flask import jsonify, abort
 from flask_restful import Resource
 
-from services.database import db
+from services.database import model_db
 
 VALID_TYPES = ('templates', 'blueprints', 'entities')
 
@@ -12,7 +12,7 @@ class Index(Resource):
         if schema_type not in VALID_TYPES:
             return abort(500, f'Error: Valid index types are {VALID_TYPES}')
         documents = []
-        for document in db[f'{schema_type}'].find({}, {'title': '1', 'name': '2', 'version': '3'}):
+        for document in model_db[f'{schema_type}'].find(filter={}, projection=['title', 'name', 'version']):
 
             # generate root packages. example: /schemas/blueprint/propellers/1.0.0/package.json
             # a parent will be generated if it does not exist.

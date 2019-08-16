@@ -4,7 +4,7 @@ from flask import Flask
 
 from config import Config
 from rest import create_api
-from services.database import db
+from services.database import model_db
 from utils.debugging import enable_remote_debugging
 from utils.files import getListOfFiles
 
@@ -37,4 +37,4 @@ def init_import():
                 with open(file) as json_file:
                     document = json.load(json_file)
                     document['_id'] = id
-                    db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
+                    model_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)

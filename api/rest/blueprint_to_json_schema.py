@@ -1,14 +1,14 @@
 from flask import jsonify, request, abort
 from flask_restful import Resource
 
-from services.database import db
+from services.database import model_db
 
 
 
 class BlueprintToJsonSchema(Resource):
     @staticmethod
     def get(path):
-        document = db.blueprints.find_one({"_id": path})
+        document = model_db.blueprints.find_one({"_id": path})
         if not document:
             return abort(404)
         properties = {}
