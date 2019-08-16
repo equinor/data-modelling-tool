@@ -1,16 +1,24 @@
 import React from 'react'
-import { PageMode } from '../BlueprintPage'
 import Button from '../../../components/Button'
 import useFetch from '../../../components/useFetch'
 import styled from 'styled-components'
+import {
+  BlueprintAction,
+  BlueprintActions,
+  BlueprintState,
+  PageMode,
+} from '../BlueprintReducer'
 
 interface Props {
-  selectedBlueprintId: string
-  setPageMode: (mode: PageMode) => void
+  state: BlueprintState
+  dispatch: (action: BlueprintAction) => void
 }
 
 export default (props: Props) => {
-  const { selectedBlueprintId, setPageMode } = props
+  const {
+    state: { selectedBlueprintId },
+    dispatch,
+  } = props
   const isDisabled = selectedBlueprintId === ''
   const [loading, data] = useFetch('/api/blueprints/' + selectedBlueprintId)
   const [loadingTemplate, dataTemplate] = useFetch(
@@ -27,7 +35,9 @@ export default (props: Props) => {
         <div style={{ display: 'inline-flex' }}>
           <Button
             disabled={isDisabled}
-            onClick={() => setPageMode(PageMode.edit)}
+            onClick={() =>
+              dispatch(BlueprintActions.setPageMode(PageMode.edit))
+            }
           >
             Edit
           </Button>
@@ -100,34 +110,41 @@ const Td = styled.td`
 
 const TableView = (props: any) => {
   const { config, data } = props
+  try {
+    let items = data
+    let rows = []
 
-  let items = data
-  let rows = []
-
-  if (config.keys.indexOf('.')) {
-    config.keys.split('.').forEach((key: string) => {
-      if (items && items[key]) {
-        items = items[key]
-      }
-    })
-    rows = items.map((item: any, index: number) => {
-      const tds = config.rowValues.map((rowValue: string, index: number) => {
-        return <Td key={'td' + index}>{item[rowValue]}</Td>
+    if (config.keys.indexOf('.')) {
+      config.keys.split('.').forEach((key: string) => {
+        if (items && items[key]) {
+          items = items[key]
+        }
       })
-      return <Tr key={'row' + index}>{tds}</Tr>
-    })
+      rows = items.map((item: any, index: number) => {
+        const tds = config.rowValues.map((rowValue: string, index: number) => {
+          return <Td key={'td' + index}>{item[rowValue]}</Td>
+        })
+        return <Tr key={'row' + index}>{tds}</Tr>
+      })
+    }
+
+    const headerCells = config.rowHeader.map((label: string, index: number) => (
+      <Th key={label + index}>{label}</Th>
+    ))
+
+    return (
+      <Table>
+        <thead>
+          <Tr>{headerCells}</Tr>
+        </thead>
+        <tbody>{rows}</tbody>
+      </Table>
+    )
+  } catch (e) {
+    return (
+      <pre>
+        {Object.keys(data).length > 0 && JSON.stringify(config.view, null, 2)}
+      </pre>
+    )
   }
-
-  const headerCells = config.rowHeader.map((label: string, index: number) => (
-    <Th key={label + index}>{label}</Th>
-  ))
-
-  return (
-    <Table>
-      <thead>
-        <Tr>{headerCells}</Tr>
-      </thead>
-      <tbody>{rows}</tbody>
-    </Table>
-  )
 }
