@@ -1,28 +1,16 @@
 {
   "title": "propeller",
   "description": "A typical propeller blueprint",
-  "type": "object",
-  "properties": {
-    "title": {
-      "type": "string"
+  "attributes": [
+    {
+      "name": "radius",
+      "type": "int",
+      "unit": "millimeters"
     },
-    "description": {
-      "type": "string"
-    },
-    "attributes": {
-      "type": "array",
-      "items": [
-        {
-          "name": "radius",
-          "type": "int",
-          "unit": "millimeters"
-        },
-        {
-          "name": "material",
-          "type": "string",
-          "default": "steel"
-        }
-      ]
+    {
+      "name": "material",
+      "type": "string",
+      "default": "steel"
     }
-  }
+  ]
 }

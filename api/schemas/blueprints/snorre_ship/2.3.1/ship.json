@@ -1,33 +1,21 @@
 {
   "title": "ship",
   "description": "A typical ship blueprint",
-  "type": "object",
-  "properties": {
-    "title": {
-      "type": "string"
+  "attributes": [
+    {
+      "name": "length",
+      "type": "int",
+      "unit": "feet"
     },
-    "description": {
-      "type": "string"
+    {
+      "name": "propeller",
+      "type": "object",
+      "ref": "/blueprints/propellers/1.0.1/propeller.json"
     },
-    "attributes": {
-      "type": "array",
-      "items": [
-        {
-          "name": "length",
-          "type": "int",
-          "unit": "feet"
-        },
-        {
-          "name": "propeller",
-          "type": "object",
-          "ref": "/blueprints/propellers/1.0.1/propeller.json"
-        },
-        {
-          "name": "freight capacity",
-          "type": "int",
-          "unit": "tonnes"
-        }
-      ]
+    {
+      "name": "freight capacity",
+      "type": "int",
+      "unit": "tonnes"
     }
-  }
+  ]
 }
