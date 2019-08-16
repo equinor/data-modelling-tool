@@ -51,6 +51,7 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
         }
       }
       if (type === 'file') {
+        //@todo set all parents isOpen true.
         const parentPath = getParentPath(path)
         if (current.isOpen) {
           ;(nodes as any)[parentPath].isOpen = true

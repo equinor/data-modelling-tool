@@ -2,8 +2,9 @@ import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import BlueprintPreview from '../preview/BlueprintPreview'
-import useAxios from '@use-hooks/axios'
+//@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import useFetch from '../../../components/useFetch'
 
 const log = (type: any) => console.log.bind(console, type)
 
@@ -12,27 +13,19 @@ interface Props {
   onSubmit: (data: any) => void
 }
 
-const BlueprintForm = (props: Props) => {
+export default (props: Props) => {
   const { onSubmit, formData } = props
 
-  const { response, loading } = useAxios({
-    url: '/api/templates/blueprint.json',
-    method: 'GET',
-    trigger: true,
-    customHandler: error => {
-      if (error) {
-        NotificationManager.error(``, 'Failed to fetch blueprint template')
-      }
-    },
-  })
+  const [loading, template, error] = useFetch('/api/templates/blueprint.json')
+  if (error) {
+    NotificationManager.error(``, 'Failed to fetch blueprint template')
+  }
 
   const [data, setData] = useState(formData)
 
   if (loading) {
     return <div>Loading...</div>
   }
-
-  const { data: template } = response || { data: {} }
 
   return (
     <Grid fluid>
@@ -56,5 +49,3 @@ const BlueprintForm = (props: Props) => {
     </Grid>
   )
 }
-
-export default BlueprintForm

@@ -1,4 +1,4 @@
-FROM  bitnami/oauth2-proxy:latest as base
+FROM  bitnami/oauth2-proxy:3.2.0 as base
 WORKDIR /opt/bitnami/oauth2-proxy
 USER 1001
 ENTRYPOINT sed -i 's@OAUTH2_REDIRECT_URL@'"$OAUTH2_REDIRECT_URL"''@g /tmp/oauth2_proxy.cfg && \

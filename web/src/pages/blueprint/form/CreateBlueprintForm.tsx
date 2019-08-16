@@ -1,8 +1,11 @@
-import axios from 'axios'
-import { BlueprintTreeViewActions } from '../tree-view/BlueprintTreeViewReducer'
 import React from 'react'
-import BlueprintForm from './BlueprintForm'
+import axios from 'axios'
+//@ts-ignore
 import toJsonSchema from 'to-json-schema'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
+import { BlueprintTreeViewActions } from '../tree-view/BlueprintTreeViewReducer'
+import BlueprintForm from './BlueprintForm'
 
 interface Props {
   dispatch: (action: {}) => void
@@ -31,6 +34,7 @@ const CreateBlueprintForm = (props: Props) => {
       axios
         .put(url, schemas.formData)
         .then(function(response) {
+          NotificationManager.error(response.data, 'Created blueprint')
           dispatch(BlueprintTreeViewActions.addFile(response.data, title))
         })
         .catch(e => {
