@@ -21,7 +21,7 @@ export default () => {
   return (
     <Grid fluid>
       <Row>
-        <Col xs={12} md={4} lg={4}>
+        <Col xs={12} md={12} lg={5}>
           <Wrapper>
             <BlueprintTreeView
               dispatchTreeview={dispatchTreeView}
@@ -32,7 +32,7 @@ export default () => {
           </Wrapper>
         </Col>
 
-        <Col xs={12} md={8} lg={8}>
+        <Col xs={12} md={12} lg={7}>
           <Wrapper>
             {pageMode === PageMode.view && (
               <ViewBlueprintForm state={state} dispatch={dispatch} />

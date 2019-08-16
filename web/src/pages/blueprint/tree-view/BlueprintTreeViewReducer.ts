@@ -71,6 +71,7 @@ export default (state: any, action: any) => {
       const newItems = index.filter(node => {
         return !isDuplicate(state, node._id)
       })
+      console.log(index, newItems)
       if (newItems.length) {
         NotificationManager.success(index[1]._id, 'New package created')
         return generateTreeViewNodes(newItems, { ...state })
@@ -95,12 +96,28 @@ export default (state: any, action: any) => {
           `${action.indexNode._id}`,
           'New file created'
         )
-        return generateTreeViewNodes([action.indexNode], { ...state })
+        try {
+          return generateTreeViewNodes([action.indexNode], { ...state })
+        } catch (e) {
+          NotificationManager.error(
+            'Check index list',
+            'Failed to generate treeview'
+          )
+          return state
+        }
       }
 
     case ADD_ASSET:
-      const nodes = generateTreeViewNodes(action.data)
-      return { ...state, ...nodes }
+      try {
+        const nodes = generateTreeViewNodes(action.data)
+        return { ...state, ...nodes }
+      } catch (e) {
+        NotificationManager.error(
+          'Check index list',
+          'Failed to generate treeview'
+        )
+        return state
+      }
 
     case FILTER_TREE:
     case TOGGLE_NODE:

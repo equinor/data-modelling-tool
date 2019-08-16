@@ -12,7 +12,7 @@ interface Props {
 
 const EditBlueprintForm = (props: Props) => {
   const {
-    state: { selectedBlueprintId },
+    state: { selectedBlueprintId, dataUrl },
   } = props
 
   const [loading, formData, error] = useFetch(
@@ -27,7 +27,7 @@ const EditBlueprintForm = (props: Props) => {
   }
 
   const onSubmit = (schemas: any) => {
-    const url = `api/blueprints/${selectedBlueprintId}`
+    const url = dataUrl
 
     axios
       .put(url, schemas.formData)

@@ -16,11 +16,11 @@ interface Props {
 
 export default (props: Props) => {
   const {
-    state: { selectedBlueprintId },
+    state: { selectedBlueprintId, dataUrl },
     dispatch,
   } = props
   const isDisabled = selectedBlueprintId === ''
-  const [loading, data] = useFetch('/api/blueprints/' + selectedBlueprintId)
+  const [loading, data] = useFetch(dataUrl + selectedBlueprintId)
   const [loadingTemplate, dataTemplate] = useFetch(
     '/api/templates/blueprint.json'
   )

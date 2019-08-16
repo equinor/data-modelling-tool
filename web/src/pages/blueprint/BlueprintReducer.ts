@@ -27,18 +27,24 @@ export type BlueprintState = {
   openModal: boolean
   treeviewAction: string
   pageMode: PageMode
+  templateUrl: string
+  dataUrl: string
 }
+
+const datasources = [
+  { id: 0, label: 'Demo Blueprints' },
+  { id: -1, label: 'Equinor Blueprints' },
+]
 
 export const blueprintInitialState: BlueprintState = {
   selectedDatasourceId: 0,
   selectedBlueprintId: '',
-  datasources: [
-    { id: 0, label: 'Demo Blueprints' },
-    { id: -1, label: 'Equinor Blueprints' },
-  ],
+  datasources: datasources,
   openModal: false,
   treeviewAction: 'clear',
   pageMode: PageMode.view,
+  templateUrl: '/api/blueprints/blueprint.json',
+  dataUrl: `/api/blueprints/`,
 }
 
 export const BlueprintActions = {
@@ -67,9 +73,19 @@ export const BlueprintActions = {
 export default (state: BlueprintState, action: BlueprintAction) => {
   switch (action.type) {
     case SET_SELECTED_DATASOURCE_ID:
-      return { ...state, selectedDatasource: action.value }
+      return {
+        ...state,
+        selectedDatasource: action.value,
+        templateUrl: generateTemplateUrl(state),
+        dataUrl: generateDataUrl(state),
+      }
     case SET_SELECTED_BLUEPRINT_ID:
-      return { ...state, selectedBlueprintId: action.value }
+      return {
+        ...state,
+        selectedBlueprintId: action.value,
+        templateUrl: generateTemplateUrl(state),
+        dataUrl: generateDataUrl(state),
+      }
     case SET_OPEN:
       return { ...state, openModal: action.value }
     case SET_ACTION:
@@ -79,4 +95,20 @@ export default (state: BlueprintState, action: BlueprintAction) => {
     default:
       return state
   }
+}
+
+function getDatasourceSubPath(state: any) {
+  // uncomment when endpoint /api/blueprints/ is updated.
+  // return '/' + state.datasources[state.selectedDatasourceId]
+  return ''
+}
+
+function generateTemplateUrl(state: BlueprintState) {
+  return `/api${getDatasourceSubPath(state)}/templates/blueprint.json`
+}
+
+function generateDataUrl(state: BlueprintState) {
+  return `/api/${getDatasourceSubPath(state)}/blueprints/${
+    state.selectedBlueprintId
+  }`
 }
