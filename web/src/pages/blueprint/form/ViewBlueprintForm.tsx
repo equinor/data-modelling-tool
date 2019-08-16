@@ -6,7 +6,6 @@ import {
   BlueprintAction,
   BlueprintActions,
   BlueprintState,
-  PageMode,
 } from '../BlueprintReducer'
 
 interface Props {
@@ -16,18 +15,15 @@ interface Props {
 
 export default (props: Props) => {
   const {
-    state: { selectedBlueprintId },
+    state: { dataUrl, templateUrl },
     dispatch,
   } = props
-  const isDisabled = selectedBlueprintId === ''
-  const [loading, data] = useFetch('/api/blueprints/' + selectedBlueprintId)
-  const [loadingTemplate, dataTemplate] = useFetch(
-    '/api/templates/blueprint.json'
-  )
+  const isDisabled = dataUrl.length === 0
+  const [loading, data] = useFetch(isDisabled ? '' : dataUrl)
+  const [loadingTemplate, dataTemplate] = useFetch(templateUrl)
   if (loading || loadingTemplate) {
     return <div>Loading...</div>
   }
-
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -35,9 +31,9 @@ export default (props: Props) => {
         <div style={{ display: 'inline-flex' }}>
           <Button
             disabled={isDisabled}
-            onClick={() =>
-              dispatch(BlueprintActions.setPageMode(PageMode.edit))
-            }
+            onClick={() => {
+              dispatch(BlueprintActions.editFile())
+            }}
           >
             Edit
           </Button>

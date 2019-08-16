@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
-import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 import Tree from '../../../components/tree-view/Tree'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import FormModal from './FormModal'
@@ -10,81 +9,82 @@ import {
   BlueprintState,
 } from '../BlueprintReducer'
 import BlueprintTreeviewHeader from './BlueprintTreeviewHeader'
-import { BlueprintNode, FolderNode } from './BlueprintTreeViewNode'
+import {
+  BlueprintNode,
+  FolderNode,
+  RootFolderNode,
+} from './BlueprintTreeViewNode'
 import { TreeNodeType } from '../../../components/tree-view/TreeNode'
 
 interface PropTypes {
-  dispatch: (action: BlueprintAction) => void
+  dispatch: (action: BlueprintAction) => {}
   state: BlueprintState
-  dispatchTreeview: (action: object) => void
-  stateTreeview: object
 }
 
 export default (props: PropTypes) => {
-  const { stateTreeview, dispatchTreeview, state, dispatch } = props
-
-  // back compatibility. remove later.
-  const setAction = (value: string) =>
-    dispatch(BlueprintActions.setAction(value))
-  const setOpen = (value: boolean) => dispatch(BlueprintActions.setOpen(value))
+  const { state, dispatch } = props
 
   const urlBluePrints = '/api/index/blueprints'
   useEffect(() => {
     async function fetchData() {
       const responseBlueprints = await axios(urlBluePrints)
-      dispatchTreeview(
-        BlueprintTreeViewActions.addAssets(
-          responseBlueprints.data,
-          urlBluePrints.replace('/index', '')
-        )
-      )
+      dispatch(BlueprintActions.addNodes(responseBlueprints.data))
     }
 
     fetchData()
-  }, [urlBluePrints, dispatchTreeview]) // empty array
+  }, [urlBluePrints, dispatch]) // empty array
 
   const onToggle = (node: TreeNodeType): void => {
-    dispatchTreeview(BlueprintTreeViewActions.toggleNode(node.path))
+    dispatch(BlueprintActions.toggleNode(node.path))
   }
 
   return (
     <div>
-      <BlueprintTreeviewHeader
-        state={state}
-        dispatch={dispatch}
-        onCreatePackage={() => {
-          setAction('add-package')
-          setOpen(true)
-        }}
-      />
+      <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
 
-      <FormModal
-        dispatchTreeview={dispatchTreeview}
-        dispatch={dispatch}
-        state={state}
-      />
+      <FormModal dispatch={dispatch} state={state} />
 
       <div>
         <div>
           <SearchTree
             onChange={(value: string) =>
-              dispatchTreeview(BlueprintTreeViewActions.filterTree(value))
+              dispatch(BlueprintActions.filterTree(value))
             }
           />
         </div>
-        <Tree tree={stateTreeview} onToggle={onToggle}>
+        <Tree tree={state.nodes} onToggle={onToggle}>
           {(node: TreeNodeType) => {
-            switch (node.type) {
-              case 'folder':
-                return <FolderNode dispatch={dispatch} node={node} />
-              case 'file':
-                return <BlueprintNode dispatch={dispatch} node={node} />
-              default:
-                return <div>{node.title}</div>
-            }
+            const NodeComponent = getNodeComponent(node)
+            return (
+              <NodeComponent dispatch={dispatch} node={node}></NodeComponent>
+            )
           }}
         </Tree>
       </div>
     </div>
   )
+}
+
+function getNodeComponent(node: TreeNodeType) {
+  const versionTest = new RegExp(/\d+.\d+.\d+/)
+  let isParentOfVersion = false
+  node.children &&
+    node.children.forEach(childPath => {
+      const childPathTitle = childPath.substr(childPath.lastIndexOf('/') + 1)
+      if (versionTest.test(childPathTitle)) {
+        isParentOfVersion = true
+      }
+    })
+  if (isParentOfVersion) {
+    return () => <div>{node.title}</div>
+  }
+
+  switch (node.type) {
+    case 'folder':
+      return node.isRoot ? RootFolderNode : FolderNode
+    case 'file':
+      return BlueprintNode
+    default:
+      return () => <div>{node.title}</div>
+  }
 }

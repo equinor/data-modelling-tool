@@ -48,6 +48,7 @@ export type TreeNodeType = {
   isRoot: boolean
   node: TreeNodeType
   isHidden?: boolean //@todo needed?}
+  children?: string[]
 }
 
 type TreeNodeProps = {
