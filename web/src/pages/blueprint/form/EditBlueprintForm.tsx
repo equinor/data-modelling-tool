@@ -4,13 +4,16 @@ import BlueprintForm from './BlueprintForm'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import useFetch from '../../../components/useFetch'
+import { BlueprintState } from '../BlueprintReducer'
 
 interface Props {
-  selectedBlueprintId: string
+  state: BlueprintState
 }
 
 const EditBlueprintForm = (props: Props) => {
-  const { selectedBlueprintId } = props
+  const {
+    state: { selectedBlueprintId },
+  } = props
 
   const [loading, formData, error] = useFetch(
     `/api/blueprints/${selectedBlueprintId}`

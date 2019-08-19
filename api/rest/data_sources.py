@@ -5,8 +5,6 @@ from config import Config
 from services.database import data_modelling_tool_db
 from utils.logging import logger
 
-collection_suffix = 'data_sources'
-
 
 def data_sources_get(collection):
     data_sources = data_modelling_tool_db[collection]

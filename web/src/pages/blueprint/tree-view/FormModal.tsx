@@ -5,34 +5,37 @@ import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
 import axios from 'axios'
 import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
+import {
+  BlueprintAction,
+  BlueprintActions,
+  BlueprintState,
+} from '../BlueprintReducer'
 
 type FormModalProps = {
-  action: string
-  path: string
-  open: boolean
-  setOpen: (open: boolean) => void
-  dispatch: (action: {}) => void
+  state: BlueprintState
+  dispatch: (action: BlueprintAction) => void
+  dispatchTreeview: (action: {}) => void
 }
 
 export default (props: FormModalProps) => {
-  const { setOpen, open, dispatch, action, path } = props
-  const formConfig = getConfigByAction({ action, dispatch, setOpen, path })
+  const { state, dispatch } = props
+  const formConfig = getConfigByAction(props)
   return (
     <>
       <NotificationContainer timeout={5000} />
-      <Modal toggle={() => setOpen(!open)} open={open}>
+      <Modal
+        toggle={() => dispatch(BlueprintActions.setOpen(!state.openModal))}
+        open={state.openModal}
+      >
         <Form {...formConfig}></Form>
       </Modal>
     </>
   )
 }
 
-interface GetActionConfigType extends ActionConfigType {
-  action: string
-}
-
-function getConfigByAction(props: GetActionConfigType) {
-  switch (props.action) {
+function getConfigByAction(props: ActionConfigType) {
+  const treeviewAction = props.state.treeviewAction
+  switch (treeviewAction) {
     case 'add-package':
       return addPackageConfig(props)
     case 'add-subpackage':
@@ -45,7 +48,7 @@ function getConfigByAction(props: GetActionConfigType) {
       //avoid logging.
       break
     default:
-      console.warn(props.action + ' is not supported.')
+      console.warn(treeviewAction + ' is not supported.')
   }
   return {
     onSubmit: (action: {}) => {},
@@ -55,13 +58,13 @@ function getConfigByAction(props: GetActionConfigType) {
 }
 
 interface ActionConfigType {
-  dispatch: (action: {}) => void
-  path: string
-  setOpen: (open: boolean) => void
+  dispatch: (action: BlueprintAction) => void
+  dispatchTreeview: (action: {}) => void
+  state: BlueprintState
 }
 
 function addPackageConfig(props: ActionConfigType) {
-  const { dispatch, setOpen } = props
+  const { dispatch, dispatchTreeview } = props
   return {
     schemaUrl: '/api/templates/package.json',
     dataUrl: '',
@@ -72,8 +75,8 @@ function addPackageConfig(props: ActionConfigType) {
           formData
         )
         .then(res => {
-          dispatch(BlueprintTreeViewActions.addRootPackage(res.data))
-          setOpen(false)
+          dispatchTreeview(BlueprintTreeViewActions.addRootPackage(res.data))
+          dispatch(BlueprintActions.setOpen(false))
         })
         .catch(err => {
           NotificationManager.error(
@@ -87,8 +90,8 @@ function addPackageConfig(props: ActionConfigType) {
 }
 
 function editPackageConfig(props: ActionConfigType) {
-  const { setOpen, path } = props
-  const dataUrl = '/api/blueprints/' + path
+  const { state, dispatch } = props
+  const dataUrl = '/api/blueprints/' + state.selectedBlueprintId
   return {
     schemaUrl: '/api/templates/package.json',
     dataUrl,
@@ -96,7 +99,7 @@ function editPackageConfig(props: ActionConfigType) {
       axios
         .put(dataUrl, formData)
         .then(res => {
-          setOpen(false)
+          dispatch(BlueprintActions.setOpen(false))
         })
         .catch(err => {
           NotificationManager.error(
@@ -110,20 +113,20 @@ function editPackageConfig(props: ActionConfigType) {
 }
 
 function addSubPackageConfig(props: ActionConfigType) {
-  const { dispatch, setOpen, path } = props
+  const { dispatch, dispatchTreeview, state } = props
   return {
     schemaUrl: '/api/templates/subpackage.json',
     dataUrl: '',
     onSubmit: (formData: any) => {
-      const url = `/api/blueprints/${path.replace(
+      const url = `/api/blueprints/${state.selectedBlueprintId.replace(
         'package.json',
         formData.title + '/package.json'
       )}`
       axios
         .put(url, formData)
         .then(res => {
-          setOpen(false)
-          dispatch(
+          dispatch(BlueprintActions.setOpen(false))
+          dispatchTreeview(
             BlueprintTreeViewActions.addPackage(res.data, formData.title)
           )
         })
@@ -139,8 +142,8 @@ function addSubPackageConfig(props: ActionConfigType) {
 }
 
 function editSubPackageConfig(props: ActionConfigType) {
-  const { setOpen, path } = props
-  const dataUrl = '/api/blueprints/' + path
+  const { state, dispatch } = props
+  const dataUrl = '/api/blueprints/' + state.selectedBlueprintId
   return {
     schemaUrl: '/api/templates/subpackage.json',
     dataUrl,
@@ -148,7 +151,7 @@ function editSubPackageConfig(props: ActionConfigType) {
       axios
         .put(dataUrl, formData)
         .then(res => {
-          setOpen(false)
+          dispatch(BlueprintActions.setOpen(false))
         })
         .catch(err => {
           NotificationManager.error(

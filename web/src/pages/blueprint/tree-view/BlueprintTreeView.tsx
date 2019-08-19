@@ -1,36 +1,43 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import axios from 'axios'
 import values from 'lodash/values'
-import Header from '../../../components/Header'
 import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 import TreeNode, {
   MenuItem,
   TreeNodeType,
 } from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
-
-import Button from '../../../components/Button'
 import FormModal from './FormModal'
-import { PageMode } from '../BlueprintPage'
+import {
+  BlueprintAction,
+  BlueprintActions,
+  BlueprintState,
+  PageMode,
+} from '../BlueprintReducer'
+import BlueprintTreeviewHeader from './BlueprintTreeviewHeader'
 
 interface PropTypes {
-  dispatch: (action: {}) => void
-  state: object
-  setPageMode: (pageMode: PageMode) => void
-  setSelectedBlueprintId: (id: string) => void
+  dispatch: (action: BlueprintAction) => void
+  state: BlueprintState
+  dispatchTreeview: (action: object) => void
+  stateTreeview: object
 }
 
 export default (props: PropTypes) => {
-  const { state, dispatch, setPageMode, setSelectedBlueprintId } = props
-  const [open, setOpen] = useState(false)
-  const [action, setAction] = useState('clear')
-  const [nodePath, setNodePath] = useState('')
+  const { stateTreeview, dispatchTreeview, state, dispatch } = props
+
+  // back compatibility. remove later.
+  const setAction = (value: string) =>
+    dispatch(BlueprintActions.setAction(value))
+  const setOpen = (value: boolean) => dispatch(BlueprintActions.setOpen(value))
+  const setNodePath = (value: string) =>
+    dispatch(BlueprintActions.setSelectedBlueprintId(value))
 
   const urlBluePrints = '/api/index/blueprints'
   useEffect(() => {
     async function fetchData() {
       const responseBlueprints = await axios(urlBluePrints)
-      dispatch(
+      dispatchTreeview(
         BlueprintTreeViewActions.addAssets(
           responseBlueprints.data,
           urlBluePrints.replace('/index', '')
@@ -39,42 +46,36 @@ export default (props: PropTypes) => {
     }
 
     fetchData()
-  }, [urlBluePrints, dispatch]) // empty array
+  }, [urlBluePrints, dispatchTreeview]) // empty array
 
   const onToggle = (node: TreeNodeType): void => {
-    dispatch(BlueprintTreeViewActions.toggleNode(node.path))
+    dispatchTreeview(BlueprintTreeViewActions.toggleNode(node.path))
   }
 
-  const rootNodes = values(state).filter((n: TreeNodeType) => n.isRoot)
+  const rootNodes = values(stateTreeview).filter((n: TreeNodeType) => n.isRoot)
 
   return (
     <div>
-      <Header>
-        <h3>Blueprints</h3>
-        <Button
-          type="button"
-          onClick={() => {
-            setAction('add-package')
-            setOpen(true)
-          }}
-        >
-          Create Package
-        </Button>
-      </Header>
+      <BlueprintTreeviewHeader
+        state={state}
+        dispatch={dispatch}
+        onCreatePackage={() => {
+          setAction('add-package')
+          setOpen(true)
+        }}
+      />
 
       <FormModal
+        dispatchTreeview={dispatchTreeview}
         dispatch={dispatch}
-        open={open}
-        setOpen={setOpen}
-        path={nodePath}
-        action={action}
+        state={state}
       />
 
       <div>
         <div>
           <SearchTree
             onChange={(value: string) =>
-              dispatch(BlueprintTreeViewActions.filterTree(value))
+              dispatchTreeview(BlueprintTreeViewActions.filterTree(value))
             }
           />
         </div>
@@ -120,14 +121,14 @@ export default (props: PropTypes) => {
                 key={node.path}
                 level={0}
                 node={node}
-                nodes={state}
+                nodes={stateTreeview}
                 onToggle={onToggle}
                 menuItems={menuItems}
                 onClickContextMenu={(id, action) => {
                   switch (action) {
                     case 'create-blueprint':
-                      setSelectedBlueprintId(id)
-                      setPageMode(PageMode.create)
+                      dispatch(BlueprintActions.setSelectedBlueprintId(id))
+                      dispatch(BlueprintActions.setPageMode(PageMode.create))
                       break
                     case 'add-package':
                       setNodePath(id)
@@ -156,8 +157,8 @@ export default (props: PropTypes) => {
                 }}
                 onNodeSelect={(node: TreeNodeType) => {
                   if (node.type === 'file') {
-                    setSelectedBlueprintId(node.path)
-                    setPageMode(PageMode.view)
+                    dispatch(BlueprintActions.setSelectedBlueprintId(node.path))
+                    dispatch(BlueprintActions.setPageMode(PageMode.view))
                   }
                 }}
               />
