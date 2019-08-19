@@ -56,14 +56,7 @@ export default (props: PropTypes) => {
 
   return (
     <div>
-      <BlueprintTreeviewHeader
-        state={state}
-        dispatch={dispatch}
-        onCreatePackage={() => {
-          setAction('add-package')
-          setOpen(true)
-        }}
-      />
+      <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
 
       <FormModal
         dispatchTreeview={dispatchTreeview}

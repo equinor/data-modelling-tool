@@ -44,7 +44,7 @@ export const blueprintInitialState: BlueprintState = {
   treeviewAction: 'clear',
   pageMode: PageMode.view,
   templateUrl: '/api/blueprints/blueprint.json',
-  dataUrl: `/api/blueprints/`,
+  dataUrl: ``,
 }
 
 export const BlueprintActions = {

@@ -14,11 +14,10 @@ import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 type Props = {
   state: BlueprintState
   dispatch: (action: BlueprintAction) => void
-  onCreatePackage: () => void
 }
 
 export default (props: Props) => {
-  const { state, dispatch, onCreatePackage } = props
+  const { state, dispatch } = props
   return (
     <Grid fluid>
       <Row
@@ -53,13 +52,24 @@ export default (props: Props) => {
                 </option>
               ))}
             </select>
-            <FaPlus />
+            <FaPlus
+              onClick={() => {
+                dispatch(BlueprintActions.setAction('add-datasource'))
+                dispatch(BlueprintActions.setOpen(true))
+              }}
+            />
           </div>
         </Col>
       </Row>
       <Header>
         <h3>Blueprints</h3>
-        <Button type="button" onClick={onCreatePackage}>
+        <Button
+          type="button"
+          onClick={() => {
+            dispatch(BlueprintActions.setAction('add-package'))
+            dispatch(BlueprintActions.setOpen(true))
+          }}
+        >
           Create Package
         </Button>
       </Header>

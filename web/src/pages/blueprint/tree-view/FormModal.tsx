@@ -44,6 +44,8 @@ function getConfigByAction(props: ActionConfigType) {
       return editPackageConfig(props)
     case 'edit-subpackage':
       return editSubPackageConfig(props)
+    case 'add-datasource':
+      return addDatasourceConfig(props)
     case 'clear':
       //avoid logging.
       break
@@ -61,6 +63,16 @@ interface ActionConfigType {
   dispatch: (action: BlueprintAction) => void
   dispatchTreeview: (action: {}) => void
   state: BlueprintState
+}
+
+function addDatasourceConfig(props: ActionConfigType) {
+  return {
+    schemaUrl: '/api/templates/add-datasource.json',
+    dataUrl: '',
+    onSubmit: () => {
+      console.log('click')
+    },
+  }
 }
 
 function addPackageConfig(props: ActionConfigType) {
