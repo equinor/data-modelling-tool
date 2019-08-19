@@ -1,6 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import { BlueprintState } from '../BlueprintReducer'
+import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
+import { TreeviewIndex } from '../../../util/generateTreeView'
 
 type IndexItem = {
   _id: string
@@ -9,12 +11,13 @@ type IndexItem = {
 
 type Props = {
   state: BlueprintState
+  dispatchTreeview: (action: any) => void
 }
 
 export default (props: Props) => {
-  const { state } = props
+  const { state, dispatchTreeview } = props
 
-  const handleFile = (file: File, index: IndexItem[], postToApi: boolean) => {
+  function handleFile(file: File, index: TreeviewIndex[], numFiles: number) {
     let fileReader: FileReader
     fileReader = new FileReader()
     fileReader.onloadend = () => {
@@ -25,18 +28,29 @@ export default (props: Props) => {
         const indexOfCurrent = relativePath.indexOf('/')
         const path = relativePath.substring(indexOfCurrent + 1)
         const url = state.dataUrl + path
-
-        if (postToApi) {
-          axios
-            .put(url, JSON.parse(content))
-            .then(res => {
-              //@todo update treeview.
-              console.log('added to db: ', res)
-            })
-            .catch(e => {
-              console.log(e)
-            })
+        const json = JSON.parse(content)
+        const indexItem = {
+          _id: path,
+          title: json.title,
         }
+        index.push(indexItem)
+
+        //hack to deal with async behavior fileReader.
+        if (index.length === numFiles) {
+          console.log('dispatch: ', index.length, numFiles)
+          dispatchTreeview(BlueprintTreeViewActions.addRootPackage(path))
+        }
+        // if (postToApi) {
+        //   axios
+        //     .put(url, JSON.parse(content))
+        //     .then(res => {
+        //       //@todo update treeview.
+        //       console.log('added to db: ', res)
+        //     })
+        //     .catch(e => {
+        //       console.log(e)
+        //     })
+        // }
       }
     }
     fileReader.readAsText(file)
@@ -45,12 +59,9 @@ export default (props: Props) => {
   const handleFiles = (e: any) => {
     const files: any = e.target.files
     const index: IndexItem[] = []
-    const postToApi: boolean = window.confirm(
-      'Warning. Uploading wrong files or wrong relative path will mess up the structure of blueprints. Proceed with caution.'
-    )
     for (let i = 0; i < files.length; i++) {
       //@todo use generateTreeview to validate the uploaded files.
-      handleFile(files[i], index, postToApi)
+      handleFile(files[i], index, files.length)
     }
   }
 

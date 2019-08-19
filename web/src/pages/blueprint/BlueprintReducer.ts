@@ -1,3 +1,17 @@
+import BlueprintTreeViewReducer, {
+  ADD_ASSET,
+  ADD_ASSETS,
+  ADD_FILE,
+  ADD_PACKAGE,
+  ADD_ROOT_PACKAGE,
+  BlueprintTreeViewActions,
+  BlueprintTreeViewActionsTypes,
+  FILTER_TREE,
+  RESET_TREE,
+  TOGGLE_NODE,
+} from './tree-view/BlueprintTreeViewReducer'
+import { Actions as CommonTreeActions } from '../../components/tree-view/TreeReducer'
+
 const SET_SELECTED_DATASOURCE_ID = 'SET_SELECTED_DATASOURCE_ID'
 const SET_ACTION = 'SET_ACTION'
 const SET_OPEN = 'SET_OPEN'
@@ -21,6 +35,7 @@ export type BlueprintAction = {
 }
 
 export type BlueprintState = {
+  nodes: {}
   selectedDatasourceId: number
   selectedBlueprintId: string
   datasources: Datasource[]
@@ -32,11 +47,13 @@ export type BlueprintState = {
 }
 
 const datasources = [
-  { id: 0, label: 'Demo Blueprints' },
-  { id: -1, label: 'Equinor Blueprints' },
+  { id: 0, label: 'Demo Blueprints', title: 'demo' },
+  { id: 1, label: 'Equinor Blueprints', title: 'maf' },
+  { id: 2, label: 'Local drive', title: 'local-files' },
 ]
 
 export const blueprintInitialState: BlueprintState = {
+  nodes: {},
   selectedDatasourceId: 0,
   selectedBlueprintId: '',
   datasources: datasources,
@@ -68,17 +85,35 @@ export const BlueprintActions = {
     type: SET_PAGE_MODE,
     value: pageMode,
   }),
+  addRootPackage: (datasourceId: number): any => ({
+    type: ADD_ROOT_PACKAGE,
+    value: datasourceId,
+  }),
+  ...BlueprintTreeViewActions,
+  ...CommonTreeActions,
 }
 
 export default (state: BlueprintState, action: BlueprintAction) => {
   switch (action.type) {
     case SET_SELECTED_DATASOURCE_ID:
-      return {
-        ...state,
-        selectedDatasource: action.value,
+      const datasource: any = state.datasources.find(
+        ds => ds.id === state.selectedDatasourceId
+      )
+      console.log(action, datasource)
+      const rootNode = {
+        _id: datasource.title,
+        title: datasource.title,
+        isRoot: true,
+        children: [],
+      }
+      const newState = {
+        nodes: { ...state.nodes, ...rootNode },
+        selectedDatasourceId: action.value,
         templateUrl: generateTemplateUrl(state),
         dataUrl: generateDataUrl(state, ''),
       }
+      console.log(newState)
+      return { ...state, ...newState }
     case SET_SELECTED_BLUEPRINT_ID:
       return {
         ...state,
@@ -92,6 +127,16 @@ export default (state: BlueprintState, action: BlueprintAction) => {
       return { ...state, treeviewAction: action.value }
     case SET_PAGE_MODE:
       return { ...state, pageMode: action.value }
+    case ADD_ROOT_PACKAGE:
+    case ADD_ASSETS:
+    case ADD_ASSET:
+    case ADD_FILE:
+    case ADD_PACKAGE:
+    case RESET_TREE:
+    case FILTER_TREE:
+    case TOGGLE_NODE:
+      return state
+    // return {...state, nodes: BlueprintTreeViewReducer(state.nodes, action)}
     default:
       return state
   }

@@ -1,5 +1,7 @@
 import { generateTreeViewNodes, TreeviewIndex } from '../generateTreeView'
 
+describe('Generate Treeview', () => {})
+
 describe('Generate Treeview', () => {
   const blueprints = [
     {

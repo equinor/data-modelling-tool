@@ -3,7 +3,6 @@ import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
 import EditBlueprintForm from './form/EditBlueprintForm'
-import blueprintTreeViewReducer from './tree-view/BlueprintTreeViewReducer'
 import CreateBlueprintForm from './form/CreateBlueprintForm'
 import ViewBlueprintForm from './form/ViewBlueprintForm'
 import BlueprintReducer, {
@@ -12,23 +11,15 @@ import BlueprintReducer, {
 } from './BlueprintReducer'
 
 export default () => {
-  const [stateTreeView, dispatchTreeView] = useReducer(
-    blueprintTreeViewReducer,
-    {}
-  )
   const [state, dispatch] = useReducer(BlueprintReducer, blueprintInitialState)
+  console.log(state)
   const pageMode = state.pageMode
   return (
     <Grid fluid>
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
-            <BlueprintTreeView
-              dispatchTreeview={dispatchTreeView}
-              stateTreeview={stateTreeView}
-              state={state}
-              dispatch={dispatch}
-            />
+            <BlueprintTreeView state={state} dispatch={dispatch} />
           </Wrapper>
         </Col>
 
@@ -40,10 +31,7 @@ export default () => {
             {pageMode === PageMode.edit && <EditBlueprintForm state={state} />}
 
             {pageMode === PageMode.create && (
-              <CreateBlueprintForm
-                dispatchTreeview={dispatchTreeView}
-                state={state}
-              />
+              <CreateBlueprintForm dispatch={dispatch} state={state} />
             )}
           </Wrapper>
         </Col>

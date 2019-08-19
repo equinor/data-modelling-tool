@@ -10,6 +10,7 @@ const sortType = (a: any, b: any) =>
   (b.type === 'folder' ? 1 : -1) - (a.type === 'folder' ? 1 : -1)
 
 export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
+  console.log(index)
   index
     // bug in radix dev.
     .filter(node => node._id !== 'undefined' && node._id)
@@ -37,7 +38,8 @@ export function generateTreeViewNodes(index: TreeviewIndex[], nodes = {}) {
             children: getChildren(path, nodes),
           }
         } else {
-          const parentPath = getParentPath(path)
+          const parentPath: string = getParentPath(path)
+          addParent(parentPath, nodes)
           const useVersion = parentPath.split('/').length === 2
           ;(nodes as any)[parentPath].children.push(path)
           ;(nodes as any)[path] = {
@@ -73,6 +75,17 @@ function getChildren(path: string, nodes: any) {
     return (nodes as any)[path].children
   }
   return []
+}
+
+function addParent(parentPath: string, nodes: any): void {
+  if (!(nodes as any)[parentPath]) {
+    ;(nodes as any)[parentPath] = {
+      _id: parentPath,
+      title: parentPath.split('/')[0],
+      isRoot: true,
+      children: [],
+    }
+  }
 }
 
 function getParentPath(path: string): string {

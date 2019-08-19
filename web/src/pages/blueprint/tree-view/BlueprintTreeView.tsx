@@ -8,73 +8,66 @@ import TreeNode, {
 } from '../../../components/tree-view/TreeNode'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import FormModal from './FormModal'
-import {
-  BlueprintAction,
-  BlueprintActions,
-  BlueprintState,
-  PageMode,
-} from '../BlueprintReducer'
+import { BlueprintActions, BlueprintState, PageMode } from '../BlueprintReducer'
 import BlueprintTreeviewHeader from './BlueprintTreeviewHeader'
 
 interface PropTypes {
-  dispatch: (action: BlueprintAction) => void
+  dispatch: (action: any) => void
   state: BlueprintState
-  dispatchTreeview: (action: object) => void
-  stateTreeview: object
 }
 
 export default (props: PropTypes) => {
-  const { stateTreeview, dispatchTreeview, state, dispatch } = props
+  const { state, dispatch } = props
 
+  console.log(state)
   // back compatibility. remove later.
-  const setAction = (value: string) =>
-    dispatch(BlueprintActions.setAction(value))
-  const setOpen = (value: boolean) => dispatch(BlueprintActions.setOpen(value))
-  const setNodePath = (value: string) =>
-    dispatch(BlueprintActions.setSelectedBlueprintId(value))
+  const setAction = (value: string) => {
+    // dispatch(BlueprintActions.setAction(value))
+  }
+  const setOpen = (value: boolean) => {
+    // dispatch(BlueprintActions.setOpen(value))
+  }
+  const setNodePath = (value: string) => {}
+  // dispatch(BlueprintActions.setSelectedBlueprintId(value))
 
   const urlBluePrints = '/api/index/blueprints'
   useEffect(() => {
     async function fetchData() {
       const responseBlueprints = await axios(urlBluePrints)
-      dispatchTreeview(
-        BlueprintTreeViewActions.addAssets(
-          responseBlueprints.data,
-          urlBluePrints.replace('/index', '')
-        )
-      )
+      // dispatch(
+      //   BlueprintTreeViewActions.addAsset(
+      //     responseBlueprints.data,
+      //   )
+      // )
     }
 
     fetchData()
-  }, [urlBluePrints, dispatchTreeview]) // empty array
+  }, [urlBluePrints, dispatch]) // empty array
 
   const onToggle = (node: TreeNodeType): void => {
-    dispatchTreeview(BlueprintTreeViewActions.toggleNode(node.path))
+    // dispatch(BlueprintTreeViewActions.toggleNode(node.path))
   }
 
-  const rootNodes = values(stateTreeview).filter((n: TreeNodeType) => n.isRoot)
+  const rootNodes = values(state.nodes).filter((n: any) => n.isRoot)
+  console.log(rootNodes)
 
   return (
     <div>
       <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
 
-      <FormModal
-        dispatchTreeview={dispatchTreeview}
-        dispatch={dispatch}
-        state={state}
-      />
+      <FormModal dispatch={dispatch} state={state} />
 
       <div>
         <div>
           <SearchTree
             onChange={(value: string) =>
-              dispatchTreeview(BlueprintTreeViewActions.filterTree(value))
+              dispatch(BlueprintActions.filterTree(value))
             }
           />
         </div>
         {rootNodes
-          .filter((node: TreeNodeType) => !node.isHidden)
-          .map((node: TreeNodeType) => {
+          .filter((node: any) => !node.isHidden)
+          .map((node: any) => {
             /**
              * The properies hide* and only* controls when choices are visible.
              *
@@ -114,7 +107,7 @@ export default (props: PropTypes) => {
                 key={node.path}
                 level={0}
                 node={node}
-                nodes={stateTreeview}
+                nodes={state.nodes}
                 onToggle={onToggle}
                 menuItems={menuItems}
                 onClickContextMenu={(id, action) => {

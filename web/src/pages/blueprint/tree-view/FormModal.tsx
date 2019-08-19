@@ -14,7 +14,6 @@ import {
 type FormModalProps = {
   state: BlueprintState
   dispatch: (action: BlueprintAction) => void
-  dispatchTreeview: (action: {}) => void
 }
 
 export default (props: FormModalProps) => {
