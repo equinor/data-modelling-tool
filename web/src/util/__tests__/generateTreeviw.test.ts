@@ -1,4 +1,4 @@
-import { GenerateTreeview } from '../generateTreeview2'
+import { GenerateTreeview } from '../generateTreeview'
 
 describe('generate treeview', () => {
   it('should add root-node', () => {

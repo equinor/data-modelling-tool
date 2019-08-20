@@ -1,7 +1,6 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
 import values from 'lodash/values'
-import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 import TreeNode, {
   MenuItem,
   TreeNodeType,
@@ -22,26 +21,27 @@ export default (props: PropTypes) => {
   console.log(state)
   // back compatibility. remove later.
   const setAction = (value: string) => {
-    // dispatch(BlueprintActions.setAction(value))
+    dispatch(BlueprintActions.setAction(value))
   }
   const setOpen = (value: boolean) => {
-    // dispatch(BlueprintActions.setOpen(value))
+    dispatch(BlueprintActions.setOpen(value))
   }
-  const setNodePath = (value: string) => {}
-  // dispatch(BlueprintActions.setSelectedBlueprintId(value))
+  const setNodePath = (value: string) => {
+    dispatch(BlueprintActions.setSelectedBlueprintId(value))
+  }
 
   const urlBluePrints = '/api/index/blueprints'
   useEffect(() => {
     async function fetchData() {
       const responseBlueprints = await axios(urlBluePrints)
-      dispatch(BlueprintTreeViewActions.addAssets(responseBlueprints.data))
+      dispatch(BlueprintActions.addNodes(responseBlueprints.data))
     }
 
     fetchData()
   }, [urlBluePrints, dispatch]) // empty array
 
   const onToggle = (node: TreeNodeType): void => {
-    dispatch(BlueprintTreeViewActions.toggleNode(node.path))
+    dispatch(BlueprintActions.toggleNode(node.path))
   }
 
   const rootNodes = values(state.nodes).filter((n: any) => n.isRoot)

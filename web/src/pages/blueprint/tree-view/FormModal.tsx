@@ -4,7 +4,6 @@ import { NotificationContainer, NotificationManager } from 'react-notifications'
 import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
 import axios from 'axios'
-import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 import {
   BlueprintAction,
   BlueprintActions,
@@ -86,7 +85,7 @@ function addPackageConfig(props: ActionConfigType) {
           formData
         )
         .then(res => {
-          dispatchTreeview(BlueprintTreeViewActions.addRootPackage(res.data))
+          dispatchTreeview(BlueprintActions.addRootPackage(res.data))
           dispatch(BlueprintActions.setOpen(false))
         })
         .catch(err => {
@@ -137,9 +136,7 @@ function addSubPackageConfig(props: ActionConfigType) {
         .put(url, formData)
         .then(res => {
           dispatch(BlueprintActions.setOpen(false))
-          dispatchTreeview(
-            BlueprintTreeViewActions.addPackage(res.data, formData.title)
-          )
+          dispatchTreeview(BlueprintActions.addPackage(res.data))
         })
         .catch(err => {
           NotificationManager.error(

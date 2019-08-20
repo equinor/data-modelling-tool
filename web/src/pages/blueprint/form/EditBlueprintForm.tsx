@@ -12,12 +12,10 @@ interface Props {
 
 const EditBlueprintForm = (props: Props) => {
   const {
-    state: { selectedBlueprintId, dataUrl },
+    state: { dataUrl },
   } = props
 
-  const [loading, formData, error] = useFetch(
-    `/api/blueprints/${selectedBlueprintId}`
-  )
+  const [loading, formData, error] = useFetch(dataUrl)
   if (error) {
     NotificationManager.error(``, 'Failed to fetch blueprint template')
   }

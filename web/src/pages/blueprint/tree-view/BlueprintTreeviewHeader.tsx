@@ -10,7 +10,6 @@ import Button from '../../../components/Button'
 import Header from '../../../components/Header'
 import FileUpload from './FileUpload'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
-import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 
 type Props = {
   state: BlueprintState
@@ -46,9 +45,6 @@ export default (props: Props) => {
                 dispatch(
                   BlueprintActions.setSelectedDatasourceId(selectedDatasourceId)
                 )
-                if (selectedDatasourceId == 2) {
-                  dispatch(BlueprintTreeViewActions.resetTree())
-                }
               }}
               style={{ margin: '0 10px' }}
             >

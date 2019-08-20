@@ -1,8 +1,8 @@
 import React from 'react'
 import axios from 'axios'
 import { BlueprintState } from '../BlueprintReducer'
-import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
-import { TreeviewIndex } from '../../../util/generateTreeView'
+import { BlueprintActions } from '../BlueprintReducer'
+import { IndexNode } from '../../../util/generateTreeview'
 
 type IndexItem = {
   _id: string
@@ -17,7 +17,7 @@ type Props = {
 export default (props: Props) => {
   const { state, dispatchTreeview } = props
 
-  function handleFile(file: File, index: TreeviewIndex[], numFiles: number) {
+  function handleFile(file: File, index: IndexNode[], numFiles: number) {
     let fileReader: FileReader
     fileReader = new FileReader()
     fileReader.onloadend = () => {
@@ -38,7 +38,7 @@ export default (props: Props) => {
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
           console.log('dispatch: ', index.length, numFiles)
-          dispatchTreeview(BlueprintTreeViewActions.addRootPackage(path))
+          dispatchTreeview(BlueprintActions.addRootPackage(path))
         }
         // if (postToApi) {
         //   axios
