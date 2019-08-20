@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import ContextMenu from '../context-menu/ContextMenu'
+import values from 'lodash/values'
 
 type StyledTreeNode = {
   level: number
@@ -66,37 +67,49 @@ export type TreeNodeType = {
   isHidden?: boolean //@todo needed?}
 }
 
-export type MenuItem = {
-  type: string
-  action: string
-  label: string
-  hideRoot?: boolean
-  onlyRoot?: boolean
-  hideVersion?: boolean
-  onlyVersion?: boolean
+type TreeProps = {
+  children: any
+  tree: any
+  onToggle: any
+  onNodeSelect?: (node: TreeNodeType) => any
 }
 
 type TreeNodeProps = {
+  NodeRenderer: any
   key: string
   node: TreeNodeType
   nodes: object
   level: number
   onToggle: (node: TreeNodeType) => any
-  onClickContextMenu: (id: string, action: string) => any
-  onNodeSelect: (node: TreeNodeType) => any
-  menuItems: MenuItem[]
+  onNodeSelect?: (node: TreeNodeType) => any
+}
+
+export default (props: TreeProps) => {
+  const rootNodes = values(props.tree).filter((n: TreeNodeType) => n.isRoot)
+
+  return (
+    <>
+      {rootNodes
+        .filter((node: TreeNodeType) => !node.isHidden)
+        .map((node: TreeNodeType) => {
+          return (
+            <TreeNode
+              key={node.path}
+              level={0}
+              node={node}
+              nodes={props.tree}
+              onToggle={props.onToggle}
+              NodeRenderer={props.children}
+              onNodeSelect={props.onNodeSelect}
+            />
+          )
+        })}
+    </>
+  )
 }
 
 const TreeNode = (props: TreeNodeProps) => {
-  const {
-    node,
-    nodes,
-    level,
-    onToggle,
-    onNodeSelect,
-    onClickContextMenu,
-    menuItems,
-  } = props
+  const { node, nodes, level, onToggle, onNodeSelect, NodeRenderer } = props
   return (
     <React.Fragment>
       <StyledTreeNode level={level}>
@@ -107,26 +120,18 @@ const TreeNode = (props: TreeNodeProps) => {
 
         <NodeIcon marginRight={5}>
           {node.type === 'file' && <FaFile />}
-          {node.type === 'folder' && node.isOpen === true && <FaFolderOpen />}
+          {node.type === 'folder' && node.isOpen && <FaFolderOpen />}
           {node.type === 'folder' && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
         <span
           role="button"
           onClick={() => {
-            onNodeSelect(node)
+            onNodeSelect && onNodeSelect(node)
             onToggle(node)
           }}
         >
-          <WithContextMenu
-            id={node.path}
-            onClickContextMenu={onClickContextMenu}
-            menuItems={menuItems
-              .filter(filterLevel(node.isRoot))
-              .filter(filterVersion(node))
-              .filter((item: any) => item.type === node.type)}
-            label={node.title}
-          />
+          {NodeRenderer(node)}
         </span>
       </StyledTreeNode>
 
@@ -144,30 +149,3 @@ const TreeNode = (props: TreeNodeProps) => {
     </React.Fragment>
   )
 }
-
-function filterLevel(isNodeRoot: any) {
-  return (item: any) => {
-    if (item.onlyRoot && !isNodeRoot) {
-      return false
-    }
-    if (item.hideRoot && isNodeRoot) {
-      return false
-    }
-    return true //bypass.
-  }
-}
-
-function filterVersion(node: TreeNodeType) {
-  const isVersion = node.title.indexOf('.') > -1
-  return (item: any) => {
-    if (item.onlyVersion && !isVersion) {
-      return false
-    }
-    if (item.hideVersion && isVersion) {
-      return false
-    }
-    return true //bypass, filter is not needed.
-  }
-}
-
-export default TreeNode
