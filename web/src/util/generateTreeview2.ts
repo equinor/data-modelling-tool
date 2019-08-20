@@ -29,6 +29,7 @@ export class GenerateTreeview {
       path: id,
       isRoot: false,
       type: 'folder',
+      title: id.substr(id.lastIndexOf('/') + 1),
       children: [],
     }
     return this
@@ -39,6 +40,7 @@ export class GenerateTreeview {
     ;(this.nodes as any)[id] = {
       path: id,
       isRoot: false,
+      title: id.substr(id.lastIndexOf('/') + 1),
       type: 'file',
     }
   }

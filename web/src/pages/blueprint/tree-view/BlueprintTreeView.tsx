@@ -34,18 +34,14 @@ export default (props: PropTypes) => {
   useEffect(() => {
     async function fetchData() {
       const responseBlueprints = await axios(urlBluePrints)
-      // dispatch(
-      //   BlueprintTreeViewActions.addAsset(
-      //     responseBlueprints.data,
-      //   )
-      // )
+      dispatch(BlueprintTreeViewActions.addAssets(responseBlueprints.data))
     }
 
     fetchData()
   }, [urlBluePrints, dispatch]) // empty array
 
   const onToggle = (node: TreeNodeType): void => {
-    // dispatch(BlueprintTreeViewActions.toggleNode(node.path))
+    dispatch(BlueprintTreeViewActions.toggleNode(node.path))
   }
 
   const rootNodes = values(state.nodes).filter((n: any) => n.isRoot)

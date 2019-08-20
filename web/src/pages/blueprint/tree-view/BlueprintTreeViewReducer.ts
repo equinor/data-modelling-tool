@@ -22,7 +22,7 @@ export interface BlueprintTreeViewActionsTypes extends TreeActions {
   addPackage: (path: string, title: string) => any
   addFile: (path: string, title: string) => any
   addAsset: (path: string) => any
-  addAssets: (assets: TreeviewIndex[]) => any
+  addAssets: (value: TreeviewIndex[]) => any
   resetTree: () => any
 }
 

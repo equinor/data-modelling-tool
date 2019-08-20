@@ -11,6 +11,7 @@ import BlueprintTreeViewReducer, {
   TOGGLE_NODE,
 } from './tree-view/BlueprintTreeViewReducer'
 import { Actions as CommonTreeActions } from '../../components/tree-view/TreeReducer'
+import { GenerateTreeview } from '../../util/generateTreeview2'
 
 const SET_SELECTED_DATASOURCE_ID = 'SET_SELECTED_DATASOURCE_ID'
 const SET_ACTION = 'SET_ACTION'
@@ -93,13 +94,14 @@ export const BlueprintActions = {
   ...CommonTreeActions,
 }
 
-export default (state: BlueprintState, action: BlueprintAction) => {
+export default (state: BlueprintState, action: any) => {
+  const datasource = state.datasources[state.selectedDatasourceId]
+
   switch (action.type) {
     case SET_SELECTED_DATASOURCE_ID:
       const datasource: any = state.datasources.find(
         ds => ds.id === state.selectedDatasourceId
       )
-      console.log(action, datasource)
       const rootNode = {
         _id: datasource.title,
         title: datasource.title,
@@ -112,7 +114,6 @@ export default (state: BlueprintState, action: BlueprintAction) => {
         templateUrl: generateTemplateUrl(state),
         dataUrl: generateDataUrl(state, ''),
       }
-      console.log(newState)
       return { ...state, ...newState }
     case SET_SELECTED_BLUEPRINT_ID:
       return {
@@ -129,14 +130,21 @@ export default (state: BlueprintState, action: BlueprintAction) => {
       return { ...state, pageMode: action.value }
     case ADD_ROOT_PACKAGE:
     case ADD_ASSETS:
+      const generateTreeView = new GenerateTreeview(state.nodes)
+      const nodes = generateTreeView
+        .addRootNode('maf')
+        .addNodes(action.assets, 'maf')
+        .build()
+      console.log(action, nodes)
+      return { ...state, nodes }
     case ADD_ASSET:
     case ADD_FILE:
     case ADD_PACKAGE:
     case RESET_TREE:
+      return state
     case FILTER_TREE:
     case TOGGLE_NODE:
-      return state
-    // return {...state, nodes: BlueprintTreeViewReducer(state.nodes, action)}
+      return { ...state, nodes: BlueprintTreeViewReducer(state.nodes, action) }
     default:
       return state
   }

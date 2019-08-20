@@ -15,10 +15,6 @@ export class TreeViewUtil {
 
   static getParentId(id: string) {
     return TreeViewUtil.stripLastSlash(id)
-    // if (id.indexOf('.json') > -1) {
-    // 		return TreeViewUtil.stripLastSlash();
-    // } else {
-    // }
   }
 
   static isFile(id: string): boolean {
@@ -37,14 +33,10 @@ export class TreeViewUtil {
 
   static addToParent(nodes: object, id: string) {
     const parentPath = TreeViewUtil.getParentId(id)
-    console.log(parentPath)
+    console.log(parentPath, nodes)
     const parentChildren = (nodes as any)[parentPath].children
     if (!parentChildren.includes(id)) {
       parentChildren.push(id)
     }
   }
-
-  // static hasNode(nodes: object, key: string): boolean {
-  // 	return nodes[key] != null;
-  // }
 }

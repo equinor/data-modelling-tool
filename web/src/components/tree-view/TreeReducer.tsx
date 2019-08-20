@@ -56,6 +56,7 @@ export default (state: any, action: any) => {
       return { ...nodesAsObject }
 
     case TOGGLE_NODE:
+      console.log(action)
       const newState = { ...state }
       newState[action.path].isOpen = !newState[action.path].isOpen
       return newState
