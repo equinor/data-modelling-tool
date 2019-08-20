@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
 import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
-import Tree, { TreeNodeType } from '../../../components/tree-view/TreeNode'
+import Tree from '../../../components/tree-view/Tree'
 import SearchTree from '../../../components/tree-view/SearchTree'
 import FormModal from './FormModal'
 import {
@@ -11,6 +11,7 @@ import {
 } from '../BlueprintReducer'
 import BlueprintTreeviewHeader from './BlueprintTreeviewHeader'
 import { BlueprintNode, FolderNode } from './BlueprintTreeViewNode'
+import { TreeNodeType } from '../../../components/tree-view/TreeNode'
 
 interface PropTypes {
   dispatch: (action: BlueprintAction) => void

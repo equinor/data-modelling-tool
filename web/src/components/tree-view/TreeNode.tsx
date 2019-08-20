@@ -7,8 +7,6 @@ import {
   FaChevronRight,
 } from 'react-icons/fa'
 import styled from 'styled-components'
-import ContextMenu from '../context-menu/ContextMenu'
-import values from 'lodash/values'
 
 type StyledTreeNode = {
   level: number
@@ -37,21 +35,6 @@ const NodeIcon = styled.div`
     props.marginRight ? props.marginRight : 5}px;
 `
 
-type WithContextMenuProps = {
-  label: string
-  menuItems: any[]
-  id: string
-  onClickContextMenu: any
-}
-
-const WithContextMenu = (props: WithContextMenuProps) => {
-  const { label, menuItems } = props
-  if (menuItems.length === 0) {
-    return <span>{label}</span>
-  }
-  return <ContextMenu {...props}>{label}</ContextMenu>
-}
-
 const getChildNodes = (node: any, nodes: any) => {
   if (!node.children) return []
   return node.children.map((path: string) => nodes[path])
@@ -67,13 +50,6 @@ export type TreeNodeType = {
   isHidden?: boolean //@todo needed?}
 }
 
-type TreeProps = {
-  children: any
-  tree: any
-  onToggle: any
-  onNodeSelect?: (node: TreeNodeType) => any
-}
-
 type TreeNodeProps = {
   NodeRenderer: any
   key: string
@@ -82,30 +58,6 @@ type TreeNodeProps = {
   level: number
   onToggle: (node: TreeNodeType) => any
   onNodeSelect?: (node: TreeNodeType) => any
-}
-
-export default (props: TreeProps) => {
-  const rootNodes = values(props.tree).filter((n: TreeNodeType) => n.isRoot)
-
-  return (
-    <>
-      {rootNodes
-        .filter((node: TreeNodeType) => !node.isHidden)
-        .map((node: TreeNodeType) => {
-          return (
-            <TreeNode
-              key={node.path}
-              level={0}
-              node={node}
-              nodes={props.tree}
-              onToggle={props.onToggle}
-              NodeRenderer={props.children}
-              onNodeSelect={props.onNodeSelect}
-            />
-          )
-        })}
-    </>
-  )
 }
 
 const TreeNode = (props: TreeNodeProps) => {
@@ -149,3 +101,5 @@ const TreeNode = (props: TreeNodeProps) => {
     </React.Fragment>
   )
 }
+
+export default TreeNode
