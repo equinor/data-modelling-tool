@@ -1,7 +1,6 @@
 import values from 'lodash/values'
 import React from 'react'
 import TreeNode from './TreeNode'
-import TreeReducer from './TreeReducer'
 import {
   expandNodesWithMatchingDescendants,
   hideNodesWithNoMatchingDescendants,
@@ -25,6 +24,24 @@ export type TreeData = {
   isHidden?: boolean
 }
 
+/**
+ * Using a flat tree object.
+ * Example:
+ * {
+		'/root': {
+			path: '/root',
+			type: 'folder',
+			isRoot: true,
+			children: ['/root/subpackage'],
+		},
+		'/root/subpackage': {
+			path: '/root/subpackage',
+			type: 'folder',
+			children: ['/root/subpackage/readme.md'],
+		}
+  }
+ *
+ */
 export default (props: TreeProps) => {
   let tree = props.tree
   let searchTerm = props.searchTerm
