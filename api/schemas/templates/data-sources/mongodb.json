@@ -1,0 +1,42 @@
+{
+  "title": "MongodbDataSourceTemplate",
+  "description": "Create form for a Mongodb data-source",
+  "type": "object",
+  "properties": {
+    "type": {
+      "type": "string",
+      "title": "Type",
+      "default": "mongodb"
+    },
+    "host": {
+      "type": "string",
+      "title": "Hostname"
+    },
+    "port": {
+      "type": "integer",
+      "title": "port",
+      "default": 27017
+    },
+    "username": {
+      "type": "string",
+      "title": "Username"
+    },
+    "password": {
+      "type": "string",
+      "title": "Password"
+    },
+    "tls": {
+      "type": "boolean",
+      "title": "TLS",
+      "default": false
+    },
+    "database": {
+      "type": "string",
+      "title": "Database"
+    },
+    "collection": {
+      "type": "string",
+      "title": "Collection"
+    }
+  }
+}
