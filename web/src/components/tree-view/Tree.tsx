@@ -1,12 +1,18 @@
 import values from 'lodash/values'
 import React from 'react'
 import TreeNode from './TreeNode'
+import TreeReducer from './TreeReducer'
+import {
+  expandNodesWithMatchingDescendants,
+  hideNodesWithNoMatchingDescendants,
+} from './Filters'
+import keyBy from 'lodash/keyBy'
 
 type TreeProps = {
   children: Function
   tree: object
-  onToggle: (node: TreeData) => any
   onNodeSelect?: (node: TreeData) => any
+  searchTerm: string
 }
 
 export type TreeData = {
@@ -20,7 +26,22 @@ export type TreeData = {
 }
 
 export default (props: TreeProps) => {
-  const rootNodes = values(props.tree).filter((n: TreeData) => n.isRoot)
+  let tree = props.tree
+  let searchTerm = props.searchTerm
+
+  if (searchTerm) {
+    const filter = searchTerm.trim()
+    let filteredNodes = hideNodesWithNoMatchingDescendants(tree, filter)
+    let expandedNodes = expandNodesWithMatchingDescendants(
+      tree,
+      filteredNodes,
+      filter
+    )
+    let nodesAsObject = keyBy(expandedNodes, 'path')
+    tree = { ...nodesAsObject }
+  }
+
+  const rootNodes = values(tree).filter((n: TreeData) => n.isRoot)
 
   return (
     <>
@@ -32,8 +53,7 @@ export default (props: TreeProps) => {
               key={node.path}
               level={0}
               node={node}
-              nodes={props.tree}
-              onToggle={props.onToggle}
+              nodes={tree}
               NodeRenderer={props.children}
               onNodeSelect={props.onNodeSelect}
             />

@@ -22,7 +22,6 @@ import {
   }
  *
  */
-
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
 

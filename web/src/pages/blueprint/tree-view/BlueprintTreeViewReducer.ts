@@ -1,9 +1,5 @@
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import TreeReducer, {
-  Actions as CommonTreeActions,
-  TreeActions,
-} from '../../../components/tree-view/TreeReducer'
 import { generateTreeViewNodes } from '../../../util/generateTreeView'
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
@@ -12,7 +8,7 @@ const ADD_PACKAGE = 'ADD_PACKAGE'
 const ADD_FILE = 'ADD_FILE'
 const ADD_ASSET = 'ADD_ASSET'
 
-export interface BlueprintTreeViewActionsTypes extends TreeActions {
+export interface BlueprintTreeViewActionsTypes {
   addRootPackage: (path: string) => any
   addPackage: (path: string, title: string) => any
   addFile: (path: string, title: string) => any
@@ -20,7 +16,6 @@ export interface BlueprintTreeViewActionsTypes extends TreeActions {
 }
 
 export const BlueprintTreeViewActions: BlueprintTreeViewActionsTypes = {
-  ...CommonTreeActions,
   addRootPackage: (path: string) => ({
     type: ADD_ROOT_PACKAGE,
     path,
@@ -101,10 +96,6 @@ export default (state: any, action: any) => {
     case ADD_ASSET:
       const nodes = generateTreeViewNodes(action.data)
       return { ...state, ...nodes }
-
-    case FILTER_TREE:
-    case TOGGLE_NODE:
-      return TreeReducer(state, action)
 
     default:
       console.error('not supported: ', action.type)

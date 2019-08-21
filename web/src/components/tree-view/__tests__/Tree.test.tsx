@@ -1,5 +1,6 @@
 import React from 'react'
 import Tree, { TreeData } from '../Tree'
+// @ts-ignore
 import TestRenderer from 'react-test-renderer'
 
 describe('Tree', () => {
@@ -8,14 +9,14 @@ describe('Tree', () => {
       folder: {
         path: 'folder',
         type: 'folder',
-        isOpen: false,
+        //isOpen: false,
         title: 'folder',
         isRoot: true,
       },
       'folder/file': {
         path: 'folder/file',
         type: 'file',
-        isOpen: false,
+        //isOpen: false,
         title: 'file',
         isRoot: true,
       },

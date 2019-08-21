@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import {
   FaFile,
   FaFolder,
@@ -8,6 +8,7 @@ import {
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { TreeData } from './Tree'
+import useToggle from '../use-toogle/useToogle'
 
 type StyledTreeNode = {
   level: number
@@ -47,38 +48,44 @@ type TreeNodeProps = {
   node: TreeData
   nodes: object
   level: number
-  onToggle: (node: TreeData) => any
   onNodeSelect?: (node: TreeData) => any
 }
 
 const TreeNode = (props: TreeNodeProps) => {
-  const { node, nodes, level, onToggle, onNodeSelect, NodeRenderer } = props
+  const { node, nodes, level, onNodeSelect, NodeRenderer } = props
+  const [checked, toggle] = useState(node.isOpen)
+
+  useEffect(() => {
+    toggle(node.isOpen)
+  }, [node.isOpen])
+
   return (
-    <React.Fragment>
+    <>
       <StyledTreeNode level={level}>
-        <NodeIcon onClick={() => onToggle(node)}>
+        <NodeIcon onClick={() => toggle(!checked)}>
           {node.type === 'folder' &&
-            (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
+            (checked ? <FaChevronDown /> : <FaChevronRight />)}
         </NodeIcon>
 
         <NodeIcon marginRight={5}>
           {node.type === 'file' && <FaFile />}
-          {node.type === 'folder' && node.isOpen && <FaFolderOpen />}
-          {node.type === 'folder' && !node.isOpen && <FaFolder />}
+          {node.type === 'folder' && checked && <FaFolderOpen />}
+          {node.type === 'folder' && !checked && <FaFolder />}
         </NodeIcon>
 
         <span
           role="button"
           onClick={() => {
             onNodeSelect && onNodeSelect(node)
-            onToggle(node)
+            // @ts-ignore
+            // toggle(!checked)
           }}
         >
           {NodeRenderer(node)}
         </span>
       </StyledTreeNode>
 
-      {node.isOpen &&
+      {checked &&
         getChildNodes(node, nodes)
           .filter((node: TreeData) => !node.isHidden)
           .map((childNode: TreeData) => (
@@ -89,7 +96,7 @@ const TreeNode = (props: TreeNodeProps) => {
               level={level + 1}
             />
           ))}
-    </React.Fragment>
+    </>
   )
 }
 

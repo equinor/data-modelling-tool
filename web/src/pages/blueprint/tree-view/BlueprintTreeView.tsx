@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import { BlueprintTreeViewActions } from './BlueprintTreeViewReducer'
 import Tree from '../../../components/tree-view/Tree'
@@ -22,6 +22,7 @@ interface PropTypes {
 
 export default (props: PropTypes) => {
   const { stateTreeview, dispatchTreeview, state, dispatch } = props
+  const [searchTerm, changeSearchTerm] = useState('')
 
   // back compatibility. remove later.
   const setAction = (value: string) =>
@@ -68,11 +69,12 @@ export default (props: PropTypes) => {
         <div>
           <SearchTree
             onChange={(value: string) =>
-              dispatchTreeview(BlueprintTreeViewActions.filterTree(value))
+              //dispatchTreeview(BlueprintTreeViewActions.filterTree(value))
+              changeSearchTerm(value)
             }
           />
         </div>
-        <Tree tree={stateTreeview} onToggle={onToggle}>
+        <Tree searchTerm={searchTerm} tree={stateTreeview}>
           {(node: TreeNodeType) => {
             switch (node.type) {
               case 'folder':
