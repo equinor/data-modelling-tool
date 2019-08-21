@@ -5,29 +5,27 @@ from .common import common_get, common_put
 from classes.data_source import DataSource
 
 
-# New
-class DSBlueprint(Resource):
+class Form(Resource):
     @staticmethod
-    def get(data_source_id, blueprint_id):
+    def get(data_source_id, form_id):
         data_source = DataSource(_id=data_source_id)
-        return data_source.client.read_form(_id=blueprint_id)
+        return data_source.client.read_form(_id=form_id)
 
     @staticmethod
-    def post(data_source_id, blueprint_id):
+    def post(data_source_id, form_id):
         form = request.get_json()
         data_source = DataSource(_id=data_source_id)
-        result = data_source.client.create_form(form=form, _id=blueprint_id)
+        result = data_source.client.create_form(form=form, _id=form_id)
         return str(result.inserted_id)
 
     @staticmethod
-    def put(data_source_id, blueprint_id):
+    def put(data_source_id, form_id):
         form = request.get_json()
         data_source = DataSource(_id=data_source_id)
-        result = data_source.client.update_form(form=form, _id=blueprint_id)
-        return result.acknowledged
+        return data_source.client.update_form(form=form, _id=form_id)
 
 
-# Old
+# TODO: Remove this old endpoint
 class Blueprint(Resource):
     @staticmethod
     def get(path):

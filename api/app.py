@@ -4,7 +4,7 @@ from flask import Flask
 
 from config import Config
 from rest import create_api
-from services.database import model_db
+from services.database import model_db, data_modelling_tool_db
 from utils.debugging import enable_remote_debugging
 from utils.files import getListOfFiles
 
@@ -25,9 +25,8 @@ app = create_app(Config)
 @app.cli.command()
 def init_import():
     import_file_dict = {
-        "blueprints": getListOfFiles('/code/schemas/blueprints'),
+        "forms": getListOfFiles('/code/schemas/forms'),
         "templates": getListOfFiles('/code/schemas/templates'),
-        "entities": getListOfFiles('/code/schemas/entities')
     }
 
     for collection, file_list in import_file_dict.items():
@@ -37,4 +36,7 @@ def init_import():
                 with open(file) as json_file:
                     document = json.load(json_file)
                     document['_id'] = id
-                    model_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
+                    if collection == 'templates':
+                        data_modelling_tool_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
+                    if collection == 'forms':
+                        model_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
