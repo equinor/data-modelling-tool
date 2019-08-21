@@ -1,7 +1,6 @@
 from flask import jsonify, request, abort
 
 from services.database import model_db
-from utils.schema_tools import mongo_document_to_json_schema, json_schema_to_mongo_document
 
 
 def common_get(collection, path):
