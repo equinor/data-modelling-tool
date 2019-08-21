@@ -6,9 +6,6 @@ export default (url: string): any => {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
 
-  if (!url) {
-    return [false, {}, false]
-  }
   useEffect(() => {
     async function fetch() {
       axios(url)
@@ -23,8 +20,10 @@ export default (url: string): any => {
           setLoading(false)
         })
     }
-    fetch()
-    setLoading(true)
+    if (url) {
+      fetch()
+      setLoading(true)
+    }
   }, [url])
 
   return [loading, data, error]

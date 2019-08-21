@@ -27,8 +27,8 @@ export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
 
 export interface TreeActions {
-  filterTree: (filter: string) => object
-  toggleNode: (path: string) => object
+  filterTree: (filter: string) => any
+  toggleNode: (path: string) => any
 }
 
 export const Actions: TreeActions = {

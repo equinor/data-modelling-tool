@@ -1,9 +1,5 @@
 import React from 'react'
-import {
-  BlueprintAction,
-  BlueprintActions,
-  PageMode,
-} from '../BlueprintReducer'
+import { BlueprintAction, BlueprintActions } from '../BlueprintReducer'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { TreeNodeType } from '../../../components/tree-view/TreeNode'
 
@@ -36,25 +32,15 @@ export const FolderNode = (props: NodeProps) => {
       action: 'create-blueprint',
       label: 'Create Blueprint',
     },
-    {
-      action: 'add-subpackage',
-      label: 'Create SubPackage',
-    },
-    {
-      action: 'edit-package',
-      label: 'Edit Package',
-    },
-    {
-      action: 'edit-subpackage',
-      label: 'Edit Sub Package',
-    },
+    // {
+    //   action: 'add-subpackage',
+    //   label: 'Create SubPackage',
+    // },
+    // {
+    //   action: 'edit-subpackage',
+    //   label: 'Edit Sub Package',
+    // },
   ]
-
-  const setAction = (value: string) =>
-    dispatch(BlueprintActions.setAction(value))
-  const setOpen = (value: boolean) => dispatch(BlueprintActions.setOpen(value))
-  const setNodePath = (value: string) =>
-    dispatch(BlueprintActions.setSelectedBlueprintId(value))
 
   return (
     <WithContextMenu
@@ -62,31 +48,13 @@ export const FolderNode = (props: NodeProps) => {
       onClickContextMenu={(id: any, action: string) => {
         switch (action) {
           case 'create-blueprint':
-            dispatch(BlueprintActions.setSelectedBlueprintId(id))
-            dispatch(BlueprintActions.setPageMode(PageMode.create))
-            break
-          case 'add-package':
-            setNodePath(id)
-            setAction(action)
-            setOpen(true)
-            break
-          case 'add-subpackage':
-            setAction(action)
-            setNodePath(id)
-            setOpen(true)
-            break
-          case 'edit-package':
-            setAction(action)
-            setNodePath(id)
-            setOpen(true)
+            dispatch(BlueprintActions.createBlueprint(id))
             break
           case 'edit-subpackage':
-            setAction(action)
-            setNodePath(id)
-            setOpen(true)
+          case 'add-subpackage':
+            dispatch(BlueprintActions.openModal(id, action))
             break
           default:
-            setAction('clear')
             console.error('action not supported: ', action, id)
         }
       }}
@@ -100,9 +68,36 @@ export const BlueprintNode = (props: NodeProps) => {
   const { node, dispatch } = props
 
   const openBlueprint = () => {
-    dispatch(BlueprintActions.setSelectedBlueprintId(node.path))
-    dispatch(BlueprintActions.setPageMode(PageMode.view))
+    dispatch(BlueprintActions.viewFile(node.path))
   }
 
   return <div onClick={openBlueprint}>{node.title}</div>
+}
+
+export const RootFolderNode = (props: NodeProps) => {
+  const { node, dispatch } = props
+  const ADD_PACKAGE = 'add-package'
+  const menuItems: NodeMenuItem[] = [
+    {
+      action: ADD_PACKAGE,
+      label: 'Create Package',
+    },
+  ]
+
+  return (
+    <WithContextMenu
+      id={node.path}
+      onClickContextMenu={(id: any, action: string) => {
+        switch (action) {
+          case ADD_PACKAGE:
+            dispatch(BlueprintActions.openModal(id, ADD_PACKAGE))
+            break
+          default:
+            console.error('action not supported: ', action, id)
+        }
+      }}
+      menuItems={menuItems}
+      label={node.title}
+    />
+  )
 }

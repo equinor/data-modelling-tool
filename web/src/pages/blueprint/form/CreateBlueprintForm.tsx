@@ -2,31 +2,30 @@ import React from 'react'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintTreeViewActions } from '../tree-view/BlueprintTreeViewReducer'
 import BlueprintForm from './BlueprintForm'
-import { BlueprintState } from '../BlueprintReducer'
+import { BlueprintActions, BlueprintState } from '../BlueprintReducer'
 
 interface Props {
-  dispatchTreeview: (action: {}) => void
+  dispatch: (action: any) => void
   state: BlueprintState
 }
 
 export default (props: Props) => {
   const {
-    dispatchTreeview,
-    state: { selectedBlueprintId },
+    dispatch,
+    state: { dataUrl },
   } = props
 
   const onSubmit = (schemas: any) => {
     const title = schemas.formData.title
 
-    let url = `api/blueprints/${selectedBlueprintId.replace('package', title)}`
-
+    let url = dataUrl + '/' + title + '.json'
+    console.log(url)
     axios
       .put(url, schemas.formData)
       .then(function(response) {
+        dispatch(BlueprintActions.addFile(response.data, title))
         NotificationManager.success(response.data, 'Created blueprint')
-        dispatchTreeview(BlueprintTreeViewActions.addFile(response.data, title))
       })
       .catch(e => {
         NotificationManager.error(
