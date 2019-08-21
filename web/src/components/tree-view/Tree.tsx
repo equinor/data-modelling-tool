@@ -1,22 +1,32 @@
 import values from 'lodash/values'
 import React from 'react'
-import TreeNode, { TreeNodeType } from './TreeNode'
+import TreeNode from './TreeNode'
 
 type TreeProps = {
-  children: any
-  tree: any
-  onToggle: any
-  onNodeSelect?: (node: TreeNodeType) => any
+  children: Function
+  tree: object
+  onToggle: (node: TreeData) => any
+  onNodeSelect?: (node: TreeData) => any
+}
+
+export type TreeData = {
+  path: string
+  type: 'file' | 'folder'
+  isOpen: boolean
+  title: string
+  isRoot: boolean
+  node: TreeData
+  isHidden?: boolean
 }
 
 export default (props: TreeProps) => {
-  const rootNodes = values(props.tree).filter((n: TreeNodeType) => n.isRoot)
+  const rootNodes = values(props.tree).filter((n: TreeData) => n.isRoot)
 
   return (
     <>
       {rootNodes
-        .filter((node: TreeNodeType) => !node.isHidden)
-        .map((node: TreeNodeType) => {
+        .filter((node: TreeData) => !node.isHidden)
+        .map((node: TreeData) => {
           return (
             <TreeNode
               key={node.path}

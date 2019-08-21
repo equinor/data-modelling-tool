@@ -7,6 +7,7 @@ import {
   FaChevronRight,
 } from 'react-icons/fa'
 import styled from 'styled-components'
+import { TreeData } from './Tree'
 
 type StyledTreeNode = {
   level: number
@@ -40,24 +41,14 @@ const getChildNodes = (node: any, nodes: any) => {
   return node.children.map((path: string) => nodes[path])
 }
 
-export type TreeNodeType = {
-  path: string
-  type: 'file' | 'folder'
-  isOpen: boolean
-  title: string
-  isRoot: boolean
-  node: TreeNodeType
-  isHidden?: boolean //@todo needed?}
-}
-
 type TreeNodeProps = {
   NodeRenderer: any
   key: string
-  node: TreeNodeType
+  node: TreeData
   nodes: object
   level: number
-  onToggle: (node: TreeNodeType) => any
-  onNodeSelect?: (node: TreeNodeType) => any
+  onToggle: (node: TreeData) => any
+  onNodeSelect?: (node: TreeData) => any
 }
 
 const TreeNode = (props: TreeNodeProps) => {
@@ -89,10 +80,10 @@ const TreeNode = (props: TreeNodeProps) => {
 
       {node.isOpen &&
         getChildNodes(node, nodes)
-          .filter((node: any) => !node.isHidden)
-          .map((childNode: any) => (
+          .filter((node: TreeData) => !node.isHidden)
+          .map((childNode: TreeData) => (
             <TreeNode
-              key={'treenode' + childNode.path}
+              key={`tree-node-${childNode.path}`}
               {...props}
               node={childNode}
               level={level + 1}
