@@ -10,9 +10,9 @@ spec:
     - name: feature
       build:
         from: feature
-    - name: feature
+    - name: features
       build:
-      from: feature/*
+        from: feature/*
   components:
     - name: web
       src: ./web
