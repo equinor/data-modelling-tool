@@ -8,20 +8,21 @@ const context = createContext({
 
 const TabList = styled.div``
 
-const TabStyled = styled.div`
-  background-color: ${props => (props.isSelected ? 'white' : 'white')};
-  color: ${props => (props.isSelected ? 'black' : 'black')};
+const TabStyled: any = styled.div`
+  background-color: ${(props: any) => (props.isSelected ? 'white' : 'white')};
+  color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
   padding: 10px 15px;
   display: inline-block;
   border: black 1px;
   margin-bottom: 20px;
   cursor: pointer;
-  border-bottom-color: ${props => (props.isSelected ? 'black' : 'white')};
+  border-bottom-color: ${(props: any) =>
+    props.isSelected ? 'black' : 'white'};
   border-bottom-style: solid;
-  border-bottom-width: ${props => (props.isSelected ? '2px' : '0px')};
+  border-bottom-width: ${(props: any) => (props.isSelected ? '2px' : '0px')};
 
   &:hover {
-    color: ${props => (props.isSelected ? 'black' : 'gray')};
+    color: ${(props: any) => (props.isSelected ? 'black' : 'gray')};
   }
 `
 

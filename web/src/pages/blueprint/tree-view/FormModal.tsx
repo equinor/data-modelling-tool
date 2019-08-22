@@ -135,7 +135,7 @@ function addSubPackageConfig(props: ActionConfigType) {
         .put(url, formData)
         .then(res => {
           console.log(res)
-          dispatch(BlueprintActions.addSubPackage())
+          // dispatch(BlueprintActions.addSubPackage(state.selectedDatasourceId))
           // dispatch(BlueprintActions.setOpen(false))
           // dispatchTreeview(BlueprintActions.openModal(res.data))
         })

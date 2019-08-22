@@ -17,7 +17,7 @@ import {
 import { TreeNodeType } from '../../../components/tree-view/TreeNode'
 
 interface PropTypes {
-  dispatch: (action: BlueprintAction) => {}
+  dispatch: (action: BlueprintAction) => void
   state: BlueprintState
 }
 

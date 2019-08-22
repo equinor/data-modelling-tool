@@ -11,11 +11,11 @@ type IndexItem = {
 
 type Props = {
   state: BlueprintState
-  dispatchTreeview: (action: any) => void
+  dispatch: (action: any) => void
 }
 
 export default (props: Props) => {
-  const { state, dispatchTreeview } = props
+  const { state, dispatch } = props
 
   function handleFile(file: File, index: IndexNode[], numFiles: number) {
     let fileReader: FileReader
@@ -38,7 +38,7 @@ export default (props: Props) => {
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
           console.log('dispatch: ', index.length, numFiles)
-          dispatchTreeview(BlueprintActions.setSelectedDatasourceId(path))
+          dispatch(BlueprintActions.setSelectedDatasourceId(path))
         }
         // if (postToApi) {
         //   axios
@@ -71,13 +71,15 @@ export default (props: Props) => {
         Upload blueprints at root:{' '}
       </div>
       <div>
-        <input
-          type="file"
-          webkitdirectory="true"
-          mozdirectory="true"
-          directory="true"
-          onChange={handleFiles}
-        />
+        {
+          //@ts-ignore
+          <input
+            type="file"
+            webkitdirectory="true"
+            mozdirectory="true"
+            directory="true"
+          />
+        }
       </div>
     </div>
   )

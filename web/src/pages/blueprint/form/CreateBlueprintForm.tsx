@@ -24,7 +24,7 @@ export default (props: Props) => {
     axios
       .put(url, schemas.formData)
       .then(function(response) {
-        dispatch(BlueprintActions.addFile(response.data, title))
+        dispatch(BlueprintActions.addFile(response.data))
         NotificationManager.success(response.data, 'Created blueprint')
       })
       .catch(e => {
