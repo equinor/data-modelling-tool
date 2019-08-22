@@ -12,7 +12,7 @@ spec:
         from: feature
     - name: features
       build:
-        from: feature-%
+        from: feature/*
   components:
     - name: web
       src: ./web
