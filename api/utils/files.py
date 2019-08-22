@@ -8,7 +8,7 @@ def getListOfFiles(dirName):
     allFiles = list()
     # Iterate over all the entries
     for entry in listOfFile:
-        # Create full path
+        # Create full nodeId
         fullPath = os.path.join(dirName, entry)
         # If entry is a directory then get the list of files in this directory
         if os.path.isdir(fullPath):

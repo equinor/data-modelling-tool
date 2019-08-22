@@ -1,20 +1,16 @@
 import React, { useEffect } from 'react'
 import axios from 'axios'
 import Tree from '../../../components/tree-view/Tree'
-import SearchTree from '../../../components/tree-view/SearchTree'
-import FormModal from './FormModal'
 import {
   BlueprintAction,
   BlueprintActions,
   BlueprintState,
 } from '../BlueprintReducer'
 import BlueprintTreeviewHeader from './BlueprintTreeviewHeader'
-import {
-  BlueprintNode,
-  FolderNode,
-  RootFolderNode,
-} from './BlueprintTreeViewNode'
-import { TreeNodeType } from '../../../components/tree-view/TreeNode'
+import { TreeNodeData } from '../../../components/tree-view/Tree'
+import { RootFolderNode } from './nodes/DataSourceNode'
+import { FolderNode } from './nodes/FolderNode'
+import { BlueprintNode } from './nodes/BlueprintNode'
 
 interface PropTypes {
   dispatch: (action: BlueprintAction) => void
@@ -32,31 +28,23 @@ export default (props: PropTypes) => {
     }
 
     fetchData()
-  }, [urlBluePrints, dispatch]) // empty array
-
-  const onToggle = (node: TreeNodeType): void => {
-    dispatch(BlueprintActions.toggleNode(node.path))
-  }
+  }, [urlBluePrints, dispatch])
 
   return (
     <div>
       <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
 
-      <FormModal dispatch={dispatch} state={state} />
-
       <div>
-        <div>
-          <SearchTree
-            onChange={(value: string) =>
-              dispatch(BlueprintActions.filterTree(value))
-            }
-          />
-        </div>
-        <Tree tree={state.nodes} onToggle={onToggle}>
-          {(node: TreeNodeType) => {
+        <Tree tree={state.nodes}>
+          {(node: TreeNodeData, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
             return (
-              <NodeComponent dispatch={dispatch} node={node}></NodeComponent>
+              <NodeComponent
+                dispatch={dispatch}
+                addNode={addNode}
+                updateNode={updateNode}
+                node={node}
+              ></NodeComponent>
             )
           }}
         </Tree>
@@ -65,7 +53,7 @@ export default (props: PropTypes) => {
   )
 }
 
-function getNodeComponent(node: TreeNodeType) {
+function getNodeComponent(node: TreeNodeData) {
   const versionTest = new RegExp(/\d+.\d+.\d+/)
   let isParentOfVersion = false
   node.children &&
