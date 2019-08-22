@@ -9,7 +9,7 @@ spec:
         from: master
     - name: feature
       build:
-        from: feature
+        from: feature/*
   components:
     - name: web
       src: ./web
