@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
@@ -6,13 +6,29 @@ import EditBlueprintForm from './form/EditBlueprintForm'
 import CreateBlueprintForm from './form/CreateBlueprintForm'
 import ViewBlueprintForm from './form/ViewBlueprintForm'
 import BlueprintReducer, {
+  BlueprintActions,
   blueprintInitialState,
   PageMode,
 } from './BlueprintReducer'
+import { DataSourcesApi } from '../../open-api/src/apis/DataSourcesApi'
+const datasourceApi = new DataSourcesApi()
 
 export default () => {
   const [state, dispatch] = useReducer(BlueprintReducer, blueprintInitialState)
   const pageMode = state.pageMode
+
+  useEffect(() => {
+    datasourceApi
+      .dataSourcesGet()
+      .then((res: any) => {
+        dispatch(BlueprintActions.addDatasources(res))
+      })
+
+      .catch((e: any) => {
+        console.log(e)
+      })
+  }, [state.selectedDatasourceId])
+
   return (
     <Grid fluid>
       <Row>

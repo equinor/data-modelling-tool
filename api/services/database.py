@@ -10,5 +10,7 @@ if Config.ENVIRONMENT == 'local':
 else:
     client = MongoClient(Config.MONGO_URI)
 
+print("connected to model_db: " + Config.MONGO_DB)
 model_db = client[Config.MONGO_DB]
+print("connected to dmt: " + Config.MONGO_DATA_MODELLING_TOOL_DB)
 data_modelling_tool_db = client[Config.MONGO_DATA_MODELLING_TOOL_DB]

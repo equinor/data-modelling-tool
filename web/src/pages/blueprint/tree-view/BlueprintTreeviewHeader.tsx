@@ -50,7 +50,7 @@ export default (props: Props) => {
             >
               {state.datasources.map((datasource: Datasource) => (
                 <option key={datasource.id} value={datasource.id}>
-                  {datasource.label}
+                  {datasource.name}
                 </option>
               ))}
             </select>

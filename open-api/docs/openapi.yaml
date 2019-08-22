@@ -1,0 +1,93 @@
+swagger: "2.0"
+info:
+  description: ""
+  version: 1.0.0
+  title: Data Modelling Tool
+  license:
+    name: Apache-2.0
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: localhost
+basePath: /api/
+tags:
+  - name: blueprint
+    description: Everything about your blueprints
+schemes:
+  - http
+paths:
+  /index/blueprints:
+    get:
+      tags:
+        - blueprint
+      summary: Get all blueprints
+      description: Returns all blueprints
+      operationId: getBlueprints
+      produces:
+        - application/json
+      responses:
+        "200":
+          description: successful operation
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Blueprint"
+        "400":
+          description: Invalid ID supplied
+        "404":
+          description: Blueprint not found
+      security:
+        - api_key: []
+  /data-sources:
+    get:
+      tags:
+        - data_sources
+      produces: application/json
+      responses:
+        "200":
+          schema:
+            type: array
+            items:
+#securityDefinitions:
+#  blueprint_auth:
+#    type: oauth2
+#    authorizationUrl: "http://petstore.swagger.io/api/oauth/dialog"
+#    flow: implicit
+#    scopes:
+#      "write:blueprints": modify blueprints in your account
+#      "read:blueprints": read your blueprints
+#  api_key:
+#    type: apiKey
+#    name: api_key
+#    in: header
+definitions:
+  Datasource:
+    title: Datasource
+    type: object
+    properties:
+      host: string
+      name: string
+      type: string
+  Blueprint:
+    title: a Blueprint
+    description: Something...
+    type: object
+    required:
+      - title
+    properties:
+      _id:
+        type: string
+      title:
+        type: string
+      version:
+        type: string
+  ApiResponse:
+    title: An uploaded response
+    description: Describes the result of uploading an image resource
+    type: object
+    properties:
+      code:
+        type: integer
+        format: int32
+      type:
+        type: string
+      message:
+        type: string

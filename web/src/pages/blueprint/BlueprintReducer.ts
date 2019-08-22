@@ -2,8 +2,8 @@ import { GenerateTreeview } from '../../util/generateTreeview'
 
 const VIEW_FILE = 'VIEW_FILE'
 const EDIT_FILE = 'EDIT_FILE'
-const ADD_NODES = 'ADD_NODES'
 const SET_SELECTED_DATASOURCE_ID = 'SET_SELECTED_DATASOURCE_ID'
+const ADD_DATASOURCES = 'ADD_DATASOURCES'
 
 export enum PageMode {
   create,
@@ -13,7 +13,7 @@ export enum PageMode {
 
 export type Datasource = {
   id: number
-  label: string
+  name: string
   title: string
 }
 
@@ -31,12 +31,10 @@ export type BlueprintState = {
   dataUrl: string
 }
 
-const datasources: Datasource[] = [{ id: 0, label: 'Blueprints', title: 'maf' }]
-
 export const blueprintInitialState: BlueprintState = {
-  selectedDatasourceId: 0,
+  selectedDatasourceId: -1,
   selectedBlueprintId: '',
-  datasources: datasources,
+  datasources: [],
   pageMode: PageMode.view,
   templateUrl: '/api/templates/blueprint.json',
   dataUrl: ``,
@@ -52,6 +50,10 @@ export const BlueprintActions = {
     value: id,
   }),
 
+  addDatasources: (value: any[]): object => ({
+    type: ADD_DATASOURCES,
+    value,
+  }),
   /**
    * Sets selectedBlueprintId and correct pageMode
    * @param id nodeId of file
@@ -76,6 +78,12 @@ export default (state: BlueprintState, action: any) => {
         dataUrl: generateDataUrl(state, ''),
       }
       return { ...state, ...newState }
+    case ADD_DATASOURCES:
+      return {
+        ...state,
+        datasources: action.value,
+        selectedDatasourceId: 0,
+      }
 
     // FORM ACTIONS
     case EDIT_FILE:
@@ -124,6 +132,5 @@ function generateDataUrl(
   selectedBlueprintId: string
 ): string {
   //strip datasource from selectedBlueprintId.
-  const path = selectedBlueprintId.substr(selectedBlueprintId.indexOf('/'))
-  return `/api${getDatasourceSubPath(state)}/blueprints${path}`
+  return `/api${getDatasourceSubPath(state)}/blueprints/${selectedBlueprintId}`
 }

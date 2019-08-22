@@ -33,7 +33,7 @@ export default (props: Props) => {
           _id: path,
           title: json.title,
         }
-        index.push(indexItem)
+        // index.push(indexItem)
 
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
@@ -61,7 +61,7 @@ export default (props: Props) => {
     const index: IndexItem[] = []
     for (let i = 0; i < files.length; i++) {
       //@todo use generateTreeview to validate the uploaded files.
-      handleFile(files[i], index, files.length)
+      // handleFile(files[i], index, files.length)
     }
   }
 

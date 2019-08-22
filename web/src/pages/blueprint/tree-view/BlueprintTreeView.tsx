@@ -13,15 +13,36 @@ import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import { GenerateTreeview } from '../../../util/generateTreeview'
 import generateFakeTree from '../../../util/genereteFakeTree'
+import { BlueprintApi } from '../../../open-api/src/apis/BlueprintApi'
+const blueprintApi = new BlueprintApi()
 
 interface PropTypes {
   dispatch: (action: BlueprintAction) => void
   state: BlueprintState
 }
 
+const mockBlueprints: any[] = [
+  {
+    id: 'propellers/',
+    title: 'Propellers',
+    children: ['propellers/1.0.0'],
+    node_type: 'root',
+  },
+  {
+    id: 'propellers/1.0.0',
+    title: '1.0.0',
+    children: ['propellers/1.0.0/propeller.json'],
+    node_type: 'version',
+  },
+  {
+    id: 'propellers/1.0.0/propeller.json',
+    title: 'Blueprint',
+    node_type: 'file',
+  },
+]
+
 export default (props: PropTypes) => {
   const { state, dispatch } = props
-
   const [documents, setDocuments] = useState({})
 
   useEffect(() => {
@@ -30,10 +51,10 @@ export default (props: PropTypes) => {
       axios(urlBluePrints)
         .then(res => {
           const nodeBuilder = new GenerateTreeview({})
-          const rootTitle = state.datasources[state.selectedDatasourceId].title
+          const rootTitle = state.datasources[state.selectedDatasourceId].name
           const nodes = nodeBuilder
             .addRootNode(rootTitle)
-            .addNodes(res.data, rootTitle)
+            // .addNodes(mockBlueprints, rootTitle)
             .build()
           setDocuments(nodes)
         })
@@ -41,9 +62,30 @@ export default (props: PropTypes) => {
           console.error(err)
         })
     }
-
-    fetchData()
+    if (state.selectedDatasourceId > -1) {
+      fetchData()
+    }
   }, [state.selectedDatasourceId])
+
+  // //fetch blueprints if datasources is not empty.
+  // useEffect(() => {
+  //   if (state.datasources.length > 0) {
+  //     blueprintApi
+  //       .getBlueprints()
+  //       .then((res: any) => {
+  //         console.log(res)
+  //         const nodeBuilder = new GenerateTreeview({})
+  //         const rootTitle = state.datasources[state.selectedDatasourceId].title
+  //         const nodes = nodeBuilder
+  //           .addRootNode(rootTitle)
+  //           //@todo replace mockBlueprints with res when API is implemented.
+  //           .addNodes(mockBlueprints, rootTitle)
+  //           .build()
+  //         setDocuments(nodes)
+  //       })
+  //       .catch(e => console.log(e))
+  //   }
+  // }, [state.selectedDatasourceId])
 
   return (
     <div>
