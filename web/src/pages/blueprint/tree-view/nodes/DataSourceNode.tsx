@@ -68,43 +68,46 @@ export const RootFolderNode = (props: any) => {
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
 
-  const menuItems: NodeMenuItem[] = [
+  const configs: any[] = [
     {
-      action: 'add-package',
-      label: 'Create Package',
+      menuItem: {
+        action: 'add-package',
+        label: 'Create Package',
+      },
+      formProps: addPackageConfig({
+        onSuccess: () => {
+          addNode(node.title, NodeType.folder)
+          setShowModal(false)
+        },
+        onError: (error: any) => {
+          console.log(error)
+        },
+      }),
     },
     {
-      action: 'edit-package',
-      label: 'Edit Package',
+      menuItem: {
+        action: 'edit-package',
+        label: 'Edit Package',
+      },
+      formProps: editPackageConfig({
+        onSuccess: (node: any) => {
+          updateNode(node.title)
+          setShowModal(false)
+        },
+        onError: (error: any) => {
+          console.log(error)
+        },
+        nodeId: node.nodeId,
+      }),
     },
   ]
 
-  const onSuccess = (node: any) => {
-    addNode(node.title, NodeType.folder)
-    setShowModal(false)
-  }
-
-  const onError = (error: any) => {
-    console.log(error)
-  }
-
-  let formConfig = addPackageConfig({ onSuccess, onError })
-
-  if (action == 'edit-package') {
-    formConfig = editPackageConfig({
-      onSuccess: (node: any) => {
-        updateNode(node.title)
-        setShowModal(false)
-      },
-      onError,
-      nodeId: node.nodeId,
-    })
-  }
-
+  const menuItems = configs.map(config => config.menuItem)
+  const actionConfig = configs.find(config => config.menuItem.action === action)
   return (
     <>
       <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
-        <Form {...formConfig}></Form>
+        {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <WithContextMenu
         id={node.nodeId}
