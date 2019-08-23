@@ -11,6 +11,7 @@ export const UPDATE_NODE = 'UPDATE_NODE'
 export const DELETE_NODE = 'DELETE_NODE'
 export const ADD_CHILD = 'ADD_CHILD'
 export const REMOVE_CHILD = 'REMOVE_CHILD'
+export const SET_NODES = 'SET_NODES'
 
 export enum NodeType {
   folder = 'folder',
@@ -89,12 +90,17 @@ const node = (state: any, action: any) => {
 
 export interface TreeActions {
   filterTree: (filter: string) => any
+  setNodes: (nodes: object) => void
 }
 
 export const Actions: TreeActions = {
   filterTree: (filter: string): object => ({
     type: FILTER_TREE,
     filter: filter,
+  }),
+  setNodes: (nodes: object) => ({
+    type: SET_NODES,
+    nodes: nodes,
   }),
 }
 
@@ -126,6 +132,9 @@ export default (state: any = {}, action: any) => {
       )
       let nodesAsObject = keyBy(expandedNodes, 'nodeId')
       return { ...nodesAsObject }
+
+    case SET_NODES:
+      return action.nodes
 
     default:
       const { nodeId } = action

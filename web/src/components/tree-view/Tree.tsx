@@ -1,5 +1,5 @@
 import values from 'lodash/values'
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import TreeNode from './TreeNode'
 import TreeReducer, {
   Actions,
@@ -26,6 +26,10 @@ type TreeProps = {
 
 export default (props: TreeProps) => {
   const [state, dispatch] = useReducer(TreeReducer, props.tree)
+
+  useEffect(() => {
+    dispatch(Actions.setNodes(props.tree))
+  }, [props.tree])
 
   const handleToggle = (node: TreeNodeData): void =>
     dispatch(NodeActions.toggleNode(node.nodeId))

@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Tree from '../../../components/tree-view/Tree'
 import {
@@ -11,6 +11,7 @@ import { TreeNodeData } from '../../../components/tree-view/Tree'
 import { RootFolderNode } from './nodes/DataSourceNode'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
+import { GenerateTreeview } from '../../../util/generateTreeview'
 
 interface PropTypes {
   dispatch: (action: BlueprintAction) => void
@@ -20,22 +21,35 @@ interface PropTypes {
 export default (props: PropTypes) => {
   const { state, dispatch } = props
 
-  const urlBluePrints = '/api/index/blueprints'
+  const [documents, setDocuments] = useState({})
+
   useEffect(() => {
     async function fetchData() {
-      const responseBlueprints = await axios(urlBluePrints)
-      dispatch(BlueprintActions.addNodes(responseBlueprints.data))
+      const urlBluePrints = '/api/index/blueprints'
+      axios(urlBluePrints)
+        .then(res => {
+          const nodeBuilder = new GenerateTreeview({})
+          const rootTitle = state.datasources[state.selectedDatasourceId].title
+          const nodes = nodeBuilder
+            .addRootNode(rootTitle)
+            .addNodes(res.data, rootTitle)
+            .build()
+          setDocuments(nodes)
+        })
+        .catch((err: any) => {
+          console.error(err)
+        })
     }
 
     fetchData()
-  }, [urlBluePrints, dispatch])
+  }, [state.selectedDatasourceId])
 
   return (
     <div>
       <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
 
       <div>
-        <Tree tree={state.nodes}>
+        <Tree tree={documents}>
           {(node: TreeNodeData, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
             return (

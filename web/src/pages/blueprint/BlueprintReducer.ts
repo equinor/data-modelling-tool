@@ -23,7 +23,6 @@ export type BlueprintAction = {
 }
 
 export type BlueprintState = {
-  nodes: {}
   selectedDatasourceId: number
   selectedBlueprintId: string
   datasources: Datasource[]
@@ -35,7 +34,6 @@ export type BlueprintState = {
 const datasources: Datasource[] = [{ id: 0, label: 'Blueprints', title: 'maf' }]
 
 export const blueprintInitialState: BlueprintState = {
-  nodes: {},
   selectedDatasourceId: 0,
   selectedBlueprintId: '',
   datasources: datasources,
@@ -55,14 +53,6 @@ export const BlueprintActions = {
   }),
 
   /**
-   * Add nodes to state, usually index fetched from the api.
-   * @param nodes index
-   */
-  addNodes: (nodes: any[]): BlueprintAction => ({
-    type: ADD_NODES,
-    value: nodes,
-  }),
-  /**
    * Sets selectedBlueprintId and correct pageMode
    * @param id nodeId of file
    */
@@ -76,16 +66,8 @@ export const BlueprintActions = {
   editFile: () => ({ type: EDIT_FILE }),
 }
 
-function getDsTitle(state: BlueprintState) {
-  return state.datasources[state.selectedDatasourceId].title
-}
-
 export default (state: BlueprintState, action: any) => {
-  const nodeBuilder = new GenerateTreeview(state.nodes)
   switch (action.type) {
-    /*
-        General Actions
-     */
     case SET_SELECTED_DATASOURCE_ID:
       const newState = {
         nodes: {},
@@ -94,16 +76,6 @@ export default (state: BlueprintState, action: any) => {
         dataUrl: generateDataUrl(state, ''),
       }
       return { ...state, ...newState }
-
-    /*
-      NODES ACTIONS
-      */
-    case ADD_NODES:
-      const nodes = nodeBuilder
-        .addRootNode(getDsTitle(state))
-        .addNodes(action.value, getDsTitle(state))
-        .build()
-      return { ...state, nodes }
 
     // FORM ACTIONS
     case EDIT_FILE:
