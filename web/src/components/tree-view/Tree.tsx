@@ -4,42 +4,40 @@ import TreeNode from './TreeNode'
 import TreeReducer, {
   Actions,
   NodeActions,
+  NodeType,
 } from '../../components/tree-view/TreeReducer'
 import SearchTree from './SearchTree'
 
 export type TreeNodeData = {
   nodeId: string
-  type: 'file' | 'folder'
+  type: NodeType
   isOpen: boolean
   title: string
   isRoot: boolean
   node: TreeNodeData
-  isHidden?: boolean //@todo needed?}
+  isHidden?: boolean
   children?: string[]
 }
 
 type TreeProps = {
   children: Function
-  tree: any
-  onNodeSelect?: (node: TreeNodeData) => any
+  tree: object
+  onNodeSelect?: (node: TreeNodeData) => TreeNodeData
 }
 
 export default (props: TreeProps) => {
   const [state, dispatch] = useReducer(TreeReducer, props.tree)
 
-  const onToggle = (node: TreeNodeData): void => {
+  const handleToggle = (node: TreeNodeData): void =>
     dispatch(NodeActions.toggleNode(node.nodeId))
-  }
 
-  const rootNodes = values(state).filter((n: TreeNodeData) => n.isRoot)
+  const handleSearch = (term: string) => dispatch(Actions.filterTree(term))
+
+  const rootNodes = values(state).filter((node: TreeNodeData) => node.isRoot)
 
   return (
     <>
-      <div>
-        <SearchTree
-          onChange={(value: string) => dispatch(Actions.filterTree(value))}
-        />
-      </div>
+      <SearchTree onChange={handleSearch} />
       {rootNodes
         .filter((node: TreeNodeData) => !node.isHidden)
         .map((node: TreeNodeData) => {
@@ -50,7 +48,7 @@ export default (props: TreeProps) => {
               node={node}
               dispatch={dispatch}
               nodes={state}
-              onToggle={onToggle}
+              onToggle={handleToggle}
               NodeRenderer={props.children}
               onNodeSelect={props.onNodeSelect}
             />

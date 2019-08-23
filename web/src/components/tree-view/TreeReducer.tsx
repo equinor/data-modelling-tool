@@ -4,25 +4,6 @@ import {
   hideNodesWithNoMatchingDescendants,
 } from './Filters'
 
-/**
- * Using a flat state.
- * Example:
- * {
-		'/root': {
-			nodeId: '/root',
-			type: 'folder',
-			isRoot: true,
-			children: ['/root/subpackage'],
-		},
-		'/root/subpackage': {
-			nodeId: '/root/subpackage',
-			type: 'folder',
-			children: ['/root/subpackage/readme.md'],
-		}
-  }
- *
- */
-
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
 export const CREATE_NODE = 'CREATE_NODE'

@@ -43,14 +43,13 @@ const getChildNodes = (node: TreeNodeData, nodes: any) => {
 }
 
 type TreeNodeProps = {
-  NodeRenderer: any
-  key: string
+  NodeRenderer: Function
   node: TreeNodeData
   nodes: object
   level: number
-  onToggle: (node: TreeNodeData) => any
-  onNodeSelect?: (node: TreeNodeData) => any
-  dispatch: any
+  onToggle: (node: TreeNodeData) => void
+  onNodeSelect?: (node: TreeNodeData) => TreeNodeData
+  dispatch: Function
 }
 
 const TreeNode = (props: TreeNodeProps) => {
@@ -65,9 +64,8 @@ const TreeNode = (props: TreeNodeProps) => {
   } = props
 
   const addNode = (nodeId: string, nodeType: NodeType) => {
-    const action = NodeActions.createNode(nodeId, nodeType)
-    dispatch(action)
-    dispatch(NodeActions.addChild(node.nodeId, action.nodeId))
+    dispatch(NodeActions.createNode(nodeId, nodeType))
+    dispatch(NodeActions.addChild(node.nodeId, nodeId))
   }
 
   const updateNode = (title: string) => {
@@ -104,7 +102,7 @@ const TreeNode = (props: TreeNodeProps) => {
           .filter((node: any) => !node.isHidden)
           .map((childNode: any) => (
             <TreeNode
-              key={'treenode' + childNode.nodeId}
+              key={`tree-node-${childNode.nodeId}`}
               {...props}
               node={childNode}
               level={level + 1}
