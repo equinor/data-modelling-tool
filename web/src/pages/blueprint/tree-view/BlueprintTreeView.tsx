@@ -45,14 +45,12 @@ export default (props: PropTypes) => {
     fetchData()
   }, [state.selectedDatasourceId])
 
-  const tree = generateFakeTree()
-
   return (
     <div>
       <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
 
       <div>
-        <Tree tree={tree}>
+        <Tree tree={documents}>
           {(node: TreeNodeData, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
             return (
