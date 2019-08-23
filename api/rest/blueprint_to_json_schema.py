@@ -1,8 +1,7 @@
-from flask import jsonify, request, abort
+from flask import jsonify, abort
 from flask_restful import Resource
 
 from services.database import model_db
-
 
 
 class BlueprintToJsonSchema(Resource):
@@ -27,5 +26,3 @@ class BlueprintToJsonSchema(Resource):
         return jsonify({
             "properties": properties
         })
-
-

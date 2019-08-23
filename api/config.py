@@ -11,5 +11,5 @@ class Config:
     MONGO_URI = os.getenv('MONGO_AZURE_URI', '')
     MONGO_DB = os.getenv('MONGO_INITDB_DATABASE', 'db')
     MONGO_DATA_MODELLING_TOOL_DB = os.getenv('MONGO_DATA_MODELING_TOOL_DATABASE', 'dmt')
-    BLUEPRINT_DATA_SOURCE_COLLECTION = 'blueprint_data_sources'
-    ENTITY_DATA_SOURCE_COLLECTION = 'entity_data_sources'
+    TEMPLATES_COLLECTION = 'templates'
+    DATA_SOURCES_COLLECTION = 'data_sources'
