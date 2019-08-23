@@ -98,7 +98,23 @@ export const Actions: TreeActions = {
   }),
 }
 
-export default (state: any, action: any) => {
+const getAllDescendantIds = (state: any, nodeId: string) =>
+  state[nodeId].children.reduce(
+    (acc: any, childId: string) => [
+      ...acc,
+      childId,
+      ...getAllDescendantIds(state, childId),
+    ],
+    []
+  )
+
+const deleteMany = (state: any, ids: any) => {
+  state = { ...state }
+  ids.forEach((id: string) => delete state[id])
+  return state
+}
+
+export default (state: any = {}, action: any) => {
   switch (action.type) {
     case FILTER_TREE:
       const filter = action.filter.trim()
@@ -116,6 +132,12 @@ export default (state: any, action: any) => {
       if (typeof nodeId === 'undefined') {
         return state
       }
+
+      if (action.type === DELETE_NODE) {
+        const descendantIds = getAllDescendantIds(state, nodeId)
+        return deleteMany(state, [nodeId, ...descendantIds])
+      }
+
       return {
         ...state,
         [nodeId]: node(state[nodeId], action),
