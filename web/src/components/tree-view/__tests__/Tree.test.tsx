@@ -1,5 +1,5 @@
 import React from 'react'
-import Tree, { TreeData } from '../Tree'
+import Tree, { TreeNodeData } from '../Tree'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
 
@@ -21,7 +21,7 @@ describe('Tree', () => {
     }
     const testRenderer = TestRenderer.create(
       <Tree tree={tree}>
-        {(node: TreeData) => {
+        {(node: TreeNodeData) => {
           if (node.type === 'folder') {
             return <h2>{node.title}</h2>
           }

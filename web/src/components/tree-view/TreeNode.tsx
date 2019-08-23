@@ -48,7 +48,7 @@ type TreeNodeProps = {
   nodes: object
   level: number
   onToggle: (node: TreeNodeData) => void
-  onNodeSelect?: (node: TreeNodeData) => TreeNodeData
+  onNodeSelect?: (node: TreeNodeData) => void
   dispatch: Function
 }
 

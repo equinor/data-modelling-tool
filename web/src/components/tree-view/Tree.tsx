@@ -14,7 +14,6 @@ export type TreeNodeData = {
   isOpen: boolean
   title: string
   isRoot: boolean
-  node: TreeNodeData
   isHidden?: boolean
   children?: string[]
 }
