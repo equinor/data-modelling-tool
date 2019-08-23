@@ -5,17 +5,17 @@ import {
 } from './Filters'
 
 /**
- * Using a flat stateTreeview.
+ * Using a flat state.
  * Example:
  * {
 		'/root': {
-			path: '/root',
+			nodeId: '/root',
 			type: 'folder',
 			isRoot: true,
 			children: ['/root/subpackage'],
 		},
 		'/root/subpackage': {
-			path: '/root/subpackage',
+			nodeId: '/root/subpackage',
 			type: 'folder',
 			children: ['/root/subpackage/readme.md'],
 		}
@@ -25,20 +25,95 @@ import {
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
+export const CREATE_NODE = 'CREATE_NODE'
+export const UPDATE_NODE = 'UPDATE_NODE'
+export const DELETE_NODE = 'DELETE_NODE'
+export const ADD_CHILD = 'ADD_CHILD'
+export const REMOVE_CHILD = 'REMOVE_CHILD'
+
+export enum NodeType {
+  folder = 'folder',
+  file = 'file',
+}
+
+const childIds = (state: any, action: any) => {
+  switch (action.type) {
+    case ADD_CHILD:
+      return [...state, action.childId]
+    case REMOVE_CHILD:
+      return state.filter((id: any) => id !== action.childId)
+    default:
+      return state
+  }
+}
+
+export const NodeActions = {
+  createNode: (nodeId: string, nodeType: NodeType) => ({
+    type: CREATE_NODE,
+    nodeId: nodeId,
+    nodeType: nodeType,
+  }),
+  deleteNode: (nodeId: string) => ({
+    type: DELETE_NODE,
+    nodeId,
+  }),
+  addChild: (nodeId: string, childId: string) => ({
+    type: ADD_CHILD,
+    nodeId,
+    childId,
+  }),
+  removeChild: (nodeId: string, childId: string) => ({
+    type: REMOVE_CHILD,
+    nodeId,
+    childId,
+  }),
+  toggleNode: (nodeId: string): object => ({
+    type: TOGGLE_NODE,
+    nodeId,
+  }),
+  updateNode: (nodeId: string, title: string) => ({
+    title,
+  }),
+}
+
+const node = (state: any, action: any) => {
+  switch (action.type) {
+    case CREATE_NODE:
+      return {
+        nodeId: action.nodeId,
+        children: [],
+        title: action.nodeId,
+        type: action.nodeType,
+      }
+    case ADD_CHILD:
+    case REMOVE_CHILD:
+      return {
+        ...state,
+        children: childIds(state.children, action),
+      }
+    case TOGGLE_NODE:
+      return {
+        ...state,
+        isOpen: !state.isOpen,
+      }
+    case UPDATE_NODE:
+      return {
+        ...state,
+        title: action.title,
+      }
+    default:
+      return state
+  }
+}
 
 export interface TreeActions {
   filterTree: (filter: string) => any
-  toggleNode: (path: string) => any
 }
 
 export const Actions: TreeActions = {
   filterTree: (filter: string): object => ({
     type: FILTER_TREE,
     filter: filter,
-  }),
-  toggleNode: (path: string): object => ({
-    type: TOGGLE_NODE,
-    path,
   }),
 }
 
@@ -52,15 +127,17 @@ export default (state: any, action: any) => {
         filteredNodes,
         filter
       )
-      let nodesAsObject = keyBy(expandedNodes, 'path')
+      let nodesAsObject = keyBy(expandedNodes, 'nodeId')
       return { ...nodesAsObject }
 
-    case TOGGLE_NODE:
-      const newState = { ...state }
-      newState[action.path].isOpen = !newState[action.path].isOpen
-      return newState
-
     default:
-      return state
+      const { nodeId } = action
+      if (typeof nodeId === 'undefined') {
+        return state
+      }
+      return {
+        ...state,
+        [nodeId]: node(state[nodeId], action),
+      }
   }
 }

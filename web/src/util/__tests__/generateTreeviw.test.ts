@@ -8,7 +8,7 @@ describe('generate treeview', () => {
       'local-files': {
         isRoot: true,
         title: 'local-files',
-        path: 'local-files',
+        nodeId: 'local-files',
         children: [],
       },
     })
@@ -19,7 +19,7 @@ describe('generate treeview', () => {
       'local-files': {
         isRoot: true,
         title: 'local-files',
-        path: 'local-files',
+        nodeId: 'local-files',
         children: [],
       },
     }

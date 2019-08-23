@@ -35,7 +35,7 @@ const data = {
   },
 }
 
-it('filters leafnode and all parents', () => {
+it.skip('filters leafnode and all parents', () => {
   const filtered = filterNodes(data, '/root/subpackage/readme.md')
   expect(Object.keys(filtered).length).toEqual(3)
 })

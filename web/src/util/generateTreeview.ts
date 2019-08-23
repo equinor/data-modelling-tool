@@ -14,7 +14,7 @@ export class GenerateTreeview {
   private addVersion(id: string, isOpen: boolean) {
     TreeViewUtil.addToParent(this.nodes, id)
     ;(this.nodes as any)[id] = {
-      path: id,
+      nodeId: id,
       isRoot: false,
       type: 'folder',
       isOpen,
@@ -26,9 +26,10 @@ export class GenerateTreeview {
   private addPackage(id: string, rootNode: string, isOpen: boolean) {
     TreeViewUtil.addToParent(this.nodes, id)
     ;(this.nodes as any)[id] = {
-      path: id,
+      nodeId: id,
       isRoot: false,
       type: 'folder',
+      isHidden: false,
       isOpen,
       title: id.substr(id.lastIndexOf('/') + 1),
       children: [],
@@ -39,8 +40,9 @@ export class GenerateTreeview {
     id = TreeViewUtil.getId(id, rootNode)
     TreeViewUtil.addToParent(this.nodes, id)
     ;(this.nodes as any)[id] = {
-      path: id,
+      nodeId: id,
       isRoot: false,
+      isHidden: false,
       title: id.substr(id.lastIndexOf('/') + 1),
       type: 'file',
     }
@@ -50,7 +52,8 @@ export class GenerateTreeview {
   addRootNode(title: string, isOpen: boolean = false) {
     ;(this.nodes as any)[title] = {
       title,
-      path: title,
+      isHidden: false,
+      nodeId: title,
       isRoot: true,
       type: 'folder',
       children: [],

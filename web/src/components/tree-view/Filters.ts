@@ -2,7 +2,7 @@ import values from 'lodash/values'
 
 const defaultMatcher = (filterText: string, node: any) => {
   return (
-    node && node.path.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
+    node && node.nodeId.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
   )
 }
 
@@ -80,14 +80,14 @@ export function filterNodes(nodes: any, filterPath: any) {
       if (node.children) {
         const isParent = node.children.includes(filterPath)
         if (isParent) {
-          filteredNodes[node.path] = Object.assign({}, node)
+          filteredNodes[node.nodeId] = Object.assign({}, node)
           if (!node.isRoot) {
-            filterRecursive(node.path, nodes, filteredNodes)
+            filterRecursive(node.nodeId, nodes, filteredNodes)
           }
         }
       } else {
-        if (filterPath === node.path) {
-          filteredNodes[node.path] = Object.assign({}, node)
+        if (filterPath === node.nodeId) {
+          filteredNodes[node.nodeId] = Object.assign({}, node)
         }
       }
     })

@@ -20,11 +20,10 @@ export default (props: Props) => {
     const title = schemas.formData.title
 
     let url = dataUrl + '/' + title + '.json'
-    console.log(url)
     axios
       .put(url, schemas.formData)
       .then(function(response) {
-        dispatch(BlueprintActions.addFile(response.data))
+        // dispatch(BlueprintActions.addFile(response.data))
         NotificationManager.success(response.data, 'Created blueprint')
       })
       .catch(e => {

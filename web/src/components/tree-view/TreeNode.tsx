@@ -7,6 +7,8 @@ import {
   FaChevronRight,
 } from 'react-icons/fa'
 import styled from 'styled-components'
+import { NodeActions, NodeType } from './TreeReducer'
+import { TreeNodeData } from './Tree'
 
 type StyledTreeNode = {
   level: number
@@ -35,34 +37,43 @@ const NodeIcon = styled.div`
     props.marginRight ? props.marginRight : 5}px;
 `
 
-const getChildNodes = (node: any, nodes: any) => {
+const getChildNodes = (node: TreeNodeData, nodes: any) => {
   if (!node.children) return []
-  return node.children.map((path: string) => nodes[path])
-}
-
-export type TreeNodeType = {
-  path: string
-  type: 'file' | 'folder'
-  isOpen: boolean
-  title: string
-  isRoot: boolean
-  node: TreeNodeType
-  isHidden?: boolean //@todo needed?}
-  children?: string[]
+  return node.children.map((nodeId: string) => nodes[nodeId])
 }
 
 type TreeNodeProps = {
   NodeRenderer: any
   key: string
-  node: TreeNodeType
+  node: TreeNodeData
   nodes: object
   level: number
-  onToggle: (node: TreeNodeType) => any
-  onNodeSelect?: (node: TreeNodeType) => any
+  onToggle: (node: TreeNodeData) => any
+  onNodeSelect?: (node: TreeNodeData) => any
+  dispatch: any
 }
 
 const TreeNode = (props: TreeNodeProps) => {
-  const { node, nodes, level, onToggle, onNodeSelect, NodeRenderer } = props
+  const {
+    node,
+    dispatch,
+    nodes,
+    level,
+    onToggle,
+    onNodeSelect,
+    NodeRenderer,
+  } = props
+
+  const addNode = (nodeId: string, nodeType: NodeType) => {
+    const action = NodeActions.createNode(nodeId, nodeType)
+    dispatch(action)
+    dispatch(NodeActions.addChild(node.nodeId, action.nodeId))
+  }
+
+  const updateNode = (title: string) => {
+    dispatch(NodeActions.updateNode(node.nodeId, title))
+  }
+
   return (
     <React.Fragment>
       <StyledTreeNode level={level}>
@@ -81,10 +92,10 @@ const TreeNode = (props: TreeNodeProps) => {
           role="button"
           onClick={() => {
             onNodeSelect && onNodeSelect(node)
-            onToggle(node)
+            // onToggle(node)
           }}
         >
-          {NodeRenderer(node)}
+          {NodeRenderer(node, addNode, updateNode)}
         </span>
       </StyledTreeNode>
 
@@ -93,7 +104,7 @@ const TreeNode = (props: TreeNodeProps) => {
           .filter((node: any) => !node.isHidden)
           .map((childNode: any) => (
             <TreeNode
-              key={'treenode' + childNode.path}
+              key={'treenode' + childNode.nodeId}
               {...props}
               node={childNode}
               level={level + 1}
