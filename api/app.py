@@ -25,8 +25,9 @@ app = create_app(Config)
 @app.cli.command()
 def init_import():
     import_file_dict = {
-        "forms": getListOfFiles('/code/schemas/forms'),
+        "documents": getListOfFiles('/code/schemas/forms'),
         "templates": getListOfFiles('/code/schemas/templates'),
+        "data_sources": getListOfFiles('/code/schemas/data-sources'),
     }
 
     for collection, file_list in import_file_dict.items():
@@ -35,8 +36,12 @@ def init_import():
                 print(f'Importing {file} as {collection} with id: {id}.')
                 with open(file) as json_file:
                     document = json.load(json_file)
-                    document['_id'] = id
-                    if collection == 'templates':
-                        data_modelling_tool_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
+
                     if collection == 'forms':
+                        document['_id'] = id
                         model_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
+                    if collection == 'data_sources':
+                        data_modelling_tool_db[f'{collection}'].insert_one(document=document)
+                    else:
+                        document['_id'] = id
+                        data_modelling_tool_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
