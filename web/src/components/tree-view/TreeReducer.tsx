@@ -121,6 +121,7 @@ const deleteMany = (state: any, ids: any) => {
 }
 
 export default (state: any = {}, action: any) => {
+  console.log(action)
   switch (action.type) {
     case FILTER_TREE:
       const filter = action.filter.trim()
