@@ -5,7 +5,7 @@
   "username": "maf",
   "password": "maf",
   "tls": false,
-  "name": "sds-form-store",
+  "name": "latest-correct",
   "database": "maf",
-  "collection": "blueprints"
+  "collection": "documents"
 }

@@ -29,3 +29,10 @@ class MongodbClient:
             return self.handler[self.collection].insert_one(form).inserted_id
         except Exception as error:
             return abort(500, error)
+
+    def get_root_packages(self):
+        result = self.handler[self.collection].find(filter={'documentType': 'root-package'})
+        if not result:
+            return abort(404)
+        else:
+            return [package for package in result]

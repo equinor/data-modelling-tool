@@ -25,7 +25,7 @@ app = create_app(Config)
 @app.cli.command()
 def init_import():
     import_file_dict = {
-        "documents": getListOfFiles('/code/schemas/forms'),
+        "documents": getListOfFiles('/code/schemas/documents'),
         "templates": getListOfFiles('/code/schemas/templates'),
         "data_sources": getListOfFiles('/code/schemas/data-sources'),
     }
@@ -37,7 +37,7 @@ def init_import():
                 with open(file) as json_file:
                     document = json.load(json_file)
 
-                    if collection == 'forms':
+                    if collection == 'documents':
                         document['_id'] = id
                         model_db[f'{collection}'].replace_one({'_id': id}, document, upsert=True)
                     if collection == 'data_sources':
