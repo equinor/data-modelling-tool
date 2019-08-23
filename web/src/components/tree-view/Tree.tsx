@@ -31,9 +31,6 @@ export default (props: TreeProps) => {
     dispatch(Actions.setNodes(props.tree))
   }, [props.tree])
 
-  const handleToggle = (node: TreeNodeData): void =>
-    dispatch(NodeActions.toggleNode(node.nodeId))
-
   const handleSearch = (term: string) => dispatch(Actions.filterTree(term))
 
   const rootNodes = values(state).filter((node: TreeNodeData) => node.isRoot)
@@ -48,10 +45,8 @@ export default (props: TreeProps) => {
             <TreeNode
               key={node.nodeId}
               level={0}
-              node={node}
-              dispatch={dispatch}
+              nodeId={node.nodeId}
               nodes={state}
-              onToggle={handleToggle}
               NodeRenderer={props.children}
               onNodeSelect={props.onNodeSelect}
             />

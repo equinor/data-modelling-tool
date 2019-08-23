@@ -7,21 +7,20 @@ import { NodeType } from '../TreeReducer'
 
 describe('TreeNode', () => {
   it('renders without crashing', () => {
-    const node = {
-      nodeId: 'node_0',
-      type: NodeType.folder,
-      title: 'node_0',
-      isRoot: true,
-      isOpen: true,
-    }
     const props = {
-      node: node,
+      nodeId: 'node_0',
       dispatch: () => {},
       NodeRenderer: (node: TreeNodeData) => {
         return <h2>{node.title}</h2>
       },
       nodes: {
-        node_0: node,
+        node_0: {
+          nodeId: 'node_0',
+          type: NodeType.folder,
+          title: 'node_0',
+          isRoot: true,
+          isOpen: true,
+        },
       },
       level: 0,
       onToggle: (node: TreeNodeData) => {},

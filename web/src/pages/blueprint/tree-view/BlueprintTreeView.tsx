@@ -12,6 +12,7 @@ import { RootFolderNode } from './nodes/DataSourceNode'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import { GenerateTreeview } from '../../../util/generateTreeview'
+import generateFakeTree from '../../../util/genereteFakeTree'
 
 interface PropTypes {
   dispatch: (action: BlueprintAction) => void
@@ -44,12 +45,14 @@ export default (props: PropTypes) => {
     fetchData()
   }, [state.selectedDatasourceId])
 
+  const tree = generateFakeTree()
+
   return (
     <div>
       <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
 
       <div>
-        <Tree tree={documents}>
+        <Tree tree={tree}>
           {(node: TreeNodeData, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
             return (

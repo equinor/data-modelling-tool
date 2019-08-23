@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useReducer } from 'react'
 import {
   FaFile,
   FaFolder,
@@ -7,7 +7,7 @@ import {
   FaChevronRight,
 } from 'react-icons/fa'
 import styled from 'styled-components'
-import { NodeActions, NodeType } from './TreeReducer'
+import TreeReducer, { NodeActions, NodeType } from './TreeReducer'
 import { TreeNodeData } from './Tree'
 
 type StyledTreeNode = {
@@ -44,24 +44,20 @@ const getChildNodes = (node: TreeNodeData, nodes: any) => {
 
 type TreeNodeProps = {
   NodeRenderer: Function
-  node: TreeNodeData
-  nodes: object
+  nodeId: any
+  nodes: any
   level: number
-  onToggle: (node: TreeNodeData) => void
   onNodeSelect?: (node: TreeNodeData) => void
-  dispatch: Function
 }
 
 const TreeNode = (props: TreeNodeProps) => {
-  const {
-    node,
-    dispatch,
-    nodes,
-    level,
-    onToggle,
-    onNodeSelect,
-    NodeRenderer,
-  } = props
+  const { nodeId, nodes, level, onNodeSelect, NodeRenderer } = props
+
+  const [state, dispatch] = useReducer(TreeReducer, nodes)
+  const node = state[nodeId]
+
+  const handleToggle = (node: TreeNodeData): void =>
+    dispatch(NodeActions.toggleNode(node.nodeId))
 
   const addNode = (nodeId: string, nodeType: NodeType) => {
     dispatch(NodeActions.createNode(nodeId, nodeType))
@@ -75,7 +71,7 @@ const TreeNode = (props: TreeNodeProps) => {
   return (
     <React.Fragment>
       <StyledTreeNode level={level}>
-        <NodeIcon onClick={() => onToggle(node)}>
+        <NodeIcon onClick={() => handleToggle(node)}>
           {node.type === 'folder' &&
             (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
         </NodeIcon>
@@ -103,8 +99,9 @@ const TreeNode = (props: TreeNodeProps) => {
           .map((childNode: any) => (
             <TreeNode
               key={`tree-node-${childNode.nodeId}`}
-              {...props}
-              node={childNode}
+              nodes={nodes}
+              NodeRenderer={NodeRenderer}
+              nodeId={childNode.nodeId}
               level={level + 1}
             />
           ))}
