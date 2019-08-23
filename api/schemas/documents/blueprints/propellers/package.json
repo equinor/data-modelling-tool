@@ -1,0 +1,11 @@
+{
+  "_id": "blueprints/propellers/package.json",
+  "title": "propellers",
+  "documentType": "root-package",
+  "description": "cool sintef propeller model blueprints",
+  "versions": [
+    "blueprints/propellers/1.0.0/package.json",
+    "blueprints/propellers/1.0.1/package.json"
+  ],
+  "latestVersion": "blueprints/propellers/1.0.0/package.json"
+}

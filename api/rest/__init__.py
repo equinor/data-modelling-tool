@@ -13,6 +13,7 @@ from rest.form_to_schema import FormToSchema
 def create_api(app):
     api = Api(app)
     api.add_resource(Transformer, '/api/transformer/json-schema')
+    api.add_resource(Index, '/api/index/<string:data_source_id>')
 
     api.add_resource(SingleDataSource, '/api/data-sources/<string:_id>')
     api.add_resource(DataSources, '/api/data-sources')
@@ -21,7 +22,7 @@ def create_api(app):
     api.add_resource(FormToSchema, '/api/data-sources/<string:data_source_id>/<path:form_id>/json-schema')
 
     api.add_resource(Template, '/api/templates/<path:_id>')
-    api.add_resource(Index, '/api/index/<string:schema_type>')
+
     # TODO: Legacy... Remove related code
     api.add_resource(Blueprint, '/api/blueprints/<path:path>')
     api.add_resource(BlueprintToJsonSchema, '/api/blueprints/<path:path>/json-schema')

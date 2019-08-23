@@ -26,7 +26,7 @@ describe('generate treeview', () => {
 
     const index = [
       {
-        _id: '1.0.0/propeller.json',
+        _id: '1.0.0/big-propeller.json',
       },
       {
         _id: '1.0.0/package.json',
@@ -42,7 +42,7 @@ describe('generate treeview', () => {
       'local-files/1.0.0': {
         isRoot: false,
         type: 'folder',
-        children: ['local-files/1.0.0/propeller.json'],
+        children: ['local-files/1.0.0/big-propeller.json'],
       },
     })
   })

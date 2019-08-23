@@ -1,11 +1,11 @@
 {
   "schema": {
-    "title": "Package",
-    "description": "A package contains blueprints",
+    "title": "PackageTemplate",
+    "description": "Template for a package",
     "type": "object",
+    "documentType": "root-package",
     "required": [
-      "title",
-      "version"
+      "title"
     ],
     "properties": {
       "title": {
@@ -18,10 +18,13 @@
         "title": "Description",
         "default": ""
       },
-      "version": {
-        "type": "string",
-        "title": "Version",
-        "default": ""
+
+      "versions": {
+        "type": "array",
+        "title": "versions",
+        "items": {
+          "type": "string"
+        }
       }
     }
   },

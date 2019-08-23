@@ -1,9 +1,11 @@
 {
   "schema": {
-    "title": "Subpackage",
-    "description": "Contains models and other packages",
+    "title": "PackageTemplate",
+    "description": "Template for a package",
     "type": "object",
-    "required": ["title"],
+    "required": [
+      "title"
+    ],
     "properties": {
       "title": {
         "type": "string",
@@ -14,6 +16,22 @@
         "type": "string",
         "title": "Description",
         "default": ""
+      },
+      "version": {
+        "type": "string",
+        "title": "version",
+        "default": ""
+      },
+      "children": {
+        "type": "array",
+        "title": "children",
+        "items": {
+          "type": "string"
+        }
+      },
+      "parent": {
+        "type": "string",
+        "title": "parent"
       }
     }
   },
@@ -21,6 +39,10 @@
     "description": {
       "ui:widget": "textarea"
     },
-    "ui:order": ["title", "description"]
+    "ui:order": [
+      "title",
+      "description",
+      "version"
+    ]
   }
 }
