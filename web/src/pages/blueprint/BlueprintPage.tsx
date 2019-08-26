@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React, { useEffect, useReducer } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
@@ -6,19 +6,47 @@ import EditBlueprintForm from './form/EditBlueprintForm'
 import CreateBlueprintForm from './form/CreateBlueprintForm'
 import ViewBlueprintForm from './form/ViewBlueprintForm'
 import BlueprintReducer, {
+  BlueprintActions,
   blueprintInitialState,
   PageMode,
 } from './BlueprintReducer'
+import { DmtApi } from '../../api/Api'
+import BlueprintTreeviewHeader from './tree-view/BlueprintTreeviewHeader'
+const api = new DmtApi()
 
 export default () => {
   const [state, dispatch] = useReducer(BlueprintReducer, blueprintInitialState)
   const pageMode = state.pageMode
+
+  useEffect(() => {
+    api
+      .dataSourcesGet()
+      .then((res: any) => {
+        dispatch(BlueprintActions.addDatasources(res.data))
+      })
+
+      .catch((e: any) => {
+        console.log(e)
+      })
+  }, [state.selectedDatasourceId])
+
   return (
     <Grid fluid>
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
-            <BlueprintTreeView state={state} dispatch={dispatch} />
+            <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
+            {state.datasources.map((ds: any) => {
+              return (
+                <span key={ds._id}>
+                  <BlueprintTreeView
+                    state={state}
+                    datasource={ds}
+                    dispatch={dispatch}
+                  />
+                </span>
+              )
+            })}
           </Wrapper>
         </Col>
 

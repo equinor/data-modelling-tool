@@ -1,57 +1,52 @@
 import React, { useEffect, useState } from 'react'
 import axios from 'axios'
 import Tree from '../../../components/tree-view/Tree'
-import {
-  BlueprintAction,
-  BlueprintActions,
-  BlueprintState,
-} from '../BlueprintReducer'
-import BlueprintTreeviewHeader from './BlueprintTreeviewHeader'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
+import { BlueprintAction, BlueprintState } from '../BlueprintReducer'
 import { RootFolderNode } from './nodes/DataSourceNode'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
-import { GenerateTreeview } from '../../../util/generateTreeview'
-import generateFakeTree from '../../../util/genereteFakeTree'
+import { IndexNode } from '../../../api/Api'
 
 interface PropTypes {
   dispatch: (action: BlueprintAction) => void
   state: BlueprintState
+  datasource: any
 }
 
 export default (props: PropTypes) => {
-  const { state, dispatch } = props
-
+  const { state, dispatch, datasource } = props
+  const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
   useEffect(() => {
     async function fetchData() {
-      const urlBluePrints = '/api/index/blueprints'
+      const urlBluePrints = `/api/index/${datasource._id}`
       axios(urlBluePrints)
         .then(res => {
-          const nodeBuilder = new GenerateTreeview({})
-          const rootTitle = state.datasources[state.selectedDatasourceId].title
-          const nodes = nodeBuilder
-            .addRootNode(rootTitle)
-            .addNodes(res.data, rootTitle)
-            .build()
-          setDocuments(nodes)
+          setDocuments(res.data)
         })
         .catch((err: any) => {
           console.error(err)
         })
+      setLoading(false)
     }
 
+    setLoading(true)
     fetchData()
-  }, [state.selectedDatasourceId])
+  }, [datasource._id])
 
+  if (loading) {
+    return <div>Loading...</div>
+  }
+  if (!Object.keys(documents).length) {
+    return null
+  }
   return (
     <div>
-      <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
-
+      <h3>{datasource.name}</h3>
       <div>
         <Tree tree={documents}>
-          {(node: TreeNodeData, addNode: Function, updateNode: Function) => {
+          {(node: IndexNode, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
             return (
               <NodeComponent
@@ -68,23 +63,12 @@ export default (props: PropTypes) => {
   )
 }
 
-function getNodeComponent(node: TreeNodeData) {
-  const versionTest = new RegExp(/\d+.\d+.\d+/)
-  let isParentOfVersion = false
-  node.children &&
-    node.children.forEach(childPath => {
-      const childPathTitle = childPath.substr(childPath.lastIndexOf('/') + 1)
-      if (versionTest.test(childPathTitle)) {
-        isParentOfVersion = true
-      }
-    })
-  if (isParentOfVersion) {
-    return () => <div>{node.title}</div>
-  }
-
-  switch (node.type) {
-    case 'folder':
-      return node.isRoot ? RootFolderNode : FolderNode
+function getNodeComponent(node: IndexNode) {
+  switch (node.nodeType) {
+    case 'root-package':
+      return RootFolderNode
+    case 'package':
+      return FolderNode
     case 'file':
       return BlueprintNode
     default:

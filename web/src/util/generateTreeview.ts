@@ -1,4 +1,5 @@
 import { TreeViewUtil } from './TreeviewUtil'
+import { values } from 'lodash'
 
 export type IndexNode = {
   _id: string
@@ -84,15 +85,10 @@ export class GenerateTreeview {
     return this
   }
 
-  addNodes(index: any[], rootNode: string) {
-    index.sort(TreeViewUtil.sortNodes).forEach((node: IndexNode) => {
-      const id = TreeViewUtil.getId(node._id, rootNode)
-      if (TreeViewUtil.isFile(id)) {
-        this.addFile(id, rootNode)
-      } else {
-        this.addPackage(id, rootNode, false)
-      }
-    })
+  addNodes(index: object) {
+    console.log(index)
+    // const sorted = values(index).sort(TreeViewUtil.sortNodes);
+    this.nodes = index
     return this
   }
 

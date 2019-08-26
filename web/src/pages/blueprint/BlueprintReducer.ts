@@ -4,6 +4,7 @@ const VIEW_FILE = 'VIEW_FILE'
 const EDIT_FILE = 'EDIT_FILE'
 const ADD_NODES = 'ADD_NODES'
 const SET_SELECTED_DATASOURCE_ID = 'SET_SELECTED_DATASOURCE_ID'
+const ADD_DATASOURCES = 'ADD_DATASOURCES'
 
 export enum PageMode {
   create,
@@ -23,7 +24,7 @@ export type BlueprintAction = {
 }
 
 export type BlueprintState = {
-  selectedDatasourceId: number
+  selectedDatasourceId: string
   selectedBlueprintId: string
   datasources: Datasource[]
   pageMode: PageMode
@@ -31,12 +32,10 @@ export type BlueprintState = {
   dataUrl: string
 }
 
-const datasources: Datasource[] = [{ id: 0, label: 'Blueprints', title: 'maf' }]
-
 export const blueprintInitialState: BlueprintState = {
-  selectedDatasourceId: 0,
+  selectedDatasourceId: '',
   selectedBlueprintId: '',
-  datasources: datasources,
+  datasources: [],
   pageMode: PageMode.view,
   templateUrl: '/api/templates/blueprint.json',
   dataUrl: ``,
@@ -52,6 +51,10 @@ export const BlueprintActions = {
     value: id,
   }),
 
+  addDatasources: (value: any[]): object => ({
+    type: ADD_DATASOURCES,
+    value,
+  }),
   /**
    * Sets selectedBlueprintId and correct pageMode
    * @param id nodeId of file
@@ -76,6 +79,13 @@ export default (state: BlueprintState, action: any) => {
         dataUrl: generateDataUrl(state, ''),
       }
       return { ...state, ...newState }
+    case ADD_DATASOURCES:
+      return {
+        ...state,
+        datasources: action.value,
+        selectedDatasourceId:
+          action.value && action.value.length && action.value[0]._id,
+      }
 
     // FORM ACTIONS
     case EDIT_FILE:

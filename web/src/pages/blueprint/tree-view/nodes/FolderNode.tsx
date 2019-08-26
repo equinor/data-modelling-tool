@@ -4,6 +4,7 @@ import { NodeType } from '../../../../components/tree-view/TreeReducer'
 import Form from '../../../../components/Form'
 import Modal from '../../../../components/modal/Modal'
 import axios from 'axios'
+import { Props } from './DataSourceNode'
 
 type WithContextMenuProps = {
   label: string
@@ -81,7 +82,7 @@ export type NodeMenuItem = {
   label: string
 }
 
-export const FolderNode = (props: any) => {
+export const FolderNode = (props: Props) => {
   const { node, addNode, updateNode } = props
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
@@ -120,7 +121,7 @@ export const FolderNode = (props: any) => {
         setShowModal(false)
       },
       onError,
-      nodeId: node.nodeId,
+      nodeId: node._id,
     })
   }
 
