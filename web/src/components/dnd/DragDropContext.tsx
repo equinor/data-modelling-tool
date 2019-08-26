@@ -4,6 +4,7 @@ import { DragDropContext } from 'react-beautiful-dnd'
 
 interface IVerticalColumnContextProps {
   onDragEnd: (result: any) => void
+  onDragStart: (result: any) => void
   children: any
 }
 

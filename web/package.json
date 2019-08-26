@@ -17,8 +17,6 @@
     "styled-components": "^4.3.2",
     "to-json-schema": "^0.2.1",
     "typescript": "^3.5.2",
-    "react-dnd-html5-backend": "^9.3.4",
-    "react-dnd": "^9.3.4",
     "react-beautiful-dnd": "^11.0.5"
   },
   "scripts": {
@@ -74,6 +72,7 @@
     "@types/lodash": "^4.14.135",
     "@types/node": "^12.0.12",
     "@types/react": "^16.8.23",
+    "@types/react-beautiful-dnd": "^11.0.3",
     "@types/react-dom": "^16.8.4",
     "@types/react-jsonschema-form": "^1.6.2",
     "@types/styled-components": "^4.1.18",

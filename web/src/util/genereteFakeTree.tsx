@@ -7,10 +7,11 @@ export default function generateFakeTree() {
       isRoot: true,
       isHidden: false,
       type: 'folder',
+      isOpen: true,
     },
   }
 
-  for (let i = 1; i < 30; i++) {
+  for (let i = 1; i < 5; i++) {
     const id = `${i}`
     let parentId = Math.floor(Math.pow(Math.random(), 2) * i)
     tree[id] = {

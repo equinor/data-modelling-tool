@@ -1,30 +1,43 @@
 import * as React from 'react'
+// @ts-ignore
 import { Droppable, DroppableProvided } from 'react-beautiful-dnd'
+import styled from 'styled-components'
 
-const getListStyle = isDraggingOver => ({
-  background: isDraggingOver ? 'lightblue' : 'lightgrey',
-})
+const Container = styled.div`
+  height: 300px;
+  overflow: auto;
+`
 
-/*
- https://github.com/atlassian/react-beautiful-dnd/blob/master/docs/api/droppable.md
- */
-export default (props: any) => (
-  <Droppable
-    droppableId={props.droppableId}
-    isCombineEnabled={true}
-    type={props.type}
-  >
-    {(provided: DroppableProvided, snapshot: any) => (
-      <div
-        style={getListStyle(snapshot.isDraggingOver)}
-        className={props.className}
-        ref={provided.innerRef}
-        {...provided.droppableProps}
-        {...provided.droppablePlaceholder}
+interface ListProps {
+  isDraggingOver: boolean
+}
+
+const List = styled.div<ListProps>`
+  background-color: ${(props: ListProps) =>
+    props.isDraggingOver ? 'skyblue' : 'white'};
+`
+
+export default (props: any) => {
+  return (
+    <Container>
+      <Droppable
+        droppableId={props.droppableId}
+        isCombineEnabled={false}
+        //type={props.type}
       >
-        {props.children}
-        {provided.placeholder}
-      </div>
-    )}
-  </Droppable>
-)
+        {(provided: DroppableProvided, snapshot: any) => {
+          return (
+            <List
+              ref={provided.innerRef}
+              {...provided.droppableProps}
+              isDraggingOver={snapshot.isDraggingOver}
+            >
+              {props.children}
+              {provided.placeholder}
+            </List>
+          )
+        }}
+      </Droppable>
+    </Container>
+  )
+}
