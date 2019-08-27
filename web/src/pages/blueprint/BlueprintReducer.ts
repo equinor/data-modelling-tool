@@ -1,5 +1,3 @@
-import { GenerateTreeview } from '../../util/generateTreeview'
-
 const VIEW_FILE = 'VIEW_FILE'
 const EDIT_FILE = 'EDIT_FILE'
 const ADD_NODES = 'ADD_NODES'
