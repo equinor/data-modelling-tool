@@ -1,0 +1,11 @@
+{
+  "title": "Boxes",
+  "description": "Many different boxes",
+  "documentType": "version",
+  "subpackages": [
+    "blueprints/boxes/1.1.1/big/package.json"
+  ],
+  "files": [
+    "blueprints/boxes/1.1.1/ordinary.json"
+  ]
+}

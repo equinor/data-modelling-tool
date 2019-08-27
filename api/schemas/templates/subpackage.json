@@ -17,21 +17,24 @@
         "title": "Description",
         "default": ""
       },
-      "version": {
+      "documentType": {
         "type": "string",
-        "title": "version",
-        "default": ""
+        "title": "documentType",
+        "default": "subpackage"
       },
-      "children": {
+      "subpackages": {
         "type": "array",
-        "title": "children",
+        "title": "subpackages",
         "items": {
           "type": "string"
         }
       },
-      "parent": {
-        "type": "string",
-        "title": "parent"
+      "files": {
+        "type": "array",
+        "title": "files",
+        "items": {
+          "type": "string"
+        }
       }
     }
   },

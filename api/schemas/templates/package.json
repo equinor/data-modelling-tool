@@ -3,7 +3,6 @@
     "title": "PackageTemplate",
     "description": "Template for a package",
     "type": "object",
-    "documentType": "root-package",
     "required": [
       "title"
     ],
@@ -18,7 +17,15 @@
         "title": "Description",
         "default": ""
       },
-
+      "documentType": {
+        "type": "string",
+        "title": "documentType",
+        "default": "root-package"
+      },
+      "latestVersion": {
+        "type": "string",
+        "title": "Latest version"
+      },
       "versions": {
         "type": "array",
         "title": "versions",

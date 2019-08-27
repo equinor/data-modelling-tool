@@ -1,6 +1,8 @@
 from flask import abort
 from pymongo import MongoClient
 
+from utils.logging import logger
+
 
 class MongodbClient:
     def __init__(self, host: str, username: str, password: str, database: str, collection: str, port: int = 27001):
@@ -18,6 +20,7 @@ class MongodbClient:
     def read_form(self, _id):
         result = self.handler[self.collection].find_one(filter={'_id': _id})
         if not result:
+            logger.warning(f'The document with id = {_id} was not found.')
             return abort(404)
         else:
             return result
