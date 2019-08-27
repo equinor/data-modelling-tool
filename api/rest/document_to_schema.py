@@ -5,7 +5,7 @@ from classes.data_source import DataSource
 from utils.schema_tools.form_to_schema import form_to_schema
 
 
-class FormToSchema(Resource):
+class DocumentToSchema(Resource):
     @staticmethod
     def get(data_source_id, form_id):
         data_source = DataSource(_id=data_source_id)

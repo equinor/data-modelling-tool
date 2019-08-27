@@ -1,13 +1,11 @@
 from flask_restful import Api
 
-from rest.form import Blueprint, Form
-from rest.blueprint_to_json_schema import BlueprintToJsonSchema
 from rest.data_sources import DataSources, SingleDataSource
-from rest.entity import Entity
-from rest.transformer import Transformer
+from rest.document import Document
+from rest.document_to_schema import DocumentToSchema
 from rest.index import Index
 from rest.template import Template
-from rest.form_to_schema import FormToSchema
+from rest.transformer import Transformer
 
 
 def create_api(app):
@@ -18,13 +16,9 @@ def create_api(app):
     api.add_resource(SingleDataSource, '/api/data-sources/<string:_id>')
     api.add_resource(DataSources, '/api/data-sources')
 
-    api.add_resource(Form, '/api/data-sources/<string:data_source_id>/<path:form_id>')
-    api.add_resource(FormToSchema, '/api/data-sources/<string:data_source_id>/<path:form_id>/json-schema')
+    api.add_resource(Document, '/api/data-sources/<string:data_source_id>/<path:form_id>')
+    api.add_resource(DocumentToSchema, '/api/data-sources/<string:data_source_id>/<path:form_id>/json-schema')
 
     api.add_resource(Template, '/api/templates/<path:_id>')
 
-    # TODO: Legacy... Remove related code
-    api.add_resource(Blueprint, '/api/blueprints/<path:path>')
-    api.add_resource(BlueprintToJsonSchema, '/api/blueprints/<path:path>/json-schema')
-    api.add_resource(Entity, '/api/entities/<path:path>')
     return app
