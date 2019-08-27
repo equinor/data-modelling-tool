@@ -131,7 +131,8 @@ export default (state: any = {}, action: any) => {
         filteredNodes,
         filter
       )
-      let nodesAsObject = keyBy(expandedNodes, 'nodeId')
+      let nodesAsObject = keyBy(expandedNodes, '_id')
+      //@todo open rootnode.
       return { ...nodesAsObject }
 
     case SET_NODES:

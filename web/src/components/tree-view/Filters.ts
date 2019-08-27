@@ -8,7 +8,7 @@ const defaultMatcher = (filterText: string, node: IndexNode) => {
 const nodeMatchesOrHasMatchingDescendants: any = (
   data: any,
   node: IndexNode,
-  filter: any,
+  filter: string,
   matcher: any
 ) => {
   return (
@@ -33,7 +33,7 @@ export const expandNodesWithMatchingDescendants = (
   filter: any,
   matcher: any = defaultMatcher
 ) => {
-  return nodes.map((node: any) => {
+  return nodes.map((node: IndexNode) => {
     let isOpen = false
     if (node.children && node.children.length) {
       let childrenWithMatches = node.children.filter((child: string) =>
