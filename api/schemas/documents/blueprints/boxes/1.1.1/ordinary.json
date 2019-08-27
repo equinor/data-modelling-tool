@@ -1,0 +1,28 @@
+{
+  "title": "Ordinary-box",
+  "description": "Pretty standard stuff here",
+  "properties": {
+    "title": {
+      "title": "Title",
+      "type": "string",
+      "default": ""
+    },
+    "description": {
+      "title": "Description",
+      "type": "string",
+      "default": ""
+    },
+    "Length": {
+      "type": "integer",
+      "unit": "nil",
+      "value": "nil",
+      "dimensions": ""
+    },
+    "Width": {
+      "type": "integer",
+      "unit": "nil",
+      "value": "",
+      "dimensions": ""
+    }
+  }
+}

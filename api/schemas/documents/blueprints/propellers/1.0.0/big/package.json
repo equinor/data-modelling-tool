@@ -1,8 +1,0 @@
-{
-  "title": "propellers",
-  "description": "big propellers",
-  "documentType": "package",
-  "files": [
-    "blueprints/propellers/1.0.0/big/big-propeller.json"
-  ]
-}

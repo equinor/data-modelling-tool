@@ -4,31 +4,43 @@ from classes.data_source import DataSource
 
 
 def index_package(package_id: str, data_source: DataSource):
-    index = []
+    index = {}
     package = data_source.client.read_form(package_id)
-    package['nodeType'] = 'subpackage'
-    index.append(package)
 
     for file in package['files']:
         tmp_file = data_source.client.read_form(file)
+
         tmp_file['nodeType'] = 'file'
-        tmp_file.pop('attributes')
-        index.append(tmp_file)
+        tmp_file['isRoot'] = False
+        tmp_file.pop('attributes', {})
+        tmp_file.pop('properties', {})
+
+        index[tmp_file['_id']] = tmp_file
 
     for sub_package in package.get('subpackages', []):
-        index.extend(index_package(package_id=sub_package, data_source=data_source))
+        index.update(**index_package(package_id=sub_package, data_source=data_source))
+
+    if not package['documentType'] == 'version':
+        package['nodeType'] = package.pop('documentType')
+        package['isRoot'] = False
+        package['children'] = package.pop('subpackages', []) + package.pop('files', [])
+        index[package['_id']] = package
+
     return index
 
 
-def index_data_source(data_source_id: str):
-    data_source = DataSource(data_source_id)
+def index_data_source(data_source: DataSource):
+
     root_packages = data_source.client.get_root_packages()
-    index = []
+    index = {}
 
     for root_package in root_packages:
         root_package['nodeType'] = root_package.pop('documentType')
-        index.append(root_package)
-        index.extend(index_package(package_id=root_package['latestVersion'], data_source=data_source))
+        root_package['isRoot'] = True
+        index[root_package['_id']] = root_package
+
+        index.update(**index_package(package_id=root_package['latestVersion'],
+                                     data_source=data_source))
 
     return index
 
@@ -36,4 +48,5 @@ def index_data_source(data_source_id: str):
 class Index(Resource):
     @staticmethod
     def get(data_source_id):
-        return index_data_source(data_source_id=data_source_id)
+        data_source = DataSource(data_source_id)
+        return index_data_source(data_source=data_source)
