@@ -121,7 +121,7 @@ const deleteMany = (state: any, ids: any) => {
 }
 
 export default (state: any = {}, action: any) => {
-  console.log(action)
+  const { nodeId } = action
   switch (action.type) {
     case FILTER_TREE:
       const filter = action.filter.trim()
@@ -137,20 +137,24 @@ export default (state: any = {}, action: any) => {
     case SET_NODES:
       return action.nodes
 
-    default:
-      const { nodeId } = action
+    case DELETE_NODE:
+      const descendantIds = getAllDescendantIds(state, nodeId)
+      return deleteMany(state, [nodeId, ...descendantIds])
+
+    case CREATE_NODE:
+    case ADD_CHILD:
+    case REMOVE_CHILD:
+    case TOGGLE_NODE:
+    case UPDATE_NODE:
       if (typeof nodeId === 'undefined') {
         return state
-      }
-
-      if (action.type === DELETE_NODE) {
-        const descendantIds = getAllDescendantIds(state, nodeId)
-        return deleteMany(state, [nodeId, ...descendantIds])
       }
 
       return {
         ...state,
         [nodeId]: node(state[nodeId], action),
       }
+    default:
+      return state
   }
 }

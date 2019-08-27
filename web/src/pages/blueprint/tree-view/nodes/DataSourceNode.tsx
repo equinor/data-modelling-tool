@@ -4,6 +4,7 @@ import Modal from '../../../../components/modal/Modal'
 import Form from '../../../../components/Form'
 import axios from 'axios'
 import ContextMenu from '../../../../components/context-menu/ContextMenu'
+import { IndexNode } from '../../../../api/Api'
 
 type WithContextMenuProps = {
   label: string
@@ -40,8 +41,7 @@ export function addPackageConfig(props: any) {
 
 function editPackageConfig(props: any) {
   const { onSuccess, onError, nodeId } = props
-  let id = nodeId.substring(nodeId.indexOf('/') + 1)
-  const dataUrl = `/api/blueprints/${id}`
+  const dataUrl = `/api/blueprints/${nodeId}`
   return {
     schemaUrl: '/api/templates/package.json',
     dataUrl,
@@ -63,7 +63,13 @@ export type NodeMenuItem = {
   label: string
 }
 
-export const RootFolderNode = (props: any) => {
+export type Props = {
+  node: IndexNode
+  addNode: Function
+  updateNode: Function
+}
+
+export const RootFolderNode = (props: Props) => {
   const { node, addNode, updateNode } = props
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
@@ -97,7 +103,7 @@ export const RootFolderNode = (props: any) => {
         onError: (error: any) => {
           console.log(error)
         },
-        nodeId: node.nodeId,
+        nodeId: node._id,
       }),
     },
   ]
@@ -110,7 +116,7 @@ export const RootFolderNode = (props: any) => {
         {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <WithContextMenu
-        id={node.nodeId}
+        id={node._id}
         onClickContextMenu={(id: any, action: string) => {
           setAction(action)
           setShowModal(!showModal)

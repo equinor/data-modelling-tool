@@ -9,6 +9,8 @@ import {
 import styled from 'styled-components'
 import TreeReducer, { NodeActions, NodeType } from './TreeReducer'
 import { TreeNodeData } from './Tree'
+import { IndexNode } from '../../api/Api'
+import ErrorBoundary from '../ErrorBoundary'
 
 type StyledTreeNode = {
   level: number
@@ -37,9 +39,20 @@ const NodeIcon = styled.div`
     props.marginRight ? props.marginRight : 5}px;
 `
 
-const getChildNodes = (node: TreeNodeData, nodes: any) => {
-  if (!node.children) return []
-  return node.children.map((nodeId: string) => nodes[nodeId])
+const getChildNodes = (node: IndexNode, nodes: any): any[] => {
+  const children: any[] = []
+  if (node.children) {
+    node.children.forEach((nodeId: string) => {
+      if (nodes[nodeId]) {
+        children.push(nodes[nodeId])
+      } else {
+        console.warn('nodes have no child with id: ' + nodeId)
+        console.log(nodeId)
+        console.log(nodes)
+      }
+    })
+  }
+  return children
 }
 
 type TreeNodeProps = {
@@ -52,12 +65,56 @@ type TreeNodeProps = {
 
 const TreeNode = (props: TreeNodeProps) => {
   const { nodeId, nodes, level, onNodeSelect, NodeRenderer } = props
-
   const [state, dispatch] = useReducer(TreeReducer, nodes)
   const node = state[nodeId]
 
-  const handleToggle = (node: TreeNodeData): void =>
-    dispatch(NodeActions.toggleNode(node.nodeId))
+  const handleToggle = (node: IndexNode): void =>
+    dispatch(NodeActions.toggleNode(node._id))
+
+  if (!node) {
+    return null
+  }
+  const type = node.nodeType === 'file' ? 'file' : 'folder'
+  return (
+    <ErrorBoundary>
+      <StyledTreeNode level={level}>
+        <NodeIcon onClick={() => handleToggle(node)}>
+          {type === 'folder' &&
+            (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
+        </NodeIcon>
+
+        <NodeIcon marginRight={5}>
+          {type === 'file' && <FaFile />}
+          {type === 'folder' && node.isOpen && <FaFolderOpen />}
+          {type === 'folder' && !node.isOpen && <FaFolder />}
+        </NodeIcon>
+
+        <TreeChildren
+          dispatch={dispatch}
+          NodeRenderer={NodeRenderer}
+          onNodeSelect={onNodeSelect}
+          node={node}
+        />
+      </StyledTreeNode>
+
+      {node.isOpen &&
+        getChildNodes(node, nodes)
+          .filter((node: any) => !node.isHidden)
+          .map((childNode: any) => (
+            <TreeNode
+              key={`tree-node-${childNode._id}`}
+              nodes={nodes}
+              NodeRenderer={NodeRenderer}
+              nodeId={childNode._id}
+              level={level + 1}
+            />
+          ))}
+    </ErrorBoundary>
+  )
+}
+
+const TreeChildren = (props: any) => {
+  const { node, NodeRenderer, onNodeSelect, dispatch } = props
 
   const addNode = (nodeId: string, nodeType: NodeType) => {
     dispatch(NodeActions.createNode(nodeId, nodeType))
@@ -67,45 +124,20 @@ const TreeNode = (props: TreeNodeProps) => {
   const updateNode = (title: string) => {
     dispatch(NodeActions.updateNode(node.nodeId, title))
   }
-
   return (
-    <React.Fragment>
-      <StyledTreeNode level={level}>
-        <NodeIcon onClick={() => handleToggle(node)}>
-          {node.type === 'folder' &&
-            (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
-        </NodeIcon>
-
-        <NodeIcon marginRight={5}>
-          {node.type === 'file' && <FaFile />}
-          {node.type === 'folder' && node.isOpen && <FaFolderOpen />}
-          {node.type === 'folder' && !node.isOpen && <FaFolder />}
-        </NodeIcon>
-
-        <span
-          role="button"
-          onClick={() => {
-            onNodeSelect && onNodeSelect(node)
-            // onToggle(node)
-          }}
-        >
-          {NodeRenderer(node, addNode, updateNode)}
-        </span>
-      </StyledTreeNode>
-
-      {node.isOpen &&
-        getChildNodes(node, nodes)
-          .filter((node: any) => !node.isHidden)
-          .map((childNode: any) => (
-            <TreeNode
-              key={`tree-node-${childNode.nodeId}`}
-              nodes={nodes}
-              NodeRenderer={NodeRenderer}
-              nodeId={childNode.nodeId}
-              level={level + 1}
-            />
-          ))}
-    </React.Fragment>
+    <span
+      role="button"
+      onClick={() => {
+        try {
+          onNodeSelect && onNodeSelect(node)
+          // onToggle(node)
+        } catch (e) {
+          console.error('failed to click on node', e)
+        }
+      }}
+    >
+      {NodeRenderer(node, addNode, updateNode)}
+    </span>
   )
 }
 

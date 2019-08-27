@@ -2,7 +2,7 @@ import React from 'react'
 import axios from 'axios'
 import { BlueprintState } from '../BlueprintReducer'
 import { BlueprintActions } from '../BlueprintReducer'
-import { IndexNode } from '../../../util/generateTreeview'
+import { IndexNode } from '../../../api/Api'
 
 type IndexItem = {
   _id: string
@@ -17,7 +17,7 @@ type Props = {
 export default (props: Props) => {
   const { state, dispatch } = props
 
-  function handleFile(file: File, index: IndexNode[], numFiles: number) {
+  function handleFile(file: File, index: any[], numFiles: number) {
     let fileReader: FileReader
     fileReader = new FileReader()
     fileReader.onloadend = () => {

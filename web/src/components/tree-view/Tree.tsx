@@ -7,9 +7,11 @@ import TreeReducer, {
   NodeType,
 } from '../../components/tree-view/TreeReducer'
 import SearchTree from './SearchTree'
+import { IndexNode } from '../../api/Api'
+import ErrorBoundary from '../ErrorBoundary'
 
 export type TreeNodeData = {
-  nodeId: string
+  _id: string
   type: NodeType
   isOpen: boolean
   title: string
@@ -36,22 +38,22 @@ export default (props: TreeProps) => {
   const rootNodes = values(state).filter((node: TreeNodeData) => node.isRoot)
 
   return (
-    <>
+    <ErrorBoundary>
       <SearchTree onChange={handleSearch} />
       {rootNodes
         .filter((node: TreeNodeData) => !node.isHidden)
-        .map((node: TreeNodeData) => {
+        .map((node: IndexNode) => {
           return (
             <TreeNode
-              key={node.nodeId}
+              key={node._id}
               level={0}
-              nodeId={node.nodeId}
+              nodeId={node._id}
               nodes={state}
               NodeRenderer={props.children}
               onNodeSelect={props.onNodeSelect}
             />
           )
         })}
-    </>
+    </ErrorBoundary>
   )
 }
