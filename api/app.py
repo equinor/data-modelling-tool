@@ -47,3 +47,12 @@ def init_import():
                     data_modelling_tool_db[f"{collection}"].replace_one(
                         {"_id": id}, document, upsert=True
                     )
+
+
+@app.cli.command()
+def nuke_db():
+    print("Dropping all collections")
+    # FIXME: Read names from the database
+    for name in ["documents", "templates", "data-sources"]:
+        print(f"Dropping collection '{name}'")
+        model_db.drop_collection(name)
