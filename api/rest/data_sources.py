@@ -1,6 +1,7 @@
 from flask import request
 from flask_restful import Resource
 
+from rest.validators.mongo_data_source import validate_mongo_data_source
 from services.database import data_modelling_tool_db as database
 from utils.logging import logger
 from config import Config
@@ -18,6 +19,7 @@ def data_sources_get():
 
 def data_source_post():
     document = request.get_json()
+    validate_mongo_data_source(document)
     logger.info(f"Inserting new data-source named {document['name']}.")
     result = collection.insert_one(document)
     logger.info(f'Successfully inserted with id {result}')
@@ -26,6 +28,7 @@ def data_source_post():
 
 def data_source_put(_id):
     document = request.get_json()
+    validate_mongo_data_source(document)
     result = collection.replace_one({'_id': _id}, document, upsert=True)
     return str(result.acknowledged)
 

@@ -5,7 +5,7 @@ from .common import common_get, common_put
 from classes.data_source import DataSource
 
 
-class Form(Resource):
+class Document(Resource):
     @staticmethod
     def get(data_source_id, form_id):
         data_source = DataSource(_id=data_source_id)
@@ -23,14 +23,3 @@ class Form(Resource):
         form = request.get_json()
         data_source = DataSource(_id=data_source_id)
         return data_source.client.update_form(form=form, _id=form_id)
-
-
-# TODO: Remove this old endpoint
-class Blueprint(Resource):
-    @staticmethod
-    def get(path):
-        return common_get('blueprints', path)
-
-    @staticmethod
-    def put(path):
-        return common_put('blueprints', path)
