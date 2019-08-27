@@ -5,7 +5,7 @@ def replace_dict_keys(old_key, new_key, input_dict):
     :param input_dict: A complex dictionary.
     :return: A dict
     """
-    if hasattr(input_dict, 'items'):
+    if hasattr(input_dict, "items"):
         for key, value in input_dict.items():
             if key == old_key:
                 input_dict[new_key] = input_dict.pop(old_key)

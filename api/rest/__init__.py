@@ -10,15 +10,17 @@ from rest.transformer import Transformer
 
 def create_api(app):
     api = Api(app)
-    api.add_resource(Transformer, '/api/transformer/json-schema')
-    api.add_resource(Index, '/api/index/<string:data_source_id>')
+    api.add_resource(Transformer, "/api/transformer/json-schema")
+    api.add_resource(Index, "/api/index/<string:data_source_id>")
 
-    api.add_resource(SingleDataSource, '/api/data-sources/<string:_id>')
-    api.add_resource(DataSources, '/api/data-sources')
+    api.add_resource(SingleDataSource, "/api/data-sources/<string:_id>")
+    api.add_resource(DataSources, "/api/data-sources")
 
-    api.add_resource(Document, '/api/data-sources/<string:data_source_id>/<path:form_id>')
-    api.add_resource(DocumentToSchema, '/api/data-sources/<string:data_source_id>/<path:form_id>/json-schema')
+    api.add_resource(Document, "/api/data-sources/<string:data_source_id>/<path:form_id>")
+    api.add_resource(
+        DocumentToSchema, "/api/data-sources/<string:data_source_id>/<path:form_id>/json-schema"
+    )
 
-    api.add_resource(Template, '/api/templates/<path:_id>')
+    api.add_resource(Template, "/api/templates/<path:_id>")
 
     return app
