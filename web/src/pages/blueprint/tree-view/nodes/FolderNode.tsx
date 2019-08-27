@@ -111,7 +111,7 @@ export const FolderNode = (props: Props) => {
       setShowModal(false)
     },
     onError,
-    nodeId: node.nodeId,
+    nodeId: node._id,
   })
 
   if (action == 'add-subpackage') {
@@ -132,7 +132,7 @@ export const FolderNode = (props: Props) => {
         setShowModal(false)
       },
       onError,
-      nodeId: node.nodeId,
+      nodeId: node._id,
     })
   }
 
@@ -142,7 +142,7 @@ export const FolderNode = (props: Props) => {
         <Form {...formConfig}></Form>
       </Modal>
       <WithContextMenu
-        id={node.nodeId}
+        id={node._id}
         onClickContextMenu={(id: any, action: string) => {
           setAction(action)
           setShowModal(!showModal)

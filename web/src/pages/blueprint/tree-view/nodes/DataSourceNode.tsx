@@ -103,7 +103,7 @@ export const RootFolderNode = (props: Props) => {
         onError: (error: any) => {
           console.log(error)
         },
-        nodeId: node.nodeId,
+        nodeId: node._id,
       }),
     },
   ]
