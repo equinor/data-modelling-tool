@@ -1,14 +1,13 @@
 import values from 'lodash/values'
+import { IndexNode } from '../../api/Api'
 
-const defaultMatcher = (filterText: string, node: any) => {
-  return (
-    node && node.nodeId.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
-  )
+const defaultMatcher = (filterText: string, node: IndexNode) => {
+  return node && node._id.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
 }
 
-const nodeMatchesOrHasMatchingDescendants = (
+const nodeMatchesOrHasMatchingDescendants: any = (
   data: any,
-  node: any,
+  node: IndexNode,
   filter: any,
   matcher: any
 ) => {
@@ -17,7 +16,7 @@ const nodeMatchesOrHasMatchingDescendants = (
     (node &&
     node.children && // or i have decendents and one of them match
       node.children.length &&
-      !!node.children.find((childNode: any) =>
+      !!node.children.find((childNode: string) =>
         nodeMatchesOrHasMatchingDescendants(
           data,
           data[childNode],
@@ -37,7 +36,7 @@ export const expandNodesWithMatchingDescendants = (
   return nodes.map((node: any) => {
     let isOpen = false
     if (node.children && node.children.length) {
-      let childrenWithMatches = node.children.filter((child: any) =>
+      let childrenWithMatches = node.children.filter((child: string) =>
         nodeMatchesOrHasMatchingDescendants(data, data[child], filter, matcher)
       )
       isOpen = !!childrenWithMatches.length // i expand if any of my kids match
@@ -51,7 +50,7 @@ export const hideNodesWithNoMatchingDescendants = (
   filter: any,
   matcher: any = defaultMatcher
 ) => {
-  return values(data).map(node => {
+  return values(data).map((node: IndexNode) => {
     if (matcher(filter, node)) {
       return Object.assign({}, node, { isHidden: false })
     } else {
@@ -76,18 +75,18 @@ export const hideNodesWithNoMatchingDescendants = (
 
 export function filterNodes(nodes: any, filterPath: any) {
   function filterRecursive(filterPath: any, nodes: any, filteredNodes: any) {
-    values(nodes).forEach(node => {
+    values(nodes).forEach((node: IndexNode) => {
       if (node.children) {
         const isParent = node.children.includes(filterPath)
         if (isParent) {
-          filteredNodes[node.nodeId] = Object.assign({}, node)
+          filteredNodes[node._id] = Object.assign({}, node)
           if (!node.isRoot) {
-            filterRecursive(node.nodeId, nodes, filteredNodes)
+            filterRecursive(node._id, nodes, filteredNodes)
           }
         }
       } else {
-        if (filterPath === node.nodeId) {
-          filteredNodes[node.nodeId] = Object.assign({}, node)
+        if (filterPath === node._id) {
+          filteredNodes[node._id] = Object.assign({}, node)
         }
       }
     })

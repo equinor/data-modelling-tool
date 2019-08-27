@@ -41,15 +41,17 @@ const NodeIcon = styled.div`
 
 const getChildNodes = (node: IndexNode, nodes: any): any[] => {
   const children: any[] = []
-  node.children.forEach((nodeId: string) => {
-    if (nodes[nodeId]) {
-      children.push(nodes[nodeId])
-    } else {
-      console.warn('nodes have no child with id: ' + nodeId)
-      console.log(nodeId)
-      console.log(nodes)
-    }
-  })
+  if (node.children) {
+    node.children.forEach((nodeId: string) => {
+      if (nodes[nodeId]) {
+        children.push(nodes[nodeId])
+      } else {
+        console.warn('nodes have no child with id: ' + nodeId)
+        console.log(nodeId)
+        console.log(nodes)
+      }
+    })
+  }
   return children
 }
 
@@ -66,14 +68,13 @@ const TreeNode = (props: TreeNodeProps) => {
   const [state, dispatch] = useReducer(TreeReducer, nodes)
   const node = state[nodeId]
 
-  const handleToggle = (node: TreeNodeData): void =>
+  const handleToggle = (node: IndexNode): void =>
     dispatch(NodeActions.toggleNode(node._id))
 
   if (!node) {
     return null
   }
   const type = node.nodeType === 'file' ? 'file' : 'folder'
-  console.log(type, node)
   return (
     <ErrorBoundary>
       <StyledTreeNode level={level}>

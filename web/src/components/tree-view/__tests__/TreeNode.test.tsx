@@ -4,6 +4,7 @@ import TreeNode from '../TreeNode'
 import TestRenderer from 'react-test-renderer'
 import { TreeNodeData } from '../Tree'
 import { NodeType } from '../TreeReducer'
+import { IndexNode } from '../../../api/Api'
 
 describe('TreeNode', () => {
   it('renders without crashing', () => {
@@ -23,8 +24,8 @@ describe('TreeNode', () => {
         },
       },
       level: 0,
-      onToggle: (node: TreeNodeData) => {},
-      onNodeSelect: (node: TreeNodeData) => {},
+      onToggle: (node: IndexNode) => {},
+      onNodeSelect: (node: IndexNode) => {},
     }
 
     const testRenderer = TestRenderer.create(<TreeNode {...props} />)

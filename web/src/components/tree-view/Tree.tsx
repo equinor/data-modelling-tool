@@ -43,7 +43,6 @@ export default (props: TreeProps) => {
       {rootNodes
         .filter((node: TreeNodeData) => !node.isHidden)
         .map((node: IndexNode) => {
-          console.log(node)
           return (
             <TreeNode
               key={node._id}

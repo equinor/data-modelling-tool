@@ -13,5 +13,5 @@ export type IndexNode = {
   versions: string[]
   nodeType: string
   isRoot: boolean
-  children: string[]
+  children?: string[]
 }
