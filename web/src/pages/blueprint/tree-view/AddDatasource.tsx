@@ -12,7 +12,6 @@ const datasourcesOptions = [
 ]
 
 export default (props: any) => {
-  const { state, dispatch } = props
   const [showModal, setShowModal] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState(0)
 

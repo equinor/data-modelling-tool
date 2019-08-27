@@ -14,7 +14,7 @@ interface PropTypes {
 }
 
 export default (props: PropTypes) => {
-  const { state, dispatch, datasource } = props
+  const { dispatch, datasource } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 

@@ -1,27 +1,67 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Button from '../../../components/Button'
-import useFetch from '../../../components/useFetch'
 import styled from 'styled-components'
 import {
   BlueprintAction,
   BlueprintActions,
   BlueprintState,
 } from '../BlueprintReducer'
+import { DmtApi } from '../../../api/Api'
+const api = new DmtApi()
 
 interface Props {
   state: BlueprintState
   dispatch: (action: BlueprintAction) => void
 }
 
+//fixed reference
+const EMPTY_BLUEPRINT = {}
+const EMPTY_DATA = {}
+
 export default (props: Props) => {
   const {
-    state: { dataUrl, templateUrl },
+    state,
+    state: { selectedDatasourceId, selectedBlueprintId },
     dispatch,
   } = props
-  const isDisabled = dataUrl.length === 0
-  const [loading, data] = useFetch(isDisabled ? '' : dataUrl)
-  const [loadingTemplate, dataTemplate] = useFetch(templateUrl)
-  if (loading || loadingTemplate) {
+  const [template, setTemplate] = useState(EMPTY_BLUEPRINT)
+  const [loading, setLoading] = useState()
+  const [data, setData] = useState(EMPTY_DATA)
+  const [dataLoading, setDataLoading] = useState(false)
+  const isDisabled = selectedBlueprintId.length === 0
+
+  // fetch template
+  useEffect(() => {
+    setLoading(true)
+    api
+      .templatesBlueprintGet()
+      .then(res => {
+        setLoading(false)
+        setTemplate(res.data)
+      })
+      .catch((err: any) => {
+        setLoading(false)
+      })
+  }, [])
+
+  // fetch data
+  useEffect(() => {
+    if (selectedBlueprintId) {
+      setDataLoading(true)
+      api
+        .blueprintsGet(selectedDatasourceId, selectedBlueprintId)
+        .then(res => {
+          setData(res.data)
+          setDataLoading(false)
+        })
+        .catch((err: any) => {
+          setDataLoading(false)
+        })
+    }
+  }, [state.selectedDatasourceId, selectedBlueprintId])
+
+  // const [loadingTemplate, dataTemplate] = useFetch(templateUrl)
+  if (loading || dataLoading) {
     return <div>Loading...</div>
   }
   return (
@@ -40,11 +80,7 @@ export default (props: Props) => {
         </div>
       </div>
       <div style={{ margin: 20 }}>
-        <ViewData
-          data={data}
-          dataTemplate={dataTemplate}
-          disabled={isDisabled}
-        />
+        <ViewData data={data} dataTemplate={template} disabled={isDisabled} />
       </div>
     </>
   )

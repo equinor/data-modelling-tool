@@ -73,8 +73,6 @@ export default (state: BlueprintState, action: any) => {
       const newState = {
         nodes: {},
         selectedDatasourceId: action.value,
-        templateUrl: generateTemplateUrl(state),
-        dataUrl: generateDataUrl(state, ''),
       }
       return { ...state, ...newState }
     case ADD_DATASOURCES:
@@ -91,47 +89,11 @@ export default (state: BlueprintState, action: any) => {
     case VIEW_FILE:
       return {
         ...state,
-        dataUrl: generateDataUrl(state, action.value),
+        selectedBlueprintId: action.value,
         pageMode: PageMode.view,
       }
 
     default:
       return state
   }
-}
-
-/**
- * Prefix a nodeId with datasource title.
- * The datasource title is rootnodes and makes all nodes unique.
- * Any blueprint/entity/template should be reused between datasources.
- * @param state
- */
-function getDatasourceSubPath(state: any) {
-  // uncomment when endpoint /api/blueprints/ is updated.
-  // return '/' + state.datasources[state.selectedDatasourceId].title
-  return ''
-}
-
-/**
- * Prefix template url with datasource title.
- * @param state
- */
-function generateTemplateUrl(state: BlueprintState) {
-  //@todo support other templates, package.json, subpackage.json, datasources
-  return `/api${getDatasourceSubPath(state)}/templates/blueprint.json`
-}
-
-/**
- *
- * @param state
- * @param selectedBlueprintId
- * returns url of a blueprint to put or fetch.
- */
-function generateDataUrl(
-  state: BlueprintState,
-  selectedBlueprintId: string
-): string {
-  //strip datasource from selectedBlueprintId.
-  const path = selectedBlueprintId.substr(selectedBlueprintId.indexOf('/'))
-  return `/api${getDatasourceSubPath(state)}/blueprints${path}`
 }

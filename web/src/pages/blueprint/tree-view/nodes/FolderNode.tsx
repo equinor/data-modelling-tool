@@ -114,7 +114,7 @@ export const FolderNode = (props: Props) => {
     nodeId: node._id,
   })
 
-  if (action == 'add-subpackage') {
+  if (action === 'add-subpackage') {
     formConfig = addSubPackageConfig({
       onSuccess: (node: any) => {
         addNode(node.title, NodeType.folder)
@@ -125,7 +125,7 @@ export const FolderNode = (props: Props) => {
     })
   }
 
-  if (action == 'edit-subpackage') {
+  if (action === 'edit-subpackage') {
     formConfig = editSubPackageConfig({
       onSuccess: (node: any) => {
         updateNode(node.title)

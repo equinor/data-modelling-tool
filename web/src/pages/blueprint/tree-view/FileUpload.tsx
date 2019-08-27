@@ -1,8 +1,6 @@
 import React from 'react'
-import axios from 'axios'
 import { BlueprintState } from '../BlueprintReducer'
 import { BlueprintActions } from '../BlueprintReducer'
-import { IndexNode } from '../../../api/Api'
 
 type IndexItem = {
   _id: string
@@ -27,7 +25,7 @@ export default (props: Props) => {
         const relativePath = file.webkitRelativePath
         const indexOfCurrent = relativePath.indexOf('/')
         const path = relativePath.substring(indexOfCurrent + 1)
-        const url = state.dataUrl + path
+        // const url = state.dataUrl + path
         const json = JSON.parse(content)
         const indexItem = {
           _id: path,
