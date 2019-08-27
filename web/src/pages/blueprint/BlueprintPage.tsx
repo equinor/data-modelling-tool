@@ -1,6 +1,8 @@
 import React, { useEffect, useReducer } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
+//@ts-ignore
+import { NotificationContainer } from 'react-notifications'
 import BlueprintTreeView from './tree-view/BlueprintTreeView'
 import EditBlueprintForm from './form/EditBlueprintForm'
 import CreateBlueprintForm from './form/CreateBlueprintForm'
@@ -35,6 +37,7 @@ export default () => {
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
+            <NotificationContainer />
             <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
             {state.datasources.map((ds: any) => {
               return (

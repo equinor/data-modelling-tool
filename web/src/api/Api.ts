@@ -16,6 +16,10 @@ export class DmtApi {
   blueprintsGet(datasourceId: string, blueprintId: string) {
     return axios(`/api/data-sources/${datasourceId}/${blueprintId}`)
   }
+
+  blueprintsPut(datasourceId: string, blueprintId: string, data: any) {
+    return axios.put(`/api/data-sources/${datasourceId}/${blueprintId}`, data)
+  }
 }
 
 export type Datasource = {

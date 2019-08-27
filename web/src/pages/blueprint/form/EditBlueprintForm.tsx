@@ -37,19 +37,21 @@ const EditBlueprintForm = (props: Props) => {
   }
 
   const onSubmit = (schemas: any) => {
-    // const url = dataUrl
-    //@todo use api.
-    // axios
-    //   .put(url, schemas.formData)
-    //   .then(response => {
-    //     NotificationManager.success(response.data, 'Updated blueprint')
-    //   })
-    //   .catch(e => {
-    //     NotificationManager.error(
-    //       'Failed to update blueprint',
-    //       'Updated blueprint'
-    //     )
-    //   })
+    api
+      .blueprintsPut(
+        selectedDatasourceId,
+        selectedBlueprintId,
+        schemas.formData
+      )
+      .then((response: any) => {
+        NotificationManager.success(response.data, 'Updated blueprint')
+      })
+      .catch((e: any) => {
+        NotificationManager.error(
+          'Failed to update blueprint',
+          'Updated blueprint'
+        )
+      })
   }
 
   return (

@@ -26,8 +26,6 @@ export type BlueprintState = {
   selectedBlueprintId: string
   datasources: Datasource[]
   pageMode: PageMode
-  templateUrl: string
-  dataUrl: string
 }
 
 export const blueprintInitialState: BlueprintState = {
@@ -35,8 +33,6 @@ export const blueprintInitialState: BlueprintState = {
   selectedBlueprintId: '',
   datasources: [],
   pageMode: PageMode.view,
-  templateUrl: '/api/templates/blueprint.json',
-  dataUrl: ``,
 }
 
 export const BlueprintActions = {
