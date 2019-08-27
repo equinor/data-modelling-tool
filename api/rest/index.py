@@ -34,8 +34,13 @@ def index_data_source(data_source: DataSource):
     index = {}
 
     for root_package in root_packages:
+        latest_version = data_source.client.read_form(root_package["latestVersion"])
+        root_package["children"] = latest_version.get("subpackages", []) + latest_version.get(
+            "files", []
+        )
         root_package["nodeType"] = root_package.pop("documentType")
         root_package["isRoot"] = True
+
         index[root_package["_id"]] = root_package
 
         index.update(
