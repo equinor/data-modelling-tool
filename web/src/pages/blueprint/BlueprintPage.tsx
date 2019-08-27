@@ -14,23 +14,26 @@ import BlueprintReducer, {
 } from './BlueprintReducer'
 import { DmtApi } from '../../api/Api'
 import BlueprintTreeviewHeader from './tree-view/BlueprintTreeviewHeader'
+import axios from 'axios'
 const api = new DmtApi()
 
 export default () => {
   const [state, dispatch] = useReducer(BlueprintReducer, blueprintInitialState)
   const pageMode = state.pageMode
 
+  //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
-    api
-      .dataSourcesGet()
-      .then((res: any) => {
-        dispatch(BlueprintActions.addDatasources(res.data))
-      })
-
-      .catch((e: any) => {
-        console.log(e)
-      })
-  }, [state.selectedDatasourceId])
+    //avoid unnecessary fetch.
+    if (!state.datasources.length) {
+      axios(api.dataSourcesGet())
+        .then((res: any) => {
+          dispatch(BlueprintActions.addDatasources(res.data))
+        })
+        .catch((e: any) => {
+          console.log(e)
+        })
+    }
+  }, [state.datasources.length])
 
   return (
     <Grid fluid>
@@ -58,7 +61,9 @@ export default () => {
             {pageMode === PageMode.view && (
               <ViewBlueprintForm state={state} dispatch={dispatch} />
             )}
-            {pageMode === PageMode.edit && <EditBlueprintForm state={state} />}
+            {pageMode === PageMode.edit && (
+              <EditBlueprintForm state={state} dispatch={dispatch} />
+            )}
 
             {pageMode === PageMode.create && (
               <CreateBlueprintForm dispatch={dispatch} state={state} />

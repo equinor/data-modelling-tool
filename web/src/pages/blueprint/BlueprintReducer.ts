@@ -3,6 +3,7 @@ const EDIT_FILE = 'EDIT_FILE'
 // const ADD_NODES = 'ADD_NODES'
 const SET_SELECTED_DATASOURCE_ID = 'SET_SELECTED_DATASOURCE_ID'
 const ADD_DATASOURCES = 'ADD_DATASOURCES'
+const ADD_DATASOURCE = 'ADD_DATASOURCE'
 
 export enum PageMode {
   create,
@@ -53,6 +54,10 @@ export const BlueprintActions = {
    * Sets selectedBlueprintId and correct pageMode
    * @param id nodeId of file
    */
+  addDatasource: (value: Datasource) => ({
+    type: ADD_DATASOURCE,
+    value,
+  }),
   viewFile: (id: string): BlueprintAction => ({
     type: VIEW_FILE,
     value: id,
@@ -67,7 +72,7 @@ export default (state: BlueprintState, action: any) => {
   switch (action.type) {
     case SET_SELECTED_DATASOURCE_ID:
       const newState = {
-        nodes: {},
+        ...state,
         selectedDatasourceId: action.value,
       }
       return { ...state, ...newState }
@@ -77,6 +82,11 @@ export default (state: BlueprintState, action: any) => {
         datasources: action.value,
         selectedDatasourceId:
           action.value && action.value.length && action.value[0]._id,
+      }
+    case ADD_DATASOURCE:
+      return {
+        ...state,
+        datasources: [...state.datasources, action.value],
       }
 
     // FORM ACTIONS

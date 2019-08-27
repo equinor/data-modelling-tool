@@ -1,24 +1,38 @@
-import axios from 'axios'
-
 export class DmtApi {
-  dataSourcesGet() {
-    return axios('/api/data-sources')
+  dataSourcesGet(): string {
+    return '/api/data-sources'
   }
+  dataSourcesPut(datasourceId: string) {
+    return `/api/data-sources/${datasourceId}`
+  }
+  dataSourcesPost() {
+    return `/api/data-sources`
+  }
+
   indexGet(datasourceId: string) {
-    return axios(`/api/index/${datasourceId}`)
+    return `/api/index/${datasourceId}`
+  }
+
+  templatesDatasourceMongoGet() {
+    return `/api/templates/data-sources/mongodb.json`
   }
 
   templatesBlueprintGet() {
-    // return axios(`/api/data-sources/${datasourceId}/templates/blueprint.json`)
-    return axios(`/api/templates/blueprint.json`)
+    return `/api/templates/blueprint.json`
   }
 
-  blueprintsGet(datasourceId: string, blueprintId: string) {
-    return axios(`/api/data-sources/${datasourceId}/${blueprintId}`)
+  templatesPackageGet() {
+    return '/api/templates/package.json'
   }
 
-  blueprintsPut(datasourceId: string, blueprintId: string, data: any) {
-    return axios.put(`/api/data-sources/${datasourceId}/${blueprintId}`, data)
+  documentGet(datasourceId: string, blueprintId: string): string | null {
+    if (!datasourceId) {
+      return null
+    }
+    return `/api/data-sources/${datasourceId}/${blueprintId}`
+  }
+  documentPut(datasourceId: string, blueprintId: string) {
+    return `/api/data-sources/${datasourceId}/${blueprintId}`
   }
 }
 

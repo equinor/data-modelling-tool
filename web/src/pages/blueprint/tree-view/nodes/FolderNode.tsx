@@ -1,10 +1,8 @@
 import React, { useState } from 'react'
 import ContextMenu from '../../../../components/context-menu/ContextMenu'
-import { NodeType } from '../../../../components/tree-view/TreeReducer'
-import Form from '../../../../components/Form'
 import Modal from '../../../../components/modal/Modal'
-import axios from 'axios'
-import { Props } from './DataSourceNode'
+import { ActionConfig, Props } from './DataSourceNode'
+import Form from '../../../../components/Form'
 
 type WithContextMenuProps = {
   label: string
@@ -18,128 +16,91 @@ const WithContextMenu = (props: WithContextMenuProps) => {
   return <ContextMenu {...props}>{label}</ContextMenu>
 }
 
-export function addPackageConfig(props: any) {
-  const { onSuccess, onError, nodeId } = props
-  let id = nodeId.substring(nodeId.indexOf('/') + 1)
-  return {
-    schemaUrl: '/api/templates/blueprint.json',
-    dataUrl: '',
-    onSubmit: (formData: any) => {
-      axios
-        .put(`/api/blueprints/${id}/${formData.title}.json`, formData)
-        .then(res => {
-          onSuccess(res.data)
-        })
-        .catch(err => {
-          onError(err)
-        })
-    },
-  }
-}
-
-function addSubPackageConfig(props: any) {
-  const { onSuccess, onError, nodeId } = props
-  let id = nodeId.substring(nodeId.indexOf('/') + 1)
-  return {
-    schemaUrl: '/api/templates/subpackage.json',
-    dataUrl: '',
-    onSubmit: (formData: any) => {
-      const url = `/api/blueprints/${id}/${formData.title}/package.json`
-      axios
-        .put(url, formData)
-        .then(res => {
-          onSuccess(res.data)
-        })
-        .catch(err => {
-          onError(err)
-        })
-    },
-  }
-}
-
-function editSubPackageConfig(props: any) {
-  const { onSuccess, onError, nodeId } = props
-  let id = nodeId.substring(nodeId.indexOf('/') + 1)
-  const dataUrl = `/api/blueprints/${id}/package.json`
-  return {
-    schemaUrl: '/api/templates/subpackage.json',
-    dataUrl,
-    onSubmit: (formData: any) => {
-      axios
-        .put(dataUrl, formData)
-        .then(res => {
-          onSuccess(res.data)
-        })
-        .catch(err => {
-          onError(err)
-        })
-    },
-  }
-}
-
 export type NodeMenuItem = {
   action: string
   label: string
 }
 
 export const FolderNode = (props: Props) => {
-  const { node, addNode, updateNode } = props
+  const { node } = props
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
-  const menuItems: NodeMenuItem[] = [
+  const configs: ActionConfig[] = [
     {
-      action: 'create-blueprint',
-      label: 'Create Blueprint',
+      menuItem: {
+        action: 'create-blueprint',
+        label: 'Create Blueprint',
+      },
+      formProps: {
+        schemaUrl: '',
+        dataUrl: null,
+        onSubmit: () => {
+          // axios
+          //         .put(`/api/blueprints/${id}/${formData.title}.json`, formData)
+          //         .then(res => {
+          // addNode(node.title, NodeType.file)
+          // setShowModal(false)
+          //           onSuccess(res.data)
+          //         })
+          //         .catch(err => {
+          //           onError(err)
+          //         })
+        },
+      },
     },
     {
-      action: 'add-subpackage',
-      label: 'Create SubPackage',
+      menuItem: {
+        action: 'add-subpackage',
+        label: 'Create SubPackage',
+      },
+      formProps: {
+        schemaUrl: '',
+        dataUrl: null,
+        onSubmit: () => {
+          // const url = `/api/blueprints/${id}/${formData.title}/package.json`
+          //       axios
+          //         .put(url, formData)
+          //         .then(res => {
+          // addNode(node.title, NodeType.folder)
+          // setShowModal(false)
+          //         })
+          //         .catch(err => {
+          //           onError(err)
+          //         })
+        },
+      },
     },
     {
-      action: 'edit-subpackage',
-      label: 'Edit SubPackage',
+      menuItem: {
+        action: 'edit-subpackage',
+        label: 'Edit SubPackage',
+      },
+      formProps: {
+        schemaUrl: '',
+        dataUrl: '',
+        onSubmit: () => {
+          // axios
+          //         .put(dataUrl, formData)
+          //         .then(res => {
+          // updateNode(node.title)
+          // setShowModal(false)
+          //         })
+          //         .catch(err => {
+          //           onError(err)
+          //         })
+        },
+      },
     },
   ]
 
-  const onError = (error: any) => {
-    console.log(error)
-  }
-
-  let formConfig = addPackageConfig({
-    onSuccess: (node: any) => {
-      addNode(node.title, NodeType.file)
-      setShowModal(false)
-    },
-    onError,
-    nodeId: node._id,
-  })
-
-  if (action === 'add-subpackage') {
-    formConfig = addSubPackageConfig({
-      onSuccess: (node: any) => {
-        addNode(node.title, NodeType.folder)
-        setShowModal(false)
-      },
-      onError,
-      nodeId: node._id,
-    })
-  }
-
-  if (action === 'edit-subpackage') {
-    formConfig = editSubPackageConfig({
-      onSuccess: (node: any) => {
-        updateNode(node.title)
-        setShowModal(false)
-      },
-      onError,
-      nodeId: node._id,
-    })
-  }
-
+  const menuItems = configs.map(config => config.menuItem)
+  const actionConfig: ActionConfig | undefined = configs.find(
+    config => config.menuItem.action === action
+  )
   return (
     <>
       <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
-        <Form {...formConfig}></Form>
+        {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <WithContextMenu
         id={node._id}

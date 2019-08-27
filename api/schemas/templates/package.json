@@ -42,7 +42,9 @@
     "ui:order": [
       "title",
       "description",
-      "version"
+      "documentType",
+      "latestVersion",
+      "versions"
     ]
   }
 }

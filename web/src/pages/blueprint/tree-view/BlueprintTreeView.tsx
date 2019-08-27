@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import axios from 'axios'
 import Tree from '../../../components/tree-view/Tree'
+import axios from 'axios'
 import { BlueprintAction, BlueprintState } from '../BlueprintReducer'
 import { RootFolderNode } from './nodes/DataSourceNode'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
-import { IndexNode } from '../../../api/Api'
+import { DmtApi, IndexNode } from '../../../api/Api'
+const api = new DmtApi()
 
 interface PropTypes {
   dispatch: (action: BlueprintAction) => void
@@ -14,14 +15,14 @@ interface PropTypes {
 }
 
 export default (props: PropTypes) => {
-  const { dispatch, datasource } = props
+  const { dispatch, state, datasource } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
+  //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
     async function fetchData() {
-      const urlBluePrints = `/api/index/${datasource._id}`
-      axios(urlBluePrints)
+      axios(api.indexGet(datasource._id))
         .then(res => {
           setDocuments(res.data)
         })
@@ -50,6 +51,7 @@ export default (props: PropTypes) => {
             const NodeComponent = getNodeComponent(node)
             return (
               <NodeComponent
+                state={state}
                 dispatch={dispatch}
                 addNode={addNode}
                 updateNode={updateNode}

@@ -1,22 +1,27 @@
 import React, { useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
+import axios from 'axios'
 import Form from '../../../components/Form'
 import Modal from '../../../components/modal/Modal'
-
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
+import { DmtApi } from '../../../api/Api'
+// import {BlueprintActions} from "../BlueprintReducer";
+const api = new DmtApi()
 const datasourcesOptions = [
   { label: '', templateUrl: '' },
   {
+    fetchSchema: api.templatesDatasourceMongoGet(),
     label: 'mongo db',
-    templateUrl: '/api/templates/data-sources/mongodb.json',
   },
 ]
 
 export default (props: any) => {
+  // const { state, dispatch } = props
   const [showModal, setShowModal] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState(0)
 
-  const templateUrl = datasourcesOptions[selectedTemplate].templateUrl
-  console.log(templateUrl)
+  const fetchSchema = datasourcesOptions[selectedTemplate].fetchSchema
   return (
     <div>
       <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
@@ -38,12 +43,25 @@ export default (props: any) => {
             )}
           </select>
         </div>
-        {templateUrl && (
+        {fetchSchema && (
           <Form
-            schemaUrl={templateUrl}
+            schemaUrl={api.templatesDatasourceMongoGet()}
             dataUrl=""
-            onSubmit={res => {
-              console.log(res)
+            onSubmit={formData => {
+              axios
+                .post(api.dataSourcesPost(), formData)
+                .then((res: any) => {
+                  NotificationManager.success(
+                    'created datasource' + formData.name
+                  )
+                  console.log(res)
+                  //@todo fix when endpoint is ready.
+                  // dispatch(BlueprintActions.addDatasource(res.data))
+                })
+                .catch(e => {
+                  NotificationManager.error('failed to create datasource')
+                  console.log(e)
+                })
             }}
           />
         )}

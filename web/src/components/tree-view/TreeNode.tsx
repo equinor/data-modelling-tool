@@ -118,11 +118,11 @@ const TreeChildren = (props: any) => {
 
   const addNode = (nodeId: string, nodeType: NodeType) => {
     dispatch(NodeActions.createNode(nodeId, nodeType))
-    dispatch(NodeActions.addChild(node.nodeId, nodeId))
+    dispatch(NodeActions.addChild(node._id, nodeId))
   }
 
-  const updateNode = (title: string) => {
-    dispatch(NodeActions.updateNode(node.nodeId, title))
+  const updateNode = (nodeId: string, title: string) => {
+    dispatch(NodeActions.updateNode(nodeId, title))
   }
   return (
     <span
