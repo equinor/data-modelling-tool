@@ -20,7 +20,6 @@ const EMPTY_DATA = {}
 
 export default (props: Props) => {
   const {
-    state,
     state: { selectedDatasourceId, selectedBlueprintId },
     dispatch,
   } = props
@@ -58,9 +57,8 @@ export default (props: Props) => {
           setDataLoading(false)
         })
     }
-  }, [state.selectedDatasourceId, selectedBlueprintId])
+  }, [selectedDatasourceId, selectedBlueprintId])
 
-  // const [loadingTemplate, dataTemplate] = useFetch(templateUrl)
   if (loading || dataLoading) {
     return <div>Loading...</div>
   }

@@ -30,7 +30,7 @@ const Tab = ({ id, children }: any) => {
   const tab = useContext(context)
   return (
     <TabStyled
-      isSelected={tab.activeTabId == id}
+      isSelected={tab.activeTabId === id}
       onClick={() => tab.changeTab(id)}
     >
       {children}

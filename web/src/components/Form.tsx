@@ -28,7 +28,7 @@ export default (props: FormProps) => {
     if (dataUrl) {
       fetchData()
     }
-  }, [schemaUrl])
+  }, [schemaUrl, dataUrl])
 
   return (
     <Form

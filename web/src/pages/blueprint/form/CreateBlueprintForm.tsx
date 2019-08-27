@@ -3,7 +3,7 @@ import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import BlueprintForm from './BlueprintForm'
-import { BlueprintActions, BlueprintState } from '../BlueprintReducer'
+import { BlueprintState } from '../BlueprintReducer'
 
 interface Props {
   dispatch: (action: any) => void
@@ -12,7 +12,6 @@ interface Props {
 
 export default (props: Props) => {
   const {
-    dispatch,
     state: { dataUrl },
   } = props
 

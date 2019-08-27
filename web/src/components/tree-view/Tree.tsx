@@ -3,7 +3,6 @@ import React, { useEffect, useReducer } from 'react'
 import TreeNode from './TreeNode'
 import TreeReducer, {
   Actions,
-  NodeActions,
   NodeType,
 } from '../../components/tree-view/TreeReducer'
 import SearchTree from './SearchTree'

@@ -13,7 +13,7 @@ type Props = {
 }
 
 export default (props: Props) => {
-  const { state, dispatch } = props
+  const { dispatch } = props
 
   function handleFile(file: File, index: any[], numFiles: number) {
     let fileReader: FileReader
@@ -76,6 +76,7 @@ export default (props: Props) => {
             webkitdirectory="true"
             mozdirectory="true"
             directory="true"
+            onChange={handleFiles}
           />
         }
       </div>
