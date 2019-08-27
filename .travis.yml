@@ -1,0 +1,17 @@
+---
+language: python
+
+services:
+  - docker
+
+stages:
+  - build
+
+jobs:
+  include:
+    - stage: build
+      name: "Build API"
+      script: docker build ./api/
+    - stage: build
+      name: "Build Web"
+      script: docker build ./web/
