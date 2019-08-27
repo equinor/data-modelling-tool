@@ -30,10 +30,19 @@ def data_source_put(_id):
     return str(result.acknowledged)
 
 
+def data_source_delete(_id):
+    result = collection.delete_one(filter={'_id': _id})
+    return result.acknowledged
+
+
 class SingleDataSource(Resource):
     @staticmethod
     def put(_id):
         return data_source_put(_id=_id)
+
+    @staticmethod
+    def delete(_id):
+        return data_source_delete(_id=_id)
 
 
 class DataSources(Resource):
