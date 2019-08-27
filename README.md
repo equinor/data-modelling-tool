@@ -1,4 +1,5 @@
 # data-modelling-tool
+[![Build Status](https://travis-ci.com/equinor/data-modelling-tool.svg?token=yR5pmi3sbtpmzTWwTfNG&branch=master)](https://travis-ci.com/equinor/data-modelling-tool)
 
 A tool for modelling and presenting on blue-prints (data models)
 
