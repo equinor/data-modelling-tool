@@ -1,34 +1,21 @@
 {
   "title": "big-box",
   "description": "This is a very large box, its even in three dimensions",
-  "properties": {
-    "title": {
-      "title": "Title",
-      "type": "string",
-      "default": ""
-    },
-    "description": {
-      "title": "Description",
-      "type": "string",
-      "default": ""
-    },
-    "Length": {
+  "attributes": [
+    {
       "type": "integer",
-      "unit": "nil",
-      "value": "nil",
-      "dimensions": ""
-    },
-    "Width": {
-      "type": "integer",
-      "unit": "nil",
       "value": "",
-      "dimensions": ""
+      "name": "length"
     },
-    "Height": {
+    {
       "type": "integer",
-      "unit": "nil",
       "value": "",
-      "dimensions": ""
+      "name": "height"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "width"
     }
-  }
+  ]
 }

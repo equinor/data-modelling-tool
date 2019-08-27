@@ -14,6 +14,7 @@ COPY . /code
 
 FROM development as test
 RUN safety check
+RUN black --check .
 
 FROM base as production
 RUN poetry install --no-dev

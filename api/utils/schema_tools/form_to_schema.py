@@ -1,3 +1,6 @@
+from flask_restful import abort
+
+
 def get_common_keys(attribute):
     return {
         "type": attribute.get("type", "string"),
@@ -7,13 +10,16 @@ def get_common_keys(attribute):
     }
 
 
-def dimensions_to_int(string):
-    if not string:
+def dimensions_to_int(dimensions: list):
+    # TODO: Add support for matrices
+    if len(dimensions) > 1:
+        abort(401, "Sorry, we dont support matrices")
+    if not dimensions:
         return 0
-    if string == "*":
+    if dimensions[0] == "*":
         return -1
     try:
-        return int(string)
+        return int(dimensions[0])
     except ValueError:
         return 0
 
@@ -26,7 +32,7 @@ def form_to_schema(form: dict):
 
     # TODO: Only handles arrays, not matrices
     for attribute in form["attributes"]:
-        array_size = dimensions_to_int(attribute.get("dimensions", ""))
+        array_size = dimensions_to_int(attribute.get("dimensions", []))
 
         # Custom length
         if array_size == -1:
