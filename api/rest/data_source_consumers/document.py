@@ -1,7 +1,6 @@
 from flask import request
 from flask_restful import Resource
 
-from .common import common_get, common_put
 from classes.data_source import DataSource
 
 

@@ -15,6 +15,7 @@ COPY . /code
 FROM development as test
 RUN safety check
 RUN black --check .
+RUN flake8
 
 FROM base as production
 RUN poetry install --no-dev

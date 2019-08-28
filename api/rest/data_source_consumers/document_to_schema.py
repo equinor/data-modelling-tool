@@ -1,4 +1,3 @@
-from flask import request
 from flask_restful import Resource
 
 from classes.data_source import DataSource

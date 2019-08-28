@@ -1,6 +1,7 @@
 from flask_restful import Resource
 
 from classes.data_source import DataSource
+from utils.logging import logger
 
 
 def index_package(package_id: str, data_source: DataSource):
@@ -33,19 +34,21 @@ def index_data_source(data_source: DataSource):
     root_packages = data_source.client.get_root_packages()
     index = {}
 
-    for root_package in root_packages:
-        latest_version = data_source.client.read_form(root_package["latestVersion"])
-        root_package["children"] = latest_version.get("subpackages", []) + latest_version.get(
-            "files", []
-        )
-        root_package["nodeType"] = root_package.pop("documentType")
-        root_package["isRoot"] = True
+    try:
+        for root_package in root_packages:
+            latest_version = data_source.client.read_form(root_package["latestVersion"])
+            root_package["children"] = latest_version.get("subpackages", []) + latest_version.get("files", [])
+            root_package["nodeType"] = root_package.pop("documentType")
+            root_package["isRoot"] = True
 
-        index[root_package["_id"]] = root_package
+            index[root_package["_id"]] = root_package
+    except Exception as error:
+        logger.warning(f"The root-package {root_package['_id']} could not be indexed. {error}")
 
-        index.update(
-            **index_package(package_id=root_package["latestVersion"], data_source=data_source)
-        )
+    try:
+        index.update(**index_package(package_id=root_package["latestVersion"], data_source=data_source))
+    except Exception as error:
+        logger.warning(f"The subpackage {root_package['latestVersion']} could not be indexed. {error}")
 
     return index
 

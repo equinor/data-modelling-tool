@@ -1,0 +1,12 @@
+{
+  "type": "mongodb",
+  "host": "db",
+  "port": 27017,
+  "username": "maf",
+  "password": "maf",
+  "tls": false,
+  "name": "latest-correct",
+  "database": "maf",
+  "collection": "entities",
+  "type": "entities"
+}
