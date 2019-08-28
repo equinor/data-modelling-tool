@@ -1,0 +1,10 @@
+[flake8]
+exclude =
+    .venv,
+    __pycache__
+statistics = True
+show-source = True
+max-line-length = 119
+per-file-ignores =
+    api/utils/debugging.py:E302,
+    utils/debugging.py:E302

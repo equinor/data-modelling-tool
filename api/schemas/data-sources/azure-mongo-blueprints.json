@@ -7,5 +7,6 @@
   "tls": true,
   "name": "azure-mongo",
   "database": "maf",
-  "collection": "forms"
+  "collection": "blueprints",
+  "type": "blueprints"
 }

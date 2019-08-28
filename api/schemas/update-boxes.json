@@ -1,0 +1,23 @@
+{
+  "formData": {
+    "title": "Ordinary-box",
+    "description": "Pretty standard stuff here",
+    "attributes": [
+      {
+        "type": "integer",
+        "value": "",
+        "name": "length"
+      },
+      {
+        "type": "string",
+        "value": "2",
+        "name": "width",
+        "dimensions": [
+          "*"
+        ]
+      }
+    ]
+  },
+  "parentID": "blueprints/boxes/1.1.1/big/package.json",
+  "nodeType": "file"
+}

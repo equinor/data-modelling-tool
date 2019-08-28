@@ -36,10 +36,7 @@ def form_to_schema(form: dict):
 
         # Custom length
         if array_size == -1:
-            properties[attribute["name"]] = {
-                "type": "array",
-                "items": {**get_common_keys(attribute)},
-            }
+            properties[attribute["name"]] = {"type": "array", "items": {**get_common_keys(attribute)}}
         # Fixed length
         elif array_size > 0:
             array = []

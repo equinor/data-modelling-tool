@@ -1,4 +1,4 @@
-from rest.index import index_data_source
+from rest.data_sources.index import index_data_source
 import unittest
 
 correct_index = [
@@ -6,10 +6,7 @@ correct_index = [
         "_id": "blueprints/propellers/package.json",
         "title": "propellers",
         "description": "cool sintef propeller model blueprints",
-        "versions": [
-            "blueprints/propellers/1.0.0/package.json",
-            "blueprints/propellers/1.0.1/package.json",
-        ],
+        "versions": ["blueprints/propellers/1.0.0/package.json", "blueprints/propellers/1.0.1/package.json"],
         "latestVersion": "blueprints/propellers/1.0.0/package.json",
         "nodeType": "root-package",
     },

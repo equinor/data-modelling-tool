@@ -7,5 +7,6 @@
   "tls": false,
   "name": "latest-correct",
   "database": "maf",
-  "collection": "documents"
+  "collection": "blueprints",
+  "type": "blueprints"
 }

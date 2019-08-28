@@ -18,9 +18,10 @@ black = {version = "^18.3-alpha.0", allows-prereleases = true}
 pydevd = "^1.6"
 safety = "^1.8"
 pytest = "^5.1"
+flake8 = "^3.7"
 
 [tool.black]
-line-length = 96
+line-length = 119
 target-version = ['py37']
 exclude = '''
 /(
@@ -30,10 +31,6 @@ exclude = '''
   | \.mypy_cache
   | \.tox
   | \.venv
-  | _build
-  | buck-out
-  | build
-  | dist
 )/
 '''
 

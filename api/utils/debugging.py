@@ -1,6 +1,4 @@
-def enable_remote_debugging(
-    server="172.17.0.1", port=4444, egg_path="/code/pydevd-pycharm.egg"
-):
+def enable_remote_debugging(server="172.17.0.1", port=4444, egg_path="/code/pydevd-pycharm.egg"):
     import sys
     import pydevd
 
