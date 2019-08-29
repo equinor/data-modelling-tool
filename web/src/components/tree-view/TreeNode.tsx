@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import React from 'react'
 import {
   FaFile,
   FaFolder,
@@ -7,10 +7,8 @@ import {
   FaChevronRight,
 } from 'react-icons/fa'
 import styled from 'styled-components'
-import TreeReducer, { NodeActions, NodeType } from './TreeReducer'
 import { TreeNodeData } from './Tree'
-import { IndexNode } from '../../api/Api'
-import ErrorBoundary from '../ErrorBoundary'
+import { NodeType } from './TreeReducer'
 
 type StyledTreeNode = {
   level: number
@@ -22,7 +20,6 @@ const StyledTreeNode = styled.div`
   align-items: center;
   padding: 5px 8px;
   padding-left: ${(props: StyledTreeNode) => props.level * 20}px;
-
   &:hover {
     background: lightgray;
   }
@@ -39,105 +36,52 @@ const NodeIcon = styled.div`
     props.marginRight ? props.marginRight : 5}px;
 `
 
-const getChildNodes = (node: IndexNode, nodes: any): any[] => {
-  const children: any[] = []
-  if (node.children) {
-    node.children.forEach((nodeId: string) => {
-      if (nodes[nodeId]) {
-        children.push(nodes[nodeId])
-      } else {
-        console.warn('nodes have no child with id: ' + nodeId)
-        console.log(nodeId)
-        console.log(nodes)
-      }
-    })
-  }
-  return children
-}
-
 type TreeNodeProps = {
   NodeRenderer: Function
-  nodeId: any
-  nodes: any
   level: number
   onNodeSelect?: (node: TreeNodeData) => void
+  node: TreeNodeData
+  updateNode: Function
+  addNode: Function
+  handleToggle: Function
 }
 
 const TreeNode = (props: TreeNodeProps) => {
-  const { nodeId, nodes, level, onNodeSelect, NodeRenderer } = props
-  const [state, dispatch] = useReducer(TreeReducer, nodes)
-  const node = state[nodeId]
+  const {
+    node,
+    level,
+    onNodeSelect,
+    NodeRenderer,
+    updateNode,
+    addNode,
+    handleToggle,
+  } = props
 
-  const handleToggle = (node: IndexNode): void =>
-    dispatch(NodeActions.toggleNode(node._id))
-
-  if (!node) {
-    return null
-  }
-  const type = node.nodeType === 'file' ? 'file' : 'folder'
   return (
-    <ErrorBoundary>
+    <div>
       <StyledTreeNode level={level}>
         <NodeIcon onClick={() => handleToggle(node)}>
-          {type === 'folder' &&
+          {node.type === NodeType.folder &&
             (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
         </NodeIcon>
 
         <NodeIcon marginRight={5}>
-          {type === 'file' && <FaFile />}
-          {type === 'folder' && node.isOpen && <FaFolderOpen />}
-          {type === 'folder' && !node.isOpen && <FaFolder />}
+          {node.type === NodeType.file && <FaFile />}
+          {node.type === NodeType.folder && node.isOpen && <FaFolderOpen />}
+          {node.type === NodeType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
-        <TreeChildren
-          dispatch={dispatch}
-          NodeRenderer={NodeRenderer}
-          onNodeSelect={onNodeSelect}
-          node={node}
-        />
+        <span
+          role="button"
+          onClick={() => {
+            onNodeSelect && onNodeSelect(node)
+            handleToggle(node)
+          }}
+        >
+          {NodeRenderer(node, addNode, updateNode)}
+        </span>
       </StyledTreeNode>
-
-      {node.isOpen &&
-        getChildNodes(node, nodes)
-          .filter((node: any) => !node.isHidden)
-          .map((childNode: any) => (
-            <TreeNode
-              key={`tree-node-${childNode._id}`}
-              nodes={nodes}
-              NodeRenderer={NodeRenderer}
-              nodeId={childNode._id}
-              level={level + 1}
-            />
-          ))}
-    </ErrorBoundary>
-  )
-}
-
-const TreeChildren = (props: any) => {
-  const { node, NodeRenderer, onNodeSelect, dispatch } = props
-
-  const addNode = (nodeId: string, nodeType: NodeType) => {
-    dispatch(NodeActions.createNode(nodeId, nodeType))
-    dispatch(NodeActions.addChild(node._id, nodeId))
-  }
-
-  const updateNode = (nodeId: string, title: string) => {
-    dispatch(NodeActions.updateNode(nodeId, title))
-  }
-  return (
-    <span
-      role="button"
-      onClick={() => {
-        try {
-          onNodeSelect && onNodeSelect(node)
-          // onToggle(node)
-        } catch (e) {
-          console.error('failed to click on node', e)
-        }
-      }}
-    >
-      {NodeRenderer(node, addNode, updateNode)}
-    </span>
+    </div>
   )
 }
 

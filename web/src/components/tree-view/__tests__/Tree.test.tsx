@@ -5,7 +5,7 @@ import TestRenderer from 'react-test-renderer'
 import { IndexNode } from '../../../api/Api'
 
 describe('Tree', () => {
-  it('renders without crashing', () => {
+  it.skip('renders without crashing', () => {
     const tree = {
       node_0: {
         _id: 'node_0',

@@ -6,6 +6,9 @@ import { RootFolderNode } from './nodes/DataSourceNode'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import { DmtApi, IndexNode } from '../../../api/Api'
+import values from 'lodash/values'
+import { NodeType } from '../../../components/tree-view/TreeReducer'
+
 const api = new DmtApi()
 
 interface PropTypes {
@@ -24,7 +27,22 @@ export default (props: PropTypes) => {
     async function fetchData() {
       axios(api.indexGet(datasource._id))
         .then(res => {
-          setDocuments(res.data)
+          const nodes = values(res.data)
+          const documents = nodes
+            .map(node => {
+              return {
+                ...node,
+                nodeId: node._id,
+                type:
+                  node.nodeType === 'file' ? NodeType.file : NodeType.folder,
+                isOpen: false,
+              }
+            })
+            .reduce((obj, item) => {
+              obj[item.nodeId] = item
+              return obj
+            }, {})
+          setDocuments(documents)
         })
         .catch((err: any) => {
           console.error(err)
@@ -42,6 +60,7 @@ export default (props: PropTypes) => {
   if (!Object.keys(documents).length) {
     return null
   }
+
   return (
     <div>
       <h3>{datasource.name}</h3>

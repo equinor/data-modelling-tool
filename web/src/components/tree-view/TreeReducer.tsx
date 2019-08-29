@@ -12,6 +12,7 @@ export const DELETE_NODE = 'DELETE_NODE'
 export const ADD_CHILD = 'ADD_CHILD'
 export const REMOVE_CHILD = 'REMOVE_CHILD'
 export const SET_NODES = 'SET_NODES'
+export const MAKE_ROOT = 'MAKE_ROOT'
 
 export enum NodeType {
   folder = 'folder',
@@ -54,8 +55,10 @@ export const NodeActions = {
     nodeId,
   }),
   updateNode: (nodeId: string, title: string) => ({
-    type: UPDATE_NODE,
     title,
+  }),
+  makeRoot: (nodeId: string, title: string) => ({
+    type: MAKE_ROOT,
     nodeId,
   }),
 }
@@ -84,6 +87,11 @@ const node = (state: any, action: any) => {
       return {
         ...state,
         title: action.title,
+      }
+    case MAKE_ROOT:
+      return {
+        ...state,
+        isRoot: true,
       }
     default:
       return state
@@ -123,7 +131,6 @@ const deleteMany = (state: any, ids: any) => {
 }
 
 export default (state: any = {}, action: any) => {
-  const { nodeId } = action
   switch (action.type) {
     case FILTER_TREE:
       const filter = action.filter.trim()
@@ -133,31 +140,27 @@ export default (state: any = {}, action: any) => {
         filteredNodes,
         filter
       )
-      let nodesAsObject = keyBy(expandedNodes, '_id')
-      //@todo open rootnode.
+      let nodesAsObject = keyBy(expandedNodes, 'nodeId')
       return { ...nodesAsObject }
 
     case SET_NODES:
-      return action.nodes
+      return { ...action.nodes }
 
-    case DELETE_NODE:
-      const descendantIds = getAllDescendantIds(state, nodeId)
-      return deleteMany(state, [nodeId, ...descendantIds])
-
-    case CREATE_NODE:
-    case ADD_CHILD:
-    case REMOVE_CHILD:
-    case TOGGLE_NODE:
-    case UPDATE_NODE:
+    default:
+      // The rest of actions are on single node
+      const { nodeId } = action
       if (typeof nodeId === 'undefined') {
         return state
+      }
+
+      if (action.type === DELETE_NODE) {
+        const descendantIds = getAllDescendantIds(state, nodeId)
+        return deleteMany(state, [nodeId, ...descendantIds])
       }
 
       return {
         ...state,
         [nodeId]: node(state[nodeId], action),
       }
-    default:
-      return state
   }
 }
