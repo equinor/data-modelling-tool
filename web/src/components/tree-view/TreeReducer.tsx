@@ -54,7 +54,9 @@ export const NodeActions = {
     nodeId,
   }),
   updateNode: (nodeId: string, title: string) => ({
+    type: UPDATE_NODE,
     title,
+    nodeId,
   }),
 }
 

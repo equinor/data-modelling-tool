@@ -25,7 +25,6 @@ describe('TreeNode', () => {
       },
       level: 0,
       onToggle: (node: IndexNode) => {},
-      onNodeSelect: (node: IndexNode) => {},
     }
 
     const testRenderer = TestRenderer.create(<TreeNode {...props} />)

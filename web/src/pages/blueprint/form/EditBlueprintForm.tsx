@@ -1,50 +1,44 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import BlueprintForm from './BlueprintForm'
+import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintState } from '../BlueprintReducer'
+import { BlueprintActions, BlueprintState } from '../BlueprintReducer'
 import { DmtApi } from '../../../api/Api'
+import useFetch from '../../../components/useFetch'
 const api = new DmtApi()
 interface Props {
   state: BlueprintState
+  dispatch: Function
 }
 
 const EditBlueprintForm = (props: Props) => {
   const {
+    dispatch,
     state: { selectedBlueprintId, selectedDatasourceId },
   } = props
-  const [formData, setFormData] = useState({})
-  const [dataLoading, setDataLoading] = useState(false)
-  // fetch data
-  useEffect(() => {
-    if (selectedBlueprintId) {
-      setDataLoading(true)
-      api
-        .blueprintsGet(selectedDatasourceId, selectedBlueprintId)
-        .then(res => {
-          setFormData(res.data)
-          setDataLoading(false)
-        })
-        .catch((err: any) => {
-          setDataLoading(false)
-          NotificationManager.error(``, 'Failed to fetch blueprint data')
-        })
+
+  const [dataLoading, formData] = useFetch(
+    api.documentGet(selectedDatasourceId, selectedBlueprintId),
+    {
+      failureNotification: {
+        title: '',
+        body: 'Failed to fetch blueprint data',
+      },
     }
-  }, [selectedDatasourceId, selectedBlueprintId])
+  )
 
   if (dataLoading) {
     return <div>Loading...</div>
   }
 
   const onSubmit = (schemas: any) => {
-    api
-      .blueprintsPut(
-        selectedDatasourceId,
-        selectedBlueprintId,
-        schemas.formData
-      )
+    const url = api.documentPut(selectedDatasourceId, selectedBlueprintId)
+    axios
+      .put(url, schemas.formData)
       .then((response: any) => {
         NotificationManager.success(response.data, 'Updated blueprint')
+        dispatch(BlueprintActions.viewFile(selectedBlueprintId))
       })
       .catch((e: any) => {
         NotificationManager.error(

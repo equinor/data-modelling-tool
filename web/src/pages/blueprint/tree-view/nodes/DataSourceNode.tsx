@@ -1,10 +1,12 @@
 import React, { useState } from 'react'
-import { NodeType } from '../../../../components/tree-view/TreeReducer'
-import Modal from '../../../../components/modal/Modal'
-import Form from '../../../../components/Form'
 import axios from 'axios'
+import Modal from '../../../../components/modal/Modal'
+import Form, { FormProps } from '../../../../components/Form'
 import ContextMenu from '../../../../components/context-menu/ContextMenu'
-import { IndexNode } from '../../../../api/Api'
+import { DmtApi, IndexNode } from '../../../../api/Api'
+import { BlueprintState } from '../../BlueprintReducer'
+
+const api = new DmtApi()
 
 type WithContextMenuProps = {
   label: string
@@ -18,93 +20,71 @@ const WithContextMenu = (props: WithContextMenuProps) => {
   return <ContextMenu {...props}>{label}</ContextMenu>
 }
 
-export function addPackageConfig(props: any) {
-  const { onSuccess, onError } = props
-  return {
-    schemaUrl: '/api/templates/package.json',
-    dataUrl: '',
-    onSubmit: (formData: any) => {
-      axios
-        .put(
-          `/api/blueprints/${formData.title}/${formData.version}/package.json`,
-          formData
-        )
-        .then(res => {
-          onSuccess(res.data)
-        })
-        .catch(err => {
-          onError(err)
-        })
-    },
-  }
-}
-
-function editPackageConfig(props: any) {
-  const { onSuccess, onError, nodeId } = props
-  const dataUrl = `/api/blueprints/${nodeId}`
-  return {
-    schemaUrl: '/api/templates/package.json',
-    dataUrl,
-    onSubmit: (formData: any) => {
-      axios
-        .put(dataUrl, formData)
-        .then(res => {
-          onSuccess(formData)
-        })
-        .catch(err => {
-          onError(err)
-        })
-    },
-  }
-}
-
 export type NodeMenuItem = {
   action: string
   label: string
 }
 
 export type Props = {
+  state: BlueprintState
   node: IndexNode
   addNode: Function
   updateNode: Function
 }
 
+export type ActionConfig = {
+  menuItem: NodeMenuItem
+  formProps: FormProps
+}
+
 export const RootFolderNode = (props: Props) => {
-  const { node, addNode, updateNode } = props
+  const { node, state, updateNode } = props
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
 
-  const configs: any[] = [
+  const configs: ActionConfig[] = [
     {
       menuItem: {
         action: 'add-package',
         label: 'Create Package',
       },
-      formProps: addPackageConfig({
-        onSuccess: () => {
-          addNode(node.title, NodeType.folder)
-          setShowModal(false)
+      formProps: {
+        schemaUrl: api.templatesPackageGet(),
+        dataUrl: null,
+        onSubmit: (formData: any) => {
+          console.log(formData)
+          // api.documentPut(state.selectedDatasourceId, state.selectedBlueprintId, formData)
+          //   .then(res => {
+          //     addNode(node.title, NodeType.folder)
+          //     setShowModal(false)
+          //   })
+          //   .catch(err => {
+          //     console.error(err)
+          //   })
         },
-        onError: (error: any) => {
-          console.log(error)
-        },
-      }),
+      },
     },
     {
       menuItem: {
         action: 'edit-package',
         label: 'Edit Package',
       },
-      formProps: editPackageConfig({
-        onSuccess: (node: any) => {
-          updateNode(node.title)
-          setShowModal(false)
+      formProps: {
+        schemaUrl: api.templatesPackageGet(),
+        dataUrl: api.documentGet(state.selectedDatasourceId, node._id),
+        onSubmit: (formData: any) => {
+          const url = api.documentPut(state.selectedDatasourceId, node._id)
+          axios
+            .put(url, formData)
+            .then(() => {
+              updateNode(node._id, formData.title)
+              setShowModal(false)
+            })
+            .catch((e: any) => {
+              console.log(e)
+            })
         },
-        onError: (error: any) => {
-          console.log(error)
-        },
-        nodeId: node._id,
-      }),
+      },
     },
   ]
 

@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
 import BlueprintPreview from '../preview/BlueprintPreview'
-//@ts-ignore
-import { NotificationManager } from 'react-notifications'
 import Tabs, { Tab, TabPanel, TabList } from '../../../components/Tabs'
 import { DmtApi } from '../../../api/Api'
+import useFetch from '../../../components/useFetch'
 const api = new DmtApi()
 
 interface Props {
@@ -14,26 +13,8 @@ interface Props {
 
 export default (props: Props) => {
   const { onSubmit, formData } = props
-
-  const [template, setTemplate] = useState({})
-  const [loading, setLoading] = useState()
-  // fetch template
-  useEffect(() => {
-    setLoading(true)
-    api
-      .templatesBlueprintGet()
-      .then(res => {
-        setLoading(false)
-        setTemplate(res.data)
-      })
-      .catch((err: any) => {
-        setLoading(false)
-        NotificationManager.error(``, 'Failed to fetch blueprint template')
-      })
-  }, [])
-
+  const [loading, template] = useFetch(api.templatesBlueprintGet())
   const [data, setData] = useState(formData)
-
   if (loading) {
     return <div>Loading...</div>
   }

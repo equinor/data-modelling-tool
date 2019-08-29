@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React from 'react'
 import Button from '../../../components/Button'
 import styled from 'styled-components'
 import {
@@ -7,6 +7,7 @@ import {
   BlueprintState,
 } from '../BlueprintReducer'
 import { DmtApi } from '../../../api/Api'
+import useFetch from '../../../components/useFetch'
 const api = new DmtApi()
 
 interface Props {
@@ -14,52 +15,18 @@ interface Props {
   dispatch: (action: BlueprintAction) => void
 }
 
-//fixed reference
-const EMPTY_BLUEPRINT = {}
-const EMPTY_DATA = {}
-
 export default (props: Props) => {
   const {
     state: { selectedDatasourceId, selectedBlueprintId },
     dispatch,
   } = props
-  const [template, setTemplate] = useState(EMPTY_BLUEPRINT)
-  const [loading, setLoading] = useState()
-  const [data, setData] = useState(EMPTY_DATA)
-  const [dataLoading, setDataLoading] = useState(false)
   const isDisabled = selectedBlueprintId.length === 0
+  const [schemaLoading, schemaData] = useFetch(api.templatesBlueprintGet())
+  const [dataLoading, dataData] = useFetch(
+    api.documentGet(selectedDatasourceId, selectedBlueprintId)
+  )
 
-  // fetch template
-  useEffect(() => {
-    setLoading(true)
-    api
-      .templatesBlueprintGet()
-      .then(res => {
-        setLoading(false)
-        setTemplate(res.data)
-      })
-      .catch((err: any) => {
-        setLoading(false)
-      })
-  }, [])
-
-  // fetch data
-  useEffect(() => {
-    if (selectedBlueprintId) {
-      setDataLoading(true)
-      api
-        .blueprintsGet(selectedDatasourceId, selectedBlueprintId)
-        .then(res => {
-          setData(res.data)
-          setDataLoading(false)
-        })
-        .catch((err: any) => {
-          setDataLoading(false)
-        })
-    }
-  }, [selectedDatasourceId, selectedBlueprintId])
-
-  if (loading || dataLoading) {
+  if (schemaLoading || dataLoading) {
     return <div>Loading...</div>
   }
   return (
@@ -78,7 +45,11 @@ export default (props: Props) => {
         </div>
       </div>
       <div style={{ margin: 20 }}>
-        <ViewData data={data} dataTemplate={template} disabled={isDisabled} />
+        <ViewData
+          data={dataData}
+          dataTemplate={schemaData}
+          disabled={isDisabled}
+        />
       </div>
     </>
   )

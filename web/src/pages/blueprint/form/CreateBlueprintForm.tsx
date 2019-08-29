@@ -1,4 +1,5 @@
 import React from 'react'
+import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import BlueprintForm from './BlueprintForm'
@@ -17,18 +18,15 @@ export default (props: Props) => {
   } = props
 
   const onSubmit = (schemas: any) => {
-    api
-      .blueprintsPut(
-        selectedDatasourceId,
-        selectedBlueprintId,
-        schemas.formData
-      )
-      .then(function(response) {
+    const url = api.documentPut(selectedDatasourceId, selectedBlueprintId)
+    axios
+      .put(url, schemas.formData)
+      .then((response: any) => {
         //@todo implement when api return correct response. issue #92
         // dispatch(BlueprintActions.addFile(response.data))
         NotificationManager.success(response.data, 'Created blueprint')
       })
-      .catch(e => {
+      .catch((e: any) => {
         NotificationManager.error(
           'Failed to crate blueprint',
           'Created blueprint'

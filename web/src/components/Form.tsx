@@ -1,40 +1,29 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
 import Form from 'react-jsonschema-form'
+import useFetch from './useFetch'
 
-interface FormProps {
+export interface FormProps {
   schemaUrl: string
-  dataUrl: string
-  onSubmit: (formData: any) => any
+  dataUrl: string | null
+  onSubmit: (formData: any) => void
 }
 
 const log = (type: any) => console.log.bind(console, type)
 export default (props: FormProps) => {
-  const { dataUrl, schemaUrl, onSubmit } = props
-  const [data, setData] = useState({})
-  const [schema, setSchema] = useState({})
+  const { schemaUrl, dataUrl, onSubmit } = props
 
-  useEffect(() => {
-    async function fetchSchema() {
-      const response = await axios(schemaUrl)
-      setSchema(response.data)
-    }
-    async function fetchData() {
-      const response = await axios(dataUrl)
-      setData(response.data)
-    }
-    fetchSchema()
+  const [schemaLoading, schemaData] = useFetch(schemaUrl)
+  const [dataLoading, dataData] = useFetch(dataUrl)
 
-    if (dataUrl) {
-      fetchData()
-    }
-  }, [schemaUrl, dataUrl])
+  if (schemaLoading || dataLoading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <Form
-      formData={data}
-      schema={'schema' in schema ? schema['schema'] : schema}
-      uiSchema={'uiSchema' in schema ? schema['uiSchema'] : {}}
+      formData={dataData}
+      schema={'schema' in schemaData ? schemaData['schema'] : schemaData}
+      uiSchema={'uiSchema' in schemaData ? schemaData['uiSchema'] : {}}
       onSubmit={schemas => {
         const formData: any = schemas.formData
         try {

@@ -31,6 +31,10 @@
         "title": "TLS",
         "default": false
       },
+      "name": {
+        "type": "string",
+        "title": "Name"
+      },
       "database": {
         "type": "string",
         "title": "Database"

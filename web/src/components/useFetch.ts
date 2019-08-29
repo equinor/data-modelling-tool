@@ -1,30 +1,59 @@
 import { useEffect, useState } from 'react'
 import axios from 'axios'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
+type NotificationText = {
+  title: string
+  body: string
+}
 
-export default (url: string): any => {
+type Props = {
+  successNotification?: NotificationText
+  failureNotification?: NotificationText
+}
+
+/**
+ *
+ * @param url can be null. Useful to avoid unnecessary fetch.
+ * @param props
+ */
+export default (url: string | null, props?: Props): any => {
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
 
   useEffect(() => {
     async function fetch() {
-      axios(url)
-        .then(response => {
-          setData(response.data)
-          setLoading(false)
-        })
-        .catch(e => {
-          if (e.response && e.response.statusText) {
-            setError(e.response.statusText)
-          }
-          setLoading(false)
-        })
+      if (url) {
+        axios(url)
+          .then(response => {
+            setData(response.data)
+            setLoading(false)
+            if (props && props.successNotification) {
+              NotificationManager.success(
+                props.successNotification.body,
+                props.successNotification.title
+              )
+            }
+          })
+          .catch(e => {
+            if (e.response && e.response.statusText) {
+              setError(e.response.statusText)
+            }
+            setLoading(false)
+            if (props && props.failureNotification) {
+              NotificationManager.success(
+                props.failureNotification.body,
+                props.failureNotification.title
+              )
+            }
+          })
+      }
     }
     if (url) {
       fetch()
       setLoading(true)
     }
-  }, [url])
-
+  }, [url, props])
   return [loading, data, error]
 }
