@@ -56,3 +56,4 @@ def nuke_db():
     for name in ["documents", "templates", "data-sources"]:
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
+        data_modelling_tool_db.drop_collection(name)
