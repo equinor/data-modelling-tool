@@ -6,6 +6,7 @@ services:
 
 stages:
   - build
+  - deploy
 
 jobs:
   include:
@@ -15,3 +16,9 @@ jobs:
     - stage: build
       name: "Build Web"
       script: docker build ./web/
+    - stage: deploy
+      name: "Reset database"
+      script:
+        - docker-compose -f docker-compose.yml run -e MONGO_AZURE_URI api /code/reset-database.sh
+      only:
+        - master
