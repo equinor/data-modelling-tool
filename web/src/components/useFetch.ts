@@ -12,6 +12,7 @@ type Props = {
   failureNotification?: NotificationText
 }
 
+const defaultProps = Object.freeze({})
 /**
  *
  * @param url can be null. Useful to avoid unnecessary fetch.
@@ -21,7 +22,7 @@ export default (url: string | null, props?: Props): any => {
   const [data, setData] = useState({})
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState()
-
+  props = props || defaultProps
   useEffect(() => {
     async function fetch() {
       if (url) {

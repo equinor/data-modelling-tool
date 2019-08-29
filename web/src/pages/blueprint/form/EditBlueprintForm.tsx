@@ -12,6 +12,13 @@ interface Props {
   dispatch: Function
 }
 
+const notifications = {
+  failureNotification: {
+    title: '',
+    body: 'Failed to fetch blueprint data',
+  },
+}
+
 const EditBlueprintForm = (props: Props) => {
   const {
     dispatch,
@@ -20,12 +27,7 @@ const EditBlueprintForm = (props: Props) => {
 
   const [dataLoading, formData] = useFetch(
     api.documentGet(selectedDatasourceId, selectedBlueprintId),
-    {
-      failureNotification: {
-        title: '',
-        body: 'Failed to fetch blueprint data',
-      },
-    }
+    notifications
   )
 
   if (dataLoading) {
