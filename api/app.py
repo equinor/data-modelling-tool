@@ -27,7 +27,6 @@ def init_import():
     import_file_dict = {
         "documents": getListOfFiles("/code/schemas/documents"),
         "templates": getListOfFiles("/code/schemas/templates"),
-        "data_sources": getListOfFiles("/code/schemas/data-sources"),
     }
 
     for collection, file_list in import_file_dict.items():
@@ -40,18 +39,16 @@ def init_import():
                 if collection == "documents":
                     document["_id"] = id
                     model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
-                if collection == "data_sources":
-                    data_modelling_tool_db[f"{collection}"].insert_one(document=document)
-                else:
+                if collection == "templates":
                     document["_id"] = id
-                    data_modelling_tool_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
+                    data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
 
 
 @app.cli.command()
 def nuke_db():
     print("Dropping all collections")
     # FIXME: Read names from the database
-    for name in ["documents", "templates", "data-sources"]:
+    for name in ["documents", "templates"]:
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
         data_modelling_tool_db.drop_collection(name)
