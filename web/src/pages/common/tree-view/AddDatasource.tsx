@@ -6,7 +6,7 @@ import Modal from '../../../components/modal/Modal'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { DmtApi } from '../../../api/Api'
-// import {BlueprintActions} from "../BlueprintReducer";
+// import {EntitiesActions} from "../EntitiesReducer";
 const api = new DmtApi()
 const datasourcesOptions = [
   { label: '', templateUrl: '' },
@@ -56,7 +56,7 @@ export default (props: any) => {
                   )
                   console.log(res)
                   //@todo fix when endpoint is ready.
-                  // dispatch(BlueprintActions.addDatasource(res.data))
+                  // dispatch(EntitiesActions.addDatasource(res.data))
                 })
                 .catch(e => {
                   NotificationManager.error('failed to create datasource')

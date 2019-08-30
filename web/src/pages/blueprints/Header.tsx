@@ -1,13 +1,13 @@
 import React from 'react'
-import { BlueprintAction, BlueprintState } from '../BlueprintReducer'
-import Header from '../../../components/Header'
-import FileUpload from './FileUpload'
+import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
+import Header from '../../components/Header'
+import FileUpload from '../common/tree-view/FileUpload'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
-import AddDatasource from './AddDatasource'
+import AddDatasource from '../common/tree-view/AddDatasource'
 
 type Props = {
-  state: BlueprintState
-  dispatch: (action: BlueprintAction) => void
+  state: DocumentsState
+  dispatch: (action: DocumentsAction) => void
 }
 
 export default (props: Props) => {

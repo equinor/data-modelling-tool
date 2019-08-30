@@ -8,5 +8,5 @@
   "name": "latest-correct",
   "database": "maf",
   "collection": "blueprints",
-  "type": "blueprints"
+  "documentType": "blueprints"
 }

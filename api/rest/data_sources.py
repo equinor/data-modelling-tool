@@ -9,9 +9,9 @@ from config import Config
 collection = database[f"{Config.DATA_SOURCES_COLLECTION}"]
 
 
-def data_sources_get(data_source_type: str):
+def data_sources_get(document_type: str):
     all_sources = []
-    for source in collection.find(filter={"type": data_source_type}, projection=["host", "name", "type"]):
+    for source in collection.find(filter={"documentType": document_type}, projection=["host", "name", "type"]):
         source["_id"] = str(source["_id"])
         all_sources.append(source)
     return all_sources
@@ -50,8 +50,8 @@ class SingleDataSource(Resource):
 
 class DataSources(Resource):
     @staticmethod
-    def get():
-        return data_sources_get()
+    def get(document_type):
+        return data_sources_get(document_type)
 
     @staticmethod
     def post():

@@ -8,5 +8,5 @@
   "name": "latest-correct",
   "database": "maf",
   "collection": "entities",
-  "type": "entities"
+  "documentType": "entities"
 }

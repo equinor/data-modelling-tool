@@ -3,7 +3,7 @@ import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import BlueprintForm from './BlueprintForm'
-import { BlueprintState } from '../BlueprintReducer'
+import { BlueprintState } from '../../common/BlueprintReducer'
 import { DmtApi } from '../../../api/Api'
 const api = new DmtApi()
 
@@ -14,16 +14,16 @@ interface Props {
 
 export default (props: Props) => {
   const {
-    state: { selectedDatasourceId, selectedBlueprintId },
+    state: { selectedDataSourceId, selectedDocumentId },
   } = props
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(selectedDatasourceId, selectedBlueprintId)
+    const url = api.documentPut(selectedDataSourceId, selectedDocumentId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {
         //@todo implement when api return correct response. issue #92
-        // dispatch(BlueprintActions.addFile(response.data))
+        // dispatch(EntitiesActions.addFile(response.data))
         NotificationManager.success(response.data, 'Created blueprint')
       })
       .catch((e: any) => {

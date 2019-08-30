@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import ContextMenu from '../../../../components/context-menu/ContextMenu'
-import Modal from '../../../../components/modal/Modal'
+import ContextMenu from '../../../components/context-menu/ContextMenu'
+import Modal from '../../../components/modal/Modal'
 import { ActionConfig, Props } from './DataSourceNode'
-import Form from '../../../../components/Form'
+import Form from '../../../components/Form'
 
 type WithContextMenuProps = {
   label: string
