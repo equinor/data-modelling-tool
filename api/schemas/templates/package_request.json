@@ -1,0 +1,19 @@
+{
+  "title": "PackageRequestForm",
+  "description": "Used to POST and PUT packages",
+  "type": "object",
+  "properties": {
+        "formData": {
+          "type": "object",
+          "title": "formData"
+        },
+        "nodeType": {
+          "type": "string",
+          "title": "nodeType"
+        },
+        "parentID": {
+          "type": "string",
+          "title": "parentID"
+        }
+      }
+}

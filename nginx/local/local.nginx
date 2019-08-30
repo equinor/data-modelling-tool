@@ -1,0 +1,16 @@
+server {
+    listen 80;
+    server_name localhost;
+
+
+    location /api/ {
+        proxy_pass http://api:5000/api/;
+    }
+    location / {
+        proxy_pass http://web:3000/;
+    }
+}
+
+
+
+

@@ -4,28 +4,34 @@ from classes.data_source import DataSource
 from utils.logging import logger
 
 
+# TODO: Create DataModels
+
+
 def index_package(package_id: str, data_source: DataSource):
     index = {}
     package = data_source.client.read_form(package_id)
+    package["id"] = package.pop("_id")
 
-    for file in package["files"]:
+    for file in package.get("files", []):
         tmp_file = data_source.client.read_form(file)
 
         tmp_file["nodeType"] = "file"
         tmp_file["isRoot"] = False
+        tmp_file["id"] = tmp_file.pop("_id")
         tmp_file.pop("attributes", {})
         tmp_file.pop("properties", {})
 
-        index[tmp_file["_id"]] = tmp_file
+        index[tmp_file["id"]] = tmp_file
 
     for sub_package in package.get("subpackages", []):
         index.update(**index_package(package_id=sub_package, data_source=data_source))
 
-    if not package["documentType"] == "version":
-        package["nodeType"] = package.pop("documentType")
+    if not package.get("documentType", "") == "version":
+        package["nodeType"] = "folder"
         package["isRoot"] = False
         package["children"] = package.pop("subpackages", []) + package.pop("files", [])
-        index[package["_id"]] = package
+
+    index[package["id"]] = package
 
     return index
 
@@ -37,10 +43,12 @@ def index_data_source(data_source: DataSource):
     for root_package in root_packages:
         latest_version = data_source.client.read_form(root_package["latestVersion"])
         root_package["children"] = latest_version.get("subpackages", []) + latest_version.get("files", [])
-        root_package["nodeType"] = root_package.pop("documentType")
+        root_package["nodeType"] = "folder"
         root_package["isRoot"] = True
+        root_package.pop("documentType")
+        root_package["id"] = root_package.pop("_id")
 
-        index[root_package["_id"]] = root_package
+        index[root_package["id"]] = root_package
 
         try:
             index.update(**index_package(package_id=root_package["latestVersion"], data_source=data_source))

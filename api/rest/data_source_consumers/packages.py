@@ -1,73 +1,54 @@
-from os.path import dirname
-
 from flask import request
 from flask_restful import Resource
 
 from classes.data_source import DataSource
+from classes.package_request import PackageRequest
+
+nodes_with_parent = ("folder", "file")
 
 
-def update_parent(data_source: DataSource, parent_id: str, child_id: str, form_type: str, delete=False):
-    if form_type == "file":
+# TODO: This is probaly not good...
+def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_type: str, delete=False):
+    if node_type == "file":
         if delete:
             data_source.client.pull_from_parent(_id=parent_id, form={"files": child_id})
         else:
             data_source.client.append_to_parent(_id=parent_id, form={"files": child_id})
-    if form_type == "folder":
+    if node_type == "folder":
         if delete:
             data_source.client.pull_from_parent(_id=parent_id, form={"subpackages": child_id})
         else:
             data_source.client.append_to_parent(_id=parent_id, form={"subpackages": child_id})
 
 
-def create_id(form_type: str, title: str, parent_package: str):
-    if form_type == "root-package":
-        return f"{title}/package.json"
-    if form_type == "file":
-        return f"{parent_package}/{title}.json"
-    if form_type == "folder":
-        return f"{parent_package}/{title}/package.json"
-
-
 class Packages(Resource):
     @staticmethod
     def post(data_source_id: str):
         data_source = DataSource(_id=data_source_id)
-        form = request.get_json()
-        # TODO: Validate form
+        package_request = PackageRequest(request.get_json())
 
-        form_data = form["formData"]
-        parent_id = form["parentID"]
-        form_type = form["nodeType"]
-        _id = create_id(form_type, title=form_data["title"], parent_package=dirname(parent_id))
+        if package_request.node_type in nodes_with_parent:
+            update_parent(data_source, package_request.parent_id, package_request.id, package_request.node_type)
 
-        if form_type in ("folder", "file"):
-            update_parent(data_source, parent_id, _id, form_type)
-
-        data_source.client.create_form(form_data, _id=_id)
-
+        data_source.client.create_form(package_request.form_data, _id=package_request.id)
         return {
-            form_data["_id"]: {
-                "description": form_data["description"],
-                "isRoot": (form_type not in ("file", "subpackage")),
-                "nodeType": form_type,
-                "title": form_data["title"],
-                "_id": form_data["_id"],
+            package_request.id: {
+                "isRoot": package_request.is_root,
+                "nodeType": package_request.node_type,
+                "title": package_request.form_data["title"],
+                "id": package_request.id,
             }
         }
 
     @staticmethod
     def delete(data_source_id: str):
         data_source = DataSource(_id=data_source_id)
-        form = request.get_json()
-        # TODO: Validate form
+        package_request = PackageRequest(request.get_json())
 
-        form_data = form["formData"]
-        parent_id = form["parentID"]
-        form_type = form["nodeType"]
-        _id = create_id(form_type, title=form_data["title"], parent_package=dirname(parent_id))
+        if package_request.node_type in nodes_with_parent:
+            update_parent(
+                data_source, package_request.parent_id, package_request.id, package_request.node_type, delete=True
+            )
 
-        if form_type in ("folder", "file"):
-            update_parent(data_source, parent_id, _id, form_type, delete=True)
-
-        data_source.client.delete(form_data, _id=_id)
+        data_source.client.delete(package_request.form_data, _id=package_request.id)
         return True
