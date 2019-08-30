@@ -11,7 +11,7 @@ collection = database[f"{Config.DATA_SOURCES_COLLECTION}"]
 
 def data_sources_get(document_type: str):
     all_sources = []
-    for source in collection.find(filter={"documentType": document_type}, projection=["host", "name", "type"]):
+    for source in collection.find(filter={"documentType": document_type}, projection=["host", "name", "type", "documentType"]):
         source["_id"] = str(source["_id"])
         all_sources.append(source)
     return all_sources

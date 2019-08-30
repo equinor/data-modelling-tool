@@ -23,26 +23,32 @@ if Config.REMOTE_DEBUG in (1, "True", "1", True):
 app = create_app(Config)
 
 
+def import_dmt_templates():
+    files = getListOfFiles("/code/schemas/templates")
+    for file in files:
+        print(f"Importing {file}.")
+        id = file.split("/", 4)[-1]
+        with open(file) as json_file:
+            document = json.load(json_file)
+            document["_id"] = id
+            data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
+
+
+def import_maf_blueprints():
+    files = getListOfFiles("/code/schemas/documents/blueprints")
+    for file in files:
+        id = file.split("/", 4)[-1]
+        print(f"Importing {file} as data_source.")
+        with open(file) as json_file:
+            document = json.load(json_file)
+            document["_id"] = id
+            model_db["blueprints"].replace_one({"_id": id}, document, upsert=True)
+
+
 @app.cli.command()
 def init_import():
-    import_file_dict = {
-        "blueprints": getListOfFiles("/code/schemas/documents/blueprints"),
-        "entities": getListOfFiles("/code/schemas/documents/entities"),
-        "templates": getListOfFiles("/code/schemas/templates"),
-    }
-
-    for collection, file_list in import_file_dict.items():
-        for file in file_list:
-            id = file.split("/", 4)[-1]
-            print(f"Importing {file} as {collection} with id: {id}.")
-            with open(file) as json_file:
-                document = json.load(json_file)
-                if collection == "templates":
-                    document["_id"] = id
-                    data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
-                else:
-                    document["_id"] = id
-                    model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
+    import_dmt_templates()
+    import_maf_blueprints()
 
 
 @app.cli.command("import_data_source")
@@ -55,10 +61,28 @@ def import_data_source(file):
 
 
 @app.cli.command()
+def import_all_data_sources():
+    files = getListOfFiles("/code/schemas/data-sources")
+    for file in files:
+        print(f"Importing {file} as data_source.")
+        with open(file) as json_file:
+            document = json.load(json_file)
+            data_modelling_tool_db["data_sources"].insert_one(document)
+
+
+@app.cli.command()
 def nuke_db():
-    print("Dropping all collections")
+
+    print("Dropping all collections", Config.ENVIRONMENT)
     # FIXME: Read names from the database
-    for name in ["documents", "templates"]:
+
+    collections_dmt = ["templates"]
+    if Config.ENVIRONMENT == 'local':
+        collections_dmt.append("data_sources")
+
+    for name in collections_dmt:
         print(f"Dropping collection '{name}'")
-        model_db.drop_collection(name)
         data_modelling_tool_db.drop_collection(name)
+
+    for name in ["documents", "blueprints", "entities"]:
+        model_db.drop_collection(name)
