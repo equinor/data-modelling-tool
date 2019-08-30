@@ -26,7 +26,8 @@ app = create_app(Config)
 @app.cli.command()
 def init_import():
     import_file_dict = {
-        "documents": getListOfFiles("/code/schemas/documents"),
+        "blueprints": getListOfFiles("/code/schemas/documents/blueprints"),
+        "entities": getListOfFiles("/code/schemas/documents/entities"),
         "templates": getListOfFiles("/code/schemas/templates"),
     }
 
@@ -36,13 +37,12 @@ def init_import():
             print(f"Importing {file} as {collection} with id: {id}.")
             with open(file) as json_file:
                 document = json.load(json_file)
-
-                if collection == "documents":
-                    document["_id"] = id
-                    model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
                 if collection == "templates":
                     document["_id"] = id
                     data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
+                else:
+                    document["_id"] = id
+                    model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
 
 
 @app.cli.command("import_data_source")

@@ -55,4 +55,3 @@ class Index(Resource):
     def get(data_source_id):
         data_source = DataSource(data_source_id)
         return index_data_source(data_source=data_source)
-
