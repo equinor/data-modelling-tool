@@ -12,7 +12,7 @@ def update_parent(data_source: DataSource, parent_id: str, child_id: str, form_t
             data_source.client.pull_from_parent(_id=parent_id, form={"files": child_id})
         else:
             data_source.client.append_to_parent(_id=parent_id, form={"files": child_id})
-    if form_type == "folder":
+    if form_type == "package":
         if delete:
             data_source.client.pull_from_parent(_id=parent_id, form={"subpackages": child_id})
         else:
@@ -24,7 +24,7 @@ def create_id(form_type: str, title: str, parent_package: str):
         return f"{title}/package.json"
     if form_type == "file":
         return f"{parent_package}/{title}.json"
-    if form_type == "folder":
+    if form_type == "package":
         return f"{parent_package}/{title}/package.json"
 
 
@@ -33,26 +33,24 @@ class Packages(Resource):
     def post(data_source_id: str):
         data_source = DataSource(_id=data_source_id)
         form = request.get_json()
+        print(f"\n\n{form}")
         # TODO: Validate form
-
         form_data = form["formData"]
-        parent_id = form["parentID"]
+        parent_id = form["parentId"]
         form_type = form["nodeType"]
         _id = create_id(form_type, title=form_data["title"], parent_package=dirname(parent_id))
 
-        if form_type in ("folder", "file"):
+        if form_type in ("package", "file"):
             update_parent(data_source, parent_id, _id, form_type)
 
         data_source.client.create_form(form_data, _id=_id)
 
         return {
-            form_data["_id"]: {
-                "description": form_data["description"],
-                "isRoot": (form_type not in ("file", "subpackage")),
-                "nodeType": form_type,
-                "title": form_data["title"],
-                "_id": form_data["_id"],
-            }
+            "description": form_data["description"],
+            "isRoot": (form_type == "root-package"),
+            "nodeType": form_type,
+            "title": form_data["title"],
+            "_id": _id
         }
 
     @staticmethod

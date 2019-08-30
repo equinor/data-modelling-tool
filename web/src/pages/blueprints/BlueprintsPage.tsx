@@ -10,7 +10,7 @@ import BlueprintReducer, {
   initialState,
   PageMode,
 } from '../common/DocumentReducer'
-import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
+import { Datasource, DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import Header from './Header'
 import axios from 'axios'
 import { RootFolderNode } from './nodes/DataSourceNode'
@@ -57,7 +57,7 @@ export default () => {
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
             <Header state={state} dispatch={dispatch} />
-            {state.dataSources.map((ds: any) => {
+            {state.dataSources.map((ds: Datasource) => {
               return (
                 <span key={ds._id}>
                   <DocumentTree

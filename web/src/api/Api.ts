@@ -25,6 +25,10 @@ export class DmtApi {
     return '/api/templates/package.json'
   }
 
+  pacakagePost(datasourceId: string) {
+    return `/api/data-sources/${datasourceId}/packages`
+  }
+
   documentGet(datasourceId: string, blueprintId: string): string | null {
     if (!datasourceId) {
       return null

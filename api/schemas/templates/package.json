@@ -20,7 +20,7 @@
       "documentType": {
         "type": "string",
         "title": "documentType",
-        "default": "root-package"
+        "default": "package"
       },
       "latestVersion": {
         "type": "string",

@@ -73,6 +73,7 @@ export default (props: PropTypes) => {
                 addNode={addNode}
                 updateNode={updateNode}
                 node={node}
+                datasource={datasource}
               ></NodeComponent>
             )
           }}
