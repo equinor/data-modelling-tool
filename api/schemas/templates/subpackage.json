@@ -3,9 +3,7 @@
     "title": "PackageTemplate",
     "description": "Template for a package",
     "type": "object",
-    "required": [
-      "title"
-    ],
+    "required": ["title"],
     "properties": {
       "title": {
         "type": "string",
@@ -42,10 +40,15 @@
     "description": {
       "ui:widget": "textarea"
     },
-    "ui:order": [
-      "title",
-      "description",
-      "version"
-    ]
+    "documentType": {
+      "ui:widget": "hidden"
+    },
+    "subpackages": {
+      "ui:widget": "hidden"
+    },
+    "files": {
+      "ui:widget": "hidden"
+    },
+    "ui:order": ["title", "description", "version"]
   }
 }

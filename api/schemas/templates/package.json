@@ -39,6 +39,15 @@
     "description": {
       "ui:widget": "textarea"
     },
+    "documentType": {
+      "ui:widget": "hidden"
+    },
+    "latestVersion": {
+      "ui:widget": "hidden"
+    },
+    "versions": {
+      "ui:widget": "hidden"
+    },
     "ui:order": [
       "title",
       "description",
