@@ -3,7 +3,7 @@
   "host": "msa-dev.documents.azure.com",
   "port": 10255,
   "username": "msa-dev",
-  "password": "rKhHX0aaVhmRltfDcMxHaGsx4fmezzOEcl0sxFSosuAzjgM2JYcRWhsnTp5grsDIvwYOhh80imsWz8YSo576Yw==",
+  "password": "",
   "tls": true,
   "name": "azure-mongo",
   "database": "maf",
