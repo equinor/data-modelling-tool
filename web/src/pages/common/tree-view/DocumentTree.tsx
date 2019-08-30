@@ -4,12 +4,12 @@ import axios from 'axios'
 import { DmtApi, IndexNode } from '../../../api/Api'
 import values from 'lodash/values'
 import { NodeType } from '../../../components/tree-view/TreeReducer'
-import { EntitiesAction } from '../../entities/EntitiesReducer'
+import { DocumentsAction } from '../../common/DocumentReducer'
 
 const api = new DmtApi()
 
 interface PropTypes {
-  dispatch: (action: EntitiesAction) => void
+  dispatch: (action: DocumentsAction) => void
   state: any
   datasource: any
 }

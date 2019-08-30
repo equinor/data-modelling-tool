@@ -35,7 +35,7 @@ export default (props: Props) => {
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
           console.log('dispatch: ', index.length, numFiles)
-          dispatch(DocumentActions.setSelectedDatasourceId(path))
+          dispatch(DocumentActions.setSelectedDataSourceId(path))
         }
         // if (postToApi) {
         //   axios
