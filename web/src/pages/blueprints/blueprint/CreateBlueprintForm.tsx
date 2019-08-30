@@ -3,13 +3,13 @@ import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import BlueprintForm from './BlueprintForm'
-import { BlueprintState } from '../../common/BlueprintReducer'
+import { DocumentsState } from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
 const api = new DmtApi()
 
 interface Props {
   dispatch: (action: any) => void
-  state: BlueprintState
+  state: DocumentsState
 }
 
 export default (props: Props) => {
