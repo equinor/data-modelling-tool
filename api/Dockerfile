@@ -14,7 +14,7 @@ COPY . /code
 
 FROM development as test
 RUN safety check
-RUN black --check .
+RUN black --check --diff .
 RUN flake8
 
 FROM base as production
