@@ -22,11 +22,11 @@ const notifications = {
 const EditBlueprintForm = (props: Props) => {
   const {
     dispatch,
-    state: { selectedDocumentId, selectedDatasSurceId },
+    state: { selectedDocumentId, selectedDataSourceId },
   } = props
 
   const [dataLoading, formData] = useFetch(
-    api.documentGet(selectedDatasSurceId, selectedDocumentId),
+    api.documentGet(selectedDataSourceId, selectedDocumentId),
     notifications
   )
 
@@ -35,7 +35,7 @@ const EditBlueprintForm = (props: Props) => {
   }
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(selectedDatasSurceId, selectedDocumentId)
+    const url = api.documentPut(selectedDataSourceId, selectedDocumentId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {

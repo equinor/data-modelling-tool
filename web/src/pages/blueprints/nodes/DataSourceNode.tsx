@@ -4,7 +4,7 @@ import Modal from '../../../components/modal/Modal'
 import Form, { FormProps } from '../../../components/Form'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { DmtApi, IndexNode } from '../../../api/Api'
-import { BlueprintState } from '../../common/BlueprintReducer'
+import { DocumentsState } from '../../common/DocumentReducer'
 
 const api = new DmtApi()
 
@@ -26,7 +26,7 @@ export type NodeMenuItem = {
 }
 
 export type Props = {
-  state: BlueprintState
+  state: DocumentsState
   node: IndexNode
   addNode: Function
   updateNode: Function

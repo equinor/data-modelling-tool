@@ -17,13 +17,13 @@ interface Props {
 
 export default (props: Props) => {
   const {
-    state: { selectedDatasSurceId, selectedDocumentId },
+    state: { selectedDataSourceId, selectedDocumentId },
     dispatch,
   } = props
   const isDisabled = selectedDocumentId.length === 0
   const [schemaLoading, schemaData] = useFetch(api.templatesBlueprintGet())
   const [dataLoading, dataData] = useFetch(
-    api.documentGet(selectedDatasSurceId, selectedDocumentId)
+    api.documentGet(selectedDataSourceId, selectedDocumentId)
   )
 
   if (schemaLoading || dataLoading) {

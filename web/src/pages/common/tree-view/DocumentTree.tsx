@@ -12,6 +12,7 @@ interface PropTypes {
   dispatch: (action: DocumentsAction) => void
   state: any
   datasource: any
+  getNodeComponent: Function
 }
 
 export default (props: PropTypes) => {

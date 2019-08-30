@@ -22,14 +22,14 @@ export type DocumentsAction = {
 }
 
 export type DocumentsState = {
-  selectedDocumentId: string
+  selectedDataSourceId: string
   selectedDocumentId: string
   dataSources: DataSource[]
   pageMode: PageMode
 }
 
 export const initialState: DocumentsState = {
-  selectedDocumentId: '',
+  selectedDataSourceId: '',
   selectedDocumentId: '',
   dataSources: [],
   pageMode: PageMode.view,
