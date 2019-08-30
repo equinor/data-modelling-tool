@@ -1,9 +1,11 @@
 import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { BrowserRouter as Router, Route, NavLink } from 'react-router-dom'
-import BlueprintPage from './pages/blueprint/BlueprintPage'
+import BlueprintsPage from './pages/blueprints/BlueprintsPage'
 import { ALMOST_BLACK, PRIMARY_COLOR } from './components/styles'
 import { H1 } from './components/Headers'
+import { NotificationContainer } from 'react-notifications'
+import EntitiesPage from './pages/entities/EntitiesPage'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -88,7 +90,9 @@ function App() {
         </InnerHeader>
       </AppHeader>
 
-      <Route path="/blueprints" component={BlueprintPage} />
+      <NotificationContainer />
+      <Route path="/blueprints" component={BlueprintsPage} />
+      <Route path="/entities" component={EntitiesPage} />
     </Router>
   )
 }

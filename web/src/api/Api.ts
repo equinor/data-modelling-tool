@@ -1,6 +1,6 @@
 export class DmtApi {
-  dataSourcesGet(): string {
-    return '/api/data-sources'
+  dataSourcesGet(dataSourceType: string): string {
+    return `/api/data-sources/${dataSourceType}`
   }
   dataSourcesPut(datasourceId: string) {
     return `/api/data-sources/${datasourceId}`
@@ -34,6 +34,11 @@ export class DmtApi {
   documentPut(datasourceId: string, blueprintId: string) {
     return `/api/data-sources/${datasourceId}/${blueprintId}`
   }
+}
+
+export enum DataSourceType {
+  Blueprints = 'blueprints',
+  Entities = 'entities',
 }
 
 export type Datasource = {

@@ -1,6 +1,5 @@
 const VIEW_FILE = 'VIEW_FILE'
 const EDIT_FILE = 'EDIT_FILE'
-// const ADD_NODES = 'ADD_NODES'
 const SET_SELECTED_DATASOURCE_ID = 'SET_SELECTED_DATASOURCE_ID'
 const ADD_DATASOURCES = 'ADD_DATASOURCES'
 const ADD_DATASOURCE = 'ADD_DATASOURCE'
@@ -11,37 +10,33 @@ export enum PageMode {
   view,
 }
 
-export type Datasource = {
+export type DataSource = {
   id: number
   label: string
   title: string
 }
 
-export type BlueprintAction = {
+export type DocumentsAction = {
   type: string
   value?: any
 }
 
-export type BlueprintState = {
-  selectedDatasourceId: string
-  selectedBlueprintId: string
-  datasources: Datasource[]
+export type DocumentsState = {
+  selectedDocumentId: string
+  selectedDocumentId: string
+  dataSources: DataSource[]
   pageMode: PageMode
 }
 
-export const blueprintInitialState: BlueprintState = {
-  selectedDatasourceId: '',
-  selectedBlueprintId: '',
-  datasources: [],
+export const initialState: DocumentsState = {
+  selectedDocumentId: '',
+  selectedDocumentId: '',
+  dataSources: [],
   pageMode: PageMode.view,
 }
 
-export const BlueprintActions = {
-  /**
-   * Updates datasource.
-   * @param id datasource Id
-   */
-  setSelectedDatasourceId: (id: number): BlueprintAction => ({
+export const DocumentActions = {
+  setSelectedDataSourceId: (id: number): DocumentsAction => ({
     type: SET_SELECTED_DATASOURCE_ID,
     value: id,
   }),
@@ -50,52 +45,45 @@ export const BlueprintActions = {
     type: ADD_DATASOURCES,
     value,
   }),
-  /**
-   * Sets selectedBlueprintId and correct pageMode
-   * @param id nodeId of file
-   */
-  addDatasource: (value: Datasource) => ({
+
+  addDataSource: (value: DataSource) => ({
     type: ADD_DATASOURCE,
     value,
   }),
-  viewFile: (id: string): BlueprintAction => ({
+  viewFile: (id: string): DocumentsAction => ({
     type: VIEW_FILE,
     value: id,
   }),
-  /**
-   * Sets correct pageMode.
-   */
   editFile: () => ({ type: EDIT_FILE }),
 }
 
-export default (state: BlueprintState, action: any) => {
+export default (state: DocumentsState, action: any) => {
   switch (action.type) {
     case SET_SELECTED_DATASOURCE_ID:
       const newState = {
         ...state,
-        selectedDatasourceId: action.value,
+        selectedDataSourceId: action.value,
       }
       return { ...state, ...newState }
     case ADD_DATASOURCES:
       return {
         ...state,
-        datasources: action.value,
-        selectedDatasourceId:
+        dataSources: action.value,
+        selectedDataSourceId:
           action.value && action.value.length && action.value[0]._id,
       }
     case ADD_DATASOURCE:
       return {
         ...state,
-        datasources: [...state.datasources, action.value],
+        dataSources: [...state.dataSources, action.value],
       }
 
-    // FORM ACTIONS
     case EDIT_FILE:
       return { ...state, pageMode: PageMode.edit }
     case VIEW_FILE:
       return {
         ...state,
-        selectedBlueprintId: action.value,
+        selectedDocumentId: action.value,
         pageMode: PageMode.view,
       }
 

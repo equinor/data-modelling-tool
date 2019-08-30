@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import axios from 'axios'
-import Modal from '../../../../components/modal/Modal'
-import Form, { FormProps } from '../../../../components/Form'
-import ContextMenu from '../../../../components/context-menu/ContextMenu'
-import { DmtApi, IndexNode } from '../../../../api/Api'
-import { BlueprintState } from '../../BlueprintReducer'
+import Modal from '../../../components/modal/Modal'
+import Form, { FormProps } from '../../../components/Form'
+import ContextMenu from '../../../components/context-menu/ContextMenu'
+import { DmtApi, IndexNode } from '../../../api/Api'
+import { BlueprintState } from '../../common/BlueprintReducer'
 
 const api = new DmtApi()
 
@@ -53,7 +53,7 @@ export const RootFolderNode = (props: Props) => {
         dataUrl: null,
         onSubmit: (formData: any) => {
           console.log(formData)
-          // api.documentPut(state.selectedDatasourceId, state.selectedBlueprintId, formData)
+          // api.documentPut(state.selectedDocumentId, state.selectedEntityId, formData)
           //   .then(res => {
           //     addNode(node.title, NodeType.folder)
           //     setShowModal(false)
@@ -71,9 +71,9 @@ export const RootFolderNode = (props: Props) => {
       },
       formProps: {
         schemaUrl: api.templatesPackageGet(),
-        dataUrl: api.documentGet(state.selectedDatasourceId, node._id),
+        dataUrl: api.documentGet(state.selectedDataSourceId, node._id),
         onSubmit: (formData: any) => {
-          const url = api.documentPut(state.selectedDatasourceId, node._id)
+          const url = api.documentPut(state.selectedDataSourceId, node._id)
           axios
             .put(url, formData)
             .then(() => {

@@ -34,21 +34,18 @@ def index_data_source(data_source: DataSource):
     root_packages = data_source.client.get_root_packages()
     index = {}
 
-    try:
-        for root_package in root_packages:
-            latest_version = data_source.client.read_form(root_package["latestVersion"])
-            root_package["children"] = latest_version.get("subpackages", []) + latest_version.get("files", [])
-            root_package["nodeType"] = root_package.pop("documentType")
-            root_package["isRoot"] = True
+    for root_package in root_packages:
+        latest_version = data_source.client.read_form(root_package["latestVersion"])
+        root_package["children"] = latest_version.get("subpackages", []) + latest_version.get("files", [])
+        root_package["nodeType"] = root_package.pop("documentType")
+        root_package["isRoot"] = True
 
-            index[root_package["_id"]] = root_package
-    except Exception as error:
-        logger.warning(f"The root-package {root_package['_id']} could not be indexed. {error}")
+        index[root_package["_id"]] = root_package
 
-    try:
-        index.update(**index_package(package_id=root_package["latestVersion"], data_source=data_source))
-    except Exception as error:
-        logger.warning(f"The subpackage {root_package['latestVersion']} could not be indexed. {error}")
+        try:
+            index.update(**index_package(package_id=root_package["latestVersion"], data_source=data_source))
+        except Exception as error:
+            logger.warning(f"The subpackage {root_package['latestVersion']} could not be indexed. {error}")
 
     return index
 
@@ -58,3 +55,4 @@ class Index(Resource):
     def get(data_source_id):
         data_source = DataSource(data_source_id)
         return index_data_source(data_source=data_source)
+

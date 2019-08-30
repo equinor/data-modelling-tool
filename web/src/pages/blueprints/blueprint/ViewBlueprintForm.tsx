@@ -2,28 +2,28 @@ import React from 'react'
 import Button from '../../../components/Button'
 import styled from 'styled-components'
 import {
-  BlueprintAction,
-  BlueprintActions,
-  BlueprintState,
-} from '../BlueprintReducer'
+  DocumentsAction,
+  DocumentActions,
+  DocumentsState,
+} from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
 import useFetch from '../../../components/useFetch'
 const api = new DmtApi()
 
 interface Props {
-  state: BlueprintState
-  dispatch: (action: BlueprintAction) => void
+  state: DocumentsState
+  dispatch: (action: DocumentsAction) => void
 }
 
 export default (props: Props) => {
   const {
-    state: { selectedDatasourceId, selectedBlueprintId },
+    state: { selectedDatasSurceId, selectedDocumentId },
     dispatch,
   } = props
-  const isDisabled = selectedBlueprintId.length === 0
+  const isDisabled = selectedDocumentId.length === 0
   const [schemaLoading, schemaData] = useFetch(api.templatesBlueprintGet())
   const [dataLoading, dataData] = useFetch(
-    api.documentGet(selectedDatasourceId, selectedBlueprintId)
+    api.documentGet(selectedDatasSurceId, selectedDocumentId)
   )
 
   if (schemaLoading || dataLoading) {
@@ -37,7 +37,7 @@ export default (props: Props) => {
           <Button
             disabled={isDisabled}
             onClick={() => {
-              dispatch(BlueprintActions.editFile())
+              dispatch(DocumentActions.editFile())
             }}
           >
             Edit

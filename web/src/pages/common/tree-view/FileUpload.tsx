@@ -1,6 +1,5 @@
 import React from 'react'
-import { BlueprintState } from '../BlueprintReducer'
-import { BlueprintActions } from '../BlueprintReducer'
+import { DocumentActions, DocumentsState } from '../DocumentReducer'
 
 type IndexItem = {
   _id: string
@@ -8,7 +7,7 @@ type IndexItem = {
 }
 
 type Props = {
-  state: BlueprintState
+  state: DocumentsState
   dispatch: (action: any) => void
 }
 
@@ -36,7 +35,7 @@ export default (props: Props) => {
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
           console.log('dispatch: ', index.length, numFiles)
-          dispatch(BlueprintActions.setSelectedDatasourceId(path))
+          dispatch(DocumentActions.setSelectedDatasourceId(path))
         }
         // if (postToApi) {
         //   axios

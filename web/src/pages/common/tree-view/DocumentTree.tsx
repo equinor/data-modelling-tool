@@ -1,24 +1,21 @@
 import React, { useEffect, useState } from 'react'
 import Tree from '../../../components/tree-view/Tree'
 import axios from 'axios'
-import { BlueprintAction, BlueprintState } from '../BlueprintReducer'
-import { RootFolderNode } from './nodes/DataSourceNode'
-import { FolderNode } from './nodes/FolderNode'
-import { BlueprintNode } from './nodes/BlueprintNode'
 import { DmtApi, IndexNode } from '../../../api/Api'
 import values from 'lodash/values'
 import { NodeType } from '../../../components/tree-view/TreeReducer'
+import { EntitiesAction } from '../../entities/EntitiesReducer'
 
 const api = new DmtApi()
 
 interface PropTypes {
-  dispatch: (action: BlueprintAction) => void
-  state: BlueprintState
+  dispatch: (action: EntitiesAction) => void
+  state: any
   datasource: any
 }
 
 export default (props: PropTypes) => {
-  const { dispatch, state, datasource } = props
+  const { dispatch, state, datasource, getNodeComponent } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
@@ -82,17 +79,4 @@ export default (props: PropTypes) => {
       </div>
     </div>
   )
-}
-
-function getNodeComponent(node: IndexNode) {
-  switch (node.nodeType) {
-    case 'root-package':
-      return RootFolderNode
-    case 'package':
-      return FolderNode
-    case 'file':
-      return BlueprintNode
-    default:
-      return () => <div>{node.title}</div>
-  }
 }

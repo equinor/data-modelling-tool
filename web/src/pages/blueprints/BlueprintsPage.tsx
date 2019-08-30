@@ -2,53 +2,69 @@ import React, { useEffect, useReducer } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 //@ts-ignore
-import { NotificationContainer } from 'react-notifications'
-import BlueprintTreeView from './tree-view/BlueprintTreeView'
-import EditBlueprintForm from './form/EditBlueprintForm'
-import CreateBlueprintForm from './form/CreateBlueprintForm'
-import ViewBlueprintForm from './form/ViewBlueprintForm'
+import EditBlueprintForm from './blueprint/EditBlueprintForm'
+import CreateBlueprintForm from './blueprint/CreateBlueprintForm'
+import ViewBlueprintForm from './blueprint/ViewBlueprintForm'
 import BlueprintReducer, {
-  BlueprintActions,
-  blueprintInitialState,
+  DocumentActions,
+  initialState,
   PageMode,
-} from './BlueprintReducer'
-import { DmtApi } from '../../api/Api'
-import BlueprintTreeviewHeader from './tree-view/BlueprintTreeviewHeader'
+} from '../common/DocumentReducer'
+import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
+import Header from './Header'
 import axios from 'axios'
+import { RootFolderNode } from './nodes/DataSourceNode'
+import { FolderNode } from './nodes/FolderNode'
+import { BlueprintNode } from './nodes/BlueprintNode'
+import DocumentTree from '../common/tree-view/DocumentTree'
+
 const api = new DmtApi()
 
+function getNodeComponent(node: IndexNode) {
+  switch (node.nodeType) {
+    case 'root-package':
+      return RootFolderNode
+    case 'package':
+      return FolderNode
+    case 'file':
+      return BlueprintNode
+    default:
+      return () => <div>{node.title}</div>
+  }
+}
+
 export default () => {
-  const [state, dispatch] = useReducer(BlueprintReducer, blueprintInitialState)
+  const [state, dispatch] = useReducer(BlueprintReducer, initialState)
   const pageMode = state.pageMode
 
   //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
     //avoid unnecessary fetch.
-    if (!state.datasources.length) {
-      axios(api.dataSourcesGet())
+    if (!state.dataSources.length) {
+      axios(api.dataSourcesGet(DataSourceType.Blueprints))
         .then((res: any) => {
-          dispatch(BlueprintActions.addDatasources(res.data))
+          dispatch(DocumentActions.addDatasources(res.data))
         })
         .catch((e: any) => {
           console.log(e)
         })
     }
-  }, [state.datasources.length])
+  }, [state.dataSources.length])
 
   return (
     <Grid fluid>
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
-            <NotificationContainer />
-            <BlueprintTreeviewHeader state={state} dispatch={dispatch} />
-            {state.datasources.map((ds: any) => {
+            <Header state={state} dispatch={dispatch} />
+            {state.dataSources.map((ds: any) => {
               return (
                 <span key={ds._id}>
-                  <BlueprintTreeView
+                  <DocumentTree
                     state={state}
                     datasource={ds}
                     dispatch={dispatch}
+                    getNodeComponent={getNodeComponent}
                   />
                 </span>
               )

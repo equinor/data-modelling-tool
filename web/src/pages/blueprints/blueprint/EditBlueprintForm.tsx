@@ -3,12 +3,12 @@ import BlueprintForm from './BlueprintForm'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintActions, BlueprintState } from '../BlueprintReducer'
+import { DocumentActions, DocumentsState } from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
 import useFetch from '../../../components/useFetch'
 const api = new DmtApi()
 interface Props {
-  state: BlueprintState
+  state: DocumentsState
   dispatch: Function
 }
 
@@ -22,11 +22,11 @@ const notifications = {
 const EditBlueprintForm = (props: Props) => {
   const {
     dispatch,
-    state: { selectedBlueprintId, selectedDatasourceId },
+    state: { selectedDocumentId, selectedDatasSurceId },
   } = props
 
   const [dataLoading, formData] = useFetch(
-    api.documentGet(selectedDatasourceId, selectedBlueprintId),
+    api.documentGet(selectedDatasSurceId, selectedDocumentId),
     notifications
   )
 
@@ -35,12 +35,12 @@ const EditBlueprintForm = (props: Props) => {
   }
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(selectedDatasourceId, selectedBlueprintId)
+    const url = api.documentPut(selectedDatasSurceId, selectedDocumentId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {
         NotificationManager.success(response.data, 'Updated blueprint')
-        dispatch(BlueprintActions.viewFile(selectedBlueprintId))
+        dispatch(DocumentActions.viewFile(selectedDocumentId))
       })
       .catch((e: any) => {
         NotificationManager.error(
