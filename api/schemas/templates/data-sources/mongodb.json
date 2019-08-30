@@ -9,6 +9,11 @@
         "title": "Type",
         "default": "mongodb"
       },
+      "documentType": {
+        "type": "string",
+        "title": "Type",
+        "default": "mongodb"
+      },
       "host": {
         "type": "string",
         "title": "Hostname"

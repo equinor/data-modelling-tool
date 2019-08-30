@@ -8,5 +8,5 @@
   "name": "azure-mongo",
   "database": "maf",
   "collection": "entities",
-  "type": "entities"
+  "documentType": "entities"
 }

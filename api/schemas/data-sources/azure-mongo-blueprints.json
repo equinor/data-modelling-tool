@@ -8,5 +8,5 @@
   "name": "azure-mongo",
   "database": "maf",
   "collection": "blueprints",
-  "type": "blueprints"
+  "documentType": "blueprints"
 }

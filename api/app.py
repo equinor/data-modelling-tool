@@ -1,6 +1,7 @@
 import json
 
 from flask import Flask
+import click
 
 from config import Config
 from rest import create_api
@@ -42,6 +43,15 @@ def init_import():
                 if collection == "templates":
                     document["_id"] = id
                     data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
+
+
+@app.cli.command("import_data_source")
+@click.argument("file")
+def import_data_source(file):
+    print(f"Importing {file} as data_source with id: {id}.")
+    with open(file) as json_file:
+        document = json.load(json_file)
+        data_modelling_tool_db["data_sources"].insert_one(document)
 
 
 @app.cli.command()
