@@ -4,7 +4,6 @@ from flask_restful import Resource, abort
 from config import Config
 from services.database import data_modelling_tool_db
 
-
 class Template(Resource):
     @staticmethod
     def get(_id):
