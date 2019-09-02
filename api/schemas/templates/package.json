@@ -17,11 +17,6 @@
         "title": "Description",
         "default": ""
       },
-      "documentType": {
-        "type": "string",
-        "title": "documentType",
-        "default": "root-package"
-      },
       "latestVersion": {
         "type": "string",
         "title": "Latest version"

@@ -21,6 +21,12 @@ def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_t
             data_source.client.append_to_parent(_id=parent_id, form={"subpackages": child_id})
 
 
+def get_documentType(is_root: bool, node_type: str):
+    if is_root:
+        return "root-package"
+    return "subpackage"
+
+
 class Packages(Resource):
     @staticmethod
     def post(data_source_id: str):
@@ -30,14 +36,16 @@ class Packages(Resource):
         if package_request.node_type in nodes_with_parent:
             update_parent(data_source, package_request.parent_id, package_request.id, package_request.node_type)
 
+        if package_request.node_type == "folder":
+            package_request.form_data["documentType"] = get_documentType(package_request.is_root,
+                                                                         package_request.node_type)
+            
         data_source.client.create_form(package_request.form_data, _id=package_request.id)
         return {
-            package_request.id: {
-                "isRoot": package_request.is_root,
-                "nodeType": package_request.node_type,
-                "title": package_request.form_data["title"],
-                "id": package_request.id,
-            }
+            "isRoot": package_request.is_root,
+            "nodeType": package_request.node_type,
+            "title": package_request.form_data["title"],
+            "id": package_request.id,
         }
 
     @staticmethod
