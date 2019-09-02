@@ -2,7 +2,7 @@ import values from 'lodash/values'
 import { IndexNode } from '../../api/Api'
 
 const defaultMatcher = (filterText: string, node: IndexNode) => {
-  return node && node._id.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
+  return node && node.id.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
 }
 
 const nodeMatchesOrHasMatchingDescendants: any = (
@@ -79,14 +79,14 @@ export function filterNodes(nodes: any, filterPath: any) {
       if (node.children) {
         const isParent = node.children.includes(filterPath)
         if (isParent) {
-          filteredNodes[node._id] = Object.assign({}, node)
+          filteredNodes[node.id] = Object.assign({}, node)
           if (!node.isRoot) {
-            filterRecursive(node._id, nodes, filteredNodes)
+            filterRecursive(node.id, nodes, filteredNodes)
           }
         }
       } else {
-        if (filterPath === node._id) {
-          filteredNodes[node._id] = Object.assign({}, node)
+        if (filterPath === node.id) {
+          filteredNodes[node.id] = Object.assign({}, node)
         }
       }
     })

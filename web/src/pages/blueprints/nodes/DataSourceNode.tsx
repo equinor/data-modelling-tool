@@ -3,8 +3,9 @@ import axios from 'axios'
 import Modal from '../../../components/modal/Modal'
 import Form, { FormProps } from '../../../components/Form'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
-import { DmtApi, IndexNode } from '../../../api/Api'
+import { Datasource, DmtApi, IndexNode } from '../../../api/Api'
 import { DocumentsState } from '../../common/DocumentReducer'
+import { NodeType } from '../../../components/tree-view/TreeReducer'
 
 const api = new DmtApi()
 
@@ -30,6 +31,7 @@ export type Props = {
   node: IndexNode
   addNode: Function
   updateNode: Function
+  datasource: Datasource
 }
 
 export type ActionConfig = {
@@ -38,7 +40,7 @@ export type ActionConfig = {
 }
 
 export const RootFolderNode = (props: Props) => {
-  const { node, state, updateNode } = props
+  const { node, updateNode, addNode, datasource } = props
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
 
@@ -52,15 +54,26 @@ export const RootFolderNode = (props: Props) => {
         schemaUrl: api.templatesPackageGet(),
         dataUrl: null,
         onSubmit: (formData: any) => {
-          console.log(formData)
-          // api.documentPut(state.selectedDocumentId, state.selectedEntityId, formData)
-          //   .then(res => {
-          //     addNode(node.title, NodeType.folder)
-          //     setShowModal(false)
-          //   })
-          //   .catch(err => {
-          //     console.error(err)
-          //   })
+          const url = api.packagePost(datasource.id)
+          let parentId = node.id
+          if (node.isRoot && node.nodeType === 'folder' && node.latestVersion) {
+            parentId = node.latestVersion
+          }
+          axios
+            .post(url, {
+              parentId,
+              nodeType: 'folder',
+              isRoot: false,
+              formData,
+            })
+            .then(res => {
+              console.log(res)
+              addNode(node.title, NodeType.folder)
+              setShowModal(false)
+            })
+            .catch(err => {
+              console.error(err)
+            })
         },
       },
     },
@@ -71,13 +84,13 @@ export const RootFolderNode = (props: Props) => {
       },
       formProps: {
         schemaUrl: api.templatesPackageGet(),
-        dataUrl: api.documentGet(state.selectedDataSourceId, node._id),
+        dataUrl: api.documentGet(datasource.id, node.id),
         onSubmit: (formData: any) => {
-          const url = api.documentPut(state.selectedDataSourceId, node._id)
+          const url = api.documentPut(datasource.id, node.id)
           axios
             .put(url, formData)
             .then(() => {
-              updateNode(node._id, formData.title)
+              updateNode(node.id, formData.title)
               setShowModal(false)
             })
             .catch((e: any) => {
@@ -96,7 +109,7 @@ export const RootFolderNode = (props: Props) => {
         {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <WithContextMenu
-        id={node._id}
+        id={node.id}
         onClickContextMenu={(id: any, action: string) => {
           setAction(action)
           setShowModal(!showModal)

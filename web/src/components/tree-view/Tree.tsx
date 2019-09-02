@@ -15,7 +15,7 @@ import { DragStart } from 'react-beautiful-dnd'
 
 export type TreeNodeData = {
   nodeId: string
-  type: NodeType
+  nodeType: NodeType
   isOpen: boolean
   title: string
   isRoot: boolean
@@ -26,7 +26,7 @@ export type TreeNodeData = {
 type TreeProps = {
   children: Function
   tree: object
-  onNodeSelect?: (node: TreeNodeData) => TreeNodeData
+  onNodeSelect?: (node: TreeNodeData) => void
   isDragEnabled: boolean
 }
 

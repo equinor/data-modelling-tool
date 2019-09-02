@@ -37,9 +37,10 @@ class Packages(Resource):
             update_parent(data_source, package_request.parent_id, package_request.id, package_request.node_type)
 
         if package_request.node_type == "folder":
-            package_request.form_data["documentType"] = get_documentType(package_request.is_root,
-                                                                         package_request.node_type)
-            
+            package_request.form_data["documentType"] = get_documentType(
+                package_request.is_root, package_request.node_type
+            )
+
         data_source.client.create_form(package_request.form_data, _id=package_request.id)
         return {
             "isRoot": package_request.is_root,

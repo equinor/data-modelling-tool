@@ -1,6 +1,6 @@
 const VIEW_FILE = 'VIEW_FILE'
 const EDIT_FILE = 'EDIT_FILE'
-const SET_SELECTED_DATASOURCE_ID = 'SET_SELECTED_DATASOURCE_ID'
+const SET_SELECTED_DOCUMENT_ID = 'SET_SELECTED_DOCUMENT_ID'
 const ADD_DATASOURCES = 'ADD_DATASOURCES'
 const ADD_DATASOURCE = 'ADD_DATASOURCE'
 
@@ -22,22 +22,20 @@ export type DocumentsAction = {
 }
 
 export type DocumentsState = {
-  selectedDataSourceId: string
   selectedDocumentId: string
   dataSources: DataSource[]
   pageMode: PageMode
 }
 
 export const initialState: DocumentsState = {
-  selectedDataSourceId: '',
   selectedDocumentId: '',
   dataSources: [],
   pageMode: PageMode.view,
 }
 
 export const DocumentActions = {
-  setSelectedDataSourceId: (id: number): DocumentsAction => ({
-    type: SET_SELECTED_DATASOURCE_ID,
+  setSelectedDocumentId: (id: string): DocumentsAction => ({
+    type: SET_SELECTED_DOCUMENT_ID,
     value: id,
   }),
 
@@ -59,12 +57,11 @@ export const DocumentActions = {
 
 export default (state: DocumentsState, action: any) => {
   switch (action.type) {
-    case SET_SELECTED_DATASOURCE_ID:
-      const newState = {
+    case SET_SELECTED_DOCUMENT_ID:
+      return {
         ...state,
-        selectedDataSourceId: action.value,
+        selectedDocumentId: action.value,
       }
-      return { ...state, ...newState }
     case ADD_DATASOURCES:
       return {
         ...state,

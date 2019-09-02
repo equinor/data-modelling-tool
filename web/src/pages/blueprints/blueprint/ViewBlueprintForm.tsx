@@ -6,24 +6,26 @@ import {
   DocumentActions,
   DocumentsState,
 } from '../../common/DocumentReducer'
-import { DmtApi } from '../../../api/Api'
+import { Datasource, DmtApi } from '../../../api/Api'
 import useFetch from '../../../components/useFetch'
 const api = new DmtApi()
 
 interface Props {
   state: DocumentsState
   dispatch: (action: DocumentsAction) => void
+  datasource: Datasource
 }
 
 export default (props: Props) => {
   const {
-    state: { selectedDataSourceId, selectedDocumentId },
+    datasource,
+    state: { selectedDocumentId },
     dispatch,
   } = props
   const isDisabled = selectedDocumentId.length === 0
   const [schemaLoading, schemaData] = useFetch(api.templatesBlueprintGet())
   const [dataLoading, dataData] = useFetch(
-    api.documentGet(selectedDataSourceId, selectedDocumentId)
+    api.documentGet(datasource.id, selectedDocumentId)
   )
 
   if (schemaLoading || dataLoading) {

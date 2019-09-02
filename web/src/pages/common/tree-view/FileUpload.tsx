@@ -1,5 +1,5 @@
 import React from 'react'
-import { DocumentActions, DocumentsState } from '../DocumentReducer'
+import { DocumentsState } from '../DocumentReducer'
 
 type IndexItem = {
   _id: string
@@ -12,7 +12,7 @@ type Props = {
 }
 
 export default (props: Props) => {
-  const { dispatch } = props
+  // const { dispatch } = props
 
   function handleFile(file: File, index: any[], numFiles: number) {
     let fileReader: FileReader
@@ -35,7 +35,7 @@ export default (props: Props) => {
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
           console.log('dispatch: ', index.length, numFiles)
-          dispatch(DocumentActions.setSelectedDataSourceId(path))
+          // dispatch(DocumentActions.setSelectedDataSourceId(path))
         }
         // if (postToApi) {
         //   axios

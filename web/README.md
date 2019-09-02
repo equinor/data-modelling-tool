@@ -2,6 +2,6 @@
 
 | Statements                                    | Branches                                  | Functions                                   | Lines                               |
 | --------------------------------------------- | ----------------------------------------- | ------------------------------------------- | ----------------------------------- |
-| ![Statements](https://img.shields.io/badge/Coverage-28.06%25-red.svg 'Make me better!') | ![Branches](https://img.shields.io/badge/Coverage-9.72%25-red.svg 'Make me better!') | ![Functions](https://img.shields.io/badge/Coverage-11.22%25-red.svg 'Make me better!') | ![Lines](https://img.shields.io/badge/Coverage-28.36%25-red.svg 'Make me better!') |
+| ![Statements](https://img.shields.io/badge/Coverage-27.54%25-red.svg 'Make me better!') | ![Branches](https://img.shields.io/badge/Coverage-8.93%25-red.svg 'Make me better!') | ![Functions](https://img.shields.io/badge/Coverage-10.75%25-red.svg 'Make me better!') | ![Lines](https://img.shields.io/badge/Coverage-27.83%25-red.svg 'Make me better!') |
 
 ## Web
