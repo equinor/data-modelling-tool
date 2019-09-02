@@ -1,4 +1,4 @@
-from behave import *
+from behave import given
 from data_source_plugins.mongodb import MongodbClient
 
 # TODO: Find out how we want to do this logic. How to connect to clients. Should we use DataSource class?
@@ -14,7 +14,7 @@ DATA_SOURCES = {
         "name": "latest-correct",
         "database": "maf",
         "collection": "blueprints",
-        "documentType": "blueprints"
+        "documentType": "blueprints",
     }
 }
 

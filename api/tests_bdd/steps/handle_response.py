@@ -1,27 +1,24 @@
-import collections
-from pprint import pprint
-
-from behave import *
+from behave import then
 import json
 from deepdiff import DeepDiff
 
 STATUS_CODES = {
-    u'OK': 200,
-    u'Created': 201,
-    u'No Content': 204,
-    u'Bad Request': 400,
-    u'Unauthorized': 401,
-    u'Not Found': 404,
-    u'Conflict': 409
+    "OK": 200,
+    "Created": 201,
+    "No Content": 204,
+    "Bad Request": 400,
+    "Unauthorized": 401,
+    "Not Found": 404,
+    "Conflict": 409,
 }
 
 
-@then(u'the response status should be "{status}"')
-def step_impl(context, status):
+@then('the response status should be "{status}"')
+def step_response_status(context, status):
     return context.response_status == STATUS_CODES[status]
 
 
-@then('the response should contain')
+@then("the response should contain")
 def json_at_path(context):
     actual = context.response_json
     data = context.text or context.data

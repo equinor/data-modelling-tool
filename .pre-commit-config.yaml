@@ -1,0 +1,36 @@
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  sha: v1.2.3
+  hooks:
+    - id: check-ast
+      language_version: python3.7
+    - id: check-merge-conflict
+    - id: check-json
+    - id: check-yaml
+    - id: flake8
+      args: ['--config=api/.flake8']
+      language_version: python3.7
+- repo: https://github.com/ambv/black
+  rev: stable
+  hooks:
+    - id: black
+      language_version: python3.7
+      files: ^api/.*\.py$
+- repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
+  sha: v1.0.3
+  hooks:
+    - id: python-bandit-vulnerability-check
+      args: [-l, --recursive, -x, tests]
+      files: ^api/.*\.py$
+- repo: https://github.com/prettier/prettier
+  rev: "1.18.2"
+  hooks:
+    - id: prettier
+      files: ^web/.*\.(ts|tsx|js|css|html|json)$
+      args: ['--config=web/.prettierrc.js']
+- repo: local
+  hooks:
+    - id: web tests
+      name: run web tests
+      entry: sh -c "cd web && CI=true npm run coverage && node_modules/.bin/jest-badges-readme"
+      language: system
+      files: ^web/.*\.(test.ts|test.tsx|test.js)$

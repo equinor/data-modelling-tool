@@ -4,7 +4,8 @@ from config import Config
 from services.database import data_modelling_tool_db, model_db
 
 app = create_app(Config)
-app.config['TESTING'] = True
+app.config["TESTING"] = True
+
 
 def clear_databases():
     for name in ["documents", "templates"]:
@@ -12,11 +13,13 @@ def clear_databases():
         model_db.drop_collection(name)
         data_modelling_tool_db.drop_collection(name)
 
+
 def before_all(context):
     context.errors = []
     context.features = []
     clear_databases()
     init_import_internal()
+
 
 def after_all(context):
     print_overview_features(context.features)
@@ -38,5 +41,5 @@ def after_scenario(context, scenario):
 
 
 def after_step(context, step):
-    if step.status == 'failed':
+    if step.status == "failed":
         context.errors.append(step)

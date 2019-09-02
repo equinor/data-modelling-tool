@@ -11,9 +11,7 @@
       "type": "string",
       "value": "2",
       "name": "width",
-      "dimensions": [
-        "*"
-      ]
+      "dimensions": ["*"]
     }
   ]
 }
