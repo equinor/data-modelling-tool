@@ -1,7 +1,7 @@
 {
   "title": "bigBoxes",
   "description": "Big boxes are kept in this subpackage",
-  "documentType": "subpackage",
+  "isRoot": false,
   "files": [
     "blueprints/boxes/1.1.1/big/big.json"
   ]

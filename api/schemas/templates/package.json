@@ -17,11 +17,6 @@
         "title": "Description",
         "default": ""
       },
-      "documentType": {
-        "type": "string",
-        "title": "documentType",
-        "default": "package"
-      },
       "latestVersion": {
         "type": "string",
         "title": "Latest version"
@@ -51,7 +46,6 @@
     "ui:order": [
       "title",
       "description",
-      "documentType",
       "latestVersion",
       "versions"
     ]

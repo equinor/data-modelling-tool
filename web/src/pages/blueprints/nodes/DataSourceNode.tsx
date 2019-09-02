@@ -58,7 +58,8 @@ export const RootFolderNode = (props: Props) => {
             .post(api.pacakagePost(datasource._id), {
               parentId: node._id,
               formData,
-              nodeType: 'package',
+              type: 'folder',
+              isRoot: true,
             })
             // api.documentPut(state.selectedDocumentId, state.selectedEntityId, formData)
             .then((res: any) => {
