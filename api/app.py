@@ -45,7 +45,7 @@ def init_import():
                     model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
 
 
-@app.cli.command("import_data_source")
+@app.cli.command()
 @click.argument("file")
 def import_data_source(file):
     print(f"Importing {file} as data_source with id: {id}.")

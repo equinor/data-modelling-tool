@@ -1,4 +1,5 @@
 # data-modelling-tool
+
 [![Build Status](https://travis-ci.com/equinor/data-modelling-tool.svg?token=yR5pmi3sbtpmzTWwTfNG&branch=master)](https://travis-ci.com/equinor/data-modelling-tool)
 
 A tool for modelling and presenting on blue-prints (data models)
@@ -32,7 +33,7 @@ To populate the database for first-time-use, we will import all files in the `ap
 
 1. Start the project with `docker-compose up`
 2. Run the Flaks applications CLI command 'init-import' with;  
-   `docker-compose exec api flask init-import`
+   `docker-compose exec api ./reset-database.sh`
 
 ### Intellij Idea Plugin
 
