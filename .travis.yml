@@ -16,6 +16,9 @@ jobs:
     - stage: build
       name: "Build Web"
       script: docker build ./web/
+    - stage: tests
+      name: "BDD Tests"
+      script: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm api behave
     - stage: deploy
       name: "Reset database"
       script:

@@ -7,16 +7,12 @@ services:
     restart: unless-stopped
     depends_on:
       - db
-    volumes:
-      - ./api/:/code
     environment:
       ENVIRONMENT: azure
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
       MONGO_INITDB_DATABASE: maf
       MONGO_DATA_MODELING_TOOL_DATABASE: dmt
-    ports:
-      - "5000:5000"
 
   web:
     build: ./web
@@ -25,10 +21,6 @@ services:
   db:
     image: mongo:4.0.10
     command: --quiet
-    volumes:
-      - ./data/db:/data/db
-    ports:
-      - "27017:27017"
     environment:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
@@ -36,8 +28,6 @@ services:
 
   nginx:
     build: ./nginx
-    ports:
-      - "80:80"
 
 #  oauth2:
  #   build:
