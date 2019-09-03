@@ -17,6 +17,7 @@ def clear_databases():
 def before_all(context):
     context.errors = []
     context.features = []
+
     clear_databases()
     init_import_internal()
 

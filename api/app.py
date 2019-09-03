@@ -22,6 +22,8 @@ if Config.REMOTE_DEBUG in (1, "True", "1", True):
 
 app = create_app(Config)
 
+print(f"Running in environment: {app.config['ENVIRONMENT']}")
+
 
 @app.cli.command()
 def init_import():

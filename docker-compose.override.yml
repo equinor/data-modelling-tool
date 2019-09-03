@@ -3,6 +3,8 @@ version: "3.4"
 services:
   nginx:
     build: ./nginx/local
+    ports:
+      - "80:80"
 
   api:
     build:
@@ -13,6 +15,8 @@ services:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+    ports:
+      - "5000:5000"
 
   web:
     build:
@@ -21,6 +25,12 @@ services:
       - ./web/src:/code/src
     environment:
       - NODE_ENV=development
+
+  db:
+    volumes:
+      - ./data/db:/data/db
+    ports:
+      - "27017:27017"
 
   db-ui:
     depends_on:
@@ -33,3 +43,4 @@ services:
       ME_CONFIG_MONGODB_ADMINUSERNAME: maf
       ME_CONFIG_MONGODB_ADMINPASSWORD: maf
       ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
+
