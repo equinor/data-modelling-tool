@@ -5,7 +5,9 @@ services:
     build: ./nginx/local
     ports:
       - "80:80"
-
+    depends_on:
+      - web
+      - api
   api:
     build:
       target: development
