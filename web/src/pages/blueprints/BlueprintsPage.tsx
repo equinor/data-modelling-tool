@@ -61,7 +61,7 @@ export default () => {
   return (
     <Grid fluid>
       {state.dataSources.map((ds: Datasource) => (
-        <Row>
+        <Row key={ds.id}>
           <Col xs={12} md={12} lg={5}>
             <Wrapper>
               <Header state={state} dispatch={dispatch} />

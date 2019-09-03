@@ -64,3 +64,5 @@ typings/
 .idea
 
 .buildstatus
+build
+*.iml

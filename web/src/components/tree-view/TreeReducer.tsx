@@ -3,6 +3,7 @@ import {
   expandNodesWithMatchingDescendants,
   hideNodesWithNoMatchingDescendants,
 } from './Filters'
+import { TreeNodeData } from './Tree'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
@@ -31,10 +32,10 @@ const childIds = (state: any, action: any) => {
 }
 
 export const NodeActions = {
-  createNode: (nodeId: string, nodeType: NodeType) => ({
+  createNode: (value: TreeNodeData) => ({
     type: CREATE_NODE,
-    nodeId: nodeId,
-    nodeType: nodeType,
+    nodeId: value.nodeId,
+    value,
   }),
   deleteNode: (nodeId: string) => ({
     type: DELETE_NODE,
@@ -55,6 +56,8 @@ export const NodeActions = {
     nodeId,
   }),
   updateNode: (nodeId: string, title: string) => ({
+    type: UPDATE_NODE,
+    nodeId,
     title,
   }),
   makeRoot: (nodeId: string, title: string) => ({
@@ -66,12 +69,7 @@ export const NodeActions = {
 const node = (state: any, action: any) => {
   switch (action.type) {
     case CREATE_NODE:
-      return {
-        nodeId: action.nodeId,
-        children: [],
-        title: action.nodeId,
-        type: action.nodeType,
-      }
+      return action.value
     case ADD_CHILD:
     case REMOVE_CHILD:
       return {
@@ -84,6 +82,7 @@ const node = (state: any, action: any) => {
         isOpen: !state.isOpen,
       }
     case UPDATE_NODE:
+      console.log(action)
       return {
         ...state,
         title: action.title,

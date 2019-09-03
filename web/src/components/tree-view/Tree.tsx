@@ -103,13 +103,14 @@ const Tree = (props: TreeProps) => {
     dispatch(NodeActions.toggleNode(node.nodeId))
   }
 
-  const addNode = (node: TreeNodeData, nodeId: string, nodeType: NodeType) => {
-    dispatch(NodeActions.createNode(nodeId, nodeType))
-    dispatch(NodeActions.addChild(node.nodeId, nodeId))
+  const addNode = (node: TreeNodeData, parentId: string) => {
+    dispatch(NodeActions.createNode({ ...node, isOpen: true }))
+    dispatch(NodeActions.addChild(parentId, node.nodeId))
   }
 
-  const updateNode = (node: TreeNodeData, title: string) => {
-    dispatch(NodeActions.updateNode(node.nodeId, title))
+  const updateNode = (node: TreeNodeData) => {
+    console.log(node)
+    dispatch(NodeActions.updateNode(node.nodeId, node.title))
   }
 
   const rootNodes = values(state)
@@ -133,7 +134,7 @@ const Tree = (props: TreeProps) => {
                 const node = item.currentItem
                 return (
                   <DraggableWrapper
-                    key={node.nodeId}
+                    key={node.nodeId + '_' + index}
                     draggableId={`${node.nodeId}`}
                     index={index}
                     isDragEnabled={isDragEnabled}
