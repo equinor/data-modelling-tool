@@ -6,10 +6,11 @@ import Modal from '../../../components/modal/Modal'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { DmtApi } from '../../../api/Api'
-// import {EntitiesActions} from "../EntitiesReducer";
+import FileUpload from './FileUpload'
 const api = new DmtApi()
 const datasourcesOptions = [
   { label: '', templateUrl: '' },
+  { label: 'local files', templateUrl: '' },
   {
     fetchSchema: api.templatesDatasourceMongoGet(),
     label: 'mongo db',
@@ -17,7 +18,7 @@ const datasourcesOptions = [
 ]
 
 export default (props: any) => {
-  // const { state, dispatch } = props
+  const { state, dispatch } = props
   const [showModal, setShowModal] = useState(false)
   const [selectedTemplate, setSelectedTemplate] = useState(0)
 
@@ -48,6 +49,7 @@ export default (props: any) => {
             schemaUrl={api.templatesDatasourceMongoGet()}
             dataUrl=""
             onSubmit={formData => {
+              console.log(formData)
               axios
                 .post(api.dataSourcesPost(), formData)
                 .then((res: any) => {
@@ -64,6 +66,9 @@ export default (props: any) => {
                 })
             }}
           />
+        )}
+        {selectedTemplate === 1 && (
+          <FileUpload state={state} dispatch={dispatch} />
         )}
       </Modal>
       <div style={{ fontWeight: 700, marginLeft: 10, marginBottom: 10 }}>

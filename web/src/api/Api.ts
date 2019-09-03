@@ -6,7 +6,7 @@ export class DmtApi {
     return `/api/data-sources/${datasourceId}`
   }
   dataSourcesPost() {
-    return `/api/data-sources`
+    return `/api/data-sources/blueprints`
   }
 
   indexGet(datasourceId: string) {
@@ -60,5 +60,6 @@ export type IndexNode = {
   versions: string[]
   nodeType: 'folder' | 'file'
   isRoot: boolean
+  isOpen?: boolean
   children?: string[]
 }

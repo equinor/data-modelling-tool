@@ -1,7 +1,6 @@
 import React from 'react'
 import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
 import Header from '../../components/Header'
-import FileUpload from '../common/tree-view/FileUpload'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import AddDatasource from '../common/tree-view/AddDatasource'
 
@@ -11,8 +10,6 @@ type Props = {
 }
 
 export default (props: Props) => {
-  const { state, dispatch } = props
-
   return (
     <Grid fluid>
       <Row
@@ -22,9 +19,7 @@ export default (props: Props) => {
           marginBottom: 20,
         }}
       >
-        <Col style={{ display: 'inline-flex', marginBottom: 20 }}>
-          {false && <FileUpload state={state} dispatch={dispatch} />}
-        </Col>
+        <Col style={{ display: 'inline-flex', marginBottom: 20 }}></Col>
 
         <Col style={{ display: 'inline-flex', marginBottom: 20 }}>
           <AddDatasource {...props} />

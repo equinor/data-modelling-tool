@@ -32,9 +32,11 @@ export default (props: Props) => {
         }
         index.push(indexItem)
 
+        console.log(path, json)
+
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
-          console.log('dispatch: ', index.length, numFiles)
+          console.log('dispatch: ', index)
           // dispatch(DocumentActions.setSelectedDataSourceId(path))
         }
         // if (postToApi) {
