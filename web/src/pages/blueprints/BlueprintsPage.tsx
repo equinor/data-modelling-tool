@@ -46,7 +46,11 @@ export default () => {
     if (!state.dataSources.length) {
       axios(api.dataSourcesGet(DataSourceType.Blueprints))
         .then((res: any) => {
-          dispatch(DocumentActions.addDatasources(res.data))
+          dispatch(
+            DocumentActions.addDatasources(
+              res.data.filter((d: Datasource) => d.host === 'db')
+            )
+          )
         })
         .catch((e: any) => {
           console.log(e)
