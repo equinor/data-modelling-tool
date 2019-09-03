@@ -33,16 +33,19 @@ def init_import():
 
     for collection, file_list in import_file_dict.items():
         for file in file_list:
-            id = file.split("/", 4)[-1]
-            print(f"Importing {file} as {collection} with id: {id}.")
-            with open(file) as json_file:
-                document = json.load(json_file)
-                if collection == "templates":
-                    document["_id"] = id
-                    data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
-                else:
-                    document["_id"] = id
-                    model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
+            try:
+                id = file.split("/", 4)[-1]
+                print(f"Importing {file} as {collection} with id: {id}.")
+                with open(file) as json_file:
+                    document = json.load(json_file)
+                    if collection == "templates":
+                        document["_id"] = id
+                        data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
+                    else:
+                        document["_id"] = id
+                        model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
+            except Exception as Error:
+                print(f"Could not import file {file}: {Error}")
 
 
 @app.cli.command()
@@ -58,7 +61,7 @@ def import_data_source(file):
 def nuke_db():
     print("Dropping all collections")
     # FIXME: Read names from the database
-    for name in ["documents", "templates"]:
+    for name in ["blueprints", "entities", "templates"]:
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
         data_modelling_tool_db.drop_collection(name)

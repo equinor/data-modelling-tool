@@ -11,7 +11,7 @@ export const EntityNode = (props: Props) => {
   const { node, dispatch } = props
 
   const open = () => {
-    dispatch(DocumentActions.viewFile(node._id))
+    dispatch(DocumentActions.viewFile(node.id))
   }
 
   return <div onClick={open}>{node.title}</div>

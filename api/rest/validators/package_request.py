@@ -5,8 +5,8 @@ from config import Config
 from services.database import data_modelling_tool_db as database
 
 
-def validate_mongo_data_source(document):
-    schema = database[Config.TEMPLATES_COLLECTION].find_one(filter={"_id": "data-sources/mongodb.json"})
+def validate_package_request(document):
+    schema = database[Config.TEMPLATES_COLLECTION].find_one(filter={"_id": "package_request.json"})
     try:
         validate(instance=document, schema=schema)
     except ValidationError as error:

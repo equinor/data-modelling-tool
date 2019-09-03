@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from 'react'
-import { Grid, Col, Row } from 'react-styled-flexboxgrid'
+import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 //@ts-ignore
 import EditBlueprintForm from './blueprint/EditBlueprintForm'
@@ -10,22 +10,25 @@ import BlueprintReducer, {
   initialState,
   PageMode,
 } from '../common/DocumentReducer'
-import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
+import { Datasource, DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import Header from './Header'
 import axios from 'axios'
 import { RootFolderNode } from './nodes/DataSourceNode'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import DocumentTree from '../common/tree-view/DocumentTree'
+import { TreeNodeData } from '../../components/tree-view/Tree'
 
 const api = new DmtApi()
 
 function getNodeComponent(node: IndexNode) {
   switch (node.nodeType) {
-    case 'root-package':
-      return RootFolderNode
-    case 'package':
-      return FolderNode
+    case 'folder':
+      if (node.isRoot) {
+        return RootFolderNode
+      } else {
+        return FolderNode
+      }
     case 'file':
       return BlueprintNode
     default:
@@ -53,40 +56,53 @@ export default () => {
 
   return (
     <Grid fluid>
-      <Row>
-        <Col xs={12} md={12} lg={5}>
-          <Wrapper>
-            <Header state={state} dispatch={dispatch} />
-            {state.dataSources.map((ds: any) => {
-              return (
-                <span key={ds._id}>
-                  <DocumentTree
-                    state={state}
-                    datasource={ds}
-                    dispatch={dispatch}
-                    getNodeComponent={getNodeComponent}
-                  />
-                </span>
-              )
-            })}
-          </Wrapper>
-        </Col>
+      {state.dataSources.map((ds: Datasource) => (
+        <Row>
+          <Col xs={12} md={12} lg={5}>
+            <Wrapper>
+              <Header state={state} dispatch={dispatch} />
+              <span key={ds.id}>
+                <DocumentTree
+                  onNodeSelect={(node: TreeNodeData) => {
+                    dispatch(DocumentActions.setSelectedDocumentId(node.nodeId))
+                  }}
+                  state={state}
+                  datasource={ds}
+                  dispatch={dispatch}
+                  getNodeComponent={getNodeComponent}
+                />
+              </span>
+            </Wrapper>
+          </Col>
 
-        <Col xs={12} md={12} lg={7}>
-          <Wrapper>
-            {pageMode === PageMode.view && (
-              <ViewBlueprintForm state={state} dispatch={dispatch} />
-            )}
-            {pageMode === PageMode.edit && (
-              <EditBlueprintForm state={state} dispatch={dispatch} />
-            )}
+          <Col xs={12} md={12} lg={7}>
+            <Wrapper>
+              {pageMode === PageMode.view && state.selectedDocumentId && (
+                <ViewBlueprintForm
+                  state={state}
+                  datasource={ds}
+                  dispatch={dispatch}
+                />
+              )}
+              {pageMode === PageMode.edit && state.selectedDocumentId && (
+                <EditBlueprintForm
+                  state={state}
+                  datasource={ds}
+                  dispatch={dispatch}
+                />
+              )}
 
-            {pageMode === PageMode.create && (
-              <CreateBlueprintForm dispatch={dispatch} state={state} />
-            )}
-          </Wrapper>
-        </Col>
-      </Row>
+              {pageMode === PageMode.create && state.selectedDocumentId && (
+                <CreateBlueprintForm
+                  dispatch={dispatch}
+                  datasource={ds}
+                  state={state}
+                />
+              )}
+            </Wrapper>
+          </Col>
+        </Row>
+      ))}
     </Grid>
   )
 }

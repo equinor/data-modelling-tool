@@ -12,13 +12,15 @@ werkzeug = "^0.15.4"
 flask-restful = "^0.3.7"
 pymongo = "^3.8"
 jsonschema = "^3.0"
-black = {version = "^18.3-alpha.0", allows-prereleases = true}
+bandit = "^1.6"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"
 safety = "^1.8"
 pytest = "^5.1"
 flake8 = "^3.7"
+bandit = "^1.6"
+black = {version = "^18.3-alpha.0", allows-prereleases = true}
 
 [tool.black]
 line-length = 119

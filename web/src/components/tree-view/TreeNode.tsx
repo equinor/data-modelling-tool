@@ -61,14 +61,14 @@ const TreeNode = (props: TreeNodeProps) => {
     <div>
       <StyledTreeNode level={level}>
         <NodeIcon onClick={() => handleToggle(node)}>
-          {node.type === NodeType.folder &&
+          {node.nodeType === NodeType.folder &&
             (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
         </NodeIcon>
 
         <NodeIcon marginRight={5}>
-          {node.type === NodeType.file && <FaFile />}
-          {node.type === NodeType.folder && node.isOpen && <FaFolderOpen />}
-          {node.type === NodeType.folder && !node.isOpen && <FaFolder />}
+          {node.nodeType === NodeType.file && <FaFile />}
+          {node.nodeType === NodeType.folder && node.isOpen && <FaFolderOpen />}
+          {node.nodeType === NodeType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
         <span

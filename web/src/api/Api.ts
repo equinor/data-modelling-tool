@@ -25,6 +25,10 @@ export class DmtApi {
     return '/api/templates/package.json'
   }
 
+  packagePost(datasourceId: string) {
+    return `/api/data-sources/${datasourceId}/packages`
+  }
+
   documentGet(datasourceId: string, blueprintId: string): string | null {
     if (!datasourceId) {
       return null
@@ -42,18 +46,19 @@ export enum DataSourceType {
 }
 
 export type Datasource = {
-  _id: string
+  id: string
   type: string
   host: string
   name: string
 }
 
 export type IndexNode = {
-  _id: string
+  id: string
   title: string
   description: string
+  latestVersion?: string
   versions: string[]
-  nodeType: string
+  nodeType: 'folder' | 'file'
   isRoot: boolean
   children?: string[]
 }

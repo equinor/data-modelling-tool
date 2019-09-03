@@ -3,6 +3,11 @@ import ContextMenu from '../../../components/context-menu/ContextMenu'
 import Modal from '../../../components/modal/Modal'
 import { ActionConfig, Props } from './DataSourceNode'
 import Form from '../../../components/Form'
+import axios from 'axios'
+import { NodeType } from '../../../components/tree-view/TreeReducer'
+import { DmtApi } from '../../../api/Api'
+
+const api = new DmtApi()
 
 type WithContextMenuProps = {
   label: string
@@ -22,7 +27,7 @@ export type NodeMenuItem = {
 }
 
 export const FolderNode = (props: Props) => {
-  const { node } = props
+  const { node, datasource } = props
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
   const configs: ActionConfig[] = [
@@ -32,19 +37,25 @@ export const FolderNode = (props: Props) => {
         label: 'Create Blueprint',
       },
       formProps: {
-        schemaUrl: '',
+        schemaUrl: api.templatesBlueprintGet(),
         dataUrl: null,
-        onSubmit: () => {
-          // axios
-          //         .put(`/api/blueprints/${id}/${formData.title}.json`, formData)
-          //         .then(res => {
-          // addNode(node.title, NodeType.file)
-          // setShowModal(false)
-          //           onSuccess(res.data)
-          //         })
-          //         .catch(err => {
-          //           onError(err)
-          //         })
+        onSubmit: (formData: any) => {
+          const url = api.packagePost(datasource.id)
+          axios
+            .post(url, {
+              nodeType: NodeType.file,
+              isRoot: false,
+              parentId: node.id,
+              formData,
+            })
+            .then(res => {
+              // addNode(node.title, NodeType.file)
+              // setShowModal(false)
+              //           onSuccess(res.data)
+            })
+            .catch(err => {
+              // onError(err)
+            })
         },
       },
     },
@@ -54,9 +65,25 @@ export const FolderNode = (props: Props) => {
         label: 'Create SubPackage',
       },
       formProps: {
-        schemaUrl: '',
+        schemaUrl: api.templatesPackageGet(),
         dataUrl: null,
-        onSubmit: () => {
+        onSubmit: (formData: any) => {
+          const url = api.packagePost(datasource.id)
+          axios
+            .post(url, {
+              nodeType: 'folder',
+              isRoot: false,
+              parentId: node.id,
+              formData,
+            })
+            .then(res => {
+              // addNode(node.title, NodeType.file)
+              // setShowModal(false)
+              //           onSuccess(res.data)
+            })
+            .catch(err => {
+              // onError(err)
+            })
           // const url = `/api/blueprints/${id}/${formData.title}/package.json`
           //       axios
           //         .put(url, formData)
@@ -103,7 +130,7 @@ export const FolderNode = (props: Props) => {
         {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <WithContextMenu
-        id={node._id}
+        id={node.id}
         onClickContextMenu={(id: any, action: string) => {
           setAction(action)
           setShowModal(!showModal)

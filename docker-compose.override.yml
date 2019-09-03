@@ -1,6 +1,9 @@
 version: "3.4"
 
 services:
+  nginx:
+    build: ./nginx/local
+
   api:
     build:
       target: development

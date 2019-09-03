@@ -11,7 +11,7 @@ export const BlueprintNode = (props: Props) => {
   const { node, dispatch } = props
 
   const openBlueprint = () => {
-    dispatch(DocumentActions.viewFile(node._id))
+    dispatch(DocumentActions.viewFile(node.id))
   }
 
   return <div onClick={openBlueprint}>{node.title}</div>

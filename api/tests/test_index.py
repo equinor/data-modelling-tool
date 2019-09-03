@@ -1,46 +1,42 @@
-from rest.data_sources.index import index_data_source
 import unittest
 
-correct_index = [
-    {
-        "_id": "blueprints/propellers/package.json",
-        "title": "propellers",
-        "description": "cool sintef propeller model blueprints",
-        "versions": ["blueprints/propellers/1.0.0/package.json", "blueprints/propellers/1.0.1/package.json"],
-        "latestVersion": "blueprints/propellers/1.0.0/package.json",
-        "nodeType": "root-package",
+from rest.data_sources.index import index_data_source
+
+correct_index = {
+    "blueprints/boxes/package.json": {
+        "title": "Boxes",
+        "description": "Many different boxes",
+        "latestVersion": "blueprints/boxes/1.1.1/package.json",
+        "versions": ["blueprints/boxes/1.1.1/package.json"],
+        "children": ["blueprints/boxes/1.1.1/big/package.json", "blueprints/boxes/1.1.1/ordinary.json"],
+        "nodeType": "folder",
+        "isRoot": True,
+        "id": "blueprints/boxes/package.json",
     },
-    {
-        "_id": "blueprints/propellers/1.0.0/package.json",
-        "title": "propellers",
-        "description": "cool sintef propeller model blueprints",
-        "documentType": "package",
-        "version": "1.0.0",
-        "subpackages": ["blueprints/propellers/1.0.0/big/package.json"],
-        "files": ["blueprints/propellers/1.0.0/ordinary-propeller.json"],
-        "nodeType": "subpackage",
-    },
-    {
-        "_id": "blueprints/propellers/1.0.0/ordinary-propeller.json",
-        "title": "propeller",
-        "description": "A typical propeller blueprint",
+    "blueprints/boxes/1.1.1/ordinary.json": {
+        "title": "Ordinary-box",
+        "description": "Pretty standard stuff here",
         "nodeType": "file",
+        "isRoot": False,
+        "id": "blueprints/boxes/1.1.1/ordinary.json",
     },
-    {
-        "_id": "blueprints/propellers/1.0.0/big/package.json",
-        "title": "propellers",
-        "description": "big propellers",
-        "documentType": "package",
-        "files": ["blueprints/propellers/1.0.0/big/big-propeller.json"],
-        "nodeType": "subpackage",
-    },
-    {
-        "_id": "blueprints/propellers/1.0.0/big/big-propeller.json",
-        "title": "propeller",
-        "description": "A typical propeller blueprint",
+    "blueprints/boxes/1.1.1/big/big.json": {
+        "title": "big-box",
+        "description": "This is a very large box, its even in three dimensions",
         "nodeType": "file",
+        "isRoot": False,
+        "id": "blueprints/boxes/1.1.1/big/big.json",
     },
-]
+    "blueprints/boxes/1.1.1/big/package.json": {
+        "title": "bigBoxes",
+        "description": "Big boxes are kept in this subpackage",
+        "documentType": "subpackage",
+        "nodeType": "folder",
+        "id": "blueprints/boxes/1.1.1/big/package.json",
+        "isRoot": False,
+        "children": ["blueprints/boxes/1.1.1/big/big.json"],
+    },
+}
 
 
 class TestIndex(unittest.TestCase):
@@ -49,6 +45,6 @@ class TestIndex(unittest.TestCase):
         Testing the creation of an index of a data-source.
         A data-source with data needs to be available
         """
-        data_source_id = "5d5fe337f21d4b0f1d67dd02"
-        result = index_data_source(data_source_id=data_source_id)
+        data_sourceid = "5d5fe337f21d4b0f1d67dd02"
+        result = index_data_source(data_sourceid=data_sourceid)
         self.assertEqual(result, correct_index)

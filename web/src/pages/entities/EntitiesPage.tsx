@@ -19,10 +19,12 @@ const api = new DmtApi()
 
 function getNodeComponent(node: IndexNode) {
   switch (node.nodeType) {
-    case 'root-package':
-      return RootFolderNode
-    case 'package':
-      return FolderNode
+    case 'folder':
+      if (node.isRoot) {
+        return RootFolderNode
+      } else {
+        return FolderNode
+      }
     case 'file':
       return EntityNode
     default:
@@ -58,6 +60,9 @@ export default () => {
               return (
                 <span key={ds._id}>
                   <DocumentTree
+                    onNodeSelect={node => {
+                      console.log(node)
+                    }}
                     state={state}
                     datasource={ds}
                     dispatch={dispatch}

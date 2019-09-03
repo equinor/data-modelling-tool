@@ -25,6 +25,7 @@ class DataSource:
         self.name = data_source_dict["name"]
         self.database = data_source_dict["database"]
         self.collection = data_source_dict["collection"]
+        self.documentType = data_source_dict["documentType"]
 
         if self.type == "mongodb":
             self.client = MongodbClient(
