@@ -27,6 +27,16 @@ docker-compose -f docker-compose.override.yml up
 [API](api/README.md)  
 [WEB](web/README.md)
 
+## Pre-commit
+
+```
+pip install pre-commit
+pre-commit install
+```
+
+Alternative pre-commit installations can be found [here](https://pre-commit.com/#install).
+
+
 ## Database
 
 To populate the database for first-time-use, we will import all files in the `api/schemas/` directory.

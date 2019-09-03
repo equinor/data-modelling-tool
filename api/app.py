@@ -25,6 +25,10 @@ app = create_app(Config)
 
 @app.cli.command()
 def init_import():
+    init_import_internal()
+
+
+def init_import_internal():
     import_file_dict = {
         "blueprints": getListOfFiles("/code/schemas/documents/blueprints"),
         "entities": getListOfFiles("/code/schemas/documents/entities"),
