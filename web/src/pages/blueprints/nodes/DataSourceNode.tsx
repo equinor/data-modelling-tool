@@ -1,11 +1,15 @@
 import React, { useState } from 'react'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 import axios from 'axios'
 import Modal from '../../../components/modal/Modal'
 import Form, { FormProps } from '../../../components/Form'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
-import { Datasource, DmtApi, IndexNode } from '../../../api/Api'
-import { DocumentsState } from '../../common/DocumentReducer'
-import { NodeType } from '../../../components/tree-view/TreeReducer'
+import { DmtApi } from '../../../api/Api'
+import { NodeComponentProps } from '../../common/tree-view/DocumentTree'
+import { TreeNodeBuilder } from '../../common/tree-view/TreeNodeBuilder'
+import { editPackage } from '../../common/context-menu-actions/EditPackage'
+import { createBlueprint } from '../../common/context-menu-actions/CreateBluerpint'
 
 const api = new DmtApi()
 
@@ -26,20 +30,12 @@ export type NodeMenuItem = {
   label: string
 }
 
-export type Props = {
-  state: DocumentsState
-  node: IndexNode
-  addNode: Function
-  updateNode: Function
-  datasource: Datasource
-}
-
 export type ActionConfig = {
   menuItem: NodeMenuItem
   formProps: FormProps
 }
 
-export const RootFolderNode = (props: Props) => {
+export const RootFolderNode = (props: NodeComponentProps) => {
   const { node, updateNode, addNode, datasource } = props
   const [showModal, setShowModal] = useState(false)
   const [action, setAction] = useState('')
@@ -55,50 +51,35 @@ export const RootFolderNode = (props: Props) => {
         dataUrl: null,
         onSubmit: (formData: any) => {
           const url = api.packagePost(datasource.id)
-          let parentId = node.id
-          if (node.isRoot && node.nodeType === 'folder' && node.latestVersion) {
-            parentId = node.latestVersion
-          }
           axios
             .post(url, {
-              parentId,
+              parentId: node.nodeId,
               nodeType: 'folder',
               isRoot: false,
               formData,
             })
             .then(res => {
-              console.log(res)
-              addNode(node.title, NodeType.folder)
+              const treeNode = new TreeNodeBuilder(res.data)
+                .setOpen(true)
+                .buildFolderNode()
+
+              const parentId = TreeNodeBuilder.stripVersion(node.nodeId)
+              addNode(treeNode, parentId)
               setShowModal(false)
+              NotificationManager.success(res.data.id, 'Package created')
             })
             .catch(err => {
-              console.error(err)
+              console.log(err)
+              NotificationManager.error(
+                err.statusText,
+                'failed to create package.'
+              )
             })
         },
       },
     },
-    {
-      menuItem: {
-        action: 'edit-package',
-        label: 'Edit Package',
-      },
-      formProps: {
-        schemaUrl: api.templatesPackageGet(),
-        dataUrl: api.documentGet(datasource.id, node.id),
-        onSubmit: (formData: any) => {
-          const url = api.documentPut(datasource.id, node.id)
-          axios
-            .put(url, formData)
-            .then(() => {
-              updateNode(node.id, formData.title)
-              setShowModal(false)
-            })
-            .catch((e: any) => {
-              console.log(e)
-            })
-        },
-      },
-    },
+    editPackage({ node, addNode, updateNode, datasource, setShowModal }),
+    createBlueprint({ datasource, node, updateNode, addNode, setShowModal }),
   ]
 
   const menuItems = configs.map(config => config.menuItem)
@@ -109,7 +90,7 @@ export const RootFolderNode = (props: Props) => {
         {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <WithContextMenu
-        id={node.id}
+        id={node.nodeId}
         onClickContextMenu={(id: any, action: string) => {
           setAction(action)
           setShowModal(!showModal)

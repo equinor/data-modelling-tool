@@ -3,7 +3,7 @@ import Tree, { TreeNodeData } from '../../../components/tree-view/Tree'
 import axios from 'axios'
 import { Datasource, DmtApi, IndexNode } from '../../../api/Api'
 import values from 'lodash/values'
-import { DocumentsAction } from '../../common/DocumentReducer'
+import { DocumentsAction, DocumentsState } from '../DocumentReducer'
 
 const api = new DmtApi()
 
@@ -13,6 +13,21 @@ interface PropTypes {
   state: any
   datasource: Datasource
   getNodeComponent: Function
+}
+
+export type AddNode = (node: TreeNodeData, parentId: string) => void
+export type UpdateNode = (node: TreeNodeData) => void
+
+interface NodeComponentCallbackProps {
+  addNode: AddNode
+  updateNode: UpdateNode
+  node: TreeNodeData
+}
+
+export interface NodeComponentProps extends NodeComponentCallbackProps {
+  state?: DocumentsState
+  dispatch?: Function
+  datasource: Datasource
 }
 
 export default (props: PropTypes) => {
@@ -64,6 +79,11 @@ export default (props: PropTypes) => {
         <Tree tree={documents} onNodeSelect={onNodeSelect}>
           {(node: IndexNode, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
+            /**
+             * pass NodeComponent down the render tree, to get access to the indexNode and treeActions. (addNode, updateNode)
+             * The Tree only concern about displaying a TreeNode, while NodeComponent enhance a TreeNode's functionality.
+             * e.g context menu and modal.
+             */
             return (
               <NodeComponent
                 state={state}
