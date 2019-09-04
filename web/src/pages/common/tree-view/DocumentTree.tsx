@@ -4,6 +4,7 @@ import axios from 'axios'
 import { Datasource, DmtApi, IndexNode } from '../../../api/Api'
 import values from 'lodash/values'
 import { DocumentsAction, DocumentsState } from '../DocumentReducer'
+import FileUpload from './FileUpload'
 
 const api = new DmtApi()
 
@@ -74,7 +75,14 @@ export default (props: PropTypes) => {
 
   return (
     <div>
-      <h3>{datasource.name}</h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+        <div style={{ display: 'inline-flex' }}>
+          <h3>{datasource.name}</h3>
+        </div>
+        <div style={{ display: 'inline-flex' }}>
+          <FileUpload state={state} dispatch={dispatch} />
+        </div>
+      </div>
       <div>
         <Tree tree={documents} onNodeSelect={onNodeSelect}>
           {(node: IndexNode, addNode: Function, updateNode: Function) => {

@@ -59,9 +59,9 @@ export default () => {
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
+            <Header state={state} dispatch={dispatch} />
             {state.dataSources.map((ds: Datasource) => (
               <div key={ds.id}>
-                <Header state={state} dispatch={dispatch} />
                 <span key={ds.id}>
                   <DocumentTree
                     onNodeSelect={(node: TreeNodeData) => {
