@@ -9,8 +9,3 @@ services:
     environment:
       FLASK_ENV: development
       ENVIRONMENT: azure
-      MONGO_INITDB_ROOT_PASSWORD: initpassword
-
-  db:
-    environment:
-       MONGO_INITDB_ROOT_PASSWORD: initpassword
