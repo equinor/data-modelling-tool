@@ -21,6 +21,10 @@ export class DmtApi {
     return `/api/templates/blueprint.json`
   }
 
+  templatesCreateDocumentGet() {
+    return `/api/templates/create-document.json`
+  }
+
   templatesPackageGet() {
     return '/api/templates/package.json'
   }

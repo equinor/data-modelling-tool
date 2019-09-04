@@ -1,0 +1,18 @@
+{
+  "schema": {
+    "title": "Create document template",
+    "description": "Template for a creating documents",
+    "type": "object",
+    "required": ["title"],
+    "properties": {
+      "title": {
+        "type": "string",
+        "title": "Title",
+        "default": ""
+      }
+    }
+  },
+  "uiSchema": {
+
+  }
+}
