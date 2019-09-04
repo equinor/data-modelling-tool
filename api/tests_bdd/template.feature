@@ -2,8 +2,9 @@ Feature: Templates
 
   Scenario: Get blueprint template
     Given I access the resource url "/api/templates/blueprint.json"
+    And init import is done
     When I make a "GET" request
-    Then the response should contain
+    Then the response should equal
     """
     {
        "_id": "blueprint.json",

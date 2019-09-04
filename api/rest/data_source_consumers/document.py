@@ -14,8 +14,8 @@ class Document(Resource):
     def post(data_source_id, form_id):
         form = request.get_json()
         data_source = DataSource(_id=data_source_id)
-        result = data_source.client.create_form(form=form, _id=form_id)
-        return str(result.inserted_id)
+        inserted_id = data_source.client.create_form(form=form, _id=form_id)
+        return str(inserted_id)
 
     @staticmethod
     def put(data_source_id, form_id):

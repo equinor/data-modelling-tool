@@ -24,3 +24,18 @@ def print_overview_features(features):
             )
     table = AsciiTable(table_data)
     print(table.table)
+
+
+def print_overview_errors(errors):
+    print("Errors: %s" % len(errors))
+
+    for error in errors:
+        table_data = [
+            ["Feature", "Keyword", "Step", "Line"],
+            [error.filename, error.keyword, error.name, str(error.line)],
+        ]
+        table = AsciiTable(table_data)
+        print(table.table)
+        # Need a line break to avoid overlapping tables and error messages
+        print("\n")
+        print(error.error_message)

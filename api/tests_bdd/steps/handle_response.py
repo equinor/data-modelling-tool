@@ -1,6 +1,8 @@
 from behave import then
 import json
 from deepdiff import DeepDiff
+from utils.data_structure.traverse import traverse_compare
+import pprint
 
 STATUS_CODES = {
     "OK": 200,
@@ -15,11 +17,21 @@ STATUS_CODES = {
 
 @then('the response status should be "{status}"')
 def step_response_status(context, status):
-    return context.response_status == STATUS_CODES[status]
+    if context.response_status != STATUS_CODES[status]:
+        pp = pprint.PrettyPrinter(indent=2)
+        pretty_print = "\n Actual: \n {} \n Expected: \n {}".format(
+            pp.pformat(context.response_status), pp.pformat(STATUS_CODES[status])
+        )
+        print(pretty_print)
+        if "response_json" in context:
+            print(context.response_json)
+        else:
+            print(context.response.data)
+    assert context.response_status == STATUS_CODES[status]
 
 
-@then("the response should contain")
-def json_at_path(context):
+@then("the response should equal")
+def step_impl_equal(context):
     actual = context.response_json
     data = context.text or context.data
     expected = json.loads(data)
@@ -27,3 +39,30 @@ def json_at_path(context):
     if result != {}:
         print(result)
     assert result == {}
+
+
+def pretty_eq(expected, actual):
+    pp = pprint.PrettyPrinter(indent=2)
+    a = traverse_compare(expected, actual)
+    b = []
+    default_print = "\n {} != {}".format(pp.pformat(a), pp.pformat(b))
+    pretty_print = "\n Actual: \n {} \n Expected: \n {}".format(pp.pformat(actual), pp.pformat(expected))
+    msg = "{} \n {}".format(default_print, pretty_print)
+    if a != b:
+        print(msg)
+    assert a == b
+
+
+@then("the response should contain")
+def step_impl_contain(context):
+    actual = context.response_json
+    data = context.text or context.data
+    expected = json.loads(data)
+    pretty_eq(expected, actual)
+
+
+@then("the response should be")
+def step_impl_should_be(context):
+    actual = context.response_json
+    data = context.text or context.data
+    pretty_eq(data, actual)

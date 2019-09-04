@@ -9,8 +9,8 @@ services:
     environment:
       FLASK_ENV: development
       ENVIRONMENT: local
-      MONGO_INITDB_ROOT_PASSWORD: initpassword
+      MONGO_INITDB_ROOT_PASSWORD: maf
 
   db:
     environment:
-       MONGO_INITDB_ROOT_PASSWORD: initpassword
+       MONGO_INITDB_ROOT_PASSWORD: maf

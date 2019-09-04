@@ -4,9 +4,9 @@ from flask_restful import abort
 def get_common_keys(attribute):
     return {
         "type": attribute.get("type", "string"),
-        "unit": attribute.get("unit", "nil"),
-        "value": attribute.get("value", "nil"),
-        "dimensions": attribute.get("dimensions", ""),
+        # "unit": attribute.get("unit", "nil"),
+        # "value": attribute.get("value", "nil"),
+        # "dimensions": attribute.get("dimensions", ""),
     }
 
 
@@ -26,8 +26,8 @@ def dimensions_to_int(dimensions: list):
 
 def form_to_schema(form: dict):
     properties = {
-        "title": {"title": "Title", "type": "string", "default": ""},
-        "description": {"title": "Description", "type": "string", "default": ""},
+        # "title": {"title": "Title", "type": "string", "default": ""},
+        # "description": {"title": "Description", "type": "string", "default": ""},
     }
 
     # TODO: Only handles arrays, not matrices
