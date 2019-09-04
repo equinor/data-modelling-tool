@@ -17,10 +17,13 @@ jobs:
       name: "Build Web"
       script: docker build ./web/
     - stage: tests
-      name: "BDD Tests"
+      name: "API - BDD Tests"
       script: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm api behave
     - stage: tests
-      name: "Web Tests"
+      name: "API - Unit Tests"
+      script: docker-compose run --rm api pytest tests
+    - stage: tests
+      name: "Web - Tests"
       script: docker-compose -f docker-compose.yml run --no-deps --rm -e CI=true web yarn test
     - stage: deploy
       name: "Reset database"

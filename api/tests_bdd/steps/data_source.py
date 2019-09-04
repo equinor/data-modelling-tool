@@ -1,33 +1,22 @@
 from behave import given
-from data_source_plugins.mongodb import MongodbClient
-
-# TODO: Find out how we want to do this logic. How to connect to clients. Should we use DataSource class?
-
-DATA_SOURCES = {
-    "mongo": {
-        "type": "mongodb",
-        "host": "db",
-        "port": 27017,
-        "username": "maf",
-        "password": "maf",
-        "tls": False,
-        "name": "latest-correct",
-        "database": "maf",
-        "collection": "blueprints",
-        "documentType": "blueprints",
-    }
-}
+from services.database import data_modelling_tool_db
 
 
-@given('i access the data source "{data_source_type}"')
-def step_impl(context, data_source_type: str):
-    if data_source_type == "mongo":
-        client = MongodbClient(
-            host=data_source_type[data_source_type].host,
-            username=data_source_type[data_source_type].username,
-            password=data_source_type[data_source_type].password,
-            collection=data_source_type[data_source_type].collection,
-            port=data_source_type[data_source_type].port,
-            database=data_source_type[data_source_type].database,
-        )
-        context.data_source = client
+@given("there are mongodb data sources")
+def step_impl(context):
+    context.cases = {}
+    for row in context.table:
+        document = {
+            "_id": row["name"],
+            "host": row["host"],
+            "port": int(row["port"]),
+            "username": row["username"],
+            "password": row["password"],
+            "tls": row["tls"],
+            "name": row["name"].strip(),
+            "database": row["database"],
+            "collection": row["collection"],
+            "documentType": row["documentType"],
+            "type": "mongodb",
+        }
+        data_modelling_tool_db["data_sources"].insert_one(document)

@@ -16,8 +16,9 @@ def create_api(app):
 
     api.add_resource(Packages, "/api/data-sources/<string:data_source_id>/packages")
 
-    api.add_resource(SingleDataSource, "/api/data-sources/<string:_id>")
-    api.add_resource(DataSources, "/api/data-sources/<string:document_type>")
+    api.add_resource(SingleDataSource, "/api/data-sources/<string:id>")
+
+    api.add_resource(DataSources, "/api/data-sources", "/api/data-sources/<string:document_type>")
 
     api.add_resource(Document, "/api/data-sources/<string:data_source_id>/<path:form_id>")
     api.add_resource(DocumentToSchema, "/api/data-sources/<string:data_source_id>/<path:form_id>/json-schema")
