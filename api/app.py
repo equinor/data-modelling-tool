@@ -56,6 +56,12 @@ def init_import_internal():
 
 
 @app.cli.command()
+def drop_data_sources():
+    print(f"Dropping collection data_sources")
+    data_modelling_tool_db.drop_collection("data_sources")
+
+
+@app.cli.command()
 @click.argument("file")
 def import_data_source(file):
     print(f"Importing {file} as data_source with id: {id}.")

@@ -14,7 +14,7 @@ export function createBlueprint(props: ContextMenuActionProps): ActionConfig {
       label: 'Create Blueprint',
     },
     formProps: {
-      schemaUrl: api.templatesBlueprintGet(),
+      schemaUrl: api.templatesCreateDocumentGet(),
       dataUrl: null,
       onSubmit: (formData: any) => {
         const url = api.packagePost(datasource.id)
