@@ -7,7 +7,6 @@ import Form, { FormProps } from '../../../components/Form'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { DmtApi } from '../../../api/Api'
 import { NodeComponentProps } from '../../common/tree-view/DocumentTree'
-import { TreeNodeBuilder } from '../../common/tree-view/TreeNodeBuilder'
 import { editPackage } from '../../common/context-menu-actions/EditPackage'
 import { createBlueprint } from '../../common/context-menu-actions/CreateBluerpint'
 
@@ -41,6 +40,9 @@ export const RootFolderNode = (props: NodeComponentProps) => {
   const [action, setAction] = useState('')
 
   const configs: ActionConfig[] = [
+    /**
+     *  Bug in api.
+     */
     {
       menuItem: {
         action: 'add-package',
@@ -59,14 +61,14 @@ export const RootFolderNode = (props: NodeComponentProps) => {
               formData,
             })
             .then(res => {
-              const treeNode = new TreeNodeBuilder(res.data)
-                .setOpen(true)
-                .buildFolderNode()
-
-              const parentId = TreeNodeBuilder.stripVersion(node.nodeId)
-              addNode(treeNode, parentId)
-              setShowModal(false)
-              NotificationManager.success(res.data.id, 'Package created')
+              console.log(res)
+              // const treeNode = new TreeNodeBuilder(res.data)
+              //   .setOpen(true)
+              //   .buildFolderNode()
+              //
+              // addNode(treeNode, node.nodeId)
+              // setShowModal(false)
+              // NotificationManager.success(res.data.id, 'Package created')
             })
             .catch(err => {
               console.log(err)

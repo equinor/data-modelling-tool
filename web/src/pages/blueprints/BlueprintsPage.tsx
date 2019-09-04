@@ -46,11 +46,7 @@ export default () => {
     if (!state.dataSources.length) {
       axios(api.dataSourcesGet(DataSourceType.Blueprints))
         .then((res: any) => {
-          dispatch(
-            DocumentActions.addDatasources(
-              res.data
-            )
-          )
+          dispatch(DocumentActions.addDatasources(res.data))
         })
         .catch((e: any) => {
           console.log(e)
@@ -60,53 +56,48 @@ export default () => {
 
   return (
     <Grid fluid>
-      {state.dataSources.map((ds: Datasource) => (
-        <Row key={ds.id}>
-          <Col xs={12} md={12} lg={5}>
-            <Wrapper>
-              <Header state={state} dispatch={dispatch} />
-              <span key={ds.id}>
-                <DocumentTree
-                  onNodeSelect={(node: TreeNodeData) => {
-                    dispatch(DocumentActions.setSelectedDocumentId(node.nodeId))
-                  }}
-                  state={state}
-                  datasource={ds}
-                  dispatch={dispatch}
-                  getNodeComponent={getNodeComponent}
-                />
-              </span>
-            </Wrapper>
-          </Col>
+      <Row>
+        <Col xs={12} md={12} lg={5}>
+          <Wrapper>
+            {state.dataSources.map((ds: Datasource) => (
+              <div key={ds.id}>
+                <Header state={state} dispatch={dispatch} />
+                <span key={ds.id}>
+                  <DocumentTree
+                    onNodeSelect={(node: TreeNodeData) => {
+                      dispatch(
+                        DocumentActions.setSelectedDocumentId(
+                          node.nodeId,
+                          ds.id
+                        )
+                      )
+                    }}
+                    state={state}
+                    datasource={ds}
+                    dispatch={dispatch}
+                    getNodeComponent={getNodeComponent}
+                  />
+                </span>
+              </div>
+            ))}
+          </Wrapper>
+        </Col>
 
-          <Col xs={12} md={12} lg={7}>
-            <Wrapper>
-              {pageMode === PageMode.view && state.selectedDocumentId && (
-                <ViewBlueprintForm
-                  state={state}
-                  datasource={ds}
-                  dispatch={dispatch}
-                />
-              )}
-              {pageMode === PageMode.edit && state.selectedDocumentId && (
-                <EditBlueprintForm
-                  state={state}
-                  datasource={ds}
-                  dispatch={dispatch}
-                />
-              )}
+        <Col xs={12} md={12} lg={7}>
+          <Wrapper>
+            {pageMode === PageMode.view && state.selectedDocumentId && (
+              <ViewBlueprintForm state={state} dispatch={dispatch} />
+            )}
+            {pageMode === PageMode.edit && state.selectedDocumentId && (
+              <EditBlueprintForm state={state} dispatch={dispatch} />
+            )}
 
-              {pageMode === PageMode.create && state.selectedDocumentId && (
-                <CreateBlueprintForm
-                  dispatch={dispatch}
-                  datasource={ds}
-                  state={state}
-                />
-              )}
-            </Wrapper>
-          </Col>
-        </Row>
-      ))}
+            {pageMode === PageMode.create && state.selectedDocumentId && (
+              <CreateBlueprintForm dispatch={dispatch} state={state} />
+            )}
+          </Wrapper>
+        </Col>
+      </Row>
     </Grid>
   )
 }
