@@ -48,7 +48,7 @@ export default () => {
         .then((res: any) => {
           dispatch(
             DocumentActions.addDatasources(
-              res.data.filter((d: Datasource) => d.host === 'db')
+              res.data
             )
           )
         })
