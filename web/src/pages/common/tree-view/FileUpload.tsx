@@ -65,10 +65,8 @@ export default (props: Props) => {
   }
 
   return (
-    <div>
-      <div style={{ fontWeight: 700, marginBottom: 10 }}>
-        Upload blueprints at root:{' '}
-      </div>
+    <div style={{ margin: 'auto' }}>
+      <div style={{ fontWeight: 700 }}>Upload blueprints at root: </div>
       <div>
         {
           //@ts-ignore
