@@ -4,13 +4,12 @@ import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { DocumentActions, DocumentsState } from '../../common/DocumentReducer'
-import { Datasource, DmtApi } from '../../../api/Api'
+import { DmtApi } from '../../../api/Api'
 import useFetch from '../../../components/useFetch'
 const api = new DmtApi()
 interface Props {
   state: DocumentsState
   dispatch: Function
-  datasource: Datasource
 }
 
 const notifications = {
@@ -23,12 +22,11 @@ const notifications = {
 const EditBlueprintForm = (props: Props) => {
   const {
     dispatch,
-    state: { selectedDocumentId },
-    datasource,
+    state: { currentDatasourceId, selectedDocumentId },
   } = props
 
   const [dataLoading, formData] = useFetch(
-    api.documentGet(datasource.id, selectedDocumentId),
+    api.documentGet(currentDatasourceId, selectedDocumentId),
     notifications
   )
 
@@ -37,7 +35,7 @@ const EditBlueprintForm = (props: Props) => {
   }
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(datasource.id, selectedDocumentId)
+    const url = api.documentPut(currentDatasourceId, selectedDocumentId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {

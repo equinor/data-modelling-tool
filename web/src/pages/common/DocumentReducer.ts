@@ -21,22 +21,34 @@ export type DocumentsAction = {
   value?: any
 }
 
+export type SetSelectedDocumentIdAction = {
+  type: string
+  value: any
+  datasourceId: string
+}
+
 export type DocumentsState = {
   selectedDocumentId: string
+  currentDatasourceId: string
   dataSources: DataSource[]
   pageMode: PageMode
 }
 
 export const initialState: DocumentsState = {
   selectedDocumentId: '',
+  currentDatasourceId: '',
   dataSources: [],
   pageMode: PageMode.view,
 }
 
 export const DocumentActions = {
-  setSelectedDocumentId: (id: string): DocumentsAction => ({
+  setSelectedDocumentId: (
+    id: string,
+    datasourceId: string
+  ): SetSelectedDocumentIdAction => ({
     type: SET_SELECTED_DOCUMENT_ID,
     value: id,
+    datasourceId,
   }),
 
   addDatasources: (value: any[]): object => ({
@@ -58,15 +70,17 @@ export const DocumentActions = {
 export default (state: DocumentsState, action: any) => {
   switch (action.type) {
     case SET_SELECTED_DOCUMENT_ID:
+      console.log(action)
       return {
         ...state,
+        currentDatasourceId: action.datasourceId,
         selectedDocumentId: action.value,
       }
     case ADD_DATASOURCES:
       return {
         ...state,
         dataSources: action.value,
-        selectedDataSourceId:
+        currentDatasourceId:
           action.value && action.value.length && action.value[0]._id,
       }
     case ADD_DATASOURCE:

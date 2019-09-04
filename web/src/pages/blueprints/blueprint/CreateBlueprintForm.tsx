@@ -4,23 +4,21 @@ import axios from 'axios'
 import { NotificationManager } from 'react-notifications'
 import BlueprintForm from './BlueprintForm'
 import { DocumentsState } from '../../common/DocumentReducer'
-import { Datasource, DmtApi } from '../../../api/Api'
+import { DmtApi } from '../../../api/Api'
 const api = new DmtApi()
 
 interface Props {
   dispatch: (action: any) => void
   state: DocumentsState
-  datasource: Datasource
 }
 
 export default (props: Props) => {
   const {
-    state: { selectedDocumentId },
-    datasource,
+    state: { currentDatasourceId, selectedDocumentId },
   } = props
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(datasource.id, selectedDocumentId)
+    const url = api.documentPut(currentDatasourceId, selectedDocumentId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {
