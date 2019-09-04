@@ -45,11 +45,3 @@ To populate the database for first-time-use, we will import all files in the `ap
 2. Run the Flaks applications CLI command 'init-import' with;  
    `docker-compose exec api ./reset-database.sh`
 
-### Intellij Idea Plugin
-
-Install mongo plugin by David Boissier v0.12.0
-Make sure db is running.
-Open mongo explorer at right, above database explorer.
-
-![Mongo server config](./doc/idea_mongo_server.png)
-![Mongo server config](./doc/idea_mongo_auth.png)
