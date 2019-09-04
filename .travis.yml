@@ -25,6 +25,6 @@ jobs:
     - stage: deploy
       name: "Reset database"
       script:
-        - docker-compose -f docker-compose.yml run -e MONGO_AZURE_URI api /code/reset-database.sh
+        - docker-compose -f docker-compose.azure.yml run -e MONGO_AZURE_URI api /code/reset-database.sh
       only:
         - master
