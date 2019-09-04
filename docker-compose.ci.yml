@@ -12,7 +12,5 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: initpassword
 
   db:
-    ports:
-      - "27017:27017"
     environment:
        MONGO_INITDB_ROOT_PASSWORD: initpassword
