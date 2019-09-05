@@ -11,9 +11,9 @@ import EntitiesReducer, {
 import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import Header from './Header'
-import { RootFolderNode } from './nodes/DataSourceNode'
 import { EntityNode } from './nodes/EntityNode'
 import { FolderNode } from './nodes/FolderNode'
+import { RootFolderNode } from './nodes/RootFolderNode'
 
 const api = new DmtApi()
 

@@ -13,11 +13,11 @@ import BlueprintReducer, {
 import { Datasource, DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import Header from './Header'
 import axios from 'axios'
-import { RootFolderNode } from './nodes/DataSourceNode'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import DocumentTree from '../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
+import { RootFolderNode } from './nodes/RootFolderNode'
 
 const api = new DmtApi()
 
