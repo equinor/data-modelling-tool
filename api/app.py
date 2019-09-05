@@ -2,6 +2,7 @@ import json
 
 from flask import Flask
 import click
+import os
 
 from config import Config
 from rest import create_api
@@ -64,10 +65,13 @@ def drop_data_sources():
 @app.cli.command()
 @click.argument("file")
 def import_data_source(file):
-    print(f"Importing {file} as data_source with id: {id}.")
     with open(file) as json_file:
         document = json.load(json_file)
-        data_modelling_tool_db["data_sources"].insert_one(document)
+        base = os.path.basename(file)
+        id = os.path.splitext(base)[0]
+        document["_id"] = id
+        print(f"Importing {file} as data_source with id: {id}.")
+        data_modelling_tool_db["data_sources"].replace_one({"_id": id}, document, upsert=True)
 
 
 @app.cli.command()
