@@ -8,6 +8,7 @@ from rest import create_api
 from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
 from utils.files import getListOfFiles
+from utils.logging import logger
 
 
 def create_app(config):
@@ -22,7 +23,7 @@ if Config.REMOTE_DEBUG in (1, "True", "1", True):
 
 app = create_app(Config)
 
-print(f"Running in environment: {app.config['ENVIRONMENT']}")
+logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 
 
 @app.cli.command()
@@ -41,7 +42,7 @@ def init_import_internal():
         for file in file_list:
             try:
                 id = file.split("/", 4)[-1]
-                print(f"Importing {file} as {collection} with id: {id}.")
+                logger.info(f"Importing {file} as {collection} with id: {id}.")
                 with open(file) as json_file:
                     document = json.load(json_file)
                     if collection == "templates":
@@ -51,7 +52,7 @@ def init_import_internal():
                         document["_id"] = id
                         model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
             except Exception as Error:
-                print(f"Could not import file {file}: {Error}")
+                logger.error(f"Could not import file {file}: {Error}")
 
 
 @app.cli.command()

@@ -30,9 +30,10 @@ class DataSource:
         if self.type == "mongodb":
             self.client = MongodbClient(
                 host=self.host,
+                port=self.port,
                 username=self.username,
                 password=self.password,
+                tls=self.tls,
                 collection=self.collection,
-                port=self.port,
                 database=self.database,
             )

@@ -2,7 +2,7 @@
 
 ## API
 
-### Endpoints
+### Endpoints (Outdated)
 ```
 '/api/transformer/json-schema'
 Methods: POST 

@@ -19,7 +19,7 @@ services:
     restart: unless-stopped
 
   db:
-    image: mongo:4.0.10
+    image: mongo:3.4
     command: --quiet
     environment:
       MONGO_INITDB_ROOT_USERNAME: maf
@@ -27,6 +27,9 @@ services:
       MONGO_INITDB_DATABASE: maf
 
   nginx:
+    depends_on:
+      - api
+      - web
     build: ./nginx
 
 #  oauth2:

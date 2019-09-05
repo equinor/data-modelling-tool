@@ -5,8 +5,10 @@ from utils.logging import logger
 
 
 class MongodbClient:
-    def __init__(self, host: str, username: str, password: str, database: str, collection: str, port: int = 27001):
-        self.handler = MongoClient(host=host, port=port, username=username, password=password)[database]
+    def __init__(
+        self, host: str, username: str, password: str, database: str, tls: bool, collection: str, port: int = 27001
+    ):
+        self.handler = MongoClient(host=host, port=port, username=username, password=password, tls=tls)[database]
         self.collection = collection
 
     def update_form(self, form, _id):
