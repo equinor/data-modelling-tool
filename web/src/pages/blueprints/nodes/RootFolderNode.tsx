@@ -28,6 +28,8 @@ export const RootFolderNode = (props: NodeComponentProps) => {
         dataUrl: null,
         onSubmit: (formData: any) => {
           const url = api.packagePost(datasource.id)
+          if (node.isRoot) {
+          }
           axios
             .post(url, {
               parentId: node.nodeId,
