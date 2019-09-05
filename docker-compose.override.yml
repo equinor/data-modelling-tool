@@ -27,6 +27,8 @@ services:
       - ./web/src:/code/src
     environment:
       - NODE_ENV=development
+    ports:
+      - "9229:9229"
 
   db:
     volumes:
