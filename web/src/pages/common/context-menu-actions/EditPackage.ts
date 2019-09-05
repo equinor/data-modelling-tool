@@ -1,8 +1,7 @@
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { ActionConfig } from '../../blueprints/nodes/DataSourceNode'
-import { ContextMenuActionProps } from './Types'
+import { ActionConfig, ContextMenuActionProps } from './Types'
 import { DmtApi } from '../../../api/Api'
 const api = new DmtApi()
 
