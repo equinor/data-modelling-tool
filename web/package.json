@@ -27,16 +27,14 @@
     "coverage": "react-scripts test --coverage --watchAll=false",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prettier": "prettier --write './src/**/*.{ts,tsx,js,css,html,json}'",
-    "prebuild": "echo nok > .buildstatus",
-    "postbuild": "echo ok > .buildstatus"
+    "prettier": "prettier --write './src/**/*.{ts,tsx,js,css,html,json}'"
   },
   "eslintConfig": {
     "extends": "react-app"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged && npm run coverage && node_modules/.bin/jest-badges-readme && git add 'README.md'"
+      "pre-commit": "pretty-quick --staged && npm run coverage"
     }
   },
   "jest": {
@@ -62,7 +60,6 @@
     ]
   },
   "devDependencies": {
-    "@olavoparno/jest-badges-readme": "^1.3.6",
     "@storybook/addon-actions": "^5.1.9",
     "@storybook/addon-links": "^5.1.9",
     "@storybook/addon-storyshots": "^5.1.9",
