@@ -45,3 +45,22 @@ To populate the database for first-time-use, we will import all files in the `ap
 2. Run the Flaks applications CLI command 'init-import' with;  
    `docker-compose exec api ./reset-database.sh`
 
+## Development environment
+This repository includes configuration for the IntelliJ platform (including PyCharm and WebStorm).
+The most useful configuration included, is likely the run / debug configurations / targets.
+See below for more.
+
+Since this repository uses multiple technologies that PyCharm / WebStorm does not support out-of-the-box, some plugins have been included.
+When opening this repository in an IntelliJ IDE, you should be asked to install some plugins. 
+
+### Running / debugging
+Run / debugging configurations for the IntelliJ platform are included.
+The target `API` runs `docker-compose up`, and attaches the Python debugger to the `api` container. This allows setting breakpoints in the IDE.
+That is, when starting the `API` target, there is no need to run `docker-compose up` in a separate terminal (in PyCharm / WebStorm).
+There should not be an issue starting the application from the terminal, though.
+
+No other configuration should be necessary.
+
+There are multiple targets for debugging the client.
+Two of which are a work in progress.
+`WEB` will start a new Chrome browser, and stops at breakpoints in the code.

@@ -5,7 +5,9 @@ services:
     build: ./nginx/local
     ports:
       - "80:80"
-
+    depends_on:
+      - web
+      - api
   api:
     build:
       target: development
@@ -25,6 +27,8 @@ services:
       - ./web/src:/code/src
     environment:
       - NODE_ENV=development
+    ports:
+      - "9229:9229"
 
   db:
     volumes:
