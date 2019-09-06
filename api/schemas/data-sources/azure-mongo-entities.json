@@ -5,7 +5,7 @@
   "username": "msa-dev",
   "password": "",
   "tls": true,
-  "name": "azure-mongo",
+  "name": "azure-entities-equinor",
   "database": "maf",
   "collection": "entities",
   "documentType": "entities"

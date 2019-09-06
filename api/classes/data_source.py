@@ -1,11 +1,11 @@
-from bson.objectid import ObjectId
 from flask import abort
+
 from data_source_plugins.mongodb import MongodbClient
 from services.database import data_modelling_tool_db as db
 
 
 def get_data_source_from_database(_id):
-    data_source = db.data_sources.find_one({"_id": ObjectId(_id)})
+    data_source = db.data_sources.find_one({"_id": _id})
     if not data_source:
         abort(404, "Error: The data-source was not found")
     return data_source

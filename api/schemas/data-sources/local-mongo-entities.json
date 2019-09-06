@@ -5,7 +5,7 @@
   "username": "maf",
   "password": "maf",
   "tls": false,
-  "name": "latest-correct",
+  "name": "local-entities-equinor",
   "database": "maf",
   "collection": "entities",
   "documentType": "entities"

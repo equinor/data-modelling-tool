@@ -64,10 +64,15 @@ def drop_data_sources():
 @app.cli.command()
 @click.argument("file")
 def import_data_source(file):
-    print(f"Importing {file} as data_source with id: {id}.")
-    with open(file) as json_file:
-        document = json.load(json_file)
-        data_modelling_tool_db["data_sources"].insert_one(document)
+    try:
+        with open(file) as json_file:
+            document = json.load(json_file)
+            id = document["name"]
+            document["_id"] = id
+            print(f"Importing {file} as data_source with id: {id}.")
+            data_modelling_tool_db["data_sources"].replace_one({"_id": id}, document, upsert=True)
+    except Exception as error:
+        logger.error(f"Failed to import file {file}: {error}")
 
 
 @app.cli.command()
