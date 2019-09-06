@@ -29,6 +29,13 @@
               "enumNames": ["String", "Integer", "Number", "Boolean"],
               "default": "string"
             },
+            "blueprint": {
+              "type": "object",
+              "required": ["blueprint"],
+              "properties": {
+                "blueprint": {"type": "string"}
+              }
+            },
             "value": {
               "title": "Default Value",
               "type": "string",
@@ -69,7 +76,10 @@
         "orderable": false
       },
       "items": {
-        "ui:order": ["name", "type", "value", "dimensions"]
+        "blueprint": {
+          "ui:field": "blueprint"
+        },
+        "ui:order": ["name", "type", "value", "dimensions", "*"]
       }
     }
   }
