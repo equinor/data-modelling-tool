@@ -5,7 +5,7 @@
   "username": "maf",
   "password": "maf",
   "tls": false,
-  "name": "dmt-blueprints-local.equinor.com",
+  "name": "local-blueprints-equinor",
   "database": "maf",
   "collection": "blueprints",
   "documentType": "blueprints"

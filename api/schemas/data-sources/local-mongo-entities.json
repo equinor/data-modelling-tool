@@ -5,7 +5,7 @@
   "username": "maf",
   "password": "maf",
   "tls": false,
-  "name": "dmt-entites-local.equinor.com",
+  "name": "local-entities-equinor",
   "database": "maf",
   "collection": "entities",
   "documentType": "entities"

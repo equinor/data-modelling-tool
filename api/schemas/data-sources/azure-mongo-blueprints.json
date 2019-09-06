@@ -5,7 +5,7 @@
   "username": "msa-dev",
   "password": "",
   "tls": true,
-  "name": "dmt-blueprints.equinor.com",
+  "name": "azure-blueprints-equinor",
   "database": "maf",
   "collection": "blueprints",
   "documentType": "blueprints"
