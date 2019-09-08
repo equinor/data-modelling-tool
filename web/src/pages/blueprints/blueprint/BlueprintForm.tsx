@@ -4,6 +4,8 @@ import BlueprintPreview from '../preview/BlueprintPreview'
 import Tabs, { Tab, TabPanel, TabList } from '../../../components/Tabs'
 import { DmtApi } from '../../../api/Api'
 import useFetch from '../../../components/useFetch'
+import DocumentFinderWidget from '../../../components/widgets/DocumentFinderWidget'
+
 const api = new DmtApi()
 
 interface Props {
@@ -17,6 +19,10 @@ export default (props: Props) => {
   const [data, setData] = useState(formData)
   if (loading) {
     return <div>Loading...</div>
+  }
+
+  const fields = {
+    blueprint: DocumentFinderWidget,
   }
 
   return (
@@ -34,6 +40,7 @@ export default (props: Props) => {
           onChange={schemas => {
             setData(schemas.formData)
           }}
+          fields={fields}
         />
       </TabPanel>
       <TabPanel>
