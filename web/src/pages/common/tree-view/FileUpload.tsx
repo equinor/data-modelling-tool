@@ -1,9 +1,13 @@
 import React from 'react'
 import { DocumentsState } from '../DocumentReducer'
+import axios from 'axios'
+import { DmtApi } from '../../../api/Api'
 
-type IndexItem = {
-  _id: string
-  title: string
+const api = new DmtApi()
+
+type RequestBody = {
+  id: string
+  content: any
 }
 
 type Props = {
@@ -12,9 +16,7 @@ type Props = {
 }
 
 export default (props: Props) => {
-  // const { dispatch } = props
-
-  function handleFile(file: File, index: any[], numFiles: number) {
+  function handleFile(file: File, index: RequestBody[], numFiles: number) {
     let fileReader: FileReader
     fileReader = new FileReader()
     fileReader.onloadend = () => {
@@ -22,34 +24,21 @@ export default (props: Props) => {
       if (typeof content === 'string') {
         //@ts-ignore
         const relativePath = file.webkitRelativePath
-        const indexOfCurrent = relativePath.indexOf('/')
-        const path = relativePath.substring(indexOfCurrent + 1)
-        // const url = state.dataUrl + path
+        const path = `blueprints/${relativePath}`
         const json = JSON.parse(content)
         const indexItem = {
-          _id: path,
-          title: json.title,
+          id: path,
+          content: json,
         }
         index.push(indexItem)
-
-        console.log(path, json)
 
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
           console.log('dispatch: ', index)
-          // dispatch(DocumentActions.setSelectedDataSourceId(path))
+          axios.post(api.indexPost('local'), index).then(res => {
+            console.log('We have an index! ', res)
+          })
         }
-        // if (postToApi) {
-        //   axios
-        //     .put(url, JSON.parse(content))
-        //     .then(res => {
-        //       //@todo update treeview.
-        //       console.log('added to db: ', res)
-        //     })
-        //     .catch(e => {
-        //       console.log(e)
-        //     })
-        // }
       }
     }
     fileReader.readAsText(file)
@@ -57,7 +46,7 @@ export default (props: Props) => {
 
   const handleFiles = (e: any) => {
     const files: any = e.target.files
-    const index: IndexItem[] = []
+    const index: RequestBody[] = []
     for (let i = 0; i < files.length; i++) {
       //@todo use generateTreeview to validate the uploaded files.
       handleFile(files[i], index, files.length)
