@@ -27,7 +27,7 @@ export default (props: Props) => {
         </Col>
 
         <Col style={{ display: 'inline-flex', marginBottom: 20 }}>
-          <AddDatasource {...props} />
+          <AddDatasource {...props} documentType="entities" />
         </Col>
       </Row>
       <Header>

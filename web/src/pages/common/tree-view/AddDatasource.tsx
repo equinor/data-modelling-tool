@@ -46,14 +46,16 @@ export default (props: any) => {
             schemaUrl={api.templatesDatasourceMongoGet()}
             dataUrl=""
             onSubmit={formData => {
-              console.log(formData)
+              const data = {
+                ...formData,
+                documentType: props.documentType,
+              }
               axios
-                .post(api.dataSourcesPost(), formData)
+                .post(api.dataSourcesPost(), data)
                 .then((res: any) => {
                   NotificationManager.success(
                     'created datasource' + formData.name
                   )
-                  console.log(res)
                   //@todo fix when endpoint is ready.
                   // dispatch(EntitiesActions.addDatasource(res.data))
                 })
