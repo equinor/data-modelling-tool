@@ -6,7 +6,7 @@ export class DmtApi {
     return `/api/data-sources/${datasourceId}`
   }
   dataSourcesPost() {
-    return `/api/data-sources/blueprints`
+    return `/api/data-sources`
   }
 
   indexGet(datasourceId: string) {

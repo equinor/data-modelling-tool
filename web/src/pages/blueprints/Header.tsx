@@ -22,7 +22,7 @@ export default (props: Props) => {
         <Col style={{ display: 'inline-flex', marginBottom: 20 }}></Col>
 
         <Col style={{ display: 'inline-flex', marginBottom: 20 }}>
-          <AddDatasource {...props} />
+          <AddDatasource {...props} documentType="blueprints" />
         </Col>
       </Row>
       <Header>
