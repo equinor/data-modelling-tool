@@ -62,7 +62,5 @@ class Index(Resource):
     @staticmethod
     def get(data_source_id):
         data_source = DataSource(data_source_id)
-        print(data_source_id)
         test = index_data_source(data_source=data_source)
-        print(test)
         return test
