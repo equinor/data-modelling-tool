@@ -5,19 +5,24 @@ import TestRenderer from 'react-test-renderer'
 import { IndexNode } from '../../../api/Api'
 
 describe('Tree', () => {
-  it.skip('renders without crashing', () => {
+  it('renders without crashing', () => {
     const tree = {
       node_0: {
-        _id: 'node_0',
+        nodeId: 'node_0',
         nodeType: 'root-package',
         title: 'node_0',
         isRoot: true,
         children: ['node_1'],
+        isOpen: true,
+        isHidden: false,
       },
       node_1: {
-        _id: 'node_1',
+        nodeId: 'node_1',
         nodeType: 'file',
         title: 'node_1',
+        isRoot: false,
+        isOpen: true,
+        isHidden: false,
       },
     }
     const testRenderer = TestRenderer.create(

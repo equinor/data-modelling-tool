@@ -1,0 +1,191 @@
+{
+  "0": {
+    "children": ["1", "2", "3", "4", "8", "9", "10", "19", "20"],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": true,
+    "nodeId": "0",
+    "nodeType": "folder",
+    "title": "0"
+  },
+  "1": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "1",
+    "nodeType": "folder",
+    "title": "1"
+  },
+  "2": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "2",
+    "nodeType": "folder",
+    "title": "2"
+  },
+  "3": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "3",
+    "nodeType": "folder",
+    "title": "3"
+  },
+  "4": {
+    "children": ["5", "6", "7"],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "4",
+    "nodeType": "folder",
+    "title": "4"
+  },
+  "5": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "5",
+    "nodeType": "folder",
+    "title": "5"
+  },
+  "6": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "6",
+    "nodeType": "folder",
+    "title": "6"
+  },
+  "7": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "7",
+    "nodeType": "folder",
+    "title": "7"
+  },
+  "8": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "8",
+    "nodeType": "folder",
+    "title": "8"
+  },
+  "9": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "9",
+    "nodeType": "folder",
+    "title": "9"
+  },
+  "10": {
+    "children": ["11", "12", "13", "17", "18"],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "10",
+    "nodeType": "folder",
+    "title": "10"
+  },
+  "11": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "11",
+    "nodeType": "folder",
+    "title": "11"
+  },
+  "12": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "12",
+    "nodeType": "folder",
+    "title": "12"
+  },
+  "13": {
+    "children": ["14", "15", "16"],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "13",
+    "nodeType": "folder",
+    "title": "13"
+  },
+  "14": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "14",
+    "nodeType": "folder",
+    "title": "14"
+  },
+  "15": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "15",
+    "nodeType": "folder",
+    "title": "15"
+  },
+  "16": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "16",
+    "nodeType": "folder",
+    "title": "16"
+  },
+  "17": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "17",
+    "nodeType": "folder",
+    "title": "17"
+  },
+  "18": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "18",
+    "nodeType": "folder",
+    "title": "18"
+  },
+  "19": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "19",
+    "nodeType": "folder",
+    "title": "19"
+  },
+  "20": {
+    "children": [],
+    "isHidden": false,
+    "isOpen": true,
+    "isRoot": false,
+    "nodeId": "20",
+    "nodeType": "folder",
+    "title": "20"
+  }
+}

@@ -7,29 +7,24 @@ import { NodeType } from '../TreeReducer'
 import { IndexNode } from '../../../api/Api'
 
 describe('TreeNode', () => {
-  it.skip('renders without crashing', () => {
+  it('renders without crashing', () => {
     const props = {
-      nodeId: 'node_0',
-      dispatch: () => {},
+      onNodeSelect: () => {},
       NodeRenderer: (node: TreeNodeData) => {
         return <h2>{node.title}</h2>
       },
-      nodes: {
-        node_0: {
-          nodeId: 'node_0',
-          type: NodeType.folder,
-          title: 'node_0',
-          isRoot: true,
-          isOpen: true,
-        },
+      node: {
+        nodeId: 'node_0',
+        nodeType: NodeType.folder,
+        title: 'node_0',
+        isRoot: true,
+        isOpen: true,
       },
       level: 0,
-      onToggle: (node: IndexNode) => {},
     }
 
     const testRenderer = TestRenderer.create(<TreeNode {...props} />)
     const testInstance = testRenderer.root
-
     expect(testInstance.findByType('h2').props.children).toBe('node_0')
   })
 })

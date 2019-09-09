@@ -9,7 +9,8 @@ interface ContainerProps {
 
 const Container = styled.div<ContainerProps>`
   background-color: ${(props: ContainerProps) =>
-    props.isDragging ? 'lightgreen' : 'white'};
+    props.isDragging ? '#d6d8db' : 'white'};
+  border-radius: 4px;
 `
 
 export default (props: any) => {

@@ -18,10 +18,11 @@ const StyledTreeNode = styled.div`
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding: 5px 8px;
+  padding: 6px 8px;
   padding-left: ${(props: StyledTreeNode) => props.level * 20}px;
+  border-radius: 4px;
   &:hover {
-    background: lightgray;
+    background: #e2e3e5;
   }
 `
 

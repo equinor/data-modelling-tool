@@ -1,5 +1,5 @@
 import values from 'lodash/values'
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import TreeNode from './TreeNode'
 import TreeReducer, {
   Actions,
@@ -12,6 +12,7 @@ import DroppableWrapper from '../dnd/DroppableWrapper'
 import DraggableWrapper from '../dnd/DraggableWrapper'
 // @ts-ignore
 import { DragStart } from 'react-beautiful-dnd'
+import { calculateFinalDropPositions, getRootNodes } from './TreeUtils'
 
 export type TreeNodeData = {
   nodeId: string
@@ -30,56 +31,14 @@ type TreeProps = {
   isDragEnabled: boolean
 }
 
-export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
-  const node = tree[nodeId]
-
-  const hasChildren = 'children' in node
-
-  if (!hasChildren || !node.isOpen) {
-    return []
-  }
-
-  return node.children.reduce((flat: any, childId: string, index: any) => {
-    const currentPath = [...path, index]
-    const currentItem = tree[childId]
-    if (currentItem.isOpen && 'children' in currentItem) {
-      // iterating through all the children on the given level
-      const children = treeNodes(currentItem.nodeId, tree, currentPath)
-      // append to the accumulator
-      return [
-        ...flat,
-        {
-          currentItem,
-          path: currentPath,
-          level: currentPath.length,
-          parent: nodeId,
-        },
-        ...children,
-      ]
-    } else {
-      // append to the accumulator, but skip children
-      return [
-        ...flat,
-        {
-          currentItem,
-          path: currentPath,
-          level: currentPath.length,
-          parent: nodeId,
-        },
-      ]
-    }
-  }, [])
-}
-
-const getRootNodes = (rootNode: any, state: object) => [
-  { currentItem: rootNode, level: 0 },
-  ...treeNodes(rootNode.nodeId, state, []),
-]
-
 const Tree = (props: TreeProps) => {
   const { isDragEnabled, tree, children, onNodeSelect } = props
 
   const [state, dispatch] = useReducer(TreeReducer, tree)
+  const [dragState, setDragState] = useState({
+    draggableId: '',
+    level: -1,
+  })
 
   useEffect(() => {
     dispatch(Actions.setNodes(tree))
@@ -88,15 +47,56 @@ const Tree = (props: TreeProps) => {
   const handleSearch = (term: string) => dispatch(Actions.filterTree(term))
 
   const handleDrag = (result: any) => {
-    if (!result.destination) {
+    if (!result.combine && !result.destination) {
+      setDragState({
+        draggableId: '',
+        level: -1,
+      })
       return
     }
 
-    // TODO
+    // Set the dragged node open again
+    const tree = {
+      ...state,
+      [result.draggableId]: {
+        ...state[result.draggableId],
+        isOpen: true,
+      },
+    }
+
+    let { sourcePosition, destinationPosition } = calculateFinalDropPositions(
+      tree,
+      result,
+      dragState.level
+    )
+
+    setDragState({
+      draggableId: '',
+      level: -1,
+    })
+
+    if (
+      destinationPosition.parentId != -1 &&
+      tree[destinationPosition.parentId].nodeType == NodeType.folder
+    ) {
+      dispatch(
+        NodeActions.removeChild(sourcePosition.parentId, sourcePosition.nodeId)
+      )
+      dispatch(
+        NodeActions.addChild(
+          destinationPosition.parentId,
+          sourcePosition.nodeId,
+          destinationPosition.index
+        )
+      )
+    }
   }
 
   const onDragStart = (result: DragStart) => {
-    console.log(result)
+    setDragState({
+      draggableId: result.draggableId,
+      level: -1,
+    })
     dispatch(NodeActions.toggleNode(result.draggableId))
   }
 
@@ -110,8 +110,17 @@ const Tree = (props: TreeProps) => {
   }
 
   const updateNode = (node: TreeNodeData) => {
-    console.log(node)
     dispatch(NodeActions.updateNode(node.nodeId, node.title))
+  }
+
+  const onPointerMove = (event: any) => {
+    if (dragState.draggableId !== '') {
+      const level = Math.floor((event.nativeEvent.offsetX + 20 / 2) / 20) - 1
+      setDragState({
+        ...dragState,
+        level: level, //parseInt(String(parseInt(event.nativeEvent.offsetX) / 20)),
+      })
+    }
   }
 
   const rootNodes = values(state)
@@ -125,11 +134,12 @@ const Tree = (props: TreeProps) => {
     <>
       <SearchTree onChange={handleSearch} />
       <DragDropContext onDragEnd={handleDrag} onDragStart={onDragStart}>
-        {rootNodes.map((rootNode, index) => {
+        {rootNodes.map((rootNode, rootIndex) => {
           return (
             <DroppableWrapper
-              key={index}
+              key={rootIndex}
               droppableId={`${rootNode[0].currentItem.nodeId}`}
+              onMouseMove={onPointerMove}
             >
               {rootNode.map((item: any, index: number) => {
                 const node = item.currentItem

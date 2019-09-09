@@ -23,7 +23,12 @@ export enum NodeType {
 const childIds = (state: any, action: any) => {
   switch (action.type) {
     case ADD_CHILD:
-      return [...state, action.childId]
+      if ('index' in action && action.index >= 0) {
+        state.splice(action.index, 0, action.childId)
+        return state
+      } else {
+        return [...state, action.childId]
+      }
     case REMOVE_CHILD:
       return state.filter((id: any) => id !== action.childId)
     default:
@@ -41,10 +46,11 @@ export const NodeActions = {
     type: DELETE_NODE,
     nodeId,
   }),
-  addChild: (nodeId: string, childId: string) => ({
+  addChild: (nodeId: string, childId: string, index: number = -1) => ({
     type: ADD_CHILD,
     nodeId,
     childId,
+    index,
   }),
   removeChild: (nodeId: string, childId: string) => ({
     type: REMOVE_CHILD,
@@ -67,6 +73,7 @@ export const NodeActions = {
 }
 
 const node = (state: any, action: any) => {
+  console.log(state, action)
   switch (action.type) {
     case CREATE_NODE:
       return action.value
@@ -82,7 +89,6 @@ const node = (state: any, action: any) => {
         isOpen: !state.isOpen,
       }
     case UPDATE_NODE:
-      console.log(action)
       return {
         ...state,
         title: action.title,

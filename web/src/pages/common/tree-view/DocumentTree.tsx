@@ -75,7 +75,7 @@ export default (props: PropTypes) => {
   return (
     <div>
       <div>
-        <Tree tree={documents} onNodeSelect={onNodeSelect}>
+        <Tree tree={documents} onNodeSelect={onNodeSelect} isDragEnabled={true}>
           {(node: IndexNode, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
             /**
