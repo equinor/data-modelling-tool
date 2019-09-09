@@ -13,6 +13,10 @@ export class DmtApi {
     return `/api/index/${datasourceId}`
   }
 
+  indexPost(dataSourceId: string): string {
+    return `/api/index/${dataSourceId}`
+  }
+
   templatesDatasourceMongoGet() {
     return `/api/templates/data-sources/mongodb.json`
   }

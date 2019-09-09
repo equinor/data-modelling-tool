@@ -1,3 +1,4 @@
+from flask import request
 from flask_restful import Resource
 
 from classes.data_source import DataSource
@@ -64,3 +65,9 @@ class Index(Resource):
         data_source = DataSource(data_source_id)
         test = index_data_source(data_source=data_source)
         return test
+
+    @staticmethod
+    def post(data_source_id):
+        data = request.get_json()
+        data_source = DataSource.mock([{**item["content"], "_id": item["id"]} for item in data])
+        return index_data_source(data_source)
