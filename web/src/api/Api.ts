@@ -1,5 +1,5 @@
 export class DmtApi {
-  dataSourcesGet(dataSourceType: string): string {
+  dataSourcesGet(dataSourceType: DataSourceType): string {
     return `/api/data-sources/${dataSourceType}`
   }
   dataSourcesPut(datasourceId: string) {

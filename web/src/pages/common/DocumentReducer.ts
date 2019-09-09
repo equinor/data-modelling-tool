@@ -1,3 +1,5 @@
+import { Datasource } from '../../api/Api'
+
 const VIEW_FILE = 'VIEW_FILE'
 const EDIT_FILE = 'EDIT_FILE'
 const SET_SELECTED_DOCUMENT_ID = 'SET_SELECTED_DOCUMENT_ID'
@@ -8,12 +10,6 @@ export enum PageMode {
   create,
   edit,
   view,
-}
-
-export type DataSource = {
-  id: number
-  label: string
-  title: string
 }
 
 export type DocumentsAction = {
@@ -30,7 +26,7 @@ export type SetSelectedDocumentIdAction = {
 export type DocumentsState = {
   selectedDocumentId: string
   currentDatasourceId: string
-  dataSources: DataSource[]
+  dataSources: Datasource[]
   pageMode: PageMode
 }
 
@@ -56,7 +52,7 @@ export const DocumentActions = {
     value,
   }),
 
-  addDataSource: (value: DataSource) => ({
+  addDataSource: (value: Datasource) => ({
     type: ADD_DATASOURCE,
     value,
   }),
