@@ -31,43 +31,44 @@ type TreeProps = {
 }
 
 export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
-  // TODO: Can we skip children checks?
-  return tree[nodeId]
-    ? 'children' in tree[nodeId] &&
-        tree[nodeId].children.reduce(
-          (flat: any, childId: string, index: any) => {
-            const currentPath = [...path, index]
-            const currentItem = tree[childId]
-            if (currentItem.isOpen && 'children' in currentItem) {
-              // iterating through all the children on the given level
-              const children = treeNodes(currentItem.nodeId, tree, currentPath)
-              // append to the accumulator
-              return [
-                ...flat,
-                {
-                  currentItem,
-                  path: currentPath,
-                  level: currentPath.length,
-                  parent: nodeId,
-                },
-                ...children,
-              ]
-            } else {
-              // append to the accumulator, but skip children
-              return [
-                ...flat,
-                {
-                  currentItem,
-                  path: currentPath,
-                  level: currentPath.length,
-                  parent: nodeId,
-                },
-              ]
-            }
-          },
-          []
-        )
-    : []
+  const node = tree[nodeId]
+
+  const hasChildren = 'children' in node
+
+  if (!hasChildren || !node.isOpen) {
+    return []
+  }
+
+  return node.children.reduce((flat: any, childId: string, index: any) => {
+    const currentPath = [...path, index]
+    const currentItem = tree[childId]
+    if (currentItem.isOpen && 'children' in currentItem) {
+      // iterating through all the children on the given level
+      const children = treeNodes(currentItem.nodeId, tree, currentPath)
+      // append to the accumulator
+      return [
+        ...flat,
+        {
+          currentItem,
+          path: currentPath,
+          level: currentPath.length,
+          parent: nodeId,
+        },
+        ...children,
+      ]
+    } else {
+      // append to the accumulator, but skip children
+      return [
+        ...flat,
+        {
+          currentItem,
+          path: currentPath,
+          level: currentPath.length,
+          parent: nodeId,
+        },
+      ]
+    }
+  }, [])
 }
 
 const getRootNodes = (rootNode: any, state: object) => [
