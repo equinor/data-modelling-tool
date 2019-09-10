@@ -94,9 +94,11 @@ export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
     return `/api/data-sources/${dataSourceType}`
   }
+
   dataSourcesPut(datasourceId: string) {
     return `/api/data-sources/${datasourceId}`
   }
+
   dataSourcesPost() {
     return `/api/data-sources`
   }
@@ -135,6 +137,7 @@ export class DmtApi {
     }
     return `/api/data-sources/${datasourceId}/${blueprintId}`
   }
+
   documentPut(datasourceId: string, blueprintId: string) {
     return `/api/data-sources/${datasourceId}/${blueprintId}`
   }

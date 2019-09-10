@@ -56,6 +56,7 @@ export const DocumentActions = {
     type: ADD_DATASOURCE,
     value,
   }),
+
   viewFile: (id: string): DocumentsAction => ({
     type: VIEW_FILE,
     value: id,
