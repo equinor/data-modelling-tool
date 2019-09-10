@@ -10,10 +10,10 @@ import EntitiesReducer, {
 } from '../common/DocumentReducer'
 import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
-import Header from './Header'
 import { EntityNode } from './nodes/EntityNode'
 import { FolderNode } from './nodes/FolderNode'
 import { RootFolderNode } from './nodes/RootFolderNode'
+import BlueprintPicker from './BlueprintPicker'
 
 const api = new DmtApi()
 
@@ -55,7 +55,12 @@ export default () => {
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
-            <Header state={state} dispatch={dispatch} />
+            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+              <div style={{ display: 'inline-flex' }}>
+                <BlueprintPicker state={state} dispatch={dispatch} />
+              </div>
+              <div style={{ display: 'inline-flex' }}></div>
+            </div>
             {state.dataSources.map((ds: any) => {
               return (
                 <span key={ds._id}>

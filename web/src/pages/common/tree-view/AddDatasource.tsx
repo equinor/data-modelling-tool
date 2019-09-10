@@ -6,56 +6,32 @@ import Modal from '../../../components/modal/Modal'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { DmtApi } from '../../../api/Api'
+import DatasourceTypeSelect from './DatasourceTypeSelect'
 const api = new DmtApi()
-const datasourcesOptions = [
-  { label: '', templateUrl: '' },
-  {
-    fetchSchema: api.templatesDatasourceMongoGet(),
-    label: 'mongo db',
-  },
-]
 
-export default (props: any) => {
+export default () => {
   const [showModal, setShowModal] = useState(false)
-  const [selectedTemplate, setSelectedTemplate] = useState(0)
+  const [selectedDatasourceType, setSelectedDatasourceType] = useState('')
 
-  const fetchSchema = datasourcesOptions[selectedTemplate].fetchSchema
   return (
     <div>
       <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
         <div style={{ padding: '10px 0' }}>
           <label>Datasource type: </label>
-          <select
-            value={selectedTemplate}
-            onChange={e => {
-              setSelectedTemplate(Number(e.target.value))
-            }}
-            style={{ margin: '0 10px' }}
-          >
-            {datasourcesOptions.map(
-              (datasourceTemplate: any, index: number) => (
-                <option key={index} value={index}>
-                  {datasourceTemplate.label}
-                </option>
-              )
-            )}
-          </select>
+          <DatasourceTypeSelect
+            selectedDatasourceType={selectedDatasourceType}
+            setSelectedDatasourceType={setSelectedDatasourceType}
+          />
         </div>
-        {fetchSchema && (
+        {selectedDatasourceType === 'mongo-db' && (
           <Form
             schemaUrl={api.templatesDatasourceMongoGet()}
             dataUrl=""
-            onSubmit={formData => {
-              const data = {
-                ...formData,
-                documentType: props.documentType,
-              }
+            onSubmit={data => {
               axios
                 .post(api.dataSourcesPost(), data)
                 .then((res: any) => {
-                  NotificationManager.success(
-                    'created datasource' + formData.name
-                  )
+                  NotificationManager.success('created datasource' + data.name)
                   //@todo fix when endpoint is ready.
                   // dispatch(EntitiesActions.addDatasource(res.data))
                 })

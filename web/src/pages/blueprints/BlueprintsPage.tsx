@@ -11,13 +11,15 @@ import BlueprintReducer, {
   PageMode,
 } from '../common/DocumentReducer'
 import { Datasource, DataSourceType, DmtApi, IndexNode } from '../../api/Api'
-import Header from './Header'
 import axios from 'axios'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import DocumentTree from '../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
 import { RootFolderNode } from './nodes/RootFolderNode'
+import FileUpload from '../common/tree-view/FileUpload'
+import Header from '../../components/Header'
+import AddDatasource from '../common/tree-view/AddDatasource'
 
 const api = new DmtApi()
 
@@ -59,25 +61,27 @@ export default () => {
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
-            <Header state={state} dispatch={dispatch} />
+            <Header>
+              <div />
+              <AddDatasource />
+            </Header>
             {state.dataSources.map((ds: Datasource) => (
               <div key={ds.id}>
-                <span key={ds.id}>
-                  <DocumentTree
-                    onNodeSelect={(node: TreeNodeData) => {
-                      dispatch(
-                        DocumentActions.setSelectedDocumentId(
-                          node.nodeId,
-                          ds.id
-                        )
-                      )
-                    }}
-                    state={state}
-                    datasource={ds}
-                    dispatch={dispatch}
-                    getNodeComponent={getNodeComponent}
-                  />
-                </span>
+                <Header>
+                  <h3>{ds.name}</h3>
+                  <FileUpload state={state} dispatch={dispatch} />
+                </Header>
+                <DocumentTree
+                  onNodeSelect={(node: TreeNodeData) => {
+                    dispatch(
+                      DocumentActions.setSelectedDocumentId(node.nodeId, ds.id)
+                    )
+                  }}
+                  state={state}
+                  datasource={ds}
+                  dispatch={dispatch}
+                  getNodeComponent={getNodeComponent}
+                />
               </div>
             ))}
           </Wrapper>

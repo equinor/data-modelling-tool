@@ -4,7 +4,6 @@ import axios from 'axios'
 import { Datasource, DmtApi, IndexNode } from '../../../api/Api'
 import values from 'lodash/values'
 import { DocumentsAction, DocumentsState } from '../DocumentReducer'
-import FileUpload from './FileUpload'
 
 const api = new DmtApi()
 
@@ -64,7 +63,7 @@ export default (props: PropTypes) => {
 
     setLoading(true)
     fetchData()
-  }, [datasource.id])
+  }, [datasource])
 
   if (loading) {
     return <div>Loading...</div>
@@ -75,14 +74,6 @@ export default (props: PropTypes) => {
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <div style={{ display: 'inline-flex' }}>
-          <h3>{datasource.name}</h3>
-        </div>
-        <div style={{ display: 'inline-flex' }}>
-          <FileUpload state={state} dispatch={dispatch} />
-        </div>
-      </div>
       <div>
         <Tree tree={documents} onNodeSelect={onNodeSelect}>
           {(node: IndexNode, addNode: Function, updateNode: Function) => {
@@ -107,4 +98,9 @@ export default (props: PropTypes) => {
       </div>
     </div>
   )
+}
+
+type DocumentTreeHeaderProps = {
+  datasource: Datasource
+  children?: any
 }
