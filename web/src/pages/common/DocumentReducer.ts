@@ -66,7 +66,6 @@ export const DocumentActions = {
 export default (state: DocumentsState, action: any) => {
   switch (action.type) {
     case SET_SELECTED_DOCUMENT_ID:
-      console.log(action)
       return {
         ...state,
         currentDatasourceId: action.datasourceId,

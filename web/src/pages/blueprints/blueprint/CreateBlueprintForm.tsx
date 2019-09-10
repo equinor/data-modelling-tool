@@ -28,7 +28,7 @@ export default (props: Props) => {
       })
       .catch((e: any) => {
         NotificationManager.error(
-          'Failed to crate blueprint',
+          'Failed to create blueprint',
           'Created blueprint'
         )
       })

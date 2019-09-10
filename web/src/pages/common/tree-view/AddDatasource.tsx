@@ -43,7 +43,7 @@ export default () => {
           />
         )}
       </Modal>
-      <div style={{ fontWeight: 700, marginLeft: 10, marginBottom: 10 }}>
+      <div style={{ fontWeight: 200, marginLeft: 10, marginBottom: 3 }}>
         {' '}
         Datasource:
         <FaPlus onClick={() => setShowModal(!showModal)} />

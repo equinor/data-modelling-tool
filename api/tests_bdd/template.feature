@@ -7,7 +7,7 @@ Feature: Templates
     Then the response should equal
     """
     {
-       "_id": "blueprint.json",
+      "_id": "blueprint.json",
       "schema": {
         "title": "Blueprint",
         "type": "object",
@@ -34,8 +34,20 @@ Feature: Templates
                 "type": {
                   "title": "Type",
                   "type": "string",
-                  "enum": ["string", "integer", "number", "boolean"],
-                  "enumNames": ["String", "Integer", "Number", "Boolean"],
+                  "enum": [
+                    "string",
+                    "integer",
+                    "number",
+                    "boolean",
+                    "blueprint"
+                  ],
+                  "enumNames": [
+                    "String",
+                    "Integer",
+                    "Number",
+                    "Boolean",
+                    "Blueprint"
+                  ],
                   "default": "string"
                 },
                 "value": {
@@ -45,40 +57,66 @@ Feature: Templates
                 },
                 "dimensions": {
                   "title": "Dimensions",
-                  "type": "array",
-                  "items": {
-                    "title": "Size",
-                    "type": "string",
-                    "default": "*"
-                  }
+                  "type": "string"
                 }
               },
-              "required": ["name", "type"]
+              "required": [
+                "name",
+                "type"
+              ]
             }
           }
         },
-        "required": ["title"]
+        "required": [
+          "title"
+        ]
       },
       "view": [
-        { "display": "basic", "keys": ["title", "description"] },
+        {
+          "display": "basic",
+          "keys": [
+            "title",
+            "description"
+          ]
+        },
         {
           "display": "table",
           "keys": "properties.attributes.items",
-          "rowHeader": ["Name", "Type", "Unit", "$ref"],
-          "rowValues": ["name", "type", "unit", "ref"]
+          "rowHeader": [
+            "Name",
+            "Type",
+            "Unit",
+            "$ref"
+          ],
+          "rowValues": [
+            "name",
+            "type",
+            "unit",
+            "ref"
+          ]
         }
       ],
       "uiSchema": {
         "description": {
           "ui:widget": "textarea"
         },
-        "ui:order": ["title", "description", "*"],
+        "ui:order": [
+          "title",
+          "description",
+          "*"
+        ],
         "attributes": {
           "ui:options": {
             "orderable": false
           },
           "items": {
-            "ui:order": ["name", "type", "value", "dimensions"]
+            "ui:field": "attribute",
+            "ui:order": [
+              "name",
+              "type",
+              "value",
+              "dimensions"
+            ]
           }
         }
       }
