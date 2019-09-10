@@ -25,7 +25,7 @@ interface NodeComponentCallbackProps {
 }
 
 export interface NodeComponentProps extends NodeComponentCallbackProps {
-  state?: DocumentsState
+  documentState?: DocumentsState
   dispatch?: Function
   datasource: Datasource
 }

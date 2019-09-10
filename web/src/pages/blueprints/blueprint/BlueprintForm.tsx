@@ -4,6 +4,8 @@ import BlueprintPreview from '../preview/BlueprintPreview'
 import Tabs, { Tab, TabPanel, TabList } from '../../../components/Tabs'
 import { DmtApi } from '../../../api/Api'
 import useFetch from '../../../components/useFetch'
+import AttributeWidget from '../../../components/widgets/Attribute'
+
 const api = new DmtApi()
 
 interface Props {
@@ -30,6 +32,7 @@ export default (props: Props) => {
           formData={data}
           schema={'schema' in template ? template['schema'] : template}
           uiSchema={'uiSchema' in template ? template['uiSchema'] : {}}
+          fields={{ attribute: AttributeWidget }}
           onSubmit={onSubmit}
           onChange={schemas => {
             setData(schemas.formData)

@@ -3,8 +3,9 @@ import Modal from '../../components/modal/Modal'
 import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import { DocumentsState } from '../common/DocumentReducer'
-import BlueprintPickerTree from './BlueprintPickerTree'
+import BlueprintPickerTree, { OnNodeSelect } from './BlueprintPickerTree'
 import DatasourceSelect from '../common/tree-view/DatasourceSelect'
+import { TreeNodeData } from '../../components/tree-view/Tree'
 
 const api = new DmtApi()
 
@@ -17,10 +18,15 @@ export default (props: Props) => {
   const [open, setOpen] = useState(false)
   return (
     <div>
-      <button onClick={() => setOpen(!open)}>Add blueprint</button>
+      <button onClick={() => setOpen(!open)}>Create Entity</button>
 
       <Modal open={open} toggle={() => setOpen(!open)}>
-        <BlueprintPickerContent {...props} />
+        <BlueprintPickerContent
+          {...props}
+          onNodeSelect={(node: TreeNodeData) => {
+            console.log(node)
+          }}
+        />
       </Modal>
     </div>
   )
@@ -29,12 +35,15 @@ export default (props: Props) => {
 type BlueprintPickerContentProps = {
   state: DocumentsState
   dispatch: any
+  onNodeSelect: OnNodeSelect
 }
 
-const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
-  const { dispatch } = props
+export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
+  const { dispatch, state, onNodeSelect } = props
   const [selectedDatasourceId, setSelectedDatasourceId] = useState('')
-  const [blueprintDatasources, setBlueprintDatasources] = useState([])
+  const [blueprintDatasources, setBlueprintDatasources] = useState<
+    Datasource[]
+  >([])
 
   // fetch blueprints
   useEffect(() => {
@@ -42,7 +51,10 @@ const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
     axios
       .get(url)
       .then((res: any) => {
-        setBlueprintDatasources(res.data)
+        const data: Datasource[] = res.data || []
+        setBlueprintDatasources(data)
+        const datasourceId = (data && data.length > 0 && data[0].id) || ''
+        setSelectedDatasourceId(datasourceId)
       })
       .catch((err: any) => {
         console.log(err)
@@ -62,6 +74,8 @@ const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
         datasource={datasource}
         datasources={blueprintDatasources}
         dispatch={dispatch}
+        state={state}
+        onNodeSelect={onNodeSelect}
       />
     </div>
   )

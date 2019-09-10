@@ -1,7 +1,7 @@
 import React, { useEffect, useReducer } from 'react'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
-import styled from 'styled-components'
 //@ts-ignore
+import styled from 'styled-components'
 import EditBlueprintForm from './blueprint/EditBlueprintForm'
 import CreateBlueprintForm from './blueprint/CreateBlueprintForm'
 import ViewBlueprintForm from './blueprint/ViewBlueprintForm'
@@ -20,6 +20,7 @@ import { RootFolderNode } from './nodes/RootFolderNode'
 import FileUpload from '../common/tree-view/FileUpload'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
+import { H5 } from '../../components/Headers'
 
 const api = new DmtApi()
 
@@ -68,7 +69,7 @@ export default () => {
             {state.dataSources.map((ds: Datasource) => (
               <div key={ds.id}>
                 <Header>
-                  <h3>{ds.name}</h3>
+                  <H5>{ds.name}</H5>
                   <FileUpload state={state} dispatch={dispatch} />
                 </Header>
                 <DocumentTree
@@ -107,10 +108,8 @@ export default () => {
 }
 
 const Wrapper = styled.div`
-  width: 100%;
-  min-height: 600px;
   border: 1px solid;
   margin: 15px 10px;
-  padding: 20px;
+  padding: 10px;
   border-radius: 5px;
 `
