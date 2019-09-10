@@ -63,7 +63,7 @@ export default () => {
             </div>
             {state.dataSources.map((ds: any) => {
               return (
-                <span key={ds._id}>
+                <span key={ds.id}>
                   <DocumentTree
                     onNodeSelect={node => {
                       console.log(node)
