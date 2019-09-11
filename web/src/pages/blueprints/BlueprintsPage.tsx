@@ -1,6 +1,5 @@
 import React, { useEffect, useReducer } from 'react'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
-//@ts-ignore
 import styled from 'styled-components'
 import EditBlueprintForm from './blueprint/EditBlueprintForm'
 import CreateBlueprintForm from './blueprint/CreateBlueprintForm'
@@ -70,7 +69,11 @@ export default () => {
               <div key={ds.id}>
                 <Header>
                   <H5>{ds.name}</H5>
-                  <FileUpload state={state} dispatch={dispatch} />
+                  <FileUpload
+                    state={state}
+                    dispatch={dispatch}
+                    datasource={ds}
+                  />
                 </Header>
                 <DocumentTree
                   onNodeSelect={(node: TreeNodeData) => {

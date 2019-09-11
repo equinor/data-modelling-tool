@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import Tree, { TreeNodeData } from '../../../components/tree-view/Tree'
-import axios from 'axios'
-import { Datasource, DmtApi, IndexNode } from '../../../api/Api'
-import values from 'lodash/values'
+import { Datasource, IndexApi, IndexNode } from '../../../api/Api'
 import { DocumentsAction, DocumentsState } from '../DocumentReducer'
 
-const api = new DmtApi()
+const api = new IndexApi()
 
 interface PropTypes {
   dispatch: (action: DocumentsAction) => void
@@ -38,26 +36,8 @@ export default (props: PropTypes) => {
   //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
     async function fetchData() {
-      axios(api.indexGet(datasource.id))
-        .then(res => {
-          const nodes = values(res.data)
-          const documents = nodes
-            .map(node => {
-              return {
-                ...node,
-                nodeId: node.id,
-                isOpen: false,
-              }
-            })
-            .reduce((obj, item) => {
-              obj[item.nodeId] = item
-              return obj
-            }, {})
-          setDocuments(documents)
-        })
-        .catch((err: any) => {
-          console.error(err)
-        })
+      const documents = await api.get(datasource)
+      setDocuments(documents)
       setLoading(false)
     }
 
@@ -68,7 +48,7 @@ export default (props: PropTypes) => {
   if (loading) {
     return <div>Loading...</div>
   }
-  if (!Object.keys(documents).length) {
+  if (!Object.keys(documents).length && datasource.id !== 'local') {
     return null
   }
 

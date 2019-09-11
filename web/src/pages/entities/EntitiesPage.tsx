@@ -1,7 +1,6 @@
 import React, { useEffect, useReducer } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
-//@ts-ignore
 import DocumentTree from '../common/tree-view/DocumentTree'
 import EntitiesReducer, {
   DocumentActions,
@@ -63,7 +62,7 @@ export default () => {
             </div>
             {state.dataSources.map((ds: any) => {
               return (
-                <span key={ds._id}>
+                <span key={ds.id}>
                   <DocumentTree
                     onNodeSelect={node => {
                       console.log(node)
