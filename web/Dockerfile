@@ -8,11 +8,6 @@ COPY ./ /code/
 FROM base as dev
 CMD ["yarn", "start"]
 
-FROM base as test
-ENV CI=true
-RUN yarn test --ci --color --coverage
-#RUN yarn audit
-
 FROM base as prod
 EXPOSE 80
 RUN yarn build

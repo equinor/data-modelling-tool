@@ -5,6 +5,7 @@ services:
     build:
       context: ./api
       target: development
+    image: development
     entrypoint: ./wait-for-it.sh db 27017
     environment:
       FLASK_ENV: development
