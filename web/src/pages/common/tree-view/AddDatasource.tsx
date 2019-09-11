@@ -15,7 +15,11 @@ export default () => {
 
   return (
     <div>
-      <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
+      <Modal
+        toggle={() => setShowModal(!showModal)}
+        open={showModal}
+        title="Add Data Source"
+      >
         <div style={{ padding: '10px 0' }}>
           <label>Datasource type: </label>
           <DatasourceTypeSelect

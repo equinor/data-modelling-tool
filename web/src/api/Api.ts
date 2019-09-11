@@ -123,6 +123,10 @@ export class DmtApi {
     return `/api/templates/create-document.json`
   }
 
+  templatesCreateBlueprintGet() {
+    return `/api/templates/create-blueprint.json`
+  }
+
   templatesPackageGet() {
     return '/api/templates/package.json'
   }

@@ -1,6 +1,9 @@
 {
-  "schema": {
+  "meta": {
     "title": "Blueprint",
+    "description": "Template for creating blueprints"
+  },
+  "schema": {
     "type": "object",
     "properties": {
       "title": {

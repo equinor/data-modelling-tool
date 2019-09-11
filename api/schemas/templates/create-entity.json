@@ -1,7 +1,9 @@
 {
+  "meta": {
+    "title": "Create Entity",
+    "description": "Template for creating a entity"
+  },
   "schema": {
-    "title": "Create document template",
-    "description": "Template for a creating documents",
     "type": "object",
     "required": ["title"],
     "properties": {

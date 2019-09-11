@@ -55,6 +55,7 @@ def init_import_internal(collection):
                     model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
         except Exception as Error:
             logger.error(f"Could not import file {file}: {Error}")
+            exit(1)
 
 
 @app.cli.command()

@@ -1,0 +1,21 @@
+{
+  "meta": {
+    "title": "Create Blueprint",
+    "description": "Template for creating a blueprint"
+  },
+  "schema": {
+    "type": "object",
+    "required": [
+      "title"
+    ],
+    "properties": {
+      "title": {
+        "type": "string",
+        "title": "Title",
+        "default": ""
+      }
+    }
+  },
+  "uiSchema": {
+  }
+}
