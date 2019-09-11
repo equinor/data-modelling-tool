@@ -11,6 +11,7 @@ interface PropTypes {
   state: any
   datasource: Datasource
   getNodeComponent: Function
+  layout?: any
 }
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
@@ -29,7 +30,14 @@ export interface NodeComponentProps extends NodeComponentCallbackProps {
 }
 
 export default (props: PropTypes) => {
-  const { dispatch, state, datasource, onNodeSelect, getNodeComponent } = props
+  const {
+    dispatch,
+    state,
+    datasource,
+    onNodeSelect,
+    getNodeComponent,
+    layout,
+  } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
@@ -71,6 +79,7 @@ export default (props: PropTypes) => {
                 updateNode={updateNode}
                 node={node}
                 datasource={datasource}
+                layout={layout}
               ></NodeComponent>
             )
           }}

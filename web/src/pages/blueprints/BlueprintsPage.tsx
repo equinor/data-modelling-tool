@@ -1,14 +1,10 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
-import EditBlueprintForm from './blueprint/EditBlueprintForm'
-import CreateBlueprintForm from './blueprint/CreateBlueprintForm'
-import ViewBlueprintForm from './blueprint/ViewBlueprintForm'
 import BlueprintReducer, {
   DocumentActions,
   initialState,
-  PageMode,
-} from '../common/DocumentReducer'
+} from '../common/DocumentsReducer'
 import { Datasource, DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { FolderNode } from './nodes/FolderNode'
@@ -22,6 +18,11 @@ import AddDatasource from '../common/tree-view/AddDatasource'
 import { H5 } from '../../components/Headers'
 
 const api = new DmtApi()
+
+const Wrapper = styled.div`
+  width: 100%;
+  margin-top: 20px;
+`
 
 function getNodeComponent(node: IndexNode) {
   switch (node.nodeType) {
@@ -38,9 +39,9 @@ function getNodeComponent(node: IndexNode) {
   }
 }
 
-export default () => {
+export default (props: any) => {
+  const { layout } = props
   const [state, dispatch] = useReducer(BlueprintReducer, initialState)
-  const pageMode = state.pageMode
 
   //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
@@ -57,66 +58,31 @@ export default () => {
   }, [state.dataSources.length])
 
   return (
-    <Grid fluid>
-      <Row>
-        <Col xs={12} md={12} lg={5}>
-          <Wrapper>
-            <div style={{ marginBottom: 25 }}>
-              <Header>
-                <div />
-                <AddDatasource />
-              </Header>
-            </div>
-            {state.dataSources.map((ds: Datasource) => (
-              <div key={ds.id} style={{ marginBottom: 30 }}>
-                <Header>
-                  <H5>{ds.name}</H5>
-                  {ds.type === 'localStorage' && (
-                    <FileUpload
-                      state={state}
-                      dispatch={dispatch}
-                      datasource={ds}
-                    />
-                  )}
-                </Header>
-                <DocumentTree
-                  onNodeSelect={(node: TreeNodeData) => {
-                    dispatch(
-                      DocumentActions.setSelectedDocumentId(node.nodeId, ds.id)
-                    )
-                  }}
-                  state={state}
-                  datasource={ds}
-                  dispatch={dispatch}
-                  getNodeComponent={getNodeComponent}
-                />
-              </div>
-            ))}
-          </Wrapper>
-        </Col>
-
-        <Col xs={12} md={12} lg={7}>
-          <Wrapper>
-            {pageMode === PageMode.view && state.selectedDocumentId && (
-              <ViewBlueprintForm state={state} dispatch={dispatch} />
-            )}
-            {pageMode === PageMode.edit && state.selectedDocumentId && (
-              <EditBlueprintForm state={state} dispatch={dispatch} />
-            )}
-
-            {pageMode === PageMode.create && state.selectedDocumentId && (
-              <CreateBlueprintForm dispatch={dispatch} state={state} />
-            )}
-          </Wrapper>
-        </Col>
-      </Row>
-    </Grid>
+    <Wrapper>
+      <Header>
+        <div />
+        <AddDatasource />
+      </Header>
+      {state.dataSources.map((ds: Datasource) => (
+        <div key={ds.id}>
+          <Header>
+            <H5>{ds.name}</H5>
+            <FileUpload state={state} dispatch={dispatch} datasource={ds} />
+          </Header>
+          <DocumentTree
+            onNodeSelect={(node: TreeNodeData) => {
+              /*dispatch(
+                DocumentActions.setSelectedDocumentId(node.nodeId, ds.id)
+              )*/
+            }}
+            state={state}
+            datasource={ds}
+            dispatch={dispatch}
+            getNodeComponent={getNodeComponent}
+            layout={layout}
+          />
+        </div>
+      ))}
+    </Wrapper>
   )
 }
-
-const Wrapper = styled.div`
-  border: 1px solid;
-  margin: 15px 10px;
-  padding: 10px;
-  border-radius: 5px;
-`
