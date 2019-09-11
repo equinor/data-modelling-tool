@@ -1,3 +1,7 @@
+body {
+  /*background: #1e1e1e;*/
+}
+
 @font-face {
   font-family: 'Equinor-Bold';
   src: url('./fonts/equinor/Equinor-Bold.woff2') format('woff2'),

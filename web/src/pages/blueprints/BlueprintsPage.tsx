@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer } from 'react'
+import React, { useEffect, useReducer, useState } from 'react'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import EditBlueprintForm from './blueprint/EditBlueprintForm'
@@ -20,6 +20,10 @@ import FileUpload from '../common/tree-view/FileUpload'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
 import { H5 } from '../../components/Headers'
+import GoldenLayoutWrapper from './GoldenLayoutWrapper'
+import { GoldenLayoutComponent } from './GoldenLayoutComponent'
+import { MyGoldenPanel } from './MyGoldenPanel'
+import BlueprintDetail from './BlueprintDetail'
 
 const api = new DmtApi()
 
@@ -38,9 +42,22 @@ function getNodeComponent(node: IndexNode) {
   }
 }
 
+function wrapComponent(Component: any, state: any) {
+  class Wrapped extends React.Component {
+    render() {
+      return <Component {...this.props} state={state} />
+    }
+  }
+  return Wrapped
+}
+
 export default () => {
   const [state, dispatch] = useReducer(BlueprintReducer, initialState)
+  const [layout, setLayout] = useState({ myLayout: null })
+
   const pageMode = state.pageMode
+
+  console.log(pageMode)
 
   //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
@@ -59,8 +76,8 @@ export default () => {
   return (
     <Grid fluid>
       <Row>
-        <Col xs={12} md={12} lg={5}>
-          <Wrapper>
+        <Col xs={12} md={12} lg={3}>
+          <div>
             <Header>
               <div />
               <AddDatasource />
@@ -85,24 +102,55 @@ export default () => {
                   datasource={ds}
                   dispatch={dispatch}
                   getNodeComponent={getNodeComponent}
+                  layout={layout}
                 />
               </div>
             ))}
-          </Wrapper>
+          </div>
         </Col>
 
-        <Col xs={12} md={12} lg={7}>
+        <Col xs={12} md={12} lg={9}>
           <Wrapper>
-            {pageMode === PageMode.view && state.selectedDocumentId && (
-              <ViewBlueprintForm state={state} dispatch={dispatch} />
-            )}
-            {pageMode === PageMode.edit && state.selectedDocumentId && (
-              <EditBlueprintForm state={state} dispatch={dispatch} />
-            )}
-
-            {pageMode === PageMode.create && state.selectedDocumentId && (
-              <CreateBlueprintForm dispatch={dispatch} state={state} />
-            )}
+            <GoldenLayoutComponent //config from simple react example: https://golden-layout.com/examples/#qZXEyv
+              globalState={state}
+              htmlAttrs={{ style: { height: '100vh' } }}
+              config={{
+                content: [
+                  {
+                    type: 'stack',
+                    content: [
+                      {
+                        title: 'A react component',
+                        type: 'react-component',
+                        component: 'testItem',
+                        props: { value: "I'm on the left" },
+                      },
+                      {
+                        title: 'Another react component',
+                        type: 'react-component',
+                        component: 'testItem',
+                      },
+                      {
+                        title: 'Blueprint',
+                        type: 'react-component',
+                        component: 'blueprintItem',
+                        props: {
+                          state: state,
+                        },
+                      },
+                    ],
+                  },
+                ],
+              }}
+              registerComponents={(myLayout: any) => {
+                setLayout({ myLayout })
+                myLayout.registerComponent('testItem', MyGoldenPanel)
+                myLayout.registerComponent(
+                  'blueprintItem',
+                  wrapComponent(BlueprintDetail, state)
+                )
+              }}
+            />
           </Wrapper>
         </Col>
       </Row>
@@ -111,8 +159,8 @@ export default () => {
 }
 
 const Wrapper = styled.div`
-  border: 1px solid;
+  border: 3px solid;
   margin: 15px 10px;
-  padding: 10px;
+  // padding: 10px;
   border-radius: 5px;
 `
