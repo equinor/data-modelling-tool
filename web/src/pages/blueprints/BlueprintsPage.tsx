@@ -61,19 +61,23 @@ export default () => {
       <Row>
         <Col xs={12} md={12} lg={5}>
           <Wrapper>
-            <Header>
-              <div />
-              <AddDatasource />
-            </Header>
+            <div style={{ marginBottom: 25 }}>
+              <Header>
+                <div />
+                <AddDatasource />
+              </Header>
+            </div>
             {state.dataSources.map((ds: Datasource) => (
-              <div key={ds.id}>
+              <div key={ds.id} style={{ marginBottom: 30 }}>
                 <Header>
                   <H5>{ds.name}</H5>
-                  <FileUpload
-                    state={state}
-                    dispatch={dispatch}
-                    datasource={ds}
-                  />
+                  {ds.type === 'localStorage' && (
+                    <FileUpload
+                      state={state}
+                      dispatch={dispatch}
+                      datasource={ds}
+                    />
+                  )}
                 </Header>
                 <DocumentTree
                   onNodeSelect={(node: TreeNodeData) => {

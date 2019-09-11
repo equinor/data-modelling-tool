@@ -1,6 +1,10 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { DocumentsState } from '../DocumentReducer'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 import { Datasource, IndexApi, IndexRequestBody } from '../../../api/Api'
+import Modal from '../../../components/modal/Modal'
+import { FaUpload } from 'react-icons/fa'
 
 const api = new IndexApi()
 
@@ -12,6 +16,7 @@ type Props = {
 
 export default (props: Props) => {
   const { datasource } = props
+  const [open, setOpen] = useState(false)
 
   function handleFile(file: File, index: IndexRequestBody[], numFiles: number) {
     let fileReader: FileReader
@@ -29,9 +34,13 @@ export default (props: Props) => {
         }
         index.push(indexItem)
 
+        const onSuccess = () => {
+          NotificationManager.success('', `Uploaded ${numFiles} files.`)
+          setOpen(false)
+        }
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
-          api.post({ datasource, index })
+          api.post({ datasource, index, onSuccess })
         }
       }
     }
@@ -42,26 +51,32 @@ export default (props: Props) => {
     const files: any = e.target.files
     const index: IndexRequestBody[] = []
     for (let i = 0; i < files.length; i++) {
-      //@todo use generateTreeview to validate the uploaded files.
       handleFile(files[i], index, files.length)
     }
   }
 
   return (
     <div style={{ margin: 'auto' }}>
-      <div style={{ fontWeight: 700 }}>Upload blueprints at root: </div>
-      <div>
-        {
-          //@ts-ignore
-          <input
-            type="file"
-            webkitdirectory="true"
-            mozdirectory="true"
-            directory="true"
-            onChange={handleFiles}
-          />
-        }
-      </div>
+      <FaUpload
+        onClick={() => {
+          setOpen(true)
+        }}
+      />
+      <Modal open={open} toggle={() => setOpen(!open)}>
+        <div style={{ fontWeight: 700 }}>Upload blueprints at root: </div>
+        <div>
+          {
+            //@ts-ignore
+            <input
+              type="file"
+              webkitdirectory="true"
+              mozdirectory="true"
+              directory="true"
+              onChange={handleFiles}
+            />
+          }
+        </div>
+      </Modal>
     </div>
   )
 }
