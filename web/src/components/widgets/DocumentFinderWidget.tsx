@@ -48,7 +48,11 @@ const BlueprintPickerWrapper = (props: any) => {
   const { setShowModal, showModal, onSelect } = props
   const [state, dispatch] = useReducer(BlueprintReducer, initialState)
   return (
-    <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
+    <Modal
+      toggle={() => setShowModal(!showModal)}
+      open={showModal}
+      title="Select Blueprint"
+    >
       <BlueprintPickerContent
         state={state}
         dispatch={dispatch}

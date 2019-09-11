@@ -20,7 +20,11 @@ const WithContextMenu = (props: WithContextMenuProps) => {
   const actionConfig = configs.find(config => config.menuItem.action === action)
   return (
     <>
-      <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
+      <Modal
+        toggle={() => setShowModal(!showModal)}
+        open={showModal}
+        title={actionConfig && actionConfig.menuItem.label}
+      >
         {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <ContextMenu
