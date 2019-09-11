@@ -6,7 +6,7 @@ import EntitiesReducer, {
   DocumentActions,
   initialState,
   // PageMode,
-} from '../common/DocumentReducer'
+} from '../common/DocumentsReducer'
 import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { EntityNode } from './nodes/EntityNode'

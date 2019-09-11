@@ -9,11 +9,9 @@ const context = createContext({
 const TabList = styled.div``
 
 const TabStyled: any = styled.div`
-  background-color: ${(props: any) => (props.isSelected ? 'white' : 'white')};
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
   padding: 10px 15px;
   display: inline-block;
-  border: black 1px;
   margin-bottom: 20px;
   cursor: pointer;
   border-bottom-color: ${(props: any) =>
@@ -40,7 +38,7 @@ const Tab = ({ id, children }: any) => {
 
 const TabPanel = ({ whenActive, children }: any) => {
   const tab = useContext(context)
-  return tab.activeTabId === whenActive ? children : null
+  return tab.activeTabId === whenActive ? <div>{children}</div> : null
 }
 
 const TabSwitcher = ({ children }: any) => {

@@ -1,3 +1,28 @@
+body {
+  background: whitesmoke;
+}
+
+.lm_tab {
+  height: 40px !important;
+  line-height: 40px;
+  background: white !important;
+}
+
+.lm_close_tab {
+  height: 35px !important;
+}
+
+.lm_controls {
+  top: 13px;
+}
+
+.lm_content {
+  background: white !important;
+}
+.lm_goldenlayout {
+  background: white !important;
+}
+
 @font-face {
   font-family: 'Equinor-Bold';
   src: url('./fonts/equinor/Equinor-Bold.woff2') format('woff2'),

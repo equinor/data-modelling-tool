@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { DocumentsState } from '../DocumentReducer'
+import { DocumentsState } from '../DocumentsReducer'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { Datasource, IndexApi, IndexRequestBody } from '../../../api/Api'
