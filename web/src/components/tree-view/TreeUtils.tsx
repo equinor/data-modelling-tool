@@ -12,11 +12,10 @@ export const getDestination = (
   destinationIndex: any,
   sourceNode: any,
   nodes: any,
-  level: number
+  level?: number
 ): TreePosition => {
   const movingDown: boolean = destinationIndex > sourceIndex
   const sameIndex: boolean = destinationIndex === sourceIndex
-  console.log(sameIndex, destinationIndex, sourceIndex)
 
   // Path of the upper item where the item was dropped
   const upperNode: any = movingDown
@@ -38,15 +37,21 @@ export const getDestination = (
 
   // Stayed in place, might moved horizontally
   if (sameIndex) {
-    if (!upperNode) {
+    if (!upperNode || !level) {
       return {
         parentId: -1,
       }
     }
+    console.log(sourceNode)
+    console.log(upperNode)
     const minLevel = lowerNode ? lowerNode.level : 1
     const maxLevel = Math.max(sourceNode.level, upperNode.level)
+    console.log(minLevel)
+    console.log(maxLevel)
     const finalLevel = between(minLevel, maxLevel, level)
+    console.log(finalLevel)
     const sameLevel: boolean = finalLevel === sourceNode.level
+    console.log(sameLevel)
     if (sameLevel) {
       // Didn't change level
       return {
@@ -187,8 +192,6 @@ export const calculateFinalDropPositions = (
     },
     ...treeNodes(droppableId, tree, []),
   ]
-
-  console.log(nodes)
 
   // Source
   const sourceIndex = source.index

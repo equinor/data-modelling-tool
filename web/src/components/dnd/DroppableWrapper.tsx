@@ -2,7 +2,6 @@ import * as React from 'react'
 // @ts-ignore
 import { Droppable, DroppableProvided } from 'react-beautiful-dnd'
 import styled from 'styled-components'
-import { useState } from 'react'
 
 const Container = styled.div`
   height: 300px;
