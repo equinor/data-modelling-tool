@@ -17,6 +17,7 @@ import DocumentTree from '../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import FileUpload from '../common/tree-view/FileUpload'
+import AddPackage from '../common/tree-view/AddPackage'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
 import { H5 } from '../../components/Headers'
@@ -71,6 +72,7 @@ export default () => {
               <div key={ds.id} style={{ marginBottom: 30 }}>
                 <Header>
                   <H5>{ds.name}</H5>
+                  <AddPackage datasource={ds} />
                   {ds.type === 'localStorage' && (
                     <FileUpload
                       state={state}
