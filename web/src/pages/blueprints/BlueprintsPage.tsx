@@ -61,6 +61,7 @@ export default (props: any) => {
         <div />
         <AddDatasource />
       </Header>
+      <br />
       <DocumentTree
         state={state}
         dataSources={state.dataSources}
