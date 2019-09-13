@@ -1,8 +1,8 @@
 import React from 'react'
-import { IndexNode } from '../../../api/Api'
+import { TreeNodeData } from '../../../components/tree-view/Tree'
 
 type Props = {
-  node: IndexNode
+  node: TreeNodeData
   dispatch: Function
   layout: any
 }
@@ -16,9 +16,10 @@ export const BlueprintNode = (props: Props) => {
       type: 'react-component',
       component: 'blueprintItem',
       props: {
-        selectedDocumentId: node.id,
+        selectedDocumentId: node.nodeId,
       },
     }
+    console.log(newItemConfig)
     // TODO: should check that this document is not already opened
     layout.myLayout.root.contentItems[0].addChild(newItemConfig)
     // dispatch(DocumentActions.viewFile(node.id))

@@ -17,7 +17,8 @@ export function createBlueprint(props: ContextMenuActionProps): ActionConfig {
       schemaUrl: api.templatesCreateBlueprintGet(),
       dataUrl: null,
       onSubmit: (formData: any) => {
-        const url = api.packagePost(node.nodeId)
+        const dataSourceId = node.nodeId.split('/')[0]
+        const url = api.packagePost(dataSourceId)
         axios
           .post(url, {
             nodeType: NodeType.file,

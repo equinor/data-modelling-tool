@@ -6,7 +6,7 @@ import { DmtApi } from '../../../api/Api'
 const api = new DmtApi()
 
 export function editPackage(props: ContextMenuActionProps): ActionConfig {
-  const { node, datasource, updateNode, setShowModal } = props
+  const { node, updateNode, setShowModal } = props
   return {
     menuItem: {
       action: 'edit-package',
