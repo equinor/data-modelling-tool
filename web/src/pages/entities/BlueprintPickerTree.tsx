@@ -19,7 +19,7 @@ type Props = {
 }
 
 export default (props: Props) => {
-  const { datasource, state, dispatch, onNodeSelect } = props
+  const { datasource, datasources, state, dispatch, onNodeSelect } = props
   if (!datasource) {
     return null
   }
@@ -32,7 +32,7 @@ export default (props: Props) => {
         state={state}
         dispatch={dispatch}
         onNodeSelect={onNodeSelect}
-        datasource={datasource}
+        dataSources={datasources}
         getNodeComponent={getNodeComponent}
       />
     </div>

@@ -19,7 +19,6 @@ export const BlueprintNode = (props: Props) => {
       component: 'blueprintItem',
       props: {
         selectedDocumentId: node.id,
-        currentDatasourceId: datasource.id,
       },
     }
     // TODO: should check that this document is not already opened

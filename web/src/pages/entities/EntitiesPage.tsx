@@ -68,7 +68,7 @@ export default () => {
                       console.log(node)
                     }}
                     state={state}
-                    datasource={ds}
+                    dataSources={state.dataSources}
                     dispatch={dispatch}
                     getNodeComponent={getNodeComponent}
                   />

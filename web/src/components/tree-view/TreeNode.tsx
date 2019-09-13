@@ -5,6 +5,7 @@ import {
   FaFolderOpen,
   FaChevronDown,
   FaChevronRight,
+  FaDatabase,
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { TreeNodeData } from './Tree'
@@ -46,6 +47,10 @@ type TreeNodeProps = {
   handleToggle: Function
 }
 
+const Content = styled.div`
+  width: 100%;
+`
+
 const TreeNode = (props: TreeNodeProps) => {
   const {
     node,
@@ -66,12 +71,13 @@ const TreeNode = (props: TreeNodeProps) => {
         </NodeIcon>
 
         <NodeIcon marginRight={5}>
+          {node.nodeType === NodeType.datasource && <FaDatabase />}
           {node.nodeType === NodeType.file && <FaFile />}
           {node.nodeType === NodeType.folder && node.isOpen && <FaFolderOpen />}
           {node.nodeType === NodeType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
-        <span
+        <Content
           role="button"
           onClick={() => {
             onNodeSelect && onNodeSelect(node)
@@ -79,7 +85,7 @@ const TreeNode = (props: TreeNodeProps) => {
           }}
         >
           {NodeRenderer(node, addNode, updateNode)}
-        </span>
+        </Content>
       </StyledTreeNode>
     </div>
   )

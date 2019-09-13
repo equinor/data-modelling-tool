@@ -2,6 +2,8 @@ import axios from 'axios'
 import values from 'lodash/values'
 
 import Workspace from '../util/localWorkspace'
+import { TreeNodeData } from '../components/tree-view/Tree'
+import { NodeType } from '../components/tree-view/TreeReducer'
 
 function isLocal(datasource: Datasource): boolean {
   return datasource.id === 'local'
@@ -70,19 +72,42 @@ export class IndexApi extends BaseApi {
         : this.workspace.getItem(url)
       const nodes = values(res)
 
-      const documents = nodes
-        .map(node => {
-          return {
-            ...node,
-            nodeId: node.id,
-            isOpen: false,
-          }
-        })
-        .reduce((obj, item) => {
-          obj[item.nodeId] = item
-          return obj
-        }, {})
-      return documents
+      let documents = nodes.map(node => {
+        return {
+          ...node,
+          id: `${datasource.id}/${node.id}`,
+          nodeId: `${datasource.id}/${node.id}`,
+          isOpen: false,
+          children: node.children
+            ? node.children.map((child: string) => `${datasource.id}/${child}`)
+            : [],
+        }
+      })
+
+      const rootNodes = nodes.filter((node: TreeNodeData) => node.isRoot)
+
+      documents = documents.map((node: TreeNodeData) => {
+        return {
+          ...node,
+          isRoot: false,
+          isOpen: false,
+        }
+      })
+
+      documents.push({
+        nodeId: datasource.id,
+        isRoot: true,
+        isOpen: false,
+        isHidden: false,
+        title: datasource.name,
+        nodeType: NodeType.datasource,
+        children: rootNodes.map(rootNode => `${datasource.id}/${rootNode.id}`),
+      })
+
+      return documents.reduce((obj, item) => {
+        obj[item.nodeId] = item
+        return obj
+      }, {})
     } catch (err) {
       console.error(err)
     }
@@ -135,15 +160,12 @@ export class DmtApi {
     return `/api/data-sources/${datasourceId}/packages`
   }
 
-  documentGet(datasourceId: string, blueprintId: string): string | null {
-    if (!datasourceId) {
-      return null
-    }
-    return `/api/data-sources/${datasourceId}/${blueprintId}`
+  documentGet(documentId: string): string | null {
+    return `/api/data-sources/${documentId}`
   }
 
-  documentPut(datasourceId: string, blueprintId: string) {
-    return `/api/data-sources/${datasourceId}/${blueprintId}`
+  documentPut(documentId: string) {
+    return `/api/data-sources/${documentId}`
   }
 }
 
@@ -165,7 +187,7 @@ export type IndexNode = {
   description: string
   latestVersion?: string
   versions: string[]
-  nodeType: 'folder' | 'file'
+  nodeType: NodeType
   isRoot: boolean
   isOpen?: boolean
   children?: string[]
