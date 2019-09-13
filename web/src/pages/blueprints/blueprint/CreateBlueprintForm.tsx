@@ -18,7 +18,7 @@ export default (props: Props) => {
   } = props
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(currentDatasourceId, selectedDocumentId)
+    const url = api.documentPut(currentDatasourceId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {

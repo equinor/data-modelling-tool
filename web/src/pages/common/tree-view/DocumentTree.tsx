@@ -7,11 +7,11 @@ const api = new IndexApi()
 
 interface PropTypes {
   dispatch: (action: DocumentsAction) => void
-  onNodeSelect: (node: TreeNodeData) => void
   state: any
-  datasource: Datasource
+  dataSources: Datasource[]
   getNodeComponent: Function
   layout?: any
+  onNodeSelect?: (node: TreeNodeData) => void
 }
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
@@ -26,14 +26,14 @@ interface NodeComponentCallbackProps {
 export interface NodeComponentProps extends NodeComponentCallbackProps {
   documentState?: DocumentsState
   dispatch?: Function
-  datasource: Datasource
+  datasource?: any
 }
 
 export default (props: PropTypes) => {
   const {
     dispatch,
     state,
-    datasource,
+    dataSources,
     onNodeSelect,
     getNodeComponent,
     layout,
@@ -41,22 +41,32 @@ export default (props: PropTypes) => {
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
-  //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
-    async function fetchData() {
-      const documents = await api.get(datasource)
-      setDocuments(documents)
-      setLoading(false)
+    const getDataSource = async (dataSource: Datasource) => {
+      return await api.get(dataSource)
     }
-
+    const getAllDataSources = async () => {
+      return await Promise.all(
+        dataSources.map(dataSource => getDataSource(dataSource))
+      )
+    }
     setLoading(true)
-    fetchData()
-  }, [datasource])
+    getAllDataSources().then(values => {
+      const allDocuments = values.reduce((obj, item) => {
+        return {
+          ...obj,
+          ...item,
+        }
+      }, {})
+      setDocuments(allDocuments)
+      setLoading(false)
+    })
+  }, [dataSources])
 
   if (loading) {
     return <div>Loading...</div>
   }
-  if (!Object.keys(documents).length && datasource.id !== 'local') {
+  if (!Object.keys(documents).length) {
     return null
   }
 
@@ -78,7 +88,6 @@ export default (props: PropTypes) => {
                 addNode={addNode}
                 updateNode={updateNode}
                 node={node}
-                datasource={datasource}
                 layout={layout}
               ></NodeComponent>
             )

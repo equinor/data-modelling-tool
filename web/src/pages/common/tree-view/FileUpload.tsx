@@ -10,7 +10,6 @@ const api = new IndexApi()
 
 type Props = {
   state: DocumentsState
-  dispatch: (action: any) => void
   datasource: Datasource
 }
 
@@ -56,7 +55,7 @@ export default (props: Props) => {
   }
 
   return (
-    <div style={{ margin: 'auto' }}>
+    <div>
       <FaUpload
         onClick={() => {
           setOpen(true)

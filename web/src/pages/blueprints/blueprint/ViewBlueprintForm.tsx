@@ -22,9 +22,7 @@ export default (props: Props) => {
   } = props
   const isDisabled = selectedDocumentId.length === 0
   const [schemaLoading, schemaData] = useFetch(api.templatesBlueprintGet())
-  const [dataLoading, dataData] = useFetch(
-    api.documentGet(currentDatasourceId, selectedDocumentId)
-  )
+  const [dataLoading, dataData] = useFetch(api.documentGet(selectedDocumentId))
 
   if (schemaLoading || dataLoading) {
     return <div>Loading...</div>

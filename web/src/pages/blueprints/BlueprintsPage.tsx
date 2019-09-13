@@ -16,6 +16,7 @@ import FileUpload from '../common/tree-view/FileUpload'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
 import { H5 } from '../../components/Headers'
+import { DataSourceNode } from './nodes/DataSourceNode'
 
 const api = new DmtApi()
 
@@ -34,6 +35,8 @@ function getNodeComponent(node: IndexNode) {
       }
     case 'file':
       return BlueprintNode
+    case 'datasource':
+      return DataSourceNode
     default:
       return () => <div>{node.title}</div>
   }
@@ -63,26 +66,13 @@ export default (props: any) => {
         <div />
         <AddDatasource />
       </Header>
-      {state.dataSources.map((ds: Datasource) => (
-        <div key={ds.id}>
-          <Header>
-            <H5>{ds.name}</H5>
-            <FileUpload state={state} dispatch={dispatch} datasource={ds} />
-          </Header>
-          <DocumentTree
-            onNodeSelect={(node: TreeNodeData) => {
-              /*dispatch(
-                DocumentActions.setSelectedDocumentId(node.nodeId, ds.id)
-              )*/
-            }}
-            state={state}
-            datasource={ds}
-            dispatch={dispatch}
-            getNodeComponent={getNodeComponent}
-            layout={layout}
-          />
-        </div>
-      ))}
+      <DocumentTree
+        state={state}
+        dataSources={state.dataSources}
+        dispatch={dispatch}
+        getNodeComponent={getNodeComponent}
+        layout={layout}
+      />
     </Wrapper>
   )
 }
