@@ -93,6 +93,8 @@ typings/
 
 .idea/
 !.idea/externalDependencies.xml
+!.idea/codeStyles
+!.idea/codeStyleSettings.xml
 !.idea/runConfigurations/
 .idea/runConfigurations/.gitignore
 
