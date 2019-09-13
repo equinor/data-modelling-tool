@@ -33,11 +33,9 @@ class GoldenLayoutPanel extends React.Component<any, any> {
 
     return (
       <>
-        <div>
-          {React.Children.map(children, (child: any) => {
-            return React.cloneElement(child, props)
-          })}
-        </div>
+        {React.Children.map(children, (child: any) => {
+          return React.cloneElement(child, props)
+        })}
       </>
     )
   }
