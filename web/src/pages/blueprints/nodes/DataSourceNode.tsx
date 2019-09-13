@@ -1,11 +1,10 @@
 import React from 'react'
-import { IndexNode } from '../../../api/Api'
 import FileUpload from '../../common/tree-view/FileUpload'
-import Header from '../../../components/Header'
 import styled from 'styled-components'
+import { TreeNodeData } from '../../../components/tree-view/Tree'
 
 type Props = {
-  node: IndexNode
+  node: TreeNodeData
   state: any
 }
 
@@ -21,7 +20,7 @@ export const DataSourceNode = (props: Props) => {
     <Wrapper>
       <div>{node.title}</div>
       <div>
-        {node.id === 'local' && (
+        {node.nodeId === 'local' && (
           <FileUpload state={state} datasource={state.dataSources[0]} />
         )}
       </div>

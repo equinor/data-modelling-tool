@@ -18,7 +18,6 @@ const api = new DmtApi()
 
 const Wrapper = styled.div`
   width: 100%;
-  margin-top: 20px;
 `
 
 function getNodeComponent(node: IndexNode) {
