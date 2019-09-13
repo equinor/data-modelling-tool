@@ -33,10 +33,11 @@ class DataSource:
         inst.client = MockClient(data)
         return inst
 
-    def __init__(self, _id: str):
+    def __init__(self, id: str):
         # TODO: Auth
-        data_source_dict = get_data_source_from_database(_id)
+        data_source_dict = get_data_source_from_database(id)
 
+        self.id = id
         self.type = data_source_dict["type"]
         self.host = data_source_dict["host"]
         self.port = data_source_dict["port"]

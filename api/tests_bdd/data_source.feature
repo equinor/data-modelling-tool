@@ -25,7 +25,7 @@ Feature: Data Source
     """
 
   Scenario Outline: Create new data source
-    Given i access the resource url "/api/data-sources"
+    Given i access the resource url "/api/data-sources/equinor-models"
     When i make a "POST" request
     """
     {

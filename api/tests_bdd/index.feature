@@ -17,31 +17,19 @@ Feature: Index
     And the response should equal
     """
     {
-       "package_1":{
+       "local-blueprints-equinor/package_1/package":{
           "title":"package 1",
-          "description":"package description",
-          "latestVersion":"package_1/1.0.0/package.json",
-          "versions":[
-             "package_1/1.0.0/package.json"
-          ],
-          "children":[
-
-          ],
+          "children":[],
           "nodeType":"folder",
           "isRoot":true,
-          "id":"package_1"
+          "id":"local-blueprints-equinor/package_1/package"
        },
-       "package_1/1.0.0/package.json":{
+       "local-blueprints-equinor/package_1/1.0.0/package":{
           "title":"package 1",
-          "description":"package description",
-          "documentType":"version",
-          "subpackages":[
-
-          ],
-          "files":[
-
-          ],
-          "id":"package_1/1.0.0/package.json"
+          "children":[],
+          "nodeType":"folder",
+          "isRoot":false,
+          "id":"local-blueprints-equinor/package_1/1.0.0/package"
        }
     }
     """

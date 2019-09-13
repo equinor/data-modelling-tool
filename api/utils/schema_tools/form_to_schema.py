@@ -25,10 +25,7 @@ def dimensions_to_int(dimensions: list):
 
 
 def form_to_schema(form: dict):
-    properties = {
-        # "title": {"title": "Title", "type": "string", "default": ""},
-        # "description": {"title": "Description", "type": "string", "default": ""},
-    }
+    properties = {}
 
     # TODO: Only handles arrays, not matrices
     for attribute in form["attributes"]:

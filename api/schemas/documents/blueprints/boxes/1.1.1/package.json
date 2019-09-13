@@ -1,11 +1,17 @@
 {
-  "title": "Boxes",
-  "description": "Many different boxes",
-  "documentType": "version",
-  "subpackages": [
-    "blueprints/boxes/1.1.1/big/package.json"
-  ],
-  "files": [
-    "blueprints/boxes/1.1.1/ordinary.json"
-  ]
+  "meta": {
+    "name": "package",
+    "documentType": "version",
+    "templateRef": "template/package"
+  },
+  "formData": {
+    "title": "Boxes",
+    "description": "Many different boxes",
+    "subpackages": [
+      "blueprints/boxes/1.1.1/big/package"
+    ],
+    "files": [
+      "blueprints/boxes/1.1.1/ordinary"
+    ]
+  }
 }

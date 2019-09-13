@@ -1,4 +1,5 @@
 import json
+from os.path import dirname
 
 from flask import Flask
 import click
@@ -43,16 +44,22 @@ PATHS = {
 def init_import_internal(collection):
     for file in getListOfFiles(PATHS[collection]):
         try:
-            id = file.split("/", 4)[-1]
-            logger.info(f"Importing {file} as {collection} with id: {id}.")
+            id = dirname(file.split("/", 4)[-1])
             with open(file) as json_file:
                 document = json.load(json_file)
                 if collection == "templates":
-                    document["_id"] = id
+                    id += document["meta"]["name"]
+                else:
+                    id += f"/{document['meta']['name']}"
+
+                logger.info(f"Importing {file} as {collection} with id: {id}")
+                document["_id"] = id
+
+                if collection == "templates":
                     data_modelling_tool_db["templates"].replace_one({"_id": id}, document, upsert=True)
                 else:
-                    document["_id"] = id
                     model_db[f"{collection}"].replace_one({"_id": id}, document, upsert=True)
+
         except Exception as Error:
             logger.error(f"Could not import file {file}: {Error}")
             exit(1)

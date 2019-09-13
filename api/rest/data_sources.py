@@ -18,10 +18,12 @@ def data_sources_get(document_type: str):
     return all_sources
 
 
-def data_source_post():
+def data_source_post(document_type):
     document = request.get_json()
     validate_mongo_data_source(document)
-    logger.info(f"Inserting new data-source named {document['name']}.")
+    document["documentType"] = document_type
+    document["_id"] = document["name"]
+    logger.info(f"Inserting new data-source with id {document['_id']}.")
     result = collection.insert_one(document)
     logger.info(f"Successfully inserted with id {result}")
     return str(result.inserted_id)
@@ -41,6 +43,10 @@ def data_source_delete(id):
 
 class SingleDataSource(Resource):
     @staticmethod
+    def post(id):
+        return data_source_put(id=id)
+
+    @staticmethod
     def put(id):
         return data_source_put(id=id)
 
@@ -55,5 +61,5 @@ class DataSources(Resource):
         return data_sources_get(document_type)
 
     @staticmethod
-    def post():
-        return data_source_post()
+    def post(document_type):
+        return data_source_post(document_type)

@@ -11,9 +11,9 @@ Feature: Templates
     }
     """
     Examples:
-      | template              |
-      | blueprint.json        |
-      | package.json          |
-      | create-blueprint.json |
-      | subpackage.json       |
+      | template           |
+      | blueprint          |
+      | package-template   |
+      | create-blueprint   |
+      | subpackage-template|
 
