@@ -1,21 +1,17 @@
-import React, { useEffect, useReducer, useState } from 'react'
-import { Col, Grid, Row } from 'react-styled-flexboxgrid'
+import React, { useEffect, useReducer } from 'react'
 import styled from 'styled-components'
 import BlueprintReducer, {
   DocumentActions,
   initialState,
 } from '../common/DocumentsReducer'
-import { Datasource, DataSourceType, DmtApi, IndexNode } from '../../api/Api'
+import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import DocumentTree from '../common/tree-view/DocumentTree'
-import { TreeNodeData } from '../../components/tree-view/Tree'
 import { RootFolderNode } from './nodes/RootFolderNode'
-import FileUpload from '../common/tree-view/FileUpload'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
-import { H5 } from '../../components/Headers'
 import { DataSourceNode } from './nodes/DataSourceNode'
 
 const api = new DmtApi()

@@ -5,12 +5,10 @@ type Props = {
   node: IndexNode
   dispatch: Function
   layout: any
-  state: any
-  datasource: any
 }
 
 export const BlueprintNode = (props: Props) => {
-  const { node, dispatch, layout, state, datasource } = props
+  const { node, layout } = props
 
   const openBlueprint = () => {
     const newItemConfig = {

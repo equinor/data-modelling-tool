@@ -7,7 +7,7 @@ import { ActionConfig, ContextMenuActionProps } from './Types'
 const api = new DmtApi()
 
 export function createBlueprint(props: ContextMenuActionProps): ActionConfig {
-  const { node, datasource, addNode, setShowModal } = props
+  const { node, addNode, setShowModal } = props
   return {
     menuItem: {
       action: 'create-blueprint',

@@ -1,4 +1,4 @@
-import React, { useEffect, useReducer, useState } from 'react'
+import React, { useState } from 'react'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import { GoldenLayoutComponent } from './common/golden-layout/GoldenLayoutComponent'

@@ -1,10 +1,6 @@
-import { Datasource } from '../../api/Api'
-
 const VIEW_FILE = 'VIEW_FILE'
 const EDIT_FILE = 'EDIT_FILE'
 const SET_SELECTED_DOCUMENT_ID = 'SET_SELECTED_DOCUMENT_ID'
-const ADD_DATASOURCES = 'ADD_DATASOURCES'
-const ADD_DATASOURCE = 'ADD_DATASOURCE'
 
 export enum PageMode {
   create,
