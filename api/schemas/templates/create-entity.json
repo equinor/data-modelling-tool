@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Create Entity",
+    "name": "create-entity",
     "description": "Template for creating a entity"
   },
   "schema": {

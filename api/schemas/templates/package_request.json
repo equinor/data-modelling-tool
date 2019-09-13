@@ -1,19 +1,37 @@
 {
-  "title": "PackageRequestForm",
-  "description": "Used to POST and PUT packages",
-  "type": "object",
-  "properties": {
-        "formData": {
-          "type": "object",
-          "title": "formData"
+  "meta": {
+    "name": "package-request"
+  },
+  "schema": {
+    "required": ["formData", "meta", "nodeType", "parentId", "isRoot"],
+    "title": "PackageRequestForm",
+    "description": "Used to POST and PUT packages",
+    "type": "object",
+    "properties": {
+      "formData": {
+        "type": "object"
+      },
+      "meta": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "templateRef": {
+            "type": "string"
+          }
         },
-        "nodeType": {
-          "type": "string",
-          "title": "nodeType"
-        },
-        "parentID": {
-          "type": "string",
-          "title": "parentID"
-        }
+        "required": ["name", "templateRef"]
+      },
+      "nodeType": {
+        "type": "string"
+      },
+      "parentId": {
+        "type": "string"
+      },
+      "isRoot": {
+        "type": "boolean"
       }
+    }
+  }
 }

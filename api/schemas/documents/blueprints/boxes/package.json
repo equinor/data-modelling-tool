@@ -1,9 +1,15 @@
 {
-  "title": "Boxes",
-  "description": "Many different boxes",
-  "documentType": "root-package",
-  "latestVersion": "blueprints/boxes/1.1.1/package.json",
-  "versions": [
-    "blueprints/boxes/1.1.1/package.json"
-  ]
+  "meta": {
+    "name": "package",
+    "documentType": "root-package",
+    "templateRef": "template/root-package"
+  },
+  "formData": {
+    "title": "Boxes",
+    "description": "Many different boxes",
+    "latestVersion": "blueprints/boxes/1.1.1/package",
+    "versions": [
+      "blueprints/boxes/1.1.1/package"
+    ]
+  }
 }

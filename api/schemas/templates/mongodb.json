@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Mongodb DataSource Template",
+    "name": "mongodb-datasource-template",
     "description": "Create form for a Mongodb data source"
   },
   "schema": {

@@ -49,7 +49,7 @@ class MongodbClient:
             return abort(500, error)
 
     def get_root_packages(self):
-        result = self.handler[self.collection].find(filter={"documentType": "root-package"})
+        result = self.handler[self.collection].find(filter={"meta.documentType": "root-package"})
         if not result:
             return abort(404)
         else:

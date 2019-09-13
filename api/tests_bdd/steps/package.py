@@ -1,4 +1,5 @@
 from behave import given
+import json
 from services.database import model_db
 from utils.logging import logger
 
@@ -6,32 +7,49 @@ from utils.logging import logger
 @given('there are package named "{package_name}" of "{collection}"')
 def step_impl_2(context, package_name, collection):
     context.cases = {}
-    root_package_id = package_name
+    root_package_id = f"{package_name}/package"
     for row in context.table:
-        package_id = "{}/{}/package.json".format(root_package_id, row["version"])
+        version_package_id = f"{package_name}/{row['version']}/package"
+        root_package = f"""
+            {{
+                "_id": "{root_package_id}",
+                "meta": {{
+                    "name": "package",
+                    "documentType": "root-package",
+                    "templateRef": "template/root-package"
+                }},
+                "formData": {{
+                    "title": "{row['title']}",
+                    "description": "{row['description']}",
+                    "latestVersion": "{version_package_id}",
+                    "versions": ["{version_package_id}"]
+                }}
+            }}
+        """
 
-        root_package = {
-            "_id": root_package_id,
-            "title": row["title"],
-            "description": row["description"],
-            "documentType": "root-package",
-            "latestVersion": package_id,
-            "versions": [package_id],
-        }
         try:
-            model_db[f"{collection}"].replace_one({"_id": root_package_id}, root_package, upsert=True)
+            model_db[f"{collection}"].replace_one({"_id": root_package_id}, json.loads(root_package), upsert=True)
         except Exception as Error:
             logger.error(f"Could not import: {Error}")
 
-        package = {
-            "title": row["title"],
-            "description": row["description"],
-            "documentType": "version",
-            "subpackages": [],
-            "files": [],
-        }
+        version_package = f"""
+            {{
+                "_id": "{version_package_id}",
+                "meta": {{
+                    "name": "package",
+                    "documentType": "version",
+                    "templateRef": "template/package-template"
+                }},
+                "formData": {{
+                    "title": "{row['title']}",
+                    "description": "{row['description']}"
+                }}
+            }}
+        """
 
         try:
-            model_db[f"{collection}"].replace_one({"_id": package_id}, package, upsert=True)
+            model_db[f"{collection}"].replace_one(
+                {"_id": version_package_id}, json.loads(version_package), upsert=True
+            )
         except Exception as Error:
             logger.error(f"Could not import: {Error}")

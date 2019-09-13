@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "SubPackageTemplate",
+    "name": "subpackage-template",
     "description": "Template for creating subpackages"
   },
   "schema": {

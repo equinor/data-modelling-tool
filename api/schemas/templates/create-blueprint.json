@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "Create Blueprint",
+    "name": "create-blueprint",
     "description": "Template for creating a blueprint"
   },
   "schema": {

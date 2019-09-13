@@ -1,6 +1,6 @@
 {
   "meta": {
-    "title": "PackageTemplate",
+    "name": "package-template",
     "description": "Template for creating packages"
   },
   "schema": {

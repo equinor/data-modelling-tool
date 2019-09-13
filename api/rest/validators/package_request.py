@@ -6,8 +6,8 @@ from services.database import data_modelling_tool_db as database
 
 
 def validate_package_request(document):
-    schema = database[Config.TEMPLATES_COLLECTION].find_one(filter={"_id": "package_request.json"})
+    schema = database[Config.TEMPLATES_COLLECTION].find_one(filter={"_id": "package-request"})["schema"]
     try:
-        validate(instance=document, schema=schema)
+        return validate(instance=document, schema=schema)
     except ValidationError as error:
-        return abort(400, error)
+        return abort(400, message=error.message)
