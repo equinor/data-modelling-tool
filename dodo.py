@@ -1,56 +1,131 @@
 import os
 from pathlib import Path
+from doit.action import CmdAction
 
 
-def docker_compose(_targets=()):
+def docker_compose(_targets=None):
+    if _targets is None:
+        _targets = []
+    if isinstance(_targets, str):
+        _targets = (_targets,)
     return (
-        f"docker-compose "
-        f"-f docker-compose.yml"
+        f"docker-compose"
+        f" -f docker-compose.yml"
         f"{''.join([f' -f docker-compose.{target}.yml' for target in _targets])}"
     )
 
 
-def execute(container, command, run=False, include=(), environment=()):
+def execute(container, command, run=False, include=None, environment=None, **options):
+    if include is None:
+        include = []
+    if environment is None:
+        environment = []
+
+    def sanitize_environment(word):
+        return word.strip("=")
+
     return (
         f"{docker_compose(include)} "
-        f"{'run --rm' if run else 'exec'} "
-        f"{''.join([f'-e {env}' for env in environment])}"
-        f"{container} "
-        f"{command}"
+        f"{'run --rm' if run else 'exec'}"
+        f"{' --no-deps' if options.get('alone', False) else ''}"
+        f"{''.join([f' -e {sanitize_environment(env)}' for env in environment])}"
+        f" {container}"
+        f" {command}"
     )
 
 
-def container_params():
+def runs_in_ci():
+    return "TRAVIS" in os.environ
+
+
+def container_params(remote=False, include=None, environment=None):
+    if include is None:
+        include = []
+        if not runs_in_ci():
+            include.append("override")
+    if isinstance(include, str):
+        include = [include]
     return [
-        {"name": "remote", "long": "remote", "type": bool, "default": False},
+        {
+            "name": "remote",
+            "long": "run",
+            "inverse": "exec",
+            "type": bool,
+            "default": remote,
+            "help": "Toggles whether docker-compose should use run, or exec",
+        },
         {
             "name": "include",
             "long": "include",
             "short": "f",
-            "type": tuple,
-            "default": ("override",),
+            "type": list,
+            "default": include,
         },
         {
             "name": "environment",
             "long": "environment",
             "short": "e",
-            "type": tuple,
-            "default": (),
+            "type": list,
+            "default": environment or [],
         },
     ]
 
 
-def task_reset_database():
-    def reset(run=False, include=(), environment=""):
-        return execute(
-            "api",
-            "/code/reset-database.sh",
-            run=run,
-            include=include,
-            environment=environment,
-        )
+def task_docker_compose():
+    def gen_tasks():
+        tasks = [
+            {
+                "name": "test:api:bdd",
+                "container": "api",
+                "command": "behave",
+                "options": {},
+            },
+            {
+                "name": "test:api:unit",
+                "container": "api",
+                "command": "pytest tests",
+                "options": {},
+            },
+            {
+                "name": "test:web:unit",
+                "container": "web",
+                "command": "yarn test",
+                "options": {"alone": True},
+            },
+            {
+                "name": "reset_database",
+                "container": "api",
+                "command": "/code/reset-database.sh",
+                "options": {},
+            },
+        ]
+        for task in tasks:
 
-    return {"actions": [(reset,)], "params": container_params()}
+            def wrapper():
+                # The wrapper, and kwargs is a hack to ensure that the content of task is available
+                # Otherwise, the task variable (label) refer to the last item, as `run_task` is executed
+                # in a different context
+                kwargs = {
+                    "container": task["container"],
+                    "command": task["command"],
+                    **task["options"],
+                }
+
+                def run_task(remote=True, include=None, environment=None):
+                    return execute(
+                        **kwargs, run=remote, include=include, environment=environment
+                    )
+
+                yield {
+                    "basename": task["name"],
+                    "actions": [CmdAction(run_task)],
+                    "params": container_params(remote=True),
+                    "verbosity": 2,
+                }
+
+            yield wrapper()
+
+    yield gen_tasks()
 
 
 def task_initialize_ide():
