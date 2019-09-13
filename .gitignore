@@ -91,5 +91,9 @@ typings/
 # next.js build output
 .next
 
-.idea
+.idea/
+!.idea/externalDependencies.xml
 !.idea/runConfigurations/
+.idea/runConfigurations/.gitignore
+
+.doit.db
