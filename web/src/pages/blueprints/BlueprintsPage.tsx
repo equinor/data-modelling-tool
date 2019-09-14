@@ -37,8 +37,7 @@ function getNodeComponent(node: IndexNode) {
   }
 }
 
-export default (props: any) => {
-  const { layout } = props
+export default () => {
   const [state, dispatch] = useReducer(BlueprintReducer, initialState)
 
   //not use useFetch hook because response should be dispatched to the reducer.
@@ -67,7 +66,6 @@ export default (props: any) => {
         dataSources={state.dataSources}
         dispatch={dispatch}
         getNodeComponent={getNodeComponent}
-        layout={layout}
       />
     </Wrapper>
   )
