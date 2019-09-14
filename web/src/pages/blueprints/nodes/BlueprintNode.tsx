@@ -13,15 +13,18 @@ export const BlueprintNode = (props: Props) => {
   const openBlueprint = () => {
     const newItemConfig = {
       title: node.title,
+      id: node.nodeId,
       type: 'react-component',
       component: 'blueprintItem',
       props: {
         selectedDocumentId: node.nodeId,
       },
     }
-    console.log(newItemConfig)
-    // TODO: should check that this document is not already opened
-    layout.myLayout.root.contentItems[0].addChild(newItemConfig)
+    const isAlreadyOpened =
+      layout.myLayout.root.getItemsById(node.nodeId).length > 0
+    if (!isAlreadyOpened) {
+      layout.myLayout.root.contentItems[0].addChild(newItemConfig)
+    }
     // dispatch(DocumentActions.viewFile(node.id))
   }
 

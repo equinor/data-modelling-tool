@@ -17,7 +17,7 @@ interface Props {
 
 export default (props: Props) => {
   const {
-    state: { selectedDocumentId, currentDatasourceId },
+    state: { selectedDocumentId },
     dispatch,
   } = props
   const isDisabled = selectedDocumentId.length === 0
