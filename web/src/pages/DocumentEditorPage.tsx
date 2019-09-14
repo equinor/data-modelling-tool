@@ -6,6 +6,10 @@ import GoldenLayoutPanel from './common/golden-layout/GoldenLayoutPanel'
 import Blueprint from './blueprints/blueprint/Blueprint'
 import BlueprintsPage from './blueprints/BlueprintsPage'
 import Tabs, { Tab, TabPanel, TabList } from '../components/Tabs'
+import {
+  LayoutComponents,
+  LayoutProvider,
+} from './common/golden-layout/LayoutContext'
 
 function wrapComponent(Component: any, state: any) {
   class Wrapped extends React.Component {
@@ -43,7 +47,9 @@ export default () => {
                   <Tab>Entities</Tab>
                 </TabList>
                 <TabPanel>
-                  <BlueprintsPage layout={layout} />
+                  <LayoutProvider layout={layout}>
+                    <BlueprintsPage />
+                  </LayoutProvider>
                 </TabPanel>
                 <TabPanel>Entities</TabPanel>
               </Tabs>
@@ -68,7 +74,7 @@ export default () => {
             registerComponents={(myLayout: any) => {
               setLayout({ myLayout })
               myLayout.registerComponent(
-                'blueprintItem',
+                LayoutComponents.blueprint,
                 wrapComponent(Blueprint, state)
               )
             }}
