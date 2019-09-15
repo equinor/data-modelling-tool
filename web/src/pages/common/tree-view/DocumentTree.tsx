@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from 'react'
 import Tree, { TreeNodeData } from '../../../components/tree-view/Tree'
-import { Datasource, IndexApi, IndexNode } from '../../../api/Api'
+import { Datasource, DmtApi, IndexApi, IndexNode } from '../../../api/Api'
 import { DocumentsAction, DocumentsState } from '../DocumentReducer'
+import genereteFakeTree from '../../../util/genereteFakeTree'
+import axios from 'axios'
+import { NodeType } from '../../../components/tree-view/TreeReducer'
+import { TreeNodeBuilder } from './TreeNodeBuilder'
 
 const api = new IndexApi()
+const apiTargets = new DmtApi()
 
 interface PropTypes {
   dispatch: (action: DocumentsAction) => void
@@ -52,6 +57,7 @@ export default (props: PropTypes) => {
     }
     setLoading(true)
     getAllDataSources().then(values => {
+      // values = [...values, genereteFakeTree()]
       const allDocuments = values.reduce((obj, item) => {
         return {
           ...obj,
@@ -70,10 +76,80 @@ export default (props: PropTypes) => {
     return null
   }
 
+  const handleDrag = (source: any, destination: any) => {
+    console.log('SOURCE', source)
+    console.log('DEST', destination)
+    // @ts-ignore
+    const item = documents[source.nodeId]
+    console.log(item)
+    console.log(source)
+
+    if (item.nodeType == NodeType.file) {
+      const sourceUrl = apiTargets.documentGet(source.nodeId) as string
+      axios
+        // We need to get formData
+        .get(sourceUrl)
+        .then((result: any) => {
+          const formData = result.data
+          delete formData['_id']
+
+          // Add document to this package
+          const parentId = destination.parentId.substring(
+            destination.parentId.indexOf('/') + 1
+          )
+
+          // Destination data source
+          const destinationDataSourceId = destination.parentId.split('/')[0]
+          axios
+            .post(apiTargets.packagePost(destinationDataSourceId), {
+              nodeType: item.nodeType,
+              isRoot: item.isRoot,
+              parentId: parentId,
+              formData: result.data,
+            })
+            .then(res => {
+              // Add document to this package
+              const id = source.nodeId.substring(source.nodeId.indexOf('/') + 1)
+              const sourceDataSourceId = source.nodeId.split('/')[0]
+              // Remove document from this package
+              const sourceParentId = source.parentId.substring(
+                source.parentId.indexOf('/') + 1
+              )
+
+              const position = id.lastIndexOf('/')
+              let title = id.substring(position + 1)
+              title = title.substring(0, title.length - 5)
+
+              const data = {
+                id: id,
+                nodeType: item.nodeType,
+                parentId: sourceParentId,
+                isRoot: item.isRoot,
+                formData: {
+                  title: title,
+                },
+              }
+              console.log(data)
+              axios.delete(apiTargets.packagePost(sourceDataSourceId), {
+                data: data,
+              })
+            })
+            .catch(err => {
+              console.log(Object.keys(err))
+            })
+        })
+    }
+  }
+
   return (
     <div>
       <div>
-        <Tree tree={documents} onNodeSelect={onNodeSelect} isDragEnabled={true}>
+        <Tree
+          tree={documents}
+          onNodeSelect={onNodeSelect}
+          isDragEnabled={true}
+          onDrag={handleDrag}
+        >
           {(node: IndexNode, addNode: Function, updateNode: Function) => {
             const NodeComponent = getNodeComponent(node)
             /**
@@ -96,9 +172,4 @@ export default (props: PropTypes) => {
       </div>
     </div>
   )
-}
-
-type DocumentTreeHeaderProps = {
-  datasource: Datasource
-  children?: any
 }

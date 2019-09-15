@@ -178,24 +178,21 @@ export const calculateFinalDropPositions = (
 } => {
   const { source, destination, combine } = dragState
 
-  const droppableId = destination
-    ? destination.droppableId
-    : combine.droppableId
+  // Source
 
-  const rootNode = tree[droppableId]
+  const sourceRootNode = tree[source.droppableId]
 
-  const nodes: any = [
+  const sourceNodes: any = [
     {
-      currentItem: rootNode,
+      currentItem: sourceRootNode,
       level: 0,
       path: [0],
     },
-    ...treeNodes(droppableId, tree, []),
+    ...treeNodes(source.droppableId, tree, []),
   ]
 
-  // Source
   const sourceIndex = source.index
-  const sourceNode: any = nodes[sourceIndex]
+  const sourceNode: any = sourceNodes[sourceIndex]
   const sourcePosition = {
     parentId: sourceNode.parentId,
     nodeId: sourceNode.currentItem.nodeId,
@@ -211,13 +208,30 @@ export const calculateFinalDropPositions = (
     }
   }
 
+  // Destination
+
+  const droppableId = destination
+    ? destination.droppableId
+    : combine.droppableId
+
+  const destinationRootNode = tree[droppableId]
+
+  const destinationNodes: any = [
+    {
+      currentItem: destinationRootNode,
+      level: 0,
+      path: [0],
+    },
+    ...treeNodes(droppableId, tree, []),
+  ]
+
   return {
     sourcePosition,
     destinationPosition: getDestination(
       sourceIndex,
       destination.index,
       sourceNode,
-      nodes,
+      destinationNodes,
       level
     ),
   }

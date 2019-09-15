@@ -21,7 +21,7 @@ export default function generateFakeTree() {
     },
   }
 
-  for (let i = 1; i < 10; i++) {
+  for (let i = 1; i < 100; i++) {
     let title = randomString(Math.floor(Math.random() * 10 + 1))
     const id = `${i}`
     let parentId = Math.floor(Math.pow(Math.random(), 2) * i)

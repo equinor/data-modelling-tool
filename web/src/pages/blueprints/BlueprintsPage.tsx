@@ -4,7 +4,7 @@ import BlueprintReducer, {
   DocumentActions,
   initialState,
 } from '../common/DocumentsReducer'
-import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
+import { DataSourceType, DmtApi, IndexApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
@@ -15,6 +15,7 @@ import AddDatasource from '../common/tree-view/AddDatasource'
 import { DataSourceNode } from './nodes/DataSourceNode'
 
 const api = new DmtApi()
+const indexApi = new IndexApi()
 
 const Wrapper = styled.div`
   width: 100%;

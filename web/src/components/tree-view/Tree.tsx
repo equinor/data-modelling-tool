@@ -29,10 +29,11 @@ type TreeProps = {
   tree: object
   onNodeSelect?: (node: TreeNodeData) => void
   isDragEnabled: boolean
+  onDrag?: any
 }
 
 const Tree = (props: TreeProps) => {
-  const { isDragEnabled, tree, children, onNodeSelect } = props
+  const { isDragEnabled, tree, children, onNodeSelect, onDrag } = props
 
   const [state, dispatch] = useReducer(TreeReducer, tree)
   const [dragState, setDragState] = useState({
@@ -79,6 +80,8 @@ const Tree = (props: TreeProps) => {
       destinationPosition.parentId != -1 &&
       tree[destinationPosition.parentId].nodeType == NodeType.folder
     ) {
+      onDrag(sourcePosition, destinationPosition)
+
       dispatch(
         NodeActions.removeChild(sourcePosition.parentId, sourcePosition.nodeId)
       )

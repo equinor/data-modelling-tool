@@ -104,6 +104,8 @@ export class IndexApi extends BaseApi {
         children: rootNodes.map(rootNode => `${datasource.id}/${rootNode.id}`),
       })
 
+      console.log(documents)
+
       return documents.reduce((obj, item) => {
         obj[item.nodeId] = item
         return obj

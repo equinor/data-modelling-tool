@@ -22,3 +22,8 @@ class Document(Resource):
         form = request.get_json()
         data_source = DataSource(_id=data_source_id)
         return data_source.client.update_form(form=form, _id=form_id)
+
+    @staticmethod
+    def delete(data_source_id, form_id):
+        data_source = DataSource(_id=data_source_id)
+        return data_source.client.delete_form(_id=form_id)

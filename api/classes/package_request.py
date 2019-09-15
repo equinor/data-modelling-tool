@@ -4,6 +4,8 @@ from rest.validators.package_request import validate_package_request
 
 
 def create_id(node_type: str, is_root: bool, title: str, parent_package: str):
+    print(title)
+    print(parent_package)
     if is_root:
         return f"{title}/package.json"
     if node_type == "file":

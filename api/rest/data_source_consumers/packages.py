@@ -9,6 +9,8 @@ nodes_with_parent = ("folder", "file")
 
 # TODO: This is probaly not good...
 def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_type: str, delete=False):
+    print(parent_id)
+    print(child_id)
     if node_type == "file":
         if delete:
             data_source.client.pull_from_parent(_id=parent_id, form={"files": child_id})
@@ -59,5 +61,7 @@ class Packages(Resource):
                 data_source, package_request.parent_id, package_request.id, package_request.node_type, delete=True
             )
 
-        data_source.client.delete(package_request.form_data, _id=package_request.id)
+        print(package_request.id)
+
+        data_source.client.delete_form(_id=package_request.id)
         return True

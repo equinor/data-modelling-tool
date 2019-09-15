@@ -67,10 +67,6 @@ export const NodeActions = {
     nodeId,
     title,
   }),
-  makeRoot: (nodeId: string, title: string) => ({
-    type: MAKE_ROOT,
-    nodeId,
-  }),
 }
 
 const node = (state: any, action: any) => {
