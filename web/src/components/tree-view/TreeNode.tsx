@@ -62,11 +62,13 @@ const TreeNode = (props: TreeNodeProps) => {
     handleToggle,
   } = props
 
+  const expandableNodeTypes = [NodeType.folder, NodeType.datasource]
+
   return (
     <div>
       <StyledTreeNode level={level}>
         <NodeIcon onClick={() => handleToggle(node)}>
-          {node.nodeType === NodeType.folder &&
+          {expandableNodeTypes.includes(node.nodeType) &&
             (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
         </NodeIcon>
 
