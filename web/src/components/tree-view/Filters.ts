@@ -1,13 +1,15 @@
 import values from 'lodash/values'
-import { IndexNode } from '../../api/Api'
+import { TreeNodeData } from './Tree'
 
-const defaultMatcher = (filterText: string, node: IndexNode) => {
-  return node && node.id.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
+const defaultMatcher = (filterText: string, node: TreeNodeData) => {
+  return (
+    node && node.nodeId.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
+  )
 }
 
 const nodeMatchesOrHasMatchingDescendants: any = (
   data: any,
-  node: IndexNode,
+  node: TreeNodeData,
   filter: string,
   matcher: any
 ) => {
@@ -33,7 +35,7 @@ export const expandNodesWithMatchingDescendants = (
   filter: any,
   matcher: any = defaultMatcher
 ) => {
-  return nodes.map((node: IndexNode) => {
+  return nodes.map((node: TreeNodeData) => {
     let isOpen = false
     if (node.children && node.children.length) {
       let childrenWithMatches = node.children.filter((child: string) =>
@@ -50,7 +52,7 @@ export const hideNodesWithNoMatchingDescendants = (
   filter: any,
   matcher: any = defaultMatcher
 ) => {
-  return values(data).map((node: IndexNode) => {
+  return values(data).map((node: TreeNodeData) => {
     if (matcher(filter, node)) {
       return Object.assign({}, node, { isHidden: false })
     } else {
@@ -75,18 +77,18 @@ export const hideNodesWithNoMatchingDescendants = (
 
 export function filterNodes(nodes: any, filterPath: any) {
   function filterRecursive(filterPath: any, nodes: any, filteredNodes: any) {
-    values(nodes).forEach((node: IndexNode) => {
+    values(nodes).forEach((node: TreeNodeData) => {
       if (node.children) {
         const isParent = node.children.includes(filterPath)
         if (isParent) {
-          filteredNodes[node.id] = Object.assign({}, node)
+          filteredNodes[node.nodeId] = Object.assign({}, node)
           if (!node.isRoot) {
-            filterRecursive(node.id, nodes, filteredNodes)
+            filterRecursive(node.nodeId, nodes, filteredNodes)
           }
         }
       } else {
-        if (filterPath === node.id) {
-          filteredNodes[node.id] = Object.assign({}, node)
+        if (filterPath === node.nodeId) {
+          filteredNodes[node.nodeId] = Object.assign({}, node)
         }
       }
     })

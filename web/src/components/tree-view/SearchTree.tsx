@@ -18,7 +18,7 @@ export default (props: SearchTreeProps) => {
   const { onChange } = props
   return (
     <Input
-      placeholder="Search for blueprint"
+      placeholder="Search..."
       onKeyUp={(e: any) => {
         onChange(e.target.value.trim())
       }}
