@@ -3,7 +3,7 @@ import styled from 'styled-components'
 
 const HeaderWrapper = styled.div`
   display: flex;
-  justify-content: space-between;
+  justify-content: flex-end;
 `
 
 const HeaderItem = styled.div`

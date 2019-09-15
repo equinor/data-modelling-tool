@@ -10,7 +10,7 @@ collection = database[f"{Config.DATA_SOURCES_COLLECTION}"]
 
 
 def data_sources_get(document_type: str):
-    all_sources = []
+    all_sources = [{"id": "local", "host": "client", "name": "Local workspace", "type": "localStorage"}]
     for source in collection.find(filter={"documentType": document_type}, projection=["host", "name", "type"]):
         source["id"] = str(source["_id"])
         source.pop("_id")

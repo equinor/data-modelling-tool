@@ -1,7 +1,9 @@
 {
-  "schema": {
+  "meta": {
     "title": "PackageTemplate",
-    "description": "Template for a package",
+    "description": "Template for creating packages"
+  },
+  "schema": {
     "type": "object",
     "required": [
       "title"

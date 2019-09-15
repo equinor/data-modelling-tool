@@ -27,7 +27,7 @@ export const RootFolderNode = (props: NodeComponentProps) => {
         schemaUrl: api.templatesPackageGet(),
         dataUrl: null,
         onSubmit: (formData: any) => {
-          const url = api.packagePost(datasource.id)
+          const url = api.packagePost(node.nodeId)
           if (node.isRoot) {
           }
           axios

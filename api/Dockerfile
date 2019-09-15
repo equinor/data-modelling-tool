@@ -1,4 +1,4 @@
-FROM python:3.7.3-alpine3.10 as base
+FROM python:3.7.3-alpine3.10 as development
 ENV PYTHONUNBUFFERED=1 FLASK_APP=/code/app.py
 CMD flask run --host=0.0.0.0
 WORKDIR /code
@@ -7,16 +7,8 @@ RUN apk update && \
     pip install poetry && \
     poetry config settings.virtualenvs.create false
 COPY pyproject.toml poetry.lock ./
-
-FROM base as development
 RUN poetry install
 COPY . /code
 
-FROM development as test
-RUN safety check
-RUN black --check --diff .
-RUN flake8
-
-FROM base as production
+FROM development as prod
 RUN poetry install --no-dev
-COPY . /code

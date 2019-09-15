@@ -1,6 +1,0 @@
-#! /bin/bash
-
-black api/
-flake8 --config=api/.flake8 api/
-bandit -r api/
-

@@ -1,27 +1,24 @@
 import React, { useEffect, useReducer } from 'react'
-import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
-//@ts-ignore
-import EditBlueprintForm from './blueprint/EditBlueprintForm'
-import CreateBlueprintForm from './blueprint/CreateBlueprintForm'
-import ViewBlueprintForm from './blueprint/ViewBlueprintForm'
 import BlueprintReducer, {
   DocumentActions,
   initialState,
-  PageMode,
-} from '../common/DocumentReducer'
-import { Datasource, DataSourceType, DmtApi, IndexNode } from '../../api/Api'
+} from '../common/DocumentsReducer'
+import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
 import DocumentTree from '../common/tree-view/DocumentTree'
-import { TreeNodeData } from '../../components/tree-view/Tree'
 import { RootFolderNode } from './nodes/RootFolderNode'
-import FileUpload from '../common/tree-view/FileUpload'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
+import { DataSourceNode } from './nodes/DataSourceNode'
 
 const api = new DmtApi()
+
+const Wrapper = styled.div`
+  width: 100%;
+`
 
 function getNodeComponent(node: IndexNode) {
   switch (node.nodeType) {
@@ -33,6 +30,8 @@ function getNodeComponent(node: IndexNode) {
       }
     case 'file':
       return BlueprintNode
+    case 'datasource':
+      return DataSourceNode
     default:
       return () => <div>{node.title}</div>
   }
@@ -40,7 +39,6 @@ function getNodeComponent(node: IndexNode) {
 
 export default () => {
   const [state, dispatch] = useReducer(BlueprintReducer, initialState)
-  const pageMode = state.pageMode
 
   //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
@@ -57,60 +55,18 @@ export default () => {
   }, [state.dataSources.length])
 
   return (
-    <Grid fluid>
-      <Row>
-        <Col xs={12} md={12} lg={5}>
-          <Wrapper>
-            <Header>
-              <div />
-              <AddDatasource />
-            </Header>
-            {state.dataSources.map((ds: Datasource) => (
-              <div key={ds.id}>
-                <Header>
-                  <h3>{ds.name}</h3>
-                  <FileUpload state={state} dispatch={dispatch} />
-                </Header>
-                <DocumentTree
-                  onNodeSelect={(node: TreeNodeData) => {
-                    dispatch(
-                      DocumentActions.setSelectedDocumentId(node.nodeId, ds.id)
-                    )
-                  }}
-                  state={state}
-                  datasource={ds}
-                  dispatch={dispatch}
-                  getNodeComponent={getNodeComponent}
-                />
-              </div>
-            ))}
-          </Wrapper>
-        </Col>
-
-        <Col xs={12} md={12} lg={7}>
-          <Wrapper>
-            {pageMode === PageMode.view && state.selectedDocumentId && (
-              <ViewBlueprintForm state={state} dispatch={dispatch} />
-            )}
-            {pageMode === PageMode.edit && state.selectedDocumentId && (
-              <EditBlueprintForm state={state} dispatch={dispatch} />
-            )}
-
-            {pageMode === PageMode.create && state.selectedDocumentId && (
-              <CreateBlueprintForm dispatch={dispatch} state={state} />
-            )}
-          </Wrapper>
-        </Col>
-      </Row>
-    </Grid>
+    <Wrapper>
+      <Header>
+        <div />
+        <AddDatasource />
+      </Header>
+      <br />
+      <DocumentTree
+        state={state}
+        dataSources={state.dataSources}
+        dispatch={dispatch}
+        getNodeComponent={getNodeComponent}
+      />
+    </Wrapper>
   )
 }
-
-const Wrapper = styled.div`
-  width: 100%;
-  min-height: 600px;
-  border: 1px solid;
-  margin: 15px 10px;
-  padding: 20px;
-  border-radius: 5px;
-`

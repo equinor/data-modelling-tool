@@ -1,22 +1,23 @@
-import React from 'react'
-import { DocumentsState } from '../DocumentReducer'
-import axios from 'axios'
-import { DmtApi } from '../../../api/Api'
+import React, { useState } from 'react'
+import { DocumentsState } from '../DocumentsReducer'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
+import { Datasource, IndexApi, IndexRequestBody } from '../../../api/Api'
+import Modal from '../../../components/modal/Modal'
+import { FaUpload } from 'react-icons/fa'
 
-const api = new DmtApi()
-
-type RequestBody = {
-  id: string
-  content: any
-}
+const api = new IndexApi()
 
 type Props = {
   state: DocumentsState
-  dispatch: (action: any) => void
+  datasource: Datasource
 }
 
 export default (props: Props) => {
-  function handleFile(file: File, index: RequestBody[], numFiles: number) {
+  const { datasource } = props
+  const [open, setOpen] = useState(false)
+
+  function handleFile(file: File, index: IndexRequestBody[], numFiles: number) {
     let fileReader: FileReader
     fileReader = new FileReader()
     fileReader.onloadend = () => {
@@ -32,12 +33,13 @@ export default (props: Props) => {
         }
         index.push(indexItem)
 
+        const onSuccess = () => {
+          NotificationManager.success('', `Uploaded ${numFiles} files.`)
+          setOpen(false)
+        }
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
-          console.log('dispatch: ', index)
-          axios.post(api.indexPost('local'), index).then(res => {
-            console.log('We have an index! ', res)
-          })
+          api.post({ datasource, index, onSuccess })
         }
       }
     }
@@ -46,28 +48,34 @@ export default (props: Props) => {
 
   const handleFiles = (e: any) => {
     const files: any = e.target.files
-    const index: RequestBody[] = []
+    const index: IndexRequestBody[] = []
     for (let i = 0; i < files.length; i++) {
-      //@todo use generateTreeview to validate the uploaded files.
       handleFile(files[i], index, files.length)
     }
   }
 
   return (
-    <div style={{ margin: 'auto' }}>
-      <div style={{ fontWeight: 700 }}>Upload blueprints at root: </div>
-      <div>
-        {
-          //@ts-ignore
-          <input
-            type="file"
-            webkitdirectory="true"
-            mozdirectory="true"
-            directory="true"
-            onChange={handleFiles}
-          />
-        }
-      </div>
+    <div>
+      <FaUpload
+        onClick={() => {
+          setOpen(true)
+        }}
+      />
+      <Modal open={open} toggle={() => setOpen(!open)}>
+        <div style={{ fontWeight: 700 }}>Upload blueprints at root: </div>
+        <div>
+          {
+            //@ts-ignore
+            <input
+              type="file"
+              webkitdirectory="true"
+              mozdirectory="true"
+              directory="true"
+              onChange={handleFiles}
+            />
+          }
+        </div>
+      </Modal>
     </div>
   )
 }

@@ -25,7 +25,7 @@ export const FolderNode = (props: NodeComponentProps) => {
         schemaUrl: api.templatesPackageGet(),
         dataUrl: null,
         onSubmit: (formData: any) => {
-          const url = api.packagePost(datasource.id)
+          const url = api.packagePost(node.nodeId)
           axios
             .post(url, {
               parentId: node.nodeId,

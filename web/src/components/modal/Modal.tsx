@@ -28,7 +28,7 @@ function Portal(props: any) {
 
 // A modal component which will be used by other components / pages
 function Modal(props: any) {
-  const { children, toggle, open } = props
+  const { children, toggle, open, title } = props
   return (
     <Portal>
       {open && (
@@ -37,6 +37,9 @@ function Modal(props: any) {
             <StyledModal.CloseButton onClick={toggle}>
               &times;
             </StyledModal.CloseButton>
+            <StyledModal.ModalHeader>
+              <h4>{title}</h4>
+            </StyledModal.ModalHeader>
             {children}
           </StyledModal.ModalBody>
         </StyledModal.ModalWrapper>

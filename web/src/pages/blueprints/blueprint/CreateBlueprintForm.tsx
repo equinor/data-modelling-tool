@@ -18,7 +18,7 @@ export default (props: Props) => {
   } = props
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(currentDatasourceId, selectedDocumentId)
+    const url = api.documentPut(currentDatasourceId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {
@@ -28,7 +28,7 @@ export default (props: Props) => {
       })
       .catch((e: any) => {
         NotificationManager.error(
-          'Failed to crate blueprint',
+          'Failed to create blueprint',
           'Created blueprint'
         )
       })

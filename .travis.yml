@@ -4,30 +4,53 @@ language: python
 services:
   - docker
 
+env:
+  global:
+    - IMAGE_REPO=dmt
+    - IMAGE_REGISTRY=mariner.azurecr.io
+    - FULL_IMAGE_REPO=$IMAGE_REGISTRY/$IMAGE_REPO
+    - API_IMAGE=$FULL_IMAGE_REPO/api
+    - WEB_IMAGE=$FULL_IMAGE_REPO/web
+
 stages:
-  - build
-  - deploy
+  - build-publish
+  - tests
+  - name: deploy
+    if: branch = master
 
 jobs:
   include:
-    - stage: build
+    - stage: build-publish
       name: "Build API"
-      script: docker build ./api/
-    - stage: build
+      before_script: ./travis-scripts.sh pull-api
+      script:
+        - docker build --cache-from $API_IMAGE --tag $API_IMAGE ./api/
+        - docker push "$API_IMAGE"
+
+    - stage: build-publish
       name: "Build Web"
-      script: docker build ./web/
+      before_script: ./travis-scripts.sh pull-web
+      script:
+        - docker build --cache-from "$WEB_IMAGE" --tag $WEB_IMAGE ./web/
+        - docker push "$WEB_IMAGE"
+
     - stage: tests
       name: "API - BDD Tests"
+      before_script: ./travis-scripts.sh build-api-dev-image
       script: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm api behave
+
     - stage: tests
       name: "API - Unit Tests"
-      script: docker-compose run --rm api pytest tests
+      before_script: ./travis-scripts.sh build-api-dev-image
+      script: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm api pytest tests
+
     - stage: tests
       name: "Web - Tests"
+      before_script: ./travis-scripts.sh pull-web
       script: docker-compose -f docker-compose.yml run --no-deps --rm -e CI=true web yarn test
+
     - stage: deploy
       name: "Reset database"
+      before_script: ./travis-scripts.sh pull-api
       script:
-        - docker-compose -f docker-compose.azure.yml run -e MONGO_AZURE_URI api /code/reset-database.sh
-      only:
-        - master
+        - docker-compose -f docker-compose.yml run -e MONGO_AZURE_URI -e ENVIRONMENT=azure api /code/reset-database.sh

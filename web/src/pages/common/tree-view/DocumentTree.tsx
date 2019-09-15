@@ -1,18 +1,17 @@
 import React, { useEffect, useState } from 'react'
 import Tree, { TreeNodeData } from '../../../components/tree-view/Tree'
-import axios from 'axios'
-import { Datasource, DmtApi, IndexNode } from '../../../api/Api'
-import values from 'lodash/values'
+import { Datasource, IndexApi, IndexNode } from '../../../api/Api'
 import { DocumentsAction, DocumentsState } from '../DocumentReducer'
 
-const api = new DmtApi()
+const api = new IndexApi()
 
 interface PropTypes {
   dispatch: (action: DocumentsAction) => void
-  onNodeSelect: (node: TreeNodeData) => void
   state: any
-  datasource: Datasource
+  dataSources: Datasource[]
   getNodeComponent: Function
+  layout?: any
+  onNodeSelect?: (node: TreeNodeData) => void
 }
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
@@ -25,45 +24,44 @@ interface NodeComponentCallbackProps {
 }
 
 export interface NodeComponentProps extends NodeComponentCallbackProps {
-  state?: DocumentsState
+  documentState?: DocumentsState
   dispatch?: Function
-  datasource: Datasource
+  datasource?: any
 }
 
 export default (props: PropTypes) => {
-  const { dispatch, state, datasource, onNodeSelect, getNodeComponent } = props
+  const {
+    dispatch,
+    state,
+    dataSources,
+    onNodeSelect,
+    getNodeComponent,
+    layout,
+  } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
-  //not use useFetch hook because response should be dispatched to the reducer.
   useEffect(() => {
-    async function fetchData() {
-      axios(api.indexGet(datasource.id))
-        .then(res => {
-          const nodes = values(res.data)
-          const documents = nodes
-            .map(node => {
-              return {
-                ...node,
-                nodeId: node.id,
-                isOpen: false,
-              }
-            })
-            .reduce((obj, item) => {
-              obj[item.nodeId] = item
-              return obj
-            }, {})
-          setDocuments(documents)
-        })
-        .catch((err: any) => {
-          console.error(err)
-        })
-      setLoading(false)
+    const getDataSource = async (dataSource: Datasource) => {
+      return await api.get(dataSource)
     }
-
+    const getAllDataSources = async () => {
+      return await Promise.all(
+        dataSources.map(dataSource => getDataSource(dataSource))
+      )
+    }
     setLoading(true)
-    fetchData()
-  }, [datasource])
+    getAllDataSources().then(values => {
+      const allDocuments = values.reduce((obj, item) => {
+        return {
+          ...obj,
+          ...item,
+        }
+      }, {})
+      setDocuments(allDocuments)
+      setLoading(false)
+    })
+  }, [dataSources])
 
   if (loading) {
     return <div>Loading...</div>
@@ -90,7 +88,7 @@ export default (props: PropTypes) => {
                 addNode={addNode}
                 updateNode={updateNode}
                 node={node}
-                datasource={datasource}
+                layout={layout}
               ></NodeComponent>
             )
           }}

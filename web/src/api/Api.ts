@@ -1,10 +1,129 @@
+import axios from 'axios'
+import values from 'lodash/values'
+
+import Workspace from '../util/localWorkspace'
+import { TreeNodeData } from '../components/tree-view/Tree'
+import { NodeType } from '../components/tree-view/TreeReducer'
+
+function isLocal(datasource: Datasource): boolean {
+  return datasource.id === 'local'
+}
+
+export interface IndexRequestBody {
+  id: string
+  content: any
+}
+
+export interface PostIndexProp extends ApiPostProp {
+  datasource: Datasource
+  index: IndexRequestBody[]
+}
+
+export interface ApiPostProp {
+  onSuccess?: () => void
+  onError?: (error: any) => void
+}
+
+export abstract class BaseApi {
+  public readonly dmtApi: DmtApi
+  protected workspace: Workspace
+
+  protected constructor() {
+    this.dmtApi = new DmtApi()
+    this.workspace = new Workspace()
+  }
+
+  abstract async post(props: ApiPostProp): Promise<any>
+  abstract async get(props: any): Promise<any>
+}
+
+export class IndexApi extends BaseApi {
+  public constructor() {
+    super()
+  }
+
+  async post({
+    datasource,
+    index,
+    onSuccess = () => {},
+    onError = e => {},
+  }: PostIndexProp) {
+    const url = this.dmtApi.indexPost(datasource.id)
+    axios
+      .post(url, index)
+      .then(res => {
+        if (isLocal(datasource)) {
+          this.workspace.setItem(url, res.data)
+        } else {
+          console.log('We have an index! ', res)
+        }
+        onSuccess()
+      })
+      .catch(e => {
+        onError(e)
+      })
+  }
+
+  async get(datasource: Datasource) {
+    const url = this.dmtApi.indexGet(datasource.id)
+    try {
+      const res = !isLocal(datasource)
+        ? (await axios(url)).data
+        : this.workspace.getItem(url)
+      const nodes = values(res)
+
+      let documents = nodes.map(node => {
+        return {
+          ...node,
+          id: `${datasource.id}/${node.id}`,
+          nodeId: `${datasource.id}/${node.id}`,
+          isOpen: false,
+          children: node.children
+            ? node.children.map((child: string) => `${datasource.id}/${child}`)
+            : [],
+        }
+      })
+
+      const rootNodes = nodes.filter((node: TreeNodeData) => node.isRoot)
+
+      documents = documents.map((node: TreeNodeData) => {
+        return {
+          ...node,
+          isRoot: false,
+          isOpen: false,
+        }
+      })
+
+      documents.push({
+        nodeId: datasource.id,
+        isRoot: true,
+        isOpen: false,
+        isHidden: false,
+        title: datasource.name,
+        nodeType: NodeType.datasource,
+        children: rootNodes.map(rootNode => `${datasource.id}/${rootNode.id}`),
+      })
+
+      return documents.reduce((obj, item) => {
+        obj[item.nodeId] = item
+        return obj
+      }, {})
+    } catch (err) {
+      console.error(err)
+    }
+    return {}
+  }
+}
+
 export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
     return `/api/data-sources/${dataSourceType}`
   }
+
   dataSourcesPut(datasourceId: string) {
     return `/api/data-sources/${datasourceId}`
   }
+
   dataSourcesPost() {
     return `/api/data-sources`
   }
@@ -29,6 +148,10 @@ export class DmtApi {
     return `/api/templates/create-document.json`
   }
 
+  templatesCreateBlueprintGet() {
+    return `/api/templates/create-blueprint.json`
+  }
+
   templatesPackageGet() {
     return '/api/templates/package.json'
   }
@@ -37,14 +160,12 @@ export class DmtApi {
     return `/api/data-sources/${datasourceId}/packages`
   }
 
-  documentGet(datasourceId: string, blueprintId: string): string | null {
-    if (!datasourceId) {
-      return null
-    }
-    return `/api/data-sources/${datasourceId}/${blueprintId}`
+  documentGet(documentId: string): string | null {
+    return `/api/data-sources/${documentId}`
   }
-  documentPut(datasourceId: string, blueprintId: string) {
-    return `/api/data-sources/${datasourceId}/${blueprintId}`
+
+  documentPut(documentId: string) {
+    return `/api/data-sources/${documentId}`
   }
 }
 
@@ -66,7 +187,7 @@ export type IndexNode = {
   description: string
   latestVersion?: string
   versions: string[]
-  nodeType: 'folder' | 'file'
+  nodeType: NodeType
   isRoot: boolean
   isOpen?: boolean
   children?: string[]

@@ -1,7 +1,9 @@
 {
+  "meta": {
+    "title": "SubPackageTemplate",
+    "description": "Template for creating subpackages"
+  },
   "schema": {
-    "title": "PackageTemplate",
-    "description": "Template for a package",
     "type": "object",
     "required": ["title"],
     "properties": {

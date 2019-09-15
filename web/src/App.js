@@ -6,19 +6,22 @@ import { ALMOST_BLACK, PRIMARY_COLOR } from './components/styles'
 import { H1 } from './components/Headers'
 import { NotificationContainer } from 'react-notifications'
 import EntitiesPage from './pages/entities/EntitiesPage'
+import DocumentEditorPage from './pages/DocumentEditorPage'
+import { Switch } from 'react-router'
 
 const GlobalStyle = createGlobalStyle`
   body {
     padding: 0;
-    margin: 0 auto 25px;
-    max-width: 1600px;
+    margin: 0;
+    // margin: 0 auto 25px;
+    // max-width: 1600px;
     font-family: Equinor-Regular, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
   
   #root {
-    max-width: 1600px;
+    // max-width: 1600px;
   }
 `
 
@@ -26,9 +29,9 @@ const AppHeader = styled.header`
   display: flex;
   flex-direction: row;
   color: ${ALMOST_BLACK};
-  min-height: 80px;
-  margin-bottom: 20px;
-  padding-top: 20px;
+  min-height: 5px;
+  margin-bottom: 5px;
+  padding-top: 5px;
 `
 
 const AppTitle = styled(H1)`
@@ -74,25 +77,31 @@ function App() {
   return (
     <Router>
       <GlobalStyle />
-      <AppHeader>
-        <InnerHeader>
-          <AppTitle>
-            <HeaderLink to="/">Data Modelling Tool</HeaderLink>
-          </AppTitle>
-          <HeaderLinks>
-            <HeaderLink right exact to="/blueprints">
-              Blueprints
-            </HeaderLink>
-            <HeaderLink right exact to="/entities">
-              Entities
-            </HeaderLink>
-          </HeaderLinks>
-        </InnerHeader>
-      </AppHeader>
+      {false && (
+        <AppHeader>
+          <InnerHeader>
+            <AppTitle>
+              <HeaderLink to="/">Data Modelling Tool</HeaderLink>
+            </AppTitle>
+            <HeaderLinks>
+              <HeaderLink right exact to="/blueprints">
+                Blueprints
+              </HeaderLink>
+              <HeaderLink right exact to="/entities">
+                Entities
+              </HeaderLink>
+            </HeaderLinks>
+          </InnerHeader>
+        </AppHeader>
+      )}
 
       <NotificationContainer />
-      <Route path="/blueprints" component={BlueprintsPage} />
-      <Route path="/entities" component={EntitiesPage} />
+
+      <Switch>
+        <Route path="/blueprints" component={BlueprintsPage} />
+        <Route path="/entities" component={EntitiesPage} />
+        <Route exact path="/" component={DocumentEditorPage} />
+      </Switch>
     </Router>
   )
 }

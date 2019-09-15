@@ -6,7 +6,7 @@ import { DmtApi } from '../../../api/Api'
 const api = new DmtApi()
 
 export function editPackage(props: ContextMenuActionProps): ActionConfig {
-  const { node, datasource, updateNode, setShowModal } = props
+  const { node, updateNode, setShowModal } = props
   return {
     menuItem: {
       action: 'edit-package',
@@ -14,9 +14,9 @@ export function editPackage(props: ContextMenuActionProps): ActionConfig {
     },
     formProps: {
       schemaUrl: api.templatesPackageGet(),
-      dataUrl: api.documentGet(datasource.id, node.nodeId),
+      dataUrl: api.documentGet(node.nodeId),
       onSubmit: (formData: any) => {
-        const url = api.documentPut(datasource.id, node.nodeId)
+        const url = api.documentPut(node.nodeId)
         axios
           .put(url, formData)
           .then(() => {

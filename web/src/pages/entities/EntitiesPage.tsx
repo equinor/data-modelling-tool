@@ -1,13 +1,12 @@
 import React, { useEffect, useReducer } from 'react'
 import { Grid, Col, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
-//@ts-ignore
 import DocumentTree from '../common/tree-view/DocumentTree'
 import EntitiesReducer, {
   DocumentActions,
   initialState,
   // PageMode,
-} from '../common/DocumentReducer'
+} from '../common/DocumentsReducer'
 import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { EntityNode } from './nodes/EntityNode'
@@ -63,13 +62,13 @@ export default () => {
             </div>
             {state.dataSources.map((ds: any) => {
               return (
-                <span key={ds._id}>
+                <span key={ds.id}>
                   <DocumentTree
                     onNodeSelect={node => {
                       console.log(node)
                     }}
                     state={state}
-                    datasource={ds}
+                    dataSources={state.dataSources}
                     dispatch={dispatch}
                     getNodeComponent={getNodeComponent}
                   />

@@ -7,6 +7,7 @@ import Modal from '../../../components/modal/Modal'
 import { NotificationManager } from 'react-notifications'
 import { DmtApi } from '../../../api/Api'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
+import Button from '../../../components/Button'
 const api = new DmtApi()
 
 export default () => {
@@ -15,7 +16,11 @@ export default () => {
 
   return (
     <div>
-      <Modal toggle={() => setShowModal(!showModal)} open={showModal}>
+      <Modal
+        toggle={() => setShowModal(!showModal)}
+        open={showModal}
+        title="Add Data Source"
+      >
         <div style={{ padding: '10px 0' }}>
           <label>Datasource type: </label>
           <DatasourceTypeSelect
@@ -43,11 +48,15 @@ export default () => {
           />
         )}
       </Modal>
-      <div style={{ fontWeight: 700, marginLeft: 10, marginBottom: 10 }}>
-        {' '}
-        Datasource:
+      <Button
+        onClick={() => {
+          setShowModal(!showModal)
+        }}
+      >
         <FaPlus onClick={() => setShowModal(!showModal)} />
-      </div>
+        {`  `}
+        Data Source
+      </Button>
     </div>
   )
 }

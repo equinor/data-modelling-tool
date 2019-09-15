@@ -4,7 +4,6 @@ import { Droppable, DroppableProvided } from 'react-beautiful-dnd'
 import styled from 'styled-components'
 
 const Container = styled.div`
-  height: 300px;
   overflow: auto;
 `
 

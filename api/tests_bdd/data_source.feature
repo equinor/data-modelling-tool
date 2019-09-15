@@ -14,6 +14,10 @@ Feature: Data Source
     """
     [
       {
+        "host": "client",
+        "name": "Local workspace"
+      },
+      {
         "host": "hostname",
         "name": "equinor-models"
       }

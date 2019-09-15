@@ -12,6 +12,10 @@ const ModalWrapper = styled.div`
   background-color: rgba(0, 0, 0, 0.4);
 `
 
+const ModalHeader = styled.div`
+  margin-bottom: 20px;
+`
+
 const ModalBody = styled.div`
   background-color: #fefefe;
   margin: auto;
@@ -38,4 +42,5 @@ export const StyledModal = {
   ModalWrapper,
   ModalBody,
   CloseButton,
+  ModalHeader,
 }

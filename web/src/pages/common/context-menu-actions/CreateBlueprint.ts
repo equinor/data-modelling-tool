@@ -7,17 +7,18 @@ import { ActionConfig, ContextMenuActionProps } from './Types'
 const api = new DmtApi()
 
 export function createBlueprint(props: ContextMenuActionProps): ActionConfig {
-  const { node, datasource, addNode, setShowModal } = props
+  const { node, addNode, setShowModal } = props
   return {
     menuItem: {
       action: 'create-blueprint',
       label: 'Create Blueprint',
     },
     formProps: {
-      schemaUrl: api.templatesCreateDocumentGet(),
+      schemaUrl: api.templatesCreateBlueprintGet(),
       dataUrl: null,
       onSubmit: (formData: any) => {
-        const url = api.packagePost(datasource.id)
+        const dataSourceId = node.nodeId.split('/')[0]
+        const url = api.packagePost(dataSourceId)
         axios
           .post(url, {
             nodeType: NodeType.file,

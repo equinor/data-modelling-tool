@@ -1,6 +1,13 @@
 import styled from 'styled-components'
 import { ALMOST_BLACK } from './styles'
 
+export const H5 = styled.h5`
+  margin-bottom: 2px;
+  color: ${ALMOST_BLACK};
+  font-family: Equinor-Medium;
+  font-weight: 500;
+`
+
 export const H4 = styled.h4`
   margin-bottom: 2px;
   color: ${ALMOST_BLACK};

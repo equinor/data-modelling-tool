@@ -1,37 +1,25 @@
-import { Datasource, DmtApi, IndexNode } from '../../api/Api'
-import { DocumentsAction } from '../common/DocumentReducer'
-import React, { useEffect } from 'react'
-import axios from 'axios'
+import { Datasource, IndexNode } from '../../api/Api'
+import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
+import React from 'react'
 import Header from '../../components/Header'
 import DocumentTree from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import { FolderNode } from './nodes/FolderNode'
 import { EntityNode } from './nodes/EntityNode'
-const api = new DmtApi()
+import { TreeNodeData } from '../../components/tree-view/Tree'
+
+export type OnNodeSelect = (node: TreeNodeData) => void
 
 type Props = {
   datasource: Datasource | undefined
   datasources: Datasource[]
+  state: DocumentsState
   dispatch: (action: DocumentsAction) => void
+  onNodeSelect: OnNodeSelect
 }
 
 export default (props: Props) => {
-  const { datasource, dispatch } = props
-  const datasourceId = (datasource && datasource.id) || undefined
-  useEffect(() => {
-    if (datasourceId) {
-      const url = api.indexGet(datasourceId)
-      axios
-        .get(url)
-        .then((res: any) => {
-          // setIndex(res.data)
-        })
-        .catch((err: any) => {
-          console.error(err)
-        })
-    }
-  }, [datasourceId])
-
+  const { datasource, datasources, state, dispatch, onNodeSelect } = props
   if (!datasource) {
     return null
   }
@@ -41,10 +29,10 @@ export default (props: Props) => {
         <div>{datasource.name}</div>
       </Header>
       <DocumentTree
-        state={null}
+        state={state}
         dispatch={dispatch}
-        onNodeSelect={() => {}}
-        datasource={datasource}
+        onNodeSelect={onNodeSelect}
+        dataSources={datasources}
         getNodeComponent={getNodeComponent}
       />
     </div>
