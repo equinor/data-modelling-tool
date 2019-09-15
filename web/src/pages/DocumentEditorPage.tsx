@@ -68,6 +68,7 @@ export default () => {
               content: [
                 {
                   type: 'stack',
+                  isClosable: false,
                 },
               ],
             }}
