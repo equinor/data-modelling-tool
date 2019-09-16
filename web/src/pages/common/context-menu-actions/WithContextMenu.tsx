@@ -6,20 +6,21 @@ import { TreeNodeData } from '../../../components/tree-view/Tree'
 import ContextMenu, {
   MenuItem,
 } from '../../../components/context-menu/ContextMenu'
+import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
 
 type WithContextMenuProps = {
   node: TreeNodeData
   menuItems: MenuItem[]
-  configs: ActionConfig[]
-  showModal: boolean
-  setShowModal: (showModal: boolean) => void
+  configs?: ActionConfig[]
 }
 
 const WithContextMenu = (props: WithContextMenuProps) => {
-  const { node, configs, showModal, setShowModal, menuItems } = props
+  const { node, menuItems } = props
   const [action, setAction] = useState('')
+  const [showModal, setShowModal] = useState(false)
 
-  const actionConfig = configs.find(config => config.action === action)
+  const actionFactory = new ContextMenuActionsFactory()
+  const actionConfig = actionFactory.getActionConfig(action, props)
 
   return (
     <>

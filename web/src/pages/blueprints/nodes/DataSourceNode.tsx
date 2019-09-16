@@ -4,9 +4,8 @@ import styled from 'styled-components'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import { MenuItem } from '../../../components/context-menu/ContextMenu'
 import { FaFolder } from 'react-icons/fa'
-import { ActionConfig } from '../../common/context-menu-actions/Types'
-import { createPackage } from '../../common/context-menu-actions/CreatePackage'
 import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
+import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 
 type Props = {
   node: TreeNodeData
@@ -20,7 +19,6 @@ const Wrapper = styled.div`
 
 export const DataSourceNode = (props: Props) => {
   const { node, state } = props
-  const [showModal, setShowModal] = useState(false)
 
   const menuItems: MenuItem[] = [
     {
@@ -28,39 +26,20 @@ export const DataSourceNode = (props: Props) => {
       menuItems: [
         {
           label: 'Package',
-          action: 'New Package',
+          action: ContextMenuActions.createPackage,
           icon: FaFolder,
         },
       ],
     },
     {
-      action: 'Edit Data Source',
+      action: ContextMenuActions.editDataSource,
       label: 'Edit',
-    },
-  ]
-
-  const configs: ActionConfig[] = [
-    {
-      action: 'New Package',
-      formProps: createPackage({ node }), // TODO: Wrong function
-    },
-    {
-      action: 'Edit Data Source',
-      formProps: {
-        // TODO
-      },
     },
   ]
 
   return (
     <Wrapper>
-      <WithContextMenu
-        node={node}
-        menuItems={menuItems}
-        configs={configs}
-        showModal={showModal}
-        setShowModal={setShowModal}
-      />
+      <WithContextMenu node={node} menuItems={menuItems} />
       {node.nodeId === 'local' && (
         <FileUpload state={state} datasource={state.dataSources[0]} />
       )}
