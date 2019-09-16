@@ -6,7 +6,11 @@ import { DmtApi } from '../../../api/Api'
 
 const api = new DmtApi()
 
-export const createPackage = (props: { node: TreeNodeData }): any => {
+export const createPackage = (props: {
+  node: TreeNodeData
+  addNode: Function
+  setShowModal: Function
+}): any => {
   const { node } = props
   return {
     schemaUrl: api.templatesPackageGet(),
