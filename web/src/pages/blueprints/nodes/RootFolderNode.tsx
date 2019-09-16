@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { NodeComponentProps } from '../../common/tree-view/DocumentTree'
 import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
 import { MenuItem } from '../../../components/context-menu/ContextMenu'

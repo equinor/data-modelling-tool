@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { NodeComponentProps } from '../../common/tree-view/DocumentTree'
 import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
 import { MenuItem } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
-import { FaFile, FaFolder } from 'react-icons/all'
+import { FaFile, FaFolder } from 'react-icons/fa'
 
 export const FolderNode = (props: NodeComponentProps) => {
   const { node } = props
