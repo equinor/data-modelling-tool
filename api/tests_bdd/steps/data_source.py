@@ -17,6 +17,6 @@ def step_impl(context):
             "database": row["database"],
             "collection": row["collection"],
             "documentType": row["documentType"],
-            "type": "mongodb",
+            "type": row["type"],
         }
         data_modelling_tool_db["data_sources"].insert_one(document)

@@ -49,7 +49,7 @@ class DataSource:
         self.collection = data_source_dict["collection"]
         self.documentType = data_source_dict["documentType"]
 
-        if self.type == "mongodb":
+        if self.type == "mongo-db":
             self.client = MongodbClient(
                 host=self.host,
                 port=self.port,

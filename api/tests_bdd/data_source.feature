@@ -3,11 +3,11 @@ Feature: Data Source
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host     | port | username | password | tls  | name           | database   | collection | documentType |
-      | hostname | 1234 | user     | secret   | true | equinor-models | database_1 | blueprints | blueprints   |
+      | host     | port | username | password | tls  | name           | database   | collection | documentType | type    |
+      | hostname | 1234 | user     | secret   | true | equinor-models | database_1 | blueprints | blueprints   | mongo-db|
 
   Scenario: Get data source blueprints
-    Given I access the resource url "/api/data-sources/blueprints"
+    Given I access the resource url "/api/data-sources?documentType=blueprints"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -25,13 +25,21 @@ Feature: Data Source
     """
 
   Scenario Outline: Create new data source
-    Given i access the resource url "/api/data-sources/equinor-models"
+    Given i access the resource url "/api/data-sources/myTest-DataSource"
     When i make a "POST" request
-    """
-    {
-      "host": "<host>",
-      "name": "<name>"
-    }
+      """
+       {
+      "type": "mongodb",
+      "host": "database-server.equinor.com",
+      "port": 27017,
+      "username": "test",
+      "password": "testpassword",
+      "tls": false,
+      "name": "myTest-DataSource",
+      "database": "mariner",
+      "collection": "blueprints",
+      "documentType": "blueprints"
+      }
     """
     Then the response status should be "<status>"
     #And the response should be
@@ -39,20 +47,28 @@ Feature: Data Source
     #"<name>"
     #"""
     Examples:
-      | host     | name     | status     |
-      | new host | new name | OK         |
-      | new host |          | OK         |
+      | host     | name     | status |
+      | new host | new name | OK     |
+      | new host |          | OK     |
 
 
   Scenario: Update data source
     Given i access the resource url "/api/data-sources/equinor-models"
     When i make a "PUT" request
-    """
-    {
-      "host": "updated host",
-      "name": "updated name"
-    }
-    """
+      """
+        {
+          "type": "mongodb",
+          "host": "database-server.equinor.com",
+          "port": 27017,
+          "username": "test",
+          "password": "testpassword",
+          "tls": false,
+          "name": "myTest-DataSource",
+          "database": "mariner",
+          "collection": "blueprints",
+          "documentType": "blueprints"
+        }
+      """
     Then the response should be
     """
     True
@@ -61,7 +77,7 @@ Feature: Data Source
   Scenario: Delete data source
     Given i access the resource url "/api/data-sources/equinor-models"
     When i make a "DELETE" request
-    Given I access the resource url "/api/data-sources/blueprints"
+    Given I access the resource url "/api/data-sources?documentType=blueprints"
     When I make a "GET" request
     Then the response should contain
     """
