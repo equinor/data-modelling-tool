@@ -12,35 +12,16 @@ type Props = {
 export const BlueprintNode = (props: Props) => {
   const { node } = props
 
-  /*
-    const openBlueprint = () => {
-        const newItemConfig = {
-            title: node.title,
-            id: node.nodeId,
-            type: 'react-component',
-            component: 'blueprintItem',
-            props: {
-                selectedDocumentId: node.nodeId,
-            },
-        }
-        const isAlreadyOpened =
-            layout.myLayout.root.getItemsById(node.nodeId).length > 0
-        if (!isAlreadyOpened) {
-            layout.myLayout.root.contentItems[0].addChild(newItemConfig)
-        }
-        // dispatch(DocumentActions.viewFile(node.id))
-    }*/
-
   return (
     <LayoutContext.Consumer>
-      {(value: any) => {
+      {(layout: any) => {
         const data = {
           selectedDocumentId: node.nodeId,
         }
         return (
           <div
             onClick={() =>
-              value.add(
+              layout.add(
                 node.nodeId,
                 node.title,
                 LayoutComponents.blueprint,

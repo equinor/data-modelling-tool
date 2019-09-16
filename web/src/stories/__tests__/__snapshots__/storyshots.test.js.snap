@@ -46,13 +46,7 @@ exports[`Storyshots Button with text 1`] = `
 `;
 
 exports[`Storyshots ContextMenu test 1`] = `
-<span
-  style={
-    Object {
-      "fontFamily": "sans-serif",
-    }
-  }
->
+<span>
   <div>
     <div
       className="react-contextmenu-wrapper"

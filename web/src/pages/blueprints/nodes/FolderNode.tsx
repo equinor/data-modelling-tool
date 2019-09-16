@@ -1,52 +1,60 @@
 import React, { useState } from 'react'
-import axios from 'axios'
-import { DmtApi } from '../../../api/Api'
 import { NodeComponentProps } from '../../common/tree-view/DocumentTree'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import { editPackage } from '../../common/context-menu-actions/EditPackage'
-import { TreeNodeBuilder } from '../../common/tree-view/TreeNodeBuilder'
 import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
 import { ActionConfig } from '../../common/context-menu-actions/Types'
+import { MenuItem } from '../../../components/context-menu/ContextMenu'
+import { FaFile, FaFolder } from 'react-icons/fa'
+import { createPackage } from '../../common/context-menu-actions/CreatePackage'
 import { createBlueprint } from '../../common/context-menu-actions/CreateBlueprint'
 
-const api = new DmtApi()
-
 export const FolderNode = (props: NodeComponentProps) => {
-  const { node, datasource, updateNode, addNode } = props
+  const { node, updateNode, addNode } = props
   const [showModal, setShowModal] = useState(false)
-  const configs: ActionConfig[] = [
-    createBlueprint({ datasource, node, updateNode, addNode, setShowModal }),
+
+  const menuItems: MenuItem[] = [
     {
-      menuItem: {
-        action: 'add-subpackage',
-        label: 'Create SubPackage',
-      },
-      formProps: {
-        schemaUrl: api.templatesPackageGet(),
-        dataUrl: null,
-        onSubmit: (formData: any) => {
-          const url = api.packagePost(node.nodeId)
-          axios
-            .post(url, {
-              parentId: node.nodeId,
-              nodeType: 'folder',
-              isRoot: false,
-              formData,
-            })
-            .then(res => {
-              const treeNode: TreeNodeData = new TreeNodeBuilder(
-                res.data
-              ).buildFolderNode()
-              addNode(treeNode, node.nodeId)
-              setShowModal(false)
-            })
-            .catch(err => {
-              console.log(err)
-            })
+      label: 'New',
+      menuItems: [
+        {
+          label: 'Blueprint',
+          action: 'New Blueprint',
+          icon: FaFile,
         },
-      },
+        {
+          label: 'Package',
+          action: 'New Package',
+          icon: FaFolder,
+        },
+      ],
     },
-    editPackage({ node, updateNode, addNode, datasource, setShowModal }),
+    {
+      label: 'Edit',
+      action: 'Edit Package',
+    },
+  ]
+
+  const configs: ActionConfig[] = [
+    {
+      action: 'New Blueprint',
+      formProps: createBlueprint({
+        node,
+        addNode,
+        setShowModal,
+      }),
+    },
+    {
+      action: 'New Package',
+      formProps: createPackage({ node }),
+    },
+    {
+      action: 'Edit Package',
+      formProps: editPackage({
+        node,
+        updateNode,
+        setShowModal,
+      }),
+    },
   ]
 
   return (
@@ -55,6 +63,7 @@ export const FolderNode = (props: NodeComponentProps) => {
       showModal={showModal}
       node={node}
       configs={configs}
+      menuItems={menuItems}
     />
   )
 }
