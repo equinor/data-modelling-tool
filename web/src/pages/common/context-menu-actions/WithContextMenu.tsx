@@ -3,27 +3,30 @@ import { ActionConfig } from './Types'
 import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
-import ContextMenu from '../../../components/context-menu/ContextMenu'
+import ContextMenu, {
+  MenuItem,
+} from '../../../components/context-menu/ContextMenu'
 
 type WithContextMenuProps = {
   node: TreeNodeData
+  menuItems: MenuItem[]
   configs: ActionConfig[]
   showModal: boolean
   setShowModal: (showModal: boolean) => void
 }
 
 const WithContextMenu = (props: WithContextMenuProps) => {
-  const { node, configs, showModal, setShowModal } = props
+  const { node, configs, showModal, setShowModal, menuItems } = props
   const [action, setAction] = useState('')
 
-  const menuItems = configs.map(config => config.menuItem)
-  const actionConfig = configs.find(config => config.menuItem.action === action)
+  const actionConfig = configs.find(config => config.action === action)
+
   return (
     <>
       <Modal
         toggle={() => setShowModal(!showModal)}
         open={showModal}
-        title={actionConfig && actionConfig.menuItem.label}
+        title={actionConfig && actionConfig.action}
       >
         {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
@@ -34,7 +37,6 @@ const WithContextMenu = (props: WithContextMenuProps) => {
           setShowModal(!showModal)
         }}
         menuItems={menuItems}
-        label={node.title}
       >
         {node.title}
       </ContextMenu>
