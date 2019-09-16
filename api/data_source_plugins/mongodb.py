@@ -13,7 +13,11 @@ class MongodbClient:
 
     def update_form(self, form, _id):
         try:
-            return self.handler[self.collection].replace_one({"_id": _id}, form, upsert=True).acknowledged
+            return (
+                self.handler[self.collection]
+                    .update_one({"_id": _id}, {"$set": {"formData": form}}, upsert=True)
+                    .acknowledged
+            )
         except Exception as error:
             return abort(500, error)
 
