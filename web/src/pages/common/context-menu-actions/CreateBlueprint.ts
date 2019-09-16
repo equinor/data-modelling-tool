@@ -20,6 +20,10 @@ export function createBlueprint(props: {
       const url = api.packagePost(dataSourceId)
       axios
         .post(url, {
+          meta: {
+            name: formData.title,
+            templateRef: 'templates/blueprint',
+          },
           nodeType: NodeType.file,
           isRoot: false,
           parentId: node.nodeId,
