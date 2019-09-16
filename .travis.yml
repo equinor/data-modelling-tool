@@ -18,6 +18,9 @@ stages:
   - name: deploy
     if: branch = master
 
+before_install:
+  - pip3 install doit
+
 jobs:
   include:
     - stage: build-publish
@@ -37,20 +40,20 @@ jobs:
     - stage: tests
       name: "API - BDD Tests"
       before_script: ./travis-scripts.sh build-api-dev-image
-      script: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm api behave
+      script: doit test:api:bdd -f ci
 
     - stage: tests
       name: "API - Unit Tests"
       before_script: ./travis-scripts.sh build-api-dev-image
-      script: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm api pytest tests
+      script: doit test:api:unit -f ci
 
     - stage: tests
       name: "Web - Tests"
       before_script: ./travis-scripts.sh pull-web
-      script: docker-compose -f docker-compose.yml run --no-deps --rm -e CI=true web yarn test
+      script: doit test:web:unit -e=CI=true
 
     - stage: deploy
       name: "Reset database"
       before_script: ./travis-scripts.sh pull-api
       script:
-        - docker-compose -f docker-compose.yml run -e MONGO_AZURE_URI -e ENVIRONMENT=azure api /code/reset-database.sh
+        - doit reset_database -e=MONGO_AZURE_URI -e=ENVIRONMENT=azure
