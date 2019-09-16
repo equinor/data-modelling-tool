@@ -13,6 +13,7 @@ import { RootFolderNode } from './nodes/RootFolderNode'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
 import { DataSourceNode } from './nodes/DataSourceNode'
+import { DocumentType } from '../../util/variables'
 
 const api = new DmtApi()
 
@@ -58,7 +59,7 @@ export default () => {
     <Wrapper>
       <Header>
         <div />
-        <AddDatasource />
+        <AddDatasource documentType={DocumentType.BLUEPRINTS} />
       </Header>
       <br />
       <DocumentTree

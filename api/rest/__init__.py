@@ -4,7 +4,7 @@ from rest.data_source_consumers.document import Document
 from rest.data_source_consumers.document_with_template import DocumentWithTemplate
 from rest.data_source_consumers.index import Index
 from rest.data_source_consumers.packages import Packages
-from rest.data_sources import DataSources, SingleDataSource
+from rest.data_sources import SingleDataSource
 from rest.template import Template
 
 
@@ -21,7 +21,7 @@ def create_api(app):
     api.add_resource(Index, "/api/index/<string:data_source_id>")
 
     # Get a list of all data-sources
-    api.add_resource(DataSources, "/api/data-sources/<string:document_type>")
+    # api.add_resource(DataSources, "/api/data-sources/<string:document_type>")
 
     # Get and Update a single document
     api.add_resource(Document, "/api/data-sources/<string:data_source_id>/<path:form_id>")
@@ -30,7 +30,7 @@ def create_api(app):
     api.add_resource(Template, "/api/templates/<path:id>")
 
     # Create, update, or delete a data-source
-    api.add_resource(SingleDataSource, "/api/data-sources/<string:id>")
+    api.add_resource(SingleDataSource, "/api/data-sources/<string:id>", "/api/data-sources")
 
     # Not currently used by front end
     # api.add_resource(Transformer, "/api/transformer/json-schema")

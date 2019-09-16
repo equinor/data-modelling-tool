@@ -114,15 +114,19 @@ export class IndexApi extends BaseApi {
 
 export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
-    return `/api/data-sources/${dataSourceType}`
+    return `/api/data-sources?documentType=${dataSourceType}`
   }
 
   dataSourcesPut(datasourceId: string) {
     return `/api/data-sources/${datasourceId}`
   }
 
-  dataSourcesPost() {
-    return `/api/data-sources`
+  dataSourcesPost(datasourceId: string) {
+    return `/api/data-sources/${datasourceId}`
+  }
+
+  dataSourcesDelete(datasourceId: string) {
+    return `/api/data-sources/${datasourceId}`
   }
 
   indexGet(datasourceId: string) {

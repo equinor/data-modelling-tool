@@ -6,15 +6,15 @@
   "schema": {
     "type": "object",
     "properties": {
-      "type": {
-        "type": "string",
-        "title": "Type",
-        "default": "mongodb"
-      },
       "documentType": {
         "type": "string",
-        "title": "Type",
-        "default": "mongodb"
+        "title": "documentType",
+        "default": ""
+      },
+      "name": {
+        "type": "string",
+        "title": "Name",
+        "minLength": 3
       },
       "host": {
         "type": "string",
@@ -38,11 +38,6 @@
         "title": "TLS",
         "default": false
       },
-      "name": {
-        "type": "string",
-        "title": "Name",
-        "minLength": 3
-      },
       "database": {
         "type": "string",
         "title": "Database"
@@ -52,12 +47,18 @@
         "title": "Collection"
       }
     },
-    "required": ["name"]
+    "required": ["name", "database", "collection", "host", "documentType", "port", "tls"]
   },
   "uiSchema": {
     "password": {
       "ui:widget": "password",
       "ui:help": "Hint: Make it strong!"
+    },
+    "name": {
+      "ui:help": "Must be globaly unique. May only contain [a-z,A-Z,0-9,-,_]'"
+    },
+    "documentType": {
+      "ui:widget": "hidden"
     }
   }
 }

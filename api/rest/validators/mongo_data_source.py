@@ -9,6 +9,6 @@ def validate_mongo_data_source(document):
     # TODO: Update requirements on schema
     schema = database[Config.TEMPLATES_COLLECTION].find_one(filter={"_id": "mongodb-datasource-template"})
     try:
-        validate(instance=document, schema=schema)
+        validate(instance=document, schema=schema["schema"])
     except ValidationError as error:
-        return abort(400, error)
+        return abort(400, message=error)

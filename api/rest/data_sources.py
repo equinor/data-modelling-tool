@@ -18,11 +18,10 @@ def data_sources_get(document_type: str):
     return all_sources
 
 
-def data_source_post(document_type):
+def data_source_post(id):
     document = request.get_json()
     validate_mongo_data_source(document)
-    document["documentType"] = document_type
-    document["_id"] = document["name"]
+    document["_id"] = id
     logger.info(f"Inserting new data-source with id {document['_id']}.")
     result = collection.insert_one(document)
     logger.info(f"Successfully inserted with id {result}")
@@ -44,22 +43,17 @@ def data_source_delete(id):
 class SingleDataSource(Resource):
     @staticmethod
     def post(id):
-        return data_source_put(id=id)
+        return data_source_post(id)
 
     @staticmethod
     def put(id):
-        return data_source_put(id=id)
+        return data_source_put(id)
 
     @staticmethod
     def delete(id):
-        return data_source_delete(id=id)
+        return data_source_delete(id)
 
-
-class DataSources(Resource):
     @staticmethod
-    def get(document_type):
+    def get():
+        document_type = request.args["documentType"]
         return data_sources_get(document_type)
-
-    @staticmethod
-    def post(document_type):
-        return data_source_post(document_type)

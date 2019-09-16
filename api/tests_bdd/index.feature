@@ -3,8 +3,8 @@ Feature: Index
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name                     | database | collection | documentType |
-      | db   | 27017 | maf      | maf      | false | local-blueprints-equinor | maf      | documents  | blueprints   |
+      | host | port  | username | password | tls   | name                     | database | collection | documentType | type   |
+      | db   | 27017 | maf      | maf      | false | local-blueprints-equinor | maf      | documents  | blueprints   |mongo-db|
 
     Given there are package named "package_1" of "documents"
       | title     | description         | version |
