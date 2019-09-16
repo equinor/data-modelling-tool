@@ -27,6 +27,7 @@ export default (props: Props) => {
   if (schemaLoading || dataLoading) {
     return <div>Loading...</div>
   }
+
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -44,7 +45,7 @@ export default (props: Props) => {
       </div>
       <div style={{ margin: 20 }}>
         <ViewData
-          data={dataData}
+          data={'formData' in dataData ? dataData.formData : {}}
           dataTemplate={schemaData}
           disabled={isDisabled}
         />

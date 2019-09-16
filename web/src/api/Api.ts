@@ -75,12 +75,9 @@ export class IndexApi extends BaseApi {
       let documents = nodes.map(node => {
         return {
           ...node,
-          id: `${datasource.id}/${node.id}`,
-          nodeId: `${datasource.id}/${node.id}`,
+          nodeId: node.id,
           isOpen: false,
-          children: node.children
-            ? node.children.map((child: string) => `${datasource.id}/${child}`)
-            : [],
+          children: node.children ? node.children : [],
         }
       })
 
@@ -101,7 +98,7 @@ export class IndexApi extends BaseApi {
         isHidden: false,
         title: datasource.name,
         nodeType: NodeType.datasource,
-        children: rootNodes.map(rootNode => `${datasource.id}/${rootNode.id}`),
+        children: rootNodes.map(rootNode => rootNode.id),
       })
 
       return documents.reduce((obj, item) => {
@@ -137,23 +134,23 @@ export class DmtApi {
   }
 
   templatesDatasourceMongoGet() {
-    return `/api/templates/data-sources/mongodb.json`
+    return `/api/templates/data-sources/mongodb`
   }
 
   templatesBlueprintGet() {
-    return `/api/templates/blueprint.json`
+    return `/api/templates/blueprint`
   }
 
   templatesCreateDocumentGet() {
-    return `/api/templates/create-document.json`
+    return `/api/templates/create-document`
   }
 
   templatesCreateBlueprintGet() {
-    return `/api/templates/create-blueprint.json`
+    return `/api/templates/create-blueprint`
   }
 
   templatesPackageGet() {
-    return '/api/templates/package.json'
+    return '/api/templates/package'
   }
 
   packagePost(datasourceId: string) {

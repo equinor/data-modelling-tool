@@ -58,6 +58,7 @@ export default (props: PropTypes) => {
           ...item,
         }
       }, {})
+      console.log(allDocuments)
       setDocuments(allDocuments)
       setLoading(false)
     })

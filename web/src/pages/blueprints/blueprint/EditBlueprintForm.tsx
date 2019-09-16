@@ -22,7 +22,7 @@ const notifications = {
 const EditBlueprintForm = (props: Props) => {
   const {
     dispatch,
-    state: { currentDatasourceId, selectedDocumentId },
+    state: { selectedDocumentId },
   } = props
 
   const [dataLoading, formData] = useFetch(
@@ -53,7 +53,7 @@ const EditBlueprintForm = (props: Props) => {
   return (
     <>
       <h3>Edit Blueprint</h3>
-      <BlueprintForm formData={formData} onSubmit={onSubmit} />
+      <BlueprintForm formData={formData.formData} onSubmit={onSubmit} />
     </>
   )
 }
