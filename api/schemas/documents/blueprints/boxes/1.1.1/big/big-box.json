@@ -1,7 +1,7 @@
 {
   "meta": {
     "name": "big-box",
-    "template": "templates/blueprint"
+    "templateRef": "templates/blueprint"
   },
   "formData": {
     "title": "big-box",

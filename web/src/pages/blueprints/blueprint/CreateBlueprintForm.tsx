@@ -5,9 +5,11 @@ import { NotificationManager } from 'react-notifications'
 import BlueprintForm from './BlueprintForm'
 import { DocumentsState } from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
+import { DocumentData } from './FetchDocument'
 const api = new DmtApi()
 
 interface Props {
+  data?: DocumentData
   dispatch: (action: any) => void
   state: DocumentsState
 }
@@ -37,7 +39,10 @@ export default (props: Props) => {
   return (
     <>
       <h3>Create blueprint</h3>
-      <BlueprintForm formData={{}} onSubmit={onSubmit} />
+      <BlueprintForm
+        data={{ formData: {}, template: {}, uiSchema: {} }}
+        onSubmit={onSubmit}
+      />
     </>
   )
 }

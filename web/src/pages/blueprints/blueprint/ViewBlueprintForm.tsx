@@ -8,25 +8,22 @@ import {
 } from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
 import useFetch from '../../../components/useFetch'
+import { DocumentData } from './FetchDocument'
 const api = new DmtApi()
 
 interface Props {
+  data: DocumentData
   state: DocumentsState
   dispatch: (action: DocumentsAction) => void
 }
 
 export default (props: Props) => {
   const {
+    data,
     state: { selectedDocumentId },
     dispatch,
   } = props
   const isDisabled = selectedDocumentId.length === 0
-  const [schemaLoading, schemaData] = useFetch(api.templatesBlueprintGet())
-  const [dataLoading, dataData] = useFetch(api.documentGet(selectedDocumentId))
-
-  if (schemaLoading || dataLoading) {
-    return <div>Loading...</div>
-  }
 
   return (
     <>
@@ -44,28 +41,27 @@ export default (props: Props) => {
         </div>
       </div>
       <div style={{ margin: 20 }}>
-        <ViewData
-          data={'formData' in dataData ? dataData.formData : {}}
-          dataTemplate={schemaData}
-          disabled={isDisabled}
-        />
+        <ViewData data={data} disabled={isDisabled} />
       </div>
     </>
   )
 }
 
 const ViewData = (props: any) => {
-  const { disabled, dataTemplate, data } = props
+  const { disabled, data } = props
   if (disabled || Object.keys(data).length === 0) {
     return null
   }
-  let components = dataTemplate.view.map((config: any, index: number) => {
+  if (!data.view) {
+    return null
+  }
+  let components = data.view.map((config: any, index: number) => {
     const key = 'view' + index
     switch (config.display) {
       case 'basic':
-        return <BasicView key={key} config={config} data={data} />
+        return <BasicView key={key} config={config} data={data.formData} />
       case 'table':
-        return <TableView key={key} config={config} data={data} />
+        return <TableView key={key} config={config} data={data.formData} />
       default:
         return <div key={key}>{config.display}</div>
     }

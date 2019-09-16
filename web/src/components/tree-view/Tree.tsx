@@ -110,7 +110,6 @@ const Tree = (props: TreeProps) => {
   }
 
   const updateNode = (node: TreeNodeData) => {
-    console.log(node)
     dispatch(NodeActions.updateNode(node.nodeId, node.title))
   }
 

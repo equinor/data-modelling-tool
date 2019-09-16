@@ -20,7 +20,7 @@ export interface PostIndexProp extends ApiPostProp {
 }
 
 export interface ApiPostProp {
-  onSuccess?: () => void
+  onSuccess?: (data: any) => void
   onError?: (error: any) => void
 }
 
@@ -57,7 +57,7 @@ export class IndexApi extends BaseApi {
         } else {
           console.log('We have an index! ', res)
         }
-        onSuccess()
+        onSuccess(res.data)
       })
       .catch(e => {
         onError(e)
@@ -75,6 +75,7 @@ export class IndexApi extends BaseApi {
       let documents = nodes.map(node => {
         return {
           ...node,
+          id: node.id,
           nodeId: node.id,
           isOpen: false,
           children: node.children ? node.children : [],
@@ -163,6 +164,10 @@ export class DmtApi {
 
   documentPut(documentId: string) {
     return `/api/data-sources/${documentId}`
+  }
+
+  documentTemplateUrlGet(docId: string) {
+    return `/api/document-template/${docId}`
   }
 }
 

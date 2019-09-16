@@ -5,6 +5,7 @@ import useFetch from './useFetch'
 export interface FormProps {
   schemaUrl: string
   dataUrl: string | null
+  fetchDocumentData?: any
   onSubmit: (formData: any) => void
 }
 
