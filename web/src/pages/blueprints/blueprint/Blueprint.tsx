@@ -4,6 +4,7 @@ import BlueprintReducer, { PageMode } from '../../common/DocumentReducer'
 import EditBlueprintForm from './EditBlueprintForm'
 import CreateBlueprintForm from './CreateBlueprintForm'
 import styled from 'styled-components'
+import FetchDocument, { DocumentData } from './FetchDocument'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -22,16 +23,43 @@ const Blueprint = (props: any) => {
 
   return (
     <Wrapper>
-      {pageMode === PageMode.view && state.selectedDocumentId && (
-        <ViewBlueprintForm state={state} dispatch={dispatch} />
-      )}
-      {pageMode === PageMode.edit && state.selectedDocumentId && (
-        <EditBlueprintForm state={state} dispatch={dispatch} />
-      )}
-
-      {pageMode === PageMode.create && state.selectedDocumentId && (
-        <CreateBlueprintForm dispatch={dispatch} state={state} />
-      )}
+      <FetchDocument
+        pageMode={pageMode}
+        documentId={selectedDocumentId}
+        render={(data: DocumentData) => {
+          if (!selectedDocumentId) {
+            return null
+          }
+          switch (pageMode) {
+            case PageMode.view:
+              return (
+                <ViewBlueprintForm
+                  documentData={data}
+                  state={state}
+                  dispatch={dispatch}
+                />
+              )
+            case PageMode.create:
+              return (
+                <CreateBlueprintForm
+                  documentData={data}
+                  state={state}
+                  dispatch={dispatch}
+                />
+              )
+            case PageMode.edit:
+              return (
+                <EditBlueprintForm
+                  documentData={data}
+                  state={state}
+                  dispatch={dispatch}
+                />
+              )
+            default:
+              return null
+          }
+        }}
+      ></FetchDocument>
     </Wrapper>
   )
 }

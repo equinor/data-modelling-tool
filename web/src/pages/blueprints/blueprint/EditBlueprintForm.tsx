@@ -5,34 +5,20 @@ import axios from 'axios'
 import { NotificationManager } from 'react-notifications'
 import { DocumentActions, DocumentsState } from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
-import useFetch from '../../../components/useFetch'
+import { DocumentData } from './FetchDocument'
 const api = new DmtApi()
 interface Props {
   state: DocumentsState
   dispatch: Function
-}
-
-const notifications = {
-  failureNotification: {
-    title: '',
-    body: 'Failed to fetch blueprint data',
-  },
+  documentData: DocumentData
 }
 
 const EditBlueprintForm = (props: Props) => {
   const {
+    documentData,
     dispatch,
     state: { selectedDocumentId },
   } = props
-
-  const [dataLoading, formData] = useFetch(
-    api.documentGet(selectedDocumentId),
-    notifications
-  )
-
-  if (dataLoading) {
-    return <div>Loading...</div>
-  }
 
   const onSubmit = (schemas: any) => {
     const url = api.documentPut(selectedDocumentId)
@@ -53,7 +39,7 @@ const EditBlueprintForm = (props: Props) => {
   return (
     <>
       <h3>Edit Blueprint</h3>
-      <BlueprintForm formData={formData.formData} onSubmit={onSubmit} />
+      <BlueprintForm documentData={documentData} onSubmit={onSubmit} />
     </>
   )
 }

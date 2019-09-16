@@ -2,25 +2,17 @@ import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
 import BlueprintPreview from '../preview/BlueprintPreview'
 import Tabs, { Tab, TabPanel, TabList } from '../../../components/Tabs'
-import { DmtApi } from '../../../api/Api'
-import useFetch from '../../../components/useFetch'
 import AttributeWidget from '../../../components/widgets/Attribute'
-
-const api = new DmtApi()
+import { DocumentData } from './FetchDocument'
 
 interface Props {
-  formData: any
+  documentData: DocumentData
   onSubmit: (data: any) => void
 }
 
-export default (props: Props) => {
-  const { onSubmit, formData } = props
-  const [loading, template] = useFetch(api.templatesBlueprintGet())
-  const [data, setData] = useState(formData)
-  if (loading) {
-    return <div>Loading...</div>
-  }
-
+export default ({ documentData, onSubmit }: Props) => {
+  const { formData, template, uiSchema } = documentData
+  const [data, setData] = useState({ ...formData })
   return (
     <Tabs>
       <TabList>
@@ -29,9 +21,9 @@ export default (props: Props) => {
       </TabList>
       <TabPanel>
         <Form
-          formData={data}
-          schema={'schema' in template ? template['schema'] : template}
-          uiSchema={'uiSchema' in template ? template['uiSchema'] : {}}
+          formData={data || {}}
+          schema={template || {}}
+          uiSchema={uiSchema || {}}
           fields={{ attribute: AttributeWidget }}
           onSubmit={onSubmit}
           onChange={schemas => {
