@@ -1,30 +1,47 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Form from 'react-jsonschema-form'
-import useFetch from './useFetch'
+import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 
 export interface FormProps {
-  schemaUrl: string
-  dataUrl: string | null
-  fetchDocumentData?: any
+  fetchDocument?: any
   onSubmit: (formData: any) => void
 }
 
 const log = (type: any) => console.log.bind(console, type)
-export default (props: FormProps) => {
-  const { schemaUrl, dataUrl, onSubmit } = props
+export default ({ onSubmit, fetchDocument }: FormProps) => {
+  const [loading, setLoading] = useState<boolean | null>(null)
+  const [documentData, setDocumentData] = useState<DocumentData>({
+    formData: {},
+    uiSchema: {},
+    template: {},
+  })
 
-  const [schemaLoading, schemaData] = useFetch(schemaUrl)
-  const [dataLoading, dataData] = useFetch(dataUrl)
+  useEffect(() => {
+    if (fetchDocument) {
+      setLoading(true)
+      fetchDocument({
+        onSuccess: (documentData: DocumentData) => {
+          setDocumentData(documentData)
+          setLoading(false)
+        },
+        onError: (err: any) => setLoading(false),
+      })
+    }
+  }, [fetchDocument])
 
-  if (schemaLoading || dataLoading) {
+  //avoid first render.
+  if (loading === null) {
+    return null
+  }
+  if (loading) {
     return <div>Loading...</div>
   }
 
   return (
     <Form
-      formData={dataData}
-      schema={'schema' in schemaData ? schemaData['schema'] : schemaData}
-      uiSchema={'uiSchema' in schemaData ? schemaData['uiSchema'] : {}}
+      formData={documentData.formData || {}}
+      schema={documentData.template}
+      uiSchema={documentData.uiSchema}
       onSubmit={schemas => {
         const formData: any = schemas.formData
         try {

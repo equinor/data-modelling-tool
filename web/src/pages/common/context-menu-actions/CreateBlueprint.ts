@@ -1,10 +1,6 @@
-import axios from 'axios'
-import { NodeType } from '../../../components/tree-view/TreeReducer'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
-import { DmtApi } from '../../../api/Api'
-
-const api = new DmtApi()
+import Api2 from '../../../api/Api2'
 
 export function createBlueprint(props: {
   node: TreeNodeData
@@ -13,33 +9,21 @@ export function createBlueprint(props: {
 }): any {
   const { node, addNode, setShowModal } = props
   return {
-    schemaUrl: api.templatesCreateBlueprintGet(),
-    dataUrl: null,
+    fetchDocument: Api2.fetchCreateBlueprint,
     onSubmit: (formData: any) => {
-      const dataSourceId = node.nodeId.split('/')[0]
-      const url = api.packagePost(dataSourceId)
-      axios
-        .post(url, {
-          meta: {
-            name: formData.title,
-            templateRef: 'templates/blueprint',
-          },
-          nodeType: NodeType.file,
-          isRoot: false,
-          parentId: node.nodeId,
-          formData,
-        })
-        .then(res => {
+      Api2.postCreateDocument({
+        parentId: node.nodeId,
+        formData,
+        onSuccess: (res: any) => {
           const treeNodeData: TreeNodeData = new TreeNodeBuilder(
             res.data
           ).buildFileNode()
+          console.log(treeNodeData, node.nodeId)
           addNode(treeNodeData, node.nodeId)
           setShowModal(false)
-        })
-        .catch(err => {
-          console.log(Object.keys(err))
-          // onError(err)
-        })
+        },
+        onError: (err: any) => console.error(Object.keys(err)),
+      })
     },
   }
 }

@@ -1,13 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import useFetch from '../../../components/useFetch'
-import { DmtApi } from '../../../api/Api'
 import { PageMode } from '../../common/DocumentReducer'
 import Api2 from '../../../api/Api2'
-const api = new Api2()
 
 export type DocumentData = {
   template: any
-  formData: any
+  formData?: any
   view?: any
   uiSchema: any
 }
@@ -23,13 +20,13 @@ export default ({ documentId, pageMode, render }: Props) => {
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    api.fetchDocument({
-      documentId,
+    const fetchDocument = Api2.fetchDocument(documentId)
+    fetchDocument({
       onSuccess: (data: DocumentData) => {
         setDocumentData(data)
         setLoading(false)
       },
-      onError: () => setLoading(false),
+      onError: (err: any) => setLoading(false),
     })
   }, [documentId, pageMode])
 

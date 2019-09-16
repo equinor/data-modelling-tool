@@ -3,6 +3,7 @@ import axios from 'axios'
 import { NotificationManager } from 'react-notifications'
 import { DmtApi } from '../../../api/Api'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
+import Api2 from '../../../api/Api2'
 const api = new DmtApi()
 
 export function editPackage(props: {
@@ -12,8 +13,7 @@ export function editPackage(props: {
 }): any {
   const { node, updateNode, setShowModal } = props
   return {
-    schemaUrl: api.templatesPackageGet(),
-    dataUrl: api.documentGet(node.nodeId),
+    fetchDocument: Api2.fetchDocument(node.nodeId),
     onSubmit: (formData: any) => {
       const url = api.documentPut(node.nodeId)
       axios
