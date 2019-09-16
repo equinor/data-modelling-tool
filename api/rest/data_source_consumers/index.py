@@ -14,6 +14,9 @@ def index_package(package_id: str, data_source: DataSource):
     index = {}
     package = Package(data_source.client.read_form(package_id), data_source)
 
+    if package.document_type == "version":
+        package.is_root = True
+
     for file in package.files:
         tmp_file = File(data_source.client.read_form(file), data_source)
         index[tmp_file.id] = tmp_file.as_dict()
@@ -31,7 +34,6 @@ def index_data_source(data_source: DataSource):
 
     for package in root_packages:
         root_package = RootPackage(package, data_source)
-        index[root_package.id] = root_package.as_dict()
 
         # TODO: Handle index for different versions
         try:

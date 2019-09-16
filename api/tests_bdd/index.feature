@@ -17,18 +17,11 @@ Feature: Index
     And the response should equal
     """
     {
-       "local-blueprints-equinor/package_1/package":{
-          "title":"package 1",
-          "children":[],
-          "nodeType":"folder",
-          "isRoot":true,
-          "id":"local-blueprints-equinor/package_1/package"
-       },
        "local-blueprints-equinor/package_1/1.0.0/package":{
           "title":"package 1",
           "children":[],
           "nodeType":"folder",
-          "isRoot":false,
+          "isRoot":true,
           "id":"local-blueprints-equinor/package_1/1.0.0/package"
        }
     }
