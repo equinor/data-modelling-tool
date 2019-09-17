@@ -7,6 +7,7 @@ export enum ContextMenuActions {
   createPackage = 'New Package',
   editPackage = 'Edit Package',
   editDataSource = 'Edit Data Source',
+  addBlueprint = 'Add Blueprint',
 }
 
 const getFormProperties = (type: string, props: any) => {
@@ -34,6 +35,11 @@ const getFormProperties = (type: string, props: any) => {
         updateNode,
         setShowModal,
       })
+    }
+    case ContextMenuActions.addBlueprint: {
+      const { node } = props
+      console.log(node)
+      return
     }
     default:
       return {

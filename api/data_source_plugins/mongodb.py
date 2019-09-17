@@ -45,9 +45,10 @@ class MongodbClient:
     def read_form(self, _id):
         result = self.handler[self.collection].find_one(filter={"_id": _id})
         if not result:
-            logger.warning(f"The document with id = {_id} was not found.")
+            logger.warning(f"The document with id = {_id} was not found. {self.collection}")
             return abort(404)
         else:
+            print(result)
             return result
 
     def delete_form(self, _id):

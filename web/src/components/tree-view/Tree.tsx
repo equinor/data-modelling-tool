@@ -110,7 +110,6 @@ const Tree = (props: TreeProps) => {
   }
 
   const updateNode = (node: TreeNodeData) => {
-    console.log(node)
     dispatch(NodeActions.updateNode(node.nodeId, node.title))
   }
 
@@ -123,7 +122,7 @@ const Tree = (props: TreeProps) => {
 
   return (
     <>
-      <SearchTree onChange={handleSearch} />
+      {rootNodes.length > 0 && <SearchTree onChange={handleSearch} />}
       <DragDropContext onDragEnd={handleDrag} onDragStart={onDragStart}>
         {rootNodes.map((rootNode, index) => {
           return (

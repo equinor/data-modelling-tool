@@ -1,18 +1,18 @@
 import React, { useEffect, useReducer } from 'react'
-import { Grid, Col, Row } from 'react-styled-flexboxgrid'
-import styled from 'styled-components'
 import DocumentTree from '../common/tree-view/DocumentTree'
 import EntitiesReducer, {
   DocumentActions,
   initialState,
-  // PageMode,
 } from '../common/DocumentsReducer'
 import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { EntityNode } from './nodes/EntityNode'
 import { FolderNode } from './nodes/FolderNode'
+import Header from '../../components/Header'
+import { Wrapper } from '../blueprints/BlueprintsPage'
+import Button from '../../components/Button'
+import { DataSourceNode } from '../blueprints/nodes/DataSourceNode'
 import { RootFolderNode } from './nodes/RootFolderNode'
-import BlueprintPicker from './BlueprintPicker'
 
 const api = new DmtApi()
 
@@ -26,6 +26,8 @@ function getNodeComponent(node: IndexNode) {
       }
     case 'file':
       return EntityNode
+    case 'datasource':
+      return DataSourceNode
     default:
       return () => <div>{node.title}</div>
   }
@@ -50,47 +52,17 @@ export default () => {
   }, [state.dataSources.length])
 
   return (
-    <Grid fluid>
-      <Row>
-        <Col xs={12} md={12} lg={5}>
-          <Wrapper>
-            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-              <div style={{ display: 'inline-flex' }}>
-                <BlueprintPicker state={state} dispatch={dispatch} />
-              </div>
-              <div style={{ display: 'inline-flex' }}></div>
-            </div>
-            {state.dataSources.map((ds: any) => {
-              return (
-                <span key={ds.id}>
-                  <DocumentTree
-                    onNodeSelect={node => {
-                      console.log(node)
-                    }}
-                    state={state}
-                    dataSources={state.dataSources}
-                    dispatch={dispatch}
-                    getNodeComponent={getNodeComponent}
-                  />
-                </span>
-              )
-            })}
-          </Wrapper>
-        </Col>
-
-        <Col xs={12} md={12} lg={7}>
-          <Wrapper></Wrapper>
-        </Col>
-      </Row>
-    </Grid>
+    <Wrapper>
+      <Header style={{ marginBottom: 20 }}>
+        <Button>Add datasource</Button>
+      </Header>
+      <br />
+      <DocumentTree
+        state={state}
+        dataSources={state.dataSources}
+        dispatch={dispatch}
+        getNodeComponent={getNodeComponent}
+      />
+    </Wrapper>
   )
 }
-
-const Wrapper = styled.div`
-  width: 100%;
-  min-height: 600px;
-  border: 1px solid;
-  margin: 15px 10px;
-  padding: 20px;
-  border-radius: 5px;
-`

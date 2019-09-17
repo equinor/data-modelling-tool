@@ -10,6 +10,7 @@ import {
   LayoutComponents,
   LayoutProvider,
 } from './common/golden-layout/LayoutContext'
+import EntitiesPage from './entities/EntitiesPage'
 
 function wrapComponent(Component: any, state: any) {
   class Wrapped extends React.Component {
@@ -51,7 +52,11 @@ export default () => {
                     <BlueprintsPage />
                   </LayoutProvider>
                 </TabPanel>
-                <TabPanel>Entities</TabPanel>
+                <TabPanel>
+                  <LayoutProvider layout={layout}>
+                    <EntitiesPage />
+                  </LayoutProvider>
+                </TabPanel>
               </Tabs>
             </Wrapper>
           </Col>
@@ -76,6 +81,11 @@ export default () => {
               setLayout({ myLayout })
               myLayout.registerComponent(
                 LayoutComponents.blueprint,
+                wrapComponent(Blueprint, state)
+              )
+              myLayout.registerComponent(
+                LayoutComponents.entity,
+                //@todo fix this
                 wrapComponent(Blueprint, state)
               )
             }}

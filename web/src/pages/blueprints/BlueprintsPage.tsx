@@ -17,7 +17,7 @@ import { DocumentType } from '../../util/variables'
 
 const api = new DmtApi()
 
-const Wrapper = styled.div`
+export const Wrapper = styled.div`
   width: 100%;
 `
 

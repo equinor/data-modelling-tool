@@ -21,6 +21,7 @@ const Blueprint = (props: any) => {
 
   const pageMode = state.pageMode
 
+  console.log(selectedDocumentId)
   return (
     <Wrapper>
       <FetchDocument

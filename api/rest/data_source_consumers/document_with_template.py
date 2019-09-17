@@ -37,7 +37,10 @@ class DocumentWithTemplate(Resource):
         else:
             # Dynamically created documents are saved as formData, and will be transformed to json-schema
             template_data_source = DataSource(id=template_data_source_id)
-            template_data_form = template_data_source.client.read_form(_id=template_id)["formData"]
+
+            # remove datasource id, templateRef is stored with abs id.
+            doc_id = template_id.split("/", 1)[1]
+            template_data_form = template_data_source.client.read_form(_id=doc_id)["formData"]
             document["template"] = form_to_schema(template_data_form)
 
         return document
