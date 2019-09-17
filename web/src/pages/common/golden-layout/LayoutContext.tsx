@@ -4,6 +4,7 @@ export const LayoutContext = React.createContext({})
 
 export enum LayoutComponents {
   blueprint = 'blueprint',
+  entity = 'entity',
 }
 
 type Props = {

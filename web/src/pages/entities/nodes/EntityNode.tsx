@@ -1,18 +1,33 @@
 import React from 'react'
-import { DocumentActions } from '../../common/DocumentReducer'
-import { IndexNode } from '../../../api/Api'
+import { TreeNodeData } from '../../../components/tree-view/Tree'
+import {
+  LayoutComponents,
+  LayoutContext,
+} from '../../common/golden-layout/LayoutContext'
 
 type Props = {
-  node: IndexNode
-  dispatch: Function
+  node: TreeNodeData
 }
 
 export const EntityNode = (props: Props) => {
-  const { node, dispatch } = props
+  const { node } = props
 
-  const open = () => {
-    dispatch(DocumentActions.viewFile(node.id))
-  }
-
-  return <div onClick={open}>{node.title}</div>
+  return (
+    <LayoutContext.Consumer>
+      {(layout: any) => {
+        const data = {
+          selectedDocumentId: node.nodeId,
+        }
+        return (
+          <div
+            onClick={() =>
+              layout.add(node.nodeId, node.title, LayoutComponents.entity, data)
+            }
+          >
+            {node.title}
+          </div>
+        )
+      }}
+    </LayoutContext.Consumer>
+  )
 }

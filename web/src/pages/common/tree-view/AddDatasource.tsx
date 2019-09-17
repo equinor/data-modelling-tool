@@ -37,9 +37,7 @@ export default ({ documentType }: Props) => {
         </div>
         {selectedDatasourceType === 'mongo-db' && (
           <Form
-            fetchDocument={Api2.fetchCreateDatasource(
-              selectedDatasourceType
-            )}
+            fetchDocument={Api2.fetchCreateDatasource(selectedDatasourceType)}
             onSubmit={data => {
               data.documentType = documentType
               data.type = selectedDatasourceType

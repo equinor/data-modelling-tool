@@ -1,0 +1,9 @@
+{
+  "meta": {
+    "name": "ordinary",
+    "templateRef": "local-blueprints-equinor/blueprints/boxes/1.1.1/ordinary"
+  },
+  "formData": {
+    "title": "Ordinary box"
+  }
+}

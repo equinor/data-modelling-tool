@@ -6,6 +6,7 @@ import { DocumentsState } from '../common/DocumentReducer'
 import BlueprintPickerTree, { OnNodeSelect } from './BlueprintPickerTree'
 import DatasourceSelect from '../common/tree-view/DatasourceSelect'
 import { TreeNodeData } from '../../components/tree-view/Tree'
+import Button from '../../components/Button'
 
 const api = new DmtApi()
 
@@ -18,8 +19,7 @@ export default (props: Props) => {
   const [open, setOpen] = useState(false)
   return (
     <div>
-      <button onClick={() => setOpen(!open)}>Create Entity</button>
-
+      <Button onClick={() => setOpen(!open)}>Create Entity</Button>
       <Modal open={open} toggle={() => setOpen(!open)}>
         <BlueprintPickerContent
           {...props}
