@@ -3,6 +3,7 @@ import { TreeNodeData } from '../../../components/tree-view/Tree'
 import { NotificationManager } from 'react-notifications'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
+import Api2 from '../../../api/Api2'
 
 const api = new DmtApi()
 
@@ -13,8 +14,7 @@ export const createPackage = (props: {
 }): any => {
   const { node } = props
   return {
-    schemaUrl: api.templatesPackageGet(),
-    dataUrl: null,
+    fetchDocument: Api2.fetchCreatePackage,
     onSubmit: (formData: any) => {
       const url = api.packagePost(node.nodeId)
       if (node.isRoot) {

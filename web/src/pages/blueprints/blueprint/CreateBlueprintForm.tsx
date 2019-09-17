@@ -5,16 +5,19 @@ import { NotificationManager } from 'react-notifications'
 import BlueprintForm from './BlueprintForm'
 import { DocumentsState } from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
+import { DocumentData } from './FetchDocument'
 const api = new DmtApi()
 
 interface Props {
+  documentData: DocumentData
   dispatch: (action: any) => void
   state: DocumentsState
 }
 
 export default (props: Props) => {
   const {
-    state: { currentDatasourceId, selectedDocumentId },
+    documentData,
+    state: { currentDatasourceId },
   } = props
 
   const onSubmit = (schemas: any) => {
@@ -37,7 +40,7 @@ export default (props: Props) => {
   return (
     <>
       <h3>Create blueprint</h3>
-      <BlueprintForm formData={{}} onSubmit={onSubmit} />
+      <BlueprintForm documentData={documentData} onSubmit={onSubmit} />
     </>
   )
 }

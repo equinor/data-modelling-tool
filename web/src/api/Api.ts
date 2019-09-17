@@ -134,7 +134,7 @@ export class DmtApi {
   }
 
   templatesDatasourceMongoGet() {
-    return `/api/templates/data-sources/mongodb`
+    return `/api/templates/mongodb-datasource-template`
   }
 
   templatesBlueprintGet() {
@@ -150,15 +150,19 @@ export class DmtApi {
   }
 
   templatesPackageGet() {
-    return '/api/templates/package'
+    return '/api/templates/package-template'
   }
 
   packagePost(datasourceId: string) {
     return `/api/data-sources/${datasourceId}/packages`
   }
 
-  documentGet(documentId: string): string | null {
+  documentGet(documentId: string): string {
     return `/api/data-sources/${documentId}`
+  }
+
+  documentTemplatesGet(documentId: string): string {
+    return `/api/document-template/${documentId}`
   }
 
   documentPut(documentId: string) {

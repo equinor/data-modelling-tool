@@ -8,6 +8,7 @@ import { NotificationManager } from 'react-notifications'
 import { DmtApi } from '../../../api/Api'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
 import Button from '../../../components/Button'
+import Api2 from '../../../api/Api2'
 const api = new DmtApi()
 
 export default () => {
@@ -30,8 +31,9 @@ export default () => {
         </div>
         {selectedDatasourceType === 'mongo-db' && (
           <Form
-            schemaUrl={api.templatesDatasourceMongoGet()}
-            dataUrl=""
+            fetchDocument={Api2.fetchCreateDatasource(
+              selectedDatasourceType
+            )}
             onSubmit={data => {
               axios
                 .post(api.dataSourcesPost(), data)
