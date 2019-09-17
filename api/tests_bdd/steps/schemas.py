@@ -2,6 +2,6 @@ from behave import given
 from app import init_import_internal
 
 
-@given("init import is done")
+@given("data modelling tool templates are imported")
 def step_impl(context):
     init_import_internal("templates")

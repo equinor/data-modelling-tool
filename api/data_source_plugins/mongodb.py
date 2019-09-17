@@ -21,6 +21,12 @@ class MongodbClient:
         )[database]
         self.collection = collection
 
+    def update(self, form, _id):
+        try:
+            return self.handler[self.collection].update_one({"_id": _id}, {"$set": form}, upsert=True).acknowledged
+        except Exception as error:
+            return abort(500, error)
+
     def update_form(self, form, _id):
         try:
             return (
@@ -59,7 +65,7 @@ class MongodbClient:
             logger.warning(f"The document with id = {_id} was not found. {self.collection}")
             return abort(404)
         else:
-            print(result)
+            result["id"] = _id
             return result
 
     def delete_form(self, _id):
@@ -79,3 +85,10 @@ class MongodbClient:
             return [package for package in result]
         except ServerSelectionTimeoutError as error:
             return abort(500, error._message)
+
+    def find(self, filter):
+        result = self.handler[self.collection].find(filter=filter)
+        if not result:
+            return abort(404)
+        else:
+            return result
