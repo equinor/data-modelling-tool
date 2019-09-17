@@ -26,7 +26,6 @@ export type TreeNodeData = {
 type TreeProps = {
   children: Function
   tree: object
-  onNodeSelect?: (node: TreeNodeData) => void
   isDragEnabled: boolean
 }
 
@@ -77,7 +76,7 @@ const getRootNodes = (rootNode: any, state: object) => [
 ]
 
 const Tree = (props: TreeProps) => {
-  const { isDragEnabled, tree, children, onNodeSelect } = props
+  const { isDragEnabled, tree, children } = props
 
   const [state, dispatch] = useReducer(TreeReducer, tree)
 
@@ -143,7 +142,6 @@ const Tree = (props: TreeProps) => {
                       level={item.level}
                       node={node}
                       NodeRenderer={children}
-                      onNodeSelect={onNodeSelect}
                       handleToggle={handleToggle}
                       addNode={addNode}
                       updateNode={updateNode}

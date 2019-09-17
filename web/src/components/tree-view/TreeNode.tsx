@@ -40,7 +40,6 @@ const NodeIcon = styled.div`
 type TreeNodeProps = {
   NodeRenderer: Function
   level: number
-  onNodeSelect?: (node: TreeNodeData) => void
   node: TreeNodeData
   updateNode: Function
   addNode: Function
@@ -52,15 +51,7 @@ const Content = styled.div`
 `
 
 const TreeNode = (props: TreeNodeProps) => {
-  const {
-    node,
-    level,
-    onNodeSelect,
-    NodeRenderer,
-    updateNode,
-    addNode,
-    handleToggle,
-  } = props
+  const { node, level, NodeRenderer, updateNode, addNode, handleToggle } = props
 
   const expandableNodeTypes = [NodeType.folder, NodeType.datasource]
 
@@ -82,7 +73,6 @@ const TreeNode = (props: TreeNodeProps) => {
         <Content
           role="button"
           onClick={() => {
-            onNodeSelect && onNodeSelect(node)
             handleToggle(node)
           }}
         >

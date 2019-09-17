@@ -4,25 +4,24 @@ import React from 'react'
 import DocumentTree from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import { FolderNode } from './nodes/FolderNode'
-import { EntityNode } from './nodes/EntityNode'
+import { SelectBlueprintNode } from './nodes/EntityNode'
 import { TreeNodeData } from '../../components/tree-view/Tree'
-
-export type OnNodeSelect = (node: TreeNodeData) => void
 
 type Props = {
   datasources: Datasource[]
   state: DocumentsState
   dispatch: (action: DocumentsAction) => void
-  onNodeSelect: OnNodeSelect
+  sourceNode?: TreeNodeData
 }
 
 export default (props: Props) => {
-  const { datasources, state, dispatch, onNodeSelect } = props
+  const { datasources, state, dispatch, sourceNode } = props
+
+  //@todo use render props
   return (
     <DocumentTree
       state={state}
       dispatch={dispatch}
-      onNodeSelect={onNodeSelect}
       dataSources={datasources}
       getNodeComponent={getNodeComponent}
     />
@@ -38,7 +37,8 @@ function getNodeComponent(node: IndexNode) {
         return FolderNode
       }
     case 'file':
-      return EntityNode
+      // override Node. Add an entity to the first tree based on selected blueprint.
+      return SelectBlueprintNode
     default:
       return () => <div>{node.title}</div>
   }

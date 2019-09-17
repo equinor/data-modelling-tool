@@ -6,7 +6,6 @@ import { FaFile, FaFolder } from 'react-icons/fa'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 import Modal from '../../../components/modal/Modal'
 import { BlueprintPickerContent } from '../BlueprintPicker'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 
 export const FolderNode = (props: any) => {
   const { node, state, dispatch } = props
@@ -42,11 +41,9 @@ export const FolderNode = (props: any) => {
         title={'Select Blueprint'}
       >
         <BlueprintPickerContent
+          sourceNode={node}
           state={state}
           dispatch={dispatch}
-          onNodeSelect={(node: TreeNodeData) => {
-            console.log('use blueprint: ' + node.nodeId)
-          }}
         />
       </Modal>
       <ContextMenu
