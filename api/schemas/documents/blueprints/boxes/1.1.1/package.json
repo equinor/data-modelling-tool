@@ -2,7 +2,7 @@
   "meta": {
     "name": "package",
     "documentType": "version",
-    "templateRef": "template/package"
+    "templateRef": "templates/package-template"
   },
   "formData": {
     "title": "Boxes",

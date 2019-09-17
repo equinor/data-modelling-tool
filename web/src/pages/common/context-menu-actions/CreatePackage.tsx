@@ -25,6 +25,10 @@ export const createPackage = (props: {
           nodeType: 'folder',
           isRoot: false,
           formData,
+          meta: {
+            name: formData.title,
+            templateRef: 'templates/package-template',
+          },
         })
         .then(res => {
           console.log(res)

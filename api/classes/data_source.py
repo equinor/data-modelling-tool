@@ -4,10 +4,10 @@ from data_source_plugins.mongodb import MongodbClient
 from services.database import data_modelling_tool_db as db
 
 
-def get_data_source_from_database(_id):
-    data_source = db.data_sources.find_one({"_id": _id})
+def get_data_source_from_database(id):
+    data_source = db.data_sources.find_one({"_id": id})
     if not data_source:
-        abort(404, "Error: The data-source was not found")
+        abort(404, f"Error: The data-source was not found. ID: {id}")
     return data_source
 
 

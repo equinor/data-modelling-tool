@@ -1,7 +1,8 @@
 {
   "meta": {
     "name": "package",
-    "documentType": "subpackage"
+    "documentType": "subpackage",
+    "templateRef": "templates/subpackage-template"
   },
   "formData": {
     "title": "bigBoxes",

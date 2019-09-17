@@ -25,15 +25,15 @@ class DocumentWithTemplate(Resource):
         template_data_source_id = template_id.split("/", 1)[0]
 
         # If the templateRef is a Data-modelling-tool template, get it from the DMT database
-        if template_data_source_id == "templates":
+        if template_data_source_id == Config.TEMPLATES_COLLECTION:
             dmt_template_id = template_id.split("/")[-1]
             dmt_template = data_modelling_tool_db[Config.TEMPLATES_COLLECTION].find_one(
                 filter={"_id": dmt_template_id}
             )
             # DMT-templates are stored as json-schema, and does not require formData-to-json-schema transformation
             document["template"] = dmt_template["schema"]
-            document["view"] = dmt_template["view"]
-            document["uiSchema"] = dmt_template["uiSchema"]
+            document["view"] = dmt_template.get("view", "")
+            document["uiSchema"] = dmt_template.get("uiSchema", "")
         else:
             # Dynamically created documents are saved as formData, and will be transformed to json-schema
             template_data_source = DataSource(id=template_data_source_id)
