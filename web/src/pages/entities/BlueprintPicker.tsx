@@ -4,7 +4,6 @@ import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import { DocumentsState } from '../common/DocumentReducer'
 import BlueprintPickerTree, { OnNodeSelect } from './BlueprintPickerTree'
-import DatasourceSelect from '../common/tree-view/DatasourceSelect'
 import { TreeNodeData } from '../../components/tree-view/Tree'
 import Button from '../../components/Button'
 
@@ -40,7 +39,6 @@ type BlueprintPickerContentProps = {
 
 export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
   const { dispatch, state, onNodeSelect } = props
-  const [selectedDatasourceId, setSelectedDatasourceId] = useState('')
   const [blueprintDatasources, setBlueprintDatasources] = useState<
     Datasource[]
   >([])
@@ -53,25 +51,14 @@ export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
       .then((res: any) => {
         const data: Datasource[] = res.data || []
         setBlueprintDatasources(data)
-        const datasourceId = (data && data.length > 0 && data[0].id) || ''
-        setSelectedDatasourceId(datasourceId)
       })
       .catch((err: any) => {
         console.log(err)
       })
   }, [])
-  const datasource: Datasource | undefined = blueprintDatasources.find(
-    (d: Datasource) => d.id === selectedDatasourceId
-  )
   return (
     <div>
-      <DatasourceSelect
-        selectedDatasource={selectedDatasourceId}
-        setSelectedDatasource={setSelectedDatasourceId}
-        datasources={blueprintDatasources}
-      />
       <BlueprintPickerTree
-        datasource={datasource}
         datasources={blueprintDatasources}
         dispatch={dispatch}
         state={state}

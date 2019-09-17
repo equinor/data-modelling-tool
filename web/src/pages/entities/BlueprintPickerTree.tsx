@@ -1,7 +1,6 @@
 import { Datasource, IndexNode } from '../../api/Api'
 import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
 import React from 'react'
-import Header from '../../components/Header'
 import DocumentTree from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import { FolderNode } from './nodes/FolderNode'
@@ -11,7 +10,6 @@ import { TreeNodeData } from '../../components/tree-view/Tree'
 export type OnNodeSelect = (node: TreeNodeData) => void
 
 type Props = {
-  datasource: Datasource | undefined
   datasources: Datasource[]
   state: DocumentsState
   dispatch: (action: DocumentsAction) => void
@@ -19,23 +17,15 @@ type Props = {
 }
 
 export default (props: Props) => {
-  const { datasource, datasources, state, dispatch, onNodeSelect } = props
-  if (!datasource) {
-    return null
-  }
+  const { datasources, state, dispatch, onNodeSelect } = props
   return (
-    <div>
-      <Header>
-        <div>{datasource.name}</div>
-      </Header>
-      <DocumentTree
-        state={state}
-        dispatch={dispatch}
-        onNodeSelect={onNodeSelect}
-        dataSources={datasources}
-        getNodeComponent={getNodeComponent}
-      />
-    </div>
+    <DocumentTree
+      state={state}
+      dispatch={dispatch}
+      onNodeSelect={onNodeSelect}
+      dataSources={datasources}
+      getNodeComponent={getNodeComponent}
+    />
   )
 }
 

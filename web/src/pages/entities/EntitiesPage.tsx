@@ -8,12 +8,11 @@ import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
 import axios from 'axios'
 import { EntityNode } from './nodes/EntityNode'
 import { FolderNode } from './nodes/FolderNode'
-import { RootFolderNode } from './nodes/RootFolderNode'
-import BlueprintPicker from './BlueprintPicker'
 import Header from '../../components/Header'
 import { Wrapper } from '../blueprints/BlueprintsPage'
 import Button from '../../components/Button'
 import { DataSourceNode } from '../blueprints/nodes/DataSourceNode'
+import { RootFolderNode } from './nodes/RootFolderNode'
 
 const api = new DmtApi()
 
@@ -56,8 +55,6 @@ export default () => {
     <Wrapper>
       <Header style={{ marginBottom: 20 }}>
         <Button>Add datasource</Button>
-        {/* TODO move picker to context menu. */}
-        <BlueprintPicker state={state} dispatch={dispatch} />
       </Header>
       <br />
       <DocumentTree

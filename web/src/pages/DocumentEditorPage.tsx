@@ -85,6 +85,7 @@ export default () => {
               )
               myLayout.registerComponent(
                 LayoutComponents.entity,
+                //@todo fix this
                 wrapComponent(Blueprint, state)
               )
             }}
