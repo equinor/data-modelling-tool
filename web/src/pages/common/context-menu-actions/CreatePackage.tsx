@@ -4,6 +4,7 @@ import { NotificationManager } from 'react-notifications'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
 import Api2 from '../../../api/Api2'
+import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
 
 const api = new DmtApi()
 
@@ -12,7 +13,7 @@ export const createPackage = (props: {
   addNode: Function
   setShowModal: Function
 }): any => {
-  const { node } = props
+  const { node, addNode, setShowModal } = props
   return {
     fetchDocument: Api2.fetchCreatePackage,
     onSubmit: (formData: any) => {
@@ -32,13 +33,13 @@ export const createPackage = (props: {
         })
         .then(res => {
           console.log(res)
-          // const treeNode = new TreeNodeBuilder(res.data)
-          //   .setOpen(true)
-          //   .buildFolderNode()
-          //
-          // addNode(treeNode, node.nodeId)
-          // setShowModal(false)
-          // NotificationManager.success(res.data.id, 'Package created')
+          const treeNode = new TreeNodeBuilder(res.data)
+            .setOpen(true)
+            .buildFolderNode()
+
+          addNode(treeNode, node.nodeId)
+          setShowModal(false)
+          NotificationManager.success(res.data.id, 'Package created')
         })
         .catch(err => {
           console.log(err)
