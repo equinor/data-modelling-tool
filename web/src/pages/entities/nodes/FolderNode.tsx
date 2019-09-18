@@ -10,13 +10,13 @@ import { RenderProps } from '../../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 
 interface Props extends RenderProps {
-  sourceNode?: TreeNodeData
+  sourceNode: TreeNodeData
   state: any
   dispatch: Function
 }
 
 export const FolderNode = (props: Props) => {
-  const { treeNodeData, state, dispatch } = props
+  const { treeNodeData, state, dispatch, sourceNode } = props
   const [showModal, setShowModal] = useState(false)
 
   const menuItems: MenuItem[] = [
@@ -49,7 +49,7 @@ export const FolderNode = (props: Props) => {
         title={'Select Blueprint'}
       >
         <BlueprintPickerContent
-          sourceNode={treeNodeData}
+          sourceNode={sourceNode}
           state={state}
           dispatch={dispatch}
         />

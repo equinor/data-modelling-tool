@@ -7,10 +7,10 @@ import { RenderProps } from '../../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 
 interface Props extends RenderProps {
-  sourceNode?: TreeNodeData
+  sourceNode: TreeNodeData
 }
 
-export const EntityNode = (props: Props) => {
+export const EntityNode = (props: RenderProps) => {
   const { treeNodeData } = props
   return (
     <LayoutContext.Consumer>

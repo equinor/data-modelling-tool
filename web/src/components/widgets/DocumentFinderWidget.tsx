@@ -53,7 +53,11 @@ const BlueprintPickerWrapper = (props: any) => {
       open={showModal}
       title="Select Blueprint"
     >
-      <BlueprintPickerContent state={state} dispatch={dispatch} />
+      <BlueprintPickerContent
+        sourceNode={undefined}
+        state={state}
+        dispatch={dispatch}
+      />
     </Modal>
   )
 }
