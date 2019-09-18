@@ -37,10 +37,10 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
             nodeType: NodeType.file,
             formData,
             onSuccess: (res: any) => {
-              const treeNodeData: TreeNodeData = new TreeNodeBuilder(
+              const newTreeNode: TreeNodeData = new TreeNodeBuilder(
                 res.data
               ).buildFileNode()
-              addNode(treeNodeData, treeNodeData.nodeId)
+              addNode(newTreeNode, treeNodeData.nodeId)
               setShowModal(false)
             },
             onError: (err: any) => console.error(Object.keys(err)),
