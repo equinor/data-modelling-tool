@@ -81,9 +81,12 @@ export class IndexApi extends BaseApi {
         }
       })
 
+      /*
       const rootNodes = nodes.filter(
         (node: TreeNodeData) => node.nodeType === NodeType.rootPackage
-      )
+      )*/
+
+      const rootNodes = nodes.filter((node: TreeNodeData) => node.isRoot)
 
       documents = documents.map((node: TreeNodeData) => {
         return {
@@ -96,7 +99,7 @@ export class IndexApi extends BaseApi {
       const document: TreeNodeData = {
         nodeId: datasource.id,
         isRoot: true,
-        isOpen: false,
+        isOpen: true,
         isHidden: false,
         title: datasource.name,
         nodeType: NodeType.datasource,
@@ -174,6 +177,16 @@ export class DmtApi {
 
   documentPut(documentId: string) {
     return `/api/data-sources/${documentId}`
+  }
+
+  // Explorer
+
+  addFile(datasourceId: string) {
+    return `/api/explorer/${datasourceId}/add-file`
+  }
+
+  addPackage(datasourceId: string) {
+    return `/api/explorer/${datasourceId}/add-package`
   }
 }
 

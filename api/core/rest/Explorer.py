@@ -11,7 +11,7 @@ from core.domain.package import SubPackage
 blueprint = Blueprint("explorer", __name__)
 
 
-@blueprint.route("/api/explorer/<string:data_source_id>/add-file-to-package", methods=["POST"])
+@blueprint.route("/api/explorer/<string:data_source_id>/add-file", methods=["POST"])
 def add_file_to_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
@@ -22,14 +22,14 @@ def add_file_to_package(data_source_id: str):
     use_case = AddFileToPackageUseCase(document_repository=document_repository, package_repository=package_repository)
 
     document = Document.from_dict(request_data["document"])
-    added_document = use_case.execute(request_data["package_id"], document)
+    added_document = use_case.execute(request_data["parentId"], document)
 
     return Response(
         json.dumps(added_document.to_dict(), cls=DocumentSerializer), mimetype="application/json", status=200
     )
 
 
-@blueprint.route("/api/explorer/<string:data_source_id>/add-package-to-package", methods=["POST"])
+@blueprint.route("/api/explorer/<string:data_source_id>/add-package", methods=["POST"])
 def add_package_to_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
@@ -39,7 +39,7 @@ def add_package_to_package(data_source_id: str):
     use_case = AddPackageToPackageUseCase(package_repository=package_repository)
 
     sub_package = SubPackage().from_dict(request_data["document"])
-    added_sub_package = use_case.execute(request_data["package_id"], sub_package)
+    added_sub_package = use_case.execute(request_data["parentId"], sub_package)
 
     return Response(
         json.dumps(added_sub_package.to_dict(), cls=DocumentSerializer), mimetype="application/json", status=200

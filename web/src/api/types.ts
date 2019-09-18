@@ -6,4 +6,5 @@ export enum NodeType {
   subPackage = 'subpackage',
   file = 'file',
   datasource = 'datasource', //needed?
+  folder = 'folder',
 }

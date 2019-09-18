@@ -52,7 +52,7 @@ export default () => {
           switch (renderProps.treeNodeData.nodeType) {
             case NodeType.rootPackage:
               return <RootFolderNode {...renderProps} />
-            case NodeType.subPackage:
+            case NodeType.folder:
               return <FolderNode {...renderProps} />
             case NodeType.file:
               return <EntityNode {...renderProps} />

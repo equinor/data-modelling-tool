@@ -32,8 +32,8 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
-          Api2.postFile({
-            parentId: treeNodeData.nodeId,
+          Api2.addFile({
+            nodeId: treeNodeData.nodeId,
             formData,
             onSuccess: (res: any) => {
               const newTreeNode: TreeNodeData = new TreeNodeBuilder(

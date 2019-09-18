@@ -56,6 +56,7 @@ const TreeNode = (props: TreeNodeProps) => {
     NodeType.rootPackage,
     NodeType.subPackage,
     NodeType.datasource,
+    NodeType.folder,
   ]
   const isFolder = [NodeType.subPackage, NodeType.rootPackage].includes(
     node.nodeType

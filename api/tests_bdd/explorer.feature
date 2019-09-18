@@ -10,12 +10,12 @@ Feature: Explorer
       | title     | description         | version |
       | package 1 | package description | 1.0.0   |
 
-  Scenario: Add file to package
-    Given i access the resource url "/api/explorer/local-blueprints/add-file-to-package"
+  Scenario: Add file
+    Given i access the resource url "/api/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
     {
-      "package_id": "package_1/1.0.0/package",
+      "parentId": "package_1/1.0.0/package",
       "document": {
         "meta": {
            "name": "new file",
@@ -44,12 +44,12 @@ Feature: Explorer
     }
     """
 
-  Scenario: Add package to package
-    Given i access the resource url "/api/explorer/local-blueprints/add-package-to-package"
+  Scenario: Add package
+    Given i access the resource url "/api/explorer/local-blueprints/add-package"
     When i make a "POST" request
     """
     {
-      "package_id": "package_1/1.0.0/package",
+      "parentId": "package_1/1.0.0/package",
       "document": {
         "meta": {
            "name": "new package",

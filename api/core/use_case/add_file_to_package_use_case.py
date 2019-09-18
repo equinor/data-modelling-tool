@@ -8,10 +8,10 @@ class AddFileToPackageUseCase:
         self.document_repository = document_repository
         self.package_repository = package_repository
 
-    def execute(self, package_id: str, document: Document) -> Document:
-        package: SubPackage = self.package_repository.get_by_id(package_id)
+    def execute(self, parent_id: str, document: Document) -> Document:
+        package: SubPackage = self.package_repository.get_by_id(parent_id)
         document_id = package.add_file(document.meta.name)
-        self.package_repository.update(package_id, package)
+        self.package_repository.update(parent_id, package)
         document = self.document_repository.save(document, document_id)
-        logger.info(f"Added document '{document_id}' to package '{package_id}'")
+        logger.info(f"Added document '{document_id}' to package '{parent_id}'")
         return document
