@@ -14,8 +14,8 @@ def index_package(package_id: str, data_source: DataSource):
     index = {}
     package = Package(data_source.client.read_form(package_id), data_source)
 
-    if package.document_type == "version":
-        package.is_root = True
+    # if package.document_type == "version":
+    #   package.is_root = True
 
     for file in package.files:
         tmp_file = File(data_source.client.read_form(file), data_source)
