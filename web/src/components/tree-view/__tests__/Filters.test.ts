@@ -1,9 +1,10 @@
 import { filterNodes } from '../Filters'
+import { NodeType } from '../../../api/types'
 
 const data = {
   '/root': {
     _id: '/root',
-    nodeType: 'folder',
+    nodeType: NodeType.subPackage,
     isRoot: true,
     children: ['/root/subpackage'],
   },

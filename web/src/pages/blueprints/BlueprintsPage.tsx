@@ -15,6 +15,7 @@ import AddDatasource from '../common/tree-view/AddDatasource'
 import { DataSourceNode } from './nodes/DataSourceNode'
 import { DocumentType } from '../../util/variables'
 import { TreeNodeData } from '../../components/tree-view/Tree'
+import { NodeType } from '../../api/types'
 
 const api = new DmtApi()
 
@@ -24,15 +25,13 @@ export const Wrapper = styled.div`
 
 function getNodeComponent(treeNodeData: TreeNodeData) {
   switch (treeNodeData.nodeType) {
-    case 'folder':
-      if (treeNodeData.isRoot) {
-        return RootFolderNode
-      } else {
-        return FolderNode
-      }
-    case 'file':
+    case NodeType.rootPackage:
+      return RootFolderNode
+    case NodeType.subPackage:
+      return FolderNode
+    case NodeType.file:
       return BlueprintNode
-    case 'datasource':
+    case NodeType.datasource:
       return DataSourceNode
     default:
       return () => <div>{treeNodeData.title}</div>

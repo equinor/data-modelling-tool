@@ -1,3 +1,5 @@
+import { NodeType } from '../api/types'
+
 export default function generateFakeTree() {
   let tree: any = {
     0: {
@@ -6,7 +8,7 @@ export default function generateFakeTree() {
       title: '0',
       isRoot: true,
       isHidden: false,
-      type: 'folder',
+      type: NodeType.datasource,
       isOpen: true,
     },
   }
@@ -20,7 +22,7 @@ export default function generateFakeTree() {
       title: id,
       isRoot: false,
       isHidden: false,
-      type: 'folder',
+      type: i === 0 ? NodeType.rootPackage : NodeType.subPackage,
       isOpen: true,
     }
     tree[parentId].children.push(id)

@@ -25,7 +25,6 @@ const getFormProperties = (type: string, props: any) => {
       const { node, addNode, setShowModal } = props
       return createPackage({
         node,
-        documentType: 'root-package',
         addNode,
         setShowModal,
       })
@@ -34,7 +33,6 @@ const getFormProperties = (type: string, props: any) => {
       const { node, addNode, setShowModal } = props
       return createPackage({
         node,
-        documentType: 'subpackage',
         addNode,
         setShowModal,
       })

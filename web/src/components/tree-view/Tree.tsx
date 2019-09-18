@@ -4,7 +4,6 @@ import TreeNode from './TreeNode'
 import TreeReducer, {
   Actions,
   NodeActions,
-  NodeType,
 } from '../../components/tree-view/TreeReducer'
 import SearchTree from './SearchTree'
 import DragDropContext from '../dnd/DragDropContext'
@@ -12,6 +11,7 @@ import DroppableWrapper from '../dnd/DroppableWrapper'
 import DraggableWrapper from '../dnd/DraggableWrapper'
 // @ts-ignore
 import { DragStart } from 'react-beautiful-dnd'
+import { NodeType } from '../../api/types'
 
 export type TreeNodeData = {
   nodeId: string

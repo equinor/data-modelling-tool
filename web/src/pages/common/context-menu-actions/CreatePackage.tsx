@@ -6,6 +6,7 @@ import { DmtApi } from '../../../api/Api'
 import Api2 from '../../../api/Api2'
 import { getDataSourceIDFromAbsolutID } from '../../../util/helperFunctions'
 import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
+import { NodeType } from '../../../api/types'
 
 const api = new DmtApi()
 
@@ -13,9 +14,8 @@ export const createPackage = (props: {
   node: TreeNodeData
   addNode: Function
   setShowModal: Function
-  documentType: 'root-package' | 'subpackage' | 'version' // version is not used
 }): any => {
-  const { node, addNode, documentType, setShowModal } = props
+  const { node, addNode, setShowModal } = props
   return {
     fetchDocument: Api2.fetchCreatePackage,
     onSubmit: (formData: any) => {
@@ -24,19 +24,17 @@ export const createPackage = (props: {
       if (node.isRoot) {
       }
       let templateRef = 'templates/package-template'
-      if (documentType === 'subpackage') {
+      if (node.nodeType === NodeType.subPackage) {
         templateRef = 'templates/subpackage-template'
       }
       axios
         .post(url, {
           parentId: node.nodeId,
-          nodeType: 'folder',
-          isRoot: false,
           formData,
+          nodeType: node.nodeType,
           meta: {
             name: formData.title,
             templateRef,
-            documentType,
           },
         })
         .then(res => {

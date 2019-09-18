@@ -3,8 +3,8 @@ import TreeNode from '../TreeNode'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
 import { TreeNodeData } from '../Tree'
-import { NodeType } from '../TreeReducer'
 import { IndexNode } from '../../../api/Api'
+import { NodeType } from '../../../api/types'
 
 describe('TreeNode', () => {
   it.skip('renders without crashing', () => {
@@ -17,7 +17,7 @@ describe('TreeNode', () => {
       nodes: {
         node_0: {
           nodeId: 'node_0',
-          type: NodeType.folder,
+          nodeType: NodeType.rootPackage,
           title: 'node_0',
           isRoot: true,
           isOpen: true,

@@ -5,7 +5,7 @@ import BlueprintReducer, {
   initialState,
 } from '../../pages/common/DocumentReducer'
 import { TreeNodeData } from '../tree-view/Tree'
-import { NodeType } from '../tree-view/TreeReducer'
+import { NodeType } from '../../api/types'
 
 type Props = {
   onChange: (event: any) => void

@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import { DmtApi } from './Api'
-import { NodeType } from '../components/tree-view/TreeReducer'
-
+import { NodeType } from './types'
 const api = new DmtApi()
 
 /**
@@ -95,8 +94,7 @@ export default class Api2 {
           templateRef: 'templates/blueprint',
         },
         id: parentId + '/' + formData.title,
-        nodeType: NodeType.file,
-        isRoot: false,
+        documentType: NodeType.file,
         parentId: parentId,
         formData,
       })

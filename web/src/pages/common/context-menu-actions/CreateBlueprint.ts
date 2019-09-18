@@ -18,7 +18,6 @@ export function createBlueprint(props: {
           const treeNodeData: TreeNodeData = new TreeNodeBuilder(
             res.data
           ).buildFileNode()
-          console.log(treeNodeData, node.nodeId)
           addNode(treeNodeData, node.nodeId)
           setShowModal(false)
         },

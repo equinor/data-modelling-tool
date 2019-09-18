@@ -30,7 +30,7 @@ export const FolderNode = (props: Props) => {
         },
         {
           label: 'Package',
-          action: ContextMenuActions.createPackage,
+          action: ContextMenuActions.createSubPackage,
           icon: FaFolder,
         },
       ],

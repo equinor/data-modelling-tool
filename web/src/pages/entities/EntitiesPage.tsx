@@ -14,20 +14,19 @@ import Button from '../../components/Button'
 import { DataSourceNode } from '../blueprints/nodes/DataSourceNode'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import { TreeNodeData } from '../../components/tree-view/Tree'
+import { NodeType } from '../../api/types'
 
 const api = new DmtApi()
 
 function getNodeComponent(treeNodeData: TreeNodeData) {
   switch (treeNodeData.nodeType) {
-    case 'folder':
-      if (treeNodeData.isRoot) {
-        return RootFolderNode
-      } else {
-        return FolderNode
-      }
-    case 'file':
+    case NodeType.rootPackage:
+      return RootFolderNode
+    case NodeType.subPackage:
+      return FolderNode
+    case NodeType.file:
       return EntityNode
-    case 'datasource':
+    case NodeType.datasource:
       return DataSourceNode
     default:
       return (props: RenderProps) => <div>{props.treeNodeData.title}</div>

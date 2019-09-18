@@ -1,6 +1,6 @@
 import { IndexNode } from '../../../api/Api'
-import { NodeType } from '../../../components/tree-view/TreeReducer'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
+import { NodeType } from '../../../api/types'
 
 export class TreeNodeBuilder {
   nodeId: string
@@ -12,11 +12,10 @@ export class TreeNodeBuilder {
 
   constructor(node: IndexNode) {
     this.nodeId = node.id
-    this.nodeId = node.id
     this.isRoot = node.isRoot
     this.title = node.title
     this.isOpen = node.isOpen || false
-    this.nodeType = NodeType.folder
+    this.nodeType = node.nodeType
     this.children = node.children || []
   }
 
@@ -25,9 +24,9 @@ export class TreeNodeBuilder {
     return this
   }
 
+  //@todo add buildRootFolderNode
   buildFolderNode(): TreeNodeData {
     this.isRoot = false
-    this.nodeType = NodeType.folder
     return this
   }
 

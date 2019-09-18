@@ -6,6 +6,8 @@ import { RootFolderNode } from './nodes/RootFolderNode'
 import { FolderNode } from './nodes/FolderNode'
 import { SelectBlueprintNode } from './nodes/EntityNode'
 import { TreeNodeData } from '../../components/tree-view/Tree'
+import { DataSourceNode } from '../blueprints/nodes/DataSourceNode'
+import { NodeType } from '../../api/types'
 
 type Props = {
   datasources: Datasource[]
@@ -37,18 +39,17 @@ export default (props: Props) => {
   )
 }
 
-function getNodeComponent(node: TreeNodeData): any {
-  switch (node.nodeType) {
-    case 'folder':
-      if (node.isRoot) {
-        return RootFolderNode
-      } else {
-        return FolderNode
-      }
-    case 'file':
-      // override Node. Add an entity to the first tree based on selected blueprint.
+function getNodeComponent(treeNodeData: TreeNodeData): any {
+  switch (treeNodeData.nodeType) {
+    case NodeType.rootPackage:
+      return RootFolderNode
+    case NodeType.subPackage:
+      return FolderNode
+    case NodeType.file:
       return SelectBlueprintNode
+    case NodeType.datasource:
+      return DataSourceNode
     default:
-      return () => <div>{node.title}</div>
+      return () => <div>{treeNodeData.title}</div>
   }
 }
