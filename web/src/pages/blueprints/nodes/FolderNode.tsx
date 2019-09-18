@@ -18,8 +18,8 @@ export const FolderNode = (props: RenderProps) => {
           icon: FaFile,
         },
         {
-          label: 'Package',
-          action: ContextMenuActions.createPackage,
+          label: 'Subpackage',
+          action: ContextMenuActions.createSubPackage,
           icon: FaFolder,
         },
       ],

@@ -4,6 +4,7 @@ import { NotificationManager } from 'react-notifications'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
 import Api2 from '../../../api/Api2'
+import { getDataSourceIDFromAbsolutID } from '../../../util/helperFunctions'
 import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
 
 const api = new DmtApi()
@@ -12,13 +13,19 @@ export const createPackage = (props: {
   node: TreeNodeData
   addNode: Function
   setShowModal: Function
+  documentType: 'root-package' | 'subpackage' | 'version' // version is not used
 }): any => {
-  const { node, addNode, setShowModal } = props
+  const { node, addNode, documentType, setShowModal } = props
   return {
     fetchDocument: Api2.fetchCreatePackage,
     onSubmit: (formData: any) => {
-      const url = api.packagePost(node.nodeId)
+      const datasourceId = getDataSourceIDFromAbsolutID(node.nodeId)
+      const url = api.packagePost(datasourceId)
       if (node.isRoot) {
+      }
+      let templateRef = 'templates/package-template'
+      if (documentType === 'subpackage') {
+        templateRef = 'templates/subpackage-template'
       }
       axios
         .post(url, {
@@ -28,7 +35,8 @@ export const createPackage = (props: {
           formData,
           meta: {
             name: formData.title,
-            templateRef: 'templates/package-template',
+            templateRef,
+            documentType,
           },
         })
         .then(res => {

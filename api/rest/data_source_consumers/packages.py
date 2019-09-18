@@ -1,30 +1,52 @@
+import json
+
 from flask import request
 from flask_restful import Resource
 
 from classes.data_source import DataSource
-from classes.package_request import PackageRequest
+from classes.package_request import PackageRequest, DocumentType
 
-nodes_with_parent = ("folder", "file")
+nodes_with_parent = ("subpackage", "file")
 
 
 # TODO: This is probaly not good...
 def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_type: str, delete=False):
-    if node_type == "file":
+    if DocumentType(node_type) is DocumentType.FILE:
         if delete:
             data_source.client.pull_from_parent(_id=parent_id, form={"files": child_id})
         else:
             data_source.client.append_to_parent(_id=parent_id, form={"files": child_id})
-    if node_type == "folder":
+    if DocumentType(node_type) is DocumentType.SUB_PACKAGE:
         if delete:
             data_source.client.pull_from_parent(_id=parent_id, form={"subpackages": child_id})
         else:
             data_source.client.append_to_parent(_id=parent_id, form={"subpackages": child_id})
 
 
-def get_document_type(is_root: bool):
-    if is_root:
-        return "root-package"
-    return "subpackage"
+# def get_document_type(is_root: bool):
+#     if is_root:
+#         return "root-package"
+#     return "subpackage"
+
+
+def create_version_package(package_request: PackageRequest, data_source: DataSource, latest_version):
+    document = f"""
+{{
+  "_id": "{latest_version}/package",
+  "meta": {{
+    "name": "package",
+    "documentType": "version",
+    "templateRef": "templates/package-template"
+  }},
+  "formData": {{
+    "title": "{package_request.meta['name']}",
+    "description": "{package_request.formData['description']}",
+    "subpackages": [],
+    "files": []
+  }}
+}}
+    """
+    data_source.client.create_form(json.loads(document))
 
 
 class Packages(Resource):
@@ -36,14 +58,19 @@ class Packages(Resource):
         if package_request.node_type in nodes_with_parent:
             update_parent(data_source, package_request.parent_id, package_request.id, package_request.node_type)
 
-        if package_request.node_type == "folder":
-            package_request.formData["documentType"] = get_document_type(package_request.is_root)
+        # if package_request.node_type == "folder":
+        #     package_request.formData["documentType"] = get_document_type(package_request.is_root)
+        # TODO: Fix this hack
+        if package_request.node_type == "root-package":
+            latest_version = f"{package_request.id.split('/', 1)[0]}/1.0.0"
+            latest_version_id = f"{latest_version}/package"
+            package_request.formData["latestVersion"] = latest_version_id
+            create_version_package(package_request, data_source, latest_version)
 
         data_source.client.create_form(
             {"meta": package_request.meta, "formData": package_request.formData}, _id=package_request.id
         )
         return {
-            "isRoot": package_request.is_root,
             "nodeType": package_request.node_type,
             "title": package_request.formData["title"],
             "id": package_request.id,

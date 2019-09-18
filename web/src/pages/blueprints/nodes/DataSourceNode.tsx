@@ -28,7 +28,7 @@ export const DataSourceNode = (props: Props) => {
       menuItems: [
         {
           label: 'Package',
-          action: ContextMenuActions.createPackage,
+          action: ContextMenuActions.createRootPackage,
           icon: FaFolder,
         },
       ],

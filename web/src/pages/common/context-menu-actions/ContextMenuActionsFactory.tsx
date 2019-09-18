@@ -4,7 +4,8 @@ import { createPackage } from './CreatePackage'
 
 export enum ContextMenuActions {
   createBlueprint = 'New Blueprint',
-  createPackage = 'New Package',
+  createRootPackage = 'New Package',
+  createSubPackage = 'New Subpackage',
   editPackage = 'Edit Package',
   editDataSource = 'Edit Data Source',
   addBlueprint = 'Add Blueprint',
@@ -20,10 +21,20 @@ const getFormProperties = (type: string, props: any) => {
         setShowModal,
       })
     }
-    case ContextMenuActions.createPackage: {
+    case ContextMenuActions.createRootPackage: {
       const { node, addNode, setShowModal } = props
       return createPackage({
         node,
+        documentType: 'root-package',
+        addNode,
+        setShowModal,
+      })
+    }
+    case ContextMenuActions.createSubPackage: {
+      const { node, addNode, setShowModal } = props
+      return createPackage({
+        node,
+        documentType: 'subpackage',
         addNode,
         setShowModal,
       })

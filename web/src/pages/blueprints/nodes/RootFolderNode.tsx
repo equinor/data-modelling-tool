@@ -18,8 +18,8 @@ export const RootFolderNode = (props: NodeComponentProps) => {
           icon: FaFile,
         },
         {
-          label: 'Package',
-          action: ContextMenuActions.createPackage,
+          label: 'Packageaaaa',
+          action: ContextMenuActions.createRootPackage,
           icon: FaFolder,
         },
       ],

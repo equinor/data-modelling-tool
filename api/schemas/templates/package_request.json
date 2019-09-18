@@ -3,7 +3,7 @@
     "name": "package-request"
   },
   "schema": {
-    "required": ["formData", "meta", "nodeType", "parentId", "isRoot"],
+    "required": ["formData", "meta", "nodeType", "parentId"],
     "title": "PackageRequestForm",
     "description": "Used to POST and PUT packages",
     "type": "object",
@@ -28,9 +28,6 @@
       },
       "parentId": {
         "type": "string"
-      },
-      "isRoot": {
-        "type": "boolean"
       }
     }
   }

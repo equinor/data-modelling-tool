@@ -1,22 +1,33 @@
+from enum import Enum
 from os.path import dirname
 
 from rest.validators.package_request import validate_package_request
 
 
-def create_id(node_type: str, is_root: bool, title: str, parent_package: str):
-    if is_root:
+class DocumentType(Enum):
+    ROOT_PACKAGE = "root-package"
+    VERSION = "version"
+    SUB_PACKAGE = "sub-package"
+    FILE = "file"
+
+
+document_type_tuple = (DocumentType.ROOT_PACKAGE, DocumentType.VERSION, DocumentType.SUB_PACKAGE, DocumentType.FILE)
+
+
+def create_id(node_type: str, title: str, parent_package: str):
+    if node_type == DocumentType.ROOT_PACKAGE:
         return f"{title}/package"
-    if node_type == "file":
+    elif node_type == DocumentType.FILE:
         return f"{parent_package}/{title}"
-    if node_type == "folder":
+    elif node_type == DocumentType.SUB_PACKAGE:
         return f"{parent_package}/{title}/package"
 
 
-def get_node_type(is_root: bool, node_type: str):
-    if is_root:
-        return "folder"
-    else:
-        return node_type
+def get_node_type(node_type: str, meta: dict):
+    if node_type == DocumentType.FILE:
+        return DocumentType.FILE
+    elif meta["documentType"] in document_type_tuple:
+        return meta["documentType"]
 
 
 class PackageRequest:
@@ -25,8 +36,5 @@ class PackageRequest:
         self.meta = package_request["meta"]
         self.formData = package_request["formData"]
         self.parent_id = package_request["parentId"]
-        self.is_root = package_request["isRoot"]
-        self.node_type = get_node_type(is_root=self.is_root, node_type=package_request["nodeType"])
-        self.id = create_id(
-            self.node_type, is_root=self.is_root, title=self.meta["name"], parent_package=dirname(self.parent_id)
-        )
+        self.node_type = package_request["nodeType"]
+        self.id = create_id(self.node_type, title=self.meta["name"], parent_package=dirname(self.parent_id))
