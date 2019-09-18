@@ -27,11 +27,11 @@ type TreeProps = {
   children: Function
   tree: object
   isDragEnabled: boolean
+  render?: Function
 }
 
 export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
   const node = tree[nodeId]
-
   const hasChildren = 'children' in node
 
   if (!hasChildren || !node.isOpen) {
@@ -130,7 +130,7 @@ const Tree = (props: TreeProps) => {
               droppableId={`${rootNode[0].currentItem.nodeId}`}
             >
               {rootNode.map((item: any, index: number) => {
-                const node = item.currentItem
+                const node: TreeNodeData = item.currentItem
                 return (
                   <DraggableWrapper
                     key={node.nodeId + '_' + index}

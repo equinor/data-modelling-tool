@@ -1,7 +1,7 @@
-import { Datasource, IndexNode } from '../../api/Api'
+import { Datasource } from '../../api/Api'
 import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
 import React from 'react'
-import DocumentTree from '../common/tree-view/DocumentTree'
+import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import { FolderNode } from './nodes/FolderNode'
 import { SelectBlueprintNode } from './nodes/EntityNode'
@@ -20,15 +20,24 @@ export default (props: Props) => {
   //@todo use render props
   return (
     <DocumentTree
-      state={state}
-      dispatch={dispatch}
+      render={(renderProps: RenderProps) => {
+        const { treeNodeData } = renderProps
+        const NodeComponent = getNodeComponent(treeNodeData)
+        return (
+          <NodeComponent
+            treeNodeData={treeNodeData}
+            dispatch={dispatch}
+            state={state}
+            sourceNode={sourceNode}
+          />
+        )
+      }}
       dataSources={datasources}
-      getNodeComponent={getNodeComponent}
     />
   )
 }
 
-function getNodeComponent(node: IndexNode) {
+function getNodeComponent(node: TreeNodeData): any {
   switch (node.nodeType) {
     case 'folder':
       if (node.isRoot) {

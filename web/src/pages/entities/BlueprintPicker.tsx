@@ -10,11 +10,11 @@ const api = new DmtApi()
 type BlueprintPickerContentProps = {
   state: DocumentsState
   dispatch: any
-  //the source node that opened this picker.
+  //the source treeNodeData that opened this picker.
   sourceNode?: TreeNodeData
 }
 
-export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
+export const BlueprintPickerContent = (props: any) => {
   const { dispatch, state, sourceNode } = props
   const [blueprintDatasources, setBlueprintDatasources] = useState<
     Datasource[]

@@ -1,31 +1,35 @@
 import React from 'react'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import {
   LayoutComponents,
   LayoutContext,
 } from '../../common/golden-layout/LayoutContext'
+import { RenderProps } from '../../common/tree-view/DocumentTree'
+import { TreeNodeData } from '../../../components/tree-view/Tree'
 
-type Props = {
-  node: TreeNodeData
-  dispatch: Function
+interface Props extends RenderProps {
+  sourceNode?: TreeNodeData
 }
 
 export const EntityNode = (props: Props) => {
-  const { node } = props
-
+  const { treeNodeData } = props
   return (
     <LayoutContext.Consumer>
       {(layout: any) => {
         const data = {
-          selectedDocumentId: node.nodeId,
+          selectedDocumentId: treeNodeData.nodeId,
         }
         return (
           <div
             onClick={() =>
-              layout.add(node.nodeId, node.title, LayoutComponents.entity, data)
+              layout.add(
+                treeNodeData.nodeId,
+                treeNodeData.title,
+                LayoutComponents.entity,
+                data
+              )
             }
           >
-            {node.title}
+            {treeNodeData.title}
           </div>
         )
       }}
@@ -34,21 +38,19 @@ export const EntityNode = (props: Props) => {
 }
 
 export const SelectBlueprintNode = (props: Props) => {
-  const { node, dispatch } = props
+  const { treeNodeData, sourceNode } = props
   return (
     <div
       onClick={() => {
-        console.log(props)
+        console.log(treeNodeData, sourceNode)
         /*@todo
          * post package. create a new entity, show modal first and give it a name?
          * must know which node opened the select blueprint modal. this node will be the parent of the new entity.
          * templateRef of the new entity will be the node.id we just clicked on in the modal treeview.
-         *
-         * figure out how to get the node of the
          * */
       }}
     >
-      {node.title}
+      {treeNodeData.title}
     </div>
   )
 }

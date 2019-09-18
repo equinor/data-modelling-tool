@@ -4,16 +4,17 @@ import BlueprintReducer, {
   DocumentActions,
   initialState,
 } from '../common/DocumentsReducer'
-import { DataSourceType, DmtApi, IndexNode } from '../../api/Api'
+import { DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import { FolderNode } from './nodes/FolderNode'
 import { BlueprintNode } from './nodes/BlueprintNode'
-import DocumentTree from '../common/tree-view/DocumentTree'
+import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
 import { DataSourceNode } from './nodes/DataSourceNode'
 import { DocumentType } from '../../util/variables'
+import { TreeNodeData } from '../../components/tree-view/Tree'
 
 const api = new DmtApi()
 
@@ -21,10 +22,10 @@ export const Wrapper = styled.div`
   width: 100%;
 `
 
-function getNodeComponent(node: IndexNode) {
-  switch (node.nodeType) {
+function getNodeComponent(treeNodeData: TreeNodeData) {
+  switch (treeNodeData.nodeType) {
     case 'folder':
-      if (node.isRoot) {
+      if (treeNodeData.isRoot) {
         return RootFolderNode
       } else {
         return FolderNode
@@ -34,7 +35,7 @@ function getNodeComponent(node: IndexNode) {
     case 'datasource':
       return DataSourceNode
     default:
-      return () => <div>{node.title}</div>
+      return () => <div>{treeNodeData.title}</div>
   }
 }
 
@@ -63,10 +64,20 @@ export default () => {
       </Header>
       <br />
       <DocumentTree
-        state={state}
+        render={(renderProps: RenderProps) => {
+          const { treeNodeData, addNode, updateNode } = renderProps
+          const NodeComponent = getNodeComponent(treeNodeData)
+          return (
+            <NodeComponent
+              addNode={addNode}
+              updateNode={updateNode}
+              treeNodeData={treeNodeData}
+              state={state}
+              dispatch={dispatch}
+            />
+          )
+        }}
         dataSources={state.dataSources}
-        dispatch={dispatch}
-        getNodeComponent={getNodeComponent}
       />
     </Wrapper>
   )
