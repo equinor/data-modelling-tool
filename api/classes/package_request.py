@@ -7,7 +7,7 @@ from rest.validators.package_request import validate_package_request
 class DocumentType(Enum):
     ROOT_PACKAGE = "root-package"
     VERSION = "version"
-    SUB_PACKAGE = "sub-package"
+    SUB_PACKAGE = "subpackage"
     FILE = "file"
 
 
@@ -23,10 +23,11 @@ def create_id(node_type: str, title: str, parent_package: str):
         return f"{parent_package}/{title}/package"
 
 
+# TODO: REMOVE
 def get_node_type(node_type: str, meta: dict):
     if node_type == DocumentType.FILE:
         return DocumentType.FILE
-    elif meta["documentType"] in document_type_tuple:
+    elif DocumentType(meta["documentType"]) in document_type_tuple:
         return meta["documentType"]
 
 
