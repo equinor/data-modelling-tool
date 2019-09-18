@@ -13,7 +13,8 @@ class Package:
         self.title = document["formData"].get("title", "")
         self.node_type = DocumentType.SUB_PACKAGE
         self.id = f"{data_source.id}/{document['_id']}"
-        self.document_type = document["meta"].get("documentType")
+        # TODO: Version documents is now the only document with meta: documentType...
+        self.document_type = DocumentType(document["meta"].get("documentType", ""))
 
     def as_dict(self):
         return {"children": self.children, "nodeType": self.node_type.value, "id": self.id, "title": self.title}

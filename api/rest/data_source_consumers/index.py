@@ -2,6 +2,7 @@ from flask_restful import Resource
 
 from classes.data_source import DataSource
 from classes.files import File
+from classes.package_request import DocumentType
 from classes.root_package import RootPackage
 from classes.subpackage import Package
 from utils.logging import logger
@@ -14,8 +15,9 @@ def index_package(package_id: str, data_source: DataSource):
     index = {}
     package = Package(data_source.client.read_form(package_id), data_source)
 
-    # if package.document_type == "version":
-    #   package.is_root = True
+    # TODO: Fix this when we support versions
+    if package.document_type is DocumentType.VERSION:
+        package.node_type = DocumentType.ROOT_PACKAGE
 
     for file in package.files:
         tmp_file = File(data_source.client.read_form(file), data_source)
