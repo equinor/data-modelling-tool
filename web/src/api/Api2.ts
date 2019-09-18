@@ -94,7 +94,7 @@ export default class Api2 {
           templateRef: 'templates/blueprint',
         },
         id: parentId + '/' + formData.title,
-        documentType: NodeType.file,
+        nodeType: NodeType.file,
         parentId: parentId,
         formData,
       })

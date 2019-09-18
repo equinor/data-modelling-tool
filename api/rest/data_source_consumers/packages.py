@@ -16,7 +16,7 @@ def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_t
             data_source.client.pull_from_parent(_id=parent_id, form={"files": child_id})
         else:
             data_source.client.append_to_parent(_id=parent_id, form={"files": child_id})
-    if DocumentType(node_type) is DocumentType.SUB_PACKAGE:
+    elif DocumentType(node_type) is DocumentType.SUB_PACKAGE:
         if delete:
             data_source.client.pull_from_parent(_id=parent_id, form={"subpackages": child_id})
         else:
