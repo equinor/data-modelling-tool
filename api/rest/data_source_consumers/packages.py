@@ -35,7 +35,7 @@ def create_version_package(package_request: PackageRequest, data_source: DataSou
   "_id": "{latest_version}/package",
   "meta": {{
     "name": "package",
-    "documentType": {DocumentType.VERSION.value},
+    "documentType": "{DocumentType.VERSION.value}",
     "templateRef": "templates/package-template"
   }},
   "formData": {{
@@ -58,9 +58,8 @@ class Packages(Resource):
         if DocumentType.has_parent(DocumentType(package_request.node_type)):
             update_parent(data_source, package_request.parent_id, package_request.id, package_request.node_type)
 
-        # if package_request.node_type == "folder":
-        #     package_request.formData["documentType"] = get_document_type(package_request.is_root)
-        # TODO: Fix this hack
+        # TODO: Fix this hack when we want to support versions
+        # Now, this creates a dummy version 1.0.0 for all root-packages
         if package_request.node_type is DocumentType.ROOT_PACKAGE:
             latest_version = f"{package_request.id.split('/', 1)[0]}/1.0.0"
             latest_version_id = f"{latest_version}/package"

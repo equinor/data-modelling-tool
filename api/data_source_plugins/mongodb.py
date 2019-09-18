@@ -2,6 +2,7 @@ from flask import abort
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError
 
+from classes.package_request import DocumentType
 from utils.logging import logger
 
 
@@ -64,7 +65,7 @@ class MongodbClient:
 
     def get_root_packages(self):
         try:
-            result = self.handler[self.collection].find(filter={"meta.documentType": "root-package"})
+            result = self.handler[self.collection].find(filter={"meta.documentType": DocumentType.ROOT_PACKAGE.value})
             return [package for package in result]
         except ServerSelectionTimeoutError as error:
             return abort(500, error._message)

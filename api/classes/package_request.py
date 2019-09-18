@@ -36,4 +36,5 @@ class PackageRequest:
         self.formData = package_request["formData"]
         self.parent_id = package_request["parentId"]
         self.node_type = DocumentType(package_request["nodeType"])
+        self.meta["documentType"] = self.node_type.value
         self.id = create_id(self.node_type, name=self.meta["name"], parent_id=self.parent_id)

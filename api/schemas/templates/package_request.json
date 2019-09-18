@@ -24,7 +24,8 @@
         "required": ["name", "templateRef"]
       },
       "nodeType": {
-        "type": "string"
+        "type": "string",
+        "enum": ["root-package", "version", "subpackage", "file"]
       },
       "parentId": {
         "type": "string"
