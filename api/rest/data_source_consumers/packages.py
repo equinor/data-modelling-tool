@@ -61,7 +61,7 @@ class Packages(Resource):
         # if package_request.node_type == "folder":
         #     package_request.formData["documentType"] = get_document_type(package_request.is_root)
         # TODO: Fix this hack
-        if DocumentType(package_request.node_type) is DocumentType.ROOT_PACKAGE:
+        if package_request.node_type is DocumentType.ROOT_PACKAGE:
             latest_version = f"{package_request.id.split('/', 1)[0]}/1.0.0"
             latest_version_id = f"{latest_version}/package"
             package_request.formData["latestVersion"] = latest_version_id
@@ -71,7 +71,7 @@ class Packages(Resource):
             {"meta": package_request.meta, "formData": package_request.formData}, _id=package_request.id
         )
         return {
-            "nodeType": package_request.node_type,
+            "nodeType": package_request.node_type.value,
             "title": package_request.formData["title"],
             "id": package_request.id,
         }
