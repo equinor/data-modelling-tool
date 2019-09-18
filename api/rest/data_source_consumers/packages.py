@@ -6,7 +6,7 @@ from flask_restful import Resource
 from classes.data_source import DataSource
 from classes.package_request import PackageRequest, DocumentType
 
-nodes_with_parent = ("subpackage", "file")
+nodes_with_parent = (DocumentType.SUB_PACKAGE, DocumentType.FILE)
 
 
 # TODO: This is probaly not good...
@@ -35,7 +35,7 @@ def create_version_package(package_request: PackageRequest, data_source: DataSou
   "_id": "{latest_version}/package",
   "meta": {{
     "name": "package",
-    "documentType": "version",
+    "documentType": {DocumentType.VERSION.value},
     "templateRef": "templates/package-template"
   }},
   "formData": {{
@@ -55,13 +55,13 @@ class Packages(Resource):
         data_source = DataSource(id=data_source_id)
         package_request = PackageRequest(request.get_json())
 
-        if package_request.node_type in nodes_with_parent:
+        if DocumentType(package_request.node_type) in nodes_with_parent:
             update_parent(data_source, package_request.parent_id, package_request.id, package_request.node_type)
 
         # if package_request.node_type == "folder":
         #     package_request.formData["documentType"] = get_document_type(package_request.is_root)
         # TODO: Fix this hack
-        if package_request.node_type == "root-package":
+        if DocumentType(package_request.node_type) is DocumentType.ROOT_PACKAGE:
             latest_version = f"{package_request.id.split('/', 1)[0]}/1.0.0"
             latest_version_id = f"{latest_version}/package"
             package_request.formData["latestVersion"] = latest_version_id
