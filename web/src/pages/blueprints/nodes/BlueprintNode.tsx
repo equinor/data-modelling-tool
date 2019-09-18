@@ -6,30 +6,30 @@ import {
 } from '../../common/golden-layout/LayoutContext'
 
 type Props = {
-  node: TreeNodeData
+  treeNodeData: TreeNodeData
 }
 
 export const BlueprintNode = (props: Props) => {
-  const { node } = props
+  const { treeNodeData } = props
 
   return (
     <LayoutContext.Consumer>
       {(layout: any) => {
         const data = {
-          selectedDocumentId: node.nodeId,
+          selectedDocumentId: treeNodeData.nodeId,
         }
         return (
           <div
             onClick={() =>
               layout.add(
-                node.nodeId,
-                node.title,
+                treeNodeData.nodeId,
+                treeNodeData.title,
                 LayoutComponents.blueprint,
                 data
               )
             }
           >
-            {node.title}
+            {treeNodeData.title}
           </div>
         )
       }}

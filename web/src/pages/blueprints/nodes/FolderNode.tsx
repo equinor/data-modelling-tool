@@ -1,12 +1,12 @@
 import React from 'react'
-import { NodeComponentProps } from '../../common/tree-view/DocumentTree'
+import { RenderProps } from '../../common/tree-view/DocumentTree'
 import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
 import { MenuItem } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 import { FaFile, FaFolder } from 'react-icons/fa'
 
-export const FolderNode = (props: NodeComponentProps) => {
-  const { node } = props
+export const FolderNode = (props: RenderProps) => {
+  const { treeNodeData } = props
 
   const menuItems: MenuItem[] = [
     {
@@ -30,5 +30,5 @@ export const FolderNode = (props: NodeComponentProps) => {
     },
   ]
 
-  return <WithContextMenu node={node} menuItems={menuItems} />
+  return <WithContextMenu treeNodeData={treeNodeData} menuItems={menuItems} />
 }

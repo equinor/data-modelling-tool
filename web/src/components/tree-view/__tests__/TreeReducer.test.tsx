@@ -35,13 +35,13 @@ describe('tree reducer', () => {
 
   it('should handle CREATE_NODE action', () => {
     const stateBefore = {}
-    const nodeId = 'New node'
+    const nodeId = 'New treeNodeData'
     const action = NodeActions.createNode({
-      nodeId: 'New node',
+      nodeId: 'New treeNodeData',
       children: [],
       nodeType: NodeType.folder,
       isRoot: false,
-      title: 'New node',
+      title: 'New treeNodeData',
       isOpen: true,
     })
     const stateAfter = {

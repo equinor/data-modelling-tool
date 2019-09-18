@@ -10,14 +10,14 @@ import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
 import { AddNode } from '../tree-view/DocumentTree'
 
 type WithContextMenuProps = {
-  node: TreeNodeData
+  treeNodeData: TreeNodeData
   menuItems: MenuItem[]
   configs?: ActionConfig[]
   addNode?: AddNode
 }
 
 const WithContextMenu = (props: WithContextMenuProps) => {
-  const { node, menuItems } = props
+  const { treeNodeData, menuItems } = props
   const [action, setAction] = useState('')
   const [showModal, setShowModal] = useState(false)
 
@@ -37,14 +37,14 @@ const WithContextMenu = (props: WithContextMenuProps) => {
         {actionConfig && <Form {...actionConfig.formProps}></Form>}
       </Modal>
       <ContextMenu
-        id={node.nodeId}
+        id={treeNodeData.nodeId}
         onClickContextMenu={(id: any, action: string) => {
           setAction(action)
           setShowModal(!showModal)
         }}
         menuItems={menuItems}
       >
-        {node.title}
+        {treeNodeData.title}
       </ContextMenu>
     </>
   )

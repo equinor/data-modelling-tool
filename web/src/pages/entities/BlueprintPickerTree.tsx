@@ -1,35 +1,43 @@
-import { Datasource, IndexNode } from '../../api/Api'
+import { Datasource } from '../../api/Api'
 import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
 import React from 'react'
-import DocumentTree from '../common/tree-view/DocumentTree'
+import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import { FolderNode } from './nodes/FolderNode'
-import { EntityNode } from './nodes/EntityNode'
+import { SelectBlueprintNode } from './nodes/EntityNode'
 import { TreeNodeData } from '../../components/tree-view/Tree'
-
-export type OnNodeSelect = (node: TreeNodeData) => void
 
 type Props = {
   datasources: Datasource[]
   state: DocumentsState
   dispatch: (action: DocumentsAction) => void
-  onNodeSelect: OnNodeSelect
+  sourceNode?: TreeNodeData
 }
 
 export default (props: Props) => {
-  const { datasources, state, dispatch, onNodeSelect } = props
+  const { datasources, state, dispatch, sourceNode } = props
+
+  //@todo use render props
   return (
     <DocumentTree
-      state={state}
-      dispatch={dispatch}
-      onNodeSelect={onNodeSelect}
+      render={(renderProps: RenderProps) => {
+        const { treeNodeData } = renderProps
+        const NodeComponent = getNodeComponent(treeNodeData)
+        return (
+          <NodeComponent
+            treeNodeData={treeNodeData}
+            dispatch={dispatch}
+            state={state}
+            sourceNode={sourceNode}
+          />
+        )
+      }}
       dataSources={datasources}
-      getNodeComponent={getNodeComponent}
     />
   )
 }
 
-function getNodeComponent(node: IndexNode) {
+function getNodeComponent(node: TreeNodeData): any {
   switch (node.nodeType) {
     case 'folder':
       if (node.isRoot) {
@@ -38,7 +46,8 @@ function getNodeComponent(node: IndexNode) {
         return FolderNode
       }
     case 'file':
-      return EntityNode
+      // override Node. Add an entity to the first tree based on selected blueprint.
+      return SelectBlueprintNode
     default:
       return () => <div>{node.title}</div>
   }

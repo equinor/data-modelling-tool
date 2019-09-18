@@ -147,7 +147,7 @@ export default (state: any = {}, action: any) => {
       return { ...action.nodes }
 
     default:
-      // The rest of actions are on single node
+      // The rest of actions are on single treeNodeData
       const { nodeId } = action
       if (typeof nodeId === 'undefined') {
         return state

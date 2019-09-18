@@ -14,21 +14,20 @@ const Blueprint = (props: any) => {
   const { selectedDocumentId, currentDatasourceId } = props
 
   const [state, dispatch] = useReducer(BlueprintReducer, {
-    selectedDocumentId: selectedDocumentId,
-    currentDatasourceId: currentDatasourceId,
+    selectedDocumentId,
+    currentDatasourceId,
     pageMode: PageMode.view,
   })
 
   const pageMode = state.pageMode
 
-  console.log(selectedDocumentId)
   return (
     <Wrapper>
       <FetchDocument
         pageMode={pageMode}
-        documentId={selectedDocumentId}
+        documentId={state.selectedDocumentId}
         render={(data: DocumentData) => {
-          if (!selectedDocumentId) {
+          if (!state.selectedDocumentId) {
             return null
           }
           switch (pageMode) {

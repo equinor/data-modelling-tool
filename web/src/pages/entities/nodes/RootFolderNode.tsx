@@ -1,7 +1,8 @@
 import React from 'react'
+import { RenderProps } from '../../common/tree-view/DocumentTree'
 
-export const RootFolderNode = (props: any) => {
-  const { node } = props
+export const RootFolderNode = (props: RenderProps) => {
+  const { treeNodeData } = props
 
-  return <div>{node.title}</div>
+  return <div>{treeNodeData.title}</div>
 }

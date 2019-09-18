@@ -6,7 +6,7 @@ import { FaFile, FaFolder } from 'react-icons/fa'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 
 export const RootFolderNode = (props: NodeComponentProps) => {
-  const { node } = props
+  const { treeNodeData } = props
 
   const menuItems: MenuItem[] = [
     {
@@ -30,5 +30,5 @@ export const RootFolderNode = (props: NodeComponentProps) => {
     },
   ]
 
-  return <WithContextMenu node={node} menuItems={menuItems} />
+  return <WithContextMenu treeNodeData={treeNodeData} menuItems={menuItems} />
 }

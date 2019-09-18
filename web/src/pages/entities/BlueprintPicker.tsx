@@ -1,44 +1,21 @@
 import React, { useEffect, useState } from 'react'
-import Modal from '../../components/modal/Modal'
 import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import { DocumentsState } from '../common/DocumentReducer'
-import BlueprintPickerTree, { OnNodeSelect } from './BlueprintPickerTree'
+import BlueprintPickerTree from './BlueprintPickerTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
-import Button from '../../components/Button'
 
 const api = new DmtApi()
-
-type Props = {
-  state: any
-  dispatch: any
-}
-
-export default (props: Props) => {
-  const [open, setOpen] = useState(false)
-  return (
-    <div>
-      <Button onClick={() => setOpen(!open)}>Create Entity</Button>
-      <Modal open={open} toggle={() => setOpen(!open)}>
-        <BlueprintPickerContent
-          {...props}
-          onNodeSelect={(node: TreeNodeData) => {
-            console.log(node)
-          }}
-        />
-      </Modal>
-    </div>
-  )
-}
 
 type BlueprintPickerContentProps = {
   state: DocumentsState
   dispatch: any
-  onNodeSelect: OnNodeSelect
+  //the source treeNodeData that opened this picker.
+  sourceNode?: TreeNodeData
 }
 
-export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
-  const { dispatch, state, onNodeSelect } = props
+export const BlueprintPickerContent = (props: any) => {
+  const { dispatch, state, sourceNode } = props
   const [blueprintDatasources, setBlueprintDatasources] = useState<
     Datasource[]
   >([])
@@ -62,7 +39,7 @@ export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
         datasources={blueprintDatasources}
         dispatch={dispatch}
         state={state}
-        onNodeSelect={onNodeSelect}
+        sourceNode={sourceNode}
       />
     </div>
   )

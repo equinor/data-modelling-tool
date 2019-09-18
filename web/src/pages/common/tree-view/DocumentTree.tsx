@@ -1,17 +1,13 @@
 import React, { useEffect, useState } from 'react'
 import Tree, { TreeNodeData } from '../../../components/tree-view/Tree'
-import { Datasource, IndexApi, IndexNode } from '../../../api/Api'
-import { DocumentsAction, DocumentsState } from '../DocumentReducer'
+import { Datasource, IndexApi } from '../../../api/Api'
+import { DocumentsState } from '../DocumentReducer'
 
 const api = new IndexApi()
 
 interface PropTypes {
-  dispatch: (action: DocumentsAction) => void
-  state: any
   dataSources: Datasource[]
-  getNodeComponent: Function
-  layout?: any
-  onNodeSelect?: (node: TreeNodeData) => void
+  render: Function
 }
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
@@ -20,7 +16,7 @@ export type UpdateNode = (node: TreeNodeData) => void
 interface NodeComponentCallbackProps {
   addNode: AddNode
   updateNode: UpdateNode
-  node: TreeNodeData
+  treeNodeData: TreeNodeData
 }
 
 export interface NodeComponentProps extends NodeComponentCallbackProps {
@@ -29,15 +25,14 @@ export interface NodeComponentProps extends NodeComponentCallbackProps {
   datasource?: any
 }
 
+export type RenderProps = {
+  treeNodeData: TreeNodeData
+  addNode: AddNode
+  updateNode: UpdateNode
+}
+
 export default (props: PropTypes) => {
-  const {
-    dispatch,
-    state,
-    dataSources,
-    onNodeSelect,
-    getNodeComponent,
-    layout,
-  } = props
+  const { dataSources, render } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
@@ -73,32 +68,16 @@ export default (props: PropTypes) => {
   return (
     <div>
       <div>
-        <Tree tree={documents} onNodeSelect={onNodeSelect}>
-          {(node: IndexNode, addNode: Function, updateNode: Function) => {
-            const NodeComponent = getNodeComponent(node)
-            /**
-             * pass NodeComponent down the render tree, to get access to the indexNode and treeActions. (addNode, updateNode)
-             * The Tree only concern about displaying a TreeNode, while NodeComponent enhance a TreeNode's functionality.
-             * e.g context menu and modal.
-             */
-            return (
-              <NodeComponent
-                state={state}
-                dispatch={dispatch}
-                addNode={addNode}
-                updateNode={updateNode}
-                node={node}
-                layout={layout}
-              ></NodeComponent>
-            )
+        <Tree tree={documents}>
+          {(
+            treeNodeData: TreeNodeData,
+            addNode: AddNode,
+            updateNode: UpdateNode
+          ) => {
+            return render({ treeNodeData, addNode, updateNode })
           }}
         </Tree>
       </div>
     </div>
   )
-}
-
-type DocumentTreeHeaderProps = {
-  datasource: Datasource
-  children?: any
 }

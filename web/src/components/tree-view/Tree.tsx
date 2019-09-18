@@ -26,13 +26,12 @@ export type TreeNodeData = {
 type TreeProps = {
   children: Function
   tree: object
-  onNodeSelect?: (node: TreeNodeData) => void
   isDragEnabled: boolean
+  render?: Function
 }
 
 export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
   const node = tree[nodeId]
-
   const hasChildren = 'children' in node
 
   if (!hasChildren || !node.isOpen) {
@@ -77,7 +76,7 @@ const getRootNodes = (rootNode: any, state: object) => [
 ]
 
 const Tree = (props: TreeProps) => {
-  const { isDragEnabled, tree, children, onNodeSelect } = props
+  const { isDragEnabled, tree, children } = props
 
   const [state, dispatch] = useReducer(TreeReducer, tree)
 
@@ -131,7 +130,7 @@ const Tree = (props: TreeProps) => {
               droppableId={`${rootNode[0].currentItem.nodeId}`}
             >
               {rootNode.map((item: any, index: number) => {
-                const node = item.currentItem
+                const node: TreeNodeData = item.currentItem
                 return (
                   <DraggableWrapper
                     key={node.nodeId + '_' + index}
@@ -143,7 +142,6 @@ const Tree = (props: TreeProps) => {
                       level={item.level}
                       node={node}
                       NodeRenderer={children}
-                      onNodeSelect={onNodeSelect}
                       handleToggle={handleToggle}
                       addNode={addNode}
                       updateNode={updateNode}

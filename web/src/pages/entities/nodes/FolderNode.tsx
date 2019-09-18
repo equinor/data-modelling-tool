@@ -6,10 +6,17 @@ import { FaFile, FaFolder } from 'react-icons/fa'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 import Modal from '../../../components/modal/Modal'
 import { BlueprintPickerContent } from '../BlueprintPicker'
+import { RenderProps } from '../../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 
-export const FolderNode = (props: any) => {
-  const { node, state, dispatch } = props
+interface Props extends RenderProps {
+  sourceNode?: TreeNodeData
+  state: any
+  dispatch: Function
+}
+
+export const FolderNode = (props: Props) => {
+  const { treeNodeData, state, dispatch } = props
   const [showModal, setShowModal] = useState(false)
 
   const menuItems: MenuItem[] = [
@@ -42,21 +49,19 @@ export const FolderNode = (props: any) => {
         title={'Select Blueprint'}
       >
         <BlueprintPickerContent
+          sourceNode={treeNodeData}
           state={state}
           dispatch={dispatch}
-          onNodeSelect={(node: TreeNodeData) => {
-            console.log('use blueprint: ' + node.nodeId)
-          }}
         />
       </Modal>
       <ContextMenu
-        id={node.nodeId}
+        id={treeNodeData.nodeId}
         onClickContextMenu={() => {
           setShowModal(!showModal)
         }}
         menuItems={menuItems}
       >
-        {node.title}
+        {treeNodeData.title}
       </ContextMenu>
     </>
   )
