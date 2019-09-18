@@ -2,6 +2,7 @@ import { createBlueprint } from './CreateBlueprint'
 import { editPackage } from './EditPackage'
 import { createPackage } from './CreatePackage'
 import { createSubpackage } from './CreateSubpackage'
+import { TreeNodeData } from '../../../components/tree-view/Tree'
 
 export enum ContextMenuActions {
   createBlueprint = 'New Blueprint',
@@ -12,7 +13,14 @@ export enum ContextMenuActions {
   addBlueprint = 'Add Blueprint',
 }
 
-const getFormProperties = (type: string, props: any) => {
+export type ContextMenuActionProps = {
+  treeNodeData: TreeNodeData
+  addNode: Function
+  setShowModal: Function
+  updateNode: Function
+}
+
+const getFormProperties = (type: string, props: ContextMenuActionProps) => {
   switch (type) {
     case ContextMenuActions.createBlueprint: {
       const { treeNodeData, addNode, setShowModal } = props
@@ -23,20 +31,11 @@ const getFormProperties = (type: string, props: any) => {
       })
     }
     case ContextMenuActions.createRootPackage: {
-      const { treeNodeData, addNode, setShowModal } = props
-      return createPackage({
-        treeNodeData,
-        addNode,
-        setShowModal,
-      })
+      return createPackage(props)
     }
     case ContextMenuActions.createSubPackage: {
-      const { node, addNode, setShowModal } = props
-      return createSubpackage({
-        treeNodeData: node,
-        addNode,
-        setShowModal,
-      })
+      console.log(props)
+      return createSubpackage(props)
     }
     case ContextMenuActions.editPackage: {
       const { treeNodeData, updateNode, setShowModal } = props
@@ -61,7 +60,7 @@ const getFormProperties = (type: string, props: any) => {
 }
 
 export class ContextMenuActionsFactory {
-  getActionConfig(type: string, props: any) {
+  getActionConfig(type: string, props: ContextMenuActionProps) {
     return {
       formProps: getFormProperties(type, props),
       action: type,

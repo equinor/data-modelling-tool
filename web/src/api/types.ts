@@ -2,8 +2,8 @@
  *
  */
 export enum NodeType {
-  file = 'file',
   rootPackage = 'root-package',
   subPackage = 'subpackage',
-  datasource = 'datasource',
+  file = 'file',
+  datasource = 'datasource', //needed?
 }

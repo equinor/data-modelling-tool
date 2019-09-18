@@ -57,8 +57,9 @@ const TreeNode = (props: TreeNodeProps) => {
     NodeType.subPackage,
     NodeType.datasource,
   ]
-  const isFolder =
-    [NodeType.subPackage, NodeType.rootPackage].indexOf(node.nodeType) > 0
+  const isFolder = [NodeType.subPackage, NodeType.rootPackage].includes(
+    node.nodeType
+  )
   return (
     <div>
       <StyledTreeNode level={level}>

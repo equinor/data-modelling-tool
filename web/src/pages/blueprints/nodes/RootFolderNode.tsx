@@ -30,5 +30,11 @@ export const RootFolderNode = (props: NodeComponentProps) => {
     },
   ]
 
-  return <WithContextMenu treeNodeData={treeNodeData} menuItems={menuItems} />
+  return (
+    <WithContextMenu
+      {...props}
+      treeNodeData={treeNodeData}
+      menuItems={menuItems}
+    />
+  )
 }
