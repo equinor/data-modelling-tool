@@ -44,6 +44,32 @@ Feature: Explorer
     }
     """
 
+    Scenario: Add file with missing parent id should fail
+    Given i access the resource url "/api/explorer/local-blueprints/add-file"
+    When i make a "POST" request
+    """
+    {
+      "document": {
+        "meta": {
+           "name": "new file",
+           "templateRef": "",
+           "documentType": "file"
+        },
+        "formData": {
+        }
+      }
+    }
+    """
+    Then the response status should be "Bad Request"
+    And the response should equal
+    """
+    {
+      "type": "PARAMETERS_ERROR",
+      "message": "parentId: is missing"
+    }
+    """
+
+
   Scenario: Add package
     Given i access the resource url "/api/explorer/local-blueprints/add-package"
     When i make a "POST" request

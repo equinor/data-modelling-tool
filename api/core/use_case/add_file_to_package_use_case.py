@@ -43,4 +43,4 @@ class AddFileToPackageUseCase(uc.UseCase):
         self.package_repository.update(parent_id, package)
         document = self.document_repository.save(document, document_id)
         logger.info(f"Added document '{document_id}' to package '{parent_id}'")
-        return res.ResponseSuccess(document)
+        return res.ResponseSuccess(document.to_dict())

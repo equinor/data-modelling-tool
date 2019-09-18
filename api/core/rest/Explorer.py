@@ -33,7 +33,7 @@ def add_file_to_package(data_source_id: str):
     response = use_case.execute(request_object)
 
     return Response(
-        json.dumps(response.value.to_dict(), cls=DocumentSerializer),
+        json.dumps(response.value, cls=DocumentSerializer),
         mimetype="application/json",
         status=STATUS_CODES[response.type],
     )
