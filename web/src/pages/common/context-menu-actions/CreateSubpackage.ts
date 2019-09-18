@@ -10,7 +10,7 @@ import { NodeType } from '../../../api/types'
 
 const api = new DmtApi()
 
-export const createPackage = (props: {
+export const createSubpackage = (props: {
   treeNodeData: TreeNodeData
   addNode: Function
   setShowModal: Function
@@ -21,12 +21,13 @@ export const createPackage = (props: {
     onSubmit: (formData: any) => {
       const datasourceId = getDataSourceIDFromAbsolutID(treeNodeData.nodeId)
       const url = api.packagePost(datasourceId)
-      const templateRef = 'templates/package-template'
+      const templateRef = 'templates/subpackage-template'
+
       axios
         .post(url, {
-          parentId: '',
+          parentId: treeNodeData.nodeId,
           formData,
-          nodeType: NodeType.rootPackage,
+          nodeType: NodeType.subPackage,
           meta: {
             name: formData.title,
             templateRef,
