@@ -25,6 +25,10 @@
               "title": "Name",
               "type": "string"
             },
+            "description": {
+              "title": "Description",
+              "type": "string"
+            },
             "type": {
               "title": "Type",
               "type": "string",

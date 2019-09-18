@@ -11,10 +11,11 @@ type BlueprintPickerContentProps = {
   state: DocumentsState
   dispatch: any
   //the source treeNodeData that opened this picker.
-  sourceNode?: TreeNodeData
+  //@todo Document FinderWidget should pass its own document tree. Which dont use the SelectBlueprintNode
+  sourceNode: TreeNodeData | undefined //undefined since DocumentFinderWidget uses this component.
 }
 
-export const BlueprintPickerContent = (props: any) => {
+export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
   const { dispatch, state, sourceNode } = props
   const [blueprintDatasources, setBlueprintDatasources] = useState<
     Datasource[]

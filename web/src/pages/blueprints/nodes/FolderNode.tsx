@@ -18,8 +18,8 @@ export const FolderNode = (props: RenderProps) => {
           icon: FaFile,
         },
         {
-          label: 'Package',
-          action: ContextMenuActions.createPackage,
+          label: 'Subpackage',
+          action: ContextMenuActions.createSubPackage,
           icon: FaFolder,
         },
       ],
@@ -30,5 +30,11 @@ export const FolderNode = (props: RenderProps) => {
     },
   ]
 
-  return <WithContextMenu treeNodeData={treeNodeData} menuItems={menuItems} />
+  return (
+    <WithContextMenu
+      {...props}
+      treeNodeData={treeNodeData}
+      menuItems={menuItems}
+    />
+  )
 }

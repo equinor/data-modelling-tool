@@ -1,8 +1,7 @@
 import axios from 'axios'
 import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import { DmtApi } from './Api'
-import { NodeType } from '../components/tree-view/TreeReducer'
-
+import { NodeType } from './types'
 const api = new DmtApi()
 
 /**
@@ -17,6 +16,15 @@ interface BASE_CRUD {
 }
 interface FetchTemplate extends BASE_CRUD {
   url: string
+}
+
+interface PostPackage {
+  parentId: string
+  formData: any
+  nodeType: NodeType
+  onSuccess: (res: any) => void
+  onError?: OnError
+  templateRef?: string
 }
 
 /**
@@ -78,29 +86,43 @@ export default class Api2 {
   }
 
   /**
+   * Creates a package, subpackage or file.
+   * Covers:
+   *   - create root-package (top-level node directly below datasource node.
+   *   - create sub-package (all other packages)
+   *   - create document (blueprint, entity)
+   *
    * FormData must have a non empty computer-friendly title property used to generate the filename and document id.
    *
-   * @param parentId absolute path of parent.
+   * @param nodeType NodeType
    * @param formData
-   * @param onSuccess @todo fix type
+   * @param parentId absolute path
+   * @param templateRef optional
+   * @param onSuccess
    * @param onError
    */
-  static postCreateDocument({ parentId, formData, onSuccess, onError }: any) {
+  static postPackage({
+    nodeType,
+    formData,
+    parentId,
+    templateRef = 'templates/blueprint',
+    onSuccess,
+    onError = () => {},
+  }: PostPackage) {
     const dataSourceId = parentId.split('/')[0]
     const url = api.packagePost(dataSourceId)
+    const data = {
+      meta: {
+        name: formData.title,
+        templateRef,
+      },
+      nodeType,
+      parentId,
+      formData,
+    }
     axios
-      .post(url, {
-        meta: {
-          name: formData.title,
-          templateRef: 'templates/blueprint',
-        },
-        id: parentId + '/' + formData.title,
-        nodeType: NodeType.file,
-        isRoot: false,
-        parentId: parentId,
-        formData,
-      })
-      .then((res: any) => onSuccess(res))
+      .post(url, data)
+      .then(response => onSuccess(response))
       .catch(onError)
   }
 }

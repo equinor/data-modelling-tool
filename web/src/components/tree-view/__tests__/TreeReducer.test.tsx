@@ -1,4 +1,5 @@
-import reducer, { Actions, NodeActions, NodeType } from '../TreeReducer'
+import reducer, { Actions, NodeActions } from '../TreeReducer'
+import { NodeType } from '../../../api/types'
 
 describe('tree reducer', () => {
   it('should provide the initial state', () => {
@@ -39,7 +40,7 @@ describe('tree reducer', () => {
     const action = NodeActions.createNode({
       nodeId: 'New treeNodeData',
       children: [],
-      nodeType: NodeType.folder,
+      nodeType: NodeType.subPackage,
       isRoot: false,
       title: 'New treeNodeData',
       isOpen: true,
@@ -49,7 +50,7 @@ describe('tree reducer', () => {
         nodeId: nodeId,
         children: [],
         isRoot: false,
-        nodeType: NodeType.folder,
+        nodeType: NodeType.subPackage,
         title: nodeId,
         isOpen: true,
       },

@@ -15,12 +15,6 @@ export const REMOVE_CHILD = 'REMOVE_CHILD'
 export const SET_NODES = 'SET_NODES'
 export const MAKE_ROOT = 'MAKE_ROOT'
 
-export enum NodeType {
-  folder = 'folder',
-  file = 'file',
-  datasource = 'datasource',
-}
-
 const childIds = (state: any, action: any) => {
   switch (action.type) {
     case ADD_CHILD:

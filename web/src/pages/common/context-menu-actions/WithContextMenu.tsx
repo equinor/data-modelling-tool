@@ -7,13 +7,14 @@ import ContextMenu, {
   MenuItem,
 } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
-import { AddNode } from '../tree-view/DocumentTree'
+import { AddNode, UpdateNode } from '../tree-view/DocumentTree'
 
 type WithContextMenuProps = {
   treeNodeData: TreeNodeData
   menuItems: MenuItem[]
   configs?: ActionConfig[]
-  addNode?: AddNode
+  addNode: AddNode
+  updateNode: UpdateNode
 }
 
 const WithContextMenu = (props: WithContextMenuProps) => {
@@ -23,7 +24,9 @@ const WithContextMenu = (props: WithContextMenuProps) => {
 
   const actionFactory = new ContextMenuActionsFactory()
   const actionConfig = actionFactory.getActionConfig(action, {
-    ...props,
+    treeNodeData,
+    addNode: props.addNode,
+    updateNode: props.updateNode,
     setShowModal,
   })
 
@@ -34,7 +37,7 @@ const WithContextMenu = (props: WithContextMenuProps) => {
         open={showModal}
         title={actionConfig && actionConfig.action}
       >
-        {actionConfig && <Form {...actionConfig.formProps}></Form>}
+        {actionConfig && <Form {...actionConfig.formProps} />}
       </Modal>
       <ContextMenu
         id={treeNodeData.nodeId}

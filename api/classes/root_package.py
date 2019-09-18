@@ -1,4 +1,5 @@
 from classes.data_source import DataSource
+from classes.package_request import DocumentType
 from utils.help_functions import get_absolute_path
 
 
@@ -11,16 +12,9 @@ class RootPackage:
         self.children = self.absolute_subpackages + self.absolute_files
         self.latest_version = data_source.client.read_form(document["formData"]["latestVersion"])
         self.latest_version_id = self.latest_version["_id"]
-        self.node_type = "folder"
-        self.is_root = True
+        self.node_type = DocumentType.ROOT_PACKAGE
         self.id = f"{data_source.id}/{document['_id']}"
         self.title = document["formData"]["title"]
 
     def as_dict(self):
-        return {
-            "children": self.children,
-            "nodeType": self.node_type,
-            "isRoot": self.is_root,
-            "id": self.id,
-            "title": self.title,
-        }
+        return {"children": self.children, "nodeType": self.node_type.value, "id": self.id, "title": self.title}

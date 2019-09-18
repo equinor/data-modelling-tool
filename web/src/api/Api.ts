@@ -3,7 +3,7 @@ import values from 'lodash/values'
 
 import Workspace from '../util/localWorkspace'
 import { TreeNodeData } from '../components/tree-view/Tree'
-import { NodeType } from '../components/tree-view/TreeReducer'
+import { NodeType } from './types'
 
 function isLocal(datasource: Datasource): boolean {
   return datasource.id === 'local'
@@ -81,7 +81,9 @@ export class IndexApi extends BaseApi {
         }
       })
 
-      const rootNodes = nodes.filter((node: TreeNodeData) => node.isRoot)
+      const rootNodes = nodes.filter(
+        (node: TreeNodeData) => node.nodeType === NodeType.rootPackage
+      )
 
       documents = documents.map((node: TreeNodeData) => {
         return {
@@ -91,7 +93,7 @@ export class IndexApi extends BaseApi {
         }
       })
 
-      documents.push({
+      const document: TreeNodeData = {
         nodeId: datasource.id,
         isRoot: true,
         isOpen: false,
@@ -99,7 +101,8 @@ export class IndexApi extends BaseApi {
         title: datasource.name,
         nodeType: NodeType.datasource,
         children: rootNodes.map(rootNode => rootNode.id),
-      })
+      }
+      documents.push(document)
 
       return documents.reduce((obj, item) => {
         obj[item.nodeId] = item

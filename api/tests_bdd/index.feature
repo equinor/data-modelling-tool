@@ -20,8 +20,7 @@ Feature: Index
        "local-blueprints-equinor/package_1/1.0.0/package":{
           "title":"package 1",
           "children":[],
-          "nodeType":"folder",
-          "isRoot":true,
+          "nodeType":"root-package",
           "id":"local-blueprints-equinor/package_1/1.0.0/package"
        }
     }

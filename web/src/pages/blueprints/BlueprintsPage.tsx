@@ -14,30 +14,14 @@ import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
 import { DataSourceNode } from './nodes/DataSourceNode'
 import { DocumentType } from '../../util/variables'
-import { TreeNodeData } from '../../components/tree-view/Tree'
+import { NodeType } from '../../api/types'
+import { EntityNode } from '../entities/nodes/EntityNode'
 
 const api = new DmtApi()
 
 export const Wrapper = styled.div`
   width: 100%;
 `
-
-function getNodeComponent(treeNodeData: TreeNodeData) {
-  switch (treeNodeData.nodeType) {
-    case 'folder':
-      if (treeNodeData.isRoot) {
-        return RootFolderNode
-      } else {
-        return FolderNode
-      }
-    case 'file':
-      return BlueprintNode
-    case 'datasource':
-      return DataSourceNode
-    default:
-      return () => <div>{treeNodeData.title}</div>
-  }
-}
 
 export default () => {
   const [state, dispatch] = useReducer(BlueprintReducer, initialState)
@@ -65,17 +49,21 @@ export default () => {
       <br />
       <DocumentTree
         render={(renderProps: RenderProps) => {
-          const { treeNodeData, addNode, updateNode } = renderProps
-          const NodeComponent = getNodeComponent(treeNodeData)
-          return (
-            <NodeComponent
-              addNode={addNode}
-              updateNode={updateNode}
-              treeNodeData={treeNodeData}
-              state={state}
-              dispatch={dispatch}
-            />
-          )
+          //use components directly to control props better.
+          switch (renderProps.treeNodeData.nodeType) {
+            case NodeType.rootPackage:
+              return <RootFolderNode {...renderProps} />
+            case NodeType.subPackage:
+              return <FolderNode {...renderProps} />
+            case NodeType.file:
+              return <EntityNode {...renderProps} />
+            case NodeType.datasource:
+              return <DataSourceNode {...renderProps} state={state} />
+            default:
+              return (props: RenderProps) => (
+                <div>{props.treeNodeData.title}</div>
+              )
+          }
         }}
         dataSources={state.dataSources}
       />

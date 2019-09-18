@@ -3,9 +3,11 @@ import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
 import React from 'react'
 import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
-import { FolderNode } from './nodes/FolderNode'
-import { SelectBlueprintNode } from './nodes/EntityNode'
+import { EntityNode, SelectBlueprintNode } from './nodes/EntityNode'
 import { TreeNodeData } from '../../components/tree-view/Tree'
+import { DataSourceNode } from '../blueprints/nodes/DataSourceNode'
+import { NodeType } from '../../api/types'
+import { FolderNode } from '../blueprints/nodes/FolderNode'
 
 type Props = {
   datasources: Datasource[]
@@ -15,40 +17,31 @@ type Props = {
 }
 
 export default (props: Props) => {
-  const { datasources, state, dispatch, sourceNode } = props
-
-  //@todo use render props
+  const { datasources, state, sourceNode } = props
   return (
     <DocumentTree
       render={(renderProps: RenderProps) => {
         const { treeNodeData } = renderProps
-        const NodeComponent = getNodeComponent(treeNodeData)
-        return (
-          <NodeComponent
-            treeNodeData={treeNodeData}
-            dispatch={dispatch}
-            state={state}
-            sourceNode={sourceNode}
-          />
-        )
+        switch (renderProps.treeNodeData.nodeType) {
+          case NodeType.rootPackage:
+            return <RootFolderNode {...renderProps} />
+          case NodeType.subPackage:
+            return <FolderNode {...renderProps} />
+          case NodeType.file:
+            if (sourceNode) {
+              return (
+                <SelectBlueprintNode {...renderProps} sourceNode={sourceNode} />
+              )
+            } else {
+              return <EntityNode {...renderProps} />
+            }
+          case NodeType.datasource:
+            return <DataSourceNode {...renderProps} state={state} />
+          default:
+            return () => <div>{treeNodeData.title}</div>
+        }
       }}
       dataSources={datasources}
     />
   )
-}
-
-function getNodeComponent(node: TreeNodeData): any {
-  switch (node.nodeType) {
-    case 'folder':
-      if (node.isRoot) {
-        return RootFolderNode
-      } else {
-        return FolderNode
-      }
-    case 'file':
-      // override Node. Add an entity to the first tree based on selected blueprint.
-      return SelectBlueprintNode
-    default:
-      return () => <div>{node.title}</div>
-  }
 }

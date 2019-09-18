@@ -5,7 +5,7 @@ import BlueprintReducer, {
   initialState,
 } from '../../pages/common/DocumentReducer'
 import { TreeNodeData } from '../tree-view/Tree'
-import { NodeType } from '../tree-view/TreeReducer'
+import { NodeType } from '../../api/types'
 
 type Props = {
   onChange: (event: any) => void
@@ -53,7 +53,11 @@ const BlueprintPickerWrapper = (props: any) => {
       open={showModal}
       title="Select Blueprint"
     >
-      <BlueprintPickerContent state={state} dispatch={dispatch} />
+      <BlueprintPickerContent
+        sourceNode={undefined}
+        state={state}
+        dispatch={dispatch}
+      />
     </Modal>
   )
 }

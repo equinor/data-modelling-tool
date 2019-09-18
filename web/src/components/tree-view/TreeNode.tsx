@@ -9,7 +9,7 @@ import {
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { TreeNodeData } from './Tree'
-import { NodeType } from './TreeReducer'
+import { NodeType } from '../../api/types'
 
 type StyledTreeNode = {
   level: number
@@ -37,7 +37,7 @@ const NodeIcon = styled.div`
     props.marginRight ? props.marginRight : 5}px;
 `
 
-type TreeNodeProps = {
+export type TreeNodeProps = {
   NodeRenderer: Function
   level: number
   node: TreeNodeData
@@ -52,9 +52,14 @@ const Content = styled.div`
 
 const TreeNode = (props: TreeNodeProps) => {
   const { node, level, NodeRenderer, updateNode, addNode, handleToggle } = props
-
-  const expandableNodeTypes = [NodeType.folder, NodeType.datasource]
-
+  const expandableNodeTypes = [
+    NodeType.rootPackage,
+    NodeType.subPackage,
+    NodeType.datasource,
+  ]
+  const isFolder = [NodeType.subPackage, NodeType.rootPackage].includes(
+    node.nodeType
+  )
   return (
     <div>
       <StyledTreeNode level={level}>
@@ -66,8 +71,8 @@ const TreeNode = (props: TreeNodeProps) => {
         <NodeIcon marginRight={5}>
           {node.nodeType === NodeType.datasource && <FaDatabase />}
           {node.nodeType === NodeType.file && <FaFile />}
-          {node.nodeType === NodeType.folder && node.isOpen && <FaFolderOpen />}
-          {node.nodeType === NodeType.folder && !node.isOpen && <FaFolder />}
+          {isFolder && node.isOpen && <FaFolderOpen />}
+          {isFolder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
         <Content

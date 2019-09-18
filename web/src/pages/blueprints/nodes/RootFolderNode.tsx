@@ -19,7 +19,7 @@ export const RootFolderNode = (props: NodeComponentProps) => {
         },
         {
           label: 'Package',
-          action: ContextMenuActions.createPackage,
+          action: ContextMenuActions.createRootPackage,
           icon: FaFolder,
         },
       ],
@@ -30,5 +30,11 @@ export const RootFolderNode = (props: NodeComponentProps) => {
     },
   ]
 
-  return <WithContextMenu treeNodeData={treeNodeData} menuItems={menuItems} />
+  return (
+    <WithContextMenu
+      {...props}
+      treeNodeData={treeNodeData}
+      menuItems={menuItems}
+    />
+  )
 }
