@@ -1,8 +1,13 @@
-import { createBlueprint } from './CreateBlueprint'
-import { editPackage } from './EditPackage'
-import { createPackage } from './CreatePackage'
-import { createSubpackage } from './CreateSubpackage'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
+import { onError, onSuccess } from './processCreatePackage'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
+import Api2 from '../../../api/Api2'
+import { NodeType } from '../../../api/types'
+import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
+import axios from 'axios'
+import { DmtApi } from '../../../api/Api'
+const api = new DmtApi()
 
 export enum ContextMenuActions {
   createBlueprint = 'New Blueprint',
@@ -21,34 +26,85 @@ export type ContextMenuActionProps = {
 }
 
 const getFormProperties = (type: string, props: ContextMenuActionProps) => {
+  const { treeNodeData, addNode, setShowModal } = props
   switch (type) {
     case ContextMenuActions.createBlueprint: {
-      const { treeNodeData, addNode, setShowModal } = props
-      return createBlueprint({
-        node: treeNodeData,
-        addNode,
-        setShowModal,
-      })
+      return {
+        fetchDocument: Api2.fetchCreateBlueprint,
+        onSubmit: (formData: any) => {
+          Api2.postPackage({
+            parentId: treeNodeData.nodeId,
+            nodeType: NodeType.file,
+            formData,
+            onSuccess: (res: any) => {
+              const treeNodeData: TreeNodeData = new TreeNodeBuilder(
+                res.data
+              ).buildFileNode()
+              addNode(treeNodeData, treeNodeData.nodeId)
+              setShowModal(false)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
+          })
+        },
+      }
     }
     case ContextMenuActions.createRootPackage: {
-      return createPackage(props)
+      return {
+        fetchDocument: Api2.fetchCreatePackage,
+        onSubmit: (formData: any) => {
+          Api2.postPackage({
+            parentId: props.treeNodeData.nodeId,
+            nodeType: NodeType.rootPackage,
+            templateRef: 'templates/package-template',
+            formData,
+            onSuccess: onSuccess(props),
+            onError: onError,
+          })
+        },
+      }
     }
     case ContextMenuActions.createSubPackage: {
-      console.log(props)
-      return createSubpackage(props)
+      return {
+        fetchDocument: Api2.fetchCreatePackage,
+        onSubmit: (formData: any) => {
+          Api2.postPackage({
+            nodeType: NodeType.subPackage,
+            formData,
+            parentId: props.treeNodeData.nodeId,
+            templateRef: 'templates/subpackage-template',
+            onSuccess: onSuccess(props),
+            onError: onError,
+          })
+        },
+      }
     }
     case ContextMenuActions.editPackage: {
-      const { treeNodeData, updateNode, setShowModal } = props
-      return editPackage({
-        node: treeNodeData,
-        updateNode,
-        setShowModal,
-      })
+      return {
+        fetchDocument: Api2.fetchDocument(treeNodeData.nodeId),
+        onSubmit: (formData: any) => {
+          const url = api.documentPut(treeNodeData.nodeId)
+          axios
+            .put(url, formData)
+            .then(() => {
+              props.updateNode({ ...treeNodeData, title: formData.title })
+              setShowModal(false)
+              NotificationManager.success(
+                formData.title,
+                'Updated package title'
+              )
+            })
+            .catch((e: any) => {
+              console.log(e)
+            })
+        },
+      }
     }
     case ContextMenuActions.addBlueprint: {
       const { treeNodeData } = props
       console.log(treeNodeData)
-      return
+      return {
+        onSubmit: () => {},
+      }
     }
     default:
       return {

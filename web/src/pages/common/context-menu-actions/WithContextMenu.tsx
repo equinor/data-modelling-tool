@@ -37,7 +37,7 @@ const WithContextMenu = (props: WithContextMenuProps) => {
         open={showModal}
         title={actionConfig && actionConfig.action}
       >
-        {actionConfig && <Form {...actionConfig.formProps}></Form>}
+        {actionConfig && <Form {...actionConfig.formProps} />}
       </Modal>
       <ContextMenu
         id={treeNodeData.nodeId}

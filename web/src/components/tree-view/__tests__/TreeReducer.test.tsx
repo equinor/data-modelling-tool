@@ -1,5 +1,5 @@
 import reducer, { Actions, NodeActions } from '../TreeReducer'
-import { NodeType } from '../../../api/Api2'
+import { NodeType } from '../../../api/types'
 
 describe('tree reducer', () => {
   it('should provide the initial state', () => {

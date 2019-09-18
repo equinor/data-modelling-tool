@@ -37,7 +37,7 @@ const NodeIcon = styled.div`
     props.marginRight ? props.marginRight : 5}px;
 `
 
-type TreeNodeProps = {
+export type TreeNodeProps = {
   NodeRenderer: Function
   level: number
   node: TreeNodeData

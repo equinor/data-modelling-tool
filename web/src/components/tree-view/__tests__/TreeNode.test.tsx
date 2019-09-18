@@ -1,30 +1,27 @@
 import React from 'react'
-import TreeNode from '../TreeNode'
+import TreeNode, { TreeNodeProps } from '../TreeNode'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
 import { TreeNodeData } from '../Tree'
-import { IndexNode } from '../../../api/Api'
 import { NodeType } from '../../../api/types'
 
 describe('TreeNode', () => {
-  it.skip('renders without crashing', () => {
-    const props = {
-      nodeId: 'node_0',
-      dispatch: () => {},
+  it('renders without crashing', () => {
+    const props: TreeNodeProps = {
+      node: {
+        nodeId: 'node_0',
+        nodeType: NodeType.rootPackage,
+        title: 'node_0',
+        isRoot: true,
+        isOpen: true,
+      },
       NodeRenderer: (node: TreeNodeData) => {
         return <h2>{node.title}</h2>
       },
-      nodes: {
-        node_0: {
-          nodeId: 'node_0',
-          nodeType: NodeType.rootPackage,
-          title: 'node_0',
-          isRoot: true,
-          isOpen: true,
-        },
-      },
       level: 0,
-      onToggle: (node: IndexNode) => {},
+      updateNode: () => {},
+      addNode: () => {},
+      handleToggle: () => {},
     }
 
     const testRenderer = TestRenderer.create(<TreeNode {...props} />)
