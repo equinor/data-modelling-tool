@@ -55,7 +55,7 @@ class Packages(Resource):
         data_source = DataSource(id=data_source_id)
         package_request = PackageRequest(request.get_json())
 
-        if DocumentType(package_request.node_type) in nodes_with_parent:
+        if DocumentType.has_parent(DocumentType(package_request.node_type)):
             update_parent(data_source, package_request.parent_id, package_request.id, package_request.node_type)
 
         # if package_request.node_type == "folder":

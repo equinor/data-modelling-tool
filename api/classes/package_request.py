@@ -10,26 +10,23 @@ class DocumentType(Enum):
     SUB_PACKAGE = "subpackage"
     FILE = "file"
 
+    @staticmethod
+    def has_value(value):
+        values = [item.value for item in DocumentType]
+        return value in values
 
-document_type_tuple = (DocumentType.ROOT_PACKAGE, DocumentType.VERSION, DocumentType.SUB_PACKAGE, DocumentType.FILE)
+    def has_parent(self):
+        return self in (DocumentType.FILE, DocumentType.SUB_PACKAGE, DocumentType.VERSION)
 
 
-def create_id(node_type: DocumentType, title: str, parent_id: str):
+def create_id(node_type: DocumentType, name: str, parent_id: str):
     parent_package = dirname(parent_id)
     if node_type == DocumentType.ROOT_PACKAGE:
-        return f"{title}/package"
-    elif node_type == DocumentType.FILE:
-        return f"{parent_package}/{title}"
+        return f"{name}/package"
     elif node_type == DocumentType.SUB_PACKAGE:
-        return f"{parent_package}/{title}/package"
-
-
-# TODO: REMOVE
-def get_node_type(node_type: str, meta: dict):
-    if node_type == DocumentType.FILE:
-        return DocumentType.FILE
-    elif DocumentType(meta["documentType"]) in document_type_tuple:
-        return meta["documentType"]
+        return f"{parent_package}/{name}/package"
+    elif node_type == DocumentType.FILE:
+        return f"{parent_package}/{name}"
 
 
 class PackageRequest:
@@ -38,5 +35,5 @@ class PackageRequest:
         self.meta = package_request["meta"]
         self.formData = package_request["formData"]
         self.parent_id = package_request["parentId"]
-        self.node_type = package_request["nodeType"]
-        self.id = create_id(DocumentType(self.node_type), title=self.meta["name"], parent_id=self.parent_id)
+        self.node_type = DocumentType(package_request["nodeType"])
+        self.id = create_id(self.node_type, name=self.meta["name"], parent_id=self.parent_id)
