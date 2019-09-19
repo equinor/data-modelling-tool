@@ -102,15 +102,13 @@ export class IndexApi extends BaseApi {
         isOpen: true,
         isHidden: false,
         title: datasource.name,
-        nodeType: NodeType.datasource,
+        nodeType: NodeType.folder,
         children: rootNodes.map(rootNode => rootNode.id),
         meta: {
-          documentType: 'datasource',
+          documentType: NodeType.datasource,
         },
       }
       documents.push(document)
-
-      console.log(documents)
 
       return documents.reduce((obj, item) => {
         obj[item.nodeId] = item
@@ -217,4 +215,5 @@ export type IndexNode = {
   isRoot: boolean
   isOpen?: boolean
   children?: string[]
+  meta: object
 }

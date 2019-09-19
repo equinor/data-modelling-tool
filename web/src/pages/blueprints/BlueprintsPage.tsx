@@ -51,15 +51,15 @@ export default () => {
           //use components directly to control props better.
           switch (renderProps.treeNodeData.nodeType) {
             case NodeType.folder: {
-              const meta: object = renderProps.treeNodeData['meta']
-              console.log(meta)
-              let documentType = ''
-              if (meta.hasOwnProperty('documentType')) {
-                documentType = meta['documentType']
-              }
+              const meta: object = renderProps.treeNodeData.meta
+              // @ts-ignore
+              let documentType: string = meta.documentType
               if (documentType == NodeType.rootPackage) {
                 return <RootFolderNode {...renderProps} />
-              } else if (documentType == NodeType.subPackage) {
+              } else if (
+                documentType == NodeType.subPackage ||
+                documentType == NodeType.version
+              ) {
                 return <FolderNode {...renderProps} />
               } else if (documentType == NodeType.datasource) {
                 return <DataSourceNode {...renderProps} state={state} />
