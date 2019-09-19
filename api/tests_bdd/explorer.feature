@@ -106,3 +106,40 @@ Feature: Explorer
       }
     }
     """
+
+  Scenario: Add root package
+    Given i access the resource url "/api/explorer/local-blueprints/add-root-package"
+    When i make a "POST" request
+    """
+    {
+      "document": {
+        "meta": {
+           "name": "new root package",
+           "templateRef": "templates/package-template",
+           "documentType": "root-package"
+        },
+        "formData": {
+            "title": "Title",
+            "description": "Description"
+        }
+      }
+    }
+    """
+    Then the response status should be "OK"
+    And the response should equal
+    """
+    {
+      "id": "new root package/package",
+      "formData":{
+        "title": "Title",
+        "description": "Description",
+        "versions": [],
+        "latestVersion": "new root package/1.0.0/package"
+      },
+      "meta":{
+        "name":"new root package",
+        "templateRef":"templates/package-template",
+        "documentType": "root-package"
+      }
+    }
+    """

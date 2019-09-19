@@ -32,8 +32,8 @@ class RootPackageData:
         return cls(
             title=adict["title"],
             description=adict["description"],
-            latest_version=adict["latestVersion"],
-            versions=adict["versions"],
+            latest_version=adict.get("latestVersion", ""),
+            versions=adict.get("versions", []),
         )
 
     def to_dict(self):
