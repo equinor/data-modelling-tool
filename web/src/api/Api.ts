@@ -104,8 +104,13 @@ export class IndexApi extends BaseApi {
         title: datasource.name,
         nodeType: NodeType.datasource,
         children: rootNodes.map(rootNode => rootNode.id),
+        meta: {
+          documentType: 'datasource',
+        },
       }
       documents.push(document)
+
+      console.log(documents)
 
       return documents.reduce((obj, item) => {
         obj[item.nodeId] = item

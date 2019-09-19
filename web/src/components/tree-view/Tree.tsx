@@ -21,6 +21,8 @@ export type TreeNodeData = {
   isRoot: boolean
   isHidden?: boolean
   children?: string[]
+  meta: object
+  icon?: string
 }
 
 type TreeProps = {

@@ -52,15 +52,8 @@ const Content = styled.div`
 
 const TreeNode = (props: TreeNodeProps) => {
   const { node, level, NodeRenderer, updateNode, addNode, handleToggle } = props
-  const expandableNodeTypes = [
-    NodeType.rootPackage,
-    NodeType.subPackage,
-    NodeType.datasource,
-    NodeType.folder,
-  ]
-  const isFolder = [NodeType.subPackage, NodeType.rootPackage].includes(
-    node.nodeType
-  )
+  const expandableNodeTypes = [NodeType.folder]
+  const isFolder = [NodeType.folder].includes(node.nodeType)
   return (
     <div>
       <StyledTreeNode level={level}>

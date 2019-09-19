@@ -50,14 +50,25 @@ export default () => {
         render={(renderProps: RenderProps) => {
           //use components directly to control props better.
           switch (renderProps.treeNodeData.nodeType) {
-            case NodeType.rootPackage:
-              return <RootFolderNode {...renderProps} />
-            case NodeType.folder:
-              return <FolderNode {...renderProps} />
+            case NodeType.folder: {
+              const meta: object = renderProps.treeNodeData['meta']
+              console.log(meta)
+              let documentType = ''
+              if (meta.hasOwnProperty('documentType')) {
+                documentType = meta['documentType']
+              }
+              if (documentType == NodeType.rootPackage) {
+                return <RootFolderNode {...renderProps} />
+              } else if (documentType == NodeType.subPackage) {
+                return <FolderNode {...renderProps} />
+              } else if (documentType == NodeType.datasource) {
+                return <DataSourceNode {...renderProps} state={state} />
+              } else {
+                return <div>Not found document type</div>
+              }
+            }
             case NodeType.file:
               return <EntityNode {...renderProps} />
-            case NodeType.datasource:
-              return <DataSourceNode {...renderProps} state={state} />
             default:
               return (props: RenderProps) => (
                 <div>{props.treeNodeData.title}</div>

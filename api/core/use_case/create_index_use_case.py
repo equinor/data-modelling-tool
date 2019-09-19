@@ -27,6 +27,7 @@ class Index:
             "children": children,
             "nodeType": "folder",
             "isRoot": True if package.meta.document_type == "version" else False,
+            "meta": {"documentType": package.meta.document_type},
         }
 
     def add_file(self, document: Document):
