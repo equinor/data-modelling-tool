@@ -32,9 +32,8 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
-          Api2.postPackage({
+          Api2.postFile({
             parentId: treeNodeData.nodeId,
-            nodeType: NodeType.file,
             formData,
             onSuccess: (res: any) => {
               const newTreeNode: TreeNodeData = new TreeNodeBuilder(
@@ -52,10 +51,8 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreatePackage,
         onSubmit: (formData: any) => {
-          Api2.postPackage({
+          Api2.postRootPackage({
             parentId: props.treeNodeData.nodeId,
-            nodeType: NodeType.rootPackage,
-            templateRef: 'templates/package-template',
             formData,
             onSuccess: onSuccess(props),
             onError: onError,
@@ -67,11 +64,9 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreatePackage,
         onSubmit: (formData: any) => {
-          Api2.postPackage({
-            nodeType: NodeType.subPackage,
+          Api2.postSubPackage({
             formData,
             parentId: props.treeNodeData.nodeId,
-            templateRef: 'templates/subpackage-template',
             onSuccess: onSuccess(props),
             onError: onError,
           })
