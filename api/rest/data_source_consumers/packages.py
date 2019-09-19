@@ -10,23 +10,11 @@ nodes_with_parent = (DocumentType.SUB_PACKAGE, DocumentType.FILE)
 
 
 # TODO: This is probaly not good...
-def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_type: str, delete=False):
-    if DocumentType(node_type) is DocumentType.FILE:
-        if delete:
-            data_source.client.pull_from_parent(_id=parent_id, form={"files": child_id})
-        else:
-            data_source.client.append_to_parent(_id=parent_id, form={"files": child_id})
-    elif DocumentType(node_type) is DocumentType.SUB_PACKAGE:
-        if delete:
-            data_source.client.pull_from_parent(_id=parent_id, form={"subpackages": child_id})
-        else:
-            data_source.client.append_to_parent(_id=parent_id, form={"subpackages": child_id})
-
-
-# def get_document_type(is_root: bool):
-#     if is_root:
-#         return "root-package"
-#     return "subpackage"
+def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_type: DocumentType, delete=False):
+    if delete:
+        data_source.client.pull_from_parent(id=parent_id, child_id=child_id, node_type=node_type)
+    else:
+        data_source.client.append_to_parent(id=parent_id, child_id=child_id, node_type=node_type)
 
 
 def create_version_package(package_request: PackageRequest, data_source: DataSource, latest_version):

@@ -34,7 +34,10 @@ class PackageRequest:
         validate_package_request(package_request)
         self.meta = package_request["meta"]
         self.formData = package_request["formData"]
-        self.parent_id = package_request["parentId"]
+        if "/" in package_request["parentId"]:
+            self.parent_id = package_request["parentId"].split("/", 1)[1]
+        else:
+            self.parent_id = ""
         self.node_type = DocumentType(package_request["nodeType"])
         self.meta["documentType"] = self.node_type.value
         self.id = create_id(self.node_type, name=self.meta["name"], parent_id=self.parent_id)

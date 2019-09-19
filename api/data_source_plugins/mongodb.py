@@ -31,15 +31,25 @@ class MongodbClient:
         except Exception as error:
             return abort(500, error)
 
-    def append_to_parent(self, form, _id):
+    def append_to_parent(self, child_id, id, node_type):
+        child_type = f"{node_type.value}s"
         try:
-            return self.handler[self.collection].update_one({"_id": _id}, {"$push": form}, upsert=True).acknowledged
+            return (
+                self.handler[self.collection]
+                .update_one({"_id": id}, {"$push": {f"formData.{child_type}": child_id}}, upsert=True)
+                .acknowledged
+            )
         except Exception as error:
             return abort(500, error)
 
-    def pull_from_parent(self, form, _id):
+    def pull_from_parent(self, child_id, id, node_type):
+        child_type = f"{node_type.value}s"
         try:
-            return self.handler[self.collection].update_one({"_id": _id}, {"$pull": form}, upsert=True).acknowledged
+            return (
+                self.handler[self.collection]
+                .update_one({"_id": id}, {"$pull": {f"formData.{child_type}": child_id}}, upsert=True)
+                .acknowledged
+            )
         except Exception as error:
             return abort(500, error)
 
