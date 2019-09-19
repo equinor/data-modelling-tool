@@ -2,8 +2,6 @@ import os
 from pathlib import Path
 from doit.action import CmdAction
 
-DOIT_CONFIG = {"verbosity": 2}
-
 
 def docker_compose(_targets=None):
     if _targets is None:
@@ -17,36 +15,22 @@ def docker_compose(_targets=None):
     )
 
 
-def is_verbose():
-    return DOIT_CONFIG["verbosity"] > 0
-
-
-def _execute(command):
-    if is_verbose():
-        print(command)
-    return command
-
-
-def execute(command, include=None, **options):
-    return _execute(f"{docker_compose(include)} {command}")
-
-
-def execute_container(
-    container, command, run=False, include=None, environment=None, **options
-):
+def execute(container, command, run=False, include=None, environment=None, **options):
+    if include is None:
+        include = []
     if environment is None:
         environment = []
 
     def sanitize_environment(word):
         return word.strip("=")
 
-    return execute(
+    return (
+        f"{docker_compose(include)} "
         f"{'run --rm' if run else 'exec'}"
         f"{' --no-deps' if options.get('alone', False) else ''}"
         f"{''.join([f' -e {sanitize_environment(env)}' for env in environment])}"
         f" {container}"
-        f" {command}",
-        include,
+        f" {command}"
     )
 
 
@@ -55,6 +39,12 @@ def runs_in_ci():
 
 
 def container_params(remote=False, include=None, environment=None):
+    if include is None:
+        include = []
+        if not runs_in_ci():
+            include.append("override")
+    if isinstance(include, str):
+        include = [include]
     return [
         {
             "name": "remote",
@@ -64,7 +54,13 @@ def container_params(remote=False, include=None, environment=None):
             "default": remote,
             "help": "Toggles whether docker-compose should use run, or exec",
         },
-        container_include_param(include),
+        {
+            "name": "include",
+            "long": "include",
+            "short": "f",
+            "type": list,
+            "default": include,
+        },
         {
             "name": "environment",
             "long": "environment",
@@ -75,98 +71,33 @@ def container_params(remote=False, include=None, environment=None):
     ]
 
 
-def container_include_param(include=None):
-    if include is None:
-        include = []
-        if not runs_in_ci():
-            include.append("override")
-    if isinstance(include, str):
-        include = [include]
-    return {
-        "name": "include",
-        "long": "include",
-        "short": "f",
-        "type": list,
-        "default": include,
-    }
-
-
 def task_docker_compose():
-    class Task:
-        """A helper class to specify different docker-compose commands"""
-
-        __slots__ = ("name", "command", "container", "options", "help", "dependencies")
-
-        def __init__(
-            self,
-            name,
-            command,
-            container=None,
-            help="",
-            options=None,
-            dependencies=None,
-        ):
-            self.name = name
-            self.command = command
-            self.container = container
-            self.help = help
-            if options is None:
-                options = {}
-            self.options = options
-            if dependencies is None:
-                dependencies = []
-            elif isinstance(dependencies, str):
-                dependencies = [dependencies]
-            self.dependencies = dependencies
-
-        @property
-        def as_dict(self):
-            return {
-                "command": self.command,
-                "container": self.container,
-                **(self.options),
-            }
-
     def gen_tasks():
         tasks = [
-            Task("test:api:bdd", "behave", "api", help="Run the behavior / API tests"),
-            Task(
-                "test:api:unit",
-                "pytest tests",
-                "api",
-                help="Run the unit tests of the API",
-            ),
-            Task(
-                "test:web:unit",
-                "yarn test",
-                "web",
-                options={"alone": True},
-                help="Run the unit tests of the client",
-            ),
-            Task(
-                "build",
-                "build",
-                help="Build the Docker images for running / testing locally",
-            ),
-            Task(
-                "build:prod",
-                "build",
-                options={"include": []},
-                help="Build the Docker images as a production build",
-            ),
-            Task(
-                "start",
-                "up -d",
-                help="Starts the containers in detached-mode",
-                dependencies="build",
-            ),
-            Task("stop", "down", help="Stops the running containers"),
-            Task(
-                "reset_database",
-                "/code/reset-database.sh",
-                "api",
-                help="Reset the database (locally). Add --exec, to reset the running database",
-            ),
+            {
+                "name": "test:api:bdd",
+                "container": "api",
+                "command": "behave",
+                "options": {},
+            },
+            {
+                "name": "test:api:unit",
+                "container": "api",
+                "command": "pytest tests",
+                "options": {},
+            },
+            {
+                "name": "test:web:unit",
+                "container": "web",
+                "command": "yarn test",
+                "options": {"alone": True},
+            },
+            {
+                "name": "reset_database",
+                "container": "api",
+                "command": "/code/reset-database.sh",
+                "options": {},
+            },
         ]
         for task in tasks:
 
@@ -174,25 +105,22 @@ def task_docker_compose():
                 # The wrapper, and kwargs is a hack to ensure that the content of task is available
                 # Otherwise, the task variable (label) refer to the last item, as `run_task` is executed
                 # in a different context
-                kwargs = task.as_dict
+                kwargs = {
+                    "container": task["container"],
+                    "command": task["command"],
+                    **task["options"],
+                }
 
                 def run_task(remote=True, include=None, environment=None):
-                    if "include" not in kwargs:
-                        kwargs["include"] = include
-                    if "environment" not in kwargs:
-                        kwargs["environment"] = environment
-
-                    if kwargs["container"]:
-                        return execute_container(**kwargs, run=remote)
-                    else:
-                        return execute(**kwargs)
+                    return execute(
+                        **kwargs, run=remote, include=include, environment=environment
+                    )
 
                 yield {
-                    "basename": task.name,
+                    "basename": task["name"],
                     "actions": [CmdAction(run_task)],
-                    "doc": task.help,
-                    "task_dep": task.dependencies,
                     "params": container_params(remote=True),
+                    "verbosity": 2,
                 }
 
             yield wrapper()
@@ -262,7 +190,6 @@ def task_initialize_ide():
         "params": [
             {"name": "wip_config", "long": "wip-config", "type": bool, "default": False}
         ],
-        "doc": "Install the run configurations to the IDE. Use --wip-config to get the configurations that are still a work in progress",
         "verbosity": 2,
     }
 
