@@ -2,7 +2,7 @@ import axios from 'axios'
 import values from 'lodash/values'
 
 import Workspace from '../util/localWorkspace'
-import { TreeNodeData } from '../components/tree-view/Tree'
+import { NodeIconType, TreeNodeData } from '../components/tree-view/Tree'
 import { NodeType } from './types'
 
 function isLocal(datasource: Datasource): boolean {
@@ -97,6 +97,7 @@ export class IndexApi extends BaseApi {
       })
 
       const document: TreeNodeData = {
+        icon: NodeIconType.database,
         nodeId: datasource.id,
         isRoot: true,
         isOpen: true,
