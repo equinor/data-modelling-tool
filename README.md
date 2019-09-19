@@ -13,14 +13,6 @@ docker-compose build
 docker-compose up
 ```
 
-You may also want to run `./bin/setup.sh`, which installs [DoIt](https://pydoit.org), and [pre-commit](https://github.com/pre-commit/pre-commit), if they are not installed already in a local, virtual environment.
-This will also install the run configurations for the IntelliJ products.
-It will also make the necessary changes in the `.idea` configurations.
-
-#### DoIt
-This is a tool similar to Makefile, but uses Python.
-With it, some targets are included; `doit list` for an overview of the available targets / commands, and what they do.
-
 ### Run production
 
 To test production build locally, use the override compose.
