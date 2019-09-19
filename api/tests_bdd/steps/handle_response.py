@@ -12,6 +12,7 @@ STATUS_CODES = {
     "Unauthorized": 401,
     "Not Found": 404,
     "Conflict": 409,
+    "System Error": 500,
 }
 
 

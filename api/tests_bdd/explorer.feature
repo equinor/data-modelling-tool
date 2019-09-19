@@ -44,6 +44,33 @@ Feature: Explorer
     }
     """
 
+    Scenario: Add file to parent that does not exists
+    Given i access the resource url "/api/explorer/local-blueprints/add-file"
+    When i make a "POST" request
+    """
+    {
+      "parentId": "package_1/3.3.3/package",
+      "document": {
+        "meta": {
+           "name": "new file",
+           "templateRef": "",
+           "documentType": "file"
+        },
+        "formData": {
+
+        }
+      }
+    }
+    """
+    Then the response status should be "System Error"
+    And the response should equal
+    """
+    {
+      "type": "SYSTEM_ERROR",
+      "message": "Exception: The document with id = package_1/3.3.3/package was not found in collection = documents"
+    }
+    """
+
     Scenario: Add file with missing parent id should fail
     Given i access the resource url "/api/explorer/local-blueprints/add-file"
     When i make a "POST" request

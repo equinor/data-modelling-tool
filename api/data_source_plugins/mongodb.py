@@ -63,7 +63,8 @@ class MongodbClient:
         result = self.handler[self.collection].find_one(filter={"_id": _id})
         if not result:
             logger.warning(f"The document with id = {_id} was not found. {self.collection}")
-            return abort(404)
+            raise Exception(f"The document with id = {_id} was not found in collection = {self.collection}")
+            # return #abort(404)
         else:
             result["id"] = _id
             return result
