@@ -33,12 +33,30 @@ Feature: Index
     And the response should equal
     """
     {
+       "local-blueprints-equinor": {
+          "id": "local-blueprints-equinor",
+          "icon": "database",
+          "nodeId": "local-blueprints-equinor",
+          "isRoot": true,
+          "isOpen": true,
+          "isHidden": false,
+          "title": "local-blueprints-equinor",
+          "nodeType": "folder",
+          "children": ["local-blueprints-equinor/package_1/1.0.0/package"],
+          "meta": {
+            "documentType": "datasource"
+          }
+       },
        "local-blueprints-equinor/package_1/1.0.0/package":{
           "id":"local-blueprints-equinor/package_1/1.0.0/package",
+          "nodeId":"local-blueprints-equinor/package_1/1.0.0/package",
           "title":"package 1",
           "children":[],
           "nodeType":"folder",
-          "isRoot":true
+          "isRoot":false,
+          "meta": {
+            "documentType": "version"
+          }
        }
     }
     """
