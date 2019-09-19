@@ -20,7 +20,7 @@ def update_parent(data_source: DataSource, parent_id: str, child_id: str, node_t
 def create_version_package(package_request: PackageRequest, data_source: DataSource, latest_version):
     document = f"""
 {{
-  "_id": "{latest_version}/package",
+  "_id": "{latest_version}",
   "meta": {{
     "name": "package",
     "documentType": "{DocumentType.VERSION.value}",
@@ -49,18 +49,22 @@ class Packages(Resource):
         # TODO: Fix this hack when we want to support versions
         # Now, this creates a dummy version 1.0.0 for all root-packages
         if package_request.node_type is DocumentType.ROOT_PACKAGE:
-            latest_version = f"{package_request.id.split('/', 1)[0]}/1.0.0"
-            latest_version_id = f"{latest_version}/package"
-            package_request.formData["latestVersion"] = latest_version_id
+            latest_version = f"{package_request.id.split('/')[0]}/1.0.0/package"
+            package_request.formData["latestVersion"] = latest_version
             create_version_package(package_request, data_source, latest_version)
 
         data_source.client.create_form(
             {"meta": package_request.meta, "formData": package_request.formData}, _id=package_request.id
         )
+
+        # TODO: Cheat because no versioning
+        if package_request.node_type is DocumentType.ROOT_PACKAGE:
+            package_request.id = f"{latest_version}"
+
         return {
             "nodeType": package_request.node_type.value,
             "title": package_request.formData["title"],
-            "id": package_request.id,
+            "id": f"{data_source_id}/{package_request.id}",
         }
 
     @staticmethod
