@@ -7,7 +7,6 @@ import BlueprintReducer, {
 import { DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import { FolderNode } from './nodes/FolderNode'
-import { BlueprintNode } from './nodes/BlueprintNode'
 import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import Header from '../../components/Header'
