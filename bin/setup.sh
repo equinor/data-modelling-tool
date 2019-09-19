@@ -18,6 +18,8 @@ pip install doit \
 doit initialize_ide
 
 # Install the pre-commit hooks
-echo "Installing pre-commit"
-pip install pre-commit >/dev/null
+if [[ ! $(command -v pre-commit) ]]; then
+  echo "Installing pre-commit"
+  pip install pre-commit >/dev/null
+fi
 pre-commit install
