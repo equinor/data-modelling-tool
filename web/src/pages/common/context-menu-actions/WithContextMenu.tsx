@@ -7,18 +7,33 @@ import ContextMenu, {
   MenuItem,
 } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
-import { AddNode, UpdateNode } from '../tree-view/DocumentTree'
+import { RenderProps } from '../tree-view/DocumentTree'
 
-type WithContextMenuProps = {
-  treeNodeData: TreeNodeData
+interface WithContextMenuProps extends RenderProps {
   menuItems: MenuItem[]
   configs?: ActionConfig[]
-  addNode: AddNode
-  updateNode: UpdateNode
 }
 
 const WithContextMenu = (props: WithContextMenuProps) => {
-  const { treeNodeData, menuItems } = props
+  return (
+    <WithContextMenuModal
+      {...props}
+      render={({ actionConfig }: any) => (
+        <>{actionConfig && <Form {...actionConfig.formProps} />}</>
+      )}
+    />
+  )
+}
+export default WithContextMenu
+
+interface WithContextMenuModalProps extends RenderProps {
+  menuItems: MenuItem[]
+  treeNodeData: TreeNodeData
+  render: (props: any) => any
+}
+
+export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
+  const { treeNodeData, menuItems, render } = props
   const [action, setAction] = useState('')
   const [showModal, setShowModal] = useState(false)
 
@@ -33,11 +48,11 @@ const WithContextMenu = (props: WithContextMenuProps) => {
   return (
     <>
       <Modal
-        toggle={() => setShowModal(!showModal)}
         open={showModal}
-        title={actionConfig && actionConfig.action}
+        title={action}
+        toggle={() => setShowModal(!showModal)}
       >
-        {actionConfig && <Form {...actionConfig.formProps} />}
+        {render({ action, actionConfig })}
       </Modal>
       <ContextMenu
         id={treeNodeData.nodeId}
@@ -52,5 +67,3 @@ const WithContextMenu = (props: WithContextMenuProps) => {
     </>
   )
 }
-
-export default WithContextMenu

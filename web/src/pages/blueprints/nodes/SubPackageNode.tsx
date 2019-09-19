@@ -5,7 +5,7 @@ import { MenuItem } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 import { FaFile, FaFolder } from 'react-icons/fa'
 
-export const FolderNode = (props: RenderProps) => {
+export const SubPackageNode = (props: RenderProps) => {
   const { treeNodeData } = props
 
   const menuItems: MenuItem[] = [

@@ -1,45 +1,40 @@
 import { Datasource } from '../../api/Api'
-import { DocumentsAction, DocumentsState } from '../common/DocumentReducer'
+import { DocumentsState } from '../common/DocumentReducer'
 import React from 'react'
-import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
-import { RootFolderNode } from './nodes/RootFolderNode'
-import { EntityNode, SelectBlueprintNode } from './nodes/EntityNode'
+import DocumentTree, {
+  AddNode,
+  RenderProps,
+} from '../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
-import { DataSourceNode } from '../blueprints/nodes/DataSourceNode'
 import { NodeType } from '../../api/types'
-import { FolderNode } from '../blueprints/nodes/FolderNode'
+import { SelectBlueprintNode } from './nodes/EntityNode'
 
 type Props = {
   datasources: Datasource[]
   state: DocumentsState
-  dispatch: (action: DocumentsAction) => void
   sourceNode?: TreeNodeData
+  addNode: AddNode
+  newFileName: string
 }
 
 export default (props: Props) => {
-  const { datasources, state, sourceNode } = props
+  const { datasources, sourceNode, addNode, newFileName } = props
   return (
     <DocumentTree
       render={(renderProps: RenderProps) => {
         const { treeNodeData } = renderProps
-        switch (renderProps.treeNodeData.nodeType) {
-          case NodeType.rootPackage:
-            return <RootFolderNode {...renderProps} />
-          case NodeType.subPackage:
-            return <FolderNode {...renderProps} />
-          case NodeType.file:
-            if (sourceNode) {
-              return (
-                <SelectBlueprintNode {...renderProps} sourceNode={sourceNode} />
-              )
-            } else {
-              return <EntityNode {...renderProps} />
-            }
-          case NodeType.datasource:
-            return <DataSourceNode {...renderProps} state={state} />
-          default:
-            return () => <div>{treeNodeData.title}</div>
+        if (treeNodeData.nodeType === NodeType.file && sourceNode) {
+          return (
+            <SelectBlueprintNode
+              {...renderProps}
+              addNode={addNode}
+              sourceNode={sourceNode}
+              newFileName={newFileName}
+            />
+          )
         }
+        // all other nodes should not have context menu.
+        return <div>{treeNodeData.title}</div>
       }}
       dataSources={datasources}
     />

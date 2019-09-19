@@ -4,19 +4,21 @@ import axios from 'axios'
 import { DocumentsState } from '../common/DocumentReducer'
 import BlueprintPickerTree from './BlueprintPickerTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
+import { AddNode } from '../common/tree-view/DocumentTree'
 
 const api = new DmtApi()
 
 type BlueprintPickerContentProps = {
   state: DocumentsState
-  dispatch: any
+  addNode: AddNode
   //the source treeNodeData that opened this picker.
   //@todo Document FinderWidget should pass its own document tree. Which dont use the SelectBlueprintNode
   sourceNode: TreeNodeData | undefined //undefined since DocumentFinderWidget uses this component.
 }
 
 export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
-  const { dispatch, state, sourceNode } = props
+  const { addNode, state, sourceNode } = props
+  const [name, setName] = useState('')
   const [blueprintDatasources, setBlueprintDatasources] = useState<
     Datasource[]
   >([])
@@ -36,12 +38,19 @@ export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
   }, [])
   return (
     <div>
-      <BlueprintPickerTree
-        datasources={blueprintDatasources}
-        dispatch={dispatch}
-        state={state}
-        sourceNode={sourceNode}
-      />
+      <div>
+        <label>Filename:</label>
+        <input value={name} onChange={e => setName(e.target.value)} />
+      </div>
+      {name && (
+        <BlueprintPickerTree
+          datasources={blueprintDatasources}
+          state={state}
+          newFileName={name}
+          sourceNode={sourceNode}
+          addNode={addNode}
+        />
+      )}
     </div>
   )
 }
