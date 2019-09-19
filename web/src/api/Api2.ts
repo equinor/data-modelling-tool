@@ -2,6 +2,8 @@ import axios from 'axios'
 import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import { DmtApi } from './Api'
 import { NodeType } from './types'
+import { getDataSourceIDFromAbsolutID } from '../util/helperFunctions'
+
 const api = new DmtApi()
 
 /**
@@ -21,10 +23,8 @@ interface FetchTemplate extends BASE_CRUD {
 interface PostPackage {
   parentId: string
   formData: any
-  nodeType: NodeType
   onSuccess: (res: any) => void
   onError?: OnError
-  templateRef?: string
 }
 
 /**
@@ -85,45 +85,34 @@ export default class Api2 {
     }
   }
 
-  /**
-   * Creates a package, subpackage or file.
-   * Covers:
-   *   - create root-package (top-level node directly below datasource node.
-   *   - create sub-package (all other packages)
-   *   - create document (blueprint, entity)
-   *
-   * FormData must have a non empty computer-friendly title property used to generate the filename and document id.
-   *
-   * @param nodeType NodeType
-   * @param formData
-   * @param parentId absolute path
-   * @param templateRef optional
-   * @param onSuccess
-   * @param onError
-   */
-  static postPackage({
-    nodeType,
-    formData,
-    parentId,
-    templateRef = 'templates/blueprint',
-    onSuccess,
-    onError = () => {},
-  }: PostPackage) {
-    const dataSourceId = parentId.split('/')[0]
-    const url = api.packagePost(dataSourceId)
-    const data = {
-      meta: {
-        name: formData.title,
-        templateRef,
-      },
-      nodeType,
-      parentId,
-      formData,
-    }
-    axios
-      .post(url, data)
-      .then(response => onSuccess(response))
-      .catch(onError)
+  static postFile(props: PostPackage) {
+    return postPackage({
+      nodeType: NodeType.file,
+      templateRef: 'templates/blueprint',
+      // expecting a new endpoint for postFile
+      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
+      ...props,
+    })
+  }
+
+  static postRootPackage(props: PostPackage) {
+    return postPackage({
+      nodeType: NodeType.rootPackage,
+      templateRef: 'templates/package-template',
+      // expecting a new endpoint for post root package
+      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
+      ...props,
+    })
+  }
+
+  static postSubPackage(props: PostPackage) {
+    return postPackage({
+      nodeType: NodeType.subPackage,
+      templateRef: 'templates/subpackage-template',
+      // expecting a new endpoint for post subpackage package
+      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
+      ...props,
+    })
   }
 }
 
@@ -139,5 +128,46 @@ function fetchTemplate({
         uiSchema: res.data.uiSchema || {},
       })
     })
+    .catch(onError)
+}
+
+/**
+ * Creates a package, subpackage or file.
+ * Covers:
+ *   - create root-package (top-level node directly below datasource node.
+ *   - create sub-package (all other packages)
+ *   - create document (blueprint, entity)
+ *
+ * FormData must have a non empty computer-friendly title property used to generate the filename and document id.
+ *
+ * @param nodeType NodeType
+ * @param formData
+ * @param parentId absolute path
+ * @param templateRef optional
+ * @param onSuccess
+ * @param onError
+ * @param url
+ */
+function postPackage({
+  nodeType,
+  formData,
+  parentId,
+  templateRef,
+  onSuccess,
+  onError = () => {},
+  url,
+}: any) {
+  const data = {
+    meta: {
+      name: formData.title,
+      templateRef,
+    },
+    nodeType,
+    parentId,
+    formData,
+  }
+  axios
+    .post(url, data)
+    .then(response => onSuccess(response))
     .catch(onError)
 }
