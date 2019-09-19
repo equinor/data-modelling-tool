@@ -23,10 +23,11 @@ class Index:
             children.append(self._get_absolute_path(subpackage))
         self.index[document_id] = {
             "id": document_id,
+            "nodeId": document_id,
             "title": package.form_data.title,
             "children": children,
             "nodeType": "folder",
-            "isRoot": True if package.meta.document_type == "version" else False,
+            "isRoot": False,
             "meta": {"documentType": package.meta.document_type},
         }
 
@@ -34,10 +35,30 @@ class Index:
         document_id = self._get_absolute_path(document.id)
         self.index[document_id] = {
             "id": document_id,
+            "nodeId": document_id,
             "nodeType": "file",
             "isRoot": False,
             "title": document.formData["title"],
+            "children": [],
         }
+
+    # TODO: Replace with data source entity
+    def add_data_source(self, data_source_id: str, data_source_name: str, root_packages: List[RootPackage]):
+        data_source = {
+            "id": data_source_id,
+            "icon": "database",
+            "nodeId": data_source_id,
+            "isRoot": True,
+            "isOpen": True,
+            "isHidden": False,
+            "title": data_source_name,
+            "nodeType": "folder",
+            "children": [
+                self._get_absolute_path(root_package.form_data.latest_version) for root_package in root_packages
+            ],
+            "meta": {"documentType": "datasource"},
+        }
+        self.index[data_source["nodeId"]] = data_source
 
     def to_dict(self):
         return self.index
@@ -60,10 +81,12 @@ class CreateIndexUseCase:
         for sub_package in package.form_data.subpackages:
             self._add_package(index, sub_package)
 
-    def execute(self, data_source_id: str) -> Index:
+    def execute(self, data_source_id: str, data_source_name: str) -> Index:
         index = Index(data_source_id=data_source_id)
         root_packages: List[RootPackage] = self.root_package_repository.list()
         for root_package in root_packages:
             self._add_package(index, root_package.form_data.latest_version)
+
+        index.add_data_source(data_source_id, data_source_name, root_packages)
 
         return index

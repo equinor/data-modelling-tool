@@ -14,9 +14,9 @@ import { DragStart } from 'react-beautiful-dnd'
 import { NodeType } from '../../api/types'
 
 export enum NodeIconType {
-  'file',
-  'folder',
-  'database',
+  'file' = 'file',
+  'folder' = 'folder',
+  'database' = 'database',
 }
 
 export type TreeNodeData = {

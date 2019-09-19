@@ -67,54 +67,11 @@ export class IndexApi extends BaseApi {
   async get(datasource: Datasource) {
     const url = this.dmtApi.indexGet(datasource.id)
     try {
-      const res = !isLocal(datasource)
+      const nodes = !isLocal(datasource)
         ? (await axios(url)).data
         : this.workspace.getItem(url)
-      const nodes = values(res)
 
-      let documents = nodes.map(node => {
-        return {
-          ...node,
-          nodeId: node.id,
-          isOpen: false,
-          children: node.children ? node.children : [],
-        }
-      })
-
-      /*
-      const rootNodes = nodes.filter(
-        (node: TreeNodeData) => node.nodeType === NodeType.rootPackage
-      )*/
-
-      const rootNodes = nodes.filter((node: TreeNodeData) => node.isRoot)
-
-      documents = documents.map((node: TreeNodeData) => {
-        return {
-          ...node,
-          isRoot: false,
-          isOpen: false,
-        }
-      })
-
-      const document: TreeNodeData = {
-        icon: NodeIconType.database,
-        nodeId: datasource.id,
-        isRoot: true,
-        isOpen: true,
-        isHidden: false,
-        title: datasource.name,
-        nodeType: NodeType.folder,
-        children: rootNodes.map(rootNode => rootNode.id),
-        meta: {
-          documentType: NodeType.datasource,
-        },
-      }
-      documents.push(document)
-
-      return documents.reduce((obj, item) => {
-        obj[item.nodeId] = item
-        return obj
-      }, {})
+      return nodes
     } catch (err) {
       console.error(err)
     }

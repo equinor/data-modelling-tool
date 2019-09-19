@@ -19,5 +19,5 @@ def get(data_source_id: str):
         package_repository=package_repository,
         document_repository=document_repository,
     )
-    result = use_case.execute(data_source_id=data_source_id)
+    result = use_case.execute(data_source_id=data_source_id, data_source_name=db.name)
     return Response(json.dumps(result.to_dict()), mimetype="application/json", status=200)
