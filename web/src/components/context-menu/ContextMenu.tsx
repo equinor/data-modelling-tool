@@ -62,6 +62,10 @@ type DmtSubMenuProps = {
   onClickContextMenu: Function
 }
 
+const UnClickable = ({ children }: any) => (
+  <span onClick={(e: any) => e.stopPropagation()}>{children}</span>
+)
+
 const DmtSubMenu = (props: DmtSubMenuProps) => {
   const { id, label, onClickContextMenu, menuItems } = props
 
@@ -71,7 +75,11 @@ const DmtSubMenu = (props: DmtSubMenuProps) => {
     menuItems,
   })
 
-  return <SubMenu title={<span>{label}</span>}>{menuItemsComponents}</SubMenu>
+  return (
+    <UnClickable>
+      <SubMenu title={<span>{label}</span>}>{menuItemsComponents}</SubMenu>
+    </UnClickable>
+  )
 }
 
 type DmtMenuItemProps = {
@@ -89,7 +97,9 @@ const DmtMenuItem = (props: DmtMenuItemProps) => {
   return (
     <MenuItem
       data={{ action: menuItem.action }}
-      onClick={() => {
+      onClick={e => {
+        // click on menu item. Prevent onClick to propagate to components beneath
+        e.stopPropagation()
         onClickContextMenu(id, menuItem.action)
       }}
       attributes={attributes}
@@ -125,7 +135,9 @@ export default (props: ContextMenuProps) => {
       <div>
         <ContextMenuTrigger id={id}>{props.children}</ContextMenuTrigger>
       </div>
-      <ContextMenu id={id}>{menuItemsComponents}</ContextMenu>
+      <ContextMenu data={{ test: 1 }} id={id}>
+        {menuItemsComponents}
+      </ContextMenu>
     </span>
   )
 }

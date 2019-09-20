@@ -14,6 +14,8 @@ interface WithContextMenuProps extends RenderProps {
   configs?: ActionConfig[]
 }
 
+export type SetShowModal = (showModal: boolean) => void
+
 const WithContextMenu = (props: WithContextMenuProps) => {
   return (
     <WithContextMenuModal
@@ -52,7 +54,7 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
         title={action}
         toggle={() => setShowModal(!showModal)}
       >
-        {render({ action, actionConfig })}
+        {render({ action, actionConfig, setShowModal })}
       </Modal>
       <ContextMenu
         id={treeNodeData.nodeId}

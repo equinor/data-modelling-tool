@@ -8,6 +8,7 @@ import DocumentTree, {
 import { TreeNodeData } from '../../components/tree-view/Tree'
 import { NodeType } from '../../api/types'
 import { SelectBlueprintNode } from './nodes/EntityNode'
+import { SetShowModal } from '../common/context-menu-actions/WithContextMenu'
 
 type Props = {
   datasources: Datasource[]
@@ -15,10 +16,12 @@ type Props = {
   sourceNode?: TreeNodeData
   addNode: AddNode
   newFileName: string
+  setShowModal: SetShowModal
 }
 
 export default (props: Props) => {
-  const { datasources, sourceNode, addNode, newFileName } = props
+  const { datasources, sourceNode, addNode, newFileName, setShowModal } = props
+
   return (
     <DocumentTree
       render={(renderProps: RenderProps) => {
@@ -30,6 +33,7 @@ export default (props: Props) => {
               addNode={addNode}
               sourceNode={sourceNode}
               newFileName={newFileName}
+              setShowModal={setShowModal}
             />
           )
         }

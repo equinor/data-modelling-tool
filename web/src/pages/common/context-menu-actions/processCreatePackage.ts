@@ -1,7 +1,7 @@
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
+import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 
 type OnSuccessPostPackage = {
   treeNodeData: TreeNodeData
@@ -16,12 +16,9 @@ export function onSuccess({
 }: OnSuccessPostPackage) {
   return (res: any) => {
     try {
-      const treeNode = new TreeNodeBuilder(res.data)
-        .setOpen(true)
-        .buildFolderNode()
+      const treeNode = new TreeNodeBuilderOld(res.data).setOpen(true).build()
       addNode(treeNode, treeNodeData.nodeId)
       setShowModal(false)
-
       NotificationManager.success(treeNode.nodeId, 'Package created')
     } catch (err) {
       console.log(err)
@@ -30,6 +27,8 @@ export function onSuccess({
 }
 
 export function onError(err: any) {
-  console.log(err)
-  NotificationManager.error(err.statusText, 'failed to create package.')
+  NotificationManager.error(
+    err.statusText || 'Error',
+    'failed to create package.'
+  )
 }
