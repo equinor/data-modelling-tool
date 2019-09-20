@@ -51,6 +51,7 @@ class AddFileToPackageUseCase(uc.UseCase):
         self.package_repository.update(parent_id, sub_package)
         document = Document(id=document_id, template_ref=template_ref)
         self.document_repository.save(document)
+        print("ASDF")
 
         logger.info(f"Added document '{document_id}' to package '{parent_id}'")
         return res.ResponseSuccess(document)

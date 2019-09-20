@@ -7,7 +7,7 @@ def test_without_parameters():
 
     document_repository = mock.Mock()
 
-    def mock_save(document, document_id):
+    def mock_save(document):
         return document
 
     package_repository = mock.Mock()
@@ -24,15 +24,13 @@ def test_without_parameters():
     document_repository.save = mock_save
     use_case = AddFileToPackageUseCase(document_repository=document_repository, package_repository=package_repository)
     request_object = AddFileToPackageRequestObject.from_dict(
-        {
-            "parentId": "parent",
-            "document": {"meta": {"name": "Name", "templateRef": "", "documentType": ""}, "formData": {}},
-        }
+        {"parentId": "parent", "filename": "Name", "templateRef": ""}
     )
-
     response_object = use_case.execute(request_object)
 
     assert bool(response_object) is True
     package_repository.get_by_id.assert_called_with("parent")
 
-    assert response_object.value == {"formData": {}, "meta": {"name": "Name", "templateRef": "", "documentType": ""}}
+    result = response_object.value.to_dict()
+
+    assert result == {"id": "/Name", "formData": {}, "meta": {"documentType": "file", "templateRef": ""}}
