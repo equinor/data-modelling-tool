@@ -6,7 +6,7 @@ import BlueprintReducer, {
 } from '../common/DocumentsReducer'
 import { DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
-import { FolderNode } from './nodes/FolderNode'
+import { SubPackageNode } from './nodes/SubPackageNode'
 import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
 import { RootFolderNode } from './nodes/RootFolderNode'
 import Header from '../../components/Header'
@@ -14,7 +14,7 @@ import AddDatasource from '../common/tree-view/AddDatasource'
 import { DataSourceNode } from './nodes/DataSourceNode'
 import { DocumentType } from '../../util/variables'
 import { NodeType } from '../../api/types'
-import { EntityNode } from '../entities/nodes/EntityNode'
+import { BlueprintNode } from './nodes/BlueprintNode'
 
 const api = new DmtApi()
 
@@ -53,9 +53,9 @@ export default () => {
             case NodeType.rootPackage:
               return <RootFolderNode {...renderProps} />
             case NodeType.subPackage:
-              return <FolderNode {...renderProps} />
+              return <SubPackageNode {...renderProps} />
             case NodeType.file:
-              return <EntityNode {...renderProps} />
+              return <BlueprintNode {...renderProps} />
             case NodeType.datasource:
               return <DataSourceNode {...renderProps} state={state} />
             default:

@@ -23,6 +23,7 @@ interface FetchTemplate extends BASE_CRUD {
 interface PostPackage {
   parentId: string
   formData: any
+  templateRef?: string
   onSuccess: (res: any) => void
   onError?: OnError
 }
@@ -93,11 +94,19 @@ export default class Api2 {
     }
   }
 
-  static postFile(props: PostPackage) {
+  static postEntityFile(props: PostPackage) {
+    return postPackage({
+      nodeType: NodeType.file,
+      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
+      ...props,
+    })
+  }
+
+  static postBlueprintFile(props: PostPackage) {
     return postPackage({
       nodeType: NodeType.file,
       templateRef: 'templates/blueprint',
-      // expecting a new endpoint for postFile
+      // expecting a new endpoint for postBlueprintFile
       url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
       ...props,
     })

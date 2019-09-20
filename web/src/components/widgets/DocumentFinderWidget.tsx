@@ -56,7 +56,9 @@ const BlueprintPickerWrapper = (props: any) => {
       <BlueprintPickerContent
         sourceNode={undefined}
         state={state}
-        dispatch={dispatch}
+        addNode={() => {
+          console.log('not implemented.')
+        }}
       />
     </Modal>
   )

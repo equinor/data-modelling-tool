@@ -3,7 +3,6 @@ import { NotificationManager } from 'react-notifications'
 import { onError, onSuccess } from './processCreatePackage'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2 from '../../../api/Api2'
-import { NodeType } from '../../../api/types'
 import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
@@ -99,6 +98,7 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
         },
       }
     }
+    //@todo remove?
     case ContextMenuActions.addBlueprint: {
       const { treeNodeData } = props
       console.log(treeNodeData)
