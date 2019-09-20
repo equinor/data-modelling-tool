@@ -1,9 +1,9 @@
 from flask import request
-from flask_restful import Resource
+from flask_restful import Resource, abort
+from pymongo.errors import DuplicateKeyError
 
 from rest.validators.mongo_data_source import validate_mongo_data_source
 from services.database import data_modelling_tool_db as database
-from utils.logging import logger
 from config import Config
 
 collection = database[f"{Config.DATA_SOURCES_COLLECTION}"]
@@ -22,10 +22,13 @@ def data_source_post(id):
     document = request.get_json()
     validate_mongo_data_source(document)
     document["_id"] = id
-    logger.info(f"Inserting new data-source with id {document['_id']}.")
-    result = collection.insert_one(document)
-    logger.info(f"Successfully inserted with id {result}")
-    return str(result.inserted_id)
+    try:
+        result = collection.insert_one(document)
+        return str(result.inserted_id)
+    except DuplicateKeyError:
+        return abort(400, message=f"Error: A data-source with name {id} already exists")
+    except Exception as error:
+        return abort(500, message=f"Error: Something went wrong. {error}")
 
 
 def data_source_put(id):
@@ -40,7 +43,7 @@ def data_source_delete(id):
     return result.acknowledged
 
 
-class SingleDataSource(Resource):
+class DataSource(Resource):
     @staticmethod
     def post(id):
         return data_source_post(id)
