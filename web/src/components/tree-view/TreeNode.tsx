@@ -52,8 +52,14 @@ const Content = styled.div`
 
 const TreeNode = (props: TreeNodeProps) => {
   const { node, level, NodeRenderer, updateNode, addNode, handleToggle } = props
-  const expandableNodeTypes = [NodeType.folder]
-  const isFolder = [NodeType.folder].includes(node.nodeType)
+  const expandableNodeTypes = [
+    NodeType.rootPackage,
+    NodeType.subPackage,
+    NodeType.datasource,
+  ]
+  const isFolder = [NodeType.subPackage, NodeType.rootPackage].includes(
+    node.nodeType
+  )
   const hasIcon = node.icon !== undefined
   return (
     <div>

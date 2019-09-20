@@ -39,11 +39,10 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
               const node: TreeNodeData = {
                 nodeId: `${dataSourceId}/${res.id}`,
                 title: res.filename,
-                nodeType: NodeType.file,
+                // nodeType: NodeType.file,
                 isRoot: false,
-                meta: {
-                  documentType: res.documentType,
-                },
+                nodeType: res.documentType,
+                isOpen: false,
               }
               addNode(node, treeNodeData.nodeId)
               setShowModal(false)

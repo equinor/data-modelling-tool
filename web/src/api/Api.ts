@@ -2,7 +2,7 @@ import axios from 'axios'
 import values from 'lodash/values'
 
 import Workspace from '../util/localWorkspace'
-import { NodeIconType, TreeNodeData } from '../components/tree-view/Tree'
+import { TreeNodeData } from '../components/tree-view/Tree'
 import { NodeType } from './types'
 
 function isLocal(datasource: Datasource): boolean {
@@ -67,11 +67,47 @@ export class IndexApi extends BaseApi {
   async get(datasource: Datasource) {
     const url = this.dmtApi.indexGet(datasource.id)
     try {
-      const nodes = !isLocal(datasource)
+      const res = !isLocal(datasource)
         ? (await axios(url)).data
         : this.workspace.getItem(url)
+      const nodes = values(res)
 
-      return nodes
+      let documents = nodes.map(node => {
+        return {
+          ...node,
+          nodeId: node.id,
+          isOpen: false,
+          children: node.children ? node.children : [],
+        }
+      })
+
+      const rootNodes = nodes.filter(
+        (node: TreeNodeData) => node.nodeType === NodeType.rootPackage
+      )
+
+      documents = documents.map((node: TreeNodeData) => {
+        return {
+          ...node,
+          isRoot: false,
+          isOpen: false,
+        }
+      })
+
+      const document: TreeNodeData = {
+        nodeId: datasource.id,
+        isRoot: true,
+        isOpen: false,
+        isHidden: false,
+        title: datasource.name,
+        nodeType: NodeType.datasource,
+        children: rootNodes.map(rootNode => rootNode.id),
+      }
+      documents.push(document)
+
+      return documents.reduce((obj, item) => {
+        obj[item.nodeId] = item
+        return obj
+      }, {})
     } catch (err) {
       console.error(err)
     }
@@ -97,7 +133,7 @@ export class DmtApi {
   }
 
   indexGet(datasourceId: string) {
-    return `/api/index-v2/${datasourceId}`
+    return `/api/index/${datasourceId}`
   }
 
   indexPost(dataSourceId: string): string {
@@ -173,5 +209,5 @@ export type IndexNode = {
   isRoot: boolean
   isOpen?: boolean
   children?: string[]
-  meta: object
+  meta?: object
 }
