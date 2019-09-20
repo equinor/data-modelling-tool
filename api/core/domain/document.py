@@ -1,7 +1,9 @@
+from pathlib import Path
+
+
 class DocumentMeta:
-    def __init__(self, name: str = None, document_type: str = None, template_ref: str = None):
-        self.name = name
-        self.document_type = document_type
+    def __init__(self, template_ref: str):
+        self.document_type = "file"
         self.template_ref = template_ref
 
     def get_template_data_source_id(self):
@@ -12,31 +14,33 @@ class DocumentMeta:
 
     @classmethod
     def from_dict(cls, adict):
-        return cls(
-            name=adict["name"],
-            document_type=adict.get("documentType", None),
-            template_ref=adict.get("templateRef", None),
-        )
+        return cls(template_ref=adict.get("templateRef"))
 
     def to_dict(self):
-        return {"name": self.name, "documentType": self.document_type, "templateRef": self.template_ref}
+        return {"documentType": self.document_type, "templateRef": self.template_ref}
 
 
 class Document:
-    def __init__(self, id=None, meta: DocumentMeta = None, formData=None):
+    def __init__(self, id: str, template_ref: str):
         self.id = id
-        self.meta = meta
-        self.formData = formData
+        self.meta = DocumentMeta(template_ref=template_ref)
+        self.form_data = {}
 
     def validate(self):
         pass
 
+    @property
+    def filename(self) -> str:
+        return Path(self.id).name
+
     @classmethod
     def from_dict(cls, adict):
-        return cls(id=adict.get("id", None), meta=DocumentMeta.from_dict(adict["meta"]), formData=adict["formData"])
+        instance = cls(id=adict.get("id"), template_ref=adict["meta"]["templateRef"])
+        instance.form_data = adict["formData"]
+        return instance
 
     def to_dict(self):
-        result = {"meta": self.meta.to_dict(), "formData": self.formData}
+        result = {"meta": self.meta.to_dict(), "formData": self.form_data}
         if self.id:
             result["id"] = self.id
         return result

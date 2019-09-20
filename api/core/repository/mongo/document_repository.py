@@ -17,6 +17,6 @@ class DocumentRepository(MongoRepositoryBase):
         adict = document.to_dict()
         return self.c().update(adict, document_id)
 
-    def save(self, document: Document, document_id: str) -> Document:
-        document.id = self.c().create_form(document.to_dict(), _id=document_id)
+    def save(self, document: Document) -> Document:
+        document.id = self.c().create_form(document.to_dict(), _id=document.id)
         return document

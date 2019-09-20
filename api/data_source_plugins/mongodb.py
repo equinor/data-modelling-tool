@@ -1,9 +1,9 @@
 from flask import abort
 from pymongo import MongoClient
-from pymongo.errors import ServerSelectionTimeoutError
+from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
 
 from classes.package_request import DocumentType
-from utils.logging import logger
+from core.repository.repository_exceptions import DocumentAlreadyExistsException
 
 
 class MongodbClient:
@@ -61,13 +61,9 @@ class MongodbClient:
 
     def read_form(self, _id):
         result = self.handler[self.collection].find_one(filter={"_id": _id})
-        if not result:
-            logger.warning(f"The document with id = {_id} was not found. {self.collection}")
-            raise Exception(f"The document with id = {_id} was not found in collection = {self.collection}")
-            # return #abort(404)
-        else:
+        if result:
             result["id"] = _id
-            return result
+        return result
 
     def delete_form(self, _id):
         return self.handler[self.collection].delete_one(filter={"_id": _id}).acknowledged
@@ -93,3 +89,10 @@ class MongodbClient:
             return abort(404)
         else:
             return result
+
+    def create(self, document):
+        document["_id"] = document["id"]
+        try:
+            self.handler[self.collection].insert_one(document).inserted_id
+        except DuplicateKeyError:
+            raise DocumentAlreadyExistsException(document["id"])

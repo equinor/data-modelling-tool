@@ -15,7 +15,7 @@ class MongoRepositoryBase(object):
 
     def convert_to_model(self, d):
         # del d["_id"]
-        return self.Meta.model().from_dict(d)
+        return self.Meta.model.from_dict(d)
 
         # x = self.Meta.model(id=d["_id"])
         # x.__dict__.update(d)

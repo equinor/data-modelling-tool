@@ -16,31 +16,17 @@ Feature: Explorer
     """
     {
       "parentId": "package_1/1.0.0/package",
-      "document": {
-        "meta": {
-           "name": "new file",
-           "templateRef": "",
-           "documentType": "file"
-        },
-        "formData": {
-
-        }
-      }
+      "filename": "new_file",
+      "templateRef": ""
     }
     """
     Then the response status should be "OK"
     And the response should equal
     """
     {
-      "id": "package_1/1.0.0/new file",
-      "formData":{
-
-      },
-      "meta":{
-        "name":"new file",
-        "templateRef":"",
-        "documentType": "file"
-      }
+      "id": "package_1/1.0.0/new_file",
+      "filename": "new_file",
+      "documentType": "file"
     }
     """
 
@@ -50,16 +36,8 @@ Feature: Explorer
     """
     {
       "parentId": "package_1/3.3.3/package",
-      "document": {
-        "meta": {
-           "name": "new file",
-           "templateRef": "",
-           "documentType": "file"
-        },
-        "formData": {
-
-        }
-      }
+      "filename": "new_file",
+      "templateRef": ""
     }
     """
     Then the response status should be "System Error"
@@ -67,7 +45,7 @@ Feature: Explorer
     """
     {
       "type": "SYSTEM_ERROR",
-      "message": "Exception: The document with id = package_1/3.3.3/package was not found in collection = documents"
+      "message": "Exception: The parent, with id package_1/3.3.3/package, was not found"
     }
     """
 
@@ -76,15 +54,8 @@ Feature: Explorer
     When i make a "POST" request
     """
     {
-      "document": {
-        "meta": {
-           "name": "new file",
-           "templateRef": "",
-           "documentType": "file"
-        },
-        "formData": {
-        }
-      }
+      "filename": "new_file",
+      "templateRef": ""
     }
     """
     Then the response status should be "Bad Request"

@@ -36,7 +36,7 @@ def step_impl_equal(context):
     actual = context.response_json
     data = context.text or context.data
     expected = json.loads(data)
-    result = DeepDiff(actual, expected, ignore_order=True)
+    result = DeepDiff(expected, actual, ignore_order=True)
     if result != {}:
         print(result)
     assert result == {}

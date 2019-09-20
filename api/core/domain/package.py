@@ -1,5 +1,7 @@
-from typing import List
+from typing import List, NewType
 from os.path import dirname
+
+DocumentId = NewType("DocumentId", str)
 
 
 class PackageMeta:
@@ -49,28 +51,29 @@ class SubPackageData:
 
 
 class SubPackage:
-    def __init__(self, id: str = None, meta: PackageMeta = None, form_data: SubPackageData = None):
+    def __init__(self, id: DocumentId, meta: PackageMeta = None, form_data: SubPackageData = None):
         self.id = id
         self.meta = meta
         self.form_data = form_data
 
-    def _get_package_path(self):
+    @property
+    def path(self) -> str:
         return dirname(self.id)
 
-    def add_file(self, filename):
-        document_id = f"{self._get_package_path()}/{filename}"
+    def add_file(self, filename) -> DocumentId:
+        document_id: DocumentId = f"{self.path}/{filename}"
         self.form_data.files.append(document_id)
         return document_id
 
     def add_subpackage(self, filename):
-        document_id = f"{self._get_package_path()}/{filename}/package"
+        document_id = f"{self.path}/{filename}/package"
         self.form_data.subpackages.append(document_id)
         return document_id
 
     @classmethod
     def from_dict(cls, adict):
         return cls(
-            id=adict.get("id", None),
+            id=adict.get("id"),
             meta=PackageMeta.from_dict(adict["meta"]),
             form_data=SubPackageData.from_dict(adict["formData"]),
         )
