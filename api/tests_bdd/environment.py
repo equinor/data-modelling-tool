@@ -1,4 +1,4 @@
-from app import create_app, init_import_internal
+from app import create_app
 from tests_bdd.results import print_overview_features, print_overview_errors
 from config import Config
 from services.database import data_modelling_tool_db, model_db
@@ -21,7 +21,7 @@ def before_all(context):
 
     with app.app_context():
         clear_databases()
-        init_import_internal("templates")
+        # init_import_internal("templates")
 
 
 def after_all(context):
@@ -37,7 +37,7 @@ def before_scenario(context, scenario):
     context.client = app.test_client()
     context.ctx = app.test_request_context()
     context.ctx.push()
-    init_import_internal("templates")
+    # init_import_internal("templates")
 
 
 def after_scenario(context, scenario):

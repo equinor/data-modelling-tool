@@ -31,6 +31,6 @@
   hooks:
     - id: web tests
       name: run web tests
-      entry: sh -c "cd web && CI=true npm run coverage && node_modules/.bin/jest-badges-readme"
+      entry: sh -c "cd web && CI=true npm run coverage"
       language: system
       files: ^web/.*\.(test.ts|test.tsx|test.js)$

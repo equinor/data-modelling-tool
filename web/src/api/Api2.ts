@@ -27,6 +27,14 @@ interface PostPackage {
   onError?: OnError
 }
 
+interface AddFile {
+  nodeId: string
+  filename: string
+  onSuccess: (res: any, dataSourceId: string) => void
+  onError?: OnError
+  templateRef?: string
+}
+
 /**
  * methods must static since we they are passed around, while the class instance is not.
  *
@@ -113,6 +121,29 @@ export default class Api2 {
       url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
       ...props,
     })
+  }
+
+  static addBlueprintFile({
+    nodeId,
+    filename,
+    templateRef = 'templates/blueprint',
+    onSuccess,
+    onError = () => {},
+  }: AddFile) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
+    const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
+    const url = api.addFile(dataSourceId)
+    const data = {
+      parentId,
+      filename,
+      templateRef,
+    }
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data, dataSourceId))
+      .catch(onError)
   }
 }
 

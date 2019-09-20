@@ -9,6 +9,7 @@ export class TreeNodeBuilder {
   isOpen: boolean
   isRoot: boolean
   nodeType: NodeType
+  meta: object
 
   constructor(node: IndexNode) {
     this.nodeId = node.id
@@ -17,6 +18,7 @@ export class TreeNodeBuilder {
     this.isOpen = node.isOpen || false
     this.nodeType = node.nodeType
     this.children = node.children || []
+    this.meta = node.meta || {}
   }
 
   setOpen(open: boolean) {

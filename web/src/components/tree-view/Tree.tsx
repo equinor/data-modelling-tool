@@ -13,6 +13,12 @@ import DraggableWrapper from '../dnd/DraggableWrapper'
 import { DragStart } from 'react-beautiful-dnd'
 import { NodeType } from '../../api/types'
 
+export enum NodeIconType {
+  'file' = 'file',
+  'folder' = 'folder',
+  'database' = 'database',
+}
+
 export type TreeNodeData = {
   nodeId: string
   nodeType: NodeType
@@ -21,6 +27,7 @@ export type TreeNodeData = {
   isRoot: boolean
   isHidden?: boolean
   children?: string[]
+  icon?: NodeIconType
 }
 
 type TreeProps = {

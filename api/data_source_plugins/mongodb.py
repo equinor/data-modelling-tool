@@ -1,9 +1,9 @@
 from flask import abort
 from pymongo import MongoClient
-from pymongo.errors import ServerSelectionTimeoutError
+from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
 
 from classes.package_request import DocumentType
-from utils.logging import logger
+from core.repository.repository_exceptions import DocumentAlreadyExistsException
 
 
 class MongodbClient:
@@ -20,6 +20,12 @@ class MongodbClient:
             serverSelectionTimeoutMS=5000,
         )[database]
         self.collection = collection
+
+    def update(self, form, _id):
+        try:
+            return self.handler[self.collection].update_one({"_id": _id}, {"$set": form}, upsert=True).acknowledged
+        except Exception as error:
+            return abort(500, error)
 
     def update_form(self, form, _id):
         try:
@@ -55,12 +61,9 @@ class MongodbClient:
 
     def read_form(self, _id):
         result = self.handler[self.collection].find_one(filter={"_id": _id})
-        if not result:
-            logger.warning(f"The document with id = {_id} was not found. {self.collection}")
-            return abort(404)
-        else:
-            print(result)
-            return result
+        if result:
+            result["id"] = _id
+        return result
 
     def delete_form(self, _id):
         return self.handler[self.collection].delete_one(filter={"_id": _id}).acknowledged
@@ -79,3 +82,17 @@ class MongodbClient:
             return [package for package in result]
         except ServerSelectionTimeoutError as error:
             return abort(500, error._message)
+
+    def find(self, filter):
+        result = self.handler[self.collection].find(filter=filter)
+        if not result:
+            return abort(404)
+        else:
+            return result
+
+    def create(self, document):
+        document["_id"] = document["id"]
+        try:
+            self.handler[self.collection].insert_one(document).inserted_id
+        except DuplicateKeyError:
+            raise DocumentAlreadyExistsException(document["id"])

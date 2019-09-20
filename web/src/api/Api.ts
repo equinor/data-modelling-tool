@@ -175,6 +175,16 @@ export class DmtApi {
   documentPut(documentId: string) {
     return `/api/data-sources/${documentId}`
   }
+
+  // Explorer
+
+  addFile(datasourceId: string) {
+    return `/api/explorer/${datasourceId}/add-file`
+  }
+
+  addPackage(datasourceId: string) {
+    return `/api/explorer/${datasourceId}/add-package`
+  }
 }
 
 export enum DataSourceType {
@@ -199,4 +209,5 @@ export type IndexNode = {
   isRoot: boolean
   isOpen?: boolean
   children?: string[]
+  meta?: object
 }

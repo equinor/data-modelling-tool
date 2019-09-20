@@ -38,7 +38,7 @@ def step_impl_2(context, package_name, collection):
                 "meta": {{
                     "name": "package",
                     "documentType": "version",
-                    "templateRef": "template/package-template"
+                    "templateRef": "templates/package-template"
                 }},
                 "formData": {{
                     "title": "{row['title']}",

@@ -18,10 +18,11 @@ Feature: Document
     """
     {
       "_id": "package_1/1.0.0/package",
+      "id": "package_1/1.0.0/package",
       "meta": {
         "name": "package",
         "documentType": "version",
-        "templateRef": "template/package-template"
+        "templateRef": "templates/package-template"
       },
       "formData": {
         "title": "package 1",

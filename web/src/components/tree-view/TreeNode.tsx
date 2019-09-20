@@ -8,7 +8,7 @@ import {
   FaDatabase,
 } from 'react-icons/fa'
 import styled from 'styled-components'
-import { TreeNodeData } from './Tree'
+import { NodeIconType, TreeNodeData } from './Tree'
 import { NodeType } from '../../api/types'
 
 type StyledTreeNode = {
@@ -60,6 +60,7 @@ const TreeNode = (props: TreeNodeProps) => {
   const isFolder = [NodeType.subPackage, NodeType.rootPackage].includes(
     node.nodeType
   )
+  const hasIcon = node.icon !== undefined
   return (
     <div>
       <StyledTreeNode level={level}>
@@ -69,10 +70,10 @@ const TreeNode = (props: TreeNodeProps) => {
         </NodeIcon>
 
         <NodeIcon marginRight={5}>
-          {node.nodeType === NodeType.datasource && <FaDatabase />}
-          {node.nodeType === NodeType.file && <FaFile />}
-          {isFolder && node.isOpen && <FaFolderOpen />}
-          {isFolder && !node.isOpen && <FaFolder />}
+          {node.icon === NodeIconType.database && <FaDatabase />}
+          {!hasIcon && node.nodeType === NodeType.file && <FaFile />}
+          {!hasIcon && isFolder && node.isOpen && <FaFolderOpen />}
+          {!hasIcon && isFolder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
         <Content
