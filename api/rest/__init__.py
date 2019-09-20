@@ -6,7 +6,7 @@ from rest.data_source_consumers.document import Document
 
 # from rest.data_source_consumers.index import Index
 from rest.data_source_consumers.packages import Packages
-from rest.data_sources import SingleDataSource
+from rest.data_sources import DataSource
 from rest.template import Template
 
 
@@ -34,8 +34,8 @@ def create_api(app):
     # Get DMT-templates
     api.add_resource(Template, "/api/v1/templates/<path:id>")
 
-    # Create, update, or delete a data-source
-    api.add_resource(SingleDataSource, "/api/v1/data-sources/<string:id>", "/api/v1/data-sources")
+    # Create, update, or delete a  single data-source, or GET all
+    api.add_resource(DataSource, "/api/data-sources/<string:id>", "/api/data-sources")
 
     # Not currently used by front end
     # api.add_resource(Transformer, "/api/transformer/json-schema")

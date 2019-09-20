@@ -14,7 +14,8 @@
       "name": {
         "type": "string",
         "title": "Name",
-        "minLength": 3
+        "minLength": 3,
+        "pattern": "^[a-zA-Z0-9_\\-]*$"
       },
       "host": {
         "type": "string",
