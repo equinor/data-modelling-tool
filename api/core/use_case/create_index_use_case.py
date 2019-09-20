@@ -38,7 +38,7 @@ class Index:
             "nodeId": document_id,
             "nodeType": "file",
             "isRoot": False,
-            "title": document.formData["title"],
+            "title": document.filename,
             "children": [],
         }
 

@@ -32,26 +32,20 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
-          /*Api2.addFile({
+          Api2.addBlueprintFile({
             nodeId: treeNodeData.nodeId,
-            formData,
-            onSuccess: (res: any) => {
-              const newTreeNode: TreeNodeData = new TreeNodeBuilder(
-                res.data
-              ).buildFileNode()
-              addNode(newTreeNode, treeNodeData.nodeId)
-              setShowModal(false)
-            },
-            onError: (err: any) => console.error(Object.keys(err)),
-          })*/
-          Api2.postFile({
-            parentId: treeNodeData.nodeId,
-            formData,
-            onSuccess: (res: any) => {
-              const newTreeNode: TreeNodeData = new TreeNodeBuilder(
-                res.data
-              ).buildFileNode()
-              addNode(newTreeNode, treeNodeData.nodeId)
+            filename: formData.title,
+            onSuccess: (res: any, dataSourceId: string) => {
+              const node: TreeNodeData = {
+                nodeId: `${dataSourceId}/${res.id}`,
+                title: res.filename,
+                nodeType: NodeType.file,
+                isRoot: false,
+                meta: {
+                  documentType: res.documentType,
+                },
+              }
+              addNode(node, treeNodeData.nodeId)
               setShowModal(false)
             },
             onError: (err: any) => console.error(Object.keys(err)),

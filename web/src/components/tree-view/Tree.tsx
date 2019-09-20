@@ -22,7 +22,7 @@ export enum NodeIconType {
 export type TreeNodeData = {
   nodeId: string
   nodeType: NodeType
-  isOpen: boolean
+  isOpen?: boolean
   title: string
   isRoot: boolean
   isHidden?: boolean

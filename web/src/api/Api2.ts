@@ -29,8 +29,8 @@ interface PostPackage {
 
 interface AddFile {
   nodeId: string
-  formData: any
-  onSuccess: (res: any) => void
+  filename: string
+  onSuccess: (res: any, dataSourceId: string) => void
   onError?: OnError
   templateRef?: string
 }
@@ -123,29 +123,26 @@ export default class Api2 {
     })
   }
 
-  static addFile({
+  static addBlueprintFile({
     nodeId,
-    formData,
+    filename,
     templateRef = 'templates/blueprint',
     onSuccess,
     onError = () => {},
   }: AddFile) {
+    // local-blueprints-equinor
     const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
     const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
     const url = api.addFile(dataSourceId)
     const data = {
-      document: {
-        meta: {
-          name: formData.title,
-          templateRef,
-        },
-        formData: formData,
-      },
       parentId,
+      filename,
+      templateRef,
     }
     axios
       .post(url, data)
-      .then(response => onSuccess(response))
+      .then(response => onSuccess(response.data, dataSourceId))
       .catch(onError)
   }
 }
