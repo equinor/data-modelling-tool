@@ -11,12 +11,12 @@ class DocumentRepository(MongoRepositoryBase):
 
     def get_by_id(self, document_id: str) -> Document:
         result = self.c().read_form(document_id)
-        return self.convert_to_model(result)
+        if result:
+            return self.convert_to_model(result)
 
     def update(self, document_id: str, document: Document) -> Document:
         adict = document.to_dict()
         return self.c().update(adict, document_id)
 
-    def save(self, document: Document) -> Document:
-        document.id = self.c().create_form(document.to_dict(), _id=document.id)
-        return document
+    def save(self, document: Document) -> None:
+        self.c().create(document.to_dict())

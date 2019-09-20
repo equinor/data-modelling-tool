@@ -51,7 +51,7 @@ def add_package_to_package(data_source_id: str):
 
     use_case = AddPackageToPackageUseCase(package_repository=package_repository)
 
-    sub_package = SubPackage().from_dict(request_data["document"])
+    sub_package = SubPackage.from_dict(request_data["document"])
     added_sub_package = use_case.execute(request_data["parentId"], sub_package)
 
     return Response(json.dumps(added_sub_package.to_dict(), cls=DocumentSerializer), mimetype="application/json")

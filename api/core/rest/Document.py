@@ -43,6 +43,7 @@ def post(data_source_id: str, document_id: str):
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
     document = Document.from_dict(data)
+    document.id = document_id
 
     add_use_case = AddDocumentUseCase(document_repository)
     add_use_case.execute(document_id, document)

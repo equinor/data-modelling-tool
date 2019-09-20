@@ -20,8 +20,9 @@ class AddDocumentUseCase:
             template = form_to_schema(self.document_repo.get_by_id(document.meta.template_ref))
 
         try:
-            validate(instance=document.formData, schema=template.schema)
+            validate(instance=document.form_data, schema=template.schema)
         except ValidationError as error:
             raise error
 
-        return self.document_repo.save(document, document_id)
+        self.document_repo.save(document)
+        return document

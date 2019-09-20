@@ -18,6 +18,5 @@ class PackageRepository(MongoRepositoryBase):
         adict = package.to_dict()
         return self.c().update(adict, package_id)
 
-    def save(self, document: SubPackage) -> SubPackage:
-        document.id = self.c().create_form(document.to_dict())
-        return document
+    def save(self, document: SubPackage) -> None:
+        self.c().create(document.to_dict())

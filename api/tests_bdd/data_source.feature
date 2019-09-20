@@ -26,6 +26,7 @@ Feature: Data Source
 
   Scenario Outline: Create new data source
     Given i access the resource url "/api/data-sources/myTest-DataSource"
+    And data modelling tool templates are imported
     When i make a "POST" request
       """
        {
@@ -54,6 +55,7 @@ Feature: Data Source
 
   Scenario: Update data source
     Given i access the resource url "/api/data-sources/equinor-models"
+    And data modelling tool templates are imported
     When i make a "PUT" request
       """
         {
