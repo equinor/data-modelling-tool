@@ -16,8 +16,8 @@ class MongoRootPackageRepository(MongoRepositoryBase, RootPackageRepository):
         root_packages = self.c().find(filters={"meta.documentType": DocumentType.ROOT_PACKAGE.value})
         return [RootPackage.from_dict(r) for r in root_packages]
 
-    def add(self, document: RootPackage) -> None:
-        self.c().add(document.to_dict())
+    def add(self, root_package: RootPackage) -> None:
+        self.c().add(root_package.to_dict())
 
     def update(self, root_package: RootPackage) -> None:
         raise NotImplementedError()

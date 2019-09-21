@@ -15,11 +15,11 @@ class MongoSubPackageRepository(MongoRepositoryBase, SubPackageRepository):
         if result:
             return self.convert_to_model(result)
 
-    def update(self, package: SubPackage) -> None:
-        self.c().update(package.id, package.to_dict())
+    def update(self, sub_package: SubPackage) -> None:
+        self.c().update(sub_package.id, sub_package.to_dict())
 
-    def add(self, document: SubPackage) -> None:
-        self.c().add(document.to_dict())
+    def add(self, sub_package: SubPackage) -> None:
+        self.c().add(sub_package.to_dict())
 
     def delete(self, sub_package: SubPackage) -> None:
         raise NotImplementedError()
