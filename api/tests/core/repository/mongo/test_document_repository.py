@@ -1,6 +1,6 @@
 import pytest
 from unittest import mock
-from core.repository.mongo.document_repository import DocumentRepository
+from core.repository.mongo.document_repository import MongoDocumentRepository
 
 
 @pytest.fixture
@@ -10,6 +10,6 @@ def document_dict():
 
 def test_repository(document_dict):
     db = mock.Mock()
-    db.client.read_form.return_value = document_dict
-    repo = DocumentRepository(db)
-    assert repo.get_by_id("document").to_dict() == document_dict
+    db.get.return_value = document_dict
+    repo = MongoDocumentRepository(db)
+    assert repo.get("document").to_dict() == document_dict

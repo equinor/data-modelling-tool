@@ -17,12 +17,12 @@ class AddDocumentUseCase:
         if document.meta.get_template_data_source_id() == "templates":
             template = get_template_by_id(document.meta.get_template_name())
         else:
-            template = form_to_schema(self.document_repo.get_by_id(document.meta.template_ref))
+            template = form_to_schema(self.document_repo.get(document.meta.template_ref))
 
         try:
             validate(instance=document.form_data, schema=template.schema)
         except ValidationError as error:
             raise error
 
-        self.document_repo.save(document)
+        self.document_repo.add(document)
         return document

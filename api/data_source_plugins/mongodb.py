@@ -3,7 +3,7 @@ from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
 
 from classes.package_request import DocumentType
-from core.repository.repository_exceptions import DocumentAlreadyExistsException
+from core.repository.repository_exceptions import EntityAlreadyExistsException
 
 
 class MongodbClient:
@@ -95,4 +95,4 @@ class MongodbClient:
         try:
             self.handler[self.collection].insert_one(document).inserted_id
         except DuplicateKeyError:
-            raise DocumentAlreadyExistsException(document["id"])
+            raise EntityAlreadyExistsException(document["id"])

@@ -1,8 +1,8 @@
-from core.domain.package import SubPackage
+from core.domain.sub_package import SubPackage
 from core.domain.root_package import RootPackage
 from core.domain.document import Document
-from core.repository.mongo.package_repository import PackageRepository
-from core.repository.mongo.document_repository import DocumentRepository
+from core.repository.interface.sub_package_repository import SubPackageRepository
+from core.repository.interface.document_repository import DocumentRepository
 from typing import List
 
 
@@ -66,17 +66,20 @@ class Index:
 
 class CreateIndexUseCase:
     def __init__(
-        self, root_package_repository, package_repository: PackageRepository, document_repository: DocumentRepository
+        self,
+        root_package_repository,
+        package_repository: SubPackageRepository,
+        document_repository: DocumentRepository,
     ):
         self.root_package_repository = root_package_repository
         self.package_repository = package_repository
         self.document_repository = document_repository
 
     def _add_package(self, index: Index, package_id: str):
-        package: SubPackage = self.package_repository.get_by_id(package_id)
+        package: SubPackage = self.package_repository.get(package_id)
         index.add_package(package)
         for file in package.form_data.files:
-            document = self.document_repository.get_by_id(file)
+            document = self.document_repository.get(file)
             index.add_file(document)
         for sub_package in package.form_data.subpackages:
             self._add_package(index, sub_package)

@@ -11,7 +11,7 @@ blueprint = Blueprint("index", __name__)
 def get(data_source_id: str):
     db = DataSource(id=data_source_id)
     root_package_repository = get_repository(RepositoryType.RootPackageRepository, db)
-    package_repository = get_repository(RepositoryType.PackageRepository, db)
+    package_repository = get_repository(RepositoryType.SubPackageRepository, db)
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
     use_case = CreateIndexUseCase(

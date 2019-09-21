@@ -1,22 +1,25 @@
 from core.domain.document import Document
 from core.repository.mongo.mongo_repository_base import MongoRepositoryBase
+from core.repository.interface.document_repository import DocumentRepository
 
 
-class DocumentRepository(MongoRepositoryBase):
+class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
     class Meta:
         model = Document
 
     def __init__(self, db):
         super().__init__(db)
 
-    def get_by_id(self, document_id: str) -> Document:
-        result = self.c().read_form(document_id)
+    def get(self, uid: str) -> Document:
+        result = self.c().get(uid)
         if result:
             return self.convert_to_model(result)
 
-    def update(self, document_id: str, document: Document) -> Document:
-        adict = document.to_dict()
-        return self.c().update(adict, document_id)
+    def update(self, document: Document) -> None:
+        self.c().update(document.id, document.to_dict())
 
-    def save(self, document: Document) -> None:
-        self.c().create(document.to_dict())
+    def add(self, document: Document) -> None:
+        self.c().add(document.to_dict())
+
+    def delete(self, document: Document) -> None:
+        pass

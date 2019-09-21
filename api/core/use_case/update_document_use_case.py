@@ -1,11 +1,13 @@
 from core.domain.document import Document
+from core.repository.interface.document_repository import DocumentRepository
 
 
 class UpdateDocumentUseCase:
-    def __init__(self, document_repo):
-        self.document_repo = document_repo
+    def __init__(self, document_repository: DocumentRepository):
+        self.document_repository = document_repository
 
     def execute(self, document_id: str, form_data: dict) -> Document:
-        document: Document = self.document_repo.get_by_id(document_id)
+        document: Document = self.document_repository.get(document_id)
         document.form_data = form_data
-        return self.document_repo.update(document_id, document)
+        self.document_repository.update(document)
+        return document

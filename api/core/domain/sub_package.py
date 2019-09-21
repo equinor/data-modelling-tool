@@ -4,7 +4,7 @@ from os.path import dirname
 DocumentId = NewType("DocumentId", str)
 
 
-class PackageMeta:
+class SubPackageMeta:
     def __init__(self, name: str = None, document_type: str = None, template_ref: str = None):
         self.name = name
         self.document_type = document_type
@@ -51,7 +51,7 @@ class SubPackageData:
 
 
 class SubPackage:
-    def __init__(self, id: DocumentId, meta: PackageMeta = None, form_data: SubPackageData = None):
+    def __init__(self, id: DocumentId, meta: SubPackageMeta = None, form_data: SubPackageData = None):
         self.id = id
         self.meta = meta
         self.form_data = form_data
@@ -74,7 +74,7 @@ class SubPackage:
     def from_dict(cls, adict):
         return cls(
             id=adict.get("id"),
-            meta=PackageMeta.from_dict(adict["meta"]),
+            meta=SubPackageMeta.from_dict(adict["meta"]),
             form_data=SubPackageData.from_dict(adict["formData"]),
         )
 

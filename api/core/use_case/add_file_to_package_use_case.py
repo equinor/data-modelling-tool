@@ -1,9 +1,11 @@
 from core.domain.document import Document
-from core.domain.package import SubPackage
+from core.domain.sub_package import SubPackage
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
+from core.repository.interface.sub_package_repository import SubPackageRepository
+from core.repository.interface.document_repository import DocumentRepository
 
 
 class AddFileToPackageRequestObject(req.ValidRequestObject):
@@ -34,24 +36,23 @@ class AddFileToPackageRequestObject(req.ValidRequestObject):
 
 
 class AddFileToPackageUseCase(uc.UseCase):
-    def __init__(self, document_repository, package_repository):
+    def __init__(self, document_repository: DocumentRepository, sub_package_repository: SubPackageRepository):
         self.document_repository = document_repository
-        self.package_repository = package_repository
+        self.sub_package_repository = sub_package_repository
 
     def process_request(self, request_object):
         parent_id: str = request_object.parent_id
         filename: str = request_object.filename
         template_ref: str = request_object.template_ref
 
-        sub_package: SubPackage = self.package_repository.get_by_id(parent_id)
+        sub_package: SubPackage = self.sub_package_repository.get(parent_id)
         if not sub_package:
             raise Exception(f"The parent, with id {parent_id}, was not found")
 
         document_id = sub_package.add_file(filename)
-        self.package_repository.update(parent_id, sub_package)
+        self.sub_package_repository.update(sub_package)
         document = Document(id=document_id, template_ref=template_ref)
-        self.document_repository.save(document)
-        print("ASDF")
+        self.document_repository.add(document)
 
         logger.info(f"Added document '{document_id}' to package '{parent_id}'")
         return res.ResponseSuccess(document)

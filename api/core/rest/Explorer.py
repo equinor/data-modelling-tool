@@ -6,7 +6,7 @@ from core.serializers.add_file_json_serializer import AddFileSerializer
 from core.repository.repository_factory import get_repository, RepositoryType
 from core.use_case.add_file_to_package_use_case import AddFileToPackageUseCase, AddFileToPackageRequestObject
 from core.use_case.add_package_to_package_use_case import AddPackageToPackageUseCase
-from core.domain.package import SubPackage
+from core.domain.sub_package import SubPackage
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase
 from core.domain.root_package import RootPackage
@@ -27,9 +27,11 @@ def add_file_to_package(data_source_id: str):
     request_data = request.get_json()
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
-    package_repository = get_repository(RepositoryType.PackageRepository, db)
+    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
 
-    use_case = AddFileToPackageUseCase(document_repository=document_repository, package_repository=package_repository)
+    use_case = AddFileToPackageUseCase(
+        document_repository=document_repository, sub_package_repository=sub_package_repository
+    )
 
     request_object = AddFileToPackageRequestObject.from_dict(request_data)
 
@@ -47,9 +49,9 @@ def add_package_to_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
-    package_repository = get_repository(RepositoryType.PackageRepository, db)
+    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
 
-    use_case = AddPackageToPackageUseCase(package_repository=package_repository)
+    use_case = AddPackageToPackageUseCase(sub_package_repository=sub_package_repository)
 
     sub_package = SubPackage.from_dict(request_data["document"])
     added_sub_package = use_case.execute(request_data["parentId"], sub_package)
@@ -63,10 +65,10 @@ def add_root_package(data_source_id: str):
     request_data = request.get_json()
 
     root_package_repository = get_repository(RepositoryType.RootPackageRepository, db)
-    package_repository = get_repository(RepositoryType.PackageRepository, db)
+    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
 
     use_case = AddRootPackageUseCase(
-        package_repository=package_repository, root_package_repository=root_package_repository
+        sub_package_repository=sub_package_repository, root_package_repository=root_package_repository
     )
 
     root_package = RootPackage().from_dict(request_data["document"])

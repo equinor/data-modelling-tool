@@ -3,6 +3,6 @@ class RepositoryException(Exception):
         super(message)
 
 
-class DocumentAlreadyExistsException(RepositoryException):
+class EntityAlreadyExistsException(RepositoryException):
     def __init__(self, document_id):
         super(f"The document, with id {document_id} already exists")

@@ -3,6 +3,7 @@ from core.domain.template import Template
 from typing import NamedTuple
 from utils.schema_tools.form_to_schema import form_to_schema
 from core.repository.template_repository import get_template_by_id
+from core.repository.interface.document_repository import DocumentRepository
 
 
 class DocumentWithTemplateData(NamedTuple):
@@ -11,11 +12,11 @@ class DocumentWithTemplateData(NamedTuple):
 
 
 class GetDocumentWithTemplateUseCase:
-    def __init__(self, document_repo):
-        self.document_repo = document_repo
+    def __init__(self, document_repository: DocumentRepository):
+        self.document_repository = document_repository
 
     def execute(self, document_id: str) -> DocumentWithTemplateData:
-        document: Document = self.document_repo.get_by_id(document_id)
+        document: Document = self.document_repository.get(document_id)
 
         template_id = document.meta.template_ref
         if not template_id:
@@ -24,5 +25,5 @@ class GetDocumentWithTemplateUseCase:
         if document.meta.get_template_data_source_id() == "templates":
             template = get_template_by_id(document.meta.get_template_name())
         else:
-            template = form_to_schema(self.document_repo.get_by_id(document.meta.template_ref))
+            template = form_to_schema(self.document_repository.get(document.meta.template_ref).to_dict())
         return DocumentWithTemplateData(document=document, template=template)
