@@ -48,11 +48,11 @@ class AddFileToPackageUseCase(uc.UseCase):
         sub_package: SubPackage = self.sub_package_repository.get(parent_id)
         if not sub_package:
             raise Exception(f"The parent, with id {parent_id}, was not found")
-
         document_id = sub_package.add_file(filename)
         self.sub_package_repository.update(sub_package)
+
         document = Document(id=document_id, template_ref=template_ref)
         self.document_repository.add(document)
 
-        logger.info(f"Added document '{document_id}' to package '{parent_id}'")
+        logger.info(f"Added document '{document_id}' to sub package '{parent_id}'")
         return res.ResponseSuccess(document)

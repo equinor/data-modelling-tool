@@ -185,6 +185,29 @@ export default class Api2 {
       .then(response => onSuccess(response.data, dataSourceId))
       .catch(onError)
   }
+
+  static addSubPackage({
+    nodeId,
+    filename,
+    templateRef = 'templates/package',
+    onSuccess,
+    onError = () => {},
+  }: AddFile) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
+    const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
+    const url = api.addPackage(dataSourceId)
+    const data = {
+      parentId,
+      filename,
+      templateRef,
+    }
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data, dataSourceId))
+      .catch(onError)
+  }
 }
 
 function fetchTemplate({

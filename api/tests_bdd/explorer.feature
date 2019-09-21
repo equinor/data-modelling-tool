@@ -49,7 +49,7 @@ Feature: Explorer
     }
     """
 
-    Scenario: Add file with missing parent id should fail
+    Scenario: Add file with missing parameter = parent id
     Given i access the resource url "/api/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
@@ -74,34 +74,54 @@ Feature: Explorer
     """
     {
       "parentId": "package_1/1.0.0/package",
-      "document": {
-        "meta": {
-           "name": "new package",
-           "templateRef": "",
-           "documentType": "subpackage"
-        },
-        "formData": {
-
-        }
-      }
+      "filename": "new_package",
+      "templateRef": ""
     }
     """
     Then the response status should be "OK"
     And the response should equal
     """
     {
-      "id": "package_1/1.0.0/new package/package",
-      "formData":{
-        "title": null,
-        "description": null,
-        "subpackages": [],
-        "files": []
-      },
-      "meta":{
-        "name":"new package",
-        "templateRef":"",
-        "documentType": "subpackage"
-      }
+      "id": "package_1/1.0.0/new_package/package",
+      "filename": "new_package",
+      "documentType": "subpackage"
+    }
+    """
+
+    Scenario: Add package to parent that does not exists
+    Given i access the resource url "/api/explorer/local-blueprints/add-package"
+    When i make a "POST" request
+    """
+    {
+      "parentId": "package_1/3.3.3/package",
+      "filename": "new_file",
+      "templateRef": ""
+    }
+    """
+    Then the response status should be "System Error"
+    And the response should equal
+    """
+    {
+      "type": "SYSTEM_ERROR",
+      "message": "Exception: The parent, with id package_1/3.3.3/package, was not found"
+    }
+    """
+
+    Scenario: Add package with missing parameter = parent id
+    Given i access the resource url "/api/explorer/local-blueprints/add-package"
+    When i make a "POST" request
+    """
+    {
+      "filename": "new_file",
+      "templateRef": ""
+    }
+    """
+    Then the response status should be "Bad Request"
+    And the response should equal
+    """
+    {
+      "type": "PARAMETERS_ERROR",
+      "message": "parentId: is missing"
     }
     """
 
