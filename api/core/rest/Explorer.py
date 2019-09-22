@@ -1,7 +1,6 @@
 import json
 from flask import Blueprint, Response, request
 from classes.data_source import DataSource
-from core.serializers.document_json_serializer import DocumentSerializer
 from core.serializers.add_file_json_serializer import AddFileSerializer
 from core.repository.repository_factory import get_repository, RepositoryType
 from core.use_case.add_file_to_package_use_case import AddFileToPackageUseCase, AddFileToPackageRequestObject
