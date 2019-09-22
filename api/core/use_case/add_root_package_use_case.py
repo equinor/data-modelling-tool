@@ -1,4 +1,4 @@
-from core.domain.sub_package import SubPackage, SubPackageMeta, SubPackageData
+from core.domain.sub_package import SubPackage, SubPackageData
 from core.domain.root_package import RootPackage
 from utils.logging import logger
 from core.domain.sub_package import DocumentId
@@ -43,9 +43,8 @@ class AddRootPackageUseCase(uc.UseCase):
         latest_version_id: DocumentId = DocumentId(f"{filename}/1.0.0/package")
         latest_version_package: SubPackage = SubPackage(
             id=latest_version_id,
-            meta=SubPackageMeta(
-                name=f"{filename}-1.0.0", document_type="version", template_ref="templates/package-template"
-            ),
+            template_ref="templates/package-template",
+            document_type="version",
             form_data=SubPackageData(title=filename),
         )
         self.sub_package_repository.add(latest_version_package)

@@ -6,6 +6,7 @@ import Api2 from '../../../api/Api2'
 import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilderOld'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
+
 const api = new DmtApi()
 
 export enum ContextMenuActions {
@@ -77,11 +78,21 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreatePackage,
         onSubmit: (formData: any) => {
-          Api2.postSubPackage({
-            formData,
-            parentId: props.treeNodeData.nodeId,
-            onSuccess: onSuccess(props),
-            onError: onError,
+          Api2.addSubPackage({
+            nodeId: treeNodeData.nodeId,
+            filename: formData.title,
+            onSuccess: (res: any, dataSourceId: string) => {
+              const node: TreeNodeData = new TreeNodeBuilder({
+                id: `${dataSourceId}/${res.id}`,
+                filename: res.filename,
+                nodeType: res.documentType,
+              })
+                .setOpen(true)
+                .build()
+              addNode(node, treeNodeData.nodeId)
+              setShowModal(false)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
           })
         },
       }

@@ -1,12 +1,10 @@
 import json
 from flask import Blueprint, Response, request
 from classes.data_source import DataSource
-from core.serializers.document_json_serializer import DocumentSerializer
 from core.serializers.add_file_json_serializer import AddFileSerializer
 from core.repository.repository_factory import get_repository, RepositoryType
 from core.use_case.add_file_to_package_use_case import AddFileToPackageUseCase, AddFileToPackageRequestObject
-from core.use_case.add_package_to_package_use_case import AddPackageToPackageUseCase
-from core.domain.sub_package import SubPackage
+from core.use_case.add_package_to_package_use_case import AddPackageToPackageUseCase, AddPackageToPackageRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
 
@@ -52,10 +50,15 @@ def add_package_to_package(data_source_id: str):
 
     use_case = AddPackageToPackageUseCase(sub_package_repository=sub_package_repository)
 
-    sub_package = SubPackage.from_dict(request_data["document"])
-    added_sub_package = use_case.execute(request_data["parentId"], sub_package)
+    request_object = AddPackageToPackageRequestObject.from_dict(request_data)
 
-    return Response(json.dumps(added_sub_package.to_dict(), cls=DocumentSerializer), mimetype="application/json")
+    response = use_case.execute(request_object)
+
+    return Response(
+        json.dumps(response.value, cls=AddFileSerializer),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type],
+    )
 
 
 @blueprint.route("/api/explorer/<string:data_source_id>/add-root-package", methods=["POST"])
