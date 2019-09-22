@@ -138,9 +138,9 @@ Feature: Explorer
     And the response should equal
     """
     {
-      "id": "new_root_package/package",
+      "id": "new_root_package/1.0.0/package",
       "filename": "new_root_package",
-      "documentType": "root-package"
+      "documentType": "version"
     }
     """
 

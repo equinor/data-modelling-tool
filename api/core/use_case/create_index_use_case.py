@@ -23,7 +23,7 @@ class Index:
             children.append(self._get_absolute_path(subpackage))
         self.index[document_id] = {
             "id": document_id,
-            "title": package.form_data.title,
+            "title": package.filename,
             "children": children,
             "nodeType": "root-package" if package.meta.document_type == "version" else package.meta.document_type,
         }
