@@ -27,36 +27,17 @@ Feature: Index
     """
 
   Scenario: Get index v2
-    Given I access the resource url "/api/index-v2/local-blueprints-equinor"
+    Given I access the resource url "/api/v2/index/local-blueprints-equinor"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should equal
     """
     {
-       "local-blueprints-equinor": {
-          "id": "local-blueprints-equinor",
-          "icon": "database",
-          "nodeId": "local-blueprints-equinor",
-          "isRoot": true,
-          "isOpen": true,
-          "isHidden": false,
-          "title": "local-blueprints-equinor",
-          "nodeType": "folder",
-          "children": ["local-blueprints-equinor/package_1/1.0.0/package"],
-          "meta": {
-            "documentType": "datasource"
-          }
-       },
        "local-blueprints-equinor/package_1/1.0.0/package":{
           "id":"local-blueprints-equinor/package_1/1.0.0/package",
-          "nodeId":"local-blueprints-equinor/package_1/1.0.0/package",
           "title":"package 1",
           "children":[],
-          "nodeType":"folder",
-          "isRoot":false,
-          "meta": {
-            "documentType": "version"
-          }
+          "nodeType":"root-package"
        }
     }
     """
