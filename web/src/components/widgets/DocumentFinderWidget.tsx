@@ -1,11 +1,8 @@
-import React, { useReducer, useState } from 'react'
+import React, { useState } from 'react'
 import Modal from '../modal/Modal'
-import { BlueprintPickerContent } from '../../pages/entities/BlueprintPicker'
-import BlueprintReducer, {
-  initialState,
-} from '../../pages/common/DocumentReducer'
 import { TreeNodeData } from '../tree-view/Tree'
 import { NodeType } from '../../api/types'
+import { BlueprintPickerContent } from '../../pages/common/blueprint-picker/BlueprintPicker'
 
 type Props = {
   onChange: (event: any) => void
@@ -22,7 +19,6 @@ export default (props: Props) => {
       setBlueprint(node.nodeId)
       setShowModal(false)
       onChange({ target: { value: node.nodeId } })
-      //TODO: return    my-data-source/blueprintID
     }
   }
 
@@ -45,22 +41,14 @@ export default (props: Props) => {
 }
 
 const BlueprintPickerWrapper = (props: any) => {
-  const { setShowModal, showModal } = props
-  const [state] = useReducer(BlueprintReducer, initialState)
+  const { setShowModal, showModal, onSelect } = props
   return (
     <Modal
       toggle={() => setShowModal(!showModal)}
       open={showModal}
       title="Select Blueprint"
     >
-      <BlueprintPickerContent
-        sourceNode={undefined}
-        state={state}
-        addNode={() => {
-          console.log('not implemented.')
-        }}
-        setShowModal={() => {}}
-      />
+      <BlueprintPickerContent onSelect={onSelect} />
     </Modal>
   )
 }
