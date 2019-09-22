@@ -10,7 +10,8 @@ Feature: Index
       | title     | description         | version |
       | package 1 | package description | 1.0.0   |
 
-  Scenario: Get index
+  @skip
+  Scenario: Get index (deprecated)
     Given I access the resource url "/api/index/local-blueprints-equinor"
     When I make a "GET" request
     Then the response status should be "OK"
@@ -26,7 +27,7 @@ Feature: Index
     }
     """
 
-  Scenario: Get index v2
+  Scenario: Get index
     Given I access the resource url "/api/v2/index/local-blueprints-equinor"
     When I make a "GET" request
     Then the response status should be "OK"

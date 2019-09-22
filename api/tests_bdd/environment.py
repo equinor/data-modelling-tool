@@ -30,14 +30,19 @@ def after_all(context):
 
 
 def after_feature(context, feature):
+    if "skip" in feature.tags:
+        feature.skip("Marked with @skip")
+
     context.features.append(feature)
 
 
 def before_scenario(context, scenario):
+    if "skip" in scenario.effective_tags:
+        scenario.skip("Marked with @skip")
+
     context.client = app.test_client()
     context.ctx = app.test_request_context()
     context.ctx.push()
-    # init_import_internal("templates")
 
 
 def after_scenario(context, scenario):
