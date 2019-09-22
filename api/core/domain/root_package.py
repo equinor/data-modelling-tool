@@ -1,18 +1,18 @@
 from typing import List
+from pathlib import Path
 
 
 class RootPackageMeta:
-    def __init__(self, name: str = None, document_type: str = None, template_ref: str = None):
-        self.name = name
-        self.document_type = document_type
+    def __init__(self, template_ref: str = None):
+        self.document_type = "root-package"
         self.template_ref = template_ref
 
     @classmethod
     def from_dict(cls, adict):
-        return cls(name=adict["name"], document_type=adict["documentType"], template_ref=adict["templateRef"])
+        return cls(template_ref=adict["templateRef"])
 
     def to_dict(self):
-        return {"name": self.name, "documentType": self.document_type, "templateRef": self.template_ref}
+        return {"documentType": self.document_type, "templateRef": self.template_ref}
 
 
 class RootPackageData:
@@ -49,18 +49,20 @@ class RootPackageData:
 
 
 class RootPackage:
-    def __init__(self, id: str = None, meta: RootPackageMeta = None, form_data: RootPackageData = None):
+    def __init__(self, id: str, template_ref: str, form_data: RootPackageData = RootPackageData()):
         self.id = id
-        self.meta = meta
+        self.meta = RootPackageMeta(template_ref=template_ref)
         self.form_data = form_data
+
+    @property
+    def filename(self) -> str:
+        return Path(self.id).parent.name
 
     @classmethod
     def from_dict(cls, adict):
-        return cls(
-            id=adict.get("id", None),
-            meta=RootPackageMeta.from_dict(adict["meta"]),
-            form_data=RootPackageData.from_dict(adict["formData"]),
-        )
+        instance = cls(id=adict.get("id"), template_ref=adict["meta"]["templateRef"])
+        instance.form_data = RootPackageData.from_dict(adict["formData"])
+        return instance
 
     def to_dict(self):
         result = {"meta": self.meta.to_dict(), "formData": self.form_data.to_dict()}

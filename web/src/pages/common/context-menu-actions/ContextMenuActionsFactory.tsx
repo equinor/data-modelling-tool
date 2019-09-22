@@ -42,7 +42,6 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
               })
                 .setOpen(true)
                 .build()
-              console.log(node, treeNodeData.nodeId)
               addNode(node, treeNodeData.nodeId)
               setShowModal(false)
             },
@@ -55,11 +54,21 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreatePackage,
         onSubmit: (formData: any) => {
-          Api2.postRootPackage({
-            parentId: props.treeNodeData.nodeId,
-            formData,
-            onSuccess: onSuccess(props),
-            onError: onError,
+          Api2.addRootPackage({
+            nodeId: treeNodeData.nodeId,
+            filename: formData.title,
+            onSuccess: (res: any, dataSourceId: string) => {
+              const node: TreeNodeData = new TreeNodeBuilder({
+                id: `${dataSourceId}/${res.id}`,
+                filename: res.filename,
+                nodeType: res.documentType,
+              })
+                .setOpen(true)
+                .build()
+              addNode(node, treeNodeData.nodeId)
+              setShowModal(false)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
           })
         },
       }

@@ -1,14 +1,11 @@
-from core.domain.root_package import RootPackage, RootPackageMeta, RootPackageData
+from core.domain.root_package import RootPackage, RootPackageData
 
 
 def test_package_model_init():
-    meta = RootPackageMeta(
-        **{"name": "Root Package 1", "document_type": "Document type", "template_ref": "templates/package"}
-    )
     form_data = RootPackageData(
         **{"title": "Title", "description": "Description", "latest_version": "Latest Version", "versions": []}
     )
-    package = RootPackage(meta=meta, form_data=form_data)
+    package = RootPackage(id="root_package", template_ref="templates/package", form_data=form_data)
     assert isinstance(package, RootPackage)
     assert package.form_data.title == form_data.title
     assert package.form_data.description == form_data.description
@@ -24,7 +21,8 @@ def test_package_model_from_dict():
             "latestVersion": "Latest Version",
             "versions": [],
         },
-        "meta": {"name": "Root Package 1", "documentType": "Document type", "templateRef": "templates/package"},
+        "id": "root_package",
+        "meta": {"templateRef": "templates/package"},
     }
     package = RootPackage.from_dict(data)
     assert package.form_data.title == data["formData"]["title"]
@@ -41,7 +39,8 @@ def test_package_model_to_dict():
             "latestVersion": "Latest Version",
             "versions": [],
         },
-        "meta": {"name": "Root Package 1", "documentType": "Document type", "templateRef": "templates/package"},
+        "id": "root_package",
+        "meta": {"templateRef": "templates/package", "documentType": "root-package"},
     }
     package = RootPackage.from_dict(data)
     assert package.to_dict() == data
@@ -55,7 +54,8 @@ def test_package_model_comparison():
             "latestVersion": "Latest Version",
             "versions": [],
         },
-        "meta": {"name": "Root Package 1", "documentType": "Document type", "templateRef": "templates/package"},
+        "id": "root_package",
+        "meta": {"templateRef": "templates/package"},
     }
     package1 = RootPackage.from_dict(data)
     package2 = RootPackage.from_dict(data)

@@ -36,6 +36,14 @@ interface AddFile {
   templateRef?: string
 }
 
+interface AddRootPackage {
+  nodeId: string
+  filename: string
+  onSuccess: (res: any, dataSourceId: string) => void
+  onError?: OnError
+  templateRef?: string
+}
+
 /**
  * methods must static since we they are passed around, while the class instance is not.
  *
@@ -149,6 +157,26 @@ export default class Api2 {
       /* @todo bug in api when using old index and new add blueprint endpoint.
         the old index generation expects a title, while the new endpoint store filename to the database.
       * */
+      filename,
+      templateRef,
+    }
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data, dataSourceId))
+      .catch(onError)
+  }
+
+  static addRootPackage({
+    nodeId,
+    filename,
+    templateRef = 'templates/package-template',
+    onSuccess,
+    onError = () => {},
+  }: AddRootPackage) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    const url = api.addRootPackage(dataSourceId)
+    const data = {
       filename,
       templateRef,
     }

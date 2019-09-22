@@ -110,34 +110,33 @@ Feature: Explorer
     When i make a "POST" request
     """
     {
-      "document": {
-        "meta": {
-           "name": "new root package",
-           "templateRef": "templates/package-template",
-           "documentType": "root-package"
-        },
-        "formData": {
-            "title": "Title",
-            "description": "Description"
-        }
-      }
+      "filename": "new_root_package",
+      "templateRef": "templates/package-template"
     }
     """
     Then the response status should be "OK"
     And the response should equal
     """
     {
-      "id": "new root package/package",
-      "formData":{
-        "title": "Title",
-        "description": "Description",
-        "versions": [],
-        "latestVersion": "new root package/1.0.0/package"
-      },
-      "meta":{
-        "name":"new root package",
-        "templateRef":"templates/package-template",
-        "documentType": "root-package"
-      }
+      "id": "new_root_package/package",
+      "filename": "new_root_package",
+      "documentType": "root-package"
+    }
+    """
+
+  Scenario: Add root package with missing filename should fail
+    Given i access the resource url "/api/explorer/local-blueprints/add-root-package"
+    When i make a "POST" request
+    """
+    {
+      "templateRef": "templates/package-template"
+    }
+    """
+    Then the response status should be "Bad Request"
+    And the response should equal
+    """
+    {
+      "type": "PARAMETERS_ERROR",
+      "message": "filename: is missing"
     }
     """

@@ -8,8 +8,7 @@ from core.use_case.add_file_to_package_use_case import AddFileToPackageUseCase, 
 from core.use_case.add_package_to_package_use_case import AddPackageToPackageUseCase
 from core.domain.sub_package import SubPackage
 from core.shared import response_object as res
-from core.use_case.add_root_package_use_case import AddRootPackageUseCase
-from core.domain.root_package import RootPackage
+from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -71,7 +70,12 @@ def add_root_package(data_source_id: str):
         sub_package_repository=sub_package_repository, root_package_repository=root_package_repository
     )
 
-    root_package = RootPackage().from_dict(request_data["document"])
-    added_sub_package = use_case.execute(root_package)
+    request_object = AddRootPackageRequestObject.from_dict(request_data)
 
-    return Response(json.dumps(added_sub_package.to_dict(), cls=DocumentSerializer), mimetype="application/json")
+    response = use_case.execute(request_object)
+
+    return Response(
+        json.dumps(response.value, cls=AddFileSerializer),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type],
+    )
