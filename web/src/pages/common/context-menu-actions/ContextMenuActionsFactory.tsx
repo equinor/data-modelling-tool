@@ -24,10 +24,11 @@ export type ContextMenuActionProps = {
   setShowModal: Function
   removeNode: Function
   updateNode: Function
+  layout?: any
 }
 
 const getFormProperties = (type: string, props: ContextMenuActionProps) => {
-  const { treeNodeData, addNode, setShowModal, removeNode } = props
+  const { treeNodeData, addNode, setShowModal, removeNode, layout } = props
   switch (type) {
     case ContextMenuActions.createBlueprint: {
       return {
@@ -137,6 +138,7 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
             filename: treeNodeData.title,
             onSuccess: (res: any, parentId: string) => {
               removeNode(treeNodeData.nodeId, parentId)
+              layout.remove(treeNodeData.nodeId)
             },
             onError: (err: any) => console.error(Object.keys(err)),
           })

@@ -37,10 +37,18 @@ export const LayoutProvider = ({ children, layout }: Props) => {
     }
   }
 
+  const remove = (id: string) => {
+    if (isOpen(layout, id)) {
+      const components = layout.myLayout.root.getItemsById(id)
+      components.forEach((component: any) => component.remove())
+    }
+  }
+
   return (
     <LayoutContext.Provider
       value={{
         add,
+        remove,
       }}
     >
       {children}

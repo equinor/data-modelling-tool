@@ -13,6 +13,7 @@ interface WithContextMenuProps extends RenderProps {
   menuItems: MenuItem[]
   configs?: ActionConfig[]
   children?: any
+  layout?: any
 }
 
 export type SetShowModal = (showModal: boolean) => void
@@ -34,10 +35,11 @@ interface WithContextMenuModalProps extends RenderProps {
   treeNodeData: TreeNodeData
   render: (props: any) => any
   children?: any
+  layout?: any
 }
 
 export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
-  const { treeNodeData, menuItems, render, children } = props
+  const { treeNodeData, menuItems, render, children, layout } = props
   const [action, setAction] = useState('')
   const [showModal, setShowModal] = useState(false)
 
@@ -48,6 +50,7 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
     updateNode: props.updateNode,
     removeNode: props.removeNode,
     setShowModal,
+    layout,
   })
 
   return (

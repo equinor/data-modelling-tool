@@ -31,17 +31,18 @@ export const BlueprintNode = (props: Props) => {
   ]
 
   return (
-    <WithContextMenu
-      {...props}
-      treeNodeData={treeNodeData}
-      menuItems={menuItems}
-    >
-      <LayoutContext.Consumer>
-        {(layout: any) => {
-          const data = {
-            selectedDocumentId: treeNodeData.nodeId,
-          }
-          return (
+    <LayoutContext.Consumer>
+      {(layout: any) => {
+        const data = {
+          selectedDocumentId: treeNodeData.nodeId,
+        }
+        return (
+          <WithContextMenu
+            {...props}
+            treeNodeData={treeNodeData}
+            menuItems={menuItems}
+            layout={layout}
+          >
             <div
               onClick={() =>
                 layout.add(
@@ -54,9 +55,9 @@ export const BlueprintNode = (props: Props) => {
             >
               {treeNodeData.title}
             </div>
-          )
-        }}
-      </LayoutContext.Consumer>
-    </WithContextMenu>
+          </WithContextMenu>
+        )
+      }}
+    </LayoutContext.Consumer>
   )
 }
