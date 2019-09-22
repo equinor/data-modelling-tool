@@ -178,6 +178,10 @@ export class DmtApi {
   addPackage(datasourceId: string) {
     return `/api/explorer/${datasourceId}/add-package`
   }
+
+  addRootPackage(datasourceId: string) {
+    return `/api/explorer/${datasourceId}/add-root-package`
+  }
 }
 
 export enum DataSourceType {

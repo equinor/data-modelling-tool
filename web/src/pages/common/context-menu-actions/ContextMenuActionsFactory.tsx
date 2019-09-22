@@ -55,11 +55,22 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreatePackage,
         onSubmit: (formData: any) => {
-          Api2.postRootPackage({
-            parentId: props.treeNodeData.nodeId,
-            formData,
-            onSuccess: onSuccess(props),
-            onError: onError,
+          Api2.addRootPackage({
+            nodeId: treeNodeData.nodeId,
+            filename: formData.title,
+            onSuccess: (res: any, dataSourceId: string) => {
+              const node: TreeNodeData = {
+                nodeId: `${dataSourceId}/${res.id}`,
+                title: res.filename,
+                // nodeType: NodeType.file,
+                isRoot: false,
+                nodeType: res.documentType,
+                isOpen: false,
+              }
+              addNode(node, treeNodeData.nodeId)
+              setShowModal(false)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
           })
         },
       }
