@@ -2,7 +2,8 @@ from flask_restful import Api
 
 from rest.data_source_consumers.document import Document
 from rest.data_source_consumers.document_with_template import DocumentWithTemplate
-from rest.data_source_consumers.index import Index
+
+# from rest.data_source_consumers.index import Index
 from rest.data_source_consumers.packages import Packages
 from rest.data_sources import SingleDataSource
 from rest.template import Template
@@ -18,7 +19,7 @@ def create_api(app):
     api.add_resource(Packages, "/api/data-sources/<string:data_source_id>/packages")
 
     # Get the index of files in a data-source
-    api.add_resource(Index, "/api/index/<string:data_source_id>")
+    # api.add_resource(Index, "/api/index/<string:data_source_id>")
 
     # Get a list of all data-sources
     # api.add_resource(DataSources, "/api/data-sources/<string:document_type>")
