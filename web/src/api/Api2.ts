@@ -68,7 +68,7 @@ export default class Api2 {
   static fetchDocument(documentId: string) {
     return ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
       axios
-        .get(api.documentTemplatesGet(documentId))
+        .get(api.getDocumentWithTemplate(documentId))
         .then((res: any) => {
           onSuccess(res.data)
         })
@@ -252,8 +252,11 @@ function fetchTemplate({
   axios(url)
     .then((res: any) => {
       onSuccess({
-        template: res.data.schema,
-        uiSchema: res.data.uiSchema || {},
+        document: {},
+        template: {
+          schema: res.data.schema,
+          uiSchema: res.data.uiSchema || {},
+        },
       })
     })
     .catch(onError)

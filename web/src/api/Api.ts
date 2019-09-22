@@ -159,6 +159,12 @@ export class DmtApi {
   addRootPackage(datasourceId: string) {
     return `/api/explorer/${datasourceId}/add-root-package`
   }
+
+  // Documents
+
+  getDocumentWithTemplate(documentId: string): string {
+    return `/api/documents/${documentId}`
+  }
 }
 
 export enum DataSourceType {

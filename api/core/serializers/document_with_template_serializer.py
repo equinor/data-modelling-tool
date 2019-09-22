@@ -2,7 +2,7 @@ from flask_restful import fields
 
 meta_fields = {"name": fields.String, "templateRef": fields.String}
 
-template_fields = {"meta": fields.Nested(meta_fields), "schema": fields.Raw}
+template_fields = {"meta": fields.Nested(meta_fields), "schema": fields.Raw, "uiSchema": fields.Raw}
 
 document_fields = {"meta": fields.Nested(meta_fields)}
 

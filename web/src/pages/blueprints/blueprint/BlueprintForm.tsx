@@ -11,8 +11,8 @@ interface Props {
 }
 
 export default ({ documentData, onSubmit }: Props) => {
-  const { formData, template, uiSchema } = documentData
-  const [data, setData] = useState({ ...formData })
+  const { document, template } = documentData
+  const [data, setData] = useState({ ...document.formData })
   return (
     <Tabs>
       <TabList>
@@ -22,8 +22,8 @@ export default ({ documentData, onSubmit }: Props) => {
       <TabPanel>
         <Form
           formData={data || {}}
-          schema={template || {}}
-          uiSchema={uiSchema || {}}
+          schema={template.schema || {}}
+          uiSchema={template.uiSchema || {}}
           fields={{ attribute: AttributeWidget }}
           onSubmit={onSubmit}
           onChange={schemas => {
