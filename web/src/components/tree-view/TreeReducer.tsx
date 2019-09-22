@@ -77,7 +77,6 @@ const node = (state: any, action: any) => {
         isOpen: !state.isOpen,
       }
     case UPDATE_NODE:
-      console.log(action)
       return {
         ...state,
         title: action.title,

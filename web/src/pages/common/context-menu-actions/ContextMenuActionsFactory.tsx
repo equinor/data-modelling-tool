@@ -22,11 +22,12 @@ export type ContextMenuActionProps = {
   treeNodeData: TreeNodeData
   addNode: Function
   setShowModal: Function
+  removeNode: Function
   updateNode: Function
 }
 
 const getFormProperties = (type: string, props: ContextMenuActionProps) => {
-  const { treeNodeData, addNode, setShowModal } = props
+  const { treeNodeData, addNode, setShowModal, removeNode } = props
   switch (type) {
     case ContextMenuActions.createBlueprint: {
       return {
@@ -134,10 +135,8 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
           Api2.removeFile({
             nodeId: treeNodeData.nodeId,
             filename: treeNodeData.title,
-            onSuccess: (res: any, dataSourceId: string) => {
-              // TODO: Remove node from tree
-              // addNode(node, treeNodeData.nodeId)
-              setShowModal(false)
+            onSuccess: (res: any, parentId: string) => {
+              removeNode(treeNodeData.nodeId, parentId)
             },
             onError: (err: any) => console.error(Object.keys(err)),
           })

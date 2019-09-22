@@ -7,12 +7,17 @@ import {
 import { MenuItem } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
-import { AddNode, UpdateNode } from '../../common/tree-view/DocumentTree'
+import {
+  AddNode,
+  RemoveNode,
+  UpdateNode,
+} from '../../common/tree-view/DocumentTree'
 
 type Props = {
   treeNodeData: TreeNodeData
   addNode: AddNode
   updateNode: UpdateNode
+  removeNode: RemoveNode
 }
 
 export const BlueprintNode = (props: Props) => {

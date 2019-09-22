@@ -169,7 +169,9 @@ export default class Api2 {
     }
     axios
       .post(url, data)
-      .then(response => onSuccess(response.data, dataSourceId))
+      .then(response =>
+        onSuccess(response.data, `${dataSourceId}/${parentId}/package`)
+      )
       .catch(onError)
   }
 

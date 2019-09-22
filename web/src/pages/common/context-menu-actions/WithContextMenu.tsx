@@ -46,6 +46,7 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
     treeNodeData,
     addNode: props.addNode,
     updateNode: props.updateNode,
+    removeNode: props.removeNode,
     setShowModal,
   })
 
