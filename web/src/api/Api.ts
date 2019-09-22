@@ -152,6 +152,10 @@ export class DmtApi {
     return `/api/explorer/${datasourceId}/add-package`
   }
 
+  removeSubPackage(datasourceId: string) {
+    return `/api/v2/explorer/${datasourceId}/remove-package`
+  }
+
   addRootPackage(datasourceId: string) {
     return `/api/explorer/${datasourceId}/add-root-package`
   }

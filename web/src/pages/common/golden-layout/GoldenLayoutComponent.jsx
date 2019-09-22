@@ -40,13 +40,11 @@ export class GoldenLayoutComponent extends React.Component {
   }
 
   componentWillReceiveProps(nextProps) {
-      console.log(this.goldenLayoutInstance);
       this.goldenLayoutInstance.eventHub.emit( 'props-updated', nextProps );
   }
 
   getDerivedStateFromProps(props, state) {
-      console.log(props);
-      console.log(state);
+
   }
 
   goldenLayoutInstance = undefined;

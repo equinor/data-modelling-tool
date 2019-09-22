@@ -175,6 +175,31 @@ export default class Api2 {
       .catch(onError)
   }
 
+  static removeSubPackage({
+    nodeId,
+    filename,
+    onSuccess,
+    onError = () => {},
+  }: RemoveFile) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
+    const packageId = nodeId.substring(nodeId.indexOf('/') + 1)
+    const packagePath = packageId.substring(0, packageId.lastIndexOf('/'))
+    const parentId = packagePath.substring(0, packagePath.lastIndexOf('/'))
+    const url = api.removeSubPackage(dataSourceId)
+    const data = {
+      parentId: `${parentId}/package`,
+      filename: packageId,
+    }
+    axios
+      .post(url, data)
+      .then(response =>
+        onSuccess(response.data, `${dataSourceId}/${parentId}/package`)
+      )
+      .catch(onError)
+  }
+
   static addRootPackage({
     nodeId,
     filename,
