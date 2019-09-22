@@ -110,36 +110,6 @@ export default class Api2 {
     })
   }
 
-  static postBlueprintFile(props: PostPackage) {
-    return postPackage({
-      nodeType: NodeType.file,
-      templateRef: 'templates/blueprint',
-      // expecting a new endpoint for postBlueprintFile
-      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
-      ...props,
-    })
-  }
-
-  static postRootPackage(props: PostPackage) {
-    return postPackage({
-      nodeType: NodeType.rootPackage,
-      templateRef: 'templates/package-template',
-      // expecting a new endpoint for post root package
-      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
-      ...props,
-    })
-  }
-
-  static postSubPackage(props: PostPackage) {
-    return postPackage({
-      nodeType: NodeType.subPackage,
-      templateRef: 'templates/subpackage-template',
-      // expecting a new endpoint for post subpackage package
-      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
-      ...props,
-    })
-  }
-
   static addBlueprintFile({
     nodeId,
     filename,

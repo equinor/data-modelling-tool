@@ -113,15 +113,7 @@ export class DmtApi {
     return `/api/data-sources?documentType=${dataSourceType}`
   }
 
-  dataSourcesPut(datasourceId: string) {
-    return `/api/data-sources/${datasourceId}`
-  }
-
   dataSourcesPost(datasourceId: string) {
-    return `/api/data-sources/${datasourceId}`
-  }
-
-  dataSourcesDelete(datasourceId: string) {
     return `/api/data-sources/${datasourceId}`
   }
 
@@ -137,14 +129,6 @@ export class DmtApi {
     return `/api/templates/mongodb-datasource-template`
   }
 
-  templatesBlueprintGet() {
-    return `/api/templates/blueprint`
-  }
-
-  templatesCreateDocumentGet() {
-    return `/api/templates/create-document`
-  }
-
   templatesCreateBlueprintGet() {
     return `/api/templates/create-blueprint`
   }
@@ -155,10 +139,6 @@ export class DmtApi {
 
   packagePost(datasourceId: string) {
     return `/api/data-sources/${datasourceId}/packages`
-  }
-
-  documentGet(documentId: string): string {
-    return `/api/data-sources/${documentId}`
   }
 
   documentTemplatesGet(documentId: string): string {
