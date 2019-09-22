@@ -5,19 +5,21 @@ import { DocumentsState } from '../common/DocumentReducer'
 import BlueprintPickerTree from './BlueprintPickerTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
 import { AddNode } from '../common/tree-view/DocumentTree'
+import { SetShowModal } from '../common/context-menu-actions/WithContextMenu'
 
 const api = new DmtApi()
 
 type BlueprintPickerContentProps = {
   state: DocumentsState
   addNode: AddNode
+  setShowModal: SetShowModal
   //the source treeNodeData that opened this picker.
   //@todo Document FinderWidget should pass its own document tree. Which dont use the SelectBlueprintNode
   sourceNode: TreeNodeData | undefined //undefined since DocumentFinderWidget uses this component.
 }
 
 export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
-  const { addNode, state, sourceNode } = props
+  const { addNode, state, sourceNode, setShowModal } = props
   const [name, setName] = useState('')
   const [blueprintDatasources, setBlueprintDatasources] = useState<
     Datasource[]
@@ -49,6 +51,7 @@ export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
           newFileName={name}
           sourceNode={sourceNode}
           addNode={addNode}
+          setShowModal={setShowModal}
         />
       )}
     </div>

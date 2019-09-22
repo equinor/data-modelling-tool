@@ -1,15 +1,14 @@
 import React from 'react'
 import {
-  FaFile,
-  FaFolder,
-  FaFolderOpen,
   FaChevronDown,
   FaChevronRight,
   FaDatabase,
+  FaFile,
+  FaFolder,
+  FaFolderOpen,
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { NodeIconType, TreeNodeData } from './Tree'
-import { NodeType } from '../../api/types'
 
 type StyledTreeNode = {
   level: number
@@ -52,28 +51,24 @@ const Content = styled.div`
 
 const TreeNode = (props: TreeNodeProps) => {
   const { node, level, NodeRenderer, updateNode, addNode, handleToggle } = props
-  const expandableNodeTypes = [
-    NodeType.rootPackage,
-    NodeType.subPackage,
-    NodeType.datasource,
-  ]
-  const isFolder = [NodeType.subPackage, NodeType.rootPackage].includes(
-    node.nodeType
-  )
-  const hasIcon = node.icon !== undefined
+
   return (
     <div>
       <StyledTreeNode level={level}>
-        <NodeIcon onClick={() => handleToggle(node)}>
-          {expandableNodeTypes.includes(node.nodeType) &&
-            (node.isOpen ? <FaChevronDown /> : <FaChevronRight />)}
+        <NodeIcon
+          onClick={() => {
+            handleToggle(node)
+          }}
+        >
+          {node.isExpandable && node.isOpen && <FaChevronDown />}
+          {node.isExpandable && !node.isOpen && <FaChevronRight />}
         </NodeIcon>
 
         <NodeIcon marginRight={5}>
           {node.icon === NodeIconType.database && <FaDatabase />}
-          {!hasIcon && node.nodeType === NodeType.file && <FaFile />}
-          {!hasIcon && isFolder && node.isOpen && <FaFolderOpen />}
-          {!hasIcon && isFolder && !node.isOpen && <FaFolder />}
+          {node.icon === NodeIconType.file && <FaFile />}
+          {node.icon === NodeIconType.folder && node.isOpen && <FaFolderOpen />}
+          {node.icon === NodeIconType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
         <Content

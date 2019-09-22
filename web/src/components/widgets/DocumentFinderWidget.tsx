@@ -46,7 +46,7 @@ export default (props: Props) => {
 
 const BlueprintPickerWrapper = (props: any) => {
   const { setShowModal, showModal } = props
-  const [state, dispatch] = useReducer(BlueprintReducer, initialState)
+  const [state] = useReducer(BlueprintReducer, initialState)
   return (
     <Modal
       toggle={() => setShowModal(!showModal)}
@@ -59,6 +59,7 @@ const BlueprintPickerWrapper = (props: any) => {
         addNode={() => {
           console.log('not implemented.')
         }}
+        setShowModal={() => {}}
       />
     </Modal>
   )

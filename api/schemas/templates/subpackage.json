@@ -51,6 +51,6 @@
     "files": {
       "ui:widget": "hidden"
     },
-    "ui:order": ["title", "description", "version"]
+    "ui:order": ["title", "description", "documentType", "subpackages", "files"]
   }
 }

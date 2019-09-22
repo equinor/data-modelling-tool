@@ -40,7 +40,7 @@ export const SubPackageNode = (props: Props) => {
     <WithContextMenuModal
       {...props}
       menuItems={menuItems}
-      render={({ action, actionConfig }: any) => {
+      render={({ action, actionConfig, setShowModal }: any) => {
         switch (action) {
           case ContextMenuActions.addBlueprint:
             return (
@@ -48,6 +48,7 @@ export const SubPackageNode = (props: Props) => {
                 sourceNode={sourceNode}
                 state={state}
                 addNode={addNode}
+                setShowModal={setShowModal}
               />
             )
           case ContextMenuActions.createSubPackage:

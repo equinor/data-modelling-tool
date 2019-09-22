@@ -2,11 +2,17 @@ import axios from 'axios'
 import values from 'lodash/values'
 
 import Workspace from '../util/localWorkspace'
+import { TreeNodeBuilderOld } from '../pages/common/tree-view/TreeNodeBuilderOld'
 import { TreeNodeData } from '../components/tree-view/Tree'
 import { NodeType } from './types'
 
 function isLocal(datasource: Datasource): boolean {
   return datasource.id === 'local'
+}
+
+function toObject(acc: any, current: TreeNodeData) {
+  ;(acc as any)[current.nodeId] = current
+  return acc
 }
 
 export interface IndexRequestBody {
@@ -72,42 +78,28 @@ export class IndexApi extends BaseApi {
         : this.workspace.getItem(url)
       const nodes = values(res)
 
-      let documents = nodes.map(node => {
-        return {
-          ...node,
-          nodeId: node.id,
-          isOpen: false,
-          children: node.children ? node.children : [],
-        }
-      })
-
-      const rootNodes = nodes.filter(
-        (node: TreeNodeData) => node.nodeType === NodeType.rootPackage
+      // find rootPackages that should be child of the datasource.
+      const rootPackages = nodes.filter(
+        (node: IndexNode) => node.nodeType === NodeType.rootPackage
       )
 
-      documents = documents.map((node: TreeNodeData) => {
-        return {
-          ...node,
-          isRoot: false,
-          isOpen: false,
-        }
-      })
-
-      const document: TreeNodeData = {
-        nodeId: datasource.id,
-        isRoot: true,
-        isOpen: false,
-        isHidden: false,
-        title: datasource.name,
+      // generate datasource treeDataNode.
+      const datasourceTreeNode: TreeNodeData = new TreeNodeBuilderOld({
+        id: datasource.id,
         nodeType: NodeType.datasource,
-        children: rootNodes.map(rootNode => rootNode.id),
-      }
-      documents.push(document)
+        title: datasource.id,
+        children: rootPackages.map(
+          (rootPackages: IndexNode) => rootPackages.id
+        ),
+      }).build()
 
-      return documents.reduce((obj, item) => {
-        obj[item.nodeId] = item
-        return obj
-      }, {})
+      // map index to list of treeNodeData
+      const indexNodes = nodes.map((node: IndexNode) =>
+        new TreeNodeBuilderOld(node).build()
+      )
+
+      // concat datasourceNode and index, and transform to a object.
+      return [datasourceTreeNode, ...indexNodes].reduce(toObject, {})
     } catch (err) {
       console.error(err)
     }
@@ -202,12 +194,6 @@ export type Datasource = {
 export type IndexNode = {
   id: string
   title: string
-  description: string
-  latestVersion?: string
-  versions: string[]
   nodeType: NodeType
-  isRoot: boolean
-  isOpen?: boolean
   children?: string[]
-  meta?: object
 }

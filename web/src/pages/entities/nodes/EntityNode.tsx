@@ -6,9 +6,10 @@ import {
 import { RenderProps } from '../../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2 from '../../../api/Api2'
-import { TreeNodeBuilder } from '../../common/tree-view/TreeNodeBuilder'
+import { TreeNodeBuilderOld } from '../../common/tree-view/TreeNodeBuilderOld'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { SetShowModal } from '../../common/context-menu-actions/WithContextMenu'
 
 export const EntityNode = (props: RenderProps) => {
   const { treeNodeData } = props
@@ -40,10 +41,11 @@ export const EntityNode = (props: RenderProps) => {
 interface Props extends RenderProps {
   sourceNode: TreeNodeData
   newFileName: string
+  setShowModal: SetShowModal
 }
 
 export const SelectBlueprintNode = (props: Props) => {
-  const { treeNodeData, sourceNode, addNode, newFileName } = props
+  const { treeNodeData, sourceNode, addNode, newFileName, setShowModal } = props
   return (
     <div
       onClick={() => {
@@ -67,11 +69,12 @@ export const SelectBlueprintNode = (props: Props) => {
             },
             onSuccess: (res: any) => {
               try {
-                const newTreeNode = new TreeNodeBuilder(res.data)
+                const newTreeNode = new TreeNodeBuilderOld(res.data)
                   .setOpen(true)
-                  .buildFolderNode()
+                  .build()
                 addNode(newTreeNode, sourceNode.nodeId)
-                // setShowModal(false)
+                //@todo close modal.
+                setShowModal(false)
                 NotificationManager.success(
                   newTreeNode.nodeId,
                   'Entity created'

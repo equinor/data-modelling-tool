@@ -3,7 +3,7 @@ import { NotificationManager } from 'react-notifications'
 import { onError, onSuccess } from './processCreatePackage'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2 from '../../../api/Api2'
-import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilder'
+import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilderOld'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
 const api = new DmtApi()
@@ -35,14 +35,14 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
             nodeId: treeNodeData.nodeId,
             filename: formData.title,
             onSuccess: (res: any, dataSourceId: string) => {
-              const node: TreeNodeData = {
-                nodeId: `${dataSourceId}/${res.id}`,
-                title: res.filename,
-                // nodeType: NodeType.file,
-                isRoot: false,
+              const node: TreeNodeData = new TreeNodeBuilder({
+                id: `${dataSourceId}/${res.id}`,
+                filename: res.filename,
                 nodeType: res.documentType,
-                isOpen: false,
-              }
+              })
+                .setOpen(true)
+                .build()
+              console.log(node, treeNodeData.nodeId)
               addNode(node, treeNodeData.nodeId)
               setShowModal(false)
             },

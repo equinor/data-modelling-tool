@@ -146,6 +146,9 @@ export default class Api2 {
     const url = api.addFile(dataSourceId)
     const data = {
       parentId,
+      /* @todo bug in api when using old index and new add blueprint endpoint.
+        the old index generation expects a title, while the new endpoint store filename to the database.
+      * */
       filename,
       templateRef,
     }

@@ -17,6 +17,7 @@ export enum NodeIconType {
   'file' = 'file',
   'folder' = 'folder',
   'database' = 'database',
+  'default' = '',
 }
 
 export type TreeNodeData = {
@@ -24,33 +25,47 @@ export type TreeNodeData = {
   nodeType: NodeType
   isOpen: boolean
   title: string
+  isExpandable: boolean
   isRoot: boolean
-  isHidden?: boolean
-  children?: string[]
   icon?: NodeIconType
+  isHidden?: boolean
+  isFolder: boolean
+  children?: string[]
+}
+
+interface Tree {
+  [key: string]: TreeNodeData
 }
 
 type TreeProps = {
   children: Function
-  tree: object
+  tree: Tree
   isDragEnabled: boolean
   render?: Function
 }
 
+/**
+ *
+ * @param nodeId the current nodeId.
+ * @param tree object with key,value:  [abs_node_path]: treeNodeData
+ * @param path, number[]  list of levels down in the three.
+ */
 export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
-  const node = tree[nodeId]
+  const node: any = tree[nodeId]
+
   const hasChildren = 'children' in node
 
   if (!hasChildren || !node.isOpen) {
     return []
   }
 
-  return node.children.reduce((flat: any, childId: string, index: any) => {
-    const currentPath = [...path, index]
-    const currentItem = tree[childId]
+  return node.children.reduce((flat: [], childId: string, index: number) => {
+    const currentPath: number[] = [...path, index]
+    const currentItem: TreeNodeData = tree[childId]
+
     if (currentItem.isOpen && 'children' in currentItem) {
       // iterating through all the children on the given level
-      const children = treeNodes(currentItem.nodeId, tree, currentPath)
+      const children: [] = treeNodes(currentItem.nodeId, tree, currentPath)
       // append to the accumulator
       return [
         ...flat,
@@ -77,7 +92,7 @@ export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
   }, [])
 }
 
-const getRootNodes = (rootNode: any, state: object) => [
+const getRootNodes = (rootNode: TreeNodeData, state: Tree) => [
   { currentItem: rootNode, level: 0 },
   ...treeNodes(rootNode.nodeId, state, []),
 ]
@@ -128,7 +143,7 @@ const Tree = (props: TreeProps) => {
 
   return (
     <>
-      {rootNodes.length > 0 && <SearchTree onChange={handleSearch} />}
+      <SearchTree onChange={handleSearch} />
       <DragDropContext onDragEnd={handleDrag} onDragStart={onDragStart}>
         {rootNodes.map((rootNode, index) => {
           return (
