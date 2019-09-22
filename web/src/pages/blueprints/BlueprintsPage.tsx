@@ -50,6 +50,7 @@ export default () => {
         render={(renderProps: RenderProps) => {
           //use components directly to control props better.
           switch (renderProps.treeNodeData.nodeType) {
+            case NodeType.version:
             case NodeType.rootPackage:
               return <RootFolderNode {...renderProps} />
             case NodeType.subPackage:

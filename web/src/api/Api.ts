@@ -76,6 +76,7 @@ export class IndexApi extends BaseApi {
       const res = !isLocal(datasource)
         ? (await axios(url)).data
         : this.workspace.getItem(url)
+
       const nodes = values(res)
 
       // find rootPackages that should be child of the datasource.
@@ -125,7 +126,7 @@ export class DmtApi {
   }
 
   indexGet(datasourceId: string) {
-    return `/api/index/${datasourceId}`
+    return `/api/v2/index/${datasourceId}`
   }
 
   indexPost(dataSourceId: string): string {

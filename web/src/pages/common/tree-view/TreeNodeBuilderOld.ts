@@ -67,6 +67,7 @@ function getNodeIcon(nodeType: NodeType): NodeIconType {
     case NodeType.datasource:
       return NodeIconType.database
 
+    case NodeType.version:
     case NodeType.rootPackage:
     case NodeType.subPackage:
       return NodeIconType.folder
@@ -81,6 +82,7 @@ function getNodeIcon(nodeType: NodeType): NodeIconType {
 
 function isExpandable(nodeType: NodeType) {
   switch (nodeType) {
+    case NodeType.version:
     case NodeType.datasource:
     case NodeType.subPackage:
     case NodeType.rootPackage:

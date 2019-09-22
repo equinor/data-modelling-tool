@@ -7,7 +7,7 @@ from core.use_case.create_index_use_case import CreateIndexUseCase
 blueprint = Blueprint("index", __name__)
 
 
-@blueprint.route("/api/index-v2/<string:data_source_id>", methods=["GET"])
+@blueprint.route("/api/v2/index/<string:data_source_id>", methods=["GET"])
 def get(data_source_id: str):
     db = DataSource(id=data_source_id)
     root_package_repository = get_repository(RepositoryType.RootPackageRepository, db)
