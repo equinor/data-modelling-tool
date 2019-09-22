@@ -52,7 +52,8 @@ class AddRootPackageUseCase(uc.UseCase):
         # Create root package
         root_package = RootPackage(id=f"{filename}/package", template_ref=template_ref)
         root_package.form_data.latest_version = latest_version_id
+        root_package.form_data.versions = [latest_version_id]
 
         self.root_package_repository.add(root_package)
         logger.info(f"Added root package '{root_package.id}'")
-        return res.ResponseSuccess(root_package)
+        return res.ResponseSuccess(latest_version_package)

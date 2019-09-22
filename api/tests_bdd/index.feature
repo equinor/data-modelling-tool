@@ -35,7 +35,7 @@ Feature: Index
     {
        "local-blueprints-equinor/package_1/1.0.0/package":{
           "id":"local-blueprints-equinor/package_1/1.0.0/package",
-          "title":"package 1",
+          "title":"package_1",
           "children":[],
           "nodeType":"root-package"
        }

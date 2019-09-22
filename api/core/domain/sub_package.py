@@ -56,7 +56,11 @@ class SubPackage:
     def filename(self) -> str:
         path = Path(self.id)
         parent = path.parent
-        return parent.name
+        if self.meta.document_type == "version":
+            parent = parent.parent
+            return parent.name
+        else:
+            return parent.name
 
     @property
     def path(self) -> str:
