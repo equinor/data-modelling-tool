@@ -10,7 +10,9 @@ class Template:
 
     @classmethod
     def from_dict(cls, adict):
-        return cls(meta=adict["meta"], schema=adict["schema"], uiSchema=adict["uiSchema"], view=adict["view"])
+        return cls(
+            meta=adict["meta"], schema=adict["schema"], uiSchema=adict.get("uiSchema", ""), view=adict.get("view", "")
+        )
 
     def to_dict(self):
         return {"meta": self.meta, "schema": self.schema, "uiSchema": self.uiSchema, "view": self.view}

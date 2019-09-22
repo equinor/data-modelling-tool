@@ -9,6 +9,9 @@ class DocumentMeta:
     def get_template_data_source_id(self):
         return self.template_ref.split("/", 1)[0]
 
+    def get_template_id(self):
+        return self.template_ref.split("/", 1)[1]
+
     def get_template_name(self):
         return self.template_ref.split("/")[-1]
 
