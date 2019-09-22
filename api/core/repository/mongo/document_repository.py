@@ -22,4 +22,4 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
         self.c().add(document.to_dict())
 
     def delete(self, document: Document) -> None:
-        pass
+        self.c().delete(document.id)

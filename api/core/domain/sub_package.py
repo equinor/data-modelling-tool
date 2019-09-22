@@ -71,6 +71,15 @@ class SubPackage:
         self.form_data.files.append(document_id)
         return document_id
 
+    def remove_file(self, filename) -> DocumentId:
+        # document_id: DocumentId = f"{self.path}/{filename}"
+        document_id = filename
+        # is_found = lambda x: x is document_id
+        # cleaned_list = filter(is_found, self.form_data.files)
+        # self.form_data.files = cleaned_list
+        self.form_data.files.remove(document_id)
+        return document_id
+
     def add_subpackage(self, filename):
         document_id = f"{self.path}/{filename}/package"
         self.form_data.subpackages.append(document_id)

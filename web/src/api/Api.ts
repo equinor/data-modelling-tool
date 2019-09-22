@@ -122,6 +122,10 @@ export class DmtApi {
     return '/api/templates/package-template'
   }
 
+  templatesRemoveFile() {
+    return '/api/templates/remove-file'
+  }
+
   packagePost(datasourceId: string) {
     return `/api/data-sources/${datasourceId}/packages`
   }
@@ -138,6 +142,10 @@ export class DmtApi {
 
   addFile(datasourceId: string) {
     return `/api/explorer/${datasourceId}/add-file`
+  }
+
+  removeFile(datasourceId: string) {
+    return `/api/v2/explorer/${datasourceId}/remove-file`
   }
 
   addPackage(datasourceId: string) {

@@ -15,6 +15,7 @@ export enum ContextMenuActions {
   editPackage = 'Edit Package',
   editDataSource = 'Edit Data Source',
   addBlueprint = 'Add Blueprint',
+  removeFile = 'Remove',
 }
 
 export type ContextMenuActionProps = {
@@ -123,6 +124,24 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       console.log(treeNodeData)
       return {
         onSubmit: () => {},
+      }
+    }
+    case ContextMenuActions.removeFile: {
+      const { treeNodeData } = props
+      return {
+        fetchDocument: Api2.fetchRemoveFile,
+        onSubmit: () => {
+          Api2.removeFile({
+            nodeId: treeNodeData.nodeId,
+            filename: treeNodeData.title,
+            onSuccess: (res: any, dataSourceId: string) => {
+              // TODO: Remove node from tree
+              // addNode(node, treeNodeData.nodeId)
+              setShowModal(false)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
+          })
+        },
       }
     }
     default:
