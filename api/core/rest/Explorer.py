@@ -17,6 +17,7 @@ from core.use_case.remove_package_from_package_use_case import (
 )
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 from core.use_case.move_package_use_case import MovePackageUseCase, MovePackageRequestObject
+from core.use_case.remove_root_package_use_case import RemoveRootPackageRequestObject, RemoveRootPackageUseCase
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -168,3 +169,25 @@ def add_root_package(data_source_id: str):
         mimetype="application/json",
         status=STATUS_CODES[response.type],
     )
+
+
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-root-package", methods=["POST"])
+def remove_root_package(data_source_id: str):
+    db = DataSource(id=data_source_id)
+    request_data = request.get_json()
+
+    root_package_repository = get_repository(RepositoryType.RootPackageRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
+    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
+
+    use_case = RemoveRootPackageUseCase(
+        document_repository=document_repository,
+        root_package_repository=root_package_repository,
+        sub_package_repository=sub_package_repository,
+    )
+
+    request_object = RemoveRootPackageRequestObject.from_dict(request_data)
+
+    response = use_case.execute(request_object)
+
+    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])

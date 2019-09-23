@@ -21,6 +21,7 @@ export enum ContextMenuActions {
   removeFile = 'Remove File',
   removeSubPackage = 'Remove Subpackage',
   renameFile = 'Rename file',
+  removeRootPackage = 'Remove Package',
 }
 
 export type ContextMenuActionProps = {
@@ -277,6 +278,23 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
           Api2.removeSubPackage({
             nodeId: treeNodeData.nodeId,
             filename: treeNodeData.title,
+            onSuccess: (res: any, parentId: string) => {
+              removeNode(treeNodeData.nodeId, parentId)
+              // TODO: Return list of deleted ids?
+              // layout.remove(treeNodeData.nodeId)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
+          })
+        },
+      }
+    }
+    case ContextMenuActions.removeRootPackage: {
+      const { treeNodeData } = props
+      return {
+        fetchDocument: Api2.fetchRemoveFile,
+        onSubmit: () => {
+          Api2.removeRootPackage({
+            nodeId: treeNodeData.nodeId,
             onSuccess: (res: any, parentId: string) => {
               removeNode(treeNodeData.nodeId, parentId)
               // TODO: Return list of deleted ids?

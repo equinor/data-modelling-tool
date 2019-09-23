@@ -12,6 +12,11 @@ class MongoRootPackageRepository(MongoRepositoryBase, RootPackageRepository):
     def __init__(self, db):
         super().__init__(db)
 
+    def get(self, uid: str) -> RootPackage:
+        result = self.c().get(uid)
+        if result:
+            return self.convert_to_model(result)
+
     def list(self) -> List[RootPackage]:
         root_packages = self.c().find(filters={"meta.documentType": DocumentType.ROOT_PACKAGE.value})
         return [RootPackage.from_dict(r) for r in root_packages]
@@ -23,4 +28,4 @@ class MongoRootPackageRepository(MongoRepositoryBase, RootPackageRepository):
         raise NotImplementedError()
 
     def delete(self, root_package: RootPackage) -> None:
-        raise NotImplementedError()
+        self.c().delete(root_package.id)

@@ -35,6 +35,12 @@ interface RemoveFile {
   templateRef?: string
 }
 
+interface RemoveRootPackage {
+  nodeId: string
+  onSuccess: (res: any, dataSourceId: string) => void
+  onError?: OnError
+}
+
 interface AddRootPackage {
   nodeId: string
   filename: string
@@ -231,6 +237,27 @@ export default class Api2 {
       .then(response =>
         onSuccess(response.data, `${dataSourceId}/${parentId}/package`)
       )
+      .catch(onError)
+  }
+
+  static removeRootPackage({
+    nodeId,
+    onSuccess,
+    onError = () => {},
+  }: RemoveRootPackage) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
+    const packageId = nodeId.substring(nodeId.indexOf('/') + 1)
+    const packagePath = packageId.substring(0, packageId.lastIndexOf('/'))
+    const parentId = packagePath.substring(0, packagePath.lastIndexOf('/'))
+    const url = api.removeRootPackage(dataSourceId)
+    const data = {
+      filename: `${parentId}/package`,
+    }
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data, `${dataSourceId}`))
       .catch(onError)
   }
 

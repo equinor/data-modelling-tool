@@ -19,3 +19,7 @@ class RootPackageRepository(ABC):
     @abstractmethod
     def delete(self, root_package: RootPackage) -> None:
         """Delete method to be implemented"""
+
+    @abstractmethod
+    def get(self, uid: str) -> RootPackage:
+        """Add method to be implemented"""
