@@ -197,6 +197,18 @@ export default class Api2 {
       .catch(error => onError(error))
   }
 
+  static moveSubPackage({ source, destination, onSuccess, onError }: MoveFile) {
+    const data = {
+      source: source,
+      destination: destination,
+    }
+    const url = api.moveSubPackage()
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data))
+      .catch(error => onError(error))
+  }
+
   static removeSubPackage({
     nodeId,
     filename,

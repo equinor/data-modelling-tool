@@ -148,6 +148,10 @@ export class DmtApi {
     return `/api/v2/explorer/${datasourceId}/remove-package`
   }
 
+  moveSubPackage() {
+    return `/api/v2/explorer/move-package`
+  }
+
   addRootPackage(datasourceId: string) {
     return `/api/explorer/${datasourceId}/add-root-package`
   }

@@ -25,8 +25,8 @@ export const SubPackageNode = (props: RenderProps) => {
       ],
     },
     {
-      label: 'Edit',
-      action: ContextMenuActions.editPackage,
+      label: 'Rename',
+      action: ContextMenuActions.renameSubPackage,
     },
     {
       label: 'Remove',

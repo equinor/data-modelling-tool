@@ -14,6 +14,7 @@ export enum ContextMenuActions {
   createBlueprint = 'New Blueprint',
   createRootPackage = 'New Package',
   createSubPackage = 'New Subpackage',
+  renameSubPackage = 'Rename Subpackage',
   editPackage = 'Edit Package',
   editDataSource = 'Edit Data Source',
   addBlueprint = 'Add Blueprint',
@@ -197,6 +198,47 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
                 LayoutComponents.blueprint,
                 data
               )
+            },
+            onError: (error: any) => showError(error),
+          })
+        },
+      }
+    }
+    case ContextMenuActions.renameSubPackage: {
+      const { treeNodeData } = props
+      return {
+        fetchDocument: Api2.fetchCreateBlueprint,
+        onSubmit: (formData: any) => {
+          const packageId = treeNodeData.nodeId.substring(
+            0,
+            treeNodeData.nodeId.lastIndexOf('/')
+          )
+          const root = packageId.substring(0, packageId.lastIndexOf('/'))
+
+          const parentId = `${root}/package`
+          Api2.moveSubPackage({
+            source: treeNodeData.nodeId,
+            destination: `${root}/${formData.title}/package`,
+            onSuccess: (res: any) => {
+              const dataSourceId = treeNodeData.nodeId.split('/')[0]
+              const newNodeId = `${dataSourceId}/${res.id}`
+
+              // Remove old node
+              removeNode(treeNodeData.nodeId, parentId)
+
+              // Add new node (TODO: what about children)
+              const node: TreeNodeData = new TreeNodeBuilder({
+                id: newNodeId,
+                filename: res.filename,
+                nodeType: res.documentType,
+                // children: treeNodeData.children || []
+              })
+                .setOpen(true)
+                .build()
+
+              addNode(node, parentId)
+
+              NotificationManager.success(formData.title, 'Renamed')
             },
             onError: (error: any) => showError(error),
           })
