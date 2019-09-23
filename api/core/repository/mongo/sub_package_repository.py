@@ -22,4 +22,4 @@ class MongoSubPackageRepository(MongoRepositoryBase, SubPackageRepository):
         self.c().add(sub_package.to_dict())
 
     def delete(self, sub_package: SubPackage) -> None:
-        raise NotImplementedError()
+        self.c().delete(sub_package.id)

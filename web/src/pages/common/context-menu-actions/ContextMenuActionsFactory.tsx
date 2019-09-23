@@ -1,5 +1,6 @@
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { onError, onSuccess } from './processCreatePackage'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2 from '../../../api/Api2'
 import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilderOld'
@@ -15,7 +16,8 @@ export enum ContextMenuActions {
   editPackage = 'Edit Package',
   editDataSource = 'Edit Data Source',
   addBlueprint = 'Add Blueprint',
-  removeFile = 'Remove',
+  removeFile = 'Remove File',
+  removeSubPackage = 'Remove Subpackage',
 }
 
 export type ContextMenuActionProps = {
@@ -145,6 +147,25 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
         },
       }
     }
+    case ContextMenuActions.removeSubPackage: {
+      const { treeNodeData } = props
+      return {
+        fetchDocument: Api2.fetchRemoveFile,
+        onSubmit: () => {
+          Api2.removeSubPackage({
+            nodeId: treeNodeData.nodeId,
+            filename: treeNodeData.title,
+            onSuccess: (res: any, parentId: string) => {
+              removeNode(treeNodeData.nodeId, parentId)
+              // TODO: Return list of deleted ids?
+              // layout.remove(treeNodeData.nodeId)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
+          })
+        },
+      }
+    }
+
     default:
       return {
         schemaUrl: '',

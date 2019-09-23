@@ -147,6 +147,20 @@ Feature: Explorer
     }
     """
 
+  Scenario: Remove package
+    Given i access the resource url "/api/v2/explorer/local-blueprints/remove-package"
+    When i make a "POST" request
+    """
+    {
+      "parentId": "package_1/1.0.0/package",
+      "filename": "package_1/1.0.0/sub_package_1/package"
+    }
+    """
+    Then the response status should be "OK"
+    Given I access the resource url "/api/data-sources/local-blueprints-equinor/package_1/1.0.0/sub_package_1/document_1"
+    When I make a "GET" request
+    Then the response status should be "Not Found"
+
   Scenario: Add root package
     Given i access the resource url "/api/explorer/local-blueprints/add-root-package"
     When i make a "POST" request

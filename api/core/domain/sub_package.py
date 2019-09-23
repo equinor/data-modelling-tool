@@ -19,11 +19,16 @@ class SubPackageMeta:
 
 
 class SubPackageData:
-    def __init__(self, title: str = None, description: str = None, subpackages: List[str] = [], files: List[str] = []):
+    subpackages = []
+    files = []
+
+    def __init__(
+        self, title: str = None, description: str = None, subpackages: List[str] = None, files: List[str] = None
+    ):
         self.title = title
         self.description = description
-        self.subpackages = subpackages
-        self.files = files
+        self.subpackages = [] if subpackages is None else subpackages
+        self.files = [] if files is None else files
 
     def validate(self):
         pass
@@ -47,9 +52,11 @@ class SubPackageData:
 
 
 class SubPackage:
-    def __init__(self, id: str, template_ref: str, document_type: str, form_data: SubPackageData = SubPackageData()):
+    def __init__(self, id: str, template_ref: str, document_type: str, form_data: SubPackageData = None):
         self.id = id
         self.meta = SubPackageMeta(template_ref=template_ref, document_type=document_type)
+        if not form_data:
+            form_data = SubPackageData()
         self.form_data = form_data
 
     @property
@@ -79,6 +86,9 @@ class SubPackage:
         # self.form_data.files = cleaned_list
         self.form_data.files.remove(document_id)
         return document_id
+
+    def remove_subpackage(self, filename: str):
+        self.form_data.subpackages.remove(filename)
 
     def add_subpackage(self, filename):
         document_id = f"{self.path}/{filename}/package"

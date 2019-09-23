@@ -36,12 +36,17 @@ def step_impl_sub_packages(context, collection):
         parent: SubPackage = context.sub_packages[row["parent_id"]]
         filename = row["filename"]
         sub_package_id = parent.add_subpackage(filename)
-        sub_package = SubPackage(
+        try:
+            model_db[f"{collection}"].replace_one({"_id": parent.id}, parent.to_dict(), upsert=True)
+        except Exception as Error:
+            logger.error(f"Could not import: {Error}")
+
+        new_sub_package = SubPackage(
             id=sub_package_id, template_ref="templates/package-template", document_type="subpackage"
         )
         try:
-            model_db[f"{collection}"].replace_one({"_id": sub_package.id}, sub_package.to_dict(), upsert=True)
-            context.sub_packages[sub_package.id] = sub_package
+            model_db[f"{collection}"].replace_one({"_id": new_sub_package.id}, new_sub_package.to_dict(), upsert=True)
+            context.sub_packages[new_sub_package.id] = new_sub_package
         except Exception as Error:
             logger.error(f"Could not import: {Error}")
 
@@ -53,6 +58,10 @@ def step_impl_documents(context, collection):
         parent: SubPackage = context.sub_packages[row["parent_id"]]
         filename = row["filename"]
         document_id = parent.add_file(filename)
+        try:
+            model_db[f"{collection}"].replace_one({"_id": parent.id}, parent.to_dict(), upsert=True)
+        except Exception as Error:
+            logger.error(f"Could not import: {Error}")
 
         document = Document(id=document_id, template_ref="templates/package-template")
         try:

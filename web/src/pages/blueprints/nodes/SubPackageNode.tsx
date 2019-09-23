@@ -28,6 +28,10 @@ export const SubPackageNode = (props: RenderProps) => {
       label: 'Edit',
       action: ContextMenuActions.editPackage,
     },
+    {
+      label: 'Remove',
+      action: ContextMenuActions.removeSubPackage,
+    },
   ]
 
   return (
