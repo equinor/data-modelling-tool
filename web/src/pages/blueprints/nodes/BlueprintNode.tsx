@@ -10,6 +10,7 @@ import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
 import {
   AddNode,
   RemoveNode,
+  ReplaceNode,
   UpdateNode,
 } from '../../common/tree-view/DocumentTree'
 
@@ -18,6 +19,7 @@ type Props = {
   addNode: AddNode
   updateNode: UpdateNode
   removeNode: RemoveNode
+  replaceNode: ReplaceNode
 }
 
 export const BlueprintNode = (props: Props) => {

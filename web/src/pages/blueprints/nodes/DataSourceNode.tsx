@@ -9,6 +9,7 @@ import { ContextMenuActions } from '../../common/context-menu-actions/ContextMen
 import {
   AddNode,
   RemoveNode,
+  ReplaceNode,
   UpdateNode,
 } from '../../common/tree-view/DocumentTree'
 
@@ -18,6 +19,7 @@ type Props = {
   addNode: AddNode
   updateNode: UpdateNode
   removeNode: RemoveNode
+  replaceNode: ReplaceNode
 }
 
 const Wrapper = styled.div`
@@ -26,7 +28,14 @@ const Wrapper = styled.div`
 `
 
 export const DataSourceNode = (props: Props) => {
-  const { treeNodeData, state, addNode, updateNode, removeNode } = props
+  const {
+    treeNodeData,
+    state,
+    addNode,
+    updateNode,
+    removeNode,
+    replaceNode,
+  } = props
 
   const menuItems: MenuItem[] = [
     {
@@ -53,6 +62,7 @@ export const DataSourceNode = (props: Props) => {
         addNode={addNode}
         updateNode={updateNode}
         removeNode={removeNode}
+        replaceNode={replaceNode}
       />
       {treeNodeData.nodeId === 'local' && (
         <FileUpload state={state} datasource={state.dataSources[0]} />

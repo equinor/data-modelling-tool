@@ -13,7 +13,7 @@ export const DELETE_NODE = 'DELETE_NODE'
 export const ADD_CHILD = 'ADD_CHILD'
 export const REMOVE_CHILD = 'REMOVE_CHILD'
 export const SET_NODES = 'SET_NODES'
-export const MAKE_ROOT = 'MAKE_ROOT'
+export const REPLACE_NODE = 'REPLACE_NODE'
 
 const childIds = (state: any, action: any) => {
   switch (action.type) {
@@ -55,9 +55,10 @@ export const NodeActions = {
     nodeId,
     title,
   }),
-  makeRoot: (nodeId: string, title: string) => ({
-    type: MAKE_ROOT,
-    nodeId,
+  replaceNode: (oldId: string, newId: string) => ({
+    type: REPLACE_NODE,
+    nodeId: oldId,
+    newId: newId,
   }),
 }
 
@@ -81,11 +82,12 @@ const node = (state: any, action: any) => {
         ...state,
         title: action.title,
       }
-    case MAKE_ROOT:
-      return {
+    case REPLACE_NODE:
+      state = {
         ...state,
-        isRoot: true,
+        nodeId: action.newId,
       }
+      return state
     default:
       return state
   }
@@ -149,6 +151,15 @@ export default (state: any = {}, action: any) => {
       if (action.type === DELETE_NODE) {
         const descendantIds = getAllDescendantIds(state, nodeId)
         return deleteMany(state, [nodeId, ...descendantIds])
+      }
+
+      if (action.type === REPLACE_NODE) {
+        const newState = {
+          ...state,
+          [action.newId]: node(state[nodeId], action),
+        }
+        delete newState[nodeId]
+        return newState
       }
 
       return {

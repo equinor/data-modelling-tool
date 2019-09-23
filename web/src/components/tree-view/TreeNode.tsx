@@ -44,6 +44,7 @@ export type TreeNodeProps = {
   addNode: Function
   handleToggle: Function
   removeNode: Function
+  replaceNode: Function
 }
 
 const Content = styled.div`
@@ -59,6 +60,7 @@ const TreeNode = (props: TreeNodeProps) => {
     addNode,
     handleToggle,
     removeNode,
+    replaceNode,
   } = props
 
   return (
@@ -86,7 +88,7 @@ const TreeNode = (props: TreeNodeProps) => {
             handleToggle(node)
           }}
         >
-          {NodeRenderer(node, addNode, updateNode, removeNode)}
+          {NodeRenderer(node, addNode, updateNode, removeNode, replaceNode)}
         </Content>
       </StyledTreeNode>
     </div>
