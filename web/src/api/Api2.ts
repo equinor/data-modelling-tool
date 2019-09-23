@@ -1,7 +1,6 @@
 import axios from 'axios'
 import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import { DmtApi } from './Api'
-import { NodeType } from './types'
 import { getDataSourceIDFromAbsolutID } from '../util/helperFunctions'
 
 const api = new DmtApi()
@@ -18,14 +17,6 @@ interface BASE_CRUD {
 }
 interface FetchTemplate extends BASE_CRUD {
   url: string
-}
-
-interface PostPackage {
-  parentId: string
-  formData: any
-  templateRef?: string
-  onSuccess: (res: any) => void
-  onError?: OnError
 }
 
 interface AddFile {

@@ -126,14 +126,6 @@ export class DmtApi {
     return '/api/templates/remove-file'
   }
 
-  packagePost(datasourceId: string) {
-    return `/api/data-sources/${datasourceId}/packages`
-  }
-
-  documentTemplatesGet(documentId: string): string {
-    return `/api/document-template/${documentId}`
-  }
-
   documentPut(documentId: string) {
     return `/api/data-sources/${documentId}`
   }
