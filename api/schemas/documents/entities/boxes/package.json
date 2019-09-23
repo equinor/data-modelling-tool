@@ -1,5 +1,4 @@
 {
-  "id" : "boxes/1.1.1/package",
   "meta": {
     "name": "package",
     "documentType": "root-package",
@@ -8,9 +7,9 @@
   "formData": {
     "title": "Boxes",
     "description": "Many different boxes",
-    "latestVersion": "1.1.1",
+    "latestVersion": "entities/boxes/1.1.1/package",
     "versions": [
-      "1.1.1"
+      "entities/boxes/1.1.1/package"
     ]
   }
 }
