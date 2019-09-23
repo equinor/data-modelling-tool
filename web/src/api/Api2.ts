@@ -117,14 +117,6 @@ export default class Api2 {
     }
   }
 
-  static postEntityFile(props: PostPackage) {
-    return postPackage({
-      nodeType: NodeType.file,
-      url: api.packagePost(getDataSourceIDFromAbsolutID(props.parentId)),
-      ...props,
-    })
-  }
-
   static addBlueprintFile({
     nodeId,
     filename,
@@ -139,9 +131,29 @@ export default class Api2 {
     const url = api.addFile(dataSourceId)
     const data = {
       parentId,
-      /* @todo bug in api when using old index and new add blueprint endpoint.
-        the old index generation expects a title, while the new endpoint store filename to the database.
-      * */
+      filename,
+      templateRef,
+    }
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data, dataSourceId))
+      .catch(onError)
+  }
+
+  static addEntityFile({
+    nodeId,
+    filename,
+    templateRef,
+    onSuccess,
+    onError = () => {},
+  }: AddFile) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
+    const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
+    const url = api.addFile(dataSourceId)
+    const data = {
+      parentId,
       filename,
       templateRef,
     }

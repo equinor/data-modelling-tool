@@ -60,13 +60,11 @@ export const SelectBlueprintNode = (props: Props) => {
             'Failed to create entity'
           )
         } else {
-          Api2.postEntityFile({
+          // @todo input field in BlueprintPicker, optional new file name.
+          Api2.addEntityFile({
             templateRef: treeNodeData.nodeId,
-            parentId: sourceNode.nodeId,
-            formData: {
-              //default same as blueprint name. @todo input field in BlueprintPicker, optional new file name.
-              title: newFileName,
-            },
+            nodeId: sourceNode.nodeId,
+            filename: newFileName,
             onSuccess: (res: any) => {
               try {
                 const newTreeNode = new TreeNodeBuilderOld(res.data)
