@@ -11,7 +11,8 @@
       "blueprints/boxes/1.1.1/big/package"
     ],
     "files": [
-      "blueprints/boxes/1.1.1/ordinary"
+      "blueprints/boxes/1.1.1/ordinary",
+      "ordinary"
     ]
   }
 }

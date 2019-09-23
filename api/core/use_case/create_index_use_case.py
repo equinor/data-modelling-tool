@@ -74,6 +74,6 @@ class CreateIndexUseCase:
         for root_package in root_packages:
             self._add_package(index, root_package.form_data.latest_version)
 
-        # index.add_data_source(data_source_id, data_source_name, root_packages)
+        index.add_data_source(data_source_id, data_source_name, root_packages)
 
         return index

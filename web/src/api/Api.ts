@@ -79,28 +79,13 @@ export class IndexApi extends BaseApi {
 
       const nodes = values(res)
 
-      // find rootPackages that should be child of the datasource.
-      const rootPackages = nodes.filter(
-        (node: IndexNode) => node.nodeType === NodeType.rootPackage
-      )
-
-      // generate datasource treeDataNode.
-      const datasourceTreeNode: TreeNodeData = new TreeNodeBuilderOld({
-        id: datasource.id,
-        nodeType: NodeType.datasource,
-        title: datasource.id,
-        children: rootPackages.map(
-          (rootPackages: IndexNode) => rootPackages.id
-        ),
-      }).build()
-
       // map index to list of treeNodeData
       const indexNodes = nodes.map((node: IndexNode) =>
         new TreeNodeBuilderOld(node).build()
       )
 
       // concat datasourceNode and index, and transform to a object.
-      return [datasourceTreeNode, ...indexNodes].reduce(toObject, {})
+      return indexNodes.reduce(toObject, {})
     } catch (err) {
       console.error(err)
     }
