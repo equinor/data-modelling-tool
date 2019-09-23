@@ -21,11 +21,15 @@ const EditBlueprintForm = (props: Props) => {
   } = props
 
   const onSubmit = (schemas: any) => {
-    const url = api.documentPut(selectedDocumentId)
+    const url = api.updateDocument(selectedDocumentId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {
-        NotificationManager.success(response.data, 'Updated blueprint')
+        const responseData: DocumentData = response.data
+        NotificationManager.success(
+          responseData.document.id,
+          'Updated blueprint'
+        )
         dispatch(DocumentActions.viewFile(selectedDocumentId))
       })
       .catch((e: any) => {
