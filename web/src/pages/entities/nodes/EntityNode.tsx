@@ -6,7 +6,7 @@ import {
 import { RenderProps } from '../../common/tree-view/DocumentTree'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2 from '../../../api/Api2'
-import { TreeNodeBuilderOld } from '../../common/tree-view/TreeNodeBuilderOld'
+import { TreeNodeBuilder } from '../../common/tree-view/TreeNodeBuilderOld'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { SetShowModal } from '../../common/context-menu-actions/WithContextMenu'
@@ -67,7 +67,7 @@ export const SelectBlueprintNode = (props: Props) => {
             filename: newFileName,
             onSuccess: (res: any) => {
               try {
-                const newTreeNode = new TreeNodeBuilderOld(res.data)
+                const newTreeNode = new TreeNodeBuilder(res)
                   .setOpen(true)
                   .build()
                 addNode(newTreeNode, sourceNode.nodeId)
