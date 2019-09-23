@@ -22,7 +22,7 @@ STATUS_CODES = {
 }
 
 
-@blueprint.route("/api/documents/<string:data_source_id>/<path:document_id>", methods=["GET"])
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["GET"])
 def get(data_source_id: str, document_id: str):
     logger.info(f"Getting document '{document_id}' from data source '{data_source_id}'")
 
@@ -36,7 +36,7 @@ def get(data_source_id: str, document_id: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/documents/<string:data_source_id>/<path:document_id>", methods=["POST"])
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["POST"])
 def post(data_source_id: str, document_id: str):
     logger.info(f"Creating document '{document_id}' in data source '{data_source_id}'")
 
@@ -58,7 +58,7 @@ def post(data_source_id: str, document_id: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/documents/<string:data_source_id>/<path:document_id>", methods=["PUT"])
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["PUT"])
 def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
 

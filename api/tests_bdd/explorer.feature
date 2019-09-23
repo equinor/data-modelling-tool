@@ -22,7 +22,7 @@ Feature: Explorer
 
 
   Scenario: Add file
-    Given i access the resource url "/api/explorer/local-blueprints/add-file"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
     {
@@ -42,7 +42,7 @@ Feature: Explorer
     """
 
   Scenario: Add file to parent that does not exists
-    Given i access the resource url "/api/explorer/local-blueprints/add-file"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
     {
@@ -61,7 +61,7 @@ Feature: Explorer
     """
 
   Scenario: Add file with missing parameter = parent id
-    Given i access the resource url "/api/explorer/local-blueprints/add-file"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
     {
@@ -102,7 +102,7 @@ Feature: Explorer
 
 
   Scenario: Add package
-    Given i access the resource url "/api/explorer/local-blueprints/add-package"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-package"
     When i make a "POST" request
     """
     {
@@ -122,7 +122,7 @@ Feature: Explorer
     """
 
   Scenario: Add package to parent that does not exists
-    Given i access the resource url "/api/explorer/local-blueprints/add-package"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-package"
     When i make a "POST" request
     """
     {
@@ -141,7 +141,7 @@ Feature: Explorer
     """
 
   Scenario: Add package with missing parameter = parent id
-    Given i access the resource url "/api/explorer/local-blueprints/add-package"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-package"
     When i make a "POST" request
     """
     {
@@ -190,7 +190,7 @@ Feature: Explorer
     }
     """
     Then the response status should be "OK"
-   Given I access the resource url "/api/documents/local-blueprints/package_1/1.0.0/sub_package_1/package"
+   Given I access the resource url "/api/v2/documents/local-blueprints/package_1/1.0.0/sub_package_1/package"
     When I make a "GET" request
     Then the response status should be "System Error"
     And the response should equal
@@ -200,12 +200,12 @@ Feature: Explorer
       "message": "EntityNotFoundException: 'The entity, with id package_1/1.0.0/sub_package_1/package is not found'"
     }
     """
-  Given I access the resource url "/api/documents/local-blueprints/package_1/1.0.0/sub_package_3/package"
+  Given I access the resource url "/api/v2/documents/local-blueprints/package_1/1.0.0/sub_package_3/package"
     When I make a "GET" request
     Then the response status should be "OK"
 
   Scenario: Add root package
-    Given i access the resource url "/api/explorer/local-blueprints/add-root-package"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-root-package"
     When i make a "POST" request
     """
     {
@@ -224,7 +224,7 @@ Feature: Explorer
     """
 
   Scenario: Add root package with missing filename should fail
-    Given i access the resource url "/api/explorer/local-blueprints/add-root-package"
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-root-package"
     When i make a "POST" request
     """
     {
@@ -249,7 +249,7 @@ Feature: Explorer
     }
     """
     Then the response status should be "OK"
-    Given I access the resource url "/api/documents/local-blueprints/package_1/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints/package_1/package"
     When I make a "GET" request
     Then the response status should be "System Error"
     And the response should equal
@@ -270,7 +270,7 @@ Feature: Explorer
     }
     """
     Then the response status should be "OK"
-    Given I access the resource url "/api/documents/local-blueprints/package_1/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints/package_1/package"
     When I make a "GET" request
     Then the response status should be "System Error"
     And the response should equal

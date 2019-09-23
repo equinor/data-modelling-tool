@@ -129,7 +129,7 @@ export class DmtApi {
   // Explorer
 
   addFile(datasourceId: string) {
-    return `/api/explorer/${datasourceId}/add-file`
+    return `/api/v2/explorer/${datasourceId}/add-file`
   }
 
   removeFile(datasourceId: string) {
@@ -141,7 +141,7 @@ export class DmtApi {
   }
 
   addPackage(datasourceId: string) {
-    return `/api/explorer/${datasourceId}/add-package`
+    return `/api/v2/explorer/${datasourceId}/add-package`
   }
 
   removeSubPackage(datasourceId: string) {
@@ -153,7 +153,7 @@ export class DmtApi {
   }
 
   addRootPackage(datasourceId: string) {
-    return `/api/explorer/${datasourceId}/add-root-package`
+    return `/api/v2/explorer/${datasourceId}/add-root-package`
   }
 
   removeRootPackage(datasourceId: string) {
@@ -167,7 +167,7 @@ export class DmtApi {
   // Documents
 
   getDocumentWithTemplate(documentId: string): string {
-    return `/api/documents/${documentId}`
+    return `/api/v2/documents/${documentId}`
   }
 
   updateDocument(documentId: string) {

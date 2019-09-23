@@ -30,7 +30,7 @@ STATUS_CODES = {
 }
 
 
-@blueprint.route("/api/explorer/<string:data_source_id>/add-file", methods=["POST"])
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/add-file", methods=["POST"])
 def add_file_to_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
@@ -93,7 +93,7 @@ def move_file():
     )
 
 
-@blueprint.route("/api/explorer/<string:data_source_id>/add-package", methods=["POST"])
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/add-package", methods=["POST"])
 def add_package_to_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
@@ -149,7 +149,7 @@ def move_package():
     )
 
 
-@blueprint.route("/api/explorer/<string:data_source_id>/add-root-package", methods=["POST"])
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/add-root-package", methods=["POST"])
 def add_root_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
