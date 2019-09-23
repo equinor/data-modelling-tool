@@ -12,6 +12,8 @@ import { RenderProps } from '../tree-view/DocumentTree'
 interface WithContextMenuProps extends RenderProps {
   menuItems: MenuItem[]
   configs?: ActionConfig[]
+  children?: any
+  layout?: any
 }
 
 export type SetShowModal = (showModal: boolean) => void
@@ -32,10 +34,12 @@ interface WithContextMenuModalProps extends RenderProps {
   menuItems: MenuItem[]
   treeNodeData: TreeNodeData
   render: (props: any) => any
+  children?: any
+  layout?: any
 }
 
 export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
-  const { treeNodeData, menuItems, render } = props
+  const { treeNodeData, menuItems, render, children, layout } = props
   const [action, setAction] = useState('')
   const [showModal, setShowModal] = useState(false)
 
@@ -44,7 +48,9 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
     treeNodeData,
     addNode: props.addNode,
     updateNode: props.updateNode,
+    removeNode: props.removeNode,
     setShowModal,
+    layout,
   })
 
   return (
@@ -64,7 +70,7 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
         }}
         menuItems={menuItems}
       >
-        {treeNodeData.title}
+        {children || treeNodeData.title}
       </ContextMenu>
     </>
   )

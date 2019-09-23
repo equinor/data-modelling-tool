@@ -6,13 +6,18 @@ import { MenuItem } from '../../../components/context-menu/ContextMenu'
 import { FaFolder } from 'react-icons/fa'
 import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
-import { AddNode, UpdateNode } from '../../common/tree-view/DocumentTree'
+import {
+  AddNode,
+  RemoveNode,
+  UpdateNode,
+} from '../../common/tree-view/DocumentTree'
 
 type Props = {
   treeNodeData: TreeNodeData
   state: any
   addNode: AddNode
   updateNode: UpdateNode
+  removeNode: RemoveNode
 }
 
 const Wrapper = styled.div`
@@ -21,7 +26,7 @@ const Wrapper = styled.div`
 `
 
 export const DataSourceNode = (props: Props) => {
-  const { treeNodeData, state, addNode, updateNode } = props
+  const { treeNodeData, state, addNode, updateNode, removeNode } = props
 
   const menuItems: MenuItem[] = [
     {
@@ -47,6 +52,7 @@ export const DataSourceNode = (props: Props) => {
         menuItems={menuItems}
         addNode={addNode}
         updateNode={updateNode}
+        removeNode={removeNode}
       />
       {treeNodeData.nodeId === 'local' && (
         <FileUpload state={state} datasource={state.dataSources[0]} />

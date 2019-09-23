@@ -7,6 +7,10 @@ from core.use_case.add_file_to_package_use_case import AddFileToPackageUseCase, 
 from core.use_case.add_package_to_package_use_case import AddPackageToPackageUseCase, AddPackageToPackageRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
+from core.use_case.remove_file_from_package_use_case import (
+    RemoveFileFromPackageUseCase,
+    RemoveFileFromPackageRequestObject,
+)
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -31,6 +35,29 @@ def add_file_to_package(data_source_id: str):
     )
 
     request_object = AddFileToPackageRequestObject.from_dict(request_data)
+
+    response = use_case.execute(request_object)
+
+    return Response(
+        json.dumps(response.value, cls=AddFileSerializer),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type],
+    )
+
+
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-file", methods=["POST"])
+def remove_file_from_package(data_source_id: str):
+    db = DataSource(id=data_source_id)
+    request_data = request.get_json()
+
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
+    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
+
+    use_case = RemoveFileFromPackageUseCase(
+        document_repository=document_repository, sub_package_repository=sub_package_repository
+    )
+
+    request_object = RemoveFileFromPackageRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 

@@ -12,11 +12,13 @@ interface PropTypes {
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
 export type UpdateNode = (node: TreeNodeData) => void
+export type RemoveNode = (node: TreeNodeData) => void
 
 interface NodeComponentCallbackProps {
   addNode: AddNode
   updateNode: UpdateNode
   treeNodeData: TreeNodeData
+  removeNode: RemoveNode
 }
 
 export interface NodeComponentProps extends NodeComponentCallbackProps {
@@ -29,6 +31,7 @@ export type RenderProps = {
   treeNodeData: TreeNodeData
   addNode: AddNode
   updateNode: UpdateNode
+  removeNode: RemoveNode
 }
 
 export default (props: PropTypes) => {
@@ -72,9 +75,10 @@ export default (props: PropTypes) => {
           {(
             treeNodeData: TreeNodeData,
             addNode: AddNode,
-            updateNode: UpdateNode
+            updateNode: UpdateNode,
+            removeNode: RemoveNode
           ) => {
-            return render({ treeNodeData, addNode, updateNode })
+            return render({ treeNodeData, addNode, updateNode, removeNode })
           }}
         </Tree>
       </div>

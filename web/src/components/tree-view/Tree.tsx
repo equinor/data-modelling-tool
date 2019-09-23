@@ -134,6 +134,11 @@ const Tree = (props: TreeProps) => {
     dispatch(NodeActions.updateNode(node.nodeId, node.title))
   }
 
+  const removeNode = (nodeId: string, parentId: string) => {
+    dispatch(NodeActions.removeChild(parentId, nodeId))
+    dispatch(NodeActions.deleteNode(nodeId))
+  }
+
   const rootNodes = values(state)
     .filter((node: TreeNodeData) => node.isRoot)
     .filter((node: TreeNodeData) => !node.isHidden)
@@ -167,6 +172,7 @@ const Tree = (props: TreeProps) => {
                       handleToggle={handleToggle}
                       addNode={addNode}
                       updateNode={updateNode}
+                      removeNode={removeNode}
                     />
                   </DraggableWrapper>
                 )

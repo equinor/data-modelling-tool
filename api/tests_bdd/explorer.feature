@@ -6,9 +6,20 @@ Feature: Explorer
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
       | db   | 27017 | maf      | maf      | false | local-blueprints | maf      | documents  | blueprints   | mongo-db |
 
-    Given there are package named "package_1" of "documents"
-      | title     | description         | version |
-      | package 1 | package description | 1.0.0   |
+    Given there are root packages in collection "documents"
+      | filename  | version |
+      | package_1 | 1.0.0   |
+
+    Given there are sub packages in collection "documents"
+      | parent_id               | filename      |
+      | package_1/1.0.0/package | sub_package_1 |
+      | package_1/1.0.0/package | sub_package_2 |
+
+    Given there are documents in collection "documents"
+      | parent_id                             | filename   |
+      | package_1/1.0.0/sub_package_1/package | document_1 |
+      | package_1/1.0.0/sub_package_1/package | document_2 |
+
 
   Scenario: Add file
     Given i access the resource url "/api/explorer/local-blueprints/add-file"
@@ -30,7 +41,7 @@ Feature: Explorer
     }
     """
 
-    Scenario: Add file to parent that does not exists
+  Scenario: Add file to parent that does not exists
     Given i access the resource url "/api/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
@@ -49,7 +60,7 @@ Feature: Explorer
     }
     """
 
-    Scenario: Add file with missing parameter = parent id
+  Scenario: Add file with missing parameter = parent id
     Given i access the resource url "/api/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
@@ -66,6 +77,17 @@ Feature: Explorer
       "message": "parentId: is missing"
     }
     """
+
+  Scenario: Remove file
+    Given i access the resource url "/api/v2/explorer/local-blueprints/remove-file"
+    When i make a "POST" request
+    """
+    {
+      "parentId": "package_1/1.0.0/sub_package_1/package",
+      "filename": "package_1/1.0.0/sub_package_1/document_1"
+    }
+    """
+    Then the response status should be "OK"
 
 
   Scenario: Add package
@@ -88,7 +110,7 @@ Feature: Explorer
     }
     """
 
-    Scenario: Add package to parent that does not exists
+  Scenario: Add package to parent that does not exists
     Given i access the resource url "/api/explorer/local-blueprints/add-package"
     When i make a "POST" request
     """
@@ -107,7 +129,7 @@ Feature: Explorer
     }
     """
 
-    Scenario: Add package with missing parameter = parent id
+  Scenario: Add package with missing parameter = parent id
     Given i access the resource url "/api/explorer/local-blueprints/add-package"
     When i make a "POST" request
     """

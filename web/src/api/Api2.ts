@@ -36,6 +36,14 @@ interface AddFile {
   templateRef?: string
 }
 
+interface RemoveFile {
+  nodeId: string
+  filename: string
+  onSuccess: (res: any, dataSourceId: string) => void
+  onError?: OnError
+  templateRef?: string
+}
+
 interface AddRootPackage {
   nodeId: string
   filename: string
@@ -87,6 +95,13 @@ export default class Api2 {
   }
 
   /**
+   * Wraps fetchTemplate with a custom endpoint url.
+   */
+  static fetchRemoveFile({ onSuccess, onError }: BASE_CRUD) {
+    fetchTemplate({ url: api.templatesRemoveFile(), onSuccess, onError })
+  }
+
+  /**
    * Wraps fetchTemplate with different template endpoints.
    */
   static fetchCreateDatasource(selectedDatasourceType: string) {
@@ -133,6 +148,30 @@ export default class Api2 {
     axios
       .post(url, data)
       .then(response => onSuccess(response.data, dataSourceId))
+      .catch(onError)
+  }
+
+  static removeFile({
+    nodeId,
+    filename,
+    onSuccess,
+    onError = () => {},
+  }: RemoveFile) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
+    const packageId = nodeId.substring(nodeId.indexOf('/') + 1)
+    const parentId = packageId.substring(0, packageId.lastIndexOf('/'))
+    const url = api.removeFile(dataSourceId)
+    const data = {
+      parentId: `${parentId}/package`,
+      filename: `${parentId}/${filename}`,
+    }
+    axios
+      .post(url, data)
+      .then(response =>
+        onSuccess(response.data, `${dataSourceId}/${parentId}/package`)
+      )
       .catch(onError)
   }
 
