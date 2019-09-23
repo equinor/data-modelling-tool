@@ -2,7 +2,6 @@ import ViewBlueprintForm from './ViewBlueprintForm'
 import React, { useReducer } from 'react'
 import BlueprintReducer, { PageMode } from '../../common/DocumentReducer'
 import EditBlueprintForm from './EditBlueprintForm'
-import CreateBlueprintForm from './CreateBlueprintForm'
 import styled from 'styled-components'
 import FetchDocument, { DocumentData } from './FetchDocument'
 
@@ -39,14 +38,6 @@ const Blueprint = (props: any) => {
                   dispatch={dispatch}
                 />
               )
-            case PageMode.create:
-              return (
-                <CreateBlueprintForm
-                  documentData={data}
-                  state={state}
-                  dispatch={dispatch}
-                />
-              )
             case PageMode.edit:
               return (
                 <EditBlueprintForm
@@ -59,7 +50,7 @@ const Blueprint = (props: any) => {
               return null
           }
         }}
-      ></FetchDocument>
+      />
     </Wrapper>
   )
 }

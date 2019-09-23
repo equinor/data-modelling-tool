@@ -43,6 +43,13 @@ interface AddRootPackage {
   templateRef?: string
 }
 
+interface MoveFile {
+  source: string
+  destination: string
+  onSuccess: (res: any) => void
+  onError?: OnError
+  templateRef?: string
+}
 /**
  * methods must static since we they are passed around, while the class instance is not.
  *
@@ -175,6 +182,23 @@ export default class Api2 {
       .then(response =>
         onSuccess(response.data, `${dataSourceId}/${parentId}/package`)
       )
+      .catch(onError)
+  }
+
+  static moveFile({
+    source,
+    destination,
+    onSuccess,
+    onError = () => {},
+  }: MoveFile) {
+    const data = {
+      source: source,
+      destination: destination,
+    }
+    const url = api.moveFile()
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data))
       .catch(onError)
   }
 

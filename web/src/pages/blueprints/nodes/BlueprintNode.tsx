@@ -28,6 +28,10 @@ export const BlueprintNode = (props: Props) => {
       label: 'Remove',
       action: ContextMenuActions.removeFile,
     },
+    {
+      label: 'Rename',
+      action: ContextMenuActions.renameFile,
+    },
   ]
 
   return (

@@ -78,6 +78,17 @@ Feature: Explorer
     }
     """
 
+  Scenario: Move file
+    Given i access the resource url "/api/v2/explorer/move-file"
+    When i make a "POST" request
+    """
+    {
+      "source": "local-blueprints/package_1/1.0.0/sub_package_1/document_1",
+      "destination": "local-blueprints/package_1/1.0.0/sub_package_1/document_3"
+    }
+    """
+    Then the response status should be "OK"
+
   Scenario: Remove file
     Given i access the resource url "/api/v2/explorer/local-blueprints/remove-file"
     When i make a "POST" request

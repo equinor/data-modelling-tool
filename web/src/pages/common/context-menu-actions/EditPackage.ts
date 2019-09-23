@@ -15,12 +15,12 @@ export function editPackage(props: {
   return {
     fetchDocument: Api2.fetchDocument(node.nodeId),
     onSubmit: (formData: any) => {
-      const url = api.documentPut(node.nodeId)
+      const url = api.updateDocument(node.nodeId)
       axios
         .put(url, formData)
         .then(() => {
           updateNode({ ...node, title: formData.title })
-          setShowModal(false)
+          // setShowModal(false)
           NotificationManager.success(formData.title, 'Updated package title')
         })
         .catch((e: any) => {

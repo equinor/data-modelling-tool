@@ -126,10 +126,6 @@ export class DmtApi {
     return '/api/templates/remove-file'
   }
 
-  documentPut(documentId: string) {
-    return `/api/data-sources/${documentId}`
-  }
-
   // Explorer
 
   addFile(datasourceId: string) {
@@ -138,6 +134,10 @@ export class DmtApi {
 
   removeFile(datasourceId: string) {
     return `/api/v2/explorer/${datasourceId}/remove-file`
+  }
+
+  moveFile() {
+    return `/api/v2/explorer/move-file`
   }
 
   addPackage(datasourceId: string) {
@@ -155,6 +155,10 @@ export class DmtApi {
   // Documents
 
   getDocumentWithTemplate(documentId: string): string {
+    return `/api/documents/${documentId}`
+  }
+
+  updateDocument(documentId: string) {
     return `/api/documents/${documentId}`
   }
 }

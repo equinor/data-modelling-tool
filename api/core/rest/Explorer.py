@@ -15,6 +15,7 @@ from core.use_case.remove_package_from_package_use_case import (
     RemovePackageFromPackageUseCase,
     RemovePackageFromPackageRequestObject,
 )
+from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -62,6 +63,23 @@ def remove_file_from_package(data_source_id: str):
     )
 
     request_object = RemoveFileFromPackageRequestObject.from_dict(request_data)
+
+    response = use_case.execute(request_object)
+
+    return Response(
+        json.dumps(response.value, cls=AddFileSerializer),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type],
+    )
+
+
+@blueprint.route("/api/v2/explorer/move-file", methods=["POST"])
+def move_file():
+    request_data = request.get_json()
+
+    use_case = MoveFileUseCase(get_repository=get_repository)
+
+    request_object = MoveFileRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 

@@ -6,6 +6,7 @@ import Api2 from '../../../api/Api2'
 import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilderOld'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
+import { LayoutComponents } from '../golden-layout/LayoutContext'
 
 const api = new DmtApi()
 
@@ -18,6 +19,7 @@ export enum ContextMenuActions {
   addBlueprint = 'Add Blueprint',
   removeFile = 'Remove File',
   removeSubPackage = 'Remove Subpackage',
+  renameFile = 'Rename file',
 }
 
 export type ContextMenuActionProps = {
@@ -105,12 +107,12 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchDocument(treeNodeData.nodeId),
         onSubmit: (formData: any) => {
-          const url = api.documentPut(treeNodeData.nodeId)
+          const url = api.updateDocument(treeNodeData.nodeId)
           axios
             .put(url, formData)
             .then(() => {
               props.updateNode({ ...treeNodeData, title: formData.title })
-              setShowModal(false)
+              // setShowModal(false)
               NotificationManager.success(
                 formData.title,
                 'Updated package title'
@@ -141,6 +143,55 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
             onSuccess: (res: any, parentId: string) => {
               removeNode(treeNodeData.nodeId, parentId)
               layout.remove(treeNodeData.nodeId)
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
+          })
+        },
+      }
+    }
+    case ContextMenuActions.renameFile: {
+      const { treeNodeData } = props
+      return {
+        fetchDocument: Api2.fetchCreateBlueprint,
+        onSubmit: (formData: any) => {
+          const packageId = treeNodeData.nodeId.substring(
+            0,
+            treeNodeData.nodeId.lastIndexOf('/')
+          )
+          const parentId = `${packageId}/package`
+          Api2.moveFile({
+            source: treeNodeData.nodeId,
+            destination: `${packageId}/${formData.title}`,
+            onSuccess: (res: any) => {
+              const dataSourceId = treeNodeData.nodeId.split('/')[0]
+              const newNodeId = `${dataSourceId}/${res.id}`
+
+              // Remove old node
+              removeNode(treeNodeData.nodeId, parentId)
+
+              // Add new node
+              const node: TreeNodeData = new TreeNodeBuilder({
+                id: newNodeId,
+                filename: res.filename,
+                nodeType: res.documentType,
+              })
+                .setOpen(true)
+                .build()
+              addNode(node, parentId)
+
+              NotificationManager.success(formData.title, 'Renamed')
+
+              layout.remove(treeNodeData.nodeId)
+
+              const data = {
+                selectedDocumentId: newNodeId,
+              }
+              layout.add(
+                newNodeId,
+                res.filename,
+                LayoutComponents.blueprint,
+                data
+              )
             },
             onError: (err: any) => console.error(Object.keys(err)),
           })
