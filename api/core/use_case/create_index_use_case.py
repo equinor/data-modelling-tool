@@ -63,7 +63,9 @@ class CreateIndexUseCase:
         package: SubPackage = self.package_repository.get(package_id)
         index.add_package(package)
         for file in package.form_data.files:
+            print(file)
             document = self.document_repository.get(file)
+            print(document)
             index.add_file(document)
         for sub_package in package.form_data.subpackages:
             self._add_package(index, sub_package)
