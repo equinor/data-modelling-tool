@@ -156,6 +156,10 @@ export class DmtApi {
     return `/api/explorer/${datasourceId}/add-root-package`
   }
 
+  removeRootPackage(datasourceId: string) {
+    return `/api/v2/explorer/${datasourceId}/remove-root-package`
+  }
+
   // Documents
 
   getDocumentWithTemplate(documentId: string): string {

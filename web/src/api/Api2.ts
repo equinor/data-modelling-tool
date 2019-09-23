@@ -35,6 +35,12 @@ interface RemoveFile {
   templateRef?: string
 }
 
+interface RemoveRootPackage {
+  nodeId: string
+  onSuccess: (res: any, dataSourceId: string) => void
+  onError?: OnError
+}
+
 interface AddRootPackage {
   nodeId: string
   filename: string
@@ -234,6 +240,27 @@ export default class Api2 {
       .catch(onError)
   }
 
+  static removeRootPackage({
+    nodeId,
+    onSuccess,
+    onError = () => {},
+  }: RemoveRootPackage) {
+    // local-blueprints-equinor
+    const dataSourceId = nodeId.split('/')[0]
+    // root-package/1.0.0/subpackage/package
+    const packageId = nodeId.substring(nodeId.indexOf('/') + 1)
+    const packagePath = packageId.substring(0, packageId.lastIndexOf('/'))
+    const parentId = packagePath.substring(0, packagePath.lastIndexOf('/'))
+    const url = api.removeRootPackage(dataSourceId)
+    const data = {
+      filename: `${parentId}/package`,
+    }
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data, `${dataSourceId}`))
+      .catch(onError)
+  }
+
   static addRootPackage({
     nodeId,
     filename,
@@ -293,46 +320,5 @@ function fetchTemplate({
         },
       })
     })
-    .catch(onError)
-}
-
-/**
- * Creates a package, subpackage or file.
- * Covers:
- *   - create root-package (top-level node directly below datasource node.
- *   - create sub-package (all other packages)
- *   - create document (blueprint, entity)
- *
- * FormData must have a non empty computer-friendly title property used to generate the filename and document id.
- *
- * @param nodeType NodeType
- * @param formData
- * @param parentId absolute path
- * @param templateRef optional
- * @param onSuccess
- * @param onError
- * @param url
- */
-function postPackage({
-  nodeType,
-  formData,
-  parentId,
-  templateRef,
-  onSuccess,
-  onError = () => {},
-  url,
-}: any) {
-  const data = {
-    meta: {
-      name: formData.title,
-      templateRef,
-    },
-    nodeType,
-    parentId,
-    formData,
-  }
-  axios
-    .post(url, data)
-    .then(response => onSuccess(response))
     .catch(onError)
 }
