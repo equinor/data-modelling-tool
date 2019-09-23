@@ -160,6 +160,10 @@ export class DmtApi {
     return `/api/v2/explorer/${datasourceId}/remove-root-package`
   }
 
+  moveRootPackage() {
+    return `/api/v2/explorer/move-root-package`
+  }
+
   // Documents
 
   getDocumentWithTemplate(documentId: string): string {

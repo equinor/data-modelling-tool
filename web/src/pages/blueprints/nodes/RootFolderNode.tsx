@@ -26,7 +26,7 @@ export const RootFolderNode = (props: NodeComponentProps) => {
     },
     {
       label: 'Rename',
-      action: ContextMenuActions.editPackage,
+      action: ContextMenuActions.renameRootPackage,
     },
     {
       label: 'Remove',

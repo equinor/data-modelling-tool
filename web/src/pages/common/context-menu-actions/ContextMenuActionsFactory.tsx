@@ -22,6 +22,7 @@ export enum ContextMenuActions {
   removeSubPackage = 'Remove Subpackage',
   renameFile = 'Rename file',
   removeRootPackage = 'Remove Package',
+  renameRootPackage = 'Rename Package',
 }
 
 export type ContextMenuActionProps = {
@@ -305,7 +306,57 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
         },
       }
     }
+    case ContextMenuActions.renameRootPackage: {
+      const { treeNodeData } = props
+      return {
+        fetchDocument: Api2.fetchCreateBlueprint,
+        onSubmit: (formData: any) => {
+          const parts = treeNodeData.nodeId.split('/')
+          parts.pop()
+          parts.pop()
+          const source = `${parts.join('/')}/package`
+          const sourceNode = `${parts.join('/')}/1.0.0/package`
+          parts.pop()
+          const destination = `${parts.join('/')}/${formData.title}/package`
+          const destinationNode = `${parts.join('/')}/${
+            formData.title
+          }/1.0.0/package`
 
+          Api2.moveRootPackage({
+            source: source,
+            destination: destination,
+            onSuccess: (res: any) => {
+              const dataSourceId = treeNodeData.nodeId.split('/')[0]
+              replaceNode(
+                dataSourceId,
+                sourceNode,
+                destinationNode,
+                res.filename
+              )
+
+              /*
+              // Remove old node
+              removeNode(treeNodeData.nodeId, parentId)
+
+              // Add new node (TODO: what about children)
+              const node: TreeNodeData = new TreeNodeBuilder({
+                id: newNodeId,
+                filename: res.filename,
+                nodeType: res.documentType,
+                // children: treeNodeData.children || []
+              })
+                .setOpen(true)
+                .build()
+
+              addNode(node, parentId)
+              */
+              NotificationManager.success(formData.title, 'Renamed')
+            },
+            onError: (error: any) => showError(error),
+          })
+        },
+      }
+    }
     default:
       return {
         schemaUrl: '',

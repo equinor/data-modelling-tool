@@ -259,3 +259,24 @@ Feature: Explorer
       "message": "EntityNotFoundException: 'The entity, with id package_1/package is not found'"
     }
     """
+
+  Scenario: Move root package
+    Given i access the resource url "/api/v2/explorer/move-root-package"
+    When i make a "POST" request
+    """
+    {
+       "source": "local-blueprints/package_1/package",
+       "destination": "local-blueprints/package_2/package"
+    }
+    """
+    Then the response status should be "OK"
+    Given I access the resource url "/api/documents/local-blueprints/package_1/package"
+    When I make a "GET" request
+    Then the response status should be "System Error"
+    And the response should equal
+    """
+    {
+      "type": "SYSTEM_ERROR",
+      "message": "EntityNotFoundException: 'The entity, with id package_1/package is not found'"
+    }
+    """
