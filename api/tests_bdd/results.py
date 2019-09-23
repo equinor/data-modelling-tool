@@ -3,7 +3,6 @@ from colorclass import Color
 
 
 def colored_status(status, text):
-    print(status)
     if status == "passed":
         return Color("{autogreen}%s{/autogreen}" % text)
     elif status == "skipped":

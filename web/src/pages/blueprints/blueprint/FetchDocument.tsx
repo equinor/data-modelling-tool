@@ -4,9 +4,7 @@ import Api2 from '../../../api/Api2'
 
 export type DocumentData = {
   template: any
-  formData?: any
-  view?: any
-  uiSchema: any
+  document: any
 }
 
 type Props = {

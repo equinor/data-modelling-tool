@@ -22,10 +22,8 @@ def get(data_source_id: str, document_id: str):
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    get_document_with_template_use_case = GetDocumentWithTemplateUseCase(document_repository)
+    get_document_with_template_use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     result = get_document_with_template_use_case.execute(document_id)
-
-    # data = marshal(result._asdict(), document_with_template_fields)
 
     data = {"template": result.template.to_dict(), "document": result.document.to_dict()}
 
@@ -48,11 +46,8 @@ def post(data_source_id: str, document_id: str):
     add_use_case = AddDocumentUseCase(document_repository)
     add_use_case.execute(document_id, document)
 
-    get_document_with_template_use_case = GetDocumentWithTemplateUseCase(document_repository)
+    get_document_with_template_use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     result = get_document_with_template_use_case.execute(document_id)
-
-    # data = marshal({"template": result.template, "document": result.document.to_dict()},
-    # document_with_template_fields)
 
     data = {"template": result.template.to_dict(), "document": result.document.to_dict()}
 
@@ -72,11 +67,8 @@ def put(data_source_id: str, document_id: str):
     add_use_case = UpdateDocumentUseCase(document_repository)
     add_use_case.execute(document_id, data)
 
-    get_document_with_template_use_case = GetDocumentWithTemplateUseCase(document_repository)
+    get_document_with_template_use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     result = get_document_with_template_use_case.execute(document_id)
-
-    # data = marshal({"template": result.template, "document": result.document.to_dict()},
-    # document_with_template_fields)
 
     data = {"template": result.template.to_dict(), "document": result.document.to_dict()}
 

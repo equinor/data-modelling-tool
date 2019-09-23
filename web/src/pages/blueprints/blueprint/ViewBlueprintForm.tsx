@@ -49,16 +49,22 @@ const ViewData = (props: any) => {
   if (disabled || Object.keys(data).length === 0) {
     return null
   }
-  if (!data.view) {
+  const { view } = data.template
+
+  if (!view) {
     return null
   }
-  let components = data.view.map((config: any, index: number) => {
+  let components = view.map((config: any, index: number) => {
     const key = 'view' + index
     switch (config.display) {
       case 'basic':
-        return <BasicView key={key} config={config} data={data.formData} />
+        return (
+          <BasicView key={key} config={config} data={data.document.formData} />
+        )
       case 'table':
-        return <TableView key={key} config={config} data={data.formData} />
+        return (
+          <TableView key={key} config={config} data={data.document.formData} />
+        )
       default:
         return <div key={key}>{config.display}</div>
     }
