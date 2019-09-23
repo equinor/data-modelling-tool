@@ -99,7 +99,7 @@ export class DmtApi {
   }
 
   dataSourcesPost(datasourceId: string) {
-    return `/api/data-sources/${datasourceId}`
+    return `/api/v1/data-sources/${datasourceId}`
   }
 
   indexGet(datasourceId: string) {
@@ -111,19 +111,19 @@ export class DmtApi {
   }
 
   templatesDatasourceMongoGet() {
-    return `/api/templates/mongodb-datasource-template`
+    return `/api/v1/templates/mongodb-datasource-template`
   }
 
   templatesCreateBlueprintGet() {
-    return `/api/templates/create-blueprint`
+    return `/api/v1/templates/create-blueprint`
   }
 
   templatesPackageGet() {
-    return '/api/templates/package-template'
+    return '/api/v1/templates/package-template'
   }
 
   templatesRemoveFile() {
-    return '/api/templates/remove-file'
+    return '/api/v1/templates/remove-file'
   }
 
   // Explorer

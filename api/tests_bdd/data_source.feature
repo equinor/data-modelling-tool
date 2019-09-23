@@ -7,7 +7,7 @@ Feature: Data Source
       | hostname | 1234 | user     | secret   | true | equinor-models | database_1 | blueprints | blueprints   | mongo-db|
 
   Scenario: Get data source blueprints
-    Given I access the resource url "/api/data-sources?documentType=blueprints"
+    Given I access the resource url "/api/v1/data-sources?documentType=blueprints"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -25,7 +25,7 @@ Feature: Data Source
     """
 
   Scenario Outline: Create new data source
-    Given i access the resource url "/api/data-sources/myTest-DataSource"
+    Given i access the resource url "/api/v1/data-sources/myTest-DataSource"
     And data modelling tool templates are imported
     When i make a "POST" request
       """
@@ -54,7 +54,7 @@ Feature: Data Source
 
 
   Scenario: Update data source
-    Given i access the resource url "/api/data-sources/equinor-models"
+    Given i access the resource url "/api/v1/data-sources/equinor-models"
     And data modelling tool templates are imported
     When i make a "PUT" request
       """
@@ -77,9 +77,9 @@ Feature: Data Source
     """
 
   Scenario: Delete data source
-    Given i access the resource url "/api/data-sources/equinor-models"
+    Given i access the resource url "/api/v1/data-sources/equinor-models"
     When i make a "DELETE" request
-    Given I access the resource url "/api/data-sources?documentType=blueprints"
+    Given I access the resource url "/api/v1/data-sources?documentType=blueprints"
     When I make a "GET" request
     Then the response should contain
     """

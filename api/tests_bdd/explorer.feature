@@ -168,7 +168,7 @@ Feature: Explorer
     }
     """
     Then the response status should be "OK"
-    Given I access the resource url "/api/documents/local-blueprints/package_1/1.0.0/sub_package_1/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints/package_1/1.0.0/sub_package_1/package"
     When I make a "GET" request
     Then the response status should be "System Error"
     And the response should equal
