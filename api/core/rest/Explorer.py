@@ -18,6 +18,7 @@ from core.use_case.remove_package_from_package_use_case import (
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 from core.use_case.move_package_use_case import MovePackageUseCase, MovePackageRequestObject
 from core.use_case.remove_root_package_use_case import RemoveRootPackageRequestObject, RemoveRootPackageUseCase
+from core.use_case.move_root_package_use_case import MoveRootPackageRequestObject, MoveRootPackageUseCase
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -191,3 +192,20 @@ def remove_root_package(data_source_id: str):
     response = use_case.execute(request_object)
 
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+
+
+@blueprint.route("/api/v2/explorer/move-root-package", methods=["POST"])
+def move_root_package():
+    request_data = request.get_json()
+
+    use_case = MoveRootPackageUseCase(get_repository=get_repository)
+
+    request_object = MoveRootPackageRequestObject.from_dict(request_data)
+
+    response = use_case.execute(request_object)
+
+    return Response(
+        json.dumps(response.value, cls=AddFileSerializer),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type],
+    )

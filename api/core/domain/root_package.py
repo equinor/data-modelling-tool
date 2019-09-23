@@ -21,8 +21,8 @@ class RootPackageData:
     ):
         self.title = title
         self.description = description
-        self.latest_version = latest_version
-        self.versions = versions
+        self.latest_version = [] if latest_version is None else latest_version
+        self.versions = [] if versions is None else versions
 
     def validate(self):
         pass
