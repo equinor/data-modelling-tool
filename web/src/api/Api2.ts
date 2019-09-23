@@ -47,7 +47,7 @@ interface MoveFile {
   source: string
   destination: string
   onSuccess: (res: any) => void
-  onError?: OnError
+  onError: OnError
   templateRef?: string
 }
 /**
@@ -185,12 +185,7 @@ export default class Api2 {
       .catch(onError)
   }
 
-  static moveFile({
-    source,
-    destination,
-    onSuccess,
-    onError = () => {},
-  }: MoveFile) {
+  static moveFile({ source, destination, onSuccess, onError }: MoveFile) {
     const data = {
       source: source,
       destination: destination,
@@ -199,7 +194,7 @@ export default class Api2 {
     axios
       .post(url, data)
       .then(response => onSuccess(response.data))
-      .catch(onError)
+      .catch(error => onError(error))
   }
 
   static removeSubPackage({

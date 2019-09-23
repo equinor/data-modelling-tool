@@ -33,6 +33,11 @@ export type ContextMenuActionProps = {
 
 const getFormProperties = (type: string, props: ContextMenuActionProps) => {
   const { treeNodeData, addNode, setShowModal, removeNode, layout } = props
+
+  const showError = (error: any) => {
+    NotificationManager.error(error.response.data.message, 'Failed')
+  }
+
   switch (type) {
     case ContextMenuActions.createBlueprint: {
       return {
@@ -193,7 +198,7 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
                 data
               )
             },
-            onError: (err: any) => console.error(Object.keys(err)),
+            onError: (error: any) => showError(error),
           })
         },
       }

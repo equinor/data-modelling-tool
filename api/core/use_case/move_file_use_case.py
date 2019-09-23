@@ -9,6 +9,7 @@ from core.repository.interface.document_repository import DocumentRepository
 from pathlib import Path
 from core.domain.document import Document
 from classes.data_source import DataSource
+from core.repository.repository_exceptions import EntityNotFoundException, EntityAlreadyExistsException
 
 
 class MoveFileRequestObject(req.ValidRequestObject):
@@ -29,14 +30,14 @@ class MoveFileRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return MoveFileRequestObject(source=adict.get("source"), destination=adict.get("destination"))
+        return cls(source=adict.get("source"), destination=adict.get("destination"))
 
 
 class MoveFileUseCase(uc.UseCase):
     def __init__(self, get_repository):
         self.get_repository = get_repository
 
-    def process_request(self, request_object):
+    def process_request(self, request_object: MoveFileRequestObject):
         source_data_source, source_document_id = request_object.source.split("/", 1)
         destination_data_source, destination_document_id = request_object.destination.split("/", 1)
 
@@ -54,7 +55,7 @@ class MoveFileUseCase(uc.UseCase):
         source_id = f"{source.parent}/package"
         source_package: SubPackage = source_sub_package_repository.get(source_id)
         if not source_package:
-            raise Exception(f"The destination, with id {source_id}, was not found")
+            raise EntityNotFoundException(uid=source_id)
         source_package.remove_file(source_document_id)
         logger.info(f"Removed file '{source.name}' from sub package '{source_id}")
         source_sub_package_repository.update(source_package)
@@ -66,7 +67,7 @@ class MoveFileUseCase(uc.UseCase):
         destination_id = f"{destination.parent}/package"
         destination_package: SubPackage = destination_sub_package_repository.get(destination_id)
         if not destination_package:
-            raise Exception(f"The target, with id {destination_id}, was not found")
+            raise EntityNotFoundException(uid=destination_id)
         destination_package.add_file(destination.name)
         logger.info(f"Added file '{destination.name}' to sub package '{destination_id}")
         destination_sub_package_repository.update(destination_package)
@@ -75,9 +76,9 @@ class MoveFileUseCase(uc.UseCase):
         source_document_repository: DocumentRepository = self.get_repository(
             RepositoryType.DocumentRepository, source_data_source
         )
-        source_document = source_document_repository.get(source_document_id)
+        source_document: Document = source_document_repository.get(source_document_id)
         if not source_document:
-            raise Exception(f"The source document, with id {source_document_id}, was not found")
+            raise EntityNotFoundException(uid=source_document_id)
         source_document_repository.delete(source_document)
         logger.info(f"Removed document '{source_document.id}'")
 
@@ -85,9 +86,9 @@ class MoveFileUseCase(uc.UseCase):
         destination_document_repository: DocumentRepository = self.get_repository(
             RepositoryType.DocumentRepository, source_data_source
         )
-        destination_document = destination_document_repository.get(destination_document_id)
+        destination_document: Document = destination_document_repository.get(destination_document_id)
         if destination_document:
-            raise Exception(f"The destination document, with id {request_object.source}, already exists")
+            raise EntityAlreadyExistsException(request_object.source)
         destination_document = Document(id=destination_document_id, template_ref=source_document.meta.template_ref)
         destination_document.form_data = source_document.form_data
         destination_document_repository.add(destination_document)
