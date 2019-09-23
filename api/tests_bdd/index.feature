@@ -34,6 +34,12 @@ Feature: Index
     And the response should equal
     """
     {
+       "local-blueprints-equinor": {
+          "id": "local-blueprints-equinor",
+          "title": "local-blueprints-equinor",
+          "nodeType": "datasource",
+          "children": ["local-blueprints-equinor/package_1/1.0.0/package"]
+       },
        "local-blueprints-equinor/package_1/1.0.0/package":{
           "id":"local-blueprints-equinor/package_1/1.0.0/package",
           "title":"package_1",
