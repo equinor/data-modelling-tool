@@ -171,7 +171,7 @@ export class DmtApi {
   }
 
   updateDocument(documentId: string) {
-    return `/api/documents/${documentId}`
+    return `/api/v2/documents/${documentId}`
   }
 }
 
