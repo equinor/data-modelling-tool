@@ -4,6 +4,7 @@ from core.repository.mongo.root_package_repository import MongoRootPackageReposi
 from core.repository.mongo.mongo_db_client import MongoDbClient
 
 
+# TODO: Make Enum
 class RepositoryType(object):
     DocumentRepository = "DocumentRepository"
     SubPackageRepository = "SubPackageRepository"
@@ -11,6 +12,7 @@ class RepositoryType(object):
 
 
 def get_repository(repository_type: RepositoryType, db):
+    # TODO: db.type as Enum
     if db.type == "mongo-db":
         # Not sure if this is the correct place
         db = MongoDbClient(

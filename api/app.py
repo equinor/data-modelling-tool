@@ -10,7 +10,7 @@ from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
 from utils.files import getListOfFiles
 from utils.logging import logger
-from core.rest import Document, Explorer, Index
+from core.rest import Document, Explorer, Index, DataSource
 
 
 def create_app(config):
@@ -19,6 +19,7 @@ def create_app(config):
     create_api(app)
     app.register_blueprint(Document.blueprint)
     app.register_blueprint(Explorer.blueprint)
+    app.register_blueprint(DataSource.blueprint)
     app.register_blueprint(Index.blueprint)
     return app
 

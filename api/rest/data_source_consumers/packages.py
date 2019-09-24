@@ -4,7 +4,8 @@ from flask import request
 from flask_restful import Resource
 
 from classes.data_source import DataSource
-from classes.package_request import PackageRequest, DocumentType
+from classes.package_request import PackageRequest
+from utils.enums import DocumentType
 
 nodes_with_parent = (DocumentType.SUB_PACKAGE, DocumentType.FILE)
 

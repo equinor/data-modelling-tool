@@ -49,6 +49,7 @@ class DataSource:
         self.collection = data_source_dict["collection"]
         self.documentType = data_source_dict["documentType"]
 
+        # TODO: Deprecate this client. Rename db
         if self.type == "mongo-db":
             self.client = MongodbClient(
                 host=self.host,

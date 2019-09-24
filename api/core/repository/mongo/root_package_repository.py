@@ -1,7 +1,7 @@
 from core.domain.root_package import RootPackage
 from core.repository.mongo.mongo_repository_base import MongoRepositoryBase
 from typing import List
-from classes.package_request import DocumentType
+from utils.enums import DocumentType
 from core.repository.interface.root_package_repository import RootPackageRepository
 
 

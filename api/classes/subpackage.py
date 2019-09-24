@@ -1,5 +1,5 @@
 from classes.data_source import DataSource
-from classes.package_request import DocumentType
+from utils.enums import DocumentType
 from utils.help_functions import get_absolute_path
 
 
