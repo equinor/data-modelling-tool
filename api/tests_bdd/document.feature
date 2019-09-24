@@ -11,7 +11,7 @@ Feature: Document
       | package 1 | package description | 1.0.0   |
 
   Scenario: Get document
-    Given I access the resource url "/api/data-sources/local-blueprints-equinor/package_1/1.0.0/package"
+    Given I access the resource url "/api/v1/data-sources/local-blueprints-equinor/package_1/1.0.0/package"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should equal
@@ -32,7 +32,7 @@ Feature: Document
     """
 
   Scenario: Create document
-    Given i access the resource url "/api/data-sources/local-blueprints-equinor/package_1/1.0.1/package"
+    Given i access the resource url "/api/v1/data-sources/local-blueprints-equinor/package_1/1.0.1/package"
     When i make a "POST" request
     """
     {
@@ -51,7 +51,7 @@ Feature: Document
     """
 
   Scenario: Update document
-    Given i access the resource url "/api/data-sources/local-blueprints-equinor/package_1/1.0.0/package"
+    Given i access the resource url "/api/v1/data-sources/local-blueprints-equinor/package_1/1.0.0/package"
     When i make a "PUT" request
     """
     {

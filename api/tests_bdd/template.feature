@@ -1,7 +1,7 @@
 Feature: Templates
 
   Scenario Outline: Get blueprint template
-    Given I access the resource url "/api/templates/<template>"
+    Given I access the resource url "/api/v1/templates/<template>"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response should contain

@@ -99,7 +99,7 @@ export class DmtApi {
   }
 
   dataSourcesPost(datasourceId: string) {
-    return `/api/data-sources/${datasourceId}`
+    return `/api/v1/data-sources/${datasourceId}`
   }
 
   indexGet(datasourceId: string) {
@@ -111,25 +111,25 @@ export class DmtApi {
   }
 
   templatesDatasourceMongoGet() {
-    return `/api/templates/mongodb-datasource-template`
+    return `/api/v1/templates/mongodb-datasource-template`
   }
 
   templatesCreateBlueprintGet() {
-    return `/api/templates/create-blueprint`
+    return `/api/v1/templates/create-blueprint`
   }
 
   templatesPackageGet() {
-    return '/api/templates/package-template'
+    return '/api/v1/templates/package-template'
   }
 
   templatesRemoveFile() {
-    return '/api/templates/remove-file'
+    return '/api/v1/templates/remove-file'
   }
 
   // Explorer
 
   addFile(datasourceId: string) {
-    return `/api/explorer/${datasourceId}/add-file`
+    return `/api/v2/explorer/${datasourceId}/add-file`
   }
 
   removeFile(datasourceId: string) {
@@ -141,7 +141,7 @@ export class DmtApi {
   }
 
   addPackage(datasourceId: string) {
-    return `/api/explorer/${datasourceId}/add-package`
+    return `/api/v2/explorer/${datasourceId}/add-package`
   }
 
   removeSubPackage(datasourceId: string) {
@@ -153,7 +153,7 @@ export class DmtApi {
   }
 
   addRootPackage(datasourceId: string) {
-    return `/api/explorer/${datasourceId}/add-root-package`
+    return `/api/v2/explorer/${datasourceId}/add-root-package`
   }
 
   removeRootPackage(datasourceId: string) {
@@ -167,7 +167,7 @@ export class DmtApi {
   // Documents
 
   getDocumentWithTemplate(documentId: string): string {
-    return `/api/documents/${documentId}`
+    return `/api/v2/documents/${documentId}`
   }
 
   updateDocument(documentId: string) {

@@ -11,7 +11,7 @@ Feature: Document 2
       | package 1 | package description | 1.0.0   |
 
   Scenario: Get document
-    Given I access the resource url "/api/documents/local-blueprints-equinor/package_1/1.0.0/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints-equinor/package_1/1.0.0/package"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
@@ -38,7 +38,7 @@ Feature: Document 2
     """
 
   Scenario: Create document
-    Given i access the resource url "/api/documents/local-blueprints-equinor/package_1/1.0.1/package"
+    Given i access the resource url "/api/v2/documents/local-blueprints-equinor/package_1/1.0.1/package"
     And data modelling tool templates are imported
     When i make a "POST" request
     """
@@ -74,7 +74,7 @@ Feature: Document 2
     """
 
     Scenario: Update document (form data only now)
-    Given i access the resource url "/api/documents/local-blueprints-equinor/package_1/1.0.0/package"
+    Given i access the resource url "/api/v2/documents/local-blueprints-equinor/package_1/1.0.0/package"
     And data modelling tool templates are imported
     When i make a "PUT" request
     """

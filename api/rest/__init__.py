@@ -20,25 +20,25 @@ def create_api(app):
     # api.add_resource(DocumentWithTemplate, "/api/document-template/<path:absolute_document_id>")
 
     # Create and Delete packages and files
-    # api.add_resource(Packages, "/api/data-sources/<string:data_source_id>/packages")
+    # api.add_resource(Packages, "/api/v1/data-sources/<string:data_source_id>/packages")
 
     # Get the index of files in a data-source
     # api.add_resource(Index, "/api/index/<string:data_source_id>")
 
     # Get a list of all data-sources
-    # api.add_resource(DataSources, "/api/data-sources/<string:document_type>")
+    # api.add_resource(DataSources, "/api/v1/data-sources/<string:document_type>")
 
     # Get and Update a single document
-    api.add_resource(Document, "/api/data-sources/<string:data_source_id>/<path:form_id>")
+    api.add_resource(Document, "/api/v1/data-sources/<string:data_source_id>/<path:form_id>")
 
     # Get DMT-templates
-    api.add_resource(Template, "/api/templates/<path:id>")
+    api.add_resource(Template, "/api/v1/templates/<path:id>")
 
     # Create, update, or delete a data-source
-    api.add_resource(SingleDataSource, "/api/data-sources/<string:id>", "/api/data-sources")
+    api.add_resource(SingleDataSource, "/api/v1/data-sources/<string:id>", "/api/v1/data-sources")
 
     # Not currently used by front end
     # api.add_resource(Transformer, "/api/transformer/json-schema")
-    # api.add_resource(DocumentToSchema, "/api/data-sources/<string:data_source_id>/<path:form_id>/json-schema")
+    # api.add_resource(DocumentToSchema, "/api/v1/data-sources/<string:data_source_id>/<path:form_id>/json-schema")
 
     return app

@@ -11,7 +11,7 @@ Data:
 Returns: 
     POST: json-schema
 
-'/api/data-sources/
+'/api/v1/data-sources/
 Methods: POST, GET 
 Data: 
     POST: json data-source object
@@ -20,7 +20,7 @@ Returns:
     POST: data-source id
     GET: List of data-source
     
-'/api/data-sources/<string:_id>'
+'/api/v1/data-sources/<string:_id>'
 Methods: PUT
 Data:
     PUT: New data-source json object
