@@ -25,21 +25,17 @@ class DataSourceRepository:
             )
         return all_sources
 
-    # def data_source_post(id):
+    def create(self, id: str, document):
+        document["_id"] = id
+        result = self.collection.insert_one(document)
+        return str(result.inserted_id)
+
+    # def update(self, id: str):
     #     document = request.get_json()
     #     validate_mongo_data_source(document)
-    #     document["_id"] = id
-    #     logger.info(f"Inserting new data-source with id {document['_id']}.")
-    #     result = collection.insert_one(document)
-    #     logger.info(f"Successfully inserted with id {result}")
-    #     return str(result.inserted_id)
-    #
-    # def data_source_put(id):
-    #     document = request.get_json()
-    #     validate_mongo_data_source(document)
-    #     result = collection.replace_one({"_id": id}, document, upsert=True)
+    #     result = self.collection.replace_one({"_id": id}, document, upsert=True)
     #     return str(result.acknowledged)
     #
-    # def data_source_delete(id):
-    #     result = collection.delete_one(filter={"_id": id})
+    # def delete(self, id: str):
+    #     result = self.collection.delete_one(filter={"_id": id})
     #     return result.acknowledged
