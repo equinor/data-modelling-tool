@@ -1,8 +1,6 @@
 {
-  "meta": {
-    "name": "big-box",
-    "templateRef": "templates/blueprint"
-  },
+  "filename": "big-box",
+  "templateRef": "templates/blueprint",
   "formData": {
     "title": "big-box",
     "description": "This is a very large box, its even in three dimensions",

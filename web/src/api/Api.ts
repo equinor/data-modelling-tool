@@ -103,7 +103,7 @@ export class DmtApi {
   }
 
   indexGet(datasourceId: string) {
-    return `/api/v2/index/${datasourceId}`
+    return `/api/v3/index/${datasourceId}`
   }
 
   indexPost(dataSourceId: string): string {

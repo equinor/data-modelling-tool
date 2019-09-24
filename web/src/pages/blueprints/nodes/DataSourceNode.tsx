@@ -20,6 +20,8 @@ type Props = {
   updateNode: UpdateNode
   removeNode: RemoveNode
   replaceNode: ReplaceNode
+  path: string
+  parent: string
 }
 
 const Wrapper = styled.div`
@@ -35,6 +37,8 @@ export const DataSourceNode = (props: Props) => {
     updateNode,
     removeNode,
     replaceNode,
+    path,
+    parent,
   } = props
 
   const menuItems: MenuItem[] = [
@@ -63,6 +67,8 @@ export const DataSourceNode = (props: Props) => {
         updateNode={updateNode}
         removeNode={removeNode}
         replaceNode={replaceNode}
+        path={path}
+        parent={parent}
       />
       {treeNodeData.nodeId === 'local' && (
         <FileUpload state={state} datasource={state.dataSources[0]} />

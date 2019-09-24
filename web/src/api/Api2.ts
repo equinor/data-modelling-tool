@@ -20,6 +20,15 @@ interface FetchTemplate extends BASE_CRUD {
 }
 
 interface AddFile {
+  dataSourceId: string
+  parentId: string
+  filename: string
+  onSuccess: (res: any, dataSourceId: string) => void
+  onError?: OnError
+  templateRef?: string
+}
+
+interface AddEntitiy {
   nodeId: string
   filename: string
   onSuccess: (res: any, dataSourceId: string) => void
@@ -28,9 +37,17 @@ interface AddFile {
 }
 
 interface RemoveFile {
-  nodeId: string
+  dataSourceId: string
   filename: string
-  onSuccess: (res: any, dataSourceId: string) => void
+  onSuccess: () => void
+  onError?: OnError
+  templateRef?: string
+}
+
+interface RemoveFolder {
+  dataSourceId: string
+  filename: string
+  onSuccess: (res: any) => void
   onError?: OnError
   templateRef?: string
 }
@@ -122,16 +139,13 @@ export default class Api2 {
   }
 
   static addBlueprintFile({
-    nodeId,
+    dataSourceId,
+    parentId,
     filename,
     templateRef = 'templates/blueprint',
     onSuccess,
     onError = () => {},
   }: AddFile) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
-    // root-package/1.0.0/subpackage/package
-    const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
     const url = api.addFile(dataSourceId)
     const data = {
       parentId,
@@ -150,7 +164,7 @@ export default class Api2 {
     templateRef,
     onSuccess,
     onError = () => {},
-  }: AddFile) {
+  }: AddEntitiy) {
     // local-blueprints-equinor
     const dataSourceId = nodeId.split('/')[0]
     // root-package/1.0.0/subpackage/package
@@ -168,26 +182,18 @@ export default class Api2 {
   }
 
   static removeFile({
-    nodeId,
+    dataSourceId,
     filename,
     onSuccess,
     onError = () => {},
   }: RemoveFile) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
-    // root-package/1.0.0/subpackage/package
-    const packageId = nodeId.substring(nodeId.indexOf('/') + 1)
-    const parentId = packageId.substring(0, packageId.lastIndexOf('/'))
     const url = api.removeFile(dataSourceId)
     const data = {
-      parentId: `${parentId}/package`,
-      filename: `${parentId}/${filename}`,
+      filename: filename,
     }
     axios
       .post(url, data)
-      .then(response =>
-        onSuccess(response.data, `${dataSourceId}/${parentId}/package`)
-      )
+      .then(response => onSuccess())
       .catch(onError)
   }
 
@@ -233,27 +239,18 @@ export default class Api2 {
   }
 
   static removeSubPackage({
-    nodeId,
+    dataSourceId,
     filename,
     onSuccess,
     onError = () => {},
-  }: RemoveFile) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
-    // root-package/1.0.0/subpackage/package
-    const packageId = nodeId.substring(nodeId.indexOf('/') + 1)
-    const packagePath = packageId.substring(0, packageId.lastIndexOf('/'))
-    const parentId = packagePath.substring(0, packagePath.lastIndexOf('/'))
+  }: RemoveFolder) {
     const url = api.removeSubPackage(dataSourceId)
     const data = {
-      parentId: `${parentId}/package`,
-      filename: packageId,
+      filename: filename,
     }
     axios
       .post(url, data)
-      .then(response =>
-        onSuccess(response.data, `${dataSourceId}/${parentId}/package`)
-      )
+      .then(response => onSuccess(response.data))
       .catch(onError)
   }
 
@@ -299,16 +296,13 @@ export default class Api2 {
   }
 
   static addSubPackage({
-    nodeId,
+    dataSourceId,
+    parentId,
     filename,
     templateRef = 'templates/package',
     onSuccess,
     onError = () => {},
   }: AddFile) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
-    // root-package/1.0.0/subpackage/package
-    const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
     const url = api.addPackage(dataSourceId)
     const data = {
       parentId,

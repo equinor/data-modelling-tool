@@ -5,30 +5,11 @@
   },
   "schema": {
     "type": "object",
-    "required": [
-      "title"
-    ],
     "properties": {
-      "title": {
-        "type": "string",
-        "title": "Title",
-        "default": ""
-      },
       "description": {
         "type": "string",
         "title": "Description",
         "default": ""
-      },
-      "latestVersion": {
-        "type": "string",
-        "title": "Latest version"
-      },
-      "versions": {
-        "type": "array",
-        "title": "versions",
-        "items": {
-          "type": "string"
-        }
       }
     }
   },
@@ -36,21 +17,8 @@
     "description" : {
       "ui:widget": "textarea"
     },
-    "documentType": {
-      "ui:widget": "hidden"
-    },
-    "latestVersion": {
-      "ui:widget": "hidden"
-    },
-    "versions": {
-      "ui:widget": "hidden"
-    },
     "ui:order": [
-      "title",
-      "description",
-      "documentType",
-      "latestVersion",
-      "versions"
+      "description"
     ]
   }
 }

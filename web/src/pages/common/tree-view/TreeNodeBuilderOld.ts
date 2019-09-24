@@ -70,6 +70,7 @@ function getNodeIcon(nodeType: NodeType): NodeIconType {
     case NodeType.version:
     case NodeType.rootPackage:
     case NodeType.subPackage:
+    case NodeType.folder:
       return NodeIconType.folder
 
     case NodeType.file:
@@ -86,6 +87,7 @@ function isExpandable(nodeType: NodeType) {
     case NodeType.datasource:
     case NodeType.subPackage:
     case NodeType.rootPackage:
+    case NodeType.folder:
       return true
     default:
       // add special logic here if file should be expandable.

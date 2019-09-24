@@ -36,9 +36,9 @@ def get(data_source_id: str, document_id: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["POST"])
-def post(data_source_id: str, document_id: str):
-    logger.info(f"Creating document '{document_id}' in data source '{data_source_id}'")
+@blueprint.route("/api/v2/documents/<string:data_source_id>", methods=["POST"])
+def post(data_source_id: str):
+    logger.info(f"Creating document in data source '{data_source_id}'")
 
     data = request.get_json()
 
@@ -47,13 +47,12 @@ def post(data_source_id: str, document_id: str):
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
     document = Document.from_dict(data)
-    document.id = document_id
 
     add_use_case = AddDocumentUseCase(document_repository)
-    add_use_case.execute(document_id, document)
+    add_use_case.execute(document)
 
     use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
-    request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})
+    request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document.uid})
     response = use_case.execute(request_object)
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 

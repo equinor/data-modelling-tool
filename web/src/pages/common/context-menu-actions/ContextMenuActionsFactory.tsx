@@ -33,6 +33,8 @@ export type ContextMenuActionProps = {
   updateNode: Function
   replaceNode: Function
   layout?: any
+  path: string
+  parent: string
 }
 
 const getFormProperties = (type: string, props: ContextMenuActionProps) => {
@@ -43,6 +45,8 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
     removeNode,
     layout,
     replaceNode,
+    path,
+    parent,
   } = props
 
   const showError = (error: any) => {
@@ -50,13 +54,18 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
     NotificationManager.error(error.response.data.message, 'Failed')
   }
 
+  const dataSourceId = path.split('/')[0]
+  const nodeId = treeNodeData.nodeId.replace(`${dataSourceId}/`, '')
+
   switch (type) {
     case ContextMenuActions.createBlueprint: {
       return {
         fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
           Api2.addBlueprintFile({
-            nodeId: treeNodeData.nodeId,
+            dataSourceId: dataSourceId,
+            // The parent is node the itself
+            parentId: nodeId,
             filename: formData.title,
             onSuccess: (res: any, dataSourceId: string) => {
               const node: TreeNodeData = new TreeNodeBuilder({
@@ -99,10 +108,12 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
     }
     case ContextMenuActions.createSubPackage: {
       return {
-        fetchDocument: Api2.fetchCreatePackage,
+        fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
           Api2.addSubPackage({
-            nodeId: treeNodeData.nodeId,
+            dataSourceId: dataSourceId,
+            // The parent is node the itself
+            parentId: nodeId,
             filename: formData.title,
             onSuccess: (res: any, dataSourceId: string) => {
               const node: TreeNodeData = new TreeNodeBuilder({
@@ -151,17 +162,22 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
     }
     case ContextMenuActions.removeFile: {
       const { treeNodeData } = props
+      const basePath = props.path
+      const dataSourceId = basePath.split('/')[0]
       return {
         fetchDocument: Api2.fetchRemoveFile,
         onSubmit: () => {
           Api2.removeFile({
-            nodeId: treeNodeData.nodeId,
-            filename: treeNodeData.title,
-            onSuccess: (res: any, parentId: string) => {
-              removeNode(treeNodeData.nodeId, parentId)
+            dataSourceId: dataSourceId,
+            filename: `${basePath}/${treeNodeData.title}`.replace(
+              `${dataSourceId}/`,
+              ''
+            ),
+            onSuccess: () => {
+              removeNode(treeNodeData.nodeId, props.parent)
               layout.remove(treeNodeData.nodeId)
             },
-            onError: (err: any) => console.error(Object.keys(err)),
+            onError: (error: any) => showError(error),
           })
         },
       }
@@ -171,52 +187,17 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
-          const packageId = treeNodeData.nodeId.substring(
-            0,
-            treeNodeData.nodeId.lastIndexOf('/')
-          )
-          const parentId = `${packageId}/package`
+          const basePath = props.path
           Api2.moveFile({
-            source: treeNodeData.nodeId,
-            destination: `${packageId}/${formData.title}`,
+            source: `${basePath}/${treeNodeData.title}`,
+            destination: `${basePath}/${formData.title}`,
             onSuccess: (res: any) => {
-              const dataSourceId = treeNodeData.nodeId.split('/')[0]
-              const newNodeId = `${dataSourceId}/${res.id}`
-
-              /*
-              // Remove old node
-              removeNode(treeNodeData.nodeId, parentId)
-
-              // Add new node
-              const node: TreeNodeData = new TreeNodeBuilder({
-                id: newNodeId,
-                filename: res.filename,
-                nodeType: res.documentType,
-              })
-                .setOpen(true)
-                .build()
-              addNode(node, parentId)
-              */
-
-              replaceNode(
-                parentId,
-                treeNodeData.nodeId,
-                newNodeId,
-                res.filename
-              )
-
-              NotificationManager.success(formData.title, 'Renamed')
-
-              layout.remove(treeNodeData.nodeId)
-              const data = {
-                selectedDocumentId: newNodeId,
-              }
-              layout.add(
-                newNodeId,
-                res.filename,
-                LayoutComponents.blueprint,
-                data
-              )
+              // Set title in tree
+              props.updateNode({ ...treeNodeData, title: res.filename })
+              // Set title in layout
+              layout.update(treeNodeData.nodeId, res.filename)
+              NotificationManager.success(res.filename, 'Renamed')
+              setShowModal(false)
             },
             onError: (error: any) => showError(error),
           })
@@ -228,43 +209,15 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
       return {
         fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
-          const packageId = treeNodeData.nodeId.substring(
-            0,
-            treeNodeData.nodeId.lastIndexOf('/')
-          )
-          const root = packageId.substring(0, packageId.lastIndexOf('/'))
-
-          const parentId = `${root}/package`
+          const basePath = props.path
           Api2.moveSubPackage({
-            source: treeNodeData.nodeId,
-            destination: `${root}/${formData.title}/package`,
+            source: `${basePath}/${treeNodeData.title}`,
+            destination: `${basePath}/${formData.title}`,
             onSuccess: (res: any) => {
-              const dataSourceId = treeNodeData.nodeId.split('/')[0]
-              const newNodeId = `${dataSourceId}/${res.id}`
-              replaceNode(
-                parentId,
-                treeNodeData.nodeId,
-                newNodeId,
-                res.filename
-              )
-
-              /*
-              // Remove old node
-              removeNode(treeNodeData.nodeId, parentId)
-
-              // Add new node (TODO: what about children)
-              const node: TreeNodeData = new TreeNodeBuilder({
-                id: newNodeId,
-                filename: res.filename,
-                nodeType: res.documentType,
-                // children: treeNodeData.children || []
-              })
-                .setOpen(true)
-                .build()
-
-              addNode(node, parentId)
-              */
-              NotificationManager.success(formData.title, 'Renamed')
+              // Set title in tree
+              props.updateNode({ ...treeNodeData, title: res.filename })
+              NotificationManager.success(res.filename, 'Renamed')
+              setShowModal(false)
             },
             onError: (error: any) => showError(error),
           })
@@ -273,16 +226,22 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
     }
     case ContextMenuActions.removeSubPackage: {
       const { treeNodeData } = props
+      const basePath = props.path
+      const dataSourceId = basePath.split('/')[0]
       return {
         fetchDocument: Api2.fetchRemoveFile,
         onSubmit: () => {
           Api2.removeSubPackage({
-            nodeId: treeNodeData.nodeId,
-            filename: treeNodeData.title,
-            onSuccess: (res: any, parentId: string) => {
-              removeNode(treeNodeData.nodeId, parentId)
-              // TODO: Return list of deleted ids?
-              // layout.remove(treeNodeData.nodeId)
+            dataSourceId: dataSourceId,
+            filename: `${basePath}/${treeNodeData.title}`.replace(
+              `${dataSourceId}/`,
+              ''
+            ),
+            onSuccess: (response: any) => {
+              response.removedChildren.forEach((removedChildId: string) => {
+                layout.remove(`${dataSourceId}/${removedChildId}`)
+              })
+              removeNode(treeNodeData.nodeId, parent)
             },
             onError: (err: any) => console.error(Object.keys(err)),
           })
@@ -297,7 +256,7 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
           Api2.removeRootPackage({
             nodeId: treeNodeData.nodeId,
             onSuccess: (res: any, parentId: string) => {
-              removeNode(treeNodeData.nodeId, parentId)
+              removeNode(treeNodeData.nodeId, props.parent)
               // TODO: Return list of deleted ids?
               // layout.remove(treeNodeData.nodeId)
             },

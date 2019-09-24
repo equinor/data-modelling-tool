@@ -21,6 +21,8 @@ interface NodeComponentCallbackProps {
   treeNodeData: TreeNodeData
   removeNode: RemoveNode
   replaceNode: ReplaceNode
+  path: string
+  parent: string
 }
 
 export interface NodeComponentProps extends NodeComponentCallbackProps {
@@ -30,6 +32,8 @@ export interface NodeComponentProps extends NodeComponentCallbackProps {
 }
 
 export type RenderProps = {
+  path: string
+  parent: string
   treeNodeData: TreeNodeData
   addNode: AddNode
   updateNode: UpdateNode
@@ -76,6 +80,8 @@ export default (props: PropTypes) => {
       <div>
         <Tree tree={documents}>
           {(
+            path: string,
+            parent: string,
             treeNodeData: TreeNodeData,
             addNode: AddNode,
             updateNode: UpdateNode,
@@ -83,6 +89,8 @@ export default (props: PropTypes) => {
             replaceNode: ReplaceNode
           ) => {
             return render({
+              path,
+              parent,
               treeNodeData,
               addNode,
               updateNode,

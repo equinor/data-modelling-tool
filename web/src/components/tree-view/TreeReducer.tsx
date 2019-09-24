@@ -109,8 +109,12 @@ export const Actions: TreeActions = {
   }),
 }
 
-const getAllDescendantIds = (state: any, nodeId: string) =>
-  state[nodeId].children.reduce(
+const getAllDescendantIds = (state: any, nodeId: string) => {
+  if (!state.hasOwnProperty(nodeId)) {
+    console.warn(`Node ${nodeId} does not exist in state`)
+    return []
+  }
+  return state[nodeId].children.reduce(
     (acc: any, childId: string) => [
       ...acc,
       childId,
@@ -118,7 +122,7 @@ const getAllDescendantIds = (state: any, nodeId: string) =>
     ],
     []
   )
-
+}
 const deleteMany = (state: any, ids: any) => {
   state = { ...state }
   ids.forEach((id: string) => delete state[id])

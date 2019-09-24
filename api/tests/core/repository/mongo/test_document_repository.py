@@ -5,7 +5,7 @@ from core.repository.mongo.document_repository import MongoDocumentRepository
 
 @pytest.fixture
 def document_dict():
-    return {"meta": {"documentType": "file", "templateRef": ""}, "formData": {}}
+    return {"uid": "1", "filename": "", "path": "path", "type": "type", "templateRef": "", "formData": {}}
 
 
 def test_repository(document_dict):

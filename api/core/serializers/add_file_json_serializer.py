@@ -6,9 +6,10 @@ class AddFileSerializer(json.JSONEncoder):
     def default(self, document: Document):
         try:
             to_serialize = {
-                "id": document.id,
+                "id": document.uid,
                 "filename": document.filename,
-                "documentType": document.meta.document_type,
+                "documentType": document.type,
+                "path": document.path,
             }
             return to_serialize
         except AttributeError:

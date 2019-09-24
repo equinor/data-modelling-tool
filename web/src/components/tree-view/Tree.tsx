@@ -50,7 +50,12 @@ type TreeProps = {
  * @param tree object with key,value:  [abs_node_path]: treeNodeData
  * @param path, number[]  list of levels down in the three.
  */
-export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
+export const treeNodes = (
+  nodeId: string,
+  tree: any,
+  path: any = [],
+  track: any = []
+): [] => {
   const node: any = tree[nodeId]
 
   const hasChildren = 'children' in node
@@ -62,16 +67,27 @@ export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
   return node.children.reduce((flat: [], childId: string, index: number) => {
     const currentPath: number[] = [...path, index]
     const currentItem: TreeNodeData = tree[childId]
+    const currentTrack: string[] = [...track, node.title]
+
+    if (!currentItem || !node.isOpen) {
+      return []
+    }
 
     if (currentItem.isOpen && 'children' in currentItem) {
       // iterating through all the children on the given level
-      const children: [] = treeNodes(currentItem.nodeId, tree, currentPath)
+      const children: [] = treeNodes(
+        currentItem.nodeId,
+        tree,
+        currentPath,
+        currentTrack
+      )
       // append to the accumulator
       return [
         ...flat,
         {
           currentItem,
           path: currentPath,
+          track: currentTrack,
           level: currentPath.length,
           parent: nodeId,
         },
@@ -84,6 +100,7 @@ export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
         {
           currentItem,
           path: currentPath,
+          track: currentTrack,
           level: currentPath.length,
           parent: nodeId,
         },
@@ -93,7 +110,7 @@ export const treeNodes = (nodeId: string, tree: any, path: any = []): [] => {
 }
 
 const getRootNodes = (rootNode: TreeNodeData, state: Tree) => [
-  { currentItem: rootNode, level: 0 },
+  { currentItem: rootNode, level: 0, track: [] },
   ...treeNodes(rootNode.nodeId, state, []),
 ]
 
@@ -117,7 +134,6 @@ const Tree = (props: TreeProps) => {
   }
 
   const onDragStart = (result: DragStart) => {
-    console.log(result)
     dispatch(NodeActions.toggleNode(result.draggableId))
   }
 
@@ -180,6 +196,8 @@ const Tree = (props: TreeProps) => {
                     <TreeNode
                       level={item.level}
                       node={node}
+                      path={item.track.join('/')}
+                      parent={item.parent}
                       NodeRenderer={children}
                       handleToggle={handleToggle}
                       addNode={addNode}

@@ -50,6 +50,8 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
     updateNode: props.updateNode,
     removeNode: props.removeNode,
     replaceNode: props.replaceNode,
+    path: props.path,
+    parent: props.parent,
     setShowModal,
     layout,
   })

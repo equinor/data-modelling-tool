@@ -6,38 +6,52 @@ Feature: Explorer
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
       | db   | 27017 | maf      | maf      | false | local-blueprints | maf      | documents  | blueprints   | mongo-db |
 
-    Given there are root packages in collection "documents"
-      | filename  | version |
-      | package_1 | 1.0.0   |
-
-    Given there are sub packages in collection "documents"
-      | parent_id               | filename      |
-      | package_1/1.0.0/package | sub_package_1 |
-      | package_1/1.0.0/package | sub_package_2 |
-
     Given there are documents in collection "documents"
-      | parent_id                             | filename   |
-      | package_1/1.0.0/sub_package_1/package | document_1 |
-      | package_1/1.0.0/sub_package_1/package | document_2 |
+      | uid | path                     | filename      | type   |
+      | 1   | /                        | package_1     | folder |
+      | 2   | /package_1               | sub_package_1 | folder |
+      | 3   | /package_1               | sub_package_2 | folder |
+      | 4   | /package_1/sub_package_1 | document_1    | file   |
+      | 5   | /package_1/sub_package_1 | document_2    | file   |
 
 
-  Scenario: Add file
+  Scenario: Add file to root
     Given i access the resource url "/api/v2/explorer/local-blueprints/add-file"
     When i make a "POST" request
     """
     {
-      "parentId": "package_1/1.0.0/package",
+      "parentId": "1",
       "filename": "new_file",
       "templateRef": ""
     }
     """
     Then the response status should be "OK"
-    And the response should equal
+    And the response should contain
     """
     {
-      "id": "package_1/1.0.0/new_file",
       "filename": "new_file",
-      "documentType": "file"
+      "documentType": "file",
+      "path": "/package_1"
+    }
+    """
+
+  Scenario: Add file to subpackage
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-file"
+    When i make a "POST" request
+    """
+    {
+      "parentId": "2",
+      "filename": "new_file",
+      "templateRef": ""
+    }
+    """
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+      "filename": "new_file",
+      "documentType": "file",
+      "path": "/package_1/sub_package_1"
     }
     """
 
@@ -46,7 +60,7 @@ Feature: Explorer
     When i make a "POST" request
     """
     {
-      "parentId": "package_1/3.3.3/package",
+      "parentId": "10",
       "filename": "new_file",
       "templateRef": ""
     }
@@ -56,7 +70,7 @@ Feature: Explorer
     """
     {
       "type": "SYSTEM_ERROR",
-      "message": "Exception: The parent, with id package_1/3.3.3/package, was not found"
+      "message": "Exception: The parent, with id 10, was not found"
     }
     """
 
@@ -78,46 +92,92 @@ Feature: Explorer
     }
     """
 
-  Scenario: Move file
+  Scenario: Move file (renaming)
     Given i access the resource url "/api/v2/explorer/move-file"
+    And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
-      "source": "local-blueprints/package_1/1.0.0/sub_package_1/document_1",
-      "destination": "local-blueprints/package_1/1.0.0/sub_package_1/document_3"
+      "source": "local-blueprints/package_1/sub_package_1/document_1",
+      "destination": "local-blueprints/package_1/sub_package_1/document_3"
     }
     """
     Then the response status should be "OK"
+    Given I access the resource url "/api/v2/documents/local-blueprints/4"
+    When I make a "GET" request
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+      "document" : {
+        "uid": "4",
+        "path": "/package_1/sub_package_1",
+        "filename": "document_3",
+        "type": "file",
+        "formData": {
+
+        }
+      }
+    }
+    """
 
   Scenario: Remove file
     Given i access the resource url "/api/v2/explorer/local-blueprints/remove-file"
     When i make a "POST" request
     """
     {
-      "parentId": "package_1/1.0.0/sub_package_1/package",
-      "filename": "package_1/1.0.0/sub_package_1/document_1"
+      "filename": "package_1/sub_package_1/document_1"
     }
     """
     Then the response status should be "OK"
+    Given I access the resource url "/api/v2/documents/local-blueprints/4"
+    When I make a "GET" request
+    Then the response status should be "System Error"
+    And the response should equal
+    """
+    {
+      "type": "SYSTEM_ERROR",
+      "message": "EntityNotFoundException: 'The entity, with id 4 is not found'"
+    }
+    """
 
-
-  Scenario: Add package
+  Scenario: Add package to root
     Given i access the resource url "/api/v2/explorer/local-blueprints/add-package"
     When i make a "POST" request
     """
     {
-      "parentId": "package_1/1.0.0/package",
-      "filename": "new_package",
+      "parentId": "1",
+      "filename": "new_folder",
       "templateRef": ""
     }
     """
     Then the response status should be "OK"
-    And the response should equal
+    And the response should contain
     """
     {
-      "id": "package_1/1.0.0/new_package/package",
-      "filename": "new_package",
-      "documentType": "subpackage"
+      "filename": "new_folder",
+      "documentType": "folder",
+      "path": "/package_1"
+    }
+    """
+
+  Scenario: Add package to subpackage
+    Given i access the resource url "/api/v2/explorer/local-blueprints/add-package"
+    When i make a "POST" request
+    """
+    {
+      "parentId": "2",
+      "filename": "new_folder",
+      "templateRef": ""
+    }
+    """
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+      "filename": "new_folder",
+      "documentType": "folder",
+      "path": "/package_1/sub_package_1"
     }
     """
 
@@ -126,8 +186,8 @@ Feature: Explorer
     When i make a "POST" request
     """
     {
-      "parentId": "package_1/3.3.3/package",
-      "filename": "new_file",
+      "parentId": "10",
+      "filename": "new_folder",
       "templateRef": ""
     }
     """
@@ -136,7 +196,7 @@ Feature: Explorer
     """
     {
       "type": "SYSTEM_ERROR",
-      "message": "Exception: The parent, with id package_1/3.3.3/package, was not found"
+      "message": "Exception: The parent, with id 10, was not found"
     }
     """
 
@@ -145,7 +205,7 @@ Feature: Explorer
     When i make a "POST" request
     """
     {
-      "filename": "new_file",
+      "filename": "new_folder",
       "templateRef": ""
     }
     """
@@ -163,19 +223,24 @@ Feature: Explorer
     When i make a "POST" request
     """
     {
-      "parentId": "package_1/1.0.0/package",
-      "filename": "package_1/1.0.0/sub_package_1/package"
+      "filename": "package_1/sub_package_1"
     }
     """
     Then the response status should be "OK"
-    Given I access the resource url "/api/v2/documents/local-blueprints/package_1/1.0.0/sub_package_1/package"
+    And the response should contain
+    """
+    {
+      "removedChildren": ["4", "5"]
+    }
+    """
+    Given I access the resource url "/api/v2/documents/local-blueprints/2"
     When I make a "GET" request
     Then the response status should be "System Error"
     And the response should equal
     """
     {
       "type": "SYSTEM_ERROR",
-      "message": "EntityNotFoundException: 'The entity, with id package_1/1.0.0/sub_package_1/package is not found'"
+      "message": "EntityNotFoundException: 'The entity, with id 2 is not found'"
     }
     """
 
@@ -185,25 +250,30 @@ Feature: Explorer
     When i make a "POST" request
     """
     {
-      "source": "local-blueprints/package_1/1.0.0/sub_package_1/package",
-      "destination": "local-blueprints/package_1/1.0.0/sub_package_3/package"
+      "source": "local-blueprints/package_1/sub_package_1",
+      "destination": "local-blueprints/package_1/sub_package_3"
     }
     """
     Then the response status should be "OK"
-   Given I access the resource url "/api/v2/documents/local-blueprints/package_1/1.0.0/sub_package_1/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints/2"
     When I make a "GET" request
-    Then the response status should be "System Error"
-    And the response should equal
+    Then the response status should be "OK"
+    And the response should contain
     """
     {
-      "type": "SYSTEM_ERROR",
-      "message": "EntityNotFoundException: 'The entity, with id package_1/1.0.0/sub_package_1/package is not found'"
-    }
-    """
-  Given I access the resource url "/api/v2/documents/local-blueprints/package_1/1.0.0/sub_package_3/package"
-    When I make a "GET" request
-    Then the response status should be "OK"
+      "document" : {
+        "uid": "2",
+        "path": "/package_1",
+        "filename": "sub_package_3",
+        "type": "folder",
+        "formData": {
 
+        }
+      }
+    }
+   """
+
+  @skip
   Scenario: Add root package
     Given i access the resource url "/api/v2/explorer/local-blueprints/add-root-package"
     When i make a "POST" request
@@ -223,6 +293,7 @@ Feature: Explorer
     }
     """
 
+  @skip
   Scenario: Add root package with missing filename should fail
     Given i access the resource url "/api/v2/explorer/local-blueprints/add-root-package"
     When i make a "POST" request
@@ -239,7 +310,7 @@ Feature: Explorer
       "message": "filename: is missing"
     }
     """
-
+  @skip
   Scenario: Remove root package
     Given i access the resource url "/api/v2/explorer/local-blueprints/remove-root-package"
     When i make a "POST" request
@@ -259,7 +330,7 @@ Feature: Explorer
       "message": "EntityNotFoundException: 'The entity, with id package_1/package is not found'"
     }
     """
-
+  @skip
   Scenario: Move root package
     Given i access the resource url "/api/v2/explorer/move-root-package"
     When i make a "POST" request

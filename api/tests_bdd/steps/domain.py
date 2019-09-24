@@ -55,17 +55,18 @@ def step_impl_sub_packages(context, collection):
 def step_impl_documents(context, collection):
     context.documents = {}
     for row in context.table:
-        parent: SubPackage = context.sub_packages[row["parent_id"]]
+        uid = row["uid"]
+        path = row["path"]
         filename = row["filename"]
-        document_id = parent.add_file(filename)
-        try:
-            model_db[f"{collection}"].replace_one({"_id": parent.id}, parent.to_dict(), upsert=True)
-        except Exception as Error:
-            logger.error(f"Could not import: {Error}")
+        type = row["type"]
 
-        document = Document(id=document_id, template_ref="templates/package-template")
+        template_ref = "templates/blueprint" if type == "file" else "templates/package-template"
+
+        document = Document(uid=uid, path=path, filename=filename, type=type, template_ref=template_ref)
+
         try:
-            model_db[f"{collection}"].replace_one({"_id": document.id}, document.to_dict(), upsert=True)
-            context.documents[document.id] = document
+            model_db[f"{collection}"].replace_one({"_id": document.uid}, document.to_dict(), upsert=True)
+            context.documents[document.uid] = document
+            logger.error(f"There are documents in collection: {document.uid}")
         except Exception as Error:
             logger.error(f"Could not import: {Error}")

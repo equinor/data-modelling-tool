@@ -2,7 +2,7 @@ import React from 'react'
 import TreeNode, { TreeNodeProps } from '../TreeNode'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
-import { TreeNodeData } from '../Tree'
+import { NodeIconType, TreeNodeData } from '../Tree'
 import { NodeType } from '../../../api/types'
 
 describe('TreeNode', () => {
@@ -14,14 +14,20 @@ describe('TreeNode', () => {
         title: 'node_0',
         isRoot: true,
         isOpen: true,
+        isExpandable: true,
+        isFolder: true,
       },
-      NodeRenderer: (node: TreeNodeData) => {
+      NodeRenderer: (path, parent, node: TreeNodeData) => {
         return <h2>{node.title}</h2>
       },
       level: 0,
       updateNode: () => {},
       addNode: () => {},
       handleToggle: () => {},
+      replaceNode: () => {},
+      removeNode: () => {},
+      path: '',
+      parent: '',
     }
 
     const testRenderer = TestRenderer.create(<TreeNode {...props} />)

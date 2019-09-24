@@ -39,19 +39,18 @@ class GetDocumentWithTemplateUseCase(uc.UseCase):
         if not document:
             raise EntityNotFoundException(uid=document_id)
 
-        # TODO: Cleanup template logic and find out where to do remote call
-        template_ref = document.meta.template_ref
+        template_ref = document.template_ref
         if not template_ref:
             raise Exception("The requested document does not contain a template reference")
 
-        if document.meta.get_template_data_source_id() == "templates":
-            template = get_template_by_id(document.meta.get_template_name())
+        if document.get_template_data_source_id() == "templates":
+            template = get_template_by_id(document.get_template_name())
         else:
-            data_source = DataSource(id=document.meta.get_template_data_source_id())
+            data_source = DataSource(id=document.get_template_data_source_id())
             remote_document_repository = self.get_repository(RepositoryType.DocumentRepository, data_source)
-            blueprint: Document = remote_document_repository.get(document.meta.get_template_id())
+            blueprint: Document = remote_document_repository.get(document.get_template_id())
             template = Template(
-                schema=form_to_schema(blueprint.form_data), uiSchema=None, view=None, meta=blueprint.meta.to_dict()
+                schema=form_to_schema(blueprint.form_data), uiSchema=None, view=None, meta=blueprint.to_dict()
             )
 
         data = {"template": template.to_dict(), "document": document.to_dict()}
