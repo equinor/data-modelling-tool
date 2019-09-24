@@ -2,7 +2,7 @@ from flask import abort
 from pymongo import MongoClient
 from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
 
-from classes.package_request import DocumentType
+from utils.enums import DocumentType
 from core.repository.repository_exceptions import EntityAlreadyExistsException
 
 

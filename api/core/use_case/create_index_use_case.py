@@ -25,11 +25,13 @@ class Index:
             "id": document_id,
             "title": package.filename,
             "children": children,
+            # TODO: Use enum for documentType version
             "nodeType": "root-package" if package.meta.document_type == "version" else package.meta.document_type,
         }
 
     def add_file(self, document: Document):
         document_id = self._get_absolute_path(document.id)
+        # TODO: Enum for nodeType
         self.index[document_id] = {"id": document_id, "nodeType": "file", "title": document.filename, "children": []}
 
     # TODO: Replace with data source entity
@@ -37,6 +39,7 @@ class Index:
         data_source = {
             "id": data_source_id,
             "title": data_source_name,
+            # TODO: Use enum
             "nodeType": "datasource",
             "children": [
                 self._get_absolute_path(root_package.form_data.latest_version) for root_package in root_packages

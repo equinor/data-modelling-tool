@@ -2,7 +2,7 @@ from flask_restful import Resource
 
 from classes.data_source import DataSource
 from classes.files import File
-from classes.package_request import DocumentType
+from utils.enums import DocumentType
 from classes.root_package import RootPackage
 from classes.subpackage import Package
 from utils.logging import logger

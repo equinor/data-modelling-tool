@@ -5,9 +5,12 @@ from rest.data_source_consumers.document import Document
 # from rest.data_source_consumers.document_with_template import DocumentWithTemplate
 
 # from rest.data_source_consumers.index import Index
-# from rest.data_source_consumers.packages import Packages
+from rest.data_source_consumers.packages import Packages
 from rest.data_sources import SingleDataSource
 from rest.template import Template
+
+
+# from rest.data_source_consumers.document_with_template import DocumentWithTemplate
 
 
 def create_api(app):

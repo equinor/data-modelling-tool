@@ -95,7 +95,7 @@ export class IndexApi extends BaseApi {
 
 export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
-    return `/api/data-sources?documentType=${dataSourceType}`
+    return `/api/v2/data-sources?documentType=${dataSourceType}`
   }
 
   dataSourcesPost(datasourceId: string) {
