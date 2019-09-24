@@ -10,9 +10,6 @@ from rest.data_sources import DataSource
 from rest.template import Template
 
 
-# from rest.data_source_consumers.document_with_template import DocumentWithTemplate
-
-
 def create_api(app):
     api = Api(app)
 
@@ -36,6 +33,8 @@ def create_api(app):
 
     # Create, update, or delete a  single data-source, or GET all
     api.add_resource(DataSource, "/api/data-sources/<string:id>", "/api/data-sources")
+    # Create, update, or delete a data-source
+    # api.add_resource(SingleDataSource, "/api/data-sources/<string:id>", "/api/data-sources")
 
     # Not currently used by front end
     # api.add_resource(Transformer, "/api/transformer/json-schema")
