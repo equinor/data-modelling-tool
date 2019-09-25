@@ -273,27 +273,25 @@ Feature: Explorer
     }
    """
 
-  @skip
   Scenario: Add root package
     Given i access the resource url "/api/v2/explorer/local-blueprints/add-root-package"
     When i make a "POST" request
     """
     {
-      "filename": "new_root_package",
-      "templateRef": "templates/package-template"
+      "filename": "new_root",
+      "templateRef": ""
     }
     """
     Then the response status should be "OK"
-    And the response should equal
+    And the response should contain
     """
     {
-      "id": "new_root_package/1.0.0/package",
-      "filename": "new_root_package",
-      "documentType": "version"
+      "filename": "new_root",
+      "documentType": "folder",
+      "path": "/"
     }
     """
 
-  @skip
   Scenario: Add root package with missing filename should fail
     Given i access the resource url "/api/v2/explorer/local-blueprints/add-root-package"
     When i make a "POST" request
@@ -310,6 +308,7 @@ Feature: Explorer
       "message": "filename: is missing"
     }
     """
+    
   @skip
   Scenario: Remove root package
     Given i access the resource url "/api/v2/explorer/local-blueprints/remove-root-package"
