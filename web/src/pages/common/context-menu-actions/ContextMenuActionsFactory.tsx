@@ -85,10 +85,10 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
     }
     case ContextMenuActions.createRootPackage: {
       return {
-        fetchDocument: Api2.fetchCreatePackage,
+        fetchDocument: Api2.fetchCreateBlueprint,
         onSubmit: (formData: any) => {
           Api2.addRootPackage({
-            nodeId: treeNodeData.nodeId,
+            dataSourceId: treeNodeData.nodeId,
             filename: formData.title,
             onSuccess: (res: any, dataSourceId: string) => {
               const node: TreeNodeData = new TreeNodeBuilder({

@@ -59,7 +59,7 @@ interface RemoveRootPackage {
 }
 
 interface AddRootPackage {
-  nodeId: string
+  dataSourceId: string
   filename: string
   onSuccess: (res: any, dataSourceId: string) => void
   onError?: OnError
@@ -276,14 +276,12 @@ export default class Api2 {
   }
 
   static addRootPackage({
-    nodeId,
+    dataSourceId,
     filename,
     templateRef = 'templates/package-template',
     onSuccess,
     onError = () => {},
   }: AddRootPackage) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
     const url = api.addRootPackage(dataSourceId)
     const data = {
       filename,

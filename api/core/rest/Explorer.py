@@ -145,12 +145,9 @@ def add_root_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
-    root_package_repository = get_repository(RepositoryType.RootPackageRepository, db)
-    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = AddRootPackageUseCase(
-        sub_package_repository=sub_package_repository, root_package_repository=root_package_repository
-    )
+    use_case = AddRootPackageUseCase(document_repository=document_repository)
 
     request_object = AddRootPackageRequestObject.from_dict(request_data)
 
