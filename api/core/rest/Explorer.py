@@ -7,14 +7,8 @@ from core.use_case.add_file_to_package_use_case import AddFileToPackageUseCase, 
 from core.use_case.add_package_to_package_use_case import AddPackageToPackageUseCase, AddPackageToPackageRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
-from core.use_case.remove_file_from_package_use_case import (
-    RemoveFileFromPackageUseCase,
-    RemoveFileFromPackageRequestObject,
-)
-from core.use_case.remove_package_from_package_use_case import (
-    RemovePackageFromPackageUseCase,
-    RemovePackageFromPackageRequestObject,
-)
+from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
+from core.use_case.remove_package_use_case import RemovePackageUseCase, RemovePackageRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 from core.use_case.move_package_use_case import MovePackageUseCase, MovePackageRequestObject
 
@@ -29,7 +23,7 @@ STATUS_CODES = {
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-file", methods=["POST"])
-def add_file_to_package(data_source_id: str):
+def add_file(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
@@ -55,9 +49,9 @@ def remove_file(data_source_id: str):
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = RemoveFileFromPackageUseCase(document_repository=document_repository)
+    use_case = RemoveFileUseCase(document_repository=document_repository)
 
-    request_object = RemoveFileFromPackageRequestObject.from_dict(request_data)
+    request_object = RemoveFileRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 
@@ -86,7 +80,7 @@ def move_file():
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-package", methods=["POST"])
-def add_package_to_package(data_source_id: str):
+def add_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
@@ -106,15 +100,15 @@ def add_package_to_package(data_source_id: str):
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-package", methods=["POST"])
-def remove_package_from_package(data_source_id: str):
+def remove_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = RemovePackageFromPackageUseCase(document_repository=document_repository)
+    use_case = RemovePackageUseCase(document_repository=document_repository)
 
-    request_object = RemovePackageFromPackageRequestObject.from_dict(request_data)
+    request_object = RemovePackageRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 
@@ -168,9 +162,9 @@ def remove_root_package(data_source_id: str):
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = RemovePackageFromPackageUseCase(document_repository=document_repository)
+    use_case = RemovePackageUseCase(document_repository=document_repository)
 
-    request_object = RemovePackageFromPackageRequestObject.from_dict(request_data)
+    request_object = RemovePackageRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 

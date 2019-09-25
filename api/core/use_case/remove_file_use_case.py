@@ -7,7 +7,7 @@ from core.shared import request_object as req
 from core.repository.interface.document_repository import DocumentRepository
 
 
-class RemoveFileFromPackageRequestObject(req.ValidRequestObject):
+class RemoveFileRequestObject(req.ValidRequestObject):
     def __init__(self, parent_id=None, filename=None):
         self.parent_id = parent_id
         self.filename = filename
@@ -22,10 +22,10 @@ class RemoveFileFromPackageRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return RemoveFileFromPackageRequestObject(filename=adict.get("filename"))
+        return cls(filename=adict.get("filename"))
 
 
-class RemoveFileFromPackageUseCase(uc.UseCase):
+class RemoveFileUseCase(uc.UseCase):
     def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
 
