@@ -19,6 +19,8 @@ services:
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
     ports:
       - "5000:5000"
+    depends_on:
+      - db-ui
 
   web:
     build:
