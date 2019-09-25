@@ -3,8 +3,8 @@ from flask import Blueprint, Response, request
 from classes.data_source import DataSource
 from core.serializers.add_file_json_serializer import AddFileSerializer
 from core.repository.repository_factory import get_repository, RepositoryType
-from core.use_case.add_file_to_package_use_case import AddFileToPackageUseCase, AddFileToPackageRequestObject
-from core.use_case.add_package_to_package_use_case import AddPackageToPackageUseCase, AddPackageToPackageRequestObject
+from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
+from core.use_case.add_package_use_case import AddPackageUseCase, AddPackageRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
 from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
@@ -29,9 +29,9 @@ def add_file(data_source_id: str):
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = AddFileToPackageUseCase(document_repository=document_repository)
+    use_case = AddFileUseCase(document_repository=document_repository)
 
-    request_object = AddFileToPackageRequestObject.from_dict(request_data)
+    request_object = AddFileRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 
@@ -86,9 +86,9 @@ def add_package(data_source_id: str):
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = AddPackageToPackageUseCase(document_repository=document_repository)
+    use_case = AddPackageUseCase(document_repository=document_repository)
 
-    request_object = AddPackageToPackageRequestObject.from_dict(request_data)
+    request_object = AddPackageRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 

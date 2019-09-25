@@ -1,14 +1,14 @@
 from uuid import uuid4
 
 from core.domain.document import Document
+from core.repository.interface.document_repository import DocumentRepository
 from utils.logging import logger
-from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
-from core.repository.interface.document_repository import DocumentRepository
+from core.shared import use_case as uc
 
 
-class AddFileToPackageRequestObject(req.ValidRequestObject):
+class AddPackageRequestObject(req.ValidRequestObject):
     def __init__(self, parent_id=None, filename=None, template_ref=None):
         self.parent_id = parent_id
         self.filename = filename
@@ -35,7 +35,7 @@ class AddFileToPackageRequestObject(req.ValidRequestObject):
         )
 
 
-class AddFileToPackageUseCase(uc.UseCase):
+class AddPackageUseCase(uc.UseCase):
     def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
 
@@ -49,15 +49,15 @@ class AddFileToPackageUseCase(uc.UseCase):
             raise Exception(f"The parent, with id {parent_id}, was not found")
 
         path = str(parent.path) if str(parent.path) != "/" else ""
-        file = Document(
+        folder = Document(
             uid=str(uuid4()),
             filename=filename,
-            type="file",
+            type="folder",
             path=f"{path}/{parent.filename}",
             template_ref=template_ref,
         )
 
-        self.document_repository.add(file)
+        self.document_repository.add(folder)
 
-        logger.info(f"Added document '{file.uid}' to path '{file.path}'")
-        return res.ResponseSuccess(file)
+        logger.info(f"Added folder '{folder.uid}' to package '{folder.path}'")
+        return res.ResponseSuccess(folder)
