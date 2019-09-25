@@ -308,45 +308,34 @@ Feature: Explorer
       "message": "filename: is missing"
     }
     """
-    
-  @skip
+
   Scenario: Remove root package
     Given i access the resource url "/api/v2/explorer/local-blueprints/remove-root-package"
     When i make a "POST" request
     """
     {
-      "filename": "package_1/package"
+      "filename": "package_1"
     }
     """
     Then the response status should be "OK"
-    Given I access the resource url "/api/v2/documents/local-blueprints/package_1/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints/1"
     When I make a "GET" request
     Then the response status should be "System Error"
     And the response should equal
     """
     {
       "type": "SYSTEM_ERROR",
-      "message": "EntityNotFoundException: 'The entity, with id package_1/package is not found'"
+      "message": "EntityNotFoundException: 'The entity, with id 1 is not found'"
     }
     """
-  @skip
+
   Scenario: Move root package
     Given i access the resource url "/api/v2/explorer/move-root-package"
     When i make a "POST" request
     """
     {
-       "source": "local-blueprints/package_1/package",
-       "destination": "local-blueprints/package_2/package"
+       "source": "local-blueprints/package_1",
+       "destination": "local-blueprints/package_2"
     }
     """
     Then the response status should be "OK"
-    Given I access the resource url "/api/v2/documents/local-blueprints/package_1/package"
-    When I make a "GET" request
-    Then the response status should be "System Error"
-    And the response should equal
-    """
-    {
-      "type": "SYSTEM_ERROR",
-      "message": "EntityNotFoundException: 'The entity, with id package_1/package is not found'"
-    }
-    """

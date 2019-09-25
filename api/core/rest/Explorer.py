@@ -17,8 +17,6 @@ from core.use_case.remove_package_from_package_use_case import (
 )
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 from core.use_case.move_package_use_case import MovePackageUseCase, MovePackageRequestObject
-from core.use_case.remove_root_package_use_case import RemoveRootPackageRequestObject, RemoveRootPackageUseCase
-from core.use_case.move_root_package_use_case import MoveRootPackageRequestObject, MoveRootPackageUseCase
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -140,6 +138,9 @@ def move_package():
     )
 
 
+# Keep root-package functions add,remove and move, since we may later need special logic for this root folder type
+
+
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-root-package", methods=["POST"])
 def add_root_package(data_source_id: str):
     db = DataSource(id=data_source_id)
@@ -165,17 +166,11 @@ def remove_root_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
-    root_package_repository = get_repository(RepositoryType.RootPackageRepository, db)
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
-    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
 
-    use_case = RemoveRootPackageUseCase(
-        document_repository=document_repository,
-        root_package_repository=root_package_repository,
-        sub_package_repository=sub_package_repository,
-    )
+    use_case = RemovePackageFromPackageUseCase(document_repository=document_repository)
 
-    request_object = RemoveRootPackageRequestObject.from_dict(request_data)
+    request_object = RemovePackageFromPackageRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 
@@ -186,9 +181,9 @@ def remove_root_package(data_source_id: str):
 def move_root_package():
     request_data = request.get_json()
 
-    use_case = MoveRootPackageUseCase(get_repository=get_repository)
+    use_case = MovePackageUseCase(get_repository=get_repository)
 
-    request_object = MoveRootPackageRequestObject.from_dict(request_data)
+    request_object = MovePackageRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 
