@@ -4,6 +4,7 @@ import WithContextMenu from '../../common/context-menu-actions/WithContextMenu'
 import { MenuItem } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActions } from '../../common/context-menu-actions/ContextMenuActionsFactory'
 import { FaFile, FaFolder } from 'react-icons/fa'
+import { LayoutContext } from '../../common/golden-layout/LayoutContext'
 
 export const SubPackageNode = (props: RenderProps) => {
   const { treeNodeData } = props
@@ -35,10 +36,17 @@ export const SubPackageNode = (props: RenderProps) => {
   ]
 
   return (
-    <WithContextMenu
-      {...props}
-      treeNodeData={treeNodeData}
-      menuItems={menuItems}
-    />
+    <LayoutContext.Consumer>
+      {(layout: any) => {
+        return (
+          <WithContextMenu
+            {...props}
+            treeNodeData={treeNodeData}
+            menuItems={menuItems}
+            layout={layout}
+          />
+        )
+      }}
+    </LayoutContext.Consumer>
   )
 }

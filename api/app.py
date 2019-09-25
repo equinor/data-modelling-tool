@@ -1,4 +1,5 @@
 import json
+import os
 from os.path import dirname
 
 from flask import Flask
@@ -10,14 +11,16 @@ from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
 from utils.files import getListOfFiles
 from utils.logging import logger
-from core.rest import Document, Explorer, Index, DataSource
+from core.rest import Document as DocumentBlueprint, Explorer, Index, DataSource
+from uuid import uuid4
+from core.domain.document import Document
 
 
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
     create_api(app)
-    app.register_blueprint(Document.blueprint)
+    app.register_blueprint(DocumentBlueprint.blueprint)
     app.register_blueprint(Explorer.blueprint)
     app.register_blueprint(DataSource.blueprint)
     app.register_blueprint(Index.blueprint)
@@ -34,9 +37,11 @@ logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 
 @app.cli.command()
 def init_import():
-    collections = ["blueprints", "entities", "templates"]
+    collections = ["templates"]
     for collection in collections:
         init_import_internal(collection)
+
+    import_documents("blueprints")
 
 
 PATHS = {
@@ -44,6 +49,47 @@ PATHS = {
     "entities": "/code/schemas/documents/entities",
     "templates": "/code/schemas/templates",
 }
+
+
+def import_documents(collection):
+    base_path = PATHS[collection]
+    for path, subdirs, files in os.walk(base_path):
+        base_path_size = len(base_path)
+        relative_path = path[base_path_size:] or "/"
+        for foldername in subdirs:
+            try:
+                folder = Document(
+                    uid=str(uuid4()),
+                    filename=foldername,
+                    type="folder",
+                    path=relative_path,
+                    template_ref="templates/package",
+                )
+                model_db[f"{collection}"].replace_one({"_id": folder.uid}, folder.to_dict(), upsert=True)
+
+            except Exception as Error:
+                logger.error(f"Could not import file {folder}: {Error}")
+                exit(1)
+
+        for filename in files:
+            file = os.path.join(path, filename)
+            try:
+                with open(file) as json_file:
+                    form_data = json.load(json_file)
+
+                file = Document(
+                    uid=str(uuid4()),
+                    filename=filename,
+                    type="file",
+                    path=relative_path,
+                    template_ref="templates/blueprint",
+                )
+                file.form_data = form_data["formData"]
+                model_db[f"{collection}"].replace_one({"_id": file.uid}, file.to_dict(), upsert=True)
+
+            except Exception as Error:
+                logger.error(f"Could not import file {file}: {Error}")
+                exit(1)
 
 
 def init_import_internal(collection):
@@ -98,3 +144,7 @@ def nuke_db():
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
         data_modelling_tool_db.drop_collection(name)
+
+
+if __name__ == "__main__":
+    import_documents("blueprints")

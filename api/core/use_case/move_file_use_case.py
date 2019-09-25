@@ -1,10 +1,8 @@
-from core.domain.sub_package import SubPackage
 from core.repository.repository_factory import RepositoryType
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
-from core.repository.interface.sub_package_repository import SubPackageRepository
 from core.repository.interface.document_repository import DocumentRepository
 from pathlib import Path
 from core.domain.document import Document
@@ -38,60 +36,45 @@ class MoveFileUseCase(uc.UseCase):
         self.get_repository = get_repository
 
     def process_request(self, request_object: MoveFileRequestObject):
-        source_data_source, source_document_id = request_object.source.split("/", 1)
-        destination_data_source, destination_document_id = request_object.destination.split("/", 1)
+        source_data_source_uid, source = request_object.source.split("/", 1)
+        destination_data_source_uid, destination = request_object.destination.split("/", 1)
 
-        source: Path = Path(source_document_id)
-        destination: Path = Path(destination_document_id)
+        source: Path = Path(source)
+        destination: Path = Path(destination)
 
-        source_data_source = DataSource(id=source_data_source)
-
-        destination_data_source = DataSource(id=destination_data_source)
-
-        # Source package
-        source_sub_package_repository: SubPackageRepository = self.get_repository(
-            RepositoryType.SubPackageRepository, source_data_source
-        )
-        source_id = f"{source.parent}/package"
-        source_package: SubPackage = source_sub_package_repository.get(source_id)
-        if not source_package:
-            raise EntityNotFoundException(uid=source_id)
-        source_package.remove_file(source_document_id)
-        logger.info(f"Removed file '{source.name}' from sub package '{source_id}")
-        source_sub_package_repository.update(source_package)
-
-        # Destination package
-        destination_sub_package_repository: SubPackageRepository = self.get_repository(
-            RepositoryType.SubPackageRepository, destination_data_source
-        )
-        destination_id = f"{destination.parent}/package"
-        destination_package: SubPackage = destination_sub_package_repository.get(destination_id)
-        if not destination_package:
-            raise EntityNotFoundException(uid=destination_id)
-        destination_package.add_file(destination.name)
-        logger.info(f"Added file '{destination.name}' to sub package '{destination_id}")
-        destination_sub_package_repository.update(destination_package)
+        source_data_source = DataSource(id=source_data_source_uid)
+        destination_data_source = DataSource(id=destination_data_source_uid)
 
         # Remove source
-        source_document_repository: DocumentRepository = self.get_repository(
+        source_repository: DocumentRepository = self.get_repository(
             RepositoryType.DocumentRepository, source_data_source
         )
-        source_document: Document = source_document_repository.get(source_document_id)
+        source_document: Document = source_repository.get_by_path_and_filename(
+            path=f"/{str(source.parent)}", filename=source.name
+        )
         if not source_document:
-            raise EntityNotFoundException(uid=source_document_id)
-        source_document_repository.delete(source_document)
-        logger.info(f"Removed document '{source_document.id}'")
+            raise EntityNotFoundException(uid=f"{str(source)}")
+        source_repository.delete(source_document)
+        logger.info(f"Removed document '{source_document.uid}'")
 
         # Add destination
         destination_document_repository: DocumentRepository = self.get_repository(
-            RepositoryType.DocumentRepository, source_data_source
+            RepositoryType.DocumentRepository, destination_data_source
         )
-        destination_document: Document = destination_document_repository.get(destination_document_id)
-        if destination_document:
+        if destination_document_repository.get_by_path_and_filename(
+            path=f"/{str(destination.parent)}", filename=destination.name
+        ):
             raise EntityAlreadyExistsException(request_object.source)
-        destination_document = Document(id=destination_document_id, template_ref=source_document.meta.template_ref)
+
+        destination_document = Document(
+            uid=source_document.uid,
+            filename=destination.name,
+            path=f"/{str(destination.parent)}",
+            type=source_document.type,
+            template_ref=source_document.template_ref,
+        )
         destination_document.form_data = source_document.form_data
         destination_document_repository.add(destination_document)
-        logger.info(f"Added document '{destination_document.id}'")
+        logger.info(f"Added document '{destination_document.uid}'")
 
         return res.ResponseSuccess(destination_document)

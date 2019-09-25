@@ -1,12 +1,11 @@
-from core.domain.sub_package import SubPackage, SubPackageData
-from core.domain.root_package import RootPackage
+from uuid import uuid4
+
+from core.domain.document import Document
+from core.repository.interface.document_repository import DocumentRepository
 from utils.logging import logger
-from core.domain.sub_package import DocumentId
-from core.repository.interface.sub_package_repository import SubPackageRepository
-from core.repository.interface.root_package_repository import RootPackageRepository
-from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
+from core.shared import use_case as uc
 
 
 class AddRootPackageRequestObject(req.ValidRequestObject):
@@ -27,33 +26,20 @@ class AddRootPackageRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return AddRootPackageRequestObject(filename=adict.get("filename"), template_ref=adict.get("templateRef"))
+        return cls(filename=adict.get("filename"), template_ref=adict.get("templateRef"))
 
 
 class AddRootPackageUseCase(uc.UseCase):
-    def __init__(self, sub_package_repository: SubPackageRepository, root_package_repository: RootPackageRepository):
-        self.sub_package_repository = sub_package_repository
-        self.root_package_repository = root_package_repository
+    def __init__(self, document_repository: DocumentRepository):
+        self.document_repository = document_repository
 
     def process_request(self, request_object):
         filename: str = request_object.filename
         template_ref: str = request_object.template_ref
 
-        # Create version
-        latest_version_id: DocumentId = DocumentId(f"{filename}/1.0.0/package")
-        latest_version_package: SubPackage = SubPackage(
-            id=latest_version_id,
-            template_ref="templates/package-template",
-            document_type="version",
-            form_data=SubPackageData(title=filename),
-        )
-        self.sub_package_repository.add(latest_version_package)
+        folder = Document(uid=str(uuid4()), filename=filename, type="folder", path=f"/", template_ref=template_ref)
 
-        # Create root package
-        root_package = RootPackage(id=f"{filename}/package", template_ref=template_ref)
-        root_package.form_data.latest_version = latest_version_id
-        root_package.form_data.versions = [latest_version_id]
+        self.document_repository.add(folder)
 
-        self.root_package_repository.add(root_package)
-        logger.info(f"Added root package '{root_package.id}'")
-        return res.ResponseSuccess(latest_version_package)
+        logger.info(f"Added folder '{folder.uid}' to package '{folder.path}'")
+        return res.ResponseSuccess(folder)

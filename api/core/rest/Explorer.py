@@ -36,11 +36,8 @@ def add_file_to_package(data_source_id: str):
     request_data = request.get_json()
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
-    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
 
-    use_case = AddFileToPackageUseCase(
-        document_repository=document_repository, sub_package_repository=sub_package_repository
-    )
+    use_case = AddFileToPackageUseCase(document_repository=document_repository)
 
     request_object = AddFileToPackageRequestObject.from_dict(request_data)
 
@@ -54,16 +51,13 @@ def add_file_to_package(data_source_id: str):
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-file", methods=["POST"])
-def remove_file_from_package(data_source_id: str):
+def remove_file(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
-    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
 
-    use_case = RemoveFileFromPackageUseCase(
-        document_repository=document_repository, sub_package_repository=sub_package_repository
-    )
+    use_case = RemoveFileFromPackageUseCase(document_repository=document_repository)
 
     request_object = RemoveFileFromPackageRequestObject.from_dict(request_data)
 
@@ -98,9 +92,9 @@ def add_package_to_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
-    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = AddPackageToPackageUseCase(sub_package_repository=sub_package_repository)
+    use_case = AddPackageToPackageUseCase(document_repository=document_repository)
 
     request_object = AddPackageToPackageRequestObject.from_dict(request_data)
 
@@ -119,11 +113,8 @@ def remove_package_from_package(data_source_id: str):
     request_data = request.get_json()
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
-    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
 
-    use_case = RemovePackageFromPackageUseCase(
-        document_repository=document_repository, sub_package_repository=sub_package_repository
-    )
+    use_case = RemovePackageFromPackageUseCase(document_repository=document_repository)
 
     request_object = RemovePackageFromPackageRequestObject.from_dict(request_data)
 
@@ -154,12 +145,9 @@ def add_root_package(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
-    root_package_repository = get_repository(RepositoryType.RootPackageRepository, db)
-    sub_package_repository = get_repository(RepositoryType.SubPackageRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    use_case = AddRootPackageUseCase(
-        sub_package_repository=sub_package_repository, root_package_repository=root_package_repository
-    )
+    use_case = AddRootPackageUseCase(document_repository=document_repository)
 
     request_object = AddRootPackageRequestObject.from_dict(request_data)
 

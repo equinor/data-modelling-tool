@@ -15,6 +15,8 @@ import {
 } from '../../common/tree-view/DocumentTree'
 
 type Props = {
+  path: string
+  parent: string
   treeNodeData: TreeNodeData
   addNode: AddNode
   updateNode: UpdateNode

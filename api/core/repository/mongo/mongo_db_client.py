@@ -24,7 +24,11 @@ class DbClient(ABC):
 
     @abstractmethod
     def find(self, filters: Dict) -> Optional[List[Dict]]:
-        """Find method to be implemented""" ""
+        """Find method to be implemented"""
+
+    @abstractmethod
+    def find_one(self, filters: Dict) -> Dict:
+        """Find one method to be implemented"""
 
 
 class MongoDbClient(DbClient):
@@ -43,7 +47,7 @@ class MongoDbClient(DbClient):
         self.collection = collection
 
     def add(self, document: Dict) -> bool:
-        document["_id"] = document["id"]
+        document["_id"] = document["uid"]
         try:
             return self.handler[self.collection].insert_one(document).acknowledged
         except DuplicateKeyError:
@@ -66,3 +70,6 @@ class MongoDbClient(DbClient):
 
     def find(self, filters: Dict) -> Optional[List[Dict]]:
         return self.handler[self.collection].find(filter=filters)
+
+    def find_one(self, filters: Dict) -> Optional[Dict]:
+        return self.handler[self.collection].find_one(filter=filters)

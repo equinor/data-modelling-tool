@@ -44,11 +44,19 @@ export const LayoutProvider = ({ children, layout }: Props) => {
     }
   }
 
+  const update = (id: string, title: string) => {
+    if (isOpen(layout, id)) {
+      const components = layout.myLayout.root.getItemsById(id)
+      components.forEach((component: any) => component.setTitle(title))
+    }
+  }
+
   return (
     <LayoutContext.Provider
       value={{
         add,
         remove,
+        update,
       }}
     >
       {children}

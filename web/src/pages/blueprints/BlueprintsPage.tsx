@@ -54,6 +54,7 @@ export default () => {
             case NodeType.rootPackage:
               return <RootFolderNode {...renderProps} />
             case NodeType.subPackage:
+            case NodeType.folder:
               return <SubPackageNode {...renderProps} />
             case NodeType.file:
               return <BlueprintNode {...renderProps} />

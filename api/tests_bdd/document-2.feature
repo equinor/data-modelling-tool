@@ -6,12 +6,13 @@ Feature: Document 2
       | host | port  | username | password | tls   | name                     | database | collection | documentType | type     |
       | db   | 27017 | maf      | maf      | false | local-blueprints-equinor | maf      | documents  | blueprints   | mongo-db |
 
-    Given there are package named "package_1" of "documents"
-      | title     | description         | version |
-      | package 1 | package description | 1.0.0   |
+    Given there are documents in collection "documents"
+      | uid | path | filename  | type      |
+      | 1   | /    | package_1 | folder    |
+
 
   Scenario: Get document
-    Given I access the resource url "/api/v2/documents/local-blueprints-equinor/package_1/1.0.0/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints-equinor/1"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
@@ -19,14 +20,12 @@ Feature: Document 2
     """
     {
       "document" : {
-        "id": "package_1/1.0.0/package",
-        "meta": {
-          "documentType": "file",
-          "templateRef": "templates/package-template"
-        },
+        "uid": "1",
+        "path": "/",
+        "filename": "package_1",
+        "type": "folder",
         "formData": {
-          "title": "package 1",
-          "description": "package description"
+
         }
       },
       "template" : {
@@ -38,17 +37,18 @@ Feature: Document 2
     """
 
   Scenario: Create document
-    Given i access the resource url "/api/v2/documents/local-blueprints-equinor/package_1/1.0.1/package"
+    Given i access the resource url "/api/v2/documents/local-blueprints-equinor"
     And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
-      "meta": {
-        "templateRef": "templates/package-template"
-      },
+      "uid": "2",
+      "path": "/",
+      "filename": "new_folder",
+      "type": "folder",
+      "templateRef": "templates/package-template",
       "formData": {
-        "title": "package 1",
-        "description": "package description"
+
       }
     }
     """
@@ -57,13 +57,14 @@ Feature: Document 2
     """
     {
       "document": {
-        "meta": {
+        "uid": "2",
+        "path": "/",
+        "filename": "new_folder",
+        "type": "folder",
+        "templateRef": "templates/package-template",
+         "formData": {
 
-        },
-        "formData": {
-          "title": "package 1",
-          "description": "package description"
-        }
+         }
       },
       "template" : {
          "meta": {
@@ -74,15 +75,12 @@ Feature: Document 2
     """
 
     Scenario: Update document (form data only now)
-    Given i access the resource url "/api/v2/documents/local-blueprints-equinor/package_1/1.0.0/package"
+    Given i access the resource url "/api/v2/documents/local-blueprints-equinor/1"
     And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
-      "title": "new package title",
-      "description": "package description",
-      "subpackages": [],
-      "files": []
+      "description": "package description"
     }
     """
     Then the response status should be "OK"
@@ -90,14 +88,12 @@ Feature: Document 2
     """
     {
       "document": {
-        "meta": {
-
-        },
+        "uid": "1",
+        "path": "/",
+        "filename": "package_1",
+        "type": "folder",
         "formData": {
-          "title": "new package title",
-          "description": "package description",
-          "subpackages": [],
-          "files": []
+          "description": "package description"
         }
       },
       "template" : {

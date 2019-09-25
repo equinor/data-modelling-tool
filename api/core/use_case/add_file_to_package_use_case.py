@@ -1,10 +1,10 @@
+from uuid import uuid4
+
 from core.domain.document import Document
-from core.domain.sub_package import SubPackage
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
-from core.repository.interface.sub_package_repository import SubPackageRepository
 from core.repository.interface.document_repository import DocumentRepository
 
 
@@ -30,29 +30,34 @@ class AddFileToPackageRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return AddFileToPackageRequestObject(
+        return cls(
             parent_id=adict.get("parentId"), filename=adict.get("filename"), template_ref=adict.get("templateRef")
         )
 
 
 class AddFileToPackageUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository, sub_package_repository: SubPackageRepository):
+    def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
-        self.sub_package_repository = sub_package_repository
 
     def process_request(self, request_object):
         parent_id: str = request_object.parent_id
         filename: str = request_object.filename
         template_ref: str = request_object.template_ref
 
-        sub_package: SubPackage = self.sub_package_repository.get(parent_id)
-        if not sub_package:
+        parent: Document = self.document_repository.get(parent_id)
+        if not parent:
             raise Exception(f"The parent, with id {parent_id}, was not found")
-        document_id = sub_package.add_file(filename)
-        self.sub_package_repository.update(sub_package)
 
-        document = Document(id=document_id, template_ref=template_ref)
-        self.document_repository.add(document)
+        path = str(parent.path) if str(parent.path) != "/" else ""
+        file = Document(
+            uid=str(uuid4()),
+            filename=filename,
+            type="file",
+            path=f"{path}/{parent.filename}",
+            template_ref=template_ref,
+        )
 
-        logger.info(f"Added document '{document_id}' to sub package '{parent_id}'")
-        return res.ResponseSuccess(document)
+        self.document_repository.add(file)
+
+        logger.info(f"Added document '{file.uid}' to path '{file.path}'")
+        return res.ResponseSuccess(file)

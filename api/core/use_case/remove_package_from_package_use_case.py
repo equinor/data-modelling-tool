@@ -1,23 +1,18 @@
-from core.domain.sub_package import SubPackage
+from pathlib import Path
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
-from core.repository.interface.sub_package_repository import SubPackageRepository
 from core.repository.interface.document_repository import DocumentRepository
 
 
 class RemovePackageFromPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, filename=None):
-        self.parent_id = parent_id
+    def __init__(self, filename=None):
         self.filename = filename
 
     @classmethod
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
-
-        if "parentId" not in adict:
-            invalid_req.add_error("parentId", "is missing")
 
         if "filename" not in adict:
             invalid_req.add_error("filename", "is missing")
@@ -25,42 +20,33 @@ class RemovePackageFromPackageRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return RemovePackageFromPackageRequestObject(parent_id=adict.get("parentId"), filename=adict.get("filename"))
+        return RemovePackageFromPackageRequestObject(filename=adict.get("filename"))
 
 
 class RemovePackageFromPackageUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository, sub_package_repository: SubPackageRepository):
+    def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
-        self.sub_package_repository = sub_package_repository
-
-    def _delete_package(self, uid: str):
-        sub_package = self.sub_package_repository.get(uid)
-        if not sub_package:
-            raise Exception(f"The sub package, with id {uid}, was not found")
-        for uid in sub_package.form_data.files:
-            document = self.document_repository.get(uid)
-            if not document:
-                raise Exception(f"The file, with id {uid}, was not found")
-            logger.info(f"Removed file '{uid}' from sub package '{sub_package.id}'")
-            self.document_repository.delete(document)
-        for uid in sub_package.form_data.subpackages:
-            self._delete_package(uid)
-        self.sub_package_repository.delete(sub_package)
-        logger.info(f"Removed sub package '{sub_package.id}'")
 
     def process_request(self, request_object):
-        parent_id: str = request_object.parent_id
         filename: str = request_object.filename
 
-        # Remove from parent
-        parent_sub_package: SubPackage = self.sub_package_repository.get(parent_id)
-        if not parent_sub_package:
-            raise Exception(f"The parent, with id {parent_id}, was not found")
-        parent_sub_package.remove_subpackage(filename)
-        self.sub_package_repository.update(parent_sub_package)
+        target: Path = Path(filename)
+        path = str(target.parent) if str(target.parent) != "." else ""
+        document = self.document_repository.get_by_path_and_filename(path=f"/{path}", filename=target.name)
 
-        # Recursively delete all files and subpackages
-        self._delete_package(filename)
+        if not document:
+            raise Exception(f"The folder, with id {document.uid}, was not found")
+        self.document_repository.delete(document)
 
-        logger.info(f"Removed sub package '{filename}' from sub package '{parent_id}'")
-        return res.ResponseSuccess(True)
+        start = "" if document.path == "/" else document.path
+        children = (
+            self.document_repository.get_nodes(f"{start}/{document.filename}", direct_descendants_only=False)
+            if document.type == "folder"
+            else []
+        )
+        for child in children:
+            self.document_repository.delete(child)
+            logger.info(f"Removed document '{child.uid}'")
+
+        logger.info(f"Removed document '{filename}'")
+        return res.ResponseSuccess({"removedChildren": [child.uid for child in children]})
