@@ -4,47 +4,58 @@ Feature: Index
 
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name                     | database | collection | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | local-blueprints-equinor | maf      | documents  | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | data-source-name         | maf      | documents  | blueprints   | mongo-db |
 
-    Given there are package named "package_1" of "documents"
-      | title     | description         | version |
-      | package 1 | package description | 1.0.0   |
-
-  @skip
-  Scenario: Get index (deprecated)
-    Given I access the resource url "/api/index/local-blueprints-equinor"
-    When I make a "GET" request
-    Then the response status should be "OK"
-    And the response should equal
-    """
-    {
-       "local-blueprints-equinor/package_1/1.0.0/package":{
-          "title":"package 1",
-          "children":[],
-          "nodeType":"root-package",
-          "id":"local-blueprints-equinor/package_1/1.0.0/package"
-       }
-    }
-    """
+    Given there are documents in collection "documents"
+      | uid | path                     | filename      | type   |
+      | 1   | /                        | package_1     | folder |
+      | 2   | /package_1               | sub_package_1 | folder |
+      | 3   | /package_1               | sub_package_2 | folder |
+      | 4   | /package_1/sub_package_1 | document_1    | file   |
+      | 5   | /package_1/sub_package_1 | document_2    | file   |
 
   Scenario: Get index
-    Given I access the resource url "/api/v2/index/local-blueprints-equinor"
+    Given I access the resource url "/api/v3/index/data-source-name"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should equal
     """
     {
-       "local-blueprints-equinor": {
-          "id": "local-blueprints-equinor",
-          "title": "local-blueprints-equinor",
+       "data-source-name": {
+          "id": "data-source-name",
+          "title": "data-source-name",
           "nodeType": "datasource",
-          "children": ["local-blueprints-equinor/package_1/1.0.0/package"]
+          "children": ["data-source-name/1"]
        },
-       "local-blueprints-equinor/package_1/1.0.0/package":{
-          "id":"local-blueprints-equinor/package_1/1.0.0/package",
+       "data-source-name/1":{
+          "id":"data-source-name/1",
           "title":"package_1",
+          "children":["data-source-name/2", "data-source-name/3"],
+          "nodeType":"subpackage"
+       },
+       "data-source-name/2":{
+          "id":"data-source-name/2",
+          "title":"sub_package_1",
+          "children":["data-source-name/4", "data-source-name/5"],
+          "nodeType":"subpackage"
+       },
+       "data-source-name/3":{
+          "id":"data-source-name/3",
+          "title":"sub_package_2",
           "children":[],
-          "nodeType":"root-package"
+          "nodeType":"subpackage"
+       },
+       "data-source-name/4":{
+          "id":"data-source-name/4",
+          "title":"document_1",
+          "children":[],
+          "nodeType":"file"
+       },
+       "data-source-name/5":{
+          "id":"data-source-name/5",
+          "title":"document_2",
+          "children":[],
+          "nodeType":"file"
        }
     }
     """
