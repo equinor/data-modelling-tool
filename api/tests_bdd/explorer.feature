@@ -304,3 +304,56 @@ Feature: Explorer
     }
     """
     Then the response status should be "OK"
+
+  Scenario: Upload a package
+    Given i access the resource url "/api/v2/explorer/local-blueprints/upload-package-to-root"
+    When i make a "POST" request
+    """
+    [{
+        "path": "propellers/ordinary.json",
+        "filename": "ordinary",
+        "templateRef": "templates/blueprint",
+        "formData": {
+            "title": "Ordinary propeller",
+            "description": "Pretty standard stuff here",
+            "attributes": [{
+                "type": "integer",
+                "value": "",
+                "name": "length"
+            }, {
+                "type": "string",
+                "value": "2",
+                "name": "width",
+                "dimensions": "*"
+            }]
+        }
+    }, {
+        "path": "propellers/big/big-propeller.json",
+        "filename": "big-propeller",
+        "templateRef": "templates/blueprint",
+        "formData": {
+            "title": "big-propeller",
+            "description": "This is a very large propeller, its even in three dimensions",
+            "attributes": [{
+                "type": "integer",
+                "value": "",
+                "name": "length"
+            }, {
+                "type": "integer",
+                "value": "",
+                "name": "height"
+            }, {
+                "type": "string",
+                "value": "",
+                "name": "width"
+            }]
+        }
+    }]
+    """
+  Then the response status should be "OK"
+  And the collection "documents" should contain
+    | path            | filename       | type   |
+    | /               | propellers     | folder |
+    | /propellers     | big            | folder |
+    | /propellers     | ordinary       | file   |
+    | /propellers/big | big-propeller  | file   |

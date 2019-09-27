@@ -16,8 +16,10 @@ function toObject(acc: any, current: TreeNodeData) {
 }
 
 export interface IndexRequestBody {
-  id: string
-  content: any
+  path: string
+  filename: string
+  templateRef: string
+  formData: any
 }
 
 export interface PostIndexProp extends ApiPostProp {
@@ -154,6 +156,10 @@ export class DmtApi {
 
   moveSubPackage() {
     return `/api/v2/explorer/move-package`
+  }
+
+  uploadPackageToRoot(datasourceId: string) {
+    return `/api/v2/explorer/${datasourceId}/upload-package-to-root`
   }
 
   addRootPackage(datasourceId: string) {

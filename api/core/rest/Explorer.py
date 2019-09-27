@@ -18,6 +18,7 @@ from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequ
 from core.use_case.remove_package_use_case import RemovePackageUseCase, RemovePackageRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 from core.use_case.move_package_use_case import MovePackageUseCase, MovePackageRequestObject
+from core.use_case.upload_package_use_case import UploadPackageUseCase, UploadPackageRequestObject
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -181,6 +182,25 @@ def add_root_package(data_source_id: str):
     result = use_case.single(data_source_id=data_source_id, data_source_name=db.name, document=root_package.value)
 
     return Response(json.dumps(result), mimetype="application/json", status=200)  # STATUS_CODES[response.type],
+
+
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/upload-package-to-root", methods=["POST"])
+def upload_package_to_root(data_source_id: str):
+    db = DataSource(id=data_source_id)
+    request_data = request.get_json()
+
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
+
+    use_case = UploadPackageUseCase(document_repository=document_repository)
+
+    request_object = UploadPackageRequestObject.from_dict(request_data)
+
+    response = use_case.execute(request_object)
+
+    # Generate the new index, and return it
+    use_case = GenerateIndexUseCase(document_repository=document_repository)
+    result = use_case.execute(data_source_id=data_source_id, data_source_name=db.name)
+    return Response(json.dumps(result.to_dict()), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-root-package", methods=["POST"])
