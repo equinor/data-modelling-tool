@@ -1,6 +1,185 @@
-from core.domain.document import Document
-from core.repository.interface.document_repository import DocumentRepository
-from typing import List
+from core.domain.blueprint import Blueprint
+from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
+from core.repository.repository_exceptions import EntityNotFoundException
+from core.use_case.utils.get_template import get_template
+from utils.logging import logger
+from anytree import NodeMixin, RenderTree, PreOrderIter
+
+
+class Node(NodeMixin):
+    def __init__(self, data_source_id, name, document=None, blueprint=None, parent=None, children=None):
+        self.data_source_id = data_source_id
+        self.name = name
+        self.document = document
+        self.blueprint = blueprint
+        self.parent = parent
+        if children:
+            self.children = children
+
+    @property
+    def uid(self):
+        if self.document:
+            return self.document.uid
+
+    @property
+    def start_path(self):
+        return "/".join([node.name for node in self.path])
+
+
+class DataSourceNode(Node):
+    def __init__(self, data_source_id, name):
+        super().__init__(data_source_id, name)
+
+    @property
+    def id(self):
+        return self.data_source_id
+
+    def to_node(self):
+        return {
+            "id": self.id,
+            "title": self.name,
+            "nodeType": "datasource",
+            "children": [child.to_node()["id"] for child in self.children],
+        }
+
+
+class EntityPlaceholderNode(Node):
+    def __init__(self, data_source_id, name, document, blueprint, parent, template_ref):
+        super().__init__(data_source_id, name, document, blueprint, parent)
+        self.template_ref = template_ref
+
+    def find_root_uid(self, node):
+        if not node:
+            return ""
+
+        if node.document and node.document.uid:
+            return node.document.uid
+
+        return self.find_root_uid(node.parent)
+
+    @property
+    def id(self):
+        # If the document is created, use that value, if not use parent id
+        # uid = self.document.uid if self.document else self.find_root_uid(self.parent)
+        uid = self.find_root_uid(self.parent)
+        return f"{self.data_source_id}/{uid}_{self.name}"
+
+    def to_node(self):
+        return {
+            "parentId": self.parent.id,
+            "filename": self.name,
+            "title": self.name,
+            "id": self.id,
+            "nodeType": "document-ref",
+            "templateRef": self.template_ref,
+            "attributePath": "",
+            "children": [child.to_node()["id"] for child in self.children],
+        }
+
+
+class ArrayPlaceholderNode(Node):
+    """
+    A class used as a placeholder for documents.
+
+    Attributes
+    ----------
+    item_type : str
+        specify the kind of item type we can add to this array
+    """
+
+    def __init__(
+        self,
+        data_source_id: str,
+        name: str,
+        document: Blueprint,
+        blueprint: Blueprint,
+        item_type: Blueprint,
+        parent: Node = None,
+    ):
+        super().__init__(data_source_id, name, document, blueprint, parent)
+        self.item_type = item_type
+
+    @property
+    def id(self):
+        return f"{self.data_source_id}/{self.parent.document.uid}_{self.name}"
+
+    def to_node(self):
+        return {
+            "parentId": self.parent.id,
+            "filename": self.name,
+            "title": self.name,
+            "id": self.id,
+            "nodeType": "array-placeholder",
+            "children": [child.to_node()["id"] for child in self.children],
+            "meta": {
+                "itemType": self.blueprint.template_ref,
+                "itemName": self.item_type.name,
+                "attribute": self.name,
+                "parentId": f"{self.parent.document.uid}",
+                "dataSourceId": self.data_source_id,
+            },
+        }
+
+
+class FolderNode(Node):
+    def __init__(self, data_source_id, name, document, blueprint, parent=None, children=None):
+        super().__init__(data_source_id, name, document, blueprint, parent, children)
+        pass
+
+    @property
+    def id(self):
+        return f"{self.data_source_id}/{self.document.uid}"
+
+    def to_node(self):
+        return {
+            "parentId": self.parent.id,
+            "filename": self.name,
+            "title": self.name,
+            "id": self.id,
+            "nodeType": "subpackage",
+            "children": [child.to_node()["id"] for child in self.children],
+        }
+
+
+class FileNode(Node):
+    def __init__(self, data_source_id, name, document, blueprint, parent=None, children=None):
+        super().__init__(data_source_id, name, document, blueprint, parent, children)
+        pass
+
+    @property
+    def id(self):
+        return f"{self.data_source_id}/{self.document.uid}"
+
+    def to_node(self):
+        return {
+            "parentId": self.parent.id,
+            "filename": self.name,
+            "title": self.name,
+            "id": self.id,
+            "nodeType": "file",
+            "children": [child.to_node()["id"] for child in self.children],
+        }
+
+
+class PackageNode(Node):
+    def __init__(self, data_source_id, name, document, blueprint, parent=None, children=None):
+        super().__init__(data_source_id, name, document, blueprint, parent, children)
+        pass
+
+    @property
+    def id(self):
+        return f"{self.start_path}/{self.document.uid}"
+
+    def to_node(self):
+        print(self.start_path)
+        return {
+            "parentId": self.parent.id,
+            "filename": self.name,
+            "title": self.name,
+            "id": self.id,
+            "nodeType": "package",
+            "children": [child.to_node()["id"] for child in self.children],
+        }
 
 
 class Index:
@@ -14,46 +193,175 @@ class Index:
     def to_dict(self):
         return self.index
 
-        # TODO: Replace with data source entity
 
-    def add_data_source(self, data_source_id: str, data_source_name: str, children: List[str]):
-        data_source = {"id": data_source_id, "title": data_source_name, "nodeType": "datasource", "children": children}
-        self.index[data_source["id"]] = data_source
+def print_tree(root_node):
+    for pre, fill, node in RenderTree(root_node):
+        treestr = "%s%s" % (pre, node.name)
+        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"])
 
 
-def get_node_type(path: str) -> str:
-    if path == "/":
-        return "root-package"
-    else:
-        return "subpackage"
+class Tree:
+    def __init__(self, blueprint_repository: MongoBlueprintRepository, get_repository):
+        self.blueprint_repository = blueprint_repository
+        self.get_repository = get_repository
+
+    def _add_document(self, data_source_id: str, document: Blueprint, parent_node):
+        child_node = FileNode(
+            data_source_id=data_source_id,
+            name=document.name,
+            document=document,
+            blueprint=get_template(self.get_repository, document.template_ref),
+            parent=parent_node,
+        )
+        self._add_attributes(data_source_id, child_node)
+
+    def _add_package(self, data_source_id: str, document: Blueprint, parent_node):
+        child_node = FolderNode(
+            data_source_id=data_source_id,
+            name=document.name,
+            document=document,
+            blueprint=get_template(self.get_repository, document.template_ref),
+            parent=parent_node,
+        )
+        self._add_attributes(data_source_id, child_node)
+
+    def _add_references(self, data_source_id, references, parent_node, attribute_name, attribute_type):
+        index = 0
+        for ref in references:
+            if isinstance(ref, dict):
+                primitives = ["string", "number", "integer", "number", "boolean"]
+                if ref["type"] not in primitives:
+                    if ref["value"]:
+                        logger.info(f"Add reference dict for '{ref['name']}'")
+                        document = get_template(self.get_repository, ref["value"])
+                        if not document:
+                            raise EntityNotFoundException(uid=ref["value"])
+                        if document.template_ref == "templates/package":
+                            self._add_package(data_source_id, document, parent_node)
+                        else:
+                            self._add_document(data_source_id, document, parent_node)
+                    else:
+                        blueprint = get_template(self.get_repository, ref["type"])
+                        if blueprint:
+                            attribute_node = EntityPlaceholderNode(
+                                data_source_id=data_source_id,
+                                name=f"{attribute_name}.{index}",  # .{ref['name']}
+                                document=None,
+                                blueprint=blueprint,  # get_template(self.get_repository, reference.template_ref),
+                                parent=parent_node,
+                                template_ref=attribute_type,
+                            )
+                            self._add_attributes(data_source_id, attribute_node)
+                else:
+                    EntityPlaceholderNode(
+                        data_source_id=data_source_id,
+                        name=f"{attribute_name}.{index}",
+                        document=None,
+                        blueprint=None,  # get_template(self.get_repository, reference.template_ref),
+                        parent=parent_node,
+                        template_ref=attribute_type,
+                    )
+
+            else:
+                # TODO: Replace this type with only using dict structure above
+                logger.warn(f"Add reference single for '{ref}'")
+                document = self.blueprint_repository.find_one(name=ref)
+                if not document:
+                    raise EntityNotFoundException(uid=ref)
+                self._add_document(data_source_id, document, parent_node)
+
+            index += 1
+
+    def _add_attributes(self, data_source_id, parent_node):
+        logger.info(f"Add attributes for '{parent_node.name}'")
+
+        # document instance
+        document = parent_node.document
+        # type instance
+        blueprint = parent_node.blueprint
+
+        if not blueprint:
+            raise EntityNotFoundException(uid=document.template_ref)
+
+        # Use the blueprint to find attributes that contains references
+        for attribute in blueprint.get_blueprint_attributes():
+            name = attribute["name"]
+            # What blueprint is this attribute pointing too
+
+            # If the attribute is an array
+            if "dimensions" in attribute and attribute["dimensions"] == "*":
+                # Create a placeholder node that can contain real documents
+                attribute_node = ArrayPlaceholderNode(
+                    data_source_id=data_source_id,
+                    name=name,
+                    document=document,
+                    blueprint=blueprint,
+                    parent=parent_node,
+                    # template_ref = specify what kind of type we can add to this array
+                    item_type=get_template(self.get_repository, attribute["type"]),
+                )
+                # Check if values for the attribute exists in current document,
+                # this means that we have added some documents to this array
+                if document and name in document.form_data:
+                    self._add_references(
+                        data_source_id, document.form_data[name], attribute_node, name, attribute["type"]
+                    )
+            # If the attribute is a single reference
+            else:
+                blueprint = get_template(self.get_repository, attribute["value"])
+                # document = Blueprint(**document.form_data[name]) if document and name in document.form_data else None
+                # if document:
+                #    document.template_ref = attribute["value"]
+                attribute_node = EntityPlaceholderNode(
+                    data_source_id=data_source_id,
+                    name=name,
+                    document=None,
+                    blueprint=blueprint,  # get_template(self.get_repository, reference.template_ref),
+                    parent=parent_node,
+                    template_ref=attribute["value"],
+                )
+
+                self._add_attributes(data_source_id, attribute_node)
+
+    def generate(self, data_source_id: str, data_source_name: str, document) -> Index:
+        root_node = DataSourceNode(data_source_id=data_source_id, name=data_source_name)
+
+        node = FolderNode(
+            data_source_id=data_source_id,
+            name=document.name,
+            document=document,
+            blueprint=get_template(self.get_repository, document.template_ref),
+            parent=root_node,
+        )
+        self._add_attributes(data_source_id, node)
+
+        return root_node
 
 
 class GenerateIndexUseCase:
-    def __init__(self, document_repository: DocumentRepository):
-        self.document_repository = document_repository
+    def __init__(self, blueprint_repository: MongoBlueprintRepository, get_repository):
+        self.blueprint_repository = blueprint_repository
+        self.get_repository = get_repository
+
+        self.tree = Tree(blueprint_repository=blueprint_repository, get_repository=get_repository)
 
     def execute(self, data_source_id: str, data_source_name: str) -> Index:
         index = Index(data_source_id=data_source_id)
 
-        for node in self.document_repository.list():
-            document: Document = node
+        root_node = DataSourceNode(data_source_id=data_source_id, name=data_source_name)
 
-            start = "" if node.path == "/" else node.path
+        # TODO: Create a package concept, so that we know where to start.
+        for package in [
+            self.blueprint_repository.find_one(name="blueprints"),
+            self.blueprint_repository.find_one(name="entities"),
+        ]:
+            # TODO: Remove this if when we have created real packages
+            if package:
+                root_node = self.tree.generate(data_source_id, data_source_name, package)
 
-            children = (
-                self.document_repository.get_nodes(f"{start}/{node.filename}") if document.type == "folder" else []
-            )
+        print_tree(root_node)
 
-            index.add(
-                {
-                    "id": f"{data_source_id}/{document.uid}",
-                    "title": document.filename,
-                    "nodeType": get_node_type(document.type) if document.type == "folder" else document.type,
-                    "children": [f"{data_source_id}/{child.uid}" for child in children],
-                }
-            )
-
-        root_packages = [f"{data_source_id}/{child.uid}" for child in self.document_repository.get_nodes(f"/")]
-        index.add_data_source(data_source_id, data_source_name, root_packages)
+        for node in PreOrderIter(root_node):
+            index.add(node.to_node())
 
         return index

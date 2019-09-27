@@ -1,0 +1,22 @@
+{
+  "templateRef": "templates/enum",
+  "formData": {
+    "name": "blueprint_types",
+    "description": "This describes a blueprint",
+    "values": [
+      "string",
+      "integer",
+      "number",
+      "boolean",
+      "local-blueprints-equinor/collections/blueprint"
+    ],
+    "labels": [
+      "String",
+      "Integer",
+      "Number",
+      "Boolean",
+      "Blueprint"
+    ],
+    "storage_recipes": []
+  }
+}

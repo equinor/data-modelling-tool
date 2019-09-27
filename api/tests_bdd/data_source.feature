@@ -1,3 +1,4 @@
+@skip
 Feature: Data Source
 
   Background: There are data sources in the system

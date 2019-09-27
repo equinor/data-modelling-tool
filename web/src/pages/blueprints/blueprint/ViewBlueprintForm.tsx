@@ -7,6 +7,7 @@ import {
   DocumentsState,
 } from '../../common/DocumentReducer'
 import { DocumentData } from './FetchDocument'
+import BlueprintPreview from '../preview/BlueprintPreview'
 
 interface Props {
   documentData: DocumentData
@@ -52,8 +53,13 @@ const ViewData = (props: any) => {
   const { view } = data.template
 
   if (!view) {
-    return null
+    return (
+      <div>
+        <BlueprintPreview data={data.document.formData} />
+      </div>
+    )
   }
+
   let components = view.map((config: any, index: number) => {
     const key = 'view' + index
     switch (config.display) {

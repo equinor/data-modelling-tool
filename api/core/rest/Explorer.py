@@ -3,6 +3,10 @@ from flask import Blueprint, Response, request
 from classes.data_source import DataSource
 from core.serializers.add_file_json_serializer import AddFileSerializer
 from core.repository.repository_factory import get_repository, RepositoryType
+from core.use_case.add_entity_file_to_package_use_case import (
+    AddEntityFileToPackageUseCase,
+    AddEntityFileToPackageRequestObject,
+)
 from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
 from core.use_case.add_package_use_case import AddPackageUseCase, AddPackageRequestObject
 from core.shared import response_object as res
@@ -27,19 +31,37 @@ def add_file(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
-    document_repository = get_repository(RepositoryType.DocumentRepository, db)
+    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
 
-    use_case = AddFileUseCase(document_repository=document_repository)
+    use_case = AddFileUseCase(document_repository=document_repository, get_repository=get_repository, data_source=db)
 
     request_object = AddFileRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
 
     return Response(
-        json.dumps(response.value, cls=AddFileSerializer),
+        json.dumps(response.value),  # , cls=AddFileSerializer
         mimetype="application/json",
         status=STATUS_CODES[response.type],
     )
+
+
+@blueprint.route("/api/explorer/<string:data_source_id>/add-entity-file", methods=["POST"])
+def add_entity_file_to_package(data_source_id: str):
+    db = DataSource(id=data_source_id)
+    request_data = request.get_json()
+
+    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
+
+    use_case = AddEntityFileToPackageUseCase(
+        document_repository=document_repository, get_repository=get_repository, data_source_id=data_source_id
+    )
+
+    request_object = AddEntityFileToPackageRequestObject.from_dict(request_data)
+
+    response = use_case.execute(request_object)
+
+    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-file", methods=["POST"])

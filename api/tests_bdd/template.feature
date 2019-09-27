@@ -1,3 +1,4 @@
+@skip
 Feature: Templates
 
   Scenario Outline: Get blueprint template

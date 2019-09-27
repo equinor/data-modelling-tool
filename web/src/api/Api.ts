@@ -132,6 +132,10 @@ export class DmtApi {
     return `/api/v2/explorer/${datasourceId}/add-file`
   }
 
+  addEntityFile(datasourceId: string) {
+    return `/api/explorer/${datasourceId}/add-entity-file`
+  }
+
   removeFile(datasourceId: string) {
     return `/api/v2/explorer/${datasourceId}/remove-file`
   }
@@ -170,6 +174,10 @@ export class DmtApi {
     return `/api/v2/documents/${documentId}`
   }
 
+  getJsonSchema(templateRef: string): string {
+    return `/api/v2/json-schema/${templateRef}`
+  }
+
   updateDocument(documentId: string) {
     return `/api/v2/documents/${documentId}`
   }
@@ -192,4 +200,6 @@ export type IndexNode = {
   title: string
   nodeType: NodeType
   children?: string[]
+  templateRef?: string
+  meta?: object
 }

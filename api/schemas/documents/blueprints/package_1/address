@@ -1,0 +1,14 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "title": "Address",
+    "description": "This describes a address",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      }
+    ]
+  }
+}

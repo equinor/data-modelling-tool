@@ -6,6 +6,7 @@ import {
   FaFile,
   FaFolder,
   FaFolderOpen,
+  FaCircle,
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { NodeIconType, TreeNodeData } from './Tree'
@@ -82,6 +83,7 @@ const TreeNode = (props: TreeNodeProps) => {
         <NodeIcon marginRight={5}>
           {node.icon === NodeIconType.database && <FaDatabase />}
           {node.icon === NodeIconType.file && <FaFile />}
+          {node.icon === NodeIconType.ref && <FaCircle />}
           {node.icon === NodeIconType.folder && node.isOpen && <FaFolderOpen />}
           {node.icon === NodeIconType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>

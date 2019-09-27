@@ -1,5 +1,6 @@
 {
   "name": "web",
+  "proxy": "http://0.0.0.0:5000",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -19,7 +20,8 @@
     "react-styled-flexboxgrid": "3.1.0",
     "styled-components": "^4.3.2",
     "to-json-schema": "^0.2.1",
-    "typescript": "^3.5.2"
+    "typescript": "^3.5.2",
+    "object-path": "0.11.4"
   },
   "scripts": {
     "start": "react-scripts start",

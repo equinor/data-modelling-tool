@@ -1,3 +1,4 @@
+@skip
 Feature: Explorer
 
   Background: There are data sources in the system
@@ -7,12 +8,12 @@ Feature: Explorer
       | db   | 27017 | maf      | maf      | false | local-blueprints | maf      | documents  | blueprints   | mongo-db |
 
     Given there are documents in collection "documents"
-      | uid | path                     | filename      | type   |
-      | 1   | /                        | package_1     | folder |
-      | 2   | /package_1               | sub_package_1 | folder |
-      | 3   | /package_1               | sub_package_2 | folder |
-      | 4   | /package_1/sub_package_1 | document_1    | file   |
-      | 5   | /package_1/sub_package_1 | document_2    | file   |
+      | uid | path                     | name          | description | type                   |
+      | 1   | /                        | package_1     |             | templates/v2/package   |
+      | 2   | /package_1               | sub_package_1 |             | templates/v2/package   |
+      | 3   | /package_1               | sub_package_2 |             | templates/v2/package   |
+      | 4   | /package_1/sub_package_1 | document_1    |             | templates/v2/blueprint |
+      | 5   | /package_1/sub_package_1 | document_2    |             | templates/v2/blueprint |
 
 
   Scenario: Add file to root

@@ -3,6 +3,7 @@ import { Datasource, DataSourceType, DmtApi } from '../../../api/Api'
 import axios from 'axios'
 import DocumentTree, { RenderProps } from '../tree-view/DocumentTree'
 import { NodeType } from '../../../api/types'
+import { render } from 'react-dom'
 
 const api = new DmtApi()
 
@@ -38,7 +39,7 @@ export const BlueprintPickerContent = ({
           return (
             <div
               onClick={() => {
-                onSelect(renderProps.treeNodeData)
+                onSelect(renderProps)
               }}
             >
               {treeNodeData.title}

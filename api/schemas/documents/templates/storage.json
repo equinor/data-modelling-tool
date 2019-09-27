@@ -1,0 +1,20 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "title": "Storage Recipe",
+    "description": "This describes a package",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      },
+      {
+        "type": "blueprint",
+        "value": "template/storage_attribute",
+        "name": "attributes",
+        "dimensions": "*"
+      }
+    ]
+  }
+}

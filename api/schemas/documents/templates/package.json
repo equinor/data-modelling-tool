@@ -1,0 +1,36 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "name": "Package",
+    "description": "This is a blueprint for a package that contains documents and other packages",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      },
+      {
+        "type": "string",
+        "value": "",
+        "name": "description"
+      },
+      {
+        "type": "templates/blueprint",
+        "name": "blueprints",
+        "dimensions": "*"
+      },
+      {
+        "type": "templates/package",
+        "name": "packages",
+        "dimensions": "*"
+      }
+    ],
+    "storage_recipes": [
+      {
+        "type": "templates/storage",
+        "value": "templates/package_storage",
+        "name": "packages"
+      }
+    ]
+  }
+}

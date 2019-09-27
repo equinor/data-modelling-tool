@@ -1,0 +1,19 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "title": "Wheel",
+    "description": "This describes a wheel",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      },
+      {
+        "type": "string",
+        "value": "",
+        "name": "diameter"
+      }
+    ]
+  }
+}

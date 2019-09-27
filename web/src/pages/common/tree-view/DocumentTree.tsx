@@ -13,7 +13,12 @@ interface PropTypes {
 export type AddNode = (node: TreeNodeData, parentId: string) => void
 export type UpdateNode = (node: TreeNodeData) => void
 export type RemoveNode = (node: TreeNodeData) => void
-export type ReplaceNode = (nodeId: string, data: object) => void
+export type ReplaceNode = (
+  parentId: string,
+  oldId: string,
+  newId: string,
+  title: string
+) => void
 
 interface NodeComponentCallbackProps {
   addNode: AddNode

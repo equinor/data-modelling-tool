@@ -1,0 +1,32 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "name": "Reference",
+    "description": "This describes a reference",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      },
+      {
+        "type": "string",
+        "value": "",
+        "name": "value"
+      },
+      {
+        "type": "string",
+        "name": "type",
+        "value": ""
+      }
+    ],
+    "storage_recipes": [],
+    "ui_recipes": [
+      {
+        "type": "local-blueprints-equinor/collections/ui",
+        "value": "some ui definition",
+        "name": ""
+      }
+    ]
+  }
+}

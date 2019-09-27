@@ -1,0 +1,30 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "title": "Car",
+    "description": "This describes a car",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      },
+      {
+        "type": "string",
+        "value": "",
+        "name": "manufacturer"
+      },
+      {
+        "type": "local-blueprints-equinor/blueprints/package_1/wheel",
+        "value": "local-blueprints-equinor/blueprints/package_1/wheel",
+        "name": "wheels",
+        "dimensions": "*"
+      },
+      {
+        "type": "templates/blueprint",
+        "value": "local-blueprints-equinor/blueprints/package_1/engine",
+        "name": "engine"
+      }
+    ]
+  }
+}

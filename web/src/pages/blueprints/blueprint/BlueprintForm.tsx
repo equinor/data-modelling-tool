@@ -12,6 +12,7 @@ interface Props {
 
 export default ({ documentData, onSubmit }: Props) => {
   const { document, template } = documentData
+  console.log(document)
   const [data, setData] = useState({ ...document.formData })
   return (
     <Tabs>

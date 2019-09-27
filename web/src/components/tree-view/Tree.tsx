@@ -17,6 +17,7 @@ export enum NodeIconType {
   'file' = 'file',
   'folder' = 'folder',
   'database' = 'database',
+  'ref' = 'ref',
   'default' = '',
 }
 
@@ -30,7 +31,9 @@ export type TreeNodeData = {
   icon?: NodeIconType
   isHidden?: boolean
   isFolder: boolean
+  templateRef?: string
   children?: string[]
+  meta?: object
 }
 
 interface Tree {
@@ -142,8 +145,11 @@ const Tree = (props: TreeProps) => {
   }
 
   const addNode = (node: TreeNodeData, parentId: string) => {
+    console.log('ADD', node.nodeId, parentId)
     dispatch(NodeActions.createNode({ ...node, isOpen: true }))
-    dispatch(NodeActions.addChild(parentId, node.nodeId))
+    if (parentId) {
+      dispatch(NodeActions.addChild(parentId, node.nodeId))
+    }
   }
 
   const updateNode = (node: TreeNodeData) => {
@@ -173,6 +179,8 @@ const Tree = (props: TreeProps) => {
     .map(rootNode => {
       return getRootNodes(rootNode, state)
     })
+
+  console.log(state)
 
   return (
     <>

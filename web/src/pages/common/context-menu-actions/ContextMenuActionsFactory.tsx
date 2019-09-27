@@ -1,12 +1,17 @@
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { onError, onSuccess } from './processCreatePackage'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2 from '../../../api/Api2'
-import { TreeNodeBuilder } from '../tree-view/TreeNodeBuilderOld'
+import {
+  TreeNodeBuilder,
+  TreeNodeBuilderOld,
+} from '../tree-view/TreeNodeBuilderOld'
 import axios from 'axios'
 import { DmtApi } from '../../../api/Api'
-import { LayoutComponents } from '../golden-layout/LayoutContext'
+import { DocumentData } from '../../blueprints/blueprint/FetchDocument'
+import { BlueprintPickerContent } from '../../entities/BlueprintPicker'
+import React from 'react'
+import values from 'lodash/values'
 
 const api = new DmtApi()
 
@@ -17,12 +22,14 @@ export enum ContextMenuActions {
   renameSubPackage = 'Rename Subpackage',
   editPackage = 'Edit Package',
   editDataSource = 'Edit Data Source',
-  addBlueprint = 'Add Blueprint',
+  addBlueprint = 'Select Blueprint',
   removeFile = 'Remove File',
   removeSubPackage = 'Remove Subpackage',
   renameFile = 'Rename file',
   removeRootPackage = 'Remove Package',
   renameRootPackage = 'Rename Package',
+  ADD_ITEM_TO_ARRAY = 'Add Item To Array',
+  addEntity = 'Add something...',
 }
 
 export type ContextMenuActionProps = {
@@ -37,7 +44,7 @@ export type ContextMenuActionProps = {
   parent: string
 }
 
-const getFormProperties = (type: string, props: ContextMenuActionProps) => {
+const getFormProperties = (action: any, props: ContextMenuActionProps) => {
   const {
     treeNodeData,
     addNode,
@@ -53,11 +60,159 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
     console.log(error)
     NotificationManager.error(error.response.data.message, 'Failed')
   }
+  const [dataSourceId, nodeId] = treeNodeData.nodeId.split('/')
+  //const dataSourceId = path.split('/')[0]
+  //const nodeId = treeNodeData.nodeId.replace(`${dataSourceId}/`, '')
 
-  const dataSourceId = path.split('/')[0]
-  const nodeId = treeNodeData.nodeId.replace(`${dataSourceId}/`, '')
+  switch (action.type) {
+    case ContextMenuActions.addEntity: {
+      const [dataSourceId, nodeId] = treeNodeData.nodeId.split('/')
+      const [selectedDocumentId, attribute] = nodeId.split('_')
 
-  switch (type) {
+      return {
+        fetchDocument: Api2.fetchJsonSchema(action.data.templateRef),
+        onSubmit: (formData: any) => {
+          const isContained = formData.contained
+          console.log(isContained)
+          if (isContained) {
+            const url = api.updateDocument(
+              `${dataSourceId}/${selectedDocumentId}/${attribute}`
+            )
+            axios
+              .put(url, formData)
+              .then((response: any) => {
+                const responseData: DocumentData = response.data
+                NotificationManager.success(
+                  responseData.document.id,
+                  'Updated blueprint'
+                )
+              })
+              .catch((e: any) => {
+                NotificationManager.error(
+                  'Failed to update blueprint',
+                  'Updated blueprint'
+                )
+              })
+          } else {
+            Api2.addBlueprintFile({
+              dataSourceId: dataSourceId,
+              parentId: `${selectedDocumentId}`,
+              filename: formData.name,
+              templateRef: action.data.templateRef,
+              onSuccess: (res: any, dataSourceId: string) => {
+                const node: TreeNodeData = new TreeNodeBuilder({
+                  id: `${dataSourceId}/${res.id}`,
+                  filename: res.filename,
+                  nodeType: res.documentType,
+                })
+                  .setOpen(true)
+                  .build()
+                addNode(node, treeNodeData.nodeId)
+                setShowModal(false)
+
+                const url = api.updateDocument(
+                  `${dataSourceId}/${selectedDocumentId}/${attribute}`
+                )
+                let formData: any = [res.id]
+                axios
+                  .put(url, formData)
+                  .then((response: any) => {
+                    const responseData: DocumentData = response.data
+                    NotificationManager.success(
+                      responseData.document.id,
+                      'Updated blueprint'
+                    )
+                    // dispatch(DocumentActions.viewFile(documentId))
+                  })
+                  .catch((e: any) => {
+                    NotificationManager.error(
+                      'Failed to update blueprint',
+                      'Updated blueprint'
+                    )
+                  })
+              },
+              onError: (err: any) => console.error(Object.keys(err)),
+            })
+          }
+        },
+      }
+    }
+
+    case ContextMenuActions.ADD_ITEM_TO_ARRAY: {
+      const { meta } = treeNodeData
+
+      const {
+        itemName = '',
+        itemType = '',
+        attribute = '',
+        parentId = '',
+        dataSourceId = '',
+      } = meta as any
+
+      return {
+        fetchDocument: Api2.fetchJsonSchema(itemType),
+        onSubmit: (formData: any) => {
+          console.log(`ADD ITEM OF TYPE ${itemName} TO ARRAY`)
+
+          Api2.addFile({
+            dataSourceId: dataSourceId,
+            parentId: parentId,
+            filename: formData.name,
+            templateRef: itemType,
+            attribute: attribute,
+            path: path,
+            onSuccess: (result: any, dataSourceId: string) => {
+              const nodes: any = values(result)
+              nodes.forEach((item: any, index: number) => {
+                delete item['children']
+                const node = new TreeNodeBuilderOld(item).build()
+                if (index == 0) {
+                  addNode(node, treeNodeData.nodeId)
+                } else {
+                  addNode(node, item.parentId)
+                }
+              })
+              setShowModal(false)
+
+              // TODO: Add node
+              /*
+                            const node: TreeNodeData = new TreeNodeBuilder({
+                                id: `${dataSourceId}/${result.id}`,
+                                filename: result.name,
+                                nodeType: result.nodeType,
+                            })
+                                .setOpen(true)
+                                .build()
+                            addNode(node, `${dataSourceId}/${result.parentId}`)
+                            setShowModal(false)
+                             */
+              //const url = api.updateDocument(`${dataSourceId}/${selectedDocumentId}/${attribute}`)
+              //const url = api.updateDocument(`${dataSourceId}/${res.id}`)
+              // let formData: any = [res.filename] // TODO: What about id?
+              /*
+                            axios
+                                .put(url, formData)
+                                .then((response: any) => {
+                                    const responseData: DocumentData = response.data
+                                    NotificationManager.success(
+                                        responseData.document.id,
+                                        'Updated blueprint'
+                                    )
+                                    // dispatch(DocumentActions.viewFile(documentId))
+                                })
+                                .catch((e: any) => {
+                                    NotificationManager.error(
+                                        'Failed to update blueprint',
+                                        'Updated blueprint'
+                                    )
+                                })
+                             */
+            },
+            onError: (err: any) => console.error(Object.keys(err)),
+          })
+        },
+      }
+    }
     case ContextMenuActions.createBlueprint: {
       return {
         fetchDocument: Api2.fetchCreateBlueprint,
@@ -294,21 +449,19 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
               )
 
               /*
-              // Remove old node
-              removeNode(treeNodeData.nodeId, parentId)
-
-              // Add new node (TODO: what about children)
-              const node: TreeNodeData = new TreeNodeBuilder({
-                id: newNodeId,
-                filename: res.filename,
-                nodeType: res.documentType,
-                // children: treeNodeData.children || []
-              })
-                .setOpen(true)
-                .build()
-
-              addNode(node, parentId)
-              */
+                            // Remove old node
+                            removeNode(treeNodeData.nodeId, parentId)
+                            // Add new node (TODO: what about children)
+                            const node: TreeNodeData = new TreeNodeBuilder({
+                              id: newNodeId,
+                              filename: res.filename,
+                              nodeType: res.documentType,
+                              // children: treeNodeData.children || []
+                            })
+                              .setOpen(true)
+                              .build()
+                            addNode(node, parentId)
+                            */
               NotificationManager.success(formData.title, 'Renamed')
             },
             onError: (error: any) => showError(error),
@@ -326,10 +479,10 @@ const getFormProperties = (type: string, props: ContextMenuActionProps) => {
 }
 
 export class ContextMenuActionsFactory {
-  getActionConfig(type: string, props: ContextMenuActionProps) {
+  getActionConfig(action: any, props: ContextMenuActionProps) {
     return {
-      formProps: getFormProperties(type, props),
-      action: type,
+      formProps: getFormProperties(action, props),
+      action: action.type,
     }
   }
 }

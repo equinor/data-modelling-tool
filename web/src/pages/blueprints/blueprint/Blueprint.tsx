@@ -42,7 +42,7 @@ const Blueprint = (props: any) => {
               return (
                 <EditBlueprintForm
                   documentData={data}
-                  state={state}
+                  documentId={state.selectedDocumentId}
                   dispatch={dispatch}
                 />
               )

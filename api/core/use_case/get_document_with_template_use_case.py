@@ -1,11 +1,11 @@
 from classes.data_source import DataSource
-from core.domain.document import Document
+from core.domain.blueprint import Blueprint
 from core.domain.template import Template
+from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.repository.repository_factory import RepositoryType
 from utils.schema_tools.form_to_schema import form_to_schema
-from core.repository.template_repository import get_template_by_id
-from core.repository.interface.document_repository import DocumentRepository
+from core.repository.template_repository import get_template_by_name
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
@@ -29,30 +29,34 @@ class GetDocumentWithTemplateRequestObject(req.ValidRequestObject):
 
 
 class GetDocumentWithTemplateUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository, get_repository):
+    def __init__(self, document_repository: MongoBlueprintRepository, get_repository):
         self.document_repository = document_repository
         self.get_repository = get_repository
 
+    def _get_template(self, blueprint: Blueprint) -> Blueprint:
+        if blueprint.get_template_data_source_id() == "templates":
+            return Blueprint.from_dict(get_template_by_name(blueprint.get_template_name()))
+        else:
+            data_source = DataSource(id=blueprint.get_template_data_source_id())
+            remote_document_repository: MongoBlueprintRepository = self.get_repository(
+                RepositoryType.BlueprintRepository, data_source
+            )
+            return remote_document_repository.find_one(blueprint.get_template_name())
+
     def process_request(self, request_object: GetDocumentWithTemplateRequestObject):
         document_id = request_object.document_id
-        document: Document = self.document_repository.get(document_id)
-        if not document:
+        blueprint: Blueprint = self.document_repository.get(document_id)
+        if not blueprint:
             raise EntityNotFoundException(uid=document_id)
 
-        template_ref = document.template_ref
+        template_ref = blueprint.template_ref
         if not template_ref:
             raise Exception("The requested document does not contain a template reference")
 
-        if document.get_template_data_source_id() == "templates":
-            template = get_template_by_id(document.get_template_name())
-        else:
-            data_source = DataSource(id=document.get_template_data_source_id())
-            remote_document_repository = self.get_repository(RepositoryType.DocumentRepository, data_source)
-            blueprint: Document = remote_document_repository.get(document.get_template_id())
-            template = Template(
-                schema=form_to_schema(blueprint.form_data), uiSchema=None, view=None, meta=blueprint.to_dict()
-            )
+        document = self._get_template(blueprint)
 
-        data = {"template": template.to_dict(), "document": document.to_dict()}
+        template = Template(schema=form_to_schema(document.form_data), uiSchema=document.ui_recipe, view=None)
+
+        data = {"template": template.to_dict(), "document": blueprint.to_dict()}
 
         return res.ResponseSuccess(data)
