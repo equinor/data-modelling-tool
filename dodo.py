@@ -144,6 +144,27 @@ def task_docker_compose():
                 help="Run the unit tests of the client",
             ),
             Task(
+                "test:api",
+                None,
+                None,
+                help="Run the tests for the API",
+                dependencies=["test:api:bdd", "test:api:unit"],
+            ),
+            Task(
+                "test:web",
+                None,
+                None,
+                help="Run the tests for the client",
+                dependencies=["test:web:unit"],
+            ),
+            Task(
+                "test",
+                None,
+                None,
+                help="Run all the defined tests",
+                dependencies=["test:api", "test:web"],
+            ),
+            Task(
                 "build",
                 "build",
                 help="Build the Docker images for running / testing locally",
