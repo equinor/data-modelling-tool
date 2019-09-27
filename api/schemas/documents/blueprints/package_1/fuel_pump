@@ -1,0 +1,14 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "title": "Fuel pump",
+    "description": "This describes a fuel pump",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      }
+    ]
+  }
+}

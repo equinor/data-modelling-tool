@@ -1,0 +1,17 @@
+{
+  "templateRef": "templates/storage",
+  "formData": {
+    "name": "Package Storage",
+    "attributes": [
+      {
+        "name": "blueprints",
+        "contained": false
+      },
+      {
+        "name": "packages",
+        "contained": true
+      }
+    ]
+  }
+}
+

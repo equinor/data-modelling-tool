@@ -41,7 +41,7 @@ export const SubPackageNode = (props: Props) => {
       {...props}
       menuItems={menuItems}
       render={({ action, actionConfig, setShowModal }: any) => {
-        switch (action) {
+        switch (action.type) {
           case ContextMenuActions.addBlueprint:
             return (
               <BlueprintPickerContent

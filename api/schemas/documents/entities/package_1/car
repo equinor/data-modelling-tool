@@ -1,0 +1,10 @@
+{
+  "templateRef": "local-blueprints-equinor/blueprints/package_1/car",
+  "formData": {
+    "name": "Volvo",
+    "description": "This is a nice car",
+    "engine": {
+        "name": "Engine name"
+    }
+  }
+}

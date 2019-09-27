@@ -26,6 +26,9 @@ interface AddFile {
   onSuccess: (res: any, dataSourceId: string) => void
   onError?: OnError
   templateRef?: string
+  attribute?: string
+  path?: string
+  isContained?: boolean
 }
 
 interface AddEntitiy {
@@ -97,6 +100,20 @@ export default class Api2 {
     }
   }
 
+  static fetchJsonSchema(templateRef: string) {
+    return ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
+      axios
+        .get(api.getJsonSchema(templateRef))
+        .then((res: any) => {
+          onSuccess({
+            document: {},
+            template: res.data,
+          })
+        })
+        .catch(onError)
+    }
+  }
+
   /**
    * Wraps fetchTemplate with a custom endpoint url.
    */
@@ -158,22 +175,49 @@ export default class Api2 {
       .catch(onError)
   }
 
-  static addEntityFile({
-    nodeId,
+  static addFile({
+    dataSourceId,
+    parentId,
     filename,
-    templateRef,
+    templateRef = 'templates/blueprint',
+    attribute,
+    isContained,
+    path,
     onSuccess,
     onError = () => {},
-  }: AddEntitiy) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
-    // root-package/1.0.0/subpackage/package
-    const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
+  }: AddFile) {
     const url = api.addFile(dataSourceId)
     const data = {
       parentId,
       filename,
       templateRef,
+      attribute,
+      path,
+      isContained,
+    }
+    axios
+      .post(url, data)
+      .then(response => onSuccess(response.data, dataSourceId))
+      .catch(onError)
+  }
+
+  static addEntityFile({
+    dataSourceId,
+    parentId,
+    filename,
+    templateRef,
+    path,
+    attribute,
+    onSuccess,
+    onError = () => {},
+  }: AddFile) {
+    const url = api.addEntityFile(dataSourceId)
+    const data = {
+      parentId,
+      filename,
+      templateRef,
+      path,
+      attribute,
     }
     axios
       .post(url, data)

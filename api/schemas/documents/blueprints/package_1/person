@@ -1,0 +1,19 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "title": "Person",
+    "description": "This describes a person",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      },
+      {
+        "type": "templates/document_reference",
+        "value": "local-blueprints-equinor/blueprints/package_1/address",
+        "name": "address"
+      }
+    ]
+  }
+}

@@ -3,6 +3,7 @@ import Modal from '../modal/Modal'
 import { TreeNodeData } from '../tree-view/Tree'
 import { NodeType } from '../../api/types'
 import { BlueprintPickerContent } from '../../pages/common/blueprint-picker/BlueprintPicker'
+import { RenderProps } from '../../pages/common/tree-view/DocumentTree'
 
 type Props = {
   onChange: (event: any) => void
@@ -14,11 +15,12 @@ export default (props: Props) => {
   const [blueprint, setBlueprint] = useState(value)
   const [showModal, setShowModal] = useState(false)
 
-  const handleNodeSelect = (node: TreeNodeData) => {
+  const handleNodeSelect = (renderProps: RenderProps) => {
+    const node = renderProps.treeNodeData
     if (node.nodeType === NodeType.file) {
-      setBlueprint(node.nodeId)
+      setBlueprint(`${renderProps.path}/${node.title}`)
       setShowModal(false)
-      onChange({ target: { value: node.nodeId } })
+      onChange({ target: { value: `${renderProps.path}/${node.title}` } })
     }
   }
 

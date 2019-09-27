@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Form from 'react-jsonschema-form'
 import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
+import AttributeWidget from './widgets/Attribute'
 
 export interface FormProps {
   fetchDocument?: any
@@ -36,11 +37,18 @@ export default ({ onSubmit, fetchDocument }: FormProps) => {
     return <div>Loading...</div>
   }
 
+  console.log(documentData)
+
   return (
     <Form
-      formData={documentData.document.formData || {}}
+      formData={
+        documentData.hasOwnProperty('document')
+          ? documentData.document.formData || {}
+          : {}
+      }
       schema={documentData.template.schema}
       uiSchema={documentData.template.uiSchema}
+      fields={{ attribute: AttributeWidget }}
       onSubmit={schemas => {
         const formData: any = schemas.formData
         try {

@@ -18,6 +18,7 @@ export interface MenuItem {
   label: string
   menuItems?: MenuItem[]
   icon?: any
+  data?: any
 }
 
 type DmtMenuItemsProps = {
@@ -100,7 +101,7 @@ const DmtMenuItem = (props: DmtMenuItemProps) => {
       onClick={e => {
         // click on menu item. Prevent onClick to propagate to components beneath
         e.stopPropagation()
-        onClickContextMenu(id, menuItem.action)
+        onClickContextMenu(id, menuItem.action, menuItem.data)
       }}
       attributes={attributes}
     >

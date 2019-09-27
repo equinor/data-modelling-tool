@@ -11,6 +11,7 @@ import {
   LayoutProvider,
 } from './common/golden-layout/LayoutContext'
 import EntitiesPage from './entities/EntitiesPage'
+import DocumentRef from './blueprints/blueprint/DocumentRef'
 
 function wrapComponent(Component: any, state: any) {
   class Wrapped extends React.Component {
@@ -87,6 +88,10 @@ export default () => {
                 LayoutComponents.entity,
                 //@todo fix this
                 wrapComponent(Blueprint, state)
+              )
+              myLayout.registerComponent(
+                LayoutComponents.ref,
+                wrapComponent(DocumentRef, state)
               )
             }}
           />

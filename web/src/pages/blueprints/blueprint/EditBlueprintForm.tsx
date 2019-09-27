@@ -8,20 +8,16 @@ import { DmtApi } from '../../../api/Api'
 import { DocumentData } from './FetchDocument'
 const api = new DmtApi()
 interface Props {
-  state: DocumentsState
+  documentId: string
   dispatch: Function
   documentData: DocumentData
 }
 
 const EditBlueprintForm = (props: Props) => {
-  const {
-    documentData,
-    dispatch,
-    state: { selectedDocumentId },
-  } = props
+  const { documentData, dispatch, documentId } = props
 
   const onSubmit = (schemas: any) => {
-    const url = api.updateDocument(selectedDocumentId)
+    const url = api.updateDocument(documentId)
     axios
       .put(url, schemas.formData)
       .then((response: any) => {
@@ -30,7 +26,7 @@ const EditBlueprintForm = (props: Props) => {
           responseData.document.id,
           'Updated blueprint'
         )
-        dispatch(DocumentActions.viewFile(selectedDocumentId))
+        // dispatch(DocumentActions.viewFile(documentId))
       })
       .catch((e: any) => {
         NotificationManager.error(

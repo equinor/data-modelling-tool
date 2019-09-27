@@ -23,6 +23,24 @@ export const SubPackageNode = (props: RenderProps) => {
           action: ContextMenuActions.createSubPackage,
           icon: FaFolder,
         },
+        {
+          label: 'Add entity - Blueprint',
+          action: ContextMenuActions.addEntity,
+          icon: FaFile,
+          data: {
+            templateRef: 'local-blueprints-equinor/collections/blueprint',
+            label: 'Blueprint',
+          },
+        },
+        {
+          label: 'Add entity - Package',
+          action: ContextMenuActions.addEntity,
+          icon: FaFile,
+          data: {
+            templateRef: 'local-blueprints-equinor/collections/package',
+            label: 'Package',
+          },
+        },
       ],
     },
     {

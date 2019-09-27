@@ -6,6 +6,7 @@ import BlueprintPickerTree from './BlueprintPickerTree'
 import { TreeNodeData } from '../../components/tree-view/Tree'
 import { AddNode } from '../common/tree-view/DocumentTree'
 import { SetShowModal } from '../common/context-menu-actions/WithContextMenu'
+import { H3 } from '../../components/Headers'
 
 const api = new DmtApi()
 
@@ -40,19 +41,21 @@ export const BlueprintPickerContent = (props: BlueprintPickerContentProps) => {
   }, [])
   return (
     <div>
-      <div>
+      <div style={{ marginBottom: 20 }}>
         <label>Filename:</label>
         <input value={name} onChange={e => setName(e.target.value)} />
       </div>
       {name && (
-        <BlueprintPickerTree
-          datasources={blueprintDatasources}
-          state={state}
-          newFileName={name}
-          sourceNode={sourceNode}
-          addNode={addNode}
-          setShowModal={setShowModal}
-        />
+        <>
+          <BlueprintPickerTree
+            datasources={blueprintDatasources}
+            state={state}
+            newFileName={name}
+            sourceNode={sourceNode}
+            addNode={addNode}
+            setShowModal={setShowModal}
+          />
+        </>
       )}
     </div>
   )

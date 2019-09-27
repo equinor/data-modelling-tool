@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, Response, request
 from classes.data_source import DataSource
+from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaUseCase, GenerateJsonSchemaRequestObject
 from utils.logging import logger
 from core.domain.document import Document
 from core.use_case.get_document_with_template_use_case import (
@@ -22,13 +23,22 @@ STATUS_CODES = {
 }
 
 
+@blueprint.route("/api/v2/json-schema/<path:template_ref>", methods=["GET"])
+def get_json_schema(template_ref: str):
+    logger.info(f"Getting json-schema '{template_ref}'")
+    use_case = GenerateJsonSchemaUseCase(get_repository)
+    request_object = GenerateJsonSchemaRequestObject.from_dict({"templateRef": template_ref})
+    response = use_case.execute(request_object)
+    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+
+
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["GET"])
 def get(data_source_id: str, document_id: str):
     logger.info(f"Getting document '{document_id}' from data source '{data_source_id}'")
 
     db = DataSource(id=data_source_id)
 
-    document_repository = get_repository(RepositoryType.DocumentRepository, db)
+    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
 
     use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})
@@ -57,18 +67,21 @@ def post(data_source_id: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["PUT"])
-def put(data_source_id: str, document_id: str):
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])
+@blueprint.route(
+    "/api/v2/documents/<string:data_source_id>/<string:document_id>/<path:attribute_path>", methods=["PUT"]
+)
+def put(data_source_id: str, document_id: str, attribute_path: str = None):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
 
     data = request.get_json()
 
     db = DataSource(id=data_source_id)
 
-    document_repository = get_repository(RepositoryType.DocumentRepository, db)
+    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
 
     add_use_case = UpdateDocumentUseCase(document_repository)
-    add_use_case.execute(document_id, data)
+    add_use_case.execute(document_id, data, attribute_path)
 
     use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})

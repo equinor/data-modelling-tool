@@ -13,6 +13,9 @@ import Button from '../../components/Button'
 import { DataSourceNode } from '../blueprints/nodes/DataSourceNode'
 import { NodeType } from '../../api/types'
 import { SubPackageNode } from './nodes/SubPackageNode'
+import FileRefNode from './nodes/FileRefNode'
+import { DocumentRefNode } from './nodes/DocumentRefNode'
+import { ArrayPlaceholderNode } from '../common/nodes/ArrayPlaceholderNode'
 
 const api = new DmtApi()
 
@@ -40,8 +43,9 @@ export default () => {
       <br />
       <DocumentTree
         render={(renderProps: RenderProps) => {
-          //use components directly to control props better.
           switch (renderProps.treeNodeData.nodeType) {
+            case NodeType.ARRAY_PLACEHOLDER:
+              return <ArrayPlaceholderNode {...renderProps} />
             case NodeType.rootPackage:
             case NodeType.subPackage:
               return (
@@ -51,14 +55,17 @@ export default () => {
                   state={state}
                 />
               )
+            case NodeType.entityFile:
             case NodeType.file:
               return <EntityNode {...renderProps} />
             case NodeType.datasource:
               return <DataSourceNode {...renderProps} state={state} />
+            case NodeType.fileRef:
+              return <FileRefNode {...renderProps} />
+            case NodeType.documentRef:
+              return <DocumentRefNode {...renderProps} />
             default:
-              return (props: RenderProps) => (
-                <div>{props.treeNodeData.title}</div>
-              )
+              return <div>{renderProps.treeNodeData.title}</div>
           }
         }}
         dataSources={state.dataSources}

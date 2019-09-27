@@ -1,0 +1,9 @@
+{
+  "templateRef": "templates/document_reference",
+  "formData": {
+      "type": "templates/blueprint",
+      "name": "blueprint reference",
+      "value": "templates/package"
+  }
+}
+

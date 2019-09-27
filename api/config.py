@@ -11,5 +11,5 @@ class Config:
     MONGO_URI = os.getenv("MONGO_AZURE_URI", "")
     MONGO_DB = os.getenv("MONGO_INITDB_DATABASE", "maf")
     MONGO_DATA_MODELLING_TOOL_DB = os.getenv("MONGO_DATA_MODELING_TOOL_DATABASE", "dmt")
-    TEMPLATES_COLLECTION = "templates"
+    TEMPLATES_COLLECTION = "dmt-templates"
     DATA_SOURCES_COLLECTION = "data_sources"

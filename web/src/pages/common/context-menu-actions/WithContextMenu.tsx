@@ -38,9 +38,22 @@ interface WithContextMenuModalProps extends RenderProps {
   layout?: any
 }
 
+interface ActionData {
+  templateRef?: string
+  label: string
+}
+
+interface Action {
+  data: ActionData
+  type: string
+}
+
 export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
   const { treeNodeData, menuItems, render, children, layout } = props
-  const [action, setAction] = useState('')
+  const [action, setAction] = useState<Action>({
+    data: { label: '' },
+    type: '',
+  })
   const [showModal, setShowModal] = useState(false)
 
   const actionFactory = new ContextMenuActionsFactory()
@@ -60,15 +73,15 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
     <>
       <Modal
         open={showModal}
-        title={action}
+        title={action.data ? action.data.label : action.type}
         toggle={() => setShowModal(!showModal)}
       >
         {render({ action, actionConfig, setShowModal })}
       </Modal>
       <ContextMenu
         id={treeNodeData.nodeId}
-        onClickContextMenu={(id: any, action: string) => {
-          setAction(action)
+        onClickContextMenu={(id: any, action: string, data: { label: '' }) => {
+          setAction({ type: action, data })
           setShowModal(!showModal)
         }}
         menuItems={menuItems}

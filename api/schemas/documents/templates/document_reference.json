@@ -1,0 +1,21 @@
+{
+  "templateRef": "templates/blueprint",
+  "formData": {
+    "name": "Reference",
+    "description": "This describes a reference",
+    "attributes": [
+      {
+        "type": "string",
+        "value": "",
+        "name": "name"
+      },
+      {
+        "type": "templates/blueprint_reference",
+        "value": "templates/blueprint_reference",
+        "name": "reference"
+      }
+    ],
+    "storage_recipes": [],
+    "ui_recipes": []
+  }
+}

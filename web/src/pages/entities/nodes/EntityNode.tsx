@@ -45,7 +45,14 @@ interface Props extends RenderProps {
 }
 
 export const SelectBlueprintNode = (props: Props) => {
-  const { treeNodeData, sourceNode, addNode, newFileName, setShowModal } = props
+  const {
+    treeNodeData,
+    sourceNode,
+    addNode,
+    newFileName,
+    path,
+    setShowModal,
+  } = props
   return (
     <div
       onClick={() => {
@@ -61,22 +68,35 @@ export const SelectBlueprintNode = (props: Props) => {
           )
         } else {
           // @todo input field in BlueprintPicker, optional new file name.
+          const [sourceDataSourceId, sourceNodeId] = sourceNode.nodeId.split(
+            '/'
+          )
           Api2.addEntityFile({
-            templateRef: treeNodeData.nodeId,
-            nodeId: sourceNode.nodeId,
+            dataSourceId: sourceDataSourceId,
+            templateRef: `${path}/${treeNodeData.title}`,
+            parentId: sourceNodeId,
             filename: newFileName,
+            attribute: 'blueprints',
+            path: path,
             onSuccess: (res: any) => {
               try {
-                const newTreeNode = new TreeNodeBuilder(res)
+                const newEntityNode = new TreeNodeBuilder(res.entity)
                   .setOpen(true)
                   .build()
-                addNode(newTreeNode, sourceNode.nodeId)
+                addNode(newEntityNode, sourceNode.nodeId)
+                res.refs.forEach((node: any) => {
+                  const newRefNode = new TreeNodeBuilder(node)
+                    .setOpen(true)
+                    .build()
+                  addNode(newRefNode, newEntityNode.nodeId)
+                })
                 //@todo close modal.
-                setShowModal(false)
+                // setShowModal(false)
                 NotificationManager.success(
-                  newTreeNode.nodeId,
+                  newEntityNode.nodeId,
                   'Entity created'
                 )
+                setShowModal(false)
               } catch (err) {
                 console.log(err)
               }

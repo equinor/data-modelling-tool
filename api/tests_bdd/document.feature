@@ -1,68 +1,111 @@
-Feature: Document
+@skip
+Feature: Document 2
 
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name                     | database | collection | documentType | type    |
-      | db   | 27017 | maf      | maf      | false | local-blueprints-equinor | maf      | documents  | blueprints   | mongo-db|
+      | host | port  | username | password | tls   | name                     | database | collection | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | local-blueprints-equinor | maf      | documents  | blueprints   | mongo-db |
 
-    Given there are package named "package_1" of "documents"
-      | title     | description         | version |
-      | package 1 | package description | 1.0.0   |
+    Given there are documents in collection "documents"
+      | uid | path                     | name          | description | type                   |
+      | 1   | /                        | package_1     |             | templates/v2/package   |
+      | 2   | /package_1               | sub_package_1 |             | templates/v2/package   |
+      | 3   | /package_1               | sub_package_2 |             | templates/v2/package   |
+      | 4   | /package_1/sub_package_1 | document_1    |             | templates/v2/blueprint |
+      | 5   | /package_1/sub_package_1 | document_2    |             | templates/v2/blueprint |
+
+
 
   Scenario: Get document
-    Given I access the resource url "/api/v1/data-sources/local-blueprints-equinor/package_1/1.0.0/package"
+    Given I access the resource url "/api/v2/documents/local-blueprints-equinor/1"
+    And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
-    And the response should equal
+    And the response should contain
     """
     {
-      "_id": "package_1/1.0.0/package",
-      "id": "package_1/1.0.0/package",
-      "meta": {
-        "name": "package",
-        "documentType": "version",
-        "templateRef": "templates/package-template"
+      "document" : {
+        "uid": "1",
+        "path": "/",
+        "filename": "package_1",
+        "type": "folder",
+        "formData": {
+
+        }
       },
-      "formData": {
-        "title": "package 1",
-        "description": "package description"
+      "template" : {
+         "meta": {
+
+        }
       }
     }
     """
 
   Scenario: Create document
-    Given i access the resource url "/api/v1/data-sources/local-blueprints-equinor/package_1/1.0.1/package"
+    Given i access the resource url "/api/v2/documents/local-blueprints-equinor"
+    And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
-      "_id": "package_1/1.0.1/package",
-      "title": "package 1",
-      "description": "package description",
-      "documentType": "version",
-      "subpackages": [],
-      "files": []
+      "uid": "2",
+      "path": "/",
+      "filename": "new_folder",
+      "type": "folder",
+      "templateRef": "templates/package-template",
+      "formData": {
+
+      }
     }
     """
     Then the response status should be "OK"
-    And the response should be
+    And the response should contain
     """
-    package_1/1.0.1/package
+    {
+      "document": {
+        "uid": "2",
+        "path": "/",
+        "filename": "new_folder",
+        "type": "folder",
+        "templateRef": "templates/package-template",
+         "formData": {
+
+         }
+      },
+      "template" : {
+         "meta": {
+
+        }
+      }
+    }
     """
 
-  Scenario: Update document
-    Given i access the resource url "/api/v1/data-sources/local-blueprints-equinor/package_1/1.0.0/package"
+    Scenario: Update document (form data only now)
+    Given i access the resource url "/api/v2/documents/local-blueprints-equinor/1"
+    And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
-      "_id": "package_1/1.0.0/package",
-      "title": "new package title",
-      "description": "package description",
-      "documentType": "version",
-      "subpackages": [],
-      "files": []
+      "description": "package description"
     }
     """
     Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+      "document": {
+        "uid": "1",
+        "path": "/",
+        "filename": "package_1",
+        "type": "folder",
+        "formData": {
+          "description": "package description"
+        }
+      },
+      "template" : {
+         "meta": {
 
-
+        }
+      }
+    }
+    """
