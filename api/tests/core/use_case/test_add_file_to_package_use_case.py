@@ -2,7 +2,7 @@ from unittest import mock
 from uuid import uuid4
 
 from core.domain.document import Document
-from core.use_case.add_file_to_package_use_case import AddFileToPackageRequestObject, AddFileToPackageUseCase
+from core.use_case.add_file_use_case import AddFileRequestObject, AddFileUseCase
 from core.repository.interface.document_repository import DocumentRepository
 
 
@@ -20,9 +20,9 @@ def test_without_parameters():
     document_repository.add.return_value = mock_add
     document_repository.get.return_value = parent
 
-    use_case = AddFileToPackageUseCase(document_repository=document_repository)
+    use_case = AddFileUseCase(document_repository=document_repository)
     data = {"parentId": parent_id, "filename": "new_file", "templateRef": ""}
-    request_object = AddFileToPackageRequestObject.from_dict(data)
+    request_object = AddFileRequestObject.from_dict(data)
     response_object = use_case.execute(request_object)
 
     assert bool(response_object) is True
