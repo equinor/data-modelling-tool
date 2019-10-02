@@ -1,3 +1,7 @@
+from typing import Dict
+from uuid import uuid4
+
+
 class AttributeReference:
     def __init__(self, name: str, type: str, dimensions: str, value: str = None):
         self.name = name
@@ -10,40 +14,90 @@ class AttributeReference:
         return result
 
 
-class Blueprint:
-    def __init__(self, uid: str, name: str, description: str, type: str):
-        self.uid = uid
+class DocumentDTO:
+    def __init__(self, data):
+        self._uid = uuid4()
+        self.data = data
+
+    @property
+    def uid(self):
+        return str(self._uid)
+
+    @classmethod
+    def from_dict(cls, adict):
+        type = adict["data"]["type"]
+        if type == "templates/blueprint":
+            return Blueprint.from_dict(adict)
+
+
+
+class Blueprint(BaseDocument):
+    def __init__(self, name: str, description: str, type: str):
+        super().__init__()
         self.name = name
         self.description = description
         self.type = type
-        self.form_data = {}
-        self.ui_recipe = {}
-        self.ui_schema = {}  # TODO: Remove
+        self.attributes = []
 
     def get_blueprint_attributes(self):
         primitives = ["string", "number", "integer", "number", "boolean"]
-        if "attributes" not in self.form_data:
-            return []
         blueprints = list(
-            filter(lambda item: "type" in item and item["type"] not in primitives, self.form_data["attributes"])
+            filter(lambda item: "type" in item and item["type"] not in primitives, self.attributes)
         )
         return blueprints
 
     @classmethod
     def from_dict(cls, adict):
-        instance = cls(uid=adict["uid"], name=adict["name"], description=adict["description"], type=adict["type"])
-        instance.form_data = adict["formData"]
+        instance = cls(name=adict["name"], description=adict["description"], type=adict["type"])
+        instance.attributes = adict["attributes"]
+        if "uid" in adict:
+            instance._uid = adict["uid"]
         return instance
 
     def to_dict(self):
-        result = {
-            "uid": self.uid,
+        return {
             "name": self.name,
             "description": self.description,
             "type": self.type,
-            "formData": self.form_data,
+            "attributes": self.attributes,
         }
-        return result
+
+    def __eq__(self, other):
+        return self.to_dict() == other.to_dict()
+
+
+class Package(DocumentDTO):
+    def __init__(self, name: str, description: str, type: str):
+        super().__init__()
+        self.name = name
+        self.description = description
+        self.type = type
+        self.packages = []
+        self.blueprints = []
+
+    def add_package(self, item):
+        self.packages.append(item)
+
+    def add_blueprint(self, item):
+        self.blueprints.append(item)
+
+    @classmethod
+    def from_dict(cls, adict):
+        instance = cls(name=adict["name"], description=adict["description"], type=adict["type"])
+        instance.packages = adict["packages"]
+        instance.blueprints = adict["blueprints"]
+        if "uid" in adict:
+            instance._uid = adict["uid"]
+        return instance
+
+    def to_dict(self):
+        return {
+            "name": self.name,
+            "description": self.description,
+            "type": self.type,
+            "packages": self.packages,
+            "blueprints": self.blueprints,
+        }
 
     def __eq__(self, other):
         return self.to_dict() == other.to_dict()

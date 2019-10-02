@@ -1,42 +1,25 @@
 {
   "type": "templates/blueprint",
-  "formData": {
-    "name": "Blueprint",
-    "description": "This describes a blueprint",
-    "attributes": [
-      {
-        "type": "string",
-        "value": "",
-        "name": "name"
-      },
-      {
-        "type": "string",
-        "value": "",
-        "name": "description"
-      },
-      {
-        "type": "templates/blueprint_attribute",
-        "dimensions": "*",
-        "name": "attributes"
-      },
-      {
-        "type": "templates/storage",
-        "dimensions": "*",
-        "name": "storage_recipes"
-      },
-      {
-        "type": "templates/ui",
-        "dimensions": "*",
-        "name": "ui_recipes"
-      }
-    ],
-    "storage_recipes": [],
-    "ui_recipes": [
-      {
-        "type": "local-blueprints-equinor/collections/ui",
-        "value": "some ui definition",
-        "name": ""
-      }
-    ]
-  }
+  "name": "Blueprint",
+  "description": "This describes a blueprint",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+     {
+      "type": "string",
+      "value": "",
+      "name": "type"
+    },
+    {
+      "type": "templates/blueprint_attribute",
+      "dimensions": "*",
+      "name": "attributes"
+    }
+  ]
 }

@@ -20,7 +20,7 @@ class MongoBlueprintRepository(MongoRepositoryBase):
         self.c().update(document.uid, document.to_dict())
 
     def add(self, document: Blueprint) -> None:
-        self.c().add(document.to_dict())
+        self.c().add(document.uid, document.to_dict())
 
     def delete(self, document: Blueprint) -> None:
         self.c().delete(document.uid)
