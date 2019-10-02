@@ -1,6 +1,5 @@
 {
   "type": "templates/blueprint",
-  "formData": {
     "title": "Car",
     "description": "This describes a car",
     "attributes": [
@@ -27,4 +26,4 @@
       }
     ]
   }
-}
+

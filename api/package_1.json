@@ -1,0 +1,31 @@
+{
+  "_id": "353b41df-3df7-4c9e-86f4-7bcf7ae920a8",
+  "name": "Cars",
+  "description": "This is a package of cars",
+  "type": "templates/package",
+  "documents": [
+    {
+      "name": "car",
+      "_id": "1234"
+    }
+  ],
+  "packages": [
+    {
+      "name": "Parts",
+      "description": "Subpackage of cars, containing parts",
+      "type": "templates/package",
+      "documents": [
+        {
+          "name": "wheel",
+          "_id": "12345678990"
+        }
+      ],
+      "packages": [
+        {
+          "_id": "81786393963468",
+          "name": "package1"
+        }
+      ]
+    }
+  ]
+}
