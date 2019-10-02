@@ -1,4 +1,5 @@
 from core.domain.blueprint import Blueprint
+from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_template import get_template
@@ -101,7 +102,10 @@ class ArrayPlaceholderNode(Node):
 
     @property
     def id(self):
-        return f"{self.data_source_id}/{self.parent.document.uid}_{self.name}"
+        if self.parent.document:
+            return f"{self.data_source_id}/{self.parent.document.uid}_{self.name}"
+        else:
+            return ""
 
     def to_node(self):
         return {
@@ -115,7 +119,7 @@ class ArrayPlaceholderNode(Node):
                 "itemType": self.blueprint.type,
                 "itemName": self.item_type.name,
                 "attribute": self.name,
-                "parentId": f"{self.parent.document.uid}",
+                "parentId": f"{self.parent.document.uid if self.parent.document else ''}",
                 "dataSourceId": self.data_source_id,
             },
         }
@@ -228,10 +232,17 @@ class Tree:
     def _add_references(self, data_source_id, references, parent_node, attribute_name, attribute_type):
         index = 0
         for ref in references:
-            if isinstance(ref, dict):
+            logger.info(ref)
+            if isinstance(ref, dict) and ref["type"] == "ref":
+                logger.warn(f"Add ref '{ref}'")
+                document = self.blueprint_repository.get(ref["_id"])
+                if not document:
+                    raise EntityNotFoundException(uid=ref)
+                self._add_document(data_source_id, document, parent_node)
+            elif isinstance(ref, dict):
                 primitives = ["string", "number", "integer", "number", "boolean"]
                 if ref["type"] not in primitives:
-                    if ref["value"]:
+                    if "value" in ref:
                         logger.info(f"Add reference dict for '{ref['name']}'")
                         document = get_template(self.get_repository, ref["value"])
                         if not document:
@@ -284,7 +295,7 @@ class Tree:
             raise EntityNotFoundException(uid=document.type)
 
         # Use the blueprint to find attributes that contains references
-        for attribute in blueprint.get_blueprint_attributes():
+        for attribute in blueprint.get_attributes_with_reference():
             name = attribute["name"]
             # What blueprint is this attribute pointing too
 
@@ -302,10 +313,9 @@ class Tree:
                 )
                 # Check if values for the attribute exists in current document,
                 # this means that we have added some documents to this array
-                if document and name in document.form_data:
-                    self._add_references(
-                        data_source_id, document.form_data[name], attribute_node, name, attribute["type"]
-                    )
+                if hasattr(document, name):
+                    values = getattr(document, name)
+                    self._add_references(data_source_id, values, attribute_node, name, attribute["type"])
             # If the attribute is a single reference
             else:
                 blueprint = get_template(self.get_repository, attribute["value"])
@@ -339,8 +349,11 @@ class Tree:
 
 
 class GenerateIndexUseCase:
-    def __init__(self, blueprint_repository: MongoBlueprintRepository, get_repository):
+    def __init__(
+        self, blueprint_repository: MongoBlueprintRepository, package_repository: PackageRepository, get_repository
+    ):
         self.blueprint_repository = blueprint_repository
+        self.package_repository = package_repository
         self.get_repository = get_repository
 
         self.tree = Tree(blueprint_repository=blueprint_repository, get_repository=get_repository)
@@ -350,14 +363,8 @@ class GenerateIndexUseCase:
 
         root_node = DataSourceNode(data_source_id=data_source_id, name=data_source_name)
 
-        # TODO: Create a package concept, so that we know where to start.
-        for package in [
-            self.blueprint_repository.find_one(name="blueprints"),
-            self.blueprint_repository.find_one(name="entities"),
-        ]:
-            # TODO: Remove this if when we have created real packages
-            if package:
-                root_node = self.tree.generate(data_source_id, data_source_name, package)
+        for package in self.package_repository.list():
+            root_node = self.tree.generate(data_source_id, data_source_name, package)
 
         print_tree(root_node)
 

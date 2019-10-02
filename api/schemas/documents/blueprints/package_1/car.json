@@ -14,7 +14,7 @@
       "name": "manufacturer"
     },
     {
-      "type": "local-blueprints-equinor/package_1/engine",
+      "type": "local-blueprints/package_1/engine",
       "name": "engine"
     }
   ]

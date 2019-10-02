@@ -11,7 +11,10 @@ blueprint = Blueprint("index", __name__)
 def get(data_source_id: str):
     db = DataSource(id=data_source_id)
     blueprint_repository = get_repository(RepositoryType.BlueprintRepository, db)
+    package_repository = get_repository(RepositoryType.PackageRepository, db)
 
-    use_case = GenerateIndexUseCase(blueprint_repository=blueprint_repository, get_repository=get_repository)
+    use_case = GenerateIndexUseCase(
+        blueprint_repository=blueprint_repository, package_repository=package_repository, get_repository=get_repository
+    )
     result = use_case.execute(data_source_id=data_source_id, data_source_name=db.name)
     return Response(json.dumps(result.to_dict()), mimetype="application/json", status=200)
