@@ -1,5 +1,5 @@
 {
-  "type": "local-blueprints-equinor/blueprints/package_1/car",
+  "type": "local-blueprints/blueprints/package_1/car",
   "formData": {
     "name": "Volvo",
     "description": "This is a nice car",

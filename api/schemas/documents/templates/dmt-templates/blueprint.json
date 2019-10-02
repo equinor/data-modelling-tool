@@ -1,6 +1,6 @@
 {
   "type": "templates/blueprint",
-  "name": "Blueprint",
+  "name": "blueprint",
   "description": "This describes a blueprint",
   "attributes": [
     {

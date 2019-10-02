@@ -7,7 +7,7 @@ import click
 
 from config import Config
 from core.tree_generator import Tree, TreeNode
-from core.domain.blueprint import Blueprint, Package, BaseDocument
+from core.domain.blueprint import Blueprint, Package
 from rest import create_api
 from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
@@ -39,8 +39,8 @@ logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 @app.cli.command()
 def init_import():
     # Internal
-    import_collection("dmt-templates", data_modelling_tool_db, start_path="templates")
-    import_collection("blueprints", model_db, start_path="local-blueprints-equinor")
+    import_collection("blueprints", start_path="local-blueprints")
+    import_collection("dmt-templates", start_path="local-templates")
     # import_collection("entities", model_db, start_path="local-entities-equinor")
 
 
@@ -50,15 +50,14 @@ PATHS = {
     "dmt-templates": "/code/schemas/documents/templates",
 }
 
+
 def generate_tree(base_path):
-    root=None
+    root = None
     for dirpath, _, files in os.walk(base_path):
         if dirpath == base_path:
             continue
         package = Package(
-            name=str(dirpath.split("/")[-1]),
-            description="",
-            type="templates/package"
+            name=str(dirpath.split("/")[-1]), description="", type="templates/package", is_root=root is None
         )
         node = TreeNode(document=package)
         if root is None:
@@ -74,23 +73,24 @@ def generate_tree(base_path):
             blueprint = Blueprint(
                 name=data["name"] if "name" in data else filename.replace(".json", ""),
                 description="",
-                type=data["type"] if "type" in data else "templates/blueprint"
+                type=data["type"] if "type" in data else "templates/blueprint",
             )
-            blueprint.attributes = data["attributes"]
+            if "attributes" in data:
+                blueprint.attributes = data["attributes"]
+            else:
+                logger.warn(f"Missing attributes in '{filename}'")
 
-            BaseDocument.from_dict(data)
-
-            TreeNode(
-                document=blueprint,
-                parent=node
-            )
+            TreeNode(document=blueprint, parent=node)
         parent = node
     return root
 
-def import_collection(collection, database, start_path=None):
+
+def import_collection(collection, start_path=None):
     base_path = PATHS[collection]
     tree = Tree(data_source_id=start_path)
     root = generate_tree(base_path)
+    if not root:
+        raise Exception("Root node not found")
     tree.print_tree(root)
     tree.add(root)
 
@@ -150,4 +150,4 @@ def nuke_db():
 
 
 if __name__ == "__main__":
-    import_collection("blueprints", model_db, start_path="local-blueprints-equinor")
+    import_collection("blueprints", start_path="local-blueprints")

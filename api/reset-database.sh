@@ -4,7 +4,8 @@ set -eu
 mkdir -p /code/schemas/documents/entities
 
 flask nuke-db
-flask init-import
+
+echo "ENVIRONMENT: $ENVIRONMENT"
 
 if [ "$ENVIRONMENT" = 'local' ]; then
     flask drop-data-sources
@@ -13,3 +14,5 @@ if [ "$ENVIRONMENT" = 'local' ]; then
       flask import-data-source "$dataSource"
     done
 fi
+
+flask init-import

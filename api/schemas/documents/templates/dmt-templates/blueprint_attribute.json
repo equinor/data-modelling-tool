@@ -28,7 +28,7 @@
           "integer",
           "number",
           "boolean",
-          "local-blueprints-equinor/collections/blueprint"
+          "local-blueprints/collections/blueprint"
         ],
         "labels": [
           "String",

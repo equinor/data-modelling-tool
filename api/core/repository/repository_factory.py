@@ -4,10 +4,12 @@ from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 
 
 # TODO: Make Enum
+from core.repository.mongo.package_repository import MongoPackageRepository
+
+
 class RepositoryType(object):
     DocumentRepository = "DocumentRepository"
-    SubPackageRepository = "SubPackageRepository"
-    RootPackageRepository = "RootPackageRepository"
+    PackageRepository = "PackageRepository"
     BlueprintRepository = "BlueprintRepository"
 
 
@@ -28,3 +30,5 @@ def get_repository(repository_type: RepositoryType, db):
             return MongoDocumentRepository(db)
         if repository_type == RepositoryType.BlueprintRepository:
             return MongoBlueprintRepository(db)
+        if repository_type == RepositoryType.PackageRepository:
+            return MongoPackageRepository(db)

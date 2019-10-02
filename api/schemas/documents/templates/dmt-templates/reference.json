@@ -23,7 +23,7 @@
     "storage_recipes": [],
     "ui_recipes": [
       {
-        "type": "local-blueprints-equinor/collections/ui",
+        "type": "local-blueprints/collections/ui",
         "value": "some ui definition",
         "name": ""
       }

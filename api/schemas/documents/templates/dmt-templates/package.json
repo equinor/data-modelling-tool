@@ -1,0 +1,37 @@
+{
+  "type": "templates/blueprint",
+  "name": "package",
+  "description": "This is a blueprint for a package that contains documents and other packages",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "description"
+    },
+    {
+      "type": "boolean",
+      "name": "isRoot"
+    },
+    {
+      "type": "templates/blueprint",
+      "name": "blueprints",
+      "dimensions": "*"
+    },
+    {
+      "type": "templates/package",
+      "name": "packages",
+      "dimensions": "*"
+    }
+  ],
+  "storage_recipes": [
+    {
+      "type": "templates/storage",
+      "value": "templates/package_storage",
+      "name": "packages"
+    }
+  ]
+}

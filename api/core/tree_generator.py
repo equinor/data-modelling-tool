@@ -13,14 +13,12 @@ class TreeNode(NodeMixin):
     def process(self):
         if self.document.type == "templates/package":
             for child in self.children:
-                reference = {
-                    "_id": child.document.uid,
-                    "name": child.document.name
-                }
+                reference = {"_id": child.document.uid, "name": child.document.name, "type": "ref"}
                 if child.document.type == "templates/blueprint":
                     self.document.add_blueprint(reference)
                 elif child.document.type == "templates/package":
                     self.document.add_package(reference)
+
 
 class Tree:
     def __init__(self, data_source_id):
@@ -36,5 +34,6 @@ class Tree:
 
     def print_tree(self, root):
         for pre, fill, node in RenderTree(root):
+            print(node)
             treestr = "%s%s" % (pre, node.document.name)
             print(treestr.ljust(8), f"uid = {node.document.uid}")
