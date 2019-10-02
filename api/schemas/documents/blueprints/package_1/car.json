@@ -1,0 +1,22 @@
+{
+  "type": "templates/blueprint",
+  "name": "Car",
+  "description": "This describes a car",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "manufacturer"
+    },
+    {
+      "type": "local-blueprints-equinor/package_1/engine",
+      "name": "engine"
+    }
+  ]
+}
+

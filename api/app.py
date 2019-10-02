@@ -6,7 +6,8 @@ from flask import Flask
 import click
 
 from config import Config
-from core.domain.blueprint import Blueprint
+from core.tree_generator import Tree, TreeNode
+from core.domain.blueprint import Blueprint, Package, BaseDocument
 from rest import create_api
 from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
@@ -38,10 +39,9 @@ logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 @app.cli.command()
 def init_import():
     # Internal
-    import_documents("dmt-templates", data_modelling_tool_db, start_path="templates")
-
-    import_documents("blueprints", model_db, start_path="local-blueprints-equinor")
-    import_documents("entities", model_db, start_path="local-entities-equinor")
+    import_collection("dmt-templates", data_modelling_tool_db, start_path="templates")
+    import_collection("blueprints", model_db, start_path="local-blueprints-equinor")
+    # import_collection("entities", model_db, start_path="local-entities-equinor")
 
 
 PATHS = {
@@ -50,52 +50,49 @@ PATHS = {
     "dmt-templates": "/code/schemas/documents/templates",
 }
 
+def generate_tree(base_path):
+    root=None
+    for dirpath, _, files in os.walk(base_path):
+        if dirpath == base_path:
+            continue
+        package = Package(
+            name=str(dirpath.split("/")[-1]),
+            description="",
+            type="templates/package"
+        )
+        node = TreeNode(document=package)
+        if root is None:
+            root = node
+        else:
+            node.parent = parent
 
-def import_documents(collection, database, start_path=None):
-    base_path = PATHS[collection]
-    for path, subdirs, files in os.walk(base_path):
-        base_path_size = len(base_path)
-        relative_path = path[base_path_size:] or ""
-
-        documents = []
         for filename in files:
-            file = os.path.join(path, filename)
-            try:
-                with open(file) as json_file:
-                    data = json.load(json_file)
+            file = os.path.join(dirpath, filename)
+            with open(file) as json_file:
+                data = json.load(json_file)
 
-                file = Blueprint(
-                    uid=str(uuid4()),
-                    name=filename.replace(".json", ""),
-                    description="",
-                    type=data["type"] if "type" in data else "templates/blueprint",
-                )
-                logger.info(f"Created file {file.name}")
-                documents.append(
-                    {"type": file.type, "value": f"{start_path}{relative_path}/{filename}", "name": file.name}
-                )
-                if "formData" in data:
-                    file.form_data = data["formData"]
-                database[f"{collection}"].replace_one({"_id": file.uid}, file.to_dict(), upsert=True)
+            blueprint = Blueprint(
+                name=data["name"] if "name" in data else filename.replace(".json", ""),
+                description="",
+                type=data["type"] if "type" in data else "templates/blueprint"
+            )
+            blueprint.attributes = data["attributes"]
 
-            except Exception as Error:
-                logger.error(f"Could not import file {file}: {Error}")
-                exit(1)
+            BaseDocument.from_dict(data)
 
-        packages = [
-            {"type": "templates/package", "value": f"{start_path}/{path.split('/')[-1]}/{package}", "name": package}
-            for package in subdirs
-        ]
+            TreeNode(
+                document=blueprint,
+                parent=node
+            )
+        parent = node
+    return root
 
-        try:
-            folder = Blueprint(uid=str(uuid4()), name=path.split("/")[-1], description="", type="templates/package")
-            folder.form_data = {"blueprints": documents, "packages": packages}
-            logger.info(f"Created folder {folder.name}")
-            database[f"{collection}"].replace_one({"_id": folder.uid}, folder.to_dict(), upsert=True)
-
-        except Exception as Error:
-            logger.error(f"Could not import folder {path}: {Error}")
-            exit(1)
+def import_collection(collection, database, start_path=None):
+    base_path = PATHS[collection]
+    tree = Tree(data_source_id=start_path)
+    root = generate_tree(base_path)
+    tree.print_tree(root)
+    tree.add(root)
 
 
 def init_import_internal(collection):
@@ -153,4 +150,4 @@ def nuke_db():
 
 
 if __name__ == "__main__":
-    import_documents("blueprints")
+    import_collection("blueprints", model_db, start_path="local-blueprints-equinor")

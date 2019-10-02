@@ -1,0 +1,17 @@
+{
+  "type": "templates/blueprint",
+  "name": "Engine",
+  "description": "This describes an engine",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "power"
+    }
+  ]
+}

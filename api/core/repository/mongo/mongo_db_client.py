@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 
 class DbClient(ABC):
     @abstractmethod
-    def add(self, document: Dict) -> bool:
+    def add(self, uid:str, document: Dict) -> bool:
         """Get method to be implemented"""
 
     @abstractmethod
@@ -46,8 +46,8 @@ class MongoDbClient(DbClient):
         )[database]
         self.collection = collection
 
-    def add(self, document: Dict) -> bool:
-        document["_id"] = document["uid"]
+    def add(self, uid: str, document: Dict) -> bool:
+        document["_id"] = uid
         try:
             return self.handler[self.collection].insert_one(document).acknowledged
         except DuplicateKeyError:
