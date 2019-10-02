@@ -64,6 +64,48 @@ def generate_tree(base_path):
         else:
             node.parent = parent
 
+def import_package(path):
+    package = {
+        "name": os.path.basename(path).split(".")[0],
+        "description": "",
+        "type": "templates/package",
+        "packages": [],
+        "files": [],
+    }
+    for file in next(os.walk(path))[2]:
+        with open(f"{path}/{file}") as json_file:
+            data = json.load(json_file)
+            data["uid"] = str(uuid4())
+            data["description"] = data.get("description", "")
+        file = Blueprint.from_dict(data)
+        # TODO:
+        print(f"IMPORTING {file.name}")
+        model_db.blueprints.replace_one({"_id": file.uid}, file.to_dict(), upsert=True)
+        package["files"].append({"uid": file.uid, "name": file.name})
+    for folder in next(os.walk(path))[1]:
+        package["packages"].append(import_package(f"{path}/{folder}"))
+    return package
+
+
+@app.cli.command()
+def import_blueprint_package():
+    package = import_package("/code/schemas/documents/blueprints/package_1")
+    package["uid"] = str(uuid4())
+    print(f"IMPORTING PACKAGE {package['name']}")
+    model_db.blueprints.replace_one({"_id": package["uid"]}, package, upsert=True)
+    # print(package)
+
+
+def import_documents(collection, database, start_path=None):
+    base_path = PATHS[collection]
+    for path, subdirs, files in os.walk(base_path):
+        print(path)
+        print(subdirs)
+        print(files)
+        base_path_size = len(base_path)
+        relative_path = path[base_path_size:] or ""
+
+        documents = []
         for filename in files:
             logger.info(f"Import {filename}")
             file = os.path.join(dirpath, filename)

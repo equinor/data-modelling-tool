@@ -1,0 +1,17 @@
+{
+  "type": "templates/blueprint",
+  "name": "Wheel",
+  "description": "This describes a wheel",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "diameter"
+    }
+  ]
+}

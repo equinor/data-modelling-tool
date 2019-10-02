@@ -1,0 +1,22 @@
+{
+  "type": "templates/blueprint",
+  "name": "Engine",
+  "description": "This describes a engine",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "power"
+    },
+    {
+      "type": "templates/blueprint",
+      "value": "local-blueprints-equinor/blueprints/package_1/fuel_pump",
+      "name": "fuel_pump"
+    }
+  ]
+}

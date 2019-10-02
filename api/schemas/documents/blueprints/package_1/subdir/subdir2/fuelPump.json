@@ -1,0 +1,12 @@
+{
+  "type": "templates/blueprint",
+  "name": "FuelPump",
+  "description": "This describes a fuel pump",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    }
+  ]
+}

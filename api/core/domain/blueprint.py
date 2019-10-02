@@ -1,3 +1,4 @@
+from typing import Dict
 from uuid import uuid4
 
 
@@ -37,6 +38,9 @@ class Blueprint(Base):
 
     @classmethod
     def from_dict(cls, adict):
+        instance = cls(uid=adict["uid"], name=adict["name"], description=adict["description"], type=adict["type"])
+        instance.attributes = adict.get("attributes", "")
+        print("FROM DICT", adict)
         instance = cls(name=adict["name"], description=adict.get("description", ""), type=adict["type"])
         if "attributes" in adict:
             instance.attributes = adict["attributes"]
@@ -79,8 +83,6 @@ class Package(Base):
         instance.blueprints = adict["blueprints"]
         if "uid" in adict:
             instance._uid = adict["uid"]
-        if "_id" in adict:
-            instance._uid = adict["_id"]
         return instance
 
     def to_dict(self):
@@ -88,6 +90,7 @@ class Package(Base):
             "name": self.name,
             "description": self.description,
             "type": self.type,
+            "attributes": self.attributes,
             "packages": self.packages,
             "blueprints": self.blueprints,
             "isRoot": self.is_root,
@@ -95,7 +98,6 @@ class Package(Base):
 
     def __eq__(self, other):
         return self.to_dict() == other.to_dict()
-
 
 class Entity(Base):
     def __init__(self, init=None):
@@ -123,7 +125,6 @@ class Entity(Base):
 
     def to_dict(self):
         return self.__dict__
-
 
 """
 class Entity(Base):
