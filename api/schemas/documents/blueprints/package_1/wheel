@@ -1,5 +1,5 @@
 {
-  "templateRef": "templates/blueprint",
+  "type": "templates/blueprint",
   "formData": {
     "title": "Wheel",
     "description": "This describes a wheel",

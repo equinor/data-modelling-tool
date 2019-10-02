@@ -1,5 +1,5 @@
 {
-  "templateRef": "templates/storage",
+  "type": "templates/storage",
   "formData": {
     "name": "Package Storage",
     "attributes": [

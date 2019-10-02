@@ -1,4 +1,3 @@
-from core.repository.data_source_repository import DataSourceRepository
 from core.shared import request_object, response_object, use_case
 from rest.validators.mongo_data_source import validate_mongo_data_source
 from utils.enums import DataSourceType
@@ -36,8 +35,8 @@ class CreateDataSourceRequestObject(request_object.ValidRequestObject):
 
 
 class CreateDataSourceUseCase(use_case.UseCase):
-    def __init__(self,):
-        self.data_source_repository = DataSourceRepository()
+    def __init__(self, data_source_repository):
+        self.data_source_repository = data_source_repository
 
     def process_request(self, request_obj: CreateDataSourceRequestObject):
         response = self.data_source_repository.create(request_obj.data_source_id, request_obj.form_data)

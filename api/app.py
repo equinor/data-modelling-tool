@@ -68,11 +68,11 @@ def import_documents(collection, database, start_path=None):
                     uid=str(uuid4()),
                     name=filename.replace(".json", ""),
                     description="",
-                    template_ref=data["templateRef"] if "templateRef" in data else "templates/blueprint",
+                    type=data["type"] if "type" in data else "templates/blueprint",
                 )
                 logger.info(f"Created file {file.name}")
                 documents.append(
-                    {"type": file.template_ref, "value": f"{start_path}{relative_path}/{filename}", "name": file.name}
+                    {"type": file.type, "value": f"{start_path}{relative_path}/{filename}", "name": file.name}
                 )
                 if "formData" in data:
                     file.form_data = data["formData"]
@@ -88,9 +88,7 @@ def import_documents(collection, database, start_path=None):
         ]
 
         try:
-            folder = Blueprint(
-                uid=str(uuid4()), name=path.split("/")[-1], description="", template_ref="templates/package"
-            )
+            folder = Blueprint(uid=str(uuid4()), name=path.split("/")[-1], description="", type="templates/package")
             folder.form_data = {"blueprints": documents, "packages": packages}
             logger.info(f"Created folder {folder.name}")
             database[f"{collection}"].replace_one({"_id": folder.uid}, folder.to_dict(), upsert=True)

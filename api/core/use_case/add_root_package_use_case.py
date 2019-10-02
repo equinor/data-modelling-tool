@@ -9,9 +9,9 @@ from core.shared import use_case as uc
 
 
 class AddRootPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, filename=None, template_ref=None):
+    def __init__(self, filename=None, type=None):
         self.filename = filename
-        self.template_ref = template_ref
+        self.type = type
 
     @classmethod
     def from_dict(cls, adict):
@@ -20,13 +20,13 @@ class AddRootPackageRequestObject(req.ValidRequestObject):
         if "filename" not in adict:
             invalid_req.add_error("filename", "is missing")
 
-        if "templateRef" not in adict:
-            invalid_req.add_error("templateRef", "is missing")
+        if "type" not in adict:
+            invalid_req.add_error("type", "is missing")
 
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(filename=adict.get("filename"), template_ref=adict.get("templateRef"))
+        return cls(filename=adict.get("filename"), type=adict.get("type"))
 
 
 class AddRootPackageUseCase(uc.UseCase):
@@ -35,9 +35,9 @@ class AddRootPackageUseCase(uc.UseCase):
 
     def process_request(self, request_object):
         filename: str = request_object.filename
-        template_ref: str = request_object.template_ref
+        type: str = request_object.type
 
-        folder = Document(uid=str(uuid4()), filename=filename, type="folder", path=f"/", template_ref=template_ref)
+        folder = Document(uid=str(uuid4()), filename=filename, type="folder", path=f"/", template_ref=type)
 
         self.document_repository.add(folder)
 

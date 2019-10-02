@@ -9,10 +9,10 @@ from core.shared import use_case as uc
 
 
 class AddPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, filename=None, template_ref=None):
+    def __init__(self, parent_id=None, filename=None, type=None):
         self.parent_id = parent_id
         self.filename = filename
-        self.template_ref = template_ref
+        self.type = type
 
     @classmethod
     def from_dict(cls, adict):
@@ -24,15 +24,13 @@ class AddPackageRequestObject(req.ValidRequestObject):
         if "filename" not in adict:
             invalid_req.add_error("filename", "is missing")
 
-        if "templateRef" not in adict:
-            invalid_req.add_error("templateRef", "is missing")
+        if "type" not in adict:
+            invalid_req.add_error("type", "is missing")
 
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(
-            parent_id=adict.get("parentId"), filename=adict.get("filename"), template_ref=adict.get("templateRef")
-        )
+        return cls(parent_id=adict.get("parentId"), filename=adict.get("filename"), type=adict.get("type"))
 
 
 class AddPackageUseCase(uc.UseCase):
@@ -42,7 +40,7 @@ class AddPackageUseCase(uc.UseCase):
     def process_request(self, request_object):
         parent_id: str = request_object.parent_id
         filename: str = request_object.filename
-        template_ref: str = request_object.template_ref
+        type: str = request_object.type
 
         parent: Document = self.document_repository.get(parent_id)
         if not parent:
@@ -50,11 +48,7 @@ class AddPackageUseCase(uc.UseCase):
 
         path = str(parent.path) if str(parent.path) != "/" else ""
         folder = Document(
-            uid=str(uuid4()),
-            filename=filename,
-            type="folder",
-            path=f"{path}/{parent.filename}",
-            template_ref=template_ref,
+            uid=str(uuid4()), filename=filename, type="folder", path=f"{path}/{parent.filename}", template_ref=type
         )
 
         self.document_repository.add(folder)

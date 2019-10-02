@@ -1,5 +1,5 @@
 {
-  "templateRef": "templates/blueprint",
+  "type": "templates/blueprint",
   "formData": {
     "title": "Fuel pump",
     "description": "This describes a fuel pump",
