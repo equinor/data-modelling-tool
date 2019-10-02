@@ -1,5 +1,5 @@
 {
-  "templateRef": "templates/blueprint",
+  "type": "templates/blueprint",
   "formData": {
     "name": "blueprint_attribute",
     "description": "This describes a blueprint attribute",

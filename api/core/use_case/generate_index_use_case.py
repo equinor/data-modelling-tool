@@ -44,9 +44,9 @@ class DataSourceNode(Node):
 
 
 class EntityPlaceholderNode(Node):
-    def __init__(self, data_source_id, name, document, blueprint, parent, template_ref):
+    def __init__(self, data_source_id, name, document, blueprint, parent, type):
         super().__init__(data_source_id, name, document, blueprint, parent)
-        self.template_ref = template_ref
+        self.type = type
 
     def find_root_uid(self, node):
         if not node:
@@ -71,7 +71,7 @@ class EntityPlaceholderNode(Node):
             "title": self.name,
             "id": self.id,
             "nodeType": "document-ref",
-            "templateRef": self.template_ref,
+            "templateRef": self.type,
             "attributePath": "",
             "children": [child.to_node()["id"] for child in self.children],
         }
@@ -112,7 +112,7 @@ class ArrayPlaceholderNode(Node):
             "nodeType": "array-placeholder",
             "children": [child.to_node()["id"] for child in self.children],
             "meta": {
-                "itemType": self.blueprint.template_ref,
+                "itemType": self.blueprint.type,
                 "itemName": self.item_type.name,
                 "attribute": self.name,
                 "parentId": f"{self.parent.document.uid}",
@@ -210,7 +210,7 @@ class Tree:
             data_source_id=data_source_id,
             name=document.name,
             document=document,
-            blueprint=get_template(self.get_repository, document.template_ref),
+            blueprint=get_template(self.get_repository, document.type),
             parent=parent_node,
         )
         self._add_attributes(data_source_id, child_node)
@@ -220,7 +220,7 @@ class Tree:
             data_source_id=data_source_id,
             name=document.name,
             document=document,
-            blueprint=get_template(self.get_repository, document.template_ref),
+            blueprint=get_template(self.get_repository, document.type),
             parent=parent_node,
         )
         self._add_attributes(data_source_id, child_node)
@@ -236,7 +236,7 @@ class Tree:
                         document = get_template(self.get_repository, ref["value"])
                         if not document:
                             raise EntityNotFoundException(uid=ref["value"])
-                        if document.template_ref == "templates/package":
+                        if document.type == "templates/package":
                             self._add_package(data_source_id, document, parent_node)
                         else:
                             self._add_document(data_source_id, document, parent_node)
@@ -247,9 +247,9 @@ class Tree:
                                 data_source_id=data_source_id,
                                 name=f"{attribute_name}.{index}",  # .{ref['name']}
                                 document=None,
-                                blueprint=blueprint,  # get_template(self.get_repository, reference.template_ref),
+                                blueprint=blueprint,
                                 parent=parent_node,
-                                template_ref=attribute_type,
+                                type=attribute_type,
                             )
                             self._add_attributes(data_source_id, attribute_node)
                 else:
@@ -257,9 +257,9 @@ class Tree:
                         data_source_id=data_source_id,
                         name=f"{attribute_name}.{index}",
                         document=None,
-                        blueprint=None,  # get_template(self.get_repository, reference.template_ref),
+                        blueprint=None,
                         parent=parent_node,
-                        template_ref=attribute_type,
+                        type=attribute_type,
                     )
 
             else:
@@ -281,7 +281,7 @@ class Tree:
         blueprint = parent_node.blueprint
 
         if not blueprint:
-            raise EntityNotFoundException(uid=document.template_ref)
+            raise EntityNotFoundException(uid=document.type)
 
         # Use the blueprint to find attributes that contains references
         for attribute in blueprint.get_blueprint_attributes():
@@ -297,7 +297,7 @@ class Tree:
                     document=document,
                     blueprint=blueprint,
                     parent=parent_node,
-                    # template_ref = specify what kind of type we can add to this array
+                    # type = specify what kind of type we can add to this array
                     item_type=get_template(self.get_repository, attribute["type"]),
                 )
                 # Check if values for the attribute exists in current document,
@@ -316,9 +316,9 @@ class Tree:
                     data_source_id=data_source_id,
                     name=name,
                     document=None,
-                    blueprint=blueprint,  # get_template(self.get_repository, reference.template_ref),
+                    blueprint=blueprint,
                     parent=parent_node,
-                    template_ref=attribute["value"],
+                    type=attribute["value"],
                 )
 
                 self._add_attributes(data_source_id, attribute_node)
@@ -330,7 +330,7 @@ class Tree:
             data_source_id=data_source_id,
             name=document.name,
             document=document,
-            blueprint=get_template(self.get_repository, document.template_ref),
+            blueprint=get_template(self.get_repository, document.type),
             parent=root_node,
         )
         self._add_attributes(data_source_id, node)

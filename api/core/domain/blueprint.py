@@ -11,25 +11,14 @@ class AttributeReference:
 
 
 class Blueprint:
-    def __init__(self, uid: str, name: str, description: str, template_ref: str):
+    def __init__(self, uid: str, name: str, description: str, type: str):
         self.uid = uid
         self.name = name
         self.description = description
-        self.template_ref = template_ref
+        self.type = type
         self.form_data = {}
         self.ui_recipe = {}
-        self.ui_schema = {}
-        # storage_recipes
-        # ui_recipes
-
-    def get_template_data_source_id(self):
-        return self.template_ref.split("/", 1)[0]
-
-    def get_template_id(self):
-        return self.template_ref.split("/", 1)[1]
-
-    def get_template_name(self):
-        return self.template_ref.split("/")[-1]
+        self.ui_schema = {}  # TODO: Remove
 
     def get_blueprint_attributes(self):
         primitives = ["string", "number", "integer", "number", "boolean"]
@@ -42,9 +31,7 @@ class Blueprint:
 
     @classmethod
     def from_dict(cls, adict):
-        instance = cls(
-            uid=adict["uid"], name=adict["name"], description=adict["description"], template_ref=adict["templateRef"]
-        )
+        instance = cls(uid=adict["uid"], name=adict["name"], description=adict["description"], type=adict["type"])
         instance.form_data = adict["formData"]
         return instance
 
@@ -53,7 +40,7 @@ class Blueprint:
             "uid": self.uid,
             "name": self.name,
             "description": self.description,
-            "templateRef": self.template_ref,
+            "type": self.type,
             "formData": self.form_data,
         }
         return result

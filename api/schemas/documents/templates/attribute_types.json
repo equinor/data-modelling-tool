@@ -1,5 +1,5 @@
 {
-  "templateRef": "templates/enum",
+  "type": "templates/enum",
   "formData": {
     "name": "blueprint_types",
     "description": "This describes a blueprint",

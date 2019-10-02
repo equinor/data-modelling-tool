@@ -8,10 +8,10 @@ from uuid import uuid4
 
 
 class AddEntityFileToPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, filename=None, template_ref=None, attribute=None, path=None):
+    def __init__(self, parent_id=None, filename=None, type=None, attribute=None, path=None):
         self.parent_id = parent_id
         self.filename = filename
-        self.template_ref = template_ref
+        self.type = type
         self.attribute = attribute
         self.path = path
 
@@ -25,8 +25,8 @@ class AddEntityFileToPackageRequestObject(req.ValidRequestObject):
         if "filename" not in adict:
             invalid_req.add_error("filename", "is missing")
 
-        if "templateRef" not in adict:
-            invalid_req.add_error("templateRef", "is missing")
+        if "type" not in adict:
+            invalid_req.add_error("type", "is missing")
 
         if invalid_req.has_errors():
             return invalid_req
@@ -34,7 +34,7 @@ class AddEntityFileToPackageRequestObject(req.ValidRequestObject):
         return AddEntityFileToPackageRequestObject(
             parent_id=adict.get("parentId"),
             filename=adict.get("filename"),
-            template_ref=adict.get("templateRef"),
+            type=adict.get("type"),
             attribute=adict.get("attribute", ""),
             path=adict.get("path", ""),
         )
@@ -49,7 +49,7 @@ class AddEntityFileToPackageUseCase(uc.UseCase):
     def process_request(self, request_object):
         parent_id: str = request_object.parent_id
         filename: str = request_object.filename
-        template_ref: str = request_object.template_ref
+        type: str = request_object.type
         attribute: str = request_object.attribute
         path: str = request_object.path
 
@@ -57,12 +57,12 @@ class AddEntityFileToPackageUseCase(uc.UseCase):
         if not parent:
             raise Exception(f"The parent, with id {parent_id}, was not found")
 
-        file = Blueprint(uid=str(uuid4()), name=filename, description="", template_ref=template_ref)
+        file = Blueprint(uid=str(uuid4()), name=filename, description="", type=type)
 
         if attribute not in parent.form_data:
             parent.form_data[attribute] = []
 
-        parent.form_data[attribute] += [{"type": template_ref, "value": f"{path}/{file.name}", "name": file.name}]
+        parent.form_data[attribute] += [{"type": type, "value": f"{path}/{file.name}", "name": file.name}]
         self.document_repository.update(parent)
 
         self.document_repository.add(file)

@@ -2,6 +2,7 @@ import json
 
 from flask import Blueprint, request, Response
 
+from core.repository.data_source_repository import DataSourceRepository
 from core.rest.Explorer import STATUS_CODES
 from core.serializers.create_data_source_serializer import CreateDataSourceSerializer
 from core.serializers.get_data_sources_serializer import GetDataSourcesSerializer
@@ -25,7 +26,8 @@ def get_all_data_sources_by_document_type() -> Response:
 
 @blueprint.route("/api/v2/data-sources/<string:data_source_id>", methods=["POST"])
 def create_data_source(data_source_id: str) -> Response:
-    use_case = CreateDataSourceUseCase()
+    data_source_repository = DataSourceRepository()
+    use_case = CreateDataSourceUseCase(data_source_repository=data_source_repository)
     request_object = CreateDataSourceRequestObject.from_dict(
         {"dataSourceId": data_source_id, "formData": request.get_json()}
     )
