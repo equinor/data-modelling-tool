@@ -5,7 +5,7 @@
   "username": "maf",
   "password": "maf",
   "tls": false,
-  "name": "local-blueprints-equinor",
+  "name": "local-blueprints",
   "database": "maf",
   "collection": "blueprints",
   "documentType": "blueprints"

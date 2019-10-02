@@ -1,0 +1,52 @@
+Cars:Parts:Engines:V6
+
+Note: Packages are contained. Blueprints are not-contained
+
+elements = split(type, ":") = 4
+
+i = 4
+for element in elements:
+    if i > 1:
+        i = i-1
+        get_folder()
+    else:
+        get_file()
+
+
+
+
+Move Cars:Parts:Engine to Cars:Engine
+
+get_package(Cars)
+Cars:Engine.append(Cars:Pars:Engine.pop())
+update_package(Cars)
+
+
+
+Import
+
+create_package(folder) -> Package:
+    for file in folder:
+        file_id = uuid()
+        create_file(file, file_id)
+        package.files += file
+     for folder in folder:
+        package.packages += create_package
+    return package
+
+
+
+Index
+
+for package in get_root_packages(data_source):
+    documents_storage = package.storage.document
+    package_storage = package.storage.package
+
+    for folder in package.folders:
+        index.append(folder)
+
+    for file in package.files:
+        if not_contained:
+            file = get_file(file.id))
+        for attribute in file.attributes:
+            index.append(attribute)
