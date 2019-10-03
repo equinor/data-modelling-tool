@@ -1,25 +1,23 @@
 {
   "type": "templates/blueprint",
-  "formData": {
-    "name": "Entity Package",
-    "description": "",
-    "attributes": [
-      {
-        "type": "string",
-        "value": "",
-        "name": "name"
-      },
-      {
-        "type": "string",
-        "value": "",
-        "name": "description"
-      },
-      {
-        "type": "templates/document_reference",
-        "name": "blueprints",
-        "dimensions": "*"
-      }
-    ],
-    "storage_recipes": []
-  }
+  "name": "Entity Package",
+  "description": "",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "description"
+    },
+    {
+      "type": "templates/document_reference",
+      "name": "blueprints",
+      "dimensions": "*"
+    }
+  ],
+  "storage_recipes": []
 }

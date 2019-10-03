@@ -1,34 +1,32 @@
 {
   "type": "templates/blueprint",
-  "formData": {
-    "name": "Enum",
-    "description": "This describes a enum",
-    "attributes": [
-      {
-        "type": "string",
-        "value": "",
-        "name": "name"
-      },
-      {
-        "type": "string",
-        "value": "",
-        "name": "description"
-      },
-      {
-        "type": "string",
-        "value": "",
-        "name": "labels",
-        "dimensions": "*"
-      },
-      {
-        "type": "string",
-        "value": "",
-        "name": "values",
-        "dimensions": "*"
-      }
-    ],
-    "storage_recipes": [
+  "name": "enum",
+  "description": "This describes a enum",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "description"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "labels",
+      "dimensions": "*"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "values",
+      "dimensions": "*"
+    }
+  ],
+  "storage_recipes": [
 
-    ]
-  }
+  ]
 }

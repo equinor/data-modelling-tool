@@ -1,20 +1,18 @@
 {
   "type": "templates/blueprint",
-  "formData": {
-    "title": "UI Recipe",
-    "description": "This describes ui recipe",
-    "attributes": [
-      {
-        "type": "string",
-        "value": "",
-        "name": "name"
-      },
-      {
-        "type": "blueprint",
-        "value": "templates/ui_attribute",
-        "name": "attributes",
-        "dimensions": "*"
-      }
-    ]
-  }
+  "title": "UI Recipe",
+  "description": "This describes ui recipe",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "templates/ui_attribute",
+      "name": "attributes",
+      "dimensions": "*"
+    }
+  ]
 }
+

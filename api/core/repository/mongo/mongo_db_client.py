@@ -62,7 +62,7 @@ class MongoDbClient(DbClient):
     def get(self, uid: str) -> Dict:
         result = self.handler[self.collection].find_one(filter={"_id": uid})
         if result:
-            result["id"] = uid
+            result["uid"] = uid
         return result
 
     def delete(self, uid: str) -> bool:

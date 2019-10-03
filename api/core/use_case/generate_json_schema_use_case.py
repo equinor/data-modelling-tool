@@ -39,7 +39,10 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
         if not blueprint:
             raise EntityNotFoundException(uid=type)
 
+        data = blueprint.to_dict()
+        del data["type"]
+
         # TODO: Can we use blueprint directly?
-        template = Template(schema=form_to_schema(blueprint.form_data), uiSchema=blueprint.ui_recipe, view=None)
+        template = Template(schema=form_to_schema(data), uiSchema={}, view=None)
 
         return res.ResponseSuccess(template.to_dict())
