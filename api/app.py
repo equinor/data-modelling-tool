@@ -7,7 +7,7 @@ import click
 
 from config import Config
 from core.tree_generator import Tree, TreeNode
-from core.domain.blueprint import Blueprint, Package
+from core.domain.blueprint import Blueprint, Package, Entity
 from rest import create_api
 from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
@@ -38,10 +38,9 @@ logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 
 @app.cli.command()
 def init_import():
-    # Internal
     import_collection("blueprints", start_path="local-blueprints")
     import_collection("dmt-templates", start_path="local-templates")
-    # import_collection("entities", model_db, start_path="local-entities-equinor")
+    import_collection("entities", start_path="local-entities")
 
 
 PATHS = {
@@ -49,7 +48,6 @@ PATHS = {
     "entities": "/code/schemas/documents/entities",
     "dmt-templates": "/code/schemas/documents/templates",
 }
-
 
 def generate_tree(base_path):
     root = None
@@ -70,17 +68,26 @@ def generate_tree(base_path):
             with open(file) as json_file:
                 data = json.load(json_file)
 
-            blueprint = Blueprint(
-                name=data["name"] if "name" in data else filename.replace(".json", ""),
-                description="",
-                type=data["type"] if "type" in data else "templates/blueprint",
-            )
-            if "attributes" in data:
-                blueprint.attributes = data["attributes"]
-            else:
-                logger.warn(f"Missing attributes in '{filename}'")
+            type = data["type"] if "type" in data else "templates/blueprint"
 
-            TreeNode(document=blueprint, parent=node)
+            if type == "templates/blueprint":
+                blueprint = Blueprint(
+                    name=data["name"] if "name" in data else filename.replace(".json", ""),
+                    description="",
+                    type=type
+                )
+                if "attributes" in data:
+                    blueprint.attributes = data["attributes"]
+                else:
+                    logger.warn(f"Missing attributes in '{filename}'")
+                TreeNode(document=blueprint, parent=node)
+            else:
+                if "name" not in data:
+                    data["name"] = filename.replace(".json", "")
+
+                entity = Entity(data)
+                TreeNode(document=entity, parent=node)
+
         parent = node
     return root
 
@@ -150,4 +157,5 @@ def nuke_db():
 
 
 if __name__ == "__main__":
-    import_collection("blueprints", start_path="local-blueprints")
+    #import_collection("blueprints", start_path="local-blueprints")
+    import_collection("entities", start_path="local-entities")

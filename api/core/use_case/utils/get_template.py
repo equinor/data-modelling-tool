@@ -31,6 +31,7 @@ def _get_remote_template(get_repository, type: str) -> Blueprint:
 
 # TODO: Rename get_templates to get_blueprint?
 def get_template(get_repository, type: str) -> Blueprint:
+    print(type)
     if _is_dmt_template(type):
         return _get_dmt_template(type)
     else:
