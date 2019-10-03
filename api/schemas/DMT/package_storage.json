@@ -1,0 +1,16 @@
+{
+  "type": "templates/storage",
+  "name": "PackageStorage",
+  "description": "Storage recipe for a DMT:Package",
+  "attributes": [
+    {
+      "name": "blueprints",
+      "contained": false
+    },
+    {
+      "name": "packages",
+      "contained": true
+    }
+  ]
+}
+

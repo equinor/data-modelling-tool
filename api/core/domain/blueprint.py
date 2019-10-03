@@ -2,6 +2,9 @@ from typing import Dict
 from uuid import uuid4
 
 
+from typing import List, Dict
+
+
 class AttributeReference:
     def __init__(self, name: str, type: str, dimensions: str, value: str = None):
         self.name = name
@@ -55,49 +58,56 @@ class Blueprint(Base):
         return self.to_dict() == other.to_dict()
 
 
-class Package(Base):
-    def __init__(self, name: str, description: str, type: str, is_root: bool):
-        super().__init__()
+class Package:
+    def __init__(
+        self,
+        name: str,
+        description: str,
+        blueprints: List[Dict] = None,
+        dependencies: List[Dict] = [],
+        uid: str = None,
+    ):
+        self.uid = uid
         self.name = name
         self.description = description
-        self.type = type
+        self.type = "template/package"
+        # TODO: Create Dependencies class
+        self.dependencies = dependencies
+        self.blueprints = blueprints
         self.packages = []
-        self.blueprints = []
-        self.is_root = is_root
 
-    def add_package(self, item):
-        self.packages.append(item)
-
-    def add_blueprint(self, item):
-        self.blueprints.append(item)
+    def addPackage(self, package):
+        self.packages.append(package)
 
     @classmethod
     def from_dict(cls, adict):
         instance = cls(
+            uid=adict["uid"],
             name=adict["name"],
-            description=adict.get("description", ""),
-            type=adict["type"],
-            is_root=adict.get("isRoot", False),
+            description=adict["description"],
+            blueprints=adict["blueprints"],
+            dependencies=adict["dependencies"],
         )
-        instance.packages = adict["packages"]
-        instance.blueprints = adict["blueprints"]
-        if "uid" in adict:
-            instance._uid = adict["uid"]
+
+        instance.packages = [Package.from_dict(package) for package in adict["packages"]]
+
         return instance
 
     def to_dict(self):
-        return {
+        result = {
+            "uid": self.uid,
             "name": self.name,
             "description": self.description,
             "type": self.type,
-            "attributes": self.attributes,
-            "packages": self.packages,
             "blueprints": self.blueprints,
-            "isRoot": self.is_root,
+            "dependencies": self.dependencies,
+            "packages": [package.to_dict() for package in self.packages],
         }
+        return result
 
     def __eq__(self, other):
         return self.to_dict() == other.to_dict()
+
 
 class Entity(Base):
     def __init__(self, init=None):
@@ -125,36 +135,3 @@ class Entity(Base):
 
     def to_dict(self):
         return self.__dict__
-
-"""
-class Entity(Base):
-    def __init__(self, name: str, type: str, data: Dict):
-        super().__init__()
-        self.name = name
-        self.type = type
-        self.data = data
-
-        if not data:
-            self.data = {}
-
-    @classmethod
-    def from_dict(cls, adict):
-        instance = cls(
-            name=adict["name"],
-            type=adict["type"],
-            data=adict.get("data", {}),
-        )
-        if "uid" in adict:
-            instance._uid = adict["uid"]
-        return instance
-
-    def to_dict(self):
-        return {
-            "name": self.name,
-            "type": self.type,
-            "data": self.data,
-        }
-
-    def __eq__(self, other):
-        return self.to_dict() == other.to_dict()
-"""

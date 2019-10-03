@@ -1,0 +1,47 @@
+{
+  "type": "templates/blueprint",
+  "name": "blueprint_attribute",
+  "description": "This describes a blueprint attribute",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "description"
+    },
+    {
+      "type": "string",
+      "name": "value",
+      "value": ""
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "values": [
+        "string",
+        "integer",
+        "number",
+        "boolean",
+        "local-blueprints-equinor/collections/blueprint"
+      ],
+      "labels": [
+        "String",
+        "Integer",
+        "Number",
+        "Boolean",
+        "Blueprint"
+      ]
+    },
+    {
+      "type": "string",
+      "name": "dimensions",
+      "value": ""
+    }
+  ],
+  "storage_recipes": []
+}
+
