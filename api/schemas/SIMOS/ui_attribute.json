@@ -1,0 +1,38 @@
+{
+  "type": "templates/blueprint",
+  "name": "UIAttribute",
+  "description": "This describes a storage recipe",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "description"
+    },
+    {
+      "type": "boolean",
+      "value": "",
+      "name": "optional"
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "enum": [
+        "templates/ui_string_types"
+      ],
+      "enumNames": [
+        "String"
+      ],
+      "default": "small"
+    },
+    {
+      "type": "blueprint",
+      "value": "",
+      "name": "recipe"
+    }
+  ]
+}

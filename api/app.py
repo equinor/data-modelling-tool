@@ -1,19 +1,21 @@
 import json
 import os
 from os.path import dirname
+from uuid import uuid4
 
-from flask import Flask
 import click
+from flask import Flask
 
 from config import Config
 from core.tree_generator import Tree, TreeNode
+from core.domain.blueprint import Blueprint, Package, Entity
 from core.domain.blueprint import Blueprint, Package
+from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index
 from rest import create_api
 from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
 from utils.files import getListOfFiles
 from utils.logging import logger
-from core.rest import Document as DocumentBlueprint, Explorer, Index, DataSource
 
 
 def create_app(config):
@@ -41,6 +43,11 @@ def init_import():
     import_collection("dmt-templates", start_path="templates")
     import_collection("entities", start_path="local-entities")
 
+PACKAGE_PATHS = [
+    "/code/schemas/CarsDemo",
+    # "/code/schemas/demo__entities",
+    "/code/schemas/SIMOS",
+    "/code/schemas/DMT",
 
 PATHS = {
     "blueprints": "/code/schemas/documents/blueprints",
@@ -48,10 +55,8 @@ PATHS = {
     "dmt-templates": "/code/schemas/documents/templates",
 }
 
-
 def generate_tree(base_path):
     root = None
-    parent = None
     for dirpath, _, files in os.walk(base_path):
         if dirpath == base_path:
             continue
@@ -64,36 +69,47 @@ def generate_tree(base_path):
         else:
             node.parent = parent
 
-def import_package(path):
-    package = {
-        "name": os.path.basename(path).split(".")[0],
-        "description": "",
-        "type": "templates/package",
-        "packages": [],
-        "files": [],
-    }
-    for file in next(os.walk(path))[2]:
-        with open(f"{path}/{file}") as json_file:
+def import_package(path) -> Package:
+    package = Package(name=os.path.basename(path).split(".")[0], description="", blueprints=[])
+
+    for blueprint in next(os.walk(path))[2]:
+        print(f"working on {blueprint}")
+        # TODO: Check type. Handle things not a blueprint
+        if blueprint[0] == "_":
+            continue
+        with open(f"{path}/{blueprint}") as json_file:
             data = json.load(json_file)
-            data["uid"] = str(uuid4())
-            data["description"] = data.get("description", "")
-        file = Blueprint.from_dict(data)
-        # TODO:
-        print(f"IMPORTING {file.name}")
-        model_db.blueprints.replace_one({"_id": file.uid}, file.to_dict(), upsert=True)
-        package["files"].append({"uid": file.uid, "name": file.name})
+        data["uid"] = str(uuid4())
+        blueprint = Blueprint.from_dict(data)
+        # TODO: database:collection
+        print(f"IMPORTING {blueprint.name}")
+        model_db.blueprints.replace_one({"_id": blueprint.uid}, blueprint.to_dict(), upsert=True)
+        package.blueprints.append({"uid": blueprint.uid, "name": blueprint.name})
+
     for folder in next(os.walk(path))[1]:
-        package["packages"].append(import_package(f"{path}/{folder}"))
+        # TODO: append Package, not package: Dict
+        package.addPackage(import_package(f"{path}/{folder}"))
+
     return package
 
 
 @app.cli.command()
 def import_blueprint_package():
-    package = import_package("/code/schemas/documents/blueprints/package_1")
-    package["uid"] = str(uuid4())
-    print(f"IMPORTING PACKAGE {package['name']}")
-    model_db.blueprints.replace_one({"_id": package["uid"]}, package, upsert=True)
-    # print(package)
+    for folder in PACKAGE_PATHS:
+
+        package = import_package(folder)
+        package.uid = str(uuid4())
+        # package.dependencies.append({"car": {"version": "1.2.3",
+        #                                      "data-source": "local-blueprints",
+        #                                      "package": "car",
+        #                                      }})
+        # package.dependencies.append({"SIMOS": {"version": "0.0.1",
+        #                                        "data-source": "templates",
+        #                                        "package": "SIMOS",
+        #                                        }})
+
+        print(f"IMPORTING PACKAGE {package.name}")
+        model_db.blueprints.replace_one({"_id": package.uid}, package.to_dict(), upsert=True)
 
 
 def import_documents(collection, database, start_path=None):
@@ -107,21 +123,29 @@ def import_documents(collection, database, start_path=None):
 
         documents = []
         for filename in files:
-            logger.info(f"Import {filename}")
-            file = os.path.join(dirpath, filename)
+            file = os.path.join(path, filename)
             with open(file) as json_file:
                 data = json.load(json_file)
 
             type = data["type"] if "type" in data else "templates/blueprint"
 
-            blueprint = Blueprint(
-                name=data["name"] if "name" in data else filename.replace(".json", ""), description="", type=type
-            )
-            if "attributes" in data:
-                blueprint.attributes = data["attributes"]
+            if type == "templates/blueprint":
+                blueprint = Blueprint(
+                    name=data["name"] if "name" in data else filename.replace(".json", ""),
+                    description="",
+                    type=type
+                )
+                if "attributes" in data:
+                    blueprint.attributes = data["attributes"]
+                else:
+                    logger.warn(f"Missing attributes in '{filename}'")
+                TreeNode(document=blueprint, parent=node)
             else:
-                logger.warn(f"Missing attributes in '{filename}'")
-            TreeNode(document=blueprint, parent=node)
+                if "name" not in data:
+                    data["name"] = filename.replace(".json", "")
+
+                entity = Entity(data)
+                TreeNode(document=entity, parent=node)
 
         parent = node
     return root
@@ -192,5 +216,5 @@ def nuke_db():
 
 
 if __name__ == "__main__":
-    # import_collection("blueprints", start_path="local-blueprints")
+    #import_collection("blueprints", start_path="local-blueprints")
     import_collection("entities", start_path="local-entities")

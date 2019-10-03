@@ -32,16 +32,16 @@ def get_json_schema(type: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["GET"])
-def get(data_source_id: str, document_id: str):
-    logger.info(f"Getting document '{document_id}' from data source '{data_source_id}'")
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<document_path>", methods=["GET"])
+def get(data_source_id: str, document_path: str):
+    logger.info(f"Getting document '{document_path}' from data source '{data_source_id}'")
 
     db = DataSource(id=data_source_id)
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
     use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
-    request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})
+    request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_path})
     response = use_case.execute(request_object)
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 

@@ -96,3 +96,6 @@ class MongodbClient:
             self.handler[self.collection].insert_one(document).inserted_id
         except DuplicateKeyError:
             raise EntityAlreadyExistsException(document["id"])
+
+    def find_one(self, filters):
+        return self.handler[self.collection].find_one(filter=filters)

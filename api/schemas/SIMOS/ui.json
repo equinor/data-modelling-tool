@@ -1,0 +1,18 @@
+{
+  "type": "templates/blueprint",
+  "name": "UIRecipe",
+  "description": "This describes ui recipe",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "blueprint",
+      "value": "templates/ui_attribute",
+      "name": "attributes",
+      "dimensions": "*"
+    }
+  ]
+}

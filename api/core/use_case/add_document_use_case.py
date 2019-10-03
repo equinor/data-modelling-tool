@@ -1,6 +1,5 @@
 from core.domain.document import Document
-from utils.schema_tools.form_to_schema import form_to_schema
-from core.repository.template_repository import get_template_by_id
+from core.repository.template_repository import get_template_by_document_type
 from jsonschema import validate, ValidationError
 
 
@@ -9,18 +8,13 @@ class AddDocumentUseCase:
         self.document_repo = document_repo
 
     def execute(self, document: Document) -> Document:
-        template_id = document.template_ref
-
-        if not template_id:
+        if not document.type:
             raise Exception("The requested document does not contain a template reference")
 
-        if document.get_template_data_source_id() == "templates":
-            template = get_template_by_id(document.get_template_name())
-        else:
-            template = form_to_schema(self.document_repo.get(document.template_ref))
+        template = get_template_by_document_type(document.type)
 
         try:
-            validate(instance=document.form_data, schema=template.schema)
+            validate(instance=document.form_data, schema=template)
         except ValidationError as error:
             raise error
 
