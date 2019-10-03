@@ -200,6 +200,7 @@ class Index:
 
 def print_tree(root_node):
     for pre, fill, node in RenderTree(root_node):
+        print(node)
         treestr = "%s%s" % (pre, node.name)
         print(treestr.ljust(8), node.uid, node.to_node()["nodeType"])
 
@@ -333,9 +334,7 @@ class Tree:
 
                 self._add_attributes(data_source_id, attribute_node)
 
-    def generate(self, data_source_id: str, data_source_name: str, document) -> Index:
-        root_node = DataSourceNode(data_source_id=data_source_id, name=data_source_name)
-
+    def generate(self, data_source_id: str, document, root_node) -> Index:
         node = FolderNode(
             data_source_id=data_source_id,
             name=document.name,
@@ -345,12 +344,12 @@ class Tree:
         )
         self._add_attributes(data_source_id, node)
 
-        return root_node
-
 
 class GenerateIndexUseCase:
     def __init__(
-        self, blueprint_repository: MongoBlueprintRepository, package_repository: PackageRepository, get_repository
+        self, blueprint_repository: MongoBlueprintRepository,
+            package_repository: PackageRepository,
+            get_repository
     ):
         self.blueprint_repository = blueprint_repository
         self.package_repository = package_repository
@@ -364,7 +363,7 @@ class GenerateIndexUseCase:
         root_node = DataSourceNode(data_source_id=data_source_id, name=data_source_name)
 
         for package in self.package_repository.list():
-            root_node = self.tree.generate(data_source_id, data_source_name, package)
+            self.tree.generate(data_source_id, package, root_node)
 
         print_tree(root_node)
 
