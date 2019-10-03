@@ -5,7 +5,7 @@
   "username": "maf",
   "password": "maf",
   "tls": false,
-  "name": "local-templates",
+  "name": "templates",
   "database": "dmt",
   "collection": "dmt-templates",
   "documentType": "blueprints"

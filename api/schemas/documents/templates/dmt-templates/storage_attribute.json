@@ -1,42 +1,40 @@
 {
   "type": "templates/blueprint",
-  "formData": {
-    "title": "Storage",
-    "description": "This describes a storage recipe",
-    "attributes": [
-      {
-        "type": "string",
-        "value": "",
-        "name": "name"
-      },
-      {
-        "type": "string",
-        "value": "",
-        "name": "description"
-      },
-      {
-        "type": "boolean",
-        "value": "",
-        "name": "contained"
-      },
-      {
-        "type": "string",
-        "name": "type",
-        "enum": [
-          "small",
-          "large"
-        ],
-        "enumNames": [
-          "Small",
-          "Large"
-        ],
-        "default": "small"
-     },
-     {
-        "type": "blueprint",
-        "value": "",
-        "name": "recipe"
-      }
-    ]
-  }
+  "title": "Storage",
+  "description": "This describes a storage recipe",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "description"
+    },
+    {
+      "type": "boolean",
+      "value": "",
+      "name": "contained"
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "enum": [
+        "small",
+        "large"
+      ],
+      "enumNames": [
+        "Small",
+        "Large"
+      ],
+      "default": "small"
+   },
+   {
+      "type": "string",
+      "value": "",
+      "name": "recipe"
+    }
+  ]
 }

@@ -175,7 +175,6 @@ class PackageNode(Node):
         return f"{self.start_path}/{self.document.uid}"
 
     def to_node(self):
-        print(self.start_path)
         return {
             "parentId": self.parent.id,
             "filename": self.name,
@@ -200,9 +199,8 @@ class Index:
 
 def print_tree(root_node):
     for pre, fill, node in RenderTree(root_node):
-        print(node)
         treestr = "%s%s" % (pre, node.name)
-        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"])
+        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"], node.document.type if node.document else "")
 
 
 class Tree:
@@ -233,7 +231,10 @@ class Tree:
     def _add_references(self, data_source_id, references, parent_node, attribute_name, attribute_type):
         index = 0
         for ref in references:
-            logger.info(ref)
+            if "type" not in ref:
+                logger.warn(f"Missing type for ref {ref}")
+                continue
+
             if isinstance(ref, dict) and ref["type"] == "ref":
                 logger.warn(f"Add ref '{ref}'")
                 document = self.blueprint_repository.get(ref["_id"])
@@ -302,6 +303,7 @@ class Tree:
 
             # If the attribute is an array
             if "dimensions" in attribute and attribute["dimensions"] == "*":
+                item_type = get_template(self.get_repository, attribute["type"])
                 # Create a placeholder node that can contain real documents
                 attribute_node = ArrayPlaceholderNode(
                     data_source_id=data_source_id,
@@ -310,13 +312,16 @@ class Tree:
                     blueprint=blueprint,
                     parent=parent_node,
                     # type = specify what kind of type we can add to this array
-                    item_type=get_template(self.get_repository, attribute["type"]),
+                    item_type=item_type,
                 )
                 # Check if values for the attribute exists in current document,
                 # this means that we have added some documents to this array
                 if hasattr(document, name):
                     values = getattr(document, name)
-                    self._add_references(data_source_id, values, attribute_node, name, attribute["type"])
+                    if "type" in attribute:
+                        self._add_references(data_source_id, values, attribute_node, name, attribute["type"])
+                    else:
+                        logger.warn(f"Missing type {attribute}")
             # If the attribute is a single reference
             else:
                 blueprint = get_template(self.get_repository, attribute["value"])

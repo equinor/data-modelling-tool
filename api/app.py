@@ -39,7 +39,7 @@ logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 @app.cli.command()
 def init_import():
     import_collection("blueprints", start_path="local-blueprints")
-    import_collection("dmt-templates", start_path="local-templates")
+    import_collection("dmt-templates", start_path="templates")
     import_collection("entities", start_path="local-entities")
 
 
@@ -64,6 +64,7 @@ def generate_tree(base_path):
             node.parent = parent
 
         for filename in files:
+            logger.info(f"Import {filename}")
             file = os.path.join(dirpath, filename)
             with open(file) as json_file:
                 data = json.load(json_file)

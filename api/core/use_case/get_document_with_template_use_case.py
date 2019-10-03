@@ -39,7 +39,10 @@ class GetDocumentWithTemplateUseCase(uc.UseCase):
 
         blueprint = get_template(self.get_repository, document.type)
 
-        template = Template(schema=form_to_schema(blueprint.form_data), uiSchema=blueprint.ui_recipe, view=None)
+        data = blueprint.to_dict()
+        del data["type"]
+
+        template = Template(schema=form_to_schema(data), uiSchema={}, view=None)
 
         data = {"template": template.to_dict(), "document": document.to_dict()}
 
