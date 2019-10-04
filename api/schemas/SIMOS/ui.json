@@ -1,5 +1,5 @@
 {
-  "type": "templates/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "name": "UIRecipe",
   "description": "This describes ui recipe",
   "attributes": [
@@ -9,8 +9,8 @@
       "name": "name"
     },
     {
-      "type": "blueprint",
-      "value": "templates/ui_attribute",
+      "type": "templates/SIMOS/Blueprint",
+      "value": "templates/SIMOS/UiAttribute",
       "name": "attributes",
       "dimensions": "*"
     }

@@ -5,36 +5,43 @@ class Package:
     def __init__(
         self,
         name: str,
-        description: str,
-        blueprints: List[Dict] = None,
+        uid: str,
         dependencies: List[Dict] = [],
-        uid: str = None,
+        description: str = "",
+        type: str = "templates/DMT/Package",
+        blueprints: List[Dict] = None,
     ):
-        self.uid = uid
         self.name = name
+        self.uid = uid
         self.description = description
-        self.type = "template/package"
+        self.type = type
         # TODO: Create Dependencies class
         self.dependencies = dependencies
         self.blueprints = blueprints
         self.packages = []
 
-    def addPackage(self, package):
-        self.packages.append(package)
-
     @classmethod
     def from_dict(cls, adict):
         instance = cls(
-            uid=adict["uid"],
-            name=adict["name"],
-            description=adict["description"],
-            blueprints=adict["blueprints"],
-            dependencies=adict["dependencies"],
+            name=adict.get("name", ""),
+            uid=adict.get("_id", ""),
+            description=adict.get("description", ""),
+            blueprints=adict.get("blueprints", ""),
+            dependencies=adict.get("dependencies", ""),
+            type=adict.get("type", ""),
         )
 
-        instance.packages = [Package.from_dict(package) for package in adict["packages"]]
+        instance.packages = [Package.from_dict(package) for package in adict.get("packages", "")]
 
         return instance
+
+    # TODO: Find other way to do this
+    @staticmethod
+    def contained_package_to_dict(package):
+        if isinstance(package, Package):
+            return package.to_dict()
+        if isinstance(package, Dict):
+            return package
 
     def to_dict(self):
         result = {
@@ -44,7 +51,7 @@ class Package:
             "type": self.type,
             "blueprints": self.blueprints,
             "dependencies": self.dependencies,
-            "packages": [package.to_dict() for package in self.packages],
+            "packages": [self.contained_package_to_dict(package) for package in self.packages],
         }
         return result
 

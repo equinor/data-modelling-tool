@@ -1,6 +1,6 @@
 {
-  "type": "templates/blueprint",
-  "name": "UIAttribute",
+  "type": "templates/SIMOS/Blueprint",
+  "name": "UiAttribute",
   "description": "This describes a storage recipe",
   "attributes": [
     {
@@ -22,17 +22,12 @@
       "type": "string",
       "name": "type",
       "enum": [
-        "templates/ui_string_types"
+        "templates/SIMOS/UiStringTypes"
       ],
       "enumNames": [
         "String"
       ],
       "default": "small"
-    },
-    {
-      "type": "blueprint",
-      "value": "",
-      "name": "recipe"
     }
   ]
 }

@@ -34,7 +34,7 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
         if not type:
             raise Exception("Missing type")
 
-        blueprint = get_blueprint(self.get_repository, type)
+        blueprint = get_blueprint(type)
 
         if not blueprint:
             raise EntityNotFoundException(uid=type)

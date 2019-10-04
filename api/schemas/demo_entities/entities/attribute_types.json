@@ -1,0 +1,20 @@
+{
+  "type": "template/SIMOS/Enum",
+  "name": "blueprint_types",
+  "description": "This describes a blueprint",
+  "values": [
+    "string",
+    "integer",
+    "number",
+    "boolean",
+    "local-blueprints/collections/blueprint"
+  ],
+  "labels": [
+    "String",
+    "Integer",
+    "Number",
+    "Boolean",
+    "Blueprint"
+  ],
+  "storage_recipes": []
+}

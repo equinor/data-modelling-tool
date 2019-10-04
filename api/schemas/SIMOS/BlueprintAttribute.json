@@ -1,5 +1,5 @@
 {
-  "type": "templates/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "name": "BlueprintAttribute",
   "description": "This describes a blueprint attribute",
   "attributes": [
@@ -26,7 +26,7 @@
         "integer",
         "number",
         "boolean",
-        "local-blueprints-equinor/collections/blueprint"
+        "local-blueprints/collections/blueprint"
       ],
       "labels": [
         "String",

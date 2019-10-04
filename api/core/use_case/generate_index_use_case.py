@@ -159,7 +159,7 @@ class Tree:
             data_source_id=data_source_id,
             name=document.name,
             document=document,
-            blueprint=get_blueprint(self.get_repository, document.type),
+            blueprint=get_blueprint(document.type),
             parent=parent_node,
             menu_items=[
                 {
@@ -184,7 +184,7 @@ class Tree:
             data_source_id=data_source_id,
             name=document.name,
             document=document,
-            blueprint=get_blueprint(self.get_repository, document.type),
+            blueprint=get_blueprint(document.type),
             parent=parent_node,
             menu_items=[],
         )
@@ -208,15 +208,15 @@ class Tree:
                 if ref["type"] not in primitives:
                     if "value" in ref:
                         logger.info(f"Add reference dict for '{ref['name']}'")
-                        document = get_blueprint(self.get_repository, ref["value"])
+                        document = get_blueprint(ref["value"])
                         if not document:
                             raise EntityNotFoundException(uid=ref["value"])
-                        if document.type == "templates/package":
+                        if document.type == "templates/SIMOS/Package":
                             self._add_package(data_source_id, document, parent_node)
                         else:
                             self._add_document(data_source_id, document, parent_node, attribute_name)
                     else:
-                        blueprint = get_blueprint(self.get_repository, ref["type"])
+                        blueprint = get_blueprint(ref["type"])
                         if blueprint:
                             attribute_node = EntityPlaceholderNode(
                                 data_source_id=data_source_id,
@@ -265,7 +265,7 @@ class Tree:
 
             # If the attribute is an array
             if "dimensions" in attribute and attribute["dimensions"] == "*":
-                item_type = get_blueprint(self.get_repository, attribute["type"])
+                item_type = get_blueprint(attribute["type"])
                 # Create a placeholder node that can contain real documents
 
                 attribute_node = DocumentNode(
@@ -305,8 +305,7 @@ class Tree:
                         logger.warn(f"Missing type {attribute}")
             # If the attribute is a single reference
             else:
-                blueprint = get_template(self.get_repository, attribute["type"])
-                blueprint = get_blueprint(self.get_repository, attribute["value"])
+                blueprint = get_blueprint(attribute["value"])
                 # document = Blueprint(**document.form_data[name]) if document and name in document.form_data else None
                 # if document:
                 #    document.template_ref = attribute["value"]
@@ -394,6 +393,8 @@ class GenerateIndexUseCase:
         root_node = DocumentNode(data_source_id=data_source_id, name=data_source_name, menu_items=[])
 
         for package in self.package_repository.list():
+            # TODO: Make Indexer Handle Package Class
+            package.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in package.packages]
             self.tree.generate(data_source_id, package, root_node)
 
         print_tree(root_node)

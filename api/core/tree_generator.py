@@ -1,6 +1,7 @@
+from anytree import NodeMixin, RenderTree
+
 from classes.data_source import DataSource
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
-from anytree import NodeMixin, RenderTree
 from core.repository.repository_factory import get_repository, RepositoryType
 
 
@@ -10,12 +11,12 @@ class TreeNode(NodeMixin):
         self.parent = parent
 
     def process(self):
-        if self.document.type == "templates/package":
+        if self.document.type == "templates/DMT/Package":
             for child in self.children:
                 reference = {"_id": child.document.uid, "name": child.document.name, "type": "ref"}
-                if child.document.type == "templates/blueprint":
+                if child.document.type == "templates/SIMOS/Blueprint":
                     self.document.add_blueprint(reference)
-                elif child.document.type == "templates/package":
+                elif child.document.type == "templates/DMT/Package":
                     self.document.add_package(reference)
                 else:
                     self.document.add_blueprint(reference)
