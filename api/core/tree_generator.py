@@ -32,7 +32,7 @@ class Tree:
         )
         for pre, fill, node in RenderTree(root):
             node.process()
-            blueprint_repository.add({"uid": node.document.uid, "data": node.document})
+            blueprint_repository.add(node.document)
 
     def print_tree(self, root):
         for pre, fill, node in RenderTree(root):

@@ -23,7 +23,6 @@ export default (props: Props) => {
   } = props
   const isDisabled = selectedDocumentId.length === 0
 
-  const data = documentData.document.data
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
@@ -40,8 +39,7 @@ export default (props: Props) => {
         </div>
       </div>
       <div style={{ margin: 20 }}>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
-        {/*<ViewData data={documentData} disabled={isDisabled} />*/}
+        <ViewData data={documentData} disabled={isDisabled} />
       </div>
     </>
   )

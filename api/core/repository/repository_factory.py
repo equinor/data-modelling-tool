@@ -1,5 +1,4 @@
 from core.repository.mongo.document_repository import MongoDocumentRepository
-from core.repository.mongo.dto_repository import DocumentDtoRepository
 from core.repository.mongo.mongo_db_client import MongoDbClient
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 
@@ -12,7 +11,6 @@ class RepositoryType(object):
     DocumentRepository = "DocumentRepository"
     PackageRepository = "PackageRepository"
     BlueprintRepository = "BlueprintRepository"
-    DtoRepository = "DtoRepository"
 
 
 def get_repository(repository_type: RepositoryType, db):
@@ -34,5 +32,3 @@ def get_repository(repository_type: RepositoryType, db):
             return MongoBlueprintRepository(db)
         if repository_type == RepositoryType.PackageRepository:
             return MongoPackageRepository(db)
-        if repository_type == RepositoryType.DtoRepository:
-            return DocumentDtoRepository(db)
