@@ -38,9 +38,9 @@ def get(data_source_id: str, document_id: str):
 
     db = DataSource(id=data_source_id)
 
-    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
+    dto_repository = get_repository(RepositoryType.DtoRepository, db)
 
-    use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
+    use_case = GetDocumentWithTemplateUseCase(dto_repository, get_repository)
     request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})
     response = use_case.execute(request_object)
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
@@ -78,7 +78,7 @@ def put(data_source_id: str, document_id: str, attribute_path: str = None):
 
     db = DataSource(id=data_source_id)
 
-    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
+    document_repository = get_repository(RepositoryType.DtoRepository, db)
 
     add_use_case = UpdateDocumentUseCase(document_repository)
     add_use_case.execute(document_id, data, attribute_path)
