@@ -1,6 +1,6 @@
 {
   "type": "templates/blueprint",
-  "name": "Enum",
+  "name": "Storage",
   "description": "This describes a enum",
   "attributes": [
     {
