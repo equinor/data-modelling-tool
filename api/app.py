@@ -8,6 +8,7 @@ from flask import Flask
 
 from config import Config
 from core.domain.blueprint import Blueprint
+from core.domain.entity import Entity
 from core.domain.package import Package
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index
 from core.tree_generator import Tree, TreeNode
@@ -73,35 +74,35 @@ def generate_tree(base_path):
         #     node.parent = parent
 
 
-def import_package(path) -> Package:
+def _import_package(path) -> Package:
     package = Package(name=os.path.basename(path).split(".")[0], description="", blueprints=[])
 
-    for blueprint in next(os.walk(path))[2]:
-        print(f"working on {blueprint}")
-        # TODO: Check type. Handle things not a blueprint
-        if blueprint[0] == "_":
-            continue
-        with open(f"{path}/{blueprint}") as json_file:
+    for document in next(os.walk(path))[2]:
+        print(f"working on {document}")
+        with open(f"{path}/{document}") as json_file:
             data = json.load(json_file)
         data["uid"] = str(uuid4())
-        blueprint = Blueprint.from_dict(data)
+        if data["type"] == "templates/blueprint":
+            document = Blueprint.from_dict(data)
+        else:
+            document = Entity(data)
         # TODO: database:collection
-        print(f"IMPORTING {blueprint.name}")
-        model_db.blueprints.replace_one({"_id": blueprint.uid}, blueprint.to_dict(), upsert=True)
-        package.blueprints.append({"uid": blueprint.uid, "name": blueprint.name})
+        print(f"IMPORTING {document.name}")
+        model_db.blueprints.replace_one({"_id": document.uid}, document.to_dict(), upsert=True)
+        package.blueprints.append({"uid": document.uid, "name": document.name})
 
     for folder in next(os.walk(path))[1]:
         # TODO: append Package, not package: Dict
-        package.addPackage(import_package(f"{path}/{folder}"))
+        package.addPackage(_import_package(f"{path}/{folder}"))
 
     return package
 
 
 @app.cli.command()
-def import_blueprint_package():
+def import_package():
     for folder in PACKAGE_PATHS:
         # TODO: Allow only one root-package with the same name
-        package = import_package(folder)
+        package = _import_package(folder)
         package.uid = str(uuid4())
         # package.dependencies.append({"SIMOS": {
         #     "version": "0.0.1",
