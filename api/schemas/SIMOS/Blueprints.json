@@ -1,40 +1,40 @@
 {
-  "type": "templates/blueprint",
-    "name": "Blueprint",
-    "description": "This describes a blueprint",
-    "attributes": [
-      {
-        "type": "string",
-        "value": "",
-        "name": "name"
-      },
-      {
-        "type": "string",
-        "value": "",
-        "name": "description"
-      },
-      {
-        "type": "templates/blueprint_attribute",
-        "dimensions": "*",
-        "name": "attributes"
-      },
-      {
-        "type": "templates/storage",
-        "dimensions": "*",
-        "name": "storage_recipes"
-      },
-      {
-        "type": "templates/ui",
-        "dimensions": "*",
-        "name": "ui_recipes"
-      }
-    ],
-    "storage_recipes": [],
-    "ui_recipes": [
-      {
-        "type": "local-blueprints-equinor/collections/ui",
-        "value": "some ui definition",
-        "name": ""
-      }
-    ]
+  "type": "templates/SIMOS/Blueprint",
+  "name": "Blueprint",
+  "description": "This describes a blueprint",
+  "attributes": [
+    {
+      "type": "string",
+      "value": "",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "value": "",
+      "name": "description"
+    },
+    {
+      "type": "templates/SIMOS/BlueprintAttribute",
+      "dimensions": "*",
+      "name": "attributes"
+    },
+    {
+      "type": "templates/SIMOS/Storage",
+      "dimensions": "*",
+      "name": "storage_recipes"
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "dimensions": "*",
+      "name": "ui_recipes"
+    }
+  ],
+  "storage_recipes": [],
+  "ui_recipes": [
+    {
+      "type": "local-blueprints/collections/ui",
+      "value": "some ui definition",
+      "name": ""
+    }
+  ]
 }

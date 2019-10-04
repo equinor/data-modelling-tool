@@ -1,6 +1,6 @@
 {
   "type": "local-blueprints/blueprints/package_1/car",
-  "name": "Volvo",
+  "name": "volvo",
   "description": "This is a nice car",
   "engine": {
     "name": "Engine name"

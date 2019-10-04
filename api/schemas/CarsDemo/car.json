@@ -1,5 +1,5 @@
 {
-  "type": "templates/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "name": "Car",
   "description": "This describes a car",
   "attributes": [
@@ -14,14 +14,14 @@
       "name": "manufacturer"
     },
     {
-      "type": "local-blueprints-equinor/blueprints/package_1/wheel",
-      "value": "local-blueprints-equinor/blueprints/package_1/wheel",
+      "type": "templates/SIMOS/Blueprint",
+      "value": "templates/CarsDemo/Wheel",
       "name": "wheels",
       "dimensions": "*"
     },
     {
-      "type": "templates/blueprint",
-      "value": "local-blueprints-equinor/blueprints/package_1/engine",
+      "type": "templates/SIMOS/Blueprint",
+      "value": "templates/CarsDemo/subdir/Engine",
       "name": "engine"
     }
   ]

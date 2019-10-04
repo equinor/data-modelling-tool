@@ -1,5 +1,5 @@
 {
-  "type": "templates/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "name": "Package",
   "description": "This is a blueprint for a package that contains documents and other packages",
   "attributes": [
@@ -17,20 +17,20 @@
       "name": "isRootPackage"
     },
     {
-      "type": "templates/blueprint",
+      "type": "templates/SIMOS/Blueprint",
       "name": "blueprints",
       "dimensions": "*"
     },
     {
-      "type": "templates/package",
+      "type": "templates/DMT/Package",
       "name": "packages",
       "dimensions": "*"
     }
   ],
   "storage_recipes": [
     {
-      "type": "templates/storage",
-      "value": "templates/package_storage",
+      "type": "templates/SIMOS/Storage",
+      "value": "templates/SIMOS/PackageStorage",
       "name": "packages"
     }
   ]

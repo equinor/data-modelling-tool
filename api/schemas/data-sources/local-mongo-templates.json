@@ -7,6 +7,6 @@
   "tls": false,
   "name": "templates",
   "database": "dmt",
-  "collection": "dmt-templates",
+  "collection": "templates",
   "documentType": "blueprints"
 }

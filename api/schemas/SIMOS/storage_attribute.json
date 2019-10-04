@@ -1,5 +1,5 @@
 {
-  "type": "templates/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "name": "StorageAttribute",
   "description": "This describes a storage recipe",
   "attributes": [
@@ -30,11 +30,6 @@
         "Large"
       ],
       "default": "small"
-    },
-    {
-      "type": "blueprint",
-      "value": "",
-      "name": "recipe"
     }
   ]
 }

@@ -1,5 +1,5 @@
 {
-  "type": "templates/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "name": "EntityPackage",
   "description": "",
   "attributes": [
@@ -12,11 +12,6 @@
       "type": "string",
       "value": "",
       "name": "description"
-    },
-    {
-      "type": "templates/document_reference",
-      "name": "blueprints",
-      "dimensions": "*"
     }
   ],
   "storage_recipes": []

@@ -1,5 +1,5 @@
 {
-  "type": "templates/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "name": "Engine",
   "description": "This describes a engine",
   "attributes": [
@@ -14,8 +14,8 @@
       "name": "power"
     },
     {
-      "type": "templates/blueprint",
-      "value": "local-blueprints-equinor/blueprints/package_1/fuel_pump",
+      "type": "templates/SIMOS/Blueprint",
+      "value": "templates/CarsDemo/subdir/subdir2/FuelPump",
       "name": "fuel_pump"
     }
   ]
