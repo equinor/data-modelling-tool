@@ -1,6 +1,6 @@
-from core.domain.blueprint import Blueprint
+from core.domain.dto import DTO
 from core.domain.template import Template
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
+from core.repository.mongo.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_template import get_template
 from utils.schema_tools.form_to_schema import form_to_schema
@@ -27,23 +27,24 @@ class GetDocumentWithTemplateRequestObject(req.ValidRequestObject):
 
 
 class GetDocumentWithTemplateUseCase(uc.UseCase):
-    def __init__(self, document_repository: MongoBlueprintRepository, get_repository):
+    def __init__(self, document_repository: DocumentRepository, get_repository):
         self.document_repository = document_repository
         self.get_repository = get_repository
 
     def process_request(self, request_object: GetDocumentWithTemplateRequestObject):
         document_id = request_object.document_id
-        document: Blueprint = self.document_repository.get(document_id)
-        if not document:
+        dto: DTO = self.document_repository.get(document_id)
+        if not dto:
             raise EntityNotFoundException(uid=document_id)
 
-        blueprint = get_template(self.get_repository, document.type)
-
+        #todo use dto_repository
+        blueprint = get_template(self.get_repository, dto.type)
         data = blueprint.to_dict()
-        del data["type"]
 
+        #@todo move to template class, should have a custom template ReactJsonFormTemplate which translate our template to something react json schema understands.
+        del data["type"]
         template = Template(schema=form_to_schema(data), uiSchema={}, view=None)
 
-        data = {"template": template.to_dict(), "document": document.to_dict()}
+        data = {"template": template.to_dict(), "document": dto.to_dict()}
 
         return res.ResponseSuccess(data)

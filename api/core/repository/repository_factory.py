@@ -1,4 +1,4 @@
-from core.repository.mongo.document_repository import MongoDocumentRepository
+from core.repository.mongo.document_repository import DocumentRepository
 from core.repository.mongo.mongo_db_client import MongoDbClient
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 
@@ -27,7 +27,7 @@ def get_repository(repository_type: RepositoryType, db):
             port=db.port,
         )
         if repository_type == RepositoryType.DocumentRepository:
-            return MongoDocumentRepository(db)
+            return DocumentRepository(db)
         if repository_type == RepositoryType.BlueprintRepository:
             return MongoBlueprintRepository(db)
         if repository_type == RepositoryType.PackageRepository:
