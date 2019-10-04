@@ -1,6 +1,6 @@
 {
   "type": "templates/blueprint",
-  "name": "blueprint_attribute",
+  "name": "BlueprintAttribute",
   "description": "This describes a blueprint attribute",
   "attributes": [
     {

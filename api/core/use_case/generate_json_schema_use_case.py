@@ -1,6 +1,6 @@
 from core.domain.template import Template
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_template import get_template
+from core.use_case.utils.get_template import get_blueprint
 from utils.schema_tools.form_to_schema import form_to_schema
 from core.shared import use_case as uc
 from core.shared import response_object as res
@@ -34,7 +34,7 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
         if not type:
             raise Exception("Missing type")
 
-        blueprint = get_template(self.get_repository, type)
+        blueprint = get_blueprint(self.get_repository, type)
 
         if not blueprint:
             raise EntityNotFoundException(uid=type)

@@ -2,7 +2,7 @@ from core.domain.blueprint import Blueprint
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_template import get_template
+from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
 from anytree import NodeMixin, RenderTree, PreOrderIter
 
@@ -159,7 +159,7 @@ class Tree:
             data_source_id=data_source_id,
             name=document.name,
             document=document,
-            blueprint=get_template(self.get_repository, document.type),
+            blueprint=get_blueprint(self.get_repository, document.type),
             parent=parent_node,
             menu_items=[
                 {
@@ -184,7 +184,7 @@ class Tree:
             data_source_id=data_source_id,
             name=document.name,
             document=document,
-            blueprint=get_template(self.get_repository, document.type),
+            blueprint=get_blueprint(self.get_repository, document.type),
             parent=parent_node,
             menu_items=[],
         )
@@ -208,7 +208,7 @@ class Tree:
                 if ref["type"] not in primitives:
                     if "value" in ref:
                         logger.info(f"Add reference dict for '{ref['name']}'")
-                        document = get_template(self.get_repository, ref["value"])
+                        document = get_blueprint(self.get_repository, ref["value"])
                         if not document:
                             raise EntityNotFoundException(uid=ref["value"])
                         if document.type == "templates/package":
@@ -216,7 +216,7 @@ class Tree:
                         else:
                             self._add_document(data_source_id, document, parent_node, attribute_name)
                     else:
-                        blueprint = get_template(self.get_repository, ref["type"])
+                        blueprint = get_blueprint(self.get_repository, ref["type"])
                         if blueprint:
                             attribute_node = EntityPlaceholderNode(
                                 data_source_id=data_source_id,
@@ -265,7 +265,7 @@ class Tree:
 
             # If the attribute is an array
             if "dimensions" in attribute and attribute["dimensions"] == "*":
-                item_type = get_template(self.get_repository, attribute["type"])
+                item_type = get_blueprint(self.get_repository, attribute["type"])
                 # Create a placeholder node that can contain real documents
 
                 attribute_node = DocumentNode(
@@ -306,6 +306,7 @@ class Tree:
             # If the attribute is a single reference
             else:
                 blueprint = get_template(self.get_repository, attribute["type"])
+                blueprint = get_blueprint(self.get_repository, attribute["value"])
                 # document = Blueprint(**document.form_data[name]) if document and name in document.form_data else None
                 # if document:
                 #    document.template_ref = attribute["value"]
@@ -321,7 +322,7 @@ class Tree:
                 self._add_attributes(data_source_id, attribute_node)
 
     def generate(self, data_source_id: str, document, root_node) -> Index:
-        blueprint = get_template(self.get_repository, document.type)
+        blueprint = get_blueprint(document.type)
         node = DocumentNode(
             data_source_id=data_source_id,
             name=document.name,

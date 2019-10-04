@@ -1,6 +1,6 @@
 {
   "type": "templates/blueprint",
-  "name": "Entity Package",
+  "name": "EntityPackage",
   "description": "",
   "attributes": [
     {

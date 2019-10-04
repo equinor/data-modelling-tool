@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from core.domain.blueprint import Package
+from core.domain.package import Package
 from typing import List
 
 

@@ -2,7 +2,7 @@ from core.domain.dto import DTO
 from core.domain.template import Template
 from core.repository.mongo.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_template import get_template
+from core.use_case.utils.get_template import get_blueprint
 from utils.schema_tools.form_to_schema import form_to_schema
 from core.shared import use_case as uc
 from core.shared import response_object as res
@@ -36,6 +36,8 @@ class GetDocumentWithTemplateUseCase(uc.UseCase):
         dto: DTO = self.document_repository.get(document_id)
         if not dto:
             raise EntityNotFoundException(uid=document_id)
+
+        blueprint = get_blueprint(self.get_repository, document.type)
 
         #todo use dto_repository
         blueprint = get_template(self.get_repository, dto.type)

@@ -7,10 +7,10 @@ import click
 from flask import Flask
 
 from config import Config
-from core.tree_generator import Tree, TreeNode
-from core.domain.blueprint import Blueprint, Package, Entity
-from core.domain.blueprint import Blueprint, Package
+from core.domain.blueprint import Blueprint
+from core.domain.package import Package
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index
+from core.tree_generator import Tree, TreeNode
 from rest import create_api
 from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
@@ -43,17 +43,20 @@ def init_import():
     import_collection("dmt-templates", start_path="templates")
     import_collection("entities", start_path="local-entities")
 
+
 PACKAGE_PATHS = [
     "/code/schemas/CarsDemo",
     # "/code/schemas/demo__entities",
     "/code/schemas/SIMOS",
     "/code/schemas/DMT",
+]
 
 PATHS = {
     "blueprints": "/code/schemas/documents/blueprints",
     "entities": "/code/schemas/documents/entities",
     "dmt-templates": "/code/schemas/documents/templates",
 }
+
 
 def generate_tree(base_path):
     root = None
@@ -66,8 +69,9 @@ def generate_tree(base_path):
         node = TreeNode(document=package)
         if root is None:
             root = node
-        else:
-            node.parent = parent
+        # else:
+        #     node.parent = parent
+
 
 def import_package(path) -> Package:
     package = Package(name=os.path.basename(path).split(".")[0], description="", blueprints=[])
@@ -96,59 +100,54 @@ def import_package(path) -> Package:
 @app.cli.command()
 def import_blueprint_package():
     for folder in PACKAGE_PATHS:
-
+        # TODO: Allow only one root-package with the same name
         package = import_package(folder)
         package.uid = str(uuid4())
-        # package.dependencies.append({"car": {"version": "1.2.3",
-        #                                      "data-source": "local-blueprints",
-        #                                      "package": "car",
-        #                                      }})
-        # package.dependencies.append({"SIMOS": {"version": "0.0.1",
-        #                                        "data-source": "templates",
-        #                                        "package": "SIMOS",
-        #                                        }})
+        # package.dependencies.append({"SIMOS": {
+        #     "version": "0.0.1",
+        #     "data-source": "templates",
+        #     "package": "SIMOS",
+        # }})
 
         print(f"IMPORTING PACKAGE {package.name}")
         model_db.blueprints.replace_one({"_id": package.uid}, package.to_dict(), upsert=True)
 
 
-def import_documents(collection, database, start_path=None):
-    base_path = PATHS[collection]
-    for path, subdirs, files in os.walk(base_path):
-        print(path)
-        print(subdirs)
-        print(files)
-        base_path_size = len(base_path)
-        relative_path = path[base_path_size:] or ""
-
-        documents = []
-        for filename in files:
-            file = os.path.join(path, filename)
-            with open(file) as json_file:
-                data = json.load(json_file)
-
-            type = data["type"] if "type" in data else "templates/blueprint"
-
-            if type == "templates/blueprint":
-                blueprint = Blueprint(
-                    name=data["name"] if "name" in data else filename.replace(".json", ""),
-                    description="",
-                    type=type
-                )
-                if "attributes" in data:
-                    blueprint.attributes = data["attributes"]
-                else:
-                    logger.warn(f"Missing attributes in '{filename}'")
-                TreeNode(document=blueprint, parent=node)
-            else:
-                if "name" not in data:
-                    data["name"] = filename.replace(".json", "")
-
-                entity = Entity(data)
-                TreeNode(document=entity, parent=node)
-
-        parent = node
-    return root
+# def import_documents(collection, database, start_path=None):
+#     base_path = PATHS[collection]
+#     for path, subdirs, files in os.walk(base_path):
+#         print(path)
+#         print(subdirs)
+#         print(files)
+#         base_path_size = len(base_path)
+#         relative_path = path[base_path_size:] or ""
+#
+#         documents = []
+#         for filename in files:
+#             file = os.path.join(path, filename)
+#             with open(file) as json_file:
+#                 data = json.load(json_file)
+#
+#             type = data["type"] if "type" in data else "templates/blueprint"
+#
+#             if type == "templates/blueprint":
+#                 blueprint = Blueprint(
+#                     name=data["name"] if "name" in data else filename.replace(".json", ""), description="", type=type
+#                 )
+#                 if "attributes" in data:
+#                     blueprint.attributes = data["attributes"]
+#                 else:
+#                     logger.warn(f"Missing attributes in '{filename}'")
+#                 TreeNode(document=blueprint, parent=node)
+#             else:
+#                 if "name" not in data:
+#                     data["name"] = filename.replace(".json", "")
+#
+#                 entity = Entity(data)
+#                 TreeNode(document=entity, parent=node)
+#
+#         parent = node
+#     return root
 
 
 def import_collection(collection, start_path=None):
@@ -216,5 +215,5 @@ def nuke_db():
 
 
 if __name__ == "__main__":
-    #import_collection("blueprints", start_path="local-blueprints")
+    # import_collection("blueprints", start_path="local-blueprints")
     import_collection("entities", start_path="local-entities")
