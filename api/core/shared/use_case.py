@@ -1,5 +1,5 @@
 from core.shared import response_object as res
-
+import traceback
 
 class UseCase(object):
     def execute(self, request_object):
@@ -8,6 +8,7 @@ class UseCase(object):
         try:
             return self.process_request(request_object)
         except Exception as exc:
+            traceback.print_exc()
             return res.ResponseFailure.build_system_error("{}: {}".format(exc.__class__.__name__, "{}".format(exc)))
 
     def process_request(self, request_object):

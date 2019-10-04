@@ -38,7 +38,7 @@ def get(data_source_id: str, document_id: str):
 
     db = DataSource(id=data_source_id)
 
-    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
     use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})
@@ -78,10 +78,10 @@ def put(data_source_id: str, document_id: str, attribute_path: str = None):
 
     db = DataSource(id=data_source_id)
 
-    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
     add_use_case = UpdateDocumentUseCase(document_repository)
-    add_use_case.execute(document_id, data, attribute_path)
+    add_use_case.execute(document_id, data)
 
     use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})
