@@ -14,6 +14,7 @@ class Config:
     BLUEPRINT_COLLECTION = "SSR-DataSource"
     ENTITY_COLLECTION = "entities"
     DATA_SOURCES_COLLECTION = "data_sources"
+    DYNAMIC_MODULES = "dynamic_modules"
     SYSTEM_COLLECTION = "system"
     CACHE_MAX_SIZE = 0 if ENVIRONMENT == "local" else 0
     APPLICATION_HOME = "/home"

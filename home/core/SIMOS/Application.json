@@ -12,6 +12,11 @@
       "name": "description"
     },
     {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "attributes",
+      "dimensions": "*"
+    },
+    {
       "type": "string",
       "name": "blueprints",
       "dimensions": "*",

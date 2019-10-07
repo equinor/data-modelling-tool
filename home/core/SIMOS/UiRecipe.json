@@ -1,17 +1,31 @@
 {
   "type": "system/SIMOS/Blueprint",
-  "name": "UIRecipe",
+  "name": "UiRecipe",
   "description": "This describes ui recipe",
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     },
     {
       "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "string",
       "name": "plugin",
-      "description": "Plugin for this blueprint."
+      "optional": true,
+      "default": ""
+    },
+    {
+      "type": "string",
+      "name": "field",
+      "optional": true,
+      "default": ""
     },
     {
       "type": "system/SIMOS/UiAttribute",

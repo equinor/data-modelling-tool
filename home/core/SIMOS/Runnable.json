@@ -1,7 +1,7 @@
 {
   "type": "system/SIMOS/Blueprint",
   "name": "Runnable",
-  "description": "This describes an runnable",
+  "description": "This describes a runnable",
   "attributes": [
     {
       "type": "string",
@@ -22,6 +22,11 @@
       "name": "output",
       "description": "",
       "contained": false
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "attributes",
+      "dimensions": "*"
     },
     {
       "type": "string",

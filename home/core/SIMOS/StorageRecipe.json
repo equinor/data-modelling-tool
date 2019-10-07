@@ -5,12 +5,14 @@
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     },
     {
       "type": "string",
-      "value": "",
+      "name": "type"
+    },
+    {
+      "type": "string",
       "name": "description"
     },
     {
@@ -19,6 +21,5 @@
       "dimensions": "*",
       "contained": true
     }
-  ],
-  "storageRecipes": []
+  ]
 }

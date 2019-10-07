@@ -16,7 +16,7 @@
   "storageRecipes": [],
   "uiRecipes": [
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "DEFAULT_CREATE",
       "description": "",
       "attributes": [{

@@ -167,6 +167,19 @@ def task_docker_compose():
                 dependencies=["test:api", "test:web"],
             ),
             Task(
+                "create:blueprint",
+                "python -c  '" + ";".join("""\
+from core.repository.file.document_repository import TemplateRepositoryFromFile
+from core.domain.schema import Factory
+from utils.help_functions import schemas_location
+template_repository = TemplateRepositoryFromFile(schemas_location())
+template_type = "templates/SIMOS/Blueprint"
+Factory(template_repository).write_domain(template_type)
+""".split("\n")) + "'",
+                "api",
+                help="Create the Python class of Blueprint, and all classes it depends on"
+            ),
+            Task(
                 "build",
                 "build",
                 help="Build the Docker images for running / testing locally",

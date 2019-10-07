@@ -132,3 +132,4 @@ typings/
 .idea/runConfigurations/.gitignore
 
 .doit.db
+api/core/domain/dynamic_models/__init__.py

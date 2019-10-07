@@ -60,14 +60,14 @@ def process_ui_recipe(ui_recipe, attributes):
 
 
 DEFAULT_PREVIEW_UI_RECIPE = {
-    "type": "system/SIMOS/UIRecipe",
+    "type": "system/SIMOS/UiRecipe",
     "name": "PREVIEW",
     "description": "",
     "plugin": "PREVIEW",
     "attributes": [],
 }
 
-DEFAULT_EDIT_UI_RECIPE = {"type": "system/SIMOS/UIRecipe", "name": "EDIT", "description": "", "attributes": []}
+DEFAULT_EDIT_UI_RECIPE = {"type": "system/SIMOS/UiRecipe", "name": "EDIT", "description": "", "attributes": []}
 
 
 def form_to_ui_schema(blueprint):
