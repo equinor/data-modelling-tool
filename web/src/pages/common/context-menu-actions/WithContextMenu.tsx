@@ -22,9 +22,22 @@ const WithContextMenu = (props: WithContextMenuProps) => {
   return (
     <WithContextMenuModal
       {...props}
-      render={({ actionConfig }: any) => (
-        <>{actionConfig && <Form {...actionConfig.formProps} />}</>
-      )}
+      render={({ actionConfig }: any) => {
+        console.log(actionConfig)
+        const { formProps } = actionConfig
+        return (
+          <>
+            {actionConfig && formProps.fetchDocument && <Form {...formProps} />}
+            {actionConfig && formProps.prompt && (
+              <div>
+                <h4>{formProps.prompt.title}</h4>
+                {formProps.prompt.content}
+                <button onClick={formProps.onSubmit}>Submit</button>
+              </div>
+            )}
+          </>
+        )
+      }}
     />
   )
 }

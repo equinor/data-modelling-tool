@@ -13,38 +13,19 @@ export type DocumentsAction = {
   value?: any
 }
 
-export type SetSelectedDocumentIdAction = {
-  type: string
-  value: any
-  datasourceId: string
-}
-
 export type DocumentsState = {
-  selectedDocumentId: string
-  currentDatasourceId: string
+  dataUrl: string
+  schemaUrl: string
   pageMode: PageMode
 }
 
 export const initialState: DocumentsState = {
-  selectedDocumentId: '',
-  currentDatasourceId: '',
+  schemaUrl: '',
+  dataUrl: '',
   pageMode: PageMode.view,
 }
 
 export const DocumentActions = {
-  setSelectedDocumentId: (
-    id: string,
-    datasourceId: string
-  ): SetSelectedDocumentIdAction => ({
-    type: SET_SELECTED_DOCUMENT_ID,
-    value: id,
-    datasourceId,
-  }),
-
-  viewFile: (id: string): DocumentsAction => ({
-    type: VIEW_FILE,
-    value: id,
-  }),
   editFile: () => ({ type: EDIT_FILE }),
 }
 

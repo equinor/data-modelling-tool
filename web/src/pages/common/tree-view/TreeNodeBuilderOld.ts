@@ -9,6 +9,7 @@ type IndexNodeV2 = {
   children?: string[]
   templateRef?: string
   meta?: object
+  type?: string
 }
 
 export class TreeNodeBuilderOld {
@@ -22,6 +23,7 @@ export class TreeNodeBuilderOld {
       children: node.children,
       templateRef: node.templateRef,
       meta: node.meta,
+      type: node.type,
     })
   }
 
@@ -47,24 +49,21 @@ function createTreeNode({
   children = [],
   templateRef = '',
   meta = {},
+  type = '',
 }: IndexNodeV2) {
-  const folderNodes = [NodeType.rootPackage, NodeType.subPackage]
-  if (children.length) {
-    folderNodes.push(NodeType.entityFile)
-  }
   return {
     nodeId: id,
     title: filename,
     templateRef,
     nodeType,
     meta,
-    isExpandable: isExpandable(nodeType, children),
+    isExpandable: isExpandable(type, children),
     isOpen: false,
-    isRoot: nodeType === NodeType.datasource,
+    isRoot: type === NodeType.datasource,
     isHidden: false,
     children: children || [],
-    icon: getNodeIcon(nodeType),
-    isFolder: folderNodes.includes(nodeType),
+    icon: getNodeIcon(type),
+    isFolder: true,
   }
 }
 
@@ -75,12 +74,15 @@ export class TreeNodeBuilder extends TreeNodeBuilderOld {
       title: node.filename,
       nodeType: node.nodeType,
       children: node.children,
+      type: '',
     })
   }
 }
 
-function getNodeIcon(nodeType: NodeType): NodeIconType {
+function getNodeIcon(nodeType: string): NodeIconType {
   switch (nodeType) {
+    case NodeType.DOCUMENT_NODE:
+      return NodeIconType.file
     case NodeType.datasource:
       return NodeIconType.database
 
@@ -102,7 +104,7 @@ function getNodeIcon(nodeType: NodeType): NodeIconType {
   }
 }
 
-function isExpandable(nodeType: NodeType, children: string[]): boolean {
+function isExpandable(nodeType: string, children: string[]): boolean {
   switch (nodeType) {
     case NodeType.version:
     case NodeType.datasource:
@@ -113,6 +115,7 @@ function isExpandable(nodeType: NodeType, children: string[]): boolean {
       return true
     case NodeType.entityFile:
     case NodeType.documentRef:
+    case NodeType.DOCUMENT_NODE:
       return children.length > 0
     default:
       // add special logic here if file should be expandable.

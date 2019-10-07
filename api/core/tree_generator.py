@@ -1,5 +1,4 @@
 from classes.data_source import DataSource
-from core.domain.blueprint import Blueprint, AttributeReference
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
 from core.repository.repository_factory import get_repository, RepositoryType

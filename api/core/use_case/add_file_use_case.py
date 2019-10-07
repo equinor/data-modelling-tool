@@ -1,20 +1,20 @@
 from uuid import uuid4
 
 from classes.data_source import DataSource
-from core.domain.blueprint import Blueprint
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
+from core.domain.dto import DTO
+from core.repository.interface.document_repository import DocumentRepository
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
-from core.use_case.generate_index_use_case import Tree, Index, print_tree
+from core.use_case.generate_index_use_case import Tree, Index, print_tree, DocumentNode
 from anytree import PreOrderIter
 
 
 class AddFileRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, filename=None, type=None, attribute=None, path=None):
+    def __init__(self, parent_id=None, name=None, type=None, attribute=None, path=None):
         self.parent_id = parent_id
-        self.filename = filename
+        self.name = name
         self.type = type
         self.attribute = attribute
         self.path = path
@@ -26,8 +26,8 @@ class AddFileRequestObject(req.ValidRequestObject):
         if "parentId" not in adict:
             invalid_req.add_error("parentId", "is missing")
 
-        if "filename" not in adict:
-            invalid_req.add_error("filename", "is missing")
+        if "name" not in adict:
+            invalid_req.add_error("name", "is missing")
 
         if "type" not in adict:
             invalid_req.add_error("type", "is missing")
@@ -37,7 +37,7 @@ class AddFileRequestObject(req.ValidRequestObject):
 
         return cls(
             parent_id=adict.get("parentId"),
-            filename=adict.get("filename"),
+            name=adict.get("name"),
             type=adict.get("type"),
             attribute=adict.get("attribute", ""),
             path=adict.get("path", ""),
@@ -45,38 +45,36 @@ class AddFileRequestObject(req.ValidRequestObject):
 
 
 class AddFileUseCase(uc.UseCase):
-    def __init__(self, document_repository: MongoBlueprintRepository, get_repository, data_source: DataSource):
+    def __init__(self, document_repository: DocumentRepository, get_repository, data_source: DataSource):
         self.document_repository = document_repository
-        # self.data_source = data_source
         self.get_repository = get_repository
         self.data_source = data_source
 
     def process_request(self, request_object: AddFileRequestObject):
         parent_id: str = request_object.parent_id
-        filename: str = request_object.filename
+        name: str = request_object.name
         type: str = request_object.type
         attribute: str = request_object.attribute
-        path: str = request_object.path
 
-        parent: Blueprint = self.document_repository.get(parent_id)
+        parent: DTO = self.document_repository.get(parent_id)
         if not parent:
             raise Exception(f"The parent, with id {parent_id}, was not found")
 
-        file = Blueprint(uid=str(uuid4()), name=filename.replace(".json", ""), description="", type=type)
+        file = DTO(uid=uuid4(), data={"name": name, "description": "", "type": type})
 
-        # TODO: Get the storage recipe here and use it?
-        if attribute not in parent.form_data:
-            parent.form_data[attribute] = []
+        data = parent.data
+        if attribute not in data:
+            data[attribute] = []
 
-        # TODO: Start using type only
-        parent.form_data[attribute] += [{"type": type, "value": f"{path}/{file.name}", "name": file.name}]
-        self.document_repository.update(parent)
+        data[attribute] += [{"type": "ref", "_id": file.uid, "name": name}]
+
+        self.document_repository.update(parent.uid, data)
         self.document_repository.add(file)
 
         tree = Tree(get_repository=self.get_repository, blueprint_repository=self.document_repository)
-        root_node = tree.generate(
-            data_source_id=self.data_source.id, data_source_name=self.data_source.name, document=file
-        )
+        root_node = DocumentNode(data_source_id=self.data_source.id, name=self.data_source.name, menu_items=[])
+
+        tree.generate(data_source_id=self.data_source.id, document=file, root_node=root_node)
         print_tree(root_node)
 
         index = Index(data_source_id=self.data_source.id)

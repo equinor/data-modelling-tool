@@ -10,11 +10,13 @@ const Wrapper = styled.div`
 `
 
 const Blueprint = (props: any) => {
-  const { selectedDocumentId, currentDatasourceId } = props
+  console.log(props)
+
+  const { dataUrl, schemaUrl } = props
 
   const [state, dispatch] = useReducer(BlueprintReducer, {
-    selectedDocumentId,
-    currentDatasourceId,
+    dataUrl,
+    schemaUrl,
     pageMode: PageMode.view,
   })
 
@@ -24,11 +26,11 @@ const Blueprint = (props: any) => {
     <Wrapper>
       <FetchDocument
         pageMode={pageMode}
-        documentId={state.selectedDocumentId}
+        dataUrl={dataUrl}
+        schemaUrl={schemaUrl}
         render={(data: DocumentData) => {
-          if (!state.selectedDocumentId) {
-            return null
-          }
+          console.log(data)
+
           switch (pageMode) {
             case PageMode.view:
               return (
@@ -42,7 +44,7 @@ const Blueprint = (props: any) => {
               return (
                 <EditBlueprintForm
                   documentData={data}
-                  documentId={state.selectedDocumentId}
+                  dataUrl={dataUrl}
                   dispatch={dispatch}
                 />
               )
