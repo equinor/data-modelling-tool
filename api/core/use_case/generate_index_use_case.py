@@ -290,6 +290,7 @@ class Tree:
                                             "type": f"{blueprint.type}",
                                             "parentId": getattr(document, "uid", None),
                                             "attribute": name,
+                                            "name": "${name}",
                                         },
                                     },
                                 }
@@ -360,7 +361,7 @@ class Tree:
                         "schemaUrl": f"/api/v2/json-schema/templates/actions/rename",
                         "request": {
                             "source": f"{data_source_id}/{document.name}",
-                            "destination": f"{data_source_id}/<FORM_DATA_NAME>",
+                            "destination": f"{data_source_id}/" + "${name}",
                         },
                     },
                 },
