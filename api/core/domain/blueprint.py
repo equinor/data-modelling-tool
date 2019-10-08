@@ -17,7 +17,7 @@ class Blueprint:
             name=adict["name"],
             description=adict["description"],
             type=adict["type"],
-            uid=adict.get("uid", adict.get("__id")),
+            uid=adict.get("uid", adict.get("_id")),
         )
         instance.attributes = adict.get("attributes", "")
         return instance

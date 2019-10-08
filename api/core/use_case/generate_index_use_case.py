@@ -101,8 +101,10 @@ class DocumentNode(Node):
     def id(self):
         if self.document:
             return f"{self.start_path}/{self.document.uid}"
-        else:
+        elif self.depth == 0:
             return self.data_source_id
+        else:
+            return "WRONG!"
 
     @property
     def onSelect(self):
@@ -286,7 +288,7 @@ class Tree:
                                         "schemaUrl": f"/api/v2/json-schema/{blueprint.type}",
                                         "request": {
                                             "type": f"{blueprint.type}",
-                                            "parentId": document.uid,
+                                            "parentId": getattr(document, "uid", None),
                                             "attribute": name,
                                         },
                                     },
