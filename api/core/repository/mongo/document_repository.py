@@ -14,7 +14,8 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
 
     def get(self, uid: str) -> DTO:
         result = self.c().get(uid)
-        return DTO(data=result, uid=uid, type=result["type"])
+        if result:
+            return DTO(data=result, uid=uid, type=result["type"])
 
     def update(self, uid: str, data: Dict) -> None:
         # flatten dto, keep back compability

@@ -37,12 +37,16 @@ def _find_document_in_package_by_path(package: Package, path_elements: List, dat
 def _get_document_id_by_path(path: str, data_source) -> str:
     ref_elements = path.split("/", 1)
     package_name = ref_elements[0]
-    path_elements = ref_elements[1].split("/")
     temp = data_source.client.find_one({"name": package_name})
+    if not temp:
+        return None
     package = Package.from_dict(temp)
-    uid = _find_document_in_package_by_path(package, path_elements, data_source)
-
-    return uid
+    if len(ref_elements) > 1:
+        path_elements = ref_elements[1].split("/")
+        uid = _find_document_in_package_by_path(package, path_elements, data_source)
+        return uid
+    else:
+        return package.uid
 
 
 # TODO: Move to blueprint repo?
