@@ -31,7 +31,6 @@ app = create_app(Config)
 logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 
 PACKAGE_PATHS = ["/code/schemas/CarsDemo", "/code/schemas/SIMOS", "/code/schemas/DMT"]
-# PACKAGE_PATHS = ["/code/schemas/CarsDemo"]
 
 
 @app.cli.command()
@@ -41,12 +40,11 @@ PACKAGE_PATHS = ["/code/schemas/CarsDemo", "/code/schemas/SIMOS", "/code/schemas
 def import_packages(uncontained: bool = False):
     # TODO: Read data-source from Package-Config
     for folder in PACKAGE_PATHS:
-
         if uncontained:
             import_package(folder, uncontained, is_root=True)
         else:
             package = import_package(folder, uncontained)
-            # TODO: Should not be needed
+            # TODO: isRoot should not be needed
             as_dict = package.to_dict()
             as_dict["isRoot"] = True
             dmt_db.templates.replace_one({"_id": package.uid}, as_dict, upsert=True)

@@ -15,4 +15,4 @@ if [ "$ENVIRONMENT" = 'local' ]; then
     done
 fi
 
-flask init-import
+flask import-packages --uncontained
