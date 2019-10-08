@@ -28,6 +28,8 @@ def _execute(command):
 
 
 def execute(command, include=None, **options):
+    if command is None:
+        return _execute('')
     return _execute(f"{docker_compose(include)} {command}")
 
 
