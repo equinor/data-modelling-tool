@@ -7,14 +7,13 @@ import click
 
 from config import Config
 from core.tree_generator import Tree, TreeNode
-from core.domain.blueprint import Blueprint, Package, Entity
+from core.domain.blueprint import Blueprint, Package
 from rest import create_api
 from services.database import data_modelling_tool_db, model_db
 from utils.debugging import enable_remote_debugging
 from utils.files import getListOfFiles
 from utils.logging import logger
 from core.rest import Document as DocumentBlueprint, Explorer, Index, DataSource
-from uuid import uuid4
 
 
 def create_app(config):
@@ -49,8 +48,10 @@ PATHS = {
     "dmt-templates": "/code/schemas/documents/templates",
 }
 
+
 def generate_tree(base_path):
     root = None
+    parent = None
     for dirpath, _, files in os.walk(base_path):
         if dirpath == base_path:
             continue
@@ -71,23 +72,14 @@ def generate_tree(base_path):
 
             type = data["type"] if "type" in data else "templates/blueprint"
 
-            if type == "templates/blueprint":
-                blueprint = Blueprint(
-                    name=data["name"] if "name" in data else filename.replace(".json", ""),
-                    description="",
-                    type=type
-                )
-                if "attributes" in data:
-                    blueprint.attributes = data["attributes"]
-                else:
-                    logger.warn(f"Missing attributes in '{filename}'")
-                TreeNode(document=blueprint, parent=node)
+            blueprint = Blueprint(
+                name=data["name"] if "name" in data else filename.replace(".json", ""), description="", type=type
+            )
+            if "attributes" in data:
+                blueprint.attributes = data["attributes"]
             else:
-                if "name" not in data:
-                    data["name"] = filename.replace(".json", "")
-
-                entity = Entity(data)
-                TreeNode(document=entity, parent=node)
+                logger.warn(f"Missing attributes in '{filename}'")
+            TreeNode(document=blueprint, parent=node)
 
         parent = node
     return root
@@ -158,5 +150,5 @@ def nuke_db():
 
 
 if __name__ == "__main__":
-    #import_collection("blueprints", start_path="local-blueprints")
+    # import_collection("blueprints", start_path="local-blueprints")
     import_collection("entities", start_path="local-entities")

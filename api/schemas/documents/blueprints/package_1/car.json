@@ -14,8 +14,8 @@
       "name": "manufacturer"
     },
     {
-      "type": "local-blueprints/package_1/engine",
-      "name": "engine"
+      "type": "local-blueprints/package_1/Engine",
+      "name": "Engine"
     }
   ]
 }

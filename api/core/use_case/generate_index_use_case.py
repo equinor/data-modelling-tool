@@ -324,7 +324,7 @@ class Tree:
                         logger.warn(f"Missing type {attribute}")
             # If the attribute is a single reference
             else:
-                blueprint = get_template(self.get_repository, attribute["value"])
+                blueprint = get_template(self.get_repository, attribute["type"])
                 # document = Blueprint(**document.form_data[name]) if document and name in document.form_data else None
                 # if document:
                 #    document.template_ref = attribute["value"]
@@ -334,7 +334,7 @@ class Tree:
                     document=None,
                     blueprint=blueprint,
                     parent=parent_node,
-                    type=attribute["value"],
+                    type=attribute["type"],
                 )
 
                 self._add_attributes(data_source_id, attribute_node)
@@ -352,9 +352,7 @@ class Tree:
 
 class GenerateIndexUseCase:
     def __init__(
-        self, blueprint_repository: MongoBlueprintRepository,
-            package_repository: PackageRepository,
-            get_repository
+        self, blueprint_repository: MongoBlueprintRepository, package_repository: PackageRepository, get_repository
     ):
         self.blueprint_repository = blueprint_repository
         self.package_repository = package_repository
