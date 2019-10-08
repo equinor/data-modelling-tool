@@ -31,7 +31,7 @@ def add_file(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
 
-    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
     use_case = AddFileUseCase(document_repository=document_repository, get_repository=get_repository, data_source=db)
 
@@ -84,7 +84,7 @@ def remove_file(data_source_id: str):
     )
 
 
-@blueprint.route("/api/v2/explorer/move-file", methods=["POST"])
+@blueprint.route("/api/v2/explorer/move-file", methods=["PUT"])
 def move_file():
     request_data = request.get_json()
 

@@ -1,0 +1,11 @@
+{
+  "type": "templates/blueprint",
+  "name": "rename",
+  "description": "This describes a rename action",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    }
+  ]
+}

@@ -5,6 +5,7 @@ import {
   DocumentsAction,
   DocumentActions,
   DocumentsState,
+  PageMode,
 } from '../../common/DocumentReducer'
 import { DocumentData } from './FetchDocument'
 import BlueprintPreview from '../preview/BlueprintPreview'
@@ -18,10 +19,10 @@ interface Props {
 export default (props: Props) => {
   const {
     documentData,
-    state: { selectedDocumentId },
+    state: { dataUrl = '', schemaUrl = '' },
     dispatch,
   } = props
-  const isDisabled = selectedDocumentId.length === 0
+  const isDisabled = dataUrl == ''
 
   const data = documentData.document.data
   return (

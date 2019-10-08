@@ -202,4 +202,5 @@ export type IndexNode = {
   children?: string[]
   templateRef?: string
   meta?: object
+  type: string
 }

@@ -12,4 +12,5 @@ export enum NodeType {
   entityFile = 'entity-file',
   documentRef = 'document-ref',
   ARRAY_PLACEHOLDER = 'array-placeholder',
+  DOCUMENT_NODE = 'document-node',
 }

@@ -71,6 +71,7 @@ export const SelectBlueprintNode = (props: Props) => {
           const [sourceDataSourceId, sourceNodeId] = sourceNode.nodeId.split(
             '/'
           )
+          /*
           Api2.addEntityFile({
             dataSourceId: sourceDataSourceId,
             templateRef: `${path}/${treeNodeData.title}`,
@@ -102,6 +103,7 @@ export const SelectBlueprintNode = (props: Props) => {
               }
             },
           })
+           */
         }
       }}
     >
