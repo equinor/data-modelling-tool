@@ -358,7 +358,7 @@ class Tree:
                     "data": {
                         "url": f"/api/v2/explorer/move-file",
                         "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                        "schemaUrl": f"/api/v2/json-schema/templates/actions/rename",
+                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/rename",
                         "request": {
                             "source": f"{data_source_id}/{document.name}",
                             "destination": f"{data_source_id}/" + "${name}",
