@@ -1,6 +1,7 @@
 import json
 from flask import Blueprint, Response, request
 from classes.data_source import DataSource
+from core.domain.blueprint import Blueprint as Document
 from core.serializers.add_file_json_serializer import AddFileSerializer
 from core.repository.repository_factory import get_repository, RepositoryType
 from core.use_case.add_entity_file_to_package_use_case import (
@@ -11,6 +12,7 @@ from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
 from core.use_case.add_package_use_case import AddPackageUseCase, AddPackageRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
+from core.use_case.generate_index_use_case import GenerateIndexUseCase
 from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
 from core.use_case.remove_package_use_case import RemovePackageUseCase, RemovePackageRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
@@ -32,18 +34,25 @@ def add_file(data_source_id: str):
     request_data = request.get_json()
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
+    package_repository = get_repository(RepositoryType.PackageRepository, db)
 
     use_case = AddFileUseCase(document_repository=document_repository, get_repository=get_repository, data_source=db)
-
     request_object = AddFileRequestObject.from_dict(request_data)
-
     response = use_case.execute(request_object)
 
-    return Response(
-        json.dumps(response.value),  # , cls=AddFileSerializer
-        mimetype="application/json",
-        status=STATUS_CODES[response.type],
+    use_case = GenerateIndexUseCase(
+        blueprint_repository=document_repository, package_repository=package_repository, get_repository=get_repository
     )
+
+    # TODO: Replace this
+    data = response.value.data
+    result = use_case.single(
+        data_source_id=data_source_id,
+        data_source_name=db.name,
+        document=Document(uid=response.value.uid, description="", name=data["name"], type=data["type"]),
+    )
+
+    return Response(json.dumps(result), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
 @blueprint.route("/api/explorer/<string:data_source_id>/add-entity-file", methods=["POST"])
@@ -159,18 +168,18 @@ def add_root_package(data_source_id: str):
     request_data = request.get_json()
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
+    package_repository = get_repository(RepositoryType.PackageRepository, db)
 
     use_case = AddRootPackageUseCase(document_repository=document_repository)
-
     request_object = AddRootPackageRequestObject.from_dict(request_data)
+    root_package = use_case.execute(request_object)
 
-    response = use_case.execute(request_object)
-
-    return Response(
-        json.dumps(response.value, cls=AddFileSerializer),
-        mimetype="application/json",
-        status=STATUS_CODES[response.type],
+    use_case = GenerateIndexUseCase(
+        blueprint_repository=document_repository, package_repository=package_repository, get_repository=get_repository
     )
+    result = use_case.single(data_source_id=data_source_id, data_source_name=db.name, document=root_package.value)
+
+    return Response(json.dumps(result), mimetype="application/json", status=200)  # STATUS_CODES[response.type],
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-root-package", methods=["POST"])

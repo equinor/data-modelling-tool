@@ -24,7 +24,10 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
         self.c().update(uid, data)
 
     def add(self, dto: DTO) -> None:
-        self.c().add(dto.uid, dto.data)  # .to_dict()"
+        if isinstance(dto.data, dict):
+            self.c().add(dto.uid, dto.data)
+        else:
+            self.c().add(dto.uid, dto.data.to_dict())
 
     def delete(self, document: DTO) -> None:
         self.c().delete(document.uid)

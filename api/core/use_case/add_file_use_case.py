@@ -7,17 +7,16 @@ from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
-from core.use_case.generate_index_use_case import Tree, Index, print_tree, DocumentNode
-from anytree import PreOrderIter
 
 
 class AddFileRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, name=None, type=None, attribute=None, path=None):
+    def __init__(self, parent_id=None, name=None, type=None, attribute=None, path=None, is_contained=None):
         self.parent_id = parent_id
         self.name = name
         self.type = type
         self.attribute = attribute
         self.path = path
+        self.is_contained = is_contained
 
     @classmethod
     def from_dict(cls, adict):
@@ -32,6 +31,9 @@ class AddFileRequestObject(req.ValidRequestObject):
         if "type" not in adict:
             invalid_req.add_error("type", "is missing")
 
+        if "isContained" not in adict:
+            invalid_req.add_error("is contained", "is missing")
+
         if invalid_req.has_errors():
             return invalid_req
 
@@ -41,6 +43,7 @@ class AddFileRequestObject(req.ValidRequestObject):
             type=adict.get("type"),
             attribute=adict.get("attribute", ""),
             path=adict.get("path", ""),
+            is_contained=adict.get("isContained", ""),
         )
 
 
@@ -55,6 +58,10 @@ class AddFileUseCase(uc.UseCase):
         name: str = request_object.name
         type: str = request_object.type
         attribute: str = request_object.attribute
+        print("B")
+        is_contained = bool(request_object.is_contained)
+
+        print("A", is_contained)
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
@@ -66,22 +73,15 @@ class AddFileUseCase(uc.UseCase):
         if attribute not in data:
             data[attribute] = []
 
-        data[attribute] += [{"type": "ref", "_id": file.uid, "name": name}]
+        print(file.data)
+
+        if is_contained:
+            data[attribute] += [file.data]
+        else:
+            data[attribute] += [{"type": "ref", "_id": file.uid, "name": name}]
 
         self.document_repository.update(parent.uid, data)
         self.document_repository.add(file)
 
-        tree = Tree(get_repository=self.get_repository, blueprint_repository=self.document_repository)
-        root_node = DocumentNode(data_source_id=self.data_source.id, name=self.data_source.name, menu_items=[])
-
-        tree.generate(data_source_id=self.data_source.id, document=file, root_node=root_node)
-        print_tree(root_node)
-
-        index = Index(data_source_id=self.data_source.id)
-        for node in PreOrderIter(root_node):
-            adict = node.to_node()
-            if adict["id"] != self.data_source.id:
-                index.add(adict)
-
         logger.info(f"Added document '{file.uid}''")
-        return res.ResponseSuccess(index.to_dict())
+        return res.ResponseSuccess(file)
