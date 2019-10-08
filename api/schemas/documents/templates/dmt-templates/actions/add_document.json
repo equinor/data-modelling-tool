@@ -1,0 +1,11 @@
+{
+  "type": "templates/blueprint",
+  "name": "AddDocument",
+  "description": "This describes a add document",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    }
+  ]
+}

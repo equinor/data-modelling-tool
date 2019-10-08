@@ -2,23 +2,12 @@
 import { NotificationManager } from 'react-notifications'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2, { BASE_CRUD } from '../../../api/Api2'
-import {
-  TreeNodeBuilder,
-  TreeNodeBuilderOld,
-} from '../tree-view/TreeNodeBuilderOld'
-import axios from 'axios'
-import { DmtApi } from '../../../api/Api'
-import { DocumentData } from '../../blueprints/blueprint/FetchDocument'
 import React from 'react'
-import values from 'lodash/values'
-
-const api = new DmtApi()
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
-  RENAME = 'RENAME',
 }
 
 export type ContextMenuActionProps = {
@@ -33,10 +22,12 @@ export type ContextMenuActionProps = {
   parent: string
 }
 
-interface RenameActionType {
-  formData: object
-  action: string
-  setShowModal: Function
+const fillTemplate = function(templateString: string, templateVars: object) {
+  let func = new Function(
+    ...Object.keys(templateVars),
+    'return `' + templateString + '`;'
+  )
+  return func(...Object.values(templateVars))
 }
 
 const fetchUpdate = (action: any) => {
@@ -79,8 +70,14 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
           })
         },
         onSubmit: (formData: any) => {
+          const data = {} as any
+
+          Object.keys(action.data.request).forEach(key => {
+            data[key] = fillTemplate(action.data.request[key], formData)
+          })
+
           Api2.post({
-            data: { ...formData, ...action.data.request },
+            data: data,
             url: action.data.url,
             onSuccess: () => {
               /*
@@ -109,8 +106,14 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return {
         fetchDocument: fetchUpdate(action),
         onSubmit: (formData: any) => {
+          const data = {} as any
+
+          Object.keys(action.data.request).forEach(key => {
+            data[key] = fillTemplate(action.data.request[key], formData)
+          })
+
           Api2.put({
-            data: { ...formData, ...action.data.request },
+            data: data, // { ...formData, ...action.data.request }
             url: action.data.url,
             onSuccess: () => {
               /*
