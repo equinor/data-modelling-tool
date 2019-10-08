@@ -1,6 +1,6 @@
 {
   "type": "templates/blueprint",
-  "name": "AddDocument",
+  "name": "AddAction",
   "description": "This describes a add document",
   "attributes": [
     {

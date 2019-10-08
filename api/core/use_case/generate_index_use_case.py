@@ -285,7 +285,7 @@ class Tree:
                                     "action": "CREATE",
                                     "data": {
                                         "url": f"/api/v2/explorer/{data_source_id}/add-file",
-                                        "schemaUrl": f"/api/v2/json-schema/{blueprint.type}",
+                                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/AddAction",
                                         "request": {
                                             "type": f"{blueprint.type}",
                                             "parentId": getattr(document, "uid", None),
@@ -325,15 +325,8 @@ class Tree:
 
     def generate(self, data_source_id: str, document, root_node) -> Index:
         blueprint = get_blueprint(document.type)
-        node = DocumentNode(
-            data_source_id=data_source_id,
-            name=document.name,
-            document=document,
-            blueprint=blueprint,
-            parent=root_node,
-            on_select="blueprint",
-            menu_items=[
-                {
+        """
+        {
                     "label": "New",
                     "menuItems": [
                         {
@@ -352,13 +345,22 @@ class Tree:
                         }
                     ],
                 },
+        """
+        node = DocumentNode(
+            data_source_id=data_source_id,
+            name=document.name,
+            document=document,
+            blueprint=blueprint,
+            parent=root_node,
+            on_select="blueprint",
+            menu_items=[
                 {
                     "label": "Rename",
                     "action": "UPDATE/RENAME",
                     "data": {
                         "url": f"/api/v2/explorer/move-file",
                         "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/rename",
+                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/RenameAction",
                         "request": {
                             "source": f"{data_source_id}/{document.name}",
                             "destination": f"{data_source_id}/" + "${name}",
