@@ -356,7 +356,7 @@ class Tree:
             menu_items=[
                 {
                     "label": "Rename",
-                    "action": "UPDATE/RENAME",
+                    "action": "UPDATE",
                     "data": {
                         "url": f"/api/v2/explorer/move-file",
                         "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
