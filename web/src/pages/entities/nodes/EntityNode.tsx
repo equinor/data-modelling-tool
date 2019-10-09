@@ -25,7 +25,7 @@ export const EntityNode = (props: RenderProps) => {
               layout.add(
                 treeNodeData.nodeId,
                 treeNodeData.title,
-                LayoutComponents.entity,
+                LayoutComponents.blueprint,
                 data
               )
             }

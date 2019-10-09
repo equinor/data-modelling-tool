@@ -3,7 +3,7 @@ import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import { GoldenLayoutComponent } from './common/golden-layout/GoldenLayoutComponent'
 import GoldenLayoutPanel from './common/golden-layout/GoldenLayoutPanel'
-import Blueprint from './blueprints/blueprint/Blueprint'
+import DocumentComponent from './common/golden-layout/DocumentComponent'
 import BlueprintsPage from './blueprints/BlueprintsPage'
 import Tabs, { Tab, TabPanel, TabList } from '../components/Tabs'
 import {
@@ -81,12 +81,7 @@ export default () => {
               setLayout({ myLayout })
               myLayout.registerComponent(
                 LayoutComponents.blueprint,
-                wrapComponent(Blueprint, state)
-              )
-              myLayout.registerComponent(
-                LayoutComponents.entity,
-                //@todo fix this
-                wrapComponent(Blueprint, state)
+                wrapComponent(DocumentComponent, state)
               )
             }}
           />

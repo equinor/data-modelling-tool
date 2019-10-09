@@ -1,15 +1,17 @@
-import ViewBlueprintForm from './ViewBlueprintForm'
+import ViewBlueprintForm from '../../blueprints/blueprint/ViewBlueprintForm'
 import React, { useReducer } from 'react'
-import BlueprintReducer, { PageMode } from '../../common/DocumentReducer'
-import EditBlueprintForm from './EditBlueprintForm'
+import BlueprintReducer, { PageMode } from '../DocumentReducer'
+import EditBlueprintForm from '../../blueprints/blueprint/EditBlueprintForm'
 import styled from 'styled-components'
-import FetchDocument, { DocumentData } from './FetchDocument'
+import FetchDocument, {
+  DocumentData,
+} from '../../blueprints/blueprint/FetchDocument'
 
 const Wrapper = styled.div`
   padding: 20px;
 `
 
-const Blueprint = (props: any) => {
+const DocumentComponent = (props: any) => {
   console.log(props)
 
   const { dataUrl, schemaUrl } = props
@@ -29,8 +31,6 @@ const Blueprint = (props: any) => {
         dataUrl={dataUrl}
         schemaUrl={schemaUrl}
         render={(data: DocumentData) => {
-          console.log(data)
-
           switch (pageMode) {
             case PageMode.view:
               return (
@@ -57,4 +57,4 @@ const Blueprint = (props: any) => {
   )
 }
 
-export default Blueprint
+export default DocumentComponent
