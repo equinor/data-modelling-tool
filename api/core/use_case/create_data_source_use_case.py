@@ -1,5 +1,4 @@
 from core.shared import request_object, response_object, use_case
-from rest.validators.mongo_data_source import validate_mongo_data_source
 from utils.enums import DataSourceType
 
 
@@ -21,10 +20,12 @@ class CreateDataSourceRequestObject(request_object.ValidRequestObject):
                 f"The data source is not a valid type. Valid types are; {[item.value for item in DataSourceType]}",
             )
 
-        if request_data["formData"].get("type", "") == DataSourceType.MONGO.value:
-            validation = validate_mongo_data_source(request_data["formData"])
-            if validation:
-                invalid_req.add_error("Schema validation", validation.message)
+        # TODO: Add validation again
+        # if request_data["formData"].get("type", "") == DataSourceType.MONGO.value:
+
+        # validation = validate_mongo_data_source(request_data["formData"])
+        # if validation:
+        #     invalid_req.add_error("Schema validation", validation.message)
 
         if invalid_req.has_errors():
             return invalid_req

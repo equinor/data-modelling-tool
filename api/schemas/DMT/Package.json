@@ -14,7 +14,7 @@
     },
     {
       "type": "boolean",
-      "name": "isRootPackage"
+      "name": "isRoot"
     },
     {
       "type": "templates/SIMOS/Blueprint",

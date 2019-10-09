@@ -5,7 +5,6 @@ from flask import Flask
 
 from config import Config
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index
-from rest import create_api
 from services.database import data_modelling_tool_db as dmt_db, model_db
 from utils.debugging import enable_remote_debugging
 from utils.logging import logger
@@ -15,7 +14,6 @@ from utils.package_import import import_package
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
-    create_api(app)
     app.register_blueprint(DocumentBlueprint.blueprint)
     app.register_blueprint(Explorer.blueprint)
     app.register_blueprint(DataSource.blueprint)
