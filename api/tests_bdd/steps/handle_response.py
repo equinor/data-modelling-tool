@@ -39,6 +39,7 @@ def step_impl_equal(context):
     result = DeepDiff(expected, actual, ignore_order=True)
     if result != {}:
         print(result)
+        print(actual)
     assert result == {}
 
 
