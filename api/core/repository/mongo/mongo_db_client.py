@@ -7,7 +7,7 @@ from typing import Dict, List, Optional
 
 class DbClient(ABC):
     @abstractmethod
-    def add(self, uid:str, document: Dict) -> bool:
+    def add(self, uid: str, document: Dict) -> bool:
         """Get method to be implemented"""
 
     @abstractmethod
@@ -55,8 +55,10 @@ class MongoDbClient(DbClient):
 
     def update(self, uid: str, document: Dict) -> bool:
         try:
+            print(document)
             return self.handler[self.collection].update_one({"_id": uid}, {"$set": document}, upsert=True).acknowledged
-        except Exception:
+        except Exception as error:
+            print("ERROR", error)
             return False
 
     def get(self, uid: str) -> Dict:

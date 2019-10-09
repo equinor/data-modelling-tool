@@ -54,6 +54,7 @@ const DocumentComponent = (props: any) => {
                   documentData={documentData}
                   dataUrl={dataUrl}
                   dispatch={dispatch}
+                  attribute={attribute}
                 />
               )
             default:

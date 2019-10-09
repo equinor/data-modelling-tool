@@ -68,10 +68,8 @@ def post(data_source_id: str):
 
 
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])
-@blueprint.route(
-    "/api/v2/documents/<string:data_source_id>/<string:document_id>/<path:attribute_path>", methods=["PUT"]
-)
-def put(data_source_id: str, document_id: str, attribute_path: str = None):
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>/<path:attribute>", methods=["PUT"])
+def put(data_source_id: str, document_id: str, attribute: str = None):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
 
     data = request.get_json()
@@ -80,8 +78,8 @@ def put(data_source_id: str, document_id: str, attribute_path: str = None):
 
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
 
-    add_use_case = UpdateDocumentUseCase(document_repository)
-    add_use_case.execute(document_id, data)
+    update_use_case = UpdateDocumentUseCase(document_repository)
+    update_use_case.execute(document_id=document_id, form_data=data, attribute=attribute)
 
     use_case = GetDocumentWithTemplateUseCase(document_repository, get_repository)
     request_object = GetDocumentWithTemplateRequestObject.from_dict({"document_id": document_id})

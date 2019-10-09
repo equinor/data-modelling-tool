@@ -11,14 +11,16 @@ interface Props {
   dataUrl: string
   dispatch: Function
   documentData: DocumentData
+  attribute: string
 }
 
 const EditBlueprintForm = (props: Props) => {
-  const { documentData, dispatch, dataUrl } = props
+  const { documentData, dispatch, dataUrl, attribute } = props
 
   const onSubmit = (schemas: any) => {
+    const url = attribute ? `${dataUrl}/${attribute}` : dataUrl
     axios
-      .put(dataUrl, schemas.formData)
+      .put(url, schemas.formData)
       .then((response: any) => {
         const responseData: DocumentData = response.data
         NotificationManager.success(
