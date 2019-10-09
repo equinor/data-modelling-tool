@@ -1,4 +1,4 @@
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 
 class Package:
@@ -6,19 +6,21 @@ class Package:
         self,
         name: str,
         uid: str,
-        dependencies: List[Dict] = [],
+        dependencies: Optional[List[Dict]] = None,
         description: str = "",
         type: str = "templates/DMT/Package",
         blueprints: List[Dict] = None,
+        is_root: bool = False,
     ):
         self.name = name
         self.uid = uid
         self.description = description
         self.type = type
         # TODO: Create Dependencies class
-        self.dependencies = dependencies
-        self.blueprints = blueprints
+        self.dependencies = [] if not dependencies else dependencies
+        self.blueprints = [] if not blueprints else blueprints
         self.packages = []
+        self.is_root = is_root
 
     @classmethod
     def from_dict(cls, adict):
@@ -52,6 +54,7 @@ class Package:
             "blueprints": self.blueprints,
             "dependencies": self.dependencies,
             "packages": [self.contained_package_to_dict(package) for package in self.packages],
+            "isRoot": self.is_root,
         }
         return result
 

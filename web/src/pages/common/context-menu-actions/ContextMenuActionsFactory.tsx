@@ -3,6 +3,8 @@ import { NotificationManager } from 'react-notifications'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2, { BASE_CRUD } from '../../../api/Api2'
 import React from 'react'
+import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
+import values from 'lodash/values'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -79,9 +81,9 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
           Api2.post({
             data: data,
             url: action.data.url,
-            onSuccess: () => {
-              /*
-              const nodes: any = values(result)
+            onSuccess: (result: any) => {
+              console.debug('POST result', result)
+              const nodes: any = values(result.data)
               nodes.forEach((item: any, index: number) => {
                 delete item['children']
                 const node = new TreeNodeBuilderOld(item).build()
@@ -91,7 +93,6 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
                   addNode(node, item.parentId)
                 }
               })
-              */
               setShowModal(false)
             },
             onError: (err: any) => console.error(Object.keys(err)),
@@ -115,9 +116,9 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
           Api2.put({
             data: data, // { ...formData, ...action.data.request }
             url: action.data.url,
-            onSuccess: () => {
-              /*
-              const nodes: any = values(result)
+            onSuccess: (result: any) => {
+              console.debug('PUT result', result)
+              const nodes: any = values(result.data)
               nodes.forEach((item: any, index: number) => {
                 delete item['children']
                 const node = new TreeNodeBuilderOld(item).build()
@@ -127,7 +128,6 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
                   addNode(node, item.parentId)
                 }
               })
-              */
               setShowModal(false)
             },
             onError: (err: any) => console.error(Object.keys(err)),

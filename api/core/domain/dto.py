@@ -1,11 +1,11 @@
-from uuid import uuid4
-from typing import Union, Dict, TypeVar
+from uuid import uuid4, UUID
+from typing import Union, Dict, TypeVar, Optional
 
 T = TypeVar("T")
 
 
 class DTO:
-    def __init__(self, data: Union[Dict, T], uid: None, type: str=None):
+    def __init__(self, data: Union[Dict, T], uid: Optional[UUID] = None, type: str = None):
         if uid is None:
             uid = uuid4()
         self._uid = uid

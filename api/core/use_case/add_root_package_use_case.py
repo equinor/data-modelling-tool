@@ -1,6 +1,7 @@
 from uuid import uuid4
 
-from core.domain.document import Document
+from core.domain.dto import DTO
+from core.domain.package import Package
 from core.repository.interface.document_repository import DocumentRepository
 from utils.logging import logger
 from core.shared import response_object as res
@@ -9,24 +10,21 @@ from core.shared import use_case as uc
 
 
 class AddRootPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, filename=None, type=None):
-        self.filename = filename
+    def __init__(self, name=None, type=None):
+        self.name = name
         self.type = type
 
     @classmethod
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
 
-        if "filename" not in adict:
-            invalid_req.add_error("filename", "is missing")
-
-        if "type" not in adict:
-            invalid_req.add_error("type", "is missing")
+        if "name" not in adict:
+            invalid_req.add_error("name", "is missing")
 
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(filename=adict.get("filename"), type=adict.get("type"))
+        return cls(name=adict.get("name"), type=adict.get("type"))
 
 
 class AddRootPackageUseCase(uc.UseCase):
@@ -34,12 +32,14 @@ class AddRootPackageUseCase(uc.UseCase):
         self.document_repository = document_repository
 
     def process_request(self, request_object):
-        filename: str = request_object.filename
-        type: str = request_object.type
+        name: str = request_object.name
 
-        folder = Document(uid=str(uuid4()), filename=filename, type="folder", path=f"/", template_ref=type)
+        package = Package(uid=str(uuid4()), name=name, is_root=True)
 
-        self.document_repository.add(folder)
+        document: DTO = DTO(data=package.to_dict())
 
-        logger.info(f"Added folder '{folder.uid}' to package '{folder.path}'")
-        return res.ResponseSuccess(folder)
+        self.document_repository.add(document)
+
+        logger.info(f"Added package '{package.uid}'")
+
+        return res.ResponseSuccess(package)

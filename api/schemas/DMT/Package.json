@@ -17,13 +17,13 @@
       "name": "isRootPackage"
     },
     {
-      "type": "templates/SIMOS/Blueprint",
-      "name": "blueprints",
+      "type": "templates/DMT/Package",
+      "name": "packages",
       "dimensions": "*"
     },
     {
-      "type": "templates/DMT/Package",
-      "name": "packages",
+      "type": "templates/SIMOS/Blueprint",
+      "name": "blueprints",
       "dimensions": "*"
     }
   ],

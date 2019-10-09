@@ -2,6 +2,7 @@ from core.domain.blueprint import Blueprint
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.shared.templates import TemplatesDMT
 from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
 from anytree import NodeMixin, RenderTree, PreOrderIter
@@ -32,40 +33,6 @@ class Node(NodeMixin):
     @property
     def start_path(self):
         return "/".join([node.name for node in self.path])
-
-
-class EntityPlaceholderNode(Node):
-    def __init__(self, data_source_id, name, document, blueprint, parent, type):
-        super().__init__(data_source_id, name, document, blueprint, parent)
-        self.type = type
-
-    def find_root_uid(self, node):
-        if not node:
-            return ""
-
-        if node.document and node.document.uid:
-            return node.document.uid
-
-        return self.find_root_uid(node.parent)
-
-    @property
-    def id(self):
-        # If the document is created, use that value, if not use parent id
-        # uid = self.document.uid if self.document else self.find_root_uid(self.parent)
-        uid = self.find_root_uid(self.parent)
-        return f"{self.data_source_id}/{uid}_{self.name}"
-
-    def to_node(self):
-        return {
-            "parentId": self.parent.id,
-            "filename": self.name,
-            "title": self.name,
-            "id": self.id,
-            "nodeType": "document-ref",
-            "templateRef": self.type,
-            "attributePath": "",
-            "children": [child.to_node()["id"] for child in self.children],
-        }
 
 
 class DocumentNode(Node):
@@ -106,19 +73,6 @@ class DocumentNode(Node):
         else:
             return "WRONG!"
 
-    @property
-    def onSelect(self):
-        if self.on_select:
-            return {
-                "uid": self.id,
-                "title": self.name,
-                "component": self.on_select,
-                "data": {
-                    "dataUrl": f"/api/v2/documents/{self.data_source_id}/{self.document.uid}",
-                    "schemaUrl": f"/api/v2/json-schema/{self.blueprint.type}",
-                },
-            }
-
     def to_node(self):
         result = {
             "parentId": None if not self.parent else self.parent.id,
@@ -128,7 +82,7 @@ class DocumentNode(Node):
             "nodeType": "document-node",
             "children": [child.to_node()["id"] for child in self.children],
             "type": "datasource" if not self.document else self.document.type,
-            "meta": {"menuItems": self.menu_items, "onSelect": self.onSelect},
+            "meta": {"menuItems": self.menu_items, "onSelect": self.on_select},
         }
         return result
 
@@ -152,211 +106,49 @@ def print_tree(root_node):
 
 
 class Tree:
-    def __init__(self, blueprint_repository: MongoBlueprintRepository, get_repository):
+    def __init__(self, blueprint_repository: MongoBlueprintRepository, get_repository, package_repository):
         self.blueprint_repository = blueprint_repository
         self.get_repository = get_repository
+        self.package_repository = package_repository
 
-    def _add_document(self, data_source_id: str, document: Blueprint, parent_node, attribute_name):
-        on_select = None
-        if attribute_name == "blueprints" and document.type == "templates/SIMOS/Blueprint":
-            on_select = "blueprint"
-
-        child_node = DocumentNode(
-            data_source_id=data_source_id,
-            name=document.name,
-            document=document,
-            on_select=on_select,
-            blueprint=get_blueprint(document.type),
-            parent=parent_node,
-            menu_items=[
-                {
-                    "label": "Remove",
-                    "action": "DELETE",
-                    "data": {
-                        "url": f"/api/v2/explorer/{data_source_id}/remove-file",
-                        "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
-                        "request": {
-                            "parentId": parent_node.document.uid,
-                            "name": document.name,
-                            "attribute": attribute_name,
-                        },
-                    },
-                }
-            ],
-        )
-        self._add_attributes(data_source_id, child_node)
-
-    def _add_package(self, data_source_id: str, document: Blueprint, parent_node):
-        child_node = DocumentNode(
-            data_source_id=data_source_id,
-            name=document.name,
-            document=document,
-            blueprint=get_blueprint(document.type),
-            parent=parent_node,
-            menu_items=[],
-        )
-        self._add_attributes(data_source_id, child_node)
-
-    def _add_references(self, data_source_id, references, parent_node, attribute_name, attribute_type):
-        index = 0
+    def get_references(self, references, item_type):
+        documents = []
         for ref in references:
-            if "type" not in ref:
-                logger.warn(f"Missing type for ref {ref}")
-                continue
-
             if isinstance(ref, dict) and ref["type"] == "ref":
-                logger.warn(f"Add ref '{ref}'")
-                document = self.blueprint_repository.get(ref["_id"])
-                if not document:
-                    raise EntityNotFoundException(uid=ref)
-                self._add_document(data_source_id, document, parent_node, attribute_name)
-            elif isinstance(ref, dict):
-                primitives = ["string", "number", "integer", "number", "boolean"]
-                if ref["type"] not in primitives:
-                    if "value" in ref:
-                        logger.info(f"Add reference dict for '{ref['name']}'")
-                        document = get_blueprint(ref["value"])
-                        if not document:
-                            raise EntityNotFoundException(uid=ref["value"])
-                        if document.type == "templates/SIMOS/Package":
-                            self._add_package(data_source_id, document, parent_node)
-                        else:
-                            self._add_document(data_source_id, document, parent_node, attribute_name)
-                    else:
-                        blueprint = get_blueprint(ref["type"])
-                        if blueprint:
-                            attribute_node = EntityPlaceholderNode(
-                                data_source_id=data_source_id,
-                                name=f"{attribute_name}.{index}",  # .{ref['name']}
-                                document=None,
-                                blueprint=blueprint,
-                                parent=parent_node,
-                                type=attribute_type,
-                            )
-                            self._add_attributes(data_source_id, attribute_node)
+                logger.warn(f"Add ref '{ref}' {item_type}")
+                if item_type == TemplatesDMT.PACKAGE.value:
+                    document = self.package_repository.get(ref["_id"])
+                    # document.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in document.packages]
                 else:
-                    EntityPlaceholderNode(
-                        data_source_id=data_source_id,
-                        name=f"{attribute_name}.{index}",
-                        document=None,
-                        blueprint=None,
-                        parent=parent_node,
-                        type=attribute_type,
-                    )
-
-            else:
-                # TODO: Replace this type with only using dict structure above
-                logger.warn(f"Add reference single for '{ref}'")
-                document = self.blueprint_repository.find_one(name=ref)
+                    document = self.blueprint_repository.get(ref["_id"])
                 if not document:
                     raise EntityNotFoundException(uid=ref)
-                self._add_document(data_source_id, document, parent_node)
+                documents.append(document)
 
-            index += 1
+        return documents
 
-    def _add_attributes(self, data_source_id, parent_node):
-        logger.info(f"Add attributes for '{parent_node.name}'")
+    def process_document(self, data_source_id, document, parent_node):
+        logger.info(f"Add attributes for '{document.name}'")
 
-        # document instance
-        document = parent_node.document
-        # type instance
-        blueprint = parent_node.blueprint
-
-        if not blueprint:
-            raise EntityNotFoundException(uid=document.type)
-
-        # Use the blueprint to find attributes that contains references
-        for attribute in blueprint.get_attributes_with_reference():
-            name = attribute["name"]
-            # What blueprint is this attribute pointing too
-
-            # If the attribute is an array
-            if "dimensions" in attribute and attribute["dimensions"] == "*":
-                item_type = get_blueprint(attribute["type"])
-                # Create a placeholder node that can contain real documents
-
-                attribute_node = DocumentNode(
-                    data_source_id=data_source_id,
-                    name=name,
-                    document=document,
-                    blueprint=blueprint,
-                    parent=parent_node,
-                    menu_items=[
-                        {
-                            "label": "New",
-                            "menuItems": [
-                                {
-                                    "label": f"{item_type.name}",
-                                    "action": "CREATE",
-                                    "data": {
-                                        "url": f"/api/v2/explorer/{data_source_id}/add-file",
-                                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/AddAction",
-                                        "request": {
-                                            "type": f"{blueprint.type}",
-                                            "parentId": getattr(document, "uid", None),
-                                            "attribute": name,
-                                            "name": "${name}",
-                                        },
-                                    },
-                                }
-                            ],
-                        }
-                    ],
-                )
-                # Check if values for the attribute exists in current document,
-                # this means that we have added some documents to this array
-                if hasattr(document, name):
-                    values = getattr(document, name)
-                    if "type" in attribute:
-                        self._add_references(data_source_id, values, attribute_node, name, attribute["type"])
-                    else:
-                        logger.warn(f"Missing type {attribute}")
-            # If the attribute is a single reference
-            else:
-                blueprint = get_blueprint(attribute["type"])
-                # document = Blueprint(**document.form_data[name]) if document and name in document.form_data else None
-                # if document:
-                #    document.template_ref = attribute["value"]
-                attribute_node = EntityPlaceholderNode(
-                    data_source_id=data_source_id,
-                    name=name,
-                    document=None,
-                    blueprint=blueprint,
-                    parent=parent_node,
-                    type=attribute["type"],
-                )
-
-                self._add_attributes(data_source_id, attribute_node)
-
-    def generate(self, data_source_id: str, document, root_node) -> Index:
         blueprint = get_blueprint(document.type)
-        """
-        {
-                    "label": "New",
-                    "menuItems": [
-                        {
-                            "label": "Package",
-                            "action": "CREATE",
-                            "data": {
-                                "url": f"/api/v2/explorer/{data_source_id}/add-file",
-                                "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                                "schemaUrl": f"/api/v2/json-schema/{blueprint.type}",
-                                "request": {
-                                    "itemType": "templates/package",
-                                    "itemName": "Package",
-                                    "parentId": data_source_id,
-                                },
-                            },
-                        }
-                    ],
-                },
-        """
+
+        is_contained = document.type == "templates/SIMOS/Blueprint"
+
         node = DocumentNode(
             data_source_id=data_source_id,
             name=document.name,
             document=document,
             blueprint=blueprint,
-            parent=root_node,
+            parent=parent_node,
+            on_select={
+                "uid": document.uid,
+                "title": document.name,
+                "component": "blueprint",
+                "data": {
+                    "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
+                    "schemaUrl": f"/api/v2/json-schema/{document.type}",
+                },
+            },
             menu_items=[
                 {
                     "label": "Rename",
@@ -382,7 +174,130 @@ class Tree:
                 },
             ],
         )
-        self._add_attributes(data_source_id, node)
+
+        if not blueprint:
+            raise EntityNotFoundException(uid=document.type)
+
+        attribute_nodes = []
+
+        # Use the blueprint to find attributes that contains references
+        for attribute in blueprint.get_attributes_with_reference():
+            name = attribute["name"]
+            # What blueprint is this attribute pointing too
+
+            print(f"------------------------{document.name}:{name}------------------------")
+
+            # If the attribute is an array
+            if "dimensions" in attribute and attribute["dimensions"] == "*":
+                item_type = get_blueprint(attribute["type"])
+                # Create a placeholder node that can contain real documents
+
+                attribute_node = DocumentNode(
+                    data_source_id=data_source_id,
+                    name=name,
+                    document=document,
+                    blueprint=blueprint,
+                    parent=node,
+                    menu_items=[
+                        {
+                            "label": "New",
+                            "menuItems": [
+                                {
+                                    "label": f"{item_type.name}",
+                                    "action": "CREATE",
+                                    "data": {
+                                        "url": f"/api/v2/explorer/{data_source_id}/add-file",
+                                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/AddAction",
+                                        "request": {
+                                            "type": f"{blueprint.type}",
+                                            "parentId": getattr(document, "uid", None),
+                                            "attribute": name,
+                                            "name": "${name}",
+                                            "isContained": is_contained,
+                                        },
+                                    },
+                                }
+                            ],
+                        }
+                    ],
+                )
+
+                # Check if values for the attribute exists in current document,
+                # this means that we have added some documents to this array
+                if hasattr(document, name):
+                    values = getattr(document, name)
+
+                    if "type" in attribute:
+                        # Get real documents
+                        attribute_nodes.append(
+                            {"documents": self.get_references(values, attribute["type"]), "node": attribute_node}
+                        )
+                        # Placeholder nodes
+                        if is_contained:
+                            for instance in values:
+                                uid = f"{document.uid}.{instance['name']}"
+                                DocumentNode(
+                                    data_source_id=data_source_id,
+                                    name=instance["name"],
+                                    document=Blueprint(
+                                        uid=uid, name=instance["name"], description="", type=attribute["type"]
+                                    ),
+                                    blueprint=blueprint,
+                                    parent=attribute_node,
+                                    on_select={
+                                        "uid": uid,
+                                        "title": instance["name"],
+                                        "component": "blueprint",
+                                        "data": {
+                                            "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
+                                            "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
+                                        },
+                                    },
+                                    menu_items=[],
+                                )
+                    else:
+                        logger.warn(f"Missing type {attribute}")
+
+        for attribute_node in attribute_nodes:
+            for attribute_document in attribute_node["documents"]:
+                self.process_document(
+                    data_source_id=data_source_id, document=attribute_document, parent_node=attribute_node["node"]
+                )
+
+    def execute(self, data_source_id: str, data_source_name: str, packages) -> Index:
+
+        index = Index(data_source_id=data_source_id)
+
+        root_node = DocumentNode(
+            data_source_id=data_source_id,
+            name=data_source_name,
+            menu_items=[
+                {
+                    "label": "New",
+                    "menuItems": [
+                        {
+                            "label": "Package",
+                            "action": "CREATE",
+                            "data": {
+                                "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
+                                "schemaUrl": f"/api/v2/json-schema/{TemplatesDMT.PACKAGE.value}",
+                                "request": {"name": "${name}"},
+                            },
+                        }
+                    ],
+                }
+            ],
+        )
+
+        for package in packages:
+            self.process_document(data_source_id, package, root_node)
+
+        print_tree(root_node)
+
+        for node in PreOrderIter(root_node):
+            index.add(node.to_node())
+
+        return index
 
 
 class GenerateIndexUseCase:
@@ -393,22 +308,24 @@ class GenerateIndexUseCase:
         self.package_repository = package_repository
         self.get_repository = get_repository
 
-        self.tree = Tree(blueprint_repository=blueprint_repository, get_repository=get_repository)
+        self.tree = Tree(
+            blueprint_repository=blueprint_repository,
+            package_repository=package_repository,
+            get_repository=get_repository,
+        )
 
     def execute(self, data_source_id: str, data_source_name: str) -> Index:
-
-        index = Index(data_source_id=data_source_id)
-
-        root_node = DocumentNode(data_source_id=data_source_id, name=data_source_name, menu_items=[])
-
+        packages = []
         for package in self.package_repository.list():
             # TODO: Make Indexer Handle Package Class
             package.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in package.packages]
-            self.tree.generate(data_source_id, package, root_node)
+            packages.append(package)
 
-        print_tree(root_node)
+        return self.tree.execute(data_source_id=data_source_id, data_source_name=data_source_name, packages=packages)
 
-        for node in PreOrderIter(root_node):
-            index.add(node.to_node())
-
-        return index
+    def single(self, data_source_id: str, data_source_name: str, document) -> Index:
+        data = self.tree.execute(
+            data_source_id=data_source_id, data_source_name=data_source_name, packages=[document]
+        ).to_dict()
+        del data[data_source_id]
+        return data
