@@ -234,7 +234,7 @@ class Tree:
                         )
                         # Placeholder nodes
                         if is_contained:
-                            for instance in values:
+                            for index, instance in enumerate(values):
                                 uid = f"{document.uid}.{instance['name']}"
                                 DocumentNode(
                                     data_source_id=data_source_id,
@@ -251,6 +251,7 @@ class Tree:
                                         "data": {
                                             "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
                                             "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
+                                            "attribute": f"{name}.{index}",
                                         },
                                     },
                                     menu_items=[],

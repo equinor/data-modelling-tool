@@ -12,7 +12,7 @@ interface Props {
 
 export default ({ documentData, onSubmit }: Props) => {
   const { document, template } = documentData
-  const [data, setData] = useState({ ...document.data })
+  const [data, setData] = useState({ ...document })
   return (
     <Tabs>
       <TabList>

@@ -6,15 +6,15 @@ import styled from 'styled-components'
 import FetchDocument, {
   DocumentData,
 } from '../../blueprints/blueprint/FetchDocument'
+// @ts-ignore
+import objectPath from 'object-path'
 
 const Wrapper = styled.div`
   padding: 20px;
 `
 
 const DocumentComponent = (props: any) => {
-  console.log(props)
-
-  const { dataUrl, schemaUrl } = props
+  const { dataUrl, schemaUrl, attribute = null } = props
 
   const [state, dispatch] = useReducer(BlueprintReducer, {
     dataUrl,
@@ -31,11 +31,19 @@ const DocumentComponent = (props: any) => {
         dataUrl={dataUrl}
         schemaUrl={schemaUrl}
         render={(data: DocumentData) => {
+          const formData = attribute
+            ? objectPath.get(data.document, attribute)
+            : data.document
+          let documentData = {
+            template: data.template,
+            document: formData || {},
+          }
+
           switch (pageMode) {
             case PageMode.view:
               return (
                 <ViewBlueprintForm
-                  documentData={data}
+                  documentData={documentData}
                   state={state}
                   dispatch={dispatch}
                 />
@@ -43,7 +51,7 @@ const DocumentComponent = (props: any) => {
             case PageMode.edit:
               return (
                 <EditBlueprintForm
-                  documentData={data}
+                  documentData={documentData}
                   dataUrl={dataUrl}
                   dispatch={dispatch}
                 />
