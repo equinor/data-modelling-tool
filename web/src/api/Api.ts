@@ -111,7 +111,7 @@ export class DmtApi {
   }
 
   templatesDatasourceMongoGet() {
-    return `/api/v1/templates/mongodb-datasource-template`
+    return `/api/v2/json-schema/templates/DMT/data-sources/MongoDataSource`
   }
 
   templatesCreateBlueprintGet() {

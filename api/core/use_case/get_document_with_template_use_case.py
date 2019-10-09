@@ -6,7 +6,7 @@ from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.get_template import get_blueprint
-from utils.schema_tools.form_to_schema import form_to_schema
+from utils.form_to_schema import form_to_schema
 
 
 class GetDocumentWithTemplateRequestObject(req.ValidRequestObject):

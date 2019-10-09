@@ -1,0 +1,46 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "name": "MongoDataSource",
+  "description": "Blueprint for a MongoDB type DataSource",
+  "attributes": [
+    {
+      "name": "documentType",
+      "type": "string"
+    },
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "hostname",
+      "type": "string"
+    },
+    {
+      "name": "port",
+      "type": "integer"
+    },
+    {
+      "name": "username",
+      "type": "string"
+    },
+    {
+      "type": "string",
+      "name": "password"
+    },
+    {
+      "type": "boolean",
+      "name": "tls"
+    },
+    {
+      "type": "string",
+      "name": "database"
+    },
+    {
+      "type": "string",
+      "name": "collection"
+    }
+  ],
+  "storage_recipes": [],
+  "ui_recipes": []
+}
+
