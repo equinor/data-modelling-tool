@@ -24,7 +24,7 @@ export default (props: Props) => {
   } = props
   const isDisabled = dataUrl == ''
 
-  const data = documentData.document.data
+  const data = documentData.document
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>

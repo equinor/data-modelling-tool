@@ -23,7 +23,6 @@ const WithContextMenu = (props: WithContextMenuProps) => {
     <WithContextMenuModal
       {...props}
       render={({ actionConfig }: any) => {
-        console.log(actionConfig)
         const { formProps } = actionConfig
         return (
           <>
