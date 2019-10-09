@@ -17,7 +17,7 @@ export default (props: Props) => {
 
   const handleNodeSelect = (renderProps: RenderProps) => {
     const node = renderProps.treeNodeData
-    if (node.nodeType === NodeType.file) {
+    if (node.nodeType === NodeType.DOCUMENT_NODE) {
       setBlueprint(`${renderProps.path}/${node.title}`)
       setShowModal(false)
       onChange({ target: { value: `${renderProps.path}/${node.title}` } })

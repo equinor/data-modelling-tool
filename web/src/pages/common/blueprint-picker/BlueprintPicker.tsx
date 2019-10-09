@@ -35,7 +35,7 @@ export const BlueprintPickerContent = ({
     <DocumentTree
       render={(renderProps: RenderProps) => {
         const { treeNodeData } = renderProps
-        if (treeNodeData.nodeType === NodeType.file) {
+        if (treeNodeData.nodeType === NodeType.DOCUMENT_NODE) {
           return (
             <div
               onClick={() => {

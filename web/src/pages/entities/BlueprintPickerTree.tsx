@@ -26,7 +26,7 @@ export default (props: Props) => {
     <DocumentTree
       render={(renderProps: RenderProps) => {
         const { treeNodeData } = renderProps
-        if (treeNodeData.nodeType === NodeType.file && sourceNode) {
+        if (treeNodeData.nodeType === NodeType.DOCUMENT_NODE && sourceNode) {
           return (
             <SelectBlueprintNode
               {...renderProps}

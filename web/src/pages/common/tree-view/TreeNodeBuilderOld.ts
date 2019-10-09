@@ -59,10 +59,10 @@ function createTreeNode({
     meta,
     isExpandable: isExpandable(type, children),
     isOpen: false,
-    isRoot: type === NodeType.datasource,
+    isRoot: type === NodeType.DATA_SOURCE,
     isHidden: false,
     children: children || [],
-    icon: getNodeIcon(type),
+    icon: getNodeIcon(type, children),
     isFolder: true,
   }
 }
@@ -79,46 +79,26 @@ export class TreeNodeBuilder extends TreeNodeBuilderOld {
   }
 }
 
-function getNodeIcon(nodeType: string): NodeIconType {
+function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
   switch (nodeType) {
-    case NodeType.DOCUMENT_NODE:
+    case NodeType.SIMOS_BLUEPRINT:
       return NodeIconType.file
-    case NodeType.datasource:
-      return NodeIconType.database
-
-    case NodeType.version:
-    case NodeType.rootPackage:
-    case NodeType.subPackage:
-    case NodeType.folder:
-    case NodeType.ARRAY_PLACEHOLDER:
-      return NodeIconType.folder
-    case NodeType.fileRef:
-    case NodeType.file:
-    case NodeType.entityFile:
-      return NodeIconType.file
-    case NodeType.documentRef:
+    case NodeType.SIMOS_BLUEPRINT_ATTRIBUTE:
       return NodeIconType.ref
+    case NodeType.DATA_SOURCE:
+      return NodeIconType.database
     default:
-      console.warn(`nodeType ${nodeType} is not matched to any icon type.`)
-      return NodeIconType.default
+      if (children.length > 0) {
+        return NodeIconType.folder
+      } else {
+        return NodeIconType.file
+      }
   }
 }
 
 function isExpandable(nodeType: string, children: string[]): boolean {
   switch (nodeType) {
-    case NodeType.version:
-    case NodeType.datasource:
-    case NodeType.subPackage:
-    case NodeType.rootPackage:
-    case NodeType.folder:
-    case NodeType.ARRAY_PLACEHOLDER:
-      return true
-    case NodeType.entityFile:
-    case NodeType.documentRef:
-    case NodeType.DOCUMENT_NODE:
-      return children.length > 0
     default:
-      // add special logic here if file should be expandable.
-      return false
+      return children.length > 0
   }
 }
