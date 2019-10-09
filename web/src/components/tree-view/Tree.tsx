@@ -145,7 +145,6 @@ const Tree = (props: TreeProps) => {
   }
 
   const addNode = (node: TreeNodeData, parentId: string) => {
-    console.log('ADD', node.nodeId, parentId)
     dispatch(NodeActions.createNode({ ...node, isOpen: true }))
     if (parentId) {
       dispatch(NodeActions.addChild(parentId, node.nodeId))
@@ -179,8 +178,6 @@ const Tree = (props: TreeProps) => {
     .map(rootNode => {
       return getRootNodes(rootNode, state)
     })
-
-  console.log(state)
 
   return (
     <>

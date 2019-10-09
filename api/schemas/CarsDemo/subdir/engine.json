@@ -14,8 +14,7 @@
       "name": "power"
     },
     {
-      "type": "templates/SIMOS/Blueprint",
-      "value": "templates/CarsDemo/subdir/subdir2/FuelPump",
+      "type": "templates/CarsDemo/subdir/subdir2/FuelPump",
       "name": "fuel_pump"
     }
   ]

@@ -29,8 +29,7 @@
   ],
   "storage_recipes": [
     {
-      "type": "templates/SIMOS/Storage",
-      "value": "templates/SIMOS/PackageStorage",
+      "type": "templates/SIMOS/PackageStorage",
       "name": "packages"
     }
   ]

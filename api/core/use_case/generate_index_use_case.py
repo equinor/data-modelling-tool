@@ -157,10 +157,15 @@ class Tree:
         self.get_repository = get_repository
 
     def _add_document(self, data_source_id: str, document: Blueprint, parent_node, attribute_name):
+        on_select = None
+        if attribute_name == "blueprints" and document.type == "templates/SIMOS/Blueprint":
+            on_select = "blueprint"
+
         child_node = DocumentNode(
             data_source_id=data_source_id,
             name=document.name,
             document=document,
+            on_select=on_select,
             blueprint=get_blueprint(document.type),
             parent=parent_node,
             menu_items=[
@@ -308,7 +313,7 @@ class Tree:
                         logger.warn(f"Missing type {attribute}")
             # If the attribute is a single reference
             else:
-                blueprint = get_blueprint(attribute["value"])
+                blueprint = get_blueprint(attribute["type"])
                 # document = Blueprint(**document.form_data[name]) if document and name in document.form_data else None
                 # if document:
                 #    document.template_ref = attribute["value"]
@@ -352,7 +357,6 @@ class Tree:
             document=document,
             blueprint=blueprint,
             parent=root_node,
-            on_select="blueprint",
             menu_items=[
                 {
                     "label": "Rename",

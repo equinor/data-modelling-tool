@@ -14,14 +14,12 @@
       "name": "manufacturer"
     },
     {
-      "type": "templates/SIMOS/Blueprint",
-      "value": "templates/CarsDemo/Wheel",
+      "type": "templates/CarsDemo/Wheel",
       "name": "wheels",
       "dimensions": "*"
     },
     {
-      "type": "templates/SIMOS/Blueprint",
-      "value": "templates/CarsDemo/subdir/Engine",
+      "type": "templates/CarsDemo/subdir/Engine",
       "name": "engine"
     }
   ]
