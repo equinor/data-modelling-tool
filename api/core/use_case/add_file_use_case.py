@@ -1,8 +1,10 @@
+from typing import Dict
 from uuid import uuid4
 
 from classes.data_source import DataSource
 from core.domain.dto import DTO
 from core.repository.interface.document_repository import DocumentRepository
+from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
@@ -10,13 +12,13 @@ from core.shared import request_object as req
 
 
 class AddFileRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, name=None, type=None, attribute=None, path=None, is_contained=None):
+    def __init__(self, parent_id=None, name=None, type=None, attribute=None, path=None, data=None):
         self.parent_id = parent_id
         self.name = name
         self.type = type
         self.attribute = attribute
         self.path = path
-        self.is_contained = is_contained
+        self.data = data
 
     @classmethod
     def from_dict(cls, adict):
@@ -31,9 +33,6 @@ class AddFileRequestObject(req.ValidRequestObject):
         if "type" not in adict:
             invalid_req.add_error("type", "is missing")
 
-        if "isContained" not in adict:
-            invalid_req.add_error("is contained", "is missing")
-
         if invalid_req.has_errors():
             return invalid_req
 
@@ -43,7 +42,7 @@ class AddFileRequestObject(req.ValidRequestObject):
             type=adict.get("type"),
             attribute=adict.get("attribute", ""),
             path=adict.get("path", ""),
-            is_contained=adict.get("isContained", ""),
+            data=adict.get("data", None),
         )
 
 
@@ -53,30 +52,42 @@ class AddFileUseCase(uc.UseCase):
         self.get_repository = get_repository
         self.data_source = data_source
 
+    def storage_config(self, blueprint):
+        attribute_configs = {}
+        storage_recipe = blueprint.get_storage_recipe()
+        if storage_recipe:
+            storage_document = get_blueprint(storage_recipe)
+            for attribute_config in storage_document.attributes:
+                attribute_configs[attribute_config["name"]] = attribute_config
+        return attribute_configs
+
     def process_request(self, request_object: AddFileRequestObject):
         parent_id: str = request_object.parent_id
         name: str = request_object.name
         type: str = request_object.type
         attribute: str = request_object.attribute
-        is_contained = request_object.is_contained == "true"
+        data: Dict = request_object.data
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
             raise Exception(f"The parent, with id {parent_id}, was not found")
 
+        parent_data = parent.data
+        if attribute not in parent_data:
+            parent_data[attribute] = []
+
+        attribute_configs = self.storage_config(get_blueprint(parent.type))
+
+        # TODO: Set all data
         file = DTO(uid=uuid4(), data={"name": name, "description": "", "type": type})
 
-        data = parent.data
-        if attribute not in data:
-            data[attribute] = []
-
-        if is_contained:
-            data[attribute] += [file.data]
+        if attribute_configs and attribute in attribute_configs and attribute_configs[attribute]["contained"]:
+            parent_data[attribute] += [data]
         else:
-            data[attribute] += [{"type": "ref", "_id": file.uid, "name": name}]
+            parent_data[attribute] += [{"type": "ref", "_id": file.uid, "name": name}]
+            self.document_repository.add(file)
+            logger.info(f"Added document '{file.uid}''")
 
-        self.document_repository.update(parent.uid, data)
-        self.document_repository.add(file)
+        self.document_repository.update(parent.uid, parent_data)
 
-        logger.info(f"Added document '{file.uid}''")
         return res.ResponseSuccess(file)

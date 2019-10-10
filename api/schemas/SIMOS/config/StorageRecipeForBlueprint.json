@@ -1,0 +1,12 @@
+{
+  "type": "templates/SIMOS/StorageRecipe",
+  "name": "StorageRecipeForBlueprint",
+  "description": "Storage recipe for a SIMOS:Blueprint",
+  "attributes": [
+    {
+      "name": "attributes",
+      "contained": true
+    }
+  ]
+}
+

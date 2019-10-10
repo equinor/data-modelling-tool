@@ -21,6 +21,7 @@ class Package:
         self.blueprints = [] if not blueprints else blueprints
         self.packages = []
         self.is_root = is_root
+        self.storage_recipes = []
 
     @classmethod
     def from_dict(cls, adict):
@@ -37,6 +38,10 @@ class Package:
 
         return instance
 
+    def get_storage_recipe(self):
+        if len(self.storage_recipes) > 0:
+            return self.storage_recipes[0]["type"]
+
     # TODO: Find other way to do this
     @staticmethod
     def contained_package_to_dict(package):
@@ -47,7 +52,7 @@ class Package:
 
     def to_dict(self):
         result = {
-            "uid": self.uid,
+            "uid": str(self.uid),
             "name": self.name,
             "description": self.description,
             "type": self.type,

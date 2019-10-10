@@ -21,7 +21,11 @@ def _add_documents(path, documents):
             blueprint = Blueprint.from_dict(data)
         else:
             blueprint = Entity(data)
-        dmt_db.templates.replace_one({"_id": blueprint.uid}, blueprint.to_dict(), upsert=True)
+            # TODO: dont store binary in mongo
+            data = blueprint.to_dict()
+            data["_id"] = blueprint.uid
+            data["_uid"] = blueprint.uid
+        dmt_db.templates.replace_one({"_id": blueprint.uid}, data, upsert=True)
         docs.append({"_id": blueprint.uid, "name": blueprint.name, "type": "ref"})
     return docs
 

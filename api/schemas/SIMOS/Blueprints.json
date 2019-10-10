@@ -29,6 +29,11 @@
       "name": "uiRecipes"
     }
   ],
-  "storageRecipes": [],
+  "storageRecipes": [
+    {
+      "type": "templates/SIMOS/config/StorageRecipeForBlueprint",
+      "name": "default"
+    }
+  ],
   "uiRecipes": []
 }

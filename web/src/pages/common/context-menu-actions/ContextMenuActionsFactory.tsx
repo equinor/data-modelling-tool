@@ -41,6 +41,31 @@ const fetchUpdate = (action: any) => {
       onError,
     })
 }
+
+interface Adict {
+  [key: string]: string
+}
+
+const processFormData = (requestData: any, formData: any) => {
+  const data = {} as any
+  Object.keys(requestData).forEach(key => {
+    if (typeof requestData[key] === 'object') {
+      const adict = {} as Adict
+      for (const item_key in requestData[key]) {
+        const value: string = requestData[key][item_key]
+        if (item_key in formData) {
+          const result = fillTemplate(value, formData)
+          adict[item_key] = result
+        }
+      }
+      data[key] = adict
+    } else {
+      data[key] = fillTemplate(requestData[key], formData)
+    }
+  })
+  return data
+}
+
 const getFormProperties = (action: any, props: ContextMenuActionProps) => {
   const {
     treeNodeData,
@@ -72,12 +97,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
           })
         },
         onSubmit: (formData: any) => {
-          const data = {} as any
-
-          Object.keys(action.data.request).forEach(key => {
-            data[key] = fillTemplate(action.data.request[key], formData)
-          })
-
+          const data = processFormData(action.data.request, formData)
           Api2.post({
             data: data,
             url: action.data.url,
@@ -107,12 +127,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return {
         fetchDocument: fetchUpdate(action),
         onSubmit: (formData: any) => {
-          const data = {} as any
-
-          Object.keys(action.data.request).forEach(key => {
-            data[key] = fillTemplate(action.data.request[key], formData)
-          })
-
+          const data = processFormData(action.data.request, formData)
           Api2.put({
             data: data, // { ...formData, ...action.data.request }
             url: action.data.url,

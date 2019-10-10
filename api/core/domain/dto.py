@@ -8,7 +8,7 @@ class DTO:
     def __init__(self, data: Union[Dict, T], uid: Optional[UUID] = None, type: str = None):
         if uid is None:
             uid = uuid4()
-        self._uid = uid
+        self._uid = str(uid)
         self._data = data
         self._type = type
 
