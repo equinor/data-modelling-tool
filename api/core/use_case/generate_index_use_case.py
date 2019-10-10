@@ -1,13 +1,12 @@
 from __future__ import annotations
 from pathlib import Path
-from typing import Union
 
 from anytree import NodeMixin, PreOrderIter, RenderTree
 from flask import g
 
 from core.domain.blueprint import Blueprint
+from core.domain.dto import DTO
 from core.domain.entity import Entity
-from core.domain.package import Package
 from core.domain.storage_recipe import StorageRecipe
 from core.domain.ui_recipe import UIRecipe
 from core.repository.interface.package_repository import PackageRepository
@@ -126,6 +125,8 @@ class Tree:
 
                 if not document:
                     raise EntityNotFoundException(uid=ref)
+                if not hasattr(document, "uid"):
+                    document.uid = ref["_id"]
                 documents.append(document)
 
         return documents
@@ -192,11 +193,7 @@ class Tree:
                 )
 
     def process_document(
-        self,
-        data_source_id,
-        document: Union[Blueprint, Package],
-        parent_node: DocumentNode,
-        document_type: DataSourceDocumentType,
+        self, data_source_id, document: DTO, parent_node: DocumentNode, document_type: DataSourceDocumentType
     ):
         # logger.info(f"Add attributes for '{document.name}'")
 
@@ -497,6 +494,7 @@ class GenerateIndexUseCase:
 
     def single(self, data_source_id: str, data_source_name: str, document_id: str, document_type: str) -> Index:
         document = self.document_repository.get(document_id)
+        uid = document.uid
         # The tree can't handle dto, need to use one of the below
         if document.type == DMT.PACKAGE.value:
             document = self.package_repository.get(document.uid)
@@ -506,6 +504,9 @@ class GenerateIndexUseCase:
             dto = self.document_repository.get(document.uid)
             document = Entity(dto.data)
             document.uid = dto.uid
+
+        if not hasattr(document, "uid"):
+            document.uid = uid
 
         data = self.tree.execute(
             data_source_id=data_source_id,

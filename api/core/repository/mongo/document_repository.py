@@ -15,30 +15,29 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
     def get(self, uid: str) -> DTO:
         result = self.client().get(uid)
         if result:
-            return DTO(data=result, uid=uid, type=result["type"])
+            return DTO(data=result, uid=uid)
 
     def find(self, filter: dict):
         result = self.client().find_one(filter)
         if result:
             data = result
             data["uid"] = result["_id"]
-            return DTO(data=data, uid=result["_id"], type=result["type"])
+            return DTO(data=data, uid=result["_id"])
 
     def update(self, dto: DTO) -> None:
-        if not isinstance(dto.data, dict):
-            data = dto.data.to_dict()
-        else:
-            data = dto.data
-        # flatten dto, keep back compability
+        data = dto.data
+        if not isinstance(data, dict):
+            data = data.to_dict()
+        # flatten dto, keep backward compatibility
         data["_id"] = dto.uid
         data["uid"] = dto.uid
         self.client().update(dto.uid, data)
 
     def add(self, dto: DTO) -> None:
-        if isinstance(dto.data, dict):
-            self.client().add(dto.uid, dto.data)
-        else:
-            self.client().add(dto.uid, dto.data.to_dict())
+        data = dto.data
+        if not isinstance(data, dict):
+            data = data.to_dict()
+        self.client().add(dto.uid, data)
 
     def delete(self, document: DTO) -> None:
         self.client().delete(document.uid)

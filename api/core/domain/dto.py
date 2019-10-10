@@ -1,23 +1,25 @@
 from uuid import uuid4, UUID
 from typing import Union, Dict, TypeVar, Optional
 
+from stringcase import snakecase
+
 T = TypeVar("T")
 
 
 class DTO:
-    def __init__(self, data: Union[Dict, T], uid: Optional[UUID] = None, type: str = None):
+    def __init__(self, data: Union[Dict, T], uid: Optional[UUID] = None):
         if uid is None:
             uid = uuid4()
-        self._uid = str(uid)
+        self._uid = uid
         self._data = data
-        self._type = type
 
-        # remove when dto is stored in mongo documents.
-        # for key in ["uid", "_id"]:
-        #    try:
-        #        del self._data[key]
-        #    except KeyError:
-        #        pass
+        if isinstance(self.data, Dict):
+            # remove when dto is stored in mongo documents.
+            for key in ["uid", "_id"]:
+                try:
+                    del self._data[key]
+                except KeyError:
+                    pass
 
     @property
     def uid(self):
@@ -31,9 +33,23 @@ class DTO:
     def data(self, data):
         self._data = data
 
-    @property
-    def type(self) -> str:
-        return self._type
-
     def to_dict(self):
-        return {"uid": self.uid, "data": self.data}
+        return {"uid": self.uid, "data": self.data if isinstance(self.data, dict) else self.data.to_dict()}
+
+    def __getattr__(self, item):
+        def get(name):
+            try:
+                return getattr(self.data, name)
+            except AttributeError:
+                return self.data[name]
+
+        try:
+            return get(item)
+        except KeyError:
+            return get(snakecase(item))
+
+    def get_values(self, name):
+        try:
+            return self.__getattr__(name)
+        except KeyError:
+            return None
