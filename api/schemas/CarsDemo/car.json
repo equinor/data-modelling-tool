@@ -16,13 +16,28 @@
     {
       "type": "templates/CarsDemo/Wheel",
       "name": "wheels",
-      "dimensions": "*",
-      "contained": false
+      "dimensions": "*"
     },
     {
       "type": "templates/CarsDemo/subdir/Engine",
-      "name": "engine",
-      "contained": false
+      "name": "engine"
+    }
+  ],
+  "storageRecipe": [
+    {
+      "name": "Car storage",
+      "type": "templates/SIMOS/StorageRecipe",
+      "description": "",
+      "attributes": [
+        {
+          "name": "wheels",
+          "contained": false
+        },
+        {
+          "name": "engine",
+          "contained": "false"
+        }
+      ]
     }
   ]
 }

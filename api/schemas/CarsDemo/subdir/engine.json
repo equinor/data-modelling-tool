@@ -16,7 +16,6 @@
     {
       "type": "templates/CarsDemo/subdir/subdir2/FuelPump",
       "name": "fuel_pump",
-      "contained": false
     }
   ]
 }
