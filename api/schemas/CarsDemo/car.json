@@ -6,7 +6,7 @@
     {
       "type": "string",
       "value": "",
-      "name": "name"
+      "name": "name",
     },
     {
       "type": "string",
@@ -35,7 +35,7 @@
         },
         {
           "name": "engine",
-          "contained": "false"
+          "contained": false
         }
       ]
     }

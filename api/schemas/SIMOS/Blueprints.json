@@ -15,12 +15,14 @@
     {
       "type": "templates/SIMOS/StorageRecipe",
       "dimensions": "*",
-      "name": "storageRecipes"
+      "name": "storageRecipes",
+      "optional": true
     },
     {
       "type": "templates/SIMOS/UIRecipe",
       "dimensions": "*",
-      "name": "uiRecipes"
+      "name": "uiRecipes",
+      "optional": true
     }
   ],
   "storageRecipes": [
