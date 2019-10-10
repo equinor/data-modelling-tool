@@ -14,7 +14,7 @@
       "name": "description"
     },
     {
-      "type": "templates/SIMOS/BlueprintAttribute",
+      "type": "templates/SIMOS/StorageAttribute",
       "name": "attributes",
       "dimensions": "*"
     }

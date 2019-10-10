@@ -8,16 +8,6 @@
       "name": "name"
     },
     {
-      "type": "string",
-      "name": "description",
-      "description": "default value empty."
-    },
-    {
-      "type": "boolean",
-      "name": "contained",
-      "description": "if this attribute is contained, default true"
-    },
-    {
       "type": "templates/SIMOS/BlueprintAttribute",
       "dimensions": "*",
       "name": "attributes"

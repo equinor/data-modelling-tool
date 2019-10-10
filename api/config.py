@@ -14,4 +14,4 @@ class Config:
     TEMPLATES_COLLECTION = "dmt-templates"
     DATA_SOURCES_COLLECTION = "data_sources"
     # TODO: CACHE_MAX_SIZE - Enable in production, disable in development
-    CACHE_MAX_SIZE = 0
+    CACHE_MAX_SIZE = 100
