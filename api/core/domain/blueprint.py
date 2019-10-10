@@ -25,7 +25,7 @@ class Blueprint:
             name=adict["name"],
             description=adict["description"],
             type=adict["type"],
-            uid=adict.get("uid", adict.get("_id")),
+            uid=adict.get("_id", adict.get("uid", "")),
         )
         instance.attributes = adict.get("attributes", "")
         instance.storage_recipes = adict.get("storageRecipes", [])
@@ -34,7 +34,7 @@ class Blueprint:
     def to_dict(self):
         return {
             "name": self.name,
-            "uid": str(self.uid),
+            "_id": self.uid,
             "description": self.description,
             "type": self.type,
             "attributes": self.attributes,

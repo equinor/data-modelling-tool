@@ -14,7 +14,7 @@
     },
     {
       "type": "boolean",
-      "name": "isRoot"
+      "name": "isRootPackage"
     },
     {
       "type": "templates/DMT/Package",
