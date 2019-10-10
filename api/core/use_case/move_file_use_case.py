@@ -8,7 +8,7 @@ from core.repository.interface.document_repository import DocumentRepository
 from pathlib import Path
 from classes.data_source import DataSource
 from core.repository.repository_exceptions import EntityNotFoundException, EntityAlreadyExistsException
-from core.repository.template_repository import _get_document_id_by_path
+from core.repository.template_repository import get_document_uid_by_path
 
 
 class MoveFileRequestObject(req.ValidRequestObject):
@@ -51,11 +51,11 @@ class MoveFileUseCase(uc.UseCase):
             RepositoryType.DocumentRepository, destination_data_source
         )
 
-        if _get_document_id_by_path(str(destination), destination_data_source):
+        if get_document_uid_by_path(str(destination), destination_data_source):
             raise EntityAlreadyExistsException(request_object.source)
 
         # Remove source
-        source_uid = _get_document_id_by_path(str(source), source_data_source)
+        source_uid = get_document_uid_by_path(str(source), source_data_source)
         source_repository: DocumentRepository = self.get_repository(
             RepositoryType.DocumentRepository, source_data_source
         )

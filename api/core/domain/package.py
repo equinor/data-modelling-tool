@@ -27,7 +27,7 @@ class Package:
     def from_dict(cls, adict):
         instance = cls(
             name=adict.get("name", ""),
-            uid=adict.get("_id", ""),
+            uid=adict.get("_id", adict.get("uid")),
             description=adict.get("description", ""),
             blueprints=adict.get("blueprints", ""),
             dependencies=adict.get("dependencies", ""),
@@ -52,7 +52,7 @@ class Package:
 
     def to_dict(self):
         result = {
-            "uid": str(self.uid),
+            "_id": self.uid,
             "name": self.name,
             "description": self.description,
             "type": self.type,

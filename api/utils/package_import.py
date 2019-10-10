@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Dict, Union
+from typing import Dict, List, Union
 from uuid import uuid4
 
 from core.domain.blueprint import Blueprint
@@ -10,34 +10,35 @@ from services.database import data_modelling_tool_db as dmt_db
 from utils.logging import logger
 
 
-def _add_documents(path, documents):
+def _add_documents(path, documents) -> List[Dict]:
     docs = []
-    for document in documents:
-        with open(f"{path}/{document}") as json_file:
+    for file in documents:
+        with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
         data["uid"] = str(uuid4())
         # TODO: Remove hardcoded String
         if data["type"] == "templates/SIMOS/Blueprint":
-            blueprint = Blueprint.from_dict(data)
+            document = Blueprint.from_dict(data)
         else:
-            blueprint = Entity(data)
-            # TODO: dont store binary in mongo
-            data = blueprint.to_dict()
-            data["_id"] = blueprint.uid
-            data["_uid"] = blueprint.uid
-        dmt_db.templates.replace_one({"_id": blueprint.uid}, data, upsert=True)
-        docs.append({"_id": blueprint.uid, "name": blueprint.name, "type": "ref"})
+            document = Entity(data)
+        dmt_db.templates.replace_one({"_id": document.uid}, document.to_dict(), upsert=True)
+        # TODO: Remove "type: ref"
+        docs.append({"_id": document.uid, "name": document.name, "type": "ref"})
     return docs
 
 
-def import_package(path, uncontained: bool = False, is_root: bool = False) -> Union[Package, Dict]:
-    package = Package(name=os.path.basename(path), description="", blueprints=[], uid=str(uuid4()))
+def import_package(
+    path, root_package_uid: str = None, contained: bool = True, is_root: bool = False
+) -> Union[Package, Dict]:
+    package = Package(name=os.path.basename(path), uid=str(uuid4() if not contained else root_package_uid))
     package.blueprints = _add_documents(path, next(os.walk(path))[2])
 
     for folder in next(os.walk(path))[1]:
-        package.packages.append(import_package(f"{path}/{folder}", uncontained, is_root=False))
+        package.packages.append(
+            import_package(f"{path}/{folder}", contained=contained, is_root=False, root_package_uid=root_package_uid)
+        )
 
-    if uncontained:
+    if not contained:
         # TODO: isRoot should not be needed
         as_dict = package.to_dict()
         as_dict["isRoot"] = is_root

@@ -1,5 +1,5 @@
 from core.domain.document import Document
-from core.repository.template_repository import get_template_by_document_type
+from core.repository.template_repository import get_document_by_ref
 from jsonschema import validate, ValidationError
 
 
@@ -11,7 +11,7 @@ class AddDocumentUseCase:
         if not document.type:
             raise Exception("The requested document does not contain a template reference")
 
-        template = get_template_by_document_type(document.type)
+        template = get_document_by_ref(document.type)
 
         try:
             validate(instance=document.form_data, schema=template)

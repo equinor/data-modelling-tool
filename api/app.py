@@ -1,4 +1,5 @@
 import json
+from uuid import uuid4
 
 import click
 from flask import Flask
@@ -32,26 +33,23 @@ PACKAGE_PATHS = ["/code/schemas/CarsDemo", "/code/schemas/SIMOS", "/code/schemas
 
 
 @app.cli.command()
-@click.option(
-    "--uncontained", "-U", is_flag=True, default=False, help="Import every subpackage as a separate document."
-)
-def import_packages(uncontained: bool = False):
+@click.option("--contained", "-C", is_flag=True, default=False)
+def import_packages(contained: bool = False):
     # TODO: Read data-source from Package-Config
     for folder in PACKAGE_PATHS:
-        import_folder(uncontained, folder)
+        import_folder(folder, contained=contained)
 
 
-def import_folder(uncontained, folder):
-    if uncontained:
-        import_package(folder, uncontained, is_root=True)
+def import_folder(folder, contained: bool = False):
+    if not contained:
+        import_package(folder, contained=False, is_root=True)
     else:
-        package = import_package(folder, uncontained)
-        # TODO: isRoot should not be needed
+        uid = str(uuid4())
+        package = import_package(folder, contained=True, root_package_uid=uid)
         as_dict = package.to_dict()
         as_dict["isRoot"] = True
         dmt_db.templates.replace_one({"_id": package.uid}, as_dict, upsert=True)
         logger.info(f"Imported package {package.name}")
-
 
 @app.cli.command()
 def drop_data_sources():

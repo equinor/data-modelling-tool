@@ -1,9 +1,5 @@
-from core.domain.base import Base
-
-
-class Entity(Base):
+class Entity:
     def __init__(self, init=None):
-        super().__init__()
         if init is not None:
             self.__dict__.update(init)
 
