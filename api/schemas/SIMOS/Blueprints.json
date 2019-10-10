@@ -19,14 +19,14 @@
       "name": "attributes"
     },
     {
-      "type": "templates/SIMOS/Storage",
+      "type": "templates/SIMOS/StorageRecipe",
       "dimensions": "*",
-      "name": "storage_recipes"
+      "name": "storageRecipes"
     },
     {
       "type": "templates/SIMOS/UIRecipe",
       "dimensions": "*",
-      "name": "ui_recipes"
+      "name": "uiRecipes"
     }
   ],
   "storage_recipes": [],

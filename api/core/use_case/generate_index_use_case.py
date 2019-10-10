@@ -114,7 +114,8 @@ class Tree:
     def get_references(self, references, item_type):
         documents = []
         for ref in references:
-            if isinstance(ref, dict) and ref["type"] == "ref":
+
+            if isinstance(ref, dict) and "type" in ref and ref["type"] == "ref":
                 logger.warn(f"Add ref '{ref}' {item_type}")
                 if item_type == TemplatesDMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
@@ -131,8 +132,6 @@ class Tree:
         logger.info(f"Add attributes for '{document.name}'")
 
         blueprint = get_blueprint(document.type)
-
-        is_contained = document.type == "templates/SIMOS/Blueprint"
 
         node = DocumentNode(
             data_source_id=data_source_id,
@@ -185,7 +184,9 @@ class Tree:
             name = attribute["name"]
             # What blueprint is this attribute pointing too
 
-            print(f"------------------------{document.name}:{name}------------------------")
+            is_contained = document.type == "templates/SIMOS/Blueprint" and name == "blueprints"
+
+            print(f"------------------------{document.name}:{name}:{is_contained}------------------------")
 
             # If the attribute is an array
             if "dimensions" in attribute and attribute["dimensions"] == "*":
@@ -209,7 +210,7 @@ class Tree:
                                         "url": f"/api/v2/explorer/{data_source_id}/add-file",
                                         "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/AddAction",
                                         "request": {
-                                            "type": f"{blueprint.type}",
+                                            "type": attribute["type"],
                                             "parentId": getattr(document, "uid", None),
                                             "attribute": name,
                                             "name": "${name}",

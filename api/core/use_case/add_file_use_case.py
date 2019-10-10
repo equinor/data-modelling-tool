@@ -58,10 +58,7 @@ class AddFileUseCase(uc.UseCase):
         name: str = request_object.name
         type: str = request_object.type
         attribute: str = request_object.attribute
-        print("B")
-        is_contained = bool(request_object.is_contained)
-
-        print("A", is_contained)
+        is_contained = request_object.is_contained == "true"
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
@@ -72,8 +69,6 @@ class AddFileUseCase(uc.UseCase):
         data = parent.data
         if attribute not in data:
             data[attribute] = []
-
-        print(file.data)
 
         if is_contained:
             data[attribute] += [file.data]

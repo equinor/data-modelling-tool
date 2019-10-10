@@ -1,9 +1,10 @@
 from core.domain.blueprint import Blueprint
 from core.repository.template_repository import get_template_by_document_type
 from functools import lru_cache
+from config import Config
 
 
-@lru_cache(maxsize=32)
+@lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def get_blueprint(type: str) -> Blueprint:
     DTO = get_template_by_document_type(type)
     if not DTO:

@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Storage",
+  "type": "templates/SIMOS/StorageRecipe",
   "name": "PackageStorage",
   "description": "Storage recipe for a DMT:Package",
   "attributes": [
