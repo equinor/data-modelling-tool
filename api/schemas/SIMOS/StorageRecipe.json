@@ -14,15 +14,9 @@
       "name": "description"
     },
     {
-      "type": "templates/SIMOS/StorageAttribute",
+      "type": "templates/SIMOS/BlueprintAttribute",
       "name": "attributes",
       "dimensions": "*"
-    }
-  ],
-  "storageRecipes": [
-    {
-      "type": "templates/SIMOS/config/StorageRecipeForStorageRecipe",
-      "name": "default"
     }
   ]
 }

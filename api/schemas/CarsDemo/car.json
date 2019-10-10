@@ -16,11 +16,13 @@
     {
       "type": "templates/CarsDemo/Wheel",
       "name": "wheels",
-      "dimensions": "*"
+      "dimensions": "*",
+      "contained": false
     },
     {
       "type": "templates/CarsDemo/subdir/Engine",
-      "name": "engine"
+      "name": "engine",
+      "contained": false
     }
   ]
 }
