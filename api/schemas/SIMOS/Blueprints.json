@@ -29,12 +29,6 @@
       "name": "uiRecipes"
     }
   ],
-  "storage_recipes": [],
-  "ui_recipes": [
-    {
-      "type": "local-blueprints/collections/ui",
-      "value": "some ui definition",
-      "name": ""
-    }
-  ]
+  "storageRecipes": [],
+  "uiRecipes": []
 }

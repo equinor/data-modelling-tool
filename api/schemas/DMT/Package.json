@@ -14,7 +14,7 @@
     },
     {
       "type": "boolean",
-      "name": "isRootPackage"
+      "name": "isRoot"
     },
     {
       "type": "templates/DMT/Package",
@@ -27,7 +27,7 @@
       "dimensions": "*"
     }
   ],
-  "storage_recipes": [
+  "storageRecipes": [
     {
       "type": "templates/SIMOS/PackageStorage",
       "name": "packages"
