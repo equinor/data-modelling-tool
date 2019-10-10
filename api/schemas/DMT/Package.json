@@ -29,7 +29,7 @@
   ],
   "storageRecipes": [
     {
-      "type": "templates/SIMOS/PackageStorage",
+      "type": "templates/DMT/PackageStorage",
       "name": "packages"
     }
   ]

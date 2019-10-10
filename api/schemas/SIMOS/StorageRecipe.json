@@ -18,5 +18,11 @@
       "name": "attributes",
       "dimensions": "*"
     }
+  ],
+  "storageRecipes": [
+    {
+      "type": "templates/SIMOS/config/StorageRecipeForStorageRecipe",
+      "name": "default"
+    }
   ]
 }

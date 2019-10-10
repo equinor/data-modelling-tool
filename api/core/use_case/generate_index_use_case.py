@@ -177,88 +177,122 @@ class Tree:
         if not blueprint:
             raise EntityNotFoundException(uid=document.type)
 
-        attribute_nodes = []
+        attribute_configs = {}
+        storage_recipe = blueprint.get_storage_recipe()
+        if storage_recipe:
+            storage_document = get_blueprint(storage_recipe)
+            for attribute_config in storage_document.attributes:
+                attribute_configs[attribute_config["name"]] = attribute_config
 
+        attribute_nodes = []
         # Use the blueprint to find attributes that contains references
         for attribute in blueprint.get_attributes_with_reference():
             name = attribute["name"]
             # What blueprint is this attribute pointing too
 
             is_contained = document.type == "templates/SIMOS/Blueprint" and name == "blueprints"
+            if storage_recipe and name in attribute_configs:
+                config = attribute_configs[name]
+                is_contained = config["contained"]
 
             print(f"------------------------{document.name}:{name}:{is_contained}------------------------")
 
             # If the attribute is an array
             if "dimensions" in attribute and attribute["dimensions"] == "*":
                 item_type = get_blueprint(attribute["type"])
-                # Create a placeholder node that can contain real documents
 
+                data = {}
+                for item in item_type.get_attribute_names():
+                    data[item] = ("${" + item + "}",)
+
+                not_contained_menu_action = {
+                    "label": "New",
+                    "menuItems": [
+                        {
+                            "label": f"{item_type.name}",
+                            "action": "CREATE",
+                            "data": {
+                                "url": f"/api/v2/explorer/{data_source_id}/add-file",
+                                "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/AddAction",
+                                "request": {
+                                    "type": attribute["type"],
+                                    "parentId": getattr(document, "uid", None),
+                                    "attribute": name,
+                                    "name": "${name}",
+                                    "data": data,
+                                },
+                            },
+                        }
+                    ],
+                }
+
+                contained_menu_action = {
+                    "label": "New",
+                    "menuItems": [
+                        {
+                            "label": f"{item_type.name}",
+                            "action": "CREATE",
+                            "data": {
+                                "url": f"/api/v2/explorer/{data_source_id}/add-file",
+                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
+                                "request": {
+                                    "type": attribute["type"],
+                                    "parentId": getattr(document, "uid", None),
+                                    "attribute": name,
+                                    "data": data,
+                                    "name": "${name}",
+                                },
+                            },
+                        }
+                    ],
+                }
+
+                # Create a placeholder node that can contain real documents
                 attribute_node = DocumentNode(
                     data_source_id=data_source_id,
                     name=name,
                     document=document,
                     blueprint=blueprint,
                     parent=node,
-                    menu_items=[
-                        {
-                            "label": "New",
-                            "menuItems": [
-                                {
-                                    "label": f"{item_type.name}",
-                                    "action": "CREATE",
-                                    "data": {
-                                        "url": f"/api/v2/explorer/{data_source_id}/add-file",
-                                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/AddAction",
-                                        "request": {
-                                            "type": attribute["type"],
-                                            "parentId": getattr(document, "uid", None),
-                                            "attribute": name,
-                                            "name": "${name}",
-                                            "isContained": is_contained,
-                                        },
-                                    },
-                                }
-                            ],
-                        }
-                    ],
+                    menu_items=[contained_menu_action if is_contained else not_contained_menu_action],
                 )
 
                 # Check if values for the attribute exists in current document,
-                # this means that we have added some documents to this array
+                # this means that we have added some documents to this array.
                 if hasattr(document, name):
                     values = getattr(document, name)
 
-                    if "type" in attribute:
+                    # Values are stored in separate document
+                    if not is_contained:
                         # Get real documents
                         attribute_nodes.append(
                             {"documents": self.get_references(values, attribute["type"]), "node": attribute_node}
                         )
-                        # Placeholder nodes
-                        if is_contained:
-                            for index, instance in enumerate(values):
-                                uid = f"{document.uid}.{instance['name']}"
-                                DocumentNode(
-                                    data_source_id=data_source_id,
-                                    name=instance["name"],
-                                    document=Blueprint(
-                                        uid=uid, name=instance["name"], description="", type=attribute["type"]
-                                    ),
-                                    blueprint=blueprint,
-                                    parent=attribute_node,
-                                    on_select={
-                                        "uid": uid,
-                                        "title": instance["name"],
-                                        "component": "blueprint",
-                                        "data": {
-                                            "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                                            "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
-                                            "attribute": f"{name}.{index}",
-                                        },
+                    # Values are stored inside parent. We create placeholder nodes.
+                    if is_contained:
+                        for index, instance in enumerate(values):
+                            print(instance)
+                            uid = f"{document.uid}.{instance['name']}"
+                            DocumentNode(
+                                data_source_id=data_source_id,
+                                name=instance["name"],
+                                document=Blueprint(
+                                    uid=uid, name=instance["name"], description="", type=attribute["type"]
+                                ),
+                                blueprint=blueprint,
+                                parent=attribute_node,
+                                on_select={
+                                    "uid": uid,
+                                    "title": instance["name"],
+                                    "component": "blueprint",
+                                    "data": {
+                                        "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
+                                        "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
+                                        "attribute": f"{name}.{index}",
                                     },
-                                    menu_items=[],
-                                )
-                    else:
-                        logger.warn(f"Missing type {attribute}")
+                                },
+                                menu_items=[],
+                            )
 
         for attribute_node in attribute_nodes:
             for attribute_document in attribute_node["documents"]:
