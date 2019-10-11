@@ -14,7 +14,7 @@ class Blueprint:
 
     def get_storage_recipe(self):
         if len(self.storage_recipes) > 0:
-            return self.storage_recipes[0]["type"]
+            return self.storage_recipes[0]
 
     def get_attribute_names(self):
         return list(map(lambda item: item["name"], self.attributes))
@@ -38,6 +38,7 @@ class Blueprint:
             "description": self.description,
             "type": self.type,
             "attributes": self.attributes,
+            "storageRecipes": self.storage_recipes,
         }
 
     def __eq__(self, other):

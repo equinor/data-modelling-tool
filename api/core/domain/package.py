@@ -35,12 +35,12 @@ class Package:
         )
 
         instance.packages = [Package.from_dict(package) for package in adict.get("packages", "")]
-
+        instance.storage_recipes = adict.get("storageRecipes", [])
         return instance
 
     def get_storage_recipe(self):
         if len(self.storage_recipes) > 0:
-            return self.storage_recipes[0]["type"]
+            return self.storage_recipes[0]
 
     # TODO: Find other way to do this
     @staticmethod
@@ -60,6 +60,7 @@ class Package:
             "dependencies": self.dependencies,
             "packages": [self.contained_package_to_dict(package) for package in self.packages],
             "isRoot": self.is_root,
+            "storageRecipes": self.storage_recipes,
         }
         return result
 
