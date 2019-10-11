@@ -19,6 +19,13 @@ class Blueprint:
     def get_attribute_names(self):
         return list(map(lambda item: item["name"], self.attributes))
 
+    def get_values(self, attribute_name):
+        data = self.to_dict()
+        if attribute_name in data:
+            return data[attribute_name]
+        else:
+            return None
+
     @classmethod
     def from_dict(cls, adict):
         instance = cls(

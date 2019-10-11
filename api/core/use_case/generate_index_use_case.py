@@ -253,9 +253,8 @@ class Tree:
 
                 # Check if values for the attribute exists in current document,
                 # this means that we have added some documents to this array.
-                if hasattr(document, name):
-                    values = getattr(document, name)
-
+                values = document.get_values(name)
+                if values:
                     # Values are stored in separate document
                     if not is_contained:
                         # Get real documents

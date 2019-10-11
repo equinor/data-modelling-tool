@@ -2,7 +2,7 @@ from typing import List
 
 DEFAULT_PRIMITIVE_CONTAINED = True
 DEFAULT_COMPLEX_CONTAINED = False
-PRIMITIVES = ["string", "number", "integer", "number", "boolean"]
+PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
 class StorageRecipeAttribute:

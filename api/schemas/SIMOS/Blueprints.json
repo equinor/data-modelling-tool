@@ -38,6 +38,10 @@
         {
           "name": "attributes",
           "contained": true
+        },
+        {
+          "name": "storageRecipes",
+          "contained": true
         }
       ]
     }
