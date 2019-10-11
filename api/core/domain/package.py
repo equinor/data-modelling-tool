@@ -34,7 +34,7 @@ class Package:
         description: str = None,
         type: str = Config.DMT_PACKAGE,
         # TODO: Should handle refs and contained blueprints to be consistent with rest of the system
-        blueprints: List[Dict] = None,
+        documents: List[Dict] = None,
         is_root: bool = False,
     ):
         self.name = name
@@ -42,7 +42,7 @@ class Package:
         self.description = description
         self.type = type
         self.dependencies = [] if not dependencies else dependencies
-        self.blueprints = [] if not blueprints else blueprints
+        self.documents = [] if not documents else documents
         self.packages = []
         self.is_root = is_root
         self.storage_recipes = []
@@ -53,7 +53,7 @@ class Package:
             name=adict["name"],
             uid=adict["_id"],
             description=adict.get("description"),
-            blueprints=adict.get("blueprints"),
+            documents=adict.get("documents", adict.get("blueprints")),
             dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
             type=adict.get("type", Config.DMT_PACKAGE),
         )
@@ -87,7 +87,7 @@ class Package:
             "name": self.name,
             "description": self.description,
             "type": self.type,
-            "blueprints": self.blueprints,
+            "documents": self.documents,
             "dependencies": [dependency.to_dict() for dependency in self.dependencies],
             "packages": [self.contained_package_to_dict(package) for package in self.packages],
             "isRoot": self.is_root,

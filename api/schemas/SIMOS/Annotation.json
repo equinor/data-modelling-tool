@@ -1,0 +1,19 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "name": "Annotation",
+  "description": "This describes an annotation",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "string",
+      "name": "value"
+    }
+  ]
+}

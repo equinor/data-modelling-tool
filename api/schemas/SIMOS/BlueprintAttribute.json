@@ -5,41 +5,46 @@
   "attributes": [
     {
       "type": "string",
-      "value": "",
-      "name": "name"
+      "name": "name",
+      "optional": false
     },
     {
       "type": "string",
-      "value": "",
-      "name": "description"
+      "name": "description",
+      "optional": true
     },
     {
+      "name": "default",
       "type": "string",
-      "name": "value",
-      "value": ""
+      "optional": true,
+      "default": null,
+      "contained": true
     },
     {
       "type": "string",
       "name": "type",
-      "values": [
-        "string",
-        "integer",
-        "number",
-        "boolean",
-        "local-blueprints/collections/blueprint"
-      ],
-      "labels": [
-        "String",
-        "Integer",
-        "Number",
-        "Boolean",
-        "Blueprint"
-      ]
+      "enum": "templates/SIMOS/attribute_types",
+      "optional": false
     },
     {
       "type": "string",
       "name": "dimensions",
-      "value": ""
+      "optional": true,
+      "default": "1"
+    },
+    {
+      "name": "contained",
+      "type": "boolean",
+      "default": true,
+      "contained": true,
+      "optional": true
+    },
+    {
+      "name": "enum",
+      "type": "templates/SIMOS/Enum",
+      "optional": true,
+      "default": null,
+      "contained": true
     }
   ],
   "storageRecipes": []

@@ -5,12 +5,10 @@
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     },
     {
       "type": "string",
-      "value": "",
       "name": "description"
     },
     {

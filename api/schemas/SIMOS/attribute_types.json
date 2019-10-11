@@ -1,0 +1,21 @@
+{
+  "type": "templates/SIMOS/Enum",
+  "name": "attribute_types",
+  "description": "This describes a list of attribute types",
+  "values": [
+    "string",
+    "integer",
+    "number",
+    "boolean",
+    "local-blueprints-equinor/collections/blueprint",
+    "entity"
+  ],
+  "labels": [
+    "String",
+    "Integer",
+    "Number",
+    "Boolean",
+    "Blueprint",
+    "Entity"
+  ]
+}

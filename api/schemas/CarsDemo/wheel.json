@@ -7,22 +7,20 @@
       "type": "string",
       "name": "name",
       "optional": false,
-      "default": "",
       "contained": true
     },
     {
       "type": "string",
       "name": "description",
       "optional": false,
-      "default": "",
       "contained": true
     },
     {
       "type": "string",
       "name": "type",
       "optional": false,
-      "default": "",
-      "contained": true
+      "contained": true,
+      "default": "templates/CarsDemo/Wheel"
     },
     {
       "type": "string",
