@@ -3,6 +3,7 @@ import os
 from typing import Dict, List, Union
 from uuid import uuid4
 
+from config import Config
 from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
 from core.domain.package import Package
@@ -16,8 +17,7 @@ def _add_documents(path, documents) -> List[Dict]:
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
         data["uid"] = str(uuid4())
-        # TODO: Remove hardcoded String
-        if data["type"] == "templates/SIMOS/Blueprint":
+        if data["type"] == Config.MASTER_BLUEPRINT:
             document = Blueprint.from_dict(data)
         else:
             document = Entity(data)
