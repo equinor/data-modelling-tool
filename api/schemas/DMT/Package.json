@@ -29,8 +29,19 @@
   ],
   "storageRecipes": [
     {
-      "type": "templates/DMT/PackageStorage",
-      "name": "packages"
+      "type": "templates/SIMOS/StorageRecipe",
+      "name": "DefaultStorageRecipe",
+      "description": "",
+      "attributes": [
+        {
+          "name": "blueprints",
+          "contained": false
+        },
+        {
+          "name": "packages",
+          "contained": false
+        }
+      ]
     }
   ]
 }

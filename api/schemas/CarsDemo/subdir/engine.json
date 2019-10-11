@@ -17,5 +17,18 @@
       "type": "templates/CarsDemo/subdir/subdir2/FuelPump",
       "name": "fuel_pump"
     }
+  ],
+  "storageRecipe": [
+    {
+      "name": "DefaultStorageRecipe",
+      "type": "templates/SIMOS/StorageRecipe",
+      "description": "",
+      "attributes": [
+        {
+          "name": "fuel_pump",
+          "contained": false
+        }
+      ]
+    }
   ]
 }

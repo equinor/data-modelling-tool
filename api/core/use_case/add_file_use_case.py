@@ -3,7 +3,9 @@ from uuid import uuid4
 
 from classes.data_source import DataSource
 from core.domain.dto import DTO
+from core.domain.storage_recipe import StorageRecipe
 from core.repository.interface.document_repository import DocumentRepository
+from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
 from core.shared import use_case as uc
@@ -76,12 +78,13 @@ class AddFileUseCase(uc.UseCase):
         if attribute not in parent_data:
             parent_data[attribute] = []
 
-        attribute_configs = self.storage_config(get_blueprint(parent.type))
+        blueprint = get_blueprint(parent.type)
+        storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
         # TODO: Set all data
         file = DTO(uid=uuid4(), data={"name": name, "description": "", "type": type})
 
-        if attribute_configs and attribute in attribute_configs and attribute_configs[attribute]["contained"]:
+        if storage_recipe.is_contained(attribute, type):
             parent_data[attribute] += [data]
         else:
             parent_data[attribute] += [{"type": "ref", "_id": file.uid, "name": name}]

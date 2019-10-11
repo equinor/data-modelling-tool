@@ -1,8 +1,10 @@
 from core.domain.blueprint import Blueprint
+from core.domain.storage_recipe import StorageRecipe
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared.templates import TemplatesDMT
+from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
 from anytree import NodeMixin, RenderTree, PreOrderIter
@@ -177,12 +179,7 @@ class Tree:
         if not blueprint:
             raise EntityNotFoundException(uid=document.type)
 
-        attribute_configs = {}
-        storage_recipe = blueprint.get_storage_recipe()
-        if storage_recipe:
-            storage_document = get_blueprint(storage_recipe)
-            for attribute_config in storage_document.attributes:
-                attribute_configs[attribute_config["name"]] = attribute_config
+        storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
         attribute_nodes = []
         # Use the blueprint to find attributes that contains references
@@ -190,10 +187,7 @@ class Tree:
             name = attribute["name"]
             # What blueprint is this attribute pointing too
 
-            is_contained = document.type == "templates/SIMOS/Blueprint" and name == "blueprints"
-            if storage_recipe and name in attribute_configs:
-                config = attribute_configs[name]
-                is_contained = config["contained"]
+            is_contained = storage_recipe.is_contained(attribute["name"], attribute["type"])
 
             print(f"------------------------{document.name}:{name}:{is_contained}------------------------")
 
@@ -271,7 +265,6 @@ class Tree:
                     # Values are stored inside parent. We create placeholder nodes.
                     if is_contained:
                         for index, instance in enumerate(values):
-                            print(instance)
                             uid = f"{document.uid}.{instance['name']}"
                             DocumentNode(
                                 data_source_id=data_source_id,
