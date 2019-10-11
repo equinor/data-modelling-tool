@@ -7,15 +7,13 @@
     "integer",
     "number",
     "boolean",
-    "local-blueprints-equinor/collections/blueprint",
-    "entity"
+    "local-blueprints-equinor/collections/blueprint"
   ],
   "labels": [
     "String",
     "Integer",
     "Number",
     "Boolean",
-    "Blueprint",
-    "Entity"
+    "Blueprint"
   ]
 }

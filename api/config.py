@@ -11,8 +11,10 @@ class Config:
     MONGO_URI = os.getenv("MONGO_AZURE_URI", "")
     MONGO_DB = os.getenv("MONGO_INITDB_DATABASE", "maf")
     MONGO_DATA_MODELLING_TOOL_DB = os.getenv("MONGO_DATA_MODELING_TOOL_DATABASE", "dmt")
-    TEMPLATES_COLLECTION = "dmt-templates"
+    BLUEPRINT_COLLECTION = "templates"
+    ENTITY_COLLECTION = "entities"
     DATA_SOURCES_COLLECTION = "data_sources"
     CACHE_MAX_SIZE = 0 if ENVIRONMENT == "local" else 64
     MASTER_BLUEPRINT = "templates/SIMOS/Blueprint"
     DMT_PACKAGE = "templates/DMT/Package"
+    DMT_ENTITY_PACKAGE = "templates/DMT/EntityPackage"

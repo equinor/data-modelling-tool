@@ -30,7 +30,7 @@
       "contained": true,
       "default": "[]",
       "dimensions": "*",
-      "name": "entity_packages",
+      "name": "entityPackages",
       "optional": true,
       "type": "templates/DMT/EntityPackage"
     }, {
@@ -39,7 +39,7 @@
       "dimensions": "*",
       "name": "documents",
       "optional": true,
-      "type": "entity"
+      "type": "templates/DMT/Reference"
     }
   ],
   "storageRecipes": [
@@ -53,7 +53,7 @@
           "name": "entities"
         }, {
           "contained": false,
-          "name": "entity_packages"
+          "name": "entityPackages"
         }
       ]
     }
