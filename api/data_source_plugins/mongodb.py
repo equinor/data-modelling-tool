@@ -1,8 +1,7 @@
 from flask import abort
 from pymongo import MongoClient
-from pymongo.errors import ServerSelectionTimeoutError, DuplicateKeyError
+from pymongo.errors import DuplicateKeyError
 
-from utils.enums import DocumentType
 from core.repository.repository_exceptions import EntityAlreadyExistsException
 
 
@@ -75,13 +74,6 @@ class MongodbClient:
             return self.handler[self.collection].insert_one(form).inserted_id
         except Exception as error:
             return abort(500, error)
-
-    def get_root_packages(self):
-        try:
-            result = self.handler[self.collection].find(filter={"meta.documentType": DocumentType.ROOT_PACKAGE.value})
-            return [package for package in result]
-        except ServerSelectionTimeoutError as error:
-            return abort(500, error._message)
 
     def find(self, filter):
         result = self.handler[self.collection].find(filter=filter)

@@ -5,7 +5,7 @@ class MongoRepositoryBase(object):
     def __init__(self, db: DbClient):
         self.db = db
 
-    def c(self) -> DbClient:
+    def client(self) -> DbClient:
         return self.db
 
     # def create(self, item):
@@ -16,9 +16,9 @@ class MongoRepositoryBase(object):
     # def convert_from_model(self, obj):
     #    return obj.__dict__
 
-    def convert_to_model(self, d):
+    def convert_to_model(self, dict_):
         # del d["_id"]
-        return self.Meta.model.from_dict(d)
+        return self.Meta.model.from_dict(dict_)
 
         # x = self.Meta.model(id=d["_id"])
         # x.__dict__.update(d)

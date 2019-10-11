@@ -5,7 +5,8 @@ from core.domain.blueprint import Blueprint
 from core.domain.attribute_reference import AttributeReference
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from utils.enums import RepositoryType
 
 
 class TreeNode(NodeMixin):

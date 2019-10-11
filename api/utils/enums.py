@@ -20,16 +20,7 @@ class DataSourceDocumentType(Enum):
         return value in values
 
 
-class DocumentType(Enum):
-    ROOT_PACKAGE = "root-package"
-    VERSION = "version"
-    SUB_PACKAGE = "subpackage"
-    FILE = "file"
-
-    @staticmethod
-    def has_value(value):
-        values = [item.value for item in DocumentType]
-        return value in values
-
-    def has_parent(self):
-        return self in (DocumentType.FILE, DocumentType.SUB_PACKAGE, DocumentType.VERSION)
+class RepositoryType(Enum):
+    DocumentRepository = "DocumentRepository"
+    PackageRepository = "PackageRepository"
+    BlueprintRepository = "BlueprintRepository"

@@ -2,7 +2,8 @@ from anytree import NodeMixin, RenderTree
 
 from classes.data_source import DataSource
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from utils.enums import RepositoryType
 
 
 class TreeNode(NodeMixin):

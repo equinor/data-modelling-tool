@@ -1,5 +1,5 @@
 from core.domain.dto import DTO
-from core.repository.repository_factory import RepositoryType
+from utils.enums import RepositoryType
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
@@ -8,7 +8,7 @@ from core.repository.interface.document_repository import DocumentRepository
 from pathlib import Path
 from classes.data_source import DataSource
 from core.repository.repository_exceptions import EntityNotFoundException, EntityAlreadyExistsException
-from core.repository.template_repository import get_document_uid_by_path
+from core.utility import get_document_uid_by_path
 
 
 class MoveFileRequestObject(req.ValidRequestObject):

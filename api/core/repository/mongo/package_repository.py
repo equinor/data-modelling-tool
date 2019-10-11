@@ -12,19 +12,19 @@ class MongoPackageRepository(MongoRepositoryBase, PackageRepository):
         super().__init__(db)
 
     def get(self, uid: str) -> Package:
-        result = self.c().get(uid)
+        result = self.client().get(uid)
         if result:
             return self.convert_to_model(result)
 
     def list(self) -> List[Package]:
-        root_packages = self.c().find(filters={"isRoot": True})
+        root_packages = self.client().find(filters={"isRoot": True})
         return [Package.from_dict(r) for r in root_packages]
 
     def add(self, root_package: Package) -> None:
-        self.c().add(root_package.to_dict())
+        self.client().add(root_package.to_dict())
 
     def update(self, root_package: Package) -> None:
         raise NotImplementedError()
 
     def delete(self, root_package: Package) -> None:
-        self.c().delete(root_package.id)
+        self.client().delete(root_package.id)
