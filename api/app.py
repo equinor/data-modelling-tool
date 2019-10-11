@@ -29,27 +29,32 @@ app = create_app(Config)
 
 logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 
-PACKAGE_PATHS = ["/code/schemas/CarsDemo", "/code/schemas/SIMOS", "/code/schemas/DMT"]
+BLUEPRINT_PACKAGES = ["/code/schemas/CarsDemo", "/code/schemas/SIMOS", "/code/schemas/DMT"]
+
+ENTITY_PACKAGES = ["/code/schemas/demo_entities/volvo_components"]
 
 
 @app.cli.command()
 @click.option("--contained", "-C", is_flag=True, default=False)
 def import_packages(contained: bool = False):
     # TODO: Read data-source from Package-Config
-    for folder in PACKAGE_PATHS:
-        import_folder(folder, contained=contained)
+    for folder in BLUEPRINT_PACKAGES:
+        import_folder(folder, contained=contained, collection="templates")
+    for folder in ENTITY_PACKAGES:
+        import_folder(folder, contained=contained, collection="entities")
 
 
-def import_folder(folder, contained: bool = False):
+def import_folder(folder, collection, contained: bool = False):
     if not contained:
-        import_package(folder, contained=False, is_root=True)
+        import_package(folder, contained=False, is_root=True, collection=collection)
     else:
         uid = str(uuid4())
-        package = import_package(folder, contained=True, root_package_uid=uid)
+        package = import_package(folder, contained=True, root_package_uid=uid, collection=collection)
         as_dict = package.to_dict()
         as_dict["isRoot"] = True
-        dmt_db.templates.replace_one({"_id": package.uid}, as_dict, upsert=True)
+        dmt_db[collection].replace_one({"_id": package.uid}, as_dict, upsert=True)
         logger.info(f"Imported package {package.name}")
+
 
 @app.cli.command()
 def drop_data_sources():

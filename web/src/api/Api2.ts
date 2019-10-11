@@ -142,13 +142,10 @@ export default class Api2 {
     onSuccess,
     onError = () => {},
   }: any): void {
-    console.log(urlSchema)
-    console.log(urlData)
     axios
       .all([axios.get(urlSchema), axios.get(urlData)])
       .then(
         axios.spread((schemaRes, dataRes) => {
-          console.log(dataRes)
           onSuccess({
             document: dataRes.data.document.data,
             template: schemaRes.data,

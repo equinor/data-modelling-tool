@@ -5,13 +5,31 @@
   "attributes": [
     {
       "type": "string",
-      "value": "",
-      "name": "name"
+      "name": "name",
+      "optional": false,
+      "default": "",
+      "contained": true
     },
     {
       "type": "string",
-      "value": "",
-      "name": "diameter"
+      "name": "description",
+      "optional": false,
+      "default": "",
+      "contained": true
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "optional": false,
+      "default": "",
+      "contained": true
+    },
+    {
+      "type": "string",
+      "name": "diameter",
+      "optional": false,
+      "default": 120,
+      "contained": true
     }
   ]
 }

@@ -1,8 +1,8 @@
 from behave import given
-from app import import_folder, PACKAGE_PATHS
+from app import import_folder, BLUEPRINT_PACKAGES
 
 
 @given("data modelling tool templates are imported")
 def step_impl(context):
-    import_folder(contained=True, folder=PACKAGE_PATHS[1])
-    import_folder(contained=True, folder=PACKAGE_PATHS[2])
+    import_folder(contained=True, folder=BLUEPRINT_PACKAGES[1])
+    import_folder(contained=True, folder=BLUEPRINT_PACKAGES[2])
