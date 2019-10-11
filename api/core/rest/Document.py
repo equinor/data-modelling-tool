@@ -10,7 +10,8 @@ from core.use_case.get_document_with_template_use_case import (
 )
 from core.shared import response_object as res
 from core.use_case.add_document_use_case import AddDocumentUseCase
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from utils.enums import RepositoryType
 from core.use_case.update_document_use_case import UpdateDocumentUseCase
 
 blueprint = Blueprint("document", __name__)

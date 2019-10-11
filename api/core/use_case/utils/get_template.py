@@ -1,6 +1,6 @@
 from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
-from core.repository.template_repository import get_document_by_ref
+from core.utility import get_document_by_ref
 from functools import lru_cache
 from config import Config
 

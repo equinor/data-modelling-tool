@@ -12,31 +12,31 @@ class MongoBlueprintRepository(MongoRepositoryBase):
         super().__init__(db)
 
     def get(self, uid: str) -> Blueprint:
-        result = self.c().get(uid)
+        result = self.client().get(uid)
         if result:
             return self.convert_to_model(result)
 
     def update(self, document: Blueprint) -> None:
-        self.c().update(document.uid, document.to_dict())
+        self.client().update(document.uid, document.to_dict())
 
     def add(self, document: Blueprint) -> None:
-        self.c().add(document.uid, document.to_dict())
+        self.client().add(document.uid, document.to_dict())
 
     def delete(self, document: Blueprint) -> None:
-        self.c().delete(document.uid)
+        self.client().delete(document.uid)
 
     def list(self):
-        return [Blueprint.from_dict(document) for document in self.c().find(filters={})]
+        return [Blueprint.from_dict(document) for document in self.client().find(filters={})]
 
     def find_one(self, name: str) -> Blueprint:
         filters = {"name": name}
-        adict = self.c().find_one(filters=filters)
+        adict = self.client().find_one(filters=filters)
         if adict:
             return Blueprint.from_dict(adict)
 
     def find(self, name: str) -> List[Blueprint]:
         filters = {"name": name}
         result = []
-        for item in self.c().find(filters=filters):
+        for item in self.client().find(filters=filters):
             result.append(Blueprint.from_dict(item))
         return result

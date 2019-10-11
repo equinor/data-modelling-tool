@@ -26,6 +26,7 @@ class MockClient:
         return None
 
 
+#  TODO: This should not be used
 class DataSource:
     @classmethod
     def mock(cls, data):
@@ -34,7 +35,6 @@ class DataSource:
         return inst
 
     def __init__(self, id: str):
-        # TODO: Auth
         data_source_dict = get_data_source_from_database(id)
 
         self.id = id
@@ -49,7 +49,6 @@ class DataSource:
         self.collection = data_source_dict["collection"]
         self.documentType = data_source_dict["documentType"]
 
-        # TODO: Deprecate this client. Rename db
         if self.type == "mongo-db":
             self.client = MongodbClient(
                 host=self.host,

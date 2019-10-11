@@ -1,5 +1,5 @@
 from core.domain.document import Document
-from core.repository.template_repository import get_document_by_ref
+from core.utility import get_document_by_ref
 from jsonschema import validate, ValidationError
 
 
