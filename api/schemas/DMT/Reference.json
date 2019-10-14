@@ -1,0 +1,25 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "description": "Blueprint for a DMT reference",
+  "name": "Reference",
+  "attributes": [
+    {
+      "contained": true,
+      "name": "name",
+      "optional": false,
+      "type": "string"
+    },
+    {
+      "contained": true,
+      "name": "_id",
+      "optional": false,
+      "type": "string"
+    },
+    {
+      "name": "type",
+      "default": "ref",
+      "type": "string"
+    }
+  ],
+  "storageRecipes": []
+}

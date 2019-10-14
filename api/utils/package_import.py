@@ -14,6 +14,7 @@ from utils.logging import logger
 def _add_documents(path, documents, collection) -> List[Dict]:
     docs = []
     for file in documents:
+        print(f"Working on {file}...")
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
         data["uid"] = str(uuid4())
@@ -31,8 +32,11 @@ def _add_documents(path, documents, collection) -> List[Dict]:
 def import_package(
     path, collection: str, root_package_uid: str = None, contained: bool = True, is_root: bool = False
 ) -> Union[Package, Dict]:
-    package = Package(name=os.path.basename(path), uid=str(uuid4() if not contained else root_package_uid))
-    package.blueprints = _add_documents(path, documents=next(os.walk(path))[2], collection=collection)
+    package_type = Config.DMT_PACKAGE if collection == Config.BLUEPRINT_COLLECTION else Config.DMT_ENTITY_PACKAGE
+    package = Package(
+        name=os.path.basename(path), type=package_type, uid=str(uuid4() if not contained else root_package_uid)
+    )
+    package.documents = _add_documents(path, documents=next(os.walk(path))[2], collection=collection)
 
     for folder in next(os.walk(path))[1]:
         package.packages.append(

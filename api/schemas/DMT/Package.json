@@ -9,7 +9,6 @@
     },
     {
       "type": "string",
-      "value": "",
       "name": "description"
     },
     {
@@ -23,7 +22,7 @@
     },
     {
       "type": "templates/SIMOS/Blueprint",
-      "name": "blueprints",
+      "name": "documents",
       "dimensions": "*"
     }
   ],

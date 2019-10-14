@@ -20,7 +20,7 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
         try:
             # TODO: objects instead of lists in blueprints and packages?
             packages = [package.to_dict() for package in package.packages]
-            files_in_folder = packages + package.blueprints
+            files_in_folder = packages + package.documents
             return [file["_id"] for file in files_in_folder if file["name"] == path_elements[0]][0]
         except IndexError:
             logger.error(f"The document {path_elements[0]} could not be found in the package {package.name}")

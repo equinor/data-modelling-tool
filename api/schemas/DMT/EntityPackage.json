@@ -1,18 +1,61 @@
 {
   "type": "templates/SIMOS/Blueprint",
+  "description": "This is a blueprint for a package that contains entities and other EntitiesPackages",
   "name": "EntityPackage",
-  "description": "",
   "attributes": [
     {
-      "type": "string",
-      "value": "",
-      "name": "name"
-    },
-    {
-      "type": "string",
-      "value": "",
-      "name": "description"
+      "contained": true,
+      "name": "name",
+      "optional": false,
+      "type": "string"
+    }, {
+      "contained": true,
+      "default": "templates/SIMOS/Blueprint",
+      "name": "type",
+      "optional": false,
+      "type": "string"
+    }, {
+      "contained": true,
+      "default": "",
+      "name": "description",
+      "optional": true,
+      "type": "string"
+    }, {
+      "contained": true,
+      "default": false,
+      "name": "isRootPackage",
+      "optional": false,
+      "type": "boolean"
+    }, {
+      "contained": true,
+      "default": "[]",
+      "dimensions": "*",
+      "name": "entityPackages",
+      "optional": true,
+      "type": "templates/DMT/EntityPackage"
+    }, {
+      "contained": true,
+      "default": "[]",
+      "dimensions": "*",
+      "name": "documents",
+      "optional": true,
+      "type": "templates/DMT/Reference"
     }
   ],
-  "storage_recipes": []
+  "storageRecipes": [
+    {
+      "description": "",
+      "name": "DefaultStorageRecipe",
+      "type": "templates/SIMOS/StorageRecipe",
+      "attributes": [
+        {
+          "contained": false,
+          "name": "entities"
+        }, {
+          "contained": false,
+          "name": "entityPackages"
+        }
+      ]
+    }
+  ]
 }
