@@ -4,8 +4,9 @@ from core.enums import DataSourceDocumentType
 
 
 class GetDataSourcesUseCaseRequestObject(request_object.ValidRequestObject):
-    def __init__(self, document_type: str = None):
+    def __init__(self, document_type: str = None, client_id: str = ""):
         self.data_source_document_type: str = document_type
+        self.client_id = client_id
 
     @classmethod
     def from_dict(cls, request_args: dict):
@@ -17,7 +18,7 @@ class GetDataSourcesUseCaseRequestObject(request_object.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return GetDataSourcesUseCaseRequestObject(request_args["documentType"])
+        return GetDataSourcesUseCaseRequestObject(request_args["documentType"], request_args.get("clientId", ""))
 
 
 class GetDataSourcesUseCase(use_case.UseCase):
@@ -26,5 +27,6 @@ class GetDataSourcesUseCase(use_case.UseCase):
 
     def process_request(self, request_object: GetDataSourcesUseCaseRequestObject):
         data_source_document_type = request_object.data_source_document_type
+        self.data_source_repository.ensure_user_data_source_exists(request_object.client_id)
         data_sources = self.data_source_repository.list(DataSourceDocumentType(data_source_document_type))
         return response_object.ResponseSuccess(data_sources)

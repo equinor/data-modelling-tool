@@ -95,7 +95,15 @@ export class IndexApi extends BaseApi {
 
 export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
-    return `/api/v2/data-sources?documentType=${dataSourceType}`
+    let clientId = '00000000-0000-0000-0000-000000000000'
+    const match = document.cookie.match(
+      /AzureAppProxyUserSessionCookie_([\d]{8}(-[\d]{4}){3}-[\d]{12})/
+    )
+    if (match) {
+      clientId = match[1]
+    }
+    // FIXME: Secure / do not allow sharing of these "local" databases by URL
+    return `/api/v2/data-sources?documentType=${dataSourceType}&clientId=${clientId}`
   }
 
   dataSourcesPost(datasourceId: string) {

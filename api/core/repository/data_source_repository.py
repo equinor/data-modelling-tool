@@ -10,7 +10,7 @@ class DataSourceRepository:
     collection = database[f"{Config.DATA_SOURCES_COLLECTION}"]
 
     def list(self, document_type: DataSourceDocumentType) -> List[DataSource]:
-        all_sources = [DataSource(id="local", host="client", name="Local workspace", type="localStorage")]
+        all_sources = []
         for data_source in self.collection.find(
             filter={"documentType": document_type.value}, projection=["host", "name", "type"]
         ):
@@ -24,6 +24,20 @@ class DataSourceRepository:
                 )
             )
         return all_sources
+
+    def ensure_user_data_source_exists(self, client_id: str) -> bool:
+        """Creates a datasource for the given user if one does not exist"""
+        if not any(self.collection.find(filter={"id": client_id})):
+            self.create(
+                client_id,
+                {
+                    "id": client_id,
+                    "documentType": DataSourceDocumentType.BLUEPRINT.value,
+                    "host": "db",
+                    "name": "Personal Workspace",
+                    "type": DataSourceType.MONGO.value,
+                },
+            )
 
     def create(self, id: str, document):
         document["_id"] = id
