@@ -44,5 +44,34 @@
       ]
     }
   ],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "name": "edit",
+      "description": "React json schema uiSchema",
+      "uiSchema": {
+        "description": {
+          "ui:widget": "textarea"
+        },
+        "ui:order": [
+          "name",
+          "description",
+          "*"
+        ],
+        "attributes": {
+          "ui:options": {
+            "orderable": false
+          },
+          "items": {
+            "ui:field": "attribute",
+            "ui:order": [
+              "name",
+              "type",
+              "value",
+              "dimensions"
+            ]
+          }
+        }
+      }
+    }
+  ]
 }

@@ -6,6 +6,7 @@ class Blueprint:
         self.type = type
         self.attributes = []
         self.storage_recipes = []
+        self.ui_recipes = []
 
     def get_attributes_with_reference(self):
         primitives = ["string", "number", "integer", "number", "boolean"]
@@ -20,6 +21,10 @@ class Blueprint:
 
     def get_attribute_names(self):
         return list(map(lambda item: item["name"], self.attributes))
+
+    def get_ui_schema(self):
+        ui_recipes = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
+        return ui_recipes
 
     def get_values(self, attribute_name):
         data = self.to_dict()
@@ -38,6 +43,7 @@ class Blueprint:
         )
         instance.attributes = adict.get("attributes", "")
         instance.storage_recipes = adict.get("storageRecipes", [])
+        instance.ui_recipes = adict.get("uiRecipes", [])
         return instance
 
     def to_dict(self):
@@ -48,6 +54,7 @@ class Blueprint:
             "type": self.type,
             "attributes": self.attributes,
             "storageRecipes": self.storage_recipes,
+            "uiRecipes": self.ui_recipes,
         }
 
     def __eq__(self, other):

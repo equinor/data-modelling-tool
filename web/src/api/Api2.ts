@@ -154,6 +154,15 @@ export default class Api2 {
       )
       .catch(onError)
   }
+
+  static fetchDocument({ dataUrl, onSuccess, onError = () => {} }: any): void {
+    axios
+      .get(dataUrl)
+      .then(({ data }) => {
+        onSuccess(data)
+      })
+      .catch(onError)
+  }
 }
 
 function fetchTemplate({

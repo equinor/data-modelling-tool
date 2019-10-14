@@ -73,13 +73,19 @@ export default (props: Props) => {
   }
 
   const { name, type, value, dimensions } = formData
+  const primitives = [
+    DataType.STRING,
+    DataType.NUMBER,
+    DataType.BOOLEAN,
+    DataType.INTEGER,
+  ]
+  const isPrimitive = primitives.includes(type)
+  const selectedType = isPrimitive ? type : DataType.BLUEPRINT
   return (
     <AttributeGroup>
       <NameInput value={name} onChange={onChange} />
-      <TypeInput value={type} onChange={onChange} />
-      {type === DataType.BLUEPRINT && (
-        <BlueprintInput value={value} onChange={onChange} />
-      )}
+      <TypeInput value={selectedType} onChange={onChange} />
+      {!isPrimitive && <BlueprintInput value={type} onChange={onChange} />}
       <ArrayRadioGroup onChange={onChange} attributeName={name} array={array} />
       {array === ArrayType.COMPLEX && (
         <div style={{ display: 'flex', alignItems: 'baseline' }}>
