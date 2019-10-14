@@ -23,8 +23,9 @@ class Blueprint:
         return list(map(lambda item: item["name"], self.attributes))
 
     def get_ui_schema(self):
-        ui_recipes = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
-        return ui_recipes
+        ui_schema = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
+        view = self.ui_recipes[1] if len(self.ui_recipes) > 1 else {}
+        return ui_schema, view
 
     def get_values(self, attribute_name):
         data = self.to_dict()
@@ -37,7 +38,7 @@ class Blueprint:
     def from_dict(cls, adict):
         instance = cls(
             name=adict["name"],
-            description=adict["description"],
+            description=adict.get("description", ""),
             type=adict["type"],
             uid=adict.get("_id", adict.get("uid", "")),
         )

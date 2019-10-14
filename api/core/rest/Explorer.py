@@ -56,16 +56,18 @@ def add_file(data_source_id: str):
     return Response(json.dumps(result), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/explorer/<string:data_source_id>/add-entity-file", methods=["POST"])
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/add-entity-file", methods=["POST"])
 def add_entity_file_to_package(data_source_id: str):
-    db = DataSource(id=data_source_id)
-    request_data = request.get_json()
+    data_source = DataSource(id=data_source_id)
+    request_data = request.get_json(force=True)
 
-    document_repository = get_repository(RepositoryType.BlueprintRepository, db)
+    document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
+    package_repository = get_repository(RepositoryType.PackageRepository, data_source)
 
     use_case = AddEntityFileToPackageUseCase(
-        document_repository=document_repository, get_repository=get_repository, data_source_id=data_source_id
+        document_repository=document_repository, package_repository=package_repository
     )
+    request_data["type"] = request_data["data"]["type"]
 
     request_object = AddEntityFileToPackageRequestObject.from_dict(request_data)
 
