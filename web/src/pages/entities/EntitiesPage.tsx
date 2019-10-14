@@ -9,6 +9,8 @@ import axios from 'axios'
 import Header from '../../components/Header'
 import { Wrapper } from '../blueprints/BlueprintsPage'
 import Button from '../../components/Button'
+import { NodeType } from '../../api/types'
+import { DocumentNode } from '../common/nodes/DocumentNode'
 
 const api = new DmtApi()
 
@@ -36,9 +38,14 @@ export default () => {
       <br />
       <DocumentTree
         render={(renderProps: RenderProps) => {
+          //use components directly to control props better.
           switch (renderProps.treeNodeData.nodeType) {
+            case NodeType.DOCUMENT_NODE:
+              return <DocumentNode {...renderProps} />
             default:
-              return <div>{renderProps.treeNodeData.title}</div>
+              return (props: RenderProps) => (
+                <div>{props.treeNodeData.title}</div>
+              )
           }
         }}
         dataSources={state.dataSources}
