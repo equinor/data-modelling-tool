@@ -3,11 +3,10 @@ import React, { useReducer } from 'react'
 import BlueprintReducer, { PageMode } from '../DocumentReducer'
 import EditBlueprintForm from '../../blueprints/blueprint/EditBlueprintForm'
 import styled from 'styled-components'
-import FetchDocument, {
-  DocumentData,
-} from '../../blueprints/blueprint/FetchDocument'
+import FetchDocument from '../../blueprints/blueprint/FetchDocument'
 // @ts-ignore
 import objectPath from 'object-path'
+import { DocumentData } from '../../blueprints/blueprint/types'
 
 const Wrapper = styled.div`
   padding: 20px;

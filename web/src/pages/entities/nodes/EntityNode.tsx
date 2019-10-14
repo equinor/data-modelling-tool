@@ -4,12 +4,12 @@ import {
   LayoutContext,
 } from '../../common/golden-layout/LayoutContext'
 import { RenderProps } from '../../common/tree-view/DocumentTree'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2 from '../../../api/Api2'
 import { TreeNodeBuilder } from '../../common/tree-view/TreeNodeBuilderOld'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { SetShowModal } from '../../common/context-menu-actions/WithContextMenu'
+import { TreeNodeData } from '../../../components/tree-view/types'
 
 export const EntityNode = (props: RenderProps) => {
   const { treeNodeData } = props

@@ -2,8 +2,8 @@ import React from 'react'
 import TreeNode, { TreeNodeProps } from '../TreeNode'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
-import { NodeIconType, TreeNodeData } from '../Tree'
 import { NodeType } from '../../../api/types'
+import { NodeIconType, TreeNodeData } from '../types'
 
 describe('TreeNode', () => {
   it('renders without crashing', () => {

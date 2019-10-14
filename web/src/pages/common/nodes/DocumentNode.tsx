@@ -6,9 +6,9 @@ import {
   ReplaceNode,
   UpdateNode,
 } from '../tree-view/DocumentTree'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import WithContextMenu from '../context-menu-actions/WithContextMenu'
 import { LayoutComponents, LayoutContext } from '../golden-layout/LayoutContext'
+import { TreeNodeData } from '../../../components/tree-view/types'
 
 interface Props extends RenderProps {
   treeNodeData: TreeNodeData

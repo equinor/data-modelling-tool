@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Form from 'react-jsonschema-form'
-import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import AttributeWidget from './widgets/Attribute'
+import { DocumentData } from '../pages/blueprints/blueprint/types'
 
 export interface FormProps {
   fetchDocument?: any

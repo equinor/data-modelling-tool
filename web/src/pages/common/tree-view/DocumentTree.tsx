@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import Tree, { TreeNodeData } from '../../../components/tree-view/Tree'
+import Tree from '../../../components/tree-view/Tree'
 import { Datasource, IndexApi } from '../../../api/Api'
-import { DocumentsState } from '../DocumentReducer'
+import { TreeNodeData } from '../../../components/tree-view/types'
 
 const api = new IndexApi()
 
@@ -19,22 +19,6 @@ export type ReplaceNode = (
   newId: string,
   title: string
 ) => void
-
-interface NodeComponentCallbackProps {
-  addNode: AddNode
-  updateNode: UpdateNode
-  treeNodeData: TreeNodeData
-  removeNode: RemoveNode
-  replaceNode: ReplaceNode
-  path: string
-  parent: string
-}
-
-export interface NodeComponentProps extends NodeComponentCallbackProps {
-  documentState?: DocumentsState
-  dispatch?: Function
-  datasource?: any
-}
 
 export type RenderProps = {
   path: string

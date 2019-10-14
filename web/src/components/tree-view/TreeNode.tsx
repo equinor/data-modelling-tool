@@ -9,7 +9,9 @@ import {
   FaCircle,
 } from 'react-icons/fa'
 import styled from 'styled-components'
-import { NodeIconType, TreeNodeData } from './Tree'
+import FileUpload from '../../pages/common/tree-view/FileUpload'
+import { AddNode } from '../../pages/common/tree-view/DocumentTree'
+import { NodeIconType, TreeNodeData } from './types'
 
 type StyledTreeNode = {
   level: number
@@ -42,7 +44,7 @@ export type TreeNodeProps = {
   level: number
   node: TreeNodeData
   updateNode: Function
-  addNode: Function
+  addNode: AddNode
   handleToggle: Function
   removeNode: Function
   replaceNode: Function
@@ -104,6 +106,12 @@ const TreeNode = (props: TreeNodeProps) => {
             replaceNode
           )}
         </Content>
+        {node.isRoot && (
+          <FileUpload
+            datasource={node.nodeId.split('/')[0]}
+            addNode={addNode}
+          />
+        )}
       </StyledTreeNode>
     </div>
   )

@@ -1,5 +1,5 @@
 import values from 'lodash/values'
-import { TreeNodeData } from './Tree'
+import { TreeNodeData } from './types'
 
 const defaultMatcher = (filterText: string, node: TreeNodeData) => {
   return (

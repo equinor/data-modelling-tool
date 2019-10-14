@@ -3,7 +3,7 @@ import {
   expandNodesWithMatchingDescendants,
   hideNodesWithNoMatchingDescendants,
 } from './Filters'
-import { TreeNodeData } from './Tree'
+import { TreeNodeData } from './types'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'

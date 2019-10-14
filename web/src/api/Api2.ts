@@ -1,7 +1,6 @@
 import axios from 'axios'
-import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import { DmtApi, IndexRequestBody } from './Api'
-import { getDataSourceIDFromAbsolutID } from '../util/helperFunctions'
+import { DocumentData } from '../pages/blueprints/blueprint/types'
 
 const api = new DmtApi()
 
@@ -11,7 +10,7 @@ const api = new DmtApi()
 type OnSuccess = (data: DocumentData) => void
 type OnError = (err: any) => void
 
-interface BASE_CRUD {
+export interface BASE_CRUD {
   onSuccess: OnSuccess
   onError?: OnError
 }
@@ -26,6 +25,9 @@ interface AddFile {
   onSuccess: (res: any, dataSourceId: string) => void
   onError?: OnError
   templateRef?: string
+  attribute?: string
+  path?: string
+  isContained?: boolean
 }
 
 interface AddEntitiy {
@@ -73,205 +75,42 @@ interface MoveFile {
   onError: OnError
   templateRef?: string
 }
-/**
- * methods must static since we they are passed around, while the class instance is not.
- *
- * Fetch methods is a function or returns a function with callbacks as arguments.
- * This makes it possible to delay the actual fetch request.
- * All fetch methods respond with a DocumentData type in onSuccess, abstracting details of the backend endpoints.
- */
+
+interface Post {
+  url: string
+  data: object
+  onSuccess: (res: any) => void
+  onError: OnError
+}
+
+interface Get {
+  url: string
+  onSuccess: (res: any) => void
+  onError: OnError
+}
+
 export default class Api2 {
-  /**
-   * Custom fetch since api actually responds with a DocumentData type.
-   *
-   * @param documentId absolute path of a document.
-   */
-  static fetchDocument(documentId: string) {
-    return ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
-      axios
-        .get(api.getDocumentWithTemplate(documentId))
-        .then((res: any) => {
-          onSuccess(res.data)
-        })
-        .catch(onError)
-    }
-  }
-
-  /**
-   * Wraps fetchTemplate with a custom endpoint url.
-   */
-  static fetchCreateBlueprint({ onSuccess, onError }: BASE_CRUD) {
-    fetchTemplate({
-      url: api.templatesCreateBlueprintGet(),
-      onSuccess,
-      onError,
-    })
-  }
-
-  /**
-   * Wraps fetchTemplate with a custom endpoint url.
-   */
-  static fetchCreatePackage({ onSuccess, onError }: BASE_CRUD) {
-    fetchTemplate({ url: api.templatesPackageGet(), onSuccess, onError })
-  }
-
-  /**
-   * Wraps fetchTemplate with a custom endpoint url.
-   */
-  static fetchRemoveFile({ onSuccess, onError }: BASE_CRUD) {
-    fetchTemplate({ url: api.templatesRemoveFile(), onSuccess, onError })
-  }
-
-  /**
-   * Wraps fetchTemplate with different template endpoints.
-   */
-  static fetchCreateDatasource(selectedDatasourceType: string) {
-    return ({ onSuccess, onError }: BASE_CRUD): void => {
-      if (selectedDatasourceType === 'mongo-db') {
-        fetchTemplate({ url: api.templatesDatasourceMongoGet(), onSuccess })
-      } else {
-        //@todo use selectedDatasourceType to use other template than mongo db.
-        console.error(
-          `template for ${selectedDatasourceType} is not supported.`
-        )
-      }
-    }
-  }
-
-  static addBlueprintFile({
-    dataSourceId,
-    parentId,
-    filename,
-    templateRef = 'templates/blueprint',
-    onSuccess,
-    onError = () => {},
-  }: AddFile) {
-    const url = api.addFile(dataSourceId)
-    const data = {
-      parentId,
-      filename,
-      templateRef,
-    }
+  static post({ url, data, onSuccess, onError = () => {} }: Post) {
+    console.debug(`Post ${url}`)
     axios
       .post(url, data)
-      .then(response => onSuccess(response.data, dataSourceId))
+      .then(onSuccess)
       .catch(onError)
   }
 
-  static addEntityFile({
-    nodeId,
-    filename,
-    templateRef,
-    onSuccess,
-    onError = () => {},
-  }: AddEntitiy) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
-    // root-package/1.0.0/subpackage/package
-    const parentId = nodeId.substring(nodeId.indexOf('/') + 1)
-    const url = api.addFile(dataSourceId)
-    const data = {
-      parentId,
-      filename,
-      templateRef,
-    }
+  static put({ url, data, onSuccess, onError = () => {} }: Post) {
+    console.debug(`Put ${url}`)
     axios
-      .post(url, data)
-      .then(response => onSuccess(response.data, dataSourceId))
+      .put(url, data)
+      .then(onSuccess)
       .catch(onError)
   }
 
-  static removeFile({
-    dataSourceId,
-    filename,
-    onSuccess,
-    onError = () => {},
-  }: RemoveFile) {
-    const url = api.removeFile(dataSourceId)
-    const data = {
-      filename: filename,
-    }
+  static get({ url, onSuccess, onError = () => {} }: Get) {
+    console.debug(`Get ${url}`)
     axios
-      .post(url, data)
-      .then(response => onSuccess())
-      .catch(onError)
-  }
-
-  static moveFile({ source, destination, onSuccess, onError }: MoveFile) {
-    const data = {
-      source: source,
-      destination: destination,
-    }
-    const url = api.moveFile()
-    axios
-      .post(url, data)
+      .get(url)
       .then(response => onSuccess(response.data))
-      .catch(error => onError(error))
-  }
-
-  static moveSubPackage({ source, destination, onSuccess, onError }: MoveFile) {
-    const data = {
-      source: source,
-      destination: destination,
-    }
-    const url = api.moveSubPackage()
-    axios
-      .post(url, data)
-      .then(response => onSuccess(response.data))
-      .catch(error => onError(error))
-  }
-
-  static moveRootPackage({
-    source,
-    destination,
-    onSuccess,
-    onError,
-  }: MoveFile) {
-    const data = {
-      source: source,
-      destination: destination,
-    }
-    const url = api.moveRootPackage()
-    axios
-      .post(url, data)
-      .then(response => onSuccess(response.data))
-      .catch(error => onError(error))
-  }
-
-  static removeSubPackage({
-    dataSourceId,
-    filename,
-    onSuccess,
-    onError = () => {},
-  }: RemoveFolder) {
-    const url = api.removeSubPackage(dataSourceId)
-    const data = {
-      filename: filename,
-    }
-    axios
-      .post(url, data)
-      .then(response => onSuccess(response.data))
-      .catch(onError)
-  }
-
-  static removeRootPackage({
-    nodeId,
-    onSuccess,
-    onError = () => {},
-  }: RemoveRootPackage) {
-    // local-blueprints-equinor
-    const dataSourceId = nodeId.split('/')[0]
-    // root-package/1.0.0/subpackage/package
-    const packageId = nodeId.substring(nodeId.indexOf('/') + 1)
-    const packagePath = packageId.substring(0, packageId.lastIndexOf('/'))
-    const parentId = packagePath.substring(0, packagePath.lastIndexOf('/'))
-    const url = api.removeRootPackage(dataSourceId)
-    const data = {
-      filename: `${parentId}/package`,
-    }
-    axios
-      .post(url, data)
-      .then(response => onSuccess(response.data, `${dataSourceId}`))
       .catch(onError)
   }
 
@@ -293,41 +132,43 @@ export default class Api2 {
       .catch(onError)
   }
 
-  static addRootPackage({
-    dataSourceId,
-    filename,
-    templateRef = 'templates/package-template',
-    onSuccess,
-    onError = () => {},
-  }: AddRootPackage) {
-    const url = api.addRootPackage(dataSourceId)
-    const data = {
-      filename,
-      templateRef,
-    }
+  static delete({ url, onSuccess, onError = () => {} }: Get) {
+    console.debug(`Delete ${url}`)
     axios
-      .post(url, data)
-      .then(response => onSuccess(response.data, dataSourceId))
+      .delete(url)
+      .then(response => onSuccess(response.data))
       .catch(onError)
   }
 
-  static addSubPackage({
-    dataSourceId,
-    parentId,
-    filename,
-    templateRef = 'templates/package',
+  static fetchCreateDatasource(selectedDatasourceType: string) {
+    return ({ onSuccess, onError }: BASE_CRUD): void => {
+      if (selectedDatasourceType === 'mongo-db') {
+        fetchTemplate({ url: api.templatesDatasourceMongoGet(), onSuccess })
+      } else {
+        //@todo use selectedDatasourceType to use other template than mongo db.
+        console.error(
+          `template for ${selectedDatasourceType} is not supported.`
+        )
+      }
+    }
+  }
+
+  static fetchWithTemplate({
+    urlSchema,
+    urlData,
     onSuccess,
     onError = () => {},
-  }: AddFile) {
-    const url = api.addPackage(dataSourceId)
-    const data = {
-      parentId,
-      filename,
-      templateRef,
-    }
+  }: any): void {
     axios
-      .post(url, data)
-      .then(response => onSuccess(response.data, dataSourceId))
+      .all([axios.get(urlSchema), axios.get(urlData)])
+      .then(
+        axios.spread((schemaRes, dataRes) => {
+          onSuccess({
+            document: dataRes.data.document.data,
+            template: schemaRes.data,
+          })
+        })
+      )
       .catch(onError)
   }
 }

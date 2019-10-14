@@ -3,10 +3,7 @@ import BlueprintForm from './BlueprintForm'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { DocumentActions, DocumentsState } from '../../common/DocumentReducer'
-import { DmtApi } from '../../../api/Api'
-import { DocumentData } from './FetchDocument'
-const api = new DmtApi()
+import { DocumentData } from './types'
 interface Props {
   dataUrl: string
   dispatch: Function
@@ -15,7 +12,7 @@ interface Props {
 }
 
 const EditBlueprintForm = (props: Props) => {
-  const { documentData, dispatch, dataUrl, attribute } = props
+  const { documentData, dataUrl, attribute } = props
 
   const onSubmit = (schemas: any) => {
     const url = attribute ? `${dataUrl}/${attribute}` : dataUrl

@@ -5,3 +5,13 @@ export enum NodeType {
   DATA_SOURCE = 'datasource',
   DOCUMENT_NODE = 'document-node',
 }
+
+export type IndexNode = {
+  id: string
+  title: string
+  nodeType: NodeType
+  children?: string[]
+  templateRef?: string
+  meta?: object
+  type: string
+}

@@ -1,8 +1,9 @@
 import React from 'react'
-import Tree, { TreeNodeData } from '../Tree'
+import Tree from '../Tree'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
-import { IndexNode } from '../../../api/Api'
+import { TreeNodeData } from '../types'
+import { IndexNode } from '../../../api/types'
 
 describe('Tree', () => {
   it.skip('renders without crashing', () => {

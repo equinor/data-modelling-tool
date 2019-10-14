@@ -3,8 +3,8 @@ import values from 'lodash/values'
 
 import Workspace from '../util/localWorkspace'
 import { TreeNodeBuilderOld } from '../pages/common/tree-view/TreeNodeBuilderOld'
-import { TreeNodeData } from '../components/tree-view/Tree'
-import { NodeType } from './types'
+import { IndexNode } from './types'
+import { TreeNodeData } from '../components/tree-view/types'
 
 function isLocal(datasource: Datasource): boolean {
   return datasource.id === 'local'
@@ -199,14 +199,4 @@ export type Datasource = {
   type: string
   host: string
   name: string
-}
-
-export type IndexNode = {
-  id: string
-  title: string
-  nodeType: NodeType
-  children?: string[]
-  templateRef?: string
-  meta?: object
-  type: string
 }

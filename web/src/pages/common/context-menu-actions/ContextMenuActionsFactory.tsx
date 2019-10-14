@@ -1,10 +1,10 @@
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2, { BASE_CRUD } from '../../../api/Api2'
 import React from 'react'
 import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import values from 'lodash/values'
+import { TreeNodeData } from '../../../components/tree-view/types'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',

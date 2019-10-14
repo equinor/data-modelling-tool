@@ -7,8 +7,8 @@ import {
   DocumentsState,
   PageMode,
 } from '../../common/DocumentReducer'
-import { DocumentData } from './FetchDocument'
 import BlueprintPreview from '../preview/BlueprintPreview'
+import { DocumentData } from './types'
 
 interface Props {
   documentData: DocumentData

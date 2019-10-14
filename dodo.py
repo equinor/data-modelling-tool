@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from doit.action import CmdAction
 
 DOIT_CONFIG = {"verbosity": 2}
@@ -188,6 +189,23 @@ def task_docker_compose():
                 "api",
                 help="Reset the database (locally). Add --exec, to reset the running database",
             ),
+            Task(
+                "check:circular_dependencies",
+                (
+                    "npx strip-json-comments-cli "
+                    "           --no-whitespace"
+                    "           /code/tsconfig.json > /tmp/tsconfig.json"
+                    " && "
+                    "npx madge  --circular"
+                    "           --warning"
+                    "           --ts-config /tmp/tsconfig.json"
+                    "           --webpack-config /code/node_modules/react-scripts/config/webpack.config.js"
+                    "           --extensions js,ts"
+                    "           /code/src"
+                ),
+                "web",
+                help="Checks for circular imports",
+            )
         ]
         for task in tasks:
 

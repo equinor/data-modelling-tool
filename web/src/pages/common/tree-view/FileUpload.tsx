@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { DocumentsState } from '../DocumentsReducer'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { IndexRequestBody } from '../../../api/Api'
@@ -11,7 +10,6 @@ import { NodeType } from '../../../api/types'
 import { TreeNodeBuilder } from './TreeNodeBuilderOld'
 
 type Props = {
-  state: DocumentsState
   datasource: string
   addNode: AddNode
 }

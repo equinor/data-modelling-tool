@@ -3,7 +3,7 @@ import Form from 'react-jsonschema-form'
 import BlueprintPreview from '../preview/BlueprintPreview'
 import Tabs, { Tab, TabPanel, TabList } from '../../../components/Tabs'
 import AttributeWidget from '../../../components/widgets/Attribute'
-import { DocumentData } from './FetchDocument'
+import { DocumentData } from './types'
 
 interface Props {
   documentData: DocumentData

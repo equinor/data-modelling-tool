@@ -1,6 +1,5 @@
-import { NodeIconType, TreeNodeData } from '../../../components/tree-view/Tree'
-import { NodeType } from '../../../api/types'
-import { IndexNode } from '../../../api/Api'
+import { IndexNode, NodeType } from '../../../api/types'
+import { NodeIconType, TreeNodeData } from '../../../components/tree-view/types'
 
 type IndexNodeV2 = {
   id: string

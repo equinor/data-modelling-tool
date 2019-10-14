@@ -5,10 +5,10 @@ import DocumentTree, {
   AddNode,
   RenderProps,
 } from '../common/tree-view/DocumentTree'
-import { TreeNodeData } from '../../components/tree-view/Tree'
 import { NodeType } from '../../api/types'
 import { SelectBlueprintNode } from './nodes/EntityNode'
 import { SetShowModal } from '../common/context-menu-actions/WithContextMenu'
+import { TreeNodeData } from '../../components/tree-view/types'
 
 type Props = {
   datasources: Datasource[]

@@ -2,13 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { PageMode } from '../../common/DocumentReducer'
 import Api2 from '../../../api/Api2'
 import { DmtApi } from '../../../api/Api'
+import { DocumentData } from './types'
 
 const api = new DmtApi()
-
-export type DocumentData = {
-  template: any
-  document: any
-}
 
 type Props = {
   dataUrl: string

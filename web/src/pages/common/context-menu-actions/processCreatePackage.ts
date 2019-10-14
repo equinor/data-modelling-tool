@@ -1,7 +1,7 @@
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
+import { TreeNodeData } from '../../../components/tree-view/types'
 
 type OnSuccessPostPackage = {
   treeNodeData: TreeNodeData
