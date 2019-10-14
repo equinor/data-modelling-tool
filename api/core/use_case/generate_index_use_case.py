@@ -228,9 +228,11 @@ class Tree:
             print(f"------------------------{document.name}:{name}:{is_contained}------------------------")
 
             # If the attribute is an array
-            if "dimensions" in attribute and attribute["dimensions"] == "*":
+            if attribute.get("dimensions", "") == "*":
                 item_type = get_blueprint(attribute["type"])
 
+                # TODO: This is hard coded now...
+                add_file_type = "add-entity-file" if item_type.name == "Entity" else "add-file"
                 data = {}
                 for item in item_type.get_attribute_names():
                     data[item] = ("${" + item + "}",)
@@ -242,8 +244,8 @@ class Tree:
                             "label": f"{item_type.name}",
                             "action": "CREATE",
                             "data": {
-                                "url": f"/api/v2/explorer/{data_source_id}/add-file",
-                                "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/AddAction",
+                                "url": f"/api/v2/explorer/{data_source_id}/{add_file_type}",
+                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
                                 "request": {
                                     "type": attribute["type"],
                                     "parentId": getattr(document, "uid", None),
@@ -263,7 +265,7 @@ class Tree:
                             "label": f"{item_type.name}",
                             "action": "CREATE",
                             "data": {
-                                "url": f"/api/v2/explorer/{data_source_id}/add-file",
+                                "url": f"/api/v2/explorer/{data_source_id}/{add_file_type}",
                                 "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
                                 "request": {
                                     "type": attribute["type"],

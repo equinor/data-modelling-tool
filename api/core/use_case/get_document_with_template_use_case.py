@@ -37,8 +37,6 @@ class GetDocumentWithTemplateUseCase(uc.UseCase):
         if not dto:
             raise EntityNotFoundException(uid=document_id)
 
-        blueprint = get_blueprint(dto.type)
-
         # todo use dto_repository
         blueprint = get_blueprint(dto.type)
         data = blueprint.to_dict()
@@ -46,7 +44,8 @@ class GetDocumentWithTemplateUseCase(uc.UseCase):
         # @todo move to template class, should have a custom template ReactJsonFormTemplate which translate our
         #  template to something react json schema understands.
         del data["type"]
-        template = Template(schema=form_to_schema(data), uiSchema={}, view=None)
+        ui_schema, view = blueprint.get_ui_schema()
+        template = Template(schema=form_to_schema(data), uiSchema=ui_schema, view=view)
 
         data = {"template": template.to_dict(), "document": dto.to_dict()}
 

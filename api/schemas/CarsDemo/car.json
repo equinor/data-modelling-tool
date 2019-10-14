@@ -5,12 +5,10 @@
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     },
     {
       "type": "string",
-      "value": "",
       "name": "manufacturer"
     },
     {
@@ -38,6 +36,46 @@
           "contained": false
         }
       ]
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "edit",
+      "description": "React json schema uiSchema",
+      "attributes": {
+        "description": {
+          "ui:widget": "textarea"
+        },
+        "ui:order": [
+          "title",
+          "description",
+          "*"
+        ],
+        "attributes": {
+          "ui:options": {
+            "orderable": false
+          },
+          "items": {
+            "ui:order": [
+              "name",
+              "type",
+              "value",
+              "dimensions"
+            ]
+          }
+        }
+      }
+    },
+    {
+      "name": "view",
+      "attributes": {
+        "name": {
+          "ui:widget": "attribute"
+        },
+        "description": {
+          "ui:widget": "textarea"
+        }
+      }
     }
   ]
 }

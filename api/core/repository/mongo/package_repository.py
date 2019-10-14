@@ -14,17 +14,17 @@ class MongoPackageRepository(MongoRepositoryBase, PackageRepository):
     def get(self, uid: str) -> Package:
         result = self.client().get(uid)
         if result:
-            return self.convert_to_model(result)
+            return Package.from_dict(result)
 
     def list(self) -> List[Package]:
         root_packages = self.client().find(filters={"isRoot": True})
         return [Package.from_dict(r) for r in root_packages]
 
-    def add(self, root_package: Package) -> None:
-        self.client().add(root_package.to_dict())
+    def add(self, package: Package) -> None:
+        self.client().add(package.to_dict())
 
-    def update(self, root_package: Package) -> None:
-        raise NotImplementedError()
+    def update(self, package: Package) -> None:
+        self.client().update(package.uid, package.to_dict())
 
-    def delete(self, root_package: Package) -> None:
-        self.client().delete(root_package.id)
+    def delete(self, package: Package) -> None:
+        self.client().delete(package.id)

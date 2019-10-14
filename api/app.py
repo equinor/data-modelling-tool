@@ -49,10 +49,8 @@ def import_folder(folder, collection, contained: bool = False):
         import_package(folder, contained=False, is_root=True, collection=collection)
     else:
         uid = str(uuid4())
-        package = import_package(folder, contained=True, root_package_uid=uid, collection=collection)
-        as_dict = package.to_dict()
-        as_dict["isRoot"] = True
-        dmt_db[collection].replace_one({"_id": package.uid}, as_dict, upsert=True)
+        package = import_package(folder, contained=True, is_root=True, root_package_uid=uid, collection=collection)
+        dmt_db[collection].replace_one({"_id": package.uid}, package.to_dict(), upsert=True)
         logger.info(f"Imported package {package.name}")
 
 

@@ -34,8 +34,12 @@ def import_package(
 ) -> Union[Package, Dict]:
     package_type = Config.DMT_PACKAGE if collection == Config.BLUEPRINT_COLLECTION else Config.DMT_ENTITY_PACKAGE
     package = Package(
-        name=os.path.basename(path), type=package_type, uid=str(uuid4() if not contained else root_package_uid)
+        name=os.path.basename(path),
+        type=package_type,
+        uid=str(uuid4()) if not contained else root_package_uid,
+        is_root=is_root,
     )
+
     package.documents = _add_documents(path, documents=next(os.walk(path))[2], collection=collection)
 
     for folder in next(os.walk(path))[1]:
@@ -50,10 +54,7 @@ def import_package(
         )
 
     if not contained:
-        # TODO: isRoot should not be needed
-        as_dict = package.to_dict()
-        as_dict["isRoot"] = is_root
-        dmt_db[collection].replace_one({"_id": package.uid}, as_dict, upsert=True)
+        dmt_db[collection].replace_one({"_id": package.uid}, package.to_dict(), upsert=True)
         logger.info(f"Imported package {package.name}")
         return {"_id": package.uid, "name": package.name, "type": "ref"}
     else:

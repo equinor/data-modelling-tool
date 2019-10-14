@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import Form from 'react-jsonschema-form'
 import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import AttributeWidget from './widgets/Attribute'
+import DocumentFinderWidget from './widgets/DocumentFinderWidget'
 
 export interface FormProps {
   fetchDocument?: any
@@ -37,8 +38,6 @@ export default ({ onSubmit, fetchDocument }: FormProps) => {
     return <div>Loading...</div>
   }
 
-  console.log(documentData)
-
   return (
     <Form
       formData={
@@ -47,8 +46,9 @@ export default ({ onSubmit, fetchDocument }: FormProps) => {
           : {}
       }
       schema={documentData.template.schema}
-      uiSchema={documentData.template.uiSchema}
-      fields={{ attribute: AttributeWidget }}
+      // TODO: A proper select-uiSchema-system
+      uiSchema={documentData.template.uiSchema[0]}
+      fields={{ type: DocumentFinderWidget, attribute: AttributeWidget }}
       onSubmit={schemas => {
         const formData: any = schemas.formData
         try {

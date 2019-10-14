@@ -43,6 +43,6 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
         del data["type"]
 
         # TODO: Can we use blueprint directly?
-        template = Template(schema=form_to_schema(data), uiSchema={}, view=None)
+        template = Template(schema=form_to_schema(data), uiSchema=blueprint.get_ui_schema(), view=None)
 
         return res.ResponseSuccess(template.to_dict())

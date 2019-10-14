@@ -56,6 +56,7 @@ class Package:
             documents=adict.get("documents", adict.get("blueprints")),
             dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
             type=adict.get("type", Config.DMT_PACKAGE),
+            is_root=adict.get("isRoot", "false"),
         )
 
         instance.packages = [Package.from_dict(package) for package in adict.get("packages", "")]

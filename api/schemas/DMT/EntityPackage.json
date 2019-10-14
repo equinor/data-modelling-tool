@@ -23,7 +23,7 @@
     }, {
       "contained": true,
       "default": false,
-      "name": "isRootPackage",
+      "name": "isRoot",
       "optional": false,
       "type": "boolean"
     }, {
@@ -39,7 +39,7 @@
       "dimensions": "*",
       "name": "documents",
       "optional": true,
-      "type": "templates/DMT/Reference"
+      "type": "templates/DMT/Entity"
     }
   ],
   "storageRecipes": [

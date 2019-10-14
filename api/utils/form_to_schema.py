@@ -1,6 +1,7 @@
 from flask_restful import abort
 
 from core.use_case.utils.get_template import get_blueprint
+from core.shared.templates import TemplatesSIMOS
 
 
 def get_common_keys(attribute):
@@ -38,29 +39,32 @@ def form_to_schema(form: dict):
     if "attributes" not in form:
         return {}
 
-    primitives = ["string", "number", "integer", "number", "boolean", "enum"]
+    primitives = ["string", "number", "integer", "boolean", "enum"]
     # TODO: Only handles arrays, not matrices
     for attribute in form["attributes"]:
         if attribute["type"] in primitives:
-            array_size = dimensions_to_int(attribute.get("dimensions", []))
+            properties[attribute["name"]] = attribute
 
-            # Custom length
-            if array_size == -1:
-                properties[attribute["name"]] = {"type": "array", "items": {**get_common_keys(attribute)}}
-            # Fixed length
-            elif array_size > 0:
-                array = []
-                for i in range(array_size):
-                    array.append({**get_common_keys(attribute)})
-                properties[attribute["name"]] = {"type": "array", "items": array}
-            # No dimension
-            else:
-                properties[attribute["name"]] = {**get_common_keys(attribute)}
+        elif attribute["type"] == TemplatesSIMOS.BLUEPRINT_ATTRIBUTE.value:
+            blueprint = get_blueprint(attribute["type"])
+            properties[attribute["name"]] = {"type": "array", "items": blueprint.attributes}
+        else:
+            if attribute["dimensions"] == "*":
+                properties[attribute["name"]] = {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "_id": {"type": "string", "title": "id"},
+                            "name": {"type": "string", "title": "name"},
+                        },
+                    },
+                }
 
-    form.pop("attributes")
+    del form["attributes"]
     form["properties"] = properties
 
-    return form
+    return {"type": "object", "properties": properties}
 
 
 def form_to_schema2(form: dict):
