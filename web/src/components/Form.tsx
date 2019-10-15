@@ -3,14 +3,20 @@ import Form from 'react-jsonschema-form'
 import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import AttributeWidget from './widgets/Attribute'
 import DocumentFinderWidget from './widgets/DocumentFinderWidget'
+import { getProperty } from './Utils'
 
 export interface FormProps {
   fetchDocument?: any
   onSubmit: (formData: any) => void
+  selectedUiSchema?: string
 }
 
 const log = (type: any) => console.log.bind(console, type)
-export default ({ onSubmit, fetchDocument }: FormProps) => {
+export default ({
+  onSubmit,
+  fetchDocument,
+  selectedUiSchema = 'DEFAULT',
+}: FormProps) => {
   const [loading, setLoading] = useState<boolean | null>(null)
   const [documentData, setDocumentData] = useState<DocumentData>({
     document: {},
@@ -38,6 +44,12 @@ export default ({ onSubmit, fetchDocument }: FormProps) => {
     return <div>Loading...</div>
   }
 
+  const uiSchema = getProperty(
+    documentData.template.uiRecipes,
+    selectedUiSchema,
+    {}
+  )
+
   return (
     <Form
       formData={
@@ -47,8 +59,8 @@ export default ({ onSubmit, fetchDocument }: FormProps) => {
       }
       schema={documentData.template.schema}
       // TODO: A proper select-uiSchema-system
-      uiSchema={documentData.template.uiSchema[0]}
       fields={{ type: DocumentFinderWidget, attribute: AttributeWidget }}
+      uiSchema={uiSchema}
       onSubmit={schemas => {
         const formData: any = schemas.formData
         try {

@@ -6,7 +6,8 @@ from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.get_template import get_blueprint
-from utils.form_to_schema import form_to_schema2, form_to_schema
+from utils.form_to_schema import form_to_schema2
+from utils.form_to_ui_schema import form_to_ui_schema
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):
@@ -45,7 +46,9 @@ class GetDocumentUseCase(uc.UseCase):
         #  template to something react json schema understands.
         del data["type"]
 
-        template = Template(schema=form_to_schema2(data), ui_recipes=blueprint.ui_recipes, uiSchema={}, view=None)
+        template = Template(
+            schema=form_to_schema2(data), ui_recipes=form_to_ui_schema(blueprint), uiSchema={}, view=None
+        )
 
         data = {"template": template.to_dict(), "document": dto.data}
 

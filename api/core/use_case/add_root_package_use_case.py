@@ -10,9 +10,8 @@ from core.shared import use_case as uc
 
 
 class AddRootPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, name=None, type=None):
+    def __init__(self, name=None):
         self.name = name
-        self.type = type
 
     @classmethod
     def from_dict(cls, adict):
@@ -24,7 +23,7 @@ class AddRootPackageRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(name=adict.get("name"), type=adict.get("type"))
+        return cls(name=adict.get("name"))
 
 
 class AddRootPackageUseCase(uc.UseCase):

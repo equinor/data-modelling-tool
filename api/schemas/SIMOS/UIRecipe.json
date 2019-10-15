@@ -9,8 +9,7 @@
       "name": "name"
     },
     {
-      "type": "templates/SIMOS/Blueprint",
-      "value": "templates/SIMOS/UiAttribute",
+      "type": "templates/SIMOS/UiAttribute",
       "name": "attributes",
       "dimensions": "*"
     }

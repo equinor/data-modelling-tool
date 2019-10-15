@@ -42,5 +42,33 @@
         }
       ]
     }
+  ],
+  "uiRecipes": [
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "DEFAULT_VIEW",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        }
+      ]
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "DEFAULT_CREATE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "isRootPackage",
+          "widget": "hidden"
+        }
+      ]
+    }
   ]
 }

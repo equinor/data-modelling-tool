@@ -47,6 +47,14 @@
       "contained": true
     }
   ],
-  "storageRecipes": []
+  "storageRecipes": [],
+  "uiRecipes": [
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "DEFAULT_EDIT",
+      "description": "",
+      "field": "attribute"
+    }
+  ]
 }
 

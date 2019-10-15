@@ -1,7 +1,8 @@
 from core.domain.template import Template
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_template import get_blueprint
-from utils.form_to_schema import form_to_schema
+from utils.form_to_ui_schema import form_to_ui_schema
+from utils.form_to_schema import form_to_schema2
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
@@ -43,6 +44,6 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
         del data["type"]
 
         # TODO: Can we use blueprint directly?
-        template = Template(schema=form_to_schema(data), uiSchema=blueprint.get_ui_schema(), view=None)
+        template = Template(schema=form_to_schema2(data), ui_recipes=form_to_ui_schema(blueprint))
 
         return res.ResponseSuccess(template.to_dict())
