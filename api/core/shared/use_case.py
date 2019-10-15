@@ -1,6 +1,7 @@
 from core.shared import response_object as res
 import traceback
 
+
 class UseCase(object):
     def execute(self, request_object):
         if not request_object:

@@ -32,18 +32,24 @@ def import_package(
     path, collection: str, root_package_uid: str = None, contained: bool = True, is_root: bool = False
 ) -> Union[Package, Dict]:
     package = Package(name=os.path.basename(path), uid=str(uuid4() if not contained else root_package_uid))
-    package.blueprints = _add_documents(path, documents=next(os.walk(path))[2], collection=collection)
+    try:
+        package.blueprints = _add_documents(path, documents=next(os.walk(path))[2], collection=collection)
+    except StopIteration:
+        pass
 
-    for folder in next(os.walk(path))[1]:
-        package.packages.append(
-            import_package(
-                f"{path}/{folder}",
-                contained=contained,
-                is_root=False,
-                root_package_uid=root_package_uid,
-                collection=collection,
+    try:
+        for folder in next(os.walk(path))[1]:
+            package.packages.append(
+                import_package(
+                    f"{path}/{folder}",
+                    contained=contained,
+                    is_root=False,
+                    root_package_uid=root_package_uid,
+                    collection=collection,
+                )
             )
-        )
+    except StopIteration:
+        pass
 
     if not contained:
         # TODO: isRoot should not be needed

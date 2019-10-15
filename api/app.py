@@ -29,7 +29,7 @@ app = create_app(Config)
 
 logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 
-BLUEPRINT_PACKAGES = ["/code/schemas/CarsDemo", "/code/schemas/SIMOS", "/code/schemas/DMT"]
+BLUEPRINT_PACKAGES = ["/code/schemas/SIMOS", "/code/schemas/DMT"]
 
 ENTITY_PACKAGES = ["/code/schemas/demo_entities/volvo_components"]
 

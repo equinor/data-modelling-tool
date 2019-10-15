@@ -196,9 +196,14 @@ def upload_package_to_root(data_source_id: str):
     request_object = UploadPackageRequestObject.from_dict(request_data)
 
     response = use_case.execute(request_object)
-
+    if not response:
+        return Response(response, status=STATUS_CODES[response.type])
     # Generate the new index, and return it
-    use_case = GenerateIndexUseCase(document_repository=document_repository)
+    package_repository = get_repository(RepositoryType.PackageRepository, db)
+
+    use_case = GenerateIndexUseCase(
+        blueprint_repository=document_repository, package_repository=package_repository, get_repository=get_repository
+    )
     result = use_case.execute(data_source_id=data_source_id, data_source_name=db.name)
     return Response(json.dumps(result.to_dict()), mimetype="application/json", status=STATUS_CODES[response.type])
 
