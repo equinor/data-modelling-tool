@@ -10,6 +10,8 @@ class Blueprint:
     def get_attributes_with_reference(self):
         primitives = ["string", "number", "integer", "number", "boolean"]
         blueprints = list(filter(lambda item: "type" in item and item["type"] not in primitives, self.attributes))
+        # TMP: Remove enum since not working
+        blueprints = list(filter(lambda item: item["name"] != "enum", blueprints))
         return blueprints
 
     def get_storage_recipe(self):

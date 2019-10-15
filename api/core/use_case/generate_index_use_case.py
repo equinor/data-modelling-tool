@@ -130,6 +130,45 @@ class Tree:
 
         return documents
 
+    def generate_contained_nodes(
+        self, data_source_id, document_id, document_path, attribute_type, values, parent_node
+    ):
+        print(f"adding {attribute_type} to {'.'.join(document_path)}")
+        for index, instance in enumerate(values):
+            uid = f"{document_id}.{'.'.join(document_path)}.{instance['name']}"
+            current_path = document_path + [f"{index}"]
+
+            node = DocumentNode(
+                data_source_id=data_source_id,
+                name=instance["name"],
+                document=Blueprint(uid=uid, name=instance["name"], description="", type=attribute_type),
+                blueprint=None,
+                parent=parent_node,
+                on_select={
+                    "uid": uid,
+                    "title": instance["name"],
+                    "component": "blueprint",
+                    "data": {
+                        "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
+                        "schemaUrl": f"/api/v2/json-schema/{attribute_type}",
+                        "attribute": ".".join(current_path),
+                    },
+                },
+                menu_items=[],
+            )
+            blueprint = get_blueprint(attribute_type)
+            for attribute in blueprint.get_attributes_with_reference():
+                name = attribute["name"]
+                if name in instance:
+                    self.generate_contained_nodes(
+                        data_source_id,
+                        document_id,
+                        current_path + [f"{name}"],
+                        attribute["type"],
+                        instance[name],
+                        node,
+                    )
+
     def process_document(self, data_source_id, document, parent_node):
         logger.info(f"Add attributes for '{document.name}'")
 
@@ -263,28 +302,9 @@ class Tree:
                         )
                     # Values are stored inside parent. We create placeholder nodes.
                     if is_contained:
-                        for index, instance in enumerate(values):
-                            uid = f"{document.uid}.{instance['name']}"
-                            DocumentNode(
-                                data_source_id=data_source_id,
-                                name=instance["name"],
-                                document=Blueprint(
-                                    uid=uid, name=instance["name"], description="", type=attribute["type"]
-                                ),
-                                blueprint=blueprint,
-                                parent=attribute_node,
-                                on_select={
-                                    "uid": uid,
-                                    "title": instance["name"],
-                                    "component": "blueprint",
-                                    "data": {
-                                        "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                                        "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
-                                        "attribute": f"{name}.{index}",
-                                    },
-                                },
-                                menu_items=[],
-                            )
+                        self.generate_contained_nodes(
+                            data_source_id, document.uid, [name], attribute["type"], values, attribute_node
+                        )
 
         for attribute_node in attribute_nodes:
             for attribute_document in attribute_node["documents"]:
