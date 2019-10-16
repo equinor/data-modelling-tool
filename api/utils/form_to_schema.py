@@ -49,7 +49,7 @@ def form_to_schema(form: dict):
             blueprint = get_blueprint(attribute["type"])
             properties[attribute["name"]] = {"type": "array", "items": blueprint.attributes}
         else:
-            if attribute["dimensions"] == "*":
+            if attribute.get("dimensions", "") == "*":
                 properties[attribute["name"]] = {
                     "type": "array",
                     "items": {
