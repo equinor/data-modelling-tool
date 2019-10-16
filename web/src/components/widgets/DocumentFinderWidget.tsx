@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import Modal from '../modal/Modal'
 import { NodeType } from '../../api/types'
-import { BlueprintPickerContent } from '../../pages/common/blueprint-picker/BlueprintPicker'
+import { BlueprintPickerContent } from '../../pages/common/BlueprintPicker'
 import { RenderProps } from '../../pages/common/tree-view/DocumentTree'
 
 type Props = {

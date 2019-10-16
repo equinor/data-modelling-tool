@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { Datasource, DataSourceType, DmtApi } from '../../../api/Api'
+import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
-import DocumentTree, { RenderProps } from '../tree-view/DocumentTree'
-import { NodeType } from '../../../api/types'
-import { render } from 'react-dom'
+import DocumentTree, { RenderProps } from './tree-view/DocumentTree'
+import { NodeType } from '../../api/types'
 
 const api = new DmtApi()
 
