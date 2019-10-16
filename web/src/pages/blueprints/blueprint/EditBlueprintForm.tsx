@@ -12,10 +12,11 @@ interface Props {
   dispatch: Function
   documentData: DocumentData
   attribute: string
+  selectUiSchema: string
 }
 
 const EditBlueprintForm = (props: Props) => {
-  const { documentData, dispatch, dataUrl, attribute } = props
+  const { documentData, dispatch, selectUiSchema, dataUrl, attribute } = props
 
   const onSubmit = (schemas: any) => {
     console.log(schemas.formData)
@@ -41,7 +42,11 @@ const EditBlueprintForm = (props: Props) => {
   return (
     <>
       <h3>Edit Blueprint</h3>
-      <BlueprintForm documentData={documentData} onSubmit={onSubmit} />
+      <BlueprintForm
+        documentData={documentData}
+        selectUiSchema={selectUiSchema}
+        onSubmit={onSubmit}
+      />
     </>
   )
 }

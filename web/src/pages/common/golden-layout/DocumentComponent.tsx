@@ -51,6 +51,7 @@ const DocumentComponent = (props: any) => {
             case PageMode.edit:
               return (
                 <EditBlueprintForm
+                  selectUiSchema={'DEFAULT_EDIT'}
                   documentData={documentData}
                   dataUrl={dataUrl}
                   dispatch={dispatch}

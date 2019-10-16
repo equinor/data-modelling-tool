@@ -89,6 +89,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
   switch (method) {
     case ContextMenuActions.CREATE: {
       return {
+        selectedUiSchema: 'DEFAULT_CREATE',
         fetchDocument: ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
           Api2.get({
             url: action.data.schemaUrl,

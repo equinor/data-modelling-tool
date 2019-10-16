@@ -40,38 +40,32 @@
         {
           "name": "storageRecipes",
           "contained": true
+        },
+        {
+          "name": "uiRecipes",
+          "contained": true
         }
       ]
     }
   ],
   "uiRecipes": [
     {
-      "name": "edit",
-      "description": "React json schema uiSchema",
-      "uiSchema": {
-        "description": {
-          "ui:widget": "textarea"
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "DEFAULT_EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
         },
-        "ui:order": [
-          "name",
-          "description",
-          "*"
-        ],
-        "attributes": {
-          "ui:options": {
-            "orderable": false
-          },
-          "items": {
-            "ui:field": "attribute",
-            "ui:order": [
-              "name",
-              "type",
-              "value",
-              "dimensions"
-            ]
+        {
+          "name": "attributes",
+          "uiRecipe": "DEFAULT_EDIT",
+          "options": {
+            "orderable" : false
           }
         }
-      }
+      ]
     }
   ]
 }
