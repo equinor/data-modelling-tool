@@ -6,7 +6,7 @@ authors = ["Stig Ofstad <stoo@equinor.com>","Christoffer","Eirik"]
 license = "MIT"
 
 [tool.poetry.dependencies]
-python = "3.7.*"
+python = "3.8.*"
 flask = "^1.0"
 werkzeug = "^0.15.4"
 flask-restful = "^0.3.7"
