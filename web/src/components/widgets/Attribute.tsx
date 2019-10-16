@@ -2,6 +2,7 @@ import {
   ArrayRadioGroup,
   BlueprintInput,
   DefaultValueInput,
+  DescriptionInput,
   DimensionsInput,
   NameInput,
   OnChange,
@@ -72,7 +73,13 @@ export default (props: Props) => {
     }
   }
 
-  const { name, type, value, dimensions } = formData
+  const {
+    name,
+    description,
+    type,
+    default: defaultValue,
+    dimensions,
+  } = formData
   const primitives = [
     DataType.STRING,
     DataType.NUMBER,
@@ -84,6 +91,7 @@ export default (props: Props) => {
   return (
     <AttributeGroup>
       <NameInput value={name} onChange={onChange} />
+      <DescriptionInput value={description} onChange={onChange} />
       <TypeInput value={selectedType} onChange={onChange} />
       {!isPrimitive && <BlueprintInput value={type} onChange={onChange} />}
       <ArrayRadioGroup onChange={onChange} attributeName={name} array={array} />
@@ -94,7 +102,7 @@ export default (props: Props) => {
         </div>
       )}
       {array === ArrayType.SIMPLE && type !== DataType.BLUEPRINT && (
-        <DefaultValueInput value={value} onChange={onChange} />
+        <DefaultValueInput value={defaultValue} onChange={onChange} />
       )}
     </AttributeGroup>
   )

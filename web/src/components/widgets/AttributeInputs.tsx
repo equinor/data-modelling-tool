@@ -18,6 +18,16 @@ export const NameInput = (props: any) => {
   )
 }
 
+export const DescriptionInput = (props: any) => {
+  const { onChange, value } = props
+  return (
+    <AttributeWrapper>
+      Description:{' '}
+      <input type="string" value={value} onChange={onChange('description')} />
+    </AttributeWrapper>
+  )
+}
+
 export const TypeInput = (props: any) => {
   const { onChange, value } = props
   return (

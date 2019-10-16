@@ -18,6 +18,7 @@ const EditBlueprintForm = (props: Props) => {
   const { documentData, dispatch, dataUrl, attribute } = props
 
   const onSubmit = (schemas: any) => {
+    console.log(schemas.formData)
     const url = attribute ? `${dataUrl}/${attribute}` : dataUrl
     axios
       .put(url, schemas.formData)
