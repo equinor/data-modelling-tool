@@ -36,7 +36,8 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
         blueprint = get_blueprint(attribute_type)
         if attribute_dimensions == "*":
             attribute_ui_recipe = find_attribute(attribute_instance["uiRecipe"], blueprint.ui_recipes)
-            result["items"] = process_ui_recipe(attribute_ui_recipe, blueprint.attributes)
+            if attribute_ui_recipe:
+                result["items"] = process_ui_recipe(attribute_ui_recipe, blueprint.attributes)
     return result
 
 

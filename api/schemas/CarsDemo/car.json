@@ -9,6 +9,10 @@
     },
     {
       "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "string",
       "name": "manufacturer"
     },
     {
@@ -40,42 +44,22 @@
   ],
   "uiRecipes": [
     {
-      "name": "edit",
-      "description": "React json schema uiSchema",
-      "attributes": {
-        "description": {
-          "ui:widget": "textarea"
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "DEFAULT_EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
         },
-        "ui:order": [
-          "title",
-          "description",
-          "*"
-        ],
-        "attributes": {
-          "ui:options": {
-            "orderable": false
-          },
-          "items": {
-            "ui:order": [
-              "name",
-              "type",
-              "value",
-              "dimensions"
-            ]
+        {
+          "name": "wheels",
+          "uiRecipe": "DEFAULT_EDIT",
+          "options": {
+            "orderable" : false
           }
         }
-      }
-    },
-    {
-      "name": "view",
-      "attributes": {
-        "name": {
-          "ui:widget": "attribute"
-        },
-        "description": {
-          "ui:widget": "textarea"
-        }
-      }
+      ]
     }
   ]
 }
