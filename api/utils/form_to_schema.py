@@ -1,5 +1,7 @@
 from flask_restful import abort
 
+from core.use_case.utils.get_template import get_blueprint
+
 
 def get_common_keys(attribute):
     keys = {
@@ -59,3 +61,37 @@ def form_to_schema(form: dict):
     form["properties"] = properties
 
     return form
+
+
+def form_to_schema2(form: dict):
+    properties = {}
+
+    if "attributes" not in form:
+        return {}
+
+    primitives = ["string", "number", "integer", "boolean"]
+    for attribute in form["attributes"]:
+        if attribute["type"] in primitives:
+            print(attribute)
+            properties[attribute["name"]] = attribute
+
+        else:
+            blueprint = get_blueprint(attribute["type"])
+            items = {"properties": {}}
+            attributes = blueprint.attributes
+            filtered_attributes = []
+            for attr in attributes:
+                if attr["type"] != "templates/SIMOS/Enum":
+                    filtered_attributes.append(attr)
+                    key = attr["name"]
+                    items["properties"][key] = attr
+
+            properties[attribute["name"]] = {"type": "array", "items": items}
+
+    if "uiRecipes" in properties:
+        properties.pop("uiRecipes")
+
+    if "storageRecipes" in properties:
+        properties.pop("storageRecipes")
+
+    return {"type": "object", "properties": properties}

@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { PageMode } from '../../common/DocumentReducer'
 import Api2 from '../../../api/Api2'
-import { DmtApi } from '../../../api/Api'
-
-const api = new DmtApi()
 
 export type DocumentData = {
   template: any
@@ -12,7 +9,7 @@ export type DocumentData = {
 
 type Props = {
   dataUrl: string
-  schemaUrl: string
+  schemaUrl?: string
   pageMode: PageMode
   render: any
 }
@@ -21,16 +18,29 @@ export default ({ dataUrl, schemaUrl, pageMode, render }: Props) => {
   const [documentData, setDocumentData] = useState()
   const [loading, setLoading] = useState(false)
 
+  console.log(dataUrl, schemaUrl)
   useEffect(() => {
-    Api2.fetchWithTemplate({
-      urlData: dataUrl,
-      urlSchema: schemaUrl,
-      onSuccess: (data: DocumentData) => {
-        setDocumentData(data)
-        setLoading(false)
-      },
-      onError: (err: any) => setLoading(false),
-    })
+    // @todo cleanup
+    if (schemaUrl) {
+      Api2.fetchWithTemplate({
+        urlData: dataUrl,
+        urlSchema: schemaUrl,
+        onSuccess: (data: DocumentData) => {
+          setDocumentData(data)
+          setLoading(false)
+        },
+        onError: (err: any) => setLoading(false),
+      })
+    } else {
+      Api2.fetchDocument({
+        dataUrl,
+        onSuccess: (data: DocumentData) => {
+          setDocumentData(data)
+          setLoading(false)
+        },
+        onError: (err: any) => setLoading(false),
+      })
+    }
   }, [dataUrl, schemaUrl, pageMode])
 
   if (loading) {

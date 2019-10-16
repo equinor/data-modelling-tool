@@ -23,7 +23,7 @@
       "name": "engine"
     }
   ],
-  "storageRecipe": [
+  "storageRecipes": [
     {
       "name": "DefaultStorageRecipe",
       "type": "templates/SIMOS/StorageRecipe",
