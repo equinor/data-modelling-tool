@@ -1,9 +1,10 @@
 from core.domain.blueprint import Blueprint
+from core.domain.entity import Entity
 from core.domain.storage_recipe import StorageRecipe
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.shared.templates import TemplatesDMT
+from core.shared.templates import TemplatesDMT, TemplatesSIMOS
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
@@ -108,10 +109,13 @@ def print_tree(root_node):
 
 
 class Tree:
-    def __init__(self, blueprint_repository: MongoBlueprintRepository, get_repository, package_repository):
+    def __init__(
+        self, blueprint_repository: MongoBlueprintRepository, get_repository, package_repository, document_repository
+    ):
         self.blueprint_repository = blueprint_repository
         self.get_repository = get_repository
         self.package_repository = package_repository
+        self.document_repository = document_repository
 
     def get_references(self, references, item_type):
         documents = []
@@ -122,8 +126,13 @@ class Tree:
                 if item_type == TemplatesDMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
                     # document.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in document.packages]
-                else:
+                elif item_type == TemplatesSIMOS.BLUEPRINT.value:
                     document = self.blueprint_repository.get(ref["_id"])
+                else:
+                    dto = self.document_repository.get(ref["_id"])
+                    document = Entity(dto.data)
+                    document.uid = dto.uid
+
                 if not document:
                     raise EntityNotFoundException(uid=ref)
                 documents.append(document)
@@ -350,16 +359,22 @@ class Tree:
 
 class GenerateIndexUseCase:
     def __init__(
-        self, blueprint_repository: MongoBlueprintRepository, package_repository: PackageRepository, get_repository
+        self,
+        blueprint_repository: MongoBlueprintRepository,
+        package_repository: PackageRepository,
+        get_repository,
+        document_repository,
     ):
         self.blueprint_repository = blueprint_repository
         self.package_repository = package_repository
         self.get_repository = get_repository
+        self.document_repository = document_repository
 
         self.tree = Tree(
             blueprint_repository=blueprint_repository,
             package_repository=package_repository,
             get_repository=get_repository,
+            document_repository=document_repository,
         )
 
     def execute(self, data_source_id: str, data_source_name: str) -> Index:

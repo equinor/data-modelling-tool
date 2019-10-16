@@ -23,3 +23,6 @@ class Entity:
 
     def to_dict(self):
         return self.__dict__
+
+    def get_values(self, name):
+        return self[name]
