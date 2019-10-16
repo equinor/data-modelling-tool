@@ -14,17 +14,20 @@
     {
       "type": "templates/SIMOS/BlueprintAttribute",
       "dimensions": "*",
-      "name": "attributes"
+      "name": "attributes",
+      "contained": true
     },
     {
       "type": "templates/SIMOS/StorageRecipe",
       "dimensions": "*",
-      "name": "storageRecipes"
+      "name": "storageRecipes",
+      "contained": false
     },
     {
       "type": "templates/SIMOS/UIRecipe",
       "dimensions": "*",
-      "name": "uiRecipes"
+      "name": "uiRecipes",
+      "contained": false
     }
   ],
   "storageRecipes": [

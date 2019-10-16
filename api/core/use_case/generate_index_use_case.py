@@ -169,6 +169,11 @@ class Tree:
                 blueprint = get_blueprint(attribute_type)
                 for attribute in blueprint.get_attributes_with_reference():
                     name = attribute["name"]
+
+                    is_contained_in_ui = attribute["contained"] if "contained" in attribute else False
+                    if is_contained_in_ui:
+                        continue
+
                     if name in instance:
                         self.generate_contained_nodes(
                             data_source_id,
@@ -233,9 +238,13 @@ class Tree:
             name = attribute["name"]
             # What blueprint is this attribute pointing too
 
-            is_contained = storage_recipe.is_contained(attribute["name"], attribute["type"])
+            is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
 
-            print(f"------------------------{document.name}:{name}:{is_contained}------------------------")
+            is_contained_in_ui = attribute["contained"] if "contained" in attribute else False
+            if is_contained_in_ui:
+                continue
+
+            print(f"------------------------{document.name}:{name}:{is_contained_in_storage}------------------------")
 
             # If the attribute is an array
             if attribute.get("dimensions", "") == "*":
@@ -296,7 +305,7 @@ class Tree:
                     document=document,
                     blueprint=blueprint,
                     parent=node,
-                    menu_items=[contained_menu_action if is_contained else not_contained_menu_action],
+                    menu_items=[contained_menu_action if is_contained_in_storage else not_contained_menu_action],
                 )
 
                 # Check if values for the attribute exists in current document,
@@ -304,13 +313,13 @@ class Tree:
                 values = document.get_values(name)
                 if values:
                     # Values are stored in separate document
-                    if not is_contained:
+                    if not is_contained_in_storage:
                         # Get real documents
                         attribute_nodes.append(
                             {"documents": self.get_references(values, attribute["type"]), "node": attribute_node}
                         )
                     # Values are stored inside parent. We create placeholder nodes.
-                    if is_contained:
+                    if is_contained_in_storage:
                         self.generate_contained_nodes(
                             data_source_id, document.uid, [name], attribute["type"], values, attribute_node
                         )

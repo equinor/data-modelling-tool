@@ -11,7 +11,8 @@
     {
       "type": "templates/SIMOS/UiAttribute",
       "name": "attributes",
-      "dimensions": "*"
+      "dimensions": "*",
+      "contained": true
     }
   ]
 }
