@@ -46,7 +46,11 @@ export const BlueprintInput = (props: WidgetInput) => {
   return (
     <AttributeWrapper>
       Blueprint:{' '}
-      <DocumentFinderWidget value={value} onChange={onChange('type')} />
+      <DocumentFinderWidget
+        value={value}
+        onChange={onChange('type')}
+        attributeInput={true}
+      />
     </AttributeWrapper>
   )
 }

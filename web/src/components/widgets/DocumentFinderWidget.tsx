@@ -11,7 +11,7 @@ type Props = {
 }
 
 export default (props: any) => {
-  const { value, onChange } = props
+  const { value, onChange, attributeInput } = props
   const [blueprint, setBlueprint] = useState(value)
   const [showModal, setShowModal] = useState(false)
 
@@ -21,9 +21,11 @@ export default (props: any) => {
     if (node.nodeType === NodeType.DOCUMENT_NODE) {
       setBlueprint(`${renderProps.path}/${node.title}`)
       setShowModal(false)
-      // TODO: This probably broke BlueprintPicker...
-      // props.onChange(`${renderProps.path}/${node.title}`)
-      onChange(`${renderProps.path}/${node.title}`)
+      if (attributeInput) {
+        onChange({ target: { value: `${renderProps.path}/${node.title}` } })
+      } else {
+        onChange(`${renderProps.path}/${node.title}`)
+      }
     }
   }
 
