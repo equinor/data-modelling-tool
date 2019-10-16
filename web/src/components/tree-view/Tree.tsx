@@ -33,7 +33,7 @@ export type TreeNodeData = {
   isFolder: boolean
   templateRef?: string
   children?: string[]
-  meta?: object
+  meta?: any
 }
 
 interface Tree {

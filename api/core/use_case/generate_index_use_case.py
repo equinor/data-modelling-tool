@@ -174,6 +174,9 @@ class Tree:
         logger.info(f"Add attributes for '{document.name}'")
 
         blueprint = get_blueprint(document.type)
+        document_type = ""
+        if parent_node:
+            document_type = parent_node.start_path.replace("documents", "") + document.name
 
         node = DocumentNode(
             data_source_id=data_source_id,
@@ -184,6 +187,7 @@ class Tree:
             on_select={
                 "uid": document.uid,
                 "title": document.name,
+                "type": document_type,
                 "component": "blueprint",
                 "data": {"dataUrl": f"/api/v2/documents-template/{data_source_id}/{document.uid}"},
             },

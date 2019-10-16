@@ -19,12 +19,16 @@ export default (props: any) => {
     const node = renderProps.treeNodeData
     // TODO: This is now true for all nodes?
     if (node.nodeType === NodeType.DOCUMENT_NODE) {
-      setBlueprint(`${renderProps.path}/${node.title}`)
+      const selectedBlueprintPath =
+        renderProps.treeNodeData.meta &&
+        renderProps.treeNodeData.meta.onSelect &&
+        renderProps.treeNodeData.meta.onSelect.type
+      setBlueprint(selectedBlueprintPath)
       setShowModal(false)
       if (attributeInput) {
-        onChange({ target: { value: `${renderProps.path}/${node.title}` } })
+        onChange({ target: { value: selectedBlueprintPath } })
       } else {
-        onChange(`${renderProps.path}/${node.title}`)
+        onChange(selectedBlueprintPath)
       }
     }
   }
