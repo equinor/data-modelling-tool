@@ -27,14 +27,14 @@
       "optional": false,
       "type": "boolean"
     }, {
-      "contained": true,
+      "contained": false,
       "default": "[]",
       "dimensions": "*",
-      "name": "entityPackages",
+      "name": "packages",
       "optional": true,
       "type": "templates/DMT/EntityPackage"
     }, {
-      "contained": true,
+      "contained": false,
       "default": "[]",
       "dimensions": "*",
       "name": "documents",

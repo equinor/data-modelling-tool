@@ -28,12 +28,9 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
         try:
 
             next_package = [package for package in package.packages if package.name == path_elements[0]][0]
-            # TODO: This should be "if contained"
-            # If the packages is not contained, get it
-            if next_package.type == "ref":
-                next_package = Package.from_dict(repository.find({"_id": next_package.uid}))
-
-            path_elements.pop(0)
+            # TODO: This should be "if contained", now only works with implicit uncontained packages
+            next_package = Package.from_dict(repository.find({"_id": next_package.uid}))
+            del path_elements[0]
             return _find_document_in_package_by_path(next_package, path_elements, repository)
         except IndexError:
             logger.error(f"The package {path_elements[0]} could not be found in the package {package.name}")
