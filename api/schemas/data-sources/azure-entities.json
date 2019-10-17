@@ -5,8 +5,9 @@
   "username": "msa-dev",
   "password": "",
   "tls": true,
-  "name": "azure-entities",
-  "database": "maf",
+  "name": "entities",
+  "database": "dmt",
   "collection": "entities",
-  "documentType": "entities"
+  "documentType": "entities",
+  "_id": "entities"
 }

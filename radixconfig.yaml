@@ -25,11 +25,11 @@ spec:
           monitoring: false
           resources:
             requests:
-              memory: "50Mi"
-              cpu: "10m"
+              memory: "200M"
+              cpu: "100m"
             limits:
-              memory: "54Mi"
-              cpu: "20m"
+              memory: "200M"
+              cpu: "100m"
           replicas: 1
     - name: api
       src: ./api
@@ -37,6 +37,17 @@ spec:
         - name: http
           port: 5000
       public: true
+      environmentConfig:
+        - environment: dev
+          monitoring: false
+          resources:
+            requests:
+              memory: "500M"
+              cpu: "200m"
+            limits:
+              memory: "500M"
+              cpu: "200m"
+          replicas: 1
       secrets:
         - MONGO_AZURE_URI
     - name: oauth-proxy
@@ -45,17 +56,6 @@ spec:
         - name: http
           port: 8081
       public: true
-      environmentConfig:
-        - environment: dev
-          monitoring: false
-          resources:
-            requests:
-              memory: "42Mi"
-              cpu: "10m"
-            limits:
-              memory: "50Mi"
-              cpu: "20m"
-          replicas: 1
       secrets:
         - OAUTH2_PROXY_CLIENT_ID
         - OAUTH2_PROXY_CLIENT_SECRET

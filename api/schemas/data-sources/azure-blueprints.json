@@ -5,8 +5,9 @@
   "username": "msa-dev",
   "password": "",
   "tls": true,
-  "name": "azure-blueprints",
-  "database": "maf",
-  "collection": "blueprints",
-  "documentType": "blueprints"
+  "name": "templates",
+  "database": "dmt",
+  "collection": "templates",
+  "documentType": "blueprints",
+  "_id": "templates"
 }
