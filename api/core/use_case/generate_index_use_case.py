@@ -4,7 +4,7 @@ from core.domain.storage_recipe import StorageRecipe
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.shared.templates import TemplatesDMT, TemplatesSIMOS
+from core.shared.templates import DMT, TemplatesSIMOS
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
@@ -123,7 +123,7 @@ class Tree:
 
             if isinstance(ref, dict):
                 logger.warn(f"Add ref '{ref}' {item_type}")
-                if item_type == TemplatesDMT.PACKAGE.value:
+                if item_type == DMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
                     # document.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in document.packages]
                 elif item_type == TemplatesSIMOS.BLUEPRINT.value:
@@ -199,7 +199,10 @@ class Tree:
                 "uid": document.uid,
                 "title": document.name,
                 "component": "blueprint",
-                "data": {"dataUrl": f"/api/v2/documents-template/{data_source_id}/{document.uid}"},
+                "data": {
+                    "dataUrl": f"/api/v2/documents-template/{data_source_id}/{document.uid}",
+                    "schemaUrl": f"/api/v2/json-schema/{document.type}",
+                },
             },
             menu_items=[
                 {
@@ -346,7 +349,7 @@ class Tree:
                             "action": "CREATE",
                             "data": {
                                 "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
-                                "schemaUrl": f"/api/v2/json-schema/{TemplatesDMT.PACKAGE.value}",
+                                "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_schema=DEFAULT_CREATE",
                                 "request": {"name": "${name}"},
                             },
                         }

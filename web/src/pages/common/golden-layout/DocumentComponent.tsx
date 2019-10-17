@@ -1,66 +1,77 @@
 import ViewBlueprintForm from '../../blueprints/blueprint/ViewBlueprintForm'
-import React, { useReducer } from 'react'
-import BlueprintReducer, { PageMode } from '../DocumentReducer'
-import EditBlueprintForm from '../../blueprints/blueprint/EditBlueprintForm'
+import React from 'react'
+import ReactJsonSchemaWrapper from '../form/ReactJsonSchemaWrapper'
 import styled from 'styled-components'
-import FetchDocument, {
-  DocumentData,
-} from '../../blueprints/blueprint/FetchDocument'
+import FetchDocument from '../utils/FetchDocument'
 // @ts-ignore
 import objectPath from 'object-path'
+import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
+import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 
 const Wrapper = styled.div`
   padding: 20px;
 `
 
+const UI_RECIPES = ['PREVIEW', 'EDIT']
+
+const View = (props: any) => {
+  const { schemaUrl, document, dataUrl, attribute, uiRecipe } = props
+  // TODO: Dont explicit add plugins, let plugins add them self to our code, to actually make it a plugin
+  return (
+    <FetchDocument
+      url={`${schemaUrl}?ui_recipe=${uiRecipe}`}
+      render={(data: any) => {
+        const { plugin = '' } = data.uiSchema
+        switch (plugin) {
+          case 'PREVIEW':
+            return <BlueprintPreview data={document} />
+          default:
+            return (
+              <ReactJsonSchemaWrapper
+                document={document}
+                template={data}
+                dataUrl={dataUrl}
+                attribute={attribute}
+              />
+            )
+        }
+      }}
+    />
+  )
+}
+
+const ViewList = (props: any) => {
+  return (
+    <Tabs>
+      <TabList>
+        {UI_RECIPES.map((uiRecipe: string) => {
+          return <Tab key={uiRecipe}>{uiRecipe}</Tab>
+        })}
+      </TabList>
+      {UI_RECIPES.map((uiRecipe: string) => {
+        return (
+          <TabPanel key={uiRecipe}>
+            <View {...props} uiRecipe={uiRecipe} />
+          </TabPanel>
+        )
+      })}
+    </Tabs>
+  )
+}
+
 const DocumentComponent = (props: any) => {
-  const { dataUrl, schemaUrl, attribute = null } = props
-
-  const [state, dispatch] = useReducer(BlueprintReducer, {
-    dataUrl,
-    schemaUrl,
-    pageMode: PageMode.view,
-  })
-
-  const pageMode = state.pageMode
+  const { dataUrl, attribute = null } = props
 
   return (
     <Wrapper>
       <FetchDocument
-        pageMode={pageMode}
-        dataUrl={dataUrl}
-        schemaUrl={schemaUrl}
-        render={(data: DocumentData) => {
-          const formData = attribute
+        url={dataUrl}
+        render={(data: any) => {
+          const document = attribute
             ? objectPath.get(data.document, attribute)
             : data.document
-          let documentData = {
-            template: data.template,
-            document: formData || {},
-          }
 
-          switch (pageMode) {
-            case PageMode.view:
-              return (
-                <ViewBlueprintForm
-                  documentData={documentData}
-                  state={state}
-                  dispatch={dispatch}
-                />
-              )
-            case PageMode.edit:
-              return (
-                <EditBlueprintForm
-                  selectUiSchema={'DEFAULT_EDIT'}
-                  documentData={documentData}
-                  dataUrl={dataUrl}
-                  dispatch={dispatch}
-                  attribute={attribute}
-                />
-              )
-            default:
-              return null
-          }
+          return <ViewList {...props} document={document} />
         }}
       />
     </Wrapper>

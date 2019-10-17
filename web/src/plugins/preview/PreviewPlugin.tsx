@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import Header from '../../../components/Header'
+import Header from '../../components/Header'
 
 export const Pre = styled.pre`
   white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */

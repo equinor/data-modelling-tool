@@ -1,14 +1,12 @@
 import axios from 'axios'
-import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import { DmtApi } from './Api'
-import { getDataSourceIDFromAbsolutID } from '../util/helperFunctions'
 
 const api = new DmtApi()
 
 /**
  * Standardize client side api by forcing onSuccess callback to pass a DocumentData back.
  */
-type OnSuccess = (data: DocumentData) => void
+type OnSuccess = (data: any) => void
 type OnError = (err: any) => void
 
 export interface BASE_CRUD {
@@ -174,7 +172,7 @@ function fetchTemplate({
     .then((res: any) => {
       onSuccess({
         document: {},
-        template: {
+        blueprint: {
           schema: res.data.schema,
           uiSchema: res.data.uiSchema || {},
         },

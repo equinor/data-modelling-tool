@@ -22,10 +22,12 @@ class Blueprint:
     def get_attribute_names(self):
         return list(map(lambda item: item["name"], self.attributes))
 
-    def get_ui_schema(self):
-        ui_schema = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
-        view = self.ui_recipes[1] if len(self.ui_recipes) > 1 else {}
-        return ui_schema, view
+    def get_ui_recipe(self, ui_schema=None):
+        if ui_schema:
+            return next((x for x in self.ui_recipes if x["name"] == ui_schema), None)
+        else:
+            ui_schema = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
+            return ui_schema
 
     def get_values(self, attribute_name):
         return self.to_dict().get(attribute_name, None)

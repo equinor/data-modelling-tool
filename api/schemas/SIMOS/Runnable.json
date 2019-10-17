@@ -1,0 +1,32 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "name": "Runnable",
+  "description": "This describes an runnable",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "templates/SIMOS/Blueprint",
+      "name": "input",
+      "description": "",
+      "contained": false
+    },
+    {
+      "type": "templates/SIMOS/Blueprint",
+      "name": "output",
+      "description": "",
+      "contained": false
+    },
+    {
+      "type": "string",
+      "name": "function",
+      "description": "Where are the function to be called stored"
+    }
+  ]
+}

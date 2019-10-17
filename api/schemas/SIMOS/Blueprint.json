@@ -54,7 +54,14 @@
   "uiRecipes": [
     {
       "type": "templates/SIMOS/UIRecipe",
-      "name": "DEFAULT_EDIT",
+      "name": "PREVIEW",
+      "description": "",
+      "plugin": "PREVIEW",
+      "attributes": []
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "EDIT",
       "description": "",
       "attributes": [
         {
@@ -67,6 +74,14 @@
           "options": {
             "orderable" : false
           }
+        },
+        {
+          "name": "storageRecipes",
+          "contained": true
+        },
+        {
+          "name": "uiRecipes",
+          "contained": true
         }
       ]
     }

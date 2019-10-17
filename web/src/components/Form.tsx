@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react'
 import Form from 'react-jsonschema-form'
-import { DocumentData } from '../pages/blueprints/blueprint/FetchDocument'
 import AttributeWidget from './widgets/Attribute'
 import DocumentFinderWidget from './widgets/DocumentFinderWidget'
 import { getProperty } from './Utils'
@@ -18,7 +17,7 @@ export default ({
   selectedUiSchema = 'DEFAULT',
 }: FormProps) => {
   const [loading, setLoading] = useState<boolean | null>(null)
-  const [documentData, setDocumentData] = useState<DocumentData>({
+  const [documentData, setDocumentData] = useState({
     document: {},
     template: {},
   })
@@ -27,7 +26,7 @@ export default ({
     if (fetchDocument) {
       setLoading(true)
       fetchDocument({
-        onSuccess: (documentData: DocumentData) => {
+        onSuccess: (documentData: any) => {
           setDocumentData(documentData)
           setLoading(false)
         },
@@ -44,20 +43,22 @@ export default ({
     return <div>Loading...</div>
   }
 
-  const uiSchema = getProperty(
-    documentData.template.uiRecipes,
-    selectedUiSchema,
-    {}
-  )
+  // @ts-ignore
+  const schema = documentData.template.schema
+  // @ts-ignore
+  const uiSchema = documentData.template.uiSchema
 
+  // @ts-ignore
   return (
     <Form
       formData={
         documentData.hasOwnProperty('document')
-          ? documentData.document.formData || {}
+          ? // @ts-ignore
+            documentData.document || {}
           : {}
       }
-      schema={documentData.template.schema}
+      // @ts-ignore
+      schema={schema}
       // TODO: A proper select-uiSchema-system
       fields={{ type: DocumentFinderWidget, attribute: AttributeWidget }}
       uiSchema={uiSchema}

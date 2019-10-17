@@ -30,9 +30,6 @@ export const DocumentNode = (props: Props) => {
   return (
     <LayoutContext.Consumer>
       {(layout: any) => {
-        const data = {
-          selectedDocumentId: treeNodeData.nodeId,
-        }
         return (
           <WithContextMenu
             {...props}
@@ -48,13 +45,6 @@ export const DocumentNode = (props: Props) => {
                     onSelect.title,
                     onSelect.component,
                     onSelect.data
-                    /*
-                                    treeNodeData.nodeId,
-                                    treeNodeData.title,
-                                    // TODO: Selected?
-                                    LayoutComponents.blueprint,
-                                    data
-                                    */
                   )
                 }
               >
