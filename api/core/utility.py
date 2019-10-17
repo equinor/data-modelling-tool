@@ -26,6 +26,7 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
             logger.error(f"The document {path_elements[0]} could not be found in the package {package.name}")
     else:
         try:
+
             next_package = [package for package in package.packages if package.name == path_elements[0]][0]
             # TODO: This should be "if contained"
             # If the packages is not contained, get it

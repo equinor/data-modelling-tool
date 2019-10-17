@@ -23,7 +23,6 @@ def _add_documents(path, documents, collection) -> List[Dict]:
             # TODO: Good candidate to become a DTO
             document = Entity(data)
         dmt_db[collection].replace_one({"_id": document.uid}, document.to_dict(), upsert=True)
-        # TODO: Remove "type: ref"
         docs.append({"_id": document.uid, "name": document.name})
     return docs
 
@@ -55,6 +54,6 @@ def import_package(
     if not contained:
         dmt_db[collection].replace_one({"_id": package.uid}, package.to_dict(), upsert=True)
         logger.info(f"Imported package {package.name}")
-        return {"_id": package.uid, "name": package.name, "type": "ref"}
+        return {"_id": package.uid, "name": package.name}
     else:
         return package

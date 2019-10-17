@@ -121,7 +121,7 @@ class Tree:
         documents = []
         for ref in references:
 
-            if isinstance(ref, dict) and "type" in ref:
+            if isinstance(ref, dict):
                 logger.warn(f"Add ref '{ref}' {item_type}")
                 if item_type == TemplatesDMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
@@ -390,7 +390,7 @@ class GenerateIndexUseCase:
         packages = []
         for package in self.package_repository.list():
             # TODO: Make Indexer Handle Package Class
-            package.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in package.packages]
+            package.packages = [{"name": p.name, "_id": p.uid} for p in package.packages]
             packages.append(package)
 
         return self.tree.execute(data_source_id=data_source_id, data_source_name=data_source_name, packages=packages)
