@@ -16,7 +16,8 @@
     {
       "type": "templates/SIMOS/StorageAttribute",
       "name": "attributes",
-      "dimensions": "*"
+      "dimensions": "*",
+      "contained": true
     }
   ],
   "storageRecipes": []
