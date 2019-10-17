@@ -14,7 +14,6 @@ from utils.logging import logger
 def _add_documents(path, documents, collection) -> List[Dict]:
     docs = []
     for file in documents:
-        print(f"Working on {file}...")
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
         data["uid"] = str(uuid4())
@@ -25,7 +24,7 @@ def _add_documents(path, documents, collection) -> List[Dict]:
             document = Entity(data)
         dmt_db[collection].replace_one({"_id": document.uid}, document.to_dict(), upsert=True)
         # TODO: Remove "type: ref"
-        docs.append({"_id": document.uid, "name": document.name, "type": "ref"})
+        docs.append({"_id": document.uid, "name": document.name})
     return docs
 
 

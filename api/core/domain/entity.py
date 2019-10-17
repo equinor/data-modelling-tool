@@ -25,4 +25,4 @@ class Entity:
         return self.__dict__
 
     def get_values(self, name):
-        return self[name]
+        return self.__dict__.get(name, None)

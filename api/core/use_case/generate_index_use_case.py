@@ -121,7 +121,7 @@ class Tree:
         documents = []
         for ref in references:
 
-            if isinstance(ref, dict) and "type" in ref and ref["type"] == "ref":
+            if isinstance(ref, dict) and "type" in ref:
                 logger.warn(f"Add ref '{ref}' {item_type}")
                 if item_type == TemplatesDMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
