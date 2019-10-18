@@ -12,7 +12,7 @@ const Wrapper = styled.div`
   padding: 20px;
 `
 
-const UI_RECIPES = ['PREVIEW', 'EDIT']
+const DEFAULT_UI_RECIPES = ['PREVIEW', 'EDIT']
 
 const View = (props: any) => {
   const { schemaUrl, document, dataUrl, attribute, uiRecipe } = props
@@ -41,17 +41,23 @@ const View = (props: any) => {
 }
 
 const ViewList = (props: any) => {
+  const { document } = props
+  const { uiRecipes = [] } = document
+  const uiRecipesNames = DEFAULT_UI_RECIPES.concat(
+    uiRecipes.map((uiRecipe: any) => uiRecipe['name'])
+  )
+
   return (
     <Tabs>
       <TabList>
-        {UI_RECIPES.map((uiRecipe: string) => {
-          return <Tab key={uiRecipe}>{uiRecipe}</Tab>
+        {uiRecipesNames.map((uiRecipesName: string) => {
+          return <Tab key={uiRecipesName}>{uiRecipesName}</Tab>
         })}
       </TabList>
-      {UI_RECIPES.map((uiRecipe: string) => {
+      {uiRecipesNames.map((uiRecipesName: string) => {
         return (
-          <TabPanel key={uiRecipe}>
-            <View {...props} uiRecipe={uiRecipe} />
+          <TabPanel key={uiRecipesName}>
+            <View {...props} uiRecipe={uiRecipesName} />
           </TabPanel>
         )
       })}
