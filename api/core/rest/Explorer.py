@@ -42,7 +42,10 @@ def add_file(data_source_id: str):
     response = use_case.execute(request_object)
 
     use_case = GenerateIndexUseCase(
-        blueprint_repository=document_repository, package_repository=package_repository, get_repository=get_repository
+        blueprint_repository=document_repository,
+        package_repository=package_repository,
+        get_repository=get_repository,
+        document_repository=document_repository,
     )
 
     # TODO: Replace this

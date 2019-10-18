@@ -7,41 +7,22 @@ import {
   DocumentsState,
   PageMode,
 } from '../../common/DocumentReducer'
-import { DocumentData } from './FetchDocument'
-import BlueprintPreview from '../preview/BlueprintPreview'
+import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 
 interface Props {
-  documentData: DocumentData
-  state: DocumentsState
-  dispatch: (action: DocumentsAction) => void
+  document: any
 }
 
 export default (props: Props) => {
-  const {
-    documentData,
-    state: { dataUrl = '', schemaUrl = '' },
-    dispatch,
-  } = props
-  const isDisabled = dataUrl == ''
+  const { document } = props
 
-  const data = documentData.document
   return (
     <>
       <div style={{ display: 'flex', justifyContent: 'space-between' }}>
         <div style={{ display: 'inline-flex' }}>View mode</div>
-        <div style={{ display: 'inline-flex' }}>
-          <Button
-            disabled={isDisabled}
-            onClick={() => {
-              dispatch(DocumentActions.editFile())
-            }}
-          >
-            Edit
-          </Button>
-        </div>
       </div>
       <div style={{ margin: 20 }}>
-        <pre>{JSON.stringify(data, null, 2)}</pre>
+        <pre>{JSON.stringify(document, null, 2)}</pre>
         {/*<ViewData data={documentData} disabled={isDisabled} />*/}
       </div>
     </>

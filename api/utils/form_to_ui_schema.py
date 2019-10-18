@@ -22,20 +22,20 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if not ui_attributes:
         return {}
 
-    attribute_instance = find_attribute(attribute_name, ui_attributes)
+    ui_attribute = find_attribute(attribute_name, ui_attributes)
 
-    if not attribute_instance:
+    if not ui_attribute:
         return {}
 
-    if "options" in attribute_instance:
-        result["ui:options"] = attribute_instance["options"]
+    if "options" in ui_attribute:
+        result["ui:options"] = ui_attribute["options"]
 
     if attribute_type in PRIMITIVES:
-        return get_attribute_config(attribute_instance)
+        return get_attribute_config(ui_attribute)
     else:
         blueprint = get_blueprint(attribute_type)
         if attribute_dimensions == "*":
-            attribute_ui_recipe = find_attribute(attribute_instance["uiRecipe"], blueprint.ui_recipes)
+            attribute_ui_recipe = find_attribute(ui_attribute.get("uiRecipe", ""), blueprint.ui_recipes)
             if attribute_ui_recipe:
                 result["items"] = process_ui_recipe(attribute_ui_recipe, blueprint.attributes)
     return result
@@ -43,6 +43,8 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
 
 def process_ui_recipe(ui_recipe, attributes):
     setting = {}
+    if "plugin" in ui_recipe:
+        setting["plugin"] = ui_recipe["plugin"]
 
     if "field" in ui_recipe:
         return {"ui:field": ui_recipe["field"]}
@@ -57,12 +59,30 @@ def process_ui_recipe(ui_recipe, attributes):
     return setting
 
 
+DEFAULT_PREVIEW_UI_RECIPE = {
+    "type": "templates/SIMOS/UIRecipe",
+    "name": "PREVIEW",
+    "description": "",
+    "plugin": "PREVIEW",
+    "attributes": [],
+}
+
+DEFAULT_EDIT_UI_RECIPE = {"type": "templates/SIMOS/UIRecipe", "name": "EDIT", "description": "", "attributes": []}
+
+
 def form_to_ui_schema(blueprint):
     result = {}
 
-    for ui_recipe in blueprint.ui_recipes:
-        ui_schema = process_ui_recipe(ui_recipe, blueprint.attributes)
-        if ui_schema:
-            result[ui_recipe["name"]] = ui_schema
+    ui_recipes = blueprint.ui_recipes
+
+    if not find_attribute("PREVIEW", ui_recipes):
+        ui_recipes.append(DEFAULT_PREVIEW_UI_RECIPE)
+
+    if not find_attribute("EDIT", ui_recipes):
+        # TODO: Set default widget types for attributes
+        ui_recipes.append(DEFAULT_EDIT_UI_RECIPE)
+
+    for ui_recipe in ui_recipes:
+        result[ui_recipe["name"]] = process_ui_recipe(ui_recipe, blueprint.attributes)
 
     return result

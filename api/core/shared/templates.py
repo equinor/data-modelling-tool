@@ -6,5 +6,5 @@ class TemplatesSIMOS(Enum):
     BLUEPRINT_ATTRIBUTE = "templates/SIMOS/BlueprintAttribute"
 
 
-class TemplatesDMT(Enum):
+class DMT(Enum):
     PACKAGE = "templates/DMT/Package"

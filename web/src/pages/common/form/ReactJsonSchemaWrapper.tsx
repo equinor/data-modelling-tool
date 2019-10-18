@@ -1,35 +1,30 @@
 import React from 'react'
-import BlueprintForm from './BlueprintForm'
+import ReactJsonSchemaPlugin from '../../../plugins/form/Form'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { DocumentActions, DocumentsState } from '../../common/DocumentReducer'
 import { DmtApi } from '../../../api/Api'
-import { DocumentData } from './FetchDocument'
 const api = new DmtApi()
 interface Props {
   dataUrl: string
-  dispatch: Function
-  documentData: DocumentData
+  document: any
+  template: any
   attribute: string
-  selectUiSchema: string
 }
 
-const EditBlueprintForm = (props: Props) => {
-  const { documentData, dispatch, selectUiSchema, dataUrl, attribute } = props
+const ReactJsonSchemaWrapper = (props: Props) => {
+  const { document, template, dataUrl, attribute } = props
 
   const onSubmit = (schemas: any) => {
-    console.log(schemas.formData)
     const url = attribute ? `${dataUrl}/${attribute}` : dataUrl
     axios
       .put(url, schemas.formData)
       .then((response: any) => {
-        const responseData: DocumentData = response.data
+        const responseData: any = response.data
         NotificationManager.success(
           responseData.document.id,
           'Updated blueprint'
         )
-        // dispatch(DocumentActions.viewFile(documentId))
       })
       .catch((e: any) => {
         NotificationManager.error(
@@ -42,13 +37,13 @@ const EditBlueprintForm = (props: Props) => {
   return (
     <>
       <h3>Edit Blueprint</h3>
-      <BlueprintForm
-        documentData={documentData}
-        selectUiSchema={selectUiSchema}
+      <ReactJsonSchemaPlugin
+        template={template}
+        document={document}
         onSubmit={onSubmit}
       />
     </>
   )
 }
 
-export default EditBlueprintForm
+export default ReactJsonSchemaWrapper

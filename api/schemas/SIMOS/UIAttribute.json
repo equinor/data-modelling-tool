@@ -21,6 +21,11 @@
     {
       "type": "string",
       "name": "type"
+    },
+    {
+      "type": "boolean",
+      "value": "",
+      "name": "contained"
     }
   ]
 }

@@ -33,7 +33,7 @@
       "description": "",
       "attributes": [
         {
-          "name": "blueprints",
+          "name": "documents",
           "contained": false
         },
         {
@@ -46,17 +46,6 @@
   "uiRecipes": [
     {
       "type": "templates/SIMOS/UIRecipe",
-      "name": "DEFAULT_VIEW",
-      "description": "",
-      "attributes": [
-        {
-          "name": "description",
-          "widget": "textarea"
-        }
-      ]
-    },
-    {
-      "type": "templates/SIMOS/UIRecipe",
       "name": "DEFAULT_CREATE",
       "description": "",
       "attributes": [
@@ -65,8 +54,35 @@
           "widget": "textarea"
         },
         {
-          "name": "isRootPackage",
+          "name": "isRoot",
           "widget": "hidden"
+        },
+        {
+          "name": "packages",
+          "contained": false
+        },
+        {
+          "name": "documents",
+          "contained": false
+        }
+      ]
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "packages",
+          "contained": false
+        },
+        {
+          "name": "documents",
+          "contained": false
         }
       ]
     }

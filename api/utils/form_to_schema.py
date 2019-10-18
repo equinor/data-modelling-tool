@@ -1,16 +1,20 @@
-from flask_restful import abort
+from typing import List
 
+from core.domain.blueprint import Blueprint
 from core.use_case.utils.get_template import get_blueprint
-from core.shared.templates import TemplatesSIMOS
+
+PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
-def get_common_keys(attribute):
-    keys = {
-        "type": attribute.get("type", "string"),
-        # "unit": attribute.get("unit", "nil"),
-        # "value": attribute.get("value", "nil"),
-        # "dimensions": attribute.get("dimensions", ""),
-    }
+def find_attribute(name: str, attributes: List):
+    return next((x for x in attributes if x["name"] == name), None)
+
+
+def get_attribute_config(attribute):
+    keys = {"type": attribute.get("type", "string")}
+
+    if "default" in attribute:
+        keys["default"] = attribute["default"]
 
     if "labels" in attribute:
         keys["enum"] = attribute.get("values")
@@ -19,83 +23,48 @@ def get_common_keys(attribute):
     return keys
 
 
-def dimensions_to_int(dimensions: list):
-    # TODO: Add support for matrices
-    if len(dimensions) > 1:
-        abort(401, "Sorry, we dont support matrices")
-    if not dimensions:
-        return 0
-    if dimensions[0] == "*":
-        return -1
-    try:
-        return int(dimensions[0])
-    except ValueError:
-        return 0
-
-
-def form_to_schema(form: dict):
+def process_attributes(blueprint, parent_blueprint, ui_recipe):
     properties = {}
 
-    if "attributes" not in form:
-        return {}
+    nested_attributes = []
+    for attribute in blueprint.attributes:
+        attribute_name = attribute["name"]
 
-    primitives = ["string", "number", "integer", "boolean", "enum"]
-    # TODO: Only handles arrays, not matrices
-    for attribute in form["attributes"]:
-        if attribute["type"] in primitives:
-            properties[attribute["name"]] = attribute
+        if "enum" in attribute:
+            continue
 
-        elif attribute["type"] == TemplatesSIMOS.BLUEPRINT_ATTRIBUTE.value:
-            blueprint = get_blueprint(attribute["type"])
-            properties[attribute["name"]] = {"type": "array", "items": blueprint.attributes}
+        ui_attributes = [] if not ui_recipe else ui_recipe.get("attributes", [])
+        ui_attribute = find_attribute(attribute_name, ui_attributes)
+        if ui_attribute:
+            is_contained = ui_attribute["contained"] if "contained" in ui_attribute else True
+            if not is_contained:
+                # Skip create schema if not contained
+                continue
+
+        if attribute["type"] in PRIMITIVES:
+            properties[attribute_name] = get_attribute_config(attribute)
         else:
+            nested_attributes.append(attribute["type"])
+
+        for nested_type in nested_attributes:
+            nested_blueprint = get_blueprint(nested_type)
+
+            if parent_blueprint and nested_blueprint == parent_blueprint:
+                continue
+
+            attribute_ui_recipe = (
+                find_attribute(ui_attribute.get("uiRecipe", ""), nested_blueprint.ui_recipes) if ui_attribute else None
+            )
             if attribute.get("dimensions", "") == "*":
-                properties[attribute["name"]] = {
+                properties[attribute_name] = {
                     "type": "array",
-                    "items": {
-                        "type": "object",
-                        "properties": {
-                            "_id": {"type": "string", "title": "id"},
-                            "name": {"type": "string", "title": "name"},
-                        },
-                    },
+                    "items": process_attributes(nested_blueprint, blueprint, attribute_ui_recipe),
                 }
-
-    del form["attributes"]
-    form["properties"] = properties
-
-    return {"type": "object", "properties": properties}
-
-
-def form_to_schema2(form: dict):
-    properties = {}
-
-    if "attributes" not in form:
-        return {}
-
-    primitives = ["string", "number", "integer", "boolean"]
-    for attribute in form["attributes"]:
-        if attribute["type"] in primitives:
-            print(attribute)
-            properties[attribute["name"]] = attribute
-
-        else:
-            blueprint = get_blueprint(attribute["type"])
-            items = {"properties": {}}
-            attributes = blueprint.attributes
-            filtered_attributes = []
-            for attr in attributes:
-                if attr["type"] != "templates/SIMOS/Enum":
-                    filtered_attributes.append(attr)
-                    key = attr["name"]
-                    items["properties"][key] = attr
-
-            properties[attribute["name"]] = {"type": "array", "items": items}
-
-    if "uiRecipes" in properties:
-        properties.pop("uiRecipes")
-
-    if "storageRecipes" in properties:
-        properties.pop("storageRecipes")
+            else:
+                return process_attributes(nested_blueprint, blueprint, attribute_ui_recipe)
 
     return {"type": "object", "properties": properties}
+
+
+def form_to_schema(blueprint: Blueprint, ui_recipe):
+    return process_attributes(blueprint, None, ui_recipe)

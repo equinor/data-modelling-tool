@@ -28,8 +28,9 @@ STATUS_CODES = {
 @blueprint.route("/api/v2/json-schema/<path:type>", methods=["GET"])
 def get_json_schema(type: str):
     logger.info(f"Getting json-schema '{type}'")
+    ui_recipe = request.args.get("ui_recipe")
     use_case = GenerateJsonSchemaUseCase(get_repository)
-    request_object = GenerateJsonSchemaRequestObject.from_dict({"type": type})
+    request_object = GenerateJsonSchemaRequestObject.from_dict({"type": type, "ui_recipe": ui_recipe})
     response = use_case.execute(request_object)
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 

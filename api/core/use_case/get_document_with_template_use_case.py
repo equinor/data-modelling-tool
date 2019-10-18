@@ -6,6 +6,7 @@ from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.get_template import get_blueprint
+from utils.form_to_ui_schema import form_to_ui_schema
 from utils.form_to_schema import form_to_schema
 
 
@@ -37,15 +38,12 @@ class GetDocumentWithTemplateUseCase(uc.UseCase):
         if not dto:
             raise EntityNotFoundException(uid=document_id)
 
-        # todo use dto_repository
         blueprint = get_blueprint(dto.type)
-        data = blueprint.to_dict()
-
-        # @todo move to template class, should have a custom template ReactJsonFormTemplate which translate our
-        #  template to something react json schema understands.
-        del data["type"]
-        ui_schema, view = blueprint.get_ui_schema()
-        template = Template(schema=form_to_schema(data), uiSchema=ui_schema, view=view)
+        ui_recipe = blueprint.get_ui_recipe()
+        ui_recipes = form_to_ui_schema(blueprint)
+        template = Template(
+            schema=form_to_schema(blueprint, ui_recipe), ui_schema=ui_recipes[ui_recipe["name"]] if ui_recipe else {}
+        )
 
         data = {"template": template.to_dict(), "document": dto.to_dict()}
 
