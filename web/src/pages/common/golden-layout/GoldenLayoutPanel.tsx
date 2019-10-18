@@ -11,13 +11,15 @@ class GoldenLayoutPanel extends React.Component<any, any> {
     globalState: {},
   }
 
-  componentWillMount() {
+  /*
+  componentDidMount() {
     this.props.glEventHub.on('props-updated', this.setProps)
   }
 
   componentWillUnmount() {
     this.props.glEventHub.off('props-updated', this.setProps)
   }
+  */
 
   setProps(globalState: any) {
     this.setState(globalState)

@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react'
 import Form from 'react-jsonschema-form'
 import AttributeWidget from './widgets/Attribute'
 import DocumentFinderWidget from './widgets/DocumentFinderWidget'
-import { getProperty } from './Utils'
 
 export interface FormProps {
   fetchDocument?: any

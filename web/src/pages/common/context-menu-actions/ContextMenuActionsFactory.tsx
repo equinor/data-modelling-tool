@@ -2,7 +2,6 @@
 import { NotificationManager } from 'react-notifications'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import Api2, { BASE_CRUD } from '../../../api/Api2'
-import React from 'react'
 import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import values from 'lodash/values'
 
@@ -82,7 +81,6 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
     console.error(error)
     NotificationManager.error(error.response.data.message, 'Failed')
   }
-  // const [dataSourceId, nodeId] = treeNodeData.nodeId.split('/')
 
   const [method, actionType] = action.type.split('/')
 
@@ -108,7 +106,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
               nodes.forEach((item: any, index: number) => {
                 delete item['children']
                 const node = new TreeNodeBuilderOld(item).build()
-                if (index == 0) {
+                if (index === 0) {
                   addNode(node, treeNodeData.nodeId)
                 } else {
                   addNode(node, item.parentId)
@@ -121,8 +119,6 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
         },
       }
     }
-
-    // Option 1: ContextMenuActions.RENAME + change data
 
     case ContextMenuActions.UPDATE: {
       return {
@@ -138,7 +134,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
               nodes.forEach((item: any, index: number) => {
                 delete item['children']
                 const node = new TreeNodeBuilderOld(item).build()
-                if (index == 0) {
+                if (index === 0) {
                   addNode(node, treeNodeData.nodeId)
                 } else {
                   addNode(node, item.parentId)

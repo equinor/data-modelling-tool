@@ -1,7 +1,5 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
-import BlueprintPreview from '../preview/PreviewPlugin'
-import Tabs, { Tab, TabPanel, TabList } from '../../components/Tabs'
 import AttributeWidget from '../../components/widgets/Attribute'
 import '../../pages/blueprints/blueprint/form-styles.css'
 

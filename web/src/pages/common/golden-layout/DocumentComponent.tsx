@@ -1,4 +1,3 @@
-import ViewBlueprintForm from '../../blueprints/blueprint/ViewBlueprintForm'
 import React from 'react'
 import ReactJsonSchemaWrapper from '../form/ReactJsonSchemaWrapper'
 import styled from 'styled-components'
@@ -12,6 +11,7 @@ const Wrapper = styled.div`
   padding: 20px;
 `
 
+// These UI recipes should always be shown
 const DEFAULT_UI_RECIPES = ['PREVIEW', 'EDIT']
 
 const View = (props: any) => {
@@ -43,8 +43,13 @@ const View = (props: any) => {
 const ViewList = (props: any) => {
   const { document } = props
   const { uiRecipes = [] } = document
-  const uiRecipesNames = DEFAULT_UI_RECIPES.concat(
-    uiRecipes.map((uiRecipe: any) => uiRecipe['name'])
+  // Create a list of unique UI recipe names
+  const uiRecipesNames = Array.from(
+    new Set(
+      DEFAULT_UI_RECIPES.concat(
+        uiRecipes.map((uiRecipe: any) => uiRecipe['name'])
+      )
+    )
   )
 
   return (

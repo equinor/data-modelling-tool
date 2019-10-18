@@ -8,7 +8,7 @@ import {
 } from '../tree-view/DocumentTree'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import WithContextMenu from '../context-menu-actions/WithContextMenu'
-import { LayoutComponents, LayoutContext } from '../golden-layout/LayoutContext'
+import { LayoutContext } from '../golden-layout/LayoutContext'
 
 interface Props extends RenderProps {
   treeNodeData: TreeNodeData

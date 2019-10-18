@@ -3,8 +3,7 @@ import ReactJsonSchemaPlugin from '../../../plugins/form/Form'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { DmtApi } from '../../../api/Api'
-const api = new DmtApi()
+
 interface Props {
   dataUrl: string
   document: any
