@@ -21,7 +21,7 @@ class MongoPackageRepository(MongoRepositoryBase, PackageRepository):
         return [Package.from_dict(r) for r in root_packages]
 
     def add(self, package: Package) -> None:
-        self.client().add(package.to_dict())
+        self.client().add(package.uid, package.to_dict())
 
     def update(self, package: Package) -> None:
         self.client().update(package.uid, package.to_dict())

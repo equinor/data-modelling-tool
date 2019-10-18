@@ -1,4 +1,4 @@
-Feature: Explorer - Add Root Package
+Feature: Explorer - Add file
 
   Background: There are data sources in the system
 
@@ -7,13 +7,19 @@ Feature: Explorer - Add Root Package
       | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | templates        | dmt      | template   | blueprints   | mongo-db |
 
-  Scenario: Add root package
-    Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"
+    Given there are documents for the data source "data-source-name" in collection "documents"
+      | uid | parent_uid | name         | description | type                  |
+      | 1   |            | root_package |             | templates/DMT/Package |
+
+  Scenario: Add file
+    Given i access the resource url "/api/v2/explorer/data-source-name/add-file"
     And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
-      "name": "new_root_package"
+      "name": "new_document",
+      "parentId": "1",
+      "type": "templates/SIMOS/Blueprint"
     }
     """
     Then the response status should be "OK"
@@ -21,24 +27,22 @@ Feature: Explorer - Add Root Package
     """
     {
         "data":{
-           "name":"new_root_package",
+           "name":"new_document",
            "description":null,
-           "type":"templates/DMT/Package",
-           "documents":[],
-           "dependencies":[],
-           "packages":[],
-           "isRoot":true,
+           "type":"templates/SIMOS/Blueprint",
            "storageRecipes":[]
         }
     }
     """
 
-  Scenario: Add root package with missing parameter name should fail
+  Scenario: Add file with missing parameter name should fail
     Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"
     And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
+      "parentId": 1,
+      "type": "templates/SIMOS/Blueprint"
     }
     """
     Then the response status should be "Bad Request"

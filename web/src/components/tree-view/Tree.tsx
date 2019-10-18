@@ -151,6 +151,14 @@ const Tree = (props: TreeProps) => {
     }
   }
 
+  const addNodes = (nodes: object) => {
+    dispatch(Actions.addNodes(nodes))
+  }
+
+  const addChild = (parentId: string, childId: string) => {
+    dispatch(NodeActions.addChild(parentId, childId))
+  }
+
   const updateNode = (node: TreeNodeData) => {
     dispatch(NodeActions.updateNode(node.nodeId, node.title))
   }
@@ -206,6 +214,8 @@ const Tree = (props: TreeProps) => {
                       NodeRenderer={children}
                       handleToggle={handleToggle}
                       addNode={addNode}
+                      addNodes={addNodes}
+                      addChild={addChild}
                       updateNode={updateNode}
                       removeNode={removeNode}
                       replaceNode={replaceNode}

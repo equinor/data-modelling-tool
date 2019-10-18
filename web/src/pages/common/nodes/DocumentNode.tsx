@@ -1,6 +1,8 @@
 import React from 'react'
 import {
+  AddChild,
   AddNode,
+  AddNodes,
   RemoveNode,
   RenderProps,
   ReplaceNode,
@@ -13,6 +15,8 @@ import { LayoutContext } from '../golden-layout/LayoutContext'
 interface Props extends RenderProps {
   treeNodeData: TreeNodeData
   addNode: AddNode
+  addNodes: AddNodes
+  addChild: AddChild
   updateNode: UpdateNode
   removeNode: RemoveNode
   replaceNode: ReplaceNode

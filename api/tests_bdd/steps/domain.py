@@ -2,11 +2,22 @@ from behave import given
 
 from classes.data_source import DataSource
 from core.domain.blueprint import Blueprint
-from core.domain.attribute_reference import AttributeReference
+from core.domain.package import Package
+from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
 from core.repository.repository_factory import get_repository
 from utils.enums import RepositoryType
+from core.shared.templates import DMT, SIMOS
+
+
+class Reference:
+    def __init__(self, uid: str, name: str):
+        self.uid = uid
+        self.name = name
+
+    def to_dict(self):
+        return {"_id": self.uid, "name": self.name}
 
 
 class TreeNode(NodeMixin):
@@ -17,18 +28,18 @@ class TreeNode(NodeMixin):
         self.type = type
         self.description = description
 
-    def form_data(self):
-        if self.type == "templates/v2/package":
+    def extra(self):
+        if self.type == DMT.PACKAGE.value:
             packages = []
-            blueprints = []
+            documents = []
             for child in self.children:
-                path = "/".join([node.name for node in child.path]) if child.path else ""
-                reference = AttributeReference(name=child.name, type=child.type, dimensions="", value=f"{path}")
-                if reference.type == "templates/v2/blueprint":
-                    blueprints.append(reference.to_dict())
-                elif reference.type == "templates/v2/package":
+                # Always contained
+                reference = Reference(uid=child.uid, name=child.name)
+                if child.type == SIMOS.BLUEPRINT.value:
+                    documents.append(reference.to_dict())
+                elif child.type == DMT.PACKAGE.value:
                     packages.append(reference.to_dict())
-            return {"blueprints": blueprints, "packages": packages}
+            return {"documents": documents, "packages": packages}
         return {}
 
 
@@ -61,10 +72,19 @@ class Tree:
         blueprint_repository: MongoBlueprintRepository = get_repository(
             RepositoryType.BlueprintRepository, self.data_source
         )
+        package_repository: PackageRepository = get_repository(RepositoryType.PackageRepository, self.data_source)
         for pre, fill, node in RenderTree(self.root):
-            document = Blueprint(uid=node.uid, name=node.name, description=node.description, template_ref=node.type)
-            document.form_data = node.form_data()
-            blueprint_repository.add(document)
+            if node.type == SIMOS.BLUEPRINT.value:
+                document = Blueprint(uid=node.uid, name=node.name, description=node.description, type=node.type)
+                blueprint_repository.add(document)
+                print(f"Added blueprint {document.uid}")
+            if node.type == DMT.PACKAGE.value:
+                package = Package(uid=node.uid, name=node.name, description=node.description, type=node.type)
+                extra = node.extra()
+                package.documents = extra["documents"]
+                package.packages = extra["packages"]
+                package_repository.add(package)
+                print(f"Added package {package.uid}")
 
     def print_tree(self):
         for pre, fill, node in RenderTree(self.root):
@@ -76,7 +96,7 @@ class Tree:
         root_node = TreeNode(uid=None, name=self.data_source.name, description="", type="", parent=None)
         package = list(filter(lambda row: row["parent_uid"] == "", self.table.rows))[0]
         if not package:
-            raise Exception("Package is not found, you need to specify root")
+            raise Exception("Root package is not found, you need to specify root package")
         package_node = TreeNode(**package.as_dict(), parent=root_node)
         rows = list(filter(lambda row: row["parent_uid"] != "", self.table.rows))
         generate_tree_from_rows(package_node, rows)

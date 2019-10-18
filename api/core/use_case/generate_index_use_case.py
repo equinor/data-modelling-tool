@@ -4,7 +4,7 @@ from core.domain.storage_recipe import StorageRecipe
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.shared.templates import DMT, TemplatesSIMOS
+from core.shared.templates import DMT, SIMOS
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
@@ -126,7 +126,7 @@ class Tree:
                 if item_type == DMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
                     # document.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in document.packages]
-                elif item_type == TemplatesSIMOS.BLUEPRINT.value:
+                elif item_type == SIMOS.BLUEPRINT.value:
                     document = self.blueprint_repository.get(ref["_id"])
                 else:
                     dto = self.document_repository.get(ref["_id"])
@@ -268,6 +268,7 @@ class Tree:
                             "data": {
                                 "url": f"/api/v2/explorer/{data_source_id}/{add_file_type}",
                                 "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
+                                "nodeUrl": f"/api/v3/index/{data_source_id}",
                                 "request": {
                                     "type": attribute["type"],
                                     "parentId": getattr(document, "uid", None),
@@ -350,6 +351,7 @@ class Tree:
                             "data": {
                                 "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
                                 "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_schema=DEFAULT_CREATE",
+                                "nodeUrl": f"/api/v3/index/{data_source_id}",
                                 "request": {"name": "${name}"},
                             },
                         }
@@ -398,7 +400,13 @@ class GenerateIndexUseCase:
 
         return self.tree.execute(data_source_id=data_source_id, data_source_name=data_source_name, packages=packages)
 
-    def single(self, data_source_id: str, data_source_name: str, document) -> Index:
+    def single(self, data_source_id: str, data_source_name: str, document_id: str) -> Index:
+        document = self.document_repository.get(document_id)
+        # The tree can't handle dto
+        if document.type == DMT.PACKAGE.value:
+            document = self.package_repository.get(document.uid)
+        if document.type == SIMOS.BLUEPRINT.value:
+            document = self.blueprint_repository.get(document.uid)
         data = self.tree.execute(
             data_source_id=data_source_id, data_source_name=data_source_name, packages=[document]
         ).to_dict()

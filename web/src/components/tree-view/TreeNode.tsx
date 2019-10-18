@@ -43,6 +43,8 @@ export type TreeNodeProps = {
   node: TreeNodeData
   updateNode: Function
   addNode: Function
+  addNodes: Function
+  addChild: Function
   handleToggle: Function
   removeNode: Function
   replaceNode: Function
@@ -61,6 +63,8 @@ const TreeNode = (props: TreeNodeProps) => {
     NodeRenderer,
     updateNode,
     addNode,
+    addNodes,
+    addChild,
     handleToggle,
     removeNode,
     replaceNode,
@@ -101,7 +105,9 @@ const TreeNode = (props: TreeNodeProps) => {
             addNode,
             updateNode,
             removeNode,
-            replaceNode
+            replaceNode,
+            addNodes,
+            addChild
           )}
         </Content>
       </StyledTreeNode>

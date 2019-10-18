@@ -13,6 +13,7 @@ export const DELETE_NODE = 'DELETE_NODE'
 export const ADD_CHILD = 'ADD_CHILD'
 export const REMOVE_CHILD = 'REMOVE_CHILD'
 export const SET_NODES = 'SET_NODES'
+export const ADD_NODES = 'ADD_NODES'
 export const REPLACE_NODE = 'REPLACE_NODE'
 
 const childIds = (state: any, action: any) => {
@@ -96,6 +97,7 @@ const node = (state: any, action: any) => {
 export interface TreeActions {
   filterTree: (filter: string) => any
   setNodes: (nodes: object) => void
+  addNodes: (nodes: object) => void
 }
 
 export const Actions: TreeActions = {
@@ -105,6 +107,10 @@ export const Actions: TreeActions = {
   }),
   setNodes: (nodes: object) => ({
     type: SET_NODES,
+    nodes: nodes,
+  }),
+  addNodes: (nodes: object) => ({
+    type: ADD_NODES,
     nodes: nodes,
   }),
 }
@@ -144,6 +150,11 @@ export default (state: any = {}, action: any) => {
 
     case SET_NODES:
       return { ...action.nodes }
+
+    case ADD_NODES:
+      console.log(action.nodes)
+      console.log(state)
+      return { ...action.nodes, ...state }
 
     default:
       // The rest of actions are on single treeNodeData

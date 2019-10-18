@@ -11,6 +11,8 @@ interface PropTypes {
 }
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
+export type AddChild = (parentId: string, childId: string) => void
+export type AddNodes = (nodes: object) => void
 export type UpdateNode = (node: TreeNodeData) => void
 export type RemoveNode = (node: TreeNodeData) => void
 export type ReplaceNode = (
@@ -22,6 +24,8 @@ export type ReplaceNode = (
 
 interface NodeComponentCallbackProps {
   addNode: AddNode
+  addNodes: AddNodes
+  addChild: AddChild
   updateNode: UpdateNode
   treeNodeData: TreeNodeData
   removeNode: RemoveNode
@@ -41,6 +45,8 @@ export type RenderProps = {
   parent: string
   treeNodeData: TreeNodeData
   addNode: AddNode
+  addNodes: AddNodes
+  addChild: AddChild
   updateNode: UpdateNode
   removeNode: RemoveNode
   replaceNode: ReplaceNode
@@ -91,7 +97,9 @@ export default (props: PropTypes) => {
             addNode: AddNode,
             updateNode: UpdateNode,
             removeNode: RemoveNode,
-            replaceNode: ReplaceNode
+            replaceNode: ReplaceNode,
+            addNodes: AddNodes,
+            addChild: AddChild
           ) => {
             return render({
               path,
@@ -101,6 +109,8 @@ export default (props: PropTypes) => {
               updateNode,
               removeNode,
               replaceNode,
+              addNodes,
+              addChild,
             })
           }}
         </Tree>

@@ -6,7 +6,7 @@ import ContextMenu, {
   MenuItem,
 } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
-import { RenderProps } from '../tree-view/DocumentTree'
+import { AddChild, AddNodes, RenderProps } from '../tree-view/DocumentTree'
 
 export type ActionConfig = {
   action: string
@@ -77,9 +77,11 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
   const actionConfig = actionFactory.getActionConfig(action, {
     treeNodeData,
     addNode: props.addNode,
+    addNodes: props.addNodes,
     updateNode: props.updateNode,
     removeNode: props.removeNode,
     replaceNode: props.replaceNode,
+    addChild: props.addChild,
     path: props.path,
     parent: props.parent,
     setShowModal,

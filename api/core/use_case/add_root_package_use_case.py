@@ -35,10 +35,11 @@ class AddRootPackageUseCase(uc.UseCase):
 
         package = Package(uid=str(uuid4()), name=name, is_root=True)
 
+        # uid=package.uid,
         document: DTO = DTO(data=package.to_dict())
 
         self.document_repository.add(document)
 
-        logger.info(f"Added package '{package.uid}'")
+        logger.info(f"Added root package '{document.uid}'")
 
-        return res.ResponseSuccess(package)
+        return res.ResponseSuccess(document)
