@@ -1,13 +1,18 @@
 import React, { useState } from 'react'
-import { ActionConfig } from './Types'
 import Modal from '../../../components/modal/Modal'
-import Form from '../../../components/Form'
+import Form, { FormProps } from '../../../components/Form'
 import { TreeNodeData } from '../../../components/tree-view/Tree'
 import ContextMenu, {
   MenuItem,
 } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
 import { RenderProps } from '../tree-view/DocumentTree'
+
+export type ActionConfig = {
+  action: string
+  formProps: FormProps
+  fetchDocumentData?: any
+}
 
 interface WithContextMenuProps extends RenderProps {
   menuItems: MenuItem[]
