@@ -54,7 +54,7 @@ class AddEntityFileToPackageUseCase(uc.UseCase):
         uid = str(uuid4())
         file = Entity({"_id": uid, "uid": uid, "name": name, "type": type})
 
-        parent.documents += [{"_id": file._id, "name": file.name, "type": "ref"}]
+        parent.documents += [{"_id": file._id, "name": file.name, "type": file.type}]
         self.package_repository.update(parent)
 
         self.document_repository.add(DTO(data=file.to_dict(), uid=file._id, type=file.type))
