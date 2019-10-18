@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
-import DocumentTree, { RenderProps } from './tree-view/DocumentTree'
+import DocumentTree from './tree-view/DocumentTree'
 import { NodeType } from '../../api/types'
+import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 
 const api = new DmtApi()
 
@@ -32,21 +33,21 @@ export const BlueprintPickerContent = ({
   }, [])
   return (
     <DocumentTree
-      render={(renderProps: RenderProps) => {
-        const { treeNodeData } = renderProps
-        if (treeNodeData.nodeType === NodeType.DOCUMENT_NODE) {
+      render={(renderProps: TreeNodeRenderProps) => {
+        const { nodeData } = renderProps
+        if (nodeData.nodeType === NodeType.DOCUMENT_NODE) {
           return (
             <div
               onClick={() => {
                 onSelect(renderProps)
               }}
             >
-              {treeNodeData.title}
+              {nodeData.title}
             </div>
           )
         }
         // all other nodes should not have context menu.
-        return <div>{treeNodeData.title}</div>
+        return <div>{nodeData.title}</div>
       }}
       dataSources={blueprintDatasources}
     />

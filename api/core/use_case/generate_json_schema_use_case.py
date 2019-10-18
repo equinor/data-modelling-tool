@@ -33,7 +33,6 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
     def process_request(self, request_object: GenerateJsonSchemaRequestObject):
         type = request_object.type
         ui_recipe_name = request_object.ui_recipe
-
         blueprint = get_blueprint(type)
 
         if not blueprint:

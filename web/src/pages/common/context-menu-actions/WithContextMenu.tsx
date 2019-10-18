@@ -1,12 +1,11 @@
 import React, { useState } from 'react'
 import Modal from '../../../components/modal/Modal'
 import Form, { FormProps } from '../../../components/Form'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import ContextMenu, {
   MenuItem,
 } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
-import { AddChild, AddNodes, RenderProps } from '../tree-view/DocumentTree'
+import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
 
 export type ActionConfig = {
   action: string
@@ -14,19 +13,21 @@ export type ActionConfig = {
   fetchDocumentData?: any
 }
 
-interface WithContextMenuProps extends RenderProps {
-  menuItems: MenuItem[]
-  configs?: ActionConfig[]
-  children?: any
-  layout?: any
+interface WithContextMenuProps {
+  children: any
+  layout: any
+  node: TreeNodeRenderProps
 }
 
 export type SetShowModal = (showModal: boolean) => void
 
 const WithContextMenu = (props: WithContextMenuProps) => {
+  const { layout, node, children } = props
   return (
     <WithContextMenuModal
-      {...props}
+      layout={layout}
+      node={node}
+      children={children}
       render={({ actionConfig }: any) => {
         const { formProps } = actionConfig
         return (
@@ -47,12 +48,11 @@ const WithContextMenu = (props: WithContextMenuProps) => {
 }
 export default WithContextMenu
 
-interface WithContextMenuModalProps extends RenderProps {
-  menuItems: MenuItem[]
-  treeNodeData: TreeNodeData
+interface WithContextMenuModalProps {
   render: (props: any) => any
-  children?: any
-  layout?: any
+  layout: any
+  node: TreeNodeRenderProps
+  children: any
 }
 
 interface ActionData {
@@ -66,7 +66,7 @@ interface Action {
 }
 
 export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
-  const { treeNodeData, menuItems, render, children, layout } = props
+  const { node, render, layout, children } = props
   const [action, setAction] = useState<Action>({
     data: { label: '' },
     type: '',
@@ -75,18 +75,14 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
 
   const actionFactory = new ContextMenuActionsFactory()
   const actionConfig = actionFactory.getActionConfig(action, {
-    treeNodeData,
-    addNode: props.addNode,
-    addNodes: props.addNodes,
-    updateNode: props.updateNode,
-    removeNode: props.removeNode,
-    replaceNode: props.replaceNode,
-    addChild: props.addChild,
-    path: props.path,
-    parent: props.parent,
+    node,
     setShowModal,
     layout,
   })
+
+  const { nodeData } = node
+  const { meta } = nodeData
+  const { menuItems = [] } = meta as any
 
   return (
     <>
@@ -98,14 +94,14 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
         {render({ action, actionConfig, setShowModal })}
       </Modal>
       <ContextMenu
-        id={treeNodeData.nodeId}
+        id={node.nodeData.nodeId}
         onClickContextMenu={(id: any, action: string, data: { label: '' }) => {
           setAction({ type: action, data })
           setShowModal(!showModal)
         }}
         menuItems={menuItems}
       >
-        {children || treeNodeData.title}
+        {children || node.nodeData.title}
       </ContextMenu>
     </>
   )

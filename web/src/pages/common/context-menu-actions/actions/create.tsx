@@ -4,36 +4,26 @@ import { TreeNodeBuilderOld } from '../../tree-view/TreeNodeBuilderOld'
 import { processFormData } from './utils/request'
 import { IndexNode } from '../../../../api/Api'
 import { toObject } from './utils/to_object'
+import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 
-export const postCreate = (
-  data: any,
-  nodeUrl: string,
-  addNode: Function,
-  addNodes: Function,
-  addChild: Function,
-  setShowModal: Function,
-  parentId: string
-) => {
+interface PostCreateProps {
+  response: any
+  nodeUrl: string
+  node: TreeNodeRenderProps
+}
+
+const createNodes = (props: PostCreateProps) => {
+  const { response, nodeUrl, node } = props
   Api2.get({
-    url: `${nodeUrl}/${data.uid}`,
+    url: `${nodeUrl}/${response.uid}`,
     onSuccess: result => {
-      console.log('NODE(S)', result)
       const nodes: any = values(result)
-      /*nodes.forEach((item: any, index: number) => {
-                delete item['children']
-                const node = new TreeNodeBuilderOld(item).build()
-                if (index === 0) {
-                    console.log("CONNECT TO PARENT", parentId)
-                    addNode(node, parentId)
-                } else {
-                    addNode(node, item.parentId)
-                }
-            })*/
       const indexNodes = nodes.map((node: IndexNode) =>
         new TreeNodeBuilderOld(node).build()
       )
-      addNodes(indexNodes.reduce(toObject, {}))
-      addChild(parentId, nodes[0]['id'])
+      node.actions.addNodes(indexNodes.reduce(toObject, {}))
+      // Connect new nodes to parent in tree
+      node.actions.addChild(node.nodeData.nodeId, nodes[0]['id'])
     },
     onError: (err: any) => console.error(Object.keys(err)),
   })
@@ -41,11 +31,9 @@ export const postCreate = (
 
 export const createAction = (
   action: any,
-  addNode: Function,
-  addNodes: Function,
-  addChild: Function,
+  node: TreeNodeRenderProps,
   setShowModal: Function,
-  parentId: string
+  showError: Function
 ) => {
   return {
     selectedUiSchema: 'DEFAULT_CREATE',
@@ -57,25 +45,19 @@ export const createAction = (
       })
     },
     onSubmit: (formData: any) => {
-      console.log('POST FORM DATA', formData)
       const data = processFormData(action.data.request, formData)
       Api2.post({
         data: data,
         url: action.data.url,
         onSuccess: (result: any) => {
-          console.log('RESULT', result)
-          postCreate(
-            result.data,
-            action.data.nodeUrl,
-            addNode,
-            addNodes,
-            addChild,
-            setShowModal,
-            parentId
-          )
+          createNodes({
+            response: result.data,
+            nodeUrl: action.data.nodeUrl,
+            node,
+          })
           setShowModal(false)
         },
-        onError: (err: any) => console.error(Object.keys(err)),
+        onError: (error: any) => showError(error),
       })
     },
   }

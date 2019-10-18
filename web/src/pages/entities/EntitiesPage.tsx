@@ -1,5 +1,5 @@
 import React, { useEffect, useReducer } from 'react'
-import DocumentTree, { RenderProps } from '../common/tree-view/DocumentTree'
+import DocumentTree from '../common/tree-view/DocumentTree'
 import EntitiesReducer, {
   DocumentActions,
   initialState,
@@ -11,6 +11,7 @@ import { Wrapper } from '../blueprints/BlueprintsPage'
 import Button from '../../components/Button'
 import { NodeType } from '../../api/types'
 import { DocumentNode } from '../common/nodes/DocumentNode'
+import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 
 const api = new DmtApi()
 
@@ -37,14 +38,14 @@ export default () => {
       </Header>
       <br />
       <DocumentTree
-        render={(renderProps: RenderProps) => {
+        render={(renderProps: TreeNodeRenderProps) => {
           //use components directly to control props better.
-          switch (renderProps.treeNodeData.nodeType) {
+          switch (renderProps.nodeData.nodeType) {
             case NodeType.DOCUMENT_NODE:
-              return <DocumentNode {...renderProps} />
+              return <DocumentNode node={renderProps} />
             default:
-              return (props: RenderProps) => (
-                <div>{props.treeNodeData.title}</div>
+              return (props: TreeNodeRenderProps) => (
+                <div>{props.nodeData.title}</div>
               )
           }
         }}

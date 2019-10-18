@@ -57,9 +57,10 @@ class AddEntityFileToPackageUseCase(uc.UseCase):
         parent.documents += [{"_id": file._id, "name": file.name, "type": file.type}]
         self.package_repository.update(parent)
 
-        self.document_repository.add(DTO(data=file.to_dict(), uid=file._id, type=file.type))
+        document = DTO(data=file.to_dict(), uid=file._id, type=file.type)
+        self.document_repository.add(document)
 
         # todo: create instance of references
 
-        logger.info(f"Added document '{file._id}''")
-        return res.ResponseSuccess(file.to_dict())
+        logger.info(f"Added document '{document.uid}''")
+        return res.ResponseSuccess(document)

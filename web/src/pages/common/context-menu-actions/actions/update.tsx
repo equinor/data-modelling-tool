@@ -1,7 +1,6 @@
 import Api2, { BASE_CRUD } from '../../../../api/Api2'
-import values from 'lodash/values'
-import { TreeNodeBuilderOld } from '../../tree-view/TreeNodeBuilderOld'
 import { processFormData } from './utils/request'
+import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 
 const fetchUpdate = (action: any) => {
   return ({ onSuccess, onError = () => {} }: BASE_CRUD): void =>
@@ -13,43 +12,27 @@ const fetchUpdate = (action: any) => {
     })
 }
 
-export const postUpdate = (
-  data: any,
-  addNode: Function,
-  setShowModal: Function,
-  parentId: string
-) => {
-  const nodes: any = values(data)
-  nodes.forEach((item: any, index: number) => {
-    delete item['children']
-    const node = new TreeNodeBuilderOld(item).build()
-    if (index === 0) {
-      addNode(node, parentId)
-    } else {
-      addNode(node, item.parentId)
-    }
-  })
+export const postUpdate = (setShowModal: Function) => {
   setShowModal(false)
 }
 
 export const updateAction = (
   action: any,
-  addNode: Function,
+  node: TreeNodeRenderProps,
   setShowModal: Function,
-  parentId: string
+  showError: Function
 ) => {
   return {
     fetchDocument: fetchUpdate(action),
     onSubmit: (formData: any) => {
       const data = processFormData(action.data.request, formData)
       Api2.put({
-        data: data, // { ...formData, ...action.data.request }
+        data: data,
         url: action.data.url,
         onSuccess: (result: any) => {
-          console.debug('PUT result', result)
-          postUpdate(result.data, addNode, setShowModal, parentId)
+          postUpdate(setShowModal)
         },
-        onError: (err: any) => console.error(Object.keys(err)),
+        onError: (error: any) => showError(error),
       })
     },
   }

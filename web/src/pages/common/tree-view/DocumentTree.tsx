@@ -1,55 +1,13 @@
 import React, { useEffect, useState } from 'react'
-import Tree, { TreeNodeData } from '../../../components/tree-view/Tree'
+import Tree from '../../../components/tree-view/Tree'
 import { Datasource, IndexApi } from '../../../api/Api'
-import { DocumentsState } from '../DocumentReducer'
+import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
 
 const api = new IndexApi()
 
 interface PropTypes {
   dataSources: Datasource[]
   render: Function
-}
-
-export type AddNode = (node: TreeNodeData, parentId: string) => void
-export type AddChild = (parentId: string, childId: string) => void
-export type AddNodes = (nodes: object) => void
-export type UpdateNode = (node: TreeNodeData) => void
-export type RemoveNode = (node: TreeNodeData) => void
-export type ReplaceNode = (
-  parentId: string,
-  oldId: string,
-  newId: string,
-  title: string
-) => void
-
-interface NodeComponentCallbackProps {
-  addNode: AddNode
-  addNodes: AddNodes
-  addChild: AddChild
-  updateNode: UpdateNode
-  treeNodeData: TreeNodeData
-  removeNode: RemoveNode
-  replaceNode: ReplaceNode
-  path: string
-  parent: string
-}
-
-export interface NodeComponentProps extends NodeComponentCallbackProps {
-  documentState?: DocumentsState
-  dispatch?: Function
-  datasource?: any
-}
-
-export type RenderProps = {
-  path: string
-  parent: string
-  treeNodeData: TreeNodeData
-  addNode: AddNode
-  addNodes: AddNodes
-  addChild: AddChild
-  updateNode: UpdateNode
-  removeNode: RemoveNode
-  replaceNode: ReplaceNode
 }
 
 export default (props: PropTypes) => {
@@ -90,28 +48,8 @@ export default (props: PropTypes) => {
     <div>
       <div>
         <Tree tree={documents}>
-          {(
-            path: string,
-            parent: string,
-            treeNodeData: TreeNodeData,
-            addNode: AddNode,
-            updateNode: UpdateNode,
-            removeNode: RemoveNode,
-            replaceNode: ReplaceNode,
-            addNodes: AddNodes,
-            addChild: AddChild
-          ) => {
-            return render({
-              path,
-              parent,
-              treeNodeData,
-              addNode,
-              updateNode,
-              removeNode,
-              replaceNode,
-              addNodes,
-              addChild,
-            })
+          {(props: TreeNodeRenderProps) => {
+            return render(props)
           }}
         </Tree>
       </div>

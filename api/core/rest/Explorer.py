@@ -63,7 +63,9 @@ def add_entity_file_to_package(data_source_id: str):
 
     response = use_case.execute(request_object)
 
-    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
+    )
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-file", methods=["POST"])

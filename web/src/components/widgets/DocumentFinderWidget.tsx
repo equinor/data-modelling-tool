@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import Modal from '../modal/Modal'
 import { NodeType } from '../../api/types'
 import { BlueprintPickerContent } from '../../pages/common/BlueprintPicker'
-import { RenderProps } from '../../pages/common/tree-view/DocumentTree'
+import { TreeNodeRenderProps } from '../tree-view/TreeNode'
 
 type Props = {
   onChange: (event: any) => void
@@ -27,8 +27,8 @@ export default (props: any) => {
   const [blueprint, setBlueprint] = useState(value)
   const [showModal, setShowModal] = useState(false)
 
-  const handleNodeSelect = (renderProps: RenderProps) => {
-    const node = renderProps.treeNodeData
+  const handleNodeSelect = (renderProps: TreeNodeRenderProps) => {
+    const node = renderProps.nodeData
     // TODO: This is now true for all nodes?
     if (node.nodeType === NodeType.DOCUMENT_NODE) {
       const selectedNodePath = stripPackageAttributesFromPath(

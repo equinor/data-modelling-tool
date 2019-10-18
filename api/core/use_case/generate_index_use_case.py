@@ -267,7 +267,7 @@ class Tree:
                             "action": "CREATE",
                             "data": {
                                 "url": f"/api/v2/explorer/{data_source_id}/{add_file_type}",
-                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
+                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}?ui_recipe=DEFAULT_CREATE",
                                 "nodeUrl": f"/api/v3/index/{data_source_id}",
                                 "request": {
                                     "type": attribute["type"],
@@ -289,7 +289,7 @@ class Tree:
                             "action": "CREATE",
                             "data": {
                                 "url": f"/api/v2/explorer/{data_source_id}/{add_file_type}",
-                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}",
+                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}?ui_recipe=DEFAULT_CREATE",
                                 "request": {
                                     "type": attribute["type"],
                                     "parentId": getattr(document, "uid", None),
@@ -350,7 +350,7 @@ class Tree:
                             "action": "CREATE",
                             "data": {
                                 "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
-                                "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_schema=DEFAULT_CREATE",
+                                "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
                                 "nodeUrl": f"/api/v3/index/{data_source_id}",
                                 "request": {"name": "${name}"},
                             },
@@ -402,11 +402,16 @@ class GenerateIndexUseCase:
 
     def single(self, data_source_id: str, data_source_name: str, document_id: str) -> Index:
         document = self.document_repository.get(document_id)
-        # The tree can't handle dto
+        # The tree can't handle dto, need to use one of the below
         if document.type == DMT.PACKAGE.value:
             document = self.package_repository.get(document.uid)
-        if document.type == SIMOS.BLUEPRINT.value:
+        elif document.type == SIMOS.BLUEPRINT.value:
             document = self.blueprint_repository.get(document.uid)
+        else:
+            dto = self.document_repository.get(document.uid)
+            document = Entity(dto.data)
+            document.uid = dto.uid
+
         data = self.tree.execute(
             data_source_id=data_source_id, data_source_name=data_source_name, packages=[document]
         ).to_dict()

@@ -1,46 +1,23 @@
 import React from 'react'
-import {
-  AddChild,
-  AddNode,
-  AddNodes,
-  RemoveNode,
-  RenderProps,
-  ReplaceNode,
-  UpdateNode,
-} from '../tree-view/DocumentTree'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
 import WithContextMenu from '../context-menu-actions/WithContextMenu'
 import { LayoutContext } from '../golden-layout/LayoutContext'
+import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
 
-interface Props extends RenderProps {
-  treeNodeData: TreeNodeData
-  addNode: AddNode
-  addNodes: AddNodes
-  addChild: AddChild
-  updateNode: UpdateNode
-  removeNode: RemoveNode
-  replaceNode: ReplaceNode
-  path: string
-  parent: string
+interface DocumentNodeProps {
+  node: TreeNodeRenderProps
 }
 
-export const DocumentNode = (props: Props) => {
-  const { treeNodeData } = props
-
-  const { meta } = treeNodeData
-
-  const { menuItems, onSelect } = meta as any
+export const DocumentNode = (props: DocumentNodeProps) => {
+  const { node } = props
+  const { nodeData } = node
+  const { meta } = nodeData
+  const { onSelect } = meta as any
 
   return (
     <LayoutContext.Consumer>
       {(layout: any) => {
         return (
-          <WithContextMenu
-            {...props}
-            treeNodeData={treeNodeData}
-            menuItems={menuItems}
-            layout={layout}
-          >
+          <WithContextMenu node={node} layout={layout}>
             {onSelect && (
               <div
                 onClick={() =>
@@ -52,7 +29,7 @@ export const DocumentNode = (props: Props) => {
                   )
                 }
               >
-                {treeNodeData.title}
+                {nodeData.title}
               </div>
             )}
           </WithContextMenu>

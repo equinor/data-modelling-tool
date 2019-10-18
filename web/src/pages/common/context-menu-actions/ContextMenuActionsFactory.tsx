@@ -1,10 +1,10 @@
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TreeNodeData } from '../../../components/tree-view/Tree'
-import Api2 from '../../../api/Api2'
 import { createAction } from './actions/create'
 import { updateAction } from './actions/update'
-import { AddChild } from '../tree-view/DocumentTree'
+import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
+import { SetShowModal } from './WithContextMenu'
+import { deleteAction } from './actions/delete'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -12,33 +12,14 @@ export enum ContextMenuActions {
   DELETE = 'DELETE',
 }
 
-export type ContextMenuActionProps = {
-  treeNodeData: TreeNodeData
-  addNode: Function
-  addNodes: Function
-  setShowModal: Function
-  removeNode: Function
-  updateNode: Function
-  replaceNode: Function
-  addChild: Function
+export interface ContextMenuActionProps {
+  node: TreeNodeRenderProps
   layout?: any
-  path: string
-  parent: string
+  setShowModal: SetShowModal
 }
 
 const getFormProperties = (action: any, props: ContextMenuActionProps) => {
-  const {
-    treeNodeData,
-    addNode,
-    addNodes,
-    setShowModal,
-    addChild,
-    removeNode,
-    layout,
-    replaceNode,
-    path,
-    parent,
-  } = props
+  const { node, setShowModal, layout } = props
 
   const showError = (error: any) => {
     console.error(error)
@@ -49,35 +30,13 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
 
   switch (method) {
     case ContextMenuActions.CREATE: {
-      return createAction(
-        action,
-        addNode,
-        addNodes,
-        addChild,
-        setShowModal,
-        treeNodeData.nodeId
-      )
+      return createAction(action, node, setShowModal, showError)
     }
-
     case ContextMenuActions.UPDATE: {
-      return updateAction(action, addNode, setShowModal, treeNodeData.nodeId)
+      return updateAction(action, node, setShowModal, showError)
     }
-
     case ContextMenuActions.DELETE: {
-      return {
-        prompt: action.data.prompt,
-        onSubmit: () => {
-          Api2.post({
-            url: action.data.url,
-            data: action.data.request,
-            onSuccess: () => {
-              //removeNode(treeNodeData.nodeId, props.parent)
-              //layout.remove(treeNodeData.nodeId)
-            },
-            onError: (error: any) => showError(error),
-          })
-        },
-      }
+      return deleteAction(action, node, setShowModal, showError, layout)
     }
 
     default:

@@ -213,12 +213,14 @@ const Tree = (props: TreeProps) => {
                       parent={item.parent}
                       NodeRenderer={children}
                       handleToggle={handleToggle}
-                      addNode={addNode}
-                      addNodes={addNodes}
-                      addChild={addChild}
-                      updateNode={updateNode}
-                      removeNode={removeNode}
-                      replaceNode={replaceNode}
+                      actions={{
+                        addNode,
+                        addNodes,
+                        addChild,
+                        updateNode,
+                        removeNode,
+                        replaceNode,
+                      }}
                     />
                   </DraggableWrapper>
                 )
