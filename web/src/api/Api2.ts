@@ -17,64 +17,6 @@ interface FetchTemplate extends BASE_CRUD {
   url: string
 }
 
-interface AddFile {
-  dataSourceId: string
-  parentId: string
-  filename: string
-  onSuccess: (res: any, dataSourceId: string) => void
-  onError?: OnError
-  templateRef?: string
-  attribute?: string
-  path?: string
-  isContained?: boolean
-}
-
-interface AddEntitiy {
-  nodeId: string
-  filename: string
-  onSuccess: (res: any, dataSourceId: string) => void
-  onError?: OnError
-  templateRef?: string
-}
-
-interface RemoveFile {
-  dataSourceId: string
-  filename: string
-  onSuccess: () => void
-  onError?: OnError
-  templateRef?: string
-}
-
-interface RemoveFolder {
-  dataSourceId: string
-  filename: string
-  onSuccess: (res: any) => void
-  onError?: OnError
-  templateRef?: string
-}
-
-interface RemoveRootPackage {
-  nodeId: string
-  onSuccess: (res: any, dataSourceId: string) => void
-  onError?: OnError
-}
-
-interface AddRootPackage {
-  dataSourceId: string
-  filename: string
-  onSuccess: (res: any, dataSourceId: string) => void
-  onError?: OnError
-  templateRef?: string
-}
-
-interface MoveFile {
-  source: string
-  destination: string
-  onSuccess: (res: any) => void
-  onError: OnError
-  templateRef?: string
-}
-
 interface Post {
   url: string
   data: object
