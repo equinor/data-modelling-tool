@@ -230,7 +230,7 @@ class Tree:
                         "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
                         "request": {
                             "parentId": parent_node.uid,
-                            "name": document.name,
+                            "documentId": document.uid,
                             "attribute": parent_attribute.name,
                         },
                     },

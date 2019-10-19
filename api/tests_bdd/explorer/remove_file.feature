@@ -13,13 +13,55 @@ Feature: Explorer - Remove file
       | 2   | 1          | sub_package_1 |             | templates/DMT/Package     |
       | 3   | 2          | document_1    |             | templates/SIMOS/Blueprint |
 
+  Scenario: Remove root package
+    Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
+    When i make a "POST" request
+  """
+  {
+    "documentId": "1",
+    "parentId": null,
+    "attribute": null
+  }
+  """
+    Then the response status should be "OK"
+    Given I access the resource url "/api/v2/documents/data-source-name/1"
+    When I make a "GET" request
+    Then the response status should be "System Error"
+    And the response should equal
+  """
+  {
+    "type": "SYSTEM_ERROR",
+    "message": "EntityNotFoundException: 'The entity, with id 1 is not found'"
+  }
+  """
+    Given I access the resource url "/api/v2/documents/data-source-name/2"
+    When I make a "GET" request
+    Then the response status should be "System Error"
+    And the response should equal
+  """
+  {
+    "type": "SYSTEM_ERROR",
+    "message": "EntityNotFoundException: 'The entity, with id 2 is not found'"
+  }
+  """
+    Given I access the resource url "/api/v2/documents/data-source-name/3"
+    When I make a "GET" request
+    Then the response status should be "System Error"
+    And the response should equal
+  """
+  {
+    "type": "SYSTEM_ERROR",
+    "message": "EntityNotFoundException: 'The entity, with id 3 is not found'"
+  }
+  """
+
   Scenario: Remove file with no children
     Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
     When i make a "POST" request
     """
     {
       "parentId": "2",
-      "name": "document_1",
+      "documentId": "3",
       "attribute": "documents"
     }
     """
@@ -41,7 +83,7 @@ Feature: Explorer - Remove file
   """
   {
     "parentId": "1",
-    "name": "sub_package_1",
+    "documentId": "2",
     "attribute": "packages"
   }
   """
