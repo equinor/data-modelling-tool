@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/equinor/data-modelling-tool.svg?token=yR5pmi3sbtpmzTWwTfNG&branch=master)](https://travis-ci.com/equinor/data-modelling-tool)
 
 A tool for modelling and presenting on blue-prints (data models)
-Read more about the core concepts here: [DMT](README_DMT.md)
+Read more about the core concepts here: [DMT](README_DMT.md) and plugins [plugins](README_Plugin.md)
 ### Getting started
 
 Fill in secrets in .env file.
