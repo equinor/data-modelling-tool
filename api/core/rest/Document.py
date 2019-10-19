@@ -39,6 +39,7 @@ def get(data_source_id: str, document_path: str):
     use_case = GetDocumentUseCase(document_repository, get_repository)
     request_object = GetDocumentRequestObject.from_dict({"document_id": document_path})
     response = use_case.execute(request_object)
+    # TODO: Use DTOSerializer?
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
@@ -56,7 +57,6 @@ def post(data_source_id: str):
     )
 
 
-@blueprint.route("/api/v2/documents-template/<string:data_source_id>/<string:document_id>", methods=["PUT"])
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>/<path:attribute>", methods=["PUT"])
 def put(data_source_id: str, document_id: str, attribute: str = None):

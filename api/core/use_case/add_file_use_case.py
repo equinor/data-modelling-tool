@@ -5,6 +5,7 @@ from classes.data_source import DataSource
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
 from core.repository.interface.document_repository import DocumentRepository
+from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
@@ -35,6 +36,9 @@ class AddFileRequestObject(req.ValidRequestObject):
         if "type" not in adict:
             invalid_req.add_error("type", "is missing")
 
+        if "attribute" not in adict:
+            invalid_req.add_error("attribute", "is missing")
+
         if invalid_req.has_errors():
             return invalid_req
 
@@ -42,7 +46,7 @@ class AddFileRequestObject(req.ValidRequestObject):
             parent_id=adict.get("parentId"),
             name=adict.get("name"),
             type=adict.get("type"),
-            attribute=adict.get("attribute", ""),
+            attribute=adict.get("attribute"),
             path=adict.get("path", ""),
             data=adict.get("data", None),
         )
@@ -54,15 +58,6 @@ class AddFileUseCase(uc.UseCase):
         self.get_repository = get_repository
         self.data_source = data_source
 
-    def storage_config(self, blueprint):
-        attribute_configs = {}
-        storage_recipe = blueprint.get_storage_recipe()
-        if storage_recipe:
-            storage_document = get_blueprint(storage_recipe)
-            for attribute_config in storage_document.attributes:
-                attribute_configs[attribute_config["name"]] = attribute_config
-        return attribute_configs
-
     def process_request(self, request_object: AddFileRequestObject):
         parent_id: str = request_object.parent_id
         name: str = request_object.name
@@ -72,7 +67,7 @@ class AddFileUseCase(uc.UseCase):
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
-            raise Exception(f"The parent, with id {parent_id}, was not found")
+            raise EntityNotFoundException(uid=parent_id)
 
         parent_data = parent.data
         if attribute not in parent_data:
