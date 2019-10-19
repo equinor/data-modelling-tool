@@ -18,3 +18,4 @@ class Config:
     MASTER_BLUEPRINT = "templates/SIMOS/Blueprint"
     DMT_PACKAGE = "templates/DMT/Package"
     DMT_ENTITY_PACKAGE = "templates/DMT/EntityPackage"
+    APPLICATION_HOME = "/home"

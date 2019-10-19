@@ -1,8 +1,11 @@
 from behave import given
-from app import import_folder, BLUEPRINT_PACKAGES
+from app import import_folder, import_application_settings
+from config import Config
 
 
 @given("data modelling tool templates are imported")
 def step_impl(context):
-    import_folder(contained=True, folder=BLUEPRINT_PACKAGES[1], collection="templates")
-    import_folder(contained=True, folder=BLUEPRINT_PACKAGES[2], collection="templates")
+    application_settings = import_application_settings()
+    for folder in application_settings["core"]:
+        print(f"Import {folder}")
+        import_folder(f"{Config.APPLICATION_HOME}/core/{folder}", contained=True, collection="templates")

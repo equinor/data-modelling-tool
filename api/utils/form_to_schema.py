@@ -16,6 +16,9 @@ def get_attribute_config(attribute):
     if "default" in attribute:
         keys["default"] = attribute["default"]
 
+    if "description" in attribute:
+        keys["description"] = attribute["description"]
+
     if "labels" in attribute:
         keys["enum"] = attribute.get("values")
         keys["enumNames"] = attribute.get("labels")
@@ -29,6 +32,7 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe):
     nested_attributes = []
     for attribute in blueprint.attributes:
         attribute_name = attribute["name"]
+        is_array = attribute.get("dimensions", "") == "*"
 
         if "enum" in attribute:
             continue
@@ -42,7 +46,8 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe):
                 continue
 
         if attribute["type"] in PRIMITIVES:
-            properties[attribute_name] = get_attribute_config(attribute)
+            config = get_attribute_config(attribute)
+            properties[attribute_name] = config if not is_array else {"type": "array", "items": config}
         else:
             nested_attributes.append(attribute["type"])
 
@@ -55,7 +60,7 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe):
             attribute_ui_recipe = (
                 find_attribute(ui_attribute.get("uiRecipe", ""), nested_blueprint.ui_recipes) if ui_attribute else None
             )
-            if attribute.get("dimensions", "") == "*":
+            if is_array:
                 properties[attribute_name] = {
                     "type": "array",
                     "items": process_attributes(nested_blueprint, blueprint, attribute_ui_recipe),

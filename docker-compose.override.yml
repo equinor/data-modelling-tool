@@ -13,6 +13,7 @@ services:
       target: development
     volumes:
       - ./api/:/code
+      - ./home/:/home
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local

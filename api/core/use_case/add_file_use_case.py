@@ -74,6 +74,9 @@ class AddFileUseCase(uc.UseCase):
             parent_data[attribute] = []
 
         blueprint = get_blueprint(parent.type)
+        if not blueprint:
+            raise EntityNotFoundException(uid=parent.type)
+
         storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
         # TODO: Set all data

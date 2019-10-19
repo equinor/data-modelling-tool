@@ -1,5 +1,5 @@
 from pathlib import Path
-
+from flask import g
 from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
 from core.domain.storage_recipe import StorageRecipe
@@ -193,6 +193,47 @@ class Tree:
 
         parent_attribute = Path(parent_node.start_path)
 
+        menu_items = [
+            {
+                "label": "Rename",
+                "action": "UPDATE",
+                "data": {
+                    "url": f"/api/v2/explorer/move-file",
+                    "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
+                    "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/RenameAction",
+                    "request": {
+                        "source": f"{data_source_id}/{document.name}",
+                        "destination": f"{data_source_id}/" + "${name}",
+                    },
+                },
+            },
+            {
+                "label": "Remove",
+                "action": "DELETE",
+                "data": {
+                    "url": f"/api/v2/explorer/{data_source_id}/remove-file",
+                    "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
+                    "request": {
+                        "parentId": parent_node.uid,
+                        "documentId": document.uid,
+                        "attribute": parent_attribute.name,
+                    },
+                },
+            },
+        ]
+
+        if document.type == SIMOS.APPLICATION.value:
+            menu_items.append(
+                {
+                    "label": "Create Application",
+                    "action": "DOWNLOAD",
+                    "data": {
+                        "url": f"/api/v2/system/{data_source_id}/create-application/{document.uid}",
+                        "prompt": {"title": "Create Application", "content": "Download the application"},
+                    },
+                }
+            )
+
         node = DocumentNode(
             data_source_id=data_source_id,
             name=document.name,
@@ -208,34 +249,7 @@ class Tree:
                     "schemaUrl": f"/api/v2/json-schema/{document.type}",
                 },
             },
-            menu_items=[
-                {
-                    "label": "Rename",
-                    "action": "UPDATE",
-                    "data": {
-                        "url": f"/api/v2/explorer/move-file",
-                        "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                        "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/RenameAction",
-                        "request": {
-                            "source": f"{data_source_id}/{document.name}",
-                            "destination": f"{data_source_id}/" + "${name}",
-                        },
-                    },
-                },
-                {
-                    "label": "Remove",
-                    "action": "DELETE",
-                    "data": {
-                        "url": f"/api/v2/explorer/{data_source_id}/remove-file",
-                        "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
-                        "request": {
-                            "parentId": parent_node.uid,
-                            "documentId": document.uid,
-                            "attribute": parent_attribute.name,
-                        },
-                    },
-                },
-            ],
+            menu_items=menu_items,
         )
 
         if not blueprint:
@@ -349,26 +363,22 @@ class Tree:
 
         index = Index(data_source_id=data_source_id)
 
+        models = [
+            {
+                "label": "Package",
+                "action": "CREATE",
+                "data": {
+                    "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
+                    "schemaUrl": f"/api/v2/json-schema/{model}?ui_recipe=DEFAULT_CREATE",
+                    "nodeUrl": f"/api/v3/index/{data_source_id}",
+                    "request": {"name": "${name}"},
+                },
+            }
+            for model in g.application_settings["models"]
+        ]
+
         root_node = DocumentNode(
-            data_source_id=data_source_id,
-            name=data_source_name,
-            menu_items=[
-                {
-                    "label": "New",
-                    "menuItems": [
-                        {
-                            "label": "Package",
-                            "action": "CREATE",
-                            "data": {
-                                "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
-                                "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
-                                "nodeUrl": f"/api/v3/index/{data_source_id}",
-                                "request": {"name": "${name}"},
-                            },
-                        }
-                    ],
-                }
-            ],
+            data_source_id=data_source_id, name=data_source_name, menu_items=[{"label": "New", "menuItems": models}]
         )
 
         for package in packages:

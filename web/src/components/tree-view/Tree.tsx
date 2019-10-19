@@ -17,6 +17,7 @@ export enum NodeIconType {
   'file' = 'file',
   'folder' = 'folder',
   'database' = 'database',
+  'laptop' = 'laptop',
   'ref' = 'ref',
   'default' = '',
 }

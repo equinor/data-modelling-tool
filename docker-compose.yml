@@ -32,7 +32,9 @@ services:
     depends_on:
       - api
       - web
-    build: ./nginx
+    build:
+      context: ./nginx
+    image: mariner.azurecr.io/dmt/nginx
 
 #  oauth2:
  #   build:

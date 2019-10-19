@@ -29,7 +29,7 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
 
             next_package = [package for package in package.packages if package.name == path_elements[0]][0]
             # TODO: This should be "if contained", now only works with implicit uncontained packages
-            next_package = Package.from_dict(repository.find({"_id": next_package.uid}))
+            next_package = Package.from_dict(repository.find({"_id": next_package.uid}).data)
             del path_elements[0]
             return _find_document_in_package_by_path(next_package, path_elements, repository)
         except IndexError:
@@ -42,7 +42,7 @@ def get_document_uid_by_path(path: str, repository) -> Union[str, None]:
     package_dict = repository.find({"name": root_package_name})
     if not package_dict:
         return None
-    package = Package.from_dict(package_dict)
+    package = Package.from_dict(package_dict.data)
     # Check if it's a root-package
     if not path_elements:
         return package.uid

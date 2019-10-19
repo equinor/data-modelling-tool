@@ -1,5 +1,4 @@
 from core.domain.dto import DTO
-from core.repository.interface.package_repository import PackageRepository
 from utils.enums import RepositoryType
 from utils.logging import logger
 from core.shared import use_case as uc
@@ -48,13 +47,10 @@ class MoveFileUseCase(uc.UseCase):
         # Remove source document
         source: Path = Path(source)
         source_data_source = DataSource(id=source_data_source_id)
-        source_package_repository: PackageRepository = self.get_repository(
-            RepositoryType.PackageRepository, source_data_source
-        )
         source_document_repository: DocumentRepository = self.get_repository(
             RepositoryType.DocumentRepository, source_data_source
         )
-        source_uid = get_document_uid_by_path(str(source), source_package_repository)
+        source_uid = get_document_uid_by_path(str(source), source_document_repository)
         source_document: DTO = source_document_repository.get(source_uid)
         if not source_document:
             raise EntityNotFoundException(uid=f"{str(source)}")

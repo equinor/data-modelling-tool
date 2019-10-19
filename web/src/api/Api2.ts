@@ -31,6 +31,18 @@ interface Get {
 }
 
 export default class Api2 {
+  static download({ url, data, onSuccess, onError = () => {} }: Post) {
+    console.debug(`Download ${url}`)
+    axios({
+      url: url,
+      method: 'POST',
+      data: data,
+      responseType: 'blob', // important
+    })
+      .then(onSuccess)
+      .catch(onError)
+  }
+
   static post({ url, data, onSuccess, onError = () => {} }: Post) {
     console.debug(`Post ${url}`)
     axios

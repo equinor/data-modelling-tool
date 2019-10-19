@@ -44,6 +44,7 @@ class Package:
         self.dependencies = [] if not dependencies else dependencies
         self.documents = [] if not documents else documents
         self.packages = []
+        self.applications = []
         self.is_root = is_root
         self.storage_recipes = []
 
@@ -61,6 +62,7 @@ class Package:
 
         instance.packages = [Package.from_dict(package) for package in adict.get("packages", "")]
         instance.storage_recipes = adict.get("storageRecipes", [])
+        instance.applications = adict.get("applications", [])
         return instance
 
     def get_storage_recipe(self):
@@ -93,6 +95,7 @@ class Package:
             "packages": [self.contained_package_to_dict(package) for package in self.packages],
             "isRoot": self.is_root,
             "storageRecipes": self.storage_recipes,
+            "applications": self.applications,
         }
         return result
 

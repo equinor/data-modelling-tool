@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/blueprint",
+  "type": "templates/SIMOS/Blueprint",
   "description": "Inputs to a plugin. A plugin will use the fields in the entity to process output. Output in this context is a generated form, plot, tables. IndexNodes and TreeView with lazy loading is also suitable as a plugin, where only the first two levels are generated.",
   "name": "BasicPluginInput",
   "attributes": [

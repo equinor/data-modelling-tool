@@ -18,7 +18,11 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
             return DTO(data=result, uid=uid, type=result["type"])
 
     def find(self, filter: dict):
-        return self.client().find_one(filter)
+        result = self.client().find_one(filter)
+        if result:
+            data = result
+            data["uid"] = result["_id"]
+            return DTO(data=data, uid=result["_id"], type=result["type"])
 
     def update(self, dto: DTO) -> None:
         if not isinstance(dto.data, dict):
