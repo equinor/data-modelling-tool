@@ -10,13 +10,10 @@ from core.use_case.add_entity_file_to_package_use_case import (
     AddEntityFileToPackageRequestObject,
 )
 from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
-from core.use_case.add_package_use_case import AddPackageUseCase, AddPackageRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
 from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
-from core.use_case.remove_package_use_case import RemovePackageUseCase, RemovePackageRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
-from core.use_case.move_package_use_case import MovePackageUseCase, MovePackageRequestObject
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -32,15 +29,12 @@ STATUS_CODES = {
 def add_file(data_source_id: str):
     data_source = DataSource(id=data_source_id)
     request_data = request.get_json()
-
     document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
-
     use_case = AddFileUseCase(
         document_repository=document_repository, get_repository=get_repository, data_source=data_source
     )
     request_object = AddFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
-
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
     )
@@ -50,19 +44,14 @@ def add_file(data_source_id: str):
 def add_entity_file_to_package(data_source_id: str):
     data_source = DataSource(id=data_source_id)
     request_data = request.get_json(force=True)
-
     document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
     package_repository = get_repository(RepositoryType.PackageRepository, data_source)
-
     use_case = AddEntityFileToPackageUseCase(
         document_repository=document_repository, package_repository=package_repository
     )
     request_data["type"] = request_data["data"]["type"]
-
     request_object = AddEntityFileToPackageRequestObject.from_dict(request_data)
-
     response = use_case.execute(request_object)
-
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
     )
@@ -72,15 +61,10 @@ def add_entity_file_to_package(data_source_id: str):
 def remove_file(data_source_id: str):
     db = DataSource(id=data_source_id)
     request_data = request.get_json()
-
     document_repository = get_repository(RepositoryType.DocumentRepository, db)
-
     use_case = RemoveFileUseCase(document_repository=document_repository)
-
     request_object = RemoveFileRequestObject.from_dict(request_data)
-
     response = use_case.execute(request_object)
-
     return Response(
         json.dumps(response.value, cls=AddFileSerializer),
         mimetype="application/json",
@@ -91,66 +75,11 @@ def remove_file(data_source_id: str):
 @blueprint.route("/api/v2/explorer/move-file", methods=["PUT"])
 def move_file():
     request_data = request.get_json()
-
     use_case = MoveFileUseCase(get_repository=get_repository)
-
     request_object = MoveFileRequestObject.from_dict(request_data)
-
     response = use_case.execute(request_object)
-
-    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-
-
-@blueprint.route("/api/v2/explorer/<string:data_source_id>/add-package", methods=["POST"])
-def add_package(data_source_id: str):
-    db = DataSource(id=data_source_id)
-    request_data = request.get_json()
-
-    document_repository = get_repository(RepositoryType.DocumentRepository, db)
-
-    use_case = AddPackageUseCase(document_repository=document_repository)
-
-    request_object = AddPackageRequestObject.from_dict(request_data)
-
-    response = use_case.execute(request_object)
-
     return Response(
-        json.dumps(response.value, cls=AddFileSerializer),
-        mimetype="application/json",
-        status=STATUS_CODES[response.type],
-    )
-
-
-@blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-package", methods=["POST"])
-def remove_package(data_source_id: str):
-    db = DataSource(id=data_source_id)
-    request_data = request.get_json()
-
-    document_repository = get_repository(RepositoryType.DocumentRepository, db)
-
-    use_case = RemovePackageUseCase(document_repository=document_repository)
-
-    request_object = RemovePackageRequestObject.from_dict(request_data)
-
-    response = use_case.execute(request_object)
-
-    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-
-
-@blueprint.route("/api/v2/explorer/move-package", methods=["POST"])
-def move_package():
-    request_data = request.get_json()
-
-    use_case = MovePackageUseCase(get_repository=get_repository)
-
-    request_object = MovePackageRequestObject.from_dict(request_data)
-
-    response = use_case.execute(request_object)
-
-    return Response(
-        json.dumps(response.value, cls=AddFileSerializer),
-        mimetype="application/json",
-        status=STATUS_CODES[response.type],
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
     )
 
 
@@ -167,37 +96,4 @@ def add_root_package(data_source_id: str):
 
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
-
-
-@blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-root-package", methods=["POST"])
-def remove_root_package(data_source_id: str):
-    db = DataSource(id=data_source_id)
-    request_data = request.get_json()
-
-    document_repository = get_repository(RepositoryType.DocumentRepository, db)
-
-    use_case = RemovePackageUseCase(document_repository=document_repository)
-
-    request_object = RemovePackageRequestObject.from_dict(request_data)
-
-    response = use_case.execute(request_object)
-
-    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-
-
-@blueprint.route("/api/v2/explorer/move-root-package", methods=["POST"])
-def move_root_package():
-    request_data = request.get_json()
-
-    use_case = MovePackageUseCase(get_repository=get_repository)
-
-    request_object = MovePackageRequestObject.from_dict(request_data)
-
-    response = use_case.execute(request_object)
-
-    return Response(
-        json.dumps(response.value, cls=AddFileSerializer),
-        mimetype="application/json",
-        status=STATUS_CODES[response.type],
     )

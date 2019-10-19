@@ -17,7 +17,6 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
         if result:
             return DTO(data=result, uid=uid, type=result["type"])
 
-    # TODO: Use DTO?
     def find(self, filter: dict):
         return self.client().find_one(filter)
 

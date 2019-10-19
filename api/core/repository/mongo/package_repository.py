@@ -28,3 +28,6 @@ class MongoPackageRepository(MongoRepositoryBase, PackageRepository):
 
     def delete(self, package: Package) -> None:
         self.client().delete(package.id)
+
+    def find(self, filter: dict):
+        return self.client().find_one(filter)

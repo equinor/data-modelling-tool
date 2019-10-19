@@ -11,7 +11,7 @@ Feature: Explorer - Add file
       | uid | parent_uid | name         | description | type                  |
       | 1   |            | root_package |             | templates/DMT/Package |
 
-  Scenario: Add file - contained
+  Scenario: Add file - not contained
     Given i access the resource url "/api/v2/explorer/data-source-name/add-file"
     And data modelling tool templates are imported
     When i make a "POST" request

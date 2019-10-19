@@ -1,3 +1,5 @@
+from pathlib import Path
+
 from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
 from core.domain.storage_recipe import StorageRecipe
@@ -189,6 +191,8 @@ class Tree:
 
         blueprint = get_blueprint(document.type)
 
+        parent_attribute = Path(parent_node.start_path)
+
         node = DocumentNode(
             data_source_id=data_source_id,
             name=document.name,
@@ -222,9 +226,13 @@ class Tree:
                     "label": "Remove",
                     "action": "DELETE",
                     "data": {
-                        "url": f"/api/v2/explorer/{data_source_id}/remove-package",
+                        "url": f"/api/v2/explorer/{data_source_id}/remove-file",
                         "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
-                        "request": {"parentId": data_source_id, "name": document.name},
+                        "request": {
+                            "parentId": parent_node.uid,
+                            "name": document.name,
+                            "attribute": parent_attribute.name,
+                        },
                     },
                 },
             ],
