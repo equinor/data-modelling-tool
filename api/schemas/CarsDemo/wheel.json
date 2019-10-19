@@ -26,7 +26,7 @@
       "type": "string",
       "name": "diameter",
       "optional": false,
-      "default": 120,
+      "default": "120",
       "contained": true
     }
   ]
