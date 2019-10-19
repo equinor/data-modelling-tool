@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/equinor/data-modelling-tool.svg?token=yR5pmi3sbtpmzTWwTfNG&branch=master)](https://travis-ci.com/equinor/data-modelling-tool)
 
 A tool for modelling and presenting on blue-prints (data models)
-
+Read more about the core concepts here: [DMT](README_DMT.md)
 ### Getting started
 
 Fill in secrets in .env file.
@@ -29,6 +29,7 @@ To test production build locally, use the override compose.
 docker-compose -f docker-compose.override.yml build
 docker-compose -f docker-compose.override.yml up
 ```
+
 
 ## Components README
 
