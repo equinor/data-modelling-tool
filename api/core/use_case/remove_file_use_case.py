@@ -54,10 +54,11 @@ class RemoveFileUseCase(uc.UseCase):
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
             if attribute.get("dimensions", "") == "*":
                 if not is_contained_in_storage:
-                    references = document.data[name]
-                    for reference in references:
-                        document_reference = self.document_repository.get(reference["_id"])
-                        document_references.append(document_reference)
+                    if name in document.data:
+                        references = document.data[name]
+                        for reference in references:
+                            document_reference = self.document_repository.get(reference["_id"])
+                            document_references.append(document_reference)
 
         for document_reference in document_references:
             result.append(document_reference)
