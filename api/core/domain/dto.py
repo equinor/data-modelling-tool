@@ -27,6 +27,10 @@ class DTO:
     def data(self) -> T:
         return self._data
 
+    @data.setter
+    def data(self, data):
+        self._data = data
+
     @property
     def type(self) -> str:
         return self._type

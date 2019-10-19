@@ -73,8 +73,6 @@ const ViewList = (props: any) => {
 const DocumentComponent = (props: any) => {
   const { dataUrl, attribute = null } = props
 
-  console.log(props)
-
   return (
     <Wrapper>
       <FetchDocument

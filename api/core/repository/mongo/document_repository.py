@@ -21,11 +21,15 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
     def find(self, filter: dict):
         return self.client().find_one(filter)
 
-    def update(self, uid: str, data: Dict) -> None:
+    def update(self, dto: DTO) -> None:
+        if not isinstance(dto.data, dict):
+            data = dto.data.to_dict()
+        else:
+            data = dto.data
         # flatten dto, keep back compability
-        data["_id"] = uid
-        data["uid"] = uid
-        self.client().update(uid, data)
+        data["_id"] = dto.uid
+        data["uid"] = dto.uid
+        self.client().update(dto.uid, data)
 
     def add(self, dto: DTO) -> None:
         if isinstance(dto.data, dict):

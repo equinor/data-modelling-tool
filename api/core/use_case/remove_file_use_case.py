@@ -45,7 +45,7 @@ class RemoveFileUseCase(uc.UseCase):
 
         # Remove reference from parent
         data[attribute] = list(filter(lambda d: d["name"] != name, data[attribute]))
-        self.document_repository.update(parent.uid, data)
+        self.document_repository.update(parent)
 
         # Remove actual document
         document: DTO = self.document_repository.get(reference[0]["_id"])

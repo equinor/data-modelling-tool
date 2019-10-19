@@ -20,12 +20,10 @@ const ReactJsonSchemaWrapper = (props: Props) => {
       .put(url, schemas.formData)
       .then((response: any) => {
         const responseData: any = response.data
-        NotificationManager.success(
-          responseData.document.id,
-          'Updated blueprint'
-        )
+        NotificationManager.success(responseData.data.uid, 'Updated blueprint')
       })
       .catch((e: any) => {
+        console.log(e)
         NotificationManager.error(
           'Failed to update blueprint',
           'Updated blueprint'

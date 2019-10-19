@@ -91,6 +91,6 @@ class AddFileUseCase(uc.UseCase):
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
 
-        self.document_repository.update(parent.uid, parent_data)
+        self.document_repository.update(parent)
 
         return res.ResponseSuccess(file)

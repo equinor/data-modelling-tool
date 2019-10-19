@@ -200,7 +200,7 @@ class Tree:
                 "title": document.name,
                 "component": "blueprint",
                 "data": {
-                    "dataUrl": f"/api/v2/documents-template/{data_source_id}/{document.uid}",
+                    "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
                     "schemaUrl": f"/api/v2/json-schema/{document.type}",
                 },
             },

@@ -1,4 +1,3 @@
-@skip
 Feature: Data Source
 
   Background: There are data sources in the system
@@ -52,38 +51,4 @@ Feature: Data Source
       | host     | name     | status |
       | new host | new name | OK     |
       | new host |          | OK     |
-
-  @skip
-  Scenario: Update data source (deprecated)
-    Given i access the resource url "/api/v1/data-sources/equinor-models"
-    And data modelling tool templates are imported
-    When i make a "PUT" request
-      """
-        {
-          "type": "mongodb",
-          "host": "database-server.equinor.com",
-          "port": 27017,
-          "username": "test",
-          "password": "testpassword",
-          "tls": false,
-          "name": "myTest-DataSource",
-          "database": "mariner",
-          "collection": "blueprints",
-          "documentType": "blueprints"
-        }
-      """
-    Then the response should be
-    """
-    True
-    """
-  @skip
-  Scenario: Delete data source (deprecated)
-    Given i access the resource url "/api/v1/data-sources/equinor-models"
-    When i make a "DELETE" request
-    Given I access the resource url "/api/v1/data-sources?documentType=blueprints"
-    When I make a "GET" request
-    Then the response should contain
-    """
-    []
-    """
 
