@@ -5,7 +5,7 @@ Feature: Explorer - Remove file
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
       | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | templates        | dmt      | template   | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | templates        | dmt      | templates  | blueprints   | mongo-db |
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                      |
@@ -15,6 +15,7 @@ Feature: Explorer - Remove file
 
   Scenario: Remove root package
     Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
+    And data modelling tool templates are imported
     When i make a "POST" request
   """
   {
@@ -57,6 +58,7 @@ Feature: Explorer - Remove file
 
   Scenario: Remove file with no children
     Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
+    And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
@@ -79,6 +81,7 @@ Feature: Explorer - Remove file
 
   Scenario: Remove file with children
     Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
+    And data modelling tool templates are imported
     When i make a "POST" request
   """
   {

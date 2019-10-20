@@ -24,6 +24,11 @@
       "type": "templates/SIMOS/Blueprint",
       "name": "documents",
       "dimensions": "*"
+    },
+    {
+      "type": "templates/SIMOS/Application",
+      "name": "applications",
+      "dimensions": "*"
     }
   ],
   "storageRecipes": [

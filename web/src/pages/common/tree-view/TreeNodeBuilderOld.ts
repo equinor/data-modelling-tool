@@ -87,6 +87,8 @@ function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
       return NodeIconType.ref
     case NodeType.DATA_SOURCE:
       return NodeIconType.database
+    case NodeType.SIMOT_APPLICATION:
+      return NodeIconType.laptop
     default:
       if (children.length > 0) {
         return NodeIconType.folder

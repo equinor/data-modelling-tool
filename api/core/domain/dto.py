@@ -13,11 +13,11 @@ class DTO:
         self._type = type
 
         # remove when dto is stored in mongo documents.
-        for key in ["uid", "_id"]:
-            try:
-                del self._data[key]
-            except KeyError:
-                pass
+        # for key in ["uid", "_id"]:
+        #    try:
+        #        del self._data[key]
+        #    except KeyError:
+        #        pass
 
     @property
     def uid(self):

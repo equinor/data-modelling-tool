@@ -1,0 +1,13 @@
+{
+  "type": "mongo-db",
+  "host": "msa-dev.documents.azure.com",
+  "port": 10255,
+  "username": "msa-dev",
+  "password": "",
+  "tls": true,
+  "name": "entities",
+  "database": "dmt",
+  "collection": "entities",
+  "documentType": "entities",
+  "_id": "entities"
+}

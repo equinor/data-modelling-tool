@@ -20,3 +20,7 @@ class DocumentRepository(ABC):
     @abstractmethod
     def delete(self, document: DTO) -> None:
         """Delete method to be implemented"""
+
+    @abstractmethod
+    def find(self, filter: dict) -> DTO:
+        """Find method to be implemented"""

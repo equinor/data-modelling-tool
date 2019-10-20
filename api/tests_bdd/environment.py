@@ -6,6 +6,7 @@ from services.database import data_modelling_tool_db, model_db
 app = create_app(Config)
 app.config["TESTING"] = True
 app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
+app.config["CACHE_MAX_SIZE"] = 0
 
 
 def clear_databases():
@@ -21,7 +22,6 @@ def before_all(context):
 
     with app.app_context():
         clear_databases()
-        # init_import_internal("templates")
 
 
 def after_all(context):

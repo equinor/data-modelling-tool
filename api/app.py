@@ -1,11 +1,12 @@
 import json
+from functools import lru_cache
 from uuid import uuid4
 
 import click
-from flask import Flask
+from flask import Flask, g
 
 from config import Config
-from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index
+from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
 from services.database import data_modelling_tool_db as dmt_db, model_db
 from utils.debugging import enable_remote_debugging
 from utils.logging import logger
@@ -19,6 +20,7 @@ def create_app(config):
     app.register_blueprint(Explorer.blueprint)
     app.register_blueprint(DataSource.blueprint)
     app.register_blueprint(Index.blueprint)
+    app.register_blueprint(System.blueprint)
     return app
 
 
@@ -29,22 +31,37 @@ app = create_app(Config)
 
 logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 
-BLUEPRINT_PACKAGES = ["/code/schemas/CarsDemo", "/code/schemas/SIMOS", "/code/schemas/DMT"]
 
-ENTITY_PACKAGES = ["/code/schemas/demo_entities/volvo_components"]
+def import_application_settings():
+    with open(f"{Config.APPLICATION_HOME}/settings.json") as json_file:
+        application_settings = json.load(json_file)
+        dmt_db["system"].insert_one(application_settings)
+        logger.info(f"Imported application settings {application_settings['name']}")
+        return application_settings
+
+
+@app.before_request
+@lru_cache(maxsize=Config.CACHE_MAX_SIZE)
+def load_application_settings():
+    g.application_settings = dmt_db["system"].find_one(filter={"name": "ApplicationSettings"})
 
 
 @app.cli.command()
 @click.option("--contained", "-C", is_flag=True, default=False)
-def import_packages(contained: bool = False):
-    # TODO: Read data-source from Package-Config
-    for folder in BLUEPRINT_PACKAGES:
-        import_folder(folder, contained=contained, collection="templates")
-    for folder in ENTITY_PACKAGES:
-        import_folder(folder, contained=contained, collection="entities")
+def init_application(contained: bool = False):
+    application_settings = import_application_settings()
+
+    for folder in application_settings["core"]:
+        import_folder(f"{Config.APPLICATION_HOME}/core/{folder}", contained=contained, collection="templates")
+
+    for folder in application_settings["blueprints"]:
+        import_folder(f"{Config.APPLICATION_HOME}/blueprints/{folder}", contained=contained, collection="templates")
+    for folder in application_settings["entities"]:
+        import_folder(f"{Config.APPLICATION_HOME}/entities/{folder}", contained=contained, collection="entities")
 
 
 def import_folder(folder, collection, contained: bool = False):
+    print(f"importing: {folder}")
     if not contained:
         import_package(folder, contained=False, is_root=True, collection=collection)
     else:

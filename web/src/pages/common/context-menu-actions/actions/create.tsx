@@ -35,16 +35,8 @@ export const createAction = (
   setShowModal: Function,
   showError: Function
 ) => {
-  return {
-    selectedUiSchema: 'DEFAULT_CREATE',
-    fetchDocument: ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
-      Api2.get({
-        url: action.data.schemaUrl,
-        onSuccess: result => onSuccess({ template: result, document: {} }),
-        onError,
-      })
-    },
-    onSubmit: (formData: any) => {
+  const handleSubmit = () => {
+    return (formData: any) => {
       const data = processFormData(action.data.request, formData)
       Api2.post({
         data: data,
@@ -59,6 +51,18 @@ export const createAction = (
         },
         onError: (error: any) => showError(error),
       })
+    }
+  }
+
+  return {
+    selectedUiSchema: 'DEFAULT_CREATE',
+    fetchDocument: ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
+      Api2.get({
+        url: action.data.schemaUrl,
+        onSuccess: result => onSuccess({ template: result, document: {} }),
+        onError,
+      })
     },
+    onSubmit: handleSubmit,
   }
 }

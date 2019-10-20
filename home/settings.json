@@ -1,0 +1,20 @@
+{
+  "type": "templates/SIMOS/Application",
+  "name": "ApplicationSettings",
+  "blueprints": [
+    "CarsDemo"
+  ],
+  "entities": [
+    "CarsDemo"
+  ],
+  "core": [
+    "SIMOS",
+    "DMT"
+  ],
+  "models": [
+    "templates/DMT/Package"
+  ],
+  "settings": {
+    "showBlueprints": false
+  }
+}

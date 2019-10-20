@@ -5,11 +5,13 @@ import { updateAction } from './actions/update'
 import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
 import { SetShowModal } from './WithContextMenu'
 import { deleteAction } from './actions/delete'
+import { downloadAction } from './actions/download'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
+  DOWNLOAD = 'DOWNLOAD',
 }
 
 export interface ContextMenuActionProps {
@@ -37,6 +39,9 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
     }
     case ContextMenuActions.DELETE: {
       return deleteAction(action, node, setShowModal, showError, layout)
+    }
+    case ContextMenuActions.DOWNLOAD: {
+      return downloadAction(action)
     }
 
     default:
