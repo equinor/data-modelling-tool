@@ -100,6 +100,13 @@
           "plugin": "table.widget"
         }
       ]
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "TEST_EXTERNAL",
+      "description": "",
+      "plugin": "TEST_EXTERNAL",
+      "attributes": []
     }
   ]
 }
