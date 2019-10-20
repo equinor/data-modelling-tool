@@ -8,14 +8,14 @@
  */
 
 const TestPlugin = () => {
-	return 'test plugin';
+  return 'test plugin'
 }
 
 const registeredPlugins = {
-	'TEST_EXTERNAL': TestPlugin
+  TEST_EXTERNAL: TestPlugin,
 }
 
 export default function pluginHook(plugin) {
-	console.log(plugin)
-	return registeredPlugins[plugin];
+  console.log(plugin)
+  return registeredPlugins[plugin]
 }

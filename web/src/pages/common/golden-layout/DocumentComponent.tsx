@@ -6,8 +6,8 @@ import FetchDocument from '../utils/FetchDocument'
 import objectPath from 'object-path'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
-import pluginHook from '../../../external-plugins';
-import ViewPlugin from "../../../plugins/ViewPlugin";
+import pluginHook from '../../../external-plugins'
+import ViewPlugin from '../../../plugins/ViewPlugin'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -38,9 +38,9 @@ const View = (props: any) => {
             return <ViewPlugin blueprint={document} parent={parent} />
 
           default:
-            const ExternalPlugin = pluginHook(plugin);
+            const ExternalPlugin = pluginHook(plugin)
             if (ExternalPlugin) {
-              return <ExternalPlugin blueprint={document} parent={parent}/>
+              return <ExternalPlugin blueprint={document} parent={parent} />
             }
             //@todo use EDIT plugin, and alert the user of missing plugin.
             return (
@@ -61,7 +61,7 @@ const ViewList = (props: any) => {
   const { document, parent } = props
   const { uiRecipes = [] } = document
 
-	//@todo remove this, now name and plugin in a uiRecipe must match, otherwise the plugin wont be used.
+  //@todo remove this, now name and plugin in a uiRecipe must match, otherwise the plugin wont be used.
   const uiRecipeNamesBlueprint = uiRecipes.map(
     (uiRecipe: any) => uiRecipe['name']
   )
