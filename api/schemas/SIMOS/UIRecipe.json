@@ -9,6 +9,11 @@
       "name": "name"
     },
     {
+      "type": "string",
+      "name": "plugin",
+      "description": "View plugin this blueprint."
+    },
+    {
       "type": "templates/SIMOS/UiAttribute",
       "name": "attributes",
       "dimensions": "*",

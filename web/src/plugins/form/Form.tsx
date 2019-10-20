@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
 import AttributeWidget from '../../components/widgets/Attribute'
-import '../../pages/blueprints/blueprint/form-styles.css'
 
 interface Props {
   document: any

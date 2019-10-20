@@ -26,6 +26,11 @@
       "type": "boolean",
       "value": "",
       "name": "contained"
+    },
+    {
+      "type": "string",
+      "name": "plugin",
+      "description": "Plugin for this property"
     }
   ]
 }

@@ -6,7 +6,7 @@ A PluginInput blueprint makes it possible to replace entire plugins which can wr
 When all parts of an applications is a plugin, the application itself can be a plugin. If DMT was a plugin, a DMT application blueprint 
 would have property api, an Api blueprint with list of endpoints where each endpoint would have a request and response blueprint. 
 
-### Requirements
+### Requirements    
 A plugin needs two things: 
 - A blueprint: (data, storageRecipes and uiRecipes)
 - Children blueprints: a list of (data, storageRecipes and uiRecipes)

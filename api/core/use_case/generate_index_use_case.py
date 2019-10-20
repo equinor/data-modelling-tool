@@ -338,9 +338,12 @@ class Tree:
 
         for attribute_node in attribute_nodes:
             for attribute_document in attribute_node["documents"]:
-                self.process_document(
-                    data_source_id=data_source_id, document=attribute_document, parent_node=attribute_node["node"]
-                )
+                try:
+                    self.process_document(
+                        data_source_id=data_source_id, document=attribute_document, parent_node=attribute_node["node"]
+                    )
+                except EntityNotFoundException:
+                    print("wip")
 
     def execute(self, data_source_id: str, data_source_name: str, packages) -> Index:
 

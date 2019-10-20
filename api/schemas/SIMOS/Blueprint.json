@@ -84,6 +84,22 @@
           "contained": true
         }
       ]
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "VIEW",
+      "description": "",
+      "plugin": "VIEW",
+      "attributes": [
+        {
+          "name": "name",
+          "plugin": "view.widget"
+        },
+        {
+          "name": "uiRecipes",
+          "plugin": "table.widget"
+        }
+      ]
     }
   ]
 }
