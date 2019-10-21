@@ -5,9 +5,9 @@
   "username": "msa-dev",
   "password": "",
   "tls": true,
-  "name": "templates",
+  "name": "SSR-DataSource",
   "database": "dmt",
-  "collection": "templates",
+  "collection": "SSR-DataSource",
   "documentType": "blueprints",
-  "_id": "templates"
+  "_id": "SSR-DataSource"
 }

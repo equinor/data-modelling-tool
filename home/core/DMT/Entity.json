@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "description": "Blueprint for a DMT reference",
   "name": "Entity",
   "attributes": [
@@ -16,7 +16,7 @@
   "storageRecipes": [],
   "uiRecipes": [
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "DEFAULT_CREATE",
       "description": "",
       "attributes": [{

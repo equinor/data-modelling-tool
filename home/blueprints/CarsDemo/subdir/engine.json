@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "Engine",
   "description": "This describes a engine",
   "attributes": [
@@ -14,14 +14,14 @@
       "name": "power"
     },
     {
-      "type": "templates/CarsDemo/subdir/subdir2/FuelPump",
+      "type": "SSR-DataSource/CarsDemo/subdir/subdir2/FuelPump",
       "name": "fuel_pump"
     }
   ],
   "storageRecipe": [
     {
       "name": "DefaultStorageRecipe",
-      "type": "templates/SIMOS/StorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
       "description": "",
       "attributes": [
         {

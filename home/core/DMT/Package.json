@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "Package",
   "description": "This is a blueprint for a package that contains documents and other packages",
   "attributes": [
@@ -16,24 +16,24 @@
       "name": "isRoot"
     },
     {
-      "type": "templates/DMT/Package",
+      "type": "system/DMT/Package",
       "name": "packages",
       "dimensions": "*"
     },
     {
-      "type": "templates/SIMOS/Blueprint",
+      "type": "system/SIMOS/Blueprint",
       "name": "documents",
       "dimensions": "*"
     },
     {
-      "type": "templates/SIMOS/Application",
+      "type": "system/SIMOS/Application",
       "name": "applications",
       "dimensions": "*"
     }
   ],
   "storageRecipes": [
     {
-      "type": "templates/SIMOS/StorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
       "name": "DefaultStorageRecipe",
       "description": "",
       "attributes": [
@@ -50,7 +50,7 @@
   ],
   "uiRecipes": [
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "DEFAULT_CREATE",
       "description": "",
       "attributes": [
@@ -73,7 +73,7 @@
       ]
     },
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "EDIT",
       "description": "",
       "attributes": [

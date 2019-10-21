@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "UIRecipe",
   "description": "This describes ui recipe",
   "attributes": [
@@ -14,7 +14,7 @@
       "description": "Plugin for this blueprint."
     },
     {
-      "type": "templates/SIMOS/UiAttribute",
+      "type": "system/SIMOS/UiAttribute",
       "name": "attributes",
       "dimensions": "*",
       "contained": true

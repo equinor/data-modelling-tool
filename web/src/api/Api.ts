@@ -111,7 +111,7 @@ export class DmtApi {
   }
 
   templatesDatasourceMongoGet() {
-    return `/api/v2/json-schema/templates/DMT/data-sources/MongoDataSource`
+    return `/api/v2/json-schema/system/DMT/data-sources/MongoDataSource`
   }
 }
 

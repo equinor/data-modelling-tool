@@ -17,7 +17,7 @@ A initial draft of the PluginInput blueprint. An PluginOutput will look similar.
 
 ```
 {
-  "type": "templates/SIMOS/blueprint",
+  "type": "system/SIMOS/blueprint",
   "description": "
     Inputs to a plugin. A plugin will use the fields in the entity to process output.  
     The plugin can itself have plugins or widget. These are set in the uiRecipe for 
@@ -66,7 +66,7 @@ where only the first two levels are generated.
 ### Example PluginInput
 ```
 {
-  "type": "templates/SIMOS/InputPlugin",
+  "type": "system/SIMOS/InputPlugin",
   "name": "PlotPlugin",
   "description": "
     A plugin for plots. Types of plot are provided by the plugin, 

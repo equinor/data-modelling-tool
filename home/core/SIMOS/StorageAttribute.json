@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "StorageAttribute",
   "description": "This describes a storage recipe attribute",
   "attributes": [

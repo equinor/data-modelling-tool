@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "AddAction",
   "description": "This describes a add document",
   "attributes": [

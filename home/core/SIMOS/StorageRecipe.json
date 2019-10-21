@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "StorageRecipe",
   "description": "This describes a storage recipe",
   "attributes": [
@@ -14,7 +14,7 @@
       "name": "description"
     },
     {
-      "type": "templates/SIMOS/StorageAttribute",
+      "type": "system/SIMOS/StorageAttribute",
       "name": "attributes",
       "dimensions": "*",
       "contained": true

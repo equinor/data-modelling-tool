@@ -126,7 +126,7 @@ class Tree:
         for ref in references:
 
             if isinstance(ref, dict):
-                logger.warn(f"Add ref '{ref}' {item_type}")
+                logger.warning(f"Add ref '{ref}' {item_type}")
                 if item_type == DMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
                     # document.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in document.packages]
@@ -215,7 +215,7 @@ class Tree:
                 "data": {
                     "url": f"/api/v2/explorer/move-file",
                     "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                    "schemaUrl": f"/api/v2/json-schema/templates/DMT/actions/RenameAction",
+                    "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/RenameAction",
                     "request": {
                         "source": f"{data_source_id}/{document.name}",
                         "destination": f"{data_source_id}/" + "${name}",
