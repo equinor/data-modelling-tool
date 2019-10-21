@@ -81,6 +81,8 @@ export class TreeNodeBuilder extends TreeNodeBuilderOld {
 
 function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
   switch (nodeType) {
+    case NodeType.DMT_PACKAGE:
+      return NodeIconType.folder
     case NodeType.SIMOS_BLUEPRINT:
       return NodeIconType.file
     case NodeType.SIMOS_BLUEPRINT_ATTRIBUTE:
