@@ -51,6 +51,7 @@ def load_application_settings():
 def init_application(contained: bool = False):
     application_settings = import_application_settings()
 
+    # TODO: Hard code core
     for folder in application_settings["core"]:
         import_folder(
             f"{Config.APPLICATION_HOME}/core/{folder}", contained=contained, collection=Config.BLUEPRINT_COLLECTION

@@ -234,6 +234,10 @@ class Tree:
                 }
             )
 
+        # Placeholder for new actions
+        if document.type in [DMT.PACKAGE.value, DMT.ENTITY_PACKAGE.value]:
+            menu_items.append({"label": "New", "menuItems": []})
+
         node = DocumentNode(
             data_source_id=data_source_id,
             name=document.name,
@@ -324,15 +328,21 @@ class Tree:
                     ],
                 }
 
-                # Create a placeholder node that can contain real documents
-                attribute_node = DocumentNode(
-                    data_source_id=data_source_id,
-                    name=name,
-                    document=document,
-                    blueprint=blueprint,
-                    parent=node,
-                    menu_items=[contained_menu_action if is_contained_in_storage else not_contained_menu_action],
-                )
+                if document.type in [DMT.PACKAGE.value, DMT.ENTITY_PACKAGE.value]:
+                    new_menu_action = next((x for x in node.menu_items if x["label"] == "New"), None)
+                    menu_item = contained_menu_action if is_contained_in_storage else not_contained_menu_action
+                    new_menu_action["menuItems"].append(menu_item["menuItems"][0])
+                    attribute_node = node
+                else:
+                    # Create a placeholder node that can contain real documents
+                    attribute_node = DocumentNode(
+                        data_source_id=data_source_id,
+                        name=name,
+                        document=document,
+                        blueprint=blueprint,
+                        parent=node,
+                        menu_items=[contained_menu_action if is_contained_in_storage else not_contained_menu_action],
+                    )
 
                 # Check if values for the attribute exists in current document,
                 # this means that we have added some documents to this array.
