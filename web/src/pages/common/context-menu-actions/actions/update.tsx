@@ -11,9 +11,21 @@ const fetchUpdate = (action: any) => {
       onError,
     })
 }
+interface PostUpdateProps {
+  response: any
+  setShowModal: Function
+  node: TreeNodeRenderProps
+}
 
-export const postUpdate = (setShowModal: Function) => {
+export const postUpdate = ({
+  setShowModal,
+  response,
+  node,
+}: PostUpdateProps) => {
   setShowModal(false)
+  const data = node.nodeData
+  data.title = response.data.data['name']
+  node.actions.updateNode(data)
 }
 
 export const updateAction = (
@@ -29,8 +41,8 @@ export const updateAction = (
       Api2.put({
         data: data,
         url: action.data.url,
-        onSuccess: (result: any) => {
-          postUpdate(setShowModal)
+        onSuccess: (response: any) => {
+          postUpdate({ setShowModal, response, node })
         },
         onError: (error: any) => showError(error),
       })
