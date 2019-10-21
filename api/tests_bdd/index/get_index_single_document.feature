@@ -69,61 +69,8 @@ Feature: Index
           "title":"sub_package_1",
           "id":"data-source-name/sub_package_1/2",
           "nodeType":"document-node",
-          "children":[
-             "data-source-name/sub_package_1/packages/2",
-             "data-source-name/sub_package_1/documents/2"
-          ],
-          "type":"templates/DMT/Package"
-       },
-       "data-source-name/sub_package_1/packages/2":{
-          "parentId":"data-source-name/sub_package_1/2",
-          "filename":"packages",
-          "title":"packages",
-          "id":"data-source-name/sub_package_1/packages/2",
-          "nodeType":"document-node",
           "children":[],
           "type":"templates/DMT/Package"
-       },
-       "data-source-name/sub_package_1/documents/2":{
-          "parentId":"data-source-name/sub_package_1/2",
-          "filename":"documents",
-          "title":"documents",
-          "id":"data-source-name/sub_package_1/documents/2",
-          "nodeType":"document-node",
-          "children":[
-             "data-source-name/sub_package_1/documents/document_1/3"
-          ],
-          "type":"templates/DMT/Package"
-       },
-       "data-source-name/sub_package_1/documents/document_1/3":{
-          "parentId":"data-source-name/sub_package_1/documents/2",
-          "filename":"document_1",
-          "title":"document_1",
-          "id":"data-source-name/sub_package_1/documents/document_1/3",
-          "nodeType":"document-node",
-          "children":[
-             "data-source-name/sub_package_1/documents/document_1/storageRecipes/3",
-             "data-source-name/sub_package_1/documents/document_1/uiRecipes/3"
-          ],
-          "type":"templates/SIMOS/Blueprint"
-       },
-       "data-source-name/sub_package_1/documents/document_1/storageRecipes/3":{
-          "parentId":"data-source-name/sub_package_1/documents/document_1/3",
-          "filename":"storageRecipes",
-          "title":"storageRecipes",
-          "id":"data-source-name/sub_package_1/documents/document_1/storageRecipes/3",
-          "nodeType":"document-node",
-          "children":[],
-          "type":"templates/SIMOS/Blueprint"
-       },
-       "data-source-name/sub_package_1/documents/document_1/uiRecipes/3":{
-          "parentId":"data-source-name/sub_package_1/documents/document_1/3",
-          "filename":"uiRecipes",
-          "title":"uiRecipes",
-          "id":"data-source-name/sub_package_1/documents/document_1/uiRecipes/3",
-          "nodeType":"document-node",
-          "children":[],
-          "type":"templates/SIMOS/Blueprint"
        }
     }
     """
