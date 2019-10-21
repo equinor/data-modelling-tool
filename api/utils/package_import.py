@@ -7,6 +7,7 @@ from config import Config
 from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
 from core.domain.package import Package
+from core.shared.templates import DMT, SIMOS
 from services.database import data_modelling_tool_db as dmt_db
 from utils.logging import logger
 
@@ -17,7 +18,7 @@ def _add_documents(path, documents, collection) -> List[Dict]:
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
         data["uid"] = str(uuid4())
-        if data["type"] == Config.MASTER_BLUEPRINT:
+        if data["type"] == SIMOS.BLUEPRINT.value:
             document = Blueprint.from_dict(data)
         else:
             # TODO: Good candidate to become a DTO
@@ -30,7 +31,7 @@ def _add_documents(path, documents, collection) -> List[Dict]:
 def import_package(
     path, collection: str, root_package_uid: str = None, contained: bool = True, is_root: bool = False
 ) -> Union[Package, Dict]:
-    package_type = Config.DMT_PACKAGE if collection == Config.BLUEPRINT_COLLECTION else Config.DMT_ENTITY_PACKAGE
+    package_type = DMT.PACKAGE.value if collection == Config.BLUEPRINT_COLLECTION else DMT.ENTITY_PACKAGE.value
     package = Package(
         name=os.path.basename(path),
         type=package_type,

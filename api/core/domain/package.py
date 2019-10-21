@@ -1,6 +1,5 @@
 from typing import Dict, List
-
-from config import Config
+from core.shared.templates import DMT
 
 
 class Dependency:
@@ -32,7 +31,7 @@ class Package:
         uid: str,
         dependencies: List[Dependency] = None,
         description: str = None,
-        type: str = Config.DMT_PACKAGE,
+        type: str = DMT.PACKAGE.value,
         # TODO: Should handle refs and contained blueprints to be consistent with rest of the system
         documents: List[Dict] = None,
         is_root: bool = False,
@@ -56,7 +55,7 @@ class Package:
             description=adict.get("description"),
             documents=adict.get("documents", adict.get("blueprints")),
             dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
-            type=adict.get("type", Config.DMT_PACKAGE),
+            type=adict.get("type", DMT.PACKAGE.value),
             is_root=adict.get("isRoot", "false"),
         )
 

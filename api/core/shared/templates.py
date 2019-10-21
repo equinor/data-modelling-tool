@@ -9,3 +9,4 @@ class SIMOS(Enum):
 
 class DMT(Enum):
     PACKAGE = "templates/DMT/Package"
+    ENTITY_PACKAGE = "templates/DMT/EntityPackage"
