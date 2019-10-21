@@ -172,17 +172,24 @@ class Tree:
             menu_items=[],
         )
         blueprint = get_blueprint(attribute_type)
+        ui_recipe: UIRecipe = get_ui_recipe(blueprint, "EDIT")
         for attribute in blueprint.get_attributes_with_reference():
             name = attribute["name"]
 
-            is_contained_in_ui = attribute["contained"] if "contained" in attribute else False
+            is_contained_in_ui = ui_recipe.is_contained(attribute)
             if is_contained_in_ui:
                 continue
 
-            if name in instance:
-                self.generate_contained_nodes(
-                    data_source_id, document_id, current_path + [f"{name}"], attribute["type"], instance[name], node
-                )
+            self.generate_contained_node(
+                document_id,
+                current_path + [f"{name}"],
+                attribute,
+                None,
+                data_source_id,
+                attribute["type"],
+                node,
+                False,
+            )
 
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
@@ -403,12 +410,9 @@ class Tree:
 
         for attribute_node in attribute_nodes:
             for attribute_document in attribute_node["documents"]:
-                try:
-                    self.process_document(
-                        data_source_id=data_source_id, document=attribute_document, parent_node=attribute_node["node"]
-                    )
-                except EntityNotFoundException:
-                    print("wip")
+                self.process_document(
+                    data_source_id=data_source_id, document=attribute_document, parent_node=attribute_node["node"]
+                )
 
     def execute(self, data_source_id: str, data_source_name: str, packages) -> Index:
 
