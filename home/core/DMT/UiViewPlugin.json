@@ -1,0 +1,31 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "description": "A ui plugin for presenting a document.",
+  "name": "UiBlueprintViewPlugin",
+  "attributes": [
+    {
+      "name": "name",
+      "optional": false,
+      "type": "string"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "default": "templates/SIMOS/UiBlueprintViewPlugin"
+    },
+    {
+      "name": "optional",
+      "type": "boolean",
+      "default": false,
+      "description": "Used to control what plugin in chosen"
+    },
+    {
+      "type": "string",
+      "name": "widgets",
+      "dimensions": "*",
+      "description": "Should be a list of names of the widgets this plugin supports. Or type of widget."
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

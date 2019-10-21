@@ -13,6 +13,7 @@ const Wrapper = styled.div`
   padding: 20px;
 `
 
+//@todo add UiPlugin
 export enum RegisteredPlugins {
   PREVIEW = 'PREVIEW',
   EDIT = 'EDIT',
@@ -24,37 +25,29 @@ const DEFAULT_UI_RECIPES = [RegisteredPlugins.PREVIEW, RegisteredPlugins.EDIT]
 
 const View = (props: any) => {
   const { schemaUrl, parent, document, dataUrl, attribute, uiRecipe } = props
-  // TODO: Dont explicit add plugins, let plugins add them self to our code, to actually make it a plugin
-  return (
-    <FetchDocument
-      url={`${schemaUrl}?ui_recipe=${uiRecipe}`}
-      render={(data: any) => {
-        const { plugin = '' } = data.uiSchema
-        switch (plugin) {
-          case 'PREVIEW':
-            return <BlueprintPreview data={document} />
+  switch (uiRecipe) {
+    case 'PREVIEW':
+      return <BlueprintPreview data={document} />
 
-          case RegisteredPlugins.VIEW:
-            return <ViewPlugin blueprint={document} parent={parent} />
+    case RegisteredPlugins.VIEW:
+      return <ViewPlugin blueprint={document} parent={parent} />
 
-          default:
-            const ExternalPlugin = pluginHook(plugin)
-            if (ExternalPlugin) {
-              return <ExternalPlugin blueprint={document} parent={parent} />
-            }
-            //@todo use EDIT plugin, and alert the user of missing plugin.
-            return (
-              <ReactJsonSchemaWrapper
-                document={document}
-                template={data}
-                dataUrl={dataUrl}
-                attribute={attribute}
-              />
-            )
-        }
-      }}
-    />
-  )
+    default:
+      const ExternalPlugin = pluginHook(uiRecipe)
+      if (ExternalPlugin) {
+        return <ExternalPlugin blueprint={document} parent={parent} />
+      }
+      //@todo use EDIT plugin, and alert the user of missing plugin.
+      return (
+        <ReactJsonSchemaWrapper
+          document={document}
+          schemaUrl={schemaUrl}
+          dataUrl={dataUrl}
+          attribute={attribute}
+          uiRecipe={uiRecipe}
+        />
+      )
+  }
 }
 
 const ViewList = (props: any) => {

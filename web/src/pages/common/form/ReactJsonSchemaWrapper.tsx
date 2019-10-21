@@ -3,16 +3,18 @@ import ReactJsonSchemaPlugin from '../../../plugins/form/Form'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import FetchDocument from '../utils/FetchDocument'
 
 interface Props {
   dataUrl: string
+  schemaUrl: string
   document: any
-  template: any
   attribute: string
+  uiRecipe: string
 }
 
 const ReactJsonSchemaWrapper = (props: Props) => {
-  const { document, template, dataUrl, attribute } = props
+  const { document, schemaUrl, dataUrl, attribute, uiRecipe } = props
 
   const onSubmit = (schemas: any) => {
     const url = attribute ? `${dataUrl}/${attribute}` : dataUrl
@@ -32,14 +34,27 @@ const ReactJsonSchemaWrapper = (props: Props) => {
   }
 
   return (
-    <>
-      <h3>Edit Blueprint</h3>
-      <ReactJsonSchemaPlugin
-        template={template}
-        document={document}
-        onSubmit={onSubmit}
-      />
-    </>
+    <FetchDocument
+      url={`${schemaUrl}?ui_recipe=${uiRecipe}`}
+      render={(data: any) => {
+        return (
+          <ReactJsonSchemaPlugin
+            document={document}
+            template={data}
+            onSubmit={onSubmit}
+          />
+        )
+      }}
+    />
+
+    // <>
+    //   <h3>Edit Blueprint</h3>
+    //   <ReactJsonSchemaPlugin
+    //     template={template}
+    //     document={document}
+    //     onSubmit={onSubmit}
+    //   />
+    // </>
   )
 }
 

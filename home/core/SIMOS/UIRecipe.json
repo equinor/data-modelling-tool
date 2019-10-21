@@ -11,7 +11,7 @@
     {
       "type": "string",
       "name": "plugin",
-      "description": "View plugin this blueprint."
+      "description": "Plugin for this blueprint."
     },
     {
       "type": "templates/SIMOS/UiAttribute",

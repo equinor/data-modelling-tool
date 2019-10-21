@@ -1,0 +1,32 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "description": "Blueprint for a ui widget",
+  "name": "UiWidget",
+  "attributes": [
+    {
+      "name": "name",
+      "optional": false,
+      "type": "string",
+      "description": "Name of the widget."
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "default": "templates/SIMOS/UiWidget"
+    },
+    {
+      "name": "optional",
+      "type": "boolean",
+      "default": false,
+      "description": "Used to control what plugin in chosen."
+    },
+    {
+      "type": "templates/SIMOS/UiAttribute",
+      "name": "options",
+      "dimensions": "*",
+      "description": "List of options for this widget. may be anything, title, another widget or styling."
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

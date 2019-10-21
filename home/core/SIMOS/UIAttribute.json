@@ -1,7 +1,7 @@
 {
   "type": "templates/SIMOS/Blueprint",
   "name": "UiAttribute",
-  "description": "This describes a storage recipe",
+  "description": "This describes a ui recipe",
   "attributes": [
     {
       "type": "string",
@@ -29,8 +29,8 @@
     },
     {
       "type": "string",
-      "name": "plugin",
-      "description": "Plugin for this property"
+      "name": "widget",
+      "description": "Widget for this property"
     }
   ]
 }
