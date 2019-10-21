@@ -10,18 +10,6 @@ type Props = {
   formData: any
 }
 
-// Removes every other element in the path following datasource.
-function stripPackageAttributesFromPath(path: string) {
-  let elements = path.split('/')
-  const dataSource = elements[0]
-  elements.splice(0, 1)
-  const odd_elements = elements.filter(function(value, index) {
-    index -= 1
-    return index % 2 !== 0
-  })
-  return `${dataSource}/${odd_elements.join('/')}`
-}
-
 export default (props: any) => {
   const { value, onChange, attributeInput } = props
   const [blueprint, setBlueprint] = useState(value)
@@ -29,11 +17,9 @@ export default (props: any) => {
 
   const handleNodeSelect = (renderProps: TreeNodeRenderProps) => {
     const node = renderProps.nodeData
-    // TODO: This is now true for all nodes?
+    // TODO: This is now true for all nodes?\
     if (node.nodeType === NodeType.DOCUMENT_NODE) {
-      const selectedNodePath = stripPackageAttributesFromPath(
-        `${renderProps.path}/${node.title}`
-      )
+      const selectedNodePath = `${renderProps.path}/${node.title}`
       setBlueprint(selectedNodePath)
       setShowModal(false)
 
