@@ -52,12 +52,20 @@ def init_application(contained: bool = False):
     application_settings = import_application_settings()
 
     for folder in application_settings["core"]:
-        import_folder(f"{Config.APPLICATION_HOME}/core/{folder}", contained=contained, collection="templates")
+        import_folder(
+            f"{Config.APPLICATION_HOME}/core/{folder}", contained=contained, collection=Config.BLUEPRINT_COLLECTION
+        )
 
     for folder in application_settings["blueprints"]:
-        import_folder(f"{Config.APPLICATION_HOME}/blueprints/{folder}", contained=contained, collection="templates")
+        import_folder(
+            f"{Config.APPLICATION_HOME}/blueprints/{folder}",
+            contained=contained,
+            collection=Config.BLUEPRINT_COLLECTION,
+        )
     for folder in application_settings["entities"]:
-        import_folder(f"{Config.APPLICATION_HOME}/entities/{folder}", contained=contained, collection="entities")
+        import_folder(
+            f"{Config.APPLICATION_HOME}/entities/{folder}", contained=contained, collection=Config.ENTITY_COLLECTION
+        )
 
 
 def import_folder(folder, collection, contained: bool = False):
@@ -95,7 +103,7 @@ def import_data_source(file):
 def nuke_db():
     print("Dropping all collections")
     # FIXME: Read names from the database
-    for name in ["blueprints", "entities", "templates", "dmt-templates"]:
+    for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.DATA_SOURCES_COLLECTION]:
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
         dmt_db.drop_collection(name)

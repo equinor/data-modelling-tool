@@ -10,7 +10,7 @@ app.config["CACHE_MAX_SIZE"] = 0
 
 
 def clear_databases():
-    for name in ["documents", "templates", "data_sources"]:
+    for name in ["documents", Config.BLUEPRINT_COLLECTION, Config.DATA_SOURCES_COLLECTION]:
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
         data_modelling_tool_db.drop_collection(name)
