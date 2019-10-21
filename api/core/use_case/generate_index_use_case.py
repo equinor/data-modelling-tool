@@ -141,50 +141,56 @@ class Tree:
 
         return documents
 
+    def generate_contained_node(
+        self, document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, is_array
+    ):
+        if is_array:
+            uid = f"{document_id}.{'.'.join(document_path)}.{instance['name']}"
+            current_path = document_path + [f"{index}"]
+        else:
+            uid = f"{document_id}.{'.'.join(document_path)}"
+            current_path = document_path
+
+        node = DocumentNode(
+            data_source_id=data_source_id,
+            name=instance["name"],
+            document=Blueprint(uid=uid, name=instance["name"], description="", type=attribute_type),
+            blueprint=None,
+            parent=parent_node,
+            on_select={
+                "uid": uid,
+                "title": instance["name"],
+                "component": "blueprint",
+                "data": {
+                    "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
+                    "schemaUrl": f"/api/v2/json-schema/{attribute_type}",
+                    "attribute": ".".join(current_path),
+                },
+            },
+            menu_items=[],
+        )
+        blueprint = get_blueprint(attribute_type)
+        for attribute in blueprint.get_attributes_with_reference():
+            name = attribute["name"]
+
+            is_contained_in_ui = attribute["contained"] if "contained" in attribute else False
+            if is_contained_in_ui:
+                continue
+
+            if name in instance:
+                self.generate_contained_nodes(
+                    data_source_id, document_id, current_path + [f"{name}"], attribute["type"], instance[name], node
+                )
+
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
     ):
         print(f"adding {attribute_type} to {'.'.join(document_path)}")
         for index, instance in enumerate(values):
             if isinstance(instance, dict):
-                uid = f"{document_id}.{'.'.join(document_path)}.{instance['name']}"
-                current_path = document_path + [f"{index}"]
-
-                node = DocumentNode(
-                    data_source_id=data_source_id,
-                    name=instance["name"],
-                    document=Blueprint(uid=uid, name=instance["name"], description="", type=attribute_type),
-                    blueprint=None,
-                    parent=parent_node,
-                    on_select={
-                        "uid": uid,
-                        "title": instance["name"],
-                        "component": "blueprint",
-                        "data": {
-                            "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
-                            "schemaUrl": f"/api/v2/json-schema/{attribute_type}",
-                            "attribute": ".".join(current_path),
-                        },
-                    },
-                    menu_items=[],
+                self.generate_contained_node(
+                    document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
                 )
-                blueprint = get_blueprint(attribute_type)
-                for attribute in blueprint.get_attributes_with_reference():
-                    name = attribute["name"]
-
-                    is_contained_in_ui = attribute["contained"] if "contained" in attribute else False
-                    if is_contained_in_ui:
-                        continue
-
-                    if name in instance:
-                        self.generate_contained_nodes(
-                            data_source_id,
-                            document_id,
-                            current_path + [f"{name}"],
-                            attribute["type"],
-                            instance[name],
-                            node,
-                        )
 
     def process_document(self, data_source_id, document, parent_node):
         logger.info(f"Add attributes for '{document.name}'")
@@ -269,11 +275,13 @@ class Tree:
 
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
 
+            # TODO: ui recipe
             is_contained_in_ui = attribute["contained"] if "contained" in attribute else False
+
+            print(f"-----------{document.name}:{name}:{is_contained_in_storage}:{is_contained_in_ui}-----------")
+
             if is_contained_in_ui:
                 continue
-
-            print(f"------------------------{document.name}:{name}:{is_contained_in_storage}------------------------")
 
             # If the attribute is an array
             if attribute.get("dimensions", "") == "*":
@@ -359,6 +367,38 @@ class Tree:
                         self.generate_contained_nodes(
                             data_source_id, document.uid, [name], attribute["type"], values, attribute_node
                         )
+            else:
+                values = document.get_values(name)
+                if values:
+                    # Values are stored in separate document
+                    if not is_contained_in_storage:
+                        attribute_nodes.append(
+                            {"documents": self.get_references(values, attribute["type"]), "node": node}
+                        )
+                else:
+                    item_type = get_blueprint(attribute["type"])
+                    node.menu_items.append(
+                        {
+                            "label": f"Create - {item_type.name}",
+                            "action": "CREATE",
+                            "data": {
+                                "url": f"/api/v2/explorer/{data_source_id}/add-file",
+                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}?ui_recipe=DEFAULT_CREATE",
+                                "nodeUrl": f"/api/v3/index/{data_source_id}",
+                                "request": {
+                                    "type": attribute["type"],
+                                    "parentId": getattr(document, "uid", None),
+                                    "attribute": name,
+                                    "name": "${name}",
+                                },
+                            },
+                        }
+                    )
+
+                if is_contained_in_storage:
+                    self.generate_contained_node(
+                        document.uid, [name], attribute, None, data_source_id, attribute["type"], node, False
+                    )
 
         for attribute_node in attribute_nodes:
             for attribute_document in attribute_node["documents"]:

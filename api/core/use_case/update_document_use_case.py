@@ -20,21 +20,24 @@ class UpdateDocumentRequestObject(req.ValidRequestObject):
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
 
+        if "document_id" not in adict:
+            invalid_req.add_error("document_id", "is missing")
+
         if "data" not in adict:
             invalid_req.add_error("data", "is missing")
         else:
             data = adict["data"]
+            print(data)
+            """
             if "name" not in data:
                 invalid_req.add_error("name", "is missing")
 
             if "type" not in data:
                 invalid_req.add_error("type", "is missing")
+            """
 
-            if invalid_req.has_errors():
-                return invalid_req
-
-        if "document_id" not in adict:
-            invalid_req.add_error("document_id", "is missing")
+        if invalid_req.has_errors():
+            return invalid_req
 
         return cls(data=adict.get("data"), document_id=adict.get("document_id"), attribute=adict.get("attribute"))
 

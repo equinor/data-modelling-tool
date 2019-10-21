@@ -13,9 +13,15 @@
     },
     {
       "type": "string",
-      "name": "packages",
+      "name": "blueprints",
       "dimensions": "*",
-      "description": "Packages that are available by default"
+      "description": "Blueprint packages that are available by default"
+    },
+    {
+      "type": "string",
+      "name": "entities",
+      "dimensions": "*",
+      "description": "Entity packages that are available by default"
     },
     {
       "type": "string",
@@ -28,6 +34,12 @@
       "name": "runnable",
       "dimensions": "*",
       "description": "Runnable recipes"
+    },
+    {
+      "type": "templates/SIMOS/ApplicationSetting",
+      "name": "settings",
+      "dimensions": "*",
+      "description": "Application settings"
     }
   ]
 }

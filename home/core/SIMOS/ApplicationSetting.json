@@ -1,0 +1,15 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "name": "ApplicationSetting",
+  "description": "This describes an application setting",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    }
+  ]
+}
