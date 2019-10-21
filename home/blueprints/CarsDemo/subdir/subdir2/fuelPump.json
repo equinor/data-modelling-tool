@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "FuelPump",
   "description": "This describes a fuel pump",
   "attributes": [

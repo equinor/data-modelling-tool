@@ -5,16 +5,16 @@ Feature: Index
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
       | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | templates        | dmt      | templates  | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system        | dmt      | system  | blueprints   | mongo-db |
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                      |
-      | 1   |            | blueprints    |             | templates/DMT/Package     |
-      | 2   | 1          | sub_package_1 |             | templates/DMT/Package     |
-      | 3   | 2          | document_1    |             | templates/SIMOS/Blueprint |
+      | 1   |            | blueprints    |             | system/DMT/Package     |
+      | 2   | 1          | sub_package_1 |             | system/DMT/Package     |
+      | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
 
-  Scenario: Get index for single document of type templates/SIMOS/Blueprint
+  Scenario: Get index for single document of type system/SIMOS/Blueprint
     Given I access the resource url "/api/v3/index/data-source-name/3"
     And data modelling tool templates are imported
     When I make a "GET" request
@@ -32,7 +32,7 @@ Feature: Index
              "data-source-name/document_1/storageRecipes/3",
              "data-source-name/document_1/uiRecipes/3"
           ],
-          "type":"templates/SIMOS/Blueprint"
+          "type":"system/SIMOS/Blueprint"
        },
        "data-source-name/document_1/storageRecipes/3":{
           "parentId":"data-source-name/document_1/3",
@@ -41,7 +41,7 @@ Feature: Index
           "id":"data-source-name/document_1/storageRecipes/3",
           "nodeType":"document-node",
           "children":[],
-          "type":"templates/SIMOS/Blueprint"
+          "type":"system/SIMOS/Blueprint"
        },
        "data-source-name/document_1/uiRecipes/3":{
           "parentId":"data-source-name/document_1/3",
@@ -50,12 +50,12 @@ Feature: Index
           "id":"data-source-name/document_1/uiRecipes/3",
           "nodeType":"document-node",
           "children":[],
-          "type":"templates/SIMOS/Blueprint"
+          "type":"system/SIMOS/Blueprint"
        }
     }
     """
 
-  Scenario: Get index for single document of type templates/DMT/Package
+  Scenario: Get index for single document of type system/DMT/Package
     Given I access the resource url "/api/v3/index/data-source-name/2"
     And data modelling tool templates are imported
     When I make a "GET" request
@@ -70,7 +70,7 @@ Feature: Index
           "id":"data-source-name/sub_package_1/2",
           "nodeType":"document-node",
           "children":[],
-          "type":"templates/DMT/Package"
+          "type":"system/DMT/Package"
        }
     }
     """

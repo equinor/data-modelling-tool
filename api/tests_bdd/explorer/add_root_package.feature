@@ -3,9 +3,10 @@ Feature: Explorer - Add Root Package
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | templates        | dmt      | templates  | blueprints   | mongo-db |
+      | host | port  | username | password | tls   | name            | database | collection     | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | data-source-name| maf      | documents      | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | SSR-DataSource  | dmt      | SSR-DataSource | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system          | dmt      | system         | blueprints   | mongo-db |
 
   Scenario: Add root package
     Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"
@@ -23,7 +24,7 @@ Feature: Explorer - Add Root Package
         "data":{
            "name":"new_root_package",
            "description":null,
-           "type":"templates/DMT/Package",
+           "type":"system/DMT/Package",
            "documents":[],
            "dependencies":[],
            "packages":[],

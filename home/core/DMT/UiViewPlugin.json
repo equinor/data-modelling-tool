@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "description": "A ui plugin for presenting a document.",
   "name": "UiBlueprintViewPlugin",
   "attributes": [
@@ -11,7 +11,7 @@
     {
       "name": "type",
       "type": "string",
-      "default": "templates/SIMOS/UiBlueprintViewPlugin"
+      "default": "system/SIMOS/UiBlueprintViewPlugin"
     },
     {
       "name": "optional",

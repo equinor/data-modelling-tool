@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "description": "This is a blueprint for a package that contains entities and other EntitiesPackages",
   "name": "EntityPackage",
   "attributes": [
@@ -10,7 +10,7 @@
       "type": "string"
     }, {
       "contained": true,
-      "default": "templates/SIMOS/Blueprint",
+      "default": "system/SIMOS/Blueprint",
       "name": "type",
       "optional": false,
       "type": "string"
@@ -32,21 +32,21 @@
       "dimensions": "*",
       "name": "packages",
       "optional": true,
-      "type": "templates/DMT/EntityPackage"
+      "type": "system/DMT/EntityPackage"
     }, {
       "contained": false,
       "default": "[]",
       "dimensions": "*",
       "name": "documents",
       "optional": true,
-      "type": "templates/DMT/Entity"
+      "type": "system/DMT/Entity"
     }
   ],
   "storageRecipes": [
     {
       "description": "",
       "name": "DefaultStorageRecipe",
-      "type": "templates/SIMOS/StorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
       "attributes": [
         {
           "contained": false,

@@ -1,5 +1,5 @@
 {
-  "type": "templates/CarsDemo/Wheel",
+  "type": "SSR-DataSource/CarsDemo/Wheel",
   "name": "wheel#1",
   "description": "My first wheel entity",
   "diameter": 156

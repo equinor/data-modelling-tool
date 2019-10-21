@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "BlueprintAttribute",
   "description": "This describes a blueprint attribute",
   "attributes": [
@@ -23,7 +23,7 @@
     {
       "type": "string",
       "name": "type",
-      "enum": "templates/SIMOS/attribute_types",
+      "enum": "system/SIMOS/attribute_types",
       "optional": false
     },
     {
@@ -41,7 +41,7 @@
     },
     {
       "name": "enum",
-      "type": "templates/SIMOS/Enum",
+      "type": "system/SIMOS/Enum",
       "optional": true,
       "default": null,
       "contained": true
@@ -50,7 +50,7 @@
   "storageRecipes": [],
   "uiRecipes": [
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "DEFAULT_EDIT",
       "description": "",
       "field": "attribute"

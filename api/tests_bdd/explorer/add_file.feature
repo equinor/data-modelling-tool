@@ -3,13 +3,14 @@ Feature: Explorer - Add file
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | templates        | dmt      | templates  | blueprints   | mongo-db |
+      | host | port  | username | password | tls   | name            | database | collection     | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | data-source-name| maf      | documents      | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | SSR-DataSource  | dmt      | SSR-DataSource | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system          | dmt      | system         | blueprints   | mongo-db |
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name         | description | type                  |
-      | 1   |            | root_package |             | templates/DMT/Package |
+      | 1   |            | root_package |             | system/DMT/Package |
 
   Scenario: Add file - not contained
     Given i access the resource url "/api/v2/explorer/data-source-name/add-file"
@@ -19,7 +20,7 @@ Feature: Explorer - Add file
     {
       "name": "new_document",
       "parentId": "1",
-      "type": "templates/SIMOS/Blueprint",
+      "type": "system/SIMOS/Blueprint",
       "attribute": "documents"
     }
     """
@@ -29,7 +30,7 @@ Feature: Explorer - Add file
     {
         "data":{
            "name":"new_document",
-           "type":"templates/SIMOS/Blueprint",
+           "type":"system/SIMOS/Blueprint",
            "storageRecipes":[]
         }
     }
@@ -42,12 +43,12 @@ Feature: Explorer - Add file
     {
        "blueprint":{
           "name":"Package",
-          "type":"templates/SIMOS/Blueprint"
+          "type":"system/SIMOS/Blueprint"
        },
        "document":{
           "name":"root_package",
           "description":"",
-          "type":"templates/DMT/Package",
+          "type":"system/DMT/Package",
           "documents":[
             {
               "name":"new_document"
@@ -68,7 +69,7 @@ Feature: Explorer - Add file
     """
     {
       "parentId": 1,
-      "type": "templates/SIMOS/Blueprint"
+      "type": "system/SIMOS/Blueprint"
     }
     """
     Then the response status should be "Bad Request"
@@ -102,7 +103,7 @@ Feature: Explorer - Add file
     {
       "name": "new_document",
       "parentId": "-1",
-      "type": "templates/SIMOS/Blueprint",
+      "type": "system/SIMOS/Blueprint",
       "attribute": "documents"
     }
     """

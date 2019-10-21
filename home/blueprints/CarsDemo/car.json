@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "Car",
   "description": "This describes a car",
   "attributes": [
@@ -16,19 +16,19 @@
       "name": "manufacturer"
     },
     {
-      "type": "templates/CarsDemo/Wheel",
+      "type": "SSR-DataSource/CarsDemo/Wheel",
       "name": "wheels",
       "dimensions": "*"
     },
     {
-      "type": "templates/CarsDemo/subdir/Engine",
+      "type": "SSR-DataSource/CarsDemo/subdir/Engine",
       "name": "engine"
     }
   ],
   "storageRecipes": [
     {
       "name": "DefaultStorageRecipe",
-      "type": "templates/SIMOS/StorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
       "description": "",
       "attributes": [
         {
@@ -44,7 +44,7 @@
   ],
   "uiRecipes": [
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "DEFAULT_EDIT",
       "description": "",
       "attributes": [

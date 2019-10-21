@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "Wheel",
   "description": "This describes a wheel",
   "attributes": [
@@ -20,7 +20,7 @@
       "name": "type",
       "optional": false,
       "contained": true,
-      "default": "templates/CarsDemo/Wheel"
+      "default": "SSR-DataSource/CarsDemo/Wheel"
     },
     {
       "type": "string",

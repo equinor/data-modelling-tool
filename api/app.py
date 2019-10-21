@@ -51,11 +51,8 @@ def load_application_settings():
 def init_application(contained: bool = False):
     application_settings = import_application_settings()
 
-    # TODO: Hard code core
-    for folder in application_settings["core"]:
-        import_folder(
-            f"{Config.APPLICATION_HOME}/core/{folder}", contained=contained, collection=Config.BLUEPRINT_COLLECTION
-        )
+    for folder in [f"{Config.APPLICATION_HOME}/core/SIMOS", f"{Config.APPLICATION_HOME}/core/DMT"]:
+        import_folder(folder, contained=contained, collection=Config.SYSTEM_COLLECTION)
 
     for folder in application_settings["blueprints"]:
         import_folder(
@@ -104,7 +101,12 @@ def import_data_source(file):
 def nuke_db():
     print("Dropping all collections")
     # FIXME: Read names from the database
-    for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.DATA_SOURCES_COLLECTION]:
+    for name in [
+        Config.BLUEPRINT_COLLECTION,
+        Config.ENTITY_COLLECTION,
+        Config.DATA_SOURCES_COLLECTION,
+        Config.SYSTEM_COLLECTION,
+    ]:
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
         dmt_db.drop_collection(name)

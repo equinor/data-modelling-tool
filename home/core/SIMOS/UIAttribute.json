@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "UiAttribute",
   "description": "This describes a ui recipe",
   "attributes": [

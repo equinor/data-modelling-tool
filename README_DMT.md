@@ -27,7 +27,7 @@ Below is a short version of a BlueprintAttribute, which in this context becomes 
 based on a Blueprint template.
 ```
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "BlueprintAttribute",
   "description": "This describes a blueprint attribute",
   "attributes": [

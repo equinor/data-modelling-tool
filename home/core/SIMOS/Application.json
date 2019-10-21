@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "Application",
   "description": "This describes an application",
   "attributes": [
@@ -30,7 +30,7 @@
       "description": "Models that are available to create"
     },
     {
-      "type": "templates/SIMOS/Runnable",
+      "type": "system/SIMOS/Runnable",
       "name": "runnable",
       "dimensions": "*",
       "description": "Runnable recipes"

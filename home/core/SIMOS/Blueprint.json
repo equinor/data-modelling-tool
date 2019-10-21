@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "name": "Blueprint",
   "description": "This describes a blueprint",
   "attributes": [
@@ -12,19 +12,19 @@
       "name": "description"
     },
     {
-      "type": "templates/SIMOS/BlueprintAttribute",
+      "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
       "name": "attributes",
       "contained": true
     },
     {
-      "type": "templates/SIMOS/StorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
       "name": "storageRecipes",
       "contained": false
     },
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "dimensions": "*",
       "name": "uiRecipes",
       "contained": false
@@ -32,7 +32,7 @@
   ],
   "storageRecipes": [
     {
-      "type": "templates/SIMOS/StorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
       "name": "DefaultStorageRecipe",
       "description": "",
       "attributes": [
@@ -53,14 +53,14 @@
   ],
   "uiRecipes": [
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "PREVIEW",
       "description": "",
       "plugin": "PREVIEW",
       "attributes": []
     },
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "EDIT",
       "description": "",
       "attributes": [
@@ -86,7 +86,7 @@
       ]
     },
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "VIEW",
       "description": "",
       "plugin": "VIEW",
@@ -102,7 +102,7 @@
       ]
     },
     {
-      "type": "templates/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UIRecipe",
       "name": "TEST_EXTERNAL",
       "description": "",
       "plugin": "TEST_EXTERNAL",

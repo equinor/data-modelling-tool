@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "description": "Blueprint for a ui widget",
   "name": "UiWidget",
   "attributes": [
@@ -12,7 +12,7 @@
     {
       "name": "type",
       "type": "string",
-      "default": "templates/SIMOS/UiWidget"
+      "default": "system/SIMOS/UiWidget"
     },
     {
       "name": "optional",
@@ -21,7 +21,7 @@
       "description": "Used to control what plugin in chosen."
     },
     {
-      "type": "templates/SIMOS/UiAttribute",
+      "type": "system/SIMOS/UiAttribute",
       "name": "options",
       "dimensions": "*",
       "description": "List of options for this widget. may be anything, title, another widget or styling."

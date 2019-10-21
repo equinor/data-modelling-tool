@@ -3,8 +3,10 @@ Feature: Data Source
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host     | port | username | password | tls  | name           | database   | collection | documentType | type    |
-      | hostname | 1234 | user     | secret   | true | equinor-models | database_1 | blueprints | blueprints   | mongo-db|
+      | host | port  | username | password | tls   | name           | database | collection     | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | entities       | maf      | documents      | entities     | mongo-db |
+      | db   | 27017 | maf      | maf      | false | SSR-DataSource | dmt      | SSR-DataSource | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system         | dmt      | system         | system       | mongo-db |
 
   Scenario: Get data source blueprints
     Given I access the resource url "/api/v2/data-sources?documentType=blueprints"
@@ -18,8 +20,8 @@ Feature: Data Source
         "name": "Local workspace"
       },
       {
-        "host": "hostname",
-        "name": "equinor-models"
+        "host": "db",
+        "name": "SSR-DataSource"
       }
     ]
     """

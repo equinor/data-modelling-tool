@@ -8,6 +8,4 @@ def step_impl(context):
     application_settings = import_application_settings()
     for folder in application_settings["core"]:
         print(f"Importing {folder}")
-        import_folder(
-            f"{Config.APPLICATION_HOME}/core/{folder}", contained=True, collection=Config.BLUEPRINT_COLLECTION
-        )
+        import_folder(f"{Config.APPLICATION_HOME}/core/{folder}", contained=True, collection=Config.SYSTEM_COLLECTION)

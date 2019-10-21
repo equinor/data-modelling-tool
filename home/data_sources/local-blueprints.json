@@ -5,8 +5,8 @@
   "username": "maf",
   "password": "maf",
   "tls": false,
-  "name": "templates",
+  "name": "SSR-DataSource",
   "database": "dmt",
-  "collection": "templates",
+  "collection": "SSR-DataSource",
   "documentType": "blueprints"
 }

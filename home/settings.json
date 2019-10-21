@@ -1,5 +1,5 @@
 {
-  "type": "templates/SIMOS/Application",
+  "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "blueprints": [
     "CarsDemo"
@@ -12,7 +12,7 @@
     "DMT"
   ],
   "models": [
-    "templates/DMT/Package"
+    "system/DMT/Package"
   ],
   "settings": {
     "showBlueprints": false
