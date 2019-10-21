@@ -14,5 +14,6 @@ class Config:
     BLUEPRINT_COLLECTION = "templates"
     ENTITY_COLLECTION = "entities"
     DATA_SOURCES_COLLECTION = "data_sources"
+    SYSTEM_COLLECTION = "system"
     CACHE_MAX_SIZE = 0 if ENVIRONMENT == "local" else 64
     APPLICATION_HOME = "/home"

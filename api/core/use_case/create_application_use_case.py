@@ -14,12 +14,12 @@ import pathlib
 import json
 import os
 
-from core.shared.templates import SIMOS, DMT
+from core.shared.templates import DMT
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 
 
-DOCKER_COMPOSE = """
+DOCKER_COMPOSE = """\
 version: "3.4"
 
 services:
@@ -58,7 +58,7 @@ services:
       - web
     image: mariner.azurecr.io/dmt/nginx
     ports:
-      - "9000:80" 
+      - "9000:80"
 """
 
 
@@ -96,36 +96,6 @@ def zip_all(ob, path, rel=""):
         ob.write(path, os.path.join(rel, basename))
     else:
         pass
-
-
-"""
-def zip_package(ob, document, document_repository, path):
-    json_data = json.dumps(document.data)
-    binary_data = json_data.encode()
-    write_to = f"{path}/{document.data['name']}.json"
-    print("Writing...", write_to)
-    ob.writestr(write_to, binary_data)
-
-    blueprint = get_blueprint(document.type)
-    storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
-
-    document_references = []
-    for attribute in blueprint.get_attributes_with_reference():
-        name = attribute["name"]
-        is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
-        if attribute.get("dimensions", "") == "*":
-            if not is_contained_in_storage:
-                if name in document.data:
-                    references = document.data[name]
-                    for reference in references:
-                        document_reference: DTO = document_repository.get(reference["_id"])
-                        document_references.append({"document": document_reference, "attribute": name})
-
-    for document_reference in document_references:
-        zip_package(
-            ob, document_reference["document"], document_repository, f"{path}/{document_reference['attribute']}"
-        )
-"""
 
 
 def remove_ids(data):

@@ -35,7 +35,7 @@ logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 def import_application_settings():
     with open(f"{Config.APPLICATION_HOME}/settings.json") as json_file:
         application_settings = json.load(json_file)
-        dmt_db["system"].insert_one(application_settings)
+        dmt_db[Config.SYSTEM_COLLECTION].insert_one(application_settings)
         logger.info(f"Imported application settings {application_settings['name']}")
         return application_settings
 
