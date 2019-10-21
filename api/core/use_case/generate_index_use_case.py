@@ -3,12 +3,14 @@ from flask import g
 from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
 from core.domain.storage_recipe import StorageRecipe
+from core.domain.ui_recipe import UIRecipe
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared.templates import DMT, SIMOS
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_ui_recipe import get_ui_recipe
 from utils.logging import logger
 from anytree import NodeMixin, RenderTree, PreOrderIter
 
@@ -266,6 +268,7 @@ class Tree:
             raise EntityNotFoundException(uid=document.type)
 
         storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
+        ui_recipe: UIRecipe = get_ui_recipe(blueprint, "EDIT")
 
         attribute_nodes = []
         # Use the blueprint to find attributes that contains references
@@ -274,9 +277,7 @@ class Tree:
             # What blueprint is this attribute pointing too
 
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
-
-            # TODO: ui recipe
-            is_contained_in_ui = attribute["contained"] if "contained" in attribute else False
+            is_contained_in_ui = ui_recipe.is_contained(attribute)
 
             print(f"-----------{document.name}:{name}:{is_contained_in_storage}:{is_contained_in_ui}-----------")
 

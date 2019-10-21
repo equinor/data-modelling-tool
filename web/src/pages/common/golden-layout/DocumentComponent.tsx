@@ -95,7 +95,7 @@ const DocumentComponent = (props: any) => {
         url={dataUrl}
         render={(data: any) => {
           const document = attribute
-            ? objectPath.get(data.document, attribute)
+            ? objectPath.get(data.document, attribute, {})
             : data.document
 
           return (
