@@ -2,12 +2,9 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "blueprints": [
-    "CarsDemo",
     "TodoDemo"
   ],
-  "entities": [
-    "CarsDemo"
-  ],
+  "entities": [],
   "blueprintsModels": [
     "system/DMT/Package"
   ],

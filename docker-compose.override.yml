@@ -28,6 +28,7 @@ services:
       target: dev
     volumes:
       - ./web/src:/code/src
+      - ./home/runnable.js:/code/src/runnable.js
     environment:
       - NODE_ENV=development
     ports:

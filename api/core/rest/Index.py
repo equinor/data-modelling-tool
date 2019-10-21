@@ -19,7 +19,9 @@ def get(data_source_id: str):
         package_repository=package_repository,
         get_repository=get_repository,
     )
-    result = use_case.execute(data_source_id=data_source_id, data_source_name=data_source.name)
+    result = use_case.execute(
+        data_source_id=data_source_id, document_type=data_source.documentType, data_source_name=data_source.name
+    )
     return Response(json.dumps(result.to_dict()), mimetype="application/json", status=200)
 
 
@@ -36,6 +38,11 @@ def get_document(data_source_id: str, document_id: str):
         get_repository=get_repository,
         document_repository=document_repository,
     )
-    result = use_case.single(data_source_id=data_source_id, data_source_name=data_source.name, document_id=document_id)
+    result = use_case.single(
+        data_source_id=data_source_id,
+        data_source_name=data_source.name,
+        document_id=document_id,
+        document_type=data_source.documentType,
+    )
 
     return Response(json.dumps(result), mimetype="application/json", status=200)

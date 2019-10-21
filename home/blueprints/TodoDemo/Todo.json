@@ -1,0 +1,32 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Todo",
+  "description": "This describes a todo",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "integer",
+      "name": "id"
+    },
+    {
+      "type": "integer",
+      "name": "userId"
+    },
+    {
+      "type": "boolean",
+      "name": "completed"
+    }
+  ],
+  "storageRecipes": [
+  ],
+  "uiRecipes": [
+  ]
+}
+

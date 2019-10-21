@@ -43,7 +43,7 @@ def import_application_settings():
 @app.before_request
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def load_application_settings():
-    g.application_settings = dmt_db["system"].find_one(filter={"name": "ApplicationSettings"})
+    g.application_settings = dmt_db[Config.SYSTEM_COLLECTION].find_one(filter={"name": "ApplicationSettings"})
 
 
 @app.cli.command()
@@ -51,8 +51,10 @@ def load_application_settings():
 def init_application(contained: bool = False):
     application_settings = import_application_settings()
 
-    for folder in [f"{Config.APPLICATION_HOME}/core/SIMOS", f"{Config.APPLICATION_HOME}/core/DMT"]:
-        import_folder(folder, contained=contained, collection=Config.SYSTEM_COLLECTION)
+    for folder in Config.SYSTEM_FOLDERS:
+        import_folder(
+            f"{Config.APPLICATION_HOME}/core/{folder}", contained=contained, collection=Config.SYSTEM_COLLECTION
+        )
 
     for folder in application_settings["blueprints"]:
         import_folder(
