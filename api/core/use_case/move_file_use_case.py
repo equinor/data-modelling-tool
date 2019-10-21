@@ -1,5 +1,5 @@
 from core.domain.dto import DTO
-from utils.enums import RepositoryType
+from core.repository.repository_factory import RepositoryType
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res

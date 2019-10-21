@@ -18,9 +18,3 @@ class DataSourceDocumentType(Enum):
     def has_value(value):
         values = [item.value for item in DataSourceDocumentType]
         return value in values
-
-
-class RepositoryType(Enum):
-    DocumentRepository = "DocumentRepository"
-    PackageRepository = "PackageRepository"
-    BlueprintRepository = "BlueprintRepository"

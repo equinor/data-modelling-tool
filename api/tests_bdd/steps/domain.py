@@ -6,8 +6,7 @@ from core.domain.package import Package
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
-from core.repository.repository_factory import get_repository
-from utils.enums import RepositoryType
+from core.repository.repository_factory import get_repository, RepositoryType
 from core.shared.templates import DMT, SIMOS
 
 

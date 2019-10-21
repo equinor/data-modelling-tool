@@ -1,3 +1,5 @@
+from enum import Enum
+
 from core.repository.mongo.document_repository import MongoDocumentRepository
 from core.repository.mongo.mongo_db_client import MongoDbClient
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
@@ -5,7 +7,13 @@ from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 
 # TODO: Make Enum
 from core.repository.mongo.package_repository import MongoPackageRepository
-from utils.enums import DataSourceType, RepositoryType
+from utils.enums import DataSourceType
+
+
+class RepositoryType(Enum):
+    DocumentRepository = "DocumentRepository"
+    PackageRepository = "PackageRepository"
+    BlueprintRepository = "BlueprintRepository"
 
 
 def get_repository(repository_type: RepositoryType, data_source):
