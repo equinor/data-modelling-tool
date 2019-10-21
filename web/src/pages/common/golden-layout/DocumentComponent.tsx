@@ -1,5 +1,7 @@
 import React from 'react'
-import ReactJsonSchemaWrapper from '../form/ReactJsonSchemaWrapper'
+import ReactJsonSchemaWrapper, {
+  onFormSubmit,
+} from '../form/ReactJsonSchemaWrapper'
 import styled from 'styled-components'
 import FetchDocument from '../utils/FetchDocument'
 // @ts-ignore
@@ -7,7 +9,8 @@ import objectPath from 'object-path'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins'
-import ViewPlugin from '../../../plugins/ViewPlugin'
+import { EditPlugin } from '../../../plugins/form_edit/Form'
+import ViewPlugin from '../../../plugins/view/ViewPlugin'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -18,68 +21,89 @@ export enum RegisteredPlugins {
   PREVIEW = 'PREVIEW',
   EDIT = 'EDIT',
   VIEW = 'VIEW',
+  EDIT_PLUGIN = 'EDIT_PLUGIN',
 }
 
-// These UI recipes should always be shown
-const DEFAULT_UI_RECIPES = [RegisteredPlugins.PREVIEW, RegisteredPlugins.EDIT]
-
 const View = (props: any) => {
-  const { schemaUrl, parent, document, dataUrl, attribute, uiRecipe } = props
-  switch (uiRecipe) {
+  const {
+    schemaUrl,
+    parent,
+    children,
+    document,
+    dataUrl,
+    attribute,
+    uiPlugin,
+  } = props
+  const pluginProps = {
+    parent,
+    blueprint: document,
+    children,
+    name: uiPlugin,
+  }
+  switch (uiPlugin) {
     case 'PREVIEW':
       return <BlueprintPreview data={document} />
 
     case RegisteredPlugins.VIEW:
-      return <ViewPlugin blueprint={document} parent={parent} />
-
-    default:
-      const ExternalPlugin = pluginHook(uiRecipe)
-      if (ExternalPlugin) {
-        return <ExternalPlugin blueprint={document} parent={parent} />
-      }
-      //@todo use EDIT plugin, and alert the user of missing plugin.
+      return <ViewPlugin {...pluginProps} />
+    case RegisteredPlugins.EDIT_PLUGIN:
+      return (
+        <EditPlugin
+          {...pluginProps}
+          onSubmit={onFormSubmit({ attribute: null, dataUrl })}
+        />
+      )
+    case RegisteredPlugins.EDIT:
+      const documentOrAttributes = attribute
+        ? objectPath.get(document, attribute, {})
+        : document
       return (
         <ReactJsonSchemaWrapper
-          document={document}
+          document={documentOrAttributes}
           schemaUrl={schemaUrl}
           dataUrl={dataUrl}
           attribute={attribute}
-          uiRecipe={uiRecipe}
+          uiRecipe={uiPlugin}
         />
       )
+
+    default:
+      const ExternalPlugin = pluginHook(uiPlugin)
+      if (ExternalPlugin) {
+        return <ExternalPlugin {...pluginProps} />
+      }
+
+      return <div>`Plugin not supported: ${uiPlugin}`</div>
   }
 }
 
 const ViewList = (props: any) => {
-  const { document, parent } = props
-  const { uiRecipes = [] } = document
-
-  //@todo remove this, now name and plugin in a uiRecipe must match, otherwise the plugin wont be used.
-  const uiRecipeNamesBlueprint = uiRecipes.map(
-    (uiRecipe: any) => uiRecipe['name']
-  )
-  const uiRecipeNamesParent = parent.uiRecipes
-    .map((uiRecipe: any) => uiRecipe['plugin'])
+  const { parent } = props
+  const uiPluginNames = parent.uiRecipes
+    .map((uiRecipe: any) => {
+      if (!uiRecipe.plugin) {
+        console.warn('plugin missing: ' + uiRecipe)
+      }
+      return uiRecipe.plugin
+    })
     .filter((name: string) => name !== undefined)
-  // Create a list of unique UI recipe names
-  const uiRecipesNames = Array.from(
-    new Set(
-      DEFAULT_UI_RECIPES.concat(uiRecipeNamesBlueprint).concat(
-        uiRecipeNamesParent
-      )
-    )
-  )
+
+  //@todo remove this hack when all blueprints has correct defualt uiSchemas set.
+  if (uiPluginNames.length === 0) {
+    uiPluginNames.push('PREVIEW');
+    uiPluginNames.push('EDIT');
+  }
   return (
     <Tabs>
       <TabList>
-        {uiRecipesNames.map((uiRecipesName: string) => {
-          return <Tab key={uiRecipesName}>{uiRecipesName}</Tab>
+        {uiPluginNames.map((uiPluginName: string) => {
+          return <Tab key={uiPluginName}>{uiPluginName}</Tab>
         })}
       </TabList>
-      {uiRecipesNames.map((uiRecipesName: string) => {
+      {uiPluginNames.map((uiPluginName: string) => {
         return (
-          <TabPanel key={uiRecipesName}>
-            <View {...props} uiRecipe={uiRecipesName} />
+          <TabPanel key={uiPluginName}>
+            <View {...props} uiPlugin={uiPluginName} />
           </TabPanel>
         )
       })}
@@ -88,18 +112,19 @@ const ViewList = (props: any) => {
 }
 
 const DocumentComponent = (props: any) => {
-  const { dataUrl, attribute = null } = props
+  const { dataUrl } = props
   return (
     <Wrapper>
       <FetchDocument
         url={dataUrl}
         render={(data: any) => {
-          const document = attribute
-            ? objectPath.get(data.document, attribute, {})
-            : data.document
-
           return (
-            <ViewList {...props} document={document} parent={data.blueprint} />
+            <ViewList
+              {...props}
+              document={data.document}
+              parent={data.blueprint}
+              children={data.children}
+            />
           )
         }}
       />

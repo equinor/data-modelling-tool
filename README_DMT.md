@@ -3,7 +3,9 @@ The purpose of this document is to get a high level understanding of the core co
 It should minimize the risk of misunderstandings between stakeholders.
 
 #### Introduction
-The data modelling tool is a tool for models, e.g templates, blueprints and entities. Entities can be used for creating applications, 
+The data modelling tool is a tool for models, e.g templates, blueprints and entities, 
+which are based on a framework for language and library agnostic type system. 
+Entities can be used for creating applications, 
 libraries, code generators and even the DMT itself.
 This is achieved by controlling the boundaries and expressiveness of the models. 
 This makes it possible to create a recursive typebound system.

@@ -1,6 +1,6 @@
 import React from 'react'
-import { Blueprint, BlueprintAttribute } from '../types'
-import { Pre } from '../preview/PreviewPlugin'
+import {Blueprint, BlueprintAttribute} from "../../types";
+import {Pre} from "../../preview/PreviewPlugin";
 
 type Props = {
   blueprint: Blueprint
@@ -19,6 +19,15 @@ export default ({ blueprint, parentAttribute, attribute }: Props) => {
   let values: any[] = []
   if (parentAttribute.dimensions === '*') {
     values = (blueprint as any)[parentAttribute.name]
+  }
+  if (values.length === 0) {
+    // show the property name and value
+    return (
+      <div style={{ padding: '5px 0' }}>
+        <span style={{ marginRight: 20 }}>{parentAttribute.name}:</span>
+        <span>{JSON.stringify(values)}</span>
+      </div>
+    )
   }
   return (
     <div style={{ padding: '20px 0' }}>

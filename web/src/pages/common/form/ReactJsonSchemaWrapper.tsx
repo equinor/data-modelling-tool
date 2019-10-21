@@ -13,10 +13,8 @@ interface Props {
   uiRecipe: string
 }
 
-const ReactJsonSchemaWrapper = (props: Props) => {
-  const { document, schemaUrl, dataUrl, attribute, uiRecipe } = props
-
-  const onSubmit = (schemas: any) => {
+export const onFormSubmit = ({attribute, dataUrl}: any) => {
+  return (schemas: any) => {
     const url = attribute ? `${dataUrl}/${attribute}` : dataUrl
     axios
       .put(url, schemas.formData)
@@ -32,6 +30,10 @@ const ReactJsonSchemaWrapper = (props: Props) => {
         )
       })
   }
+}
+
+const ReactJsonSchemaWrapper = (props: Props) => {
+  const { document, schemaUrl, dataUrl, attribute, uiRecipe } = props
 
   return (
     <FetchDocument
@@ -41,7 +43,7 @@ const ReactJsonSchemaWrapper = (props: Props) => {
           <ReactJsonSchemaPlugin
             document={document}
             template={data}
-            onSubmit={onSubmit}
+            onSubmit={onFormSubmit({attribute, dataUrl})}
           />
         )
       }}

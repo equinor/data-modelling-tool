@@ -62,18 +62,12 @@
     {
       "type": "system/SIMOS/UIRecipe",
       "name": "EDIT",
+      "plugin": "EDIT",
       "description": "",
       "attributes": [
         {
           "name": "description",
           "widget": "textarea"
-        },
-        {
-          "name": "attributes",
-          "uiRecipe": "DEFAULT_EDIT",
-          "options": {
-            "orderable" : false
-          }
         },
         {
           "name": "storageRecipes",
@@ -93,11 +87,11 @@
       "attributes": [
         {
           "name": "name",
-          "plugin": "view.widget"
+          "widget": "view.widget"
         },
         {
           "name": "uiRecipes",
-          "plugin": "table.widget"
+          "widget": "table.widget"
         }
       ]
     },
@@ -107,6 +101,22 @@
       "description": "",
       "plugin": "TEST_EXTERNAL",
       "attributes": []
+    },
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "Edit plugin",
+      "description": "",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "attributes",
+          "field": "attribute"
+        }
+      ]
     }
   ]
 }

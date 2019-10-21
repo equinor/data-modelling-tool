@@ -60,6 +60,7 @@ def get_document(document_id: str, ui_recipe_name: str, document_repository):
 
     return result
 
+PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 class GetDocumentUseCase(uc.UseCase):
     def __init__(self, document_repository: DocumentRepository, get_repository):
@@ -75,10 +76,21 @@ class GetDocumentUseCase(uc.UseCase):
             raise EntityNotFoundException(uid=document_id)
 
         blueprint = get_blueprint(dto.type)
+        children = []
+        self.add_children_types(children, blueprint.attributes)
 
         return res.ResponseSuccess(
             {
                 "blueprint": blueprint.to_dict(),
                 "document": get_document(document_id, ui_recipe_name, self.document_repository),
+                "children": children,
             }
         )
+
+    # todo control recursive iterations iterations, decided by plugin?
+    def add_children_types(self, children, attributes):
+        for attribute in attributes:
+            if attribute["type"] not in PRIMITIVES:
+                child_blueprint = get_blueprint(attribute["type"])
+                children.append(child_blueprint.to_dict())
+                self.add_children_types(children, child_blueprint.attributes)
