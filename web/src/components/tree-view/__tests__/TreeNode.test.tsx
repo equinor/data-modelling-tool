@@ -1,5 +1,5 @@
 import React from 'react'
-import TreeNode, { TreeNodeProps } from '../TreeNode'
+import TreeNode, { TreeNodeProps, TreeNodeRenderProps } from '../TreeNode'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
 import { NodeIconType, TreeNodeData } from '../Tree'
@@ -10,22 +10,27 @@ describe('TreeNode', () => {
     const props: TreeNodeProps = {
       node: {
         nodeId: 'node_0',
-        nodeType: NodeType.rootPackage,
+        nodeType: NodeType.SIMOS_BLUEPRINT,
         title: 'node_0',
         isRoot: true,
         isOpen: true,
         isExpandable: true,
         isFolder: true,
+        icon: NodeIconType.folder,
       },
-      NodeRenderer: (path, parent, node: TreeNodeData) => {
-        return <h2>{node.title}</h2>
+      NodeRenderer: (props: TreeNodeRenderProps) => {
+        return <h2>{props.nodeData.title}</h2>
       },
-      level: 0,
-      updateNode: () => {},
-      addNode: () => {},
+      actions: {
+        updateNode: () => {},
+        addNode: () => {},
+        replaceNode: () => {},
+        removeNode: () => {},
+        addChild: () => {},
+        addNodes: () => {},
+      },
       handleToggle: () => {},
-      replaceNode: () => {},
-      removeNode: () => {},
+      level: 0,
       path: '',
       parent: '',
     }
