@@ -57,5 +57,49 @@
         }
       ]
     }
+  ],
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "DEFAULT_CREATE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "isRoot",
+          "widget": "hidden"
+        },
+        {
+          "name": "packages",
+          "contained": false
+        },
+        {
+          "name": "documents",
+          "contained": false
+        }
+      ]
+    },
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "packages",
+          "contained": false
+        },
+        {
+          "name": "documents",
+          "contained": false
+        }
+      ]
+    }
   ]
 }

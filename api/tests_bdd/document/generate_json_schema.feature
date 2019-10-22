@@ -20,3 +20,79 @@ Feature: Document - Generate JSON Schema
         "uiSchema": {}
     }
     """
+
+  Scenario: Generate Application
+    Given i access the resource url "/api/v2/json-schema/system/SIMOS/Application"
+    And data modelling tool templates are imported
+    When i make a "GET" request
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+       "schema":{
+          "type":"object",
+          "properties":{
+             "name":{
+                "type":"string"
+             },
+             "description":{
+                "type":"string"
+             },
+             "blueprints":{
+                "type":"array",
+                "items":{
+                   "type":"string",
+                   "description":"Blueprint packages that are available by default"
+                }
+             },
+             "entities":{
+                "type":"array",
+                "items":{
+                   "type":"string",
+                   "description":"Entity packages that are available by default"
+                }
+             },
+             "blueprintsModels":{
+                "type":"array",
+                "items":{
+                   "type":"string",
+                   "description":"Models that are available to create in blueprints page"
+                }
+             },
+             "entityModels":{
+                "type":"array",
+                "items":{
+                   "type":"string",
+                   "description":"Models that are available to create in entity page"
+                }
+             },
+             "runnable":{
+                "type":"object",
+                "properties":{
+                   "name":{
+                      "type":"string"
+                   },
+                   "description":{
+                      "type":"string"
+                   },
+                   "input":{
+                      "type":"string",
+                      "description":""
+                   },
+                   "output":{
+                      "type":"string",
+                      "description":""
+                   },
+                   "function":{
+                      "type":"string",
+                      "description":"What are the function called inside runnable.tsx"
+                   }
+                }
+             }
+          }
+       },
+       "uiSchema":{
+
+       }
+    }
+    """
