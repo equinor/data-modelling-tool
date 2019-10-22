@@ -41,6 +41,8 @@ services:
   web:
     image: mariner.azurecr.io/dmt/web
     restart: unless-stopped
+    volumes:
+      - ./home/runnable.js:/code/src/runnable.js
 
   db:
     image: mongo:3.4
@@ -156,6 +158,8 @@ class CreateApplicationUseCase(uc.UseCase):
             json_data = json.dumps(remove_ids(application.data))
             binary_data = json_data.encode()
             zip_file.writestr("home/settings.json", binary_data)
+            with open(f"{Config.APPLICATION_HOME}/runnable.js") as runnable_file:
+                zip_file.writestr("home/runnable.js", runnable_file.read())
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             for type in application.data["blueprints"]:
                 root_package: DTO = self.document_repository.find({"name": type})

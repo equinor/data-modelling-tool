@@ -25,18 +25,23 @@
     },
     {
       "type": "string",
-      "name": "models",
+      "name": "blueprintsModels",
       "dimensions": "*",
-      "description": "Models that are available to create"
+      "description": "Models that are available to create in blueprints page"
+    },
+    {
+      "type": "string",
+      "name": "entityModels",
+      "dimensions": "*",
+      "description": "Models that are available to create in entity page"
     },
     {
       "type": "system/SIMOS/Runnable",
       "name": "runnable",
-      "dimensions": "*",
-      "description": "Runnable recipes"
+      "description": "Runnable recipe"
     },
     {
-      "type": "templates/SIMOS/ApplicationSetting",
+      "type": "system/SIMOS/ApplicationSetting",
       "name": "settings",
       "dimensions": "*",
       "description": "Application settings"

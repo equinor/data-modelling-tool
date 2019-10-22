@@ -10,8 +10,9 @@ from core.shared import use_case as uc
 
 
 class AddRootPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, name=None):
+    def __init__(self, name=None, type=None):
         self.name = name
+        self.type = type
 
     @classmethod
     def from_dict(cls, adict):
@@ -20,10 +21,13 @@ class AddRootPackageRequestObject(req.ValidRequestObject):
         if "name" not in adict:
             invalid_req.add_error("name", "is missing")
 
+        if "type" not in adict:
+            invalid_req.add_error("type", "is missing")
+
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(name=adict.get("name"))
+        return cls(name=adict.get("name"), type=adict.get("type"))
 
 
 class AddRootPackageUseCase(uc.UseCase):
@@ -32,8 +36,9 @@ class AddRootPackageUseCase(uc.UseCase):
 
     def process_request(self, request_object):
         name: str = request_object.name
+        type: str = request_object.type
 
-        package = Package(uid=str(uuid4()), name=name, is_root=True)
+        package = Package(uid=str(uuid4()), name=name, is_root=True, type=type)
 
         # uid=package.uid,
         document: DTO = DTO(data=package.to_dict())

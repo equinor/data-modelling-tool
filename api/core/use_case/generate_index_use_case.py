@@ -237,6 +237,20 @@ class Tree:
             },
         ]
 
+        if document.type == g.application_settings["runnable"]["input"]:
+            menu_items.append(
+                {
+                    "label": f"Run {g.application_settings['runnable']['name']}",
+                    "action": "RUNNABLE",
+                    "data": {
+                        "prompt": {"title": "Create Application", "content": "Download the application"},
+                        "runnable": g.application_settings["runnable"],
+                        "documentId": document.uid,
+                        "dataSourceId": data_source_id,
+                    },
+                }
+            )
+
         if document.type == SIMOS.APPLICATION.value:
             menu_items.append(
                 {
@@ -293,6 +307,7 @@ class Tree:
 
             # If the attribute is an array
             if attribute.get("dimensions", "") == "*":
+                print(attribute)
                 item_type = get_blueprint(attribute["type"])
 
                 # TODO: This is hard coded now...
@@ -414,11 +429,17 @@ class Tree:
                     data_source_id=data_source_id, document=attribute_document, parent_node=attribute_node["node"]
                 )
 
-    def execute(self, data_source_id: str, data_source_name: str, packages) -> Index:
+    def execute(self, data_source_id: str, data_source_name: str, packages, document_type: str) -> Index:
 
         index = Index(data_source_id=data_source_id)
 
-        models = [
+        models = (
+            g.application_settings["blueprintsModels"]
+            if document_type == "blueprints"
+            else g.application_settings["entityModels"]
+        )
+
+        new_models = [
             {
                 "label": "Package",
                 "action": "CREATE",
@@ -426,14 +447,16 @@ class Tree:
                     "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
                     "schemaUrl": f"/api/v2/json-schema/{model}?ui_recipe=DEFAULT_CREATE",
                     "nodeUrl": f"/api/v3/index/{data_source_id}",
-                    "request": {"name": "${name}"},
+                    "request": {"name": "${name}", "type": model},
                 },
             }
-            for model in g.application_settings["models"]
+            for model in models
         ]
 
         root_node = DocumentNode(
-            data_source_id=data_source_id, name=data_source_name, menu_items=[{"label": "New", "menuItems": models}]
+            data_source_id=data_source_id,
+            name=data_source_name,
+            menu_items=[{"label": "New", "menuItems": new_models}],
         )
 
         for package in packages:
@@ -467,16 +490,21 @@ class GenerateIndexUseCase:
             document_repository=document_repository,
         )
 
-    def execute(self, data_source_id: str, data_source_name: str) -> Index:
+    def execute(self, data_source_id: str, data_source_name: str, document_type: str) -> Index:
         packages = []
         for package in self.package_repository.list():
             # TODO: Make Indexer Handle Package Class
             package.packages = [{"name": p.name, "_id": p.uid} for p in package.packages]
             packages.append(package)
 
-        return self.tree.execute(data_source_id=data_source_id, data_source_name=data_source_name, packages=packages)
+        return self.tree.execute(
+            data_source_id=data_source_id,
+            data_source_name=data_source_name,
+            document_type=document_type,
+            packages=packages,
+        )
 
-    def single(self, data_source_id: str, data_source_name: str, document_id: str) -> Index:
+    def single(self, data_source_id: str, data_source_name: str, document_id: str, document_type: str) -> Index:
         document = self.document_repository.get(document_id)
         # The tree can't handle dto, need to use one of the below
         if document.type == DMT.PACKAGE.value:
@@ -489,7 +517,10 @@ class GenerateIndexUseCase:
             document.uid = dto.uid
 
         data = self.tree.execute(
-            data_source_id=data_source_id, data_source_name=data_source_name, packages=[document]
+            data_source_id=data_source_id,
+            data_source_name=data_source_name,
+            packages=[document],
+            document_type=document_type,
         ).to_dict()
         del data[data_source_id]
         return data
