@@ -1,4 +1,3 @@
-from pathlib import Path
 from flask import g
 from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
@@ -7,11 +6,10 @@ from core.domain.ui_recipe import UIRecipe
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.shared.templates import DMT, SIMOS
+from utils.enums import SIMOS, DMT
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
-from utils.logging import logger
 from anytree import NodeMixin, RenderTree, PreOrderIter
 
 
@@ -126,7 +124,7 @@ class Tree:
         for ref in references:
 
             if isinstance(ref, dict):
-                logger.warning(f"Add ref '{ref}' {item_type}")
+                # logger.warning(f"Add ref '{ref}' {item_type}")
                 if item_type == DMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
                     # document.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in document.packages]
@@ -194,19 +192,25 @@ class Tree:
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
     ):
-        print(f"adding {attribute_type} to {'.'.join(document_path)}")
+        # print(f"adding {attribute_type} to {'.'.join(document_path)}")
         for index, instance in enumerate(values):
             if isinstance(instance, dict):
                 self.generate_contained_node(
                     document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
                 )
 
-    def process_document(self, data_source_id, document, parent_node):
-        logger.info(f"Add attributes for '{document.name}'")
+    def process_document(self, data_source_id, document, parent_node: DocumentNode):
+        # logger.info(f"Add attributes for '{document.name}'")
 
         blueprint = get_blueprint(document.type)
 
-        parent_attribute = Path(parent_node.start_path)
+        # TODO: Dont need this with only one type contained in package
+        if document.type == SIMOS.APPLICATION.value:
+            parent_attribute = "applications"
+        elif document.type in [DMT.PACKAGE.value, DMT.ENTITY_PACKAGE.value]:
+            parent_attribute = "packages"
+        else:
+            parent_attribute = "documents"
 
         menu_items = [
             {
@@ -231,7 +235,7 @@ class Tree:
                     "request": {
                         "parentId": parent_node.uid,
                         "documentId": document.uid,
-                        "attribute": parent_attribute.name,
+                        "attribute": parent_attribute,
                     },
                 },
             },
@@ -305,14 +309,14 @@ class Tree:
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
             is_contained_in_ui = ui_recipe.is_contained(attribute)
 
-            print(f"-----------{document.name}:{name}:{is_contained_in_storage}:{is_contained_in_ui}-----------")
+            # print(f"-----------{document.name}:{name}:{is_contained_in_storage}:{is_contained_in_ui}-----------")
 
             if is_contained_in_ui:
                 continue
 
             # If the attribute is an array
             if attribute.get("dimensions", "") == "*":
-                print(attribute)
+                # print(attribute)
                 item_type = get_blueprint(attribute["type"])
 
                 # TODO: This is hard coded now...
@@ -467,7 +471,7 @@ class Tree:
         for package in packages:
             self.process_document(data_source_id, package, root_node)
 
-        print_tree(root_node)
+        # print_tree(root_node)
 
         for node in PreOrderIter(root_node):
             index.add(node.to_node())
