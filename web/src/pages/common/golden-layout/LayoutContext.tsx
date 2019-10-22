@@ -51,12 +51,22 @@ export const LayoutProvider = ({ children, layout }: Props) => {
     }
   }
 
+  const refresh = (id: string) => {
+    // TODO: Can this be done better?
+    if (isOpen(layout, id)) {
+      const components = layout.myLayout.root.getItemsById(id)
+      components[0].remove()
+      layout.myLayout.root.contentItems[0].addChild(components[0].config)
+    }
+  }
+
   return (
     <LayoutContext.Provider
       value={{
         add,
         remove,
         update,
+        refresh,
       }}
     >
       {children}

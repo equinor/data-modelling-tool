@@ -3,7 +3,7 @@ import axios from 'axios'
 const GET_URL = "https://jsonplaceholder.typicode.com/todos/"
 const POST_URL = "/api/v2/documents"
 
-const runnable = ({action, runnable, node}) => {
+const runnable = ({action, runnable, node, setProgress, createNodes, layout}) => {
     axios
       .get(GET_URL)
       .then(response => {
@@ -14,6 +14,8 @@ const runnable = ({action, runnable, node}) => {
                   return todo
               })
           })
+          setProgress(100)
+          layout.refresh(action.data.documentId)
       })
       .catch(error => {
           console.log(error);
