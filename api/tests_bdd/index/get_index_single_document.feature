@@ -28,27 +28,6 @@ Feature: Index
           "title":"document_1",
           "id":"data-source-name/document_1/3",
           "nodeType":"document-node",
-          "children":[
-             "data-source-name/document_1/storageRecipes/3",
-             "data-source-name/document_1/uiRecipes/3"
-          ],
-          "type":"system/SIMOS/Blueprint"
-       },
-       "data-source-name/document_1/storageRecipes/3":{
-          "parentId":"data-source-name/document_1/3",
-          "filename":"storageRecipes",
-          "title":"storageRecipes",
-          "id":"data-source-name/document_1/storageRecipes/3",
-          "nodeType":"document-node",
-          "children":[],
-          "type":"system/SIMOS/Blueprint"
-       },
-       "data-source-name/document_1/uiRecipes/3":{
-          "parentId":"data-source-name/document_1/3",
-          "filename":"uiRecipes",
-          "title":"uiRecipes",
-          "id":"data-source-name/document_1/uiRecipes/3",
-          "nodeType":"document-node",
           "children":[],
           "type":"system/SIMOS/Blueprint"
        }

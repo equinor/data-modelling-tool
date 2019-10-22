@@ -14,7 +14,8 @@ Feature: Explorer - Add Root Package
     When i make a "POST" request
     """
     {
-      "name": "new_root_package"
+      "name": "new_root_package",
+      "type": "system/DMT/Package"
     }
     """
     Then the response status should be "OK"
@@ -40,6 +41,7 @@ Feature: Explorer - Add Root Package
     When i make a "POST" request
     """
     {
+      "type": "system/DMT/Package"
     }
     """
     Then the response status should be "Bad Request"
