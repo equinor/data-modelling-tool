@@ -264,7 +264,8 @@ class Tree:
             )
 
         # Placeholder for new actions
-        if document.type in [DMT.PACKAGE.value, DMT.ENTITY_PACKAGE.value]:
+        is_package_type = document.type in [DMT.PACKAGE.value, DMT.ENTITY_PACKAGE.value]
+        if is_package_type:
             menu_items.append({"label": "New", "menuItems": []})
 
         node = DocumentNode(
@@ -284,6 +285,10 @@ class Tree:
             },
             menu_items=menu_items,
         )
+
+        # Packages should not open a tab on click
+        if is_package_type:
+            node.on_select = {}
 
         if not blueprint:
             raise EntityNotFoundException(uid=document.type)
