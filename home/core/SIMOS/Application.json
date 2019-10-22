@@ -36,7 +36,7 @@
       "description": "Runnable recipes"
     },
     {
-      "type": "templates/SIMOS/ApplicationSetting",
+      "type": "system/SIMOS/ApplicationSetting",
       "name": "settings",
       "dimensions": "*",
       "description": "Application settings"

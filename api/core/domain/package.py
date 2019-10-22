@@ -34,6 +34,7 @@ class Package:
         type: str = DMT.PACKAGE.value,
         # TODO: Should handle refs and contained blueprints to be consistent with rest of the system
         documents: List[Dict] = None,
+        applications: List[Dict] = None,
         is_root: bool = False,
     ):
         self.name = name
@@ -42,6 +43,7 @@ class Package:
         self.type = type
         self.dependencies = [] if not dependencies else dependencies
         self.documents = [] if not documents else documents
+        self.applications = [] if not applications else applications
         self.packages = []
         self.applications = []
         self.is_root = is_root
@@ -54,6 +56,7 @@ class Package:
             uid=adict["_id"],
             description=adict.get("description"),
             documents=adict.get("documents", adict.get("blueprints")),
+            applications=adict.get("applications", ""),
             dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
             type=adict.get("type", DMT.PACKAGE.value),
             is_root=adict.get("isRoot", "false"),
