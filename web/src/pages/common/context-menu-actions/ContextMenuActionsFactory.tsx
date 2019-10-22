@@ -7,6 +7,11 @@ import { SetShowModal } from './WithContextMenu'
 import { deleteAction } from './actions/delete'
 import { downloadAction } from './actions/download'
 import { runnableAction } from './actions/runnable'
+import Api2 from '../../../api/Api2'
+import values from 'lodash/values'
+import { IndexNode } from '../../../api/Api'
+import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
+import { toObject } from './actions/utils/to_object'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -22,6 +27,29 @@ export interface ContextMenuActionProps {
   setShowModal: SetShowModal
 }
 
+interface CreateNodesProps {
+  documentId: string
+  nodeUrl: string
+  node: TreeNodeRenderProps
+}
+
+const createNodes = (props: CreateNodesProps) => {
+  const { documentId, nodeUrl, node } = props
+  Api2.get({
+    url: `${nodeUrl}/${documentId}`,
+    onSuccess: result => {
+      const nodes: any = values(result)
+      const indexNodes = nodes.map((node: IndexNode) =>
+        new TreeNodeBuilderOld(node).build()
+      )
+      node.actions.addNodes(indexNodes.reduce(toObject, {}))
+      // Connect new nodes to parent in tree
+      node.actions.addChild(node.nodeData.nodeId, nodes[0]['id'])
+    },
+    onError: (err: any) => console.error(Object.keys(err)),
+  })
+}
+
 const getFormProperties = (action: any, props: ContextMenuActionProps) => {
   const { node, setShowModal, layout } = props
 
@@ -34,7 +62,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
 
   switch (method) {
     case ContextMenuActions.CREATE: {
-      return createAction(action, node, setShowModal, showError)
+      return createAction(action, node, setShowModal, showError, createNodes)
     }
     case ContextMenuActions.UPDATE: {
       return updateAction(action, node, setShowModal, showError)
@@ -46,7 +74,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return downloadAction(action)
     }
     case ContextMenuActions.RUNNABLE: {
-      return runnableAction(action, node)
+      return runnableAction(action, node, createNodes, layout)
     }
 
     default:

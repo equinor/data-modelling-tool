@@ -6,6 +6,7 @@ import ContextMenu, {
 } from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
 import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
+import { ProgressBarContainer } from '../../../components/Progressbar'
 
 export type ActionConfig = {
   action: string
@@ -21,6 +22,28 @@ interface WithContextMenuProps {
 
 export type SetShowModal = (showModal: boolean) => void
 
+const Prompt = (props: any) => {
+  const { title, content, onSubmit } = props
+
+  const handleOnSubmit = (setProgress: Function) => {
+    onSubmit(setProgress)
+  }
+
+  return (
+    <div>
+      <h4>{title}</h4>
+      {content}
+      <ProgressBarContainer>
+        {(setProgress: Function) => {
+          return (
+            <button onClick={() => handleOnSubmit(setProgress)}>Submit</button>
+          )
+        }}
+      </ProgressBarContainer>
+    </div>
+  )
+}
+
 const WithContextMenu = (props: WithContextMenuProps) => {
   const { layout, node, children } = props
   return (
@@ -34,11 +57,11 @@ const WithContextMenu = (props: WithContextMenuProps) => {
           <>
             {actionConfig && formProps.fetchDocument && <Form {...formProps} />}
             {actionConfig && formProps.prompt && (
-              <div>
-                <h4>{formProps.prompt.title}</h4>
-                {formProps.prompt.content}
-                <button onClick={formProps.onSubmit}>Submit</button>
-              </div>
+              <Prompt
+                title={formProps.prompt.title}
+                content={formProps.prompt.content}
+                onSubmit={formProps.onSubmit}
+              />
             )}
           </>
         )
