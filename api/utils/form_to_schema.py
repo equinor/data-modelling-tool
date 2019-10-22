@@ -66,7 +66,7 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe):
                     "items": process_attributes(nested_blueprint, blueprint, attribute_ui_recipe),
                 }
             else:
-                return process_attributes(nested_blueprint, blueprint, attribute_ui_recipe)
+                properties[attribute_name] = process_attributes(nested_blueprint, blueprint, attribute_ui_recipe)
 
     return {"type": "object", "properties": properties}
 
