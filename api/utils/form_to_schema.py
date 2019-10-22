@@ -47,8 +47,10 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
             continue
 
         if attribute["type"] in PRIMITIVES:
-            config = get_attribute_config(attribute)
-            properties[attribute_name] = config if not is_array else {"type": "array", "items": config}
+            attribute_config = get_attribute_config(attribute)
+            properties[attribute_name] = (
+                attribute_config if not is_array else {"type": "array", "items": attribute_config}
+            )
         else:
             nested_attributes.append({"name": attribute_name, "type": attribute["type"], "is_array": is_array})
 

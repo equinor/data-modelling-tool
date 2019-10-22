@@ -73,6 +73,10 @@
           "widget": "hidden"
         },
         {
+          "name": "type",
+          "widget": "hidden"
+        },
+        {
           "name": "packages",
           "contained": false
         },
@@ -98,6 +102,14 @@
         {
           "name": "documents",
           "contained": false
+        },
+        {
+          "name": "isRoot",
+          "widget": "hidden"
+        },
+        {
+          "name": "type",
+          "widget": "hidden"
         }
       ]
     }
