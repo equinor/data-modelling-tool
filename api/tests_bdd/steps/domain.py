@@ -8,8 +8,8 @@ from core.repository.interface.document_repository import DocumentRepository
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
-from core.repository.repository_factory import get_repository, RepositoryType
-from core.enums import SIMOS, DMT
+from core.repository.repository_factory import get_repository
+from core.enums import RepositoryType, DMT, SIMOS
 
 
 class TreeNode(NodeMixin):

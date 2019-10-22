@@ -2,7 +2,8 @@ import json
 from flask import Blueprint, Response, request
 from classes.data_source import DataSource
 from core.serializers.add_file_json_serializer import AddFileSerializer
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from core.enums import RepositoryType
 from core.serializers.dto_json_serializer import DTOSerializer
 from core.use_case.add_entity_file_to_package_use_case import (
     AddEntityFileToPackageUseCase,

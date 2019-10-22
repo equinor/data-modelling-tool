@@ -4,7 +4,8 @@ from classes.data_source import DataSource
 from config import Config
 from core.domain.dto import DTO
 from core.domain.package import Package
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from core.enums import RepositoryType
 from services.database import model_db, data_modelling_tool_db as dmt_db
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
 from utils.logging import logger
