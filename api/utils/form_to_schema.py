@@ -1,7 +1,9 @@
 from typing import List
 
 from core.domain.blueprint import Blueprint
+from core.domain.ui_recipe import UIRecipe
 from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_ui_recipe import get_ui_recipe
 
 PRIMITIVES = ["string", "number", "integer", "boolean"]
 
@@ -26,8 +28,10 @@ def get_attribute_config(attribute):
     return keys
 
 
-def process_attributes(blueprint, parent_blueprint, ui_recipe):
+def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
     properties = {}
+
+    ui_recipe: UIRecipe = get_ui_recipe(blueprint, ui_recipe_name)
 
     nested_attributes = []
     for attribute in blueprint.attributes:
@@ -37,39 +41,34 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe):
         if "enum" in attribute:
             continue
 
-        ui_attributes = [] if not ui_recipe else ui_recipe.get("attributes", [])
-        ui_attribute = find_attribute(attribute_name, ui_attributes)
-        if ui_attribute:
-            is_contained = ui_attribute["contained"] if "contained" in ui_attribute else True
-            if not is_contained:
-                # Skip create schema if not contained
-                continue
+        is_contained = ui_recipe.is_contained(attribute)
+
+        if not is_contained:
+            continue
 
         if attribute["type"] in PRIMITIVES:
             config = get_attribute_config(attribute)
             properties[attribute_name] = config if not is_array else {"type": "array", "items": config}
         else:
-            nested_attributes.append(attribute["type"])
+            nested_attributes.append({"name": attribute_name, "type": attribute["type"], "is_array": is_array})
 
-        for nested_type in nested_attributes:
-            nested_blueprint = get_blueprint(nested_type)
+    for nested_type in nested_attributes:
+        attribute_name = nested_type["name"]
+        nested_blueprint = get_blueprint(nested_type["type"])
 
-            if parent_blueprint and nested_blueprint == parent_blueprint:
-                continue
+        if parent_blueprint and nested_blueprint == parent_blueprint:
+            continue
 
-            attribute_ui_recipe = (
-                find_attribute(ui_attribute.get("uiRecipe", ""), nested_blueprint.ui_recipes) if ui_attribute else None
-            )
-            if is_array:
-                properties[attribute_name] = {
-                    "type": "array",
-                    "items": process_attributes(nested_blueprint, blueprint, attribute_ui_recipe),
-                }
-            else:
-                properties[attribute_name] = process_attributes(nested_blueprint, blueprint, attribute_ui_recipe)
+        if nested_type["is_array"]:
+            properties[attribute_name] = {
+                "type": "array",
+                "items": process_attributes(nested_blueprint, blueprint, ui_recipe_name),
+            }
+        else:
+            properties[attribute_name] = process_attributes(nested_blueprint, blueprint, ui_recipe_name)
 
     return {"type": "object", "properties": properties}
 
 
-def form_to_schema(blueprint: Blueprint, ui_recipe):
-    return process_attributes(blueprint, None, ui_recipe)
+def form_to_schema(blueprint: Blueprint, ui_recipe_name):
+    return process_attributes(blueprint, None, ui_recipe_name)
