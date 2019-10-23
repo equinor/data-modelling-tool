@@ -36,6 +36,8 @@ def get_document(document_id: str, ui_recipe_name: str, document_repository):
 
     blueprint = get_blueprint(dto.type)
 
+    result["type"] = dto.type
+
     # ui_recipe: UIRecipe = get_ui_recipe(blueprint, ui_recipe_name)
 
     storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
