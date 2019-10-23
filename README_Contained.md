@@ -3,6 +3,7 @@ Definition: Contained in the data model (blueprint and entity instances, in othe
 ```
 contained: if the property is present in the model or not. Contained = false means that the property is omitted in the instance.
 ```
+Contained in the data model controls the size of the data model, unrelated to storage.
 
 An example of the context of contained. 
 Primitive types are in general contained.
@@ -62,10 +63,12 @@ Types are in general contained.
     ]
   },
   {
-    "type": "WaveBlueprint",
+    "type": "WavesBlueprint",
     "name": "WaveEntity"
+    "weatherCondition": {}
     // code consuming wave entity need to use storageRecipe to populate waves property in WavesEntity.
     // waves are not contained, e.g not present in the model.
+    "fetchType": "stream",
   }
 }
 ```
