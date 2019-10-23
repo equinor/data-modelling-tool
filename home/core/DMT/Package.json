@@ -16,18 +16,8 @@
       "name": "isRoot"
     },
     {
-      "type": "system/DMT/Package",
-      "name": "packages",
-      "dimensions": "*"
-    },
-    {
-      "type": "system/SIMOS/Blueprint",
-      "name": "documents",
-      "dimensions": "*"
-    },
-    {
-      "type": "system/SIMOS/Application",
-      "name": "applications",
+      "type": "system/DMT/Entity",
+      "name": "content",
       "dimensions": "*"
     }
   ],
@@ -38,11 +28,7 @@
       "description": "",
       "attributes": [
         {
-          "name": "documents",
-          "contained": false
-        },
-        {
-          "name": "packages",
+          "name": "content",
           "contained": false
         },
         {
@@ -67,11 +53,7 @@
           "widget": "hidden"
         },
         {
-          "name": "packages",
-          "contained": false
-        },
-        {
-          "name": "documents",
+          "name": "content",
           "contained": false
         }
       ]
@@ -86,11 +68,7 @@
           "widget": "textarea"
         },
         {
-          "name": "packages",
-          "contained": false
-        },
-        {
-          "name": "documents",
+          "name": "content",
           "contained": false
         },
         {
