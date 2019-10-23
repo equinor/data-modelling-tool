@@ -247,7 +247,10 @@ class Tree:
                     "label": f"Run {g.application_settings['runnable']['name']}",
                     "action": "RUNNABLE",
                     "data": {
-                        "prompt": {"title": "Create Application", "content": "Download the application"},
+                        "prompt": {
+                            "title": f"{g.application_settings['runnable']['name']}",
+                            "content": f"{g.application_settings['runnable']['description']}",
+                        },
                         "runnable": g.application_settings["runnable"],
                         "documentId": document.uid,
                         "dataSourceId": data_source_id,

@@ -16,7 +16,7 @@
   ],
   "runnable": {
     "name": "Todo Runnable",
-    "description": "Get more work",
+    "description": "Get and store all todos",
     "input": "SSR-DataSource/TodoDemo/TodoList",
     "output": "SSR-DataSource/TodoDemo/TodoList",
     "function": "runnable.js"
