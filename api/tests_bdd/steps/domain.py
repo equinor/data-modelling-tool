@@ -2,7 +2,9 @@ from behave import given
 
 from classes.data_source import DataSource
 from core.domain.blueprint import Blueprint
+from core.domain.dto import DTO
 from core.domain.package import Package
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
@@ -72,18 +74,25 @@ class Tree:
             RepositoryType.BlueprintRepository, self.data_source
         )
         package_repository: PackageRepository = get_repository(RepositoryType.PackageRepository, self.data_source)
+        document_repository: DocumentRepository = get_repository(RepositoryType.DocumentRepository, self.data_source)
         for pre, fill, node in RenderTree(self.root):
             if node.type == SIMOS.BLUEPRINT.value:
                 document = Blueprint(uid=node.uid, name=node.name, description=node.description, type=node.type)
                 blueprint_repository.add(document)
                 print(f"Added blueprint {document.uid}")
-            if node.type == DMT.PACKAGE.value:
+            elif node.type == DMT.PACKAGE.value:
                 package = Package(uid=node.uid, name=node.name, description=node.description, type=node.type)
                 extra = node.extra()
                 package.documents = extra["documents"]
                 package.packages = extra["packages"]
                 package_repository.add(package)
                 print(f"Added package {package.uid}")
+            else:
+                document: DTO = DTO(
+                    uid=node.uid, data={"name": node.name, "description": node.description, "type": node.type}
+                )
+                document_repository.add(document)
+                print(f"Added document {document.uid}")
 
     def print_tree(self):
         for pre, fill, node in RenderTree(self.root):

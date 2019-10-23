@@ -315,7 +315,6 @@ class Tree:
 
             # If the attribute is an array
             if attribute.get("dimensions", "") == "*":
-                print(attribute)
                 item_type = get_blueprint(attribute["type"])
 
                 # TODO: This is hard coded now...
