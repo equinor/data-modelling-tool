@@ -1,19 +1,29 @@
 from __future__ import annotations
 from pathlib import Path
+from typing import Union
+
+from anytree import NodeMixin, PreOrderIter, RenderTree
 from flask import g
+
 from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
+from core.domain.package import Package
 from core.domain.storage_recipe import StorageRecipe
 from core.domain.ui_recipe import UIRecipe
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.shared.templates import DMT, SIMOS
+from core.use_case.utils.generate_index_menu_actions import (
+    get_delete_document_menu_item,
+    get_not_contained_menu_action,
+    get_package_create_document_menu_item,
+    get_package_create_package_menu_item,
+    get_update_document_menu_item,
+)
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
-from utils.logging import logger
-from anytree import NodeMixin, RenderTree, PreOrderIter
+from utils.enums import DataSourceDocumentType, DMT, SIMOS
 
 
 class DocumentNode(NodeMixin):
@@ -103,7 +113,7 @@ class Tree:
         for ref in references:
 
             if isinstance(ref, dict):
-                logger.warning(f"Add ref '{ref}' {item_type}")
+                # logger.warning(f"Add ref '{ref}' {item_type}")
                 if item_type == DMT.PACKAGE.value:
                     document = self.package_repository.get(ref["_id"])
                     # document.packages = [{"name": p.name, "type": p.type, "_id": p.uid} for p in document.packages]
@@ -174,49 +184,41 @@ class Tree:
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
     ):
-        print(f"adding {attribute_type} to {'.'.join(document_path)}")
+        # print(f"adding {attribute_type} to {'.'.join(document_path)}")
         for index, instance in enumerate(values):
             if isinstance(instance, dict):
                 self.generate_contained_node(
                     document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
                 )
 
-    def process_document(self, data_source_id, document, parent_node):
-        logger.info(f"Add attributes for '{document.name}' in '{parent_node.name}'")
+    def process_document(
+        self,
+        data_source_id,
+        document: Union[Blueprint, Package],
+        parent_node: DocumentNode,
+        document_type: DataSourceDocumentType,
+    ):
+        # logger.info(f"Add attributes for '{document.name}'")
 
+        is_package = document.type == DMT.PACKAGE.value
         blueprint = get_blueprint(document.type)
+        parent_is_data_source = parent_node.document is None
 
-        parent_attribute = Path(parent_node.start_path)
+        # Set which attribute on the parent the child belongs in
+        if not parent_is_data_source and parent_node.document.type == DMT.PACKAGE.value:
+            parent_attribute = "content"
+        else:
+            parent_attribute = Path(parent_node.start_path).name
 
+        # Every node gets an delete and update action
         menu_items = [
-            {
-                "label": "Rename",
-                "action": "UPDATE",
-                "data": {
-                    "url": f"/api/v2/explorer/move-file",
-                    "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
-                    "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/RenameAction",
-                    "request": {
-                        "source": f"{data_source_id}/{document.name}",
-                        "destination": f"{data_source_id}/" + "${name}",
-                    },
-                },
-            },
-            {
-                "label": "Remove",
-                "action": "DELETE",
-                "data": {
-                    "url": f"/api/v2/explorer/{data_source_id}/remove-file",
-                    "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
-                    "request": {
-                        "parentId": parent_node.uid,
-                        "documentId": document.uid,
-                        "attribute": parent_attribute.name,
-                    },
-                },
-            },
+            get_update_document_menu_item(data_source_id, name=document.name, document_id=document.uid),
+            get_delete_document_menu_item(
+                data_source_id, parent_id=parent_node.uid, parent_attribute=parent_attribute, document_id=document.uid
+            ),
         ]
 
+        # Runnable entities gets an custom action
         if document.type == g.application_settings["runnable"]["input"]:
             menu_items.append(
                 {
@@ -234,6 +236,7 @@ class Tree:
                 }
             )
 
+        # Applications can be downloaded
         if document.type == SIMOS.APPLICATION.value:
             menu_items.append(
                 {
@@ -245,11 +248,6 @@ class Tree:
                     },
                 }
             )
-
-        # Placeholder for new actions
-        is_package_type = document.type in [DMT.PACKAGE.value, DMT.ENTITY_PACKAGE.value]
-        if is_package_type:
-            menu_items.append({"label": "New", "menuItems": []})
 
         node = DocumentNode(
             data_source_id=data_source_id,
@@ -270,7 +268,7 @@ class Tree:
         )
 
         # Packages should not open a tab on click
-        if is_package_type:
+        if is_package:
             node.on_select = {}
 
         if not blueprint:
@@ -288,43 +286,36 @@ class Tree:
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
             is_contained_in_ui = ui_recipe.is_contained(attribute)
 
-            print(f"-----------{document.name}:{name}:{is_contained_in_storage}:{is_contained_in_ui}-----------")
+            # print(f"-----------{document.name}:{name}:{is_contained_in_storage}:{is_contained_in_ui}-----------")
 
             if is_contained_in_ui:
                 continue
 
             # If the attribute is an array
             if attribute.get("dimensions", "") == "*":
+                # print(attribute)
                 item_type = get_blueprint(attribute["type"])
 
-                # TODO: This is hard coded now...
-                add_file_type = "add-entity-file" if item_type.name == "Entity" else "add-file"
+                # TODO: Could we use same endpoint?
+                add_file_type = (
+                    "add-entity-file" if document_type == DataSourceDocumentType.ENTITIES.value else "add-file"
+                )
                 data = {}
                 for item in item_type.get_attribute_names():
                     data[item] = ("${" + item + "}",)
 
-                not_contained_menu_action = {
-                    "label": "New",
-                    "menuItems": [
-                        {
-                            "label": f"{item_type.name}",
-                            "action": "CREATE",
-                            "data": {
-                                "url": f"/api/v2/explorer/{data_source_id}/{add_file_type}",
-                                "schemaUrl": f"/api/v2/json-schema/{attribute['type']}?ui_recipe=DEFAULT_CREATE",
-                                "nodeUrl": f"/api/v3/index/{data_source_id}",
-                                "request": {
-                                    "type": attribute["type"],
-                                    "parentId": getattr(document, "uid", None),
-                                    "attribute": name,
-                                    "name": "${name}",
-                                    "data": data,
-                                },
-                            },
-                        }
-                    ],
-                }
-
+                not_contained_menu_action = get_not_contained_menu_action(
+                    data_source_id=data_source_id,
+                    name=document.name,
+                    url_type=add_file_type,
+                    type=attribute["type"],
+                    parent_id=getattr(document, "uid", None),
+                    data=data,
+                )
+                if item_type.name == "list":
+                    pass
+                if isinstance(attribute["type"], set):
+                    pass
                 contained_menu_action = {
                     "label": "New",
                     "menuItems": [
@@ -346,10 +337,26 @@ class Tree:
                     ],
                 }
 
-                if document.type in [DMT.PACKAGE.value, DMT.ENTITY_PACKAGE.value]:
-                    new_menu_action = next((x for x in node.menu_items if x["label"] == "New"), None)
-                    menu_item = contained_menu_action if is_contained_in_storage else not_contained_menu_action
-                    new_menu_action["menuItems"].append(menu_item["menuItems"][0])
+                # TODO: Refactor, we can move this package stuff to top and skip rest of the processing part.
+                # TODO: Now, the DMT/Package has a content:type:Entity, just to not break. It should be "type: any"
+                # Packages gets a "new package", and "new blueprint/entity" action
+                if is_package:
+                    node.menu_items.append(
+                        {
+                            "label": "New",
+                            "menuItems": [
+                                get_package_create_document_menu_item(
+                                    data_source_id=data_source_id,
+                                    parent_id=getattr(document, "uid", None),
+                                    data=data,
+                                    document_type=document_type,
+                                ),
+                                get_package_create_package_menu_item(
+                                    data_source_id=data_source_id, parent_id=getattr(document, "uid", None), data=data
+                                ),
+                            ],
+                        }
+                    )
                     attribute_node = node
                 else:
                     # Create a placeholder node that can contain real documents
@@ -413,13 +420,18 @@ class Tree:
         for attribute_node in attribute_nodes:
             for attribute_document in attribute_node["documents"]:
                 self.process_document(
-                    data_source_id=data_source_id, document=attribute_document, parent_node=attribute_node["node"]
+                    data_source_id=data_source_id,
+                    document=attribute_document,
+                    parent_node=attribute_node["node"],
+                    document_type=DataSourceDocumentType(document_type),
                 )
 
     def execute(self, data_source_id: str, data_source_name: str, packages, document_type: str) -> Index:
 
         index = Index(data_source_id=data_source_id)
 
+        # Set what Models the user can create on the data_source node
+        # TODO: More generic page1, page2, ...
         models = (
             g.application_settings["blueprintsModels"]
             if document_type == "blueprints"
@@ -447,9 +459,7 @@ class Tree:
         )
 
         for package in packages:
-            self.process_document(data_source_id, package, root_node)
-
-        print_tree(root_node)
+            self.process_document(data_source_id, package, root_node, DataSourceDocumentType(document_type))
 
         for node in PreOrderIter(root_node):
             index.add(node.to_node())
@@ -478,17 +488,11 @@ class GenerateIndexUseCase:
         )
 
     def execute(self, data_source_id: str, data_source_name: str, document_type: str) -> Index:
-        packages = []
-        for package in self.package_repository.list():
-            # TODO: Make Indexer Handle Package Class
-            package.packages = [{"name": p.name, "_id": p.uid} for p in package.packages]
-            packages.append(package)
-
         return self.tree.execute(
             data_source_id=data_source_id,
             data_source_name=data_source_name,
             document_type=document_type,
-            packages=packages,
+            packages=self.package_repository.list(),
         )
 
     def single(self, data_source_id: str, data_source_name: str, document_id: str, document_type: str) -> Index:

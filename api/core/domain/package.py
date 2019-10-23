@@ -1,5 +1,5 @@
 from typing import Dict, List
-from core.shared.templates import DMT
+from utils.enums import DMT
 
 
 class Dependency:
@@ -32,9 +32,7 @@ class Package:
         dependencies: List[Dependency] = None,
         description: str = None,
         type: str = DMT.PACKAGE.value,
-        # TODO: Should handle refs and contained blueprints to be consistent with rest of the system
-        documents: List[Dict] = None,
-        applications: List[Dict] = None,
+        content: List[Dict] = None,
         is_root: bool = False,
     ):
         self.name = name
@@ -42,10 +40,7 @@ class Package:
         self.description = description
         self.type = type
         self.dependencies = [] if not dependencies else dependencies
-        self.documents = [] if not documents else documents
-        self.applications = [] if not applications else applications
-        self.packages = []
-        self.applications = []
+        self.content = [] if not content else content
         self.is_root = is_root
         self.storage_recipes = []
 
@@ -55,16 +50,13 @@ class Package:
             name=adict["name"],
             uid=adict["_id"],
             description=adict.get("description"),
-            documents=adict.get("documents", adict.get("blueprints")),
-            applications=adict.get("applications", ""),
+            content=adict.get("content", ""),
             dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
             type=adict.get("type", DMT.PACKAGE.value),
             is_root=adict.get("isRoot", "false"),
         )
 
-        instance.packages = [Package.from_dict(package) for package in adict.get("packages", "")]
         instance.storage_recipes = adict.get("storageRecipes", [])
-        instance.applications = adict.get("applications", [])
         return instance
 
     def get_storage_recipe(self):
@@ -78,26 +70,16 @@ class Package:
         else:
             return None
 
-    # TODO: Find other way to do this
-    @staticmethod
-    def contained_package_to_dict(package):
-        if isinstance(package, Package):
-            return package.to_dict()
-        if isinstance(package, Dict):
-            return package
-
     def to_dict(self):
         result = {
             "_id": self.uid,
             "name": self.name,
             "description": self.description,
             "type": self.type,
-            "documents": self.documents,
+            "content": self.content,
             "dependencies": [dependency.to_dict() for dependency in self.dependencies],
-            "packages": [self.contained_package_to_dict(package) for package in self.packages],
             "isRoot": self.is_root,
             "storageRecipes": self.storage_recipes,
-            "applications": self.applications,
         }
         return result
 

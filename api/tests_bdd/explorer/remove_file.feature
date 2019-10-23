@@ -88,7 +88,7 @@ Feature: Explorer - Remove file
   {
     "parentId": "1",
     "documentId": "2",
-    "attribute": "packages"
+    "attribute": "content"
   }
   """
     Then the response status should be "OK"

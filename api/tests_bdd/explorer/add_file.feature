@@ -49,13 +49,12 @@ Feature: Explorer - Add file
           "name":"root_package",
           "description":"",
           "type":"system/DMT/Package",
-          "documents":[
+          "content":[
             {
               "name":"new_document"
             }
           ],
           "dependencies":[],
-          "packages":[],
           "isRoot":false,
           "storageRecipes":[]
        }

@@ -6,7 +6,7 @@ Feature: Document 2
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
       | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | test-source-name | dmt      | test       | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system           | dmt      | system     | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system           | dmt      | system     | system       | mongo-db |
 
     Given there exist document with id "1" in data source "test"
     """
@@ -14,7 +14,7 @@ Feature: Document 2
         "name": "TestData",
         "description": "",
         "type": "system/DMT/Package",
-        "documents": [
+        "content": [
             {
                 "_id": "3",
                 "name": "TestContainer"
@@ -25,7 +25,6 @@ Feature: Document 2
             }
         ],
         "dependencies": [],
-        "packages": [],
         "isRoot": true,
         "storageRecipes": [],
         "applications": []
@@ -127,9 +126,8 @@ Feature: Document 2
           "name":"package_1",
           "description":"",
           "type":"system/DMT/Package",
-          "documents":[],
           "dependencies":[],
-          "packages":[
+          "content":[
              {
                 "name":"sub_package_1"
              },

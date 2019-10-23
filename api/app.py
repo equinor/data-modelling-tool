@@ -1,6 +1,5 @@
 import json
 from functools import lru_cache
-from uuid import uuid4
 
 import click
 from flask import Flask, g
@@ -47,36 +46,20 @@ def load_application_settings():
 
 
 @app.cli.command()
-@click.option("--contained", "-C", is_flag=True, default=False)
-def init_application(contained: bool = False):
+def init_application():
     application_settings = import_application_settings()
 
     for folder in Config.SYSTEM_FOLDERS:
-        import_folder(
-            f"{Config.APPLICATION_HOME}/core/{folder}", contained=contained, collection=Config.SYSTEM_COLLECTION
-        )
+        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
 
     for folder in application_settings["blueprints"]:
-        import_folder(
-            f"{Config.APPLICATION_HOME}/blueprints/{folder}",
-            contained=contained,
-            collection=Config.BLUEPRINT_COLLECTION,
+        import_package(
+            f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
     for folder in application_settings["entities"]:
-        import_folder(
-            f"{Config.APPLICATION_HOME}/entities/{folder}", contained=contained, collection=Config.ENTITY_COLLECTION
+        import_package(
+            f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )
-
-
-def import_folder(folder, collection, contained: bool = False):
-    print(f"importing: {folder}")
-    if not contained:
-        import_package(folder, contained=False, is_root=True, collection=collection)
-    else:
-        uid = str(uuid4())
-        package = import_package(folder, contained=True, is_root=True, root_package_uid=uid, collection=collection)
-        dmt_db[collection].replace_one({"_id": package.uid}, package.to_dict(), upsert=True)
-        logger.info(f"Imported package {package.name}")
 
 
 @app.cli.command()

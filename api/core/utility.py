@@ -17,18 +17,13 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
     """
     if len(path_elements) == 1:
         try:
-            # TODO: objects instead of lists in blueprints and packages?
-            packages = [package.to_dict() for package in package.packages]
-            files_in_folder = packages + package.documents
-            return [file["_id"] for file in files_in_folder if file["name"] == path_elements[0]][0]
+            return [file["_id"] for file in package.content if file["name"] == path_elements[0]][0]
         except IndexError:
             logger.error(f"The document {path_elements[0]} could not be found in the package {package.name}")
     else:
         try:
-
-            next_package = [package for package in package.packages if package.name == path_elements[0]][0]
-            # TODO: This should be "if contained", now only works with implicit uncontained packages
-            next_package = Package.from_dict(repository.find({"_id": next_package.uid}).data)
+            next_package = [package for package in package.content if package["name"] == path_elements[0]][0]
+            next_package = Package.from_dict(repository.find({"_id": next_package["_id"]}).data)
             del path_elements[0]
             return _find_document_in_package_by_path(next_package, path_elements, repository)
         except IndexError:
