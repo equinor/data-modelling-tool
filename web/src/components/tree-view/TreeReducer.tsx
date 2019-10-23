@@ -152,8 +152,6 @@ export default (state: any = {}, action: any) => {
       return { ...action.nodes }
 
     case ADD_NODES:
-      console.log(action.nodes)
-      console.log(state)
       return { ...action.nodes, ...state }
 
     default:

@@ -19,15 +19,8 @@ class Node(NodeMixin):
     def __init__(self, data_source_id, name, document=None, blueprint=None, parent=None, children=None):
         self.data_source_id = data_source_id
         self.name = name
-
-        if document is None:
-            self.document = None
         self.document = document
-        if blueprint is None:
-            self.blueprint = None
         self.blueprint = blueprint
-        if parent is None:
-            self.parent = None
         self.parent = parent
         if children:
             self.children = children
@@ -43,15 +36,6 @@ class Node(NodeMixin):
 
 
 class DocumentNode(Node):
-    """
-    A class used...
-
-    Attributes
-    ----------
-    item_type : str
-        specify the kind of item type we can add to this array
-    """
-
     def __init__(
         self,
         data_source_id: str,
@@ -74,7 +58,7 @@ class DocumentNode(Node):
     @property
     def id(self):
         if self.document:
-            return f"{self.start_path}/{self.document.uid}"
+            return f"{self.document.uid}"
         elif self.depth == 0:
             return self.data_source_id
         else:

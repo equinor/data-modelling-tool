@@ -3,7 +3,7 @@ import { TreeNodeData } from './Tree'
 
 const defaultMatcher = (filterText: string, node: TreeNodeData) => {
   return (
-    node && node.nodeId.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
+    node && node.title.toLowerCase().indexOf(filterText.toLowerCase()) !== -1
   )
 }
 
@@ -81,14 +81,14 @@ export function filterNodes(nodes: any, filterPath: any) {
       if (node.children) {
         const isParent = node.children.includes(filterPath)
         if (isParent) {
-          filteredNodes[node.nodeId] = Object.assign({}, node)
+          filteredNodes[node.title] = Object.assign({}, node)
           if (!node.isRoot) {
-            filterRecursive(node.nodeId, nodes, filteredNodes)
+            filterRecursive(node.title, nodes, filteredNodes)
           }
         }
       } else {
-        if (filterPath === node.nodeId) {
-          filteredNodes[node.nodeId] = Object.assign({}, node)
+        if (filterPath === node.title) {
+          filteredNodes[node.title] = Object.assign({}, node)
         }
       }
     })
