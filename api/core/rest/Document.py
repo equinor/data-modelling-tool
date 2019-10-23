@@ -33,10 +33,11 @@ def get_json_schema(type: str):
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<document_path>", methods=["GET"])
 def get(data_source_id: str, document_path: str):
     logger.info(f"Getting document '{document_path}' from data source '{data_source_id}'")
+    ui_recipe = request.args.get("ui_recipe")
     data_source = DataSource(id=data_source_id)
     document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
     use_case = GetDocumentUseCase(document_repository, get_repository)
-    request_object = GetDocumentRequestObject.from_dict({"document_id": document_path})
+    request_object = GetDocumentRequestObject.from_dict({"document_id": document_path, "ui_recipe": ui_recipe})
     response = use_case.execute(request_object)
     # TODO: Use DTOSerializer?
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])

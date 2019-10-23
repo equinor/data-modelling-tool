@@ -37,30 +37,11 @@
         },
         {
           "name": "engine",
-          "contained": false
+          "contained": true
         }
       ]
     }
   ],
-  "uiRecipes": [
-    {
-      "type": "system/SIMOS/UIRecipe",
-      "name": "DEFAULT_EDIT",
-      "description": "",
-      "attributes": [
-        {
-          "name": "description",
-          "widget": "textarea"
-        },
-        {
-          "name": "wheels",
-          "uiRecipe": "DEFAULT_EDIT",
-          "options": {
-            "orderable" : false
-          }
-        }
-      ]
-    }
-  ]
+  "uiRecipes": []
 }
 

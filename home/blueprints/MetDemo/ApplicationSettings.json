@@ -1,0 +1,21 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "ApplicationSettings",
+  "blueprints": [
+    "TodoDemo"
+  ],
+  "entities": [],
+  "blueprintsModels": [
+    "system/DMT/Package"
+  ],
+  "entityModels": [
+    "system/DMT/EntityPackage"
+  ],
+  "runnable": {
+    "name": "Todo Runnable",
+    "description": "Get more work",
+    "input": "SSR-DataSource/TodoDemo/TodoList",
+    "output": "SSR-DataSource/TodoDemo/TodoList",
+    "function": "runnable.js"
+  }
+}

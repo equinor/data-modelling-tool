@@ -1,9 +1,12 @@
 from typing import Dict
+from uuid import uuid4
 
 from core.domain.dto import DTO
+from core.domain.storage_recipe import StorageRecipe
 from core.repository.mongo.document_repository import DocumentRepository
-from dotted.collection import DottedDict
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.use_case.utils.get_storage_recipe import get_storage_recipe
+from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
 from core.shared import response_object as res
 from core.shared import request_object as req
@@ -42,6 +45,54 @@ class UpdateDocumentRequestObject(req.ValidRequestObject):
         return cls(data=adict.get("data"), document_id=adict.get("document_id"), attribute=adict.get("attribute"))
 
 
+def create_reference(data: Dict, document_repository, type: str):
+    data["type"] = type
+    file = DTO(uid=uuid4(), data=data, type=type)
+    document_repository.add(file)
+    return {"_id": file.uid, "name": file.data.get("name", "")}
+
+
+def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, document_repository):
+    is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
+    attribute_data = data[attribute["name"]]
+
+    if is_contained_in_storage:
+        return attribute_data
+    else:
+        if attribute.get("dimensions", "") == "*":
+            references = []
+            for instance in attribute_data:
+                reference = create_reference(instance, document_repository, attribute["type"])
+                update_document(reference["_id"], instance, document_repository)
+                references.append(reference)
+            return references
+        else:
+            reference = create_reference(attribute_data, document_repository, attribute["type"])
+            return reference
+
+
+def update_document(document_id, data: Dict, document_repository):
+    document: DTO = document_repository.get(document_id)
+
+    if not document:
+        raise EntityNotFoundException(uid=document_id)
+
+    blueprint = get_blueprint(document.type)
+    if not blueprint:
+        raise EntityNotFoundException(uid=document.type)
+
+    storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
+
+    for key in data.keys():
+        attribute = next((x for x in blueprint.attributes if x["name"] == key), None)
+        if not attribute:
+            print(f"Could not find attribute {key} in {document.uid}")
+        else:
+            document.data[key] = update_attribute(attribute, data, storage_recipe, document_repository)
+
+    return document
+
+
 class UpdateDocumentUseCase(uc.UseCase):
     def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
@@ -51,19 +102,10 @@ class UpdateDocumentUseCase(uc.UseCase):
         data: Dict = request_object.data
         attribute: Dict = request_object.attribute
 
-        document: DTO = self.document_repository.get(document_id)
-
-        if not document:
-            raise EntityNotFoundException(uid=document_id)
-
-        existing_data = document.data
         if attribute:
-            obj = DottedDict(existing_data)
-            obj[attribute] = data
-            document.data = obj.to_python()
+            data = {attribute: data}
 
-        else:
-            document.data = data
+        document = update_document(document_id, data, self.document_repository)
 
         self.document_repository.update(document)
 
