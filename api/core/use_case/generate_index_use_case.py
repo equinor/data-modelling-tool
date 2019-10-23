@@ -412,7 +412,7 @@ class Tree:
                     item_type = get_blueprint(attribute["type"])
                     node.menu_items.append(
                         {
-                            "label": f"Create - {item_type.name}",
+                            "label": f"Create {attribute['name']}",
                             "action": "CREATE",
                             "data": {
                                 "url": f"/api/v2/explorer/{data_source_id}/add-file",

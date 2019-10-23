@@ -17,8 +17,17 @@
     },
     {
       "type": "SSR-DataSource/TestingDemo/Item",
+      "name": "itemNotContainedInStorageAndUi"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
       "dimensions": "*",
       "name": "itemsNotContainedInStorage"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
+      "dimensions": "*",
+      "name": "itemsNotContainedInStorageAndUi"
     },
     {
       "type": "SSR-DataSource/TestingDemo/Item",
@@ -62,7 +71,15 @@
           "contained": false
         },
         {
+          "name": "itemNotContainedInStorageAndUi",
+          "contained": false
+        },
+        {
           "name": "itemsNotContainedInStorage",
+          "contained": false
+        },
+        {
+          "name": "itemsNotContainedInStorageAndUi",
           "contained": false
         },
         {
@@ -97,6 +114,14 @@
         {
           "name": "nestedItemNotContainedInUI",
            "contained": false
+        },
+        {
+          "name": "itemNotContainedInStorageAndUi",
+          "contained": false
+        },
+        {
+          "name": "itemsNotContainedInStorageAndUi",
+          "contained": false
         }
       ]
     }
