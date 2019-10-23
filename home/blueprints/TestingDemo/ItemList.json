@@ -37,6 +37,18 @@
       "type": "SSR-DataSource/TestingDemo/Item",
       "dimensions": "*",
       "name": "itemsNotContainedInUI"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/NestedItemLevel1",
+      "name": "nestedItem"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/NestedItemLevel1",
+      "name": "nestedItemNotContainedInStorage"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/NestedItemLevel1",
+      "name": "nestedItemNotContainedInUI"
     }
   ],
   "storageRecipes": [
@@ -51,6 +63,10 @@
         },
         {
           "name": "itemsNotContainedInStorage",
+          "contained": false
+        },
+        {
+          "name": "nestedItemNotContainedInStorage",
           "contained": false
         }
       ]
@@ -77,6 +93,10 @@
         {
           "name": "itemsNotContainedInUI",
           "contained": false
+        },
+        {
+          "name": "nestedItemNotContainedInUI",
+           "contained": false
         }
       ]
     }

@@ -1,0 +1,21 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "NestedItemLevel2",
+  "description": "",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/NestedItemLevel3",
+      "name": "nestedItemLevel3"
+    }
+  ],
+  "uiRecipes": [
+  ]
+}
