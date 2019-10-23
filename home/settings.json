@@ -3,7 +3,8 @@
   "name": "ApplicationSettings",
   "blueprints": [
     "CarsDemo",
-    "TodoDemo"
+    "TodoDemo",
+    "TestingDemo"
   ],
   "entities": [
     "CarsDemo"

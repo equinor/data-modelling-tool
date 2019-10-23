@@ -2,7 +2,7 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "blueprints": [
-    "TodoDemo"
+    "TestingDemo"
   ],
   "entities": [],
   "blueprintsModels": [

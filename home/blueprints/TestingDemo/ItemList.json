@@ -1,0 +1,84 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "ItemList",
+  "description": "",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
+      "name": "itemNotContainedInStorage"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
+      "dimensions": "*",
+      "name": "itemsNotContainedInStorage"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
+      "name": "itemContainedInStorage"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
+      "dimensions": "*",
+      "name": "itemsContainedInStorage"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
+      "name": "itemNotContainedInUI"
+    },
+    {
+      "type": "SSR-DataSource/TestingDemo/Item",
+      "dimensions": "*",
+      "name": "itemsNotContainedInUI"
+    }
+  ],
+  "storageRecipes": [
+    {
+      "name": "DefaultStorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
+      "description": "",
+      "attributes": [
+        {
+          "name": "itemNotContainedInStorage",
+          "contained": false
+        },
+        {
+          "name": "itemsNotContainedInStorage",
+          "contained": false
+        }
+      ]
+    }
+  ],
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "attributes",
+          "uiRecipe": "EDIT"
+        },
+        {
+          "name": "itemNotContainedInUI",
+          "contained": false
+        },
+        {
+          "name": "itemsNotContainedInUI",
+          "contained": false
+        }
+      ]
+    }
+  ]
+}

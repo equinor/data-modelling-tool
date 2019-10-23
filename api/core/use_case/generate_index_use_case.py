@@ -180,6 +180,9 @@ class Tree:
             if is_contained_in_ui:
                 continue
 
+            if parent_node.blueprint and blueprint == parent_node.blueprint:
+                continue
+
             self.generate_contained_node(
                 document_id,
                 current_path + [f"{name}"],

@@ -50,10 +50,10 @@
       "attributes": [
         {
           "contained": false,
-          "name": "entities"
+          "name": "packages"
         }, {
           "contained": false,
-          "name": "entityPackages"
+          "name": "documents"
         }
       ]
     }

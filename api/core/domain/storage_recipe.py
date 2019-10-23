@@ -1,7 +1,7 @@
 from typing import List
 
 DEFAULT_PRIMITIVE_CONTAINED = True
-DEFAULT_COMPLEX_CONTAINED = False
+DEFAULT_COMPLEX_CONTAINED = True
 PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 

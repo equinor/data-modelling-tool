@@ -1,0 +1,28 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Item",
+  "description": "",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        }
+      ]
+    }
+  ]
+}
