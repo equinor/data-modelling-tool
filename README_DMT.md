@@ -59,7 +59,7 @@ Keywords is property metadata. Keywords and types are the building blocks.
 should not be confused with a property with name description. Its just metadata to a property.
 - dimensions: degree of dimensions, the set of dimensions is arbitrary strings, controlled by environment where the type is used. 
 e.g '*' is array in DMT.
-- contained: A boolean flag express if a property is contained or not. A document cannot have a property with contained = false.  
+- contained: [Definition](README_Contained.md) A boolean flag express if a property is contained or not. A document cannot have a property with contained = false.  
 If a property is not contained, it's the same as it did not exist, because the instance dont contain the property. 
 The keyword contains is necessary to express behavior in non model blueprints, like recipes.
 - optional: A property may be optional, default is false, which means all properties are required by default. For any valid model, 
