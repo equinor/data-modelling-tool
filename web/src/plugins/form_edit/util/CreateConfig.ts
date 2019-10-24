@@ -1,6 +1,12 @@
-import { generateTemplate } from './GenerateTemplate'
-import { BlueprintAttribute, PluginProps } from '../../types'
-import { generateUiSchema } from './GenerateUiSchema'
+import {
+  generateTemplate,
+  generateTemplateByProperty,
+} from './GenerateTemplate'
+import { Blueprint, BlueprintAttribute, PluginProps } from '../../types'
+import {
+  generateUiSchema,
+  generateUiSchemaByProperty,
+} from './GenerateUiSchema'
 import { getDefaults } from '../../pluginUtils'
 
 interface JsonSchema {
@@ -18,26 +24,51 @@ export interface JsonSchemaArray extends JsonSchema {
 
 export type FormConfig = {
   data: any
-  attribute: BlueprintAttribute
+  attribute?: BlueprintAttribute | null
   template: JsonSchema
+  uiSchema: any
 }
 
 const filterNotContained = (attribute: BlueprintAttribute) =>
   attribute.contained !== false
 
-export function createFormConfigs(pluginImport: PluginProps): FormConfig[] {
-  const { parent, blueprint, children, name } = pluginImport
-  return pluginImport.parent.attributes
-    .filter(filterNotContained)
-    .map((attribute: BlueprintAttribute) => {
-      const defaultValue = attribute.default || getDefaults(attribute)
+export function createFormConfigs(
+  pluginImport: PluginProps,
+  splitForms: boolean,
+  uiRecipe: any
+): FormConfig[] {
+  const { parent, blueprint, children } = pluginImport
+  const parentAttributes = pluginImport.parent.attributes.filter(
+    filterNotContained
+  )
+
+  if (splitForms) {
+    return parentAttributes.map((attribute: BlueprintAttribute) => {
       return {
         attribute,
-        data: {
-          [attribute.name]: (blueprint as any)[attribute.name] || defaultValue,
-        },
-        template: generateTemplate(parent, children, attribute.name),
-        uiSchema: generateUiSchema(parent, attribute, name),
+        data: getDataByAttribute(blueprint, attribute),
+        template: generateTemplateByProperty(parent, children, attribute.name),
+        uiSchema: generateUiSchemaByProperty(parent, attribute, uiRecipe),
       }
     })
+  }
+
+  return [
+    {
+      attribute: null,
+      data: blueprint,
+      template: generateTemplate(parent.attributes, children),
+      uiSchema: generateUiSchema(parent, uiRecipe),
+    },
+  ]
+}
+
+function getDataByAttribute(
+  blueprint: Blueprint,
+  attribute: BlueprintAttribute
+) {
+  const defaultValue = attribute.default || getDefaults(attribute)
+  return {
+    [attribute.name]: (blueprint as any)[attribute.name] || defaultValue,
+  }
 }

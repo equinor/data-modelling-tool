@@ -8,22 +8,40 @@ type UiSchemaProperty = {
   'ui:ArrayAttribute'?: any
 }
 
+export function generateUiSchema(parent: Blueprint, uiRecipe: any) {
+  const uiSchema = {}
+  if (uiRecipe) {
+    parent.attributes.forEach((parentAttribute: BlueprintAttribute) => {
+      const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
+      if (uiAttribute) {
+        let property = createUiSchemaProperty(uiAttribute, parentAttribute)
+
+        if (Object.keys(property).length > 0) {
+          ;(uiSchema as any)[parentAttribute.name] = property
+        }
+      }
+    })
+  }
+  return {
+    type: 'object',
+    ...uiSchema,
+  }
+}
+
 /**
  * Adapter for blueprint to rsjf uiSchema.
  * https://department-of-veterans-affairs.github.io/veteran-facing-services-tools/forms/about-the-schema-and-uischema-objects/
  *
  * @param blueprint
  * @param parentAttribute
- * @param uiPluginName
+ * @param uiRecipe
  */
-export function generateUiSchema(
-  blueprint: Blueprint,
+export function generateUiSchemaByProperty(
+  parent: Blueprint,
   parentAttribute: BlueprintAttribute,
-  uiPluginName: string
+  uiRecipe: any
 ) {
-  const uiRecipe = findRecipe(blueprint, uiPluginName)
   const uiSchema = {}
-
   if (uiRecipe) {
     const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
     if (uiAttribute) {

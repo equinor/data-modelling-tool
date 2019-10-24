@@ -1,22 +1,23 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
 import AttributeWidget from '../../components/widgets/Attribute'
-import { BlueprintAttribute, PluginProps } from '../types'
+import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './util/CreateConfig'
-import { isPrimitive } from '../pluginUtils'
+import { findRecipe, findUiAttribute, isPrimitive } from '../pluginUtils'
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void
 }
 
 export const EditPlugin = (props: Props) => {
-  const configs: FormConfig[] = createFormConfigs(props)
+  const uiRecipe = findRecipe(props.parent, props.name)
+  const splitForms = getSplitForms(props.parent, props.blueprint, uiRecipe)
+  const configs: FormConfig[] = createFormConfigs(props, splitForms, uiRecipe)
   return (
     <div>
       {configs.map((config: any, index: number) => {
-        const attribute: BlueprintAttribute = config.attribute
-        const showLabel =
-          attribute.dimensions !== '*' && !isPrimitive(attribute.type)
+        const showLabel: boolean = getShowLabel(config.attribute)
+
         return (
           <div key={'form' + index} style={{ marginBottom: 20 }}>
             {showLabel && (
@@ -37,4 +38,35 @@ export const EditPlugin = (props: Props) => {
       })}
     </div>
   )
+}
+
+function getShowLabel(attribute: BlueprintAttribute): boolean {
+  if (!attribute) {
+    return false
+  }
+  return attribute.dimensions !== '*' && !isPrimitive(attribute.type)
+}
+
+/**
+ * Check if splitForm is needed.
+ * Default behavior:  if two or more attributes is array, its convenient to split the forms.
+ * @todo use treeUiRecipe to decide if splitForm is necessary.
+ *
+ * @param parent Blueprint
+ */
+function getSplitForms(
+  parent: Blueprint,
+  blueprint: Blueprint,
+  uiRecipe: any
+): boolean {
+  function filterArrayAttributes(parentAttribute: BlueprintAttribute) {
+    const uiAttribute: any = findUiAttribute(uiRecipe, parentAttribute.name)
+    if (uiAttribute && uiAttribute.contained === false) {
+      return false
+    }
+    const value = (parent as any)[parentAttribute.name]
+    return parentAttribute.dimensions === '*' && value && value.length > 0
+  }
+  const attributesWithArray = parent.attributes.filter(filterArrayAttributes)
+  return attributesWithArray.length > 1
 }

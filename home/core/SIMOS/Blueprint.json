@@ -21,13 +21,13 @@
       "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
       "name": "storageRecipes",
-      "contained": false
+      "contained": true
     },
     {
       "type": "system/SIMOS/UIRecipe",
       "dimensions": "*",
       "name": "uiRecipes",
-      "contained": false
+      "contained": true
     }
   ],
   "storageRecipes": [

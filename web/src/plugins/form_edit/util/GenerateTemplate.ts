@@ -3,11 +3,25 @@ import { JsonSchemaArray, JsonSchemaObject } from './CreateConfig'
 import { getBlueprintFromType, isPrimitive } from '../../pluginUtils'
 
 export function generateTemplate(
-  blueprint: Blueprint,
+  attributes: BlueprintAttribute[],
+  types: Blueprint[]
+) {
+  const properties = {}
+  attributes.forEach((attribute: BlueprintAttribute) => {
+    appendJsonSchemaProperty(attribute, properties, types)
+  })
+  return {
+    type: 'object',
+    properties,
+  }
+}
+
+export function generateTemplateByProperty(
+  parent: Blueprint,
   children: Blueprint[],
   attributeName: string
 ): JsonSchemaObject | JsonSchemaArray {
-  const property: BlueprintAttribute | undefined = blueprint.attributes.find(
+  const property: BlueprintAttribute | undefined = parent.attributes.find(
     (attr: BlueprintAttribute) => attr.name === attributeName
   )
 
@@ -15,9 +29,7 @@ export function generateTemplate(
   if (property) {
     appendJsonSchemaProperty(property, properties, children)
   } else {
-    console.error(
-      'failed to generate template from blueprint: ' + blueprint.name
-    )
+    console.error('failed to generate template from blueprint: ' + parent.name)
   }
   return {
     type: 'object',
