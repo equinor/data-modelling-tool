@@ -15,14 +15,6 @@ T = TypeVar("T")
 simple_types: List[type] = [str, bool, int, float]
 
 
-def type_name(attr: Union[Attribute, str, type]) -> str:
-    if isinstance(attr, str):
-        return Factory.get_type_by_name(attr).__name__
-    elif isinstance(attr, type):
-        return attr.__name__
-    return attr.type.__name__
-
-
 def has_attribute(schema, name: str) -> bool:
     has = False
     try:
@@ -55,15 +47,6 @@ def _get_definition(schema: Union[Dict, type], name: str) -> Optional[str]:
     return None
 
 
-def type_annotation(attr: Attribute) -> str:
-    annotation = f"{type_name(attr)}"
-    if attr.is_list:
-        annotation = f"List[{annotation}]"
-    if attr.optional:
-        annotation = f"Optional[{annotation}]"
-    return annotation
-
-
 def get_unprocessed(schema: Dict) -> Dict:
     return {
         key.strip("__"): get_unprocessed(value) if isinstance(value, dict) else value
@@ -72,41 +55,11 @@ def get_unprocessed(schema: Dict) -> Dict:
     }
 
 
-def get_default_value(attr: Attribute) -> str:
-    if attr.type in simple_types or attr.default is None:
-        if attr.type is str and attr.default is not None:
-            return f'"{attr.default}"'
-        return attr.default
-    return f"{type_name(attr)}('{attr.default}')"
-
-
-def variable_annotation(attr: Attribute) -> str:
-    return f"{get_name(attr)}: {type_annotation(attr)}" + (f" = {get_default_value(attr)}" if attr.optional else "")
-
-
-def signature(attributes: List[Attribute]) -> str:
-    return f"{', '.join(variable_annotation(attr) for attr in attributes)}"
-
-
 def unpack_if_not_simple(value: str, _type: type) -> str:
     unpack = ""
     if _type not in simple_types:
         unpack = "**"
     return f"{unpack}{value}"
-
-
-def cast_as(attr: Attribute, name: Optional[str] = None) -> str:
-    if name is None:
-        name = get_name(attr)
-    return f"{type_name(attr)}({unpack_if_not_simple(name, attr.type)})"
-
-
-def cast(attr: Attribute) -> str:
-    if not attr.cast:
-        return get_name(attr)
-    if attr.is_list:
-        return f"[{cast_as(attr, 'val')} for val in {get_name(attr)}]"
-    return f"{cast_as(attr)}"
 
 
 def get_name(attr: Attribute) -> str:
@@ -204,16 +157,16 @@ class Factory:
         self._create_instance = _create_instance
         self.dump_site = dump_site
         self.macros = [
-            type_name,
-            type_annotation,
-            signature,
+            self.type_name,
+            self.type_annotation,
+            self.signature,
             unpack_if_not_simple,
             get_name,
-            variable_annotation,
+            self.variable_annotation,
             to_snake_case,
             to_camel_case,
-            cast_as,
-            cast,
+            self.cast_as,
+            self.cast,
             self.get_type,
             get_unprocessed,
             is_internal,
@@ -463,9 +416,52 @@ import stringcase
             )
         self.create(template_type, _create_instance=False)
 
-    @classmethod
-    def get_type_by_name(cls, name):
-        return cls._types[name]
+    def type_name(self, attr: Union[Attribute, str, type]) -> str:
+        if isinstance(attr, str):
+            return self.get_type_by_name(attr).__name__
+        elif isinstance(attr, type):
+            return attr.__name__
+        return attr.type.__name__
+
+    def type_annotation(self, attr: Attribute) -> str:
+        annotation = f"{self.type_name(attr)}"
+        if attr.is_list:
+            annotation = f"List[{annotation}]"
+        if attr.optional:
+            annotation = f"Optional[{annotation}]"
+        return annotation
+
+    def get_type_by_name(self, name: str):
+        if name not in self._types:
+            return self.create(name, compile=False)
+        return self._types[name]
+
+    def get_default_value(self, attr: Attribute) -> str:
+        if attr.type in simple_types or attr.default is None:
+            if attr.type is str and attr.default is not None:
+                return f'"{attr.default}"'
+            return attr.default
+        return f"{self.type_name(attr)}('{attr.default}')"
+
+    def variable_annotation(self, attr: Attribute) -> str:
+        return f"{get_name(attr)}: {self.type_annotation(attr)}" + (
+            f" = {self.get_default_value(attr)}" if attr.optional else ""
+        )
+
+    def signature(self, attributes: List[Attribute]) -> str:
+        return f"{', '.join(self.variable_annotation(attr) for attr in attributes)}"
+
+    def cast_as(self, attr: Attribute, name: Optional[str] = None) -> str:
+        if name is None:
+            name = get_name(attr)
+        return f"{self.type_name(attr)}({unpack_if_not_simple(name, attr.type)})"
+
+    def cast(self, attr: Attribute) -> str:
+        if not attr.cast:
+            return get_name(attr)
+        if attr.is_list:
+            return f"[{self.cast_as(attr, 'val')} for val in {get_name(attr)}]"
+        return f"{self.cast_as(attr)}"
 
     def compile(self, schema: Dict) -> type:
         definition = self.class_from_schema(schema)
@@ -484,10 +480,12 @@ import stringcase
         """ TODO: Function similarly to create, but without "self.template_repository" """
         pass
 
-    def create(self, template_type: str, _create_instance: bool = False):
+    def create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
         schema = snakify(self.template_repository.find({"type": template_type}))
         # Let at "dummy type" be available for others
         _cls = type(schema["name"], (), snakify(schema))
+        if not compile:
+            return _cls
         self._types[template_type] = _cls
         if "attributes" in schema:
             schema["__attributes__"] = schema["attributes"]
@@ -523,16 +521,16 @@ import stringcase
     def get_type(self, schema: Union[Dict, type], name: str) -> str:
         template_type = _get_definition(schema, name)
         if template_type:
-            return type_name(template_type)
+            return self.type_name(template_type)
         template_type = get_attribute(schema, "type")
-        Template = Factory.get_type_by_name(template_type)
+        Template = self.get_type_by_name(template_type)
         if has_attribute(Template, "attributes"):
             for attr in get_attribute(Template, "attributes"):
                 if to_snake_case(get_attribute(attr, "name")) == to_snake_case(name):
                     template_type = get_attribute(attr, "type")
-                    if template_type not in self._types:
+                    if isinstance(template_type, str) and template_type not in self._types:
                         self.create(template_type)
-                    return type_name(template_type)
+                    return self.type_name(template_type)
         return self.get_type(Template, name)
 
 
