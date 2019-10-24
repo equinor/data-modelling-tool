@@ -77,7 +77,7 @@
         },
         {
           "name": "storageRecipes",
-          "contained": true
+          "contained": false
         },
         {
           "name": "uiRecipes",

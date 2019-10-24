@@ -1,3 +1,4 @@
+from __future__ import annotations
 from pathlib import Path
 from flask import g
 from core.domain.blueprint import Blueprint
@@ -15,15 +16,28 @@ from utils.logging import logger
 from anytree import NodeMixin, RenderTree, PreOrderIter
 
 
-class Node(NodeMixin):
-    def __init__(self, data_source_id, name, document=None, blueprint=None, parent=None, children=None):
+class DocumentNode(NodeMixin):
+    def __init__(
+        self,
+        data_source_id: str,
+        name: str,
+        menu_items,
+        on_select=None,
+        document: Blueprint = None,
+        blueprint: Blueprint = None,
+        parent: DocumentNode = None,
+    ):
         self.data_source_id = data_source_id
         self.name = name
         self.document = document
         self.blueprint = blueprint
         self.parent = parent
-        if children:
-            self.children = children
+        if not menu_items:
+            menu_items = []
+        if not on_select:
+            on_select = None
+        self.on_select = on_select
+        self.menu_items = menu_items
 
     @property
     def uid(self):
@@ -34,31 +48,10 @@ class Node(NodeMixin):
     def start_path(self):
         return "/".join([node.name for node in self.path])
 
-
-class DocumentNode(Node):
-    def __init__(
-        self,
-        data_source_id: str,
-        name: str,
-        menu_items,
-        on_select=None,
-        document: Blueprint = None,
-        blueprint: Blueprint = None,
-        parent: Node = None,
-    ):
-        super().__init__(data_source_id, name, document, blueprint, parent)
-        if not menu_items:
-            self.menu_items = []
-        if not on_select:
-            self.on_select = None
-
-        self.on_select = on_select
-        self.menu_items = menu_items
-
     @property
     def id(self):
         if self.document:
-            return f"{self.document.uid}"
+            return f"{self.start_path}/{self.document.uid}"
         elif self.depth == 0:
             return self.data_source_id
         else:
@@ -189,7 +182,7 @@ class Tree:
                 )
 
     def process_document(self, data_source_id, document, parent_node):
-        logger.info(f"Add attributes for '{document.name}'")
+        logger.info(f"Add attributes for '{document.name}' in '{parent_node.name}'")
 
         blueprint = get_blueprint(document.type)
 
@@ -375,6 +368,7 @@ class Tree:
                 if values:
                     # Values are stored in separate document
                     if not is_contained_in_storage:
+
                         # Get real documents
                         attribute_nodes.append(
                             {"documents": self.get_references(values, attribute["type"]), "node": attribute_node}
@@ -393,7 +387,6 @@ class Tree:
                             {"documents": self.get_references(values, attribute["type"]), "node": node}
                         )
                 else:
-                    item_type = get_blueprint(attribute["type"])
                     node.menu_items.append(
                         {
                             "label": f"Create {attribute['name']}",
