@@ -26,6 +26,7 @@ export default ({
       setLoading(true)
       fetchDocument({
         onSuccess: (documentData: any) => {
+          console.log(documentData)
           setDocumentData(documentData)
           setLoading(false)
         },

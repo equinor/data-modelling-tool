@@ -79,23 +79,14 @@ const View = (props: any) => {
 }
 
 const ViewList = (props: any) => {
-  const { document, parent } = props
-  const { uiRecipes = [] } = document
+  const { parent } = props
 
-  //@todo remove this, now name and plugin in a uiRecipe must match, otherwise the plugin wont be used.
-  const uiRecipeNamesBlueprint = uiRecipes.map(
-    (uiRecipe: any) => uiRecipe['name']
-  )
   const uiRecipeNamesParent = parent.uiRecipes
     .map((uiRecipe: any) => uiRecipe['plugin'])
     .filter((name: string) => name !== undefined)
   // Create a list of unique UI recipe names
   const uiRecipesNames = Array.from(
-    new Set(
-      DEFAULT_UI_RECIPES.concat(uiRecipeNamesBlueprint).concat(
-        uiRecipeNamesParent
-      )
-    )
+    new Set(DEFAULT_UI_RECIPES.concat(uiRecipeNamesParent))
   )
   return (
     <Tabs>
