@@ -20,7 +20,6 @@ const AttributeGroup = styled.div`
 export enum ArrayType {
   SIMPLE = 'Simple',
   ARRAY = 'Array',
-  COMPLEX = 'Complex',
 }
 
 export enum DataType {
@@ -32,14 +31,10 @@ export enum DataType {
 }
 
 function getArrayType(dimensions: string | undefined) {
-  if (dimensions === undefined) {
-    return ArrayType.SIMPLE
-  }
-  if (dimensions === '[*]') {
+  if (dimensions === '*') {
     return ArrayType.ARRAY
-  } else {
-    return ArrayType.COMPLEX
   }
+  return ArrayType.SIMPLE
 }
 
 type Props = {
@@ -53,6 +48,7 @@ export default (props: Props) => {
 
   const onChange = (name: string) => {
     return (event: any) => {
+      event.preventDefault()
       let newFormData = { ...formData }
       if (name === 'array') {
         const arrayType = event.target.value
@@ -86,17 +82,22 @@ export default (props: Props) => {
     DataType.BOOLEAN,
     DataType.INTEGER,
   ]
-  const isPrimitive = primitives.includes(type)
-  const selectedType = isPrimitive ? type : DataType.BLUEPRINT
-  const defaultType = 'string'
+
+  //defaults
+  let isPrimitive = true
+  let selectedType = 'string'
+  if (type) {
+    isPrimitive = primitives.includes(type)
+    selectedType = isPrimitive ? type : DataType.BLUEPRINT
+  }
   return (
     <AttributeGroup>
-      <NameInput value={name} onChange={onChange} />
+      <NameInput value={name || ''} onChange={onChange} />
       <DescriptionInput value={description} onChange={onChange} />
-      <TypeInput value={selectedType || defaultType} onChange={onChange} />
+      <TypeInput value={selectedType} onChange={onChange} />
       {!isPrimitive && <BlueprintInput value={type} onChange={onChange} />}
       <ArrayRadioGroup onChange={onChange} attributeName={name} array={array} />
-      {array === ArrayType.COMPLEX && (
+      {array === ArrayType.ARRAY && (
         <div style={{ display: 'flex', alignItems: 'baseline' }}>
           <DimensionsInput value={dimensions} onChange={onChange} />{' '}
           <span>Format: [size,size] Example: "[*,10,2000]"</span>

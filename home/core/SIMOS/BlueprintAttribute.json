@@ -30,7 +30,7 @@
       "type": "string",
       "name": "dimensions",
       "optional": true,
-      "default": "*"
+      "default": ""
     },
     {
       "name": "contained",
