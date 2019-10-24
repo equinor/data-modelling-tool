@@ -70,7 +70,7 @@ export const DefaultValueInput = (props: any) => {
   return (
     <AttributeWrapper>
       Default value:{' '}
-      <input type={type} value={value} onChange={onChange('defaultValue')} />
+      <input type={type} value={value} onChange={onChange('default')} />
     </AttributeWrapper>
   )
 }

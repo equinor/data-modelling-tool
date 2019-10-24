@@ -12,12 +12,12 @@
     {
       "name": "type",
       "type": "string",
-      "defaultValue": "system/SIMOS/UiWidget"
+      "default": "system/SIMOS/UiWidget"
     },
     {
       "name": "optional",
       "type": "boolean",
-      "defaultValue": false,
+      "default": false,
       "description": "Used to control what plugin in chosen."
     },
     {

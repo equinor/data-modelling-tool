@@ -29,7 +29,7 @@
         "Small",
         "Large"
       ],
-      "defaultValue": "small"
+      "default": "small"
     }
   ]
 }

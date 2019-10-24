@@ -67,7 +67,7 @@ function getDataByAttribute(
   blueprint: Blueprint,
   attribute: BlueprintAttribute
 ) {
-  const defaultValue = attribute.defaultValue || getDefaults(attribute)
+  const defaultValue = attribute.default || getDefaults(attribute)
   return {
     [attribute.name]: (blueprint as any)[attribute.name] || defaultValue,
   }

@@ -69,10 +69,10 @@ export function getDefaults(attribute: BlueprintAttribute) {
 export function parseAttributeDefault(
   attribute: BlueprintAttribute
 ): BlueprintAttribute {
-  if (typeof attribute.defaultValue === 'string') {
-    if (attribute.type === 'boolean' && attribute.defaultValue !== undefined) {
-      ;(attribute as any).defaultValue =
-        attribute.defaultValue.toLowerCase() === 'false' ? false : true
+  if (typeof attribute.default === 'string') {
+    if (attribute.type === 'boolean' && attribute.default !== undefined) {
+      ;(attribute as any).default =
+        attribute.default.toLowerCase() === 'false' ? false : true
     }
     //@todo add other default types.
   } else {

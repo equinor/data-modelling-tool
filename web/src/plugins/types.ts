@@ -4,7 +4,7 @@ export type BlueprintAttribute = {
   description?: string
   optional?: boolean
   contained?: boolean
-  defaultValue?: string
+  default?: string
   dimensions?: string
   value?: string
 }
