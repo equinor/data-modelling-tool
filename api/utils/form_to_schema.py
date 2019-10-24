@@ -38,9 +38,6 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
         attribute_name = attribute["name"]
         is_array = attribute.get("dimensions", "") == "*"
 
-        if "enum" in attribute:
-            continue
-
         is_contained = ui_recipe.is_contained(attribute)
 
         if not is_contained:
