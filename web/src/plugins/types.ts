@@ -24,4 +24,3 @@ export type PluginProps = {
   blueprint: Blueprint
   children: Blueprint[]
 }
-

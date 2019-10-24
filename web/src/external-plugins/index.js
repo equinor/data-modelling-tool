@@ -7,7 +7,7 @@
  * External plugins must have a unique name, not conflicting with the DMT official plugin names.
  */
 
-const TestPlugin = () => {
+const TestPlugin = ({ parent, document, children }) => {
   return 'test plugin'
 }
 

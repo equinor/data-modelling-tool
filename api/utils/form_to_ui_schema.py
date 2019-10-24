@@ -67,13 +67,7 @@ DEFAULT_PREVIEW_UI_RECIPE = {
     "attributes": [],
 }
 
-DEFAULT_EDIT_UI_RECIPE = {
-    "type": "system/SIMOS/UIRecipe",
-    "plugin": "EDIT",
-    "name": "EDIT",
-    "description": "",
-    "attributes": [],
-}
+DEFAULT_EDIT_UI_RECIPE = {"type": "system/SIMOS/UIRecipe", "name": "EDIT", "description": "", "attributes": []}
 
 
 def form_to_ui_schema(blueprint):

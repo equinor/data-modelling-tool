@@ -1,10 +1,9 @@
 import React from 'react'
-import {BlueprintAttribute, PluginProps} from "../types";
-import ErrorBoundary from "../../components/ErrorBoundary";
-import TableWidget from "../widgets/table/TableWidget";
-import {RegisteredPlugins} from "../../pages/common/golden-layout/DocumentComponent";
-import {Pre} from "../preview/PreviewPlugin";
-
+import { BlueprintAttribute, PluginProps } from '../types'
+import ErrorBoundary from '../../components/ErrorBoundary'
+import TableWidget from '../widgets/table/TableWidget'
+import { RegisteredPlugins } from '../../pages/common/golden-layout/DocumentComponent'
+import { Pre } from '../preview/PreviewPlugin'
 
 // available on attribute level of this.
 enum ViewWidgets {
@@ -12,7 +11,7 @@ enum ViewWidgets {
   TABLE_WIDGET = 'table.widget',
 }
 
-export default ({ parent, blueprint }: PluginProps) => {
+export const ViewPlugin = ({ parent, blueprint }: PluginProps) => {
   const widgets = parent.attributes.map(
     (parentAttribute: BlueprintAttribute, index: number) => {
       const plugin = getPluginOfAttribute(parent.uiRecipes, parentAttribute)
@@ -42,9 +41,7 @@ export default ({ parent, blueprint }: PluginProps) => {
         <span style={{ paddingRight: 20 }}>{blueprint.name}</span>
         <span>{blueprint.type}</span>
       </div>
-      <div style={{ padding: 20 }}>
-        {widgets}
-      </div>
+      <div style={{ padding: 20 }}>{widgets}</div>
     </div>
   )
 }

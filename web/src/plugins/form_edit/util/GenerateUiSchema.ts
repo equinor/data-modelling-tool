@@ -8,7 +8,6 @@ type UiSchemaProperty = {
   'ui:ArrayAttribute'?: any
 }
 
-
 /**
  * Adapter for blueprint to rsjf uiSchema.
  * https://department-of-veterans-affairs.github.io/veteran-facing-services-tools/forms/about-the-schema-and-uischema-objects/
@@ -36,8 +35,8 @@ export function generateUiSchema(
     }
   }
   return {
-    "type": "object",
-    ...uiSchema
+    type: 'object',
+    ...uiSchema,
   }
 }
 

@@ -13,7 +13,7 @@ interface Props {
   uiRecipe: string
 }
 
-export const onFormSubmit = ({attribute, dataUrl}: any) => {
+export const onFormSubmit = ({ attribute, dataUrl }: any) => {
   return (schemas: any) => {
     const url = attribute ? `${dataUrl}/${attribute}` : dataUrl
     axios
@@ -43,7 +43,7 @@ const ReactJsonSchemaWrapper = (props: Props) => {
           <ReactJsonSchemaPlugin
             document={document}
             template={data}
-            onSubmit={onFormSubmit({attribute, dataUrl})}
+            onSubmit={onFormSubmit({ attribute, dataUrl })}
           />
         )
       }}

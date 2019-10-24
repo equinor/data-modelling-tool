@@ -30,12 +30,11 @@
       "type": "string",
       "name": "dimensions",
       "optional": true,
-      "default": "1"
+      "default": "*"
     },
     {
       "name": "contained",
       "type": "boolean",
-      "description": "BlueprintAttribute's type is contained or not. Used to control size of blueprints. If a property is not contained, code consuming this model should use the storage recipe to get access to the type.",
       "default": true,
       "contained": true,
       "optional": true
@@ -49,6 +48,13 @@
     }
   ],
   "storageRecipes": [],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "DEFAULT_EDIT",
+      "description": "",
+      "field": "attribute"
+    }
+  ]
 }
 
