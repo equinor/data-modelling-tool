@@ -195,7 +195,6 @@ class {{ schema.name }}Template(type):
 
         cls._type = "{{ schema.type }}"
 
-        @property
         def get_type(cls) -> Union[type, str]:
             try:
                 return {{ type_name(schema.type) }}
