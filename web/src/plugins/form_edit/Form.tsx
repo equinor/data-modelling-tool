@@ -17,7 +17,6 @@ export const EditPlugin = (props: Props) => {
     <div>
       {configs.map((config: any, index: number) => {
         const showLabel: boolean = getShowLabel(config.attribute)
-
         return (
           <div key={'form' + index} style={{ marginBottom: 20 }}>
             {showLabel && (

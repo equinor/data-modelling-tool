@@ -14,10 +14,10 @@
       "optional": true
     },
     {
-      "name": "default",
+      "name": "defaultValue",
       "type": "string",
       "optional": true,
-      "default": "",
+      "defaultValue": "",
       "contained": true
     },
     {
@@ -30,12 +30,12 @@
       "type": "string",
       "name": "dimensions",
       "optional": true,
-      "default": ""
+      "defaultValue": ""
     },
     {
       "name": "contained",
       "type": "boolean",
-      "default": true,
+      "defaultValue": true,
       "contained": true,
       "optional": true
     },
@@ -43,7 +43,7 @@
       "name": "enumType",
       "type": "system/SIMOS/Enum",
       "optional": true,
-      "default": null,
+      "defaultValue": null,
       "contained": true
     }
   ],

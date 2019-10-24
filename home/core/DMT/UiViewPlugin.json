@@ -11,12 +11,12 @@
     {
       "name": "type",
       "type": "string",
-      "default": "system/SIMOS/UiBlueprintViewPlugin"
+      "defaultValue": "system/SIMOS/UiBlueprintViewPlugin"
     },
     {
       "name": "optional",
       "type": "boolean",
-      "default": false,
+      "defaultValue": false,
       "description": "Used to control what plugin in chosen"
     },
     {

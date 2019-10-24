@@ -16,10 +16,13 @@ export function findRecipe(blueprint: Blueprint, uiRecipePlugin: string) {
   )
 }
 
-export function findUiAttribute(uiRecipe: any, name: string) {
-  return uiRecipe.attributes.find(
-    (uiAttribute: any) => uiAttribute.name === name
-  )
+export function findUiAttribute(uiRecipe: any, name: string): any {
+  if (uiRecipe) {
+    return uiRecipe.attributes.find(
+      (uiAttribute: any) => uiAttribute.name === name
+    )
+  }
+  return {}
 }
 
 export function getBlueprintFromType(
@@ -41,18 +44,45 @@ export function getBlueprintFromType(
  * @param attribute
  */
 export function getDefaults(attribute: BlueprintAttribute) {
-  if (isPrimitive(attribute.type)) {
-    switch (attribute.type) {
-      case 'string':
-        return ''
-      case 'number':
-        return 0
-      case 'boolean':
-        return false
-      case 'integer':
-        return 0
-    }
-  } else {
-    return attribute.dimensions === '*' ? [] : {}
+  switch (attribute.type) {
+    case 'string':
+      return ''
+    case 'number':
+      return 0
+    case 'boolean':
+      return false
+    case 'integer':
+      return 0
+    default:
+      //type is a blueprint.
+      return attribute.dimensions === '*' ? [] : {}
   }
+}
+
+/**
+ * Parse attribute default values.
+ * Since default is of type string, we can't store json type array, object, number or boolean.
+ * These needs to be parsed from the blueprint
+ *
+ * @param attribute
+ */
+export function parseAttributeDefault(
+  attribute: BlueprintAttribute
+): BlueprintAttribute {
+  if (typeof attribute.defaultValue === 'string') {
+    if (attribute.type === 'boolean' && attribute.defaultValue !== undefined) {
+      ;(attribute as any).defaultValue =
+        attribute.defaultValue.toLowerCase() === 'false' ? false : true
+    }
+    //@todo add other default types.
+  } else {
+    console.warn(
+      `attribute default value is incorrect. ${JSON.stringify(
+        attribute,
+        null,
+        2
+      )}`
+    )
+  }
+  return attribute
 }

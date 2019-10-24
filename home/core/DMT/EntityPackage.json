@@ -10,32 +10,32 @@
       "type": "string"
     }, {
       "contained": true,
-      "default": "system/SIMOS/Blueprint",
+      "defaultValue": "system/SIMOS/Blueprint",
       "name": "type",
       "optional": false,
       "type": "string"
     }, {
       "contained": true,
-      "default": "",
+      "defaultValue": "",
       "name": "description",
       "optional": true,
       "type": "string"
     }, {
       "contained": true,
-      "default": false,
+      "defaultValue": false,
       "name": "isRoot",
       "optional": false,
       "type": "boolean"
     }, {
       "contained": false,
-      "default": "[]",
+      "defaultValue": "[]",
       "dimensions": "*",
       "name": "packages",
       "optional": true,
       "type": "system/DMT/EntityPackage"
     }, {
       "contained": false,
-      "default": "[]",
+      "defaultValue": "[]",
       "dimensions": "*",
       "name": "documents",
       "optional": true,

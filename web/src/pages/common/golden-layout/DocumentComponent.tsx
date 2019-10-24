@@ -24,7 +24,11 @@ export enum RegisteredPlugins {
 }
 
 // These UI recipes should always be shown
-const DEFAULT_UI_RECIPES = [RegisteredPlugins.PREVIEW, RegisteredPlugins.EDIT]
+const DEFAULT_UI_RECIPES = [
+  RegisteredPlugins.PREVIEW,
+  RegisteredPlugins.EDIT,
+  RegisteredPlugins.EDIT_PLUGIN,
+]
 
 const View = (props: any) => {
   const {

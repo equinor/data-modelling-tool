@@ -1,6 +1,10 @@
 import { Blueprint, BlueprintAttribute } from '../../types'
 import { JsonSchemaArray, JsonSchemaObject } from './CreateConfig'
-import { getBlueprintFromType, isPrimitive } from '../../pluginUtils'
+import {
+  getBlueprintFromType,
+  isPrimitive,
+  parseAttributeDefault,
+} from '../../pluginUtils'
 
 export function generateTemplate(
   attributes: BlueprintAttribute[],
@@ -48,7 +52,7 @@ function appendJsonSchemaProperty(
   types: Blueprint[]
 ): void {
   if (isPrimitive(attribute.type)) {
-    ;(container as any)[attribute.name] = attribute
+    ;(container as any)[attribute.name] = parseAttributeDefault(attribute)
   } else {
     const properties = getJsonSchemaPropertyFromType(types, attribute)
     if (attribute.dimensions === '*') {

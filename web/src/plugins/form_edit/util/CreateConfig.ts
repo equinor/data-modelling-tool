@@ -56,7 +56,7 @@ export function createFormConfigs(
   return [
     {
       attribute: null,
-      data: blueprint,
+      data: setDefaults(parent, blueprint),
       template: generateTemplate(parent.attributes, children),
       uiSchema: generateUiSchema(parent, uiRecipe),
     },
@@ -67,8 +67,24 @@ function getDataByAttribute(
   blueprint: Blueprint,
   attribute: BlueprintAttribute
 ) {
-  const defaultValue = attribute.default || getDefaults(attribute)
+  const defaultValue = attribute.defaultValue || getDefaults(attribute)
   return {
     [attribute.name]: (blueprint as any)[attribute.name] || defaultValue,
   }
+}
+
+function setDefaults(parent: Blueprint, blueprint: Blueprint) {
+  Object.keys((key: string) => {
+    const value = (blueprint as any)[key]
+    const parentAttribute = parent.attributes.find(
+      (parentAttribute: BlueprintAttribute) => parentAttribute.name === key
+    )
+    if (!parentAttribute) {
+      throw 'invalid blueprint'
+    }
+    if (!value) {
+      ;(blueprint as any)[key] = getDefaults(parentAttribute)
+    }
+  })
+  return blueprint
 }
