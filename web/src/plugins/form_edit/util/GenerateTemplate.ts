@@ -1,7 +1,6 @@
 import { Blueprint, BlueprintAttribute } from '../../types'
 import { JsonSchemaArray, JsonSchemaObject } from './CreateConfig'
-import { isPrimitive } from '../../utils'
-import { getBlueprintFromType } from '../../util'
+import { getBlueprintFromType, isPrimitive } from '../../pluginUtils'
 
 export function generateTemplate(
   blueprint: Blueprint,

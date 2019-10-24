@@ -107,6 +107,30 @@
       "description": "",
       "plugin": "TEST_EXTERNAL",
       "attributes": []
+    },
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "Edit2",
+      "description": "",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "attributes",
+          "field": "attribute"
+        },
+        {
+          "name": "uiRecipes",
+          "contained": false
+        },
+        {
+          "name": "storageRecipes",
+          "contained": false
+        }
+      ]
     }
   ]
 }

@@ -102,17 +102,6 @@ export const ArrayRadioGroup = (props: any) => {
         />
         Array
       </label>
-      <label>
-        <input
-          onChange={onChange(valueName)}
-          style={{ marginLeft: '10px' }}
-          type="radio"
-          value={ArrayType.COMPLEX}
-          name={`array-${attributeName}`}
-          checked={array === ArrayType.COMPLEX}
-        />
-        Complex
-      </label>
     </AttributeWrapper>
   )
 }

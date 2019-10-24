@@ -54,12 +54,12 @@
           "widget": "textarea"
         },
         {
-          "name": "attributes",
+          "name": "wheels",
           "field": "attribute"
         },
         {
-          "name": "storageRecipes",
-          "contained": false
+          "name": "engine",
+          "field": "attribute"
         },
         {
           "name": "uiRecipes",

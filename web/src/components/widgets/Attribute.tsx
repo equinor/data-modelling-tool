@@ -58,10 +58,10 @@ export default (props: Props) => {
         const arrayType = event.target.value
 
         if (arrayType === ArrayType.SIMPLE) {
-          newFormData.dimensions = undefined
+          newFormData.dimensions = ''
         }
         if (arrayType === ArrayType.ARRAY) {
-          newFormData.dimensions = '[*]'
+          newFormData.dimensions = '*'
         }
         setFormData(newFormData)
         setArray(arrayType)
@@ -88,11 +88,12 @@ export default (props: Props) => {
   ]
   const isPrimitive = primitives.includes(type)
   const selectedType = isPrimitive ? type : DataType.BLUEPRINT
+  const defaultType = 'string'
   return (
     <AttributeGroup>
       <NameInput value={name} onChange={onChange} />
       <DescriptionInput value={description} onChange={onChange} />
-      <TypeInput value={selectedType} onChange={onChange} />
+      <TypeInput value={selectedType || defaultType} onChange={onChange} />
       {!isPrimitive && <BlueprintInput value={type} onChange={onChange} />}
       <ArrayRadioGroup onChange={onChange} attributeName={name} array={array} />
       {array === ArrayType.COMPLEX && (

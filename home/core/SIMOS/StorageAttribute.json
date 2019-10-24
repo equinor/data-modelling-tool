@@ -21,7 +21,7 @@
     {
       "type": "string",
       "name": "type",
-      "enum": [
+      "enumType": [
         "small",
         "large"
       ],
