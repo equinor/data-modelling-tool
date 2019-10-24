@@ -44,6 +44,10 @@
         {
           "name": "packages",
           "contained": false
+        },
+        {
+          "name": "applications",
+          "contained": false
         }
       ]
     }
@@ -87,6 +91,10 @@
         },
         {
           "name": "documents",
+          "contained": false
+        },
+        {
+          "name": "applications",
           "contained": false
         }
       ]
