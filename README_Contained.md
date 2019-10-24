@@ -1,7 +1,8 @@
 #### Contained
 Definition: Contained in the data model (blueprint and entity instances, in other words: all documents) means:
 ```
-contained: if the property is present in the model or not. Contained = false means that the property is omitted in the instance.
+contained: if the property is present in the model or not. 
+Contained = false means that the property is omitted in the instance.
 ```
 Contained in the data model controls the size of the data model, unrelated to storage.
 
