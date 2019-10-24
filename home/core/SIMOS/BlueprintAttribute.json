@@ -17,7 +17,6 @@
       "name": "defaultValue",
       "type": "string",
       "optional": true,
-      "defaultValue": "",
       "contained": true
     },
     {

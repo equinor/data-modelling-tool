@@ -73,7 +73,7 @@ export default (props: Props) => {
     name,
     description,
     type,
-    default: defaultValue,
+    defaultValue,
     dimensions,
   } = formData
   const primitives = [
