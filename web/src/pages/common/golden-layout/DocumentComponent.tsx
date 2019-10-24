@@ -1,5 +1,7 @@
 import React from 'react'
-import ReactJsonSchemaWrapper from '../form/ReactJsonSchemaWrapper'
+import ReactJsonSchemaWrapper, {
+  onFormSubmit,
+} from '../form/ReactJsonSchemaWrapper'
 import styled from 'styled-components'
 import FetchDocument from '../utils/FetchDocument'
 // @ts-ignore
@@ -7,7 +9,7 @@ import objectPath from 'object-path'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins'
-import ViewPlugin from '../../../plugins/ViewPlugin'
+import { EditPlugin, ViewPlugin } from '../../../plugins/'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -18,26 +20,52 @@ export enum RegisteredPlugins {
   PREVIEW = 'PREVIEW',
   EDIT = 'EDIT',
   VIEW = 'VIEW',
+  EDIT_PLUGIN = 'EDIT_PLUGIN',
 }
 
 // These UI recipes should always be shown
 const DEFAULT_UI_RECIPES = [RegisteredPlugins.PREVIEW, RegisteredPlugins.EDIT]
 
 const View = (props: any) => {
-  const { schemaUrl, parent, document, dataUrl, attribute, uiRecipe } = props
+  const {
+    schemaUrl,
+    parent,
+    children,
+    document,
+    dataUrl,
+    attribute,
+    uiRecipe,
+  } = props
+
+  const pluginProps = {
+    parent,
+    blueprint: document,
+    children,
+    name: uiRecipe,
+  }
+
   switch (uiRecipe) {
     case 'PREVIEW':
       return <BlueprintPreview data={document} />
 
     case RegisteredPlugins.VIEW:
-      return <ViewPlugin blueprint={document} parent={parent} />
+      return <ViewPlugin {...pluginProps} />
+
+    case RegisteredPlugins.EDIT_PLUGIN:
+      return (
+        <EditPlugin
+          {...pluginProps}
+          onSubmit={onFormSubmit({ attribute: null, dataUrl })}
+        />
+      )
 
     default:
       const ExternalPlugin = pluginHook(uiRecipe)
       if (ExternalPlugin) {
-        return <ExternalPlugin blueprint={document} parent={parent} />
+        return <ExternalPlugin {...props} />
       }
-      //@todo use EDIT plugin, and alert the user of missing plugin.
+      // TODO move edit to a case EDIT
+      //return <div>`Plugin not supported: ${uiRecipe}`</div>
       return (
         <ReactJsonSchemaWrapper
           document={document}
@@ -99,7 +127,12 @@ const DocumentComponent = (props: any) => {
             : data.document
 
           return (
-            <ViewList {...props} document={document} parent={data.blueprint} />
+            <ViewList
+              {...props}
+              document={document}
+              children={data.children}
+              parent={data.blueprint}
+            />
           )
         }}
       />

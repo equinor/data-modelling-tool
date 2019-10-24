@@ -1,0 +1,67 @@
+{
+  "type": "templates/SIMOS/Blueprint",
+  "name": "Blueprint",
+  "description": "This describes a blueprint",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "templates/SIMOS/BlueprintAttribute",
+      "dimensions": "*",
+      "name": "attributes",
+      "contained": true
+    },
+    {
+      "type": "templates/SIMOS/StorageRecipe",
+      "dimensions": "*",
+      "name": "storageRecipes",
+      "contained": false
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "dimensions": "*",
+      "name": "uiRecipes",
+      "contained": false
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": [
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "PREVIEW",
+      "description": "",
+      "plugin": "PREVIEW",
+      "attributes": []
+    },
+    {
+      "type": "templates/SIMOS/UIRecipe",
+      "name": "Edit",
+      "description": "",
+      "plugin": "EDIT",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "attributes",
+          "field": "attribute"
+        },
+        {
+          "name": "storageRecipes",
+          "contained": false
+        },
+        {
+          "name": "uiRecipes",
+          "contained": false
+        }
+      ]
+    }
+  ]
+}

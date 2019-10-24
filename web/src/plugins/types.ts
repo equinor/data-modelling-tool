@@ -6,6 +6,7 @@ export type BlueprintAttribute = {
   contained?: boolean
   default?: string
   dimensions?: string
+  value?: string
 }
 
 export type Blueprint = {
@@ -14,19 +15,12 @@ export type Blueprint = {
   description: string
   attributes: BlueprintAttribute[]
   uiRecipes: any[]
-}
-
-export type PluginImport = {
-  name: string
-  type: string
-  description?: string
-  parent: Blueprint
-  blueprint: Blueprint
-  children: Blueprint[]
-  inPlace: boolean
+  storageRecipes: any[]
 }
 
 export type PluginProps = {
-  data?: PluginImport
-  onSubmit?: Function
+  name: string
+  parent: Blueprint
+  blueprint: Blueprint
+  children: Blueprint[]
 }

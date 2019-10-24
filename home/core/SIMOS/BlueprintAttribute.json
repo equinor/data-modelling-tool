@@ -17,7 +17,7 @@
       "name": "default",
       "type": "string",
       "optional": true,
-      "default": null,
+      "default": "",
       "contained": true
     },
     {
@@ -30,7 +30,7 @@
       "type": "string",
       "name": "dimensions",
       "optional": true,
-      "default": "1"
+      "default": "*"
     },
     {
       "name": "contained",

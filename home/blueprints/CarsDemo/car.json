@@ -42,6 +42,31 @@
       ]
     }
   ],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "EDIT_PLUGIN",
+      "description": "",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "attributes",
+          "field": "attribute"
+        },
+        {
+          "name": "storageRecipes",
+          "contained": false
+        },
+        {
+          "name": "uiRecipes",
+          "contained": true
+        }
+      ]
+    }
+  ]
 }
 

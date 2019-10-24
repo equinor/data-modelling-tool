@@ -1,33 +1,18 @@
 import React from 'react'
-import { Blueprint, BlueprintAttribute, PluginImport } from './types'
-import TableWidget from './table/TableWidget'
-import { Pre } from './preview/PreviewPlugin'
-import { RegisteredPlugins } from '../pages/common/golden-layout/DocumentComponent'
-import ErrorBoundary from '../components/ErrorBoundary'
+import { BlueprintAttribute, PluginProps } from '../types'
+import ErrorBoundary from '../../components/ErrorBoundary'
+import TableWidget from '../widgets/table/TableWidget'
+import { RegisteredPlugins } from '../../pages/common/golden-layout/DocumentComponent'
+import { Pre } from '../preview/PreviewPlugin'
 
 // available on attribute level of this.
 enum ViewWidgets {
   VIEW_WIDGET = 'view.widget',
-  TABLE_ATTRIBUTE = 'table.widget',
+  TABLE_WIDGET = 'table.widget',
 }
 
-type Props = {
-  parent: Blueprint
-  blueprint: Blueprint
-}
-
-export default ({ parent, blueprint }: Props) => {
-  const pluginInput: PluginImport = {
-    name: '',
-    description: '',
-    type: '',
-    blueprint,
-    parent: parent,
-    children: [],
-    inPlace: true,
-  }
-
-  const widgets = pluginInput.parent.attributes.map(
+export const ViewPlugin = ({ parent, blueprint }: PluginProps) => {
+  const widgets = parent.attributes.map(
     (parentAttribute: BlueprintAttribute, index: number) => {
       const plugin = getPluginOfAttribute(parent.uiRecipes, parentAttribute)
       const attribute = (blueprint as any)[parentAttribute.name]
@@ -35,7 +20,7 @@ export default ({ parent, blueprint }: Props) => {
       switch (plugin) {
         case ViewWidgets.VIEW_WIDGET:
           return <DefaultView key={key} attribute={parentAttribute} />
-        case ViewWidgets.TABLE_ATTRIBUTE:
+        case ViewWidgets.TABLE_WIDGET:
           return (
             <ErrorBoundary key={key}>
               <TableWidget
@@ -53,8 +38,8 @@ export default ({ parent, blueprint }: Props) => {
   return (
     <div>
       <div>
-        <span style={{ paddingRight: 20 }}>{pluginInput.blueprint.name}</span>
-        <span>{pluginInput.blueprint.type}</span>
+        <span style={{ paddingRight: 20 }}>{blueprint.name}</span>
+        <span>{blueprint.type}</span>
       </div>
       <div style={{ padding: 20 }}>{widgets}</div>
     </div>
@@ -95,7 +80,7 @@ const PreviewView = ({ attribute }: DefaultViewProps) => {
   return <Pre>{JSON.stringify(attribute, null, 2)}</Pre>
 }
 
-const DefaultView = ({ attribute }: DefaultViewProps) => {
+export const DefaultView = ({ attribute }: DefaultViewProps) => {
   if (attribute.dimensions === '*') {
     return <PreviewView attribute={attribute} />
   }
