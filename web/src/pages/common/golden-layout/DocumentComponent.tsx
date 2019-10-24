@@ -40,6 +40,9 @@ const View = (props: any) => {
     children,
     name: uiPlugin,
   }
+  const documentOrAttributes = attribute
+    ? objectPath.get(document, attribute, {})
+    : document
   switch (uiPlugin) {
     case 'PREVIEW':
       return <BlueprintPreview data={document} />
@@ -54,9 +57,6 @@ const View = (props: any) => {
         />
       )
     case RegisteredPlugins.EDIT:
-      const documentOrAttributes = attribute
-        ? objectPath.get(document, attribute, {})
-        : document
       return (
         <ReactJsonSchemaWrapper
           document={documentOrAttributes}

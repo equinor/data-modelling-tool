@@ -81,29 +81,6 @@
     },
     {
       "type": "system/SIMOS/UIRecipe",
-      "name": "VIEW",
-      "description": "",
-      "plugin": "VIEW",
-      "attributes": [
-        {
-          "name": "name",
-          "widget": "view.widget"
-        },
-        {
-          "name": "uiRecipes",
-          "widget": "table.widget"
-        }
-      ]
-    },
-    {
-      "type": "system/SIMOS/UIRecipe",
-      "name": "TEST_EXTERNAL",
-      "description": "",
-      "plugin": "TEST_EXTERNAL",
-      "attributes": []
-    },
-    {
-      "type": "system/SIMOS/UIRecipe",
       "name": "Edit plugin",
       "description": "",
       "plugin": "EDIT_PLUGIN",

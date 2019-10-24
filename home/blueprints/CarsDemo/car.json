@@ -42,6 +42,41 @@
       ]
     }
   ],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "PREVIEW",
+      "description": "",
+      "plugin": "PREVIEW",
+      "attributes": []
+    },
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "EDIT",
+      "plugin": "EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "storageRecipes",
+          "contained": false
+        },
+        {
+          "name": "uiRecipes",
+          "contained": true
+        }
+      ]
+    },
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "TEST_EXTERNAL",
+      "description": "",
+      "plugin": "TEST_EXTERNAL",
+      "attributes": []
+    }
+  ]
 }
 
