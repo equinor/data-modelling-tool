@@ -1,4 +1,4 @@
-from utils.enums import DataSourceType
+from core.enums import DataSourceType
 
 
 # TODO: Make data_source types inherit this class

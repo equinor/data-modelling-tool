@@ -7,7 +7,7 @@ from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 
 # TODO: Make Enum
 from core.repository.mongo.package_repository import MongoPackageRepository
-from utils.enums import DataSourceType
+from core.enums import DataSourceType
 
 
 class RepositoryType(Enum):

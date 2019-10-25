@@ -1,5 +1,5 @@
 from typing import Dict, List
-from utils.enums import DMT
+from core.enums import DMT
 
 
 class Dependency:

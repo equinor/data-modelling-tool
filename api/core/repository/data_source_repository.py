@@ -3,7 +3,7 @@ from typing import List
 from config import Config
 from core.domain.data_source import DataSource
 from services.database import data_modelling_tool_db as database
-from utils.enums import DataSourceDocumentType, DataSourceType
+from core.enums import DataSourceDocumentType, DataSourceType
 
 
 class DataSourceRepository:

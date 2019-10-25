@@ -7,7 +7,7 @@ from core.domain.blueprint import Blueprint
 from core.domain.entity import Entity
 from core.domain.package import Package
 from services.database import data_modelling_tool_db as dmt_db
-from utils.enums import DMT, SIMOS
+from core.enums import DMT, SIMOS
 from utils.logging import logger
 
 

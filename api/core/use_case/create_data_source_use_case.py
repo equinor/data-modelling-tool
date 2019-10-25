@@ -1,5 +1,5 @@
 from core.shared import request_object, response_object, use_case
-from utils.enums import DataSourceType
+from core.enums import DataSourceType
 
 
 class CreateDataSourceRequestObject(request_object.ValidRequestObject):

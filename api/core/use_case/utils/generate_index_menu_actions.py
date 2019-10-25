@@ -1,4 +1,4 @@
-from utils.enums import DMT, SIMOS, DataSourceDocumentType
+from core.enums import DMT, SIMOS, DataSourceDocumentType
 
 
 def get_update_document_menu_item(data_source_id: str, name: str, document_id: str):
