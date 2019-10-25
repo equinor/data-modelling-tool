@@ -112,6 +112,7 @@ def get_runnable_menu_action(data_source_id: str, document_id: str):
         "label": f"Run {g.application_settings['runnable']['name']}",
         "action": "RUNNABLE",
         "data": {
+            "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
             "prompt": {
                 "title": f"{g.application_settings['runnable']['name']}",
                 "content": f"{g.application_settings['runnable']['description']}",

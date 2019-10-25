@@ -16,7 +16,7 @@ services:
       MONGO_DATA_MODELING_TOOL_DATABASE: dmt
     volumes:
       - ./home/:/home
-      
+
   web:
     build: ./web
     image: mariner.azurecr.io/dmt/web
