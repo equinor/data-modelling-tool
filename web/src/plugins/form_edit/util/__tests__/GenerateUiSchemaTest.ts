@@ -2,7 +2,7 @@ import { uiRecipeToUiSchema } from '../GenerateUiSchema'
 import blueprint from './blueprint_test.json'
 import car from './car_test.json'
 
-describe('Generate uiSchema', () => {
+describe.skip('Generate uiSchema', () => {
   it('should generate uiSchema for a car', () => {
     const uiSchema = uiRecipeToUiSchema(blueprint, car, 'EDIT')
     expect((uiSchema as any)['description']).toEqual({

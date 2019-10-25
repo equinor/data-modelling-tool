@@ -2,7 +2,7 @@ import { createFormConfigs, FormConfig } from '../CreateConfig'
 import car from './car_test.json'
 import blueprint from './blueprint_test.json'
 
-describe('CreateFormConfig', () => {
+describe.skip('CreateFormConfig', () => {
   let configs: FormConfig[] = []
   beforeEach(() => {
     configs = createFormConfigs(blueprint, car)
