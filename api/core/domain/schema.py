@@ -173,6 +173,7 @@ class Factory:
             extract_casting,
             snakify,
         ]
+        self.to_be_compiled = set()
 
     def class_from_schema(self, schema):
         # with open(f'{Path(__file__).parent}/schema.jinja2') as f:
@@ -387,7 +388,7 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
             is_list = attribute.get("dimensions", "").strip("\"'") == "*"
             attribute_type = attribute["type"]
             if attribute_type not in self._types:
-                self.create(attribute_type, False)
+                self._create(attribute_type, False)
             attribute_type = self._types[attribute_type]
             attribute = Attribute(
                 type=attribute_type,
@@ -433,7 +434,8 @@ import stringcase
 
     def get_type_by_name(self, name: str):
         if name not in self._types:
-            return self.create(name, compile=False)
+            self.to_be_compiled.add(name)
+            return self._create(name, compile=False)
         return self._types[name]
 
     def get_default_value(self, attr: Attribute) -> str:
@@ -481,6 +483,12 @@ import stringcase
         pass
 
     def create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
+        Template = self._create(template_type, _create_instance, compile)
+        for template_type in self.to_be_compiled:
+            self._create(template_type, _create_instance)
+        return Template
+
+    def _create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
         schema = snakify(self.template_repository.find({"type": template_type}))
         # Let at "dummy type" be available for others
         _cls = type(schema["name"], (), snakify(schema))
@@ -494,7 +502,7 @@ import stringcase
         self._types[template_type] = _cls
         try:
             if isinstance(_cls.type, str) and _cls.type not in self._types:
-                self.create(_cls.type, _create_instance)
+                self._create(_cls.type, _create_instance)
         except AttributeError:
             pass
         if _create_instance:
@@ -529,7 +537,7 @@ import stringcase
                 if to_snake_case(get_attribute(attr, "name")) == to_snake_case(name):
                     template_type = get_attribute(attr, "type")
                     if isinstance(template_type, str) and template_type not in self._types:
-                        self.create(template_type)
+                        self._create(template_type)
                     return self.type_name(template_type)
         return self.get_type(Template, name)
 
