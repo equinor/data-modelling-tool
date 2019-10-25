@@ -1,7 +1,7 @@
 {
-  "type": "system/SIMOS/Blueprint",
-  "description": "A ui plugin for presenting a document.",
-  "name": "UiBlueprintViewPlugin",
+  "type": "system/DMT/Blueprint",
+  "description": "A ui plugin for presenting a document on the right side of the application",
+  "name": "UiViewPlugin",
   "attributes": [
     {
       "name": "name",
@@ -9,21 +9,31 @@
       "type": "string"
     },
     {
-      "name": "type",
-      "type": "string",
-      "default": "system/SIMOS/UiBlueprintViewPlugin"
+      "name": "description",
+      "optional": true,
+      "type": "string"
     },
     {
-      "name": "optional",
+      "name": "label",
+      "description": "Label of a tab or label in a dropdown.",
+      "type": "string"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "default": "system/DMT/UiViewPlugin"
+    },
+    {
+      "name": "required",
       "type": "boolean",
       "default": false,
-      "description": "Used to control what plugin in chosen"
+      "description": "Whether this plugin is required or not, in tabs, for instance."
     },
     {
       "type": "string",
       "name": "widgets",
       "dimensions": "*",
-      "description": "Should be a list of names of the widgets this plugin supports. Or type of widget."
+      "description": "List of type of the widgets this plugin supports."
     }
   ],
   "storageRecipes": [],

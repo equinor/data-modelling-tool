@@ -1,0 +1,7 @@
+{
+  "name": "DefaultEdit",
+  "type": "system/DMT/UiViewPlugin",
+  "label": "Edit",
+  "required": true,
+  "widgets": []
+}

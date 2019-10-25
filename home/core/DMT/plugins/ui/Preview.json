@@ -1,0 +1,7 @@
+{
+  "name": "PreviewPlugin",
+  "type": "system/DMT/UiViewPlugin",
+  "label": "Edit",
+  "required": true,
+  "widgets": []
+}
