@@ -10,30 +10,21 @@ const AttributeWrapper = styled.div`
   border-radius: 5px;
 `
 
-export const NameInput = (props: any) => {
-  const { onChange, value } = props
+export const TextInput = (props: any) => {
+  const { onChange, value, label, name } = props
   return (
     <AttributeWrapper>
-      Name: <input type="string" value={value} onChange={onChange('name')} />
+      {label}:{' '}
+      <input type="text" name={name} value={value || ''} onChange={onChange} />
     </AttributeWrapper>
   )
 }
 export const BoolDefaultInput = (props: any) => {
-  const { onChange, value } = props
-  let checked = value === 'true'
+  const { onChange, value, label } = props
   return (
     <AttributeWrapper>
-      Default: <Switch onChange={onChange('default')} checked={checked} />
-    </AttributeWrapper>
-  )
-}
-
-export const DescriptionInput = (props: any) => {
-  const { onChange, value } = props
-  return (
-    <AttributeWrapper>
-      Description:{' '}
-      <input type="string" value={value} onChange={onChange('description')} />
+      {label}:{' '}
+      <Switch onChange={onChange} checked={value} height={20} width={40} />
     </AttributeWrapper>
   )
 }
@@ -42,7 +33,7 @@ export const TypeInput = (props: any) => {
   const { onChange, value } = props
   return (
     <AttributeWrapper>
-      <select value={value} onChange={onChange('type')}>
+      <select value={value} onChange={onChange}>
         <option value={DataType.STRING}>String</option>
         <option value={DataType.INTEGER}>Integer</option>
         <option value={DataType.NUMBER}>Number</option>
@@ -80,39 +71,26 @@ export const BlueprintInput = (props: WidgetInput) => {
   )
 }
 
-export const DefaultValueInput = (props: any) => {
-  const { onChange, value, type } = props
-  return (
-    <AttributeWrapper>
-      Default value:{' '}
-      <input type={type} value={value} onChange={onChange('default')} />
-    </AttributeWrapper>
-  )
-}
-
 export const ArrayRadioGroup = (props: any) => {
-  const { onChange, attributeName, array } = props
-  const valueName = 'array'
+  const { onChange, array } = props
   return (
     <AttributeWrapper>
       <label>
         <input
-          onChange={onChange(valueName)}
+          onChange={onChange}
           style={{ marginLeft: '10px' }}
           type="radio"
           value={ArrayType.SIMPLE}
-          name={`array-${attributeName}`}
           checked={array === ArrayType.SIMPLE}
         />
         Simple
       </label>
       <label>
         <input
-          onChange={onChange(valueName)}
+          onChange={onChange}
           style={{ marginLeft: '10px' }}
           type="radio"
           value={ArrayType.ARRAY}
-          name={`array-${attributeName}`}
           checked={array === ArrayType.ARRAY}
         />
         Array
@@ -121,12 +99,21 @@ export const ArrayRadioGroup = (props: any) => {
   )
 }
 
-export const DimensionsInput = (props: any) => {
-  const { onChange, value } = props
+export const DimensionWrapper = (props: any) => {
+  const { onChange, array, value, attributeName } = props
   return (
-    <AttributeWrapper>
-      Dimensions:
-      <input type="string" value={value} onChange={onChange('dimensions')} />
-    </AttributeWrapper>
+    <>
+      <ArrayRadioGroup
+        onChange={onChange}
+        attributeName={attributeName}
+        array={array}
+      />
+      {array === ArrayType.ARRAY && (
+        <div style={{ display: 'flex', alignItems: 'baseline' }}>
+          <TextInput value={value} onChange={onChange} />{' '}
+          <span>Format: [size,size] Example: "[*,10,2000]"</span>
+        </div>
+      )}
+    </>
   )
 }

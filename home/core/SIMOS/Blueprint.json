@@ -43,14 +43,10 @@
       "attributes": [
         {
           "name": "attributes",
-          "type": "",
-          "description": "",
           "contained": true
         },
         {
-          "name": "StorageRecipes",
-          "type": "",
-          "description": "",
+          "name": "storageRecipes",
           "contained": true
         },
         {

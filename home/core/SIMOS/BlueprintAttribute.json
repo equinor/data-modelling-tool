@@ -23,7 +23,7 @@
     {
       "type": "string",
       "name": "type",
-      "enum": "system/SIMOS/AttributeTypes",
+      "enumType": "system/SIMOS/AttributeTypes",
       "optional": false
     },
     {
@@ -36,7 +36,7 @@
       "type": "string",
       "name": "dimensions",
       "optional": true,
-      "default": "1"
+      "default": ""
     },
     {
       "name": "contained",
@@ -46,7 +46,7 @@
       "optional": true
     },
     {
-      "name": "enum",
+      "name": "enumType",
       "type": "system/SIMOS/Enum",
       "optional": true,
       "default": null,

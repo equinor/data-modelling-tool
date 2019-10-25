@@ -1,5 +1,6 @@
-import { Blueprint, BlueprintAttribute } from '../../types'
+import { Blueprint, BlueprintAttribute, PluginProps } from '../../types'
 import { findUiAttribute } from '../../pluginUtils'
+import { getWidgetAttributes } from '../Form'
 
 type UiSchemaProperty = {
   items?: any
@@ -8,19 +9,25 @@ type UiSchemaProperty = {
   'ui:ArrayAttribute'?: any
 }
 
-export function generateUiSchema(parent: Blueprint, uiRecipe: any) {
+export function generateUiSchema(pluginProps: PluginProps, uiRecipe: any) {
   const uiSchema = {}
   if (uiRecipe) {
-    parent.attributes.forEach((parentAttribute: BlueprintAttribute) => {
-      const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
-      if (uiAttribute) {
-        let property = createUiSchemaProperty(uiAttribute, parentAttribute)
+    pluginProps.parent.attributes.forEach(
+      (parentAttribute: BlueprintAttribute) => {
+        const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
+        if (uiAttribute) {
+          let property = createUiSchemaProperty(
+            uiAttribute,
+            parentAttribute,
+            pluginProps
+          )
 
-        if (Object.keys(property).length > 0) {
-          ;(uiSchema as any)[parentAttribute.name] = property
+          if (Object.keys(property).length > 0) {
+            ;(uiSchema as any)[parentAttribute.name] = property
+          }
         }
       }
-    })
+    )
   }
   return {
     type: 'object',
@@ -37,7 +44,7 @@ export function generateUiSchema(parent: Blueprint, uiRecipe: any) {
  * @param uiRecipe
  */
 export function generateUiSchemaByProperty(
-  parent: Blueprint,
+  pluginProps: PluginProps,
   parentAttribute: BlueprintAttribute,
   uiRecipe: any
 ) {
@@ -45,7 +52,11 @@ export function generateUiSchemaByProperty(
   if (uiRecipe) {
     const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
     if (uiAttribute) {
-      let property = createUiSchemaProperty(uiAttribute, parentAttribute)
+      let property = createUiSchemaProperty(
+        uiAttribute,
+        parentAttribute,
+        pluginProps
+      )
 
       if (Object.keys(property).length > 0) {
         ;(uiSchema as any)[parentAttribute.name] = property
@@ -60,7 +71,8 @@ export function generateUiSchemaByProperty(
 
 function createUiSchemaProperty(
   uiAttribute: any,
-  blueprintAttribute: BlueprintAttribute
+  blueprintAttribute: BlueprintAttribute,
+  pluginProps: PluginProps
 ) {
   if (uiAttribute.contained === false) {
     return { 'ui:field': 'hidden' }
@@ -75,6 +87,7 @@ function createUiSchemaProperty(
     if (blueprintAttribute.dimensions === '*') {
       property.items = {
         'ui:field': uiAttribute.field,
+        attributes: getWidgetAttributes(pluginProps),
       }
     } else {
       property['ui:field'] = uiAttribute.field

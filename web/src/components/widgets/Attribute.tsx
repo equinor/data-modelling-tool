@@ -1,17 +1,15 @@
 import {
-  ArrayRadioGroup,
-  BlueprintInput,
-  BoolDefaultInput,
-  DefaultValueInput,
-  DescriptionInput,
-  DimensionsInput,
-  NameInput,
+  TextInput,
   OnChange,
+  BoolDefaultInput,
   TypeInput,
+  BlueprintInput,
+  DimensionWrapper,
 } from './AttributeInputs'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { Blueprint } from '../../plugins/types'
+import { BlueprintAttribute } from '../../plugins/types'
+import { isPrimitive } from '../../plugins/pluginUtils'
 
 const AttributeGroup = styled.div`
   border: 1px solid;
@@ -19,7 +17,6 @@ const AttributeGroup = styled.div`
   padding: 5px;
   border-radius: 5px;
 `
-
 export enum ArrayType {
   SIMPLE = 'Simple',
   ARRAY = 'Array',
@@ -44,87 +41,199 @@ function getArrayType(dimensions: string | undefined) {
 type Props = {
   formData: any
   onChange: OnChange
+  attributes?: any[]
+  uiSchema: any
 }
 
-const AttributeWidgetEnhanced = (props: Props) => {
-  const [formData, setFormData] = useState(props.formData)
-  const [array, setArray] = useState(getArrayType(props.formData.dimensions))
+export const AttributeWidget = (props: Props) => {
+  let attributes = props.uiSchema.attributes
+  if (!attributes) {
+    //components/Form.tsx may use attribute.
+    attributes = blueprintAttributes
+  }
+
+  const [formData, setFormData] = useState<BlueprintAttribute>(props.formData)
+  const [array, setArray] = useState<ArrayType>(
+    getArrayType(props.formData.dimensions)
+  )
 
   const onChange = (name: string) => {
     return (event: any) => {
-      // event.preventDefault()
-      let newFormData = { ...formData }
-      if (name === 'array') {
-        const arrayType = event.target.value
-
-        if (arrayType === ArrayType.SIMPLE) {
-          newFormData.dimensions = ''
-        }
-        if (arrayType === ArrayType.ARRAY) {
-          newFormData.dimensions = '*'
-        }
-        setFormData(newFormData)
-        setArray(arrayType)
-      } else {
-        if (!event.hasOwnProperty('target')) {
-          event = { target: { value: event.toString() } }
-        }
-        // if (){}
-        newFormData[name] = event.target.value
-        setFormData(newFormData)
-        props.onChange(newFormData)
-      }
+      let newFormData = { ...formData, [name]: event.target.value }
+      setFormData(newFormData)
+      props.onChange(newFormData)
     }
   }
 
-  const {
-    name,
-    description,
-    type,
-    default: defaultValue,
-    dimensions,
-  } = formData
-
-  //defaults
-  let selectedType = type
-  if (!Object.values(DataType).includes(type)) {
-    selectedType = DataType.BLUEPRINT
+  const onChangeBool = (name: string) => {
+    return (value: boolean) => {
+      let newFormData = { ...formData, [name]: value }
+      setFormData(newFormData)
+      props.onChange(newFormData)
+    }
   }
+
+  const onChangeArray = (event: any) => {
+    const {
+      target: { value },
+    } = event
+    let newFormData = { ...formData }
+
+    if (value === ArrayType.SIMPLE) {
+      newFormData.dimensions = ''
+    }
+
+    if (value === ArrayType.ARRAY) {
+      newFormData.dimensions = '*'
+    }
+    setFormData(newFormData)
+    setArray(value)
+  }
+
+  const { type } = formData
+  const primitives = [
+    DataType.STRING.toString(),
+    DataType.NUMBER.toString(),
+    DataType.BOOLEAN.toString(),
+    DataType.INTEGER.toString(),
+  ]
+
+  //@todo add order in uiRecipe to change order of elements in the widget.
+
+  const TypeWrapper = (props: any) => {
+    const type: string = formData.type
+    const isPrimitive = primitives.includes(type)
+    const selectedType = isPrimitive ? type : DataType.BLUEPRINT
+    const { onChange, attribute } = props
+    const value = type === DataType.BLUEPRINT ? '' : type
+    return (
+      <>
+        <TypeInput value={selectedType} onChange={onChange(attribute.name)} />
+        {!isPrimitive && <BlueprintInput value={value} onChange={onChange} />}
+      </>
+    )
+  }
+
   return (
     <AttributeGroup>
-      <NameInput value={name || ''} onChange={onChange} />
-      <DescriptionInput value={description} onChange={onChange} />
-      <TypeInput value={selectedType} onChange={onChange} />
-      {selectedType === DataType.BLUEPRINT && (
-        <BlueprintInput value={type} onChange={onChange} />
-      )}
-      <ArrayRadioGroup onChange={onChange} attributeName={name} array={array} />
-      {array === ArrayType.ARRAY && (
-        <div style={{ display: 'flex', alignItems: 'baseline' }}>
-          <DimensionsInput value={dimensions} onChange={onChange} />{' '}
-          <span>Format: [size,size] Example: "[*,10,2000]"</span>
-        </div>
-      )}
-      {array === ArrayType.SIMPLE &&
-        ![DataType.BLUEPRINT, DataType.BOOLEAN].includes(selectedType) && (
-          <DefaultValueInput value={defaultValue} onChange={onChange} />
-        )}
-      {selectedType === DataType.BOOLEAN && (
-        <BoolDefaultInput value={defaultValue} onChange={onChange} />
-      )}
+      {attributes.map((blueprintAttribute: BlueprintAttribute) => {
+        const { name } = blueprintAttribute
+        const attributeType = blueprintAttribute.type
+
+        const value = (formData as any)[name] || blueprintAttribute.default
+        switch (attributeType) {
+          case 'string':
+            if (name === 'type') {
+              return (
+                <span key={name}>
+                  <TypeWrapper
+                    onChange={onChange}
+                    attribute={blueprintAttribute}
+                  />
+                </span>
+              )
+            } else if (name === 'dimensions') {
+              return (
+                <span key={name}>
+                  <DimensionWrapper
+                    array={array}
+                    attributeName={name}
+                    value={value}
+                    onChange={onChangeArray}
+                  />
+                </span>
+              )
+            } else {
+              return (
+                <span key={name}>
+                  <TextInput
+                    label={name}
+                    value={value}
+                    onChange={onChange(name)}
+                  />
+                </span>
+              )
+            }
+          case 'boolean':
+            let booleanValue = (formData as any)[name]
+            if (booleanValue === undefined) {
+              booleanValue =
+                blueprintAttribute.default === 'false' ? false : true
+            }
+            return (
+              <span key={name}>
+                <BoolDefaultInput
+                  label={name}
+                  value={booleanValue}
+                  onChange={onChangeBool(name)}
+                />
+              </span>
+            )
+          default:
+            if (isPrimitive(attributeType)) {
+              console.warn(
+                `Type is not supported in form widget: ${name} ${type}`
+              )
+            }
+            return <div key={JSON.stringify(blueprintAttribute)} />
+        }
+      })}
     </AttributeGroup>
   )
 }
 
-/**
- * Parent is used to generate defaults, a description attributes has other defaults
- * than a type attribute or boolean attribute.
- *
- * @param parent Blueprint
- */
-export const attributeWidget = (parent?: Blueprint) => {
-  return (props: Props) => {
-    const { formData, onChange } = props
-    return <AttributeWidgetEnhanced formData={formData} onChange={onChange} />
-  }
-}
+//fallback when parent and children cant be used.
+// works only for properties of blueprintAttribue.
+//@todo pass parent and children from client code. Otherwise, remember to update this list whenever the BlueprintAttribute.json changes.
+export const blueprintAttributes: BlueprintAttribute[] = [
+  {
+    type: 'string',
+    name: 'name',
+    optional: false,
+  },
+  {
+    type: 'string',
+    name: 'description',
+    optional: false,
+  },
+  {
+    name: 'default',
+    type: 'string',
+    optional: false,
+    default: '',
+    contained: true,
+  },
+  {
+    type: 'string',
+    name: 'type',
+    enumType: 'system/SIMOS/attribute_types',
+    optional: false,
+  },
+  {
+    type: 'string',
+    name: 'dimensions',
+    optional: true,
+    default: '',
+  },
+  {
+    name: 'contained',
+    type: 'boolean',
+    default: true,
+    contained: true,
+    optional: true,
+  },
+  {
+    name: 'optional',
+    type: 'boolean',
+    default: false,
+    contained: true,
+    optional: true,
+  },
+  {
+    name: 'enumType',
+    type: 'system/SIMOS/Enum',
+    optional: true,
+    default: '',
+    contained: true,
+  },
+]

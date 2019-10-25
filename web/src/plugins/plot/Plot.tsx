@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
-import { attributeWidget } from '../../components/widgets/Attribute'
+import { AttributeWidget } from '../../components/widgets/Attribute'
 import { CollapsibleField } from '../../components/widgets/CollapsibleField'
 import { Blueprint } from '../types'
 // @ts-ignore
