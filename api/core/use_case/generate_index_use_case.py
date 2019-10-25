@@ -23,7 +23,7 @@ from core.use_case.utils.generate_index_menu_actions import (
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
-from utils.enums import DataSourceDocumentType, DMT, SIMOS
+from core.enums import DataSourceDocumentType, DMT, SIMOS
 
 
 class DocumentNode(NodeMixin):

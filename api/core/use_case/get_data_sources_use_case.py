@@ -1,6 +1,6 @@
 from core.repository.data_source_repository import DataSourceRepository
 from core.shared import request_object, response_object, use_case
-from utils.enums import DataSourceDocumentType
+from core.enums import DataSourceDocumentType
 
 
 class GetDataSourcesUseCaseRequestObject(request_object.ValidRequestObject):
