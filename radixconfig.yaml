@@ -4,6 +4,9 @@ metadata:
   name: data-modelling-tool
 spec:
   environments:
+    - name: prod
+      build:
+        from: stable
     - name: dev
       build:
         from: master
