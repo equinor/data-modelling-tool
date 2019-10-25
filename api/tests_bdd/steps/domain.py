@@ -12,15 +12,6 @@ from core.repository.repository_factory import get_repository, RepositoryType
 from core.enums import SIMOS, DMT
 
 
-class Reference:
-    def __init__(self, uid: str, name: str):
-        self.uid = uid
-        self.name = name
-
-    def to_dict(self):
-        return {"_id": self.uid, "name": self.name}
-
-
 class TreeNode(NodeMixin):
     def __init__(self, uid, name, parent, description, type, **kwargs):
         self.uid = uid
@@ -31,16 +22,11 @@ class TreeNode(NodeMixin):
 
     def extra(self):
         if self.type == DMT.PACKAGE.value:
-            packages = []
-            documents = []
+            content = []
             for child in self.children:
                 # Always contained
-                reference = Reference(uid=child.uid, name=child.name)
-                if child.type == SIMOS.BLUEPRINT.value:
-                    documents.append(reference.to_dict())
-                elif child.type == DMT.PACKAGE.value:
-                    packages.append(reference.to_dict())
-            return {"documents": documents, "packages": packages}
+                content.append({"_id": child.uid, "name": child.name})
+            return {"content": content}
         return {}
 
 
@@ -83,8 +69,7 @@ class Tree:
             elif node.type == DMT.PACKAGE.value:
                 package = Package(uid=node.uid, name=node.name, description=node.description, type=node.type)
                 extra = node.extra()
-                package.documents = extra["documents"]
-                package.packages = extra["packages"]
+                package.content = extra["content"]
                 package_repository.add(package)
                 print(f"Added package {package.uid}")
             else:

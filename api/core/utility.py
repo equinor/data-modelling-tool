@@ -1,9 +1,11 @@
 from typing import List, Union
 
 from classes.data_source import DataSource
+from config import Config
 from core.domain.dto import DTO
 from core.domain.package import Package
 from core.repository.repository_factory import get_repository, RepositoryType
+from services.database import model_db, data_modelling_tool_db as dmt_db
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
 from utils.logging import logger
 
@@ -50,3 +52,18 @@ def get_document_by_ref(type_ref) -> DTO:
     repository = get_repository(RepositoryType.DocumentRepository, DataSource(data_source_id))
     type_id = get_document_uid_by_path(path, repository)
     return repository.get(uid=type_id)
+
+
+def wipe_db():
+    print("Dropping all collections")
+    # FIXME: Read names from the database
+    for name in [
+        Config.BLUEPRINT_COLLECTION,
+        Config.ENTITY_COLLECTION,
+        Config.DATA_SOURCES_COLLECTION,
+        Config.SYSTEM_COLLECTION,
+        "documents",
+    ]:
+        print(f"Dropping collection '{name}'")
+        model_db.drop_collection(name)
+        dmt_db.drop_collection(name)

@@ -65,7 +65,7 @@ Feature: Explorer - Remove file
     {
       "parentId": "2",
       "documentId": "3",
-      "attribute": "documents"
+      "attribute": "content"
     }
     """
     Then the response status should be "OK"

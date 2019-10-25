@@ -6,7 +6,8 @@ from flask import Flask, g
 
 from config import Config
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
-from services.database import data_modelling_tool_db as dmt_db, model_db
+from core.utility import wipe_db
+from services.database import data_modelling_tool_db as dmt_db
 from utils.debugging import enable_remote_debugging
 from utils.logging import logger
 from utils.package_import import import_package
@@ -84,14 +85,4 @@ def import_data_source(file):
 
 @app.cli.command()
 def nuke_db():
-    print("Dropping all collections")
-    # FIXME: Read names from the database
-    for name in [
-        Config.BLUEPRINT_COLLECTION,
-        Config.ENTITY_COLLECTION,
-        Config.DATA_SOURCES_COLLECTION,
-        Config.SYSTEM_COLLECTION,
-    ]:
-        print(f"Dropping collection '{name}'")
-        model_db.drop_collection(name)
-        dmt_db.drop_collection(name)
+    wipe_db()

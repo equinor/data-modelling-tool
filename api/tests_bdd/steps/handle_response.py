@@ -58,9 +58,13 @@ def pretty_eq(expected, actual):
 @then("the response should contain")
 def step_impl_contain(context):
     actual = context.response_json
+    print(actual)
     data = context.text or context.data
     expected = json.loads(data)
-    pretty_eq(expected, actual)
+    try:
+        pretty_eq(expected, actual)
+    except Exception:
+        assert actual == expected
 
 
 @then("the response should be")

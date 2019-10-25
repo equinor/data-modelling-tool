@@ -21,7 +21,7 @@ Feature: Explorer - Add file
       "name": "new_document",
       "parentId": "1",
       "type": "system/SIMOS/Blueprint",
-      "attribute": "documents"
+      "attribute": "content"
     }
     """
     Then the response status should be "OK"
