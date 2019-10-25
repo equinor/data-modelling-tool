@@ -1,6 +1,7 @@
 import {
   ArrayRadioGroup,
   BlueprintInput,
+  BoolDefaultInput,
   DefaultValueInput,
   DescriptionInput,
   DimensionsInput,
@@ -18,9 +19,11 @@ const AttributeGroup = styled.div`
   padding: 5px;
   border-radius: 5px;
 `
+
 export enum ArrayType {
   SIMPLE = 'Simple',
   ARRAY = 'Array',
+  MATRIX = 'Matrix',
 }
 
 export enum DataType {
@@ -49,7 +52,7 @@ const AttributeWidgetEnhanced = (props: Props) => {
 
   const onChange = (name: string) => {
     return (event: any) => {
-      event.preventDefault()
+      // event.preventDefault()
       let newFormData = { ...formData }
       if (name === 'array') {
         const arrayType = event.target.value
@@ -63,6 +66,10 @@ const AttributeWidgetEnhanced = (props: Props) => {
         setFormData(newFormData)
         setArray(arrayType)
       } else {
+        if (!event.hasOwnProperty('target')) {
+          event = { target: { value: event.toString() } }
+        }
+        // if (){}
         newFormData[name] = event.target.value
         setFormData(newFormData)
         props.onChange(newFormData)
@@ -77,26 +84,20 @@ const AttributeWidgetEnhanced = (props: Props) => {
     default: defaultValue,
     dimensions,
   } = formData
-  const primitives = [
-    DataType.STRING,
-    DataType.NUMBER,
-    DataType.BOOLEAN,
-    DataType.INTEGER,
-  ]
 
   //defaults
-  let isPrimitive = true
-  let selectedType = 'string'
-  if (type) {
-    isPrimitive = primitives.includes(type)
-    selectedType = isPrimitive ? type : DataType.BLUEPRINT
+  let selectedType = type
+  if (!Object.values(DataType).includes(type)) {
+    selectedType = DataType.BLUEPRINT
   }
   return (
     <AttributeGroup>
       <NameInput value={name || ''} onChange={onChange} />
       <DescriptionInput value={description} onChange={onChange} />
       <TypeInput value={selectedType} onChange={onChange} />
-      {!isPrimitive && <BlueprintInput value={type} onChange={onChange} />}
+      {selectedType === DataType.BLUEPRINT && (
+        <BlueprintInput value={type} onChange={onChange} />
+      )}
       <ArrayRadioGroup onChange={onChange} attributeName={name} array={array} />
       {array === ArrayType.ARRAY && (
         <div style={{ display: 'flex', alignItems: 'baseline' }}>
@@ -104,8 +105,12 @@ const AttributeWidgetEnhanced = (props: Props) => {
           <span>Format: [size,size] Example: "[*,10,2000]"</span>
         </div>
       )}
-      {array === ArrayType.SIMPLE && type !== DataType.BLUEPRINT && (
-        <DefaultValueInput value={defaultValue} onChange={onChange} />
+      {array === ArrayType.SIMPLE &&
+        ![DataType.BLUEPRINT, DataType.BOOLEAN].includes(selectedType) && (
+          <DefaultValueInput value={defaultValue} onChange={onChange} />
+        )}
+      {selectedType === DataType.BOOLEAN && (
+        <BoolDefaultInput value={defaultValue} onChange={onChange} />
       )}
     </AttributeGroup>
   )

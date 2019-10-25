@@ -2,6 +2,7 @@ import DocumentFinderWidget from './DocumentFinderWidget'
 import React from 'react'
 import styled from 'styled-components'
 import { ArrayType, DataType } from './Attribute'
+import Switch from 'react-switch'
 
 const AttributeWrapper = styled.div`
   margin: 2px 2px;
@@ -14,6 +15,15 @@ export const NameInput = (props: any) => {
   return (
     <AttributeWrapper>
       Name: <input type="string" value={value} onChange={onChange('name')} />
+    </AttributeWrapper>
+  )
+}
+export const BoolDefaultInput = (props: any) => {
+  const { onChange, value } = props
+  let checked = value === 'true'
+  return (
+    <AttributeWrapper>
+      Default: <Switch onChange={onChange('default')} checked={checked} />
     </AttributeWrapper>
   )
 }
@@ -53,11 +63,16 @@ type WidgetInput = {
 
 export const BlueprintInput = (props: WidgetInput) => {
   const { onChange, value } = props
+  // Just so not to display "blueprint" as a "selected blueprint" when none is selected
+  let displayValue = value
+  if (value === DataType.BLUEPRINT) {
+    displayValue = ''
+  }
   return (
     <AttributeWrapper>
       Blueprint:{' '}
       <DocumentFinderWidget
-        value={value}
+        value={displayValue}
         onChange={onChange('type')}
         attributeInput={true}
       />
