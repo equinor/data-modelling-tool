@@ -1,9 +1,9 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import AttributeWidget from '../../components/widgets/Attribute'
 import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './util/CreateConfig'
 import { findRecipe, findUiAttribute, isPrimitive } from '../pluginUtils'
+import { AttributeWidget } from '../../components/widgets/Attribute'
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void

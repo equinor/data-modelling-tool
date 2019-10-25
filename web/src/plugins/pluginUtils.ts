@@ -69,6 +69,9 @@ export function getDefaults(attribute: BlueprintAttribute) {
 export function parseAttributeDefault(
   attribute: BlueprintAttribute
 ): BlueprintAttribute {
+  if (typeof attribute.default === undefined) {
+    return attribute
+  }
   if (typeof attribute.default === 'string') {
     if (attribute.type === 'boolean' && attribute.default !== undefined) {
       ;(attribute as any).default =
@@ -76,13 +79,23 @@ export function parseAttributeDefault(
     }
     //@todo add other default types.
   } else {
-    console.warn(
-      `attribute default value is incorrect. ${JSON.stringify(
-        attribute,
-        null,
-        2
-      )}`
-    )
+    // console.warn(
+    //   `attribute default value is incorrect. ${JSON.stringify(
+    //     attribute,
+    //     null,
+    //     2
+    //   )}`
+    // )
   }
   return attribute
+}
+
+export function filterUiNotContained(uiRecipeParent: Blueprint) {
+  return (parentAttribute: BlueprintAttribute) => {
+    const uiAttribute = findUiAttribute(uiRecipeParent, parentAttribute.name)
+    if (uiAttribute) {
+      return uiAttribute.contained !== false
+    }
+    return true
+  }
 }

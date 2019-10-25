@@ -7,7 +7,7 @@ import {
   generateUiSchema,
   generateUiSchemaByProperty,
 } from './GenerateUiSchema'
-import { getDefaults } from '../../pluginUtils'
+import { filterUiNotContained, getDefaults } from '../../pluginUtils'
 
 interface JsonSchema {
   type: string
@@ -29,17 +29,14 @@ export type FormConfig = {
   uiSchema: any
 }
 
-const filterNotContained = (attribute: BlueprintAttribute) =>
-  attribute.contained !== false
-
 export function createFormConfigs(
   pluginImport: PluginProps,
   splitForms: boolean,
   uiRecipe: any
 ): FormConfig[] {
   const { parent, blueprint, children } = pluginImport
-  const parentAttributes = pluginImport.parent.attributes.filter(
-    filterNotContained
+  const parentAttributes = parent.attributes.filter(
+    filterUiNotContained(uiRecipe)
   )
 
   if (splitForms) {

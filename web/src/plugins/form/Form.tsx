@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
-import AttributeWidget from '../../components/widgets/Attribute'
+import { AttributeWidget } from '../../components/widgets/Attribute'
 
 interface Props {
   document: any

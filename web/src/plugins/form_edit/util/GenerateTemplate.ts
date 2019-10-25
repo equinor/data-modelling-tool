@@ -51,24 +51,33 @@ function appendJsonSchemaProperty(
   container: any,
   types: Blueprint[]
 ): void {
+  let value = null
   if (isPrimitive(attribute.type)) {
-    ;(container as any)[attribute.name] = parseAttributeDefault(attribute)
+    if (attribute.dimensions === '*') {
+      value = {
+        type: 'array',
+        items: parseAttributeDefault(attribute),
+      }
+    } else {
+      value = parseAttributeDefault(attribute)
+    }
   } else {
     const properties = getJsonSchemaPropertyFromType(types, attribute)
     if (attribute.dimensions === '*') {
-      ;(container as any)[attribute.name] = {
+      value = {
         type: 'array',
         items: {
           properties,
         },
       }
     } else {
-      ;(container as any)[attribute.name] = {
+      value = {
         type: 'object',
         properties,
       }
     }
   }
+  ;(container as any)[attribute.name] = value
 }
 
 function getJsonSchemaPropertyFromType(

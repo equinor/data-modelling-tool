@@ -13,7 +13,8 @@
     },
     {
       "type": "string",
-      "name": "manufacturer"
+      "name": "manufacturer",
+      "contained": true
     },
     {
       "type": "SSR-DataSource/CarsDemo/Wheel",
@@ -43,30 +44,6 @@
     }
   ],
   "uiRecipes": [
-    {
-      "type": "system/SIMOS/UIRecipe",
-      "name": "EDIT_PLUGIN",
-      "description": "",
-      "plugin": "EDIT_PLUGIN",
-      "attributes": [
-        {
-          "name": "description",
-          "widget": "textarea"
-        },
-        {
-          "name": "wheels",
-          "field": "attribute"
-        },
-        {
-          "name": "engine",
-          "field": "attribute"
-        },
-        {
-          "name": "uiRecipes",
-          "contained": true
-        }
-      ]
-    }
   ]
 }
 

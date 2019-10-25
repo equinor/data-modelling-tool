@@ -42,7 +42,7 @@ type Props = {
   onChange: OnChange
 }
 
-export default (props: Props) => {
+export const AttributeWidget = (props: Props) => {
   const [formData, setFormData] = useState(props.formData)
   const [array, setArray] = useState(getArrayType(props.formData.dimensions))
 
