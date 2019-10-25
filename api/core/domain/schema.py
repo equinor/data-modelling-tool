@@ -318,11 +318,21 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         if self is None:
             self = {{ schema.name }}
 
-        def get_representation(value):
+        def get_representation(item, key: str = None):
+            if key:
+                value = getattr(item, key)
+                if hasattr(item, f"_{key}") and not isinstance(value, str):
+                    # Hack to avoid circular references
+                    value = getattr(item, f"_{key}")
+            else:
+                value = item
+
             if isinstance(value, list):
                 return [get_representation(val) for val in value]
             elif isinstance(value, dict):
                 return {self._to_camel_case(key): get_representation(val) for key, val in value.items()}
+            elif callable(value):
+                value = value()
             try:
                 value = value.to_dict()
             except AttributeError:
@@ -331,7 +341,7 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
 
         return {
             {%- for attr in schema.attributes %}
-            "{{ to_camel_case(attr.name) }}": get_representation(self.{{ get_name(attr) }}),
+            "{{ to_camel_case(attr.name) }}": get_representation(self, "{{ get_name(attr) }}"),
             {%- endfor %}
         }
 
