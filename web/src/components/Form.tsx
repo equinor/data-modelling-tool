@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import Form from 'react-jsonschema-form'
 import DocumentFinderWidget from './widgets/DocumentFinderWidget'
-import { AttributeWidget } from './widgets/Attribute'
+import { attributeWidget } from './widgets/Attribute'
 
 export interface FormProps {
   fetchDocument?: any
@@ -59,7 +59,7 @@ export default ({
       // @ts-ignore
       schema={schema}
       // TODO: A proper select-uiSchema-system
-      fields={{ type: DocumentFinderWidget, attribute: AttributeWidget }}
+      fields={{ type: DocumentFinderWidget, attribute: attributeWidget() }}
       uiSchema={uiSchema}
       onSubmit={schemas => {
         const formData: any = schemas.formData

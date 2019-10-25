@@ -3,7 +3,7 @@ import Form from 'react-jsonschema-form'
 import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './util/CreateConfig'
 import { findRecipe, findUiAttribute, isPrimitive } from '../pluginUtils'
-import { AttributeWidget } from '../../components/widgets/Attribute'
+import { attributeWidget } from '../../components/widgets/Attribute'
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void
@@ -27,7 +27,7 @@ export const EditPlugin = (props: Props) => {
               formData={config.data || {}}
               uiSchema={config.uiSchema || {}}
               fields={{
-                attribute: AttributeWidget,
+                attribute: attributeWidget(undefined),
                 hidden: () => <div />,
               }}
               onSubmit={props.onSubmit}

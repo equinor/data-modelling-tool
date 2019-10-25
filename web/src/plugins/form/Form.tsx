@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
-import { AttributeWidget } from '../../components/widgets/Attribute'
+import { attributeWidget } from '../../components/widgets/Attribute'
 
 interface Props {
   document: any
@@ -17,7 +17,7 @@ export default ({ document, template, onSubmit }: Props) => {
       formData={data || {}}
       schema={schema}
       uiSchema={uiSchema}
-      fields={{ attribute: AttributeWidget }}
+      fields={{ attribute: attributeWidget() }}
       onSubmit={onSubmit}
       onChange={schemas => {
         setData(schemas.formData)

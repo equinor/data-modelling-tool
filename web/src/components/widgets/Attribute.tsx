@@ -10,6 +10,7 @@ import {
 } from './AttributeInputs'
 import React, { useState } from 'react'
 import styled from 'styled-components'
+import { Blueprint } from '../../plugins/types'
 
 const AttributeGroup = styled.div`
   border: 1px solid;
@@ -42,7 +43,7 @@ type Props = {
   onChange: OnChange
 }
 
-export const AttributeWidget = (props: Props) => {
+const AttributeWidgetEnhanced = (props: Props) => {
   const [formData, setFormData] = useState(props.formData)
   const [array, setArray] = useState(getArrayType(props.formData.dimensions))
 
@@ -108,4 +109,17 @@ export const AttributeWidget = (props: Props) => {
       )}
     </AttributeGroup>
   )
+}
+
+/**
+ * Parent is used to generate defaults, a description attributes has other defaults
+ * than a type attribute or boolean attribute.
+ *
+ * @param parent Blueprint
+ */
+export const attributeWidget = (parent?: Blueprint) => {
+  return (props: Props) => {
+    const { formData, onChange } = props
+    return <AttributeWidgetEnhanced formData={formData} onChange={onChange} />
+  }
 }
