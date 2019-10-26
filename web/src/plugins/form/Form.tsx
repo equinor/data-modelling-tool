@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
 import { attributeWidget } from '../../components/widgets/Attribute'
+import { CollapsibleField } from '../../components/widgets/CollapsibleField'
 
 interface Props {
   document: any
@@ -17,7 +18,7 @@ export default ({ document, template, onSubmit }: Props) => {
       formData={data || {}}
       schema={schema}
       uiSchema={uiSchema}
-      fields={{ attribute: attributeWidget() }}
+      fields={{ attribute: attributeWidget(), collapsible: CollapsibleField }}
       onSubmit={onSubmit}
       onChange={schemas => {
         setData(schemas.formData)
