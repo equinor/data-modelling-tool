@@ -9,7 +9,7 @@ import objectPath from 'object-path'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins'
-import { EditPlugin, ViewPlugin } from '../../../plugins/'
+import { EditPlugin, ViewPlugin, PlotPlugin } from '../../../plugins/'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -21,6 +21,7 @@ export enum RegisteredPlugins {
   EDIT = 'EDIT',
   VIEW = 'VIEW',
   EDIT_PLUGIN = 'EDIT_PLUGIN',
+  PLOT = 'PLOT',
 }
 
 // These UI recipes should always be shown
@@ -62,6 +63,9 @@ const View = (props: any) => {
           onSubmit={onFormSubmit({ attribute: null, dataUrl })}
         />
       )
+
+    case RegisteredPlugins.PLOT:
+      return <PlotPlugin {...pluginProps} />
 
     default:
       const ExternalPlugin = pluginHook(uiRecipe)

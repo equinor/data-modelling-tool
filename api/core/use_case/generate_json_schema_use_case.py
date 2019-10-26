@@ -38,11 +38,8 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
         if not blueprint:
             raise EntityNotFoundException(uid=type)
 
-        print(ui_recipe_name)
-
-        ui_recipes = form_to_ui_schema(blueprint, ui_recipe_name)
+        ui_recipes = form_to_ui_schema(blueprint)
         ui_schema = ui_recipes[ui_recipe_name] if ui_recipe_name in ui_recipes else {}
-        print(ui_schema)
         template = Template(schema=form_to_schema(blueprint, ui_recipe_name), ui_schema=ui_schema)
 
         return res.ResponseSuccess(template.to_dict())

@@ -10,7 +10,6 @@ def find_attribute(name: str, attributes: List):
 
 
 def get_attribute_config(attribute):
-    print(attribute)
     if "widget" in attribute:
         return {"ui:widget": attribute["widget"]}
     if "field" in attribute:

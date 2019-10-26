@@ -1,0 +1,27 @@
+{
+  "type": "SSR-DataSource/MeasurementDemo/MeasurementList",
+  "name": "Observation 1",
+  "measurements": [
+    {
+      "name": "1",
+      "date": 1,
+      "temperature": 20
+    },
+    {
+      "name": "2",
+      "date": 2,
+      "temperature": 10
+    },
+    {
+      "name": "3",
+      "date": 3,
+      "temperature": 30
+    },
+    {
+      "name": "4",
+      "date": 4,
+      "temperature": 40
+    }
+  ]
+}
+

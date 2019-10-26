@@ -23,7 +23,8 @@
     "to-json-schema": "^0.2.3",
     "typescript": "^3.5.2",
     "object-path": "0.11.4",
-    "react-collapsed": "2.2.2"
+    "react-collapsed": "2.2.2",
+    "victory": "33.1.1"
   },
   "scripts": {
     "start": "react-scripts start",
