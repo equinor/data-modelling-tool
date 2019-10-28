@@ -60,64 +60,6 @@ def get_create_root_package_menu_item(data_source_id: str):
     }
 
 
-# def get_create_package_menu_item(data_source_id: str, parent_id: str = None, data: dict = None):
-#     return {
-#         "label": "Package",
-#         "action": "CREATE",
-#         "data": {
-#             "url": f"/api/v2/explorer/{data_source_id}/add-file",
-#             "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
-#             "nodeUrl": f"/api/v3/index/{data_source_id}",
-#             "request": {
-#                 "type": DMT.PACKAGE.value,
-#                 "parentId": parent_id,
-#                 "attribute": "content",
-#                 "name": "${name}",
-#                 "data": data,
-#             },
-#         },
-#     }
-
-
-# def get_package_create_document_menu_item(
-#         data_source_id: str, parent_id: str, document_type: DataSourceDocumentType, data
-# ):
-#     if document_type == DataSourceDocumentType.BLUEPRINT:
-#         return {
-#             "label": "Blueprint",
-#             "action": "CREATE",
-#             "data": {
-#                 "url": f"/api/v2/explorer/{data_source_id}/add-file",
-#                 "schemaUrl": f"/api/v2/json-schema/{SIMOS.BLUEPRINT.value}?ui_recipe=DEFAULT_CREATE",
-#                 "nodeUrl": f"/api/v3/index/{data_source_id}",
-#                 "request": {
-#                     "type": SIMOS.BLUEPRINT.value,
-#                     "parentId": parent_id,
-#                     "attribute": "content",
-#                     "name": "${name}",
-#                     "data": data,
-#                 },
-#             },
-#         }
-#     else:
-#         return {
-#             "label": "Entity",
-#             "action": "CREATE",
-#             "data": {
-#                 "url": f"/api/v2/explorer/{data_source_id}/add-entity-file",
-#                 "schemaUrl": f"/api/v2/json-schema/{DMT.ENTITY.value}?ui_recipe=DEFAULT_CREATE",
-#                 "nodeUrl": f"/api/v3/index/{data_source_id}",
-#                 "request": {
-#                     "type": DMT.ENTITY.value,
-#                     "parentId": parent_id,
-#                     "attribute": "content",
-#                     "name": "${name}",
-#                     "data": data,
-#                 },
-#             },
-#         }
-
-
 def get_not_contained_menu_action(data_source_id: str, name: str, url_type: str, type: str, parent_id: str, data):
     return {
         "label": "New",
