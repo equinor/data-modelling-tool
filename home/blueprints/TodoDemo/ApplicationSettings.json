@@ -9,7 +9,7 @@
     "system/DMT/Package"
   ],
   "entityModels": [
-    "system/DMT/EntityPackage"
+    "system/DMT/Package"
   ],
   "runnable": {
     "name": "Todo Runnable",

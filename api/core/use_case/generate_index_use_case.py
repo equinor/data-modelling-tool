@@ -189,7 +189,6 @@ class Tree:
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
     ):
-        # print(f"adding {attribute_type} to {'.'.join(document_path)}")
         for index, instance in enumerate(values):
             if isinstance(instance, dict):
                 self.generate_contained_node(
