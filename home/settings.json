@@ -10,10 +10,12 @@
     "CarsDemo"
   ],
   "blueprintsModels": [
-    "system/DMT/Package"
+    "system/DMT/Package",
+    "system/SIMOS/Blueprint"
   ],
   "entityModels": [
-    "system/DMT/Package"
+    "system/DMT/Package",
+    "system/DMT/Entity"
   ],
   "runnable": {
     "name": "Todo Runnable",

@@ -85,7 +85,7 @@ class AddFileUseCase(uc.UseCase):
         if storage_recipe.is_contained(attribute, type):
             parent_data[attribute] += [data]
         else:
-            parent_data[attribute] += [{"_id": file.uid, "name": name}]
+            parent_data[attribute] += [{"_id": file.uid, "name": name, "type": type}]
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
 
