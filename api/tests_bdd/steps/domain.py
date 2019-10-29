@@ -64,7 +64,7 @@ class Tree:
         document_repository: DocumentRepository = get_repository(RepositoryType.DocumentRepository, self.data_source)
         for pre, fill, node in RenderTree(self.root):
             if node.type == SIMOS.BLUEPRINT.value:
-                document = DTO(
+                document: DTO[Blueprint] = DTO(
                     uid=node.uid, data=Blueprint(name=node.name, description=node.description, type=node.type)
                 )
                 blueprint_repository.add(document)
@@ -75,11 +75,11 @@ class Tree:
                 )
                 extra = node.extra()
                 package.content = extra["content"]
-                package = DTO(package, uid=node.uid)
+                package: DTO[Package] = DTO(package, uid=node.uid)
                 package_repository.add(package)
                 print(f"Added package {package.uid}")
             else:
-                document: DTO = DTO(
+                document: DTO[dict] = DTO(
                     uid=node.uid, data={"name": node.name, "description": node.description, "type": node.type}
                 )
                 document_repository.add(document)
