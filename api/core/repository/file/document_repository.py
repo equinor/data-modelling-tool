@@ -1,6 +1,6 @@
 import json
 from pathlib import Path
-from typing import Dict, Union
+from typing import Union
 
 from core.domain.dto import DTO
 from core.repository.interface.document_repository import DocumentRepository
@@ -31,5 +31,5 @@ class TemplateRepositoryFromFile(DocumentRepository):
     def delete(self, document: DTO) -> None:
         raise NotImplementedError
 
-    def update(self, uid: str, data: Dict) -> None:
+    def update(self, uid: str, document: DTO) -> None:
         raise NotImplementedError
