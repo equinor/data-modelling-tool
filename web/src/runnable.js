@@ -1,5 +1,5 @@
 export default {
-  run: props => {
+  run: async ({ document, config, setProgress }) => {
     /* Custom code goes here */
   },
 }
