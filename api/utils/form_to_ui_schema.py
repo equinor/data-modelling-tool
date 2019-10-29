@@ -31,7 +31,10 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
         return {}
 
     if "options" in ui_attribute:
-        result["ui:options"] = ui_attribute["options"]
+        options = {}
+        for option in ui_attribute["options"]:
+            options[option["name"]] = option["value"]
+        result["ui:options"] = options
 
     if attribute_type in PRIMITIVES:
         return get_attribute_config(ui_attribute)

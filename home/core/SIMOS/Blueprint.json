@@ -80,9 +80,12 @@
         {
           "name": "attributes",
           "uiRecipe": "DEFAULT_EDIT",
-          "options": {
-            "orderable" : false
-          },
+          "options": [
+            {
+              "name": "orderable",
+              "value" : false
+            }
+          ],
           "field": "collapsible"
         },
         {

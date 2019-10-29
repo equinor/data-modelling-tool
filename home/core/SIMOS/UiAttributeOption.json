@@ -1,0 +1,21 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "UiAttributeOption",
+  "description": "This describes an ui recipe attribute option",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "default": "",
+      "optional": true
+    },
+    {
+      "type": "string",
+      "name": "value"
+    }
+  ]
+}
