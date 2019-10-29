@@ -56,7 +56,7 @@ function createTreeNode({
     title: filename,
     templateRef,
     nodeType,
-    meta,
+    meta: { ...meta, type },
     isExpandable: isExpandable(type, children),
     isOpen: false,
     isRoot: type === NodeType.DATA_SOURCE,
