@@ -74,7 +74,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return downloadAction(action)
     }
     case ContextMenuActions.RUNNABLE: {
-      return runnableAction(action, node, createNodes, layout)
+      return runnableAction(action, node, createNodes, layout, showError)
     }
 
     default:
