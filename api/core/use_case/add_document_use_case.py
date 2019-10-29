@@ -1,5 +1,4 @@
 from typing import Dict
-from uuid import uuid4
 from core.domain.dto import DTO
 from core.use_case.utils.get_template import get_blueprint
 from jsonschema import validate, ValidationError
@@ -41,7 +40,7 @@ class AddDocumentUseCase(uc.UseCase):
     def process_request(self, request_object: AddDocumentRequestObject):
         data: Dict = request_object.data
 
-        document: DTO = DTO(uid=uuid4(), data=data)
+        document: DTO = DTO(data)
 
         if not document.type:
             raise Exception("The requested document does not contain a template reference")
