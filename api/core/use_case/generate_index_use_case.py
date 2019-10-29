@@ -32,7 +32,7 @@ class DocumentNode(NodeMixin):
         name: str,
         menu_items,
         on_select=None,
-        document: Blueprint = None,
+        document: DTO = None,
         blueprint: Blueprint = None,
         parent: DocumentNode = None,
     ):
@@ -144,7 +144,7 @@ class Tree:
         node = DocumentNode(
             data_source_id=data_source_id,
             name=instance["name"],
-            document=Blueprint(uid=uid, name=instance["name"], description="", type=attribute_type),
+            document=DTO(Blueprint(name=instance["name"], description="", type=attribute_type), uid=uid),
             blueprint=None,
             parent=parent_node,
             on_select={
