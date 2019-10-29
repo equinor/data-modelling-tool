@@ -4,11 +4,12 @@ from flask import g
 
 from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
+from core.domain.index import DocumentNode
 from core.domain.package import Package
 from core.enums import DMT
 
 
-def get_update_document_menu_item(data_source_id: str, document: DTO, parent):
+def get_update_document_menu_item(data_source_id: str, document: DTO, parent: DocumentNode):
     return {
         "label": "Rename",
         "action": "UPDATE",
