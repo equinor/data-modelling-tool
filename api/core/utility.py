@@ -35,14 +35,13 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
 
 def get_document_uid_by_path(path: str, repository) -> Union[str, None]:
     root_package_name, path_elements = get_package_and_path(path)
-    # TODO: This fails if several documents with the same name
-    dto: Optional[DTO] = repository.find({"name": root_package_name})
-    if not dto:
+    root_package: Optional[DTO] = repository.find({"name": root_package_name, "isRoot": True})
+    if not root_package:
         return None
     # Check if it's a root-package
     if not path_elements:
-        return dto.uid
-    package = Package.from_dict(dto.data)
+        return root_package.uid
+    package = Package.from_dict(root_package.data)
     uid = _find_document_in_package_by_path(package, path_elements, repository)
     return uid
 

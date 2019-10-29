@@ -13,12 +13,13 @@ from core.enums import RepositoryType, DMT, SIMOS
 
 
 class TreeNode(NodeMixin):
-    def __init__(self, uid, name, parent, description, type, **kwargs):
+    def __init__(self, uid, name, parent, description, type, is_root=False, **kwargs):
         self.uid = uid
         self.name = name
         self.parent = parent
         self.type = type
         self.description = description
+        self.dmt_is_root = is_root
 
     def extra(self):
         if self.type == DMT.PACKAGE.value:
@@ -69,7 +70,9 @@ class Tree:
                 blueprint_repository.add(document)
                 print(f"Added blueprint {document.uid}")
             elif node.type == DMT.PACKAGE.value:
-                package = Package(name=node.name, description=node.description, type=node.type)
+                package = Package(
+                    name=node.name, description=node.description, type=node.type, is_root=node.dmt_is_root
+                )
                 extra = node.extra()
                 package.content = extra["content"]
                 package = DTO(package, uid=node.uid)
@@ -93,7 +96,7 @@ class Tree:
         package = list(filter(lambda row: row["parent_uid"] == "", self.table.rows))[0]
         if not package:
             raise Exception("Root package is not found, you need to specify root package")
-        package_node = TreeNode(**package.as_dict(), parent=root_node)
+        package_node = TreeNode(**package.as_dict(), parent=root_node, is_root=True)
         rows = list(filter(lambda row: row["parent_uid"] != "", self.table.rows))
         generate_tree_from_rows(package_node, rows)
         return package_node

@@ -13,7 +13,7 @@ from utils.package_import import import_package
 @given("data modelling tool templates are imported")
 def step_impl(context):
     for folder in Config.SYSTEM_FOLDERS:
-        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION)
+        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
 
 
 @given('there exist document with id "{uid}" in data source "{collection}"')
