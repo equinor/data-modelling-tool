@@ -9,7 +9,7 @@ Feature: Explorer - Add file
       | db   | 27017 | maf      | maf      | false | system          | dmt      | system         | blueprints   | mongo-db |
 
     Given there are documents for the data source "data-source-name" in collection "documents"
-      | uid | parent_uid | name         | description | type                      |
+      | uid | parent_uid | name         | description | type                   |
       | 1   |            | root_package |             | system/DMT/Package     |
       | 2   | 1          | document_1   |             | system/SIMOS/Blueprint |
 
