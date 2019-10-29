@@ -1,5 +1,5 @@
 import { Blueprint, BlueprintAttribute } from '../../types'
-import { findRecipe, findUiAttribute } from '../../pluginUtils'
+import { findUiAttribute } from '../../pluginUtils'
 
 type UiSchemaProperty = {
   items?: any

@@ -77,7 +77,7 @@ function setDefaults(parent: Blueprint, blueprint: Blueprint) {
       (parentAttribute: BlueprintAttribute) => parentAttribute.name === key
     )
     if (!parentAttribute) {
-      throw 'invalid blueprint'
+      throw new Error('invalid blueprint')
     }
     if (!value) {
       ;(blueprint as any)[key] = getDefaults(parentAttribute)

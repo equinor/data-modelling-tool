@@ -1,18 +1,10 @@
 import React, { useState } from 'react'
 import Modal from '../../../components/modal/Modal'
-import Form, { FormProps } from '../../../components/Form'
-import ContextMenu, {
-  MenuItem,
-} from '../../../components/context-menu/ContextMenu'
+import Form from '../../../components/Form'
+import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
 import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
 import { ProgressBarContainer } from '../../../components/Progressbar'
-
-export type ActionConfig = {
-  action: string
-  formProps: FormProps
-  fetchDocumentData?: any
-}
 
 interface WithContextMenuProps {
   children: any
