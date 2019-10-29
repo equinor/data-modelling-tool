@@ -111,15 +111,13 @@ const ViewList = (props: any) => {
 }
 
 const DocumentComponent = (props: any) => {
-  const { dataUrl, attribute = null } = props
+  const { dataUrl } = props
   return (
     <Wrapper>
       <FetchDocument
         url={dataUrl}
         render={(data: any) => {
-          const document = attribute
-            ? objectPath.get(data.document, attribute, {})
-            : data.document
+          const document = data.document
 
           return (
             <ViewList

@@ -156,9 +156,8 @@ class Tree:
                 "title": instance["name"],
                 "component": "blueprint",
                 "data": {
-                    "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
+                    "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}?attribute={'.'.join(current_path)}",
                     "schemaUrl": f"/api/v2/json-schema/{attribute_type}",
-                    "attribute": ".".join(current_path),
                 },
             },
             menu_items=[],
