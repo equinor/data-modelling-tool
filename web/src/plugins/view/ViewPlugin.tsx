@@ -2,7 +2,7 @@ import React from 'react'
 import { BlueprintAttribute, PluginProps } from '../types'
 import ErrorBoundary from '../../components/ErrorBoundary'
 import TableWidget from '../widgets/table/TableWidget'
-import { RegisteredPlugins } from '../../pages/common/golden-layout/DocumentComponent'
+import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
 import { Pre } from '../preview/PreviewPlugin'
 
 // available on attribute level of this.

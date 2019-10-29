@@ -3,7 +3,7 @@ import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import { GoldenLayoutComponent } from './common/golden-layout/GoldenLayoutComponent'
 import GoldenLayoutPanel from './common/golden-layout/GoldenLayoutPanel'
-import DocumentComponent from './common/golden-layout/DocumentComponent'
+import DocumentComponent from './common/layout-components/DocumentComponent'
 import BlueprintsPage from './blueprints/BlueprintsPage'
 import Tabs, { Tab, TabPanel, TabList } from '../components/Tabs'
 import {
@@ -36,58 +36,56 @@ export default () => {
   const [layout, setLayout] = useState({ myLayout: null })
 
   return (
-    <Grid fluid>
-      <Row>
-        {layout && (
-          <Col xs={12} md={12} lg={3}>
-            <Wrapper>
-              <h4>Data Modelling Tool</h4>
-              <Tabs>
-                <TabList>
-                  <Tab>Blueprints</Tab>
-                  <Tab>Entities</Tab>
-                </TabList>
-                <TabPanel>
-                  <LayoutProvider layout={layout}>
+    <LayoutProvider layout={layout}>
+      <Grid fluid>
+        <Row>
+          {layout && (
+            <Col xs={12} md={12} lg={3}>
+              <Wrapper>
+                <h4>Data Modelling Tool</h4>
+                <Tabs>
+                  <TabList>
+                    <Tab>Blueprints</Tab>
+                    <Tab>Entities</Tab>
+                  </TabList>
+                  <TabPanel>
                     <BlueprintsPage />
-                  </LayoutProvider>
-                </TabPanel>
-                <TabPanel>
-                  <LayoutProvider layout={layout}>
+                  </TabPanel>
+                  <TabPanel>
                     <EntitiesPage />
-                  </LayoutProvider>
-                </TabPanel>
-              </Tabs>
-            </Wrapper>
-          </Col>
-        )}
+                  </TabPanel>
+                </Tabs>
+              </Wrapper>
+            </Col>
+          )}
 
-        <Col xs={12} md={12} lg={9}>
-          <GoldenLayoutComponent
-            globalState={state}
-            htmlAttrs={{ style: { height: '100vh' } }}
-            config={{
-              dimensions: {
-                headerHeight: 46,
-              },
-              content: [
-                {
-                  type: 'stack',
-                  isClosable: false,
+          <Col xs={12} md={12} lg={9}>
+            <GoldenLayoutComponent
+              globalState={state}
+              htmlAttrs={{ style: { height: '100vh' } }}
+              config={{
+                dimensions: {
+                  headerHeight: 46,
                 },
-              ],
-            }}
-            registerComponents={(myLayout: any) => {
-              setLayout({ myLayout })
-              myLayout.registerComponent(
-                LayoutComponents.blueprint,
-                wrapComponent(DocumentComponent, state)
-              )
-            }}
-          />
-        </Col>
-      </Row>
-    </Grid>
+                content: [
+                  {
+                    type: 'stack',
+                    isClosable: false,
+                  },
+                ],
+              }}
+              registerComponents={(myLayout: any) => {
+                setLayout({ myLayout })
+                myLayout.registerComponent(
+                  LayoutComponents.blueprint,
+                  wrapComponent(DocumentComponent, state)
+                )
+              }}
+            />
+          </Col>
+        </Row>
+      </Grid>
+    </LayoutProvider>
   )
 }
 

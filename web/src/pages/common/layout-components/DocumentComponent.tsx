@@ -8,8 +8,8 @@ import FetchDocument from '../utils/FetchDocument'
 import objectPath from 'object-path'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
-import pluginHook from '../../../external-plugins'
-import { EditPlugin, ViewPlugin, PlotPlugin } from '../../../plugins/'
+import pluginHook from '../../../external-plugins/index'
+import { EditPlugin, ViewPlugin, PlotPlugin } from '../../../plugins'
 
 const Wrapper = styled.div`
   padding: 20px;
