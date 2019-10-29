@@ -4,6 +4,7 @@ import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import FetchDocument from '../utils/FetchDocument'
+import { LayoutContext } from '../golden-layout/LayoutContext'
 
 interface Props {
   dataUrl: string
@@ -13,7 +14,7 @@ interface Props {
   uiRecipe: string
 }
 
-export const onFormSubmit = ({ attribute, dataUrl }: any) => {
+export const onFormSubmit = ({ attribute, dataUrl, layout }: any) => {
   return (schemas: any) => {
     const url = attribute ? `${dataUrl}/${attribute}` : dataUrl
     axios
@@ -21,6 +22,7 @@ export const onFormSubmit = ({ attribute, dataUrl }: any) => {
       .then((response: any) => {
         const responseData: any = response.data
         NotificationManager.success(responseData.data.uid, 'Updated blueprint')
+        layout.refresh(responseData.data.uid)
       })
       .catch((e: any) => {
         console.log(e)
@@ -36,18 +38,25 @@ const ReactJsonSchemaWrapper = (props: Props) => {
   const { document, schemaUrl, dataUrl, attribute, uiRecipe } = props
 
   return (
-    <FetchDocument
-      url={`${schemaUrl}?ui_recipe=${uiRecipe}`}
-      render={(data: any) => {
+    <LayoutContext.Consumer>
+      {(layout: any) => {
+        console.log(layout)
         return (
-          <ReactJsonSchemaPlugin
-            document={document}
-            template={data}
-            onSubmit={onFormSubmit({ attribute, dataUrl })}
+          <FetchDocument
+            url={`${schemaUrl}?ui_recipe=${uiRecipe}`}
+            render={(data: any) => {
+              return (
+                <ReactJsonSchemaPlugin
+                  document={document}
+                  template={data}
+                  onSubmit={onFormSubmit({ attribute, dataUrl, layout })}
+                />
+              )
+            }}
           />
         )
       }}
-    />
+    </LayoutContext.Consumer>
 
     // <>
     //   <h3>Edit Blueprint</h3>

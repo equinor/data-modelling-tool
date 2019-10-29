@@ -13,7 +13,10 @@ def get_attribute_config(attribute):
     if "widget" in attribute:
         return {"ui:widget": attribute["widget"]}
     if "field" in attribute:
-        return {"ui:field": attribute["field"]}
+        result = {"ui:field": attribute["field"]}
+        if attribute["field"] == "collapsible":
+            result["collapse"] = {"field": "ObjectField"}
+        return result
 
 
 def process_attributes(attribute_name: str, attribute_type: str, attribute_dimensions: str, ui_attributes):
@@ -35,6 +38,10 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     else:
         blueprint = get_blueprint(attribute_type)
         if attribute_dimensions == "*":
+            if "field" in ui_attribute:
+                result["ui:field"] = ui_attribute["field"]
+                if ui_attribute["field"] == "collapsible":
+                    result["collapse"] = {"field": "ArrayField"}
             attribute_ui_recipe = find_attribute(ui_attribute.get("uiRecipe", ""), blueprint.ui_recipes)
             if attribute_ui_recipe:
                 result["items"] = process_ui_recipe(attribute_ui_recipe, blueprint.attributes)
@@ -53,8 +60,7 @@ def process_ui_recipe(ui_recipe, attributes):
         result = process_attributes(
             attribute["name"], attribute["type"], attribute.get("dimensions", ""), ui_recipe.get("attributes", None)
         )
-        if result:
-            setting[attribute["name"]] = result
+        setting[attribute["name"]] = result
 
     return setting
 
@@ -70,7 +76,7 @@ DEFAULT_PREVIEW_UI_RECIPE = {
 DEFAULT_EDIT_UI_RECIPE = {"type": "system/SIMOS/UiRecipe", "name": "EDIT", "description": "", "attributes": []}
 
 
-def form_to_ui_schema(blueprint):
+def form_to_ui_schema(blueprint, ui_recipe_name=None):
     result = {}
 
     ui_recipes = blueprint.ui_recipes
@@ -82,7 +88,10 @@ def form_to_ui_schema(blueprint):
         # TODO: Set default widget types for attributes
         ui_recipes.append(DEFAULT_EDIT_UI_RECIPE)
 
-    for ui_recipe in ui_recipes:
-        result[ui_recipe["name"]] = process_ui_recipe(ui_recipe, blueprint.attributes)
+    if ui_recipe_name:
+        result[ui_recipe_name] = process_ui_recipe(blueprint.get_ui_recipe(ui_recipe_name), blueprint.attributes)
+    else:
+        for ui_recipe in ui_recipes:
+            result[ui_recipe["name"]] = process_ui_recipe(ui_recipe, blueprint.attributes)
 
     return result

@@ -2,26 +2,18 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "blueprints": [
-    "CarsDemo",
-    "TodoDemo",
-    "TestingDemo",
-    "MeasurementDemo"
+    "TodoDemo"
   ],
-  "entities": [
-    "CarsDemo",
-    "MeasurementDemo"
-  ],
+  "entities": [],
   "blueprintsModels": [
-    "system/DMT/Package",
-    "system/SIMOS/Blueprint"
+    "system/DMT/Package"
   ],
   "entityModels": [
-    "system/DMT/Package",
-    "system/DMT/Entity"
+    "system/DMT/EntityPackage"
   ],
   "runnable": {
     "name": "Todo Runnable",
-    "description": "Get and store all todos",
+    "description": "Get more work",
     "input": "SSR-DataSource/TodoDemo/TodoList",
     "output": "SSR-DataSource/TodoDemo/TodoList",
     "function": "runnable.js"

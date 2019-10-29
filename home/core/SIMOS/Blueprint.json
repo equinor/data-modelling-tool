@@ -78,15 +78,22 @@
           "widget": "textarea"
         },
         {
-          "name": "attributes"
+          "name": "attributes",
+          "uiRecipe": "DEFAULT_EDIT",
+          "options": {
+            "orderable" : false
+          },
+          "field": "collapsible"
         },
         {
           "name": "storageRecipes",
-          "contained": false
+          "contained": false,
+          "field": "collapsible"
         },
         {
           "name": "uiRecipes",
-          "contained": true
+          "contained": true,
+          "field": "collapsible"
         }
       ]
     },
