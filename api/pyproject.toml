@@ -3,27 +3,21 @@ name = "api"
 version = "0.1.0"
 description = "API for data-modelling-tool"
 authors = ["Stig Ofstad <stoo@equinor.com>","Christoffer","Eirik"]
-license = "MIT"
+license = "TBD"
 
 [tool.poetry.dependencies]
 python = "3.8.*"
 flask = "^1.0"
 werkzeug = "^0.15.4"
-flask-restful = "^0.3.7"
 pymongo = "^3.8"
 jsonschema = "^3.0"
-bandit = "^1.6"
 dotted = "^0.1.8"
 anytree = "^2.7.0"
 stringcase = "^1.2"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"
-safety = "^1.8"
 pytest = "^5.1"
-flake8 = "^3.7"
-bandit = "^1.6"
-black = {version = "^18.3-alpha.0", allows-prereleases = true}
 behave = "1.2.6"
 colorclass = "1.0.1"
 terminaltables = "3.1.0"

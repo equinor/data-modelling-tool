@@ -1,6 +1,10 @@
 # Created by https://www.gitignore.io/api/macos
 # Edit at https://www.gitignore.io/?templates=macos
 
+data/
+h5/
+/home/first-run-false
+
 ### macOS ###
 # General
 .DS_Store
@@ -36,9 +40,6 @@ Temporary Items
 
 __pycache__/
 pydevd-pycharm.egg
-
-data/
-h5/
 
 react-app-env.d.ts
 

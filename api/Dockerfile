@@ -1,6 +1,6 @@
 FROM python:3.8.0-alpine3.10 as development
 ENV PYTHONUNBUFFERED=1 FLASK_APP=/code/app.py
-CMD flask run --host=0.0.0.0
+CMD /code/init.sh
 WORKDIR /code
 RUN apk update && \
     pip install --upgrade pip && \
