@@ -28,7 +28,6 @@ class Package:
     def __init__(
         self,
         name: str,
-        uid: str,
         dependencies: List[Dependency] = None,
         description: str = None,
         type: str = DMT.PACKAGE.value,
@@ -36,7 +35,6 @@ class Package:
         is_root: bool = False,
     ):
         self.name = name
-        self.uid = uid
         self.description = description
         self.type = type
         self.dependencies = [] if not dependencies else dependencies
@@ -48,7 +46,6 @@ class Package:
     def from_dict(cls, adict):
         instance = cls(
             name=adict["name"],
-            uid=adict["_id"],
             description=adict.get("description"),
             content=adict.get("content", ""),
             dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
@@ -72,7 +69,6 @@ class Package:
 
     def to_dict(self):
         result = {
-            "_id": self.uid,
             "name": self.name,
             "description": self.description,
             "type": self.type,

@@ -15,3 +15,8 @@ class EntityAlreadyExistsException(RepositoryException):
 class EntityNotFoundException(RepositoryException):
     def __init__(self, uid):
         super().__init__(message=f"The entity, with id {uid} is not found")
+
+
+class TemplateNotFound(RepositoryException):
+    def __init__(self, template_id):
+        super().__init__(message=f"The template with ID, {template_id}, was not found")

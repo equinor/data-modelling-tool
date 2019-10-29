@@ -1,6 +1,5 @@
 class Blueprint:
-    def __init__(self, uid: str, name: str, description: str, type: str):
-        self.uid = uid
+    def __init__(self, name: str, description: str, type: str):
         self.name = name
         self.description = description
         self.type = type
@@ -34,12 +33,7 @@ class Blueprint:
 
     @classmethod
     def from_dict(cls, adict):
-        instance = cls(
-            name=adict["name"],
-            description=adict.get("description", ""),
-            type=adict["type"],
-            uid=adict.get("_id", adict.get("uid", "")),
-        )
+        instance = cls(name=adict["name"], description=adict.get("description", ""), type=adict["type"])
         instance.attributes = adict.get("attributes", "")
         instance.storage_recipes = adict.get("storageRecipes", [])
         instance.ui_recipes = adict.get("uiRecipes", [])
@@ -48,7 +42,6 @@ class Blueprint:
     def to_dict(self):
         return {
             "name": self.name,
-            "_id": self.uid,
             "description": self.description,
             "type": self.type,
             "attributes": self.attributes,

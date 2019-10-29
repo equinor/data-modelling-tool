@@ -3,7 +3,8 @@ import json
 from flask import Blueprint, Response
 
 from classes.data_source import DataSource
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from core.enums import RepositoryType
 from core.use_case.generate_index_use_case import GenerateIndexUseCase
 
 blueprint = Blueprint("index", __name__)

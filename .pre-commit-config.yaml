@@ -2,18 +2,18 @@
   sha: v1.2.3
   hooks:
     - id: check-ast
-      language_version: python3.7
+      language_version: python3.8
     - id: check-merge-conflict
     - id: check-json
     - id: check-yaml
     - id: flake8
       args: ['--config=api/.flake8']
-      language_version: python3.7
+      language_version: python3.8
 - repo: https://github.com/ambv/black
   rev: stable
   hooks:
     - id: black
-      language_version: python3.7
+      language_version: python3.8
       files: ^api/.*\.py$
 - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
   sha: v1.0.3

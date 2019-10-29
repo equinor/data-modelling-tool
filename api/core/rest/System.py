@@ -3,7 +3,8 @@ from classes.data_source import DataSource
 from core.use_case.create_application_use_case import CreateApplicationUseCase, CreateApplicationRequestObject
 from utils.logging import logger
 from core.shared import response_object as res
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from core.enums import RepositoryType
 import json
 
 blueprint = Blueprint("system", __name__)

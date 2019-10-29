@@ -1,10 +1,11 @@
-from typing import List, Union
+from typing import List, Union, Optional
 
 from classes.data_source import DataSource
 from config import Config
 from core.domain.dto import DTO
 from core.domain.package import Package
-from core.repository.repository_factory import get_repository, RepositoryType
+from core.repository.repository_factory import get_repository
+from core.enums import RepositoryType
 from services.database import model_db, data_modelling_tool_db as dmt_db
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
 from utils.logging import logger
@@ -35,13 +36,13 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
 def get_document_uid_by_path(path: str, repository) -> Union[str, None]:
     root_package_name, path_elements = get_package_and_path(path)
     # TODO: This fails if several documents with the same name
-    package_dict = repository.find({"name": root_package_name})
-    if not package_dict:
+    dto: Optional[DTO] = repository.find({"name": root_package_name})
+    if not dto:
         return None
-    package = Package.from_dict(package_dict.data)
     # Check if it's a root-package
     if not path_elements:
-        return package.uid
+        return dto.uid
+    package = Package.from_dict(dto.data)
     uid = _find_document_in_package_by_path(package, path_elements, repository)
     return uid
 

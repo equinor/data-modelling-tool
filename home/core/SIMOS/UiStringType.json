@@ -1,0 +1,11 @@
+{
+  "type": "system/SIMOS/Enum",
+  "name": "UiStringType",
+  "description": "",
+  "labels": [
+    "Small"
+  ],
+  "values": [
+    "small"
+  ]
+}

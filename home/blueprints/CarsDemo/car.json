@@ -13,8 +13,7 @@
     },
     {
       "type": "string",
-      "name": "manufacturer",
-      "contained": true
+      "name": "manufacturer"
     },
     {
       "type": "SSR-DataSource/CarsDemo/Wheel",
@@ -44,6 +43,24 @@
     }
   ],
   "uiRecipes": [
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "DEFAULT_EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "wheels",
+          "uiRecipe": "DEFAULT_EDIT",
+          "options": {
+            "orderable" : false
+          }
+        }
+      ]
+    }
   ]
 }
 

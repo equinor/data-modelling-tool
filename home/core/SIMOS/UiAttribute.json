@@ -1,0 +1,60 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "UiAttribute",
+  "description": "This describes an ui recipe attribute",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "type": "boolean",
+      "name": "optional",
+      "optional": true,
+      "default": false
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "optional": true,
+      "default": "system/SIMOS/UiAttribute"
+    },
+    {
+      "type": "string",
+      "name": "field",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "type": "string",
+      "name": "dimensions",
+      "optional": true,
+      "default": "1"
+    },
+    {
+      "type": "string",
+      "name": "default",
+      "optional": true,
+      "default": null
+    },
+    {
+      "type": "boolean",
+      "name": "contained",
+      "optional": true,
+      "default": true
+    },
+    {
+      "type": "string",
+      "name": "widget",
+      "description": "Widget for this property",
+      "optional": true,
+      "default": ""
+    }
+  ]
+}

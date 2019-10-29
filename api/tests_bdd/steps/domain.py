@@ -8,8 +8,8 @@ from core.repository.interface.document_repository import DocumentRepository
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
-from core.repository.repository_factory import get_repository, RepositoryType
-from core.enums import SIMOS, DMT
+from core.repository.repository_factory import get_repository
+from core.enums import RepositoryType, DMT, SIMOS
 
 
 class TreeNode(NodeMixin):
@@ -63,13 +63,16 @@ class Tree:
         document_repository: DocumentRepository = get_repository(RepositoryType.DocumentRepository, self.data_source)
         for pre, fill, node in RenderTree(self.root):
             if node.type == SIMOS.BLUEPRINT.value:
-                document = Blueprint(uid=node.uid, name=node.name, description=node.description, type=node.type)
+                document = DTO(
+                    uid=node.uid, data=Blueprint(name=node.name, description=node.description, type=node.type)
+                )
                 blueprint_repository.add(document)
                 print(f"Added blueprint {document.uid}")
             elif node.type == DMT.PACKAGE.value:
-                package = Package(uid=node.uid, name=node.name, description=node.description, type=node.type)
+                package = Package(name=node.name, description=node.description, type=node.type)
                 extra = node.extra()
                 package.content = extra["content"]
+                package = DTO(package, uid=node.uid)
                 package_repository.add(package)
                 print(f"Added package {package.uid}")
             else:

@@ -1,31 +1,31 @@
 {
   "type": "system/SIMOS/Blueprint",
   "name": "Enum",
-  "description": "This describes a enum",
+  "description": "This describes an enum",
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     },
     {
       "type": "string",
-      "value": "",
       "name": "description"
     },
     {
       "type": "string",
-      "value": "",
       "name": "labels",
       "dimensions": "*"
     },
     {
       "type": "string",
-      "value": "",
       "name": "values",
       "dimensions": "*"
+    },
+    {
+      "type": "string",
+      "name": "selected",
+      "optional": true,
+      "default": ""
     }
-  ],
-  "storage_recipes": [
   ]
 }

@@ -9,6 +9,10 @@
     },
     {
       "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
       "name": "description"
     },
     {
@@ -24,9 +28,10 @@
       "contained": true
     },
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "dimensions": "*",
       "name": "uiRecipes",
+      "optional": true,
       "contained": true
     }
   ],
@@ -38,10 +43,14 @@
       "attributes": [
         {
           "name": "attributes",
+          "type": "",
+          "description": "",
           "contained": true
         },
         {
-          "name": "storageRecipes",
+          "name": "StorageRecipes",
+          "type": "",
+          "description": "",
           "contained": true
         },
         {
@@ -53,14 +62,14 @@
   ],
   "uiRecipes": [
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "PREVIEW",
       "description": "",
       "plugin": "PREVIEW",
       "attributes": []
     },
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "EDIT",
       "description": "",
       "attributes": [
@@ -69,11 +78,7 @@
           "widget": "textarea"
         },
         {
-          "name": "attributes",
-          "uiRecipe": "DEFAULT_EDIT",
-          "options": {
-            "orderable" : false
-          }
+          "name": "attributes"
         },
         {
           "name": "storageRecipes",
@@ -86,30 +91,30 @@
       ]
     },
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "VIEW",
       "description": "",
       "plugin": "VIEW",
       "attributes": [
         {
           "name": "name",
-          "plugin": "view.widget"
+          "widget": "view.widget"
         },
         {
           "name": "uiRecipes",
-          "plugin": "table.widget"
+          "widget": "table.widget"
         }
       ]
     },
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "TEST_EXTERNAL",
       "description": "",
       "plugin": "TEST_EXTERNAL",
       "attributes": []
     },
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "Edit2",
       "description": "",
       "plugin": "EDIT_PLUGIN",

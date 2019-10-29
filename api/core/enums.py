@@ -20,6 +20,12 @@ class DataSourceDocumentType(Enum):
         return value in values
 
 
+class RepositoryType(Enum):
+    DocumentRepository = "DocumentRepository"
+    PackageRepository = "PackageRepository"
+    BlueprintRepository = "BlueprintRepository"
+
+
 class SIMOS(Enum):
     BLUEPRINT = "system/SIMOS/Blueprint"
     BLUEPRINT_ATTRIBUTE = "system/SIMOS/BlueprintAttribute"

@@ -1,5 +1,4 @@
 from typing import Dict
-from uuid import uuid4
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
@@ -47,7 +46,7 @@ class UpdateDocumentRequestObject(req.ValidRequestObject):
 
 def create_reference(data: Dict, document_repository, type: str):
     data["type"] = type
-    file = DTO(uid=uuid4(), data=data, type=type)
+    file = DTO(data)
     document_repository.add(file)
     return {"_id": file.uid, "name": file.data.get("name", "")}
 

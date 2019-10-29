@@ -87,9 +87,14 @@ function getJsonSchemaPropertyFromType(
   const type = getBlueprintFromType(types, attribute.type)
   const property = {}
   if (type) {
-    type.attributes.forEach((attribute: BlueprintAttribute) => {
-      appendJsonSchemaProperty(attribute, property, types)
-    })
+    if (type.attributes) {
+      type.attributes.forEach((attribute: BlueprintAttribute) => {
+        appendJsonSchemaProperty(attribute, property, types)
+      })
+    } else {
+      // That is, `type` is an instance of a blueprint
+      appendJsonSchemaProperty(type, property, types)
+    }
   } else {
     console.error('type is missing.')
   }

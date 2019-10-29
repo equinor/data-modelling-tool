@@ -23,14 +23,20 @@
     {
       "type": "string",
       "name": "type",
-      "enumType": "system/SIMOS/attribute_types",
+      "enum": "system/SIMOS/AttributeTypes",
       "optional": false
+    },
+    {
+      "type": "boolean",
+      "name": "optional",
+      "default": false,
+      "optional": true
     },
     {
       "type": "string",
       "name": "dimensions",
       "optional": true,
-      "default": ""
+      "default": "1"
     },
     {
       "name": "contained",
@@ -40,21 +46,14 @@
       "optional": true
     },
     {
-      "name": "enumType",
+      "name": "enum",
       "type": "system/SIMOS/Enum",
       "optional": true,
-      "default": "",
+      "default": null,
       "contained": true
     }
   ],
   "storageRecipes": [],
-  "uiRecipes": [
-    {
-      "type": "system/SIMOS/UIRecipe",
-      "name": "DEFAULT_EDIT",
-      "description": "",
-      "field": "attribute"
-    }
-  ]
+  "uiRecipes": []
 }
 

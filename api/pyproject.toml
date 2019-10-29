@@ -15,6 +15,7 @@ jsonschema = "^3.0"
 bandit = "^1.6"
 dotted = "^0.1.8"
 anytree = "^2.7.0"
+stringcase = "^1.2"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"

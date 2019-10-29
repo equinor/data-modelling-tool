@@ -1,6 +1,7 @@
 from typing import List
 
 from core.domain.blueprint import Blueprint
+from core.domain.dto import DTO
 from core.repository.mongo.mongo_repository_base import MongoRepositoryBase
 
 
@@ -19,8 +20,8 @@ class MongoBlueprintRepository(MongoRepositoryBase):
     def update(self, document: Blueprint) -> None:
         self.client().update(document.uid, document.to_dict())
 
-    def add(self, document: Blueprint) -> None:
-        self.client().add(document.uid, document.to_dict())
+    def add(self, document: DTO) -> None:
+        self.client().add(document.uid, document.data.to_dict())
 
     def delete(self, document: Blueprint) -> None:
         self.client().delete(document.uid)

@@ -1,0 +1,123 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "description": "This is a blueprint for a package that contains entities and other EntitiesPackages",
+  "name": "EntityPackage",
+  "attributes": [
+    {
+      "contained": true,
+      "name": "name",
+      "optional": false,
+      "type": "string"
+    },
+    {
+      "contained": true,
+      "default": "system/SIMOS/Blueprint",
+      "name": "type",
+      "optional": false,
+      "type": "string"
+    },
+    {
+      "contained": true,
+      "default": "",
+      "name": "description",
+      "optional": true,
+      "type": "string"
+    },
+    {
+      "contained": true,
+      "default": false,
+      "name": "isRoot",
+      "optional": false,
+      "type": "boolean"
+    },
+    {
+      "contained": false,
+      "default": [],
+      "dimensions": "*",
+      "name": "packages",
+      "optional": true,
+      "type": "system/DMT/EntityPackage"
+    },
+    {
+      "contained": false,
+      "default": [],
+      "dimensions": "*",
+      "name": "documents",
+      "optional": true,
+      "type": "system/DMT/Entity"
+    }
+  ],
+  "storageRecipes": [
+    {
+      "description": "",
+      "name": "DefaultStorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
+      "attributes": [
+        {
+          "contained": false,
+          "name": "packages"
+        },
+        {
+          "contained": false,
+          "name": "documents"
+        }
+      ]
+    }
+  ],
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "DEFAULT_CREATE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "isRoot",
+          "widget": "hidden"
+        },
+        {
+          "name": "type",
+          "widget": "hidden"
+        },
+        {
+          "name": "packages",
+          "contained": false
+        },
+        {
+          "name": "documents",
+          "contained": false
+        }
+      ]
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "description",
+          "widget": "textarea"
+        },
+        {
+          "name": "packages",
+          "contained": false
+        },
+        {
+          "name": "documents",
+          "contained": false
+        },
+        {
+          "name": "isRoot",
+          "widget": "hidden"
+        },
+        {
+          "name": "type",
+          "widget": "hidden"
+        }
+      ]
+    }
+  ]
+}

@@ -5,31 +5,30 @@
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     },
     {
       "type": "string",
-      "value": "",
-      "name": "description"
+      "name": "description",
+      "optional": true
     },
     {
       "type": "boolean",
-      "value": "",
-      "name": "contained"
+      "name": "contained",
+      "optional": true,
+      "default": true
+    },
+    {
+      "type": "system/SIMOS/StorageTypes",
+      "name": "type",
+      "default": "small",
+      "optional": true
     },
     {
       "type": "string",
-      "name": "type",
-      "enumType": [
-        "small",
-        "large"
-      ],
-      "enumNames": [
-        "Small",
-        "Large"
-      ],
-      "default": "small"
+      "name": "dimensions",
+      "optional": true,
+      "default": "1"
     }
   ]
 }

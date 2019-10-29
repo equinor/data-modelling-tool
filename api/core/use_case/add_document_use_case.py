@@ -41,7 +41,7 @@ class AddDocumentUseCase(uc.UseCase):
     def process_request(self, request_object: AddDocumentRequestObject):
         data: Dict = request_object.data
 
-        document: DTO = DTO(uid=uuid4(), data=data, type=data["type"])
+        document: DTO = DTO(uid=uuid4(), data=data)
 
         if not document.type:
             raise Exception("The requested document does not contain a template reference")
