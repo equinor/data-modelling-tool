@@ -83,7 +83,7 @@
           "options": [
             {
               "name": "orderable",
-              "value" : false
+              "value" : "false"
             }
           ],
           "field": "collapsible"

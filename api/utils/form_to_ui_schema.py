@@ -33,7 +33,10 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if "options" in ui_attribute:
         options = {}
         for option in ui_attribute["options"]:
-            options[option["name"]] = option["value"]
+            if option["name"] in ["orderable"]:
+                value = option["value"]
+                value = {"false": False, "true": True}[value.lower()]
+                options[option["name"]] = value
         result["ui:options"] = options
 
     if attribute_type in PRIMITIVES:
