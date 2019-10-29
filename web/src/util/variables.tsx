@@ -3,7 +3,7 @@ export enum DocumentType {
   BLUEPRINTS = 'blueprints',
 }
 
-export enum BlueprintType {
+export enum BlueprintEnum {
   BLUEPRINT = 'system/SIMOS/Blueprint',
   PACKAGE = 'system/DMT/Package',
 }

@@ -3,7 +3,7 @@ import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import DocumentTree from './tree-view/DocumentTree'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
-import { BlueprintType } from '../../util/variables'
+import { BlueprintEnum } from '../../util/variables'
 
 const api = new DmtApi()
 
@@ -39,7 +39,7 @@ export const BlueprintPickerContent = ({
         const type = nodeData.meta.type
         return (
           <>
-            {type === BlueprintType.BLUEPRINT ? (
+            {type === BlueprintEnum.BLUEPRINT ? (
               <div
                 onClick={() => {
                   onSelect(renderProps)

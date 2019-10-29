@@ -58,7 +58,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
     NotificationManager.error(error.response.data.message, 'Failed')
   }
 
-  const [method, actionType] = action.type.split('/')
+  const [method] = action.type.split('/')
 
   switch (method) {
     case ContextMenuActions.CREATE: {

@@ -3,7 +3,6 @@ import {
   FaChevronDown,
   FaChevronRight,
   FaDatabase,
-  FaFile,
   FaFolder,
   FaFolderOpen,
   FaCircle,
