@@ -37,15 +37,15 @@ class MoveFileUseCase(uc.UseCase):
         self.get_repository = get_repository
 
     def process_request(self, request_object: MoveFileRequestObject):
-        source_data_source_id, source = request_object.source.split("/", 1)
-        destination_data_source_uid, destination = request_object.destination.split("/", 1)
+        source_data_source_id, *source = request_object.source.split("/")
+        destination_data_source_uid, *destination = request_object.destination.split("/")
 
         # Check if document already exists in destination
         if get_document_by_ref(request_object.destination):
             raise EntityAlreadyExistsException(request_object.destination)
 
         # Remove source document
-        source: Path = Path(source)
+        source: Path = Path("/".join(source))
         source_data_source = DataSource(id=source_data_source_id)
         source_document_repository: DocumentRepository = self.get_repository(
             RepositoryType.DocumentRepository, source_data_source
@@ -58,7 +58,7 @@ class MoveFileUseCase(uc.UseCase):
         logger.info(f"Removed document '{source_document.uid}' from data source '{source_data_source_id}'")
 
         # Add destination
-        destination: Path = Path(destination)
+        destination: Path = Path("/".join(destination))
         destination_data_source = DataSource(id=destination_data_source_uid)
         destination_document_repository: DocumentRepository = self.get_repository(
             RepositoryType.DocumentRepository, destination_data_source

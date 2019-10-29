@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from pathlib import Path
-from typing import List, Union
+from typing import List
 
 from anytree import NodeMixin, PreOrderIter, RenderTree
 from flask import g
@@ -194,9 +194,7 @@ class Tree:
                     document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
                 )
 
-    def process_document(
-        self, data_source_id, document: DTO, parent_node: DocumentNode, models: List
-    ):
+    def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, models: List):
 
         is_package = document.type == DMT.PACKAGE.value
         parent_is_data_source = parent_node.document is None
@@ -225,9 +223,7 @@ class Tree:
             node.on_select = {}
 
         # Every node gets an delete and rename action
-        node.menu_items.append(
-            get_update_document_menu_item(data_source_id, name=document.name, document_id=document.uid)
-        )
+        node.menu_items.append(get_update_document_menu_item(data_source_id, document=document, parent=parent_node))
         node.menu_items.append(
             get_delete_document_menu_item(
                 data_source_id, parent_id=parent_node.uid, parent_attribute=parent_attribute, document_id=document.uid
