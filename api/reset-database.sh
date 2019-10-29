@@ -1,8 +1,6 @@
 #!/usr/bin/env sh
 set -eu
 
-mkdir -p /code/schemas/documents/entities
-
 flask nuke-db
 
 echo "ENVIRONMENT: $ENVIRONMENT"

@@ -31,12 +31,12 @@ class UIRecipe:
         attribute_contained = attribute.get("contained")
         is_array = attribute.get("dimensions", "") == "*"
 
-        if attribute_contained:
-            return attribute_contained
         if attribute_name in self.ui_attributes:
             ui_attribute = self.ui_attributes[attribute_name]
             if ui_attribute.is_contained is not None:
                 return ui_attribute.is_contained
+        if attribute_contained:
+            return attribute_contained
         if attribute_type in PRIMITIVES:
             return DEFAULT_PRIMITIVE_CONTAINED
         else:

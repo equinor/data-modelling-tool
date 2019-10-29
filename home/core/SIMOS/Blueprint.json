@@ -91,6 +91,25 @@
       ]
     },
     {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "DEFAULT_CREATE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "attributes",
+          "contained": false
+        },
+        {
+          "name": "storageRecipes",
+          "contained": false
+        },
+        {
+          "name": "uiRecipes",
+          "contained": false
+        }
+      ]
+    },
+    {
       "type": "system/SIMOS/UiRecipe",
       "name": "VIEW",
       "description": "",

@@ -2,4 +2,4 @@
 
 ## Why is this pull request needed?
 
-## Issues releated to this change:
+## Issues related to this change:
