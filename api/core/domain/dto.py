@@ -1,19 +1,19 @@
 from uuid import uuid4, UUID
-from typing import Union, Dict, TypeVar, Optional
+from typing import TypeVar, Optional, Generic
 
 from stringcase import snakecase
 
 T = TypeVar("T")
 
 
-class DTO:
-    def __init__(self, data: Union[Dict, T], uid: Optional[UUID] = None):
+class DTO(Generic[T]):
+    def __init__(self, data: T, uid: Optional[UUID] = None):
         if uid is None:
             uid = uuid4()
         self._uid = uid
         self._data = data
 
-        if isinstance(self.data, Dict):
+        if isinstance(self.data, dict):
             # remove when dto is stored in mongo documents.
             for key in ["uid", "_id"]:
                 try:
