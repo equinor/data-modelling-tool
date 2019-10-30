@@ -45,7 +45,7 @@
   "uiRecipes": [
     {
       "type": "system/SIMOS/UiRecipe",
-      "name": "DEFAULT_EDIT",
+      "name": "EDIT",
       "description": "",
       "attributes": [
         {
@@ -54,7 +54,7 @@
         },
         {
           "name": "wheels",
-          "uiRecipe": "DEFAULT_EDIT",
+          "uiRecipe": "EDIT",
           "options": [
             {
               "name": "orderable",
