@@ -57,7 +57,8 @@
           "uiRecipe": "DEFAULT_EDIT",
           "options": [
             {
-              "orderable": false
+              "name": "orderable",
+              "value" : "false"
             }
           ]
         }
