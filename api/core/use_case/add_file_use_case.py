@@ -1,5 +1,4 @@
 from typing import Dict
-from uuid import uuid4
 
 from classes.data_source import DataSource
 from core.domain.dto import DTO
@@ -80,7 +79,7 @@ class AddFileUseCase(uc.UseCase):
         storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
         # TODO: Set all data
-        file = DTO(uid=uuid4(), data={"name": name, "description": "", "type": type})
+        file = DTO(data={"name": name, "description": "", "type": type})
 
         if storage_recipe.is_contained(attribute, type):
             parent_data[attribute] += [data]

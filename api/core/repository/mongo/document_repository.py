@@ -24,14 +24,14 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
             data["uid"] = result["_id"]
             return DTO(data=data, uid=result["_id"])
 
-    def update(self, dto: DTO) -> None:
-        data = dto.data
+    def update(self, document: DTO) -> None:
+        data = document.data
         if not isinstance(data, dict):
             data = data.to_dict()
         # flatten dto, keep backward compatibility
-        data["_id"] = dto.uid
-        data["uid"] = dto.uid
-        self.client().update(dto.uid, data)
+        data["_id"] = document.uid
+        data["uid"] = document.uid
+        self.client().update(document.uid, data)
 
     def add(self, dto: DTO) -> None:
         data = dto.data

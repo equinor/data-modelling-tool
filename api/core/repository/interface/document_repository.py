@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from typing import Dict
 
 from core.domain.dto import DTO
 
@@ -10,7 +9,7 @@ class DocumentRepository(ABC):
         """Get method to be implemented"""
 
     @abstractmethod
-    def update(self, uid: str, data: Dict) -> None:  # self, document: DTO
+    def update(self, document: DTO) -> None:
         """Update method to be implemented"""
 
     @abstractmethod

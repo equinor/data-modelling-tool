@@ -34,7 +34,7 @@ class AddRootPackageUseCase(uc.UseCase):
         package = Package(name=name, is_root=True)
 
         # uid=package.uid,
-        document: DTO = DTO(data=package)
+        document: DTO[Package] = DTO(data=package)
 
         self.document_repository.add(document)
 
