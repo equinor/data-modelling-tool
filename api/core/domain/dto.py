@@ -45,7 +45,7 @@ class DTO(Generic[T]):
 
         try:
             return get(item)
-        except KeyError:
+        except (KeyError, AttributeError, TypeError):
             return get(snakecase(item))
 
     def get_values(self, name):

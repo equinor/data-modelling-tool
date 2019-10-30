@@ -22,3 +22,21 @@ def find(obj, path):
         raise KeyError
     except TypeError:
         raise TypeError
+
+
+def has(obj, name: str):
+    if isinstance(obj, dict):
+        return name in obj
+    return hasattr(obj, name)
+
+
+def get(obj, name: str, **kwargs):
+    use_default = "default" in kwargs
+    if isinstance(obj, dict):
+        try:
+            return obj[name]
+        except KeyError as e:
+            if use_default:
+                return kwargs["default"]
+            raise e
+    return getattr(obj, name)

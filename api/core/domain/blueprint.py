@@ -1,3 +1,23 @@
+def get_attributes_with_reference(blueprint):
+    primitives = ["string", "number", "integer", "number", "boolean"]
+    blueprints = list(filter(lambda item: hasattr(item, "type") and item.type not in primitives, blueprint.attributes))
+    # TODO: Removed enum since not working
+    blueprints = list(filter(lambda item: item.name != "enum", blueprints))
+    return blueprints
+
+
+def get_attribute_names(blueprint):
+    return list(map(lambda item: item.name, blueprint.attributes))
+
+
+def get_ui_recipe_from_blueprint(blueprint, name=None):
+    if name:
+        return next((x for x in blueprint.ui_recipes if x["name"] == name), None)
+    else:
+        name = blueprint.ui_recipes[0] if len(blueprint.ui_recipes) > 0 else {}
+        return name
+
+
 class Blueprint:
     def __init__(self, name: str, description: str, type: str):
         self.name = name
@@ -6,30 +26,6 @@ class Blueprint:
         self.attributes = []
         self.storage_recipes = []
         self.ui_recipes = []
-
-    def get_attributes_with_reference(self):
-        primitives = ["string", "number", "integer", "number", "boolean"]
-        blueprints = list(filter(lambda item: "type" in item and item["type"] not in primitives, self.attributes))
-        # TODO: Removed enum since not working
-        blueprints = list(filter(lambda item: item["name"] != "enum", blueprints))
-        return blueprints
-
-    def get_storage_recipe(self):
-        if len(self.storage_recipes) > 0:
-            return self.storage_recipes[0]
-
-    def get_attribute_names(self):
-        return list(map(lambda item: item["name"], self.attributes))
-
-    def get_ui_recipe(self, name=None):
-        if name:
-            return next((x for x in self.ui_recipes if x["name"] == name), None)
-        else:
-            name = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
-            return name
-
-    def get_values(self, attribute_name):
-        return self.to_dict().get(attribute_name, None)
 
     @classmethod
     def from_dict(cls, adict):

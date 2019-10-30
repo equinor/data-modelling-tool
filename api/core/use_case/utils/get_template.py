@@ -10,6 +10,4 @@ def get_blueprint(type: str) -> Blueprint:
     document: DTO = get_document_by_ref(type)
     if not document:
         return None
-    data = document.data
-    data["_id"] = document.uid
-    return Blueprint.from_dict(data)
+    return document.data

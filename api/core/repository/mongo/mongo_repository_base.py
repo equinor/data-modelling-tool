@@ -1,26 +1,35 @@
+from abc import ABC
+from typing import Any, Dict
+
+from core.domain.dto import DTO
+from core.domain.schema import Factory
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.mongo.mongo_db_client import DbClient
 
 
-class MongoRepositoryBase:
+def strip_ids(item):
+    if isinstance(item, dict):
+        _item = {}
+        for key, value in item.items():
+            if key not in ["_id", "uid", "id"]:
+                _item[key] = strip_ids(value)
+        item = _item
+    elif isinstance(item, list):
+        item = [strip_ids(e) for e in item]
+    return item
+
+
+class MongoRepositoryBase(DocumentRepository, ABC):
     def __init__(self, db: DbClient):
         self.db = db
+        self._template_generator = Factory(self)
+
+    def _generate_template(self, template_type: str):
+        return self._template_generator.create(template_type)
 
     def client(self) -> DbClient:
         return self.db
 
-    # def create(self, item):
-    #    data = item.__dict__
-    #    self.c().insert(data)
-    #    return item
-
-    # def convert_from_model(self, obj):
-    #    return obj.__dict__
-
-    def convert_to_model(self, dict_):
-        # del d["_id"]
-        return self.Meta.model.from_dict(dict_)
-
-        # x = self.Meta.model(id=d["_id"])
-        # x.__dict__.update(d)
-        # x.from_dict()
-        # return x
+    def convert_to_model(self, dict_: Dict[str, Any]) -> DTO:
+        model = self._generate_template(dict_["type"]).from_dict(dict_)
+        return model

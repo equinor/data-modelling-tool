@@ -25,5 +25,5 @@ class DocumentRepository(ABC, Generic[T]):
         """Delete method to be implemented"""
 
     @abstractmethod
-    def find(self, filter: dict) -> Optional[DTO[T]]:
+    def find(self, filter: dict, single: bool = None, raw: bool = None) -> Optional[DTO[T]]:
         """Find method to be implemented"""

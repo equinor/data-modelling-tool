@@ -1,3 +1,5 @@
+from stringcase import snakecase
+
 from core.domain.dto import DTO
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_document_children import get_document_children
@@ -46,7 +48,7 @@ class RemoveFileUseCase(uc.UseCase):
 
         document: DTO = self.document_repository.get(document_id)
         if not document:
-            raise EntityNotFoundException(uid=document.uid)
+            raise EntityNotFoundException(uid=document_id)
 
         if parent_id:
             # Remove reference from parent
@@ -54,7 +56,9 @@ class RemoveFileUseCase(uc.UseCase):
             if not parent:
                 raise EntityNotFoundException(uid=parent_id)
             data = parent.data
-            data[attribute] = list(filter(lambda d: d["_id"] != document.uid, data[attribute]))
+            setattr(
+                data, snakecase(attribute), list(filter(lambda d: d.uid != document.uid, getattr(data, attribute)))
+            )
             self.document_repository.update(parent)
 
         # Remove the actual document

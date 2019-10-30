@@ -56,10 +56,6 @@ class Package:
         instance.storage_recipes = adict.get("storageRecipes", [])
         return instance
 
-    def get_storage_recipe(self):
-        if len(self.storage_recipes) > 0:
-            return self.storage_recipes[0]
-
     def get_values(self, attribute_name):
         data = self.to_dict()
         if attribute_name in data:

@@ -21,7 +21,7 @@ class TemplateRepositoryFromFile(DocumentRepository):
             raise TemplateNotFound(template_type)
         return schema
 
-    def find(self, filter: dict) -> DTO:
+    def find(self, filter: dict, single=None, raw=None) -> DTO:
         template_type = filter["type"]
         return self.get(template_type)
 
@@ -31,5 +31,5 @@ class TemplateRepositoryFromFile(DocumentRepository):
     def delete(self, document: DTO) -> None:
         raise NotImplementedError
 
-    def update(self, uid: str, document: DTO) -> None:
+    def update(self, document: DTO) -> None:
         raise NotImplementedError

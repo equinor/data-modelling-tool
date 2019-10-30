@@ -69,8 +69,9 @@ class AddFileUseCase(uc.UseCase):
             raise EntityNotFoundException(uid=parent_id)
 
         parent_data = parent.data
-        if attribute not in parent_data:
-            parent_data[attribute] = []
+        if not hasattr(parent_data, attribute):
+            # parent_data[attribute] = []
+            raise ValueError(f"The attribute '{attribute}' is missing")
 
         blueprint = get_blueprint(parent.type)
         if not blueprint:
@@ -79,14 +80,14 @@ class AddFileUseCase(uc.UseCase):
         storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
         if storage_recipe.is_contained(attribute, type):
-            parent_data[attribute] += [data]
+            getattr(parent_data, attribute).append(data)
             logger.info(f"Added contained document")
             self.document_repository.update(parent)
             return res.ResponseSuccess(parent)
         else:
             # TODO: Set all data
             file = DTO(data={"name": name, "description": description, "type": type})
-            parent_data[attribute] += [{"_id": file.uid, "name": name, "type": type}]
+            getattr(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
             self.document_repository.update(parent)
