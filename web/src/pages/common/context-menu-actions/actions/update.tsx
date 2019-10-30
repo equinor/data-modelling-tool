@@ -37,7 +37,9 @@ export const updateAction = (
   return {
     fetchDocument: fetchUpdate(action),
     onSubmit: (formData: any) => {
-      const data = processFormData(action.data.request, formData)
+      // TODO: Does not support moves between folders and datasources now
+      const newPath = { newPath: `${node.path}/${formData.name}` }
+      const data = processFormData(action.data.request, newPath)
       Api2.put({
         data: data,
         url: action.data.url,
