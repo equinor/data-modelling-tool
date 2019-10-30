@@ -5,8 +5,6 @@ from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
 from core.domain.package import Package
 from core.repository.interface.document_repository import DocumentRepository
-from core.repository.interface.package_repository import PackageRepository
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
 from core.repository.repository_factory import get_repository
 from core.enums import RepositoryType, DMT, SIMOS
@@ -57,10 +55,12 @@ class Tree:
         self.root = self._generate_tree()
 
     def add(self):
-        blueprint_repository: MongoBlueprintRepository = get_repository(
+        blueprint_repository: DocumentRepository[Blueprint] = get_repository(
             RepositoryType.BlueprintRepository, self.data_source
         )
-        package_repository: PackageRepository = get_repository(RepositoryType.PackageRepository, self.data_source)
+        package_repository: DocumentRepository[Package] = get_repository(
+            RepositoryType.PackageRepository, self.data_source
+        )
         document_repository: DocumentRepository = get_repository(RepositoryType.DocumentRepository, self.data_source)
         for pre, fill, node in RenderTree(self.root):
             if node.type == SIMOS.BLUEPRINT.value:

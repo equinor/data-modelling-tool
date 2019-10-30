@@ -71,7 +71,7 @@ def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, docum
             return reference
 
 
-def update_document(document_id, data: Dict, document_repository):
+def update_document(document_id, data: Dict, document_repository: DocumentRepository):
     document: DTO = document_repository.get(document_id)
 
     if not document:

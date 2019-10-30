@@ -22,7 +22,7 @@ class DTO(Generic[T]):
                     pass
 
     @property
-    def uid(self):
+    def uid(self) -> str:
         return str(self._uid)
 
     @property
@@ -30,13 +30,13 @@ class DTO(Generic[T]):
         return self._data
 
     @data.setter
-    def data(self, data):
+    def data(self, data: T):
         self._data = data
 
     def to_dict(self):
         return {"uid": self.uid, "data": self.data if isinstance(self.data, dict) else self.data.to_dict()}
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str):
         def get(name):
             try:
                 return getattr(self.data, name)

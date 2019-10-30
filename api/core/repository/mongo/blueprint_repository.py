@@ -2,10 +2,11 @@ from typing import List
 
 from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.mongo.mongo_repository_base import MongoRepositoryBase
 
 
-class MongoBlueprintRepository(MongoRepositoryBase):
+class MongoBlueprintRepository(MongoRepositoryBase, DocumentRepository[Blueprint]):
     class Meta:
         model = Blueprint
 

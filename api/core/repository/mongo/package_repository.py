@@ -1,11 +1,11 @@
 from core.domain.dto import DTO
 from core.domain.package import Package
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.mongo.mongo_repository_base import MongoRepositoryBase
 from typing import List
-from core.repository.interface.package_repository import PackageRepository
 
 
-class MongoPackageRepository(MongoRepositoryBase, PackageRepository):
+class MongoPackageRepository(MongoRepositoryBase, DocumentRepository[Package]):
     class Meta:
         model = Package
 

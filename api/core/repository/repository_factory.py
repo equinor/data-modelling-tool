@@ -6,9 +6,10 @@ from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 # TODO: Make Enum
 from core.repository.mongo.package_repository import MongoPackageRepository
 from core.enums import DataSourceType, RepositoryType
+from core.rest import DataSource
 
 
-def get_repository(repository_type: RepositoryType, data_source):
+def get_repository(repository_type: RepositoryType, data_source: DataSource):
     if data_source.type == DataSourceType.MONGO.value:
         # Not sure if this is the correct place
         data_source = MongoDbClient(

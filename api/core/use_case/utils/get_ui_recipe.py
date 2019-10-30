@@ -4,8 +4,7 @@ from core.domain.ui_recipe import UIRecipe, DefaultUIRecipe
 
 def get_ui_recipe(blueprint, ui_recipe_name) -> UIRecipe:
     if blueprint is not None:
-        ui_recipe = blueprint.get_ui_recipe(ui_recipe_name)
-        if ui_recipe:
+        if ui_recipe := blueprint.get_ui_recipe(ui_recipe_name):  # noqa E203, E231, E701
             return UIRecipe(name=ui_recipe["name"], attributes=ui_recipe.get("attributes", []))
         else:
             if ui_recipe_name == "DEFAULT_CREATE":

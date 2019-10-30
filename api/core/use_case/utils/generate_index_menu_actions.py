@@ -139,7 +139,7 @@ def get_download_menu_action(data_source_id: str, document_id: str):
     }
 
 
-def get_node_on_select(data_source_id: str, document: Union[Blueprint, Package]):
+def get_node_on_select(data_source_id: str, document: DTO[Union[Blueprint, Package]]):
     return {
         "uid": document.uid,
         "title": document.name,
