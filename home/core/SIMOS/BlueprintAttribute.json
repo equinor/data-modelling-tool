@@ -54,6 +54,14 @@
     }
   ],
   "storageRecipes": [],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "EDIT",
+      "description": "",
+      "field": "attribute",
+      "attributes": []
+    }
+  ]
 }
 

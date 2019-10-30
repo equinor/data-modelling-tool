@@ -79,7 +79,7 @@
         },
         {
           "name": "attributes",
-          "uiRecipe": "DEFAULT_EDIT",
+          "uiRecipe": "EDIT",
           "options": [
             {
               "name": "orderable",
