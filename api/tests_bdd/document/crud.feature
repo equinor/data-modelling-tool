@@ -135,7 +135,7 @@ Feature: Document 2
                 "name":"sub_package_2"
              }
           ],
-          "isRoot":false,
+          "isRoot":true,
           "storageRecipes":[]
        }
     }

@@ -3,19 +3,24 @@ from typing import Union
 from flask import g
 
 from core.domain.blueprint import Blueprint
+from core.domain.dto import DTO
+from core.domain.index import DocumentNode
 from core.domain.package import Package
 from core.enums import DMT
 
 
-def get_update_document_menu_item(data_source_id: str, name: str, document_id: str):
+def get_update_document_menu_item(data_source_id: str, document: DTO, parent: DocumentNode):
     return {
         "label": "Rename",
         "action": "UPDATE",
         "data": {
             "url": f"/api/v2/explorer/move-file",
-            "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
+            "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
             "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/RenameAction",
-            "request": {"source": f"{data_source_id}/{name}", "destination": f"{data_source_id}/" + "${name}"},
+            "request": {
+                "source": f"{parent.start_path}/{document.name}",
+                "destination": f"{parent.start_path}/" + "${name}",
+            },
         },
     }
 

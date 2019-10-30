@@ -55,7 +55,7 @@ Feature: Explorer - Add file
             }
           ],
           "dependencies":[],
-          "isRoot":false,
+          "isRoot":true,
           "storageRecipes":[]
        }
     }
