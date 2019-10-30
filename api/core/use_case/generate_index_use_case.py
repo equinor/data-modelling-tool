@@ -28,6 +28,7 @@ from core.use_case.utils.generate_index_menu_actions import (
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
+from utils.group_by import group_by
 
 
 class Index:
@@ -177,8 +178,17 @@ class Tree:
         )
 
         # Runnable entities gets an custom action
-        if document.type == g.application_settings["runnable"]["input"]:
-            node.menu_items.append(get_runnable_menu_action(data_source_id=data_source_id, document_id=document.uid))
+        runnable_types = group_by(
+            items=g.application_settings["runnableModels"], grouping_function=lambda runnable: runnable["input"]
+        )
+
+        if document.type in runnable_types:
+            for runnable in runnable_types[document.type]:
+                node.menu_items.append(
+                    get_runnable_menu_action(
+                        data_source_id=data_source_id, document_id=document.uid, runnable=runnable
+                    )
+                )
 
         # Applications can be downloaded
         if document.type == SIMOS.APPLICATION.value:

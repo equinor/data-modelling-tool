@@ -1,7 +1,4 @@
 from typing import Union
-
-from flask import g
-
 from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
 from core.domain.package import Package
@@ -43,7 +40,7 @@ def get_dynamic_create_menu_item(
             "url": f"/api/v2/explorer/{data_source_id}/add-file",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": f"/api/v3/index/{data_source_id}",
-            "request": {"type": type, "parentId": parent_id, "attribute": attribute, "name": "${name}"},
+            "request": {"type": "${type}", "parentId": parent_id, "attribute": attribute, "name": "${name}"},
         },
     }
 
@@ -108,17 +105,14 @@ def get_contained_menu_action(data_source_id: str, name: str, url_type: str, typ
     }
 
 
-def get_runnable_menu_action(data_source_id: str, document_id: str):
+def get_runnable_menu_action(data_source_id: str, document_id: str, runnable: dict):
     return {
-        "label": f"Run {g.application_settings['runnable']['name']}",
+        "label": f"Run {runnable['name']}",
         "action": "RUNNABLE",
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
-            "prompt": {
-                "title": f"{g.application_settings['runnable']['name']}",
-                "content": f"{g.application_settings['runnable']['description']}",
-            },
-            "runnable": g.application_settings["runnable"],
+            "prompt": {"title": f"{runnable['name']}", "content": f"{runnable['description']}"},
+            "runnable": runnable,
             "documentId": document_id,
             "dataSourceId": data_source_id,
         },

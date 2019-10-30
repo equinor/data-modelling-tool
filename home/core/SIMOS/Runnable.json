@@ -30,8 +30,8 @@
     },
     {
       "type": "string",
-      "name": "function",
-      "description": "What are the function called inside runnable.tsx"
+      "name": "method",
+      "description": "What method to call inside runnable.tsx"
     }
   ]
 }

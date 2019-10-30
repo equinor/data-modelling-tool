@@ -11,11 +11,13 @@
   "entityModels": [
     "system/DMT/Package"
   ],
-  "runnable": {
-    "name": "Todo Runnable",
-    "description": "Get more work",
-    "input": "SSR-DataSource/TodoDemo/TodoList",
-    "output": "SSR-DataSource/TodoDemo/TodoList",
-    "function": "runnable.js"
-  }
+  "runnableModels": [
+    {
+      "name": "Todo Runnable",
+      "description": "Get more work",
+      "input": "SSR-DataSource/TodoDemo/TodoList",
+      "output": "SSR-DataSource/TodoDemo/TodoList",
+      "method": "todo"
+    }
+  ]
 }

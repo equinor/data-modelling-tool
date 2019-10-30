@@ -19,11 +19,20 @@
     "system/DMT/Package",
     "system/DMT/Entity"
   ],
-  "runnable": {
-    "name": "Todo Runnable",
-    "description": "Get and store all todos",
-    "input": "SSR-DataSource/TodoDemo/TodoList",
-    "output": "SSR-DataSource/TodoDemo/TodoList",
-    "function": "runnable.js"
-  }
+  "runnableModels": [
+    {
+      "name": "Todo Runnable",
+      "description": "Get and store all todos",
+      "input": "SSR-DataSource/TodoDemo/TodoList",
+      "output": "SSR-DataSource/TodoDemo/TodoList",
+      "method": "GET_TODO_LIST"
+    },
+    {
+      "name": "Measurement Runnable",
+      "description": "Get and store temperature data",
+      "input": "SSR-DataSource/MeasurementDemo/MeasurementList",
+      "output": "SSR-DataSource/MeasurementDemo/MeasurementList",
+      "method": "GET_MEASUREMENTS"
+    }
+  ]
 }

@@ -42,14 +42,9 @@
     },
     {
       "type": "system/SIMOS/Runnable",
-      "name": "runnable",
-      "description": "Runnable recipe"
-    },
-    {
-      "type": "system/SIMOS/ApplicationSetting",
-      "name": "settings",
-      "dimensions": "*",
-      "description": "Application settings"
+      "name": "runnableModels",
+      "description": "Runnable models",
+      "dimensions": "*"
     }
   ]
 }
