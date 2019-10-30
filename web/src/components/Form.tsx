@@ -70,7 +70,6 @@ export default ({
           console.error(e)
         }
       }}
-      onChange={log('change')}
       onError={log('errors')}
     />
   )
