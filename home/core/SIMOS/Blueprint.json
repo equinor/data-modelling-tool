@@ -110,6 +110,10 @@
           "contained": false
         },
         {
+          "name": "type",
+          "contained": false
+        },
+        {
           "name": "storageRecipes",
           "contained": false
         },
