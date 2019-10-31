@@ -27,16 +27,16 @@
       "optional": false
     },
     {
-      "type": "boolean",
-      "name": "optional",
-      "default": false,
-      "optional": true
-    },
-    {
       "type": "string",
       "name": "dimensions",
       "optional": true,
       "default": ""
+    },
+    {
+      "type": "boolean",
+      "name": "optional",
+      "default": false,
+      "optional": true
     },
     {
       "name": "contained",
