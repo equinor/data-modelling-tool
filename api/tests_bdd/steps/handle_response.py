@@ -3,6 +3,9 @@ import json
 from deepdiff import DeepDiff
 from utils.data_structure.traverse import traverse_compare
 import pprint
+from pygments import highlight
+from pygments.lexers import JsonLexer
+from pygments.formatters import TerminalFormatter
 
 STATUS_CODES = {
     "OK": 200,
@@ -14,6 +17,11 @@ STATUS_CODES = {
     "Conflict": 409,
     "System Error": 500,
 }
+
+
+def print_pygments(json_object):
+    json_str = json.dumps(json_object, indent=2, sort_keys=True)
+    print(highlight(json_str, JsonLexer(), TerminalFormatter()))
 
 
 @then('the response status should be "{status}"')
@@ -44,28 +52,33 @@ def step_impl_equal(context):
 
 
 def pretty_eq(expected, actual):
-    pp = pprint.PrettyPrinter(indent=2)
-    a = traverse_compare(expected, actual)
-    b = []
-    default_print = "\n {} != {}".format(pp.pformat(a), pp.pformat(b))
-    pretty_print = "\n Actual: \n {} \n Expected: \n {}".format(pp.pformat(actual), pp.pformat(expected))
-    msg = "{} \n {}".format(default_print, pretty_print)
-    if a != b:
-        print(msg)
-    assert a == b
+    try:
+        a = traverse_compare(expected, actual)
+        b = []
+        if a != b:
+            print("Actual:")
+            print_pygments(actual)
+            print("Expected:")
+            print_pygments(expected)
+            print("Differences:")
+            print_pygments(a)
+        assert a == b
+    except KeyError:
+        print_pygments(actual)
+        raise Exception
+    except IndexError:
+        print_pygments(actual)
+        raise Exception
+    except Exception:
+        raise Exception
 
 
 @then("the response should contain")
 def step_impl_contain(context):
     actual = context.response_json
-    print(actual)
     data = context.text or context.data
     expected = json.loads(data)
-    try:
-        pretty_eq(expected, actual)
-    except Exception:
-        assert actual == expected
-
+    pretty_eq(expected, actual)
 
 @then("the response should be")
 def step_impl_should_be(context):
