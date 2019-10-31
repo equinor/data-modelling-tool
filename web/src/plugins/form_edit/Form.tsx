@@ -9,19 +9,19 @@ import {
   setupTypeAndRecipe,
 } from '../pluginUtils'
 import { AttributeWidget } from '../../components/widgets/Attribute'
+import { ReadOnly } from './fields/ReadOnly'
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void
 }
 
+//todo plugin property?
+const splitForms = false
+
 export const EditPlugin = (props: Props) => {
   const uiRecipe = findRecipe(props.parent, props.name)
-  const splitForms = getSplitForms(props.parent, props.blueprint, uiRecipe)
-  const configs: FormConfig[] = createFormConfigs(
-    props,
-    true || splitForms,
-    uiRecipe
-  )
+  //const splitForms = getSplitForms(props.parent, props.blueprint, uiRecipe)
+  const configs: FormConfig[] = createFormConfigs(props, splitForms, uiRecipe)
   return (
     <div>
       {configs.map((config: any, index: number) => {
@@ -41,6 +41,7 @@ export const EditPlugin = (props: Props) => {
                   <AttributeWidget {...props} attributes={attributes} />
                 ),
                 hidden: () => <div />,
+                readonly: ReadOnly,
               }}
               onSubmit={props.onSubmit}
             />

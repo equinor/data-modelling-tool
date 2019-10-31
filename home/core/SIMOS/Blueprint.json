@@ -152,6 +152,9 @@
           "name": "description",
           "widget": "textarea"
         },
+        { "name":  "type",
+          "field": "readonly"
+        },
         {
           "name": "attributes",
           "field": "attribute"
