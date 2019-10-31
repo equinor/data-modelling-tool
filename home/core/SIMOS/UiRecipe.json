@@ -30,7 +30,6 @@
     {
       "type": "system/SIMOS/UiAttribute",
       "name": "attributes",
-      "field": "attribute",
       "dimensions": "*",
       "contained": true
     }
