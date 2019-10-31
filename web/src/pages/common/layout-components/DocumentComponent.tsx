@@ -10,6 +10,7 @@ import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
 import { EditPlugin, ViewPlugin, PlotPlugin } from '../../../plugins'
+import { LayoutContext } from '../golden-layout/LayoutContext'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -58,10 +59,16 @@ const View = (props: any) => {
 
     case RegisteredPlugins.EDIT_PLUGIN:
       return (
-        <EditPlugin
-          {...pluginProps}
-          onSubmit={onFormSubmit({ attribute: null, dataUrl })}
-        />
+        <LayoutContext.Consumer>
+          {(layout: any) => {
+            return (
+              <EditPlugin
+                {...pluginProps}
+                onSubmit={onFormSubmit({ attribute: null, dataUrl, layout })}
+              />
+            )
+          }}
+        </LayoutContext.Consumer>
       )
 
     case RegisteredPlugins.PLOT:

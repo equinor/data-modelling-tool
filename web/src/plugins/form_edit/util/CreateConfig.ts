@@ -30,11 +30,11 @@ export type FormConfig = {
 }
 
 export function createFormConfigs(
-  pluginImport: PluginProps,
+  pluginProps: PluginProps,
   splitForms: boolean,
   uiRecipe: any
 ): FormConfig[] {
-  const { parent, blueprint, children } = pluginImport
+  const { parent, blueprint, children } = pluginProps
   const parentAttributes = parent.attributes.filter(
     filterUiNotContained(uiRecipe)
   )
@@ -45,7 +45,7 @@ export function createFormConfigs(
         attribute,
         data: getDataByAttribute(blueprint, attribute),
         template: generateTemplateByProperty(parent, children, attribute.name),
-        uiSchema: generateUiSchemaByProperty(parent, attribute, uiRecipe),
+        uiSchema: generateUiSchemaByProperty(pluginProps, attribute, uiRecipe),
       }
     })
   }
@@ -55,7 +55,7 @@ export function createFormConfigs(
       attribute: null,
       data: setDefaults(parent, blueprint),
       template: generateTemplate(parent.attributes, children),
-      uiSchema: generateUiSchema(parent, uiRecipe),
+      uiSchema: generateUiSchema(pluginProps, uiRecipe),
     },
   ]
 }

@@ -1,4 +1,4 @@
-import { Blueprint, BlueprintAttribute } from './types'
+import { Blueprint, BlueprintAttribute, PluginProps } from './types'
 
 /**
  * Utility function for working with blueprints and recipes.
@@ -98,4 +98,44 @@ export function filterUiNotContained(uiRecipeParent: Blueprint) {
     }
     return true
   }
+}
+
+type TypeAndRecipe = {
+  uiRecipe: any
+  uiAttributeType: Blueprint | undefined
+}
+/**
+ *
+ * @param pluginProps
+ */
+export function setupTypeAndRecipe(pluginProps?: PluginProps): TypeAndRecipe {
+  const widget = 'attribute'
+  const empty = { uiRecipe: {}, uiAttributeType: undefined }
+  if (!pluginProps) {
+    return empty
+  }
+  const { parent, children, name } = pluginProps
+  const uiRecipe = pluginProps && findRecipe(parent, name)
+  let uiAttributeType: any = {}
+
+  if (!uiRecipe) {
+    return empty
+  }
+  const uiAttributes = uiRecipe.attributes.filter(
+    (uiAttribute: any) => uiAttribute.field === widget
+  )
+  if (uiAttributes.length > 0) {
+    const uiAttribute = uiAttributes[0]
+    // find attribute which is using the field property in uiAttribute.
+    const parentAttribute = parent.attributes.find(
+      (attribute: BlueprintAttribute) => {
+        return attribute.name === uiAttribute.name
+      }
+    )
+    if (parentAttribute && !isPrimitive(parentAttribute.type)) {
+      uiAttributeType = getBlueprintFromType(children, parentAttribute.type)
+    } else {
+    }
+  }
+  return { uiRecipe, uiAttributeType }
 }

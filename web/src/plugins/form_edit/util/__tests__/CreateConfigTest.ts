@@ -4,16 +4,7 @@ import blueprint from './blueprint_test.json'
 
 describe.skip('CreateFormConfig', () => {
   let configs: FormConfig[] = []
-  beforeEach(() => {
-    configs = createFormConfigs(blueprint, car)
-  })
+  beforeEach(() => {})
 
-  it('should have config for attributes', () => {
-    const config: FormConfig | undefined = configs.find(
-      config => config.attribute.name === 'attributes'
-    )
-    if (config) {
-      console.log(config.template)
-    }
-  })
+  it('should have config for attributes', () => {})
 })
