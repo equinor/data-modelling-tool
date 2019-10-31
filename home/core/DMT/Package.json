@@ -62,6 +62,14 @@
           "widget": "hidden"
         },
         {
+          "name": "type",
+          "contained": false
+        },
+        {
+          "name": "attributes",
+          "contained": false
+        },
+        {
           "name": "content",
           "contained": false
         }

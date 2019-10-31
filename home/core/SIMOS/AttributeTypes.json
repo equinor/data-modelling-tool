@@ -7,7 +7,7 @@
     "integer",
     "number",
     "boolean",
-    "local-blueprints-equinor/collections/blueprint"
+    "system/SIMOS/Blueprint"
   ],
   "labels": [
     "String",
