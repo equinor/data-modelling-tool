@@ -67,6 +67,12 @@
       "dimensions": "*",
       "contained": true,
       "optional": true
+    },
+    {
+      "type": "boolean",
+      "name": "disabled",
+      "default": false,
+      "optional": true
     }
   ]
 }

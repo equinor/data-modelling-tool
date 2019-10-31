@@ -10,13 +10,17 @@ def find_attribute(name: str, attributes: List):
 
 
 def get_attribute_config(attribute):
+    config = {}
+
+    if "disabled" in attribute:
+        config["ui:readonly"] = attribute["disabled"]
     if "widget" in attribute:
-        return {"ui:widget": attribute["widget"]}
+        config["ui:widget"] = attribute["widget"]
     if "field" in attribute:
-        result = {"ui:field": attribute["field"]}
+        config["ui:field"] = attribute["field"]
         if attribute["field"] == "collapsible":
-            result["collapse"] = {"field": "ObjectField"}
-        return result
+            config["collapse"] = {"field": "ObjectField"}
+    return config
 
 
 def process_attributes(attribute_name: str, attribute_type: str, attribute_dimensions: str, ui_attributes):
