@@ -70,6 +70,10 @@
       "description": "",
       "attributes": [
         {
+          "name": "type",
+          "disabled": true
+        },
+        {
           "name": "description",
           "widget": "textarea"
         },
