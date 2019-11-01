@@ -66,28 +66,30 @@ Feature: Document - Generate JSON Schema
                    "description":"Models that are available to create in entity page"
                 }
              },
-             "runnable":{
-                "type":"object",
-                "properties":{
-                   "name":{
-                      "type":"string"
-                   },
-                   "description":{
-                      "type":"string"
-                   },
-                   "input":{
-                      "type":"string",
-                      "description":""
-                   },
-                   "output":{
-                      "type":"string",
-                      "description":""
-                   },
-                   "function":{
-                      "type":"string",
-                      "description":"What are the function called inside runnable.tsx"
-                   }
-                }
+             "runnableModels":{
+               "type": "array",
+               "items" : {
+                  "type":"object",
+                  "properties":{
+                     "name":{
+                        "type":"string"
+                     },
+                     "description":{
+                        "type":"string"
+                     },
+                     "input":{
+                        "type":"string",
+                        "description":""
+                     },
+                     "output":{
+                        "type":"string",
+                        "description":""
+                     },
+                     "method":{
+                        "type":"string"
+                     }
+                  }
+               }
              }
           }
        },
