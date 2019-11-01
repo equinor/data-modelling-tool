@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
-import Modal from '../modal/Modal'
+import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import { NodeType } from '../../api/types'
+import Modal from '../../components/modal/Modal'
 import { BlueprintPickerContent } from '../../pages/common/BlueprintPicker'
-import { TreeNodeRenderProps } from '../tree-view/TreeNode'
 
 type Props = {
   onChange: (event: any) => void

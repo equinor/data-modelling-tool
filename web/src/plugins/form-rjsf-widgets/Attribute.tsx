@@ -8,8 +8,8 @@ import {
 } from './AttributeInputs'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BlueprintAttribute } from '../../plugins/types'
-import { isPrimitive } from '../../plugins/pluginUtils'
+import { BlueprintAttribute } from '../types'
+import { isPrimitive } from '../pluginUtils'
 
 const AttributeGroup = styled.div`
   border: 1px solid;

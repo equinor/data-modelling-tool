@@ -1,15 +1,15 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
 import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
-import { createFormConfigs, FormConfig } from './util/CreateConfig'
+import { createFormConfigs, FormConfig } from './CreateConfig'
 import {
   findRecipe,
   findUiAttribute,
   isPrimitive,
   setupTypeAndRecipe,
 } from '../pluginUtils'
-import { AttributeWidget } from '../../components/widgets/Attribute'
-import { ReadOnly } from './fields/ReadOnly'
+import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
+import { ReadOnly } from '../form-rjsf-widgets/ReadOnly'
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void

@@ -2,12 +2,12 @@ import {
   generateTemplate,
   generateTemplateByProperty,
 } from './GenerateTemplate'
-import { Blueprint, BlueprintAttribute, PluginProps } from '../../types'
+import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
 import {
   generateUiSchema,
   generateUiSchemaByProperty,
 } from './GenerateUiSchema'
-import { filterUiNotContained, getDefaults } from '../../pluginUtils'
+import { filterUiNotContained, getDefaults } from '../pluginUtils'
 
 interface JsonSchema {
   type: string

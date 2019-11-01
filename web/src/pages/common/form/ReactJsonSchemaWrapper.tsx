@@ -1,11 +1,11 @@
 import React from 'react'
-import DefaultEditForm from '../../../plugins/form/DefaultEditForm'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import FetchDocument from '../utils/FetchDocument'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { DefaultView } from '../../../plugins/view/ViewPlugin'
+import { DefaultEditForm } from '../../../plugins'
 
 interface Props {
   dataUrl: string

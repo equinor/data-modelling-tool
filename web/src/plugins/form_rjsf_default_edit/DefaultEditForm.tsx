@@ -3,8 +3,8 @@ import Form from 'react-jsonschema-form'
 import {
   AttributeWidget,
   blueprintAttributes,
-} from '../../components/widgets/Attribute'
-import { CollapsibleField } from '../../components/widgets/CollapsibleField'
+} from '../form-rjsf-widgets/Attribute'
+import { CollapsibleField } from '../widgets/CollapsibleField'
 
 interface Props {
   document: any

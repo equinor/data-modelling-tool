@@ -1,8 +1,8 @@
-import DocumentFinderWidget from './DocumentFinderWidget'
 import React from 'react'
 import styled from 'styled-components'
 import { ArrayType, DataType } from './Attribute'
 import Switch from 'react-switch'
+import DocumentFinderWidget from './DocumentFinderWidget'
 
 const AttributeWrapper = styled.div`
   margin: 2px 2px;
