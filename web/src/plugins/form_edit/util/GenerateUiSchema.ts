@@ -1,6 +1,6 @@
-import { Blueprint, BlueprintAttribute, PluginProps } from '../../types'
+import { BlueprintAttribute, PluginProps } from '../../types'
 import { findUiAttribute } from '../../pluginUtils'
-import { getWidgetAttributes } from '../Form'
+import { getWidgetAttributes } from '../EditForm'
 
 type UiSchemaProperty = {
   items?: any
