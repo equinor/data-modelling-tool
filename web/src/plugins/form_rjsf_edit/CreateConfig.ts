@@ -34,8 +34,8 @@ export function createFormConfigs(
   splitForms: boolean,
   uiRecipe: any
 ): FormConfig[] {
-  const { parent, blueprint, children } = pluginProps
-  const parentAttributes = parent.attributes.filter(
+  const { blueprint, document, blueprints } = pluginProps
+  const parentAttributes = blueprint.attributes.filter(
     filterUiNotContained(uiRecipe)
   )
 
@@ -43,8 +43,8 @@ export function createFormConfigs(
     return parentAttributes.map((attribute: BlueprintAttribute) => {
       return {
         attribute,
-        data: getDataByAttribute(blueprint, attribute),
-        template: generateTemplateByProperty(parent, children, attribute.name),
+        data: getDataByAttribute(document, attribute),
+        template: generateTemplateByProperty(blueprint, blueprints, attribute.name),
         uiSchema: generateUiSchemaByProperty(pluginProps, attribute, uiRecipe),
       }
     })
@@ -53,20 +53,20 @@ export function createFormConfigs(
   return [
     {
       attribute: null,
-      data: setDefaults(parent, blueprint),
-      template: generateTemplate(parent.attributes, children),
+      data: setDefaults(blueprint, document),
+      template: generateTemplate(blueprint.attributes, blueprints),
       uiSchema: generateUiSchema(pluginProps, uiRecipe),
     },
   ]
 }
 
 function getDataByAttribute(
-  blueprint: Blueprint,
+  document: Blueprint,
   attribute: BlueprintAttribute
 ) {
   const defaultValue = attribute.default || getDefaults(attribute)
   return {
-    [attribute.name]: (blueprint as any)[attribute.name] || defaultValue,
+    [attribute.name]: (document as any)[attribute.name] || defaultValue,
   }
 }
 

@@ -6,9 +6,10 @@ import {
 } from '../form-rjsf-widgets/Attribute'
 import { CollapsibleField } from '../widgets/CollapsibleField'
 import DocumentFinderWidget from "../form-rjsf-widgets/DocumentFinderWidget";
+import {Blueprint} from "../types";
 
 interface Props {
-  document: any
+  document: Blueprint | {}
   template: any
   onSubmit: (data: any) => void
 }
@@ -27,6 +28,7 @@ export default ({ document, template, onSubmit }: Props) => {
       formData={data}
       schema={schema}
       uiSchema={uiSchema}
+      //@ts-ignore
       fields={{
         attribute: AttributeWidget,
         collapsible: CollapsibleField,

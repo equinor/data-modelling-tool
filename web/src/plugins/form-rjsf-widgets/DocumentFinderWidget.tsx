@@ -7,12 +7,12 @@ import { BlueprintPickerContent } from '../../pages/common/BlueprintPicker'
 type Props = {
   onChange: (event: any) => void
   value: string
-  formData: any
+  attributeInput: any
 }
 
-export default (props: any) => {
+export default (props: Props) => {
   const { value, onChange, attributeInput } = props
-  const [blueprint, setBlueprint] = useState(value)
+  const [documentType, setDocumentType] = useState(value)
   const [showModal, setShowModal] = useState(false)
 
   const handleNodeSelect = (renderProps: TreeNodeRenderProps) => {
@@ -20,7 +20,7 @@ export default (props: any) => {
     // TODO: This is now true for all nodes?\
     if (node.nodeType === NodeType.DOCUMENT_NODE) {
       const selectedNodePath = `${renderProps.path}/${node.title}`
-      setBlueprint(selectedNodePath)
+      setDocumentType(selectedNodePath)
       setShowModal(false)
 
       if (attributeInput) {
@@ -36,7 +36,7 @@ export default (props: any) => {
       <input
         style={{ width: '100%' }}
         type="string"
-        value={blueprint}
+        value={documentType}
         onChange={() => {}}
         onClick={() => setShowModal(!showModal)}
       />

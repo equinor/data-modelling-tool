@@ -19,8 +19,8 @@ interface Props extends PluginProps {
 const splitForms = false
 
 export const EditPlugin = (props: Props) => {
-  const uiRecipe = findRecipe(props.parent, props.name)
-  //const splitForms = getSplitForms(props.parent, props.blueprint, uiRecipe)
+  const uiRecipe = findRecipe(props.blueprint, props.name)
+  //const splitForms = getSplitForms(props.blueprint, props.document, uiRecipe)
   const configs: FormConfig[] = createFormConfigs(props, splitForms, uiRecipe)
   return (
     <div>

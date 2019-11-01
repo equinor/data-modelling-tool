@@ -5,7 +5,7 @@ import { generateUiSchema } from '../GenerateUiSchema'
 
 describe.skip('Generate uiSchema', () => {
   it('should generate uiSchema for a car', () => {
-    // const uiSchema = generateUiSchema({parent, blueprint, children: [], name: 'EDIT'}, 'EDIT')
+    // const uiSchema = generateUiSchema({blueprint, document, children: [], name: 'EDIT'}, 'EDIT')
     // expect((uiSchema as any)['description']).toEqual({
     //   'ui:widget': 'textarea',
     // })

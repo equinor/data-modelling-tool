@@ -21,7 +21,7 @@ export type Blueprint = {
 
 export type PluginProps = {
   name: string
-  parent: Blueprint
   blueprint: Blueprint
-  children: Blueprint[]
+  document: Blueprint
+  blueprints: Blueprint[]
 }

@@ -207,6 +207,7 @@ export const AttributeWidget = (props: Props) => {
   )
 }
 
+//fallback when blueprint and blueprints cant be used.
 function getBooleanValue(
   name: string,
   blueprintAttribute: BlueprintAttribute,
@@ -221,7 +222,7 @@ function getBooleanValue(
 
 //fallback when parent and children cant be used.
 // works only for properties of blueprintAttribue.
-//@todo pass parent and children from client code. Otherwise, remember to update this list whenever the BlueprintAttribute.json changes.
+//@todo pass blueprint and blueprints from client code. Otherwise, remember to update this list whenever the BlueprintAttribute.json changes.
 export const blueprintAttributes: BlueprintAttribute[] = [
   {
     type: 'string',

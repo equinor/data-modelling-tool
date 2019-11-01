@@ -9,7 +9,7 @@ type Props = {
 }
 
 /**
- * A widget available on the attribute level. Use another plugin if the entire blueprint should be presented as a table.
+ * A widget available on the attribute level. Use another plugin if the entire document should be presented as a table.
  * Supports arrays only. Properties with dimension *
  *
  * @param blueprint
