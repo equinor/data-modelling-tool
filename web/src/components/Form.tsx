@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import DefaultEditForm from '../plugins/form/DefaultEditForm'
+import { DefaultEditForm } from '../plugins'
 
 export interface FormProps {
   fetchDocument?: any

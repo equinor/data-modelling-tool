@@ -1,7 +1,4 @@
-import React, { useState } from 'react'
-import Form from 'react-jsonschema-form'
-import { AttributeWidget } from '../../components/widgets/Attribute'
-import { CollapsibleField } from '../../components/widgets/CollapsibleField'
+import React from 'react'
 import { Blueprint } from '../types'
 // @ts-ignore
 import { VictoryTheme, VictoryChart, VictoryLine } from 'victory'
@@ -28,8 +25,6 @@ export const PlotPlugin = (props: Props) => {
       y: item[uiRecipe.options.y],
     }
   })
-
-  console.log(data)
 
   return (
     <VictoryChart theme={VictoryTheme.material}>

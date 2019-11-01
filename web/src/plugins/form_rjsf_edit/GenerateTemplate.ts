@@ -1,10 +1,10 @@
-import { Blueprint, BlueprintAttribute } from '../../types'
+import { Blueprint, BlueprintAttribute } from '../types'
 import { JsonSchemaArray, JsonSchemaObject } from './CreateConfig'
 import {
   getBlueprintFromType,
   isPrimitive,
   parseAttributeDefault,
-} from '../../pluginUtils'
+} from '../pluginUtils'
 
 export function generateTemplate(
   attributes: BlueprintAttribute[],
