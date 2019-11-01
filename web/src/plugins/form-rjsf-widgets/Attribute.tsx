@@ -66,7 +66,11 @@ export const AttributeWidget = (props: Props) => {
   }
 
   const onChangeBool = (name: string) => {
-    return (value: boolean) => {
+    return (value: boolean | string) => {
+      // default is of type string, must be 'true' or 'false'
+      if (name === 'default') {
+        value = value + ''
+      }
       let newFormData = { ...formData, [name]: value }
       setFormData(newFormData)
       props.onChange(newFormData)
@@ -99,11 +103,11 @@ export const AttributeWidget = (props: Props) => {
   ]
 
   //@todo add order in uiRecipe to change order of elements in the widget.
+  const selectedType = isPrimitive ? type : DataType.BLUEPRINT
 
   const TypeWrapper = (props: any) => {
     const type: string = formData.type
     const isPrimitive = primitives.includes(type)
-    const selectedType = isPrimitive ? type : DataType.BLUEPRINT
     const { onChange, attribute } = props
     const value = type === DataType.BLUEPRINT ? '' : type
     return (
@@ -114,6 +118,14 @@ export const AttributeWidget = (props: Props) => {
     )
   }
 
+  /**
+   * Decision on the render code.
+   * Trade off simplicity instead of complexity
+   * Cons: nested if else in switch cases.
+   * Pros: avoid lots of props passed to a component handling type string
+   *
+   * Consider refactor type string to a component handling different subcases.
+   */
   return (
     <AttributeGroup>
       {attributes.map((blueprintAttribute: BlueprintAttribute) => {
@@ -143,6 +155,24 @@ export const AttributeWidget = (props: Props) => {
                   />
                 </span>
               )
+            } else if (
+              name === 'default' &&
+              selectedType === DataType.BLUEPRINT
+            ) {
+              return null
+            } else if (
+              name === 'default' &&
+              selectedType === DataType.BOOLEAN
+            ) {
+              return (
+                <span key={name}>
+                  <BoolDefaultInput
+                    label={name}
+                    value={getBooleanValue(name, blueprintAttribute, formData)}
+                    onChange={onChangeBool(name)}
+                  />
+                </span>
+              )
             } else {
               return (
                 <span key={name}>
@@ -155,16 +185,11 @@ export const AttributeWidget = (props: Props) => {
               )
             }
           case 'boolean':
-            let booleanValue = (formData as any)[name]
-            if (booleanValue === undefined) {
-              booleanValue =
-                blueprintAttribute.default === 'false' ? false : true
-            }
             return (
               <span key={name}>
                 <BoolDefaultInput
                   label={name}
-                  value={booleanValue}
+                  value={getBooleanValue(name, blueprintAttribute, formData)}
                   onChange={onChangeBool(name)}
                 />
               </span>
@@ -180,6 +205,18 @@ export const AttributeWidget = (props: Props) => {
       })}
     </AttributeGroup>
   )
+}
+
+function getBooleanValue(
+  name: string,
+  blueprintAttribute: BlueprintAttribute,
+  formData: any
+) {
+  let booleanValue = (formData as any)[name]
+  if (booleanValue === undefined) {
+    booleanValue = blueprintAttribute.default === 'false' ? false : true
+  }
+  return booleanValue
 }
 
 //fallback when parent and children cant be used.
