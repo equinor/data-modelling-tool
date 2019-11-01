@@ -1,10 +1,11 @@
 import React from 'react'
-import ReactJsonSchemaPlugin from '../../../plugins/form/Form'
+import DefaultEditForm from '../../../plugins/form/DefaultEditForm'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import FetchDocument from '../utils/FetchDocument'
 import { LayoutContext } from '../golden-layout/LayoutContext'
+import { DefaultView } from '../../../plugins/view/ViewPlugin'
 
 interface Props {
   dataUrl: string
@@ -49,7 +50,7 @@ const ReactJsonSchemaWrapper = (props: Props) => {
             url={`${schemaUrl}?ui_recipe=${uiRecipe}`}
             render={(data: any) => {
               return (
-                <ReactJsonSchemaPlugin
+                <DefaultEditForm
                   document={document}
                   template={data}
                   onSubmit={onFormSubmit({ attribute, dataUrl, layout })}
@@ -60,15 +61,6 @@ const ReactJsonSchemaWrapper = (props: Props) => {
         )
       }}
     </LayoutContext.Consumer>
-
-    // <>
-    //   <h3>Edit Blueprint</h3>
-    //   <ReactJsonSchemaPlugin
-    //     template={template}
-    //     document={document}
-    //     onSubmit={onSubmit}
-    //   />
-    // </>
   )
 }
 

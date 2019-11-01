@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import Form from 'react-jsonschema-form'
-import DocumentFinderWidget from './widgets/DocumentFinderWidget'
-import { AttributeWidget } from './widgets/Attribute'
+import DefaultEditForm from '../plugins/form/DefaultEditForm'
 
 export interface FormProps {
   fetchDocument?: any
@@ -10,11 +8,7 @@ export interface FormProps {
 }
 
 const log = (type: any) => console.log.bind(console, type)
-export default ({
-  onSubmit,
-  fetchDocument,
-  selectedUiSchema = 'DEFAULT',
-}: FormProps) => {
+export default ({ onSubmit, fetchDocument }: FormProps) => {
   const [loading, setLoading] = useState<boolean | null>(null)
   const [documentData, setDocumentData] = useState({
     document: {},
@@ -42,28 +36,16 @@ export default ({
     return <div>Loading...</div>
   }
 
-  // @ts-ignore
-  const schema = documentData.template.schema
-  // @ts-ignore
-  const uiSchema = documentData.template.uiSchema
-
+  const document = documentData.hasOwnProperty('document')
+    ? // @ts-ignore
+      documentData.document || {}
+    : {}
   // @ts-ignore
   return (
-    <Form
-      formData={
-        documentData.hasOwnProperty('document')
-          ? // @ts-ignore
-            documentData.document || {}
-          : {}
-      }
+    <DefaultEditForm
+      document={document}
+      template={documentData.template}
       // @ts-ignore
-      schema={schema}
-      // TODO: A proper select-uiSchema-system
-      fields={{
-        type: DocumentFinderWidget,
-        attribute: AttributeWidget,
-      }}
-      uiSchema={uiSchema}
       onSubmit={schemas => {
         const formData: any = schemas.formData
         try {
@@ -73,7 +55,6 @@ export default ({
           console.error(e)
         }
       }}
-      onError={log('errors')}
     />
   )
 }
