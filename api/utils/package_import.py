@@ -14,6 +14,7 @@ from utils.logging import logger
 def _add_documents(path, documents, collection) -> List[Dict]:
     docs = []
     for file in documents:
+        logger.info(f"Working on {file}...")
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
         if data["type"] == SIMOS.BLUEPRINT.value:
