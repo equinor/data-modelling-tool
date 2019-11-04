@@ -11,6 +11,12 @@
     {
       "name": "type",
       "type": "string"
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "default": "",
+      "optional": true
     }
   ],
   "storageRecipes": [],
