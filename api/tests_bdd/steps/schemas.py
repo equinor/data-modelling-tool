@@ -1,12 +1,17 @@
 import json
 
 from behave import given, when, then
+
+from classes.data_source import DataSource
+from core.domain.dto import DTO
 from core.domain.schema import Factory
+from core.enums import RepositoryType
 from core.repository.file.document_repository import TemplateRepositoryFromFile
+from core.repository.interface.document_repository import DocumentRepository
+from core.repository.repository_factory import get_repository
 from tests_bdd.steps.handle_response import pretty_eq
 from utils.helper_functions import schemas_location
 from config import Config
-from services.database import data_modelling_tool_db
 from utils.package_import import import_package
 
 
@@ -16,10 +21,12 @@ def step_impl(context):
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
 
 
-@given('there exist document with id "{uid}" in data source "{collection}"')
-def step_impl_2(context, uid: str, collection: str):
-    document = json.loads(context.text)
-    data_modelling_tool_db[collection].replace_one({"_id": uid}, document, upsert=True)
+@given('there exist document with id "{uid}" in data source "{data_source_id}"')
+def step_impl_2(context, uid: str, data_source_id: str):
+    data_source = DataSource(id=data_source_id)
+    document: DTO[dict] = DTO(uid=uid, data=json.loads(context.text))
+    document_repository: DocumentRepository = get_repository(RepositoryType.DocumentRepository, data_source)
+    document_repository.add(document)
 
 
 @when('I create a Python class from the template "{template_name}"')

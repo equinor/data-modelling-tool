@@ -8,7 +8,7 @@ Feature: Document 2
       | db   | 27017 | maf      | maf      | false | test-source-name | dmt      | test       | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system           | dmt      | system     | system       | mongo-db |
 
-    Given there exist document with id "1" in data source "test"
+    Given there exist document with id "1" in data source "test-source-name"
     """
     {
         "name": "TestData",
@@ -31,7 +31,7 @@ Feature: Document 2
     }
     """
 
-    Given there exist document with id "2" in data source "test"
+    Given there exist document with id "2" in data source "test-source-name"
     """
     {
       "type": "system/SIMOS/Blueprint",
@@ -54,7 +54,7 @@ Feature: Document 2
     }
     """
 
-    Given there exist document with id "3" in data source "test"
+    Given there exist document with id "3" in data source "test-source-name"
     """
     {
       "type": "system/SIMOS/Blueprint",
