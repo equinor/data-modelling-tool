@@ -12,7 +12,7 @@ type UiSchemaProperty = {
 export function generateUiSchema(pluginProps: PluginProps, uiRecipe: any) {
   const uiSchema = {}
   if (uiRecipe) {
-    pluginProps.parent.attributes.forEach(
+    pluginProps.blueprint.attributes.forEach(
       (parentAttribute: BlueprintAttribute) => {
         const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
         if (uiAttribute) {
@@ -36,10 +36,10 @@ export function generateUiSchema(pluginProps: PluginProps, uiRecipe: any) {
 }
 
 /**
- * Adapter for blueprint to rsjf uiSchema.
+ * Adapter for document to rsjf uiSchema.
  * https://department-of-veterans-affairs.github.io/veteran-facing-services-tools/forms/about-the-schema-and-uischema-objects/
  *
- * @param blueprint
+ * @param document
  * @param parentAttribute
  * @param uiRecipe
  */

@@ -8,17 +8,17 @@ import objectPath from 'object-path'
 
 interface Props {
   name: string
-  parent: Blueprint
   blueprint: Blueprint
-  children: Blueprint[]
+  document: Blueprint
+  blueprints: Blueprint[]
 }
 
 export const PlotPlugin = (props: Props) => {
-  const { name, parent, blueprint, children } = props
+  const { name, blueprint, document, blueprints } = props
 
-  const uiRecipe = findRecipe(props.parent, props.name)
+  const uiRecipe = findRecipe(blueprint, props.name)
 
-  const items = objectPath.get(blueprint, uiRecipe.options.property)
+  const items = objectPath.get(document, uiRecipe.options.property)
   const data = items.map((item: any) => {
     return {
       x: item[uiRecipe.options.x],

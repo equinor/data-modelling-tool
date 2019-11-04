@@ -11,11 +11,11 @@ enum ViewWidgets {
   TABLE_WIDGET = 'table.widget',
 }
 
-export const ViewPlugin = ({ parent, blueprint }: PluginProps) => {
-  const widgets = parent.attributes.map(
+export const ViewPlugin = ({ blueprint, document }: PluginProps) => {
+  const widgets = blueprint.attributes.map(
     (parentAttribute: BlueprintAttribute, index: number) => {
-      const plugin = getPluginOfAttribute(parent.uiRecipes, parentAttribute)
-      const attribute = (blueprint as any)[parentAttribute.name]
+      const plugin = getPluginOfAttribute(blueprint.uiRecipes, parentAttribute)
+      const attribute = (document as any)[parentAttribute.name]
       const key = `${plugin}-${index}`
       switch (plugin) {
         case ViewWidgets.VIEW_WIDGET:
@@ -24,7 +24,7 @@ export const ViewPlugin = ({ parent, blueprint }: PluginProps) => {
           return (
             <ErrorBoundary key={key}>
               <TableWidget
-                blueprint={blueprint}
+                blueprint={document}
                 parentAttribute={parentAttribute}
                 attribute={attribute}
               />
@@ -38,8 +38,8 @@ export const ViewPlugin = ({ parent, blueprint }: PluginProps) => {
   return (
     <div>
       <div>
-        <span style={{ paddingRight: 20 }}>{blueprint.name}</span>
-        <span>{blueprint.type}</span>
+        <span style={{ paddingRight: 20 }}>{document.name}</span>
+        <span>{document.type}</span>
       </div>
       <div style={{ padding: 20 }}>{widgets}</div>
     </div>
@@ -51,8 +51,8 @@ export const ViewPlugin = ({ parent, blueprint }: PluginProps) => {
  * The plugin is a value on a attribute in the current uiRecipe.
  * @todo support default ui plugin when DocumentComponent is using the parents uiRecipe names only.
  *
- * @param uiRecipes from parent
- * @param parentAttribute from parent
+ * @param uiRecipes from document
+ * @param parentAttribute from blueprint
  */
 function getPluginOfAttribute(
   uiRecipes: any[],

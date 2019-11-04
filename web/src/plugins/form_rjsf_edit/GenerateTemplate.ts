@@ -21,19 +21,19 @@ export function generateTemplate(
 }
 
 export function generateTemplateByProperty(
-  parent: Blueprint,
-  children: Blueprint[],
+  blueprint: Blueprint,
+  blueprints: Blueprint[],
   attributeName: string
 ): JsonSchemaObject | JsonSchemaArray {
-  const property: BlueprintAttribute | undefined = parent.attributes.find(
+  const property: BlueprintAttribute | undefined = blueprint.attributes.find(
     (attr: BlueprintAttribute) => attr.name === attributeName
   )
 
   const properties = {}
   if (property) {
-    appendJsonSchemaProperty(property, properties, children)
+    appendJsonSchemaProperty(property, properties, blueprints)
   } else {
-    console.error('failed to generate template from blueprint: ' + parent.name)
+    console.error('failed to generate template from blueprint: ' + blueprint.name)
   }
   return {
     type: 'object',
@@ -49,7 +49,7 @@ export function generateTemplateByProperty(
 function appendJsonSchemaProperty(
   attribute: BlueprintAttribute,
   container: any,
-  types: Blueprint[]
+  blueprints: Blueprint[]
 ): void {
   let value = null
   if (isPrimitive(attribute.type)) {
@@ -62,7 +62,7 @@ function appendJsonSchemaProperty(
       value = parseAttributeDefault(attribute)
     }
   } else {
-    const properties = getJsonSchemaPropertyFromType(types, attribute)
+    const properties = getJsonSchemaPropertyFromType(blueprints, attribute)
     if (attribute.dimensions === '*') {
       value = {
         type: 'array',
@@ -81,19 +81,18 @@ function appendJsonSchemaProperty(
 }
 
 function getJsonSchemaPropertyFromType(
-  types: any[],
+  blueprints: any[],
   attribute: BlueprintAttribute
 ) {
-  const type = getBlueprintFromType(types, attribute.type)
+  const type = getBlueprintFromType(blueprints, attribute.type)
   const property = {}
   if (type) {
     if (type.attributes) {
       type.attributes.forEach((attribute: BlueprintAttribute) => {
-        appendJsonSchemaProperty(attribute, property, types)
+        appendJsonSchemaProperty(attribute, property, blueprints)
       })
     } else {
-      // That is, `type` is an instance of a blueprint
-      appendJsonSchemaProperty(type, property, types)
+      appendJsonSchemaProperty(type, property, blueprints)
     }
   } else {
     console.error('type is missing.')

@@ -35,8 +35,8 @@ const DEFAULT_UI_RECIPES = [
 const View = (props: any) => {
   const {
     schemaUrl,
-    parent,
-    children,
+    blueprint,
+    blueprints,
     document,
     dataUrl,
     attribute,
@@ -44,9 +44,9 @@ const View = (props: any) => {
   } = props
 
   const pluginProps = {
-    parent,
-    blueprint: document,
-    children,
+    blueprint,
+    document,
+    blueprints,
     name: uiRecipe,
   }
 
@@ -134,8 +134,8 @@ const DocumentComponent = (props: any) => {
             <ViewList
               {...props}
               document={document}
-              children={data.children}
-              parent={data.blueprint}
+              blueprints={data.children}
+              blueprint={data.blueprint}
             />
           )
         }}

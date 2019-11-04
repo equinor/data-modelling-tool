@@ -114,8 +114,8 @@ export function setupTypeAndRecipe(pluginProps?: PluginProps): TypeAndRecipe {
   if (!pluginProps) {
     return empty
   }
-  const { parent, children, name } = pluginProps
-  const uiRecipe = pluginProps && findRecipe(parent, name)
+  const { blueprint, blueprints, name } = pluginProps
+  const uiRecipe = pluginProps && findRecipe(blueprint, name)
   let uiAttributeType: any = {}
 
   if (!uiRecipe) {
@@ -127,13 +127,13 @@ export function setupTypeAndRecipe(pluginProps?: PluginProps): TypeAndRecipe {
   if (uiAttributes.length > 0) {
     const uiAttribute = uiAttributes[0]
     // find attribute which is using the field property in uiAttribute.
-    const parentAttribute = parent.attributes.find(
+    const parentAttribute = blueprint.attributes.find(
       (attribute: BlueprintAttribute) => {
         return attribute.name === uiAttribute.name
       }
     )
     if (parentAttribute && !isPrimitive(parentAttribute.type)) {
-      uiAttributeType = getBlueprintFromType(children, parentAttribute.type)
+      uiAttributeType = getBlueprintFromType(blueprints, parentAttribute.type)
     } else {
     }
   }
