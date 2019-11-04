@@ -141,28 +141,6 @@ Feature: Document 2
     }
     """
 
-  Scenario: Create document
-    Given i access the resource url "/api/v2/documents/data-source-name"
-    And data modelling tool templates are imported
-    When i make a "POST" request
-    """
-    {
-       "name": "new_document",
-       "type": "system/SIMOS/Blueprint"
-    }
-    """
-    Then the response status should be "OK"
-    And the response should contain
-    """
-    {
-      "data": {
-        "name": "new_document",
-        "type": "system/SIMOS/Blueprint",
-        "storageRecipes":[]
-      }
-    }
-    """
-
   Scenario: Update document (only contained)
     Given i access the resource url "/api/v2/documents/data-source-name/1"
     And data modelling tool templates are imported
