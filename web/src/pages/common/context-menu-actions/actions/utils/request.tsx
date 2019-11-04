@@ -11,6 +11,7 @@ interface Adict {
 }
 
 export const processFormData = (requestData: any, formData: any) => {
+  console.log(formData)
   const data = {} as any
   Object.keys(requestData).forEach(key => {
     if (key in formData) {
@@ -29,5 +30,6 @@ export const processFormData = (requestData: any, formData: any) => {
       data[key] = fillTemplate(requestData[key], formData)
     }
   })
+  console.log(data)
   return data
 }

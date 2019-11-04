@@ -14,9 +14,10 @@ from utils.logging import logger
 
 
 class AddFileRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, name=None, type=None, attribute=None, path=None, data=None):
+    def __init__(self, parent_id=None, name=None, description=None, type=None, attribute=None, path=None, data=None):
         self.parent_id = parent_id
         self.name = name
+        self.description = description
         self.type = type
         self.attribute = attribute
         self.path = path
@@ -44,6 +45,7 @@ class AddFileRequestObject(req.ValidRequestObject):
         return cls(
             parent_id=adict.get("parentId"),
             name=adict.get("name"),
+            description=adict.get("description", ""),
             type=adict.get("type"),
             attribute=adict.get("attribute"),
             path=adict.get("path", ""),
@@ -61,6 +63,7 @@ class AddFileUseCase(uc.UseCase):
         parent_id: str = request_object.parent_id
         name: str = request_object.name
         type: str = request_object.type
+        description: str = request_object.description
         attribute: str = request_object.attribute
         data: Dict = request_object.data
 
@@ -85,7 +88,7 @@ class AddFileUseCase(uc.UseCase):
             return res.ResponseSuccess(parent)
         else:
             # TODO: Set all data
-            file = DTO(data={"name": name, "description": "", "type": type})
+            file = DTO(data={"name": name, "description": description, "type": type})
             parent_data[attribute] += [{"_id": file.uid, "name": name, "type": type}]
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
