@@ -88,6 +88,17 @@ export default class Api2 {
     }
   }
 
+  static fetchApplicationSettings() {
+    return ({ onSuccess, onError }: BASE_CRUD): void => {
+      axios
+        .get(api.applicationSettingsGet())
+        .then(({ data }) => {
+          onSuccess(data)
+        })
+        .catch(onError)
+    }
+  }
+
   static fetchWithTemplate({
     urlSchema,
     urlData,

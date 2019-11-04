@@ -18,4 +18,5 @@ class Config:
     SYSTEM_COLLECTION = "system"
     CACHE_MAX_SIZE = 0 if ENVIRONMENT == "local" else 0
     APPLICATION_HOME = "/home"
+    SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]

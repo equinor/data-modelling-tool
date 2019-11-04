@@ -1,16 +1,18 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Col, Grid, Row } from 'react-styled-flexboxgrid'
 import styled from 'styled-components'
 import { GoldenLayoutComponent } from './common/golden-layout/GoldenLayoutComponent'
 import GoldenLayoutPanel from './common/golden-layout/GoldenLayoutPanel'
 import DocumentComponent from './common/layout-components/DocumentComponent'
 import BlueprintsPage from './blueprints/BlueprintsPage'
-import Tabs, { Tab, TabPanel, TabList } from '../components/Tabs'
+import Tabs, { Tab, TabList, TabPanel } from '../components/Tabs'
 import {
   LayoutComponents,
   LayoutProvider,
 } from './common/golden-layout/LayoutContext'
+import { DocumentType } from '../util/variables'
 import EntitiesPage from './entities/EntitiesPage'
+import Api2 from '../api/Api2'
 
 function wrapComponent(Component: any, state: any) {
   class Wrapped extends React.Component {
@@ -34,6 +36,29 @@ export default () => {
   const state = null
 
   const [layout, setLayout] = useState({ myLayout: null })
+  const [tabs, setTabs] = useState(new Set([DocumentType.ENTITIES]))
+  const [loading, setLoading] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    {
+      Api2.fetchApplicationSettings()({
+        onSuccess: (settings: any) => {
+          if (
+            settings.blueprintsModels !== undefined &&
+            settings.blueprintsModels.length > 0
+          ) {
+            setTabs(prevState => prevState.add(DocumentType.BLUEPRINTS))
+            setLoading(false)
+          }
+        },
+        onError: (err: any) => setLoading(false),
+      })
+    }
+  }, [tabs])
+
+  if (loading) {
+    return <div>Loading...</div>
+  }
 
   return (
     <LayoutProvider layout={layout}>
@@ -43,18 +68,22 @@ export default () => {
             <Col xs={12} md={12} lg={3}>
               <Wrapper>
                 <h4>Data Modelling Tool</h4>
-                <Tabs>
-                  <TabList>
-                    <Tab>Blueprints</Tab>
-                    <Tab>Entities</Tab>
-                  </TabList>
-                  <TabPanel>
-                    <BlueprintsPage />
-                  </TabPanel>
-                  <TabPanel>
-                    <EntitiesPage />
-                  </TabPanel>
-                </Tabs>
+                {tabs.size > 1 ? (
+                  <Tabs>
+                    <TabList>
+                      <Tab>Blueprints</Tab>
+                      <Tab>Entities</Tab>
+                    </TabList>
+                    <TabPanel>
+                      <BlueprintsPage />
+                    </TabPanel>
+                    <TabPanel>
+                      <EntitiesPage />
+                    </TabPanel>
+                  </Tabs>
+                ) : (
+                  <EntitiesPage />
+                )}
               </Wrapper>
             </Col>
           )}
