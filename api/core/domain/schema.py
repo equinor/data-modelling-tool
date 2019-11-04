@@ -114,6 +114,17 @@ class Attribute:
     cast: bool
     __values__: Dict
 
+    def __repr__(self):
+        attributes = ["name", "optional", "default", "contained"]
+
+        def get_representation(key: str) -> str:
+            value = getattr(self, key)
+            if isinstance(value, str):
+                value = f"'{value}'"
+            return value
+
+        return f"""{self.__class__.__name__}({", ".join(f"{key}={get_representation(key)}" for key in attributes)})"""
+
     @property
     def name(self):
         return to_snake_case(self.__values__["name"])
@@ -121,25 +132,24 @@ class Attribute:
 
 class Attributes:
     def __init__(self):
-        self._required: List[Attribute] = []
-        self._optional: List[Attribute] = []
+        self._attributes: List[Attribute] = []
 
     def add(self, attribute: Attribute):
-        if attribute.optional:
-            self._optional.append(attribute)
-        else:
-            self._required.append(attribute)
+        self._attributes.append(attribute)
 
     @property
     def required(self):
-        return self._required
+        return self._filter(lambda attr: not attr.optional)
 
     @property
     def optional(self):
-        return self._optional
+        return self._filter(lambda attr: attr.optional)
+
+    def _filter(self, filter: Callable[[Attribute], bool]):
+        return [attribute for attribute in self._attributes if filter(attribute)]
 
     def __iter__(self):
-        return (self._required + self._optional).__iter__()
+        return (self.required + self.optional).__iter__()
 
     @property
     def has_attributes(self):
@@ -497,7 +507,7 @@ import stringcase
         if self.dump_site is not None:
             with open(self.dump_site, "a+") as f:
                 f.write(remove_imports(definition))
-        code: CodeType = compile(definition, "<string>", "exec", optimize=1)
+        code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
         exec(code)  # nosec
         cls: type = locals()[schema["name"]]
         if cls.__name__ not in globals():
