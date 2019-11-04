@@ -6,7 +6,6 @@ from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaUseCas
 from utils.logging import logger
 from core.use_case.get_document_use_case import GetDocumentUseCase, GetDocumentRequestObject
 from core.shared import response_object as res
-from core.use_case.add_document_use_case import AddDocumentUseCase, AddDocumentRequestObject
 from core.repository.repository_factory import get_repository
 from core.enums import RepositoryType
 from core.use_case.update_document_use_case import UpdateDocumentUseCase, UpdateDocumentRequestObject
@@ -45,20 +44,6 @@ def get(data_source_id: str, document_path: str):
     response = use_case.execute(request_object)
     # TODO: Use DTOSerializer?
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-
-
-@blueprint.route("/api/v2/documents/<string:data_source_id>", methods=["POST"])
-def post(data_source_id: str):
-    logger.info(f"Creating document in data source '{data_source_id}'")
-    data = request.get_json()
-    data_source = DataSource(id=data_source_id)
-    document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
-    request_object = AddDocumentRequestObject.from_dict({"data": data})
-    use_case = AddDocumentUseCase(document_repository)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
 
 
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])

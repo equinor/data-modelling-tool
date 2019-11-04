@@ -4,7 +4,7 @@ import { NodeType } from '../../api/types'
 import Modal from '../../components/modal/Modal'
 import { BlueprintPickerContent } from '../../pages/common/BlueprintPicker'
 
-type Props = {
+export type Props = {
   onChange: (event: any) => void
   value: string
   attributeInput: any
@@ -36,7 +36,7 @@ export default (props: Props) => {
       <input
         style={{ width: '100%' }}
         type="string"
-        value={documentType}
+        value={documentType || ''}
         onChange={() => {}}
         onClick={() => setShowModal(!showModal)}
       />
