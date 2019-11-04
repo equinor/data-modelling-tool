@@ -6,12 +6,14 @@
     {
       "type": "string",
       "name": "name",
+      "default": "",
       "optional": false
     },
     {
       "type": "string",
       "name": "description",
-      "optional": true
+      "default": "",
+      "optional": false
     },
     {
       "name": "default",
@@ -24,6 +26,7 @@
       "type": "string",
       "name": "type",
       "enumType": "system/SIMOS/AttributeTypes",
+      "default": "string",
       "optional": false
     },
     {
