@@ -202,6 +202,8 @@ class Tree:
         storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
         ui_recipe: UIRecipe = get_ui_recipe(node.blueprint, "EDIT")
 
+        print(ui_recipe)
+
         # If the node is a DMT-Package, add "Create New" from AppSettings
         if is_package:
             create_new_menu_items = []
@@ -222,6 +224,8 @@ class Tree:
             # Don't create node for ui_contained attributes
             if is_contained_in_ui:
                 continue
+
+            print("2", attribute)
 
             # If the attribute is an array
             # TODO: Handle fixed size arrays

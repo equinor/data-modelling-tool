@@ -33,6 +33,8 @@ class UIRecipe:
 
         if attribute_name in self.ui_attributes:
             ui_attribute = self.ui_attributes[attribute_name]
+            print(attribute)
+            print(ui_attribute.is_contained)
             if ui_attribute.is_contained is not None:
                 return ui_attribute.is_contained
         if attribute_contained:
