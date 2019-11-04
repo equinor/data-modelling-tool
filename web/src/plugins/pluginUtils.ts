@@ -10,10 +10,13 @@ export function isPrimitive(type: string): boolean {
   return ['string', 'number', 'integer', 'number', 'boolean'].includes(type)
 }
 
-export function findRecipe(blueprint: Blueprint, uiRecipePlugin: string) {
-  return blueprint.uiRecipes.find(
-    (recipe: any) => recipe.plugin === uiRecipePlugin
-  )
+export function findRecipe(blueprint: Blueprint, uiRecipePlugin: string): any {
+  if (blueprint.uiRecipes) {
+    return blueprint.uiRecipes.find(
+      (recipe: any) => recipe.plugin === uiRecipePlugin
+    )
+  }
+  return {}
 }
 
 export function findUiAttribute(uiRecipe: any, name: string): any {

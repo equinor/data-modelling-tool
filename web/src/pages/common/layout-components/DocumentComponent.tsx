@@ -11,6 +11,7 @@ import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
 import { EditPlugin, ViewPlugin, PlotPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
+import {PluginProps} from "../../../plugins/types";
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -93,10 +94,10 @@ const View = (props: any) => {
   }
 }
 
-const ViewList = (props: any) => {
-  const { parent } = props
+const ViewList = (props: PluginProps) => {
+  const { blueprint } = props
 
-  const uiRecipeNamesParent = parent.uiRecipes
+  const uiRecipeNamesParent = blueprint.uiRecipes
     .map((uiRecipe: any) => uiRecipe['plugin'])
     .filter((name: string) => name !== undefined)
   // Create a list of unique UI recipe names
