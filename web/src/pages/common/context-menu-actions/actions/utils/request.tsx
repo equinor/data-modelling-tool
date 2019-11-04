@@ -1,3 +1,7 @@
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
+import { BlueprintEnum } from '../../../../../util/variables'
+
 const fillTemplate = function(templateString: string, templateVars: object) {
   let func = new Function(
     ...Object.keys(templateVars),
@@ -11,7 +15,22 @@ interface Adict {
 }
 
 export const processFormData = (requestData: any, formData: any) => {
-  console.log(formData)
+  // Description is optional.
+  // TODO: This func should check blueprint for optional/default values
+  if (formData.description === undefined) {
+    formData.description = ''
+  }
+  if (formData.name === undefined) {
+    NotificationManager.error('Name is required')
+    return
+  }
+  if (
+    requestData.type === BlueprintEnum.ENTITY &&
+    formData.type === undefined
+  ) {
+    NotificationManager.error('Type is required')
+    return
+  }
   const data = {} as any
   Object.keys(requestData).forEach(key => {
     if (key in formData) {
@@ -30,6 +49,5 @@ export const processFormData = (requestData: any, formData: any) => {
       data[key] = fillTemplate(requestData[key], formData)
     }
   })
-  console.log(data)
   return data
 }
