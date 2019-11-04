@@ -92,6 +92,7 @@ export const AttributeWidget = (props: Props) => {
     }
     setFormData(newFormData)
     setArray(value)
+    props.onChange(newFormData)
   }
 
   const { type } = formData
