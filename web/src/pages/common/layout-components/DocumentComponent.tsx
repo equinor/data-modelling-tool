@@ -11,7 +11,7 @@ import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
 import { EditPlugin, ViewPlugin, PlotPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
-import {PluginProps} from "../../../plugins/types";
+import { PluginProps } from '../../../plugins/types'
 
 const Wrapper = styled.div`
   padding: 20px;

@@ -165,7 +165,9 @@ const Tree = (props: TreeProps) => {
   }
 
   const removeNode = (nodeId: string, parentId: string) => {
-    dispatch(NodeActions.removeChild(parentId, nodeId))
+    if (parentId) {
+      dispatch(NodeActions.removeChild(parentId, nodeId))
+    }
     dispatch(NodeActions.deleteNode(nodeId))
   }
 

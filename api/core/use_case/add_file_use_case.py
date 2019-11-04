@@ -78,16 +78,16 @@ class AddFileUseCase(uc.UseCase):
 
         storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
-        # TODO: Set all data
-        file = DTO(data={"name": name, "description": "", "type": type})
-
         if storage_recipe.is_contained(attribute, type):
             parent_data[attribute] += [data]
+            logger.info(f"Added contained document")
+            self.document_repository.update(parent)
+            return res.ResponseSuccess(parent)
         else:
+            # TODO: Set all data
+            file = DTO(data={"name": name, "description": "", "type": type})
             parent_data[attribute] += [{"_id": file.uid, "name": name, "type": type}]
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
-
-        self.document_repository.update(parent)
-
-        return res.ResponseSuccess(file)
+            self.document_repository.update(parent)
+            return res.ResponseSuccess(file)

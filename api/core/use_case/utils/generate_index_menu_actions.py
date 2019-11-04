@@ -40,7 +40,12 @@ def get_dynamic_create_menu_item(
             "url": f"/api/v2/explorer/{data_source_id}/add-file",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": f"/api/v3/index/{data_source_id}",
-            "request": {"type": "${type}", "parentId": parent_id, "attribute": attribute, "name": "${name}"},
+            "request": {
+                "type": "${type}" if type == DMT.ENTITY.value else type,
+                "parentId": parent_id,
+                "attribute": attribute,
+                "name": "${name}",
+            },
         },
     }
 
@@ -58,15 +63,15 @@ def get_create_root_package_menu_item(data_source_id: str):
     }
 
 
-def get_not_contained_menu_action(data_source_id: str, name: str, url_type: str, type: str, parent_id: str, data):
+def get_not_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data):
     return {
         "label": "New",
         "menuItems": [
             {
-                "label": f"{name}",
+                "label": f"{type}",
                 "action": "CREATE",
                 "data": {
-                    "url": f"/api/v2/explorer/{data_source_id}/{url_type}",
+                    "url": f"/api/v2/explorer/{data_source_id}/add-file",
                     "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
                     "nodeUrl": f"/api/v3/index/{data_source_id}",
                     "request": {
@@ -82,16 +87,17 @@ def get_not_contained_menu_action(data_source_id: str, name: str, url_type: str,
     }
 
 
-def get_contained_menu_action(data_source_id: str, name: str, url_type: str, type: str, parent_id: str, data):
+def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data):
     return {
         "label": "New",
         "menuItems": [
             {
-                "label": f"{name}",
+                "label": f"{type}",
                 "action": "CREATE",
                 "data": {
-                    "url": f"/api/v2/explorer/{data_source_id}/{url_type}",
+                    "url": f"/api/v2/explorer/{data_source_id}/add-file",
                     "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
+                    "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
                     "request": {
                         "type": type,
                         "parentId": parent_id,

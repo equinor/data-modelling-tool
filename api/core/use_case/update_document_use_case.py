@@ -10,6 +10,7 @@ from utils.logging import logger
 from core.shared import response_object as res
 from core.shared import request_object as req
 from core.shared import use_case as uc
+from dotted.collection import DottedDict
 
 
 class UpdateDocumentRequestObject(req.ValidRequestObject):
@@ -101,8 +102,20 @@ class UpdateDocumentUseCase(uc.UseCase):
         data: Dict = request_object.data
         attribute: Dict = request_object.attribute
 
+        dto: DTO = self.document_repository.get(document_id)
+        if not dto:
+            raise EntityNotFoundException(uid=document_id)
+
         if attribute:
-            data = {attribute: data}
+            dotted_data = DottedDict(dto.data)
+            if attribute not in dto.data:
+                dto.data[attribute] = []
+            try:
+                # Update only sub part
+                dotted_data[attribute] = data
+                data = dotted_data.to_python()
+            except Exception:
+                raise
 
         document = update_document(document_id, data, self.document_repository)
 

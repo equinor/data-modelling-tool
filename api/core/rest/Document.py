@@ -35,10 +35,13 @@ def get_json_schema(type: str):
 def get(data_source_id: str, document_path: str):
     logger.info(f"Getting document '{document_path}' from data source '{data_source_id}'")
     ui_recipe = request.args.get("ui_recipe")
+    attribute = request.args.get("attribute")
     data_source = DataSource(id=data_source_id)
     document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
     use_case = GetDocumentUseCase(document_repository, get_repository)
-    request_object = GetDocumentRequestObject.from_dict({"document_id": document_path, "ui_recipe": ui_recipe})
+    request_object = GetDocumentRequestObject.from_dict(
+        {"document_id": document_path, "ui_recipe": ui_recipe, "attribute": attribute}
+    )
     response = use_case.execute(request_object)
     # TODO: Use DTOSerializer?
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
@@ -59,10 +62,11 @@ def post(data_source_id: str):
 
 
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])
-@blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>/<path:attribute>", methods=["PUT"])
-def put(data_source_id: str, document_id: str, attribute: str = None):
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])
+def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
     data = request.get_json()
+    attribute = request.args.get("attribute")
     data_source = DataSource(id=data_source_id)
     document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
     request_object = UpdateDocumentRequestObject.from_dict(
