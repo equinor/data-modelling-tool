@@ -14,7 +14,7 @@ interface Props {
 }
 
 export const PlotPlugin = (props: Props) => {
-  const { name, blueprint, document, blueprints } = props
+  const { blueprint, document } = props
 
   const uiRecipe = findRecipe(blueprint, props.name)
 

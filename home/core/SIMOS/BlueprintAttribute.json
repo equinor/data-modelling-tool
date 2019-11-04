@@ -35,13 +35,13 @@
     {
       "type": "boolean",
       "name": "optional",
-      "default": false,
+      "default": "false",
       "optional": true
     },
     {
       "name": "contained",
       "type": "boolean",
-      "default": true,
+      "default": "true",
       "contained": true,
       "optional": true
     },
