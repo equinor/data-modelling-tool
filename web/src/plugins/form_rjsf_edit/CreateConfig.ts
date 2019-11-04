@@ -44,7 +44,11 @@ export function createFormConfigs(
       return {
         attribute,
         data: getDataByAttribute(document, attribute),
-        template: generateTemplateByProperty(blueprint, blueprints, attribute.name),
+        template: generateTemplateByProperty(
+          blueprint,
+          blueprints,
+          attribute.name
+        ),
         uiSchema: generateUiSchemaByProperty(pluginProps, attribute, uiRecipe),
       }
     })

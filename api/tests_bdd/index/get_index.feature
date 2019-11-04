@@ -27,7 +27,7 @@ Feature: Index
           "title":"data-source-name",
           "nodeType":"document-node",
           "children":[
-             "data-source-name/blueprints/1"
+             "1"
           ]
        }
     }

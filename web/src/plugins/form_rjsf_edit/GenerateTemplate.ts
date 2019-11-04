@@ -33,7 +33,9 @@ export function generateTemplateByProperty(
   if (property) {
     appendJsonSchemaProperty(property, properties, blueprints)
   } else {
-    console.error('failed to generate template from blueprint: ' + blueprint.name)
+    console.error(
+      'failed to generate template from blueprint: ' + blueprint.name
+    )
   }
   return {
     type: 'object',

@@ -22,11 +22,11 @@ Feature: Index
     And the response should contain
     """
     {
-       "data-source-name/document_1/3":{
-          "parentId":"data-source-name",
+       "3":{
+          "parentId": null,
           "filename":"document_1",
           "title":"document_1",
-          "id":"data-source-name/document_1/3",
+          "id":"3",
           "nodeType":"document-node",
           "children":[],
           "type":"system/SIMOS/Blueprint"
@@ -42,10 +42,10 @@ Feature: Index
     And the response should contain
     """
     {
-       "data-source-name/sub_package_1/2":{
+       "2":{
           "filename":"sub_package_1",
           "title":"sub_package_1",
-          "id":"data-source-name/sub_package_1/2",
+          "id":"2",
           "nodeType":"document-node",
           "children":[],
           "type":"system/DMT/Package"

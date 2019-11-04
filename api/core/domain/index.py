@@ -16,6 +16,7 @@ class DocumentNode(NodeMixin):
         document: DTO = None,
         blueprint: Blueprint = None,
         parent: DocumentNode = None,
+        is_contained=None,
     ):
         self.data_source_id = data_source_id
         self.name = name
@@ -28,6 +29,9 @@ class DocumentNode(NodeMixin):
             on_select = None
         self.on_select = on_select
         self.menu_items = menu_items
+        if not is_contained:
+            is_contained = False
+        self.is_contained = is_contained
 
     @property
     def uid(self):
@@ -40,21 +44,34 @@ class DocumentNode(NodeMixin):
 
     @property
     def id(self):
-        if self.document:
-            return f"{self.start_path}/{self.document.uid}"
+        if self.is_contained:
+            return f"{self.document.uid}_{self.name}"
+        elif self.document:
+            return f"{self.document.uid}"
         elif self.depth == 0:
             return self.data_source_id
         else:
-            return "WRONG!"
+            raise Exception
+
+    @property
+    def parent_id(self):
+        # If node is data source
+        if not self.parent:
+            return None
+        # If parent is data source
+        elif self.parent and not self.parent.document:
+            return None
+        else:
+            return self.parent.id
 
     def to_node(self):
         result = {
-            "parentId": None if not self.parent else self.parent.id,
+            "parentId": self.parent_id,
             "filename": self.name,
             "title": self.name,
             "id": self.id,
             "nodeType": "document-node",
-            "children": [child.to_node()["id"] for child in self.children],
+            "children": [child.id for child in self.children],
             "type": "datasource" if not self.document else self.document.type,
             "meta": {"menuItems": self.menu_items, "onSelect": self.on_select},
         }

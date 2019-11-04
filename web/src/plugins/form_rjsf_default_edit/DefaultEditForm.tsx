@@ -5,8 +5,8 @@ import {
   blueprintAttributes,
 } from '../form-rjsf-widgets/Attribute'
 import { CollapsibleField } from '../widgets/CollapsibleField'
-import DocumentFinderWidget from "../form-rjsf-widgets/DocumentFinderWidget";
-import {Blueprint} from "../types";
+import DocumentFinderWidget from '../form-rjsf-widgets/DocumentFinderWidget'
+import { Blueprint } from '../types'
 
 interface Props {
   document: Blueprint | {}
@@ -32,7 +32,7 @@ export default ({ document, template, onSubmit }: Props) => {
       fields={{
         attribute: AttributeWidget,
         collapsible: CollapsibleField,
-        type: DocumentFinderWidget
+        type: DocumentFinderWidget,
       }}
       onSubmit={onSubmit}
       onChange={schemas => {

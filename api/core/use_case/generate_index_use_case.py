@@ -1,5 +1,5 @@
 from pathlib import Path
-from typing import List
+from typing import List, Dict
 
 from anytree import PreOrderIter, RenderTree
 from flask import g
@@ -29,6 +29,10 @@ from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
 from utils.group_by import group_by
+
+
+def find_attribute_by_title(name: str, attributes: List):
+    return next((x for x in attributes if x["title"] == name), None)
 
 
 class Index:
@@ -106,6 +110,7 @@ class Tree:
                 },
             },
             menu_items=[],
+            is_contained=True,
         )
         blueprint = get_blueprint(attribute_type)
         ui_recipe: UIRecipe = get_ui_recipe(blueprint, "EDIT")
@@ -229,8 +234,7 @@ class Tree:
 
                 not_contained_menu_action = get_not_contained_menu_action(
                     data_source_id=data_source_id,
-                    name=document.name,
-                    url_type="add-file-entity",
+                    name=attribute_name,
                     type=attribute["type"],
                     # TODO: Should this be parent_node.id?
                     parent_id=document.uid,
@@ -239,8 +243,7 @@ class Tree:
 
                 contained_menu_action = get_contained_menu_action(
                     data_source_id=data_source_id,
-                    name=document.name,
-                    url_type="add-file-entity",
+                    name=attribute_name,
                     type=attribute["type"],
                     parent_id=document.uid,
                     data=data,
@@ -255,6 +258,7 @@ class Tree:
                         blueprint=node.blueprint,
                         parent=node,
                         menu_items=[contained_menu_action if is_contained_in_storage else not_contained_menu_action],
+                        is_contained=True,
                     )
 
                 # Check if values for the attribute exists in current document,
@@ -361,7 +365,9 @@ class GenerateIndexUseCase:
             packages=self.package_repository.list(),
         )
 
-    def single(self, data_source_id: str, data_source_name: str, document_id: str, document_type: str) -> Index:
+    def single(
+        self, data_source_id: str, data_source_name: str, document_id: str, document_type: str, attribute: str = None
+    ) -> Dict:
         document = self.document_repository.get(document_id)
         uid = document.uid
         # The tree can't handle dto, need to use one of the below
@@ -383,5 +389,22 @@ class GenerateIndexUseCase:
             packages=[document],
             document_type=document_type,
         ).to_dict()
+
         del data[data_source_id]
+
+        # Only return sub-part
+        if attribute:
+            list_values = [v for v in data.values()]
+            attribute = find_attribute_by_title(attribute, list_values)
+            result = {attribute["id"]: attribute}
+
+            def append_children(children):
+                for child in children:
+                    child_instance = data[child]
+                    result[child] = child_instance
+                    append_children(child_instance["children"])
+
+            append_children(attribute["children"])
+            return result
+
         return data
