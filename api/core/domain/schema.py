@@ -558,10 +558,13 @@ from core.domain.dto import DTO
         pass
 
     def create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
-        Template = self._create(template_type, _create_instance, compile)
-        for template_type in self.to_be_compiled:
-            self._create(template_type, _create_instance)
-        return Template
+        try:  # FIXME: Deal with the (real) possibility of the type not being fully formed (`type(<name>, (), schema)`
+            return self._types[template_type]
+        except KeyError:
+            Template = self._create(template_type, _create_instance, compile)
+            for template_type in self.to_be_compiled:
+                self._create(template_type, _create_instance)
+            return Template
 
     def _create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
         schema = snakify(self._get_schema(template_type))
