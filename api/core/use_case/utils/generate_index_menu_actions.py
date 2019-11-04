@@ -41,10 +41,11 @@ def get_dynamic_create_menu_item(
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": f"/api/v3/index/{data_source_id}",
             "request": {
-                "type": "${type}" if type == DMT.ENTITY.value else type,
+                "type": type,
                 "parentId": parent_id,
                 "attribute": attribute,
                 "name": "${name}",
+                "description": "${description}",
             },
         },
     }
@@ -58,7 +59,7 @@ def get_create_root_package_menu_item(data_source_id: str):
             "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
             "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": f"/api/v3/index/{data_source_id}",
-            "request": {"type": DMT.PACKAGE.value, "name": "${name}"},
+            "request": {"type": DMT.PACKAGE.value, "name": "${name}", "description": "${description}"},
         },
     }
 
@@ -76,6 +77,7 @@ def get_not_contained_menu_action(data_source_id: str, name: str, type: str, par
                     "nodeUrl": f"/api/v3/index/{data_source_id}",
                     "request": {
                         "type": type,
+                        "description": "${description}",
                         "parentId": parent_id,
                         "attribute": name,
                         "name": "${name}",
@@ -100,6 +102,7 @@ def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_
                     "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
                     "request": {
                         "type": type,
+                        "description": "${description}",
                         "parentId": parent_id,
                         "attribute": name,
                         "data": data,

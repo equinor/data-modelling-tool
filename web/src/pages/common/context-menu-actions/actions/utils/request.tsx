@@ -13,7 +13,9 @@ interface Adict {
 export const processFormData = (requestData: any, formData: any) => {
   const data = {} as any
   Object.keys(requestData).forEach(key => {
-    if (typeof requestData[key] === 'object') {
+    if (key in formData) {
+      data[key] = formData[key]
+    } else if (typeof requestData[key] === 'object') {
       const adict = {} as Adict
       for (const item_key in requestData[key]) {
         const value: string = requestData[key][item_key]
