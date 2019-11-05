@@ -1,8 +1,9 @@
 import {
-  TextInput,
-  AttributeWrapper,
   AttributeOnChange,
+  AttributeWrapper,
   DataType,
+  NumberInput,
+  TextInput,
   TypeWrapper,
 } from './AttributeInputs'
 import React, { useState } from 'react'
@@ -87,24 +88,35 @@ export const AttributeWidget = (props: Props) => {
                   />
                 </AttributeWrapper>
               )
-            } else if (
-              name === 'default' &&
-              selectedType === DataType.BLUEPRINT
-            ) {
-              return null
-            } else if (
-              name === 'default' &&
-              selectedType === DataType.BOOLEAN
-            ) {
-              return (
-                <AttributeWrapper key={name}>
-                  <BooleanWidget
-                    attribute={blueprintAttribute}
-                    value={value}
-                    onChange={onChange}
-                  />
-                </AttributeWrapper>
-              )
+            } else if (name === 'default') {
+              if (selectedType === DataType.BLUEPRINT) {
+                return null
+              }
+              if (selectedType === DataType.BOOLEAN) {
+                return (
+                  <AttributeWrapper key={name}>
+                    <BooleanWidget
+                      attribute={blueprintAttribute}
+                      value={value}
+                      onChange={onChange}
+                    />
+                  </AttributeWrapper>
+                )
+              }
+              const isNumeric =
+                DataType.NUMBER === selectedType ||
+                DataType.INTEGER === selectedType
+              if (isNumeric) {
+                return (
+                  <AttributeWrapper key={name}>
+                    <NumberInput
+                      attribute={blueprintAttribute}
+                      value={value}
+                      onChange={onChange}
+                    />
+                  </AttributeWrapper>
+                )
+              }
             } else {
               return (
                 <AttributeWrapper key={name}>

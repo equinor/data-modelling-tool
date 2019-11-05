@@ -48,18 +48,19 @@ const ReactJsonSchemaWrapper = (props: Props) => {
     attribute,
     uiRecipe,
     blueprints,
+    blueprint,
   } = props
 
   return (
     <LayoutContext.Consumer>
       {(layout: any) => {
-        console.log(layout)
         return (
           <FetchDocument
             url={`${schemaUrl}?ui_recipe=${uiRecipe}`}
             render={(data: any) => {
               return (
                 <DefaultEditForm
+                  blueprint={blueprint}
                   blueprints={blueprints}
                   document={document}
                   template={data}

@@ -10,6 +10,7 @@ import {
 } from '../pluginUtils'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { ReadOnly } from '../form-rjsf-widgets/ReadOnly'
+import { castValues } from '../form-rjsf-widgets/utilFormData'
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void
@@ -27,6 +28,7 @@ export const EditPlugin = (props: Props) => {
       {configs.map((config: any, index: number) => {
         const showLabel: boolean = getShowLabel(config.attribute)
         const attributes = getWidgetAttributes(props)
+        const formData = castValues(props.blueprint, props.document)
         return (
           <div key={'form' + index} style={{ marginBottom: 20 }}>
             {showLabel && (
@@ -34,7 +36,7 @@ export const EditPlugin = (props: Props) => {
             )}
             <Form
               schema={config.template}
-              formData={config.data || {}}
+              formData={formData || {}}
               uiSchema={config.uiSchema || {}}
               fields={{
                 attribute: (props: any) => (

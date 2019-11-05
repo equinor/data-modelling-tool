@@ -55,6 +55,27 @@ export const TextInput = (props: TextInputProps) => {
   )
 }
 
+interface NumberInputProps extends InputProps {
+  value: number
+}
+
+export const NumberInput = (props: NumberInputProps) => {
+  const { onChange, attribute, value } = props
+  const name = attribute.name
+
+  return (
+    <>
+      {name}:{' '}
+      <input
+        type="number"
+        name={name}
+        value={value || ''}
+        onChange={event => onChange(attribute, event.target.value)}
+      />
+    </>
+  )
+}
+
 export const TypeInput = (props: any) => {
   const { onChange, value } = props
   return (
