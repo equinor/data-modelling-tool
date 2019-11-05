@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import os
 from collections import Iterable
-from dataclasses import dataclass
 from pathlib import Path
 from types import CodeType
 from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
@@ -119,14 +118,10 @@ def snakify(schema: Dict[str, Any]) -> Dict[str, Any]:
     return _dict
 
 
-@dataclass(frozen=True)
 class Attribute:
-    type: type
-    default: Any
-    optional: bool
-    is_list: bool
-    cast: bool
-    __values__: Dict
+    def __init__(self, data: Dict[str, Any], type: type):
+        self.type = type
+        self.__values__ = data
 
     def __repr__(self):
         attributes = ["name", "optional", "default", "contained"]
@@ -142,6 +137,36 @@ class Attribute:
     @property
     def name(self):
         return to_snake_case(self.__values__["name"])
+
+    @property
+    def contained(self):
+        return self._get("contained", True)
+
+    @property
+    def is_list(self):
+        return self._get("dimensions", "").strip("\"'") == "*"
+
+    @property
+    def default(self):
+        return self._get("default", None)
+
+    @property
+    def cast(self):
+        if self.name in ["type"]:
+            return False
+        return True
+
+    @property
+    def enum_type(self):
+        enum_type = self._get("enum_type", None)
+        return enum_type
+
+    @property
+    def optional(self):
+        return self._get("optional", False)
+
+    def _get(self, name, default=None):
+        return self.__values__.get(name, default)
 
 
 class Attributes:
@@ -463,27 +488,11 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         _attributes = Attributes()
 
         for attribute in attributes:
-            # TODO: Implement logic for dimensions
-            is_optional = attribute.get("optional", False)
-            name = attribute["name"]
-            cast = True
-            if name in ["type"]:
-                cast = False
-            default = attribute.get("default", None)
-            is_list = attribute.get("dimensions", "").strip("\"'") == "*"
             attribute_type = attribute["type"]
             if attribute_type not in self._types:
                 self._create(attribute_type, False)
             attribute_type = self._types[attribute_type]
-            attribute = Attribute(
-                type=attribute_type,
-                optional=is_optional,
-                default=default,
-                is_list=is_list,
-                cast=cast,
-                __values__=attribute,
-            )
-            _attributes.add(attribute)
+            _attributes.add(Attribute(attribute, type=attribute_type))
         return _attributes
 
     def write_domain(self, template_type: str) -> None:
