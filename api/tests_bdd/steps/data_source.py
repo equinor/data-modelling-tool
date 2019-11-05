@@ -4,7 +4,7 @@ from services.database import data_modelling_tool_db
 
 @given("there are mongodb data sources")
 def step_impl(context):
-    context.cases = {}
+    context.data_sources = {}
     for row in context.table:
         document = {
             "_id": row["name"],
@@ -20,3 +20,5 @@ def step_impl(context):
             "type": row["type"],
         }
         data_modelling_tool_db["data_sources"].insert_one(document)
+        data_modelling_tool_db.drop_collection(row["collection"])
+        context.data_sources[row["name"]] = document

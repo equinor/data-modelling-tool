@@ -15,7 +15,7 @@ Feature: Index
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint                  |
       | 4   | 1          | custom_1      |             | test-source-name/TestData/TestContainer |
 
-    Given there exist document with id "1" in data source "test"
+    Given there exist document with id "1" in data source "test-source-name"
     """
     {
         "name": "TestData",
@@ -38,7 +38,7 @@ Feature: Index
     }
     """
 
-    Given there exist document with id "2" in data source "test"
+    Given there exist document with id "2" in data source "test-source-name"
     """
     {
       "type": "system/SIMOS/Blueprint",
@@ -61,7 +61,7 @@ Feature: Index
     }
     """
 
-    Given there exist document with id "3" in data source "test"
+    Given there exist document with id "3" in data source "test-source-name"
     """
     {
       "type": "system/SIMOS/Blueprint",
@@ -171,7 +171,7 @@ Feature: Index
     }
     """
 
-  Scenario: Get index for single document (Document)
+  Scenario: Get index for single document (Blueprint)
     Given I access the resource url "/api/v3/index/data-source-name/3"
     And data modelling tool templates are imported
     When I make a "GET" request
@@ -191,7 +191,7 @@ Feature: Index
     }
     """
 
-  Scenario: Get index for single document (Custom Document)
+  Scenario: Get index for single document (Document)
     Given I access the resource url "/api/v3/index/data-source-name/4"
     And data modelling tool templates are imported
     When I make a "GET" request
