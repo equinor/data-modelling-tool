@@ -18,6 +18,12 @@
     },
     {
       "type": "string",
+      "name": "selected",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "type": "string",
       "name": "values",
       "dimensions": "*"
     }
