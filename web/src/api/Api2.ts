@@ -137,7 +137,7 @@ function fetchTemplate({
     .then((res: any) => {
       onSuccess({
         document: {},
-        blueprint: {
+        template: {
           schema: res.data.schema,
           uiSchema: res.data.uiSchema || {},
         },
