@@ -89,22 +89,23 @@ DEFAULT_CREATE_UI_RECIPE = {
     "type": "system/SIMOS/UIRecipe",
     "name": "DEFAULT_CREATE",
     "description": "",
-    "attributes": [
-        {"name": "attributes", "contained": False},
-        {"name": "type", "contained": False},
-        {"name": "storageRecipes", "contained": False},
-        {"name": "uiRecipes", "contained": False},
-    ],
+    "attributes": [],
 }
 
 
 def form_to_ui_schema(blueprint, ui_recipe_name=None):
     result = {}
 
-    ui_recipes = blueprint.ui_recipes
+    ui_recipes = blueprint.ui_recipes.copy()
 
     if not find_attribute("DEFAULT_CREATE", ui_recipes):
-        ui_recipes.append(DEFAULT_CREATE_UI_RECIPE)
+        ui_recipe = DEFAULT_CREATE_UI_RECIPE
+        is_contained = ["name", "description"]
+        attributes = []
+        for attribute in filter(lambda x: x["name"] not in is_contained, blueprint.attributes):
+            attributes.append({"name": attribute["name"], "contained": False})
+        ui_recipe["attributes"] = attributes
+        ui_recipes.append(ui_recipe)
 
     if not find_attribute("PREVIEW", ui_recipes):
         ui_recipes.append(DEFAULT_PREVIEW_UI_RECIPE)
