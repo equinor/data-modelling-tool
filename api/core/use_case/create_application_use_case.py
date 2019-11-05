@@ -17,7 +17,7 @@ import os
 from core.enums import DMT
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
-
+from jinja2 import Template
 
 DOCKER_COMPOSE = """\
 version: "3.4"
@@ -62,6 +62,28 @@ services:
     ports:
       - "9000:80"
 """
+
+
+def generate_runnable_file(runnable_models):
+    class_template = Template(
+        """\
+
+{% for runnable_model in runnable_models %}
+const {{ runnable_model["method"] }} = async ({document, config, setProgress}) => {
+    return {}
+}
+{% endfor %}  
+        
+const runnableMethods = {
+{% for runnable_model in runnable_models %}
+    {{ runnable_model["method"] }}
+{% endfor %}    
+}
+
+export default runnableMethods
+"""
+    )
+    return class_template.render(runnable_models=runnable_models)
 
 
 class CreateApplicationRequestObject(req.ValidRequestObject):
@@ -158,8 +180,8 @@ class CreateApplicationUseCase(uc.UseCase):
             json_data = json.dumps(remove_ids(application.data))
             binary_data = json_data.encode()
             zip_file.writestr("home/settings.json", binary_data)
-            with open(f"{Config.APPLICATION_HOME}/runnable.js") as runnable_file:
-                zip_file.writestr("home/runnable.js", runnable_file.read())
+            runnable_file = generate_runnable_file(application.data["runnableModels"])
+            zip_file.writestr("home/runnable.js", runnable_file)
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             for type in application.data["blueprints"]:
                 root_package: DTO = self.document_repository.find({"name": type})

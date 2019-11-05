@@ -5,19 +5,18 @@
     "TodoDemo"
   ],
   "entities": [],
-  "blueprintsModels": [
-    "system/DMT/Package"
-  ],
+  "blueprintsModels": [],
   "entityModels": [
-    "system/DMT/Package"
+    "system/DMT/Package",
+    "SSR-DataSource/TodoDemo/TodoList"
   ],
   "runnableModels": [
     {
-      "name": "Todo Runnable",
-      "description": "Get more work",
+      "name": "Todo",
+      "description": "Get list of work items",
       "input": "SSR-DataSource/TodoDemo/TodoList",
       "output": "SSR-DataSource/TodoDemo/TodoList",
-      "method": "todo"
+      "method": "getTodoList"
     }
   ]
 }
