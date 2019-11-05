@@ -1,5 +1,5 @@
 #### Data modelling tool - DMT
-The purpose of this document is to get a high level understanding of the core concept. 
+The purpose of this document is to get a high level understanding of the core concepts. 
 It should minimize the risk of misunderstandings between stakeholders.
 
 #### Introduction
@@ -8,19 +8,17 @@ which are based on a framework for language and library agnostic type system.
 Models can be used for creating applications, 
 libraries, code generators and even the DMT itself.
 This is achieved by controlling the boundaries and expressiveness of the models. 
-This makes it possible to create a recursive typebound system.
+This makes it possible to create a recursive type bound system.
 
 
 #### Definitions
-- Document: A container for a entity and optionally a blueprint, is recursive if it has a blueprint. 
-- Blueprint: A collection of attributes
-- Entity: A collection attributes value
+- Document: A container for an entity and optionally a blueprint, is recursive if it has a blueprint. 
+- Blueprint: A description of one or several attributes
+- Entity: A collection of attribute values
 
 
 #### A basic blueprint example
 Below is a short version of a BlueprintAttribute document.  
-* The entity is the root key value pairs. (type, name, description and attributes)
-* The blueprint is the set of attributes in the attributes property of the entity.
 
 
 ```
@@ -42,27 +40,16 @@ Keywords is property metadata. Keywords and types are the building blocks.
 
 |Keyword|type|Description|
 |---|-----|---|
-|name|string|Name of the property, the key in the key, value pair in the entity|
-|value|any json|Value of the property, the value in the key, value pair in the entity|
-|type|string|Type of the entity, a string reference to blueprint. Has the format datasource/documentId|
-|contained|boolean|The value of the property is an entity, or a reference to an entity. In both cases, the property has a blueprint reference in the blueprint|
-|dimensions|string|degree of dimensions, the set of dimensions is arbitrary strings, controlled by environment where the type is used. e.g '*' is array in DMT.|
-|optional|boolean|The property is optional or required in the blueprint|
-|default|any json|Default value for the property. Same type as the property itself|
-|enumType|string|A reference to an enum. Value should hold the chosen enum value in the entity|
+|name|string|Name of the attribute, the key in the key value pair of the entity|
+|type|string|Type of the attribute or document, a string reference to a blueprint, or a string that is the name of a primitive type.|
+|contained|boolean|Describes the conceptual belonging of one entity to another. In other words, if an entity must always be considered in the context of it's "parent"(true), or the entity has meaning on it's own(false).  |
+|dimensions|string|Degree of dimensions. Format; A list of integers, each integer defines the size of a dimension. "*"(wildcard) has the special meaning of "unfixed size".|
+|optional|boolean|If the attribute is optional or required in the entity|
+|default|any json|Default value for the attribute. Same type as the attribute itself|
+|enumType|string|A reference to an Enum entity. Value should hold the chosen enum value in the entity|
 |inherit|boolean|Property is required in the entity|
 
 We aim to avoid typical reserved keywords in programming languages (enum, default, extends etc) 
-
-#### Contained
-Contained: The value in the entity is a an entity.
-```
-@todo add example
-```
-Not contained: The value in the entity is a reference on the format "datasource/documentId"
-```
-@todo add example
-```
 
 
 #### Validation of documents
