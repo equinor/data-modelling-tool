@@ -119,13 +119,12 @@ export const BlueprintInput = (props: BlueprintInputProps) => {
 type TypeProps = {
   onChange: AttributeOnChange
   attribute: BlueprintAttribute
+  value: string
 }
 
 export const TypeWrapper = (props: TypeProps) => {
-  const { onChange, attribute } = props
-  const [selectedType, setSelectedType] = useState(
-    attribute.default || DataType.STRING
-  )
+  const { onChange, attribute, value } = props
+  const [selectedType, setSelectedType] = useState(value || attribute.default)
   return (
     <>
       <TypeInput

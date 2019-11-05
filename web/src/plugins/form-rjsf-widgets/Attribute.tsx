@@ -73,6 +73,7 @@ export const AttributeWidget = (props: Props) => {
               return (
                 <AttributeWrapper key={name}>
                   <TypeWrapper
+                    value={value}
                     onChange={onChange}
                     attribute={blueprintAttribute}
                   />
@@ -103,6 +104,7 @@ export const AttributeWidget = (props: Props) => {
                   </AttributeWrapper>
                 )
               }
+
               const isNumeric =
                 DataType.NUMBER === selectedType ||
                 DataType.INTEGER === selectedType
