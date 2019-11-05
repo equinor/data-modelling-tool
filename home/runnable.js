@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const getMeasurements = async () => {
+const getMeasurements = async ({document, config, setProgress}) => {
     return new Promise(resolve => {
         resolve({
             "name": "List",
@@ -20,33 +20,21 @@ const getMeasurements = async () => {
     });
 }
 
-const runnable = async ({document, config, setProgress}) => {
-    console.log("RUN:", config);
-    console.log("Document:", config);
-
-    const runMethod = config["method"]
-
-    switch (runMethod) {
-        case "GET_TODO_LIST": {
-            const GET_URL = "https://jsonplaceholder.typicode.com/todos/"
-            const result = await axios.get(GET_URL);
-            return {
-                "name": "List",
-                "items": result.data.map(todo => {
-                    todo["name"] = todo["title"]
-                    return todo
-                })
-            }
-
-        }
-        case "GET_MEASUREMENTS": {
-            return await getMeasurements()
-        }
-        default:
-            throw "Runnable method not found"
+const getTodoList = async ({document, config, setProgress}) => {
+    const GET_URL = "https://jsonplaceholder.typicode.com/todos/"
+    const result = await axios.get(GET_URL);
+    return {
+        "name": "List",
+        "items": result.data.map(todo => {
+            todo["name"] = todo["title"]
+            return todo
+        })
     }
 }
 
-export default {
-    run: runnable
-};
+const runnableMethods =  {
+    getTodoList,
+    getMeasurements
+}
+
+export default runnableMethods

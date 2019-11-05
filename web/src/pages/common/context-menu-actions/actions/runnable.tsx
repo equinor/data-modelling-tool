@@ -1,6 +1,8 @@
 import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 import Runnable from '../../../../runnable'
 import axios from 'axios'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 
 const getDocument = async (dataUrl: string, showError: Function) => {
   try {
@@ -24,6 +26,14 @@ const updateDocument = async (
   }
 }
 
+export type RunnableProps = {
+  document: any
+  config: any
+  setProgress: Function
+}
+
+export type RunnableMethod = (props: RunnableProps) => Promise<void>
+
 export const runnableAction = (
   action: any,
   node: TreeNodeRenderProps,
@@ -42,20 +52,33 @@ export const runnableAction = (
       const document = getDocument(action.data.dataUrl, showError)
 
       if (document) {
-        Runnable.run({
-          document: document,
-          config: runnable,
-          setProgress,
-        })
-          .then(result => {
-            updateDocument(action.data.dataUrl, result, showError).then(() => {
-              setProgress(100)
-              layout.refresh(action.data.documentId)
+        const runMethod: string = runnable['method']
+
+        const hasMethod = runMethod in Runnable
+
+        if (!hasMethod) {
+          NotificationManager.error(`Runnable Method ${runMethod}`, 'Not Found')
+        } else {
+          // @ts-ignore
+          const method: RunnableMethod = Runnable[runMethod]
+          const input = {
+            document,
+            config: runnable,
+            setProgress,
+          }
+          method(input)
+            .then(result => {
+              updateDocument(action.data.dataUrl, result, showError).then(
+                () => {
+                  setProgress(100)
+                  layout.refresh(action.data.documentId)
+                }
+              )
             })
-          })
-          .catch((error: any) => {
-            showError(error)
-          })
+            .catch((error: any) => {
+              showError(error)
+            })
+        }
       }
     },
   }
