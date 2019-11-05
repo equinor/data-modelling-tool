@@ -44,6 +44,7 @@ export default ({ onSubmit, fetchDocument }: FormProps) => {
   return (
     <DefaultEditForm
       document={document}
+      blueprints={[]}
       template={documentData.template}
       // @ts-ignore
       onSubmit={schemas => {

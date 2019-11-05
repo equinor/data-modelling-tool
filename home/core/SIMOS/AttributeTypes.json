@@ -1,13 +1,13 @@
 {
   "type": "system/SIMOS/Enum",
-  "name": "attribute_types",
+  "name": "AttributeTypes",
   "description": "This describes a list of attribute types",
   "values": [
     "string",
     "integer",
     "number",
     "boolean",
-    "system/SIMOS/Blueprint"
+    "blueprint"
   ],
   "labels": [
     "String",

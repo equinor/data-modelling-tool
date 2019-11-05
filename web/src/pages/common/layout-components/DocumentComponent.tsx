@@ -84,6 +84,8 @@ const View = (props: any) => {
       //return <div>`Plugin not supported: ${uiRecipe}`</div>
       return (
         <ReactJsonSchemaWrapper
+          blueprint={blueprint}
+          blueprints={blueprints}
           document={document}
           schemaUrl={schemaUrl}
           dataUrl={dataUrl}

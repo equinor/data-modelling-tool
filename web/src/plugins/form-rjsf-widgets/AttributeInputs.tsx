@@ -1,38 +1,64 @@
-import React from 'react'
+import React, { useState } from 'react'
 import styled from 'styled-components'
-import { ArrayType, DataType } from './Attribute'
-import Switch from 'react-switch'
 import DocumentFinderWidget from './DocumentFinderWidget'
+import { BlueprintAttribute } from '../types'
 
-const AttributeWrapper = styled.div`
+export const AttributeWrapper = styled.div`
   margin: 2px 2px;
   padding: 5px;
   border-radius: 5px;
 `
 
-export const TextInput = (props: any) => {
-  const { onChange, value, label, name } = props
-  return (
-    <AttributeWrapper>
-      {label}:{' '}
-      <input type="text" name={name} value={value || ''} onChange={onChange} />
-    </AttributeWrapper>
-  )
+export enum DataType {
+  STRING = 'string',
+  INTEGER = 'integer',
+  BLUEPRINT = 'blueprint',
+  NUMBER = 'number',
+  BOOLEAN = 'boolean',
 }
-export const BoolDefaultInput = (props: any) => {
-  const { onChange, value, label } = props
+
+interface InputProps {
+  attribute: BlueprintAttribute
+  onChange: AttributeOnChange
+}
+
+export enum ArrayType {
+  SIMPLE = 'Simple',
+  ARRAY = 'Array',
+  MATRIX = 'Matrix',
+}
+
+export type AttributeOnChange = (
+  name: any,
+  value: string | boolean | number
+) => void
+
+interface TextInputProps extends InputProps {
+  value: string
+}
+
+export const TextInput = (props: TextInputProps) => {
+  const { onChange, attribute, value } = props
+
+  const name = attribute.name
+
   return (
-    <AttributeWrapper>
-      {label}:{' '}
-      <Switch onChange={onChange} checked={value} height={20} width={40} />
-    </AttributeWrapper>
+    <>
+      {name}:{' '}
+      <input
+        type="text"
+        name={name}
+        value={value || ''}
+        onChange={event => onChange(attribute, event.target.value)}
+      />
+    </>
   )
 }
 
 export const TypeInput = (props: any) => {
   const { onChange, value } = props
   return (
-    <AttributeWrapper>
+    <>
       <select value={value} onChange={onChange}>
         <option value={DataType.STRING}>String</option>
         <option value={DataType.INTEGER}>Integer</option>
@@ -40,20 +66,18 @@ export const TypeInput = (props: any) => {
         <option value={DataType.BOOLEAN}>Boolean</option>
         <option value={DataType.BLUEPRINT}>Blueprint</option>
       </select>
-    </AttributeWrapper>
+    </>
   )
 }
 
-export type OnChange = (event: any) => void
-export type OnChangeClosure = (name: any) => OnChange
-
-type WidgetInput = {
+type BlueprintInputProps = {
   value: string
-  onChange: OnChangeClosure
+  onChange: AttributeOnChange
+  attribute: BlueprintAttribute
 }
 
-export const BlueprintInput = (props: WidgetInput) => {
-  const { onChange, value } = props
+export const BlueprintInput = (props: BlueprintInputProps) => {
+  const { onChange, value, attribute } = props
   // Just so not to display "blueprint" as a "selected blueprint" when none is selected
   let displayValue = value
   if (value === DataType.BLUEPRINT) {
@@ -64,10 +88,36 @@ export const BlueprintInput = (props: WidgetInput) => {
       Blueprint:{' '}
       <DocumentFinderWidget
         value={displayValue}
-        onChange={onChange('type')}
+        onChange={(event: any) => onChange(attribute, event.target.value)}
         attributeInput={true}
       />
     </AttributeWrapper>
+  )
+}
+
+type TypeProps = {
+  onChange: AttributeOnChange
+  attribute: BlueprintAttribute
+}
+
+export const TypeWrapper = (props: TypeProps) => {
+  const { onChange, attribute } = props
+  const [selectedType, setSelectedType] = useState(
+    attribute.default || DataType.STRING
+  )
+  return (
+    <>
+      <TypeInput
+        value={selectedType}
+        onChange={(event: any) => {
+          setSelectedType(event.target.value)
+          onChange(attribute, event.target.value)
+        }}
+      />
+      {selectedType === DataType.BLUEPRINT && (
+        <BlueprintInput {...props} value={selectedType} />
+      )}
+    </>
   )
 }
 
@@ -96,24 +146,5 @@ export const ArrayRadioGroup = (props: any) => {
         Array
       </label>
     </AttributeWrapper>
-  )
-}
-
-export const DimensionWrapper = (props: any) => {
-  const { onChange, array, value, attributeName } = props
-  return (
-    <>
-      <ArrayRadioGroup
-        onChange={onChange}
-        attributeName={attributeName}
-        array={array}
-      />
-      {array === ArrayType.ARRAY && (
-        <div style={{ display: 'flex', alignItems: 'baseline' }}>
-          <TextInput value={value} onChange={onChange} />{' '}
-          <span>Format: [size,size] Example: "[*,10,2000]"</span>
-        </div>
-      )}
-    </>
   )
 }

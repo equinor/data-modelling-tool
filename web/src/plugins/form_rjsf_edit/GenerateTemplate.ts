@@ -97,7 +97,7 @@ function getJsonSchemaPropertyFromType(
       appendJsonSchemaProperty(type, property, blueprints)
     }
   } else {
-    console.error('type is missing.')
+    console.error('type is missing.', attribute.type)
   }
   return property
 }

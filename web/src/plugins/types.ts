@@ -5,7 +5,7 @@ export type BlueprintAttribute = {
   optional?: boolean
   contained?: boolean
   enumType?: string
-  default?: string | boolean | number
+  default?: string
   dimensions?: string
   value?: string
 }

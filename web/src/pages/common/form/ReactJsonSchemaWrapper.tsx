@@ -4,8 +4,8 @@ import axios from 'axios'
 import { NotificationManager } from 'react-notifications'
 import FetchDocument from '../utils/FetchDocument'
 import { LayoutContext } from '../golden-layout/LayoutContext'
-import { DefaultView } from '../../../plugins/view/ViewPlugin'
 import { DefaultEditForm } from '../../../plugins'
+import { Blueprint } from '../../../plugins/types'
 
 interface Props {
   dataUrl: string
@@ -13,6 +13,8 @@ interface Props {
   document: any
   attribute: string
   uiRecipe: string
+  blueprint: Blueprint
+  blueprints: Blueprint[]
 }
 
 export const onFormSubmit = ({ attribute, dataUrl, layout }: any) => {
@@ -39,7 +41,14 @@ export const onFormSubmit = ({ attribute, dataUrl, layout }: any) => {
 }
 
 const ReactJsonSchemaWrapper = (props: Props) => {
-  const { document, schemaUrl, dataUrl, attribute, uiRecipe } = props
+  const {
+    document,
+    schemaUrl,
+    dataUrl,
+    attribute,
+    uiRecipe,
+    blueprints,
+  } = props
 
   return (
     <LayoutContext.Consumer>
@@ -51,6 +60,7 @@ const ReactJsonSchemaWrapper = (props: Props) => {
             render={(data: any) => {
               return (
                 <DefaultEditForm
+                  blueprints={blueprints}
                   document={document}
                   template={data}
                   onSubmit={onFormSubmit({ attribute, dataUrl, layout })}
