@@ -20,13 +20,13 @@
       "name": "type",
       "optional": false,
       "contained": true,
-      "defaultValue": "SSR-DataSource/CarsDemo/Wheel"
+      "default": "SSR-DataSource/CarsDemo/Wheel"
     },
     {
       "type": "string",
       "name": "diameter",
       "optional": false,
-      "defaultValue": "120",
+      "default": "120",
       "contained": true
     }
   ]

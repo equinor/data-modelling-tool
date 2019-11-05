@@ -47,9 +47,8 @@
     },
     {
       "name": "enumType",
-      "type": "system/SIMOS/Enum",
+      "type": "string",
       "optional": true,
-      "default": null,
       "contained": true
     }
   ],

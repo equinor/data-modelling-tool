@@ -20,12 +20,6 @@
       "type": "string",
       "name": "values",
       "dimensions": "*"
-    },
-    {
-      "type": "string",
-      "name": "selected",
-      "optional": true,
-      "default": ""
     }
   ]
 }
