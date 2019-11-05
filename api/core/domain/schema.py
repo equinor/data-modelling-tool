@@ -79,6 +79,10 @@ def get_name(attr: Attribute) -> str:
     return to_snake_case(attr.name)
 
 
+def get_name_of_list_class(attr: Attribute) -> str:
+    return "__" + stringcase.pascalcase(f"{get_name(attr)}_container")
+
+
 def to_snake_case(name: str) -> str:
     return stringcase.snakecase(name)
 
@@ -205,6 +209,7 @@ class Factory:
             is_simple_type,
             get_simple_types,
             self.type_check,
+            get_name_of_list_class,
         ]
         self.to_be_compiled = set()
 
@@ -290,13 +295,29 @@ class {{ schema.name }}Template(type):
 
 class {{ schema.name }}(metaclass={{ schema.name }}Template):
 {%- if schema.attributes %}
+    {%- for attr in schema.attributes %}
+    {%- if attr.is_list %}
+
+    class {{ get_name_of_list_class(attr) }}(list):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+        def append(self, item):
+            item = {{ cast_as(attr, "item") }}
+            super().append(item)
+
+        def to_dict(self):
+            return [el.to_dict() if hasattr(el, "to_dict") else el for el in self]
+    {%- endif %}
+    {%- endfor %}
+
     def __init__(self, {{ signature(schema.attributes) }}):
         {%- for attr in schema.attributes %}
         {%- set name = get_name(attr) %}
         {%- if attr.is_list and attr.optional %}
 
         if {{ name }} is None:
-            {{ name }} = []
+            {{ name }} = {{ custom_list_name }}()
         {{ name }} = {{ cast(attr) }}
         {%- elif attr.optional %}
 
@@ -537,7 +558,7 @@ from core.domain.dto import DTO
         if not attr.cast:
             return get_name(attr)
         if attr.is_list:
-            return f"[{self.cast_as(attr, 'val')} for val in {get_name(attr)}]"
+            return f"self.{get_name_of_list_class(attr)}({self.cast_as(attr, 'val')} for val in {get_name(attr) if name is None else name})"
         return f"{self.cast_as(attr)}"
 
     def compile(self, schema: Dict) -> type:
