@@ -1,46 +1,114 @@
 {
   "type": "system/SIMOS/Blueprint",
   "name": "MongoDataSource",
-  "description": "Blueprint for a MongoDB type DataSource",
+  "description": "BP of a MongoDataSource",
   "attributes": [
     {
-      "name": "documentType",
-      "type": "string"
-    },
-    {
+      "default": "",
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
       "name": "name",
+      "description": "Name of DataSource",
       "type": "string"
     },
     {
-      "name": "hostname",
+      "default": "blueprints",
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
+      "name": "documentType",
+      "description": "blueprints or entities. Replace with enum",
       "type": "string"
     },
     {
+      "default": "",
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
+      "name": "host",
+      "description": "Hostname of server",
+      "type": "string"
+    },
+    {
+      "default": 27017,
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
       "name": "port",
       "type": "integer"
     },
     {
+      "default": "",
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
       "name": "username",
+      "description": "credentials: username",
       "type": "string"
     },
     {
-      "type": "string",
-      "name": "password"
+      "default": "",
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
+      "name": "password",
+      "description": "credentials: password",
+      "type": "string"
     },
     {
-      "type": "boolean",
-      "name": "tls"
+      "default": false,
+      "dimensions": "",
+      "optional": true,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
+      "name": "tls",
+      "description": "tls connection to host?",
+      "type": "boolean"
     },
     {
-      "type": "string",
-      "name": "database"
+      "default": "dmt",
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
+      "name": "database",
+      "description": "Name of database on server. Does not need to exist.",
+      "type": "string"
     },
     {
-      "type": "string",
-      "name": "collection"
+      "default": "dmt",
+      "dimensions": "",
+      "optional": false,
+      "contained": true,
+      "enumType": {
+        "selected": ""
+      },
+      "name": "collection",
+      "description": "name of mongo collection in database. Does not need to exist",
+      "type": "string"
     }
-  ],
-  "storageRecipes": [],
-  "uiRecipes": []
+  ]
 }
-

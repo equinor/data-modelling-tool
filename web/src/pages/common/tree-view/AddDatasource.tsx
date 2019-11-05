@@ -44,13 +44,15 @@ export default ({ documentType }: Props) => {
               axios
                 .post(api.dataSourcesPost(data.name), data)
                 .then((res: any) => {
-                  NotificationManager.success('created datasource' + data.name)
+                  NotificationManager.success(`Created datasource ${data.name}`)
                   setShowModal(false)
                   //@todo fix when endpoint is ready.
                   // dispatch(EntitiesActions.addDatasource(res.data))
                 })
                 .catch(e => {
-                  NotificationManager.error('failed to create datasource')
+                  NotificationManager.error(
+                    `Failed to create datasource ${data.name}`
+                  )
                   console.log(e)
                 })
             }}

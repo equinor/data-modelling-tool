@@ -43,7 +43,7 @@ class DataSource:
         self.port = data_source_dict["port"]
         self.username = data_source_dict["username"]
         self.password = data_source_dict["password"]
-        self.tls = data_source_dict["tls"]
+        self.tls = data_source_dict.get("tls", False)
         self.name = data_source_dict["name"]
         self.database = data_source_dict["database"]
         self.collection = data_source_dict["collection"]
