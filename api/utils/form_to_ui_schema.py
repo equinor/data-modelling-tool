@@ -85,11 +85,26 @@ DEFAULT_PREVIEW_UI_RECIPE = {
 
 DEFAULT_EDIT_UI_RECIPE = {"type": "system/SIMOS/UiRecipe", "name": "EDIT", "description": "", "attributes": []}
 
+DEFAULT_CREATE_UI_RECIPE = {
+    "type": "system/SIMOS/UIRecipe",
+    "name": "DEFAULT_CREATE",
+    "description": "",
+    "attributes": [
+        {"name": "attributes", "contained": False},
+        {"name": "type", "contained": False},
+        {"name": "storageRecipes", "contained": False},
+        {"name": "uiRecipes", "contained": False},
+    ],
+}
+
 
 def form_to_ui_schema(blueprint, ui_recipe_name=None):
     result = {}
 
     ui_recipes = blueprint.ui_recipes
+
+    if not find_attribute("DEFAULT_CREATE", ui_recipes):
+        ui_recipes.append(DEFAULT_CREATE_UI_RECIPE)
 
     if not find_attribute("PREVIEW", ui_recipes):
         ui_recipes.append(DEFAULT_PREVIEW_UI_RECIPE)
