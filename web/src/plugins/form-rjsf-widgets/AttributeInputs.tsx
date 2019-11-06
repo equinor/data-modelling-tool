@@ -69,7 +69,7 @@ export const NumberInput = (props: NumberInputProps) => {
       <input
         type="number"
         name={name}
-        value={value || ''}
+        value={value}
         onChange={event => onChange(attribute, event.target.value)}
       />
     </>

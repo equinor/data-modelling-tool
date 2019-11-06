@@ -80,6 +80,12 @@ export function parseAttributeDefault(
       ;(attribute as any).default =
         attribute.default.toLowerCase() === 'false' ? false : true
     }
+    if (attribute.type === 'integer' && attribute.default !== undefined) {
+      ;(attribute as any).default = Number(attribute.default)
+    }
+    if (attribute.type === 'number' && attribute.default !== undefined) {
+      ;(attribute as any).default = Number(attribute.default)
+    }
     //@todo add other default types.
   } else {
     // console.warn(

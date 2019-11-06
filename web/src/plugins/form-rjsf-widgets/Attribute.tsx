@@ -93,6 +93,17 @@ export const AttributeWidget = (props: Props) => {
               if (selectedType === DataType.BLUEPRINT) {
                 return null
               }
+              if (selectedType === DataType.STRING) {
+                return (
+                  <AttributeWrapper key={name}>
+                    <TextInput
+                      attribute={blueprintAttribute}
+                      value={value}
+                      onChange={onChange}
+                    />
+                  </AttributeWrapper>
+                )
+              }
               if (selectedType === DataType.BOOLEAN) {
                 return (
                   <AttributeWrapper key={name}>

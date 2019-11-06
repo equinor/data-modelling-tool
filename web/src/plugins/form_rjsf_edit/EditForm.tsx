@@ -45,6 +45,9 @@ export const EditPlugin = (props: Props) => {
                 hidden: () => <div />,
                 readonly: ReadOnly,
               }}
+              onChange={formData => {
+                console.log(formData)
+              }}
               onSubmit={props.onSubmit}
             />
           </div>
