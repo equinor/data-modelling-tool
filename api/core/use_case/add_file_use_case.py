@@ -86,6 +86,7 @@ class AddFileUseCase(uc.UseCase):
             return res.ResponseSuccess(parent)
         else:
             # TODO: Set all data
+            # TODO: Use a <Template>.from_dict({...})
             file = DTO(data={"name": name, "description": description, "type": type})
             getattr(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
             self.document_repository.add(file)

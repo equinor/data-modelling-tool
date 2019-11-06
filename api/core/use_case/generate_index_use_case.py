@@ -72,6 +72,8 @@ class Tree:
                 if not hasattr(document, "uid"):
                     document.uid = ref["_id"]
                 documents.append(document)
+            elif isinstance(ref, DTO):
+                documents.append(Entity({**ref.data.to_dict(), "uid": ref.uid}))
 
         return documents
 
@@ -137,6 +139,8 @@ class Tree:
 
     def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, models: List):
 
+        # FIXME: Check that document is a reference
+        document = self.document_repository.get(document.uid)
         is_package = document.type == DMT.PACKAGE.value
         parent_is_data_source = parent_node.document is None
         attribute_nodes = []

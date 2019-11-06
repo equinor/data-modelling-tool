@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import os
-from collections import Iterable
+from collections.abc import Iterable
 from pathlib import Path
 from types import CodeType
 from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
@@ -10,6 +10,7 @@ import stringcase
 from jinja2 import Template
 
 from classes.data_source import DataSource, get_client
+from config import Config
 from core.repository.interface.document_repository import DocumentRepository
 
 T = TypeVar("T")
@@ -59,12 +60,16 @@ def get_simple_types() -> str:
     return f"[{', '.join(type_.__name__ for type_ in simple_types)}]"
 
 
-def get_unprocessed(schema: Dict) -> Dict:
-    return {
-        key.strip("__"): get_unprocessed(value) if isinstance(value, dict) else value
-        for key, value in schema.items()
-        if f"__{key}__" not in schema
-    }
+def get_unprocessed(schema: Dict[str, Any]) -> Dict:
+    _schema = {}
+    for key, value in schema.items():
+        if f"__{key}__" not in schema:
+            if isinstance(value, dict):
+                value = get_unprocessed(value)
+            elif isinstance(value, type):
+                value = get_unprocessed(value.__schema__)
+            _schema[key.strip("__")] = value
+    return _schema
 
 
 def unpack_if_not_simple(value: str, _type: type) -> str:
@@ -80,6 +85,10 @@ def get_name(attr: Attribute) -> str:
 
 def get_name_of_list_class(attr: Attribute) -> str:
     return "__" + stringcase.pascalcase(f"{get_name(attr)}_container")
+
+
+def get_name_of_metaclass(schema: Dict[str, Any]) -> str:
+    return f"_{schema['name']}Template"
 
 
 def to_snake_case(name: str) -> str:
@@ -191,6 +200,10 @@ class Attributes:
         return (self.required + self.optional).__iter__()
 
     @property
+    def ordered(self):
+        return self._attributes
+
+    @property
     def has_attributes(self):
         return any(attribute.name == "attributes" for attribute in self)
 
@@ -279,6 +292,7 @@ class Factory:
             get_simple_types,
             self.type_check,
             get_name_of_list_class,
+            get_name_of_metaclass,
         ]
         self.to_be_compiled = set()
 
@@ -296,6 +310,7 @@ class Factory:
             repository = self._template_repository.__class__(get_client(DataSource(data_source_id)))
             return repository.find(filter={"name": name}, raw=True)
 
+    # noinspection GrazieInspection
     def class_from_schema(self, schema):
         # with open(f'{Path(__file__).parent}/schema.jinja2') as f:
         #     template = "\n".join(f.readlines())
@@ -307,7 +322,7 @@ import stringcase
 from core.domain.dto import DTO
 
 
-class {{ schema.name }}Template(type):
+class {{ get_name_of_metaclass(schema) }}(type):
     def __new__(metacls, name, bases, attrs):
         cls = type(name, bases, attrs)
         {%- for key, value in schema.items() if not is_internal(schema, key) %}
@@ -317,6 +332,7 @@ class {{ schema.name }}Template(type):
 
         cls._type = "{{ schema.type }}"
 
+        @property
         def get_type(cls) -> Union[type, str]:
             try:
                 return {{ type_name(schema.type) }}
@@ -339,6 +355,9 @@ class {{ schema.name }}Template(type):
         @property
         def get_{{ variable_name }}(cls):
             return [
+            {%- if variable_name == "attributes" %}
+            {%- set value = value.ordered %}
+            {%- endif %}
             {%- for attr in value %}
                 __get_{{ variable_name }}_type()({{ extract_casting(attr) }}),
             {%- endfor %}
@@ -368,7 +387,7 @@ class {{ schema.name }}Template(type):
         return bound_method
 
 
-class {{ schema.name }}(metaclass={{ schema.name }}Template):
+class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 {%- if schema.attributes %}
     {%- for attr in schema.attributes %}
     {%- if attr.is_list %}
@@ -422,13 +441,16 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         return {{ get_unprocessed(schema) }}
     {%- if schema.attributes.has_attributes %}
 
+{#
     def __new__(cls, {{ signature(schema.attributes) }}):
         # TODO?: Implement / move explicit properties to be dynamically generated.
         instance = super({{ schema.name }}, cls).__new__(cls)
         return instance
+#}
     {%- endif %}
 
-    {% for attr in schema.attributes %}
+    {%- for attr in schema.attributes %}
+
     @property
     def {{ get_name(attr) }}(self) -> {{ type_annotation(attr) }}:
         return self._{{ get_name(attr) }}
@@ -506,7 +528,6 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         {%- endif %}
         return instance
 {% endif %}
-
     @classmethod
     def from_dict(cls, adict):
         from core.domain.dto import DTO
@@ -554,7 +575,7 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         return _attributes
 
     def write_domain(self, template_type: str) -> None:
-        module: Path = Path(__file__).parent / "dynamic_models"
+        module: Path = Path(__file__).parent / Config.DYNAMIC_MODELS
         if not module.exists():
             os.mkdir(str(module.absolute()))
         self.dump_site = str(module / "__init__.py")
