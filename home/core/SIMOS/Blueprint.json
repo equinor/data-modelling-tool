@@ -70,6 +70,10 @@
       "description": "",
       "attributes": [
         {
+          "name": "name",
+          "disabled": true
+        },
+        {
           "name": "type",
           "disabled": true
         },
@@ -152,6 +156,10 @@
       "description": "",
       "plugin": "EDIT_PLUGIN",
       "attributes": [
+        {
+          "name": "name",
+          "field": "readonly"
+        },
         {
           "name": "description",
           "widget": "textarea"
