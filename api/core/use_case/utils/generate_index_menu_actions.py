@@ -5,7 +5,7 @@ from core.domain.package import Package
 from core.enums import DMT
 
 
-def get_move_document_menu_item(data_source_id: str, old_path: str, document: DTO):
+def get_rename_document_menu_item(data_source_id: str, start_path: str, document: DTO):
     return {
         "label": "Rename",
         "action": "UPDATE",
@@ -13,7 +13,7 @@ def get_move_document_menu_item(data_source_id: str, old_path: str, document: DT
             "url": f"/api/v2/explorer/move-file",
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
             "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/RenameAction",
-            "request": {"source": old_path, "destination": "${newPath}"},
+            "request": {"source": f"{start_path}/{document.name}", "destination": f"{start_path}/" + "${name}"},
         },
     }
 

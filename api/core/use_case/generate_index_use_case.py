@@ -22,7 +22,7 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_node_on_select,
     get_not_contained_menu_action,
     get_runnable_menu_action,
-    get_move_document_menu_item,
+    get_rename_document_menu_item,
     get_create_root_package_menu_item,
 )
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
@@ -174,7 +174,7 @@ class Tree:
 
         # Every node gets an delete and rename action
         node.menu_items.append(
-            get_move_document_menu_item(data_source_id, old_path=node.start_path, document=document)
+            get_rename_document_menu_item(data_source_id, start_path=parent_node.start_path, document=document)
         )
         node.menu_items.append(
             get_delete_document_menu_item(
