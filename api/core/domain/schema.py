@@ -302,7 +302,7 @@ class Factory:
         class_template = Template(
             """\
 from __future__ import annotations
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 import stringcase
 from core.domain.dto import DTO
 
@@ -434,9 +434,17 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         return self._{{ get_name(attr) }}
 
     @{{ get_name(attr) }}.setter
-    def {{ get_name(attr) }}(self, value: {{ type_annotation(attr) }}):
+    def {{ get_name(attr) }}(self, value: {{ type_annotation(attr, may_be_dict=True) }}):
         {% if attr.cast -%}
         from core.domain.dto import DTO
+        {%- if attr.is_list %}
+        if isinstance(value, list) and all(isinstance(element, dict) for element in value):
+        {%- else %}
+        if isinstance(value, dict):
+        {%- endif %}
+            # TODO: Fill in missing keys, if they can be obtained
+            # E.g. `self.type`
+            value = {{ cast(attr, "value") }}
         {% if attr.is_list -%}
         if not (isinstance(value, list) and all({{ type_check(attr, "val") }} for val in value)):
         {%- else -%}
@@ -555,7 +563,7 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
                 """\
 # flake8: noqa
 from __future__ import annotations
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 import stringcase
 from core.domain.dto import DTO
 """
@@ -577,10 +585,10 @@ from core.domain.dto import DTO
         check = f"{f'{check} or ' if check else ''}isinstance({value_name}, {type_name})"
         return check
 
-    def type_annotation(self, attr: Attribute) -> str:
+    def type_annotation(self, attr: Attribute, may_be_dict: bool = False) -> str:
         annotation = f"{self.type_name(attr)}"
         if attr.type not in simple_types:
-            annotation = f"Union[{annotation}, DTO[{annotation}]]"
+            annotation = f"Union[{annotation}, DTO[{annotation}]{', Dict[str, Any]' if may_be_dict else ''}]"
         if attr.is_list:
             annotation = f"List[{annotation}]"
         if attr.optional:
@@ -613,12 +621,14 @@ from core.domain.dto import DTO
             name = get_name(attr)
         return f"{self.type_name(attr)}{'.from_dict' if attr.type not in simple_types else ''}({name})"
 
-    def cast(self, attr: Attribute) -> str:
+    def cast(self, attr: Attribute, name: Optional[str] = None) -> str:
         if not attr.cast:
+            if name is not None:
+                return name
             return get_name(attr)
         if attr.is_list:
             return f"self.{get_name_of_list_class(attr)}({self.cast_as(attr, 'val')} for val in {get_name(attr) if name is None else name})"
-        return f"{self.cast_as(attr)}"
+        return f"{self.cast_as(attr, name)}"
 
     def compile(self, schema: Dict) -> type:
         definition = self.class_from_schema(schema)
