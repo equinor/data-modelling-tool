@@ -603,10 +603,14 @@ from core.domain.dto import DTO
 
     def get_default_value(self, attr: Attribute) -> str:
         if attr.type in simple_types or attr.default is None:
-            if attr.type is str and attr.default is not None:
-                return f'"{attr.default}"'
+            if attr.default is not None:
+                if attr.type is str:
+                    return f'"{attr.default}"'
+                elif isinstance(attr.default, str):
+                    if attr.type is bool:
+                        return {"false": False, "true": True}[attr.default.lower()]
             return attr.default
-        return f"{self.type_name(attr)}('{attr.default}')"
+        return f"{self.type_name(attr)}('''{attr.default}''')"
 
     def variable_annotation(self, attr: Attribute) -> str:
         return f"{get_name(attr)}: {self.type_annotation(attr)}" + (
