@@ -201,8 +201,51 @@ def remove_imports(definition: str) -> str:
     )
 
 
+def basic_types() -> Dict[str, type]:
+    return {"string": str, "boolean": bool, "integer": int, "number": float}
+
+
+TypeMapping = Dict[str, type]
+
+
+class TypeCache:
+    def __init__(self, permanent: TypeMapping, fleeting: Optional[TypeMapping] = None):
+        self._permanent = permanent
+        self._fleeting = fleeting or {}
+        self._static = basic_types()
+
+    def __getitem__(self, item: str) -> type:
+        if self._is_template_internal(item):
+            return self._permanent[item]
+        elif self._is_static(item):
+            return self._static[item]
+        else:
+            return self._fleeting[item]
+
+    def __setitem__(self, key: str, value: type):
+        if self._is_template_internal(key):
+            self._permanent[key] = value
+        else:
+            self._fleeting[key] = value
+
+    def __contains__(self, item: str):
+        return any(item in collection for collection in self._collections)
+
+    @property
+    def _collections(self):
+        return self._permanent, self._fleeting, self._static
+
+    @staticmethod
+    def _is_static(template_type: str) -> bool:
+        return "/" not in template_type
+
+    @staticmethod
+    def _is_template_internal(template_type: str) -> bool:
+        return template_type.startswith("system/")
+
+
 class Factory:
-    _types: Dict[str, type] = {"string": str, "boolean": bool, "integer": int, "number": float}
+    _internal_types: Dict[str, type] = {}
 
     def __init__(
         self,
@@ -211,6 +254,7 @@ class Factory:
         dump_site: Optional[str] = None,
         read_from_file: bool = False,
     ):
+        self._types = TypeCache(self._internal_types)
         self._template_repository = template_repository
         self._read_from_file = read_from_file
         self._create_instance = _create_instance
@@ -237,6 +281,12 @@ class Factory:
             get_name_of_list_class,
         ]
         self.to_be_compiled = set()
+
+    @classmethod
+    def reset_cache(cls):
+        del cls._internal_types
+        cls._internal_types = {}
+        cls._types = TypeCache(cls._internal_types)
 
     def _get_schema(self, template_type: str) -> dict:
         if self._read_from_file:
