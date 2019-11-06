@@ -14,6 +14,7 @@ from core.enums import DMT, SIMOS
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.use_case.utils.find_parent import find_parent
 from core.use_case.utils.generate_index_menu_actions import (
     get_contained_menu_action,
     get_delete_document_menu_item,
@@ -24,6 +25,7 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_runnable_menu_action,
     get_rename_document_menu_item,
     get_create_root_package_menu_item,
+    get_move_document_menu_item,
 )
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
@@ -175,6 +177,9 @@ class Tree:
         # Every node gets an delete and rename action
         node.menu_items.append(
             get_rename_document_menu_item(data_source_id, start_path=parent_node.start_path, document=document)
+        )
+        node.menu_items.append(
+            get_move_document_menu_item(data_source_id, start_path=parent_node.start_path, document=document)
         )
         node.menu_items.append(
             get_delete_document_menu_item(
@@ -391,6 +396,12 @@ class GenerateIndexUseCase:
         ).to_dict()
 
         del data[data_source_id]
+
+        # TODO: Fix this better, to find parent id
+        for root_package in self.document_repository.list({"isRoot": True}):
+            parent_id = find_parent(root_package, document_id, self.document_repository)
+            if parent_id:
+                data[document_id]["parentId"] = parent_id
 
         # Only return sub-part
         if attribute:

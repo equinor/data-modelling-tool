@@ -9,7 +9,7 @@ export const createAction = (
   showError: Function,
   createNodes: Function
 ) => {
-  const createhandleSubmitConfig = () => {
+  const createHandleSubmitConfig = () => {
     return (formData: any) => {
       const data = processFormData(action.data.request, formData)
       Api2.post({
@@ -37,6 +37,6 @@ export const createAction = (
         onError,
       })
     },
-    onSubmit: createhandleSubmitConfig(),
+    onSubmit: createHandleSubmitConfig(),
   }
 }

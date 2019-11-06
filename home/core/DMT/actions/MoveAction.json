@@ -1,0 +1,11 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "MoveAction",
+  "description": "This describes a move action",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "destination"
+    }
+  ]
+}

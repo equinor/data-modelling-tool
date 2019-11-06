@@ -46,6 +46,7 @@ const createNodes = (props: CreateNodesProps) => {
       const parentId = nodes[0]['parentId']
         ? nodes[0]['parentId']
         : node.nodeData.nodeId
+
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
       // Connect new nodes to parent in tree
@@ -70,7 +71,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return createAction(action, node, setShowModal, showError, createNodes)
     }
     case ContextMenuActions.UPDATE: {
-      return updateAction(action, node, setShowModal, showError)
+      return updateAction(action, node, setShowModal, showError, createNodes)
     }
     case ContextMenuActions.DELETE: {
       return deleteAction(action, node, setShowModal, showError, layout)

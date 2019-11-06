@@ -70,21 +70,18 @@ interface WithContextMenuModalProps {
   children: any
 }
 
-interface ActionData {
-  templateRef?: string
-  label: string
-}
-
 interface Action {
-  data: ActionData
+  data: any
   type: string
+  label: string
 }
 
 export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
   const { node, render, layout, children } = props
   const [action, setAction] = useState<Action>({
-    data: { label: '' },
+    data: {},
     type: '',
+    label: '',
   })
   const [showModal, setShowModal] = useState(false)
 
@@ -103,15 +100,20 @@ export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
     <>
       <Modal
         open={showModal}
-        title={action.data ? action.data.label : action.type}
+        title={action.label}
         toggle={() => setShowModal(!showModal)}
       >
         {render({ action, actionConfig, setShowModal })}
       </Modal>
       <ContextMenu
         id={node.nodeData.nodeId}
-        onClickContextMenu={(id: any, action: string, data: { label: '' }) => {
-          setAction({ type: action, data })
+        onClickContextMenu={(
+          id: any,
+          action: string,
+          data: { label: '' },
+          label: string
+        ) => {
+          setAction({ type: action, data, label })
           setShowModal(!showModal)
         }}
         menuItems={menuItems}

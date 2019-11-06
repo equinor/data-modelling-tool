@@ -42,6 +42,6 @@ class MongoDocumentRepository(MongoRepositoryBase, DocumentRepository):
     def delete(self, document: DTO) -> None:
         self.client().delete(document.uid)
 
-    def list(self):
-        # return [D.from_dict(document) for document in self.c().find(filters={})]
-        raise NotImplementedError
+    def list(self, filters):
+        documents = self.client().find(filters=filters)
+        return [DTO(r, uid=r["_id"]) for r in documents]

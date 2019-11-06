@@ -47,7 +47,7 @@ class MoveFileUseCase(uc.UseCase):
         # TODO: Replace with :=
         different_parent = source.parent != destination.parent
         if different_parent:
-            new_parent_document = get_document_by_ref(f"{destination_data_source_uid}/{str(destination.parent)}")
+            new_parent_document = get_document_by_ref(f"{str(destination.parent)}")
             if not new_parent_document:
                 raise EntityNotFoundException(request_object.destination)
 
@@ -88,6 +88,7 @@ class MoveFileUseCase(uc.UseCase):
         if different_parent:
             new_parent_document.data["content"].append(reference)
             destination_document_repository.update(new_parent_document)
+            source_document_repository.update(old_parent_document)
         else:
             old_parent_document.data["content"].append(reference)
             source_document_repository.update(old_parent_document)

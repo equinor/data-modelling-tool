@@ -14,6 +14,22 @@ def get_rename_document_menu_item(data_source_id: str, start_path: str, document
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
             "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/RenameAction",
             "request": {"source": f"{start_path}/{document.name}", "destination": f"{start_path}/" + "${name}"},
+            "nodeUrl": f"/api/v3/index/{data_source_id}",
+        },
+    }
+
+
+def get_move_document_menu_item(data_source_id: str, start_path: str, document: DTO):
+    return {
+        "label": "Move",
+        "action": "UPDATE",
+        "data": {
+            "url": f"/api/v2/explorer/move-file",
+            "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
+            "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/MoveAction",
+            "request": {"source": f"{start_path}/{document.name}", "destination": "${destination}"},
+            "formData": {"destination": f"{start_path}/{document.name}"},
+            "nodeUrl": f"/api/v3/index/{data_source_id}",
         },
     }
 

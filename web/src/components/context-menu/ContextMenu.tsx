@@ -95,13 +95,14 @@ const IconWrapper = styled.span`
 
 const DmtMenuItem = (props: DmtMenuItemProps) => {
   const { id, onClickContextMenu, menuItem } = props
+
   return (
     <MenuItem
       data={{ action: menuItem.action }}
       onClick={e => {
         // click on menu item. Prevent onClick to propagate to components beneath
         e.stopPropagation()
-        onClickContextMenu(id, menuItem.action, menuItem.data)
+        onClickContextMenu(id, menuItem.action, menuItem.data, menuItem.label)
       }}
       attributes={attributes}
     >
