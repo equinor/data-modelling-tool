@@ -110,7 +110,7 @@ export default class Api2 {
       .then(
         axios.spread((schemaRes, dataRes) => {
           onSuccess({
-            document: dataRes.data.document.data,
+            document: dataRes.data.document,
             template: schemaRes.data,
           })
         })
