@@ -9,7 +9,6 @@ export function getBooleanValue(
   blueprintAttribute: BlueprintAttribute
 ): boolean {
   const defaultValue = blueprintAttribute.default
-  console.log(blueprintAttribute.name, defaultValue, value)
   if (value === undefined) {
     //use default value
     if (typeof defaultValue === 'string' && defaultValue) {
@@ -53,14 +52,11 @@ export const BooleanWidget = (props: BoolDefaultInput) => {
 
   const booleanValue = getBooleanValue(value, attribute)
   return (
-    <AttributeWrapper>
-      {attribute.name}:{' '}
-      <Switch
-        onChange={onChangeBool}
-        checked={booleanValue}
-        height={20}
-        width={50}
-      />
-    </AttributeWrapper>
+    <Switch
+      onChange={onChangeBool}
+      checked={booleanValue}
+      height={20}
+      width={50}
+    />
   )
 }

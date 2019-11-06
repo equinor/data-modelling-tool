@@ -47,21 +47,13 @@
     },
     {
       "name": "enumType",
-      "type": "system/SIMOS/Enum",
+      "type": "string",
       "optional": true,
-      "default": null,
+      "default": "",
       "contained": true
     }
   ],
   "storageRecipes": [],
-  "uiRecipes": [
-    {
-      "type": "system/SIMOS/UIRecipe",
-      "name": "EDIT",
-      "description": "",
-      "field": "attribute",
-      "attributes": []
-    }
-  ]
+  "uiRecipes": []
 }
 
