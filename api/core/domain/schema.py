@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import hashlib
+import hmac
 import os
 from collections.abc import Iterable
 from pathlib import Path
@@ -125,6 +127,38 @@ def snakify(schema: Dict[str, Any]) -> Dict[str, Any]:
             value = [snakify(val) for val in value]
         _dict[f"{to_snake_case(key)}"] = value
     return _dict
+
+
+class BinaryRepresentation:
+    def __init__(self, binary: bytes, signature: str):
+        self.binary = binary
+        self.signature = signature
+
+
+def get_signature(key, msg) -> str:
+    return hmac.new(key, msg, digestmod=hashlib.sha3_256).hexdigest()
+
+
+def get_pickled(factory: Factory) -> BinaryRepresentation:
+    import pickle  # nosec B403; We are ONLY using it for dumping data, which is a safe usage of pickling
+    from app import app
+
+    pickeled = pickle.dumps(factory, pickle.HIGHEST_PROTOCOL)
+    signature = get_signature(app.secret_key, pickeled)
+    return BinaryRepresentation(pickeled, signature)
+
+
+def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
+    import pickle  # nosec B403; Loading UNTRUSTED content is a security risk. The data loaded is signed.
+    from app import app
+
+    expected_signature = representation.signature
+    actual_signature = get_signature(app.secret_key, representation.binary)
+    if hmac.compare_digest(expected_signature, actual_signature):
+        # Assuming the secret key is sufficiently random, reset between sessions, and that
+        # an adversary does not have access to the secret key, this should be sufficiently secure
+        return pickle.loads(representation.binary)  # nosec B301
+    return None
 
 
 class Attribute:

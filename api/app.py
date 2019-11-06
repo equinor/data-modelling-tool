@@ -1,4 +1,5 @@
 import json
+import os
 from functools import lru_cache
 
 import click
@@ -22,6 +23,7 @@ def create_app(config):
     app.register_blueprint(DataSource.blueprint)
     app.register_blueprint(Index.blueprint)
     app.register_blueprint(System.blueprint)
+    app.secret_key = os.urandom(64)
     return app
 
 
