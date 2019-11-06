@@ -560,7 +560,7 @@ import stringcase
 from core.domain.dto import DTO
 """
             )
-        self.create(template_type, _create_instance=False)
+        return self.create(template_type, _create_instance=False)
 
     def type_name(self, attr: Union[Attribute, str, type]) -> str:
         if isinstance(attr, str):
@@ -637,7 +637,11 @@ from core.domain.dto import DTO
         """ TODO: Function similarly to create, but without "self.template_repository" """
         pass
 
-    def create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
+    def create(
+        self, template_type: str, _create_instance: bool = False, compile: bool = True, write_domain: bool = False
+    ):
+        if write_domain:
+            return self.write_domain(template_type)
         try:  # FIXME: Deal with the (real) possibility of the type not being fully formed (`type(<name>, (), schema)`
             return self._types[template_type]
         except KeyError:
