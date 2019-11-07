@@ -5,7 +5,6 @@
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     }
   ]

@@ -54,7 +54,6 @@ Feature: Explorer - Add file
               "name":"new_document"
             }
           ],
-          "dependencies":[],
           "isRoot":true,
           "storageRecipes":[]
        }

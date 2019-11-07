@@ -23,6 +23,20 @@
       "type": "system/DMT/Entity",
       "name": "content",
       "dimensions": "*"
+    },
+    {
+      "type": "system/SIMOS/StorageRecipe",
+      "dimensions": "*",
+      "name": "storageRecipes",
+      "optional": true,
+      "contained": true
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "dimensions": "*",
+      "name": "uiRecipes",
+      "optional": true,
+      "contained": true
     }
   ],
   "storageRecipes": [
@@ -33,6 +47,7 @@
       "attributes": [
         {
           "name": "content",
+          "type": "system/DMT/Entity",
           "contained": false
         }
       ]
@@ -46,18 +61,22 @@
       "attributes": [
         {
           "name": "description",
+          "type": "string",
           "widget": "textarea"
         },
         {
           "name": "isRoot",
+          "type": "boolean",
           "widget": "hidden"
         },
         {
           "name": "type",
+          "type": "string",
           "contained": false
         },
         {
           "name": "content",
+          "type": "system/DMT/Entity",
           "contained": false
         }
       ]

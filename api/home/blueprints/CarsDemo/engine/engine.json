@@ -1,24 +1,31 @@
 {
   "type": "system/SIMOS/Blueprint",
   "name": "Engine",
-  "description": "This describes a engine",
+  "description": "This describes an engine",
   "attributes": [
     {
       "type": "string",
-      "value": "",
       "name": "name"
     },
     {
       "type": "string",
-      "value": "",
+      "name": "type"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "string",
       "name": "power"
     },
     {
       "type": "SSR-DataSource/CarsDemo/engine/FuelPump",
-      "name": "FuelPump"
+      "name": "FuelPump",
+      "optional": true
     }
   ],
-  "storageRecipe": [
+  "storageRecipes": [
     {
       "name": "DefaultStorageRecipe",
       "type": "system/SIMOS/StorageRecipe",
@@ -26,6 +33,7 @@
       "attributes": [
         {
           "name": "fuel_pump",
+          "type": "SSR-DataSource/CarsDemo/subdir/subdir2/FuelPump",
           "contained": false
         }
       ]

@@ -9,6 +9,10 @@
     },
     {
       "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
       "name": "description"
     },
     {

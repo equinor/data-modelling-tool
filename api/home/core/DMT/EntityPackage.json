@@ -25,7 +25,7 @@
     },
     {
       "contained": true,
-      "default": false,
+      "default": "false",
       "name": "isRoot",
       "optional": false,
       "type": "boolean"
@@ -55,10 +55,12 @@
       "attributes": [
         {
           "contained": false,
+          "type": "system/DMT/EntityPackage",
           "name": "packages"
         },
         {
           "contained": false,
+          "type": "system/DMT/Entity",
           "name": "documents"
         }
       ]
@@ -72,22 +74,27 @@
       "attributes": [
         {
           "name": "description",
+          "type": "string",
           "widget": "textarea"
         },
         {
           "name": "isRoot",
+          "type": "boolean",
           "widget": "hidden"
         },
         {
           "name": "type",
+          "type": "string",
           "widget": "hidden"
         },
         {
           "name": "packages",
+          "type": "system/DMT/EntityPackage",
           "contained": false
         },
         {
           "name": "documents",
+          "type": "system/DMT/Entity",
           "contained": false
         }
       ]
@@ -99,22 +106,27 @@
       "attributes": [
         {
           "name": "description",
+          "type": "string",
           "widget": "textarea"
         },
         {
           "name": "packages",
+          "type": "system/DMT/EntityPackage",
           "contained": false
         },
         {
           "name": "documents",
+          "type": "system/DMT/EntityPackage",
           "contained": false
         },
         {
           "name": "isRoot",
+          "type": "boolean",
           "widget": "hidden"
         },
         {
           "name": "type",
+          "type": "string",
           "widget": "hidden"
         }
       ]
