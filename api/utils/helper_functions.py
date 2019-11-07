@@ -32,4 +32,4 @@ def get_package_and_path(reference: str) -> Tuple[str, Union[list, None]]:
 
 
 def schemas_location() -> Path:
-    return Path(__file__).parent.parent.parent / "home" / "core"
+    return Path(__file__).parent.parent.parent / "api/home" / "core"
