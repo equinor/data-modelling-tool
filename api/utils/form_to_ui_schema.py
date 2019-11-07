@@ -18,8 +18,8 @@ def get_attribute_config(attribute):
         config["ui:widget"] = attribute["widget"]
     if "field" in attribute:
         config["ui:field"] = attribute["field"]
-        if attribute["field"] == "collapsible":
-            config["collapse"] = {"field": "ObjectField"}
+        # if attribute["field"] == "collapsible":
+        #     config["collapse"] = {"field": "ObjectField"}
     return config
 
 
@@ -34,24 +34,25 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if not ui_attribute:
         return {}
 
-    if "options" in ui_attribute:
-        options = {}
-        for option in ui_attribute["options"]:
-            if option["name"] in ["orderable"]:
-                value = option["value"]
-                value = {"false": False, "true": True}[value.lower()]
-                options[option["name"]] = value
-        result["ui:options"] = options
+    # if "options" in ui_attribute:
+    #     options = {}
+    #     for option in ui_attribute["options"]:
+    #         if option["name"] in ["orderable"]:
+    #             value = option["value"]
+    #             value = {"false": False, "true": True}[value.lower()]
+    #             options[option["name"]] = value
+    #     result["ui:options"] = options
 
     if attribute_type in PRIMITIVES:
         return get_attribute_config(ui_attribute)
     else:
         blueprint = get_blueprint(attribute_type)
         if attribute_dimensions == "*":
-            if "field" in ui_attribute:
-                result["ui:field"] = ui_attribute["field"]
-                if ui_attribute["field"] == "collapsible":
-                    result["collapse"] = {"field": "ArrayField"}
+
+            # if "field" in ui_attribute:
+            #     result["ui:field"] = ui_attribute["field"]
+                # if ui_attribute["field"] == "collapsible":
+                #     result["collapse"] = {"field": "ArrayField"}
             attribute_ui_recipe = find_attribute(ui_attribute.get("uiRecipe", ""), blueprint.ui_recipes)
             if attribute_ui_recipe:
                 result["items"] = process_ui_recipe(attribute_ui_recipe, blueprint.attributes)

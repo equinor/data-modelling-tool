@@ -30,12 +30,14 @@ type Props = {
 export const AttributeWidget = (props: Props) => {
   let { attributes } = props.uiSchema
 
-  if (!attributes) {
-    console.error('this widget depends on a attributes list.')
-  }
 
   const initialState = { type: DataType.STRING, ...props.formData }
   const [formData, setFormData] = useState<BlueprintAttribute>(initialState)
+
+  if (!attributes) {
+    console.error('this widget depends on a attributes list.')
+    return <div>Missing blueprint attributes.</div>
+  }
   //@todo add order in uiRecipe to change order of elements in the widget.
 
   const onChange: AttributeOnChange = (
