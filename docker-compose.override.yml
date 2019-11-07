@@ -9,7 +9,7 @@ services:
       target: development
     volumes:
       - ./api/:/code
-      - ./home/:/home
+      - ./api/home/:/home
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
@@ -22,8 +22,8 @@ services:
       target: dev
     volumes:
       - ./web/src:/code/src
-      - ./home/runnable.js:/code/src/runnable.js
-      - ./home/libs:/code/src/libs
+      - ./web/runnable.js:/code/src/runnable.js
+      - ./web/libs:/code/src/libs
     environment:
       - NODE_ENV=development
     ports:

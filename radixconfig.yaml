@@ -10,9 +10,6 @@ spec:
     - name: dev
       build:
         from: master
-    - name: feature
-      build:
-        from: feature
     - name: features
       build:
         from: feature/*
@@ -48,7 +45,7 @@ spec:
               memory: "500M"
               cpu: "200m"
             limits:
-              memory: "500M"
+              memory: "501M"
               cpu: "200m"
           replicas: 1
       secrets:
