@@ -1,5 +1,6 @@
 Feature: Class generation from schema
 
+  @skip
   Scenario: There, and back again
     Given data modelling tool templates are imported
     When I create a Python class from the template "system/SIMOS/Blueprint"

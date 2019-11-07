@@ -174,18 +174,18 @@ class CreateApplicationUseCase(uc.UseCase):
 
         memory_file = io.BytesIO()
         with zipfile.ZipFile(memory_file, mode="w") as zip_file:
-            zip_all(zip_file, f"{home_path}/core/SIMOS", rel="home/core/SIMOS")
-            zip_all(zip_file, f"{home_path}/core/DMT", rel="home/core/DMT")
-            zip_all(zip_file, f"{home_path}/data_sources", rel="home/data_sources")
+            zip_all(zip_file, f"{home_path}/core/SIMOS", rel="api/home/core/SIMOS")
+            zip_all(zip_file, f"{home_path}/core/DMT", rel="api/home/core/DMT")
+            zip_all(zip_file, f"{home_path}/data_sources", rel="api/home/data_sources")
             json_data = json.dumps(remove_ids(application.data))
             binary_data = json_data.encode()
-            zip_file.writestr("home/settings.json", binary_data)
+            zip_file.writestr("api/home/settings.json", binary_data)
             runnable_file = generate_runnable_file(application.data["runnableModels"])
-            zip_file.writestr("home/runnable.js", runnable_file)
+            zip_file.writestr("web/runnable.js", runnable_file)
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             for type in application.data["blueprints"]:
                 root_package: DTO = self.document_repository.find({"name": type})
-                zip_package(zip_file, root_package, self.document_repository, f"home/blueprints/")
+                zip_package(zip_file, root_package, self.document_repository, f"api/home/blueprints/")
 
         memory_file.seek(0)
 

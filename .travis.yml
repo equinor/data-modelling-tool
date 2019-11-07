@@ -79,4 +79,4 @@ jobs:
       name: "Reset database"
       before_script: ./travis-scripts.sh pull-api
       script:
-        - doit reset_database -e=MONGO_AZURE_URI -e=ENVIRONMENT=azure
+        - docker-compose run -e ENVIRONMENT=azure api ./reset-database.sh
