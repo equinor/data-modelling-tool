@@ -608,21 +608,22 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             _attributes.add(Attribute(attribute, type=attribute_type))
         return _attributes
 
-    def write_domain(self, template_type: str) -> None:
+    def write_domain(self, template_type: str, overwrite: bool = True) -> None:
         module: Path = Path(__file__).parent / Config.DYNAMIC_MODELS
         if not module.exists():
             os.mkdir(str(module.absolute()))
         self.dump_site = str(module / "__init__.py")
-        with open(self.dump_site, "w") as f:
-            f.writelines(
-                """\
+        if overwrite:
+            with open(self.dump_site, "w") as f:
+                f.writelines(
+                    """\
 # flake8: noqa
 from __future__ import annotations
 from typing import List, Optional, Union, Any
 import stringcase
 from core.domain.dto import DTO
 """
-            )
+                )
         return self.create(template_type, _create_instance=False)
 
     def type_name(self, attr: Union[Attribute, str, type]) -> str:
