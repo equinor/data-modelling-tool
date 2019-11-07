@@ -28,7 +28,6 @@ class Package:
     def __init__(
         self,
         name: str,
-        dependencies: List[Dependency] = None,
         description: str = None,
         type: str = DMT.PACKAGE.value,
         content: List[Dict] = None,
@@ -37,7 +36,6 @@ class Package:
         self.name = name
         self.description = description
         self.type = type
-        self.dependencies = [] if not dependencies else dependencies
         self.content = [] if not content else content
         self.is_root = is_root
         self.storage_recipes = []
@@ -48,7 +46,6 @@ class Package:
             name=adict["name"],
             description=adict.get("description"),
             content=adict.get("content", ""),
-            dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
             type=adict.get("type", DMT.PACKAGE.value),
             is_root=adict.get("isRoot", "false"),
         )
@@ -69,7 +66,6 @@ class Package:
             "description": self.description,
             "type": self.type,
             "content": self.content,
-            "dependencies": [dependency.to_dict() for dependency in self.dependencies],
             "isRoot": self.is_root,
             "storageRecipes": self.storage_recipes,
         }
