@@ -103,6 +103,9 @@ function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
 
 function isExpandable(nodeType: string, children: string[]): boolean {
   switch (nodeType) {
+    case NodeType.DMT_ENTITY_PACKAGE:
+    case NodeType.DMT_PACKAGE:
+      return true
     default:
       return children.length > 0
   }
