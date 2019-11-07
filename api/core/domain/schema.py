@@ -5,7 +5,7 @@ from collections import Iterable
 from dataclasses import dataclass
 from pathlib import Path
 from types import CodeType
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 import stringcase
 from jinja2 import Template
@@ -48,6 +48,16 @@ def _get_definition(schema: Union[Dict, type], name: str) -> Optional[str]:
             if not any(isinstance(attr, type) for type in simple_types) and get_attribute(attr, "name") == name:
                 return get_attribute(attr, "type")
     return None
+
+
+def is_simple_type(element) -> bool:
+    if isinstance(element, object):
+        return type(element) in simple_types
+    return element in simple_types
+
+
+def get_simple_types() -> str:
+    return f"[{', '.join(type_.__name__ for type_ in simple_types)}]"
 
 
 def get_unprocessed(schema: Dict) -> Dict:
@@ -192,6 +202,9 @@ class Factory:
             is_internal,
             extract_casting,
             snakify,
+            is_simple_type,
+            get_simple_types,
+            self.type_check,
         ]
         self.to_be_compiled = set()
 
@@ -211,6 +224,7 @@ class Factory:
 from __future__ import annotations
 from typing import List, Optional, Union
 import stringcase
+from core.domain.dto import DTO
 
 
 class {{ schema.name }}Template(type):
@@ -326,10 +340,11 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
     @{{ get_name(attr) }}.setter
     def {{ get_name(attr) }}(self, value: {{ type_annotation(attr) }}):
         {% if attr.cast -%}
+        from core.domain.dto import DTO
         {% if attr.is_list -%}
-        if not (isinstance(value, list) and all(isinstance(val, {{ type_name(attr) }}) for val in value)):
+        if not (isinstance(value, list) and all({{ type_check(attr, "val") }} for val in value)):
         {%- else -%}
-        if not isinstance(value, {{ type_name(attr) }}):
+        if not ({{ type_check(attr, "value") }}):
         {%- endif %}
             {%- if attr.optional %}
             if value is not None:
@@ -342,6 +357,7 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
     {%- endfor %}
 
     def to_dict(self=None):
+        from core.domain.dto import DTO
         # Hack to be able to call `to_dict()` of a class instance
         if self is None:
             self = {{ schema.name }}
@@ -361,6 +377,8 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
                 return {self._to_camel_case(key): get_representation(val) for key, val in value.items()}
             elif callable(value):
                 value = value()
+            elif isinstance(value, DTO):
+                value = {**value.data.to_dict(), "uid": value.uid}
             try:
                 value = value.to_dict()
             except AttributeError:
@@ -372,24 +390,11 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
             "{{ to_camel_case(attr.name) }}": get_representation(self, "{{ get_name(attr) }}"),
             {%- endfor %}
         }
-
-    @classmethod
-    def from_dict(cls, adict):
-        _type = adict.get("type", cls._type)
-        if cls._type != _type:
-            raise ValueError(f"The given type, {_type}, does not match the class' type, {cls._type}")
-        kwargs = {
-            f"{cls._to_snake_case(key)}": value
-            for key, value in adict.items()
-        }
-        return cls(**kwargs)
 {% else %}
     def __new__(cls, *args, **kwargs):
         instance = {{ type_name(schema.type) }}(**{
         {%- for key, value in schema.items() %}
-            {%- if key not in ['type'] %}
             "{{ to_snake_case(key) }}": {% if value is string %}"{{ value }}"{% else %}{{ value }}{% endif %},
-            {%- endif %}
         {%- endfor %}
         })
         {%- if schema.selected -%}
@@ -397,6 +402,28 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         {%- endif %}
         return instance
 {% endif %}
+
+    @classmethod
+    def from_dict(cls, adict):
+        from core.domain.dto import DTO
+        id_keys = ["_id", "id", "uid"]
+        is_dto = any(key in id_keys for key in adict.keys())
+        kwargs = {
+            f"{cls._to_snake_case(key)}": value
+            for key, value in adict.items()
+            if key not in id_keys
+        }
+        model = cls(**kwargs)
+        if is_dto:
+            uid = None
+            for key in id_keys:
+                try:
+                    uid = adict[key]
+                except KeyError:
+                    pass
+            model = DTO(model, uid=uid)
+        return model
+
     @staticmethod
     def _to_snake_case(value: str) -> str:
         return stringcase.snakecase(value)
@@ -450,6 +477,7 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
 from __future__ import annotations
 from typing import List, Optional, Union
 import stringcase
+from core.domain.dto import DTO
 """
             )
         self.create(template_type, _create_instance=False)
@@ -461,8 +489,18 @@ import stringcase
             return attr.__name__
         return attr.type.__name__
 
+    def type_check(self, attr: Attribute, value_name: str) -> str:
+        type_name = self.type_name(attr)
+        check = ""
+        if attr.type not in simple_types:
+            check = f"(isinstance({value_name}, DTO) and isinstance({value_name}.data, {type_name}))"
+        check = f"{f'{check} or ' if check else ''}isinstance({value_name}, {type_name})"
+        return check
+
     def type_annotation(self, attr: Attribute) -> str:
         annotation = f"{self.type_name(attr)}"
+        if attr.type not in simple_types:
+            annotation = f"Union[{annotation}, DTO[{annotation}]]"
         if attr.is_list:
             annotation = f"List[{annotation}]"
         if attr.optional:
@@ -493,7 +531,7 @@ import stringcase
     def cast_as(self, attr: Attribute, name: Optional[str] = None) -> str:
         if name is None:
             name = get_name(attr)
-        return f"{self.type_name(attr)}({unpack_if_not_simple(name, attr.type)})"
+        return f"{self.type_name(attr)}{'.from_dict' if attr.type not in simple_types else ''}({name})"
 
     def cast(self, attr: Attribute) -> str:
         if not attr.cast:

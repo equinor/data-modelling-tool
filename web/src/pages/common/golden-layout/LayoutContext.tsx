@@ -53,6 +53,7 @@ export const LayoutProvider = ({ children, layout }: Props) => {
 
   const refresh = (id: string) => {
     // TODO: Can this be done better?
+    if (!id) console.log('An empty ID was given. This will likely break')
     if (isOpen(layout, id)) {
       const components = layout.myLayout.root.getItemsById(id)
       components[0].remove()
