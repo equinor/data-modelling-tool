@@ -1,6 +1,6 @@
-import { BlueprintAttribute, PluginProps } from '../types'
+import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
 import { findUiAttribute } from '../pluginUtils'
-import { getWidgetAttributes } from './EditForm'
+import { getWidgetBlueprint } from './EditForm'
 
 type UiSchemaProperty = {
   items?: any
@@ -9,6 +9,14 @@ type UiSchemaProperty = {
   'ui:ArrayAttribute'?: any
 }
 
+/**
+ * Adapter for document to rsjf uiSchema.
+ * https://department-of-veterans-affairs.github.io/veteran-facing-services-tools/forms/about-the-schema-and-uischema-objects/
+ *
+ * @param document
+ * @param parentAttribute
+ * @param uiRecipe
+ */
 export function generateUiSchema(pluginProps: PluginProps, uiRecipe: any) {
   const uiSchema = {}
   if (uiRecipe) {
@@ -35,40 +43,6 @@ export function generateUiSchema(pluginProps: PluginProps, uiRecipe: any) {
   }
 }
 
-/**
- * Adapter for document to rsjf uiSchema.
- * https://department-of-veterans-affairs.github.io/veteran-facing-services-tools/forms/about-the-schema-and-uischema-objects/
- *
- * @param document
- * @param parentAttribute
- * @param uiRecipe
- */
-export function generateUiSchemaByProperty(
-  pluginProps: PluginProps,
-  parentAttribute: BlueprintAttribute,
-  uiRecipe: any
-) {
-  const uiSchema = {}
-  if (uiRecipe) {
-    const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
-    if (uiAttribute) {
-      let property = createUiSchemaProperty(
-        uiAttribute,
-        parentAttribute,
-        pluginProps
-      )
-
-      if (Object.keys(property).length > 0) {
-        ;(uiSchema as any)[parentAttribute.name] = property
-      }
-    }
-  }
-  return {
-    type: 'object',
-    ...uiSchema,
-  }
-}
-
 function createUiSchemaProperty(
   uiAttribute: any,
   blueprintAttribute: BlueprintAttribute,
@@ -85,9 +59,15 @@ function createUiSchemaProperty(
   }
   if (uiAttribute.field) {
     if (blueprintAttribute.dimensions === '*') {
-      property.items = {
-        'ui:field': uiAttribute.field,
-        attributes: getWidgetAttributes(pluginProps),
+      const widgetBlueprint: Blueprint | null = getWidgetBlueprint(pluginProps)
+      if (widgetBlueprint) {
+        property.items = {
+          'ui:field': uiAttribute.field,
+          attributes: widgetBlueprint.attributes,
+          uiRecipe: widgetBlueprint.uiRecipes.find(
+            (recipe: any) => recipe.plugin === pluginProps.name
+          ),
+        }
       }
     } else {
       property['ui:field'] = uiAttribute.field

@@ -83,14 +83,7 @@
         },
         {
           "name": "attributes",
-          "uiRecipe": "EDIT",
-          "options": [
-            {
-              "name": "orderable",
-              "value" : "false"
-            }
-          ],
-          "field": "collapsible"
+          "field": "attribute"
         },
         {
           "name": "storageRecipes",

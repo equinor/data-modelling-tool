@@ -35,13 +35,18 @@ export default ({
 
   //only way to pass properties to a field is adding them to uiSchema next to the field.
   //for now, only support attribute field for blueprints.
-  if (uiSchema.attributes && uiSchema.attributes.items) {
+  if (uiSchema.attributes) {
     const blueprintAttributes = blueprints.find(
       (blueprint: Blueprint) => blueprint.name === 'BlueprintAttribute'
     )
-    ;(uiSchema as any)['attributes']['items'].attributes =
-      (blueprintAttributes && blueprintAttributes.attributes) || []
+    if (!uiSchema.attributes.items) {
+      ;(uiSchema as any).attributes.items = {
+        attributes: blueprintAttributes && blueprintAttributes.attributes || [],
+        'ui:field': 'attribute'
+      }
+    }
   }
+
   const formData = castValues(blueprint, data)
   return (
     <Form
@@ -51,7 +56,7 @@ export default ({
       //@ts-ignore
       fields={{
         attribute: AttributeWidget,
-        collapsible: CollapsibleField,
+        // collapsible: CollapsibleField,
         type: DocumentFinderWrapper,
       }}
       onSubmit={onSubmit}

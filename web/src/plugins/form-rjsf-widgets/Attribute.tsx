@@ -3,15 +3,16 @@ import {
   AttributeWrapper,
   DataType,
   NumberInput,
+  TextAreaWidget,
   TextInput,
-  TypeWrapper,
+  TypeWidget,
 } from './AttributeInputs'
 import React, { useState } from 'react'
 import styled from 'styled-components'
 import { BlueprintAttribute } from '../types'
-import { isPrimitive } from '../pluginUtils'
 import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
+import {isPrimitive} from "../pluginUtils";
 
 const AttributeGroup = styled.div`
   border: 1px solid;
@@ -23,20 +24,21 @@ const AttributeGroup = styled.div`
 type Props = {
   formData: any
   onChange: (value: any) => void
-  attributes?: any[]
   uiSchema: any
 }
 
 export const AttributeWidget = (props: Props) => {
-  let attributes = props.uiSchema.attributes
-  if (!attributes) {
-    console.error('this widget depends on a attributes list.')
-  }
+  let { attributes } = props.uiSchema
+
 
   const initialState = { type: DataType.STRING, ...props.formData }
   const [formData, setFormData] = useState<BlueprintAttribute>(initialState)
+
+  if (!attributes) {
+    console.error('this widget depends on a attributes list.')
+    return <div>Missing blueprint attributes.</div>
+  }
   //@todo add order in uiRecipe to change order of elements in the widget.
-  const { type } = formData
 
   const onChange: AttributeOnChange = (
     attribute: BlueprintAttribute,
@@ -49,118 +51,75 @@ export const AttributeWidget = (props: Props) => {
   }
 
   const selectedType = formData['type']
-  /**
-   * Decision on the render code.
-   * Trade off simplicity instead of complexity
-   * Cons: nested if else in switch cases.
-   * Pros: avoid lots of props passed to a component handling type string
-   *
-   * Consider refactor type string to a component handling different subcases.
-   */
   return (
     <AttributeGroup>
       {attributes.map((blueprintAttribute: BlueprintAttribute) => {
         const { name } = blueprintAttribute
-        const attributeType = blueprintAttribute.type
-
-        let valueOrDefault =
-          (formData as any)[name] || blueprintAttribute.default
-        // can't use or operator on boolean.
         const value = (formData as any)[name]
-        switch (attributeType) {
-          case 'string':
-            if (name === 'type') {
-              return (
-                <AttributeWrapper key={name}>
-                  <TypeWrapper
-                    value={value}
-                    onChange={onChange}
-                    attribute={blueprintAttribute}
-                  />
-                </AttributeWrapper>
-              )
-            } else if (name === 'dimensions') {
-              return (
-                <AttributeWrapper key={name}>
-                  <DimensionWidget
-                    attribute={blueprintAttribute}
-                    value={valueOrDefault}
-                    onChange={onChange}
-                  />
-                </AttributeWrapper>
-              )
-            } else if (name === 'default') {
-              if (selectedType === DataType.BLUEPRINT) {
-                return null
-              }
-              if (selectedType === DataType.STRING) {
-                return (
-                  <AttributeWrapper key={name}>
-                    <TextInput
-                      attribute={blueprintAttribute}
-                      value={value}
-                      onChange={onChange}
-                    />
-                  </AttributeWrapper>
-                )
-              }
-              if (selectedType === DataType.BOOLEAN) {
-                return (
-                  <AttributeWrapper key={name}>
-                    <BooleanWidget
-                      attribute={blueprintAttribute}
-                      value={value}
-                      onChange={onChange}
-                    />
-                  </AttributeWrapper>
-                )
-              }
-
-              const isNumeric =
-                DataType.NUMBER === selectedType ||
-                DataType.INTEGER === selectedType
-              if (isNumeric) {
-                return (
-                  <AttributeWrapper key={name}>
-                    <NumberInput
-                      attribute={blueprintAttribute}
-                      value={value}
-                      onChange={onChange}
-                    />
-                  </AttributeWrapper>
-                )
-              }
-            } else {
-              return (
-                <AttributeWrapper key={name}>
-                  <TextInput
-                    attribute={blueprintAttribute}
-                    value={value}
-                    onChange={onChange}
-                  />
-                </AttributeWrapper>
-              )
-            }
-          case 'boolean':
-            return (
-              <AttributeWrapper key={name}>
-                <BooleanWidget
-                  attribute={blueprintAttribute}
-                  value={value}
-                  onChange={onChange}
-                />
-              </AttributeWrapper>
-            )
-
-          default:
-            if (isPrimitive(attributeType)) {
-              console.warn(
-                `Type is not supported in form widget: ${name} ${type}`
-              )
-            }
-            return <div key={JSON.stringify(blueprintAttribute)} />
+        let Widget: Function | null = getWidgetByName(
+          blueprintAttribute,
+          selectedType
+        )
+        if (Widget === null) {
+          return null
         }
+        if (Widget === undefined) {
+          Widget = getWidgetByType(blueprintAttribute)
+        }
+        if (Widget === undefined) {
+          console.warn('widget is not supported: ', blueprintAttribute)
+          return null
+        }
+        return (
+          <AttributeWrapper key={name}>
+            <label style={{ verticalAlign: 'top', marginRight: 10 }}>
+              {name}:{' '}
+            </label>
+            <Widget
+              onChange={onChange}
+              value={value}
+              attribute={blueprintAttribute}
+            />
+          </AttributeWrapper>
+        )
       })}
     </AttributeGroup>
   )
+}
+
+function getWidgetByName(
+  attribute: BlueprintAttribute,
+  selectedType: string
+): Function | null {
+  let widget: Function = (widgetNames as any)[attribute.name]
+  if (attribute.name === 'default') {
+    if (!isPrimitive(selectedType)) {
+      // type is a blueprint type string.
+      return null
+    }
+    widget = (widgetTypes as any)[selectedType]
+  }
+  return widget
+}
+
+function getWidgetByType(attribute: BlueprintAttribute): Function {
+  let widget: Function = (widgetTypes as any)[attribute.type]
+  if (widget === undefined) {
+    widget = TextInput
+  }
+  return widget
+}
+
+const widgetNames = {
+  type: TypeWidget,
+  dimensions: DimensionWidget,
+  description: TextAreaWidget,
+  enumType: TextInput,
+}
+
+const widgetTypes = {
+  string: TextInput,
+  boolean: BooleanWidget,
+  integer: NumberInput,
+  number: NumberInput,
 }
