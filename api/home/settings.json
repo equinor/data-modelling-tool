@@ -12,13 +12,14 @@
     "MeasurementDemo"
   ],
   "blueprintsModels": [
+    "system/SIMOS/Blueprint",
     "system/DMT/Package",
     "system/SIMOS/Application",
-    "system/SIMOS/Blueprint"
+    "system/SIMOS/Enum"
   ],
   "entityModels": [
-    "system/DMT/Package",
-    "system/DMT/Entity"
+    "system/DMT/Entity",
+    "system/DMT/Package"
   ],
   "runnableModels": [
     {

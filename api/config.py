@@ -17,6 +17,6 @@ class Config:
     DYNAMIC_MODULES = "dynamic_modules"
     SYSTEM_COLLECTION = "system"
     CACHE_MAX_SIZE = 0 if ENVIRONMENT == "local" else 0
-    APPLICATION_HOME = "/home"
+    APPLICATION_HOME = "/code/home"
     SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
