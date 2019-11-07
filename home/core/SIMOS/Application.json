@@ -1,4 +1,4 @@
-{
+ {
   "type": "system/SIMOS/Blueprint",
   "name": "Application",
   "description": "This describes an application",
@@ -9,36 +9,37 @@
     },
     {
       "type": "string",
-      "name": "description"
+      "name": "type",
+      "default": "system/SIMOS/Application"
     },
     {
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "attributes",
-      "dimensions": "*"
+      "type": "string",
+      "name": "description",
+      "default": "Create an application by exporting Blueprints and Entities, and configuring context menus."
     },
     {
       "type": "string",
       "name": "blueprints",
       "dimensions": "*",
-      "description": "Blueprint packages that are available by default"
+      "description": "Blueprint packages that are available by default (Path without Datasource prefix)."
     },
     {
       "type": "string",
       "name": "entities",
       "dimensions": "*",
-      "description": "Entity packages that are available by default"
+      "description": "Entity packages that are available by default (Path without Datasource prefix)."
     },
     {
       "type": "string",
       "name": "blueprintsModels",
       "dimensions": "*",
-      "description": "Models that are available to create in blueprints page"
+      "description": "Models that are available to create in blueprints page (Path without Datasource prefix)."
     },
     {
       "type": "string",
       "name": "entityModels",
       "dimensions": "*",
-      "description": "Models that are available to create in entity page"
+      "description": "Models that are available to create in entity page (Path without Datasource prefix)."
     },
     {
       "type": "system/SIMOS/Runnable",
