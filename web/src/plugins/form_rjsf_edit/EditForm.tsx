@@ -10,7 +10,6 @@ interface Props extends PluginProps {
   onSubmit: (data: any) => void
 }
 
-
 export const EditPlugin = (props: Props) => {
   const uiRecipe = findRecipe(props.blueprint, props.name)
   const config: FormConfig = createFormConfigs(props, uiRecipe)

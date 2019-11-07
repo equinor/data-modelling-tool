@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import styled from 'styled-components'
 import DocumentFinderWidget from './DocumentFinderWidget'
 import { BlueprintAttribute } from '../types'
-import {isPrimitive} from "../pluginUtils";
+import { isPrimitive } from '../pluginUtils'
 
 export const AttributeWrapper = styled.div`
   margin: 2px 2px;
@@ -137,7 +137,9 @@ type TypeProps = {
 export const TypeWidget = (props: TypeProps) => {
   const { onChange, attribute, value } = props
   const typeValue = isPrimitive(value) ? value : DataType.BLUEPRINT
-  const [selectedType, setSelectedType] = useState(typeValue || attribute.default)
+  const [selectedType, setSelectedType] = useState(
+    typeValue || attribute.default
+  )
   const blueprintValue = isPrimitive(value) ? '' : value
   return (
     <>

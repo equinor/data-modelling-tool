@@ -12,7 +12,7 @@ import styled from 'styled-components'
 import { BlueprintAttribute } from '../types'
 import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
-import {isPrimitive} from "../pluginUtils";
+import { isPrimitive } from '../pluginUtils'
 
 const AttributeGroup = styled.div`
   border: 1px solid;
@@ -29,7 +29,6 @@ type Props = {
 
 export const AttributeWidget = (props: Props) => {
   let { attributes } = props.uiSchema
-
 
   const initialState = { type: DataType.STRING, ...props.formData }
   const [formData, setFormData] = useState<BlueprintAttribute>(initialState)

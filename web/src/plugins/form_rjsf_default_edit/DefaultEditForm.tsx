@@ -6,6 +6,7 @@ import { Props as DocumentFinderProps } from '../form-rjsf-widgets/DocumentFinde
 import DocumentFinderWidget from '../form-rjsf-widgets/DocumentFinderWidget'
 import { Blueprint } from '../types'
 import { castValues } from '../form-rjsf-widgets/utilFormData'
+import { findRecipe, findUiAttribute } from '../pluginUtils'
 
 interface Props {
   document: Blueprint | {}
@@ -33,19 +34,8 @@ export default ({
   const schema = template.schema
   const uiSchema = template.uiSchema
 
-  //only way to pass properties to a field is adding them to uiSchema next to the field.
-  //for now, only support attribute field for blueprints.
-  if (uiSchema.attributes) {
-    const blueprintAttributes = blueprints.find(
-      (blueprint: Blueprint) => blueprint.name === 'BlueprintAttribute'
-    )
-    if (!uiSchema.attributes.items) {
-      ;(uiSchema as any).attributes.items = {
-        attributes: blueprintAttributes && blueprintAttributes.attributes || [],
-        'ui:field': 'attribute'
-      }
-    }
-  }
+  //support AttributeWidget
+  appendAttributes(blueprint, blueprints, uiSchema)
 
   const formData = castValues(blueprint, data)
   return (
@@ -56,7 +46,7 @@ export default ({
       //@ts-ignore
       fields={{
         attribute: AttributeWidget,
-        // collapsible: CollapsibleField,
+        collapsible: CollapsibleField,
         type: DocumentFinderWrapper,
       }}
       onSubmit={onSubmit}
@@ -65,4 +55,27 @@ export default ({
       }}
     />
   )
+}
+
+function appendAttributes(blueprint: any, blueprints: any, uiSchema: any) {
+  //only way to pass properties to a field is adding them to uiSchema next to the field.
+  //for now, only support attribute field for blueprints.
+  if (uiSchema.attributes) {
+    const uiRecipe = findRecipe(blueprint, 'EDIT')
+    if (uiRecipe) {
+      const uiAttribute = findUiAttribute(uiRecipe, 'attributes')
+      if (uiAttribute.field === 'attribute') {
+        const blueprintAttributes = blueprints.find(
+          (blueprint: Blueprint) => blueprint.name === 'BlueprintAttribute'
+        )
+        if (!uiSchema.attributes.items) {
+          ;(uiSchema as any).attributes.items = {
+            attributes:
+              (blueprintAttributes && blueprintAttributes.attributes) || [],
+            'ui:field': 'attribute',
+          }
+        }
+      }
+    }
+  }
 }
