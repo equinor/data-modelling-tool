@@ -9,24 +9,24 @@
     },
     {
       "type": "string",
+      "name": "type",
+      "default": "system/SIMOS/Runnable"
+    },
+    {
+      "type": "string",
       "name": "description"
     },
     {
       "type": "string",
       "name": "input",
-      "description": "",
+      "description": "Reference to a Blueprint (Path without Datasource prefix).",
       "contained": false
     },
     {
       "type": "string",
       "name": "output",
-      "description": "",
+      "description": "Reference to a Blueprint (Path without Datasource prefix).",
       "contained": false
-    },
-    {
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "attributes",
-      "dimensions": "*"
     },
     {
       "type": "string",

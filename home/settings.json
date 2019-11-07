@@ -13,6 +13,7 @@
   ],
   "blueprintsModels": [
     "system/DMT/Package",
+    "system/SIMOS/Application",
     "system/SIMOS/Blueprint"
   ],
   "entityModels": [
