@@ -565,24 +565,3 @@ import stringcase
                         self._create(template_type)
                     return self.type_name(template_type)
         return self.get_type(Template, name)
-
-
-def run():
-    from core.repository.file.document_repository import TemplateRepositoryFromFile
-    from utils.helper_functions import schemas_location
-
-    template_repository = TemplateRepositoryFromFile(schemas_location())
-    template_type = "templates/DMT/Package"
-    Factory(template_repository).write_domain(template_type)
-    from core.domain.dynamic_models import Blueprint
-
-    # Package = Factory(template_repository).create(template_type)
-    schema = template_repository.get(template_type)
-    Package = Blueprint.from_dict(schema)
-    # print(Package.attributes)
-    # print(Package.from_dict(schema))
-    print(Package)
-
-
-if __name__ == "__main__":
-    run()
