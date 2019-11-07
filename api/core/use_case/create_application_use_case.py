@@ -36,13 +36,13 @@ services:
       MONGO_INITDB_DATABASE: maf
       MONGO_DATA_MODELING_TOOL_DATABASE: dmt
     volumes:
-      - ./home/:/home
+      - ./api/home/:/home
 
   web:
     image: mariner.azurecr.io/dmt/web
     restart: unless-stopped
     volumes:
-      - ./home/runnable.js:/code/src/runnable.js
+      - ./web/runnable.js:/code/src/runnable.js
 
   db:
     image: mongo:3.4

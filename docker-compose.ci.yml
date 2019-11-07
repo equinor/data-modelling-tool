@@ -12,11 +12,11 @@ services:
       ENVIRONMENT: local
       MONGO_INITDB_ROOT_PASSWORD: maf
     volumes:
-      - ./home/:/home
+      - ./api/home/:/home
 
   web:
     volumes:
-      - ./home/runnable.js:/code/src/runnable.js
+      - ./web/runnable.js:/code/src/runnable.js
 
   db:
     environment:
