@@ -1,7 +1,6 @@
 from typing import Union
-from core.domain.blueprint import Blueprint
+from core.domain.models import Blueprint, Package
 from core.domain.dto import DTO
-from core.domain.package import Package
 from core.enums import DMT
 
 

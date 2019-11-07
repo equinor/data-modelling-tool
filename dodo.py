@@ -168,18 +168,7 @@ def task_docker_compose():
             ),
             Task(
                 "create:system:blueprints",
-                "python -c  '" + ";".join("""\
-from core.repository.file.document_repository import TemplateRepositoryFromFile
-from core.domain.schema import Factory
-from utils.helper_functions import schemas_location
-template_repository = TemplateRepositoryFromFile(schemas_location())
-template_types = ["system/SIMOS/Blueprint", \
-"system/SIMOS/Application", \
-"system/DMT/Package", \
-]
-factory = Factory(template_repository, read_from_file=True)
-[factory.write_domain(template_type, i == 0) for i, template_type in enumerate(template_types)]
-""".split("\n")) + "'",
+                "sh -c 'python3 /code/generate_system_blueprints.py && black /code/core/domain/dynamic_models'",
                 "api",
                 help="Create the Python classes of the blueprints that are used by DMT"
             ),

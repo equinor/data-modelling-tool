@@ -3,7 +3,7 @@ from typing import List, Union, Optional
 from classes.data_source import DataSource
 from config import Config
 from core.domain.dto import DTO
-from core.domain.package import Package
+from core.domain.models import Package
 from core.repository.repository_factory import get_repository
 from services.database import dmt_database
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
@@ -43,6 +43,7 @@ def get_document_uid_by_path(path: str, repository) -> Union[str, None]:
     if not path_elements:
         return root_package.uid
     if isinstance(root_package.data, dict):
+        # TODO: Refactor / use the document repository / factory
         package = Package.from_dict(root_package.data)
     else:
         package = root_package.data

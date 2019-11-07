@@ -1,6 +1,6 @@
 from typing import List
 
-from core.domain.blueprint import Blueprint
+from core.domain.models import Blueprint
 from core.domain.ui_recipe import UIRecipe
 from core.use_case.utils.get_template import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe

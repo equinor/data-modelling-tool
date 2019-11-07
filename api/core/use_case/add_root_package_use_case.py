@@ -31,6 +31,7 @@ class AddRootPackageUseCase(uc.UseCase):
     def process_request(self, request_object):
         name: str = request_object.name
 
+        # TODO: Replace with generated class
         package = Package(name=name, is_root=True)
 
         # uid=package.uid,

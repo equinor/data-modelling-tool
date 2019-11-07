@@ -1,4 +1,4 @@
-from core.domain.blueprint import Blueprint
+from core.domain.models import Blueprint
 from core.domain.dto import DTO
 from core.utility import get_document_by_ref
 from functools import lru_cache
