@@ -7,7 +7,6 @@ export interface FormProps {
   selectedUiSchema?: string
 }
 
-const log = (type: any) => console.log.bind(console, type)
 export default ({ onSubmit, fetchDocument }: FormProps) => {
   const [loading, setLoading] = useState<boolean | null>(null)
   const [documentData, setDocumentData] = useState({

@@ -1,4 +1,4 @@
-from enum import Enum
+from enum import Enum, auto
 
 
 class DataSourceType(Enum):
@@ -21,9 +21,9 @@ class DataSourceDocumentType(Enum):
 
 
 class RepositoryType(Enum):
-    DocumentRepository = "DocumentRepository"
-    PackageRepository = "PackageRepository"
-    BlueprintRepository = "BlueprintRepository"
+    DocumentRepository = auto()
+    PackageRepository = auto()
+    BlueprintRepository = auto()
 
 
 class SIMOS(Enum):

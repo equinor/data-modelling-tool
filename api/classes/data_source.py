@@ -10,28 +10,7 @@ def get_data_source_from_database(id):
     return data_source
 
 
-class MockClient:
-    def __init__(self, data):
-        self._data = data
-
-    def get_root_packages(self):
-        return [item for item in self._data if ("documentType" in item and item["documentType"] == "root-package")]
-
-    def read_form(self, package_name):
-        for item in self._data:
-            _id = item.get("_id", item.get("id"))
-            if _id == package_name:
-                return item
-        return None
-
-
 class DataSource:
-    @classmethod
-    def mock(cls, data):
-        inst = cls.__new__(cls)
-        inst.client = MockClient(data)
-        return inst
-
     def __init__(self, id: str):
         data_source_dict = get_data_source_from_database(id)
 

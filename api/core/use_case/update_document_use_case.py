@@ -2,7 +2,7 @@ from typing import Dict
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
-from core.repository.mongo.document_repository import DocumentRepository
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint

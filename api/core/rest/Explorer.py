@@ -26,9 +26,7 @@ def add_file(data_source_id: str):
     data_source = DataSource(id=data_source_id)
     request_data = request.get_json()
     document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
-    use_case = AddFileUseCase(
-        document_repository=document_repository, get_repository=get_repository, data_source=data_source
-    )
+    use_case = AddFileUseCase(document_repository=document_repository)
     request_object = AddFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(

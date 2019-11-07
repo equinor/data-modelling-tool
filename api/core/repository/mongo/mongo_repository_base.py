@@ -1,7 +1,7 @@
 from core.repository.mongo.mongo_db_client import DbClient
 
 
-class MongoRepositoryBase(object):
+class MongoRepositoryBase:
     def __init__(self, db: DbClient):
         self.db = db
 

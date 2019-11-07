@@ -40,20 +40,18 @@ export default () => {
   const [loading, setLoading] = useState<boolean | null>(null)
 
   useEffect(() => {
-    {
-      Api2.fetchApplicationSettings()({
-        onSuccess: (settings: any) => {
-          if (
-            settings.blueprintsModels !== undefined &&
-            settings.blueprintsModels.length > 0
-          ) {
-            setTabs(prevState => prevState.add(DocumentType.BLUEPRINTS))
-            setLoading(false)
-          }
-        },
-        onError: (err: any) => setLoading(false),
-      })
-    }
+    Api2.fetchApplicationSettings()({
+      onSuccess: (settings: any) => {
+        if (
+          settings.blueprintsModels !== undefined &&
+          settings.blueprintsModels.length > 0
+        ) {
+          setTabs(prevState => prevState.add(DocumentType.BLUEPRINTS))
+          setLoading(false)
+        }
+      },
+      onError: (err: any) => setLoading(false),
+    })
   }, [tabs])
 
   if (loading) {

@@ -6,13 +6,13 @@ from flask import g
 
 from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
+from core.domain.dynamic_models import Package
 from core.domain.entity import Entity
 from core.domain.index import DocumentNode
 from core.domain.recipe import Recipe
 from core.domain.storage_recipe import StorageRecipe
 from core.enums import DMT, SIMOS
-from core.repository.interface.package_repository import PackageRepository
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.generate_index_menu_actions import (
     get_contained_menu_action,
@@ -55,10 +55,12 @@ def print_tree(root_node):
 
 class Tree:
     def __init__(
-        self, blueprint_repository: MongoBlueprintRepository, get_repository, package_repository, document_repository
+        self,
+        blueprint_repository: DocumentRepository[Blueprint],
+        package_repository: DocumentRepository[Package],
+        document_repository: DocumentRepository,
     ):
         self.blueprint_repository = blueprint_repository
-        self.get_repository = get_repository
         self.package_repository = package_repository
         self.document_repository = document_repository
 
@@ -345,20 +347,17 @@ class Tree:
 class GenerateIndexUseCase:
     def __init__(
         self,
-        blueprint_repository: MongoBlueprintRepository,
-        package_repository: PackageRepository,
-        get_repository,
-        document_repository,
+        blueprint_repository: DocumentRepository[Blueprint],
+        package_repository: DocumentRepository[Package],
+        document_repository: DocumentRepository,
     ):
         self.blueprint_repository = blueprint_repository
         self.package_repository = package_repository
-        self.get_repository = get_repository
         self.document_repository = document_repository
 
         self.tree = Tree(
             blueprint_repository=blueprint_repository,
             package_repository=package_repository,
-            get_repository=get_repository,
             document_repository=document_repository,
         )
 

@@ -27,9 +27,6 @@ class GenerateJsonSchemaRequestObject(req.ValidRequestObject):
 
 
 class GenerateJsonSchemaUseCase(uc.UseCase):
-    def __init__(self, get_repository):
-        self.get_repository = get_repository
-
     def process_request(self, request_object: GenerateJsonSchemaRequestObject):
         type = request_object.type
         ui_recipe_name = request_object.ui_recipe

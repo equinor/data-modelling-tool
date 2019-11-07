@@ -1,6 +1,5 @@
 from typing import Dict
 
-from classes.data_source import DataSource
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
 from core.repository.interface.document_repository import DocumentRepository
@@ -54,10 +53,8 @@ class AddFileRequestObject(req.ValidRequestObject):
 
 
 class AddFileUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository, get_repository, data_source: DataSource):
+    def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
-        self.get_repository = get_repository
-        self.data_source = data_source
 
     def process_request(self, request_object: AddFileRequestObject):
         parent_id: str = request_object.parent_id

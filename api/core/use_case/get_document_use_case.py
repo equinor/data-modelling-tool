@@ -2,7 +2,7 @@ from typing import List
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
-from core.repository.mongo.document_repository import DocumentRepository
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -92,9 +92,8 @@ def get_attribute_type(blueprint, path: List):
 
 
 class GetDocumentUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository, get_repository):
+    def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
-        self.get_repository = get_repository
 
     def process_request(self, request_object: GetDocumentRequestObject):
         document_id: str = request_object.document_id

@@ -78,12 +78,12 @@ def generate_runnable_file(runnable_models):
 const {{ runnable_model["method"] }} = async ({document, config, setProgress}) => {
     return {}
 }
-{% endfor %}  
+{% endfor %}
         
 const runnableMethods = {
 {% for runnable_model in runnable_models %}
     {{ runnable_model["method"] }}
-{% endfor %}    
+{% endfor %}
 }
 
 export default runnableMethods

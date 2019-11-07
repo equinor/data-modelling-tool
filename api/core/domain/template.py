@@ -5,9 +5,6 @@ class Template:
             ui_schema = {}
         self.ui_schema = ui_schema
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, adict):
         return cls(schema=adict["schema"], ui_schema=adict.get("uiSchema", ""))

@@ -20,7 +20,6 @@ def get(data_source_id: str):
         document_repository=document_repository,
         blueprint_repository=blueprint_repository,
         package_repository=package_repository,
-        get_repository=get_repository,
     )
     result = use_case.execute(
         data_source_id=data_source_id, document_type=data_source.documentType, data_source_name=data_source.name
@@ -38,7 +37,6 @@ def get_document(data_source_id: str, document_id: str):
     use_case = GenerateIndexUseCase(
         blueprint_repository=blueprint_repository,
         package_repository=package_repository,
-        get_repository=get_repository,
         document_repository=document_repository,
     )
     result = use_case.single(
