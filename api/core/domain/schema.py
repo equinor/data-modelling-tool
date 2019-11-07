@@ -10,6 +10,9 @@ from typing import Any, Dict, List, Optional, TypeVar, Union
 import stringcase
 from jinja2 import Template
 
+from classes.data_source import DataSource, get_client
+from core.repository.interface.document_repository import DocumentRepository
+
 T = TypeVar("T")
 
 simple_types: List[type] = [str, bool, int, float]
@@ -152,8 +155,15 @@ def remove_imports(definition: str) -> str:
 class Factory:
     _types: Dict[str, type] = {"string": str, "boolean": bool, "integer": int, "number": float}
 
-    def __init__(self, template_repository, _create_instance: bool = False, dump_site: Optional[str] = None):
-        self.template_repository = template_repository
+    def __init__(
+        self,
+        template_repository: DocumentRepository,
+        _create_instance: bool = False,
+        dump_site: Optional[str] = None,
+        read_from_file: bool = False,
+    ):
+        self._template_repository = template_repository
+        self._read_from_file = read_from_file
         self._create_instance = _create_instance
         self.dump_site = dump_site
         self.macros = [
@@ -174,6 +184,14 @@ class Factory:
             snakify,
         ]
         self.to_be_compiled = set()
+
+    def _get_schema(self, template_type: str) -> dict:
+        if self._read_from_file:
+            return self._template_repository.find({"type": template_type})
+        else:
+            data_source_id, *_, name = template_type.split("/")
+            repository = self._template_repository.__class__(get_client(DataSource(data_source_id)))
+            return repository.find(filter={"name": name}, raw=True)
 
     def class_from_schema(self, schema):
         # with open(f'{Path(__file__).parent}/schema.jinja2') as f:
@@ -498,7 +516,7 @@ import stringcase
         return Template
 
     def _create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
-        schema = snakify(self.template_repository.find({"type": template_type}))
+        schema = snakify(self._get_schema(template_type))
         # Let at "dummy type" be available for others
         _cls = type(schema["name"], (), snakify(schema))
         if not compile:
@@ -515,9 +533,7 @@ import stringcase
         except AttributeError:
             pass
         if _create_instance:
-            schema = self.template_repository.find(
-                {"type": template_type}
-            )  # Get a fresh one, as the previous may have been altered
+            schema = self._get_schema(template_type)  # Get a fresh one, as the previous may have been altered
             return _cls.type.from_dict(schema)
         return _cls
 

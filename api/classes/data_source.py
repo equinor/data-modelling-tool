@@ -1,5 +1,6 @@
 from flask import abort
 
+from data_source_plugins.mongodb import MongodbClient
 from services.database import dmt_database as db
 
 
@@ -25,3 +26,15 @@ class DataSource:
         self.database = data_source_dict["database"]
         self.collection = data_source_dict["collection"]
         self.documentType = data_source_dict["documentType"]
+
+
+def get_client(datasource: DataSource) -> MongodbClient:
+    return MongodbClient(
+        host=datasource.host,
+        port=datasource.port,
+        username=datasource.username,
+        password=datasource.password,
+        tls=datasource.tls,
+        collection=datasource.collection,
+        database=datasource.database,
+    )

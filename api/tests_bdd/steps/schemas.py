@@ -32,7 +32,7 @@ def step_impl_2(context, uid: str, data_source_id: str):
 @when('I create a Python class from the template "{template_name}"')
 def step_impl_create_template(context, template_name: str):
     document_repository = TemplateRepositoryFromFile(schemas_location())
-    factory = Factory(document_repository)
+    factory = Factory(document_repository, read_from_file=True)
     context.template_name = template_name
     context.template = factory.create(template_name)
 
