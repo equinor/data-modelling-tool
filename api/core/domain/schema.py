@@ -200,6 +200,10 @@ class Attribute:
         return True
 
     @property
+    def has_default(self):
+        return "default" in self.__values__
+
+    @property
     def enum_type(self):
         enum_type = self._get("enum_type", None)
         return enum_type
@@ -221,7 +225,7 @@ class Attributes:
 
     @property
     def required(self):
-        return self._filter(lambda attr: not attr.optional)
+        return sorted(self._filter(lambda attr: not attr.optional), key=lambda attr: attr.has_default)
 
     @property
     def optional(self):
@@ -670,7 +674,7 @@ from core.domain.dto import DTO
 
     def variable_annotation(self, attr: Attribute) -> str:
         return f"{get_name(attr)}: {self.type_annotation(attr)}" + (
-            f" = {self.get_default_value(attr)}" if attr.optional else ""
+            f" = {self.get_default_value(attr)}" if attr.optional or attr.has_default else ""
         )
 
     def signature(self, attributes: List[Attribute]) -> str:
