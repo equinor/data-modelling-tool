@@ -13,14 +13,7 @@ def find_attribute(name: str, attributes: List):
 
 
 def get_attribute_config(attribute):
-    keys = {"type": attribute.type, "default": attribute.default, "description": attribute.description}
-
-    if hasattr(attribute, "labels"):
-        keys["enum"] = attribute.values
-        keys["enumNames"] = attribute.labels
-
-    # FIXME: Deal with the legitimate cases where `value` may be `None`
-    return {key: value for key, value in keys.items() if value is not None}
+    return attribute.to_dict(include_defaults=False)
 
 
 def process_attributes(blueprint, parent_blueprint, ui_recipe_name):

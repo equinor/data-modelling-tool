@@ -116,8 +116,8 @@ class GetDocumentUseCase(uc.UseCase):
         blueprint = get_blueprint(dto.type)
 
         # data = get_document(document_id, ui_recipe_name, self.document_repository)
-        data = dto.data.to_dict()
-        blueprint_data = blueprint.to_dict()
+        data = dto.data.to_dict(include_defaults=False)
+        blueprint_data = blueprint.to_dict(include_defaults=False)
 
         # if attribute:
         #     dotted_data = DottedDict(data)

@@ -33,8 +33,11 @@ class DTO(Generic[T]):
     def data(self, data: T):
         self._data = data
 
-    def to_dict(self):
-        return {"uid": self.uid, "data": self.data if isinstance(self.data, dict) else self.data.to_dict()}
+    def to_dict(self, include_defaults: bool = True):
+        return {
+            "uid": self.uid,
+            "data": self.data if isinstance(self.data, dict) else self.data.to_dict(include_defaults=include_defaults),
+        }
 
     def __getattr__(self, item: str):
         def get(name):

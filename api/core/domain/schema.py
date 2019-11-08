@@ -331,6 +331,7 @@ class Factory:
             self.type_check,
             get_name_of_list_class,
             get_name_of_metaclass,
+            self.get_escaped_default,
         ]
         self.to_be_compiled = set()
 
@@ -439,8 +440,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             item = {{ cast_as(attr, "item") }}
             super().append(item)
 
-        def to_dict(self):
-            return [el.to_dict() if hasattr(el, "to_dict") else el for el in self]
+        def to_dict(self, include_defaults: bool = True):
+            return [el.to_dict(include_defaults=include_defaults) if hasattr(el, "to_dict") else el for el in self]
     {%- endif %}
     {%- endfor %}
 
@@ -459,6 +460,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {{ name }} = {{ cast(attr) }}
         {%- elif attr.optional %}
 
+        if {{ name }} is None:
+            {{ name }} = {{ get_escaped_default(attr) }}
         if {{ name }} is not None:
             {{ name }} = {{ cast(attr) }}
         {%- else %}
@@ -530,41 +533,56 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         self._{{ get_name(attr) }} = value
     {%- endfor %}
 
-    def to_dict(self=None):
-        from core.domain.dto import DTO
+    def to_dict(self=None, *, include_defaults: bool = True):
         # Hack to be able to call `to_dict()` of a class instance
         if self is None:
             self = {{ schema.name }}
 
-        def get_representation(item, key: str = None):
-            if key:
-                value = getattr(item, key)
-                if hasattr(item, f"_{key}") and not isinstance(value, str):
-                    # Hack to avoid circular references
-                    value = getattr(item, f"_{key}")
-            else:
-                value = item
-
-            if isinstance(value, list):
-                return [get_representation(val) for val in value]
-            elif isinstance(value, dict):
-                return {self._to_camel_case(key): get_representation(val) for key, val in value.items()}
-            elif callable(value):
-                value = value()
-            elif isinstance(value, DTO):
-                value = {**value.data.to_dict(), "uid": value.uid}
-            try:
-                value = value.to_dict()
-            except AttributeError:
-                pass
-            return value
-
-        return {
+        representation = {
             {%- for attr in schema.attributes %}
-            "{{ to_camel_case(attr.name) }}": get_representation(self, "{{ get_name(attr) }}"),
+            "{{ to_camel_case(attr.name) }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
             {%- endfor %}
         }
+        if not include_defaults:
+        {%- if schema.attributes.has_attributes %}
+            def _get(attr, name: str):
+                if isinstance(attr, dict):
+                    if name in attr:
+                        return attr[name]
+                    attr = {{ get_type(schema, "attributes") }}.from_dict(attr)
+                return getattr(attr, self._to_snake_case(name))
+            defaults = {}
+            for attr in {{ get_type(schema, "attributes") }}.attributes:
+                try:
+                    defaults[_get(attr, "name")] = _get(attr, "default")
+                except AttributeError:
+                    continue
+            representation["attributes"] = [
+                {
+                    key: value for key, value in attr.items()
+                    if key not in defaults or value != defaults[key]
+                } for attr in representation['attributes']
+            ]
+        {%- else %}
+            attributes = [{{ get_type(schema, "attributes") }}.from_dict(definition) for definition in self.attributes]
+            defaults = {attr.name: attr.default for attr in attributes}
+            representation = {
+                key: value
+                for key, value in representation.items()
+                if value != defaults[key]
+            }
+        {%- endif %}
+        return representation
 {% else %}
+    def to_dict(self=None, *, include_defaults: bool = True):
+        # Hack to be able to call `to_dict()` of a class instance
+        if self is None:
+            self = {{ schema.name }}
+        return {
+            self._to_camel_case(key): self._get_representation(self, key, include_defaults)
+            for key in self.keys()
+        }
+
     def __new__(cls, *args, **kwargs):
         instance = {{ type_name(schema.type) }}(**{
         {%- for key, value in schema.items() %}
@@ -577,15 +595,48 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         return instance
 {% endif %}
     @classmethod
+    def _get_representation(cls, item, key: str = None, include_defaults: bool = True):
+        from core.domain.dto import DTO
+
+        if key:
+            value = getattr(item, key)
+            if hasattr(item, f"_{key}") and not isinstance(value, str):
+                # Hack to avoid circular references
+                value = getattr(item, f"_{key}")
+        else:
+            value = item
+
+        if isinstance(value, list):
+            return [cls._get_representation(val, include_defaults=include_defaults) for val in value]
+        elif isinstance(value, dict):
+            return {cls._to_camel_case(key): cls._get_representation(val, include_defaults=include_defaults) for key, val in value.items()}
+        elif callable(value):
+            value = value()
+        elif isinstance(value, DTO):
+            value = {**value.data.to_dict(include_defaults=include_defaults), "uid": value.uid}
+        try:
+            value = value.to_dict(include_defaults=include_defaults)
+        except AttributeError:
+            pass
+        return value
+
+    def keys(self):
+        return [key for key in dir(self) if not key.startswith("-")]
+
+    @classmethod
     def from_dict(cls, adict):
         from core.domain.dto import DTO
         id_keys = ["_id", "id", "uid"]
+        # FIXME: adict may not be a dict...
+        if not isinstance(adict, dict):
+            adict = adict.to_dict()
         is_dto = any(key in id_keys for key in adict.keys())
         kwargs = {
             f"{cls._to_snake_case(key)}": value
             for key, value in adict.items()
             if key not in id_keys
         }
+        # TODO: Add keys that are not given, but can be inferred
         model = cls(**kwargs)
         if is_dto:
             uid = None
@@ -677,15 +728,21 @@ from core.domain.dto import DTO
             return self._create(name, compile=False)
         return self._types[name]
 
+    @staticmethod
+    def get_escaped_default(attr: Attribute) -> str:
+        if attr.default is not None:
+            if attr.type is str:
+                return f'"{attr.default}"'
+            elif isinstance(attr.default, str):
+                if attr.type is bool:
+                    return {"false": False, "true": True}[attr.default.lower()]
+        return attr.default
+
     def get_default_value(self, attr: Attribute) -> str:
+        if attr.optional:
+            return None
         if attr.type in simple_types or attr.default is None:
-            if attr.default is not None:
-                if attr.type is str:
-                    return f'"{attr.default}"'
-                elif isinstance(attr.default, str):
-                    if attr.type is bool:
-                        return {"false": False, "true": True}[attr.default.lower()]
-            return attr.default
+            return self.get_escaped_default(attr)
         if isinstance(attr.default, str):
             # These default values must be dealt with separately
             return None

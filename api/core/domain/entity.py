@@ -21,7 +21,7 @@ class Entity:
     def __repr__(self):
         return repr(self.__dict__)
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return self.__dict__
 
     def get_values(self, name):

@@ -18,7 +18,7 @@ class Document:
 
         return instance
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         result = {
             "uid": self.uid,
             "path": self.path,

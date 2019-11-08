@@ -20,7 +20,7 @@ class Dependency:
             alias=a_dict["alias"],
         )
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return {"package": self.package, "version": self.version, "data_source": self.data_source, "alias": self.alias}
 
 
@@ -60,7 +60,7 @@ class Package:
         else:
             return None
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         result = {
             "name": self.name,
             "description": self.description,

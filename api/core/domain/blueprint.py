@@ -35,7 +35,7 @@ class Blueprint:
         instance.ui_recipes = adict.get("uiRecipes", [])
         return instance
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return {
             "name": self.name,
             "description": self.description,

@@ -42,7 +42,7 @@ class Index:
     def add(self, adict):
         self.index[adict["id"]] = adict
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return self.index
 
 
