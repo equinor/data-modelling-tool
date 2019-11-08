@@ -20,7 +20,9 @@
     {
       "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
-      "name": "attributes"
+      "name": "attributes",
+      "default": "[{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"type\", \"type\": \"string\"}, {\"name\": \"description\", \"type\": \"string\"}]",
+      "contained": true
     },
     {
       "type": "system/SIMOS/StorageRecipe",
