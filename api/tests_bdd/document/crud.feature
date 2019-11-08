@@ -139,7 +139,6 @@ Feature: Document 2
        },
        "document":{
           "name":"package_1",
-          "description":"",
           "type":"system/DMT/Package",
           "content":[
              {

@@ -47,7 +47,6 @@ Feature: Explorer - Add file
        },
        "document":{
           "name":"root_package",
-          "description":"",
           "type":"system/DMT/Package",
           "content":[
             {
