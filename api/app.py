@@ -57,10 +57,11 @@ def init_application():
         import_package(
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
-    for folder in application_settings["entities"]:
-        import_package(
-            f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
-        )
+    if "entities" in application_settings:
+        for folder in application_settings["entities"]:
+            import_package(
+                f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
+            )
 
 
 @app.cli.command()
