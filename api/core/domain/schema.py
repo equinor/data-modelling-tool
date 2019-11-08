@@ -357,6 +357,7 @@ class Factory:
 from __future__ import annotations
 from typing import List, Optional, Union, Any
 import stringcase
+import json
 from core.domain.dto import DTO
 
 
@@ -446,6 +447,11 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def __init__(self, {{ signature(schema.attributes) }}):
         {%- for attr in schema.attributes %}
         {%- set name = get_name(attr) %}
+        {%- if not is_simple_type(attr) and attr.default is string and attr.default %}
+        if {{ name }} is None:
+            import json
+            {{ name }} = json.loads('''{{ attr.default }}''')
+        {%- endif %}
         {%- if attr.is_list and attr.optional %}
 
         if {{ name }} is None:
@@ -495,6 +501,10 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
     @{{ get_name(attr) }}.setter
     def {{ get_name(attr) }}(self, value: {{ type_annotation(attr, may_be_dict=True) }}):
+        {% if not attr.optional -%}
+        if value is None:
+            raise ValueError("'{{ get_name(attr) }}' is required, and cannot be set to None")
+        {% endif -%}
         {% if attr.cast -%}
         from core.domain.dto import DTO
         {%- if attr.is_list %}
@@ -630,6 +640,7 @@ To regenerate this file, run `doit create:system:blueprints`
 from __future__ import annotations
 from typing import List, Optional, Union, Any
 import stringcase
+import json
 from core.domain.dto import DTO
 """
                 )
@@ -675,6 +686,9 @@ from core.domain.dto import DTO
                     if attr.type is bool:
                         return {"false": False, "true": True}[attr.default.lower()]
             return attr.default
+        if isinstance(attr.default, str):
+            # These default values must be dealt with separately
+            return None
         return f"{self.type_name(attr)}('''{attr.default}''')"
 
     def variable_annotation(self, attr: Attribute) -> str:
