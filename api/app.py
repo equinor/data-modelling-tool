@@ -5,6 +5,7 @@ import click
 from flask import Flask, g
 
 from config import Config
+from core.enums import SIMOS
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
 from core.utility import wipe_db
 from services.database import data_modelling_tool_db as dmt_db
@@ -43,7 +44,7 @@ def import_application_settings():
 @app.before_request
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def load_application_settings():
-    g.application_settings = dmt_db[Config.SYSTEM_COLLECTION].find_one(filter={"name": "ApplicationSettings"})
+    g.application_settings = dmt_db[Config.SYSTEM_COLLECTION].find_one(filter={"type": SIMOS.APPLICATION.value})
 
 
 @app.cli.command()

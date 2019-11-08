@@ -184,7 +184,8 @@ class Tree:
 
         # Runnable entities gets an custom action
         runnable_types = group_by(
-            items=g.application_settings["runnableModels"], grouping_function=lambda runnable: runnable["input"]
+            items=g.application_settings["runnableModels"],
+            grouping_function=lambda runnable: runnable.get("input", ""),
         )
 
         if document.type in runnable_types:
@@ -316,9 +317,9 @@ class Tree:
         # Set what Models the user can create on the data_source node and Package nodes
         # TODO: More generic page1, page2, ...
         models = (
-            g.application_settings["blueprintsModels"]
+            g.application_settings.get("blueprintsModels", [])
             if document_type == "blueprints"
-            else g.application_settings["entityModels"]
+            else g.application_settings.get("entityModels", [])
         )
 
         # The root-node (data_source) can always create a package
