@@ -36,7 +36,7 @@ services:
       MONGO_INITDB_DATABASE: maf
       MONGO_DATA_MODELING_TOOL_DATABASE: dmt
     volumes:
-      - ./api/home/:/home
+      - ./api/home/:/code/home
 
   web:
     image: mariner.azurecr.io/dmt/web
