@@ -26,12 +26,39 @@ export enum RegisteredPlugins {
   PLOT = 'PLOT',
 }
 
-// These UI recipes should always be shown
-const DEFAULT_UI_RECIPES = [
-  RegisteredPlugins.PREVIEW,
-  RegisteredPlugins.EDIT,
-  RegisteredPlugins.EDIT_PLUGIN,
+const plugins: Plugin[] = [
+  {
+    label: 'Preview',
+    name: RegisteredPlugins.PREVIEW,
+  },
+  {
+    label: 'Edit',
+    name: RegisteredPlugins.EDIT,
+    disabled: true,
+  },
+  {
+    label: 'Edit',
+    name: RegisteredPlugins.EDIT_PLUGIN,
+  },
+  {
+    label: 'View',
+    name: RegisteredPlugins.VIEW,
+    disabled: true
+  },
+  {
+    label: 'Plot',
+    name: RegisteredPlugins.PLOT,
+    disabled: true,
+  },
 ]
+
+// based on plugin blueprints
+type Plugin = {
+  label: string
+  name: string
+  optional?: boolean
+  disabled?: boolean
+}
 
 const View = (props: any) => {
   const {
@@ -41,18 +68,18 @@ const View = (props: any) => {
     document,
     dataUrl,
     attribute,
-    uiRecipe,
+    plugin,
   } = props
 
   const pluginProps = {
     blueprint,
     document,
     blueprints,
-    name: uiRecipe,
+    name: plugin.name,
   }
 
-  switch (uiRecipe) {
-    case 'PREVIEW':
+  switch (plugin.name) {
+    case RegisteredPlugins.PREVIEW:
       return <BlueprintPreview data={document} />
 
     case RegisteredPlugins.VIEW:
@@ -71,17 +98,7 @@ const View = (props: any) => {
           }}
         </LayoutContext.Consumer>
       )
-
-    case RegisteredPlugins.PLOT:
-      return <PlotPlugin {...pluginProps} />
-
-    default:
-      const ExternalPlugin = pluginHook(uiRecipe)
-      if (ExternalPlugin) {
-        return <ExternalPlugin {...props} />
-      }
-      // TODO move edit to a case EDIT
-      //return <div>`Plugin not supported: ${uiRecipe}`</div>
+    case RegisteredPlugins.EDIT:
       return (
         <ReactJsonSchemaWrapper
           blueprint={blueprint}
@@ -90,33 +107,42 @@ const View = (props: any) => {
           schemaUrl={schemaUrl}
           dataUrl={dataUrl}
           attribute={attribute}
-          uiRecipe={uiRecipe}
+          uiRecipe={plugin.name}
         />
       )
+
+    case RegisteredPlugins.PLOT:
+      return <PlotPlugin {...pluginProps} />
+
+    default:
+      const ExternalPlugin = pluginHook(plugin.name)
+      if (ExternalPlugin) {
+        return <ExternalPlugin {...props} />
+      }
+      console.warn(`Plugin not supported: ${plugin.name}`)
+      return <div>{`Plugin not supported: ${plugin.name}`}</div>
   }
 }
 
 const ViewList = (props: PluginProps) => {
-  const { blueprint } = props
-
-  const uiRecipeNamesParent = blueprint.uiRecipes
-    .map((uiRecipe: any) => uiRecipe['plugin'])
-    .filter((name: string) => name !== undefined)
-  // Create a list of unique UI recipe names
-  const uiRecipesNames = Array.from(
-    new Set(DEFAULT_UI_RECIPES.concat(uiRecipeNamesParent))
+  const visiblePlugins = plugins.filter(
+    (plugin: Plugin) => plugin.disabled !== true
   )
   return (
     <Tabs>
       <TabList>
-        {uiRecipesNames.map((uiRecipesName: string) => {
-          return <Tab key={uiRecipesName}>{uiRecipesName}</Tab>
+        {visiblePlugins.map((plugin: Plugin) => {
+          return (
+            <Tab key={plugin.name} id={plugin.name}>
+              {plugin.label}
+            </Tab>
+          )
         })}
       </TabList>
-      {uiRecipesNames.map((uiRecipesName: string) => {
+      {visiblePlugins.map((plugin: Plugin) => {
         return (
-          <TabPanel key={uiRecipesName}>
-            <View {...props} uiRecipe={uiRecipesName} />
+          <TabPanel key={plugin.name}>
+            <View {...props} plugin={plugin} />
           </TabPanel>
         )
       })}

@@ -92,7 +92,7 @@
         },
         {
           "name": "uiRecipes",
-          "contained": true,
+          "contained": false,
           "field": "collapsible"
         }
       ]
