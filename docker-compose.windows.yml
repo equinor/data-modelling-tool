@@ -7,9 +7,6 @@ services:
   api:
     build:
       target: development
-    volumes:
-      - ./api/:/code
-      - ./api/home/:/code/home
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
@@ -20,18 +17,12 @@ services:
   web:
     build:
       target: dev
-    volumes:
-      - ./web/src:/code/src
-      - ./web/runnable.js:/code/src/runnable.js
-      - ./web/libs:/code/src/libs
     environment:
       - NODE_ENV=development
     ports:
       - "9229:9229"
 
   db:
-    volumes:
-      - ./data/db:/data/db
     ports:
       - "27017:27017"
     logging:
