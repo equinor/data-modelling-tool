@@ -7,7 +7,7 @@ import { NotificationManager } from 'react-notifications'
 const getDocument = async (dataUrl: string, showError: Function) => {
   try {
     const result = await axios.get(dataUrl)
-    return result.data
+    return result.data.document
   } catch (error) {
     showError(error)
   }
@@ -32,7 +32,7 @@ export type RunnableProps = {
   setProgress: Function
 }
 
-export type RunnableMethod = (props: RunnableProps) => Promise<void>
+export type RunnableMethod = (props: RunnableProps) => any
 
 export const runnableAction = (
   action: any,
@@ -61,19 +61,19 @@ export const runnableAction = (
         } else {
           // @ts-ignore
           const method: RunnableMethod = Runnable[runMethod]
-          const input = {
+
+          const inputToRunnable = {
             document,
             config: runnable,
             setProgress,
           }
-          method(input)
-            .then(result => {
-              updateDocument(action.data.dataUrl, result, showError).then(
-                () => {
-                  setProgress(100)
-                  layout.refresh(action.data.documentId)
-                }
-              )
+
+          const result = method(inputToRunnable)
+
+          updateDocument(action.data.dataUrl, result, showError)
+            .then(() => {
+              setProgress(100)
+              layout.refresh(action.data.documentId)
             })
             .catch((error: any) => {
               showError(error)
