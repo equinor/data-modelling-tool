@@ -57,13 +57,7 @@ def get_document_by_ref(type_ref) -> DTO:
 def wipe_db():
     print("Dropping all collections")
     # FIXME: Read names from the database
-    for name in [
-        Config.BLUEPRINT_COLLECTION,
-        Config.ENTITY_COLLECTION,
-        Config.DATA_SOURCES_COLLECTION,
-        Config.SYSTEM_COLLECTION,
-        "documents",
-    ]:
+    for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.SYSTEM_COLLECTION, "documents"]:
         print(f"Dropping collection '{name}'")
         model_db.drop_collection(name)
         dmt_db.drop_collection(name)

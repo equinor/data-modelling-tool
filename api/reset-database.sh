@@ -6,8 +6,8 @@ echo "ENVIRONMENT: $ENVIRONMENT"
 
 if [ "$ENVIRONMENT" = 'local' ]; then
     flask drop-data-sources
-    echo "Populating database"
-    for dataSource in /code/home/data_sources/"${ENVIRONMENT}"*.json ; do
+    echo "Importing DataSources"
+    for dataSource in /code/home/data_sources/"local"*.json ; do
       flask import-data-source "$dataSource"
     done
 fi
