@@ -2,7 +2,6 @@ import os
 
 
 class Config:
-    REMOTE_DEBUG = 0
     LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "INFO")
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "")

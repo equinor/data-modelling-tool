@@ -9,7 +9,6 @@ from core.enums import SIMOS
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
 from core.utility import wipe_db
 from services.database import data_modelling_tool_db as dmt_db
-from utils.debugging import enable_remote_debugging
 from utils.logging import logger
 from utils.package_import import import_package
 
@@ -24,9 +23,6 @@ def create_app(config):
     app.register_blueprint(System.blueprint)
     return app
 
-
-if Config.REMOTE_DEBUG in (1, "True", "1", True):
-    enable_remote_debugging()
 
 app = create_app(Config)
 
@@ -54,15 +50,15 @@ def init_application():
     for folder in Config.SYSTEM_FOLDERS:
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
 
-    for folder in application_settings["blueprints"]:
+    for folder in application_settings.get("blueprints", []):
         import_package(
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
-    if "entities" in application_settings:
-        for folder in application_settings["entities"]:
-            import_package(
-                f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
-            )
+
+    for folder in application_settings.get("entities", []):
+        import_package(
+            f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
+        )
 
 
 @app.cli.command()

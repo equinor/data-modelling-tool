@@ -80,6 +80,7 @@ def step_impl_contain(context):
     expected = json.loads(data)
     pretty_eq(expected, actual)
 
+
 @then("the response should be")
 def step_impl_should_be(context):
     actual = context.response_json
