@@ -1,0 +1,11 @@
+{
+  "description": "A basic object",
+  "name": "NestedObject",
+  "type": "",
+  "attributes": [
+    {
+      "type": "ds/BasicObject",
+      "name": "nestedObject"
+    }
+  ]
+}

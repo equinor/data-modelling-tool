@@ -31,5 +31,6 @@ class MongoRepositoryBase(DocumentRepository, ABC):
         return self.db
 
     def convert_to_model(self, dict_: Dict[str, Any]) -> DTO:
+
         model = self._generate_template(dict_["type"]).from_dict(dict_)
         return model

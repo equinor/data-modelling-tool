@@ -37,9 +37,20 @@ export const BlueprintPickerContent = ({
         const { nodeData } = renderProps
         // @ts-ignore
         const type = nodeData.meta.type
+        if (nodeData.title === 'CarPlot') {
+          console.log(type, nodeData)
+          console.log('\n\n')
+        }
+
+        const validBlueprints = [
+          BlueprintEnum.BLUEPRINT,
+          BlueprintEnum.PLOT,
+          //@todo add new toplevel plugin blueprints here.
+        ]
+        const isValidBlueprint = validBlueprints.includes(type)
         return (
           <>
-            {type === BlueprintEnum.BLUEPRINT ? (
+            {isValidBlueprint ? (
               <div
                 onClick={() => {
                   onSelect(renderProps)

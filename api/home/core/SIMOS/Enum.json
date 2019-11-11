@@ -22,9 +22,9 @@
     },
     {
       "type": "string",
-      "name": "selected",
+      "name": "defaultValue",
       "optional": true,
-      "default": ""
+      "description": "defaults to value with index 0, add a placeholder None or Missing if enum value is optional"
     },
     {
       "type": "string",

@@ -13,7 +13,8 @@
     "system/SIMOS/Blueprint",
     "system/DMT/Package",
     "system/SIMOS/Application",
-    "system/SIMOS/Enum"
+    "system/SIMOS/Enum",
+    "system/DMT/plugins/plot/Plot"
   ],
   "entityModels": [
     "system/DMT/Entity",

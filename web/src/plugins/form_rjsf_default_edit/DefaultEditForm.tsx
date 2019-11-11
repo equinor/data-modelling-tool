@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
-import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
-import { CollapsibleField } from '../widgets/CollapsibleField'
-import { Props as DocumentFinderProps } from '../form-rjsf-widgets/DocumentFinderWidget'
-import DocumentFinderWidget from '../form-rjsf-widgets/DocumentFinderWidget'
+import { Props as DocumentFinderProps } from '../form-rjsf-fields/DocumentFinderWidget'
+import DocumentFinderWidget from '../form-rjsf-fields/DocumentFinderWidget'
 import { Blueprint } from '../types'
-import { castValues } from '../form-rjsf-widgets/utilFormData'
 import { findRecipe, findUiAttribute } from '../pluginUtils'
+import { castValues } from '../form_rjsf_util/utilFormData'
+import { AttributeWidget } from '../form-rjsf-fields/Attribute'
+import { CollapsibleField } from '../form-rjsf-fields/CollapsibleField'
 
 interface Props {
   document: Blueprint | {}
@@ -23,13 +23,8 @@ const DocumentFinderWrapper = (props: DocumentFinderProps) => (
   </div>
 )
 
-export default ({
-  document,
-  template,
-  onSubmit,
-  blueprint,
-  blueprints,
-}: Props) => {
+export default (props: Props) => {
+  const { document, template, onSubmit, blueprint, blueprints } = props
   const [data, setData] = useState(document)
   const schema = template.schema
   const uiSchema = template.uiSchema
@@ -40,9 +35,9 @@ export default ({
   const formData = castValues(blueprint, data)
   return (
     <Form
-      formData={formData}
+      formData={formData || {}}
       schema={schema}
-      uiSchema={uiSchema}
+      uiSchema={uiSchema || {}}
       //@ts-ignore
       fields={{
         attribute: AttributeWidget,
@@ -60,7 +55,7 @@ export default ({
 function appendAttributes(blueprint: any, blueprints: any, uiSchema: any) {
   //only way to pass properties to a field is adding them to uiSchema next to the field.
   //for now, only support attribute field for blueprints.
-  if (uiSchema.attributes) {
+  if (uiSchema && uiSchema.attributes) {
     const uiRecipe = findRecipe(blueprint, 'EDIT')
     if (uiRecipe) {
       const uiAttribute = findUiAttribute(uiRecipe, 'attributes')

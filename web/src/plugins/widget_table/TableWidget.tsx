@@ -1,6 +1,6 @@
 import React from 'react'
-import { Blueprint, BlueprintAttribute } from '../../types'
-import { Pre } from '../../preview/PreviewPlugin'
+import { Blueprint, BlueprintAttribute } from '../types'
+import { Pre } from '../preview/PreviewPlugin'
 
 type Props = {
   blueprint: Blueprint

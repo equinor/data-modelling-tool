@@ -68,6 +68,7 @@ export default (props: Props) => {
             //@ts-ignore
             <input
               type="file"
+              //@ts-ignore
               webkitdirectory="true"
               mozdirectory="true"
               directory="true"

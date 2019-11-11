@@ -4,15 +4,18 @@ import {
   isPrimitive,
   parseAttributeDefault,
 } from '../pluginUtils'
+import { filterIndexContained } from './CreateConfig'
 
 export function generateTemplate(
-  attributes: BlueprintAttribute[],
-  types: Blueprint[]
-) {
+  blueprint: Blueprint,
+  blueprints: Blueprint[]
+): any {
   const properties = {}
-  attributes.forEach((attribute: BlueprintAttribute) => {
-    appendJsonSchemaProperty(attribute, properties, types)
-  })
+  const attributes = filterIndexContained(blueprint)
+  attributes
+    .forEach((attribute: BlueprintAttribute) => {
+      appendJsonSchemaProperty(attribute, properties, blueprints)
+    })
   return {
     type: 'object',
     properties,
@@ -73,7 +76,7 @@ function getJsonSchemaPropertyFromType(
       appendJsonSchemaProperty(type, property, blueprints)
     }
   } else {
-    console.error('type is missing.', attribute.type)
+    console.error('type is missing.', attribute)
   }
   return property
 }

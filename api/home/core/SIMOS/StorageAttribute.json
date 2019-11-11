@@ -57,7 +57,7 @@
       "attributes": [
         {
           "name": "type",
-          "type": "string",
+          "type": "system/SIMOS/UiAttribute",
           "field": "hidden"
         }
       ]

@@ -7,10 +7,20 @@ import { findRecipe } from '../pluginUtils'
 import objectPath from 'object-path'
 import { KeyValue } from '../BlueprintUtil'
 
-export const PlotPlugin = (props: PluginProps) => {
-  const { blueprint, document, uiRecipe } = props
-  const options: KeyValue = {}
-  const items = objectPath.get(document, options.property)
+interface Props {
+  name: string
+  blueprint: Blueprint
+  document: Blueprint
+  blueprints: Blueprint[]
+}
+
+
+export const PlotPlugin = (props: Props) => {
+  const { blueprint, document } = props
+
+  const uiRecipe = findRecipe(blueprint, props.name)
+
+  const items = objectPath.get(document, uiRecipe.options.property)
   const data = items.map((item: any) => {
     return {
       x: item[options.x],

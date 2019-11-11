@@ -22,7 +22,8 @@
       "dimensions": "*",
       "name": "attributes",
       "default": "[{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"type\", \"type\": \"string\"}, {\"name\": \"description\", \"type\": \"string\"}]",
-      "contained": true
+      "contained": true,
+      "optional": true
     },
     {
       "type": "system/SIMOS/StorageRecipe",
@@ -69,7 +70,7 @@
       "attributes": [
         {
           "name": "attributes",
-          "type": "system/SIMOS/BlueprintAttribute",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
@@ -79,12 +80,12 @@
         },
         {
           "name": "storageRecipes",
-          "type": "system/SIMOS/StorageRecipe",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "uiRecipes",
-          "type": "system/SIMOS/UiRecipe",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         }
       ]
@@ -97,12 +98,12 @@
       "attributes": [
         {
           "name": "name",
-          "type": "string",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "view.widget"
         },
         {
           "name": "uiRecipes",
-          "type": "system/SIMOS/UiRecipe",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "table.widget"
         }
       ]

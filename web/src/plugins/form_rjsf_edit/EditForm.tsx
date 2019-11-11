@@ -3,7 +3,7 @@ import Form from 'react-jsonschema-form'
 import { Blueprint, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import { setupTypeAndRecipe } from '../pluginUtils'
-import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
+import {AttributeWidget} from "../form-rjsf-fields/Attribute";
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void

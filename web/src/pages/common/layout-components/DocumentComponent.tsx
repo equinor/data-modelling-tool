@@ -127,6 +127,7 @@ const DocumentComponent = (props: any) => {
               document={document}
               blueprints={data.children}
               blueprint={data.blueprint}
+              dtos={data.dtos || []}
             />
           )
         }}

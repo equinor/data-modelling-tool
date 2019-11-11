@@ -1,7 +1,8 @@
 import React from 'react'
-import { BlueprintAttribute, PluginProps, UiRecipe } from '../types'
+import { BlueprintAttribute, PluginProps } from '../types'
 import ErrorBoundary from '../../components/ErrorBoundary'
-import TableWidget from '../widgets/table/TableWidget'
+import TableWidget from '../widget_table/TableWidget'
+import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
 import { Pre } from '../preview/PreviewPlugin'
 
 // available on attribute level of this.
@@ -23,7 +24,7 @@ export const ViewPlugin = ({ blueprint, document, uiRecipe }: PluginProps) => {
           return (
             <ErrorBoundary key={key}>
               <TableWidget
-                blueprint={document}
+                blueprint={blueprint}
                 parentAttribute={parentAttribute}
                 attribute={attribute}
               />
@@ -43,6 +44,32 @@ export const ViewPlugin = ({ blueprint, document, uiRecipe }: PluginProps) => {
       <div style={{ padding: 20 }}>{widgets}</div>
     </div>
   )
+}
+
+/**
+ * Each root level attribute in the blueprint, can have a plugin.
+ * The plugin is a value on a attribute in the current uiRecipe.
+ * @todo support default ui plugin when DocumentComponent is using the parents uiRecipe names only.
+ *
+ * @param uiRecipes from document
+ * @param parentAttribute from blueprint
+ */
+function getPluginOfAttribute(
+  parentAttribute: BlueprintAttribute,
+  uiRecipes?: any[]
+): string {
+  // The uiRecipe for this plugin must be provided.
+  const uiRecipe =
+    uiRecipes &&
+    uiRecipes.find((recipe: any) => recipe.plugin === RegisteredPlugins.VIEW)
+  //find the ui attribute in parents uiRecipes.
+  const uiAttribute =
+    uiRecipe &&
+    uiRecipe.attributes &&
+    uiRecipe.attributes.find(
+      (uiAttr: any) => uiAttr.name === parentAttribute.name
+    )
+  return uiAttribute && uiAttribute.plugin
 }
 
 type DefaultViewProps = {

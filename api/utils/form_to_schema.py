@@ -22,6 +22,7 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
     ui_recipe: UIRecipe = get_ui_recipe(blueprint, ui_recipe_name)
 
     nested_attributes = []
+
     for attribute in blueprint.attributes:
         attribute_name = attribute.name
         is_array = attribute.dimensions == "*"

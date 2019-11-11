@@ -1,0 +1,36 @@
+{
+  "description": "A basic object",
+  "name": "BlueprintAttribute",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "type": "string"
+    },
+    {
+      "name": "description",
+      "type": "string"
+    },
+    {
+      "name": "type",
+      "type": "string"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "name",
+          "readonly": false
+        },
+        {
+          "name": "type",
+          "widget": "typeWidget"
+        }
+      ]
+    }
+  ]
+}

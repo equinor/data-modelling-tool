@@ -1,5 +1,5 @@
-import { castValues } from '../utilFormData'
 import { Blueprint } from '../../types'
+import { castValues } from '../utilFormData'
 
 const emptyBlueprint: Blueprint = {
   name: '',

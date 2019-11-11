@@ -1,0 +1,30 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "PlotValuesConfig",
+  "description": "This describes a set of values",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "optional": true
+    },
+    {
+      "type": "string",
+      "name": "entity",
+      "description": "the entity holding the data for this serie. path in the entity or id. "
+    },
+    {
+      "type": "string",
+      "name": "attribute",
+      "description": "name of the array attribute in the entity which holds this serie."
+    }
+  ]
+}

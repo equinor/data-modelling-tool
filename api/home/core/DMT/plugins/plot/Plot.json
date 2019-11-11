@@ -1,0 +1,80 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Plot",
+  "description": "This describes a plot blueprint, a configuration of a plot based on a sufficient model.",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "optional": true
+    },
+    {
+      "type": "string",
+      "name": "plotWidget",
+      "enumType": "system/DMT/plugins/plot/PlotTypes"
+    },
+    {
+      "type": "system/DMT/plugins/plot/PlotValuesConfig",
+      "dimensions": "*",
+      "name": "values",
+      "description": "A line, bar, etc in a plot"
+    },
+    {
+      "type": "system/SIMOS/StorageRecipe",
+      "dimensions": "*",
+      "name": "storageRecipes",
+      "contained": true
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "dimensions": "*",
+      "name": "uiRecipes",
+      "optional": true,
+      "contained": true
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "DEFAULT_CREATE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "type",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "plotWidget",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "values",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "storageRecipes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "uiRecipes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        }
+      ]
+    }
+  ]
+
+}

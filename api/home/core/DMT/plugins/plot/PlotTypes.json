@@ -1,0 +1,13 @@
+{
+  "type": "system/SIMOS/Enum",
+  "name": "PlotTypes",
+  "description": "This describes a list of plot types",
+  "values": [
+    "LinePlot",
+    "ScatterPlot"
+  ],
+  "labels": [
+    "Line",
+    "Scatter"
+  ]
+}

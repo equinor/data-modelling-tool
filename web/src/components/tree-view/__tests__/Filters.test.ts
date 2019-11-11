@@ -4,7 +4,7 @@ import { NodeType } from '../../../api/types'
 const data = {
   '/root': {
     _id: '/root',
-    nodeType: NodeType.subPackage,
+    nodeType: NodeType.DMT_PACKAGE,
     isRoot: true,
     children: ['/root/subpackage'],
   },
