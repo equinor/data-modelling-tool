@@ -1,5 +1,5 @@
 export default {
-  run: async ({ document, config, setProgress }) => {
+  run: ({ document, config, setProgress }) => {
     /* Custom code goes here */
   },
 }
