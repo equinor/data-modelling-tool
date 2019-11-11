@@ -1,0 +1,26 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "ApplicationSettings",
+  "blueprints": [
+    "CarsDemo"
+  ],
+  "entities": [],
+  "blueprintsModels": [],
+  "entityModels": [
+    "system/DMT/Package",
+    "SSR-DataSource/CarsDemo/Car",
+    "SSR-DataSource/CarsDemo/Wheels",
+    "SSR-DataSource/CarsDemo/engine/Engine",
+    "SSR-DataSource/CarsDemo/engine/FuelPump"
+
+  ],
+  "runnableModels": [
+    {
+      "name": "Car",
+      "description": "",
+      "input": "SSR-DataSource/CarsDemo/Car",
+      "output": "SSR-DataSource/CarsDemo/Car",
+      "method": "getCar"
+    }
+  ]
+}

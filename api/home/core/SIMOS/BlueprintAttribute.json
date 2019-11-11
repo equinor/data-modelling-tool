@@ -17,8 +17,7 @@
       "name": "default",
       "type": "string",
       "optional": true,
-      "default": "",
-      "contained": true
+      "default": ""
     },
     {
       "type": "string",
@@ -42,15 +41,13 @@
       "name": "contained",
       "type": "boolean",
       "default": true,
-      "contained": true,
       "optional": true
     },
     {
       "name": "enumType",
       "type": "string",
       "optional": true,
-      "default": "",
-      "contained": true
+      "default": ""
     }
   ],
   "storageRecipes": [],

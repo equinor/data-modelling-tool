@@ -191,6 +191,7 @@ Feature: Index
     }
     """
 
+  @skip
   Scenario: Get index for single document (Document)
     Given I access the resource url "/api/v3/index/data-source-name/4"
     And data modelling tool templates are imported

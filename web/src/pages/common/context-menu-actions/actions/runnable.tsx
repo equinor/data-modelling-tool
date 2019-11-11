@@ -1,30 +1,9 @@
 import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 import Runnable from '../../../../runnable'
-import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-
-const getDocument = async (dataUrl: string, showError: Function) => {
-  try {
-    const result = await axios.get(dataUrl)
-    return result.data.document
-  } catch (error) {
-    showError(error)
-  }
-}
-
-const updateDocument = async (
-  dataUrl: string,
-  data: any,
-  showError: Function
-) => {
-  try {
-    const result = await axios.put(dataUrl, data)
-    return result.data
-  } catch (error) {
-    showError(error)
-  }
-}
+import Api2 from '../../../../api/Api2'
+import { AxiosResponse } from 'axios'
 
 export type RunnableProps = {
   document: any
@@ -34,12 +13,18 @@ export type RunnableProps = {
 
 export type RunnableMethod = (props: RunnableProps) => any
 
+type RunnableInputProps = {
+  document: any
+  config: any
+  setProgress: Function
+}
+
 export const runnableAction = (
   action: any,
   node: TreeNodeRenderProps,
   createNodes: Function,
   layout: any,
-  showError: Function
+  showError?: Function
 ) => {
   return {
     prompt: action.data.prompt,
@@ -49,9 +34,10 @@ export const runnableAction = (
 
       setProgress(0)
 
-      const document = getDocument(action.data.dataUrl, showError)
+      function onSuccess(data: any) {
+        const { document } = data
 
-      if (document) {
+        console.log(document)
         const runMethod: string = runnable['method']
 
         const hasMethod = runMethod in Runnable
@@ -62,7 +48,7 @@ export const runnableAction = (
           // @ts-ignore
           const method: RunnableMethod = Runnable[runMethod]
 
-          const inputToRunnable = {
+          const inputToRunnable: RunnableInputProps = {
             document,
             config: runnable,
             setProgress,
@@ -70,16 +56,40 @@ export const runnableAction = (
 
           const result = method(inputToRunnable)
 
-          updateDocument(action.data.dataUrl, result, showError)
-            .then(() => {
-              setProgress(100)
-              layout.refresh(action.data.documentId)
-            })
-            .catch((error: any) => {
-              showError(error)
-            })
+          if (result) {
+            update(action, result, setProgress, layout)
+          }
         }
       }
+
+      Api2.fetchDocument({
+        dataUrl: action.data.dataUrl,
+        onSuccess,
+        onError: (error: Response) => {
+          console.log(error)
+          NotificationManager.error(
+            'failed to update document: ' + error.statusText
+          )
+        },
+      })
     },
   }
+}
+
+function update(action: any, result: any, setProgress: Function, layout: any) {
+  Api2.put({
+    url: action.data.dataUrl,
+    data: result,
+    onSuccess: (response: any) => {
+      console.log(response)
+      NotificationManager.success('updated document: ' + action.data.documentId)
+      setProgress(100)
+      layout.refresh(action.data.documentId)
+    },
+    onError: (error: any) => {
+      NotificationManager.error(
+        'failed to update document: ' + action.data.documentId
+      )
+    },
+  })
 }

@@ -37,10 +37,7 @@ export function generateUiSchema(pluginProps: PluginProps, uiRecipe: any) {
       }
     )
   }
-  return {
-    type: 'object',
-    ...uiSchema,
-  }
+  return uiSchema
 }
 
 function createUiSchemaProperty(

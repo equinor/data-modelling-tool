@@ -113,7 +113,7 @@ class Tree:
             is_contained=True,
         )
         blueprint = get_blueprint(attribute_type)
-        ui_recipe: UIRecipe = get_ui_recipe(blueprint, "EDIT")
+        ui_recipe: UIRecipe = get_ui_recipe(blueprint, "INDEX")
         for attribute in blueprint.get_attributes_with_reference():
             name = attribute["name"]
 
@@ -201,7 +201,7 @@ class Tree:
             node.menu_items.append(get_download_menu_action(data_source_id, document.uid))
 
         storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
-        ui_recipe: UIRecipe = get_ui_recipe(node.blueprint, "EDIT")
+        ui_recipe: UIRecipe = get_ui_recipe(node.blueprint, "INDEX")
 
         # If the node is a DMT-Package, add "Create New" from AppSettings
         if is_package:
@@ -265,6 +265,7 @@ class Tree:
                 # Check if values for the attribute exists in current document,
                 # this means that we have added some documents to this array.
                 values = document.get_values(attribute_name)
+
                 if values:
                     # Values are stored in separate document
                     if not is_contained_in_storage:

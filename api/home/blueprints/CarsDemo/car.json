@@ -21,7 +21,7 @@
       "dimensions": "*"
     },
     {
-      "type": "SSR-DataSource/CarsDemo/subdir/Engine",
+      "type": "SSR-DataSource/CarsDemo/engine/Engine",
       "name": "engine"
     }
   ],
@@ -42,28 +42,6 @@
       ]
     }
   ],
-  "uiRecipes": [
-    {
-      "type": "system/SIMOS/UiRecipe",
-      "name": "EDIT",
-      "description": "",
-      "attributes": [
-        {
-          "name": "description",
-          "widget": "textarea"
-        },
-        {
-          "name": "wheels",
-          "uiRecipe": "EDIT",
-          "options": [
-            {
-              "name": "orderable",
-              "value" : "false"
-            }
-          ]
-        }
-      ]
-    }
-  ]
+  "uiRecipes": []
 }
 
