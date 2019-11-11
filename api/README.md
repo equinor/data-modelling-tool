@@ -1,39 +1,11 @@
 # Marine Analysis Framework API
 
-## API
-
-### Endpoints (Outdated)
-```
-'/api/transformer/json-schema'
-Methods: POST 
-Data: 
-    POST: form as json
-Returns: 
-    POST: json-schema
-
-'/api/v1/data-sources/
-Methods: POST, GET 
-Data: 
-    POST: json data-source object
-    GET: None
-Returns: 
-    POST: data-source id
-    GET: List of data-source
-    
-'/api/v1/data-sources/<string:_id>'
-Methods: PUT
-Data:
-    PUT: New data-source json object
-Returns:
-    PUT: Boolean
-```
-
 ## Python packages
 
 This project uses [Poetry](https://poetry.eustace.io/docs/) for its Python package management.
 
 * If you like Poetry to create venv in the project directory, configure it like so;  
-`poetry config settings.virtualenvs.in-project true`  
+```poetry config settings.virtualenvs.in-project true```
 * To create a virtual environment run `poetry install`
 * To add packages run `poetry add myPackage` (Remember to rebuild the Docker image)
 

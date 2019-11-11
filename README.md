@@ -4,15 +4,32 @@
 
 A tool for modelling and presenting blueprints.  
 Read more about the core concepts here: [DMT](README_DMT.md) and [plugins](README_Plugin.md)
-### Getting started
 
-Fill in secrets in .env file.
+## Getting started
 
-```
-docker-compose build
-docker-compose up
-```
+1. Copy the file `.env-template` to `.env` and set the variables in the file. (Only MONGO_INITDB_ROOT_PASSWORD is needed to run locally)
+2. Run start the project through docker-compose;
 
+    For Linux;
+
+    ``` bash
+    docker-compose up
+    ```
+
+    For Windows;
+
+    ``` bash
+    docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
+
+    ```
+
+## Exported Application
+
+1. Unzip the downloaded file(e.g `unzip application.zip` )
+2. Run `docker-compose up`
+3. Visit [http://localhost:9000] in your web browser (Internet Explorer is not supported)
+
+### Extras
 You may also want to run `./bin/setup.sh`, which installs [DoIt](https://pydoit.org), and [pre-commit](https://github.com/pre-commit/pre-commit), if they are not installed already in a local, virtual environment.
 This will also install the run configurations for the IntelliJ products.
 It will also make the necessary changes in the `.idea` configurations.
@@ -20,16 +37,6 @@ It will also make the necessary changes in the `.idea` configurations.
 #### DoIt
 This is a tool similar to Makefile, but uses Python.
 With it, some targets are included; `doit list` for an overview of the available targets / commands, and what they do.
-
-### Run production
-
-To test production build locally, use the override compose.
-
-```
-docker-compose -f docker-compose.override.yml build
-docker-compose -f docker-compose.override.yml up
-```
-
 
 ## Components README
 

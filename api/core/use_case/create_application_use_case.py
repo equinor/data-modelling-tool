@@ -19,12 +19,22 @@ from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from jinja2 import Template
 
+API_DOCKERFILE = f"""\
+FROM mariner.azurecr.io/dmt/api
+COPY ./home {Config.APPLICATION_HOME}
+"""
+
+WEB_DOCKERFILE = """\
+FROM mariner.azurecr.io/dmt/web
+COPY ./runnable.js /code/src/runnable.js
+"""
+
 DOCKER_COMPOSE = """\
 version: "3.4"
 
 services:
   api:
-    image: mariner.azurecr.io/dmt/api
+    build: api
     restart: unless-stopped
     depends_on:
       - db
@@ -35,14 +45,10 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
       MONGO_INITDB_DATABASE: maf
       MONGO_DATA_MODELING_TOOL_DATABASE: dmt
-    volumes:
-      - ./api/home/:/code/home
 
   web:
-    image: mariner.azurecr.io/dmt/web
+    build: web
     restart: unless-stopped
-    volumes:
-      - ./web/runnable.js:/code/src/runnable.js
 
   db:
     image: mongo:3.4
@@ -51,14 +57,14 @@ services:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
       MONGO_INITDB_DATABASE: maf
-    volumes:
-      - ./data/db:/data/db
-      
+    logging:
+      driver: "none"
+
   nginx:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx
+    image: mariner.azurecr.io/dmt/nginx-local
     ports:
       - "9000:80"
 """
@@ -183,6 +189,8 @@ class CreateApplicationUseCase(uc.UseCase):
             runnable_file = generate_runnable_file(application.data["runnableModels"])
             zip_file.writestr("web/runnable.js", runnable_file)
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
+            zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
+            zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
             for type in application.data["blueprints"]:
                 root_package: DTO = self.document_repository.find({"name": type})
                 zip_package(zip_file, root_package, self.document_repository, f"api/home/blueprints/")
