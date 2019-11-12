@@ -2,12 +2,12 @@ from typing import List
 
 from config import Config
 from core.domain.data_source import DataSource
-from services.database import data_modelling_tool_db as database
+from services.database import dmt_database
 from core.enums import DataSourceDocumentType, DataSourceType
 
 
 class DataSourceRepository:
-    collection = database[f"{Config.DATA_SOURCES_COLLECTION}"]
+    collection = dmt_database[f"{Config.DATA_SOURCES_COLLECTION}"]
 
     def list(self, document_type: DataSourceDocumentType) -> List[DataSource]:
         all_sources = [DataSource(id="local", host="client", name="Local workspace", type="localStorage")]

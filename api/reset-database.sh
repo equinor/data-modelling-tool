@@ -1,8 +1,7 @@
 #!/usr/bin/env sh
+echo "ENVIRONMENT: $ENVIRONMENT"
 
 flask nuke-db
-
-echo "ENVIRONMENT: $ENVIRONMENT"
 
 if [ "$ENVIRONMENT" = 'local' ]; then
     flask drop-data-sources

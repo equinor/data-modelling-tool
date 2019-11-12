@@ -6,7 +6,7 @@ from core.domain.dto import DTO
 from core.domain.package import Package
 from core.repository.repository_factory import get_repository
 from core.enums import RepositoryType
-from services.database import model_db, data_modelling_tool_db as dmt_db
+from services.database import dmt_database
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
 from utils.logging import logger
 
@@ -59,5 +59,4 @@ def wipe_db():
     # FIXME: Read names from the database
     for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.SYSTEM_COLLECTION, "documents"]:
         print(f"Dropping collection '{name}'")
-        model_db.drop_collection(name)
-        dmt_db.drop_collection(name)
+        dmt_database.drop_collection(name)

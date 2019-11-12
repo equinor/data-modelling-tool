@@ -3,10 +3,10 @@
   "host": "msa-dev.documents.azure.com",
   "port": 10255,
   "username": "msa-dev",
-  "password": "",
+  "password": "REPLACE_ME",
   "tls": true,
   "name": "SSR-DataSource",
-  "database": "dmt",
+  "database": "REPLACE_ME",
   "collection": "SSR-DataSource",
   "documentType": "blueprints",
   "_id": "SSR-DataSource"
