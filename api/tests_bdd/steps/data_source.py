@@ -1,5 +1,5 @@
 from behave import given
-from services.database import data_modelling_tool_db
+from services.database import dmt_database
 
 
 @given("there are mongodb data sources")
@@ -19,6 +19,6 @@ def step_impl(context):
             "documentType": row["documentType"],
             "type": row["type"],
         }
-        data_modelling_tool_db["data_sources"].insert_one(document)
-        data_modelling_tool_db.drop_collection(row["collection"])
+        dmt_database["data_sources"].insert_one(document)
+        dmt_database.drop_collection(row["collection"])
         context.data_sources[row["name"]] = document

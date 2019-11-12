@@ -8,7 +8,7 @@ from config import Config
 from core.enums import SIMOS
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
 from core.utility import wipe_db
-from services.database import data_modelling_tool_db as dmt_db
+from services.database import dmt_database
 from utils.logging import logger
 from utils.package_import import import_package
 
@@ -32,7 +32,7 @@ logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
 def import_application_settings():
     with open(f"{Config.APPLICATION_HOME}/settings.json") as json_file:
         application_settings = json.load(json_file)
-        dmt_db[Config.SYSTEM_COLLECTION].insert_one(application_settings)
+        dmt_database[Config.SYSTEM_COLLECTION].insert_one(application_settings)
         logger.info(f"Imported application settings {application_settings['name']}")
         return application_settings
 
@@ -40,7 +40,7 @@ def import_application_settings():
 @app.before_request
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def load_application_settings():
-    g.application_settings = dmt_db[Config.SYSTEM_COLLECTION].find_one(filter={"type": SIMOS.APPLICATION.value})
+    g.application_settings = dmt_database[Config.SYSTEM_COLLECTION].find_one(filter={"type": SIMOS.APPLICATION.value})
 
 
 @app.cli.command()
@@ -64,7 +64,7 @@ def init_application():
 @app.cli.command()
 def drop_data_sources():
     print(f"Dropping collection data_sources")
-    dmt_db.drop_collection("data_sources")
+    dmt_database.drop_collection("data_sources")
 
 
 @app.cli.command()
@@ -76,7 +76,7 @@ def import_data_source(file):
             id = document["name"]
             document["_id"] = id
             print(f"Importing {file} as data_source with id: {id}.")
-            dmt_db["data_sources"].replace_one({"_id": id}, document, upsert=True)
+            dmt_database["data_sources"].replace_one({"_id": id}, document, upsert=True)
     except Exception as error:
         logger.error(f"Failed to import file {file}: {error}")
 

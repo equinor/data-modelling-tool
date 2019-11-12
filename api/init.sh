@@ -1,5 +1,5 @@
 #!/bin/sh
-if [ ! -e /home/first-run-false ]; then
+if [ ! -e /home/first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
   echo "Importing data"
   /code/reset-database.sh
   touch /home/first-run-false
