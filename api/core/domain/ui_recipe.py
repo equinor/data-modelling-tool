@@ -21,11 +21,11 @@ class UIRecipe:
 
     def _convert_attributes(self, attributes):
         for attribute in attributes:
-            self.ui_attributes[attribute["name"]] = UIAttribute(
-                name=attribute["name"], is_contained=attribute.get("contained")
-            )
+            is_contained = attribute.get("contained")
+            self.ui_attributes[attribute["name"]] = UIAttribute(name=attribute["name"], is_contained=is_contained)
 
     def is_contained(self, attribute):
+
         attribute_name = attribute["name"]
         attribute_type = attribute["type"]
         attribute_contained = attribute.get("contained")
@@ -35,7 +35,7 @@ class UIRecipe:
             ui_attribute = self.ui_attributes[attribute_name]
             if ui_attribute.is_contained is not None:
                 return ui_attribute.is_contained
-        if attribute_contained:
+        if attribute_contained is not None:
             return attribute_contained
         if attribute_type in PRIMITIVES:
             return DEFAULT_PRIMITIVE_CONTAINED
