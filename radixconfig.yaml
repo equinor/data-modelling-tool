@@ -61,5 +61,5 @@ spec:
         - OAUTH2_PROXY_CLIENT_SECRET
         - OAUTH2_REDIRECT_URL
   dnsAppAlias:
-    environment: dev
+    environment: prod
     component: oauth-proxy
