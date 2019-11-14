@@ -16,11 +16,6 @@
       "name": "type"
     },
     {
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "attributes",
-      "dimensions": "*"
-    },
-    {
       "type": "boolean",
       "name": "isRoot"
     },
