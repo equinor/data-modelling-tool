@@ -6,7 +6,7 @@
   "password": "maf",
   "tls": false,
   "name": "entities",
-  "database": "dmt",
+  "database": "local",
   "collection": "entities",
   "documentType": "entities"
 }

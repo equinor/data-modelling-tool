@@ -6,7 +6,7 @@
   "password": "maf",
   "tls": false,
   "name": "system",
-  "database": "dmt",
+  "database": "local",
   "collection": "system",
   "documentType": "system"
 }
