@@ -1,14 +1,14 @@
 
-const getTodoList = ({ document, config, setProgress }) => {
+const getTodoList = ({ document, config, setProgress, updateDocument }) => {
   document.description = 'Test: ' + Math.random()
-  return document
+  updateDocument(document)
 }
 
 const getCar = (props) => {
-  const { document, config, setProgress } = props
+  const { document, config, setProgress, updateDocument } = props
   document.description = 'Test: ' + Math.random()
   console.log(props)
-  return document
+  updateDocument(document)
 }
 
 const runnableMethods = {

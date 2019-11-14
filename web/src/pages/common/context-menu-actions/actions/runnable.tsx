@@ -17,6 +17,7 @@ type RunnableInputProps = {
   document: any
   config: any
   setProgress: Function
+  updateDocument: Function
 }
 
 export const runnableAction = (
@@ -37,7 +38,6 @@ export const runnableAction = (
       function onSuccess(data: any) {
         const { document } = data
 
-        console.log(document)
         const runMethod: string = runnable['method']
 
         const hasMethod = runMethod in Runnable
@@ -52,13 +52,12 @@ export const runnableAction = (
             document,
             config: runnable,
             setProgress,
+            updateDocument: (result: any) => {
+              update(action, result, setProgress, layout)
+            },
           }
 
-          const result = method(inputToRunnable)
-
-          if (result) {
-            update(action, result, setProgress, layout)
-          }
+          method(inputToRunnable)
         }
       }
 
