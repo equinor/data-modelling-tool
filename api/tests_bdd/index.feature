@@ -4,7 +4,7 @@ Feature: Index
 
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | data-source-name | local      | documents  | blueprints   | mongo-db |
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                   |

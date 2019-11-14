@@ -4,9 +4,9 @@ Feature: Document 2
 
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | maf      | documents  | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | test-source-name | dmt      | test       | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system           | dmt      | system     | system       | mongo-db |
+      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents  | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | test-source-name | local    | test       | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system           | local    | system     | system       | mongo-db |
 
     Given there exist document with id "1" in data source "test-source-name"
     """

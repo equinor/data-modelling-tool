@@ -1,7 +1,6 @@
 from flask import abort
 
-from data_source_plugins.mongodb import MongodbClient
-from services.database import data_modelling_tool_db as db
+from services.database import dmt_database as db
 
 
 def get_data_source_from_database(id):
@@ -26,7 +25,6 @@ class MockClient:
         return None
 
 
-#  TODO: This should not be used
 class DataSource:
     @classmethod
     def mock(cls, data):
@@ -48,14 +46,3 @@ class DataSource:
         self.database = data_source_dict["database"]
         self.collection = data_source_dict["collection"]
         self.documentType = data_source_dict["documentType"]
-
-        if self.type == "mongo-db":
-            self.client = MongodbClient(
-                host=self.host,
-                port=self.port,
-                username=self.username,
-                password=self.password,
-                tls=self.tls,
-                collection=self.collection,
-                database=self.database,
-            )
