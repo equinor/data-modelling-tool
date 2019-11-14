@@ -40,27 +40,6 @@ export function getBlueprintFromType(
   })
 }
 
-/**
- * Should be a blueprint for application wide defaults on the enum AttributeTypes.
- * To avoid specifying default in every blueprint that's created, define generic defaults.
- *
- * @param attribute
- */
-export function getDefaults(attribute: BlueprintAttribute) {
-  switch (attribute.type) {
-    case 'string':
-      return ''
-    case 'number':
-      return 0
-    case 'boolean':
-      return false
-    case 'integer':
-      return 0
-    default:
-      //type is a blueprint.
-      return attribute.dimensions === '*' ? [] : {}
-  }
-}
 
 /**
  * Parse attribute default values.
