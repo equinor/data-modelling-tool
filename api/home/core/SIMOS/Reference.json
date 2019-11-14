@@ -1,0 +1,25 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Reference",
+  "description": "This describes a reference to an entity",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "type"
+    },
+    {
+      "name": "referenceType",
+      "type": "string",
+      "description": "blueprintType of the referenced entity"
+    },
+    {
+      "type": "string",
+      "name": "uid",
+      "description": "Relative uid to the entity."
+    }
+  ]
+}
