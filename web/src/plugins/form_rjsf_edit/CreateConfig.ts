@@ -33,6 +33,6 @@ export function createFormConfigs(
   return {
     data: document,
     template: generateTemplate(attributes, blueprints),
-    uiSchema: generateUiSchema(pluginProps, uiRecipe),
+    uiSchema: generateUiSchema(pluginProps),
   }
 }

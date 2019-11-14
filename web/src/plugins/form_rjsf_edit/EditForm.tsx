@@ -4,7 +4,6 @@ import { Blueprint, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import { findRecipe, setupTypeAndRecipe } from '../pluginUtils'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
-import { ReadOnly } from '../form-rjsf-widgets/ReadOnly'
 
 interface Props extends PluginProps {
   onSubmit: (data: any) => void
@@ -23,7 +22,6 @@ export const EditPlugin = (props: Props) => {
         fields={{
           attribute: AttributeWidget,
           hidden: () => <div />,
-          readonly: ReadOnly,
         }}
         onChange={formData => {
           console.log(formData)

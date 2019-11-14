@@ -1,6 +1,6 @@
 import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
-import { findUiAttribute } from '../pluginUtils'
 import { getWidgetBlueprint } from './EditForm'
+import {BlueprintUtil, KeyValue} from "../BlueprintUtil";
 
 type UiSchemaProperty = {
   items?: any
@@ -17,26 +17,47 @@ type UiSchemaProperty = {
  * @param parentAttribute
  * @param uiRecipe
  */
-export function generateUiSchema(pluginProps: PluginProps, uiRecipe: any) {
-  const uiSchema = {}
-  if (uiRecipe) {
-    pluginProps.blueprint.attributes.forEach(
-      (parentAttribute: BlueprintAttribute) => {
-        const uiAttribute = findUiAttribute(uiRecipe, parentAttribute.name)
-        if (uiAttribute) {
-          let property = createUiSchemaProperty(
-            uiAttribute,
-            parentAttribute,
-            pluginProps
-          )
 
-          if (Object.keys(property).length > 0) {
-            ;(uiSchema as any)[parentAttribute.name] = property
-          }
-        }
+const PLUGIN_NAME = 'EDIT_PLUGIN'
+
+const defaults:KeyValue = {
+  name: {'ui:disabled': true},
+  type: {'ui:disabled': true},
+  description: {'ui:widget': 'textarea'},
+
+}
+
+function addDefaultUiProperties(container: KeyValue, attr: any) {
+    const defaultUiProperty = defaults[attr.name]
+    if (defaultUiProperty) {
+      container[attr.name] = defaultUiProperty
+    }
+}
+
+export function generateUiSchema(pluginProps: PluginProps) {
+  const {blueprint} = pluginProps
+  const blueprintUtil = new BlueprintUtil(pluginProps.blueprint, PLUGIN_NAME)
+
+
+  const uiSchema = {}
+  blueprint.attributes.forEach((attr: BlueprintAttribute) => {
+    const uiAttribute = blueprintUtil.getUiAttribute(attr.name, PLUGIN_NAME)
+
+    // top level blueprint.
+    addDefaultUiProperties(uiSchema, attr)
+
+    if (uiAttribute) {
+      let property = createUiSchemaProperty(
+        uiAttribute,
+        attr,
+        pluginProps
+      )
+
+      if (Object.keys(property).length > 0) {
+        ;(uiSchema as any)[attr.name] = property
       }
-    )
-  }
+    }
+  })
   return uiSchema
 }
 
@@ -45,6 +66,7 @@ function createUiSchemaProperty(
   blueprintAttribute: BlueprintAttribute,
   pluginProps: PluginProps
 ) {
+
   if (uiAttribute.contained === false) {
     return { 'ui:field': 'hidden' }
   }
