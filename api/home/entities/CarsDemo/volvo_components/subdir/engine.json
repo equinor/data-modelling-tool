@@ -1,7 +1,0 @@
-{
-  "type": "SSR-DataSource/CarsDemo/subdir/Engine",
-  "name": "wheel#2",
-  "description": "My second wheel entity",
-  "power": 200
-}
-

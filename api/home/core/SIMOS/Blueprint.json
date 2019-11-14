@@ -13,26 +13,24 @@
     },
     {
       "type": "string",
-      "name": "description"
+      "name": "description",
+      "optional": "true"
     },
     {
       "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
-      "name": "attributes",
-      "contained": true
+      "name": "attributes"
     },
     {
       "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
-      "name": "storageRecipes",
-      "contained": true
+      "name": "storageRecipes"
     },
     {
       "type": "system/SIMOS/UiRecipe",
       "dimensions": "*",
       "name": "uiRecipes",
-      "optional": true,
-      "contained": true
+      "optional": true
     }
   ],
   "storageRecipes": [
@@ -66,7 +64,8 @@
     },
     {
       "type": "system/SIMOS/UiRecipe",
-      "name": "EDIT",
+      "name": "INDEX",
+      "plugin": "INDEX",
       "description": "",
       "attributes": [
         {
@@ -87,12 +86,12 @@
         },
         {
           "name": "storageRecipes",
-          "contained": false,
+          "contained": true,
           "field": "collapsible"
         },
         {
           "name": "uiRecipes",
-          "contained": false,
+          "contained": true,
           "field": "collapsible"
         }
       ]

@@ -1,16 +1,19 @@
-const getMeasurements = ({ document, config, setProgress }) => {
-  document.name = 'New name'
+
+const getTodoList = ({ document, config, setProgress }) => {
+  document.description = 'Test: ' + Math.random()
   return document
 }
 
-const getTodoList = ({ document, config, setProgress }) => {
-  document.name = 'New name'
+const getCar = (props) => {
+  const { document, config, setProgress } = props
+  document.description = 'Test: ' + Math.random()
+  console.log(props)
   return document
 }
 
 const runnableMethods = {
   getTodoList,
-  getMeasurements,
+  getCar,
 }
 
 export default runnableMethods

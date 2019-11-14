@@ -20,13 +20,26 @@
       "type": "boolean",
       "name": "contained",
       "optional": true,
-      "default": true
+      "default": true,
+      "description": "WARNING: Change how the entity is stored. Changing this value will make current entities unavailable"
     },
     {
       "type": "string",
       "name": "dimensions",
       "optional": true,
       "default": "1"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "plugin": "EDIT_PLUGIN",
+      "name": "Edit",
+      "attributes": [
+        {
+          "name": "type",
+          "field": "hidden"
+        }
+      ]
     }
   ]
 }

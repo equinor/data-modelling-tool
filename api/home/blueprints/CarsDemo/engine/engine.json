@@ -14,8 +14,8 @@
       "name": "power"
     },
     {
-      "type": "SSR-DataSource/CarsDemo/subdir/subdir2/FuelPump",
-      "name": "fuel_pump"
+      "type": "SSR-DataSource/CarsDemo/engine/FuelPump",
+      "name": "FuelPump"
     }
   ],
   "storageRecipe": [

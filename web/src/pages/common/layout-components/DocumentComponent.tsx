@@ -43,7 +43,7 @@ const plugins: Plugin[] = [
   {
     label: 'View',
     name: RegisteredPlugins.VIEW,
-    disabled: true
+    disabled: true,
   },
   {
     label: 'Plot',

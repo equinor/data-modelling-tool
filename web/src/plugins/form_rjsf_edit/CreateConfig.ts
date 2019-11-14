@@ -1,5 +1,5 @@
 import { generateTemplate } from './GenerateTemplate'
-import { PluginProps } from '../types'
+import { BlueprintAttribute, PluginProps } from '../types'
 import { generateUiSchema } from './GenerateUiSchema'
 
 export type FormConfig = {
@@ -8,14 +8,31 @@ export type FormConfig = {
   uiSchema: any
 }
 
+/**
+ *
+ * @param blueprinAttribute
+ */
+const defaultFilter = (uiRecipe: any) => {
+  if (uiRecipe) {
+    //@todo fix issue #355.
+  }
+  return (blueprinAttribute: BlueprintAttribute) => {
+    if (blueprinAttribute.name === 'attributes') {
+      return true
+    }
+    return blueprinAttribute.type.indexOf('/') === -1
+  }
+}
+
 export function createFormConfigs(
   pluginProps: PluginProps,
   uiRecipe: any
 ): FormConfig {
   const { blueprint, document, blueprints } = pluginProps
+  const attributes = blueprint.attributes.filter(defaultFilter(uiRecipe))
   return {
     data: document,
-    template: generateTemplate(blueprint.attributes, blueprints),
+    template: generateTemplate(attributes, blueprints),
     uiSchema: generateUiSchema(pluginProps, uiRecipe),
   }
 }

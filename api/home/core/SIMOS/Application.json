@@ -47,5 +47,18 @@
       "description": "Runnable models",
       "dimensions": "*"
     }
-  ]
+  ],
+   "uiRecipes": [
+     {
+       "name": "INDEX",
+       "plugin": "INDEX",
+       "type": "system/SIMOS/UiRecipe",
+       "attributes": [
+         {
+           "name": "runnableModels",
+           "contained": true
+         }
+       ]
+     }
+   ]
 }

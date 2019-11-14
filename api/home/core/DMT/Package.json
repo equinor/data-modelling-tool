@@ -39,10 +39,6 @@
         {
           "name": "content",
           "contained": false
-        },
-        {
-          "name": "applications",
-          "contained": false
         }
       ]
     }
@@ -66,30 +62,7 @@
           "contained": false
         },
         {
-          "name": "attributes",
-          "contained": false
-        },
-        {
           "name": "content",
-          "contained": false
-        }
-      ]
-    },
-    {
-      "type": "system/SIMOS/UiRecipe",
-      "name": "EDIT",
-      "description": "",
-      "attributes": [
-        {
-          "name": "description",
-          "widget": "textarea"
-        },
-        {
-          "name": "content",
-          "contained": false
-        },
-        {
-          "name": "applications",
           "contained": false
         }
       ]

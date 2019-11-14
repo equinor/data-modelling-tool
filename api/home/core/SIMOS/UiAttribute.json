@@ -74,5 +74,17 @@
       "default": false,
       "optional": true
     }
+  ],
+  "uiRecipes": [
+    {
+      "plugin": "EDIT_PLUGIN",
+      "name": "Edit",
+      "attributes": [
+        {
+          "name": "type",
+          "field": "hidden"
+        }
+      ]
+    }
   ]
 }

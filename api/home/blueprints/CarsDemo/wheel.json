@@ -6,28 +6,24 @@
     {
       "type": "string",
       "name": "name",
-      "optional": false,
-      "contained": true
+      "optional": false
     },
     {
       "type": "string",
       "name": "description",
-      "optional": false,
-      "contained": true
+      "optional": false
     },
     {
       "type": "string",
       "name": "type",
       "optional": false,
-      "contained": true,
       "default": "SSR-DataSource/CarsDemo/Wheel"
     },
     {
       "type": "string",
       "name": "diameter",
       "optional": false,
-      "default": "120",
-      "contained": true
+      "default": "120"
     }
   ]
 }
