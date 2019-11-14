@@ -9,7 +9,7 @@
   "entityModels": [
     "system/DMT/Package",
     "SSR-DataSource/CarsDemo/Car",
-    "SSR-DataSource/CarsDemo/Wheels",
+    "SSR-DataSource/CarsDemo/Wheel",
     "SSR-DataSource/CarsDemo/engine/Engine",
     "SSR-DataSource/CarsDemo/engine/FuelPump"
 
