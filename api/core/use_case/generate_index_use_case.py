@@ -8,8 +8,8 @@ from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
 from core.domain.entity import Entity
 from core.domain.index import DocumentNode
+from core.domain.recipe import Recipe
 from core.domain.storage_recipe import StorageRecipe
-from core.domain.ui_recipe import UIRecipe
 from core.enums import DMT, SIMOS
 from core.repository.interface.package_repository import PackageRepository
 from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
@@ -27,7 +27,7 @@ from core.use_case.utils.generate_index_menu_actions import (
 )
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
-from core.use_case.utils.get_ui_recipe import get_ui_recipe
+from core.use_case.utils.get_ui_recipe import get_recipe
 from utils.group_by import group_by
 
 
@@ -113,12 +113,12 @@ class Tree:
             is_contained=True,
         )
         blueprint = get_blueprint(attribute_type)
-        ui_recipe: UIRecipe = get_ui_recipe(blueprint, "INDEX")
+        recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
         for attribute in blueprint.get_attributes_with_reference():
             name = attribute["name"]
 
-            is_contained_in_ui = ui_recipe.is_contained(attribute)
-            if is_contained_in_ui:
+            is_contained_in_ui = recipe.is_contained(attribute)
+            if not is_contained_in_ui:
                 continue
 
             if parent_node.blueprint and blueprint == parent_node.blueprint:
@@ -201,7 +201,7 @@ class Tree:
             node.menu_items.append(get_download_menu_action(data_source_id, document.uid))
 
         storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
-        ui_recipe: UIRecipe = get_ui_recipe(node.blueprint, "INDEX")
+        recipe: Recipe = get_recipe(blueprint=node.blueprint, plugin_name="INDEX")
 
         # If the node is a DMT-Package, add "Create New" from AppSettings
         if is_package:
@@ -218,10 +218,13 @@ class Tree:
         for attribute in node.blueprint.get_attributes_with_reference():
             attribute_name = attribute["name"]
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
-            is_contained_in_ui = ui_recipe.is_contained(attribute)
+
+            is_contained_in_ui = recipe.is_contained(attribute)
+            if not is_contained_in_ui:
+                continue
 
             # Don't create node for ui_contained attributes
-            if is_contained_in_ui:
+            if not is_contained_in_ui:
                 continue
 
             # If the attribute is an array
