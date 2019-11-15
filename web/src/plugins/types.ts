@@ -19,8 +19,15 @@ export type Blueprint = {
   storageRecipes: any[]
 }
 
-export type PluginProps = {
+// based on plugin blueprints
+export type UiRecipe = {
   name: string
+  plugin: string
+  attributes: BlueprintAttribute[] //@todo use UiAttribute
+}
+
+export type PluginProps = {
+  uiRecipe: UiRecipe //tab name, righthand side content
   blueprint: Blueprint
   document: Blueprint
   blueprints: Blueprint[]

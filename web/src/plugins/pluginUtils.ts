@@ -101,8 +101,7 @@ export function setupTypeAndRecipe(pluginProps?: PluginProps): TypeAndRecipe {
   if (!pluginProps) {
     return empty
   }
-  const { blueprint, blueprints, name } = pluginProps
-  const uiRecipe = pluginProps && findRecipe(blueprint, name)
+  const { blueprint, blueprints, uiRecipe } = pluginProps
   let uiAttributeType: any = {}
 
   if (!uiRecipe) {

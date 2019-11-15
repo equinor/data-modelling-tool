@@ -1,28 +1,20 @@
 import React from 'react'
-import { Blueprint } from '../types'
+import { Blueprint, PluginProps } from '../types'
 // @ts-ignore
 import { VictoryTheme, VictoryChart, VictoryLine } from 'victory'
 import { findRecipe } from '../pluginUtils'
 // @ts-ignore
 import objectPath from 'object-path'
+import { KeyValue } from '../BlueprintUtil'
 
-interface Props {
-  name: string
-  blueprint: Blueprint
-  document: Blueprint
-  blueprints: Blueprint[]
-}
-
-export const PlotPlugin = (props: Props) => {
-  const { blueprint, document } = props
-
-  const uiRecipe = findRecipe(blueprint, props.name)
-
-  const items = objectPath.get(document, uiRecipe.options.property)
+export const PlotPlugin = (props: PluginProps) => {
+  const { blueprint, document, uiRecipe } = props
+  const options: KeyValue = {}
+  const items = objectPath.get(document, options.property)
   const data = items.map((item: any) => {
     return {
-      x: item[uiRecipe.options.x],
-      y: item[uiRecipe.options.y],
+      x: item[options.x],
+      y: item[options.y],
     }
   })
 

@@ -43,5 +43,7 @@
       "optional": true,
       "contained": true
     }
-  ]
+  ],
+  "uiRecipes": [],
+  "storageRecipes": []
 }

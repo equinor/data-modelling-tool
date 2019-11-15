@@ -29,7 +29,6 @@ class Recipe:
             self.recipe_attributes[name] = RecipeAttribute(name=name, is_contained=get(attribute, "contained"))
 
     def is_contained(self, attribute):
-        print(f"is_contained:" + self.plugin, self.name)
         if self.plugin == "INDEX":
             return self.is_contained_in_index(attribute)
 
