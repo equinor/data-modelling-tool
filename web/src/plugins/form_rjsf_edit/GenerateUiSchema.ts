@@ -1,6 +1,6 @@
 import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
 import { getWidgetBlueprint } from './EditForm'
-import {BlueprintUtil, KeyValue} from "../BlueprintUtil";
+import { BlueprintUtil, KeyValue } from '../BlueprintUtil'
 
 type UiSchemaProperty = {
   items?: any
@@ -20,24 +20,22 @@ type UiSchemaProperty = {
 
 const PLUGIN_NAME = 'EDIT_PLUGIN'
 
-const defaults:KeyValue = {
-  name: {'ui:disabled': true},
-  type: {'ui:disabled': true},
-  description: {'ui:widget': 'textarea'},
-
+const defaults: KeyValue = {
+  name: { 'ui:disabled': true },
+  type: { 'ui:disabled': true },
+  description: { 'ui:widget': 'textarea' },
 }
 
 function addDefaultUiProperties(container: KeyValue, attr: any) {
-    const defaultUiProperty = defaults[attr.name]
-    if (defaultUiProperty) {
-      container[attr.name] = defaultUiProperty
-    }
+  const defaultUiProperty = defaults[attr.name]
+  if (defaultUiProperty) {
+    container[attr.name] = defaultUiProperty
+  }
 }
 
 export function generateUiSchema(pluginProps: PluginProps) {
-  const {blueprint} = pluginProps
+  const { blueprint } = pluginProps
   const blueprintUtil = new BlueprintUtil(pluginProps.blueprint, PLUGIN_NAME)
-
 
   const uiSchema = {}
   blueprint.attributes.forEach((attr: BlueprintAttribute) => {
@@ -47,11 +45,7 @@ export function generateUiSchema(pluginProps: PluginProps) {
     addDefaultUiProperties(uiSchema, attr)
 
     if (uiAttribute) {
-      let property = createUiSchemaProperty(
-        uiAttribute,
-        attr,
-        pluginProps
-      )
+      let property = createUiSchemaProperty(uiAttribute, attr, pluginProps)
 
       if (Object.keys(property).length > 0) {
         ;(uiSchema as any)[attr.name] = property
@@ -66,7 +60,6 @@ function createUiSchemaProperty(
   blueprintAttribute: BlueprintAttribute,
   pluginProps: PluginProps
 ) {
-
   if (uiAttribute.contained === false) {
     return { 'ui:field': 'hidden' }
   }

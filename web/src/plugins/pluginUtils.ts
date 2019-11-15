@@ -40,7 +40,6 @@ export function getBlueprintFromType(
   })
 }
 
-
 /**
  * Parse attribute default values.
  * Since default is of type string, we can't store json type array, object, number or boolean.

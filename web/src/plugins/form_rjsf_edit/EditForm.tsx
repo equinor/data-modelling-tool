@@ -2,7 +2,7 @@ import React from 'react'
 import Form from 'react-jsonschema-form'
 import { Blueprint, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
-import { findRecipe, setupTypeAndRecipe } from '../pluginUtils'
+import { setupTypeAndRecipe } from '../pluginUtils'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 
 interface Props extends PluginProps {
@@ -10,8 +10,7 @@ interface Props extends PluginProps {
 }
 
 export const EditPlugin = (props: Props) => {
-  const uiRecipe = findRecipe(props.blueprint, props.name)
-  const config: FormConfig = createFormConfigs(props, uiRecipe)
+  const config: FormConfig = createFormConfigs(props)
   const formData = config.data
   return (
     <div style={{ marginBottom: 20 }}>
