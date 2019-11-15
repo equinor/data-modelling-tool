@@ -7,21 +7,20 @@ Read more about the core concepts here: [DMT](README_DMT.md) and [plugins](READM
 
 ## Getting started
 
-1. Copy the file `.env-template` to `.env` and set the variables in the file. (Only MONGO_INITDB_ROOT_PASSWORD is needed to run locally)
-2. Run start the project through docker-compose;
+We use docker-compose to run the project locally;
 
-    For Linux;
+For Linux;
 
-    ``` bash
-    docker-compose up
-    ```
+``` bash
+docker-compose up
+```
 
-    For Windows;
+For Windows;
 
-    ``` bash
-    docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
+``` bash
+docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
 
-    ```
+```
 
 ## Exported Application
 

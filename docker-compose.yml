@@ -21,7 +21,7 @@ services:
     environment:
       ENVIRONMENT: azure
       MONGO_INITDB_ROOT_USERNAME: maf
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_ROOT_PASSWORD: maf
 
   web:
     build: ./web
@@ -33,4 +33,4 @@ services:
     command: --quiet
     environment:
       MONGO_INITDB_ROOT_USERNAME: maf
-      MONGO_INITDB_ROOT_PASSWORD: ${MONGO_INITDB_ROOT_PASSWORD}
+      MONGO_INITDB_ROOT_PASSWORD: maf
