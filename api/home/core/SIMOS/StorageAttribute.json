@@ -30,6 +30,12 @@
       "optional": true
     },
     {
+      "type": "string",
+      "name": "enumType",
+      "default": "",
+      "optional": true
+    },
+    {
       "type": "boolean",
       "name": "contained",
       "optional": true,
