@@ -25,6 +25,7 @@
       "attributes": [
         {
           "name": "items",
+          "type": "SSR-DataSource/TodoDemo/Todo",
           "contained": false
         }
       ]

@@ -26,55 +26,6 @@ class MongodbClient:
         except Exception as error:
             return abort(500, error)
 
-    def update_form(self, form, _id):
-        try:
-            return (
-                self.handler[self.collection]
-                .update_one({"_id": _id}, {"$set": {"formData": form}}, upsert=True)
-                .acknowledged
-            )
-        except Exception as error:
-            return abort(500, error)
-
-    def append_to_parent(self, child_id, id, node_type):
-        child_type = f"{node_type.value}s"
-        try:
-            return (
-                self.handler[self.collection]
-                .update_one({"_id": id}, {"$push": {f"formData.{child_type}": child_id}}, upsert=True)
-                .acknowledged
-            )
-        except Exception as error:
-            return abort(500, error)
-
-    def pull_from_parent(self, child_id, id, node_type):
-        child_type = f"{node_type.value}s"
-        try:
-            return (
-                self.handler[self.collection]
-                .update_one({"_id": id}, {"$pull": {f"formData.{child_type}": child_id}}, upsert=True)
-                .acknowledged
-            )
-        except Exception as error:
-            return abort(500, error)
-
-    def read_form(self, _id):
-        result = self.handler[self.collection].find_one(filter={"_id": _id})
-        if result:
-            result["id"] = _id
-        return result
-
-    def delete_form(self, _id):
-        return self.handler[self.collection].delete_one(filter={"_id": _id}).acknowledged
-
-    def create_form(self, form, _id=None):
-        if _id:
-            form["_id"] = _id
-        try:
-            return self.handler[self.collection].insert_one(form).inserted_id
-        except Exception as error:
-            return abort(500, error)
-
     def find(self, filter):
         result = self.handler[self.collection].find(filter=filter)
         if not result:

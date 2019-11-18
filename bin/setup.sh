@@ -23,3 +23,6 @@ if [[ ! $(command -v pre-commit) ]]; then
   pip install pre-commit >/dev/null
 fi
 pre-commit install
+
+# Create the Python classes of the SIMOS, and DMT schemas
+doit create:system:blueprints

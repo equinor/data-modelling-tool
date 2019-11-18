@@ -17,17 +17,17 @@ Feature: Document 2
         "content": [
             {
                 "_id": "3",
-                "name": "TestContainer"
+                "name": "TestContainer",
+                "type": "test-source-name/TestData/TestContainer"
             },
             {
                 "_id": "2",
-                "name": "ItemType"
+                "name": "ItemType",
+                "type": "test-source-name/TestData/ItemType"
             }
         ],
-        "dependencies": [],
         "isRoot": true,
-        "storageRecipes": [],
-        "applications": []
+        "storageRecipes": []
     }
     """
 
@@ -44,10 +44,17 @@ Feature: Document 2
         },
         {
           "type": "string",
+          "optional": true,
+          "default": "",
           "name": "description"
         },
         {
           "type": "string",
+          "name": "type"
+        },
+        {
+          "type": "string",
+          "optional": true,
           "name": "extra"
         }
       ]
@@ -67,14 +74,20 @@ Feature: Document 2
         },
         {
           "type": "string",
+          "name": "type"
+        },
+        {
+          "type": "string",
           "name": "description"
         },
         {
           "type": "test-source-name/TestData/ItemType",
+          "optional": true,
           "name": "itemNotContained"
         },
         {
           "type": "test-source-name/TestData/ItemType",
+          "optional": true,
           "dimensions": "*",
           "name": "itemsNotContained"
         }
@@ -87,10 +100,12 @@ Feature: Document 2
           "attributes": [
             {
               "name": "itemNotContained",
+              "type": "test-source-name/TestData/ItemType",
               "contained": false
             },
             {
               "name": "itemsNotContained",
+              "type": "test-source-name/TestData/ItemType",
               "contained": false
             }
           ]
@@ -124,9 +139,7 @@ Feature: Document 2
        },
        "document":{
           "name":"package_1",
-          "description":"",
           "type":"system/DMT/Package",
-          "dependencies":[],
           "content":[
              {
                 "name":"sub_package_1"
@@ -174,11 +187,13 @@ Feature: Document 2
       "type": "test-source-name/TestData/TestContainer",
       "description": "some description",
       "itemNotContained": {
-          "name": "item_single"
+          "name": "item_single",
+          "type": "test-source-name/TestData/ItemType"
       },
       "itemsNotContained": [
         {
-          "name": "item_1"
+          "name": "item_1",
+          "type": "test-source-name/TestData/ItemType"
         }
       ]
     }
@@ -192,7 +207,8 @@ Feature: Document 2
         "type": "test-source-name/TestData/TestContainer",
         "description": "some description",
         "itemNotContained": {
-            "name": "item_single"
+            "name": "item_single",
+            "type": "test-source-name/TestData/ItemType"
         }
       }
     }

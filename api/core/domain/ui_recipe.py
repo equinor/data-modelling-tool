@@ -6,7 +6,7 @@ DEFAULT_TYPE_CONTAINED = False
 PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
-class UIAttribute:
+class UiAttribute:
     def __init__(self, name: str, is_contained: bool = None):
         self.name = name
         self.is_contained = is_contained
@@ -21,15 +21,15 @@ class UIRecipe:
 
     def _convert_attributes(self, attributes):
         for attribute in attributes:
-            self.ui_attributes[attribute["name"]] = UIAttribute(
-                name=attribute["name"], is_contained=attribute.get("contained")
-            )
+            if not isinstance(attribute, UiAttribute):
+                attribute = UiAttribute(name=attribute.name, is_contained=attribute.contained)
+            self.ui_attributes[attribute.name] = attribute
 
     def is_contained(self, attribute):
-        attribute_name = attribute["name"]
-        attribute_type = attribute["type"]
-        #attribute_contained = attribute.get("contained")
-        is_array = attribute.get("dimensions", "") == "*"
+        attribute_name = attribute.name
+        attribute_type = attribute.type
+        attribute_contained = attribute.contained
+        is_array = attribute.dimensions == "*"
 
         if attribute_name in self.ui_attributes:
             ui_attribute = self.ui_attributes[attribute_name]

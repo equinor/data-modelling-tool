@@ -14,6 +14,7 @@
     {
       "type": "string",
       "name": "description",
+      "default": "",
       "optional": true
     },
     {
@@ -34,9 +35,11 @@
     {
       "plugin": "EDIT_PLUGIN",
       "name": "Edit",
+      "type": "systemSIMOS/UiRecipe",
       "attributes": [
         {
           "name": "type",
+          "type": "string",
           "field": "hidden"
         }
       ]

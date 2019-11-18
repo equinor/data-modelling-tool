@@ -9,20 +9,27 @@
     },
     {
       "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
       "name": "description"
     },
     {
       "type": "string",
-      "name": "manufacturer"
+      "name": "manufacturer",
+      "optional": true
     },
     {
       "type": "SSR-DataSource/CarsDemo/Wheel",
       "name": "wheels",
+      "optional": true,
       "dimensions": "*"
     },
     {
       "type": "SSR-DataSource/CarsDemo/engine/Engine",
-      "name": "engine"
+      "name": "engine",
+      "optional": true
     }
   ],
   "storageRecipes": [
@@ -33,10 +40,12 @@
       "attributes": [
         {
           "name": "wheels",
+          "type": "SSR-DataSource/CarsDemo/Wheel",
           "contained": false
         },
         {
           "name": "engine",
+          "type": "SSR-DataSource/CarsDemo/subdir/Engine",
           "contained": true
         }
       ]

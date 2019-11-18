@@ -1,5 +1,6 @@
+repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  sha: v1.2.3
+  rev: v2.4.0
   hooks:
     - id: check-ast
       language_version: python3.8
@@ -10,19 +11,19 @@
       args: ['--config=api/.flake8']
       language_version: python3.8
 - repo: https://github.com/ambv/black
-  rev: stable
+  rev: 19.10b0
   hooks:
     - id: black
       language_version: python3.8
       files: ^api/.*\.py$
 - repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
-  sha: v1.0.3
+  rev: v1.0.4
   hooks:
     - id: python-bandit-vulnerability-check
       args: [-l, --recursive, -x, tests]
       files: ^api/.*\.py$
 - repo: https://github.com/prettier/prettier
-  rev: "1.18.2"
+  rev: 1.18.2
   hooks:
     - id: prettier
       files: ^web/.*\.(ts|tsx|js|css|html|json)$

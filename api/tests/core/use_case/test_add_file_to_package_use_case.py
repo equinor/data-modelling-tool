@@ -13,6 +13,7 @@ def test_without_parameters():
 
     parent_id = str(uuid4())
 
+    # TODO: Use generated class
     parent = Document(uid=parent_id, path="/", filename="root", type="folder", template_ref="")
 
     def mock_add(document):

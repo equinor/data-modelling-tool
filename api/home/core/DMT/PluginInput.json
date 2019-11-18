@@ -22,7 +22,7 @@
     }, {
       "type": "string",
       "name": "children",
-      "dimension": "*",
+      "dimensions": "*",
       "description": "A list of types that are direct children of the blueprint"
     }, {
       "type": "boolean",

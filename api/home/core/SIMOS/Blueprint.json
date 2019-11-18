@@ -14,17 +14,21 @@
     {
       "type": "string",
       "name": "description",
-      "optional": "true"
+      "default": "",
+      "optional": true
     },
     {
       "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
-      "name": "attributes"
+      "name": "attributes",
+      "default": "[{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"type\", \"type\": \"string\"}, {\"name\": \"description\", \"type\": \"string\"}]",
+      "contained": true
     },
     {
       "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
-      "name": "storageRecipes"
+      "name": "storageRecipes",
+      "optional": true
     },
     {
       "type": "system/SIMOS/UiRecipe",
@@ -41,14 +45,17 @@
       "attributes": [
         {
           "name": "attributes",
+          "type": "system/SIMOS/BlueprintAttribute",
           "contained": true
         },
         {
           "name": "storageRecipes",
+          "type": "system/SIMOS/StorageRecipe",
           "contained": true
         },
         {
           "name": "uiRecipes",
+          "type": "system/SIMOS/UiRecipe",
           "contained": true
         }
       ]
@@ -68,7 +75,6 @@
       "plugin": "INDEX",
       "description": "",
       "attributes": [
-
       ]
     },
     {
@@ -78,18 +84,22 @@
       "attributes": [
         {
           "name": "attributes",
+          "type": "system/SIMOS/BlueprintAttribute",
           "contained": false
         },
         {
           "name": "type",
+          "type": "string",
           "contained": false
         },
         {
           "name": "storageRecipes",
+          "type": "system/SIMOS/StorageRecipe",
           "contained": false
         },
         {
           "name": "uiRecipes",
+          "type": "system/SIMOS/UiRecipe",
           "contained": false
         }
       ]
@@ -102,10 +112,12 @@
       "attributes": [
         {
           "name": "name",
+          "type": "string",
           "widget": "view.widget"
         },
         {
           "name": "uiRecipes",
+          "type": "system/SIMOS/UiRecipe",
           "widget": "table.widget"
         }
       ]
@@ -125,6 +137,7 @@
       "attributes": [
         {
           "name": "attributes",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "attribute"
         }
       ]

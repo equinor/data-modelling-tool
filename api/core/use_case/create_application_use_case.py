@@ -78,12 +78,12 @@ def generate_runnable_file(runnable_models):
 const {{ runnable_model["method"] }} = async ({document, config, setProgress}) => {
     return {}
 }
-{% endfor %}  
+{% endfor %}
         
 const runnableMethods = {
 {% for runnable_model in runnable_models %}
     {{ runnable_model["method"] }}
-{% endfor %}    
+{% endfor %}
 }
 
 export default runnableMethods
@@ -150,7 +150,7 @@ def zip_package(ob, document, document_repository, path):
     storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
     document_references = []
-    for attribute in blueprint.get_attributes_with_reference():
+    for attribute in get_attributes_with_reference(blueprint):
         name = attribute["name"]
         is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
         if attribute.get("dimensions", "") == "*":

@@ -27,9 +27,6 @@ class GenerateJsonSchemaRequestObject(req.ValidRequestObject):
 
 
 class GenerateJsonSchemaUseCase(uc.UseCase):
-    def __init__(self, get_repository):
-        self.get_repository = get_repository
-
     def process_request(self, request_object: GenerateJsonSchemaRequestObject):
         type = request_object.type
         ui_recipe_name = request_object.ui_recipe
@@ -40,6 +37,7 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
 
         ui_recipes = form_to_ui_schema(blueprint)
         ui_schema = ui_recipes[ui_recipe_name] if ui_recipe_name in ui_recipes else {}
+        # TODO: Replace
         template = Template(schema=form_to_schema(blueprint, ui_recipe_name), ui_schema=ui_schema)
 
         return res.ResponseSuccess(template.to_dict())

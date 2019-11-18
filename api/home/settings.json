@@ -1,6 +1,7 @@
 {
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
+  "description": "",
   "blueprints": [
     "CarsDemo",
     "TodoDemo"

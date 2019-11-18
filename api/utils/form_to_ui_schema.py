@@ -1,25 +1,27 @@
 from typing import List
 
+from core.domain.blueprint import get_ui_recipe_from_blueprint
 from core.use_case.utils.get_template import get_blueprint
+from utils.data_structure.find import get
 
 PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
 def find_attribute(name: str, attributes: List):
-    return next((x for x in attributes if x["name"] == name), None)
+    return next((x for x in attributes if get(x, "name") == name), None)
 
 
 def get_attribute_config(attribute):
     config = {}
 
-    if "disabled" in attribute:
-        config["ui:readonly"] = attribute["disabled"]
-    if "widget" in attribute:
-        config["ui:widget"] = attribute["widget"]
-    if "field" in attribute:
-        config["ui:field"] = attribute["field"]
-        # if attribute["field"] == "collapsible":
-        #     config["collapse"] = {"field": "ObjectField"}
+    if disabled := get(attribute, "disabled", default=False):
+        config["ui:readonly"] = disabled
+    if widget := get(attribute, "widget", default=False):
+        config["ui:widget"] = widget
+    if field := get(attribute, "field", default=False):
+        config["ui:field"] = field
+        if field == "collapsible":
+            config["collapse"] = {"field": "ObjectField"}
     return config
 
 
@@ -34,44 +36,44 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if not ui_attribute:
         return {}
 
-    # if "options" in ui_attribute:
-    #     options = {}
-    #     for option in ui_attribute["options"]:
-    #         if option["name"] in ["orderable"]:
-    #             value = option["value"]
-    #             value = {"false": False, "true": True}[value.lower()]
-    #             options[option["name"]] = value
-    #     result["ui:options"] = options
+    options = {}
+    for option in get(ui_attribute, "options", default=[]):
+        option_name = get(option, "name")
+        if option_name in ["orderable"]:
+            value = get(option, "value")
+            value = {"false": False, "true": True}[value.lower()]
+            options[option_name] = value
+    result["ui:options"] = options
 
     if attribute_type in PRIMITIVES:
         return get_attribute_config(ui_attribute)
     else:
         blueprint = get_blueprint(attribute_type)
         if attribute_dimensions == "*":
-
-            # if "field" in ui_attribute:
-            #     result["ui:field"] = ui_attribute["field"]
-                # if ui_attribute["field"] == "collapsible":
-                #     result["collapse"] = {"field": "ArrayField"}
-            attribute_ui_recipe = find_attribute(ui_attribute.get("uiRecipe", ""), blueprint.ui_recipes)
+            if field := get(ui_attribute, "field", default=None):
+                result["ui:field"] = field
+                if field == "collapsible":
+                    result["collapse"] = {"field": "ArrayField"}
+            attribute_ui_recipe = find_attribute(get(ui_attribute, "ui_recipe", default=""), blueprint.ui_recipes)
             if attribute_ui_recipe:
                 result["items"] = process_ui_recipe(attribute_ui_recipe, blueprint.attributes)
     return result
 
 
 def process_ui_recipe(ui_recipe, attributes):
+    if field := get(ui_recipe, "field", default=None):
+        return {"ui:field": field}
+
+    if plugin := get(ui_recipe, "plugin", default=None):
+        return {"plugin": plugin}
+
     setting = {}
-    if "plugin" in ui_recipe:
-        setting["plugin"] = ui_recipe["plugin"]
-
-    if "field" in ui_recipe:
-        return {"ui:field": ui_recipe["field"]}
-
     for attribute in attributes:
+        name = get(attribute, "name")
         result = process_attributes(
-            attribute["name"], attribute["type"], attribute.get("dimensions", ""), ui_recipe.get("attributes", None)
+            name, get(attribute, "type"), get(attribute, "dimensions"), get(ui_recipe, "attributes")
         )
-        setting[attribute["name"]] = result
+        setting[name] = result
 
     return setting
 
@@ -103,8 +105,8 @@ def form_to_ui_schema(blueprint, ui_recipe_name=None):
         ui_recipe = DEFAULT_CREATE_UI_RECIPE
         is_contained = ["name", "description"]
         attributes = []
-        for attribute in filter(lambda x: x["name"] not in is_contained, blueprint.attributes):
-            attributes.append({"name": attribute["name"], "contained": False})
+        for attribute in filter(lambda x: x.name not in is_contained, blueprint.attributes):
+            attributes.append({"name": attribute.name, "contained": False})
         ui_recipe["attributes"] = attributes
         ui_recipes.append(ui_recipe)
 
@@ -116,9 +118,11 @@ def form_to_ui_schema(blueprint, ui_recipe_name=None):
         ui_recipes.append(DEFAULT_EDIT_UI_RECIPE)
 
     if ui_recipe_name:
-        result[ui_recipe_name] = process_ui_recipe(blueprint.get_ui_recipe(ui_recipe_name), blueprint.attributes)
+        result[ui_recipe_name] = process_ui_recipe(
+            get_ui_recipe_from_blueprint(blueprint, ui_recipe_name), blueprint.attributes
+        )
     else:
         for ui_recipe in ui_recipes:
-            result[ui_recipe["name"]] = process_ui_recipe(ui_recipe, blueprint.attributes)
+            result[get(ui_recipe, "name")] = process_ui_recipe(ui_recipe, blueprint.attributes)
 
     return result

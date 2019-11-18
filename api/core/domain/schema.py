@@ -1,14 +1,19 @@
 from __future__ import annotations
 
+import hashlib
+import hmac
 import os
-from collections import Iterable
-from dataclasses import dataclass
+from collections.abc import Iterable
 from pathlib import Path
 from types import CodeType
-from typing import Any, Dict, List, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 import stringcase
 from jinja2 import Template
+
+from classes.data_source import DataSource, get_client
+from config import Config
+from core.repository.interface.document_repository import DocumentRepository
 
 T = TypeVar("T")
 
@@ -47,12 +52,26 @@ def _get_definition(schema: Union[Dict, type], name: str) -> Optional[str]:
     return None
 
 
-def get_unprocessed(schema: Dict) -> Dict:
-    return {
-        key.strip("__"): get_unprocessed(value) if isinstance(value, dict) else value
-        for key, value in schema.items()
-        if f"__{key}__" not in schema
-    }
+def is_simple_type(element) -> bool:
+    if isinstance(element, object):
+        return type(element) in simple_types
+    return element in simple_types
+
+
+def get_simple_types() -> str:
+    return f"[{', '.join(type_.__name__ for type_ in simple_types)}]"
+
+
+def get_unprocessed(schema: Dict[str, Any]) -> Dict:
+    _schema = {}
+    for key, value in schema.items():
+        if f"__{key}__" not in schema:
+            if isinstance(value, dict):
+                value = get_unprocessed(value)
+            elif isinstance(value, type):
+                value = get_unprocessed(value.__schema__)
+            _schema[key.strip("__")] = value
+    return _schema
 
 
 def unpack_if_not_simple(value: str, _type: type) -> str:
@@ -64,6 +83,14 @@ def unpack_if_not_simple(value: str, _type: type) -> str:
 
 def get_name(attr: Attribute) -> str:
     return to_snake_case(attr.name)
+
+
+def get_name_of_list_class(attr: Attribute) -> str:
+    return "__" + stringcase.pascalcase(f"{get_name(attr)}_container")
+
+
+def get_name_of_metaclass(schema: Dict[str, Any]) -> str:
+    return f"_{schema['name']}Template"
 
 
 def to_snake_case(name: str) -> str:
@@ -102,41 +129,117 @@ def snakify(schema: Dict[str, Any]) -> Dict[str, Any]:
     return _dict
 
 
-@dataclass(frozen=True)
+class BinaryRepresentation:
+    def __init__(self, binary: bytes, signature: str):
+        self.binary = binary
+        self.signature = signature
+
+
+def get_signature(key, msg) -> str:
+    return hmac.new(key, msg, digestmod=hashlib.sha3_256).hexdigest()
+
+
+def get_pickled(factory: Factory) -> BinaryRepresentation:
+    import pickle  # nosec B403; We are ONLY using it for dumping data, which is a safe usage of pickling
+    from app import app
+
+    pickeled = pickle.dumps(factory, pickle.HIGHEST_PROTOCOL)
+    signature = get_signature(app.secret_key, pickeled)
+    return BinaryRepresentation(pickeled, signature)
+
+
+def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
+    import pickle  # nosec B403; Loading UNTRUSTED content is a security risk. The data loaded is signed.
+    from app import app
+
+    expected_signature = representation.signature
+    actual_signature = get_signature(app.secret_key, representation.binary)
+    if hmac.compare_digest(expected_signature, actual_signature):
+        # Assuming the secret key is sufficiently random, reset between sessions, and that
+        # an adversary does not have access to the secret key, this should be sufficiently secure
+        return pickle.loads(representation.binary)  # nosec B301
+    return None
+
+
 class Attribute:
-    type: type
-    default: Any
-    optional: bool
-    is_list: bool
-    cast: bool
-    __values__: Dict
+    def __init__(self, data: Dict[str, Any], type: type):
+        self.type = type
+        self.__values__ = data
+
+    def __repr__(self):
+        attributes = ["name", "optional", "default", "contained"]
+
+        def get_representation(key: str) -> str:
+            value = getattr(self, key)
+            if isinstance(value, str):
+                value = f"'{value}'"
+            return value
+
+        return f"""{self.__class__.__name__}({", ".join(f"{key}={get_representation(key)}" for key in attributes)})"""
 
     @property
     def name(self):
         return to_snake_case(self.__values__["name"])
 
-
-class Attributes:
-    def __init__(self):
-        self._required: List[Attribute] = []
-        self._optional: List[Attribute] = []
-
-    def add(self, attribute: Attribute):
-        if attribute.optional:
-            self._optional.append(attribute)
-        else:
-            self._required.append(attribute)
+    @property
+    def contained(self):
+        return self._get("contained", True)
 
     @property
-    def required(self):
-        return self._required
+    def is_list(self):
+        return self._get("dimensions", "").strip("\"'") == "*"
+
+    @property
+    def default(self):
+        return self._get("default", None)
+
+    @property
+    def cast(self):
+        if self.name in ["type"]:
+            return False
+        return True
+
+    @property
+    def has_default(self):
+        return "default" in self.__values__
+
+    @property
+    def enum_type(self):
+        enum_type = self._get("enum_type", None)
+        return enum_type
 
     @property
     def optional(self):
-        return self._optional
+        return self._get("optional", False)
+
+    def _get(self, name, default=None):
+        return self.__values__.get(name, default)
+
+
+class Attributes:
+    def __init__(self):
+        self._attributes: List[Attribute] = []
+
+    def add(self, attribute: Attribute):
+        self._attributes.append(attribute)
+
+    @property
+    def required(self):
+        return sorted(self._filter(lambda attr: not attr.optional), key=lambda attr: attr.has_default)
+
+    @property
+    def optional(self):
+        return self._filter(lambda attr: attr.optional)
+
+    def _filter(self, filter: Callable[[Attribute], bool]):
+        return [attribute for attribute in self._attributes if filter(attribute)]
 
     def __iter__(self):
-        return (self._required + self._optional).__iter__()
+        return (self.required + self.optional).__iter__()
+
+    @property
+    def ordered(self):
+        return self._attributes
 
     @property
     def has_attributes(self):
@@ -149,11 +252,62 @@ def remove_imports(definition: str) -> str:
     )
 
 
-class Factory:
-    _types: Dict[str, type] = {"string": str, "boolean": bool, "integer": int, "number": float}
+def basic_types() -> Dict[str, type]:
+    return {"string": str, "boolean": bool, "integer": int, "number": float}
 
-    def __init__(self, template_repository, _create_instance: bool = False, dump_site: Optional[str] = None):
-        self.template_repository = template_repository
+
+TypeMapping = Dict[str, type]
+
+
+class TypeCache:
+    def __init__(self, permanent: TypeMapping, fleeting: Optional[TypeMapping] = None):
+        self._permanent = permanent
+        self._fleeting = fleeting or {}
+        self._static = basic_types()
+
+    def __getitem__(self, item: str) -> type:
+        if self._is_template_internal(item):
+            return self._permanent[item]
+        elif self._is_static(item):
+            return self._static[item]
+        else:
+            return self._fleeting[item]
+
+    def __setitem__(self, key: str, value: type):
+        if self._is_template_internal(key):
+            self._permanent[key] = value
+        else:
+            self._fleeting[key] = value
+
+    def __contains__(self, item: str):
+        return any(item in collection for collection in self._collections)
+
+    @property
+    def _collections(self):
+        return self._permanent, self._fleeting, self._static
+
+    @staticmethod
+    def _is_static(template_type: str) -> bool:
+        return "/" not in template_type
+
+    @staticmethod
+    def _is_template_internal(template_type: str) -> bool:
+        return template_type.startswith("system/")
+
+
+class Factory:
+    _internal_types: Dict[str, type] = {}
+
+    def __init__(
+        self,
+        template_repository: DocumentRepository,
+        _create_instance: bool = False,
+        dump_site: Optional[str] = None,
+        read_from_file: bool = False,
+    ):
+        self._types = TypeCache(self._internal_types)
+        self._template_repository = template_repository
+        self._read_from_file = read_from_file
         self._create_instance = _create_instance
         self.dump_site = dump_site
         self.macros = [
@@ -172,20 +326,43 @@ class Factory:
             is_internal,
             extract_casting,
             snakify,
+            is_simple_type,
+            get_simple_types,
+            self.type_check,
+            get_name_of_list_class,
+            get_name_of_metaclass,
+            self.get_escaped_default,
         ]
         self.to_be_compiled = set()
 
+    @classmethod
+    def reset_cache(cls):
+        del cls._internal_types
+        cls._internal_types = {}
+        cls._types = TypeCache(cls._internal_types)
+
+    def _get_schema(self, template_type: str) -> dict:
+        if self._read_from_file:
+            return self._template_repository.find({"type": template_type})
+        else:
+            data_source_id, *_, name = template_type.split("/")
+            repository = self._template_repository.__class__(get_client(DataSource(data_source_id)))
+            return repository.find(filter={"name": name}, raw=True)
+
+    # noinspection GrazieInspection
     def class_from_schema(self, schema):
         # with open(f'{Path(__file__).parent}/schema.jinja2') as f:
         #     template = "\n".join(f.readlines())
         class_template = Template(
             """\
 from __future__ import annotations
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 import stringcase
+import json
+from core.domain.dto import DTO
 
 
-class {{ schema.name }}Template(type):
+class {{ get_name_of_metaclass(schema) }}(type):
     def __new__(metacls, name, bases, attrs):
         cls = type(name, bases, attrs)
         {%- for key, value in schema.items() if not is_internal(schema, key) %}
@@ -195,6 +372,7 @@ class {{ schema.name }}Template(type):
 
         cls._type = "{{ schema.type }}"
 
+        @property
         def get_type(cls) -> Union[type, str]:
             try:
                 return {{ type_name(schema.type) }}
@@ -217,6 +395,9 @@ class {{ schema.name }}Template(type):
         @property
         def get_{{ variable_name }}(cls):
             return [
+            {%- if variable_name == "attributes" %}
+            {%- set value = value.ordered %}
+            {%- endif %}
             {%- for attr in value %}
                 __get_{{ variable_name }}_type()({{ extract_casting(attr) }}),
             {%- endfor %}
@@ -246,18 +427,41 @@ class {{ schema.name }}Template(type):
         return bound_method
 
 
-class {{ schema.name }}(metaclass={{ schema.name }}Template):
+class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 {%- if schema.attributes %}
+    {%- for attr in schema.attributes %}
+    {%- if attr.is_list %}
+
+    class {{ get_name_of_list_class(attr) }}(list):
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+        def append(self, item):
+            item = {{ cast_as(attr, "item") }}
+            super().append(item)
+
+        def to_dict(self, include_defaults: bool = True):
+            return [el.to_dict(include_defaults=include_defaults) if hasattr(el, "to_dict") else el for el in self]
+    {%- endif %}
+    {%- endfor %}
+
     def __init__(self, {{ signature(schema.attributes) }}):
         {%- for attr in schema.attributes %}
         {%- set name = get_name(attr) %}
+        {%- if not is_simple_type(attr) and attr.default is string and attr.default %}
+        if {{ name }} is None:
+            import json
+            {{ name }} = json.loads('''{{ attr.default }}''')
+        {%- endif %}
         {%- if attr.is_list and attr.optional %}
 
         if {{ name }} is None:
-            {{ name }} = []
+            {{ name }} = {{ custom_list_name }}()
         {{ name }} = {{ cast(attr) }}
         {%- elif attr.optional %}
 
+        if {{ name }} is None:
+            {{ name }} = {{ get_escaped_default(attr) }}
         if {{ name }} is not None:
             {{ name }} = {{ cast(attr) }}
         {%- else %}
@@ -284,24 +488,40 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         return {{ get_unprocessed(schema) }}
     {%- if schema.attributes.has_attributes %}
 
+{#
     def __new__(cls, {{ signature(schema.attributes) }}):
         # TODO?: Implement / move explicit properties to be dynamically generated.
         instance = super({{ schema.name }}, cls).__new__(cls)
         return instance
+#}
     {%- endif %}
 
-    {% for attr in schema.attributes %}
+    {%- for attr in schema.attributes %}
+
     @property
     def {{ get_name(attr) }}(self) -> {{ type_annotation(attr) }}:
         return self._{{ get_name(attr) }}
 
     @{{ get_name(attr) }}.setter
-    def {{ get_name(attr) }}(self, value: {{ type_annotation(attr) }}):
+    def {{ get_name(attr) }}(self, value: {{ type_annotation(attr, may_be_dict=True) }}):
+        {% if not attr.optional -%}
+        if value is None:
+            raise ValueError("'{{ get_name(attr) }}' is required, and cannot be set to None")
+        {% endif -%}
         {% if attr.cast -%}
+        from core.domain.dto import DTO
+        {%- if attr.is_list %}
+        if isinstance(value, list) and all(isinstance(element, dict) for element in value):
+        {%- else %}
+        if isinstance(value, dict):
+        {%- endif %}
+            # TODO: Fill in missing keys, if they can be obtained
+            # E.g. `self.type`
+            value = {{ cast(attr, "value") }}
         {% if attr.is_list -%}
-        if not (isinstance(value, list) and all(isinstance(val, {{ type_name(attr) }}) for val in value)):
+        if not (isinstance(value, list) and all({{ type_check(attr, "val") }} for val in value)):
         {%- else -%}
-        if not isinstance(value, {{ type_name(attr) }}):
+        if not ({{ type_check(attr, "value") }}):
         {%- endif %}
             {%- if attr.optional %}
             if value is not None:
@@ -313,55 +533,60 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         self._{{ get_name(attr) }} = value
     {%- endfor %}
 
-    def to_dict(self=None):
+    def to_dict(self=None, *, include_defaults: bool = True):
         # Hack to be able to call `to_dict()` of a class instance
         if self is None:
             self = {{ schema.name }}
 
-        def get_representation(item, key: str = None):
-            if key:
-                value = getattr(item, key)
-                if hasattr(item, f"_{key}") and not isinstance(value, str):
-                    # Hack to avoid circular references
-                    value = getattr(item, f"_{key}")
-            else:
-                value = item
-
-            if isinstance(value, list):
-                return [get_representation(val) for val in value]
-            elif isinstance(value, dict):
-                return {self._to_camel_case(key): get_representation(val) for key, val in value.items()}
-            elif callable(value):
-                value = value()
-            try:
-                value = value.to_dict()
-            except AttributeError:
-                pass
-            return value
-
-        return {
+        representation = {
             {%- for attr in schema.attributes %}
-            "{{ to_camel_case(attr.name) }}": get_representation(self, "{{ get_name(attr) }}"),
+            "{{ to_camel_case(attr.name) }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
             {%- endfor %}
         }
-
-    @classmethod
-    def from_dict(cls, adict):
-        _type = adict.get("type", cls._type)
-        if cls._type != _type:
-            raise ValueError(f"The given type, {_type}, does not match the class' type, {cls._type}")
-        kwargs = {
-            f"{cls._to_snake_case(key)}": value
-            for key, value in adict.items()
-        }
-        return cls(**kwargs)
+        if not include_defaults:
+        {%- if schema.attributes.has_attributes %}
+            def _get(attr, name: str):
+                if isinstance(attr, dict):
+                    if name in attr:
+                        return attr[name]
+                    attr = {{ get_type(schema, "attributes") }}.from_dict(attr)
+                return getattr(attr, self._to_snake_case(name))
+            defaults = {}
+            for attr in {{ get_type(schema, "attributes") }}.attributes:
+                try:
+                    defaults[_get(attr, "name")] = _get(attr, "default")
+                except AttributeError:
+                    continue
+            representation["attributes"] = [
+                {
+                    key: value for key, value in attr.items()
+                    if key not in defaults or value != defaults[key]
+                } for attr in representation['attributes']
+            ]
+        {%- else %}
+            attributes = [{{ get_type(schema, "attributes") }}.from_dict(definition) for definition in self.attributes]
+            defaults = {attr.name: attr.default for attr in attributes}
+            representation = {
+                key: value
+                for key, value in representation.items()
+                if value != defaults[key]
+            }
+        {%- endif %}
+        return representation
 {% else %}
+    def to_dict(self=None, *, include_defaults: bool = True):
+        # Hack to be able to call `to_dict()` of a class instance
+        if self is None:
+            self = {{ schema.name }}
+        return {
+            self._to_camel_case(key): self._get_representation(self, key, include_defaults)
+            for key in self.keys()
+        }
+
     def __new__(cls, *args, **kwargs):
         instance = {{ type_name(schema.type) }}(**{
         {%- for key, value in schema.items() %}
-            {%- if key not in ['type'] %}
             "{{ to_snake_case(key) }}": {% if value is string %}"{{ value }}"{% else %}{{ value }}{% endif %},
-            {%- endif %}
         {%- endfor %}
         })
         {%- if schema.selected -%}
@@ -369,6 +594,60 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         {%- endif %}
         return instance
 {% endif %}
+    @classmethod
+    def _get_representation(cls, item, key: str = None, include_defaults: bool = True):
+        from core.domain.dto import DTO
+
+        if key:
+            value = getattr(item, key)
+            if hasattr(item, f"_{key}") and not isinstance(value, str):
+                # Hack to avoid circular references
+                value = getattr(item, f"_{key}")
+        else:
+            value = item
+
+        if isinstance(value, list):
+            return [cls._get_representation(val, include_defaults=include_defaults) for val in value]
+        elif isinstance(value, dict):
+            return {cls._to_camel_case(key): cls._get_representation(val, include_defaults=include_defaults) for key, val in value.items()}
+        elif callable(value):
+            value = value()
+        elif isinstance(value, DTO):
+            value = {**value.data.to_dict(include_defaults=include_defaults), "uid": value.uid}
+        try:
+            value = value.to_dict(include_defaults=include_defaults)
+        except AttributeError:
+            pass
+        return value
+
+    def keys(self):
+        return [key for key in dir(self) if not key.startswith("-")]
+
+    @classmethod
+    def from_dict(cls, adict):
+        from core.domain.dto import DTO
+        id_keys = ["_id", "id", "uid"]
+        # FIXME: adict may not be a dict...
+        if not isinstance(adict, dict):
+            adict = adict.to_dict()
+        is_dto = any(key in id_keys for key in adict.keys())
+        kwargs = {
+            f"{cls._to_snake_case(key)}": value
+            for key, value in adict.items()
+            if key not in id_keys
+        }
+        # TODO: Add keys that are not given, but can be inferred
+        model = cls(**kwargs)
+        if is_dto:
+            uid = None
+            for key in id_keys:
+                try:
+                    uid = adict[key]
+                except KeyError:
+                    pass
+            model = DTO(model, uid=uid)
+        return model
+
     @staticmethod
     def _to_snake_case(value: str) -> str:
         return stringcase.snakecase(value)
@@ -387,44 +666,36 @@ class {{ schema.name }}(metaclass={{ schema.name }}Template):
         _attributes = Attributes()
 
         for attribute in attributes:
-            # TODO: Implement logic for dimensions
-            is_optional = attribute.get("optional", False)
-            name = attribute["name"]
-            cast = True
-            if name in ["type"]:
-                cast = False
-            default = attribute.get("default", None)
-            is_list = attribute.get("dimensions", "").strip("\"'") == "*"
             attribute_type = attribute["type"]
             if attribute_type not in self._types:
                 self._create(attribute_type, False)
             attribute_type = self._types[attribute_type]
-            attribute = Attribute(
-                type=attribute_type,
-                optional=is_optional,
-                default=default,
-                is_list=is_list,
-                cast=cast,
-                __values__=attribute,
-            )
-            _attributes.add(attribute)
+            _attributes.add(Attribute(attribute, type=attribute_type))
         return _attributes
 
-    def write_domain(self, template_type: str) -> None:
-        module: Path = Path(__file__).parent / "dynamic_models"
+    def write_domain(self, template_type: str, overwrite: bool = True) -> None:
+        module: Path = Path(__file__).parent / Config.DYNAMIC_MODELS
         if not module.exists():
             os.mkdir(str(module.absolute()))
         self.dump_site = str(module / "__init__.py")
-        with open(self.dump_site, "w") as f:
-            f.writelines(
-                """\
+        if overwrite:
+            with open(self.dump_site, "w") as f:
+                f.writelines(
+                    """\
 # flake8: noqa
+'''
+THIS FILE IS AUTOMATICALLY GENERATED.
+ANY CHANGES MADE TO THIS FILE, SHOULD BE DONE IN `core.domain.schema`
+To regenerate this file, run `doit create:system:blueprints`
+'''
 from __future__ import annotations
-from typing import List, Optional, Union
+from typing import List, Optional, Union, Any
 import stringcase
+import json
+from core.domain.dto import DTO
 """
-            )
-        self.create(template_type, _create_instance=False)
+                )
+        return self.create(template_type, _create_instance=False)
 
     def type_name(self, attr: Union[Attribute, str, type]) -> str:
         if isinstance(attr, str):
@@ -433,8 +704,18 @@ import stringcase
             return attr.__name__
         return attr.type.__name__
 
-    def type_annotation(self, attr: Attribute) -> str:
+    def type_check(self, attr: Attribute, value_name: str) -> str:
+        type_name = self.type_name(attr)
+        check = ""
+        if attr.type not in simple_types:
+            check = f"(isinstance({value_name}, DTO) and isinstance({value_name}.data, {type_name}))"
+        check = f"{f'{check} or ' if check else ''}isinstance({value_name}, {type_name})"
+        return check
+
+    def type_annotation(self, attr: Attribute, may_be_dict: bool = False) -> str:
         annotation = f"{self.type_name(attr)}"
+        if attr.type not in simple_types:
+            annotation = f"Union[{annotation}, DTO[{annotation}]{', Dict[str, Any]' if may_be_dict else ''}]"
         if attr.is_list:
             annotation = f"List[{annotation}]"
         if attr.optional:
@@ -447,16 +728,29 @@ import stringcase
             return self._create(name, compile=False)
         return self._types[name]
 
-    def get_default_value(self, attr: Attribute) -> str:
-        if attr.type in simple_types or attr.default is None:
-            if attr.type is str and attr.default is not None:
+    @staticmethod
+    def get_escaped_default(attr: Attribute) -> str:
+        if attr.default is not None:
+            if attr.type is str:
                 return f'"{attr.default}"'
-            return attr.default
-        return f"{self.type_name(attr)}('{attr.default}')"
+            elif isinstance(attr.default, str):
+                if attr.type is bool:
+                    return {"false": False, "true": True}[attr.default.lower()]
+        return attr.default
+
+    def get_default_value(self, attr: Attribute) -> str:
+        if attr.optional:
+            return None
+        if attr.type in simple_types or attr.default is None:
+            return self.get_escaped_default(attr)
+        if isinstance(attr.default, str):
+            # These default values must be dealt with separately
+            return None
+        return f"{self.type_name(attr)}('''{attr.default}''')"
 
     def variable_annotation(self, attr: Attribute) -> str:
         return f"{get_name(attr)}: {self.type_annotation(attr)}" + (
-            f" = {self.get_default_value(attr)}" if attr.optional else ""
+            f" = {self.get_default_value(attr)}" if attr.optional or attr.has_default else ""
         )
 
     def signature(self, attributes: List[Attribute]) -> str:
@@ -465,21 +759,23 @@ import stringcase
     def cast_as(self, attr: Attribute, name: Optional[str] = None) -> str:
         if name is None:
             name = get_name(attr)
-        return f"{self.type_name(attr)}({unpack_if_not_simple(name, attr.type)})"
+        return f"{self.type_name(attr)}{'.from_dict' if attr.type not in simple_types else ''}({name})"
 
-    def cast(self, attr: Attribute) -> str:
+    def cast(self, attr: Attribute, name: Optional[str] = None) -> str:
         if not attr.cast:
+            if name is not None:
+                return name
             return get_name(attr)
         if attr.is_list:
-            return f"[{self.cast_as(attr, 'val')} for val in {get_name(attr)}]"
-        return f"{self.cast_as(attr)}"
+            return f"self.{get_name_of_list_class(attr)}({self.cast_as(attr, 'val')} for val in {get_name(attr) if name is None else name})"
+        return f"{self.cast_as(attr, name)}"
 
     def compile(self, schema: Dict) -> type:
         definition = self.class_from_schema(schema)
         if self.dump_site is not None:
             with open(self.dump_site, "a+") as f:
                 f.write(remove_imports(definition))
-        code: CodeType = compile(definition, "<string>", "exec", optimize=1)
+        code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
         exec(code)  # nosec
         cls: type = locals()[schema["name"]]
         if cls.__name__ not in globals():
@@ -491,19 +787,27 @@ import stringcase
         """ TODO: Function similarly to create, but without "self.template_repository" """
         pass
 
-    def create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
-        Template = self._create(template_type, _create_instance, compile)
-        for template_type in self.to_be_compiled:
-            self._create(template_type, _create_instance)
-        return Template
+    def create(
+        self, template_type: str, _create_instance: bool = False, compile: bool = True, write_domain: bool = False
+    ):
+        if write_domain:
+            return self.write_domain(template_type)
+        try:  # FIXME: Deal with the (real) possibility of the type not being fully formed (`type(<name>, (), schema)`
+            return self._types[template_type]
+        except KeyError:
+            Template = self._create(template_type, _create_instance, compile)
+            for template_type in self.to_be_compiled:
+                self._create(template_type, _create_instance)
+            return Template
 
     def _create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
-        schema = snakify(self.template_repository.find({"type": template_type}))
+        schema = snakify(self._get_schema(template_type))
         # Let at "dummy type" be available for others
         _cls = type(schema["name"], (), snakify(schema))
         if not compile:
             return _cls
-        self._types[template_type] = _cls
+        if template_type not in self._types:
+            self._types[template_type] = _cls
         if "attributes" in schema:
             schema["__attributes__"] = schema["attributes"]
             schema["attributes"] = self._process_attributes(schema["attributes"])
@@ -515,9 +819,7 @@ import stringcase
         except AttributeError:
             pass
         if _create_instance:
-            schema = self.template_repository.find(
-                {"type": template_type}
-            )  # Get a fresh one, as the previous may have been altered
+            schema = self._get_schema(template_type)  # Get a fresh one, as the previous may have been altered
             return _cls.type.from_dict(schema)
         return _cls
 
@@ -549,24 +851,3 @@ import stringcase
                         self._create(template_type)
                     return self.type_name(template_type)
         return self.get_type(Template, name)
-
-
-def run():
-    from core.repository.file.document_repository import TemplateRepositoryFromFile
-    from utils.helper_functions import schemas_location
-
-    template_repository = TemplateRepositoryFromFile(schemas_location())
-    template_type = "templates/DMT/Package"
-    Factory(template_repository).write_domain(template_type)
-    from core.domain.dynamic_models import Blueprint
-
-    # Package = Factory(template_repository).create(template_type)
-    schema = template_repository.get(template_type)
-    Package = Blueprint.from_dict(schema)
-    # print(Package.attributes)
-    # print(Package.from_dict(schema))
-    print(Package)
-
-
-if __name__ == "__main__":
-    run()

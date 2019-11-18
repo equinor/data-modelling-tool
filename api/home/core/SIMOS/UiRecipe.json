@@ -13,7 +13,9 @@
     },
     {
       "type": "string",
-      "name": "description"
+      "name": "description",
+      "optional": true,
+      "default": ""
     },
     {
       "type": "string",
@@ -28,9 +30,17 @@
       "default": ""
     },
     {
+      "type": "system/SIMOS/UiAttributeOption",
+      "name": "options",
+      "dimensions": "*",
+      "contained": true,
+      "optional": true
+    },
+    {
       "type": "system/SIMOS/UiAttribute",
       "name": "attributes",
       "dimensions": "*",
+      "optional": true,
       "contained": true
     }
   ]

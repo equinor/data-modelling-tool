@@ -16,6 +16,7 @@
     {
       "type": "string",
       "name": "uiRecipe",
+      "default": "",
       "optional": true
     },
     {
@@ -26,9 +27,7 @@
     },
     {
       "type": "string",
-      "name": "type",
-      "optional": true,
-      "default": "system/SIMOS/UiAttribute"
+      "name": "type"
     },
     {
       "type": "string",
@@ -46,7 +45,7 @@
       "type": "string",
       "name": "default",
       "optional": true,
-      "default": null
+      "default": ""
     },
     {
       "type": "boolean",
@@ -79,9 +78,11 @@
     {
       "plugin": "EDIT_PLUGIN",
       "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
       "attributes": [
         {
           "name": "type",
+          "type": "string",
           "field": "hidden"
         }
       ]

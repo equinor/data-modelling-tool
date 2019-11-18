@@ -20,7 +20,7 @@ class Dependency:
             alias=a_dict["alias"],
         )
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return {"package": self.package, "version": self.version, "data_source": self.data_source, "alias": self.alias}
 
 
@@ -28,7 +28,6 @@ class Package:
     def __init__(
         self,
         name: str,
-        dependencies: List[Dependency] = None,
         description: str = None,
         type: str = DMT.PACKAGE.value,
         content: List[Dict] = None,
@@ -37,7 +36,6 @@ class Package:
         self.name = name
         self.description = description
         self.type = type
-        self.dependencies = [] if not dependencies else dependencies
         self.content = [] if not content else content
         self.is_root = is_root
         self.storage_recipes = []
@@ -48,17 +46,12 @@ class Package:
             name=adict["name"],
             description=adict.get("description"),
             content=adict.get("content", ""),
-            dependencies=[Dependency.from_dict(dependency) for dependency in adict.get("dependencies", [])],
             type=adict.get("type", DMT.PACKAGE.value),
             is_root=adict.get("isRoot", "false"),
         )
 
         instance.storage_recipes = adict.get("storageRecipes", [])
         return instance
-
-    def get_storage_recipe(self):
-        if len(self.storage_recipes) > 0:
-            return self.storage_recipes[0]
 
     def get_values(self, attribute_name):
         data = self.to_dict()
@@ -67,13 +60,12 @@ class Package:
         else:
             return None
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         result = {
             "name": self.name,
             "description": self.description,
             "type": self.type,
             "content": self.content,
-            "dependencies": [dependency.to_dict() for dependency in self.dependencies],
             "isRoot": self.is_root,
             "storageRecipes": self.storage_recipes,
         }

@@ -4,15 +4,14 @@ from typing import List, Dict
 from anytree import PreOrderIter, RenderTree
 from flask import g
 
-from core.domain.blueprint import Blueprint
+from core.domain.blueprint import Blueprint, get_attributes_with_reference, get_attribute_names
 from core.domain.dto import DTO
 from core.domain.entity import Entity
 from core.domain.index import DocumentNode
 from core.domain.recipe import Recipe
 from core.domain.storage_recipe import StorageRecipe
 from core.enums import DMT, SIMOS
-from core.repository.interface.package_repository import PackageRepository
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.generate_index_menu_actions import (
     get_contained_menu_action,
@@ -43,7 +42,7 @@ class Index:
     def add(self, adict):
         self.index[adict["id"]] = adict
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return self.index
 
 
@@ -55,32 +54,26 @@ def print_tree(root_node):
 
 class Tree:
     def __init__(
-        self, blueprint_repository: MongoBlueprintRepository, get_repository, package_repository, document_repository
+        self, document_repository: DocumentRepository,
     ):
-        self.blueprint_repository = blueprint_repository
-        self.get_repository = get_repository
-        self.package_repository = package_repository
         self.document_repository = document_repository
 
-    def get_references(self, references, item_type):
+    def get_references(self, references):
         documents = []
         for ref in references:
 
             if isinstance(ref, dict):
-                if item_type == DMT.PACKAGE.value:
-                    document = self.package_repository.get(ref["_id"])
-                elif item_type == SIMOS.BLUEPRINT.value:
-                    document = self.blueprint_repository.get(ref["_id"])
-                else:
-                    dto = self.document_repository.get(ref["_id"])
-                    document = Entity(dto.data)
-                    document.uid = dto.uid
+                dto = self.document_repository.get(ref["_id"])
+                document = Entity(dto.data)
+                document.uid = dto.uid
 
                 if not document:
                     raise EntityNotFoundException(uid=ref)
                 if not hasattr(document, "uid"):
                     document.uid = ref["_id"]
                 documents.append(document)
+            elif isinstance(ref, DTO):
+                documents.append(Entity({**ref.data.to_dict(), "uid": ref.uid}))
 
         return documents
 
@@ -96,13 +89,13 @@ class Tree:
 
         node = DocumentNode(
             data_source_id=data_source_id,
-            name=instance["name"],
-            document=DTO(Blueprint(name=instance["name"], description="", type=attribute_type), uid=uid),
+            name=instance.name,
+            document=DTO(Blueprint(name=instance.name, description="", type=attribute_type), uid=uid),
             blueprint=None,
             parent=parent_node,
             on_select={
                 "uid": uid,
-                "title": instance["name"],
+                "title": instance.name,
                 "component": "blueprint",
                 "data": {
                     "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}?attribute={'.'.join(current_path)}",
@@ -114,7 +107,7 @@ class Tree:
         )
         blueprint = get_blueprint(attribute_type)
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
-        for attribute in blueprint.get_attributes_with_reference():
+        for attribute in get_attributes_with_reference(blueprint):
             name = attribute["name"]
 
             is_contained_in_ui = recipe.is_contained(attribute)
@@ -146,6 +139,8 @@ class Tree:
 
     def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, models: List):
 
+        # FIXME: Check that document is a reference
+        document = self.document_repository.get(document.uid)
         is_package = document.type == DMT.PACKAGE.value
         parent_is_data_source = parent_node.document is None
         attribute_nodes = []
@@ -215,9 +210,9 @@ class Tree:
             node.menu_items.append({"label": "New", "menuItems": create_new_menu_items})
 
         # Use the blueprint to find attributes that contains references
-        for attribute in node.blueprint.get_attributes_with_reference():
-            attribute_name = attribute["name"]
-            is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
+        for attribute in get_attributes_with_reference(node.blueprint):
+            attribute_name = attribute.name
+            is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
 
             is_contained_in_ui = recipe.is_contained(attribute)
             if not is_contained_in_ui:
@@ -229,17 +224,17 @@ class Tree:
 
             # If the attribute is an array
             # TODO: Handle fixed size arrays
-            if attribute.get("dimensions", None) == "*":
-                attribute_blueprint = get_blueprint(attribute["type"])
+            if attribute.dimensions == "*":
+                attribute_blueprint = get_blueprint(attribute.type)
 
                 data = {}
-                for item in attribute_blueprint.get_attribute_names():
+                for item in get_attribute_names(attribute_blueprint):
                     data[item] = ("${" + item + "}",)
 
                 not_contained_menu_action = get_not_contained_menu_action(
                     data_source_id=data_source_id,
                     name=attribute_name,
-                    type=attribute["type"],
+                    type=attribute.type,
                     # TODO: Should this be parent_node.id?
                     parent_id=document.uid,
                     data=data,
@@ -248,7 +243,7 @@ class Tree:
                 contained_menu_action = get_contained_menu_action(
                     data_source_id=data_source_id,
                     name=attribute_name,
-                    type=attribute["type"],
+                    type=attribute.type,
                     parent_id=document.uid,
                     data=data,
                 )
@@ -273,28 +268,24 @@ class Tree:
                     # Values are stored in separate document
                     if not is_contained_in_storage:
                         # Get real documents
-                        attribute_nodes.append(
-                            {"documents": self.get_references(values, attribute["type"]), "node": attribute_node}
-                        )
+                        attribute_nodes.append({"documents": self.get_references(values), "node": attribute_node})
                     # Values are stored inside parent. We create placeholder nodes.
                     if is_contained_in_storage:
                         self.generate_contained_nodes(
-                            data_source_id, document.uid, [attribute_name], attribute["type"], values, attribute_node
+                            data_source_id, document.uid, [attribute_name], attribute.type, values, attribute_node
                         )
             else:
                 values = document.get_values(attribute_name)
                 if values:
                     # Values are stored in separate document
                     if not is_contained_in_storage:
-                        attribute_nodes.append(
-                            {"documents": self.get_references(values, attribute["type"]), "node": node}
-                        )
+                        attribute_nodes.append({"documents": self.get_references(values), "node": node})
                 else:
                     node.menu_items.append(
                         get_dynamic_create_menu_item(
                             data_source_id=data_source_id,
                             name=attribute_name,
-                            type=attribute["type"],
+                            type=attribute.type,
                             attribute=attribute_name,
                             parent_id=document.uid,
                         )
@@ -302,7 +293,7 @@ class Tree:
 
                 if is_contained_in_storage:
                     self.generate_contained_node(
-                        document.uid, [attribute_name], attribute, None, data_source_id, attribute["type"], node, False
+                        document.uid, [attribute_name], attribute, None, data_source_id, attribute.type, node, False
                     )
 
         for attribute_node in attribute_nodes:
@@ -344,30 +335,18 @@ class Tree:
 
 class GenerateIndexUseCase:
     def __init__(
-        self,
-        blueprint_repository: MongoBlueprintRepository,
-        package_repository: PackageRepository,
-        get_repository,
-        document_repository,
+        self, document_repository: DocumentRepository,
     ):
-        self.blueprint_repository = blueprint_repository
-        self.package_repository = package_repository
-        self.get_repository = get_repository
         self.document_repository = document_repository
 
-        self.tree = Tree(
-            blueprint_repository=blueprint_repository,
-            package_repository=package_repository,
-            get_repository=get_repository,
-            document_repository=document_repository,
-        )
+        self.tree = Tree(document_repository)
 
     def execute(self, data_source_id: str, data_source_name: str, document_type: str) -> Index:
         return self.tree.execute(
             data_source_id=data_source_id,
             data_source_name=data_source_name,
             document_type=document_type,
-            packages=self.package_repository.list(),
+            packages=self.document_repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False),
         )
 
     def single(
@@ -376,14 +355,7 @@ class GenerateIndexUseCase:
         document = self.document_repository.get(document_id)
         uid = document.uid
         # The tree can't handle dto, need to use one of the below
-        if document.type == DMT.PACKAGE.value:
-            document = self.package_repository.get(document.uid)
-        elif document.type == SIMOS.BLUEPRINT.value:
-            document = self.blueprint_repository.get(document.uid)
-        else:
-            dto = self.document_repository.get(document.uid)
-            document = Entity(dto.data)
-            document.uid = dto.uid
+        document = self.document_repository.get(document.uid)
 
         if not hasattr(document, "uid"):
             document.uid = uid
