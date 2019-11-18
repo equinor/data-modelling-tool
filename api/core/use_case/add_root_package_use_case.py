@@ -1,5 +1,5 @@
 from core.domain.dto import DTO
-from core.domain.package import Package
+from core.domain.models import Package
 from core.repository.interface.document_repository import DocumentRepository
 from utils.logging import logger
 from core.shared import response_object as res

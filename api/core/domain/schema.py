@@ -105,6 +105,15 @@ def is_internal(schema, key: str) -> bool:
     return key.startswith("__") and key.endswith("__") and key.strip("__") in schema
 
 
+def default_as_loadable_json(attr: Attribute) -> str:
+    default = attr.default
+    if attr.type is str:
+        default = f'"{default}"'
+    elif attr.type is bool:
+        default = str(attr.default).lower()
+    return f"'''{default}'''"
+
+
 def extract_casting(attr: Union[Attribute, str, dict]) -> str:
     try:
         return f"**{snakify(attr.__values__)}"
@@ -198,7 +207,8 @@ class Attribute:
 
     @property
     def cast(self):
-        if self.name in ["type"]:
+        # FIXME: Deal with Package's content of collection type 'Entity'
+        if self.name in ["type", "content"]:
             return False
         return True
 
@@ -335,6 +345,7 @@ class Factory:
             get_name_of_list_class,
             get_name_of_metaclass,
             self.get_escaped_default,
+            default_as_loadable_json,
         ]
         self.to_be_compiled = set()
 
@@ -454,7 +465,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {%- if not is_simple_type(attr) and attr.default is string and attr.default %}
         if {{ name }} is None:
             import json
-            {{ name }} = json.loads('''{{ attr.default }}''')
+            {{ name }} = json.loads({{ default_as_loadable_json(attr) }})
         {%- endif %}
         {%- if attr.is_list and attr.optional %}
 
@@ -756,6 +767,8 @@ from core.domain.dto import DTO
             elif isinstance(attr.default, str):
                 if attr.type is bool:
                     return {"false": False, "true": True}[attr.default.lower()]
+        if attr.default == "" and not is_simple_type(attr.type):
+            return str(None)
         return attr.default
 
     def get_default_value(self, attr: Attribute) -> str:

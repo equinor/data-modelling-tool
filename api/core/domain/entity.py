@@ -1,6 +1,8 @@
 class Entity:
     def __init__(self, init=None):
         if init is not None:
+            if not isinstance(init, dict):
+                init = init.to_dict()
             self.__dict__.update(init)
 
     def __getitem__(self, key):

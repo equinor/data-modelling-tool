@@ -9,6 +9,7 @@ RUN apk update && \
 COPY pyproject.toml poetry.lock ./
 RUN poetry install
 COPY . /code
+RUN /code/generate_system_blueprints.py
 
 FROM development as prod
 RUN poetry install --no-dev

@@ -62,6 +62,7 @@ def init_application():
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )
+    logger.info("Resetting the cache of generated blueprints")
     Factory.reset_cache()
 
 

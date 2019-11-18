@@ -14,8 +14,13 @@ class TemplateRepositoryFromFile(DocumentRepository):
     def get(self, template_type: str):
         data_source, *rest = template_type.split("/")
         template_type = "/".join(rest)
+        path = self.path
+        if data_source == "system":
+            path = path / "core"
+        elif data_source == "SSR-DataSource":
+            path = path / "blueprints"
         try:
-            with open(str(self.path / f"{template_type}.json")) as f:
+            with open(str(path / f"{template_type}.json")) as f:
                 schema = json.load(f)
         except FileNotFoundError:
             raise TemplateNotFound(template_type)
