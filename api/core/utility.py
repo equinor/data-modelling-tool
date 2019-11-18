@@ -5,7 +5,9 @@ from config import Config
 from core.domain.dto import DTO
 from core.domain.models import Package
 from core.repository.repository_factory import get_repository
+from core.use_case.utils.get_reference import get_ref_id
 from services.database import dmt_database
+from utils.data_structure.find import get
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
 from utils.logging import logger
 
@@ -26,8 +28,8 @@ def _find_document_in_package_by_path(package: Package, path_elements: List[str]
         logger.error(f"The document {target} could not be found in the package {package.name}")
     else:
         try:
-            next_package = [package for package in package.content if package.name == path_elements[0]][0]
-            next_package: DTO[Package] = repository.find({"_id": next_package.uid})
+            next_package = [package for package in package.content if get(package, "name") == path_elements[0]][0]
+            next_package: DTO[Package] = repository.find({"_id": get_ref_id(next_package)})
             del path_elements[0]
             return _find_document_in_package_by_path(next_package, path_elements, repository)
         except IndexError:

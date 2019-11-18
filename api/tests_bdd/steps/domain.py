@@ -3,7 +3,7 @@ from behave import given
 from classes.data_source import DataSource
 from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
-from core.domain.package import Package
+from core.domain.models import Package
 from core.repository.interface.document_repository import DocumentRepository
 from anytree import NodeMixin, RenderTree
 from core.repository.repository_factory import get_repository

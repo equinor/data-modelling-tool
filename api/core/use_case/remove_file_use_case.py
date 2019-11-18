@@ -3,6 +3,7 @@ from stringcase import snakecase
 from core.domain.dto import DTO
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_document_children import get_document_children
+from core.use_case.utils.get_reference import get_ref_id
 from utils.logging import logger
 from core.shared import use_case as uc
 from core.shared import response_object as res
@@ -57,7 +58,9 @@ class RemoveFileUseCase(uc.UseCase):
                 raise EntityNotFoundException(uid=parent_id)
             data = parent.data
             setattr(
-                data, snakecase(attribute), list(filter(lambda d: d.uid != document.uid, getattr(data, attribute)))
+                data,
+                snakecase(attribute),
+                list(filter(lambda d: get_ref_id(d) != document.uid, getattr(data, attribute))),
             )
             self.document_repository.update(parent)
 
