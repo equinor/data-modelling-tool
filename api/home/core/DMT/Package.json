@@ -9,7 +9,9 @@
     },
     {
       "type": "string",
-      "name": "description"
+      "name": "description",
+      "default": "",
+      "optional": true
     },
     {
       "type": "string",
@@ -22,7 +24,8 @@
     {
       "type": "system/DMT/Entity",
       "name": "content",
-      "dimensions": "*"
+      "dimensions": "*",
+      "optional": true
     },
     {
       "type": "system/SIMOS/StorageRecipe",

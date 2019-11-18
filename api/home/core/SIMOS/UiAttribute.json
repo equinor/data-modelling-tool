@@ -31,6 +31,12 @@
     },
     {
       "type": "string",
+      "name": "enumType",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "type": "string",
       "name": "field",
       "optional": true,
       "default": ""

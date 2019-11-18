@@ -21,7 +21,7 @@
     },
     {
       "type": "SSR-DataSource/CarsDemo/engine/FuelPump",
-      "name": "FuelPump",
+      "name": "fuelPump",
       "optional": true
     }
   ],

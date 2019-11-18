@@ -1,5 +1,5 @@
 {
-  "type": "system/DMT/Blueprint",
+  "type": "system/SIMOS/Blueprint",
   "description": "A ui plugin for presenting a document on the right side of the application",
   "name": "UiViewPlugin",
   "attributes": [
