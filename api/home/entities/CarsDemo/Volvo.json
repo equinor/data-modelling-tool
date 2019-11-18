@@ -3,6 +3,8 @@
   "name": "Car",
   "description": "",
   "engine": {
+    "type": "SSR-DataSource/CarsDemo/engine/Engine",
+    "description": "",
     "name": "V60",
     "power": "100"
   }
