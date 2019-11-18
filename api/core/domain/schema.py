@@ -656,6 +656,10 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def _to_camel_case(value: str) -> str:
         return stringcase.camelcase(value)
 
+    @property
+    def __completed__(self):
+        return True
+
 """
         )
         for macro in self.macros:
@@ -792,8 +796,11 @@ from core.domain.dto import DTO
     ):
         if write_domain:
             return self.write_domain(template_type)
-        try:  # FIXME: Deal with the (real) possibility of the type not being fully formed (`type(<name>, (), schema)`
-            return self._types[template_type]
+        try:
+            cls = self._types[template_type]
+            if not cls.__completed__:
+                raise KeyError
+            return cls
         except KeyError:
             Template = self._create(template_type, _create_instance, compile)
             for template_type in self.to_be_compiled:
@@ -804,6 +811,7 @@ from core.domain.dto import DTO
         schema = snakify(self._get_schema(template_type))
         # Let at "dummy type" be available for others
         _cls = type(schema["name"], (), snakify(schema))
+        _cls.__completed__ = False
         if not compile:
             return _cls
         if template_type not in self._types:
