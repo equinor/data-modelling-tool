@@ -162,12 +162,15 @@ def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
 
 
 class Attribute:
-    def __init__(self, data: Dict[str, Any], type: type):
+    def __init__(self, data: Dict[str, Any], type: type, definition: Dict[str, Any]):
         self.type = type
         self.__values__ = data
+        self._definition = definition
 
     def __repr__(self):
-        attributes = ["name", "optional", "default", "contained"]
+        attributes = ["name", "optional", "contained"]
+        if self.has_default:
+            attributes += ["default"]
 
         def get_representation(key: str) -> str:
             value = getattr(self, key)
@@ -201,7 +204,7 @@ class Attribute:
 
     @property
     def has_default(self):
-        return "default" in self.__values__
+        return "default" in self.__values__ and "default" in self._definition
 
     @property
     def enum_type(self):
@@ -666,7 +669,9 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             class_template.globals[macro.__name__] = macro
         return class_template.render(schema=schema)
 
-    def _process_attributes(self, attributes: List[Dict[str, str]]) -> Attributes:
+    def _process_attributes(self, schema: Dict[str, Any]) -> Attributes:
+        attributes: List[Dict[str, str]] = schema["attributes"]
+        attribute_definition = self._get_attribute_definition(schema)
         _attributes = Attributes()
 
         for attribute in attributes:
@@ -674,8 +679,19 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             if attribute_type not in self._types:
                 self._create(attribute_type, False)
             attribute_type = self._types[attribute_type]
-            _attributes.add(Attribute(attribute, type=attribute_type))
+            _attributes.add(Attribute(attribute, type=attribute_type, definition=attribute_definition))
         return _attributes
+
+    def _get_attribute_definition(self, schema) -> Dict[str, Any]:
+        attribute = None
+        for attr in schema.get("attributes", []):
+            if attr["name"] == "attributes":
+                attribute = attr
+                break
+        if attribute:
+            return self._get_schema(attribute["type"])
+        else:
+            return self._get_attribute_definition(self._get_schema(schema["type"]))
 
     def write_domain(self, template_type: str, overwrite: bool = True) -> None:
         module: Path = Path(__file__).parent / Config.DYNAMIC_MODELS
@@ -818,7 +834,7 @@ from core.domain.dto import DTO
             self._types[template_type] = _cls
         if "attributes" in schema:
             schema["__attributes__"] = schema["attributes"]
-            schema["attributes"] = self._process_attributes(schema["attributes"])
+            schema["attributes"] = self._process_attributes(schema)
         _cls = self.compile(schema)
         self._types[template_type] = _cls
         try:
