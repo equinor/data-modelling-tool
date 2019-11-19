@@ -55,42 +55,41 @@ export const AttributeWidget = (props: Props) => {
   const selectedType = formData['type']
   if (REQUIRED_ATTRIBUTES.includes(formData.name)) {
     return <RequiredAttributesGroup name={formData.name} type={formData.type} />
-  } else {
-    return (
-      <AttributeGroup>
-        {attributes.map((blueprintAttribute: BlueprintAttribute) => {
-          const { name } = blueprintAttribute
-          const value = (formData as any)[name]
-          let Widget: Function | null = getWidgetByName(
-            blueprintAttribute,
-            selectedType
-          )
-          if (Widget === null) {
-            return null
-          }
-          if (Widget === undefined) {
-            Widget = getWidgetByType(blueprintAttribute)
-          }
-          if (Widget === undefined) {
-            console.warn('widget is not supported: ', blueprintAttribute)
-            return null
-          }
-          return (
-            <AttributeWrapper key={name}>
-              <label style={{ verticalAlign: 'top', marginRight: 10 }}>
-                {name}:{' '}
-              </label>
-              <Widget
-                onChange={onChange}
-                value={value}
-                attribute={blueprintAttribute}
-              />
-            </AttributeWrapper>
-          )
-        })}
-      </AttributeGroup>
-    )
   }
+  return (
+    <AttributeGroup>
+      {attributes.map((blueprintAttribute: BlueprintAttribute) => {
+        const { name } = blueprintAttribute
+        const value = (formData as any)[name]
+        let Widget: Function | null = getWidgetByName(
+          blueprintAttribute,
+          selectedType
+        )
+        if (Widget === null) {
+          return null
+        }
+        if (Widget === undefined) {
+          Widget = getWidgetByType(blueprintAttribute)
+        }
+        if (Widget === undefined) {
+          console.warn('widget is not supported: ', blueprintAttribute)
+          return null
+        }
+        return (
+          <AttributeWrapper key={name}>
+            <label style={{ verticalAlign: 'top', marginRight: 10 }}>
+              {name}:{' '}
+            </label>
+            <Widget
+              onChange={onChange}
+              value={value}
+              attribute={blueprintAttribute}
+            />
+          </AttributeWrapper>
+        )
+      })}
+    </AttributeGroup>
+  )
 }
 
 function getWidgetByName(
