@@ -13,7 +13,25 @@
     },
     {
       "type": "string",
+      "name": "default",
+      "default": "",
+      "optional": true
+    },
+    {
+      "type": "boolean",
+      "name": "optional",
+      "default": false,
+      "optional": true
+    },
+    {
+      "type": "string",
       "name": "description",
+      "default": "",
+      "optional": true
+    },
+    {
+      "type": "string",
+      "name": "enumType",
       "default": "",
       "optional": true
     },
@@ -21,7 +39,7 @@
       "type": "boolean",
       "name": "contained",
       "optional": true,
-      "default": true,
+      "default": "true",
       "description": "WARNING: Change how the entity is stored. Changing this value will make current entities unavailable"
     },
     {

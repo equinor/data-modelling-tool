@@ -50,8 +50,6 @@
       "optional": true,
       "default": ""
     }
-  ],
-  "storageRecipes": [],
-  "uiRecipes": []
+  ]
 }
 

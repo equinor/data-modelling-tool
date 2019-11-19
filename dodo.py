@@ -29,7 +29,7 @@ def _execute(command):
 
 def execute(command, include=None, **options):
     if command is None:
-        return _execute('')
+        return _execute("")
     return _execute(f"{docker_compose(include)} {command}")
 
 
@@ -170,7 +170,7 @@ def task_docker_compose():
                 "create:system:blueprints",
                 "sh -c 'python3 /code/generate_system_blueprints.py && black /code/core/domain/dynamic_models'",
                 "api",
-                help="Create the Python classes of the blueprints that are used by DMT"
+                help="Create the Python classes of the blueprints that are used by DMT",
             ),
             Task(
                 "build",

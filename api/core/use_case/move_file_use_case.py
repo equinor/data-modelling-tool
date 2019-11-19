@@ -7,6 +7,7 @@ from core.repository.repository_exceptions import EntityAlreadyExistsException, 
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
+from core.use_case.utils.get_reference import get_ref_id
 from core.utility import get_document_by_ref
 from utils.logging import logger
 
@@ -77,7 +78,7 @@ class MoveFileUseCase(uc.UseCase):
         reference = {"_id": source_document.uid, "name": destination.name, "type": source_document.type}
         # Remove old reference from parent
         old_parent_document.data.content = [
-            ref for ref in old_parent_document.data.content if not ref.uid == source_document.uid
+            ref for ref in old_parent_document.data.content if not get_ref_id(ref) == source_document.uid
         ]
         # If the parent is not the same, insert ref to new parent.
         if different_parent:

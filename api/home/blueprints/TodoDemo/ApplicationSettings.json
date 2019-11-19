@@ -14,6 +14,7 @@
   "runnableModels": [
     {
       "name": "Todo",
+      "type": "system/SIMOS/Runnable",
       "description": "Get list of work items",
       "input": "SSR-DataSource/TodoDemo/TodoList",
       "output": "SSR-DataSource/TodoDemo/TodoList",
