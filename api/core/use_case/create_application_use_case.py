@@ -20,12 +20,12 @@ from core.use_case.utils.get_template import get_blueprint
 from jinja2 import Template
 
 API_DOCKERFILE = f"""\
-FROM mariner.azurecr.io/dmt/api
+FROM mariner.azurecr.io/dmt/api:stable
 COPY ./home {Config.APPLICATION_HOME}
 """
 
 WEB_DOCKERFILE = """\
-FROM mariner.azurecr.io/dmt/web
+FROM mariner.azurecr.io/dmt/web:stable
 COPY ./runnable.js /code/src/runnable.js
 """
 
