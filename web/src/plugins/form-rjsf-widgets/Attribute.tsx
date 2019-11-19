@@ -13,6 +13,9 @@ import { BlueprintAttribute } from '../types'
 import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
 import { isPrimitive } from '../pluginUtils'
+import { RequiredAttributesGroup } from '../form_rjsf_edit/RequiredAttributes'
+
+const REQUIRED_ATTRIBUTES = ['name', 'description', 'type']
 
 const AttributeGroup = styled.div`
   border: 1px solid;
@@ -50,6 +53,9 @@ export const AttributeWidget = (props: Props) => {
   }
 
   const selectedType = formData['type']
+  if (REQUIRED_ATTRIBUTES.includes(formData.name)) {
+    return <RequiredAttributesGroup name={formData.name} type={formData.type} />
+  }
   return (
     <AttributeGroup>
       {attributes.map((blueprintAttribute: BlueprintAttribute) => {

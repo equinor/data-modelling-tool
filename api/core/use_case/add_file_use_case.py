@@ -12,6 +12,14 @@ from core.use_case.utils.get_template import get_blueprint
 from utils.logging import logger
 
 
+def get_required_attributes(type: str):
+    return [
+        {"type": "string", "name": "name"},
+        {"type": "string", "name": "description"},
+        {"type": "string", "name": "type", "default": type},
+    ]
+
+
 class AddFileRequestObject(req.ValidRequestObject):
     def __init__(self, parent_id=None, name=None, description=None, type=None, attribute=None, path=None, data=None):
         self.parent_id = parent_id
@@ -87,7 +95,14 @@ class AddFileUseCase(uc.UseCase):
         else:
             # TODO: Set all data
             # TODO: Use a <Template>.from_dict({...})
-            file = DTO(data={"name": name, "description": description, "type": type})
+            file = DTO(
+                data={
+                    "name": name,
+                    "description": description,
+                    "type": type,
+                    "attributes": get_required_attributes("not_implementet"),
+                }
+            )
             getattr(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
