@@ -18,8 +18,6 @@ type UiSchemaProperty = {
  * @param uiRecipe
  */
 
-const PLUGIN_NAME = 'EDIT_PLUGIN'
-
 const defaults: KeyValue = {
   name: { 'ui:disabled': true },
   type: { 'ui:disabled': true },
@@ -34,12 +32,15 @@ function addDefaultUiProperties(container: KeyValue, attr: any) {
 }
 
 export function generateUiSchema(pluginProps: PluginProps) {
-  const { blueprint } = pluginProps
-  const blueprintUtil = new BlueprintUtil(pluginProps.blueprint, PLUGIN_NAME)
+  const { blueprint, uiRecipe } = pluginProps
+  const blueprintUtil = new BlueprintUtil(
+    pluginProps.blueprint,
+    uiRecipe.plugin
+  )
 
   const uiSchema = {}
   blueprint.attributes.forEach((attr: BlueprintAttribute) => {
-    const uiAttribute = blueprintUtil.getUiAttribute(attr.name, PLUGIN_NAME)
+    const uiAttribute = blueprintUtil.getUiAttribute(attr.name, uiRecipe.plugin)
 
     // top level blueprint.
     addDefaultUiProperties(uiSchema, attr)
@@ -77,7 +78,7 @@ function createUiSchemaProperty(
           'ui:field': uiAttribute.field,
           attributes: widgetBlueprint.attributes,
           uiRecipe: widgetBlueprint.uiRecipes.find(
-            (recipe: any) => recipe.plugin === pluginProps.name
+            (recipe: any) => recipe.name === pluginProps.uiRecipe.name
           ),
         }
       }

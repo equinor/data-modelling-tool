@@ -45,9 +45,9 @@ export class BlueprintUtil {
     }
   }
 
-  public static findRecipe(recipes: any[], pluginName: string): any {
+  public static findRecipe(recipes: any[], name: string): any {
     if (recipes) {
-      return recipes.find((recipe: any) => recipe.plugin === pluginName)
+      return recipes.find((recipe: any) => recipe.name === name)
     }
   }
 }

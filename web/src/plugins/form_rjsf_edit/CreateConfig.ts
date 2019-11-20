@@ -16,7 +16,7 @@ export function createFormConfigs(pluginProps: PluginProps): FormConfig {
   const indexRecipe = BlueprintUtil.findRecipe(blueprint.uiRecipes, 'INDEX')
   const editRecipe = BlueprintUtil.findRecipe(
     blueprint.uiRecipes,
-    'EDIT_PLUGIN'
+    pluginProps.uiRecipe.name
   )
 
   const filter = filterAttributes({ indexRecipe, editRecipe })

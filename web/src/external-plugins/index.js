@@ -12,10 +12,9 @@ const TestPlugin = ({ parent, document, children }) => {
 }
 
 const registeredPlugins = {
-  TEST_EXTERNAL: TestPlugin,
+  'My plugin': TestPlugin,
 }
 
-export default function pluginHook(plugin) {
-  console.log(plugin)
-  return registeredPlugins[plugin]
+export default function pluginHook(uiRecipe) {
+  return registeredPlugins[uiRecipe.name]
 }
