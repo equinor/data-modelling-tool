@@ -54,14 +54,24 @@
   "uiRecipes": [
     {
       "type": "system/SIMOS/UiRecipe",
-      "name": "Edit2",
+      "name": "Edit",
       "description": "",
       "plugin": "EDIT_PLUGIN",
       "attributes": [
         {
           "name": "type",
           "type": "system/SIMOS/UiAttribute",
-          "field": "typeWidget"
+          "widget": "typeWidget"
+        },
+        {
+          "name": "dimensions",
+          "type": "system/SIMOS/UiAttribute",
+          "widget": "dimensionsWidget"
+        },
+        {
+          "name": "default",
+          "type": "system/SIMOS/UiAttribute",
+          "widget": "defaultWidget"
         }
       ]
     }

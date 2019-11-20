@@ -40,6 +40,7 @@ const View = (props: any) => {
     document,
     blueprints,
     uiRecipe,
+    dtos: [],
   }
 
   switch (uiRecipe.plugin) {

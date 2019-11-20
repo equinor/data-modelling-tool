@@ -2,8 +2,7 @@
 import Switch from 'react-switch'
 import React from 'react'
 import { BlueprintAttribute } from '../types'
-import {AttributeOnChange} from "./DmtTypeWidget";
-
+import { AttributeOnChange } from './DmtTypeWidget'
 
 export function getBooleanValue(
   value: string | boolean | undefined,

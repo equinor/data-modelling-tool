@@ -14,19 +14,19 @@ interface Props {
   blueprints: Blueprint[]
 }
 
-
 export const PlotPlugin = (props: Props) => {
   const { blueprint, document } = props
 
   const uiRecipe = findRecipe(blueprint, props.name)
 
   const items = objectPath.get(document, uiRecipe.options.property)
-  const data = items.map((item: any) => {
-    return {
-      x: item[options.x],
-      y: item[options.y],
-    }
-  })
+  // const data = items.map((item: any) => {
+  //   return {
+  //     x: item[options.x],
+  //     y: item[options.y],
+  //   }
+  // })
+  const data: any[] = []
 
   return (
     <VictoryChart theme={VictoryTheme.material}>

@@ -26,13 +26,6 @@ export interface Entity extends BaseBlueprint {
   [key: string]: any //entities can have any key - value pair.
 }
 
-// based on plugin blueprints
-export type UiRecipe = {
-  name: string
-  plugin: string
-  attributes: BlueprintAttribute[] //@todo use UiAttribute
-}
-
 export type PluginProps = {
   uiRecipe: UiRecipe //tab name, righthand side content
   blueprint: Blueprint
@@ -44,7 +37,7 @@ export type PluginProps = {
 export type UiRecipe = {
   name: string
   type: string
-  description: string
+  description?: string
   plugin: string
   attributes: any[]
 }

@@ -1,8 +1,7 @@
 import React from 'react'
 import { BlueprintAttribute } from '../types'
 import { DmtWidgetProps } from './types'
-import {TypeWidgetOld} from "../form-rjsf-fields/DmtTypeWidget";
-
+import { TypeWidgetOld } from '../form-rjsf-fields/DmtTypeWidget'
 
 export const TypeWidget = (props: DmtWidgetProps) => {
   const { value, onChange, dtos, blueprint, label } = props
@@ -11,7 +10,6 @@ export const TypeWidget = (props: DmtWidgetProps) => {
     (attr: BlueprintAttribute) => attr.name === label
   )
 
-  
   if (attribute) {
     return (
       <div>

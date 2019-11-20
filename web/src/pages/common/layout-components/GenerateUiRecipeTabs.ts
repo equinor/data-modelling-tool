@@ -1,5 +1,5 @@
 import { RegisteredPlugins } from './DocumentComponent'
-import {UiRecipe} from "../../../plugins/types";
+import { UiRecipe } from '../../../plugins/types'
 
 /**
  * Requirements:
@@ -52,7 +52,7 @@ export class GenerateUiRecipeTabs {
 }
 
 function createUiRecipe(name: string, plugin: string): UiRecipe {
-  return { name, plugin, attributes: [] }
+  return { name, type: 'system/SIMOS/UiRecipe', plugin, attributes: [] }
 }
 
 export function getDefaultTabs(): UiRecipe[] {

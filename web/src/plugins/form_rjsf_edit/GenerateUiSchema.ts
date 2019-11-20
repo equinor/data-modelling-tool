@@ -1,6 +1,8 @@
 import { Blueprint, BlueprintAttribute, PluginProps } from '../types'
 import { getWidgetBlueprint } from './EditForm'
 import { BlueprintUtil, KeyValue } from '../BlueprintUtil'
+import { findRecipe } from '../pluginUtils'
+import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
 
 type UiSchemaProperty = {
   items?: any
@@ -74,12 +76,14 @@ function createUiSchemaProperty(
     if (blueprintAttribute.dimensions === '*') {
       const widgetBlueprint: Blueprint | null = getWidgetBlueprint(pluginProps)
       if (widgetBlueprint) {
+        const uiRecipe = findRecipe(
+          widgetBlueprint,
+          RegisteredPlugins.EDIT_PLUGIN
+        )
         property.items = {
           'ui:field': uiAttribute.field,
           attributes: widgetBlueprint.attributes,
-          uiRecipe: widgetBlueprint.uiRecipes.find(
-            (recipe: any) => recipe.name === pluginProps.uiRecipe.name
-          ),
+          uiAttributes: uiRecipe.attributes,
         }
       }
     } else {
