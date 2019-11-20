@@ -5,11 +5,14 @@
   "attributes": [
     {
       "type": "string",
-      "name": "name"
+      "name": "name",
+      "default": "",
+      "description": "Edit|Preview"
     },
     {
       "type": "string",
-      "name": "type"
+      "name": "type",
+      "description": "system/SIMOS/UiRecipe"
     },
     {
       "type": "string",
@@ -44,6 +47,51 @@
       "contained": true
     }
   ],
-  "uiRecipes": [],
+  "uiRecipes": [
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "plugin",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "PREVIEW | EDIT_PLUGIN | INDEX"
+        },
+        {
+          "name": "type",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "system/SIMOS/UiRecipe",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "system/SIMOS/UiAttribute",
+          "required": true,
+          "description": "Name of ui view (tab). Override or create new tab. \"Preview\" | \"Edit\""
+        },
+        {
+          "name": "options",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "hidden"
+        },
+        {
+          "name": "field",
+          "type": "system/SIMOS/UiAttribute",
+          "widget": "hidden"
+        },
+        {
+          "name": "description",
+          "type": "system/SIMOS/UiAttribute",
+          "widget": "hidden"
+        },
+        {
+          "name": "field",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "Supported: \"attribute\" | \"hidden\" (also arrays)"
+        }
+      ]
+    }
+  ],
   "storageRecipes": []
 }

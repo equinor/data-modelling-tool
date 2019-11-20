@@ -64,22 +64,22 @@
       "attributes": [
         {
           "name": "description",
-          "type": "string",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "textarea"
         },
         {
           "name": "isRoot",
-          "type": "boolean",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "hidden"
         },
         {
           "name": "type",
-          "type": "string",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "content",
-          "type": "system/DMT/Entity",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         }
       ]

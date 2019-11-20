@@ -15,6 +15,12 @@
       "optional": true
     },
     {
+      "name": "label",
+      "type": "string",
+      "optional": true,
+      "default": ""
+    },
+    {
       "name": "default",
       "type": "string",
       "optional": true,

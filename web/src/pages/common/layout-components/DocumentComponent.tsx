@@ -33,6 +33,7 @@ const View = (props: any) => {
     dataUrl,
     attribute,
     uiRecipe,
+    dtos,
   } = props
 
   const pluginProps: PluginProps = {
@@ -40,6 +41,7 @@ const View = (props: any) => {
     document,
     blueprints,
     uiRecipe,
+    dtos,
   }
 
   switch (uiRecipe.plugin) {
@@ -62,6 +64,7 @@ const View = (props: any) => {
           }}
         </LayoutContext.Consumer>
       )
+
     case RegisteredPlugins.EDIT:
       return (
         <ReactJsonSchemaWrapper
@@ -127,6 +130,7 @@ const DocumentComponent = (props: any) => {
               document={document}
               blueprints={data.children}
               blueprint={data.blueprint}
+              dtos={data.dtos || []}
             />
           )
         }}
