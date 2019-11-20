@@ -10,6 +10,7 @@ import { BlueprintAttribute } from '../types'
 import { DimensionWidget } from './DimensionWidget'
 import { FieldProps, IdSchema } from 'react-jsonschema-form'
 import { CommonWidgetProps, CreateTextWidget } from './WidgetWrappers'
+import {RequiredAttributesGroup} from "../form_rjsf_edit/RequiredAttributes";
 
 const AttributeGroup = styled.div`
   border: 1px solid;
@@ -17,6 +18,9 @@ const AttributeGroup = styled.div`
   padding: 5px;
   border-radius: 5px;
 `
+
+const REQUIRED_ATTRIBUTES = ['name', 'description', 'type']
+
 
 export const AttributeWidget = (props: FieldProps) => {
   let { attributes, uiAttributes } = props.uiSchema
@@ -41,6 +45,9 @@ export const AttributeWidget = (props: FieldProps) => {
   const registry: FieldProps['Registry'] = props.registry
 
   const selectedType = formData['type']
+  if (REQUIRED_ATTRIBUTES.includes(formData.name)) {
+    return <RequiredAttributesGroup name={formData.name} type={formData.type} />
+  }
   return (
     <AttributeGroup>
       {attributes.map((blueprintAttribute: BlueprintAttribute) => {
