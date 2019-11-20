@@ -3,7 +3,7 @@ def get_attributes_with_reference(blueprint):
     blueprints = list(filter(lambda item: hasattr(item, "type") and item.type not in primitives, blueprint.attributes))
     # TODO: Removed enum since not working
     blueprints = list(filter(lambda item: item.name != "enum", blueprints))
-    return blueprints
+    return [blueprint.to_dict() for blueprint in blueprints]
 
 
 def get_attribute_names(blueprint):

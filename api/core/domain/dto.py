@@ -3,11 +3,18 @@ from typing import TypeVar, Optional, Generic
 
 from stringcase import snakecase
 
+from utils.data_structure.find import get
+
 T = TypeVar("T")
 
 
 class DTO(Generic[T]):
     def __init__(self, data: T, uid: Optional[UUID] = None):
+        for key in ["uid", "_id", "id"]:
+            try:
+                uid = get(data, key)
+            except (KeyError, AttributeError, TypeError):
+                pass
         if uid is None:
             uid = uuid4()
         self._uid = uid

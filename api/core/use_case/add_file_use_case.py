@@ -10,6 +10,7 @@ from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
+from utils.data_structure.find import get
 from utils.logging import logger
 
 
@@ -79,7 +80,9 @@ class AddFileUseCase(uc.UseCase):
             raise EntityNotFoundException(uid=parent_id)
 
         parent_data = parent.data
-        if not hasattr(parent_data, attribute):
+        try:
+            get(parent_data, attribute)
+        except ValueError:
             raise ValueError(f"The attribute '{attribute}' is missing")
 
         parent_blueprint = get_blueprint(parent.type)
@@ -98,7 +101,7 @@ class AddFileUseCase(uc.UseCase):
             if type == SIMOS.BLUEPRINT.value:
                 file.data["attributes"] = get_required_attributes("NOT_IMPLEMENTED")
 
-            getattr(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
+            get(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
             self.document_repository.update(parent)
