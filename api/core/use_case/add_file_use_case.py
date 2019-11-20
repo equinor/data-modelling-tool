@@ -2,6 +2,7 @@ from typing import Dict
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
+from core.enums import SIMOS
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
@@ -16,6 +17,7 @@ def get_required_attributes(type: str):
     return [
         {"type": "string", "name": "name"},
         {"type": "string", "name": "description"},
+        # TODO: Set the default type of the entity
         {"type": "string", "name": "type", "default": type},
     ]
 
@@ -78,14 +80,13 @@ class AddFileUseCase(uc.UseCase):
 
         parent_data = parent.data
         if not hasattr(parent_data, attribute):
-            # parent_data[attribute] = []
             raise ValueError(f"The attribute '{attribute}' is missing")
 
-        blueprint = get_blueprint(parent.type)
-        if not blueprint:
+        parent_blueprint = get_blueprint(parent.type)
+        if not parent_blueprint:
             raise EntityNotFoundException(uid=parent.type)
 
-        storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
+        storage_recipe: StorageRecipe = get_storage_recipe(parent_blueprint)
 
         if storage_recipe.is_contained(attribute, type):
             getattr(parent_data, attribute).append(data)
@@ -93,16 +94,10 @@ class AddFileUseCase(uc.UseCase):
             self.document_repository.update(parent)
             return res.ResponseSuccess(parent)
         else:
-            # TODO: Set all data
-            # TODO: Use a <Template>.from_dict({...})
-            file = DTO(
-                data={
-                    "name": name,
-                    "description": description,
-                    "type": type,
-                    "attributes": get_required_attributes("not_implementet"),
-                }
-            )
+            file = DTO(data={"name": name, "description": description, "type": type})
+            if type == SIMOS.BLUEPRINT.value:
+                file.data["attributes"] = get_required_attributes("NOT_IMPLEMENTED")
+
             getattr(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
