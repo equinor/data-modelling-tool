@@ -11,10 +11,10 @@ interface IBlueprint {
 export class Blueprint implements IBlueprint {
   private attributes: KeyValue = {}
   private uiRecipes: KeyValue = {}
-  private blueprint: BlueprintType
+  private blueprintType: BlueprintType
 
   constructor(blueprint: BlueprintType) {
-    this.blueprint = blueprint
+    this.blueprintType = blueprint
     this.addAttributes(this.attributes, blueprint.attributes)
 
     blueprint.uiRecipes.forEach((recipe: any) => {
@@ -46,6 +46,10 @@ export class Blueprint implements IBlueprint {
   // helper functions
   isArray(attr: BlueprintAttribute) {
     return attr.dimensions === '*'
+  }
+
+  public getAttribute(name: string) {
+    return this.attributes[name]
   }
 
   public getUiAttributes(uiRecipeName: string): KeyValue | undefined {

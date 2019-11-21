@@ -8,7 +8,7 @@ import { BlueprintSchema } from './BlueprintSchema'
 import { Blueprint, KeyValue } from '../Blueprint'
 
 export type FormConfig = {
-  data: Entity
+  data: any
   template: any
   uiSchema: any
 }

@@ -62,7 +62,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       )
       const newPath = this.createAttributePath(path, attr.name)
       if (this.isPrimitive(attr.type) || (uiAttribute && uiAttribute.field)) {
-        this.appendPrimitive(newPath, attr, uiAttribute)
+        this.appendPrimitive(newPath, blueprint, attr, uiAttribute)
       } else {
         this.processNested(newPath, attr)
       }
@@ -99,17 +99,23 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
     }
   }
 
-  private appendPrimitive(path: string, attr: BlueprintAttribute, uiAttr: any) {
+  private appendPrimitive(
+    path: string,
+    blueprint: Blueprint,
+    attr: BlueprintAttribute,
+    uiAttr: any
+  ) {
     if (this.isArray(attr)) {
       objectPath.set(this.schema, path + '.items', { items: {} })
-      this.appendSchemaProperty(path, attr, uiAttr)
+      this.appendSchemaProperty(path, blueprint, attr, uiAttr)
     } else {
-      this.appendSchemaProperty(path, attr, uiAttr)
+      this.appendSchemaProperty(path, blueprint, attr, uiAttr)
     }
   }
 
   private appendSchemaProperty(
     path: string,
+    blueprint: Blueprint,
     attr: BlueprintAttribute,
     uiAttribute: any
   ): void {
