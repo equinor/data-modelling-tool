@@ -3,17 +3,11 @@ import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import DocumentTree from './tree-view/DocumentTree'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
-import { BlueprintEnum } from '../../util/variables'
+import { BlueprintEnum, NodeType } from '../../util/variables'
 
 const api = new DmtApi()
 
-type BlueprintPickerContentProps = {
-  onSelect: Function
-}
-
-export const BlueprintPickerContent = ({
-  onSelect,
-}: BlueprintPickerContentProps) => {
+export const FilePicker = ({ onSelect, packagesOnly }: any) => {
   const [blueprintDatasources, setBlueprintDatasources] = useState<
     Datasource[]
   >([])
@@ -37,6 +31,25 @@ export const BlueprintPickerContent = ({
         const { nodeData } = renderProps
         // @ts-ignore
         const type = nodeData.meta.type
+        console.log(type)
+
+        if (packagesOnly) {
+          // @ts-ignore
+          return (
+            <div>
+              {nodeData.title}
+              <button
+                onClick={() => {
+                  onSelect(renderProps)
+                }}
+              >
+                Select
+              </button>
+            </div>
+          )
+          return
+        }
+
         return (
           <>
             {type === BlueprintEnum.BLUEPRINT ? (
@@ -54,6 +67,7 @@ export const BlueprintPickerContent = ({
         )
       }}
       dataSources={blueprintDatasources}
+      packagesOnly={packagesOnly}
     />
   )
 }

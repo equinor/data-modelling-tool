@@ -8,10 +8,11 @@ const api = new IndexApi()
 interface PropTypes {
   dataSources: Datasource[]
   render: Function
+  packagesOnly: boolean
 }
 
 export default (props: PropTypes) => {
-  const { dataSources, render } = props
+  const { dataSources, render, packagesOnly } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
@@ -46,13 +47,11 @@ export default (props: PropTypes) => {
 
   return (
     <div>
-      <div>
-        <Tree tree={documents}>
-          {(props: TreeNodeRenderProps) => {
-            return render(props)
-          }}
-        </Tree>
-      </div>
+      <Tree tree={documents} packagesOnly={packagesOnly}>
+        {(props: TreeNodeRenderProps) => {
+          return render(props)
+        }}
+      </Tree>
     </div>
   )
 }

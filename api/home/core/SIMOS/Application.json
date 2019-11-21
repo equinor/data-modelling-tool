@@ -42,9 +42,9 @@
       "description": "Models that are available to create in entity page (Path without Datasource prefix)."
     },
     {
-      "type": "system/SIMOS/Runnable",
-      "name": "runnableModels",
-      "description": "Runnable models",
+      "type": "system/SIMOS/Action",
+      "name": "Actions",
+      "description": "Runnable actions",
       "dimensions": "*"
     }
   ],

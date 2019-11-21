@@ -124,6 +124,9 @@ export const BlueprintInput = (props: BlueprintInputProps) => {
       value={displayValue}
       onChange={(event: any) => onChange(attribute, event.target.value)}
       attributeInput={true}
+      packagesOnly={false}
+      title={''}
+      hint={'Select Blueprint'}
     />
   )
 }

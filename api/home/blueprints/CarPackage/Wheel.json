@@ -17,7 +17,7 @@
       "type": "string",
       "name": "type",
       "optional": false,
-      "default": "SSR-DataSource/CarsDemo/Wheel"
+      "default": "SSR-DataSource/CarPackage/Wheel"
     },
     {
       "type": "string",

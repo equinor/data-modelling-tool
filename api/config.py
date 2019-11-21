@@ -1,3 +1,4 @@
+import json
 import os
 
 
@@ -18,3 +19,5 @@ class Config:
     APPLICATION_HOME = "/code/home"
     SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
+    with open(f"{APPLICATION_HOME}/settings.json") as json_file:
+        APPLICATION_SETTINGS = json.load(json_file)

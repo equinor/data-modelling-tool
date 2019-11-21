@@ -86,9 +86,10 @@ def update_document(document_id, data: Dict, document_repository: DocumentReposi
     storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
     for key in data.keys():
+        # TODO: Sure we want this filter?
         attribute = next((x for x in blueprint.attributes if x.name == key), None)
         if not attribute:
-            print(f"Could not find attribute {key} in {document.uid}")
+            logger.error(f"Could not find attribute {key} in {document.uid}")
         else:
             if isinstance(document.data, dict):
                 document.data[key] = update_attribute(attribute, data, storage_recipe, document_repository)

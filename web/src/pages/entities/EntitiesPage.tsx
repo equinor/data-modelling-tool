@@ -9,9 +9,9 @@ import axios from 'axios'
 import Header from '../../components/Header'
 import { Wrapper } from '../blueprints/BlueprintsPage'
 import Button from '../../components/Button'
-import { NodeType } from '../../api/types'
 import { DocumentNode } from '../common/nodes/DocumentNode'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
+import { NodeType } from '../../util/variables'
 
 const api = new DmtApi()
 
@@ -49,6 +49,7 @@ export default () => {
               )
           }
         }}
+        packagesOnly={false}
         dataSources={state.dataSources}
       />
     </Wrapper>

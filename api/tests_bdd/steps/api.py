@@ -2,9 +2,6 @@ import json
 
 from behave import when, given
 
-from app import import_application_settings
-from flask import g
-
 
 def context_response_json(context):
     response = context.response
@@ -15,7 +12,6 @@ def context_response_json(context):
 @given('i access the resource url "{url}"')
 def step_access_url(context, url):
     context.url = str(url)
-    g.application_settings = import_application_settings()
 
 
 def get_headers(context):

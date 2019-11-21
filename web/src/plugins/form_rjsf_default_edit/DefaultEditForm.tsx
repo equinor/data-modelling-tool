@@ -15,11 +15,22 @@ interface Props {
   onSubmit: (data: any) => void
 }
 
-const DocumentFinderWrapper = (props: DocumentFinderProps) => (
-  <div>
-    <b>type</b>
-    <DocumentFinderWidget {...props} />
-  </div>
+const TypeSelectorWrapper = (props: DocumentFinderProps) => (
+  <DocumentFinderWidget
+    {...props}
+    title={'type'}
+    hint={'Select Blueprint'}
+    packagesOnly={false}
+  />
+)
+
+const DestinationPickerWrapper = (props: DocumentFinderProps) => (
+  <DocumentFinderWidget
+    {...props}
+    packagesOnly={true}
+    title={'destination'}
+    hint={'Select destination folder'}
+  />
 )
 
 export default ({
@@ -46,7 +57,8 @@ export default ({
       fields={{
         attribute: AttributeWidget,
         collapsible: CollapsibleField,
-        type: DocumentFinderWrapper,
+        type: TypeSelectorWrapper,
+        destination: DestinationPickerWrapper,
       }}
       onSubmit={onSubmit}
       onChange={schemas => {

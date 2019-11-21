@@ -1,0 +1,35 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "NewActionResult",
+  "description": "Create a new result form",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name",
+      "description": "Filename for the result"
+    },
+    {
+      "type": "string",
+      "name": "destination",
+      "description": "Folder to save the result in"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "DEFAULT_CREATE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "destination",
+          "type": "string",
+          "field": "destination"
+        }
+      ]
+    }
+  ]
+}

@@ -11,10 +11,10 @@
     "system/DMT/Package",
     "SSR-DataSource/TodoDemo/TodoList"
   ],
-  "runnableModels": [
+  "actions": [
     {
       "name": "Todo",
-      "type": "system/SIMOS/Runnable",
+      "type": "system/SIMOS/Action",
       "description": "Get list of work items",
       "input": "SSR-DataSource/TodoDemo/TodoList",
       "output": "SSR-DataSource/TodoDemo/TodoList",

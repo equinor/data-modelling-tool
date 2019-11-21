@@ -2,8 +2,8 @@ from pathlib import Path
 from typing import List, Dict
 
 from anytree import PreOrderIter, RenderTree
-from flask import g
 
+from config import Config
 from core.domain.blueprint import Blueprint, get_attributes_with_reference, get_attribute_names
 from core.domain.dto import DTO
 from core.domain.entity import Entity
@@ -177,18 +177,18 @@ class Tree:
         )
 
         # Runnable entities gets an custom action
-        runnable_types = group_by(
-            items=g.application_settings["runnableModels"],
-            grouping_function=lambda runnable: runnable.get("input", ""),
+        action_types = group_by(
+            items=Config.APPLICATION_SETTINGS["actions"], grouping_function=lambda runnable: runnable.get("input", ""),
         )
 
-        if document.type in runnable_types:
-            for runnable in runnable_types[document.type]:
-                node.menu_items.append(
-                    get_runnable_menu_action(
-                        data_source_id=data_source_id, document_id=document.uid, runnable=runnable
-                    )
+        if document.type in action_types:
+            action_items = []
+
+            for action in action_types[document.type]:
+                action_items.append(
+                    get_runnable_menu_action(data_source_id=data_source_id, document_id=document.uid, runnable=action)
                 )
+            node.menu_items.append({"label": "Actions", "menuItems": action_items})
 
         # Applications can be downloaded
         if document.type == SIMOS.APPLICATION.value:
@@ -263,7 +263,8 @@ class Tree:
                 # this means that we have added some documents to this array.
                 values = document.get_values(attribute_name)
 
-                if values:
+                # TODO: Fix this in DTO class. "get_values" returns "builtin_method_or_function"
+                if isinstance(values, list) and values != []:
                     # Values are stored in separate document
                     if not is_contained_in_storage:
                         # Get real documents
@@ -311,9 +312,9 @@ class Tree:
         # Set what Models the user can create on the data_source node and Package nodes
         # TODO: More generic page1, page2, ...
         models = (
-            g.application_settings.get("blueprintsModels", [])
+            Config.APPLICATION_SETTINGS.get("blueprintsModels", [])
             if document_type == "blueprints"
-            else g.application_settings.get("entityModels", [])
+            else Config.APPLICATION_SETTINGS.get("entityModels", [])
         )
 
         # The root-node (data_source) can always create a package

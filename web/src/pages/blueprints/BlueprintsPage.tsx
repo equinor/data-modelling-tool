@@ -9,8 +9,7 @@ import axios from 'axios'
 import DocumentTree from '../common/tree-view/DocumentTree'
 import Header from '../../components/Header'
 import AddDatasource from '../common/tree-view/AddDatasource'
-import { DocumentType } from '../../util/variables'
-import { NodeType } from '../../api/types'
+import { DocumentType, NodeType } from '../../util/variables'
 import { DocumentNode } from '../common/nodes/DocumentNode'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 
@@ -57,6 +56,7 @@ export default () => {
           }
         }}
         dataSources={state.dataSources}
+        packagesOnly={false}
       />
     </Wrapper>
   )

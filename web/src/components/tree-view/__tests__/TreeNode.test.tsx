@@ -3,14 +3,14 @@ import TreeNode, { TreeNodeProps, TreeNodeRenderProps } from '../TreeNode'
 // @ts-ignore
 import TestRenderer from 'react-test-renderer'
 import { NodeIconType, TreeNodeData } from '../Tree'
-import { NodeType } from '../../../api/types'
+import { NodeType } from '../../../util/variables'
 
 describe('TreeNode', () => {
   it('renders without crashing', () => {
     const props: TreeNodeProps = {
       node: {
         nodeId: 'node_0',
-        nodeType: NodeType.SIMOS_BLUEPRINT,
+        nodeType: NodeType.BLUEPRINT,
         title: 'node_0',
         isRoot: true,
         isOpen: true,

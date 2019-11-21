@@ -1,17 +1,20 @@
 import React, { useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
-import { NodeType } from '../../api/types'
 import Modal from '../../components/modal/Modal'
-import { BlueprintPickerContent } from '../../pages/common/BlueprintPicker'
+import { FilePicker } from '../../pages/common/BlueprintPicker'
+import { NodeType } from '../../util/variables'
 
 export type Props = {
   onChange: (event: any) => void
   value: string
   attributeInput: any
+  packagesOnly: boolean
+  title: string
+  hint: string
 }
 
 export default (props: Props) => {
-  const { value, onChange, attributeInput } = props
+  const { value, onChange, attributeInput, packagesOnly, title, hint } = props
   const [documentType, setDocumentType] = useState(value)
   const [showModal, setShowModal] = useState(false)
 
@@ -32,32 +35,37 @@ export default (props: Props) => {
   }
 
   return (
-    <div>
-      <input
-        style={{ width: '100%' }}
-        type="string"
-        value={documentType || ''}
-        onChange={() => {}}
-        onClick={() => setShowModal(!showModal)}
-      />
-      <BlueprintPickerWrapper
-        showModal={showModal}
-        setShowModal={setShowModal}
-        onSelect={handleNodeSelect}
-      />
-    </div>
+    <>
+      <b>{title}</b>
+      <div>
+        <input
+          style={{ width: '100%' }}
+          type="string"
+          value={documentType || ''}
+          onChange={() => {}}
+          onClick={() => setShowModal(!showModal)}
+        />
+        <FilePickerModal
+          showModal={showModal}
+          setShowModal={setShowModal}
+          onSelect={handleNodeSelect}
+          packagesOnly={packagesOnly}
+          hint={hint}
+        />
+      </div>
+    </>
   )
 }
 
-const BlueprintPickerWrapper = (props: any) => {
-  const { setShowModal, showModal, onSelect } = props
+const FilePickerModal = (props: any) => {
+  const { setShowModal, showModal, onSelect, packagesOnly, hint } = props
   return (
     <Modal
       toggle={() => setShowModal(!showModal)}
       open={showModal}
-      title="Select Blueprint"
+      title={hint}
     >
-      <BlueprintPickerContent onSelect={onSelect} />
+      <FilePicker onSelect={onSelect} packagesOnly={packagesOnly} />
     </Modal>
   )
 }

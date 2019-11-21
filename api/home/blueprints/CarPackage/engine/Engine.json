@@ -20,7 +20,7 @@
       "name": "power"
     },
     {
-      "type": "SSR-DataSource/CarsDemo/engine/FuelPump",
+      "type": "SSR-DataSource/CarPackage/engine/FuelPump",
       "name": "fuelPump",
       "optional": true
     }
@@ -33,7 +33,7 @@
       "attributes": [
         {
           "name": "fuel_pump",
-          "type": "SSR-DataSource/CarsDemo/subdir/subdir2/FuelPump",
+          "type": "SSR-DataSource/CarPackage/subdir/subdir2/FuelPump",
           "contained": false
         }
       ]

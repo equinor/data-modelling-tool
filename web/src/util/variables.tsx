@@ -8,3 +8,12 @@ export enum BlueprintEnum {
   PACKAGE = 'system/DMT/Package',
   ENTITY = 'system/DMT/Entity',
 }
+
+export enum NodeType {
+  PACKAGE = 'system/DMT/Package',
+  BLUEPRINT = 'system/SIMOS/Blueprint',
+  BLUEPRINT_ATTRIBUTE = 'system/SIMOS/BlueprintAttribute',
+  APPLICATION = 'system/SIMOS/Application',
+  DATA_SOURCE = 'datasource',
+  DOCUMENT_NODE = 'document-node',
+}

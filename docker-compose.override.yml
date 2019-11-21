@@ -22,7 +22,6 @@ services:
       target: dev
     volumes:
       - ./web/src:/code/src
-      - ./web/runnable.js:/code/src/runnable.js
       - ./web/libs:/code/src/libs
     environment:
       - NODE_ENV=development

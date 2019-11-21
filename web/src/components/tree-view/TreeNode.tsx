@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { NodeIconType, TreeNodeData } from './Tree'
+import { NodeType } from '../../util/variables'
 
 type StyledTreeNode = {
   level: number
@@ -46,6 +47,7 @@ export type TreeNodeProps = {
   node: TreeNodeData
   actions: TreeNodeActions
   handleToggle: Function
+  packagesOnly: boolean
 }
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
@@ -89,6 +91,7 @@ const TreeNode = (props: TreeNodeProps) => {
     parent,
     actions,
     handleToggle,
+    packagesOnly,
   } = props
 
   const renderProps = {
@@ -98,14 +101,19 @@ const TreeNode = (props: TreeNodeProps) => {
     actions,
   } as TreeNodeRenderProps
 
+  // Only show packages
+  if (packagesOnly) {
+    // @ts-ignore
+    if (![NodeType.PACKAGE, NodeType.DATA_SOURCE].includes(node.meta.type)) {
+      console.log(node)
+      return null
+    }
+  }
+
   return (
     <div>
       <StyledTreeNode level={level}>
-        <NodeIcon
-          onClick={() => {
-            handleToggle(node)
-          }}
-        >
+        <NodeIcon>
           {node.isExpandable && node.isOpen && <FaChevronDown />}
           {node.isExpandable && !node.isOpen && <FaChevronRight />}
         </NodeIcon>
@@ -119,12 +127,7 @@ const TreeNode = (props: TreeNodeProps) => {
           {node.icon === NodeIconType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
-        <Content
-          role="button"
-          onClick={() => {
-            handleToggle(node)
-          }}
-        >
+        <Content role="button" onClick={() => handleToggle(node)}>
           {NodeRenderer(renderProps)}
         </Content>
       </StyledTreeNode>
