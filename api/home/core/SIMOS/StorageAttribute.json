@@ -9,11 +9,36 @@
     },
     {
       "type": "string",
-      "name": "type"
+      "name": "type",
+      "default": "system/SIMOS/StorageAttribute"
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "name": "default",
+      "type": "string",
+      "optional": true,
+      "default": ""
     },
     {
       "type": "string",
-      "name": "default",
+      "name": "description",
+      "default": "",
+      "optional": true
+    },
+    {
+      "type": "string",
+      "name": "dimensions",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "type": "string",
+      "name": "enumType",
       "default": "",
       "optional": true
     },
@@ -24,29 +49,11 @@
       "optional": true
     },
     {
-      "type": "string",
-      "name": "description",
-      "default": "",
-      "optional": true
-    },
-    {
-      "type": "string",
-      "name": "enumType",
-      "default": "",
-      "optional": true
-    },
-    {
       "type": "boolean",
       "name": "contained",
       "optional": true,
       "default": "true",
       "description": "WARNING: Change how the entity is stored. Changing this value will make current entities unavailable"
-    },
-    {
-      "type": "string",
-      "name": "dimensions",
-      "optional": true,
-      "default": "1"
     }
   ],
   "uiRecipes": [
@@ -57,6 +64,21 @@
       "attributes": [
         {
           "name": "type",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "enumType",
+          "type": "string",
+          "field": "hidden"
+        },
+        {
+          "name": "description",
           "type": "string",
           "field": "hidden"
         }

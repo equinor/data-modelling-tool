@@ -1,5 +1,5 @@
 import React from 'react'
-import { BlueprintAttribute, PluginProps, UiRecipe } from '../types'
+import { BlueprintAttribute, PluginProps } from '../types'
 import ErrorBoundary from '../../components/ErrorBoundary'
 import TableWidget from '../widgets/table/TableWidget'
 import { Pre } from '../preview/PreviewPlugin'
@@ -23,7 +23,7 @@ export const ViewPlugin = ({ blueprint, document, uiRecipe }: PluginProps) => {
           return (
             <ErrorBoundary key={key}>
               <TableWidget
-                blueprint={document}
+                blueprint={blueprint}
                 parentAttribute={parentAttribute}
                 attribute={attribute}
               />

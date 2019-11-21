@@ -2,7 +2,6 @@ import React from 'react'
 import { Blueprint, PluginProps } from '../types'
 // @ts-ignore
 import { VictoryTheme, VictoryChart, VictoryLine } from 'victory'
-import { findRecipe } from '../pluginUtils'
 // @ts-ignore
 import objectPath from 'object-path'
 import { KeyValue } from '../BlueprintUtil'

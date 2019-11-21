@@ -9,7 +9,8 @@
     },
     {
       "type": "string",
-      "name": "type"
+      "name": "type",
+      "default": "system/SIMOS/StorageRecipe"
     },
     {
       "type": "string",
@@ -20,6 +21,20 @@
       "name": "attributes",
       "dimensions": "*",
       "contained": true
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "description",
+          "type": "system/SIMOS/StorageAttribute",
+          "field": "hidden"
+        }
+      ]
     }
   ]
 }

@@ -50,12 +50,12 @@
         },
         {
           "name": "storageRecipes",
-          "type": "system/SIMOS/StorageRecipe",
+          "type": "system/SIMOS/StorageAttribute",
           "contained": true
         },
         {
           "name": "uiRecipes",
-          "type": "system/SIMOS/UiRecipe",
+          "type": "system/SIMOS/UiAttribute",
           "contained": true
         }
       ]
@@ -69,22 +69,22 @@
       "attributes": [
         {
           "name": "attributes",
-          "type": "system/SIMOS/BlueprintAttribute",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "type",
-          "type": "string",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "storageRecipes",
-          "type": "system/SIMOS/StorageRecipe",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "uiRecipes",
-          "type": "system/SIMOS/UiRecipe",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         }
       ]
@@ -97,12 +97,12 @@
       "attributes": [
         {
           "name": "name",
-          "type": "string",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "view.widget"
         },
         {
           "name": "uiRecipes",
-          "type": "system/SIMOS/UiRecipe",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "table.widget"
         }
       ]
@@ -124,6 +124,23 @@
           "name": "attributes",
           "type": "system/SIMOS/UiAttribute",
           "field": "attribute"
+        },
+        {
+          "name": "uiRecipes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": true
+        }
+      ]
+    },
+    {
+      "name": "index",
+      "plugin": "INDEX",
+      "type": "system/SIMOS/UiRecipe",
+      "attributes": [
+        {
+          "name": "uiRecipes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
         }
       ]
     }

@@ -30,21 +30,6 @@ export class BlueprintUtil {
     })
   }
 
-  public getUiAttribute(name: string, pluginName: string): object | undefined {
-    if (this.uiRecipes && this.uiRecipes[pluginName]) {
-      return this.uiRecipes[pluginName][name]
-    }
-  }
-
-  public static getAttributeByName(
-    attributes: any,
-    name: string
-  ): KeyValue | undefined {
-    if (attributes) {
-      return attributes.find((attr: any) => attr.name === name)
-    }
-  }
-
   public static findRecipe(recipes: any[], name: string): any {
     if (recipes) {
       return recipes.find((recipe: any) => recipe.name === name)

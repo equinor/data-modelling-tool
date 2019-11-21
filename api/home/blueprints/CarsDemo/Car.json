@@ -51,6 +51,19 @@
       ]
     }
   ],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "wheels",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": true
+        }
+      ]
+    }
+  ]
 }
 
