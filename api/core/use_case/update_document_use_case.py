@@ -90,12 +90,14 @@ def update_document(document_id, data: Dict, document_repository: DocumentReposi
         if not attribute:
             print(f"Could not find attribute {key} in {document.uid}")
         else:
-            setattr(
-                document.data,
-                stringcase.snakecase(key),
-                update_attribute(attribute, data, storage_recipe, document_repository),
-            )
-
+            if isinstance(document.data, dict):
+                document.data[key] = update_attribute(attribute, data, storage_recipe, document_repository)
+            else:
+                setattr(
+                    document.data,
+                    stringcase.snakecase(key),
+                    update_attribute(attribute, data, storage_recipe, document_repository),
+                )
     return document
 
 
@@ -114,7 +116,10 @@ class UpdateDocumentUseCase(uc.UseCase):
 
         if attribute:
             # TODO: Use hasattr, setattr, and getattr
-            _data = dto.data.to_dict()
+            if isinstance(dto.data, dict):
+                _data = dto.data
+            else:
+                _data = dto.data.to_dict()
             dotted_data = DottedDict(_data)
             if attribute not in _data:
                 _data[attribute] = []

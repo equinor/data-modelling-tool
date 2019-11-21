@@ -49,7 +49,7 @@ class Index:
 def print_tree(root_node):
     for pre, fill, node in RenderTree(root_node):
         treestr = "%s%s" % (pre, node.name)
-        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"], node.document.type if node.document else "")
+        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"], node.document["type"] if node.document else "")
 
 
 class Tree:
@@ -89,13 +89,13 @@ class Tree:
 
         node = DocumentNode(
             data_source_id=data_source_id,
-            name=instance.name,
-            document=DTO(Blueprint(name=instance.name, description="", type=attribute_type), uid=uid),
+            name=instance["name"],
+            document=DTO(Blueprint(name=instance["name"], description="", type=attribute_type), uid=uid),
             blueprint=None,
             parent=parent_node,
             on_select={
                 "uid": uid,
-                "title": instance.name,
+                "title": instance["name"],
                 "component": "blueprint",
                 "data": {
                     "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}?attribute={'.'.join(current_path)}",
@@ -140,7 +140,6 @@ class Tree:
     def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, models: List):
 
         # FIXME: Check that document is a reference
-        document = self.document_repository.get(document.uid)
         is_package = document.type == DMT.PACKAGE.value
         parent_is_data_source = parent_node.document is None
         attribute_nodes = []
@@ -211,8 +210,8 @@ class Tree:
 
         # Use the blueprint to find attributes that contains references
         for attribute in get_attributes_with_reference(node.blueprint):
-            attribute_name = attribute.name
-            is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
+            attribute_name = attribute["name"]
+            is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
 
             is_contained_in_ui = recipe.is_contained(attribute)
             if not is_contained_in_ui:
@@ -224,8 +223,8 @@ class Tree:
 
             # If the attribute is an array
             # TODO: Handle fixed size arrays
-            if attribute.dimensions == "*":
-                attribute_blueprint = get_blueprint(attribute.type)
+            if attribute["dimensions"] == "*":
+                attribute_blueprint = get_blueprint(attribute["type"])
 
                 data = {}
                 for item in get_attribute_names(attribute_blueprint):
@@ -234,7 +233,7 @@ class Tree:
                 not_contained_menu_action = get_not_contained_menu_action(
                     data_source_id=data_source_id,
                     name=attribute_name,
-                    type=attribute.type,
+                    type=attribute["type"],
                     # TODO: Should this be parent_node.id?
                     parent_id=document.uid,
                     data=data,
@@ -243,7 +242,7 @@ class Tree:
                 contained_menu_action = get_contained_menu_action(
                     data_source_id=data_source_id,
                     name=attribute_name,
-                    type=attribute.type,
+                    type=attribute["type"],
                     parent_id=document.uid,
                     data=data,
                 )
@@ -272,7 +271,7 @@ class Tree:
                     # Values are stored inside parent. We create placeholder nodes.
                     if is_contained_in_storage:
                         self.generate_contained_nodes(
-                            data_source_id, document.uid, [attribute_name], attribute.type, values, attribute_node
+                            data_source_id, document.uid, [attribute_name], attribute["type"], values, attribute_node
                         )
             else:
                 values = document.get_values(attribute_name)
@@ -285,7 +284,7 @@ class Tree:
                         get_dynamic_create_menu_item(
                             data_source_id=data_source_id,
                             name=attribute_name,
-                            type=attribute.type,
+                            type=attribute["type"],
                             attribute=attribute_name,
                             parent_id=document.uid,
                         )
@@ -293,7 +292,7 @@ class Tree:
 
                 if is_contained_in_storage:
                     self.generate_contained_node(
-                        document.uid, [attribute_name], attribute, None, data_source_id, attribute.type, node, False
+                        document.uid, [attribute_name], attribute, None, data_source_id, attribute["type"], node, False
                     )
 
         for attribute_node in attribute_nodes:

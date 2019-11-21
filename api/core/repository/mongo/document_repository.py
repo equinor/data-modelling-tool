@@ -1,3 +1,4 @@
+from core.enums import SIMOS
 from core.repository.mongo.mongo_db_client import DbClient
 from core.domain.dto import DTO
 from core.repository.mongo.mongo_repository_base import MongoRepositoryBase
@@ -10,9 +11,10 @@ class MongoDocumentRepository(MongoRepositoryBase):
     def get(self, uid: str) -> DTO:
         result = self.client().get(uid)
         if result:
-            if "uid" not in result:
-                result["uid"] = uid
-            return self.convert_to_model(result)
+            if result["type"] == SIMOS.BLUEPRINT.value:
+                return self.convert_to_model(result)
+            else:
+                return DTO(result)
 
     def find(self, filter: dict, single: bool = True, raw: bool = False):
         result = self.client().find(filter)

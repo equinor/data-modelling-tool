@@ -77,15 +77,15 @@ class MoveFileUseCase(uc.UseCase):
         old_parent_document = get_document_by_ref(str(source.parent))
         reference = {"_id": source_document.uid, "name": destination.name, "type": source_document.type}
         # Remove old reference from parent
-        old_parent_document.data.content = [
-            ref for ref in old_parent_document.data.content if not get_ref_id(ref) == source_document.uid
+        old_parent_document.data["content"] = [
+            ref for ref in old_parent_document.data["content"] if not get_ref_id(ref) == source_document.uid
         ]
         # If the parent is not the same, insert ref to new parent.
         if different_parent:
-            new_parent_document.data.content.append(reference)
+            new_parent_document.data["content"].append(reference)
             destination_document_repository.update(new_parent_document)
         else:
-            old_parent_document.data.content.append(reference)
+            old_parent_document.data["content"].append(reference)
             source_document_repository.update(old_parent_document)
 
         return res.ResponseSuccess(destination_document)

@@ -1,14 +1,15 @@
 from stringcase import snakecase
 
 from core.domain.dto import DTO
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.shared import request_object as req
+from core.shared import response_object as res
+from core.shared import use_case as uc
 from core.use_case.utils.get_document_children import get_document_children
 from core.use_case.utils.get_reference import get_ref_id
+from utils.data_structure.find import get
 from utils.logging import logger
-from core.shared import use_case as uc
-from core.shared import response_object as res
-from core.shared import request_object as req
-from core.repository.interface.document_repository import DocumentRepository
 
 
 class RemoveFileRequestObject(req.ValidRequestObject):
@@ -57,11 +58,14 @@ class RemoveFileUseCase(uc.UseCase):
             if not parent:
                 raise EntityNotFoundException(uid=parent_id)
             data = parent.data
-            setattr(
-                data,
-                snakecase(attribute),
-                list(filter(lambda d: get_ref_id(d) != document.uid, getattr(data, attribute))),
-            )
+            if isinstance(data, dict):
+                data[attribute] = list(filter(lambda d: get_ref_id(d) != document.uid, get(data, attribute)))
+            else:
+                setattr(
+                    data,
+                    snakecase(attribute),
+                    list(filter(lambda d: get_ref_id(d) != document.uid, getattr(data, attribute))),
+                )
             self.document_repository.update(parent)
 
         # Remove the actual document
