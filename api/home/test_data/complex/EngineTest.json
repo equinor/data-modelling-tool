@@ -1,0 +1,31 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "EngineTest",
+  "description": "This describes an engine",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name",
+      "optional": true
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "default": "ds/test_data/complex/EngineTest"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "integer",
+      "name": "power",
+      "default": "120"
+    },
+    {
+      "type": "ds/test_data/complex/FuelPumpTest",
+      "name": "fuelPump",
+      "default": ""
+    }
+  ]
+}

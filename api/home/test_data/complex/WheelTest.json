@@ -1,0 +1,21 @@
+{
+  "name": "WheelTest",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": "Wheel"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "default": "ds/test_data/WheelTest"
+    },
+    {
+      "name": "power",
+      "type": "number",
+      "default": "0"
+    }
+  ]
+}

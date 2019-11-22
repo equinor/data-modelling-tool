@@ -1,0 +1,39 @@
+{
+  "name": "CarTest",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "type": "string",
+      "default": "CarTest"
+    },
+    {
+      "name": "type",
+      "type": "string",
+      "default": "ds/test_data/complex/CarTest"
+    },
+    {
+      "name": "wheel",
+      "type": "ds/test_data/complex//WheelTest"
+    },
+    {
+      "name": "wheels",
+      "type": "ds/test_data/complex//WheelTest",
+      "dimensions": "*"
+    },
+    {
+      "name": "seats",
+      "type": "integer",
+      "default": "2"
+    },
+    {
+      "name": "is_sedan",
+      "type": "boolean",
+      "default": false
+    },
+    {
+      "name": "engine",
+      "type": "ds/test_data//complex/EngineTest"
+    }
+  ]
+}
