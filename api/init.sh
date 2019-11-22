@@ -4,5 +4,5 @@ if [ ! -e /code/home/first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
   /code/reset-database.sh
   touch /code/home/first-run-false
 fi
-python "/home/generate_system_blueprints.py"
+python "/code/generate_system_blueprints.py"
 flask run --host=0.0.0.0
