@@ -26,7 +26,7 @@ COPY ./home {Config.APPLICATION_HOME}
 
 WEB_DOCKERFILE = """\
 FROM mariner.azurecr.io/dmt/web:stable
-COPY ./runnable.js /code/src/runnable.js
+COPY ./actions.js /code/src/actions.js
 """
 
 DOCKER_COMPOSE = """\
@@ -75,7 +75,7 @@ def generate_runnable_file(runnable_models):
         """\
 
 {% for runnable_model in runnable_models %}
-const {{ runnable_model["method"] }} = async ({document, config, setProgress}) => {
+const {{ runnable_model["method"] }} = async ({input, output, updateDocument}) => {
     return {}
 }
 {% endfor %}
@@ -186,12 +186,12 @@ class CreateApplicationUseCase(uc.UseCase):
             json_data = json.dumps(remove_ids(application.data))
             binary_data = json_data.encode()
             zip_file.writestr("api/home/settings.json", binary_data)
-            runnable_file = generate_runnable_file(application.data["runnableModels"])
-            zip_file.writestr("web/runnable.js", runnable_file)
+            runnable_file = generate_runnable_file(application.data["actions"])
+            zip_file.writestr("web/actions.js", runnable_file)
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
-            for type in application.data["blueprints"]:
+            for type in application.data["packages"]:
                 root_package: DTO = self.document_repository.find({"name": type})
                 zip_package(zip_file, root_package, self.document_repository, f"api/home/blueprints/")
 

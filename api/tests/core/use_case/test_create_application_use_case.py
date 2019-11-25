@@ -10,8 +10,8 @@ from core.use_case.create_application_use_case import (
 )
 
 APPLICATION_SETTING = {
-    "blueprints": [],
-    "runnableModels": [
+    "packages": [],
+    "actions": [
         {
             "name": "Runnable Name",
             "description": "Runnable Description",
@@ -29,7 +29,7 @@ def simple_compare(a, b):
 
 def test_generate_runnable_file():
     target = """\
-    const runnableMethod = async ({document, config, setProgress}) => {
+    const runnableMethod = async ({input, output, updateDocument}) => {
         return {}
     }
     const runnableMethods = {
@@ -37,7 +37,7 @@ def test_generate_runnable_file():
     }
     export default runnableMethods        
     """
-    result = generate_runnable_file(APPLICATION_SETTING["runnableModels"])
+    result = generate_runnable_file(APPLICATION_SETTING["actions"])
     assert simple_compare(result, target) is True
 
 

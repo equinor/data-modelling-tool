@@ -32,6 +32,9 @@ if [ "$1" = "pull" ]; then
 elif [ "$1" = "tags" ]; then
   docker_tag_push "$2"
 
+elif [ "$1" = "unit_tests" ]; then
+   docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run api pytest tests
+
 elif [ "$1" = "build-api-dev-image" ]; then
   docker_login
   pull $API_IMAGE

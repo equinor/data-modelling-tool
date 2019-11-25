@@ -1,5 +1,5 @@
 import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
-import Runnable from '../../../../runnable'
+import Actions from '../../../../actions'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import Api2, { BASE_CRUD } from '../../../../api/Api2'
@@ -57,7 +57,7 @@ export const Action = (
   const dataSource = node.path.substr(0, node.path.indexOf('/'))
 
   // @ts-ignore
-  if (!Runnable[methodToRun]) {
+  if (!Actions[methodToRun]) {
     NotificationManager.error(`Runnable Method "${methodToRun}"`, 'Not Found')
   }
 
@@ -79,7 +79,7 @@ export const Action = (
     // 1. Creates a new file used by the external function to write status/result
     // 2. Constructs the Input and Output objects used by the called function
     // Mainly, the Input is the clicked entity, Output is the dataSource and document ID to write the result.
-    onSubmit: (formData: any) => {
+    onSubmit: async (formData: any) => {
       async function executeAction() {
         // TODO: Validate formData. Should not be empty
         // TODO: Catch request errors
@@ -111,17 +111,16 @@ export const Action = (
         const output: Output = {
           blueprint: formData.type,
           entity: response.data.data,
-          // TODO: Add "saveAs" picker widget to get result path
           path: `${node.path}/${formData.name}`,
           dataSource: dataSource,
           id: response.data.uid,
         }
         // @ts-ignore
-        const method: Method = Runnable[methodToRun]
+        const method: Method = Actions[methodToRun]
         method({ input, output, updateDocument })
       }
 
-      executeAction()
+      await executeAction()
     },
     // Function to fetch the document used to create the rjsc-form
     fetchDocument: ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
