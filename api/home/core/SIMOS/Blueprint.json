@@ -124,22 +124,23 @@
           "name": "attributes",
           "type": "system/SIMOS/UiAttribute",
           "field": "attribute"
-        },
-        {
-          "name": "uiRecipes",
-          "type": "system/SIMOS/UiAttribute",
-          "contained": true
         }
       ]
     },
     {
-      "name": "index",
-      "plugin": "INDEX",
       "type": "system/SIMOS/UiRecipe",
+      "name": "INDEX",
+      "description": "",
+      "plugin": "INDEX",
       "attributes": [
         {
           "name": "uiRecipes",
           "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "storageRecipes",
+          "type": "system/SIMOS/StorageAttribute",
           "contained": false
         }
       ]

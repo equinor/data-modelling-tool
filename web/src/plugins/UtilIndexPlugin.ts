@@ -1,5 +1,6 @@
 import { KeyValue } from './BlueprintUtil'
 import { isPrimitive } from './pluginUtils'
+import { UiRecipe } from './types'
 
 const INDEX_PRIMITIVE_CONTAINED = false
 const INDEX_ARRAY_CONTAINED = true
@@ -13,18 +14,18 @@ export class UtilIndexPlugin {
    */
   public static filterByIndexPlugin(
     indexPlugin: any,
-    indexRecipe: KeyValue | undefined
+    indexRecipe: UiRecipe | undefined
   ) {
-    indexRecipe = indexRecipe || {}
     //@todo read defaults from indexPlugin.
     return (attr: any) => {
-      const indexAttribute: KeyValue | undefined =
-        indexRecipe && indexRecipe[attr.name]
-
-      // override defaults
-      if (indexAttribute && indexAttribute.contained !== undefined) {
-        // filter opposite of indexAttribute
-        return indexAttribute.contained
+      if (indexRecipe) {
+        const indexAttribute: any = indexRecipe.attributes.find(
+          (indexAttr: any) => indexAttr.name === attr.name
+        )
+        if (indexAttribute && indexAttribute.contained !== undefined) {
+          // override defaults
+          return indexAttribute.contained
+        }
       }
       // index plugin defaults
       const isArray = attr.dimensions === '*'
