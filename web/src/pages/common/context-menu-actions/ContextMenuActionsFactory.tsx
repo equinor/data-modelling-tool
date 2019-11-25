@@ -6,7 +6,7 @@ import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
 import { SetShowModal } from './WithContextMenu'
 import { deleteAction } from './actions/delete'
 import { downloadAction } from './actions/download'
-import { runnableAction } from './actions/runnable'
+import { Action } from './actions/actions'
 import Api2 from '../../../api/Api2'
 import values from 'lodash/values'
 import { IndexNode } from '../../../api/Api'
@@ -79,7 +79,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return downloadAction(action)
     }
     case ContextMenuActions.RUNNABLE: {
-      return runnableAction(action, node, setShowModal, createNodes)
+      return Action(action, node, setShowModal, createNodes)
     }
 
     default:

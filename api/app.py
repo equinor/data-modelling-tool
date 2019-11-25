@@ -33,12 +33,12 @@ def init_application():
     for folder in Config.SYSTEM_FOLDERS:
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
 
-    for folder in Config.APPLICATION_SETTINGS.get("blueprints", []):
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
         import_package(
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
 
-    for folder in Config.APPLICATION_SETTINGS.get("entities", []):
+    for folder in Config.DEMO_ENTITIES:
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )

@@ -47,7 +47,6 @@ export type TreeNodeProps = {
   node: TreeNodeData
   actions: TreeNodeActions
   handleToggle: Function
-  packagesOnly: boolean
 }
 
 export type AddNode = (node: TreeNodeData, parentId: string) => void
@@ -91,7 +90,6 @@ const TreeNode = (props: TreeNodeProps) => {
     parent,
     actions,
     handleToggle,
-    packagesOnly,
   } = props
 
   const renderProps = {
@@ -100,15 +98,6 @@ const TreeNode = (props: TreeNodeProps) => {
     nodeData: node,
     actions,
   } as TreeNodeRenderProps
-
-  // Only show packages
-  if (packagesOnly) {
-    // @ts-ignore
-    if (![NodeType.PACKAGE, NodeType.DATA_SOURCE].includes(node.meta.type)) {
-      console.log(node)
-      return null
-    }
-  }
 
   return (
     <div>

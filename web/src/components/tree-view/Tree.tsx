@@ -42,7 +42,6 @@ interface Tree {
 }
 
 type TreeProps = {
-  packagesOnly: boolean
   children: Function
   tree: Tree
   isDragEnabled: boolean
@@ -120,7 +119,7 @@ const getRootNodes = (rootNode: TreeNodeData, state: Tree) => [
 ]
 
 const Tree = (props: TreeProps) => {
-  const { isDragEnabled, tree, children, packagesOnly } = props
+  const { isDragEnabled, tree, children } = props
 
   const [state, dispatch] = useReducer(TreeReducer, tree)
 
@@ -211,7 +210,6 @@ const Tree = (props: TreeProps) => {
                     isDragEnabled={isDragEnabled}
                   >
                     <TreeNode
-                      packagesOnly={packagesOnly}
                       level={item.level}
                       node={node}
                       path={item.track.join('/')}

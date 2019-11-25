@@ -2,12 +2,10 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "description": "",
-  "blueprints": [
+  "packages": [
     "TodoDemo"
   ],
-  "entities": [],
-  "blueprintsModels": [],
-  "entityModels": [
+  "models": [
     "system/DMT/Package",
     "SSR-DataSource/TodoDemo/TodoList"
   ],

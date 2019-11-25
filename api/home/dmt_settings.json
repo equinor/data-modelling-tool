@@ -1,0 +1,13 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "DMTAppSettings",
+  "description": "",
+  "packages": [],
+  "models": [
+    "system/SIMOS/Blueprint",
+    "system/DMT/Package",
+    "system/SIMOS/Application",
+    "system/SIMOS/Enum"
+  ],
+  "actions": []
+}

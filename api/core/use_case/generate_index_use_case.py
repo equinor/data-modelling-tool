@@ -137,7 +137,7 @@ class Tree:
                     document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
                 )
 
-    def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, models: List):
+    def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, app_settings: Dict):
 
         # FIXME: Check that document is a reference
         is_package = document.type == DMT.PACKAGE.value
@@ -178,7 +178,7 @@ class Tree:
 
         # Runnable entities gets an custom action
         action_types = group_by(
-            items=Config.APPLICATION_SETTINGS["actions"], grouping_function=lambda runnable: runnable.get("input", ""),
+            items=app_settings["actions"], grouping_function=lambda runnable: runnable.get("input", ""),
         )
 
         if document.type in action_types:
@@ -200,7 +200,7 @@ class Tree:
         # If the node is a DMT-Package, add "Create New" from AppSettings
         if is_package:
             create_new_menu_items = []
-            for model in models:
+            for model in app_settings["models"]:
                 model_blueprint = get_blueprint(model)
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(data_source_id, model_blueprint.name, model, document.uid)
@@ -302,19 +302,17 @@ class Tree:
                     data_source_id=data_source_id,
                     document=attribute_document,
                     parent_node=attribute_node["node"],
-                    models=models,
+                    app_settings=app_settings,
                 )
 
-    def execute(self, data_source_id: str, data_source_name: str, packages, document_type: str) -> Index:
+    def execute(self, data_source_id: str, data_source_name: str, packages, application_page: str) -> Index:
 
         index = Index(data_source_id=data_source_id)
 
         # Set what Models the user can create on the data_source node and Package nodes
         # TODO: More generic page1, page2, ...
-        models = (
-            Config.APPLICATION_SETTINGS.get("blueprintsModels", [])
-            if document_type == "blueprints"
-            else Config.APPLICATION_SETTINGS.get("entityModels", [])
+        app_settings = (
+            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
 
         # The root-node (data_source) can always create a package
@@ -325,7 +323,7 @@ class Tree:
         )
 
         for package in packages:
-            self.process_document(data_source_id, package, root_node, models)
+            self.process_document(data_source_id, package, root_node, app_settings)
 
         for node in PreOrderIter(root_node):
             index.add(node.to_node())
@@ -345,7 +343,7 @@ class GenerateIndexUseCase:
         return self.tree.execute(
             data_source_id=data_source_id,
             data_source_name=data_source_name,
-            document_type=document_type,
+            application_page=document_type,
             packages=self.document_repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False),
         )
 
@@ -364,7 +362,7 @@ class GenerateIndexUseCase:
             data_source_id=data_source_id,
             data_source_name=data_source_name,
             packages=[document],
-            document_type=document_type,
+            application_page=document_type,
         ).to_dict()
 
         del data[data_source_id]

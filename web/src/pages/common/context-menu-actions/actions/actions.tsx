@@ -20,13 +20,13 @@ type Output = {
   id: string
 }
 
-type RunnableInputProps = {
+type ActionProps = {
   input: Input
   output: Output
   updateDocument: Function
 }
 
-type RunnableMethod = (props: RunnableInputProps) => any
+type Method = (props: ActionProps) => any
 
 // TODO: We must pass this entire function, not just a callBack
 function updateDocument(output: Output) {
@@ -46,7 +46,7 @@ function updateDocument(output: Output) {
   })
 }
 
-export const runnableAction = (
+export const Action = (
   action: any,
   node: TreeNodeRenderProps,
   setShowModal: Function,
@@ -75,23 +75,23 @@ export const runnableAction = (
   })
 
   return {
-    // When clicking "submit" on an runnable item, these things happen:
+    // When clicking "submit" on an action, these things happen:
     // 1. Creates a new file used by the external function to write status/result
     // 2. Constructs the Input and Output objects used by the called function
     // Mainly, the Input is the clicked entity, Output is the dataSource and document ID to write the result.
     onSubmit: (formData: any) => {
-      async function executeRunnable() {
+      async function executeAction() {
         // TODO: Validate formData. Should not be empty
         // TODO: Catch request errors
         let response = await axios.post('/api/v2/explorer/entities/add-file', {
           attribute: 'content',
           description: formData.description,
           name: formData.name,
-          parentId: node.parent,
+          parentId: formData.destination,
           type: action.data.runnable.output,
         })
 
-        // TODO: This shit ain't working...
+        // TODO: We are missing parentID from response
         // Possible to fetch destination node from api?
         // Currently creates a temp child node
         createNodes({
@@ -117,11 +117,11 @@ export const runnableAction = (
           id: response.data.uid,
         }
         // @ts-ignore
-        const method: RunnableMethod = Runnable[methodToRun]
+        const method: Method = Runnable[methodToRun]
         method({ input, output, updateDocument })
       }
 
-      executeRunnable()
+      executeAction()
     },
     // Function to fetch the document used to create the rjsc-form
     fetchDocument: ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {

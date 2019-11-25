@@ -49,7 +49,6 @@ export default () => {
               )
           }
         }}
-        packagesOnly={false}
         dataSources={state.dataSources}
       />
     </Wrapper>

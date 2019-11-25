@@ -2,7 +2,7 @@ from typing import Dict
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
-from core.enums import SIMOS
+from core.enums import SIMOS, DMT
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
@@ -80,6 +80,11 @@ class AddFileUseCase(uc.UseCase):
             raise EntityNotFoundException(uid=parent_id)
 
         parent_data = parent.data
+
+        # Set empty content on package if no content
+        if parent.type == DMT.PACKAGE.value:
+            parent_data["content"] = parent_data.get("content", [])
+
         try:
             get(parent_data, attribute)
         except ValueError:

@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
-import { FilePicker } from '../../pages/common/BlueprintPicker'
+import { FilePicker } from '../../pages/common/FilePicker'
 import { NodeType } from '../../util/variables'
 
 export type Props = {
@@ -28,6 +28,10 @@ export default (props: Props) => {
 
       if (attributeInput) {
         onChange({ target: { value: selectedNodePath } })
+      }
+      if (packagesOnly) {
+        console.log(node)
+        onChange(node.nodeId)
       } else {
         onChange(selectedNodePath)
       }

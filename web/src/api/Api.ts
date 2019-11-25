@@ -97,8 +97,8 @@ export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
     return `/api/v2/data-sources?documentType=${dataSourceType}`
   }
-  applicationSettingsGet(): string {
-    return `/api/v2/system/settings`
+  applicationSettingsGet(settingsFile: string): string {
+    return `/api/v2/system/settings?settingsFile=${settingsFile}`
   }
 
   dataSourcesPost(datasourceId: string) {

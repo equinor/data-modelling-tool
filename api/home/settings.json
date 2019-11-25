@@ -1,21 +1,12 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "ApplicationSettings",
+  "name": "DMTApplicationSettings",
   "description": "",
-  "blueprints": [
+  "packages": [
     "CarPackage",
-    "TodoDemo"
+    "TodoPackage"
   ],
-  "entities": [
-    "CarPackage"
-  ],
-  "blueprintsModels": [
-    "system/SIMOS/Blueprint",
-    "system/DMT/Package",
-    "system/SIMOS/Application",
-    "system/SIMOS/Enum"
-  ],
-  "entityModels": [
+  "models": [
     "system/DMT/Entity",
     "system/DMT/Package"
   ],
@@ -31,7 +22,7 @@
       "name": "Calculate",
       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
       "input": "SSR-DataSource/CarPackage/Car",
-      "output": "SSR-DataSource/CarPackage/Car",
+      "output": "SSR-DataSource/CarPackage/Wheel",
       "method": "run"
     },
     {
