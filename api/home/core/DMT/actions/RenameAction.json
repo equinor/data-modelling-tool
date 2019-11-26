@@ -7,5 +7,7 @@
       "type": "string",
       "name": "name"
     }
-  ]
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }

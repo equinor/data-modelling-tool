@@ -44,16 +44,18 @@ function validate(blueprint: Blueprint) {
   return (formData: KeyValue, errors: any) => {
     Object.keys(formData).forEach((key: string) => {
       const attr = blueprint.getAttribute(key)
-      if (blueprint.isArray(attr) && !blueprint.isPrimitive(attr.type)) {
-        const arr: any[] = formData[key]
-        arr.forEach((item: any, index: number) => {
-          if (!item.name) {
-            errors[key][index].addError('name must be set')
-          }
-          if (!item.type) {
-            errors[key][index].addError('type must be set')
-          }
-        })
+      if (attr) {
+        if (blueprint.isArray(attr) && !blueprint.isPrimitive(attr.type)) {
+          const arr: any[] = formData[key]
+          arr.forEach((item: any, index: number) => {
+            if (!item.name) {
+              errors[key][index].addError('name must be set')
+            }
+            if (!item.type) {
+              errors[key][index].addError('type must be set')
+            }
+          })
+        }
       }
     })
     return errors

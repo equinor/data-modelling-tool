@@ -23,6 +23,7 @@
       "contained": true
     }
   ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "name": "Edit",
