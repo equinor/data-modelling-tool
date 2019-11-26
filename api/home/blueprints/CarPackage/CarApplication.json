@@ -10,12 +10,20 @@
   ],
   "actions": [
     {
-      "name": "Car",
+      "name": "Calculate",
       "type": "system/SIMOS/Action",
       "description": "",
       "input": "SSR-DataSource/CarPackage/Car",
       "output": "SSR-DataSource/CarPackage/Car",
-      "method": "getCar"
+      "method": "run"
+    },
+    {
+      "name": "Cancel",
+      "type": "system/SIMOS/Action",
+      "description": "",
+      "input": "SSR-DataSource/CarPackage/Car",
+      "output": "SSR-DataSource/CarPackage/Car",
+      "method": "cancel"
     }
   ]
 }
