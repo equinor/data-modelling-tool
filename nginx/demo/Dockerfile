@@ -1,2 +1,2 @@
 FROM nginx:alpine
-COPY ./local.nginx /etc/nginx/conf.d/default.conf
+COPY ./exported.nginx /etc/nginx/conf.d/default.conf

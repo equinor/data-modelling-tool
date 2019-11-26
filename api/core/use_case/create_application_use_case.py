@@ -65,7 +65,7 @@ services:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx-local
+    image: mariner.azurecr.io/dmt/nginx-exported
     ports:
       - "9000:80"
 """
