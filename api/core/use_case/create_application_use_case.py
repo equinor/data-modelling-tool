@@ -27,6 +27,7 @@ COPY ./home {Config.APPLICATION_HOME}
 
 WEB_DOCKERFILE = """\
 FROM mariner.azurecr.io/dmt/web:stable
+CMD ["yarn", "start"]
 COPY ./actions.js /code/src/actions.js
 """
 
@@ -65,7 +66,7 @@ services:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx-exported
+    image: mariner.azurecr.io/dmt/nginx-local
     ports:
       - "9000:80"
 """
