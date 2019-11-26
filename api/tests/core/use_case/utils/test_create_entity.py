@@ -14,38 +14,40 @@ class Types(Enum):
     BLUEPRINT = "system/SIMOS/Blueprint"
     BLUEPRINT_ATTRIBUTE = "system/SIMOS/BlueprintAttribute"
 
+
 class CreateEntityTestCase(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
 
     def test_blueprint_entity(self):
-        expected_entity ={
-            'engine': {
-                'description': '',
-                'fuelPump': {
-                    'name': '',
-                    'description': '',
-                    'type': 'ds/test_data/complex/FuelPumpTest'
+        expected_entity = {
+            "engine": {
+                "description": "",
+                "fuelPump": {
+                    "name": "",
+                    "description": "A standard fuel pump",
+                    "type": "ds/test_data/complex/FuelPumpTest",
                 },
-                'power': 120,
-                'type': 'ds/test_data/complex/EngineTest'
+                "power": 120,
+                "type": "ds/test_data/complex/EngineTest",
             },
-            'is_sedan': True,
-            'name': 'CarTest',
-            'seats': 2,
-            'type': 'ds/test_data/complex/CarTest',
-            'wheel': {
-                'name': 'Wheel',
-                'power': 0.0,
-                'type': 'ds/test_data/WheelTest'
-            },
-            "wheels": []
+            "is_sedan": True,
+            "description": "crappy car",
+            "name": "Mercedes",
+            "seats": 2,
+            "type": "ds/test_data/complex/CarTest",
+            "wheel": {"name": "Wheel", "power": 0.0, "type": "ds/test_data/complex/WheelTest"},
+            "wheels": [],
         }
 
         blueprint_provider = BlueprintProviderTest()
-        car_blueprint = blueprint_provider.get_blueprint('ds/test_data/complex/CarTest')
+        type = "ds/test_data/complex/CarTest"
+        car_blueprint = blueprint_provider.get_blueprint(template_type=type)
         print(car_blueprint)
-        entity = CreateEntity(blueprint_provider=blueprint_provider).get_entity(car_blueprint)
+
+        entity = CreateEntity(
+            blueprint_provider=blueprint_provider, type=type, description="crappy car", name="Mercedes"
+        ).entity
 
         self.assertEqual(expected_entity, entity)
 
@@ -56,6 +58,4 @@ class BlueprintProviderTest:
         self._factory_test = Factory(template_repository=file_repository_test, read_from_file=True)
 
     def get_blueprint(self, template_type: str) -> Optional[type]:
-       return self._factory_test.create(template_type)
-
-
+        return self._factory_test.create(template_type)

@@ -9,12 +9,12 @@
     },
     {
       "type": "string",
-      "name": "description"
+      "name": "description",
+      "default": "A standard fuel pump"
     },
     {
       "type": "string",
-      "name": "type",
-      "default": "ds/test_data/complex/FuelPumpTest"
+      "name": "type"
     }
   ]
 }

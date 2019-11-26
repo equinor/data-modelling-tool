@@ -14,11 +14,11 @@
     },
     {
       "name": "wheel",
-      "type": "ds/test_data/complex//WheelTest"
+      "type": "ds/test_data/complex/WheelTest"
     },
     {
       "name": "wheels",
-      "type": "ds/test_data/complex//WheelTest",
+      "type": "ds/test_data/complex/WheelTest",
       "dimensions": "*"
     },
     {
@@ -33,7 +33,7 @@
     },
     {
       "name": "engine",
-      "type": "ds/test_data//complex/EngineTest"
+      "type": "ds/test_data/complex/EngineTest"
     }
   ]
 }
