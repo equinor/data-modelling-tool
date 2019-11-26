@@ -10,8 +10,7 @@
     },
     {
       "type": "string",
-      "name": "type",
-      "default": "ds/test_data/complex/EngineTest"
+      "name": "type"
     },
     {
       "type": "string",
@@ -24,8 +23,7 @@
     },
     {
       "type": "ds/test_data/complex/FuelPumpTest",
-      "name": "fuelPump",
-      "default": ""
+      "name": "fuelPump"
     }
   ]
 }
