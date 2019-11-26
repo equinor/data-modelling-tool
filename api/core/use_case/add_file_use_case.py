@@ -1,5 +1,7 @@
 from typing import Dict
 
+from core.use_case.utils.create_entity import CreateEntity
+
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
 from core.enums import SIMOS, DMT
@@ -12,16 +14,6 @@ from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.data_structure.find import get
 from utils.logging import logger
-
-
-def get_required_attributes(type: str):
-    return [
-        {"type": "string", "name": "name"},
-        {"type": "string", "name": "description"},
-        # TODO: Set the default type of the entity
-        {"type": "string", "name": "type", "default": type},
-    ]
-
 
 class AddFileRequestObject(req.ValidRequestObject):
     def __init__(self, parent_id=None, name=None, description=None, type=None, attribute=None, path=None, data=None):
@@ -63,9 +55,18 @@ class AddFileRequestObject(req.ValidRequestObject):
         )
 
 
+class BlueprintProvider:
+    def __init__(self, document_repository):
+        self.document_repository = document_repository
+
+    def get_blueprint(self, type: str):
+        return get_blueprint(type)
+
+
 class AddFileUseCase(uc.UseCase):
     def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
+        self.blueprint_provider = BlueprintProvider(document_repository=self.document_repository)
 
     def process_request(self, request_object: AddFileRequestObject):
         parent_id: str = request_object.parent_id
@@ -73,7 +74,7 @@ class AddFileUseCase(uc.UseCase):
         type: str = request_object.type
         description: str = request_object.description
         attribute: str = request_object.attribute
-        data: Dict = request_object.data
+        entity = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
@@ -97,16 +98,14 @@ class AddFileUseCase(uc.UseCase):
         storage_recipe: StorageRecipe = get_storage_recipe(parent_blueprint)
 
         if storage_recipe.is_contained(attribute, type):
-            getattr(parent_data, attribute).append(data)
+            getattr(parent_data, attribute).append(entity)
             logger.info(f"Added contained document")
             self.document_repository.update(parent)
             return res.ResponseSuccess(parent)
         else:
-            file = DTO(data={"name": name, "description": description, "type": type})
-            if type == SIMOS.BLUEPRINT.value:
-                file.data["attributes"] = get_required_attributes("NOT_IMPLEMENTED")
-
-            get(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
+            file = DTO(data=entity)
+            get(parent_data, attribute).append({"_id": file.uid})
+            get(parent_data, attribute).append(entity)
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
             self.document_repository.update(parent)
