@@ -38,6 +38,7 @@ def init_application():
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
 
+    logger.info(f"Importing demo entity package(s) {Config.DEMO_ENTITIES}")
     for folder in Config.DEMO_ENTITIES:
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True

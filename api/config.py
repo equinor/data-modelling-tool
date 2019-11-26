@@ -20,7 +20,10 @@ class Config:
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
-    DEMO_ENTITIES = os.getenv("DEMO_ENTITIES", "").split(",")
+    try:
+        DEMO_ENTITIES = os.getenv("DEMO_ENTITIES").split(",")
+    except Exception:
+        DEMO_ENTITIES = []
     with open(DMT_SETTINGS_FILE) as json_file:
         DMT_APPLICATION_SETTINGS = json.load(json_file)
     with open(ENTITY_SETTINGS_FILE) as json_file:
