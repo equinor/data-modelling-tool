@@ -7,8 +7,7 @@
     "TodoPackage"
   ],
   "models": [
-    "system/DMT/Entity",
-    "system/DMT/Package"
+    "system/DMT/Entity"
   ],
   "actions": [
     {

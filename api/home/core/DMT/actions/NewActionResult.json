@@ -18,5 +18,18 @@
       "name": "description"
     }
   ],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "DEFAULT_CREATE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "destination",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "destination"
+        }
+      ]
+    }
+  ]
 }

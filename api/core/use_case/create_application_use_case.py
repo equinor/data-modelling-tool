@@ -18,6 +18,7 @@ from core.enums import DMT
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from jinja2 import Template
+from core.domain.blueprint import get_attributes_with_reference
 
 API_DOCKERFILE = f"""\
 FROM mariner.azurecr.io/dmt/api:stable
@@ -138,15 +139,19 @@ def remove_ids(data):
 
 
 def zip_package(ob, document, document_repository, path):
-    json_data = json.dumps(remove_ids(document.data))
+    if isinstance(document.data, dict):
+        document = document.data
+    else:
+        document = document.data.to_dict()
+    json_data = json.dumps(remove_ids(document))
     binary_data = json_data.encode()
-    write_to = f"{path}/{document.data['name']}.json"
-    print(f"Writing: {document.type} to {write_to}")
+    write_to = f"{path}/{document['name']}.json"
+    print(f"Writing: {document['type']} to {write_to}")
 
-    if document.type != DMT.PACKAGE.value:
+    if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
-    blueprint = get_blueprint(document.type)
+    blueprint = get_blueprint(document["type"])
     storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
     document_references = []
@@ -155,14 +160,14 @@ def zip_package(ob, document, document_repository, path):
         is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
         if attribute.get("dimensions", "") == "*":
             if not is_contained_in_storage:
-                if name in document.data:
-                    references = document.data[name]
+                if name in document:
+                    references = document[name]
                     for reference in references:
                         document_reference: DTO = document_repository.get(reference["_id"])
                         document_references.append(document_reference)
 
     for document_reference in document_references:
-        zip_package(ob, document_reference, document_repository, f"{path}/{document.data['name']}")
+        zip_package(ob, document_reference, document_repository, f"{path}/{document['name']}")
 
 
 class CreateApplicationUseCase(uc.UseCase):

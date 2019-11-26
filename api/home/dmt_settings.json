@@ -5,7 +5,6 @@
   "packages": [],
   "models": [
     "system/SIMOS/Blueprint",
-    "system/DMT/Package",
     "system/SIMOS/Application",
     "system/SIMOS/Enum"
   ],

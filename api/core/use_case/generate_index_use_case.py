@@ -197,9 +197,12 @@ class Tree:
         storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
         recipe: Recipe = get_recipe(blueprint=node.blueprint, plugin_name="INDEX")
 
-        # If the node is a DMT-Package, add "Create New" from AppSettings
+        # If the node is a DMT-Package, add "Create New" from AppSettings, and newPackage
         if is_package:
             create_new_menu_items = []
+            create_new_menu_items.append(
+                get_dynamic_create_menu_item(data_source_id, "Package", DMT.PACKAGE.value, document.uid)
+            )
             for model in app_settings["models"]:
                 model_blueprint = get_blueprint(model)
                 create_new_menu_items.append(
