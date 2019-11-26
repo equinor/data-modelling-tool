@@ -41,7 +41,7 @@ const getElement = (type: string, uiSchema: any, fields: any) => {
     const fieldName = objectPath.get(uiSchema, 'collapse.field')
     return fields[fieldName]
   }
-  return type == 'array' ? fields['ObjectField'] : fields['ArrayField']
+  return type === 'array' ? fields['ObjectField'] : fields['ArrayField']
 }
 
 export const CollapsibleField = (props: any) => {

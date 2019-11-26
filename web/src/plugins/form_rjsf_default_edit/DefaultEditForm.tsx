@@ -62,7 +62,6 @@ export default ({
       }}
       onSubmit={onSubmit}
       onChange={schemas => {
-        console.log(formData)
         setData(schemas.formData)
       }}
     />

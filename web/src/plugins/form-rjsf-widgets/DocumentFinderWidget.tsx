@@ -30,7 +30,6 @@ export default (props: Props) => {
         onChange({ target: { value: selectedNodePath } })
       }
       if (packagesOnly) {
-        console.log(node)
         onChange(node.nodeId)
       } else {
         onChange(selectedNodePath)

@@ -75,7 +75,6 @@ export const FilePicker = ({ onSelect, packagesOnly }: any) => {
               )}
             </NodeWrapper>
           )
-          return
         }
 
         return (

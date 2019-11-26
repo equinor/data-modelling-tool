@@ -1,5 +1,5 @@
 import React from 'react'
-import { Blueprint, PluginProps } from '../types'
+import { PluginProps } from '../types'
 // @ts-ignore
 import { VictoryTheme, VictoryChart, VictoryLine } from 'victory'
 // @ts-ignore

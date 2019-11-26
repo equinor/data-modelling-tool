@@ -42,7 +42,7 @@ export default () => {
   useEffect(() => {
     Api2.fetchApplicationSettings('settings.json')({
       onSuccess: (settings: any) => {
-        if (settings.name == 'DMTApplicationSettings') {
+        if (settings.name === 'DMTApplicationSettings') {
           setTabs(prevState => prevState.add(DocumentType.BLUEPRINTS))
           setLoading(false)
         }

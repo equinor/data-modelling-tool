@@ -6,7 +6,6 @@
     "CarPackage"
   ],
   "models": [
-    "system/DMT/Package",
     "SSR-DataSource/CarPackage/Car"
   ],
   "actions": [

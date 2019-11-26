@@ -6,7 +6,6 @@
     "TodoDemo"
   ],
   "models": [
-    "system/DMT/Package",
     "SSR-DataSource/TodoDemo/TodoList"
   ],
   "actions": [

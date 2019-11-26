@@ -11,7 +11,6 @@ import {
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { NodeIconType, TreeNodeData } from './Tree'
-import { NodeType } from '../../util/variables'
 
 type StyledTreeNode = {
   level: number

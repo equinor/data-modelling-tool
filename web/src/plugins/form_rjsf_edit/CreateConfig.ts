@@ -1,6 +1,6 @@
-import { BlueprintAttribute, Entity, PluginProps, UiRecipe } from '../types'
+import { BlueprintAttribute, PluginProps, UiRecipe } from '../types'
 import { BlueprintUtil } from '../BlueprintUtil'
-import { getAttributeByName, UtilIndexPlugin } from '../UtilIndexPlugin'
+import { UtilIndexPlugin } from '../UtilIndexPlugin'
 import { isPrimitive } from '../pluginUtils'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { BlueprintUiSchema } from './BlueprintUiSchema'

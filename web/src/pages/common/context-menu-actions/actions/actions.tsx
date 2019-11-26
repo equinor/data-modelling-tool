@@ -35,12 +35,12 @@ function updateDocument(output: Output) {
     data: output.entity,
     onSuccess: (response: any) => {
       NotificationManager.success(
-        'updated document: ' + `${output.path}/${output.entity.name}`
+        `updated document: ${output.path}/${output.entity.name}`
       )
     },
     onError: (error: any) => {
       NotificationManager.error(
-        'failed to update document: ' + `${output.path}/${output.entity.name}`
+        `failed to update document: ${output.path}/${output.entity.name}`
       )
     },
   })
