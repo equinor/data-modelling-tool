@@ -1,0 +1,22 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "ApplicationSettings",
+  "description": "",
+  "packages": [
+    "CarPackage"
+  ],
+  "models": [
+    "system/DMT/Package",
+    "SSR-DataSource/CarPackage/Car"
+  ],
+  "actions": [
+    {
+      "name": "Car",
+      "type": "system/SIMOS/Action",
+      "description": "",
+      "input": "SSR-DataSource/CarPackage/Car",
+      "output": "SSR-DataSource/CarPackage/Car",
+      "method": "getCar"
+    }
+  ]
+}

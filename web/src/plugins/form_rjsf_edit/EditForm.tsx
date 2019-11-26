@@ -27,9 +27,6 @@ export const EditPlugin = (props: Props) => {
         widgets={{
           enumWidget: () => <div>EnumType widget</div>,
         }}
-        onChange={formData => {
-          //console.log(formData)
-        }}
         onSubmit={props.onSubmit}
       />
     </div>

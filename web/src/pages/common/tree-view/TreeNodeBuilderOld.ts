@@ -1,6 +1,6 @@
 import { NodeIconType, TreeNodeData } from '../../../components/tree-view/Tree'
-import { NodeType } from '../../../api/types'
 import { IndexNode } from '../../../api/Api'
+import { NodeType } from '../../../util/variables'
 
 type IndexNodeV2 = {
   id: string
@@ -81,16 +81,15 @@ export class TreeNodeBuilder extends TreeNodeBuilderOld {
 
 function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
   switch (nodeType) {
-    case NodeType.DMT_ENTITY_PACKAGE:
-    case NodeType.DMT_PACKAGE:
+    case NodeType.PACKAGE:
       return NodeIconType.folder
-    case NodeType.SIMOS_BLUEPRINT:
+    case NodeType.BLUEPRINT:
       return NodeIconType.file
-    case NodeType.SIMOS_BLUEPRINT_ATTRIBUTE:
+    case NodeType.BLUEPRINT_ATTRIBUTE:
       return NodeIconType.ref
     case NodeType.DATA_SOURCE:
       return NodeIconType.database
-    case NodeType.SIMOT_APPLICATION:
+    case NodeType.APPLICATION:
       return NodeIconType.laptop
     default:
       if (children.length > 0) {
@@ -102,11 +101,9 @@ function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
 }
 
 function isExpandable(nodeType: string, children: string[]): boolean {
-  switch (nodeType) {
-    case NodeType.DMT_ENTITY_PACKAGE:
-    case NodeType.DMT_PACKAGE:
-      return true
-    default:
-      return children.length > 0
+  if (nodeType === NodeType.PACKAGE) {
+    return true
+  } else {
+    return children.length > 0
   }
 }

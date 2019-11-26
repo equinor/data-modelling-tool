@@ -1,25 +1,16 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "ApplicationSettings",
+  "name": "DMTApplicationSettings",
   "description": "",
-  "blueprints": [
-    "CarsDemo",
-    "TodoDemo"
+  "packages": [
+    "CarPackage",
+    "TodoPackage"
   ],
-  "entities": [
-    "CarsDemo"
-  ],
-  "blueprintsModels": [
-    "system/SIMOS/Blueprint",
-    "system/DMT/Package",
-    "system/SIMOS/Application",
-    "system/SIMOS/Enum"
-  ],
-  "entityModels": [
+  "models": [
     "system/DMT/Entity",
     "system/DMT/Package"
   ],
-  "runnableModels": [
+  "actions": [
     {
       "name": "Todo Runnable",
       "description": "Get and store all todos",
@@ -28,11 +19,18 @@
       "method": "getTodoList"
     },
     {
-      "name": "Car Runnable",
-      "description": "Get and store a car model",
-      "input": "SSR-DataSource/CarsDemo/Car",
-      "output": "SSR-DataSource/CarsDemo/Car",
-      "method": "getCar"
+      "name": "Calculate",
+      "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
+      "input": "SSR-DataSource/CarPackage/Car",
+      "output": "SSR-DataSource/CarPackage/Wheel",
+      "method": "run"
+    },
+    {
+      "name": "Cancel",
+      "description": "Cancel a car calculation",
+      "input": "SSR-DataSource/CarPackage/Car",
+      "output": "SSR-DataSource/CarPackage/Car",
+      "method": "cancel"
     }
   ]
 }

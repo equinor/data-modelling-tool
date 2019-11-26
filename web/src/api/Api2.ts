@@ -88,10 +88,10 @@ export default class Api2 {
     }
   }
 
-  static fetchApplicationSettings() {
+  static fetchApplicationSettings(settingsFile: string) {
     return ({ onSuccess, onError }: BASE_CRUD): void => {
       axios
-        .get(api.applicationSettingsGet())
+        .get(api.applicationSettingsGet(settingsFile))
         .then(({ data }) => {
           onSuccess(data)
         })

@@ -35,9 +35,15 @@ def _add_documents(path, documents, collection) -> List[Dict]:
 
 def import_package(path, collection: str, is_root: bool = False) -> Union[Package, Dict]:
     package = Package(name=os.path.basename(path), type=DMT.PACKAGE.value, is_root=is_root)
-    package.content = _add_documents(path, documents=next(os.walk(path))[2], collection=collection)
+    files = []
+    directories = []
+    for (path, directory, file) in os.walk(path):
+        directories.extend(directory)
+        files.extend(file)
+        break
 
-    for folder in next(os.walk(path))[1]:
+    package.content = _add_documents(path, documents=files, collection=collection)
+    for folder in directories:
         package.content.append(import_package(f"{path}/{folder}", is_root=False, collection=collection))
 
     package = DTO(package)

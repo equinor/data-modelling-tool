@@ -1,7 +1,7 @@
 {
   "type": "system/SIMOS/Blueprint",
-  "name": "Runnable",
-  "description": "This describes a runnable",
+  "name": "Action",
+  "description": "This describes an action",
   "attributes": [
     {
       "type": "string",
@@ -10,7 +10,7 @@
     {
       "type": "string",
       "name": "type",
-      "default": "system/SIMOS/Runnable"
+      "default": "system/SIMOS/Action"
     },
     {
       "type": "string",
@@ -19,14 +19,12 @@
     {
       "type": "string",
       "name": "input",
-      "description": "Reference to a Blueprint (Path without Datasource prefix).",
-      "contained": false
+      "description": "Reference to a Blueprint (Path without Datasource prefix)."
     },
     {
       "type": "string",
       "name": "output",
-      "description": "Reference to a Blueprint (Path without Datasource prefix).",
-      "contained": false
+      "description": "Reference to a Blueprint (Path without Datasource prefix)."
     },
     {
       "type": "string",

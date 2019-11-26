@@ -115,7 +115,7 @@ def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_
 
 def get_runnable_menu_action(data_source_id: str, document_id: str, runnable: dict):
     return {
-        "label": f"Run {runnable['name']}",
+        "label": f"{runnable['name']}",
         "action": "RUNNABLE",
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",

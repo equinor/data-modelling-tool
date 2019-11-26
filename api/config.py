@@ -1,3 +1,4 @@
+import json
 import os
 
 
@@ -16,5 +17,11 @@ class Config:
     SYSTEM_COLLECTION = "system"
     CACHE_MAX_SIZE = 0 if ENVIRONMENT == "local" else 0
     APPLICATION_HOME = "/code/home"
-    SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
+    DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
+    ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
+    DEMO_ENTITIES = ["CarPackage"]
+    with open(DMT_SETTINGS_FILE) as json_file:
+        DMT_APPLICATION_SETTINGS = json.load(json_file)
+    with open(ENTITY_SETTINGS_FILE) as json_file:
+        ENTITY_APPLICATION_SETTINGS = json.load(json_file)

@@ -11,6 +11,7 @@ import {
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { NodeIconType, TreeNodeData } from './Tree'
+import { NodeType } from '../../util/variables'
 
 type StyledTreeNode = {
   level: number
@@ -101,11 +102,7 @@ const TreeNode = (props: TreeNodeProps) => {
   return (
     <div>
       <StyledTreeNode level={level}>
-        <NodeIcon
-          onClick={() => {
-            handleToggle(node)
-          }}
-        >
+        <NodeIcon>
           {node.isExpandable && node.isOpen && <FaChevronDown />}
           {node.isExpandable && !node.isOpen && <FaChevronRight />}
         </NodeIcon>
@@ -119,12 +116,7 @@ const TreeNode = (props: TreeNodeProps) => {
           {node.icon === NodeIconType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
-        <Content
-          role="button"
-          onClick={() => {
-            handleToggle(node)
-          }}
-        >
+        <Content role="button" onClick={() => handleToggle(node)}>
           {NodeRenderer(renderProps)}
         </Content>
       </StyledTreeNode>

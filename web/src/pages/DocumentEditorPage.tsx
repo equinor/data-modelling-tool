@@ -40,12 +40,9 @@ export default () => {
   const [loading, setLoading] = useState<boolean | null>(null)
 
   useEffect(() => {
-    Api2.fetchApplicationSettings()({
+    Api2.fetchApplicationSettings('settings.json')({
       onSuccess: (settings: any) => {
-        if (
-          settings.blueprintsModels !== undefined &&
-          settings.blueprintsModels.length > 0
-        ) {
+        if (settings.name == 'DMTApplicationSettings') {
           setTabs(prevState => prevState.add(DocumentType.BLUEPRINTS))
           setLoading(false)
         }

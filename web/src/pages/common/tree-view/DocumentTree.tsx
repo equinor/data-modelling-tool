@@ -46,13 +46,11 @@ export default (props: PropTypes) => {
 
   return (
     <div>
-      <div>
-        <Tree tree={documents}>
-          {(props: TreeNodeRenderProps) => {
-            return render(props)
-          }}
-        </Tree>
-      </div>
+      <Tree tree={documents}>
+        {(props: TreeNodeRenderProps) => {
+          return render(props)
+        }}
+      </Tree>
     </div>
   )
 }

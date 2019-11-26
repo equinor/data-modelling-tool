@@ -1,13 +1,11 @@
 import json
 import os
-from functools import lru_cache
 
 import click
-from flask import Flask, g
+from flask import Flask
 
 from config import Config
 from core.domain.schema import Factory
-from core.enums import SIMOS
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
 from core.utility import wipe_db
 from services.database import dmt_database
@@ -29,36 +27,18 @@ def create_app(config):
 
 app = create_app(Config)
 
-logger.info(f"Running in environment: {app.config['ENVIRONMENT']}")
-
-
-def import_application_settings():
-    with open(f"{Config.APPLICATION_HOME}/settings.json") as json_file:
-        application_settings = json.load(json_file)
-        dmt_database[Config.SYSTEM_COLLECTION].insert_one(application_settings)
-        logger.info(f"Imported application settings {application_settings['name']}")
-        return application_settings
-
-
-@app.before_request
-@lru_cache(maxsize=Config.CACHE_MAX_SIZE)
-def load_application_settings():
-    g.application_settings = dmt_database[Config.SYSTEM_COLLECTION].find_one(filter={"type": SIMOS.APPLICATION.value})
-
 
 @app.cli.command()
 def init_application():
-    application_settings = import_application_settings()
-
     for folder in Config.SYSTEM_FOLDERS:
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
 
-    for folder in application_settings.get("blueprints", []):
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
         import_package(
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
 
-    for folder in application_settings.get("entities", []):
+    for folder in Config.DEMO_ENTITIES:
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )

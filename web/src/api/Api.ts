@@ -4,7 +4,7 @@ import values from 'lodash/values'
 import Workspace from '../util/localWorkspace'
 import { TreeNodeBuilderOld } from '../pages/common/tree-view/TreeNodeBuilderOld'
 import { TreeNodeData } from '../components/tree-view/Tree'
-import { NodeType } from './types'
+import { NodeType } from '../util/variables'
 
 function isLocal(datasource: Datasource): boolean {
   return datasource.id === 'local'
@@ -97,8 +97,8 @@ export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
     return `/api/v2/data-sources?documentType=${dataSourceType}`
   }
-  applicationSettingsGet(): string {
-    return `/api/v2/system/settings`
+  applicationSettingsGet(settingsFile: string): string {
+    return `/api/v2/system/settings?settingsFile=${settingsFile}`
   }
 
   dataSourcesPost(datasourceId: string) {
