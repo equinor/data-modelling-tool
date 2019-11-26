@@ -36,15 +36,19 @@ export const processFormData = (requestData: any, formData: any) => {
     if (key in formData) {
       data[key] = formData[key]
     } else if (typeof requestData[key] === 'object') {
-      const adict = {} as Adict
-      for (const item_key in requestData[key]) {
-        const value: string = requestData[key][item_key]
-        if (item_key in formData) {
-          const result = fillTemplate(value, formData)
-          adict[item_key] = result
+      if (requestData[key] == null) {
+        data[key] = null
+      } else {
+        const adict = {} as Adict
+        for (const item_key in requestData[key]) {
+          const value: string = requestData[key][item_key]
+          if (item_key in formData) {
+            const result = fillTemplate(value, formData)
+            adict[item_key] = result
+          }
         }
+        data[key] = adict
       }
-      data[key] = adict
     } else {
       data[key] = fillTemplate(requestData[key], formData)
     }
