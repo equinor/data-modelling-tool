@@ -45,7 +45,7 @@
          {
            "name": "actions",
            "type": "system/SIMOS/Runnable",
-           "contained": true
+           "contained": false
          }
        ]
      }

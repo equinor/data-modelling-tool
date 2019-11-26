@@ -9,8 +9,7 @@
     },
     {
       "name": "type",
-      "type": "string",
-      "default": "ds/test_data/WheelTest"
+      "type": "string"
     },
     {
       "name": "power",

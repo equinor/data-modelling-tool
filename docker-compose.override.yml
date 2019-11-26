@@ -12,6 +12,7 @@ services:
       - ./api/:/code
     environment:
       FLASK_DEBUG: 1
+      DEMO_ENTITIES: "CarPackage"
       ENVIRONMENT: local
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
     ports:
