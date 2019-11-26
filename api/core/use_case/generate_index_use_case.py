@@ -21,8 +21,8 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_node_on_select,
     get_not_contained_menu_action,
     get_runnable_menu_action,
-    get_rename_document_menu_item,
     get_create_root_package_menu_item,
+    get_rename_menu_action,
 )
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
@@ -167,8 +167,17 @@ class Tree:
             node.on_select = {}
 
         # Every node gets an delete and rename action
+        # node.menu_items.append(
+        #    get_rename_document_menu_item(data_source_id, start_path=parent_node.start_path, document=document)
+        # )
         node.menu_items.append(
-            get_rename_document_menu_item(data_source_id, start_path=parent_node.start_path, document=document)
+            get_rename_menu_action(
+                data_source_id=data_source_id,
+                document_id=document.uid,
+                type=document.type,
+                name=document.name,
+                parent_id=parent_node.uid,
+            )
         )
         node.menu_items.append(
             get_delete_document_menu_item(
@@ -217,10 +226,6 @@ class Tree:
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
 
             is_contained_in_ui = recipe.is_contained(attribute)
-            if not is_contained_in_ui:
-                continue
-
-            # Don't create node for ui_contained attributes
             if not is_contained_in_ui:
                 continue
 
