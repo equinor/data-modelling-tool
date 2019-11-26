@@ -14,17 +14,21 @@
     {
       "type": "string",
       "name": "description",
-      "optional": "true"
+      "default": "",
+      "optional": true
     },
     {
       "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
-      "name": "attributes"
+      "name": "attributes",
+      "default": "[{\"name\": \"name\", \"type\": \"string\"}, {\"name\": \"type\", \"type\": \"string\"}, {\"name\": \"description\", \"type\": \"string\"}]",
+      "contained": true
     },
     {
       "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
-      "name": "storageRecipes"
+      "name": "storageRecipes",
+      "optional": true
     },
     {
       "type": "system/SIMOS/UiRecipe",
@@ -41,14 +45,17 @@
       "attributes": [
         {
           "name": "attributes",
+          "type": "system/SIMOS/StorageAttribute",
           "contained": true
         },
         {
           "name": "storageRecipes",
+          "type": "system/SIMOS/StorageAttribute",
           "contained": true
         },
         {
           "name": "uiRecipes",
+          "type": "system/SIMOS/UiAttribute",
           "contained": true
         }
       ]
@@ -56,76 +63,85 @@
   ],
   "uiRecipes": [
     {
-      "type": "system/SIMOS/UiRecipe",
-      "name": "PREVIEW",
-      "description": "",
-      "plugin": "PREVIEW",
-      "attributes": []
-    },
-    {
-      "type": "system/SIMOS/UiRecipe",
-      "name": "INDEX",
-      "plugin": "INDEX",
-      "description": "",
-      "attributes": [
-
-      ]
-    },
-    {
       "type": "system/SIMOS/UIRecipe",
       "name": "DEFAULT_CREATE",
       "description": "",
       "attributes": [
         {
           "name": "attributes",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "type",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "storageRecipes",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "uiRecipes",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         }
       ]
     },
     {
       "type": "system/SIMOS/UiRecipe",
-      "name": "VIEW",
+      "name": "View",
       "description": "",
       "plugin": "VIEW",
       "attributes": [
         {
           "name": "name",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "view.widget"
         },
         {
           "name": "uiRecipes",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "table.widget"
         }
       ]
     },
     {
       "type": "system/SIMOS/UiRecipe",
-      "name": "TEST_EXTERNAL",
-      "description": "",
-      "plugin": "TEST_EXTERNAL",
+      "name": "My plugin",
+      "description": "Some external plugin",
+      "plugin": "EXTERNAL",
       "attributes": []
     },
     {
       "type": "system/SIMOS/UiRecipe",
-      "name": "Edit2",
+      "name": "Edit",
       "description": "",
       "plugin": "EDIT_PLUGIN",
       "attributes": [
         {
           "name": "attributes",
+          "type": "system/SIMOS/UiAttribute",
           "field": "attribute"
+        }
+      ]
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "INDEX",
+      "description": "",
+      "plugin": "INDEX",
+      "attributes": [
+        {
+          "name": "uiRecipes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "storageRecipes",
+          "type": "system/SIMOS/StorageAttribute",
+          "contained": false
         }
       ]
     }

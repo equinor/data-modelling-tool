@@ -1,0 +1,16 @@
+{
+  "type": "SSR-DataSource/CarPackage/Car",
+  "name": "Car",
+  "description": "",
+  "engine": {
+    "type": "SSR-DataSource/CarPackage/engine/Engine",
+    "description": "",
+    "name": "V60",
+    "power": "100",
+    "fuelPump": {
+      "type": "SSR-DataSource/CarPackage/engine/FuelPump",
+      "description": "",
+      "name": "the fuel pump"
+    }
+  }
+}

@@ -7,23 +7,6 @@ class Document:
         self.form_data = {}
         self.ui_schema = {}
 
-    def get_template_data_source_id(self) -> str:
-        return self.type.split("/", 1)[0]
-
-    def get_template_id(self) -> str:
-        return self.type.split("/", 1)[1]
-
-    def get_template_name(self) -> str:
-        return self.type.split("/")[-1]
-
-    def get_template_path(self) -> str:
-        path = self.type.split("/", 1)[1]
-        path = path.replace(f"/{self.get_template_name()}", "")
-        return f"/{path}"
-
-    def get_template_filename(self) -> str:
-        return self.type.split("/")[-1]
-
     @classmethod
     def from_dict(cls, adict):
         instance = cls(uid=adict["uid"], path=adict["path"], filename=adict["filename"], type=adict["type"])
@@ -35,7 +18,7 @@ class Document:
 
         return instance
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         result = {
             "uid": self.uid,
             "path": self.path,

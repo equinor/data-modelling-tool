@@ -1,7 +1,6 @@
 from typing import Union
-from core.domain.blueprint import Blueprint
+from core.domain.models import Blueprint, Package
 from core.domain.dto import DTO
-from core.domain.package import Package
 from core.enums import DMT
 
 
@@ -116,7 +115,7 @@ def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_
 
 def get_runnable_menu_action(data_source_id: str, document_id: str, runnable: dict):
     return {
-        "label": f"Run {runnable['name']}",
+        "label": f"{runnable['name']}",
         "action": "RUNNABLE",
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
@@ -139,7 +138,7 @@ def get_download_menu_action(data_source_id: str, document_id: str):
     }
 
 
-def get_node_on_select(data_source_id: str, document: Union[Blueprint, Package]):
+def get_node_on_select(data_source_id: str, document: DTO[Union[Blueprint, Package]]):
     return {
         "uid": document.uid,
         "title": document.name,

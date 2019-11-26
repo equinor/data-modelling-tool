@@ -1,5 +1,5 @@
 from core.domain.dto import DTO
-from core.domain.package import Package
+from core.domain.models import Package
 from core.repository.interface.document_repository import DocumentRepository
 from utils.logging import logger
 from core.shared import response_object as res
@@ -8,8 +8,9 @@ from core.shared import use_case as uc
 
 
 class AddRootPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, name=None):
+    def __init__(self, name=None, type=None):
         self.name = name
+        self.type = type
 
     @classmethod
     def from_dict(cls, adict):
@@ -21,7 +22,7 @@ class AddRootPackageRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(name=adict.get("name"))
+        return cls(name=adict.get("name"), type=adict.get("type", "system/DMT/Package"))
 
 
 class AddRootPackageUseCase(uc.UseCase):
@@ -30,10 +31,10 @@ class AddRootPackageUseCase(uc.UseCase):
 
     def process_request(self, request_object):
         name: str = request_object.name
+        type: str = request_object.type
 
-        package = Package(name=name, is_root=True)
+        package = Package(name=name, type=type, is_root=True)
 
-        # uid=package.uid,
         document: DTO[Package] = DTO(data=package)
 
         self.document_repository.add(document)

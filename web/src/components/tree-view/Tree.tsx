@@ -11,7 +11,7 @@ import DroppableWrapper from '../dnd/DroppableWrapper'
 import DraggableWrapper from '../dnd/DraggableWrapper'
 // @ts-ignore
 import { DragStart } from 'react-beautiful-dnd'
-import { NodeType } from '../../api/types'
+import { NodeType } from '../../util/variables'
 
 export enum NodeIconType {
   'file' = 'file',

@@ -14,7 +14,8 @@ blueprint = Blueprint("datasource", __name__)
 
 @blueprint.route("/api/v2/data-sources", methods=["GET"])
 def get_all_data_sources_by_document_type() -> Response:
-    use_case = GetDataSourcesUseCase()
+    data_source_repository = DataSourceRepository()
+    use_case = GetDataSourcesUseCase(data_source_repository)
     request_object = GetDataSourcesUseCaseRequestObject.from_dict(request.args)
     response = use_case.execute(request_object)
     return Response(

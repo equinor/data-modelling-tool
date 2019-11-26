@@ -20,14 +20,15 @@ export const DocumentNode = (props: DocumentNodeProps) => {
           <WithContextMenu node={node} layout={layout}>
             {onSelect && (
               <div
-                onClick={() =>
+                onClick={() => {
                   layout.add(
                     onSelect.uid,
                     onSelect.title,
                     onSelect.component,
                     onSelect.data
                   )
-                }
+                  layout.focus(node.nodeData.nodeId)
+                }}
               >
                 {nodeData.title}
               </div>

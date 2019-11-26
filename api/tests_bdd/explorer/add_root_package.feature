@@ -26,7 +26,6 @@ Feature: Explorer - Add Root Package
            "name":"new_root_package",
            "description":null,
            "type":"system/DMT/Package",
-           "dependencies":[],
            "isRoot":true,
            "storageRecipes":[]
         }

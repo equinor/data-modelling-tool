@@ -9,7 +9,9 @@
     },
     {
       "type": "string",
-      "name": "description"
+      "name": "description",
+      "default": "",
+      "optional": true
     },
     {
       "type": "string",
@@ -22,7 +24,22 @@
     {
       "type": "system/DMT/Entity",
       "name": "content",
-      "dimensions": "*"
+      "dimensions": "*",
+      "optional": true
+    },
+    {
+      "type": "system/SIMOS/StorageRecipe",
+      "dimensions": "*",
+      "name": "storageRecipes",
+      "optional": true,
+      "contained": true
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "dimensions": "*",
+      "name": "uiRecipes",
+      "optional": true,
+      "contained": true
     }
   ],
   "storageRecipes": [
@@ -33,6 +50,7 @@
       "attributes": [
         {
           "name": "content",
+          "type": "system/DMT/Entity",
           "contained": false
         }
       ]
@@ -46,18 +64,22 @@
       "attributes": [
         {
           "name": "description",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "textarea"
         },
         {
           "name": "isRoot",
+          "type": "system/SIMOS/UiAttribute",
           "widget": "hidden"
         },
         {
           "name": "type",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         },
         {
           "name": "content",
+          "type": "system/SIMOS/UiAttribute",
           "contained": false
         }
       ]

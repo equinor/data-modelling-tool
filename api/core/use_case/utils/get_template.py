@@ -1,4 +1,4 @@
-from core.domain.blueprint import Blueprint
+from core.domain.models import Blueprint
 from core.domain.dto import DTO
 from core.utility import get_document_by_ref
 from functools import lru_cache
@@ -10,6 +10,4 @@ def get_blueprint(type: str) -> Blueprint:
     document: DTO = get_document_by_ref(type)
     if not document:
         return None
-    data = document.data
-    data["_id"] = document.uid
-    return Blueprint.from_dict(data)
+    return document.data

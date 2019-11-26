@@ -2,17 +2,16 @@ from pathlib import Path
 from typing import List, Dict
 
 from anytree import PreOrderIter, RenderTree
-from flask import g
 
-from core.domain.blueprint import Blueprint
+from config import Config
+from core.domain.blueprint import Blueprint, get_attributes_with_reference, get_attribute_names
 from core.domain.dto import DTO
 from core.domain.entity import Entity
 from core.domain.index import DocumentNode
 from core.domain.recipe import Recipe
 from core.domain.storage_recipe import StorageRecipe
 from core.enums import DMT, SIMOS
-from core.repository.interface.package_repository import PackageRepository
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.generate_index_menu_actions import (
     get_contained_menu_action,
@@ -43,44 +42,38 @@ class Index:
     def add(self, adict):
         self.index[adict["id"]] = adict
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return self.index
 
 
 def print_tree(root_node):
     for pre, fill, node in RenderTree(root_node):
         treestr = "%s%s" % (pre, node.name)
-        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"], node.document.type if node.document else "")
+        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"], node.document["type"] if node.document else "")
 
 
 class Tree:
     def __init__(
-        self, blueprint_repository: MongoBlueprintRepository, get_repository, package_repository, document_repository
+        self, document_repository: DocumentRepository,
     ):
-        self.blueprint_repository = blueprint_repository
-        self.get_repository = get_repository
-        self.package_repository = package_repository
         self.document_repository = document_repository
 
-    def get_references(self, references, item_type):
+    def get_references(self, references):
         documents = []
         for ref in references:
 
             if isinstance(ref, dict):
-                if item_type == DMT.PACKAGE.value:
-                    document = self.package_repository.get(ref["_id"])
-                elif item_type == SIMOS.BLUEPRINT.value:
-                    document = self.blueprint_repository.get(ref["_id"])
-                else:
-                    dto = self.document_repository.get(ref["_id"])
-                    document = Entity(dto.data)
-                    document.uid = dto.uid
+                dto = self.document_repository.get(ref["_id"])
+                document = Entity(dto.data)
+                document.uid = dto.uid
 
                 if not document:
                     raise EntityNotFoundException(uid=ref)
                 if not hasattr(document, "uid"):
                     document.uid = ref["_id"]
                 documents.append(document)
+            elif isinstance(ref, DTO):
+                documents.append(Entity({**ref.data.to_dict(), "uid": ref.uid}))
 
         return documents
 
@@ -114,7 +107,7 @@ class Tree:
         )
         blueprint = get_blueprint(attribute_type)
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
-        for attribute in blueprint.get_attributes_with_reference():
+        for attribute in get_attributes_with_reference(blueprint):
             name = attribute["name"]
 
             is_contained_in_ui = recipe.is_contained(attribute)
@@ -144,8 +137,9 @@ class Tree:
                     document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
                 )
 
-    def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, models: List):
+    def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, app_settings: Dict):
 
+        # FIXME: Check that document is a reference
         is_package = document.type == DMT.PACKAGE.value
         parent_is_data_source = parent_node.document is None
         attribute_nodes = []
@@ -183,18 +177,18 @@ class Tree:
         )
 
         # Runnable entities gets an custom action
-        runnable_types = group_by(
-            items=g.application_settings["runnableModels"],
-            grouping_function=lambda runnable: runnable.get("input", ""),
+        action_types = group_by(
+            items=app_settings["actions"], grouping_function=lambda runnable: runnable.get("input", ""),
         )
 
-        if document.type in runnable_types:
-            for runnable in runnable_types[document.type]:
-                node.menu_items.append(
-                    get_runnable_menu_action(
-                        data_source_id=data_source_id, document_id=document.uid, runnable=runnable
-                    )
+        if document.type in action_types:
+            action_items = []
+
+            for action in action_types[document.type]:
+                action_items.append(
+                    get_runnable_menu_action(data_source_id=data_source_id, document_id=document.uid, runnable=action)
                 )
+            node.menu_items.append({"label": "Actions", "menuItems": action_items})
 
         # Applications can be downloaded
         if document.type == SIMOS.APPLICATION.value:
@@ -203,10 +197,13 @@ class Tree:
         storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
         recipe: Recipe = get_recipe(blueprint=node.blueprint, plugin_name="INDEX")
 
-        # If the node is a DMT-Package, add "Create New" from AppSettings
+        # If the node is a DMT-Package, add "Create New" from AppSettings, and newPackage
         if is_package:
             create_new_menu_items = []
-            for model in models:
+            create_new_menu_items.append(
+                get_dynamic_create_menu_item(data_source_id, "Package", DMT.PACKAGE.value, document.uid)
+            )
+            for model in app_settings["models"]:
                 model_blueprint = get_blueprint(model)
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(data_source_id, model_blueprint.name, model, document.uid)
@@ -215,7 +212,7 @@ class Tree:
             node.menu_items.append({"label": "New", "menuItems": create_new_menu_items})
 
         # Use the blueprint to find attributes that contains references
-        for attribute in node.blueprint.get_attributes_with_reference():
+        for attribute in get_attributes_with_reference(node.blueprint):
             attribute_name = attribute["name"]
             is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
 
@@ -229,11 +226,11 @@ class Tree:
 
             # If the attribute is an array
             # TODO: Handle fixed size arrays
-            if attribute.get("dimensions", None) == "*":
+            if attribute["dimensions"] == "*":
                 attribute_blueprint = get_blueprint(attribute["type"])
 
                 data = {}
-                for item in attribute_blueprint.get_attribute_names():
+                for item in get_attribute_names(attribute_blueprint):
                     data[item] = ("${" + item + "}",)
 
                 not_contained_menu_action = get_not_contained_menu_action(
@@ -269,13 +266,12 @@ class Tree:
                 # this means that we have added some documents to this array.
                 values = document.get_values(attribute_name)
 
-                if values:
+                # TODO: Fix this in DTO class. "get_values" returns "builtin_method_or_function"
+                if isinstance(values, list) and values != []:
                     # Values are stored in separate document
                     if not is_contained_in_storage:
                         # Get real documents
-                        attribute_nodes.append(
-                            {"documents": self.get_references(values, attribute["type"]), "node": attribute_node}
-                        )
+                        attribute_nodes.append({"documents": self.get_references(values), "node": attribute_node})
                     # Values are stored inside parent. We create placeholder nodes.
                     if is_contained_in_storage:
                         self.generate_contained_nodes(
@@ -286,9 +282,7 @@ class Tree:
                 if values:
                     # Values are stored in separate document
                     if not is_contained_in_storage:
-                        attribute_nodes.append(
-                            {"documents": self.get_references(values, attribute["type"]), "node": node}
-                        )
+                        attribute_nodes.append({"documents": self.get_references(values), "node": node})
                 else:
                     node.menu_items.append(
                         get_dynamic_create_menu_item(
@@ -311,19 +305,17 @@ class Tree:
                     data_source_id=data_source_id,
                     document=attribute_document,
                     parent_node=attribute_node["node"],
-                    models=models,
+                    app_settings=app_settings,
                 )
 
-    def execute(self, data_source_id: str, data_source_name: str, packages, document_type: str) -> Index:
+    def execute(self, data_source_id: str, data_source_name: str, packages, application_page: str) -> Index:
 
         index = Index(data_source_id=data_source_id)
 
         # Set what Models the user can create on the data_source node and Package nodes
         # TODO: More generic page1, page2, ...
-        models = (
-            g.application_settings.get("blueprintsModels", [])
-            if document_type == "blueprints"
-            else g.application_settings.get("entityModels", [])
+        app_settings = (
+            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
 
         # The root-node (data_source) can always create a package
@@ -334,7 +326,7 @@ class Tree:
         )
 
         for package in packages:
-            self.process_document(data_source_id, package, root_node, models)
+            self.process_document(data_source_id, package, root_node, app_settings)
 
         for node in PreOrderIter(root_node):
             index.add(node.to_node())
@@ -344,30 +336,18 @@ class Tree:
 
 class GenerateIndexUseCase:
     def __init__(
-        self,
-        blueprint_repository: MongoBlueprintRepository,
-        package_repository: PackageRepository,
-        get_repository,
-        document_repository,
+        self, document_repository: DocumentRepository,
     ):
-        self.blueprint_repository = blueprint_repository
-        self.package_repository = package_repository
-        self.get_repository = get_repository
         self.document_repository = document_repository
 
-        self.tree = Tree(
-            blueprint_repository=blueprint_repository,
-            package_repository=package_repository,
-            get_repository=get_repository,
-            document_repository=document_repository,
-        )
+        self.tree = Tree(document_repository)
 
     def execute(self, data_source_id: str, data_source_name: str, document_type: str) -> Index:
         return self.tree.execute(
             data_source_id=data_source_id,
             data_source_name=data_source_name,
-            document_type=document_type,
-            packages=self.package_repository.list(),
+            application_page=document_type,
+            packages=self.document_repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False),
         )
 
     def single(
@@ -376,14 +356,7 @@ class GenerateIndexUseCase:
         document = self.document_repository.get(document_id)
         uid = document.uid
         # The tree can't handle dto, need to use one of the below
-        if document.type == DMT.PACKAGE.value:
-            document = self.package_repository.get(document.uid)
-        elif document.type == SIMOS.BLUEPRINT.value:
-            document = self.blueprint_repository.get(document.uid)
-        else:
-            dto = self.document_repository.get(document.uid)
-            document = Entity(dto.data)
-            document.uid = dto.uid
+        document = self.document_repository.get(document.uid)
 
         if not hasattr(document, "uid"):
             document.uid = uid
@@ -392,7 +365,7 @@ class GenerateIndexUseCase:
             data_source_id=data_source_id,
             data_source_name=data_source_name,
             packages=[document],
-            document_type=document_type,
+            application_page=document_type,
         ).to_dict()
 
         del data[data_source_id]

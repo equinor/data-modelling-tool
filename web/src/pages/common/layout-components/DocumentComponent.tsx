@@ -4,60 +4,24 @@ import ReactJsonSchemaWrapper, {
 } from '../form/ReactJsonSchemaWrapper'
 import styled from 'styled-components'
 import FetchDocument from '../utils/FetchDocument'
-// @ts-ignore
-import objectPath from 'object-path'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
-import { EditPlugin, ViewPlugin, PlotPlugin } from '../../../plugins'
+import { EditPlugin, ViewPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
-import { PluginProps } from '../../../plugins/types'
+import { PluginProps, UiRecipe } from '../../../plugins/types'
+import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
 
 const Wrapper = styled.div`
   padding: 20px;
 `
 
-//@todo add UiPlugin
 export enum RegisteredPlugins {
   PREVIEW = 'PREVIEW',
+  EDIT_PLUGIN = 'EDIT_PLUGIN',
   EDIT = 'EDIT',
   VIEW = 'VIEW',
-  EDIT_PLUGIN = 'EDIT_PLUGIN',
-  PLOT = 'PLOT',
-}
-
-const plugins: Plugin[] = [
-  {
-    label: 'Preview',
-    name: RegisteredPlugins.PREVIEW,
-  },
-  {
-    label: 'Edit',
-    name: RegisteredPlugins.EDIT,
-    disabled: true,
-  },
-  {
-    label: 'Edit',
-    name: RegisteredPlugins.EDIT_PLUGIN,
-  },
-  {
-    label: 'View',
-    name: RegisteredPlugins.VIEW,
-    disabled: true,
-  },
-  {
-    label: 'Plot',
-    name: RegisteredPlugins.PLOT,
-    disabled: true,
-  },
-]
-
-// based on plugin blueprints
-type Plugin = {
-  label: string
-  name: string
-  optional?: boolean
-  disabled?: boolean
+  EXTERNAL = 'EXTERNAL',
 }
 
 const View = (props: any) => {
@@ -68,17 +32,19 @@ const View = (props: any) => {
     document,
     dataUrl,
     attribute,
-    plugin,
+    uiRecipe,
+    dtos,
   } = props
 
-  const pluginProps = {
+  const pluginProps: PluginProps = {
     blueprint,
     document,
     blueprints,
-    name: plugin.name,
+    uiRecipe,
+    dtos,
   }
 
-  switch (plugin.name) {
+  switch (uiRecipe.plugin) {
     case RegisteredPlugins.PREVIEW:
       return <BlueprintPreview data={document} />
 
@@ -98,6 +64,7 @@ const View = (props: any) => {
           }}
         </LayoutContext.Consumer>
       )
+
     case RegisteredPlugins.EDIT:
       return (
         <ReactJsonSchemaWrapper
@@ -107,42 +74,40 @@ const View = (props: any) => {
           schemaUrl={schemaUrl}
           dataUrl={dataUrl}
           attribute={attribute}
-          uiRecipe={plugin.name}
+          uiRecipe={uiRecipe.name}
         />
       )
-
-    case RegisteredPlugins.PLOT:
-      return <PlotPlugin {...pluginProps} />
-
-    default:
-      const ExternalPlugin = pluginHook(plugin.name)
+    case RegisteredPlugins.EXTERNAL:
+      const ExternalPlugin = pluginHook(uiRecipe)
       if (ExternalPlugin) {
         return <ExternalPlugin {...props} />
       }
-      console.warn(`Plugin not supported: ${plugin.name}`)
-      return <div>{`Plugin not supported: ${plugin.name}`}</div>
+      break
   }
+  console.warn(`Plugin not supported: ${uiRecipe.plugin}`)
+  return <div>{`Plugin not supported: ${uiRecipe.plugin}`}</div>
 }
 
 const ViewList = (props: PluginProps) => {
-  const visiblePlugins = plugins.filter(
-    (plugin: Plugin) => plugin.disabled !== true
+  const generateUiRecipeTabs = new GenerateUiRecipeTabs(
+    props.blueprint.uiRecipes
   )
+  const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
   return (
     <Tabs>
       <TabList>
-        {visiblePlugins.map((plugin: Plugin) => {
+        {uiRecipeTabs.map((uiRecipe: UiRecipe) => {
           return (
-            <Tab key={plugin.name} id={plugin.name}>
-              {plugin.label}
+            <Tab key={uiRecipe.name + uiRecipe.plugin} id={uiRecipe.plugin}>
+              {uiRecipe.name}
             </Tab>
           )
         })}
       </TabList>
-      {visiblePlugins.map((plugin: Plugin) => {
+      {uiRecipeTabs.map((uiRecipe: UiRecipe) => {
         return (
-          <TabPanel key={plugin.name}>
-            <View {...props} plugin={plugin} />
+          <TabPanel key={uiRecipe.name + uiRecipe.plugin}>
+            <View {...props} uiRecipe={uiRecipe} />
           </TabPanel>
         )
       })}
@@ -165,6 +130,7 @@ const DocumentComponent = (props: any) => {
               document={document}
               blueprints={data.children}
               blueprint={data.blueprint}
+              dtos={data.dtos || []}
             />
           )
         }}

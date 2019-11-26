@@ -1,10 +1,13 @@
 from typing import List
 
+from utils.data_structure.find import get
+
 PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 INDEX_PRIMITIVE_CONTAINED = False
 INDEX_ARRAY_CONTAINED = True
 INDEX_TYPE_CONTAINED = False
+
 
 class RecipeAttribute:
     def __init__(self, name: str, is_contained: bool = None):
@@ -22,20 +25,17 @@ class Recipe:
 
     def _convert_attributes(self, attributes):
         for attribute in attributes:
-            self.recipe_attributes[attribute["name"]] = RecipeAttribute(
-                name=attribute["name"], is_contained=attribute.get("contained")
-            )
+            name = get(attribute, "name")
+            self.recipe_attributes[name] = RecipeAttribute(name=name, is_contained=get(attribute, "contained"))
 
     def is_contained(self, attribute):
-        print(f"is_contained:" + self.plugin, self.name)
-        if self.plugin == 'INDEX':
+        if self.plugin == "INDEX":
             return self.is_contained_in_index(attribute)
 
-
     def is_contained_in_index(self, attribute):
-        attribute_name = attribute["name"]
-        attribute_type = attribute["type"]
-        is_array = attribute.get("dimensions", "") == "*"
+        attribute_name = get(attribute, "name")
+        attribute_type = get(attribute, "type")
+        is_array = get(attribute, "dimensions", default="") == "*"
 
         if attribute_name in self.recipe_attributes:
             ui_attribute = self.recipe_attributes[attribute_name]
@@ -45,7 +45,7 @@ class Recipe:
         if attribute_type in PRIMITIVES:
             return INDEX_PRIMITIVE_CONTAINED
         else:
-            if attribute_name == 'attributes':
+            if attribute_name == "attributes":
                 return False
             elif is_array:
                 return INDEX_ARRAY_CONTAINED

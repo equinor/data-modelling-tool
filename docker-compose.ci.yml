@@ -1,4 +1,4 @@
-version: '3.4'
+version: "3.4"
 
 services:
   api:
@@ -6,17 +6,23 @@ services:
       context: ./api
       target: development
     image: development
+    volumes:
+      - ./api/home:/code/home
     environment:
+      FLASK_DEBUG: 1
       FLASK_ENV: development
       ENVIRONMENT: local
       MONGO_INITDB_ROOT_PASSWORD: maf
-    volumes:
-      - ./api/home/:/home
 
   web:
+    environment:
+      CI: "true"
     volumes:
-      - ./web/runnable.js:/code/src/runnable.js
+      - ./web/src:/code/src
+      - ./web/libs:/code/src/libs
 
   db:
     environment:
-       MONGO_INITDB_ROOT_PASSWORD: maf
+      MONGO_INITDB_ROOT_PASSWORD: maf
+
+

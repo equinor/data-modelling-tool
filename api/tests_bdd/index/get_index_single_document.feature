@@ -24,17 +24,17 @@ Feature: Index
         "content": [
             {
                 "_id": "3",
+                "type": "test-source-name/TestData/TestContainer",
                 "name": "TestContainer"
             },
             {
                 "_id": "2",
+                "type": "test-source-name/TestData/ItemType",
                 "name": "ItemType"
             }
         ],
-        "dependencies": [],
         "isRoot": true,
-        "storageRecipes": [],
-        "applications": []
+        "storageRecipes": []
     }
     """
 
@@ -77,21 +77,29 @@ Feature: Index
           "name": "description"
         },
         {
+          "type": "string",
+          "name": "type"
+        },
+        {
           "type": "test-source-name/TestData/ItemType",
+          "optional": true,
           "name": "itemNotContainedInStorage"
         },
         {
           "type": "test-source-name/TestData/ItemType",
           "dimensions": "*",
+          "optional": true,
           "name": "itemsNotContainedInStorage"
         },
         {
           "type": "test-source-name/TestData/ItemType",
+          "optional": true,
           "name": "itemNotContainedInUi"
         },
         {
           "type": "test-source-name/TestData/ItemType",
           "dimensions": "*",
+          "optional": true,
           "name": "itemsNotContainedInUi"
         }
       ],
@@ -103,10 +111,12 @@ Feature: Index
           "attributes": [
             {
               "name": "itemNotContainedInStorage",
+              "type": "test-source-name/TestData/ItemType",
               "contained": false
             },
             {
               "name": "itemsNotContainedInStorage",
+              "type": "test-source-name/TestData/ItemType",
               "contained": false
             }
           ]
@@ -120,10 +130,12 @@ Feature: Index
           "attributes": [
             {
               "name": "itemNotContainedInUi",
+              "type": "test-source-name/TestData/ItemType",
               "contained": false
             },
             {
               "name": "itemsNotContainedInUi",
+              "type": "test-source-name/TestData/ItemType",
               "contained": false
             }
           ]

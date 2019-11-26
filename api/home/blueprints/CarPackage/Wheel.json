@@ -1,0 +1,29 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Wheel",
+  "description": "This describes a wheel",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name",
+      "optional": false
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "optional": false
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "optional": false,
+      "default": "SSR-DataSource/CarPackage/Wheel"
+    },
+    {
+      "type": "string",
+      "name": "diameter",
+      "optional": false,
+      "default": "120"
+    }
+  ]
+}

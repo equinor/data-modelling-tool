@@ -1,0 +1,21 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "ApplicationSettings",
+  "description": "",
+  "packages": [
+    "TodoDemo"
+  ],
+  "models": [
+    "SSR-DataSource/TodoDemo/TodoList"
+  ],
+  "actions": [
+    {
+      "name": "Todo",
+      "type": "system/SIMOS/Action",
+      "description": "Get list of work items",
+      "input": "SSR-DataSource/TodoDemo/TodoList",
+      "output": "SSR-DataSource/TodoDemo/TodoList",
+      "method": "getTodoList"
+    }
+  ]
+}

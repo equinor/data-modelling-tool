@@ -1,6 +1,6 @@
 from typing import List
 
-from core.domain.blueprint import Blueprint
+from core.domain.models import Blueprint
 from core.domain.ui_recipe import UIRecipe
 from core.use_case.utils.get_template import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
@@ -13,19 +13,7 @@ def find_attribute(name: str, attributes: List):
 
 
 def get_attribute_config(attribute):
-    keys = {"type": attribute.get("type", "string")}
-
-    if "default" in attribute:
-        keys["default"] = attribute["default"]
-
-    if "description" in attribute:
-        keys["description"] = attribute["description"]
-
-    if "labels" in attribute:
-        keys["enum"] = attribute.get("values")
-        keys["enumNames"] = attribute.get("labels")
-
-    return keys
+    return attribute.to_dict(include_defaults=False)
 
 
 def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
@@ -35,21 +23,21 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
 
     nested_attributes = []
     for attribute in blueprint.attributes:
-        attribute_name = attribute["name"]
-        is_array = attribute.get("dimensions", "") == "*"
+        attribute_name = attribute.name
+        is_array = attribute.dimensions == "*"
 
         is_contained = ui_recipe.is_contained(attribute)
 
         if not is_contained:
             continue
 
-        if attribute["type"] in PRIMITIVES:
+        if attribute.type in PRIMITIVES:
             attribute_config = get_attribute_config(attribute)
             properties[attribute_name] = (
                 attribute_config if not is_array else {"type": "array", "items": attribute_config}
             )
         else:
-            nested_attributes.append({"name": attribute_name, "type": attribute["type"], "is_array": is_array})
+            nested_attributes.append({"name": attribute_name, "type": attribute.type, "is_array": is_array})
 
     for nested_type in nested_attributes:
         attribute_name = nested_type["name"]

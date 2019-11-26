@@ -25,10 +25,13 @@
       "type": "system/SIMOS/UiRecipe",
       "name": "DEFAULT_CREATE",
       "description": "",
-      "attributes": [{
-        "name": "type",
-        "field": "type"
-      }]
+      "attributes": [
+        {
+          "name": "type",
+          "type": "string",
+          "field": "type"
+        }
+      ]
     }
   ]
 }

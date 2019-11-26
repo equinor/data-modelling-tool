@@ -1,4 +1,4 @@
- {
+{
   "type": "system/SIMOS/Blueprint",
   "name": "Application",
   "description": "This describes an application",
@@ -19,32 +19,20 @@
     },
     {
       "type": "string",
-      "name": "blueprints",
+      "name": "packages",
       "dimensions": "*",
-      "description": "Blueprint packages that are available by default (Path without Datasource prefix)."
+      "description": "Blueprint Packages to be internalized"
     },
     {
       "type": "string",
-      "name": "entities",
+      "name": "models",
       "dimensions": "*",
-      "description": "Entity packages that are available by default (Path without Datasource prefix)."
+      "description": "Models to create in application."
     },
     {
-      "type": "string",
-      "name": "blueprintsModels",
-      "dimensions": "*",
-      "description": "Models that are available to create in blueprints page (Path without Datasource prefix)."
-    },
-    {
-      "type": "string",
-      "name": "entityModels",
-      "dimensions": "*",
-      "description": "Models that are available to create in entity page (Path without Datasource prefix)."
-    },
-    {
-      "type": "system/SIMOS/Runnable",
-      "name": "runnableModels",
-      "description": "Runnable models",
+      "type": "system/SIMOS/Action",
+      "name": "actions",
+      "description": "Runnable actions",
       "dimensions": "*"
     }
   ],
@@ -55,7 +43,8 @@
        "type": "system/SIMOS/UiRecipe",
        "attributes": [
          {
-           "name": "runnableModels",
+           "name": "actions",
+           "type": "system/SIMOS/Runnable",
            "contained": true
          }
        ]

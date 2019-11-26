@@ -9,7 +9,7 @@ class DataSource:
         self.name = name
         self.type = type
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return {"id": self.id, "name": self.name, "host": self.host, "type": self.type}
 
     def __eq__(self, other):

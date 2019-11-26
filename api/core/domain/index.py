@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from anytree import NodeMixin
 
-from core.domain.blueprint import Blueprint
+from core.domain.models import Blueprint
 from core.domain.dto import DTO
 
 

@@ -1,0 +1,20 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "FuelPumpTest",
+  "description": "This describes a fuel pump",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "default": "ds/test_data/complex/FuelPumpTest"
+    }
+  ]
+}

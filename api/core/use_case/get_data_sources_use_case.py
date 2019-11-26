@@ -1,4 +1,3 @@
-from core.repository.data_source_repository import DataSourceRepository
 from core.shared import request_object, response_object, use_case
 from core.enums import DataSourceDocumentType
 
@@ -21,8 +20,8 @@ class GetDataSourcesUseCaseRequestObject(request_object.ValidRequestObject):
 
 
 class GetDataSourcesUseCase(use_case.UseCase):
-    def __init__(self,):
-        self.data_source_repository = DataSourceRepository()
+    def __init__(self, data_source_repository):
+        self.data_source_repository = data_source_repository
 
     def process_request(self, request_object: GetDataSourcesUseCaseRequestObject):
         data_source_document_type = request_object.data_source_document_type

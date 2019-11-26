@@ -6,7 +6,6 @@ import { Props as DocumentFinderProps } from '../form-rjsf-widgets/DocumentFinde
 import DocumentFinderWidget from '../form-rjsf-widgets/DocumentFinderWidget'
 import { Blueprint } from '../types'
 import { castValues } from '../form-rjsf-widgets/utilFormData'
-import { findRecipe, findUiAttribute } from '../pluginUtils'
 
 interface Props {
   document: Blueprint | {}
@@ -16,11 +15,22 @@ interface Props {
   onSubmit: (data: any) => void
 }
 
-const DocumentFinderWrapper = (props: DocumentFinderProps) => (
-  <div>
-    <b>type</b>
-    <DocumentFinderWidget {...props} />
-  </div>
+const TypeSelectorWrapper = (props: DocumentFinderProps) => (
+  <DocumentFinderWidget
+    {...props}
+    title={'type'}
+    hint={'Select Blueprint'}
+    packagesOnly={false}
+  />
+)
+
+const DestinationPickerWrapper = (props: DocumentFinderProps) => (
+  <DocumentFinderWidget
+    {...props}
+    packagesOnly={true}
+    title={'destination'}
+    hint={'Select destination folder'}
+  />
 )
 
 export default ({
@@ -47,7 +57,8 @@ export default ({
       fields={{
         attribute: AttributeWidget,
         collapsible: CollapsibleField,
-        type: DocumentFinderWrapper,
+        type: TypeSelectorWrapper,
+        destination: DestinationPickerWrapper,
       }}
       onSubmit={onSubmit}
       onChange={schemas => {
@@ -78,4 +89,22 @@ function appendAttributes(blueprint: any, blueprints: any, uiSchema: any) {
       }
     }
   }
+}
+
+export function findUiAttribute(uiRecipe: any, name: string): any {
+  if (uiRecipe) {
+    return uiRecipe.attributes.find(
+      (uiAttribute: any) => uiAttribute.name === name
+    )
+  }
+  return {}
+}
+
+export function findRecipe(blueprint: Blueprint, uiRecipePlugin: string): any {
+  if (blueprint.uiRecipes) {
+    return blueprint.uiRecipes.find(
+      (recipe: any) => recipe.plugin === uiRecipePlugin
+    )
+  }
+  return {}
 }

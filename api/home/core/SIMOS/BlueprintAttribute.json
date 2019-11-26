@@ -11,7 +11,14 @@
     {
       "type": "string",
       "name": "description",
+      "default": "",
       "optional": true
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "optional": true,
+      "default": ""
     },
     {
       "name": "default",
@@ -34,7 +41,7 @@
     {
       "type": "boolean",
       "name": "optional",
-      "default": false,
+      "default": "false",
       "optional": true
     },
     {
@@ -49,8 +56,6 @@
       "optional": true,
       "default": ""
     }
-  ],
-  "storageRecipes": [],
-  "uiRecipes": []
+  ]
 }
 

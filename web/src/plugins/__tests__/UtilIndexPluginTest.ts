@@ -19,13 +19,13 @@ function createBlueprintAttribute(
 describe('UtilIndexPluginTest', () => {
   describe('Filter defaults contained in treeView', () => {
     it('should not filter primitives', () => {
-      const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, null)
+      const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, undefined)
       const attributes = [createBlueprintAttribute('item', 'string', false)]
       expect(attributes.filter(filterIndex)).toMatchObject([])
     })
 
     it('should not filter type', () => {
-      const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, null)
+      const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, undefined)
       const attributes = [
         createBlueprintAttribute('item', 'system/Blueprint', false),
       ]
@@ -33,7 +33,7 @@ describe('UtilIndexPluginTest', () => {
     })
 
     it('should filter array', () => {
-      const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, null)
+      const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, undefined)
       const attributes = [
         createBlueprintAttribute('item', 'system/Blueprint', true),
       ]
@@ -44,6 +44,9 @@ describe('UtilIndexPluginTest', () => {
   describe('Filter array contained in treeView', () => {
     it('should filter array type, contained in TreeView', () => {
       const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, {
+        name: '',
+        plugin: '',
+        type: '',
         attributes: [createIndexAttribute('item', true)],
       })
       const attributes = [
@@ -52,8 +55,11 @@ describe('UtilIndexPluginTest', () => {
       expect(attributes.filter(filterIndex)).toMatchObject(attributes)
     })
 
-    it('should not filter array type, not contained in TreeView', () => {
+    it('should not filter array type, not contained in index recipe', () => {
       const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, {
+        name: '',
+        plugin: '',
+        type: '',
         attributes: [createIndexAttribute('item', false)],
       })
       const attributes = [
@@ -66,6 +72,9 @@ describe('UtilIndexPluginTest', () => {
   describe('Filter types in contained in Treeview', () => {
     it('should filter type, contained in TreeView', () => {
       const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, {
+        name: '',
+        plugin: '',
+        type: '',
         attributes: [createIndexAttribute('item', true)],
       })
       const attributes = [
@@ -76,6 +85,9 @@ describe('UtilIndexPluginTest', () => {
 
     it('should not filter array type, not contained in TreeView', () => {
       const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, {
+        name: '',
+        plugin: '',
+        type: '',
         attributes: [createIndexAttribute('item', false)],
       })
       const attributes = [
@@ -88,6 +100,9 @@ describe('UtilIndexPluginTest', () => {
   describe('Filter primitives contained in treeView', () => {
     it('should filter primitive, contained in TreeView', () => {
       const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, {
+        name: '',
+        plugin: '',
+        type: '',
         attributes: [createIndexAttribute('item', true)],
       })
       const attributes = [createBlueprintAttribute('item', 'string', false)]
@@ -96,6 +111,9 @@ describe('UtilIndexPluginTest', () => {
 
     it('should not filter array primitive, not contained in TreeView', () => {
       const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, {
+        name: '',
+        plugin: '',
+        type: '',
         attributes: [createIndexAttribute('item', false)],
       })
       const attributes = [createBlueprintAttribute('item', 'string', true)]

@@ -4,31 +4,48 @@ docker_login() {
   docker login -u mariner -p $ACR_SECRET $IMAGE_REGISTRY
 }
 
-pull_api() {
-  docker pull $API_IMAGE || true
+docker_tag_push(){
+  IMAGE=$1
+  if [ -n "$TRAVIS_TAG" ]; then
+    echo "Tagging and pushing $IMAGE as $IMAGE:$TRAVIS_TAG"
+    docker tag "$IMAGE" "$IMAGE:$TRAVIS_TAG"
+    docker push "$IMAGE:$TRAVIS_TAG"
+
+  fi
+  if [ "$TRAVIS_BRANCH" == "stable" ]; then
+    echo "Tagging and pushing $IMAGE as $IMAGE:stable"
+    docker tag "$IMAGE" "$IMAGE:stable"
+    docker push "$IMAGE:stable"
+
+  fi
 }
 
-pull_web() {
-  docker pull $WEB_IMAGE || true
+pull() {
+  IMAGE=$1
+  docker pull $IMAGE || true
 }
 
-pull_nginx() {
-  docker pull $NGINX_IMAGE || true
-}
+if [ "$1" = "pull" ]; then
+  docker_login
+  pull $2
 
-if [ "$1" = "pull-web" ]; then
-  docker_login
-  pull_web
-elif [ "$1" = "pull-api" ]; then
-  docker_login
-  pull_api
-elif [ "$1" = "pull-nginx" ]; then
-  docker_login
-  pull_nginx
+elif [ "$1" = "tags" ]; then
+  docker_tag_push "$2"
+
+elif [ "$1" = "unit_tests" ]; then
+   docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run api pytest tests
+
+elif [ "$1" = "bdd_tests" ]; then
+   docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run api behave
+
+elif [ "$1" = "web_tests" ]; then
+   docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test
+
 elif [ "$1" = "build-api-dev-image" ]; then
   docker_login
-  pull_api
+  pull $API_IMAGE
   docker build --cache-from "$API_IMAGE" --target development --tag development ./api/
+
 else
     echo "Error: Invalid argument"
     exit 1

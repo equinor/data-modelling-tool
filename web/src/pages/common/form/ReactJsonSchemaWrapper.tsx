@@ -26,7 +26,7 @@ export const onFormSubmit = ({ attribute, dataUrl, layout }: any) => {
         const responseData: any = response.data
         NotificationManager.success(responseData.data.uid, 'Updated blueprint')
         try {
-          layout.refresh(responseData.data.uid)
+          layout.refresh(responseData.uid)
         } catch (e) {
           console.error('failed to refresh tab.')
         }

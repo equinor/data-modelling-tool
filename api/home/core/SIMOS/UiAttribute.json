@@ -9,26 +9,38 @@
     },
     {
       "type": "string",
+      "name": "type",
+      "default": "system/SIMOS/UiAttribute"
+    },
+    {
+      "type": "string",
       "name": "description",
+      "optional": true,
+      "default": ""
+    },
+    {
+      "name": "label",
+      "type": "string",
       "optional": true,
       "default": ""
     },
     {
       "type": "string",
       "name": "uiRecipe",
+      "default": "",
       "optional": true
     },
     {
-      "type": "boolean",
-      "name": "optional",
+      "type": "string",
+      "name": "dimensions",
       "optional": true,
-      "default": false
+      "default": ""
     },
     {
       "type": "string",
-      "name": "type",
+      "name": "enumType",
       "optional": true,
-      "default": "system/SIMOS/UiAttribute"
+      "default": ""
     },
     {
       "type": "string",
@@ -38,26 +50,14 @@
     },
     {
       "type": "string",
-      "name": "dimensions",
+      "name": "widget",
+      "description": "Widget for this property",
       "optional": true,
-      "default": "1"
+      "default": ""
     },
     {
       "type": "string",
       "name": "default",
-      "optional": true,
-      "default": null
-    },
-    {
-      "type": "boolean",
-      "name": "contained",
-      "optional": true,
-      "default": true
-    },
-    {
-      "type": "string",
-      "name": "widget",
-      "description": "Widget for this property",
       "optional": true,
       "default": ""
     },
@@ -70,19 +70,112 @@
     },
     {
       "type": "boolean",
+      "name": "optional",
+      "optional": true,
+      "default": false
+    },
+    {
+      "type": "boolean",
+      "name": "contained",
+      "optional": true,
+      "default": true
+    },
+    {
+      "type": "boolean",
       "name": "disabled",
       "default": false,
       "optional": true
+    },
+    {
+      "type": "boolean",
+      "name": "required",
+      "default": false,
+      "optional": true,
+      "description": ""
     }
   ],
   "uiRecipes": [
     {
       "plugin": "EDIT_PLUGIN",
       "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
       "attributes": [
         {
           "name": "type",
+          "type": "string",
+          "required": true,
+          "description": "system/SIMOS/UiAttribute"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "optional": true,
+          "default": ""
+        },
+        {
+          "name": "name",
+          "type": "string",
+          "required": true
+        },
+        {
+          "name": "description",
+          "type": "string",
           "field": "hidden"
+        },
+        {
+          "name": "dimensions",
+          "type": "string",
+          "field": "hidden"
+        },
+        {
+          "name": "uiRecipe",
+          "type": "string",
+          "field": "hidden"
+        },
+        {
+          "name": "default",
+          "type": "string",
+          "field": "hidden"
+        },
+        {
+          "name": "options",
+          "type": "string",
+          "field": "hidden"
+        },
+        {
+          "name": "enumType",
+          "type": "string",
+          "widget": "hidden"
+        },
+        {
+          "name": "label",
+          "type": "string",
+          "widget": "hidden"
+        },
+        {
+          "name": "widget",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "Supported: \"textarea\" | \"hidden\""
+        },
+        {
+          "name": "optional",
+          "type": "system/SIMOS/UiAttribute",
+          "widget": "hidden"
+        },
+        {
+          "name": "required",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "Client side validation. Required attribute."
+        },
+        {
+          "name": "contained",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "Contained in the plugin. EDIT_PLUGIN | INDEX"
+        },
+        {
+          "name": "disabled",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "Not editable. "
         }
       ]
     }

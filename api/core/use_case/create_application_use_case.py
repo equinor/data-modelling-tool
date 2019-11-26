@@ -18,15 +18,16 @@ from core.enums import DMT
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from jinja2 import Template
+from core.domain.blueprint import get_attributes_with_reference
 
 API_DOCKERFILE = f"""\
-FROM mariner.azurecr.io/dmt/api
+FROM mariner.azurecr.io/dmt/api:stable
 COPY ./home {Config.APPLICATION_HOME}
 """
 
 WEB_DOCKERFILE = """\
-FROM mariner.azurecr.io/dmt/web
-COPY ./runnable.js /code/src/runnable.js
+FROM mariner.azurecr.io/dmt/web:stable
+COPY ./actions.js /code/src/actions.js
 """
 
 DOCKER_COMPOSE = """\
@@ -64,7 +65,7 @@ services:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx-local
+    image: mariner.azurecr.io/dmt/nginx-exported
     ports:
       - "9000:80"
 """
@@ -73,17 +74,84 @@ services:
 def generate_runnable_file(runnable_models):
     class_template = Template(
         """\
+// This file is tightly coupled with the settings.json file, which contain your application settings.
+// The settings file has 'actions', they look like this;
+//     {
+//       "name": "Calculate",
+//       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
+//       "input": "SSR-DataSource/CarPackage/Car",
+//       "output": "SSR-DataSource/CarPackage/Result",
+//       "method": "run"
+//     },
+//
+// This action will be available on any entity of the type "SSR-DataSource/CarPackage/Car"(input).
+// The name given in "method" must be the name of a function in this file, as well as being in the "runnableMethods" object at the end of this file.
+// The main use case for this custom function is to call SIMOS calculations, and update result objects.
+// The properties that are passed to the function looks like this;
+//       type Input = {
+//         blueprint: string
+//         entity: any
+//         path: string
+//         id: string
+//       }
+//
+//       type Output = {
+//         blueprint: string
+//         entity: any
+//         path: string
+//         dataSource: string
+//         id: string
+//       }
+//
+//       updateDocument(output: Output): Function
+//
+// Current limitations and caveats;
+// * updateDocument is a callBack. That means that if the web-browser get's interrupted(refresh,closed, etc.) the callBack is lost.
+// * The API uses a strict type system, so if the output entity does NOT match the output blueprint, that attribute will not be updated.
+// * The API uses an "update" strategy when writing the output entity. This means that it merges the existing document with the provided output entity.
+// * The output object must be left intact, and posted on every updateDocument call. Everything besides the output.entity object should be considered "read-only".
+// Here are a few examples;
+//
+// function sleep(ms) {
+//   return new Promise(resolve => setTimeout(resolve, ms))
+// }
+//
+// function myExternalSystemCall(input) {
+//   return {
+//     jobId: 'kk873ks',
+//     result: 123456,
+//     executionTime: '1233215.34234ms',
+//     progress: 100,
+//     status: 'done',
+//     message: 'job complete, no errors',
+//   }
+// }
+//
+// async function run({ input, output, updateDocument }) {
+//   let entity = {
+//     ...output.entity,
+//     // This is an invalid attribute. Will not get written to database.
+//     hallo: 'Hey',
+//   }
+//   updateDocument({ ...output, entity })
+//
+//   // If the browser is interrupted during this sleep, the rest of the function will NOT be executed.
+//   await sleep(10000)
+//   entity = { diameter: 346 }
+//   updateDocument({ ...output, entity })
+//   updateDocument({ ...output, entity: myExternalSystemCall(input) })
+// }
 
 {% for runnable_model in runnable_models %}
-const {{ runnable_model["method"] }} = async ({document, config, setProgress}) => {
+const {{ runnable_model["method"] }} = async ({input, output, updateDocument}) => {
     return {}
 }
-{% endfor %}  
+{% endfor %}
         
 const runnableMethods = {
 {% for runnable_model in runnable_models %}
-    {{ runnable_model["method"] }}
-{% endfor %}    
+    {{ runnable_model["method"] }},
+{% endfor %}
 }
 
 export default runnableMethods
@@ -138,31 +206,35 @@ def remove_ids(data):
 
 
 def zip_package(ob, document, document_repository, path):
-    json_data = json.dumps(remove_ids(document.data))
+    if isinstance(document.data, dict):
+        document = document.data
+    else:
+        document = document.data.to_dict()
+    json_data = json.dumps(remove_ids(document))
     binary_data = json_data.encode()
-    write_to = f"{path}/{document.data['name']}.json"
-    print(f"Writing: {document.type} to {write_to}")
+    write_to = f"{path}/{document['name']}.json"
+    print(f"Writing: {document['type']} to {write_to}")
 
-    if document.type != DMT.PACKAGE.value:
+    if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
-    blueprint = get_blueprint(document.type)
+    blueprint = get_blueprint(document["type"])
     storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
     document_references = []
-    for attribute in blueprint.get_attributes_with_reference():
+    for attribute in get_attributes_with_reference(blueprint):
         name = attribute["name"]
         is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
         if attribute.get("dimensions", "") == "*":
             if not is_contained_in_storage:
-                if name in document.data:
-                    references = document.data[name]
+                if name in document:
+                    references = document[name]
                     for reference in references:
                         document_reference: DTO = document_repository.get(reference["_id"])
                         document_references.append(document_reference)
 
     for document_reference in document_references:
-        zip_package(ob, document_reference, document_repository, f"{path}/{document.data['name']}")
+        zip_package(ob, document_reference, document_repository, f"{path}/{document['name']}")
 
 
 class CreateApplicationUseCase(uc.UseCase):
@@ -186,12 +258,12 @@ class CreateApplicationUseCase(uc.UseCase):
             json_data = json.dumps(remove_ids(application.data))
             binary_data = json_data.encode()
             zip_file.writestr("api/home/settings.json", binary_data)
-            runnable_file = generate_runnable_file(application.data["runnableModels"])
-            zip_file.writestr("web/runnable.js", runnable_file)
+            runnable_file = generate_runnable_file(application.data["actions"])
+            zip_file.writestr("web/actions.js", runnable_file)
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
-            for type in application.data["blueprints"]:
+            for type in application.data["packages"]:
                 root_package: DTO = self.document_repository.find({"name": type})
                 zip_package(zip_file, root_package, self.document_repository, f"api/home/blueprints/")
 

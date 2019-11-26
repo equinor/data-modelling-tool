@@ -3,11 +3,18 @@ from typing import TypeVar, Optional, Generic
 
 from stringcase import snakecase
 
+from utils.data_structure.find import get
+
 T = TypeVar("T")
 
 
 class DTO(Generic[T]):
     def __init__(self, data: T, uid: Optional[UUID] = None):
+        for key in ["uid", "_id", "id"]:
+            try:
+                uid = get(data, key)
+            except (KeyError, AttributeError, TypeError):
+                pass
         if uid is None:
             uid = uuid4()
         self._uid = uid
@@ -22,7 +29,7 @@ class DTO(Generic[T]):
                     pass
 
     @property
-    def uid(self):
+    def uid(self) -> str:
         return str(self._uid)
 
     @property
@@ -30,13 +37,16 @@ class DTO(Generic[T]):
         return self._data
 
     @data.setter
-    def data(self, data):
+    def data(self, data: T):
         self._data = data
 
-    def to_dict(self):
-        return {"uid": self.uid, "data": self.data if isinstance(self.data, dict) else self.data.to_dict()}
+    def to_dict(self, include_defaults: bool = True):
+        return {
+            "uid": self.uid,
+            "data": self.data if isinstance(self.data, dict) else self.data.to_dict(include_defaults=include_defaults),
+        }
 
-    def __getattr__(self, item):
+    def __getattr__(self, item: str):
         def get(name):
             try:
                 return getattr(self.data, name)
@@ -45,7 +55,7 @@ class DTO(Generic[T]):
 
         try:
             return get(item)
-        except KeyError:
+        except (KeyError, AttributeError, TypeError):
             return get(snakecase(item))
 
     def get_values(self, name):

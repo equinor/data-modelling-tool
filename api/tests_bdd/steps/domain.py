@@ -3,13 +3,11 @@ from behave import given
 from classes.data_source import DataSource
 from core.domain.blueprint import Blueprint
 from core.domain.dto import DTO
-from core.domain.package import Package
+from core.domain.models import Package
 from core.repository.interface.document_repository import DocumentRepository
-from core.repository.interface.package_repository import PackageRepository
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
 from anytree import NodeMixin, RenderTree
 from core.repository.repository_factory import get_repository
-from core.enums import RepositoryType, DMT, SIMOS
+from core.enums import DMT, SIMOS
 
 
 class TreeNode(NodeMixin):
@@ -26,7 +24,7 @@ class TreeNode(NodeMixin):
             content = []
             for child in self.children:
                 # Always contained
-                content.append({"_id": child.uid, "name": child.name})
+                content.append({"_id": child.uid, "name": child.name, "type": child.type})
             return {"content": content}
         return {}
 
@@ -57,26 +55,26 @@ class Tree:
         self.root = self._generate_tree()
 
     def add(self):
-        blueprint_repository: MongoBlueprintRepository = get_repository(
-            RepositoryType.BlueprintRepository, self.data_source
-        )
-        package_repository: PackageRepository = get_repository(RepositoryType.PackageRepository, self.data_source)
-        document_repository: DocumentRepository = get_repository(RepositoryType.DocumentRepository, self.data_source)
+        document_repository: DocumentRepository = get_repository(self.data_source)
         for pre, fill, node in RenderTree(self.root):
             if node.type == SIMOS.BLUEPRINT.value:
                 document: DTO[Blueprint] = DTO(
                     uid=node.uid, data=Blueprint(name=node.name, description=node.description, type=node.type)
                 )
-                blueprint_repository.add(document)
+                document_repository.add(document)
                 print(f"Added blueprint {document.uid}")
             elif node.type == DMT.PACKAGE.value:
-                package = Package(
-                    name=node.name, description=node.description, type=node.type, is_root=node.dmt_is_root
+                package: DTO[Package] = DTO(
+                    Package(
+                        name=node.name,
+                        description=node.description,
+                        type=node.type,
+                        is_root=node.dmt_is_root,
+                        content=node.extra()["content"],
+                    ),
+                    uid=node.uid,
                 )
-                extra = node.extra()
-                package.content = extra["content"]
-                package: DTO[Package] = DTO(package, uid=node.uid)
-                package_repository.add(package)
+                document_repository.add(package)
                 print(f"Added package {package.uid}")
             else:
                 document: DTO[dict] = DTO(

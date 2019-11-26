@@ -1,8 +1,10 @@
 from typing import Dict
 
+import stringcase
+
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
-from core.repository.mongo.document_repository import DocumentRepository
+from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
@@ -49,29 +51,29 @@ def create_reference(data: Dict, document_repository, type: str):
     data["type"] = type
     file = DTO(data)
     document_repository.add(file)
-    return {"_id": file.uid, "name": file.data.get("name", "")}
+    return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
 
 
 def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, document_repository):
-    is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
-    attribute_data = data[attribute["name"]]
+    is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
+    attribute_data = data[attribute.name]
 
     if is_contained_in_storage:
         return attribute_data
     else:
-        if attribute.get("dimensions", "") == "*":
+        if attribute.dimensions == "*":
             references = []
             for instance in attribute_data:
-                reference = create_reference(instance, document_repository, attribute["type"])
+                reference = create_reference(instance, document_repository, attribute.type)
                 update_document(reference["_id"], instance, document_repository)
                 references.append(reference)
             return references
         else:
-            reference = create_reference(attribute_data, document_repository, attribute["type"])
+            reference = create_reference(attribute_data, document_repository, attribute.type)
             return reference
 
 
-def update_document(document_id, data: Dict, document_repository):
+def update_document(document_id, data: Dict, document_repository: DocumentRepository):
     document: DTO = document_repository.get(document_id)
 
     if not document:
@@ -84,12 +86,19 @@ def update_document(document_id, data: Dict, document_repository):
     storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
 
     for key in data.keys():
-        attribute = next((x for x in blueprint.attributes if x["name"] == key), None)
+        # TODO: Sure we want this filter?
+        attribute = next((x for x in blueprint.attributes if x.name == key), None)
         if not attribute:
-            print(f"Could not find attribute {key} in {document.uid}")
+            logger.error(f"Could not find attribute {key} in {document.uid}")
         else:
-            document.data[key] = update_attribute(attribute, data, storage_recipe, document_repository)
-
+            if isinstance(document.data, dict):
+                document.data[key] = update_attribute(attribute, data, storage_recipe, document_repository)
+            else:
+                setattr(
+                    document.data,
+                    stringcase.snakecase(key),
+                    update_attribute(attribute, data, storage_recipe, document_repository),
+                )
     return document
 
 
@@ -107,9 +116,14 @@ class UpdateDocumentUseCase(uc.UseCase):
             raise EntityNotFoundException(uid=document_id)
 
         if attribute:
-            dotted_data = DottedDict(dto.data)
-            if attribute not in dto.data:
-                dto.data[attribute] = []
+            # TODO: Use hasattr, setattr, and getattr
+            if isinstance(dto.data, dict):
+                _data = dto.data
+            else:
+                _data = dto.data.to_dict()
+            dotted_data = DottedDict(_data)
+            if attribute not in _data:
+                _data[attribute] = []
             try:
                 # Update only sub part
                 dotted_data[attribute] = data

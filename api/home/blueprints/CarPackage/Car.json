@@ -1,0 +1,69 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Car",
+  "description": "This describes a car",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "string",
+      "name": "manufacturer",
+      "optional": true
+    },
+    {
+      "type": "SSR-DataSource/CarPackage/Wheel",
+      "name": "wheels",
+      "optional": true,
+      "dimensions": "*"
+    },
+    {
+      "type": "SSR-DataSource/CarPackage/engine/Engine",
+      "name": "engine",
+      "optional": true
+    }
+  ],
+  "storageRecipes": [
+    {
+      "name": "DefaultStorageRecipe",
+      "type": "system/SIMOS/StorageRecipe",
+      "description": "",
+      "attributes": [
+        {
+          "name": "wheels",
+          "type": "SSR-DataSource/CarPackage/Wheel",
+          "contained": false
+        },
+        {
+          "name": "engine",
+          "type": "SSR-DataSource/CarPackage/subdir/Engine",
+          "contained": true
+        }
+      ]
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "wheels",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": true
+        }
+      ]
+    }
+  ]
+}
+

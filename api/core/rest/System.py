@@ -3,7 +3,6 @@ import json
 from flask import Blueprint, Response, send_file
 
 from classes.data_source import DataSource
-from core.enums import RepositoryType
 from core.repository.repository_factory import get_repository
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -25,7 +24,7 @@ STATUS_CODES = {
 def post(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
     data_source = DataSource(id=data_source_id)
-    document_repository = get_repository(RepositoryType.DocumentRepository, data_source)
+    document_repository = get_repository(data_source)
     request_object = CreateApplicationRequestObject.from_dict({"applicationId": application_id})
     use_case = CreateApplicationUseCase(document_repository)
     response = use_case.execute(request_object)

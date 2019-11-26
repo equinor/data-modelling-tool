@@ -5,14 +5,11 @@ class Template:
             ui_schema = {}
         self.ui_schema = ui_schema
 
-    def validate(self):
-        pass
-
     @classmethod
     def from_dict(cls, adict):
         return cls(schema=adict["schema"], ui_schema=adict.get("uiSchema", ""))
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return {"schema": self.schema, "uiSchema": self.ui_schema}
 
     def __eq__(self, other):

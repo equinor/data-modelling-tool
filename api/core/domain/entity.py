@@ -1,6 +1,8 @@
 class Entity:
     def __init__(self, init=None):
         if init is not None:
+            if not isinstance(init, dict):
+                init = init.to_dict()
             self.__dict__.update(init)
 
     def __getitem__(self, key):
@@ -21,7 +23,7 @@ class Entity:
     def __repr__(self):
         return repr(self.__dict__)
 
-    def to_dict(self):
+    def to_dict(self, *, include_defaults: bool = True):
         return self.__dict__
 
     def get_values(self, name):

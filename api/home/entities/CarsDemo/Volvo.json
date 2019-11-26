@@ -1,9 +1,0 @@
-{
-  "type": "SSR-DataSource/CarsDemo/Car",
-  "name": "Car",
-  "description": "",
-  "engine": {
-    "name": "V60",
-    "power": "100"
-  }
-}

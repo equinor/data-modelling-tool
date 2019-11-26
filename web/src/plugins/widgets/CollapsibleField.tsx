@@ -2,7 +2,7 @@ import React from 'react'
 import styled from 'styled-components'
 // @ts-ignore
 import useCollapse from 'react-collapsed'
-import { FaChevronDown, FaChevronRight } from 'react-icons/all'
+import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
 // @ts-ignore
 import objectPath from 'object-path'
 
@@ -41,7 +41,7 @@ const getElement = (type: string, uiSchema: any, fields: any) => {
     const fieldName = objectPath.get(uiSchema, 'collapse.field')
     return fields[fieldName]
   }
-  return type == 'array' ? fields['ObjectField'] : fields['ArrayField']
+  return type === 'array' ? fields['ObjectField'] : fields['ArrayField']
 }
 
 export const CollapsibleField = (props: any) => {

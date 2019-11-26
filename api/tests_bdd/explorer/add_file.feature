@@ -47,14 +47,12 @@ Feature: Explorer - Add file
        },
        "document":{
           "name":"root_package",
-          "description":"",
           "type":"system/DMT/Package",
           "content":[
             {
               "name":"new_document"
             }
           ],
-          "dependencies":[],
           "isRoot":true,
           "storageRecipes":[]
        }

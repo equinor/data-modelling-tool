@@ -1,5 +1,5 @@
 FROM python:3.8.0-alpine3.10 as development
-ENV PYTHONUNBUFFERED=1 FLASK_APP=/code/app.py
+ENV PYTHONUNBUFFERED=1 FLASK_APP=/code/app.py PYTHONPATH=/code
 CMD /code/init.sh
 WORKDIR /code
 RUN apk update && \
@@ -9,6 +9,7 @@ RUN apk update && \
 COPY pyproject.toml poetry.lock ./
 RUN poetry install
 COPY . /code
+RUN /code/generate_system_blueprints.py
 
 FROM development as prod
 RUN poetry install --no-dev

@@ -101,11 +101,7 @@ const TreeNode = (props: TreeNodeProps) => {
   return (
     <div>
       <StyledTreeNode level={level}>
-        <NodeIcon
-          onClick={() => {
-            handleToggle(node)
-          }}
-        >
+        <NodeIcon>
           {node.isExpandable && node.isOpen && <FaChevronDown />}
           {node.isExpandable && !node.isOpen && <FaChevronRight />}
         </NodeIcon>
@@ -119,12 +115,7 @@ const TreeNode = (props: TreeNodeProps) => {
           {node.icon === NodeIconType.folder && !node.isOpen && <FaFolder />}
         </NodeIcon>
 
-        <Content
-          role="button"
-          onClick={() => {
-            handleToggle(node)
-          }}
-        >
+        <Content role="button" onClick={() => handleToggle(node)}>
           {NodeRenderer(renderProps)}
         </Content>
       </StyledTreeNode>

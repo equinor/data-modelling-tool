@@ -4,7 +4,6 @@ import Form from '../../../components/Form'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
 import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
-import { ProgressBarContainer } from '../../../components/Progressbar'
 
 interface WithContextMenuProps {
   children: any
@@ -16,22 +15,13 @@ export type SetShowModal = (showModal: boolean) => void
 
 const Prompt = (props: any) => {
   const { title, content, onSubmit } = props
-
-  const handleOnSubmit = (setProgress: Function) => {
-    onSubmit(setProgress)
-  }
-
   return (
     <div>
       <h4>{title}</h4>
       {content}
-      <ProgressBarContainer>
-        {(setProgress: Function) => {
-          return (
-            <button onClick={() => handleOnSubmit(setProgress)}>Submit</button>
-          )
-        }}
-      </ProgressBarContainer>
+      <div>
+        <button onClick={() => onSubmit()}>Submit</button>
+      </div>
     </div>
   )
 }
@@ -80,7 +70,7 @@ interface Action {
   type: string
 }
 
-export const WithContextMenuModal = (props: WithContextMenuModalProps) => {
+const WithContextMenuModal = (props: WithContextMenuModalProps) => {
   const { node, render, layout, children } = props
   const [action, setAction] = useState<Action>({
     data: { label: '' },

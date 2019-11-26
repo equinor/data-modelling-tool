@@ -1,8 +1,8 @@
 from typing import Dict
 
-from classes.data_source import DataSource
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
+from core.enums import SIMOS, DMT
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
@@ -10,7 +10,17 @@ from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
+from utils.data_structure.find import get
 from utils.logging import logger
+
+
+def get_required_attributes(type: str):
+    return [
+        {"type": "string", "name": "name"},
+        {"type": "string", "name": "description"},
+        # TODO: Set the default type of the entity
+        {"type": "string", "name": "type", "default": type},
+    ]
 
 
 class AddFileRequestObject(req.ValidRequestObject):
@@ -54,10 +64,8 @@ class AddFileRequestObject(req.ValidRequestObject):
 
 
 class AddFileUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository, get_repository, data_source: DataSource):
+    def __init__(self, document_repository: DocumentRepository):
         self.document_repository = document_repository
-        self.get_repository = get_repository
-        self.data_source = data_source
 
     def process_request(self, request_object: AddFileRequestObject):
         parent_id: str = request_object.parent_id
@@ -72,24 +80,33 @@ class AddFileUseCase(uc.UseCase):
             raise EntityNotFoundException(uid=parent_id)
 
         parent_data = parent.data
-        if attribute not in parent_data:
-            parent_data[attribute] = []
 
-        blueprint = get_blueprint(parent.type)
-        if not blueprint:
+        # Set empty content on package if no content
+        if parent.type == DMT.PACKAGE.value:
+            parent_data["content"] = parent_data.get("content", [])
+
+        try:
+            get(parent_data, attribute)
+        except ValueError:
+            raise ValueError(f"The attribute '{attribute}' is missing")
+
+        parent_blueprint = get_blueprint(parent.type)
+        if not parent_blueprint:
             raise EntityNotFoundException(uid=parent.type)
 
-        storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
+        storage_recipe: StorageRecipe = get_storage_recipe(parent_blueprint)
 
         if storage_recipe.is_contained(attribute, type):
-            parent_data[attribute] += [data]
+            getattr(parent_data, attribute).append(data)
             logger.info(f"Added contained document")
             self.document_repository.update(parent)
             return res.ResponseSuccess(parent)
         else:
-            # TODO: Set all data
             file = DTO(data={"name": name, "description": description, "type": type})
-            parent_data[attribute] += [{"_id": file.uid, "name": name, "type": type}]
+            if type == SIMOS.BLUEPRINT.value:
+                file.data["attributes"] = get_required_attributes("NOT_IMPLEMENTED")
+
+            get(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
             self.document_repository.update(parent)

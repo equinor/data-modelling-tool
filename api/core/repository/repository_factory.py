@@ -1,14 +1,10 @@
 from core.repository.mongo.document_repository import MongoDocumentRepository
 from core.repository.mongo.mongo_db_client import MongoDbClient
-from core.repository.mongo.blueprint_repository import MongoBlueprintRepository
+from core.enums import DataSourceType
+from core.domain.data_source import DataSource
 
 
-# TODO: Make Enum
-from core.repository.mongo.package_repository import MongoPackageRepository
-from core.enums import DataSourceType, RepositoryType
-
-
-def get_repository(repository_type: RepositoryType, data_source):
+def get_repository(data_source: DataSource):
     if data_source.type == DataSourceType.MONGO.value:
         # Not sure if this is the correct place
         data_source = MongoDbClient(
@@ -21,9 +17,4 @@ def get_repository(repository_type: RepositoryType, data_source):
             port=data_source.port,
         )
 
-        if repository_type == RepositoryType.DocumentRepository:
-            return MongoDocumentRepository(data_source)
-        if repository_type == RepositoryType.BlueprintRepository:
-            return MongoBlueprintRepository(data_source)
-        if repository_type == RepositoryType.PackageRepository:
-            return MongoPackageRepository(data_source)
+        return MongoDocumentRepository(data_source)

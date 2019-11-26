@@ -20,8 +20,8 @@ class StorageRecipe:
 
     def _convert_attributes(self, attributes):
         for attribute in attributes:
-            self.storage_recipe_attributes[attribute["name"]] = StorageRecipeAttribute(
-                name=attribute["name"], is_contained=attribute["contained"]
+            self.storage_recipe_attributes[attribute.name] = StorageRecipeAttribute(
+                name=attribute.name, is_contained=attribute.contained
             )
 
     def is_contained(self, attribute_name, attribute_type):

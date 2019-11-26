@@ -14,9 +14,9 @@ env:
     - NGINX_IMAGE=$FULL_IMAGE_REPO/nginx
 
 stages:
-  - build-publish
+  - build
   - tests
-  - name: deploy
+  - name: deploy-dev
     if: branch = master
 
 before_install:
@@ -24,59 +24,47 @@ before_install:
 
 jobs:
   include:
-    - stage: build-publish
+    - stage: build
       name: "Build API"
-      before_script: ./travis-scripts.sh pull-api
+      before_script: ./travis-scripts.sh pull $API_IMAGE
       script:
         - docker build --cache-from $API_IMAGE --tag $API_IMAGE ./api/
         - docker push "$API_IMAGE"
-        - |
-          if [ ! -z "$TRAVIS_TAG" ]; then
-            docker tag "$API_IMAGE" "$API_IMAGE:$TRAVIS_TAG"
-            docker push "$API_IMAGE:$TRAVIS_TAG"
-          fi
+        - ./travis-scripts.sh tags $API_IMAGE
 
-    - stage: build-publish
+    - stage: build
       name: "Build Web"
-      before_script: ./travis-scripts.sh pull-web
+      before_script: ./travis-scripts.sh pull $WEB_IMAGE
       script:
         - docker build --cache-from "$WEB_IMAGE" --tag $WEB_IMAGE ./web/
         - docker push $WEB_IMAGE
-        - |
-          if [ ! -z "$TRAVIS_TAG" ]; then
-            docker tag "$WEB_IMAGE" "$WEB_IMAGE:$TRAVIS_TAG"
-            docker push "$WEB_IMAGE:$TRAVIS_TAG"
-          fi
+        - ./travis-scripts.sh tags "$WEB_IMAGE"
 
-    - stage: build-publish
+    - stage: build
       name: "Build Nginx"
-      before_script: ./travis-scripts.sh pull-nginx
+      before_script: ./travis-scripts.sh pull $NGINX_IMAGE
       script:
         - docker build --cache-from "$NGINX_IMAGE" --tag $NGINX_IMAGE ./nginx/
         - docker push "$NGINX_IMAGE"
-        - |
-          if [ ! -z "$TRAVIS_TAG" ]; then
-            docker tag "$NGINX_IMAGE" "$NGINX_IMAGE:$TRAVIS_TAG"
-            docker push "$NGINX_IMAGE:$TRAVIS_TAG"
-          fi
+        - ./travis-scripts.sh tags "$NGINX_IMAGE"
 
     - stage: tests
       name: "API - BDD Tests"
       before_script: ./travis-scripts.sh build-api-dev-image
-      script: doit test:api:bdd -f ci
+      script: ./travis-scripts.sh unit_tests bdd_tests
 
     - stage: tests
       name: "API - Unit Tests"
       before_script: ./travis-scripts.sh build-api-dev-image
-      script: doit test:api:unit -f ci
+      script: ./travis-scripts.sh unit_tests
 
     - stage: tests
       name: "Web - Tests"
-      before_script: ./travis-scripts.sh pull-web
-      script: doit test:web:unit -e=CI=true
+      before_script: ./travis-scripts.sh pull $WEB_IMAGE
+      script: ./travis-scripts.sh web_tests
 
-    - stage: deploy
+    - stage: deploy-dev
       name: "Reset database"
-      before_script: ./travis-scripts.sh pull-api
+      before_script: ./travis-scripts.sh pull $API_IMAGE
       script:
         - docker-compose run -e ENVIRONMENT=dev api ./reset-database.sh

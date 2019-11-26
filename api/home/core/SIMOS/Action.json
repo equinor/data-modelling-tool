@@ -1,0 +1,35 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Action",
+  "description": "This describes an action",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "default": "system/SIMOS/Action"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "string",
+      "name": "input",
+      "description": "Reference to a Blueprint (Path without Datasource prefix)."
+    },
+    {
+      "type": "string",
+      "name": "output",
+      "description": "Reference to a Blueprint (Path without Datasource prefix)."
+    },
+    {
+      "type": "string",
+      "name": "method",
+      "description": "What method to call inside runnable.tsx"
+    }
+  ]
+}

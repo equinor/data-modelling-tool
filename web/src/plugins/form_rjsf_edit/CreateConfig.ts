@@ -1,9 +1,11 @@
-import { generateTemplate } from './GenerateTemplate'
-import { BlueprintAttribute, PluginProps } from '../types'
-import { generateUiSchema } from './GenerateUiSchema'
+import { BlueprintAttribute, PluginProps, UiRecipe } from '../types'
 import { BlueprintUtil } from '../BlueprintUtil'
 import { UtilIndexPlugin } from '../UtilIndexPlugin'
 import { isPrimitive } from '../pluginUtils'
+import { BlueprintProvider } from '../BlueprintProvider'
+import { BlueprintUiSchema } from './BlueprintUiSchema'
+import { BlueprintSchema } from './BlueprintSchema'
+import { Blueprint, KeyValue } from '../Blueprint'
 
 export type FormConfig = {
   data: any
@@ -11,33 +13,52 @@ export type FormConfig = {
   uiSchema: any
 }
 
-export function createFormConfigs(pluginProps: PluginProps): FormConfig {
-  const { blueprint, document, blueprints } = pluginProps
-  const indexRecipe = BlueprintUtil.findRecipe(blueprint.uiRecipes, 'INDEX')
-  const editRecipe = BlueprintUtil.findRecipe(
-    blueprint.uiRecipes,
-    'EDIT_PLUGIN'
-  )
+export type IndexFilter = (attr: BlueprintAttribute) => boolean
 
-  const filter = filterAttributes({ indexRecipe, editRecipe })
-  const attributes = blueprint.attributes.filter(filter)
+export function createFormConfigs(pluginProps: PluginProps): FormConfig {
+  const { document, blueprints, uiRecipe } = pluginProps
+  const blueprintType = pluginProps.blueprint
+  const indexRecipe = BlueprintUtil.findRecipe(blueprintType.uiRecipes, 'INDEX')
+
+  const blueprint = new Blueprint(blueprintType)
+  const filter = filterAttributes(blueprint, uiRecipe, indexRecipe)
+
+  const blueprintProvider = new BlueprintProvider(blueprints)
+  const blueprintSchema = new BlueprintSchema(
+    blueprintType,
+    blueprintProvider,
+    uiRecipe,
+    filter
+  )
+  const uiSchema = new BlueprintUiSchema(
+    blueprintType,
+    blueprintProvider,
+    uiRecipe,
+    filter
+  ).getSchema()
 
   return {
     data: document,
-    template: generateTemplate(attributes, blueprints),
-    uiSchema: generateUiSchema(pluginProps),
+    template: blueprintSchema.getSchema(),
+    uiSchema,
   }
 }
 
-function filterAttributes({ indexRecipe, editRecipe }: any): any {
+function filterAttributes(
+  blueprint: Blueprint,
+  uiRecipe: UiRecipe,
+  indexRecipe: UiRecipe
+): any {
+  const editRecipeAttributes: KeyValue | undefined = blueprint.getUiAttributes(
+    uiRecipe.name
+  )
   return (attr: BlueprintAttribute) => {
-    const editRecipeAttr = getAttributeFromRecipe({
-      recipe: editRecipe,
-      name: attr.name,
-    })
-    //use editRecipe contained if provided.
-    if (editRecipeAttr && editRecipeAttr.contained !== undefined) {
-      return editRecipeAttr.contained
+    if (editRecipeAttributes) {
+      const editRecipeAttr = editRecipeAttributes[attr.name]
+      //use editRecipe contained if provided.
+      if (editRecipeAttr && editRecipeAttr.contained !== undefined) {
+        return editRecipeAttr.contained
+      }
     }
 
     // defaults by edit plugin.
@@ -49,11 +70,5 @@ function filterAttributes({ indexRecipe, editRecipe }: any): any {
     const filter = UtilIndexPlugin.filterByIndexPlugin(null, indexRecipe)
     const inIndex = filter(attr)
     return !inIndex
-  }
-}
-
-function getAttributeFromRecipe({ recipe, name }: any): any {
-  if (recipe && recipe.attributes) {
-    return BlueprintUtil.getAttributeByName(recipe.attributes, name)
   }
 }

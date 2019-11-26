@@ -1,0 +1,29 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "ApplicationSettings",
+  "description": "",
+  "packages": [
+    "CarPackage"
+  ],
+  "models": [
+    "SSR-DataSource/CarPackage/Car"
+  ],
+  "actions": [
+    {
+      "name": "Calculate",
+      "type": "system/SIMOS/Action",
+      "description": "",
+      "input": "SSR-DataSource/CarPackage/Car",
+      "output": "SSR-DataSource/CarPackage/Car",
+      "method": "run"
+    },
+    {
+      "name": "Cancel",
+      "type": "system/SIMOS/Action",
+      "description": "",
+      "input": "SSR-DataSource/CarPackage/Car",
+      "output": "SSR-DataSource/CarPackage/Car",
+      "method": "cancel"
+    }
+  ]
+}
