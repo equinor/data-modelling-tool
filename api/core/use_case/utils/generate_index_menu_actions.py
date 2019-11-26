@@ -17,6 +17,28 @@ def get_rename_document_menu_item(data_source_id: str, start_path: str, document
     }
 
 
+def get_rename_menu_action(
+    data_source_id: str, document_id: str, type: str, name: str, parent_id: str, attribute: str = "content"
+):
+    return {
+        "label": "Rename",
+        "action": "UPDATE",
+        "data": {
+            "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
+            "url": f"/api/v2/explorer/{data_source_id}/rename-file",
+            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
+            "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
+            "request": {
+                "description": "${description}",
+                "parentId": parent_id,
+                "name": "${name}",
+                "documentId": document_id,
+                "attribute": attribute,
+            },
+        },
+    }
+
+
 def get_delete_document_menu_item(data_source_id: str, parent_id: str, parent_attribute: str, document_id: str):
     return {
         "label": "Remove",

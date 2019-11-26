@@ -1,5 +1,3 @@
-from typing import List
-
 from core.domain.dynamic_models import BlueprintAttribute, AttributeTypes, Blueprint
 from utils.data_structure.find import get
 

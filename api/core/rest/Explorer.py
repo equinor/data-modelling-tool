@@ -9,6 +9,7 @@ from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
 from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
+from core.use_case.rename_file_use_case import RenameFileUseCase, RenameFileRequestObject
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -72,4 +73,17 @@ def add_root_package(data_source_id: str):
 
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
+    )
+
+
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/rename-file", methods=["PUT"])
+def rename_file(data_source_id: str):
+    db = DataSource(id=data_source_id)
+    request_data = request.get_json()
+    document_repository = get_repository(db)
+    use_case = RenameFileUseCase(document_repository=document_repository)
+    request_object = RenameFileRequestObject.from_dict(request_data)
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
     )
