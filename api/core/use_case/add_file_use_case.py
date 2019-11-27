@@ -1,8 +1,9 @@
 from core.use_case.utils.create_entity import CreateEntity
+from typing import Dict
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
-from core.enums import DMT
+from core.enums import SIMOS, DMT
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
@@ -12,6 +13,14 @@ from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.data_structure.find import get
 from utils.logging import logger
+
+
+def get_required_attributes(type: str):
+    return [
+        {"type": "string", "name": "name"},
+        {"type": "string", "name": "description"},
+        {"type": "string", "name": "type", "default": type},
+    ]
 
 
 class AddFileRequestObject(req.ValidRequestObject):
@@ -73,7 +82,7 @@ class AddFileUseCase(uc.UseCase):
         type: str = request_object.type
         description: str = request_object.description
         attribute: str = request_object.attribute
-        entity = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
@@ -103,7 +112,9 @@ class AddFileUseCase(uc.UseCase):
             return res.ResponseSuccess(parent)
         else:
             file = DTO(data=entity)
-            get(parent_data, attribute).append(entity)
+            if type == SIMOS.BLUEPRINT.value:
+                file.data["attributes"] = get_required_attributes(type=type)
+            get(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
             self.document_repository.update(parent)
