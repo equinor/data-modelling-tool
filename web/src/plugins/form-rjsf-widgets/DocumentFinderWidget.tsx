@@ -5,7 +5,7 @@ import { FilePicker } from '../../pages/common/FilePicker'
 import { NodeType } from '../../util/variables'
 
 export type Props = {
-  onChange: (event: any) => void
+  onChange: (value: any) => void
   value: string
   attributeInput: any
   packagesOnly: boolean
@@ -27,7 +27,7 @@ export default (props: Props) => {
       setShowModal(false)
 
       if (attributeInput) {
-        onChange({ target: { value: selectedNodePath } })
+        onChange(selectedNodePath)
       }
       if (packagesOnly) {
         onChange(node.nodeId)
