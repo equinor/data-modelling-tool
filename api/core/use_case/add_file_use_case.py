@@ -1,10 +1,8 @@
-from typing import Dict
-
 from core.use_case.utils.create_entity import CreateEntity
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
-from core.enums import SIMOS, DMT
+from core.enums import DMT
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
@@ -14,6 +12,7 @@ from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.data_structure.find import get
 from utils.logging import logger
+
 
 class AddFileRequestObject(req.ValidRequestObject):
     def __init__(self, parent_id=None, name=None, description=None, type=None, attribute=None, path=None, data=None):
@@ -104,7 +103,6 @@ class AddFileUseCase(uc.UseCase):
             return res.ResponseSuccess(parent)
         else:
             file = DTO(data=entity)
-            get(parent_data, attribute).append({"_id": file.uid})
             get(parent_data, attribute).append(entity)
             self.document_repository.add(file)
             logger.info(f"Added document '{file.uid}''")
