@@ -94,6 +94,7 @@
       "description": ""
     }
   ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "plugin": "EDIT_PLUGIN",

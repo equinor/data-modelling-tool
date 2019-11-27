@@ -29,5 +29,7 @@
       "name": "inPlace",
       "description": "If the instance should replace blueprint types with the blueprint data. Only children is replaced, while grandchildren will still have references (type as string) to other blueprints. If inPlace is false, recursive code is probably necessary."
     }
-  ]
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }

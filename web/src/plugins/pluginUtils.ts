@@ -1,4 +1,5 @@
-import { BlueprintAttribute } from './types'
+import { BlueprintAttribute, PluginProps, UiRecipe } from './types'
+import { Blueprint } from './Blueprint'
 
 /**
  * Utility function for working with blueprints and recipes.
@@ -45,4 +46,45 @@ export function parseAttributeDefault(
     // )
   }
   return attribute
+}
+
+export function getPropsByAttribute(
+  props: PluginProps,
+  attribute: string,
+  uiRecipe: UiRecipe
+): PluginProps | undefined {
+  const attributeKeys = attribute.split('.')
+  if (attributeKeys.length === 0) {
+    return props
+  }
+  const attributeName = attributeKeys[0]
+  const attributeIndex = attributeKeys[1]
+  const blueprint = new Blueprint(props.blueprint)
+  const blueprintAttr = blueprint.getAttribute(attributeName)
+  if (blueprintAttr) {
+    if (
+      !blueprint.isPrimitive(blueprintAttr.type) &&
+      blueprint.isArray(blueprintAttr)
+    ) {
+      console.log(blueprint)
+      const nameFromTypeSplit = blueprintAttr.type.split('/')
+      const name = nameFromTypeSplit[nameFromTypeSplit.length - 1]
+      const nestedBlueprint = props.blueprints.find(bp => bp.name === name)
+      if (nestedBlueprint) {
+        return {
+          blueprint: nestedBlueprint,
+          uiRecipe:
+            nestedBlueprint.uiRecipes.find(
+              (recipe: UiRecipe) => recipe.name === uiRecipe.name
+            ) || uiRecipe,
+          blueprints: props.blueprints,
+          document: ((props.document as any)[attributeName] as any)[
+            attributeIndex
+          ],
+          dtos: [],
+        }
+      }
+    }
+  }
+  return props
 }

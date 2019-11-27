@@ -110,5 +110,7 @@
       "description": "name of mongo collection in database. Does not need to exist",
       "type": "string"
     }
-  ]
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }

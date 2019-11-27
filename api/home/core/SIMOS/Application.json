@@ -36,6 +36,7 @@
       "dimensions": "*"
     }
   ],
+  "storageRecipes": [],
    "uiRecipes": [
      {
        "name": "INDEX",

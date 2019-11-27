@@ -1,6 +1,7 @@
 import React from 'react'
 import styled from 'styled-components'
 import Header from '../../components/Header'
+import { PluginProps } from '../types'
 
 export const Pre = styled.pre`
   white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
@@ -10,15 +11,15 @@ export const Pre = styled.pre`
   word-wrap: break-word; /* IE 5.5+ */
 `
 
-export default (props: any) => {
-  const { data } = props
+export default (props: PluginProps) => {
+  const { document } = props
   return (
     <div>
       <Header>
         <h3>Preview Blueprint</h3>
       </Header>
       <div>
-        <Pre>{JSON.stringify(data, null, 2)}</Pre>
+        <Pre>{JSON.stringify(document, null, 2)}</Pre>
       </div>
     </div>
   )

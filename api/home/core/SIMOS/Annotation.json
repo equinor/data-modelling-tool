@@ -15,5 +15,7 @@
       "type": "string",
       "name": "value"
     }
-  ]
+  ],
+  "uiRecipes": [],
+  "storageRecipes": []
 }
