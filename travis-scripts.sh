@@ -18,6 +18,12 @@ docker_tag_push(){
     docker push "$IMAGE:stable"
 
   fi
+  if [ "$TRAVIS_BRANCH" == "master" ]; then
+    echo "Tagging and pushing $IMAGE as $IMAGE:latest"
+    docker tag "$IMAGE" "$IMAGE:latest"
+    docker push "$IMAGE:latest"
+
+  fi
 }
 
 pull() {
