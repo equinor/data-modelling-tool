@@ -14,7 +14,9 @@ interface IBlueprintSchema {
 
 type SchemaProperty = {
   type: string
+  enum?: any[]
   required?: boolean
+  [key: string]: any
 }
 
 //@todo make uiAttribute recursive, like BlueprintUiSchema, needed to set required
@@ -116,9 +118,10 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   }
 
   private createSchemaProperty(attr: BlueprintAttribute): SchemaProperty {
-    const schemaProperty: SchemaProperty = {
+    let schemaProperty: SchemaProperty = {
       type: attr.type,
     }
+    this.addEnumToProperty(schemaProperty, attr)
     return schemaProperty
   }
 
@@ -136,5 +139,27 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
 
   getSchema() {
     return this.schema
+  }
+
+  private addEnumToProperty(
+    property: SchemaProperty,
+    attr: BlueprintAttribute
+  ): void {
+    //@todo pass uiAttribute to only add enum if desired?
+    if (attr.enumType) {
+      const dto = this.blueprintProvider.getDtoByType(attr.enumType)
+      if (dto) {
+        property.title = dto.data.name
+        property.type = 'string'
+        property.default = ''
+        property.anyOf = dto.data.values.map((value: any, index: number) => {
+          return {
+            type: 'string',
+            title: dto.data.labels[index],
+            enum: [value],
+          }
+        })
+      }
+    }
   }
 }
