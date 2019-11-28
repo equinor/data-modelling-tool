@@ -98,6 +98,7 @@ export const Action = (
           documentId: `${response.data.uid}`,
           nodeUrl: `/api/v3/index/${dataSource}`,
           node,
+          overrideParentId: formData.destination,
         })
 
         setShowModal(false)

@@ -15,6 +15,7 @@ import { NodeType } from '../../util/variables'
 
 export enum NodeIconType {
   'file' = 'file',
+  'blueprint' = 'blueprint',
   'folder' = 'folder',
   'database' = 'database',
   'laptop' = 'laptop',
@@ -29,6 +30,7 @@ export type TreeNodeData = {
   title: string
   isExpandable: boolean
   isRoot: boolean
+  isRootPackage: boolean
   icon?: NodeIconType
   isHidden?: boolean
   isFolder: boolean
@@ -214,6 +216,7 @@ const Tree = (props: TreeProps) => {
                       node={node}
                       path={item.track.join('/')}
                       parent={item.parent}
+                      isRootPackage={false}
                       NodeRenderer={children}
                       handleToggle={handleToggle}
                       actions={{

@@ -5,6 +5,7 @@ import { NodeType } from '../../../util/variables'
 type IndexNodeV2 = {
   id: string
   filename: string
+  isRootPackage: boolean
   nodeType: NodeType
   children?: string[]
   templateRef?: string
@@ -19,6 +20,7 @@ export class TreeNodeBuilderOld {
     this.treeNode = createTreeNode({
       id: node.id,
       filename: node.title,
+      isRootPackage: node.isRootPackage,
       nodeType: node.nodeType,
       children: node.children,
       templateRef: node.templateRef,
@@ -50,6 +52,7 @@ function createTreeNode({
   templateRef = '',
   meta = {},
   type = '',
+  isRootPackage,
 }: IndexNodeV2) {
   return {
     nodeId: id,
@@ -60,6 +63,7 @@ function createTreeNode({
     isExpandable: isExpandable(type, children),
     isOpen: false,
     isRoot: type === NodeType.DATA_SOURCE,
+    isRootPackage,
     isHidden: false,
     children: children || [],
     icon: getNodeIcon(type, children),
@@ -75,6 +79,7 @@ export class TreeNodeBuilder extends TreeNodeBuilderOld {
       nodeType: node.nodeType,
       children: node.children,
       type: '',
+      isRootPackage: node.isRootPackage,
     })
   }
 }
@@ -84,7 +89,7 @@ function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
     case NodeType.PACKAGE:
       return NodeIconType.folder
     case NodeType.BLUEPRINT:
-      return NodeIconType.file
+      return NodeIconType.blueprint
     case NodeType.BLUEPRINT_ATTRIBUTE:
       return NodeIconType.ref
     case NodeType.DATA_SOURCE:
@@ -92,11 +97,7 @@ function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
     case NodeType.APPLICATION:
       return NodeIconType.laptop
     default:
-      if (children.length > 0) {
-        return NodeIconType.folder
-      } else {
-        return NodeIconType.file
-      }
+      return NodeIconType.file
   }
 }
 
