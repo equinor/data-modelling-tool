@@ -27,7 +27,8 @@ Feature: Document 2
             }
         ],
         "isRoot": true,
-        "storageRecipes": []
+        "storageRecipes":[],
+        "uiRecipes":[]
     }
     """
 
@@ -57,7 +58,9 @@ Feature: Document 2
           "optional": true,
           "name": "extra"
         }
-      ]
+      ],
+      "storageRecipes":[],
+      "uiRecipes":[]
     }
     """
 
@@ -111,7 +114,7 @@ Feature: Document 2
           ]
         }
       ],
-      "uiRecipes": []
+      "uiRecipes":[]
     }
     """
 
@@ -149,7 +152,8 @@ Feature: Document 2
              }
           ],
           "isRoot":true,
-          "storageRecipes":[]
+          "storageRecipes":[],
+          "uiRecipes":[]
        }
     }
     """

@@ -83,11 +83,12 @@ class AddFileUseCase(uc.UseCase):
         type: str = request_object.type
         description: str = request_object.description
         attribute: str = stringcase.snakecase(request_object.attribute)
-        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
+
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
         parent_data = parent.data
 
