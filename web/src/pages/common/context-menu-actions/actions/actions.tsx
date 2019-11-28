@@ -34,14 +34,10 @@ function updateDocument(output: Output) {
     url: `/api/v2/documents/${output.dataSource}/${output.id}`,
     data: output.entity,
     onSuccess: (response: any) => {
-      NotificationManager.success(
-        `updated document: ${output.path}/${output.entity.name}`
-      )
+      NotificationManager.success(`updated document: ${output.path}`)
     },
     onError: (error: any) => {
-      NotificationManager.error(
-        `failed to update document: ${output.path}/${output.entity.name}`
-      )
+      NotificationManager.error(`failed to update document: ${output.path}`)
     },
   })
 }
@@ -120,8 +116,8 @@ export const Action = (
         // @ts-ignore
         const method: Method = Actions[methodToRun]
 
-        const handleUpdate = (output: Output) => {
-          updateDocument(output)
+        async function handleUpdate(output: Output) {
+          await updateDocument(output)
           layout.refresh(output.id)
         }
 
