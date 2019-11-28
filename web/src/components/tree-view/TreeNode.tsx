@@ -42,6 +42,7 @@ export type TreeNodeProps = {
   NodeRenderer: Function
   level: number
   path: string
+  isRootPackage: boolean
   parent: string
   node: TreeNodeData
   actions: TreeNodeActions
@@ -86,6 +87,7 @@ const TreeNode = (props: TreeNodeProps) => {
     level,
     NodeRenderer,
     path,
+    isRootPackage,
     parent,
     actions,
     handleToggle,
@@ -97,7 +99,6 @@ const TreeNode = (props: TreeNodeProps) => {
     nodeData: node,
     actions,
   } as TreeNodeRenderProps
-
   return (
     <div>
       <StyledTreeNode level={level}>
@@ -107,12 +108,25 @@ const TreeNode = (props: TreeNodeProps) => {
         </NodeIcon>
 
         <NodeIcon marginRight={5}>
-          {node.icon === NodeIconType.database && <FaDatabase />}
+          {node.icon === NodeIconType.database && (
+            <FaDatabase style={{ color: 'gray' }} />
+          )}
           {node.icon === NodeIconType.file && <FaRegFileAlt />}
+          {node.icon === NodeIconType.blueprint && (
+            <FaRegFileAlt style={{ color: '#2966FF' }} />
+          )}
           {node.icon === NodeIconType.ref && <FaCircle />}
           {node.icon === NodeIconType.laptop && <FaLaptop />}
-          {node.icon === NodeIconType.folder && node.isOpen && <FaFolderOpen />}
-          {node.icon === NodeIconType.folder && !node.isOpen && <FaFolder />}
+          {node.icon === NodeIconType.folder &&
+            node.isOpen &&
+            ((node.isRootPackage && (
+              <FaFolderOpen style={{ color: 'orange' }} />
+            )) || <FaFolderOpen />)}
+          {node.icon === NodeIconType.folder &&
+            !node.isOpen &&
+            ((node.isRootPackage && (
+              <FaFolder style={{ color: 'orange' }} />
+            )) || <FaFolder />)}
         </NodeIcon>
 
         <Content role="button" onClick={() => handleToggle(node)}>

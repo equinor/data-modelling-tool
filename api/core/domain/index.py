@@ -17,6 +17,7 @@ class DocumentNode(NodeMixin):
         blueprint: Blueprint = None,
         parent: DocumentNode = None,
         is_contained=None,
+        is_root_package=False,
     ):
         self.data_source_id = data_source_id
         self.name = name
@@ -32,6 +33,7 @@ class DocumentNode(NodeMixin):
         if not is_contained:
             is_contained = False
         self.is_contained = is_contained
+        self.is_root_package = is_root_package
 
     @property
     def uid(self):
@@ -73,6 +75,7 @@ class DocumentNode(NodeMixin):
             "nodeType": "document-node",
             "children": [child.id for child in self.children],
             "type": "datasource" if not self.document else self.document.type,
+            "isRootPackage": self.is_root_package,
             "meta": {"menuItems": self.menu_items, "onSelect": self.on_select},
         }
         return result

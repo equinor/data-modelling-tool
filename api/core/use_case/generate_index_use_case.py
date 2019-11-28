@@ -163,14 +163,20 @@ class Tree:
         if not node.blueprint:
             raise EntityNotFoundException(uid=document.type)
 
-        # Packages should not open a tab on click
         if is_package:
+            # TODO: Fix this mess...
+            # Set Package isRoot attribute
+            if isinstance(document, Entity) or isinstance(document, dict):
+                node.is_root_package = document["isRoot"]
+            elif isinstance(document, DTO):
+                if isinstance(document.data, dict):
+                    node.is_root_package = document.isRoot
+                else:
+                    node.is_root_package = document.is_root
+            # Packages should not open a tab on click
             node.on_select = {}
 
         # Every node gets an delete and rename action
-        # node.menu_items.append(
-        #    get_rename_document_menu_item(data_source_id, start_path=parent_node.start_path, document=document)
-        # )
         node.menu_items.append(
             get_rename_menu_action(
                 data_source_id=data_source_id,
