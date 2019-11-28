@@ -2,9 +2,10 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "description": "",
-  "packages": [
+  "blueprints": [
     "CarPackage"
   ],
+  "entities": [],
   "models": [
     "SSR-DataSource/CarPackage/Car"
   ],

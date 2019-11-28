@@ -264,9 +264,12 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
-            for type in application.data["packages"]:
+            for type in application.data["blueprints"]:
                 root_package: DTO = self.document_repository.find({"name": type})
-                zip_package(zip_file, root_package, self.document_repository, f"api/home/blueprints/")
+                zip_package(zip_file, root_package, self.document_repository, "api/home/blueprints/")
+            for type in application.data["entities"]:
+                root_package: DTO = self.document_repository.find({"name": type})
+                zip_package(zip_file, root_package, self.document_repository, "api/home/blueprints/")
 
         memory_file.seek(0)
 

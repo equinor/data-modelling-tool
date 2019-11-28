@@ -30,19 +30,25 @@ app = create_app(Config)
 
 @app.cli.command()
 def init_application():
+    logger.info(f"Importing core packages from {Config.APPLICATION_HOME}")
+    logger.info("---------------------------------------------")
     for folder in Config.SYSTEM_FOLDERS:
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
 
-    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
+    logger.info(f"Importing blueprint packages from {Config.APPLICATION_HOME}/blueprints")
+    logger.info("---------------------------------------------")
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["blueprints"]:
         import_package(
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
 
-    logger.info(f"Importing demo entity package(s) {Config.DEMO_ENTITIES}")
-    for folder in Config.DEMO_ENTITIES:
+    logger.info(f"Importing entity packages from {Config.APPLICATION_HOME}/entities")
+    logger.info("---------------------------------------------")
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )
+    logger.info("---------------------------------------------")
     logger.info("Resetting the cache of generated blueprints")
     Factory.reset_cache()
 

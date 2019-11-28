@@ -19,12 +19,12 @@
     {
       "type": "string",
       "name": "input",
-      "description": "Reference to a Blueprint (Path without Datasource prefix)."
+      "description": "Reference to a Blueprint."
     },
     {
       "type": "string",
       "name": "output",
-      "description": "Reference to a Blueprint (Path without Datasource prefix)."
+      "description": "Reference to a Blueprint."
     },
     {
       "type": "string",

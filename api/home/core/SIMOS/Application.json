@@ -19,15 +19,23 @@
     },
     {
       "type": "string",
-      "name": "packages",
+      "name": "blueprints",
+      "label": "Exported Blueprints",
       "dimensions": "*",
-      "description": "Blueprint Packages to be internalized"
+      "description": "Blueprint Packages to be internalized. (Name of package)"
+    },
+    {
+      "type": "string",
+      "name": "entities",
+      "label": "Exported Entities",
+      "dimensions": "*",
+      "description": "Entity Packages to be internalized. (Name of package)"
     },
     {
       "type": "string",
       "name": "models",
       "dimensions": "*",
-      "description": "Models to create in application."
+      "description": "Models to create in application. (Fully qualified name of model)"
     },
     {
       "type": "system/SIMOS/Action",

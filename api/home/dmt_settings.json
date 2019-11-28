@@ -2,7 +2,8 @@
   "type": "system/SIMOS/Application",
   "name": "DMTAppSettings",
   "description": "",
-  "packages": [],
+  "blueprints": [],
+  "entities": [],
   "models": [
     "system/SIMOS/Blueprint",
     "system/SIMOS/Application",

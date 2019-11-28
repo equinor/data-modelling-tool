@@ -2,10 +2,11 @@
   "type": "system/SIMOS/Application",
   "name": "DMTApplicationSettings",
   "description": "",
-  "packages": [
+  "blueprints": [
     "CarPackage",
     "TodoPackage"
   ],
+  "entities": ["CarPackage"],
   "models": [
     "system/DMT/Entity"
   ],
