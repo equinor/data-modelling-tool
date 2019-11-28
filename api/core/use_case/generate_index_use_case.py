@@ -13,6 +13,7 @@ from core.domain.storage_recipe import StorageRecipe
 from core.enums import DMT, SIMOS
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.use_case.utils.find_parent import find_parent
 from core.use_case.utils.generate_index_menu_actions import (
     get_contained_menu_action,
     get_delete_document_menu_item,
@@ -374,6 +375,11 @@ class GenerateIndexUseCase:
         ).to_dict()
 
         del data[data_source_id]
+
+        for root_package in self.document_repository.find(filter={"isRoot": True}, single=False):
+            parent_id = find_parent(root_package, document_id, self.document_repository)
+            if parent_id:
+                data[document_id]["parentId"] = parent_id
 
         # Only return sub-part
         if attribute:
