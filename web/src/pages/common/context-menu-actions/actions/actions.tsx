@@ -50,7 +50,8 @@ export const Action = (
   action: any,
   node: TreeNodeRenderProps,
   setShowModal: Function,
-  createNodes: Function
+  createNodes: Function,
+  layout: any
 ) => {
   let entity: any = {}
   const methodToRun: string = action.data.runnable.method
@@ -118,7 +119,13 @@ export const Action = (
         }
         // @ts-ignore
         const method: Method = Actions[methodToRun]
-        method({ input, output, updateDocument })
+
+        const handleUpdate = (output: Output) => {
+          updateDocument(output)
+          layout.refresh(output.id)
+        }
+
+        method({ input, output, updateDocument: handleUpdate })
       }
 
       await executeAction()
