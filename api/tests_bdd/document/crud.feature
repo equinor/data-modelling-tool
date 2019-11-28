@@ -158,6 +158,25 @@ Feature: Document 2
     }
     """
 
+    Scenario: Get attribute
+    Given I access the resource url "/api/v2/documents/test-source-name/1?attribute=content.0"
+    And data modelling tool templates are imported
+    When I make a "GET" request
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+       "blueprint":{
+          "name":"Blueprint",
+          "type":"system/SIMOS/Blueprint"
+       },
+       "document":{
+          "type": "system/SIMOS/Blueprint",
+          "name": "TestContainer"
+       }
+    }
+    """
+
   Scenario: Update document (only contained)
     Given i access the resource url "/api/v2/documents/data-source-name/1"
     And data modelling tool templates are imported

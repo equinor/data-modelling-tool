@@ -1,4 +1,4 @@
-from core.domain.models import Blueprint
+from core.domain.dynamic_models import Blueprint
 from core.domain.dto import DTO
 from core.utility import get_document_by_ref
 from functools import lru_cache
@@ -11,6 +11,7 @@ def get_blueprint(type: str) -> Blueprint:
     if not document:
         return None
     return document.data
+
 
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def get_entity(type: str) -> DTO:
