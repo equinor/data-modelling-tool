@@ -66,7 +66,6 @@ export function getPropsByAttribute(
       !blueprint.isPrimitive(blueprintAttr.type) &&
       blueprint.isArray(blueprintAttr)
     ) {
-      console.log(blueprint)
       const nameFromTypeSplit = blueprintAttr.type.split('/')
       const name = nameFromTypeSplit[nameFromTypeSplit.length - 1]
       const nestedBlueprint = props.blueprints.find(bp => bp.name === name)
@@ -81,7 +80,7 @@ export function getPropsByAttribute(
           document: ((props.document as any)[attributeName] as any)[
             attributeIndex
           ],
-          dtos: [],
+          dtos: props.dtos,
         }
       }
     }

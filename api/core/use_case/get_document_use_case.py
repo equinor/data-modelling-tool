@@ -1,5 +1,6 @@
 from typing import List
 
+from core.domain.dynamic_models import BlueprintAttribute
 from stringcase import snakecase, camelcase
 
 from core.domain.dto import DTO
@@ -10,7 +11,7 @@ from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_template import get_blueprint, get_entity
 
 # from dotted.collection import DottedDict
 
@@ -134,18 +135,28 @@ class GetDocumentUseCase(uc.UseCase):
         #     blueprint_data = blueprint.to_dict()
 
         children = []
-        self.add_children_types(children, blueprint.attributes)
+        dtos = []
+        self.add_children_types(children, dtos, blueprint.attributes)
 
-        return res.ResponseSuccess({"blueprint": blueprint_data, "document": data, "children": children})
+        return res.ResponseSuccess({"blueprint": blueprint_data, "document": data, "children": children, "dtos": dtos})
 
     # todo control recursive iterations iterations, decided by plugin?
-    def add_children_types(self, children, attributes):
+    def add_children_types(self, children, dtos, attributes):
         for attribute in attributes:
-            if isinstance(attribute, dict):
-                attribute_type = attribute["type"]
-            else:
-                attribute_type = attribute.type
+            attribute_type = attribute.type
+            self.add_dtos(dtos, attribute)
             if attribute_type not in PRIMITIVES:
                 child_blueprint = get_blueprint(attribute_type)
                 children.append(child_blueprint.to_dict())
-                self.add_children_types(children, child_blueprint.attributes)
+                self.add_children_types(children, dtos, child_blueprint.attributes)
+
+
+
+    def add_dtos(self, dtos, attribute: BlueprintAttribute):
+        if attribute.enum_type and len(attribute.enum_type) > 0:
+            enum_blueprint = get_entity(attribute.enum_type)
+            try:
+                dtos.append(enum_blueprint.to_dict(include_defaults=True))
+            except AttributeError:
+                print(f"failed to append enumType {attribute}")
+
