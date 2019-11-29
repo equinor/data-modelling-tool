@@ -108,7 +108,13 @@ class AddFileUseCase(uc.UseCase):
         storage_recipe: StorageRecipe = get_storage_recipe(parent_blueprint)
 
         if storage_recipe.is_contained(attribute, type):
-            getattr(parent_data, attribute).append(entity)
+            # only array types can be added from context menu.
+            # single types in tree can only be clicked.
+            if isinstance(parent_data, dict):
+                if attribute in parent_data:
+                    parent_data[attribute].append(entity)
+            else:
+                getattr(parent_data, attribute).append(entity)
             logger.info(f"Added contained document")
             self.document_repository.update(parent)
             return res.ResponseSuccess(parent)
