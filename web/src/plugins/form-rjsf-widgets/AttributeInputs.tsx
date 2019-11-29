@@ -122,7 +122,9 @@ export const BlueprintInput = (props: BlueprintInputProps) => {
   return (
     <DocumentFinderWidget
       value={displayValue}
-      onChange={(event: any) => onChange(attribute, event.target.value)}
+      onChange={(value: any) => {
+        onChange(attribute, value)
+      }}
       attributeInput={true}
       packagesOnly={false}
       title={''}

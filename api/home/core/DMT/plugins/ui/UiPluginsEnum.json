@@ -1,0 +1,17 @@
+{
+  "type": "system/SIMOS/Enum",
+  "name": "UiPluginsEnum",
+  "description": "This describes a list of attribute types",
+  "values": [
+    "",
+    "INDEX",
+    "EDIT_PLUGIN",
+    "PREVIEW"
+  ],
+  "labels": [
+    "",
+    "Index",
+    "Edit",
+    "Raw"
+  ]
+}

@@ -34,7 +34,8 @@ Feature: Index
             }
         ],
         "isRoot": true,
-        "storageRecipes": []
+        "storageRecipes": [],
+        "uiRecipes": []
     }
     """
 
@@ -57,7 +58,9 @@ Feature: Index
           "type": "string",
           "name": "extra"
         }
-      ]
+      ],
+      "storageRecipes": [],
+      "uiRecipes": []
     }
     """
 

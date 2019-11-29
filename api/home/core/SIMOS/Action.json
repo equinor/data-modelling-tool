@@ -31,5 +31,7 @@
       "name": "method",
       "description": "What method to call inside runnable.tsx"
     }
-  ]
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }

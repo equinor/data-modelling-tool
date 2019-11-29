@@ -24,7 +24,8 @@
       "type": "string",
       "name": "plugin",
       "optional": true,
-      "default": ""
+      "default": "",
+      "enumType": "system/DMT/plugins/ui/UiPluginsEnum"
     },
     {
       "type": "string",

@@ -24,12 +24,12 @@ describe('UtilIndexPluginTest', () => {
       expect(attributes.filter(filterIndex)).toMatchObject([])
     })
 
-    it('should not filter type', () => {
+    it('should filter type', () => {
       const filterIndex = UtilIndexPlugin.filterByIndexPlugin(null, undefined)
       const attributes = [
         createBlueprintAttribute('item', 'system/Blueprint', false),
       ]
-      expect(attributes.filter(filterIndex)).toMatchObject([])
+      expect(attributes.filter(filterIndex)).toMatchObject(attributes)
     })
 
     it('should filter array', () => {

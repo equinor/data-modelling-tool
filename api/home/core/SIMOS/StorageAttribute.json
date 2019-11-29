@@ -56,6 +56,7 @@
       "description": "WARNING: Change how the entity is stored. Changing this value will make current entities unavailable"
     }
   ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "plugin": "EDIT_PLUGIN",

@@ -28,13 +28,13 @@
       "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
       "name": "storageRecipes",
-      "optional": true
+      "optional": false
     },
     {
       "type": "system/SIMOS/UiRecipe",
       "dimensions": "*",
       "name": "uiRecipes",
-      "optional": true
+      "optional": false
     }
   ],
   "storageRecipes": [
@@ -136,12 +136,12 @@
         {
           "name": "uiRecipes",
           "type": "system/SIMOS/UiAttribute",
-          "contained": false
+          "contained": true
         },
         {
           "name": "storageRecipes",
           "type": "system/SIMOS/StorageAttribute",
-          "contained": false
+          "contained": true
         }
       ]
     }

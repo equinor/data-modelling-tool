@@ -31,5 +31,7 @@
       "name": "values",
       "dimensions": "*"
     }
-  ]
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }

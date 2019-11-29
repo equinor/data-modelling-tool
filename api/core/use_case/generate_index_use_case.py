@@ -13,6 +13,7 @@ from core.domain.storage_recipe import StorageRecipe
 from core.enums import DMT, SIMOS
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.use_case.utils.find_parent import find_parent
 from core.use_case.utils.generate_index_menu_actions import (
     get_contained_menu_action,
     get_delete_document_menu_item,
@@ -162,14 +163,20 @@ class Tree:
         if not node.blueprint:
             raise EntityNotFoundException(uid=document.type)
 
-        # Packages should not open a tab on click
         if is_package:
+            # TODO: Fix this mess...
+            # Set Package isRoot attribute
+            if isinstance(document, Entity) or isinstance(document, dict):
+                node.is_root_package = document["isRoot"]
+            elif isinstance(document, DTO):
+                if isinstance(document.data, dict):
+                    node.is_root_package = document.isRoot
+                else:
+                    node.is_root_package = document.is_root
+            # Packages should not open a tab on click
             node.on_select = {}
 
         # Every node gets an delete and rename action
-        # node.menu_items.append(
-        #    get_rename_document_menu_item(data_source_id, start_path=parent_node.start_path, document=document)
-        # )
         node.menu_items.append(
             get_rename_menu_action(
                 data_source_id=data_source_id,
@@ -374,6 +381,11 @@ class GenerateIndexUseCase:
         ).to_dict()
 
         del data[data_source_id]
+
+        for root_package in self.document_repository.find(filter={"isRoot": True}, single=False):
+            parent_id = find_parent(root_package, document_id, self.document_repository)
+            if parent_id:
+                data[document_id]["parentId"] = parent_id
 
         # Only return sub-part
         if attribute:

@@ -1,5 +1,6 @@
 from core.use_case.utils.create_entity import CreateEntity
 from typing import Dict
+import stringcase
 
 from core.domain.dto import DTO
 from core.domain.storage_recipe import StorageRecipe
@@ -81,12 +82,13 @@ class AddFileUseCase(uc.UseCase):
         name: str = request_object.name
         type: str = request_object.type
         description: str = request_object.description
-        attribute: str = request_object.attribute
-        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
+        attribute: str = stringcase.snakecase(request_object.attribute)
 
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
+
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
         parent_data = parent.data
 

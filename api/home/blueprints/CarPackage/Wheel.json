@@ -25,5 +25,7 @@
       "optional": false,
       "default": "120"
     }
-  ]
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }

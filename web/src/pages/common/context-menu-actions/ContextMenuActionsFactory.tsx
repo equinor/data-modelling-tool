@@ -31,10 +31,11 @@ interface CreateNodesProps {
   documentId: string
   nodeUrl: string
   node: TreeNodeRenderProps
+  overrideParentId?: string
 }
 
 const createNodes = (props: CreateNodesProps) => {
-  const { documentId, nodeUrl, node } = props
+  const { documentId, nodeUrl, node, overrideParentId } = props
   Api2.get({
     url: `${nodeUrl}/${documentId}`,
     onSuccess: result => {
@@ -43,9 +44,8 @@ const createNodes = (props: CreateNodesProps) => {
         new TreeNodeBuilderOld(node).build()
       )
       // TODO: Is it possible to move parent id to API? Seems hard.
-      const parentId = nodes[0]['parentId']
-        ? nodes[0]['parentId']
-        : node.nodeData.nodeId
+      const parentId =
+        overrideParentId || nodes[0]['parentId'] || node.nodeData.nodeId
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
       // Connect new nodes to parent in tree
@@ -79,7 +79,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return downloadAction(action)
     }
     case ContextMenuActions.RUNNABLE: {
-      return Action(action, node, setShowModal, createNodes)
+      return Action(action, node, setShowModal, createNodes, layout)
     }
 
     default:

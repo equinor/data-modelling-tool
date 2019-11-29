@@ -16,14 +16,14 @@ export type FormConfig = {
 export type IndexFilter = (attr: BlueprintAttribute) => boolean
 
 export function createFormConfigs(pluginProps: PluginProps): FormConfig {
-  const { document, blueprints, uiRecipe } = pluginProps
+  const { document, blueprints, uiRecipe, dtos } = pluginProps
   const blueprintType = pluginProps.blueprint
   const indexRecipe = BlueprintUtil.findRecipe(blueprintType.uiRecipes, 'INDEX')
 
   const blueprint = new Blueprint(blueprintType)
   const filter = filterAttributes(blueprint, uiRecipe, indexRecipe)
 
-  const blueprintProvider = new BlueprintProvider(blueprints)
+  const blueprintProvider = new BlueprintProvider(blueprints, dtos)
   const blueprintSchema = new BlueprintSchema(
     blueprintType,
     blueprintProvider,

@@ -18,6 +18,7 @@
       "name": "description"
     }
   ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "type": "system/SIMOS/UIRecipe",

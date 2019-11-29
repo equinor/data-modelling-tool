@@ -34,14 +34,10 @@ function updateDocument(output: Output) {
     url: `/api/v2/documents/${output.dataSource}/${output.id}`,
     data: output.entity,
     onSuccess: (response: any) => {
-      NotificationManager.success(
-        `updated document: ${output.path}/${output.entity.name}`
-      )
+      NotificationManager.success(`updated document: ${output.path}`)
     },
     onError: (error: any) => {
-      NotificationManager.error(
-        `failed to update document: ${output.path}/${output.entity.name}`
-      )
+      NotificationManager.error(`failed to update document: ${output.path}`)
     },
   })
 }
@@ -50,7 +46,8 @@ export const Action = (
   action: any,
   node: TreeNodeRenderProps,
   setShowModal: Function,
-  createNodes: Function
+  createNodes: Function,
+  layout: any
 ) => {
   let entity: any = {}
   const methodToRun: string = action.data.runnable.method
@@ -98,6 +95,7 @@ export const Action = (
           documentId: `${response.data.uid}`,
           nodeUrl: `/api/v3/index/${dataSource}`,
           node,
+          overrideParentId: formData.destination,
         })
 
         setShowModal(false)
@@ -117,7 +115,13 @@ export const Action = (
         }
         // @ts-ignore
         const method: Method = Actions[methodToRun]
-        method({ input, output, updateDocument })
+
+        async function handleUpdate(output: Output) {
+          await updateDocument(output)
+          layout.refresh(output.id)
+        }
+
+        method({ input, output, updateDocument: handleUpdate })
       }
 
       await executeAction()

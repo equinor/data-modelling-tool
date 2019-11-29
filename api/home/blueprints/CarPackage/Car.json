@@ -32,36 +32,13 @@
       "optional": true
     }
   ],
-  "storageRecipes": [
-    {
-      "name": "DefaultStorageRecipe",
-      "type": "system/SIMOS/StorageRecipe",
-      "description": "",
-      "attributes": [
-        {
-          "name": "wheels",
-          "type": "SSR-DataSource/CarPackage/Wheel",
-          "contained": false
-        },
-        {
-          "name": "engine",
-          "type": "SSR-DataSource/CarPackage/subdir/Engine",
-          "contained": true
-        }
-      ]
-    }
-  ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "EDIT_PLUGIN",
       "attributes": [
-        {
-          "name": "wheels",
-          "type": "system/SIMOS/UiAttribute",
-          "contained": true
-        }
       ]
     }
   ]

@@ -53,6 +53,7 @@
       "name": "widget",
       "description": "Widget for this property",
       "optional": true,
+      "enumType": "system/DMT/plugins/ui/edit/WidgetEnum",
       "default": ""
     },
     {
@@ -94,6 +95,7 @@
       "description": ""
     }
   ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "plugin": "EDIT_PLUGIN",
@@ -145,7 +147,7 @@
         {
           "name": "enumType",
           "type": "string",
-          "widget": "hidden"
+          "field": "hidden"
         },
         {
           "name": "label",
@@ -154,7 +156,7 @@
         },
         {
           "name": "widget",
-          "type": "system/SIMOS/UiAttribute",
+          "type": "string",
           "description": "Supported: \"textarea\" | \"hidden\""
         },
         {
