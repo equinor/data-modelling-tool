@@ -4,7 +4,7 @@ import { UiRecipe } from './types'
 
 const INDEX_PRIMITIVE_CONTAINED = false
 const INDEX_ARRAY_CONTAINED = true
-const INDEX_TYPE_CONTAINED = false
+const INDEX_TYPE_CONTAINED = true
 
 export class UtilIndexPlugin {
   /**

@@ -6,7 +6,7 @@ PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 INDEX_PRIMITIVE_CONTAINED = False
 INDEX_ARRAY_CONTAINED = True
-INDEX_TYPE_CONTAINED = False
+INDEX_TYPE_CONTAINED = True
 
 
 class RecipeAttribute:
