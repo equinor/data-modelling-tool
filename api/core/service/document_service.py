@@ -49,4 +49,4 @@ class DocumentService:
     @staticmethod
     def get_by_uid(document_uid: UUID, document_repository: DocumentRepository) -> DTO:
         adict = get_complete_document(document_uid, document_repository)
-        return DTO(date=adict, uid=document_uid)
+        return DTO(data=adict, uid=document_uid)
