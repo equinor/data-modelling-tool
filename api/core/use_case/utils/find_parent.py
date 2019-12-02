@@ -18,8 +18,11 @@ def find_parent(document, target_id, document_repository):
         is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
         if attribute.get("dimensions", "") == "*":
             if not is_contained_in_storage:
-                if hasattr(document.data, name):
-                    references = getattr(document.data, name)
+                data = document.data
+                if not isinstance(data, dict):
+                    data = data.to_dict()
+                if name in data:
+                    references = data[name]
                     for reference in references:
                         document_reference: DTO = document_repository.get(reference["_id"])
                         document_references.append(document_reference)
