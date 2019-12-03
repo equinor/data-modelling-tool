@@ -1943,6 +1943,13 @@
     "@types/prop-types" "*"
     "@types/react" "*"
 
+"@types/react-table@^6.8.5":
+  version "6.8.5"
+  resolved "https://registry.yarnpkg.com/@types/react-table/-/react-table-6.8.5.tgz#deb2bf2fcedcfb81e9020edbb7df0d8459ca348b"
+  integrity sha512-ueCsAadG1IwuuAZM+MWf2SoxbccSWweyQa9YG6xGN5cOVK3SayPOJW4MsUHGpY0V/Q+iZWgohpasliiao29O6g==
+  dependencies:
+    "@types/react" "*"
+
 "@types/react@*", "@types/react@^16.8.23":
   version "16.9.2"
   resolved "https://registry.yarnpkg.com/@types/react/-/react-16.9.2.tgz#6d1765431a1ad1877979013906731aae373de268"
@@ -10691,6 +10698,11 @@ react-syntax-highlighter@^8.0.1:
     lowlight "~1.9.1"
     prismjs "^1.8.4"
     refractor "^2.4.1"
+
+react-table@^7.0.0-beta.23:
+  version "7.0.0-beta.23"
+  resolved "https://registry.yarnpkg.com/react-table/-/react-table-7.0.0-beta.23.tgz#ceb1efa8487671d08897b51d39dffc098f789dbb"
+  integrity sha512-2Lr5xSgvwA+4eCuR2zyhCgpcxmD5dvssFtSI+wXTsC7roScmnc5FqSI3utvF2dY91rc6y9oeKtNKdNl88oGqFw==
 
 react-test-renderer@^16.8.6:
   version "16.9.0"

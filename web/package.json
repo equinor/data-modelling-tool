@@ -24,6 +24,7 @@
     "typescript": "^3.5.2",
     "object-path": "0.11.4",
     "react-collapsed": "2.2.2",
+    "react-table": "^7.0.0-beta.23",
     "victory": "33.1.1"
   },
   "scripts": {
@@ -79,6 +80,7 @@
     "@types/react-beautiful-dnd": "^11.0.3",
     "@types/react-dom": "^16.8.4",
     "@types/react-jsonschema-form": "^1.6.2",
+    "@types/react-table": "^6.8.5",
     "@types/styled-components": "^4.1.18",
     "@types/object-path": "^0.11.0",
     "eslint-config-prettier": "^6.0.0",
