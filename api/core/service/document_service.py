@@ -1,14 +1,16 @@
 from typing import Dict
 from uuid import UUID
-
+from dotted.collection import DottedDict
 from stringcase import snakecase, camelcase
 from core.domain.dynamic_models import StorageRecipe
 from core.domain.dto import DTO
-from core.domain.schema import Factory
 from core.repository.interface.document_repository import DocumentRepository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.use_case.utils.get_document_children import get_document_children
+from core.use_case.utils.get_data_always_as_dict import get_data_always_as_dict
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
+from utils.logging import logger
 
 
 def get_complete_document(document_uid: UUID, document_repository: DocumentRepository) -> Dict:
@@ -45,8 +47,25 @@ def get_complete_document(document_uid: UUID, document_repository: DocumentRepos
     return result
 
 
+def remove_children(document: DTO, document_repository: DocumentRepository):
+    children = get_document_children(document, document_repository)
+    for child in children:
+        document_repository.delete(DTO(uid=child.uid, data={}))
+        logger.info(f"Removed child document '{child.uid}'")
+
+
 class DocumentService:
     @staticmethod
     def get_by_uid(document_uid: UUID, document_repository: DocumentRepository) -> DTO:
         adict = get_complete_document(document_uid, document_repository)
         return DTO(data=adict, uid=document_uid)
+
+    @staticmethod
+    def remove_attribute(parent: DTO, attribute: str, document_repository: DocumentRepository):
+        parent = get_data_always_as_dict(parent)
+        dotted_data = DottedDict(parent.data)
+        attribute_document = DTO(dotted_data[attribute])
+        del dotted_data[attribute]
+        document_repository.update(DTO(dotted_data.to_python(), uid=parent.uid))
+        remove_children(attribute_document, document_repository)
+        logger.info(f"Removed attribute '{attribute}' from '{parent.uid}'")

@@ -7,6 +7,7 @@ from core.serializers.dto_json_serializer import DTOSerializer
 from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
+from core.use_case.remove_attribute_use_case import RemoveAttributeUseCase, RemoveAttributeRequestObject
 from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 from core.use_case.rename_file_use_case import RenameFileUseCase, RenameFileRequestObject
@@ -41,6 +42,21 @@ def remove_file(data_source_id: str):
     document_repository = get_repository(db)
     use_case = RemoveFileUseCase(document_repository=document_repository)
     request_object = RemoveFileRequestObject.from_dict(request_data)
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=AddFileSerializer),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type],
+    )
+
+
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-attribute", methods=["POST"])
+def remove_attribute(data_source_id: str):
+    db = DataSource(id=data_source_id)
+    request_data = request.get_json()
+    document_repository = get_repository(db)
+    use_case = RemoveAttributeUseCase(document_repository=document_repository)
+    request_object = RemoveAttributeRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=AddFileSerializer),
