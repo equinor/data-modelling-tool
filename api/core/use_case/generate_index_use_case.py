@@ -133,10 +133,13 @@ class Tree:
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
     ):
         for index, instance in enumerate(values):
-            if isinstance(instance, dict):
-                self.generate_contained_node(
-                    document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
-                )
+            data = instance
+            if not isinstance(instance, dict):
+                data = instance.to_dict()
+
+            self.generate_contained_node(
+                document_id, document_path, data, index, data_source_id, attribute_type, parent_node, True
+            )
 
     def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, app_settings: Dict):
 
