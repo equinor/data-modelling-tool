@@ -39,6 +39,7 @@ export type UiRecipe = {
   type: string
   description?: string
   plugin: string
+  hideTab?: boolean
   attributes: any[]
 }
 
