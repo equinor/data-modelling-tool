@@ -1,0 +1,45 @@
+{
+    "name": "RunResult",
+    "description": "",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "variable name for named accessing",
+            "default": "runResult",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "instance description",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string"
+        },
+        {
+            "name": "safetyFactor",
+            "type": "number",
+            "description": "Line safety factor",
+            "default": "0.0",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "signals",
+            "type": "SSR-DataSource/marmo/containers/EquallySpacedSignal",
+            "description": "",
+            "dimensions": "*",
+            "contained": true,
+            "optional": false
+        }
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

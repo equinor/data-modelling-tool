@@ -24,6 +24,7 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_runnable_menu_action,
     get_create_root_package_menu_item,
     get_rename_menu_action,
+    get_remove_attribute_menu_item,
 )
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
@@ -106,6 +107,11 @@ class Tree:
             menu_items=[],
             is_contained=True,
         )
+
+        node.menu_items.append(
+            get_remove_attribute_menu_item(data_source_id, parent_id=parent_node.uid, attribute=".".join(current_path))
+        )
+
         blueprint = get_blueprint(attribute_type)
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
         for attribute in get_attributes_with_reference(blueprint):
@@ -133,10 +139,13 @@ class Tree:
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
     ):
         for index, instance in enumerate(values):
-            if isinstance(instance, dict):
-                self.generate_contained_node(
-                    document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
-                )
+            data = instance
+            if not isinstance(instance, dict):
+                data = instance.to_dict()
+
+            self.generate_contained_node(
+                document_id, document_path, data, index, data_source_id, attribute_type, parent_node, True
+            )
 
     def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, app_settings: Dict):
 

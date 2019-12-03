@@ -34,6 +34,12 @@
       "default": ""
     },
     {
+      "name": "hideTab",
+      "type": "boolean",
+      "optional": true,
+      "default": false
+    },
+    {
       "type": "system/SIMOS/UiAttributeOption",
       "name": "options",
       "dimensions": "*",

@@ -46,7 +46,7 @@ class GetDocumentUseCase(uc.UseCase):
 
         document = document_service.get_by_uid(document_uid=document_id, document_repository=self.document_repository)
 
-        data = document.data.to_dict()
+        data = document.data
 
         if attribute:
             dotted_data = DottedDict(data)

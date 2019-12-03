@@ -6,12 +6,14 @@
     "",
     "INDEX",
     "EDIT_PLUGIN",
-    "PREVIEW"
+    "PREVIEW",
+    "EXTERNAL"
   ],
   "labels": [
     "",
     "Index",
     "Edit",
-    "Raw"
+    "Raw",
+    "External"
   ]
 }

@@ -51,6 +51,18 @@ def get_delete_document_menu_item(data_source_id: str, parent_id: str, parent_at
     }
 
 
+def get_remove_attribute_menu_item(data_source_id: str, parent_id: str, attribute: str):
+    return {
+        "label": "Remove",
+        "action": "DELETE",
+        "data": {
+            "url": f"/api/v2/explorer/{data_source_id}/remove-attribute",
+            "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
+            "request": {"parentId": parent_id, "attribute": attribute},
+        },
+    }
+
+
 def get_dynamic_create_menu_item(
     data_source_id: str, name: str, type: str, parent_id: str = None, attribute: str = "content"
 ):

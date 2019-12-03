@@ -4,7 +4,9 @@
   "description": "",
   "packages": [
     "CarPackage",
-    "TodoPackage"
+    "TodoPackage",
+    "marmo",
+    "mooringSRS"
   ],
   "models": [
     "system/DMT/Entity"

@@ -15,15 +15,15 @@ export class GenerateUiRecipeTabs {
 
   private uiRecipeTabs: UiRecipe[] = []
 
-  constructor(uiRecipes: UiRecipe[], defaultTabs = getDefaultTabs()) {
-    this.uiRecipeTabs = defaultTabs
+  constructor(uiRecipes: UiRecipe[], defaultTabs: UiRecipe[] | undefined) {
+    this.uiRecipeTabs = defaultTabs ? defaultTabs : getDefaultTabs([])
 
     if (uiRecipes) {
       uiRecipes.forEach((uiRecipe: UiRecipe) => {
         const existingIndex = this.uiRecipeTabs.findIndex(
           (tab: UiRecipe) => tab.name === uiRecipe.name
         )
-        if (this.isUiPlugin(uiRecipe.plugin)) {
+        if (this.isUiPlugin(uiRecipe.plugin) && !uiRecipe.hideTab) {
           if (existingIndex > -1) {
             this.replaceUiRecipe(existingIndex, uiRecipe)
           } else {
@@ -55,9 +55,27 @@ function createUiRecipe(name: string, plugin: string): UiRecipe {
   return { name, plugin, attributes: [], type: 'system/SIMOS/UiRecipe' }
 }
 
-export function getDefaultTabs(): UiRecipe[] {
-  return [
-    createUiRecipe('Raw', RegisteredPlugins.PREVIEW),
-    createUiRecipe('Edit', RegisteredPlugins.EDIT_PLUGIN),
-  ]
+export function getDefaultTabs(uiRecipes: UiRecipe[]): UiRecipe[] {
+  const defaultTabs: UiRecipe[] = []
+  addDefaultTab(defaultTabs, uiRecipes, RegisteredPlugins.PREVIEW, 'Raw')
+  addDefaultTab(defaultTabs, uiRecipes, RegisteredPlugins.EDIT_PLUGIN, 'Edit')
+  return defaultTabs
+}
+
+function addDefaultTab(
+  defaultTabs: UiRecipe[],
+  recipes: UiRecipe[],
+  plugin: RegisteredPlugins,
+  name: string
+): void {
+  const recipe: UiRecipe | undefined = recipes.find(
+    recipe => recipe.name === name
+  )
+  if (recipe) {
+    if (!recipe.hideTab) {
+      defaultTabs.push(createUiRecipe(name, plugin))
+    }
+  } else {
+    defaultTabs.push(createUiRecipe(name, plugin))
+  }
 }

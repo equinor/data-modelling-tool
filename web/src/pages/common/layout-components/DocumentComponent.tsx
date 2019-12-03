@@ -10,8 +10,7 @@ import pluginHook from '../../../external-plugins/index'
 import { EditPlugin, ViewPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { PluginProps, UiRecipe } from '../../../plugins/types'
-import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
-import { getPropsByAttribute } from '../../../plugins/pluginUtils'
+import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -43,20 +42,6 @@ const View = (props: any) => {
     blueprints,
     uiRecipe,
     dtos,
-  }
-
-  //@todo temporary code to pick nested blueprint.
-  const hasAttributePath = dataUrl.indexOf('?attribute=') > -1
-  if (hasAttributePath) {
-    const attribute = dataUrl.split('?attribute=')[1]
-    const nestedPluginProps = getPropsByAttribute(
-      pluginProps,
-      attribute,
-      uiRecipe
-    )
-    if (nestedPluginProps) {
-      pluginProps = nestedPluginProps
-    }
   }
 
   switch (uiRecipe.plugin) {
@@ -105,7 +90,8 @@ const View = (props: any) => {
 
 const ViewList = (props: PluginProps) => {
   const generateUiRecipeTabs = new GenerateUiRecipeTabs(
-    props.blueprint.uiRecipes
+    props.blueprint.uiRecipes,
+    getDefaultTabs(props.blueprint.uiRecipes)
   )
   const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
   return (
