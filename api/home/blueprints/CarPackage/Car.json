@@ -35,6 +35,14 @@
   "storageRecipes": [],
   "uiRecipes": [
     {
+      "name": "Raw",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "PREVIEW",
+      "hideTab": true,
+      "attributes": [
+      ]
+    },
+    {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "EDIT_PLUGIN",
