@@ -46,7 +46,7 @@
       "type": "boolean",
       "name": "optional",
       "default": false,
-      "optional": true
+      "optional": "true"
     },
     {
       "type": "boolean",
