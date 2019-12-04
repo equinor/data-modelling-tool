@@ -45,7 +45,15 @@
         "title": "Collection"
       }
     },
-    "required": ["name", "database", "collection", "host", "documentType", "port", "tls"]
+    "required": [
+      "name",
+      "database",
+      "collection",
+      "host",
+      "documentType",
+      "port",
+      "tls"
+    ]
   },
   "uiSchema": {
     "password": {

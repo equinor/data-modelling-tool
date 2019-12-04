@@ -1,1 +1,34 @@
-{"name":"SimpleString","description":"String data.","type":"system/SIMOS/Blueprint","attributes":[{"name":"name","type":"string","description":"variable name for named accessing","default":"simpleString","contained":true,"optional":false},{"name":"description","type":"string","description":"instance description","default":"","contained":true,"optional":false},{"name":"type","type":"string"},{"name":"value","type":"string","description":"string.","default":"","contained":true,"optional":false}],"storageRecipes":[],"uiRecipes":[]}
+{
+  "name": "SimpleString",
+  "description": "String data.",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "type": "string",
+      "description": "variable name for named accessing",
+      "default": "simpleString",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    { "name": "type", "type": "string" },
+    {
+      "name": "value",
+      "type": "string",
+      "description": "string.",
+      "default": "",
+      "contained": true,
+      "optional": false
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

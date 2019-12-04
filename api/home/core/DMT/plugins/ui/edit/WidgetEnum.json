@@ -2,14 +2,6 @@
   "type": "system/SIMOS/Enum",
   "name": "WidgetEnum",
   "description": "This describes a list of attribute types",
-  "values": [
-    "",
-    "textarea",
-    "hidden"
-  ],
-  "labels": [
-    "",
-    "Textarea",
-    "Hidden"
-  ]
+  "values": ["", "textarea", "hidden"],
+  "labels": ["", "Textarea", "Hidden"]
 }

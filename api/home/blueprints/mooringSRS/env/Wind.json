@@ -1,1 +1,42 @@
-{"name":"Wind","description":"Wind model.","type":"system/SIMOS/Blueprint","attributes":[{"name":"name","type":"string","description":"variable name for named accessing","default":"wind","contained":true,"optional":false},{"name":"description","type":"string","description":"instance description","default":"","contained":true,"optional":false},{"name":"type","type":"string"},{"name":"windDirection","type":"number","description":"Wind direction -comming from- in [deg].","default":"0.0","contained":true,"optional":false},{"name":"windVelocity","type":"number","description":"Average wind speed 10[m] above mean water surface in [m/s].","default":"0.0","contained":true,"optional":false}],"storageRecipes":[],"uiRecipes":[]}
+{
+  "name": "Wind",
+  "description": "Wind model.",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "type": "string",
+      "description": "variable name for named accessing",
+      "default": "wind",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    { "name": "type", "type": "string" },
+    {
+      "name": "windDirection",
+      "type": "number",
+      "description": "Wind direction -comming from- in [deg].",
+      "default": "0.0",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "windVelocity",
+      "type": "number",
+      "description": "Average wind speed 10[m] above mean water surface in [m/s].",
+      "default": "0.0",
+      "contained": true,
+      "optional": false
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

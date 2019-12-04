@@ -24,9 +24,6 @@
       "name": "completed"
     }
   ],
-  "storageRecipes": [
-  ],
-  "uiRecipes": [
-  ]
+  "storageRecipes": [],
+  "uiRecipes": []
 }
-

@@ -39,16 +39,13 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "PREVIEW",
       "hideTab": true,
-      "attributes": [
-      ]
+      "attributes": []
     },
     {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "EDIT_PLUGIN",
-      "attributes": [
-      ]
+      "attributes": []
     }
   ]
 }
-
