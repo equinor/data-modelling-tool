@@ -10,6 +10,7 @@ from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRo
 from core.use_case.remove_attribute_use_case import RemoveAttributeUseCase, RemoveAttributeRequestObject
 from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
+from core.use_case.rename_attribute_use_case import RenameAttributeUseCase, RenameAttributeRequestObject
 from core.use_case.rename_file_use_case import RenameFileUseCase, RenameFileRequestObject
 
 blueprint = Blueprint("explorer", __name__)
@@ -62,6 +63,19 @@ def remove_attribute(data_source_id: str):
         json.dumps(response.value, cls=AddFileSerializer),
         mimetype="application/json",
         status=STATUS_CODES[response.type],
+    )
+
+
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/rename-attribute", methods=["PUT"])
+def rename_attribute(data_source_id: str):
+    db = DataSource(id=data_source_id)
+    request_data = request.get_json()
+    document_repository = get_repository(db)
+    use_case = RenameAttributeUseCase(document_repository=document_repository)
+    request_object = RenameAttributeRequestObject.from_dict(request_data)
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
     )
 
 

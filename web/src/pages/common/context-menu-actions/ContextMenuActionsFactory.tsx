@@ -70,7 +70,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return createAction(action, node, setShowModal, showError, createNodes)
     }
     case ContextMenuActions.UPDATE: {
-      return updateAction(action, node, setShowModal, showError)
+      return updateAction(action, node, setShowModal, showError, createNodes)
     }
     case ContextMenuActions.DELETE: {
       return deleteAction(action, node, setShowModal, showError, layout)
