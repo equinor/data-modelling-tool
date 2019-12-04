@@ -50,11 +50,18 @@ class CreateEntity:
         # @todo add exception handling
         default_value = attr.default
         type = attr.type
+
         if type == "boolean":
+            if default_value == '':
+               return False
             return bool(default_value)
         if type == "number":
+            if default_value == '':
+                return 0.0
             return float(default_value)
         if type == "integer":
+            if default_value == '':
+                return 0
             return int(default_value)
         return default_value
 
