@@ -40,18 +40,6 @@
       "plugin": "PREVIEW",
       "hideTab": true,
       "attributes": []
-    },
-    {
-      "name": "Plot",
-      "type": "system/SIMOS/UiRecipe",
-      "plugin": "PLOT",
-      "attributes": [
-        {
-          "type": "system/SIMOS/UiAttribute",
-          "name": "engine",
-          "uiRecipe": "EnginePlot"
-        }
-      ]
     }
   ]
 }

@@ -75,6 +75,24 @@
           "mapping": "line"
         }
       ]
+    },
+    {
+      "name": "EngineTable",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "TABLE",
+      "description": "",
+      "attributes": [
+        {
+          "name": "value1",
+          "type": "system/SIMOS/UiAttribute",
+          "mapping": "column"
+        },
+        {
+          "name": "value2",
+          "type": "system/SIMOS/UiAttribute",
+          "mapping": "column"
+        }
+      ]
     }
   ]
 }
