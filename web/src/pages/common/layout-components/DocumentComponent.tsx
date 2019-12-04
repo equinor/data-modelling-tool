@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactJsonSchemaWrapper, {
   onFormSubmit,
 } from '../form/ReactJsonSchemaWrapper'
@@ -12,6 +12,7 @@ import { LayoutContext } from '../golden-layout/LayoutContext'
 import { PluginProps, UiRecipe } from '../../../plugins/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
 import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
+import Api2 from '../../../api/Api2'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -47,6 +48,19 @@ const View = (props: any) => {
     dtos,
   }
 
+  const [rootDocument, setRootDocument] = useState(undefined)
+
+  useEffect(() => {
+    if (!rootDocument && dataUrl.indexOf('.') > -1) {
+      //fetch root
+      const url = dataUrl.split('?')[0]
+      Api2.fetchDocument({
+        dataUrl: url,
+        onSuccess: (data: any) => setRootDocument(data.document),
+      })
+    }
+  })
+
   switch (uiRecipe.plugin) {
     case RegisteredPlugins.PREVIEW:
       return <BlueprintPreview {...pluginProps} />
@@ -61,6 +75,7 @@ const View = (props: any) => {
             return (
               <EditPlugin
                 {...pluginProps}
+                rootDocument={rootDocument}
                 onSubmit={onFormSubmit({ attribute: null, dataUrl, layout })}
               />
             )

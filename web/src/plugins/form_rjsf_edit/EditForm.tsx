@@ -4,12 +4,14 @@ import { PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { Blueprint, KeyValue } from '../Blueprint'
+import { Blueprint as BlueprintType } from '../types'
 
-interface Props extends PluginProps {
+export interface EditPluginProps extends PluginProps {
   onSubmit: (data: any) => void
+  rootDocument: BlueprintType | undefined
 }
 
-export const EditPlugin = (props: Props) => {
+export const EditPlugin = (props: EditPluginProps) => {
   const blueprint = new Blueprint(props.blueprint)
   const config: FormConfig = createFormConfigs(props)
   const formData = config.data

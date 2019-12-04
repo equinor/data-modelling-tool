@@ -48,16 +48,16 @@ export class Blueprint implements IBlueprint {
     return attr.dimensions === '*'
   }
 
+  public getBlueprintType(): BlueprintType {
+    return this.blueprintType
+  }
+
   public getAttribute(name: string): BlueprintAttribute | undefined {
     return this.attributes[name]
   }
 
   public getUiAttributes(uiRecipeName: string): KeyValue | undefined {
     return this.uiRecipes[uiRecipeName]
-  }
-
-  public getBlueprintType() {
-    return this.blueprintType
   }
 
   isPrimitive(type: string): boolean {

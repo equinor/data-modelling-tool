@@ -28,20 +28,23 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   private uiRecipe: UiRecipe
   private blueprintProvider: BlueprintProvider
   private filter: (attr: BlueprintAttribute) => boolean
+  private rootBlueprint: BlueprintType | undefined
 
   constructor(
-    blueprint: BlueprintType,
+    blueprintType: BlueprintType,
     blueprintProvider: BlueprintProvider,
     uiRecipe: UiRecipe,
-    filter: IndexFilter
+    filter: IndexFilter,
+    rootBlueprint: BlueprintType | undefined
   ) {
-    super(blueprint)
+    super(blueprintType)
     this.filter = filter
     this.uiRecipe = uiRecipe
+    this.rootBlueprint = rootBlueprint
     this.blueprintProvider = blueprintProvider
     const path = 'properties'
     objectPath.set(this.schema, 'required', this.getRequired(this))
-    this.processAttributes(path, this, blueprint.attributes)
+    this.processAttributes(path, this, blueprintType.attributes)
   }
 
   private processAttributes(
@@ -55,9 +58,9 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
         const newPath = this.createAttributePath(path, attr.name)
 
         if (this.isPrimitive(attr.type)) {
-          this.appendPrimitive(newPath, attr)
+          this.appendPrimitive(newPath, blueprint, attr)
         } else {
-          this.processNested(newPath, attr)
+          this.processNested(newPath, blueprint, attr)
         }
       })
   }
@@ -66,9 +69,13 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     return path.length === 0 ? name : path + `.${name}`
   }
 
-  private processNested(path: string, attr: BlueprintAttribute): void {
+  private processNested(
+    path: string,
+    blueprint: Blueprint,
+    attr: BlueprintAttribute
+  ): void {
     if (this.isPrimitive(attr.type)) {
-      this.appendPrimitive(path, attr)
+      this.appendPrimitive(path, blueprint, attr)
     } else {
       const nestedBlueprintType:
         | BlueprintType
@@ -106,22 +113,44 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     }
   }
 
-  private appendPrimitive(path: string, attr: BlueprintAttribute) {
+  private appendPrimitive(
+    path: string,
+    blueprint: Blueprint,
+    attr: BlueprintAttribute
+  ) {
     if (this.isArray(attr)) {
       objectPath.set(this.schema, path, {
         type: 'array',
-        items: this.createSchemaProperty(attr),
+        items: this.createSchemaProperty(blueprint, attr),
       })
     } else {
-      objectPath.set(this.schema, path, this.createSchemaProperty(attr))
+      objectPath.set(
+        this.schema,
+        path,
+        this.createSchemaProperty(blueprint, attr)
+      )
     }
   }
 
-  private createSchemaProperty(attr: BlueprintAttribute): SchemaProperty {
+  private createSchemaProperty(
+    blueprint: Blueprint,
+    attr: BlueprintAttribute
+  ): SchemaProperty {
+    let defaultValue: any = attr.default
+    if (defaultValue) {
+      if (attr.type === 'boolean') {
+        defaultValue = defaultValue === 'true' ? true : false
+      }
+      if (attr.type === 'integer' || attr.type === 'number') {
+        defaultValue = Number(defaultValue)
+      }
+    }
+
     let schemaProperty: SchemaProperty = {
       type: attr.type,
+      default: defaultValue,
     }
-    this.addEnumToProperty(schemaProperty, attr)
+    this.addEnumToProperty(blueprint, schemaProperty, attr)
     return schemaProperty
   }
 
@@ -142,14 +171,43 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   }
 
   private addEnumToProperty(
+    blueprint: Blueprint,
     property: SchemaProperty,
     attr: BlueprintAttribute
   ): void {
+    const attrBlueprintName = blueprint.getBlueprintType().name
+    if (
+      this.rootBlueprint &&
+      attr.name === 'name' &&
+      ['BlueprintAttribute', 'UiAttribute', 'StorageAttribute'].includes(
+        attrBlueprintName
+      )
+    ) {
+      const validNames = this.rootBlueprint.attributes.map(
+        (attr: BlueprintAttribute) => attr.name
+      )
+      //create an enum for valid names.
+      property.title = 'name'
+      property.type = 'string'
+      property.default = ''
+
+      // add empty option.
+      property.anyOf = ['']
+        .concat(validNames)
+        .map((value: any, index: number) => {
+          return {
+            type: 'string',
+            title: value,
+            enum: [value],
+          }
+        })
+    }
+
     //@todo pass uiAttribute to only add enum if desired?
-    if (attr.enumType && attr.name !== 'type') {
+    else if (attr.enumType && attr.name !== 'type') {
       const dto = this.blueprintProvider.getDtoByType(attr.enumType)
       if (dto) {
-        property.title = dto.data.name
+        property.title = 'name'
         property.type = 'string'
         property.default = ''
         property.anyOf = dto.data.values.map((value: any, index: number) => {
