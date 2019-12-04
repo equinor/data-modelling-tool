@@ -7,7 +7,7 @@ import FetchDocument from '../utils/FetchDocument'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
-import { EditPlugin, ViewPlugin } from '../../../plugins'
+import { EditPlugin, PlotPlugin, ViewPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { PluginProps, UiRecipe } from '../../../plugins/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
@@ -21,6 +21,7 @@ export enum RegisteredPlugins {
   EDIT_PLUGIN = 'EDIT_PLUGIN',
   EDIT = 'EDIT',
   VIEW = 'VIEW',
+  PLOT = 'PLOT',
   EXTERNAL = 'EXTERNAL',
 }
 
@@ -77,6 +78,8 @@ const View = (props: any) => {
           uiRecipe={uiRecipe.name}
         />
       )
+    case RegisteredPlugins.PLOT:
+      return <PlotPlugin {...pluginProps} />
     case RegisteredPlugins.EXTERNAL:
       const ExternalPlugin = pluginHook(uiRecipe)
       if (ExternalPlugin) {

@@ -20,10 +20,15 @@
       "default": "SSR-DataSource/CarPackage/Wheel"
     },
     {
-      "type": "string",
+      "type": "number",
       "name": "diameter",
       "optional": false,
       "default": "120"
+    },
+    {
+      "name": "pressure",
+      "type": "number",
+      "optional": false
     }
   ],
   "storageRecipes": [],

@@ -93,6 +93,11 @@
       "default": false,
       "optional": true,
       "description": ""
+    },
+    {
+      "name": "mapping",
+      "type": "string",
+      "optional": true
     }
   ],
   "storageRecipes": [],

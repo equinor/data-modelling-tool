@@ -56,6 +56,10 @@ export class Blueprint implements IBlueprint {
     return this.uiRecipes[uiRecipeName]
   }
 
+  public getBlueprintType() {
+    return this.blueprintType
+  }
+
   isPrimitive(type: string): boolean {
     //todo use AttributeTypes enum, available in the blueprint.
     return ['string', 'number', 'integer', 'number', 'boolean'].includes(type)
