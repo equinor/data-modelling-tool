@@ -130,6 +130,14 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       } else if (attr.description) {
         uiSchemaProperty['ui:description'] = attr.description
       }
+      if (uiAttribute.disabled) {
+        if (attr.default === '') {
+          console.warn(
+            `please provide a defaultValue when attribute is disabled from editing, attr: ${attr}`
+          )
+        }
+        uiSchemaProperty['ui:disabled'] = true
+      }
       if (uiAttribute.field === 'attribute') {
         const fieldBlueprint = this.blueprintProvider.getBlueprintByType(
           attr.type

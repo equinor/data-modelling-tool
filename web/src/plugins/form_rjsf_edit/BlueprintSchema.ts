@@ -118,8 +118,19 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   }
 
   private createSchemaProperty(attr: BlueprintAttribute): SchemaProperty {
+    let defaultValue: any = (attr.default = attr.default || '')
+    if (defaultValue) {
+      if (attr.type === 'boolean') {
+        defaultValue = Boolean(defaultValue)
+      }
+      if (attr.type === 'integer' || attr.type === 'number') {
+        defaultValue = Number(defaultValue)
+      }
+    }
+
     let schemaProperty: SchemaProperty = {
       type: attr.type,
+      default: defaultValue,
     }
     this.addEnumToProperty(schemaProperty, attr)
     return schemaProperty

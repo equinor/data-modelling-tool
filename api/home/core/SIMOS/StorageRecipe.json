@@ -34,6 +34,11 @@
           "name": "description",
           "type": "system/SIMOS/StorageAttribute",
           "field": "hidden"
+        },
+        {
+          "name": "type",
+          "type": "system/SIMOS/StorageAttribute",
+          "disabled": true
         }
       ]
     }

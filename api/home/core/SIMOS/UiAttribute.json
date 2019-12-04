@@ -111,7 +111,7 @@
           "name": "type",
           "type": "string",
           "required": true,
-          "description": "system/SIMOS/UiAttribute"
+          "disabled": true
         },
         {
           "name": "label",

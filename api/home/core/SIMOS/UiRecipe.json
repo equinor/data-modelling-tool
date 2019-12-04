@@ -69,7 +69,8 @@
           "name": "type",
           "type": "system/SIMOS/UiAttribute",
           "description": "system/SIMOS/UiRecipe",
-          "required": true
+          "required": true,
+          "disabled": true
         },
         {
           "name": "name",
