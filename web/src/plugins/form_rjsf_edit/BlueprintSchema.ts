@@ -146,7 +146,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     attr: BlueprintAttribute
   ): void {
     //@todo pass uiAttribute to only add enum if desired?
-    if (attr.enumType) {
+    if (attr.enumType && attr.name !== 'type') {
       const dto = this.blueprintProvider.getDtoByType(attr.enumType)
       if (dto) {
         property.title = dto.data.name
