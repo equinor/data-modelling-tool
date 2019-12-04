@@ -108,9 +108,12 @@ class Tree:
             is_contained=True,
         )
 
-        node.menu_items.append(
-            get_remove_attribute_menu_item(data_source_id, parent_id=parent_node.uid, attribute=".".join(current_path))
-        )
+        if is_array or instance.get("optional", False):
+            node.menu_items.append(
+                get_remove_attribute_menu_item(
+                    data_source_id, parent_id=parent_node.uid, attribute=".".join(current_path)
+                )
+            )
 
         blueprint = get_blueprint(attribute_type)
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
