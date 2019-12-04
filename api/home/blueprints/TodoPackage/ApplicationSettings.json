@@ -2,12 +2,8 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "description": "",
-  "packages": [
-    "TodoDemo"
-  ],
-  "models": [
-    "SSR-DataSource/TodoDemo/TodoList"
-  ],
+  "packages": ["TodoDemo"],
+  "models": ["SSR-DataSource/TodoDemo/TodoList"],
   "actions": [
     {
       "name": "Todo",

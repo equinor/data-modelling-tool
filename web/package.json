@@ -35,7 +35,8 @@
     "coverage": "react-scripts test --coverage --watchAll=false",
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
-    "prettier": "prettier --write './src/**/*.{ts,tsx,js,css,html,json}'"
+    "prettier": "prettier --write './src/**/*.{ts,tsx,js,css,html,json}'",
+    "prettier:home": "prettier --write '../api/home/**/*.json'"
   },
   "eslintConfig": {
     "extends": "react-app"

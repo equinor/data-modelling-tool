@@ -1,43 +1,43 @@
 {
-    "name": "RunOutput",
-    "description": "",
-    "type": "system/SIMOS/Blueprint",
-    "attributes": [
-        {
-            "name": "name",
-            "type": "string",
-            "description": "variable name for named accessing",
-            "default": "runOutput",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "description",
-            "type": "string",
-            "description": "instance description",
-            "default": "",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "type",
-            "type": "string"
-        },
-        {
-            "name": "status",
-            "type": "SSR-DataSource/mooringSRS/run/RunStatus",
-            "description": "status",
-            "contained": true,
-            "optional": true
-        },
-        {
-            "name": "results",
-            "type": "SSR-DataSource/mooringSRS/run/RunResult",
-            "description": "results",
-            "contained": true,
-            "optional": true
-        }
-    ],
-    "storageRecipes": [],
-    "uiRecipes": []
+  "name": "RunOutput",
+  "description": "",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "type": "string",
+      "description": "variable name for named accessing",
+      "default": "runOutput",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "type",
+      "type": "string"
+    },
+    {
+      "name": "status",
+      "type": "SSR-DataSource/mooringSRS/run/RunStatus",
+      "description": "status",
+      "contained": true,
+      "optional": true
+    },
+    {
+      "name": "results",
+      "type": "SSR-DataSource/mooringSRS/run/RunResult",
+      "description": "results",
+      "contained": true,
+      "optional": true
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }
