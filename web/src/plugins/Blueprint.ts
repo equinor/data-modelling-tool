@@ -48,6 +48,10 @@ export class Blueprint implements IBlueprint {
     return attr.dimensions === '*'
   }
 
+  public getBlueprintType(): BlueprintType {
+    return this.blueprintType
+  }
+
   public getAttribute(name: string): BlueprintAttribute | undefined {
     return this.attributes[name]
   }
