@@ -20,6 +20,24 @@
       "name": "power"
     },
     {
+      "name": "value1",
+      "type": "number",
+      "description": "data points.",
+      "default": "0.0",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "value2",
+      "type": "number",
+      "description": "more data points.",
+      "default": "0.0",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    },
+    {
       "type": "SSR-DataSource/CarPackage/engine/FuelPump",
       "name": "fuelPump",
       "optional": true
@@ -39,5 +57,24 @@
       ]
     }
   ],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "name": "EnginePlot",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "PLOT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "value1",
+          "type": "system/SIMOS/UiAttribute",
+          "mapping": "line"
+        },
+        {
+          "name": "value2",
+          "type": "system/SIMOS/UiAttribute",
+          "mapping": "line"
+        }
+      ]
+    }
+  ]
 }

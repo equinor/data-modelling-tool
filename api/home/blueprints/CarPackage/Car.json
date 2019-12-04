@@ -42,10 +42,16 @@
       "attributes": []
     },
     {
-      "name": "Edit",
+      "name": "Plot",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "EDIT_PLUGIN",
-      "attributes": []
+      "plugin": "PLOT",
+      "attributes": [
+        {
+          "type": "system/SIMOS/UiAttribute",
+          "name": "engine",
+          "uiRecipe": "EnginePlot"
+        }
+      ]
     }
   ]
 }
