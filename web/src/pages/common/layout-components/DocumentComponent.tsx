@@ -11,6 +11,7 @@ import { EditPlugin, PlotPlugin, ViewPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { PluginProps, UiRecipe } from '../../../plugins/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
+import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -23,6 +24,7 @@ export enum RegisteredPlugins {
   VIEW = 'VIEW',
   PLOT = 'PLOT',
   EXTERNAL = 'EXTERNAL',
+  TABLE = 'TABLE',
 }
 
 const View = (props: any) => {
@@ -80,6 +82,8 @@ const View = (props: any) => {
       )
     case RegisteredPlugins.PLOT:
       return <PlotPlugin {...pluginProps} />
+    case RegisteredPlugins.TABLE:
+      return <ReactTablePlugin {...pluginProps} />
     case RegisteredPlugins.EXTERNAL:
       const ExternalPlugin = pluginHook(uiRecipe)
       if (ExternalPlugin) {
