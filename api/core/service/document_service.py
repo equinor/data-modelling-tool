@@ -21,7 +21,7 @@ def get_complete_document(document_uid: UUID, document_repository: DocumentRepos
     blueprint = get_blueprint(document.type)
 
     if not isinstance(document.data, dict):
-        data = document.data.to_dict(include_defaults=False)
+        data = document.data.to_dict(include_defaults=True)
     else:
         data = document.data
 
