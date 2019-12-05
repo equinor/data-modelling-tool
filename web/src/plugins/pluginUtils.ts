@@ -1,5 +1,4 @@
-import { BlueprintAttribute, PluginProps, UiRecipe } from './types'
-import { Blueprint } from './Blueprint'
+import { BlueprintAttribute } from './types'
 
 /**
  * Utility function for working with blueprints and recipes.

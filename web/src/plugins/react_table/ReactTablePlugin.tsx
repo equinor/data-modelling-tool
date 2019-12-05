@@ -11,18 +11,15 @@ export const ReactTablePlugin = (props: PluginProps) => {
       .map((attr: KeyValue) => attr.name),
   }
 
-  const columns = React.useMemo(
-    () => [
-      {
-        Header: 'Table',
-        columns: mappings.columns.map(attrName => ({
-          Header: attrName,
-          accessor: attrName,
-        })),
-      },
-    ],
-    []
-  )
+  const columns = [
+    {
+      Header: 'Table',
+      columns: mappings.columns.map(attrName => ({
+        Header: attrName,
+        accessor: attrName,
+      })),
+    },
+  ]
 
   function getData(mappings: KeyValue, document: KeyValue) {
     return document[mappings.columns[0]].map((value: any, index: number) => {
@@ -36,7 +33,10 @@ export const ReactTablePlugin = (props: PluginProps) => {
     })
   }
 
-  const data = React.useMemo(() => getData(mappings, document), [])
+  const data = React.useMemo(() => getData(mappings, document), [
+    mappings,
+    document,
+  ])
 
   return <ReactTable columns={columns} data={data} />
 }

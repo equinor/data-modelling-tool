@@ -10,8 +10,8 @@ import Header from '../../components/Header'
 import { Wrapper } from '../blueprints/BlueprintsPage'
 import Button from '../../components/Button'
 import { DocumentNode } from '../common/nodes/DocumentNode'
-import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import { NodeType } from '../../util/variables'
+import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 
 const api = new DmtApi()
 

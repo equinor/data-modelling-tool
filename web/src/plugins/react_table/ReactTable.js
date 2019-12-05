@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import React from 'react'
 // @types/react-table is not up to date with latest react-table version.
-import {useTable} from 'react-table'
+import { useTable } from 'react-table'
 const Styles = styled.div`
   padding: 1rem;
 

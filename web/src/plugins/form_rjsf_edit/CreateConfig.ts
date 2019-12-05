@@ -1,4 +1,4 @@
-import { BlueprintAttribute, PluginProps, UiRecipe } from '../types'
+import { BlueprintAttribute, UiRecipe } from '../types'
 import { BlueprintUtil } from '../BlueprintUtil'
 import { UtilIndexPlugin } from '../UtilIndexPlugin'
 import { isPrimitive } from '../pluginUtils'

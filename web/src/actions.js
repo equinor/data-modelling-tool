@@ -35,20 +35,19 @@
 // * The API uses an "update" strategy when writing the output entity. This means that it merges the existing document with the provided output entity.
 // * The output object must be left intact, and posted on every updateDocument call. Everything besides the output.entity object should be considered "read-only".
 // Here are a few examples;
+// function myExternalSystemCall(input) {
+//   return {
+//     jobId: 'kk873ks',
+//     result: 123456,
+//     executionTime: '1233215.34234ms',
+//     progress: 100,
+//     status: 'done',
+//     message: 'job complete, no errors',
+//   }
+// }
 
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms))
-}
-
-function myExternalSystemCall(input) {
-  return {
-    jobId: 'kk873ks',
-    result: 123456,
-    executionTime: '1233215.34234ms',
-    progress: 100,
-    status: 'done',
-    message: 'job complete, no errors',
-  }
 }
 
 async function run({ input, output, updateDocument }) {

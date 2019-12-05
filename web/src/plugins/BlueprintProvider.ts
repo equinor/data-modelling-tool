@@ -36,10 +36,12 @@ export class BlueprintProvider implements IBlueprintProvider {
 
   getBlueprint(dto: Dto): Blueprint | undefined {
     //@todo use uid of dto.
-    throw 'not implemented'
+    console.warn('not implemented')
+    return
   }
 
   getEntity(dto: Dto): Dto | undefined {
-    throw 'not implemented'
+    console.warn('not implemented')
+    return
   }
 }

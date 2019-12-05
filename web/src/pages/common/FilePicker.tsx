@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react'
 import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import DocumentTree from './tree-view/DocumentTree'
-import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import { BlueprintEnum, NodeType } from '../../util/variables'
 import styled from 'styled-components'
+import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 
 const api = new DmtApi()
 
@@ -51,7 +51,7 @@ export const FilePicker = ({ onSelect, packagesOnly }: any) => {
       .catch((err: any) => {
         console.log(err)
       })
-  }, [])
+  }, [dataSourcesType])
   return (
     <DocumentTree
       render={(renderProps: TreeNodeRenderProps) => {

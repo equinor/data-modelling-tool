@@ -87,7 +87,6 @@ const TreeNode = (props: TreeNodeProps) => {
     level,
     NodeRenderer,
     path,
-    isRootPackage,
     parent,
     actions,
     handleToggle,

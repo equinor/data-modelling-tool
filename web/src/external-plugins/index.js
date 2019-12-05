@@ -1,5 +1,5 @@
-import React from 'react';
-import Plot from 'react-plotly.js';
+import React from 'react'
+import Plot from 'react-plotly.js'
 
 /**
  * Work space for attaching plugin to the dmt tool.
@@ -10,10 +10,6 @@ import Plot from 'react-plotly.js';
  * External plugins must have a unique name, not conflicting with the DMT official plugin names.
  */
 
-const TestPlugin = ({ parent, document, children }) => {
-  return 'test plugin'
-}
-
 const registeredPlugins = {
   'My plugin': PlotlyPoc,
 }
@@ -22,9 +18,8 @@ export default function pluginHook(uiRecipe) {
   return registeredPlugins[uiRecipe.name]
 }
 
-
 function PlotlyPoc() {
- return (
+  return (
     <Plot
       data={[
         {
@@ -32,11 +27,11 @@ function PlotlyPoc() {
           y: [2, 6, 3],
           type: 'scatter',
           mode: 'lines+markers',
-          marker: {color: 'red'},
+          marker: { color: 'red' },
         },
-        {type: 'bar', x: [1, 2, 3], y: [2, 5, 3]},
+        { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
       ]}
-      layout={{width: 320, height: 240, title: 'A Fancy Plot'}}
+      layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
     />
-  );
+  )
 }
