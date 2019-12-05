@@ -1,7 +1,7 @@
 import styled from 'styled-components'
-import { useTable } from 'react-table'
 import React from 'react'
-
+// @types/react-table is not up to date with latest react-table version.
+import {useTable} from 'react-table'
 const Styles = styled.div`
   padding: 1rem;
 
@@ -31,7 +31,7 @@ const Styles = styled.div`
   }
 `
 
-export function ReactTable({ columns, data }: any) {
+export function ReactTable({ columns, data }) {
   // Use the state and functions returned from useTable to build your UI
   const {
     getTableProps,
