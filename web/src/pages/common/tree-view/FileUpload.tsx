@@ -65,9 +65,9 @@ export default (props: Props) => {
         <div style={{ fontWeight: 700 }}>Upload blueprints at root: </div>
         <div>
           {
-            //@ts-ignore
             <input
               type="file"
+              //@ts-ignore
               webkitdirectory="true"
               mozdirectory="true"
               directory="true"
