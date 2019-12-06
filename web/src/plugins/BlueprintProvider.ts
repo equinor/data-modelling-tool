@@ -17,7 +17,7 @@ export class BlueprintProvider implements IBlueprintProvider {
     this.dtos = dtos
   }
 
-  private getNameFromType(type: string): string {
+  public getNameFromType(type: string): string {
     const split = type.split('/')
     return split[split.length - 1]
   }

@@ -68,9 +68,10 @@ class GetDocumentUseCase(uc.UseCase):
             attribute_type = attribute.type
             self.add_dtos(dtos, attribute)
             if attribute_type not in PRIMITIVES:
-                # stop recursion. the type is already in the children list.
-                attribute_type_name = attribute_type.split('/')[-1]
-                if attribute_type_name != blueprint.name:
+                # prevent infinite recursion.
+                child_blueprint_name = attribute_type.split('/')[-1]
+                type_in_children = next((x for x in children if x["name"] == child_blueprint_name), None)
+                if not type_in_children:
                     child_blueprint = get_blueprint(attribute_type)
                     children.append(child_blueprint.to_dict())
                     self.add_children_types(children, dtos, child_blueprint)

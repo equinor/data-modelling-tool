@@ -29,12 +29,13 @@ describe('BlueprintSchema', () => {
       uiRecipes: [],
     }
     beforeEach(() => {
-      const blueprintProvider = new BlueprintProvider([])
+      const blueprintProvider = new BlueprintProvider([], [])
       schema = new BlueprintSchema(
         blueprint,
         blueprintProvider,
         uiRecipeTest,
-        () => true
+        () => true,
+        undefined
       ).getSchema()
     })
 
@@ -109,6 +110,11 @@ describe('BlueprintSchema', () => {
             name: 'diameter',
             type: 'number',
           },
+          {
+            name: 'recursiveWheels',
+            type: 'ds/Wheel',
+            dimensions: '*',
+          },
         ],
         uiRecipes: [
           {
@@ -125,12 +131,13 @@ describe('BlueprintSchema', () => {
       },
     ]
     beforeEach(() => {
-      const blueprintProvider = new BlueprintProvider(blueprints)
+      const blueprintProvider = new BlueprintProvider(blueprints, [])
       schema = new BlueprintSchema(
         blueprint,
         blueprintProvider,
         uiRecipeTest,
-        () => true
+        () => true,
+        undefined
       ).getSchema()
     })
 

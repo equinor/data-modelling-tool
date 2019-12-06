@@ -128,23 +128,24 @@ class Tree:
             if parent_node.blueprint and blueprint == parent_node.blueprint:
                 continue
 
-            is_blueprint = attr_type not in PRIMITIVES
-            if is_blueprint:
-                is_recursive = attr_type.split('/')[-1] == blueprint["name"]
-                is_array = attribute["dimensions"] == '*'
-                if is_recursive and is_array and len(current_path) == 0:
-                    pass
-                else:
-                    self.generate_contained_node(
-                        document_id,
-                        current_path + [f"{name}"],
-                        attribute,
-                        None,
-                        data_source_id,
-                        attribute["type"],
-                        node,
-                        False,
-                    )
+            if is_array and attribute_type is not SIMOS.BLUEPRINT.value:
+                if attr_type not in PRIMITIVES:
+                    is_recursive = attr_type.split('/')[-1] == blueprint["name"]
+                    is_array = attribute["dimensions"] == '*'
+                    if is_recursive and is_array and len(current_path) > 2:
+                        # prevent generate endless nodes.
+                        return
+            else:
+                self.generate_contained_node(
+                    document_id,
+                    current_path + [f"{name}"],
+                    attribute,
+                    None,
+                    data_source_id,
+                    attribute["type"],
+                    node,
+                    False,
+                )
 
 
 
