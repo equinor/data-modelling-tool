@@ -56,21 +56,24 @@ class GetDocumentUseCase(uc.UseCase):
 
         children = []
         dtos = []
-        self.add_children_types(children, dtos, blueprint.attributes)
+        self.add_children_types(children, dtos, blueprint)
 
         return res.ResponseSuccess(
             {"blueprint": blueprint.to_dict(), "document": data, "children": children, "dtos": dtos}
         )
 
     # todo control recursive iterations iterations, decided by plugin?
-    def add_children_types(self, children, dtos, attributes):
-        for attribute in attributes:
+    def add_children_types(self, children, dtos, blueprint):
+        for attribute in blueprint.attributes:
             attribute_type = attribute.type
             self.add_dtos(dtos, attribute)
             if attribute_type not in PRIMITIVES:
-                child_blueprint = get_blueprint(attribute_type)
-                children.append(child_blueprint.to_dict())
-                self.add_children_types(children, dtos, child_blueprint.attributes)
+                # stop recursion. the type is already in the children list.
+                attribute_type_name = attribute_type.split('/')[-1]
+                if attribute_type_name != blueprint.name:
+                    child_blueprint = get_blueprint(attribute_type)
+                    children.append(child_blueprint.to_dict())
+                    self.add_children_types(children, dtos, child_blueprint)
 
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:
