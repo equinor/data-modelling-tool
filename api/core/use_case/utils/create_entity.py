@@ -84,7 +84,10 @@ class CreateEntity:
                 if is_optional is not None and not is_optional:
                     default_value = CreateEntity.default_value(attr=attr, parent_type=parent_type)
                     if attr.name not in entity:
-                        entity[attr.name] = default_value
+                        if attr.dimensions == '*':
+                            entity[attr.name] = []
+                        else:
+                            entity[attr.name] = default_value
             else:
                 blueprint = self.blueprint_provider.get_blueprint(attr.type)
                 if attr.dimensions == "*":
