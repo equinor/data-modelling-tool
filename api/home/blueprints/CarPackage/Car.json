@@ -38,7 +38,7 @@
       "name": "Raw",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "PREVIEW",
-      "hideTab": true,
+      "hideTab": false,
       "attributes": []
     }
   ]

@@ -3,6 +3,7 @@ import {
   BlueprintAttribute,
   Blueprint as BlueprintType,
   UiRecipe,
+  Entity,
 } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
@@ -64,7 +65,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       if (this.isPrimitive(attr.type) || (uiAttribute && uiAttribute.field)) {
         this.appendPrimitive(newPath, blueprint, attr, uiAttribute)
       } else {
-        this.processNested(newPath, attr)
+        this.processNested(newPath, blueprint, attr)
       }
     })
   }
@@ -73,11 +74,21 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
     return path.length === 0 ? name : path + `.${name}`
   }
 
-  private processNested(path: string, attr: BlueprintAttribute): void {
+  private processNested(
+    path: string,
+    blueprint: Blueprint,
+    attr: BlueprintAttribute
+  ): void {
     const nestedBlueprintType:
       | BlueprintType
       | undefined = this.blueprintProvider.getBlueprintByType(attr.type)
     if (nestedBlueprintType) {
+      if (nestedBlueprintType.name === blueprint.getBlueprintType().name) {
+        console.log(
+          'EditPlugin uiSchema does not support self recursive types.'
+        )
+        return
+      }
       const nestedBlueprint = new Blueprint(nestedBlueprintType)
       if (this.isArray(attr)) {
         const newPath = path + '.items'

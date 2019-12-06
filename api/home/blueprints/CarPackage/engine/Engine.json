@@ -23,7 +23,6 @@
       "name": "value1",
       "type": "number",
       "description": "data points.",
-      "default": "0.0",
       "dimensions": "*",
       "contained": true,
       "optional": false
@@ -32,7 +31,6 @@
       "name": "value2",
       "type": "number",
       "description": "more data points.",
-      "default": "0.0",
       "dimensions": "*",
       "contained": true,
       "optional": false

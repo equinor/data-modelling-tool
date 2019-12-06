@@ -29,6 +29,12 @@
       "name": "pressure",
       "type": "number",
       "optional": false
+    },
+    {
+      "name": "wheelsRecursive",
+      "type": "SSR-DataSource/CarPackage/Wheel",
+      "default": "SSR-DataSource/CarPackage/Wheel",
+      "dimensions": "*"
     }
   ],
   "storageRecipes": [],

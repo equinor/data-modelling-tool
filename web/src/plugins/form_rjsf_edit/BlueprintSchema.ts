@@ -56,7 +56,6 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
       .filter(this.filter) //@todo filter recursively on recipes and defaults.
       .forEach((attr: BlueprintAttribute) => {
         const newPath = this.createAttributePath(path, attr.name)
-
         if (this.isPrimitive(attr.type)) {
           this.appendPrimitive(newPath, blueprint, attr)
         } else {
@@ -74,16 +73,23 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     blueprint: Blueprint,
     attr: BlueprintAttribute
   ): void {
-    if (this.isPrimitive(attr.type)) {
-      this.appendPrimitive(path, blueprint, attr)
-    } else {
-      const nestedBlueprintType:
-        | BlueprintType
-        | undefined = this.blueprintProvider.getBlueprintByType(attr.type)
-      if (nestedBlueprintType) {
-        const nestedBlueprint = new Blueprint(nestedBlueprintType)
-        if (this.isArray(attr)) {
+    const nestedBlueprintType:
+      | BlueprintType
+      | undefined = this.blueprintProvider.getBlueprintByType(attr.type)
+    if (nestedBlueprintType) {
+      const nestedBlueprint = new Blueprint(nestedBlueprintType)
+      if (nestedBlueprintType.name === blueprint.getBlueprintType().name) {
+        console.log('EditPlugin schema does not support self recursive types.')
+        return
+      }
+
+      if (this.isArray(attr)) {
+        if (
+          nestedBlueprint.getBlueprintType().name !==
+          blueprint.getBlueprintType().name
+        ) {
           const newPath = path + '.items.properties'
+          console.log(attr, nestedBlueprintType, path)
           objectPath.set(this.schema, path, {
             type: 'array',
             items: {
@@ -96,19 +102,19 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
             nestedBlueprint,
             nestedBlueprintType.attributes
           )
-        } else {
-          const newPath = path + '.properties'
-          objectPath.set(this.schema, path, {
-            type: 'object',
-            required: this.getRequired(nestedBlueprint),
-            properties: {},
-          })
-          this.processAttributes(
-            newPath,
-            nestedBlueprint,
-            nestedBlueprintType.attributes
-          )
         }
+      } else {
+        const newPath = path + '.properties'
+        objectPath.set(this.schema, path, {
+          type: 'object',
+          required: this.getRequired(nestedBlueprint),
+          properties: {},
+        })
+        this.processAttributes(
+          newPath,
+          nestedBlueprint,
+          nestedBlueprintType.attributes
+        )
       }
     }
   }

@@ -8,7 +8,7 @@ from core.domain.blueprint import Blueprint, get_attributes_with_reference, get_
 from core.domain.dto import DTO
 from core.domain.entity import Entity
 from core.domain.index import DocumentNode
-from core.domain.recipe import Recipe
+from core.domain.recipe import Recipe, PRIMITIVES
 from core.domain.storage_recipe import StorageRecipe
 from core.enums import DMT, SIMOS
 from core.repository.interface.document_repository import DocumentRepository
@@ -119,6 +119,7 @@ class Tree:
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
         for attribute in get_attributes_with_reference(blueprint):
             name = attribute["name"]
+            attr_type = attribute["type"]
 
             is_contained_in_ui = recipe.is_contained(attribute)
             if not is_contained_in_ui:
@@ -127,16 +128,26 @@ class Tree:
             if parent_node.blueprint and blueprint == parent_node.blueprint:
                 continue
 
-            self.generate_contained_node(
-                document_id,
-                current_path + [f"{name}"],
-                attribute,
-                None,
-                data_source_id,
-                attribute["type"],
-                node,
-                False,
-            )
+            if is_array and attribute_type is not SIMOS.BLUEPRINT.value:
+                if attr_type not in PRIMITIVES:
+                    is_recursive = attr_type.split('/')[-1] == blueprint["name"]
+                    is_array = attribute["dimensions"] == '*'
+                    if is_recursive and is_array and len(current_path) > 2:
+                        # prevent generate endless nodes.
+                        return
+            else:
+                self.generate_contained_node(
+                    document_id,
+                    current_path + [f"{name}"],
+                    attribute,
+                    None,
+                    data_source_id,
+                    attribute["type"],
+                    node,
+                    False,
+                )
+
+
 
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
