@@ -27,6 +27,7 @@ export function createFormConfigs(pluginProps: EditPluginProps): FormConfig {
   const blueprintProvider = new BlueprintProvider(blueprints, dtos)
   const blueprintSchema = new BlueprintSchema(
     blueprintType,
+    document,
     blueprintProvider,
     uiRecipe,
     filter,

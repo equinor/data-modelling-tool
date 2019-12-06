@@ -1,8 +1,14 @@
-import { Blueprint as BlueprintType, BlueprintAttribute } from '../../types'
+import { Blueprint as BlueprintType, Entity } from '../../types'
 import { BlueprintSchema } from '../BlueprintSchema'
 import { BlueprintProvider } from '../../BlueprintProvider'
 import { RegisteredPlugins } from '../../../pages/common/layout-components/DocumentComponent'
 import { uiRecipeTest } from './BlueprintUiSchemaTest'
+
+const document: Entity = {
+  name: '',
+  description: '',
+  type: '',
+}
 
 describe('BlueprintSchema', () => {
   describe('Basic form', () => {
@@ -32,6 +38,7 @@ describe('BlueprintSchema', () => {
       const blueprintProvider = new BlueprintProvider([], [])
       schema = new BlueprintSchema(
         blueprint,
+        document,
         blueprintProvider,
         uiRecipeTest,
         () => true,
@@ -72,10 +79,6 @@ describe('BlueprintSchema', () => {
         {
           name: 'name',
           type: 'string',
-        },
-        {
-          name: 'wheel',
-          type: 'ds/Wheel',
         },
         {
           name: 'wheels',
@@ -130,10 +133,18 @@ describe('BlueprintSchema', () => {
         ],
       },
     ]
+    const document: Entity = {
+      type: '',
+      name: '',
+      description: '',
+      wheels: [],
+    }
+
     beforeEach(() => {
       const blueprintProvider = new BlueprintProvider(blueprints, [])
       schema = new BlueprintSchema(
         blueprint,
+        document,
         blueprintProvider,
         uiRecipeTest,
         () => true,
@@ -150,35 +161,30 @@ describe('BlueprintSchema', () => {
           name: {
             type: 'string',
           },
-          wheel: {
-            type: 'object',
-            required: ['wheelName'],
-            properties: {
-              diameter: {
-                type: 'number',
-              },
-              wheelName: {
-                type: 'string',
-              },
-            },
-          },
           wheels: {
             type: 'array',
             items: {
-              required: ['wheelName'],
               properties: {
                 diameter: {
                   type: 'number',
+                },
+                recursiveWheels: {
+                  items: {
+                    properties: {},
+                    required: ['wheelName'],
+                  },
+                  type: 'array',
                 },
                 wheelName: {
                   type: 'string',
                 },
               },
+              required: ['wheelName'],
             },
           },
         },
       }
-      expect(schema).toMatchObject(expected)
+      expect(schema).toEqual(expected)
     })
   })
 })

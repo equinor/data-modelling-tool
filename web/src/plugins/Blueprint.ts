@@ -64,4 +64,28 @@ export class Blueprint implements IBlueprint {
     //todo use AttributeTypes enum, available in the blueprint.
     return ['string', 'number', 'integer', 'number', 'boolean'].includes(type)
   }
+
+  public validateEntity(entity: KeyValue) {
+    this.blueprintType.attributes.forEach((attr: BlueprintAttribute) => {
+      const value = entity[attr.name]
+      if (attr.optional !== true) {
+        if (this.isPrimitive(attr.type)) {
+          if (attr.default) {
+            //todo insert default?  need to do casting.
+          }
+        } else {
+          if (value === undefined && this.isArray(attr)) {
+            entity[attr.name] = []
+          }
+        }
+
+        // required
+        if (!entity[attr.name]) {
+          console.warn(
+            `non optional value is missing for ${attr.name} of type ${attr.type}, ${entity.type}`
+          )
+        }
+      }
+    })
+  }
 }

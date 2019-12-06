@@ -14,6 +14,12 @@
     },
     {
       "type": "string",
+      "name": "attributeType",
+      "default": "system/SIMOS/BlueprintAttribute",
+      "optional": true
+    },
+    {
+      "type": "string",
       "name": "description",
       "optional": true,
       "default": ""
