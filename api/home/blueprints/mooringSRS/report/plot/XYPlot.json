@@ -1,0 +1,51 @@
+{
+    "name": "XYPlot",
+    "description": "Description of a plot.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "",
+            "default": "plot",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "xlabel",
+            "type": "string"
+        },
+        {
+            "name": "ylabel",
+            "type": "string"
+        },
+        {
+            "name": "title",
+            "type": "string"
+        },  
+        {
+            "name": "caption",
+            "type": "string"
+        },                       
+        {
+            "name": "lines",
+            "type": "SSR-DataSource/mooringSRS/report/plot/Line",
+            "dimensions": "*"
+        }                
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

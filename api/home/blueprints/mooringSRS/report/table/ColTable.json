@@ -1,0 +1,54 @@
+{
+    "name": "ColTable",
+    "description": "Description of a column table.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "",
+            "default": "table",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "caption",
+            "type": "string"
+        },   
+        {
+            "name": "transposed",
+            "type": "boolean",
+            "default":"false"
+        },    
+        {
+            "name": "stringColumns",
+            "type": "SSR-DataSource/marmo/containers/StringArray",
+            "dimensions": "*"
+        },
+        {
+            "name": "esColumns",
+            "type": "SSR-DataSource/marmo/containers/EquallySpacedSignal",
+            "dimensions": "*"
+        },                                             
+        {
+            "name": "nesColumns",
+            "type": "SSR-DataSource/marmo/containers/NonEquallySpacedSignal",
+            "dimensions": "*"
+        }                
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

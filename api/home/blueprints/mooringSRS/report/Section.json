@@ -1,0 +1,51 @@
+{
+    "name": "Section",
+    "description": "Description of the report.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "",
+            "default": "report",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "title",
+            "type": "string",
+            "description": ""
+        },        
+        {
+            "name": "plots",
+            "type": "SSR-DataSource/mooringSRS/report/plot/XYPlot",
+            "dimensions": "*",
+            "description": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "tables",
+            "type": "SSR-DataSource/mooringSRS/report/table/ColTable",
+            "dimensions": "*",
+            "description": "",
+            "contained": true,
+            "optional": false
+        }                   
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

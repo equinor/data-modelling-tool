@@ -1,43 +1,64 @@
 {
-  "name": "Scenario",
-  "description": "",
-  "type": "system/SIMOS/Blueprint",
-  "attributes": [
-    {
-      "name": "name",
-      "type": "string",
-      "description": "variable name for named accessing",
-      "default": "scenario",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "description",
-      "type": "string",
-      "description": "instance description",
-      "default": "",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "type",
-      "type": "string"
-    },
-    {
-      "name": "env",
-      "type": "SSR-DataSource/mooringSRS/env/Environment",
-      "description": "environment",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "output",
-      "type": "SSR-DataSource/mooringSRS/run/RunOutput",
-      "description": "run output",
-      "contained": true,
-      "optional": true
-    }
-  ],
-  "storageRecipes": [],
-  "uiRecipes": []
+    "name": "Scenario",
+    "description": "A model for mooring SRS analysis scenario.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "Name for the Mooring SRS scenario.",
+            "default": "scenario",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "description of the Mooring SRS scenario.",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "description": "Type of the scenario."
+        },
+        {
+            "name": "env",
+            "type": "SSR-DataSource/mooringSRS/env/Environment",
+            "description": "The environmental condition.",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "mooring",
+            "type": "SSR-DataSource/mooringSRS/positioning/Mooring",
+            "description": "The target mooring lines description.",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "simulation",
+            "type": "SSR-DataSource/mooringSRS/config/Simulation",
+            "description": "Simulation configuration.",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "report",
+            "type": "SSR-DataSource/mooringSRS/report/Section",
+            "description": "",
+            "contained": true,
+            "optional": false
+        }                 
+    ],
+    "storageRecipes": [],
+    "uiRecipes": [ {
+        "type": "system/SIMOS/UiRecipe",
+        "name": "SRS Sce 3DView",
+        "description": "Some external plugin",
+        "plugin": "EXTERNAL",
+        "attributes": []
+      }]
 }
