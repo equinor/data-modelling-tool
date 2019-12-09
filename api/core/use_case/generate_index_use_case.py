@@ -103,6 +103,19 @@ class Tree:
         else:
             uid = f"{document_id}.{'.'.join(document_path)}"
             current_path = document_path
+
+        create_new_menu_items = []
+        blueprint = get_blueprint(instance["type"])
+        for attr in blueprint.attributes:
+            if '/' in attr.type:
+                if attr.dimensions == '*':
+                    attribute_name = '.'.join(document_path) + '.' + str(index) + '.' + attr.name
+                    create_new_menu_items.append(
+                        get_dynamic_create_menu_item(data_source_id, "Create " + attr.name, attr.type, document_id, attribute_name)
+                    )
+
+        menu_items = [{"label": "New", "menuItems": create_new_menu_items}]
+
         node = DocumentNode(
             data_source_id=data_source_id,
             name=instance["name"],
@@ -119,7 +132,7 @@ class Tree:
                     "schemaUrl": f"/api/v2/json-schema/{attribute_type}",
                 },
             },
-            menu_items=[],
+            menu_items=menu_items,
             is_contained=False,
         )
 
@@ -171,17 +184,17 @@ class Tree:
                     if is_recursive and is_array and len(current_path) > 2:
                         # prevent generate endless nodes.
                         return
-            else:
-                self.generate_contained_node(
-                    document_id,
-                    current_path + [f"{name}"],
-                    attribute,
-                    None,
-                    data_source_id,
-                    attribute["type"],
-                    node,
-                    attribute["dimensions"] == "*",
-                )
+
+            self.generate_contained_node(
+                document_id,
+                current_path + [f"{name}"],
+                attribute,
+                None,
+                data_source_id,
+                attribute["type"],
+                node,
+                attribute["dimensions"] == "*",
+            )
 
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
