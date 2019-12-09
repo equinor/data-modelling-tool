@@ -1,33 +1,16 @@
 {
+  "name": "ApplicationSettings",
   "type": "system/SIMOS/Application",
-  "name": "DMTApplicationSettings",
   "description": "",
-  "packages": ["CarPackage", "ActionsTest","TodoPackage", "marmo", "mooringSRS"],
-  "models": ["system/DMT/Entity"],
+  "packages": [
+    "ActionsTest"
+  ],
+  "models": [
+    "SSR-DataSource/ActionsTest/WheelWithStatus"
+  ],
   "actions": [
     {
-      "name": "Todo Runnable",
-      "description": "Get and store all todos",
-      "input": "SSR-DataSource/TodoDemo/TodoList",
-      "output": "SSR-DataSource/TodoDemo/TodoList",
-      "method": "getTodoList"
-    },
-    {
-      "name": "Calculate",
-      "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
-      "input": "SSR-DataSource/CarPackage/Car",
-      "output": "SSR-DataSource/CarPackage/Car",
-      "method": "run"
-    },
-    {
-      "name": "Cancel",
-      "description": "Cancel a car calculation",
-      "input": "SSR-DataSource/CarPackage/Car",
-      "output": "SSR-DataSource/CarPackage/Car",
-      "method": "cancel"
-    },
-    {
-      "name": "ResultFile",
+      "name": "Own Result File",
       "type": "system/SIMOS/Action",
       "description": "Save result in resultFile",
       "input": "SSR-DataSource/ActionsTest/WheelWithStatus",
@@ -36,7 +19,7 @@
       "actionType": "separateResultFile"
     },
     {
-      "name": "NoResult",
+      "name": "No Result",
       "type": "system/SIMOS/Action",
       "description": "No Result Action",
       "input": "SSR-DataSource/ActionsTest/WheelWithStatus",
@@ -45,7 +28,7 @@
       "actionType": "noResult"
     },
     {
-      "name": "resultInEntity",
+      "name": "result In Entity",
       "type": "system/SIMOS/Action",
       "description": "Save result in entity",
       "actionType": "resultInEntity",

@@ -74,8 +74,37 @@ async function run({ input, output, updateDocument }) {
   updateDocument({ ...output, entity })
 }
 
+async function runResultFile({ input, output, updateDocument }) {
+  let entity = { diameter: 1 }
+  updateDocument({ ...output, entity })
+
+  await sleep(5000)
+  entity = { diameter: 999999999999 }
+  updateDocument({ ...output, entity })
+}
+
+async function runNoResult({ input, output, updateDocument }) {
+  await sleep(5000)
+  alert('hallo')
+}
+
+async function runResultInEntity({ input, output, updateDocument }) {
+  let entity = input.entity
+  entity.diameter = 1
+  entity.status.progress = 50.12
+  updateDocument({ ...output, entity })
+
+  await sleep(5000)
+  entity.diameter = 999999999999
+  entity.status = { ...entity.status, progress: 100, message: 'Done!' }
+  updateDocument({ ...output, entity, notify: true })
+}
+
 const runnableMethods = {
   run,
+  runResultFile,
+  runNoResult,
+  runResultInEntity,
 }
 
 export default runnableMethods

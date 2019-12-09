@@ -1,9 +1,13 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import Modal from '../../../components/modal/Modal'
 import Form from '../../../components/Form'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
-import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
+import {
+  ContextMenuActions,
+  ContextMenuActionsFactory,
+} from './ContextMenuActionsFactory'
 import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
+import Api2 from '../../../api/Api2'
 import { RegisteredPlugins } from '../layout-components/DocumentComponent'
 import { ActionEditPlugin } from './ActionEditPlugin'
 
@@ -11,18 +15,19 @@ interface WithContextMenuProps {
   children: any
   layout: any
   node: TreeNodeRenderProps
+  dataUrl: string
 }
 
 export type SetShowModal = (showModal: boolean) => void
 
 const Prompt = (props: any) => {
-  const { title, content, onSubmit } = props
+  const { title, content, onSubmit, buttonText } = props
   return (
     <div>
       <h4>{title}</h4>
       {content}
       <div>
-        <button onClick={() => onSubmit()}>Submit</button>
+        <button onClick={() => onSubmit()}>{buttonText}</button>
       </div>
     </div>
   )
@@ -54,6 +59,7 @@ const WithContextMenu = (props: WithContextMenuProps) => {
                 title={formProps.prompt.title}
                 content={formProps.prompt.content}
                 onSubmit={formProps.onSubmit}
+                buttonText={formProps.prompt.buttonText}
               />
             )}
           </>
@@ -70,6 +76,7 @@ interface WithContextMenuModalProps {
   layout: any
   node: TreeNodeRenderProps
   children: any
+  dataUrl?: string
 }
 
 interface ActionData {
@@ -83,23 +90,38 @@ interface Action {
 }
 
 const WithContextMenuModal = (props: WithContextMenuModalProps) => {
-  const { node, render, layout, children } = props
+  const { node, render, layout, children, dataUrl } = props
   const [action, setAction] = useState<Action>({
     data: { label: '' },
     type: '',
   })
+  const [entity, setEntity] = useState({ type: '', description: '', name: '' })
   const [showModal, setShowModal] = useState(false)
-
   const actionFactory = new ContextMenuActionsFactory()
   const actionConfig = actionFactory.getActionConfig(action, {
     node,
     setShowModal,
     layout,
+    entity,
   })
-
   const { nodeData } = node
   const { meta } = nodeData
   const { menuItems = [] } = meta as any
+
+  useEffect(() => {
+    if (action.type === ContextMenuActions.RUNNABLE) {
+      Api2.get({
+        // @ts-ignore
+        url: node.nodeData.meta.onSelect.data.dataUrl,
+        onSuccess: result => {
+          setEntity(result.document)
+        },
+        onError: error => {
+          console.error('failed to fetch document: ' + error.statusText)
+        },
+      })
+    }
+  }, [dataUrl, action])
 
   return (
     <>

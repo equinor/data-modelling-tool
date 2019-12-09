@@ -45,7 +45,6 @@ def get_delete_document_menu_item(data_source_id: str, parent_id: str, parent_at
         "action": "DELETE",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/remove-file",
-            "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
             "request": {"parentId": parent_id, "documentId": document_id, "attribute": parent_attribute},
         },
     }
@@ -57,7 +56,6 @@ def get_remove_attribute_menu_item(data_source_id: str, parent_id: str, attribut
         "action": "DELETE",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/remove-attribute",
-            "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
             "request": {"parentId": parent_id, "attribute": attribute},
         },
     }
@@ -172,7 +170,6 @@ def get_runnable_menu_action(data_source_id: str, document_id: str, runnable: di
         "action": "RUNNABLE",
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
-            "prompt": {"title": f"{runnable['name']}", "content": f"{runnable['description']}"},
             "runnable": runnable,
             "documentId": document_id,
             "dataSourceId": data_source_id,
@@ -184,10 +181,7 @@ def get_download_menu_action(data_source_id: str, document_id: str):
     return {
         "label": "Create Application",
         "action": "DOWNLOAD",
-        "data": {
-            "url": f"/api/v2/system/{data_source_id}/create-application/{document_id}",
-            "prompt": {"title": "Create Application", "content": "Download the application"},
-        },
+        "data": {"url": f"/api/v2/system/{data_source_id}/create-application/{document_id}"},
     }
 
 
