@@ -1,55 +1,55 @@
 {
-    "name": "RunStatus",
-    "description": "",
+    "name": "Section",
+    "description": "Description of the report.",
     "type": "system/SIMOS/Blueprint",
     "attributes": [
         {
             "name": "name",
             "type": "string",
-            "description": "variable name for named accessing",
-            "default": "runStatus",
+            "description": "",
+            "default": "report",
             "contained": true,
             "optional": false
         },
         {
             "name": "description",
             "type": "string",
-            "description": "instance description",
+            "description": "",
             "default": "",
             "contained": true,
             "optional": false
         },
         {
             "name": "type",
-            "type": "string"
-        },
-        {
-            "name": "progress",
-            "type": "number",
-            "description": "run progress",
-            "default": "0.0",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "state",
             "type": "string",
-            "description": "status",
+            "description": ""
+        },
+        {
+            "name": "title",
+            "type": "string",
+            "description": ""
+        },        
+        {
+            "name": "plots",
+            "type": "SSR-DataSource/mooringSRS/report/plot/XYPlot",
+            "dimensions": "*",
+            "description": "",
             "contained": true,
             "optional": false
         },
         {
-            "name": "progressID",
-            "type": "string",
-            "description": "Progress ID",
+            "name": "tables",
+            "type": "SSR-DataSource/mooringSRS/report/table/ColTable",
+            "dimensions": "*",
+            "description": "",
             "contained": true,
             "optional": false
-        }
+        }                   
     ],
     "storageRecipes": [],
     "uiRecipes": [{
         "type": "system/SIMOS/UiRecipe",
-        "name": "SRS Status View",
+        "name": "SRS Report View",
         "description": "Some external plugin",
         "plugin": "EXTERNAL",
         "attributes": []

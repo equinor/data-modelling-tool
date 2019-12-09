@@ -1,0 +1,48 @@
+{
+    "name": "NumberColumn",
+    "description": "Description of a column in col-table.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "",
+            "default": "column",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "header",
+            "type": "string"
+        },   
+        {
+            "name": "label",
+            "type": "string"
+        },    
+        {
+            "name": "fontSize",
+            "type": "number",
+            "default": "10"
+        },         
+        {
+            "name": "value",
+            "type": "number",
+            "dimensions": "*"
+        }        
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

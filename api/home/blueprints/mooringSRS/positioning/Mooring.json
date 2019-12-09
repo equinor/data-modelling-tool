@@ -1,44 +1,45 @@
 {
-    "name": "Wind",
-    "description": "Wind model.",
+    "name": "Mooring",
+    "description": "Description of the target mooring line.",
     "type": "system/SIMOS/Blueprint",
     "attributes": [
         {
             "name": "name",
             "type": "string",
-            "description": "variable name for named accessing",
-            "default": "wind",
+            "description": "Mooring line name.",
+            "default": "wave",
             "contained": true,
             "optional": false
         },
         {
             "name": "description",
             "type": "string",
-            "description": "instance description",
+            "description": "mooring line description",
             "default": "",
             "contained": true,
             "optional": false
         },
         {
             "name": "type",
-            "type": "string"
+            "type": "string",
+            "description": "mooring line type"
         },
         {
-            "name": "windDirection",
+            "name": "lineNumber",
             "type": "number",
-            "description": "Wind direction -comming from- in [deg].",
-            "default": "330.0",
+            "description": "mooring line number.",
+            "default": "9",
             "contained": true,
             "optional": false
         },
         {
-            "name": "windVelocity",
-            "type": "number",
-            "description": "Average wind speed 10[m] above mean water surface in [m/s].",
-            "default": "31.73",
+            "name": "brokenLines",
+            "type": "string",
+            "default": "None",
+            "description": "broken mooring line number.",
             "contained": true,
             "optional": false
-        }
+        }        
     ],
     "storageRecipes": [],
     "uiRecipes": []

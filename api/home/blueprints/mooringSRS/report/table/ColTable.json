@@ -1,0 +1,59 @@
+{
+    "name": "ColTable",
+    "description": "Description of a column table.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "",
+            "default": "table",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "description": ""
+        },
+        {
+            "name": "caption",
+            "type": "string",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },   
+        {
+            "name": "title",
+            "type": "string",
+            "default": "",
+            "contained": true,
+            "optional": false            
+        },          
+        {
+            "name": "transposed",
+            "type": "boolean",
+            "default":"false"
+        },    
+        {
+            "name": "strColumns",
+            "type": "SSR-DataSource/mooringSRS/report/table/StringColumn",
+            "dimensions": "*"
+        },    
+        {
+            "name": "numColumns",
+            "type": "SSR-DataSource/mooringSRS/report/table/NumberColumn",
+            "dimensions": "*"
+        }         
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

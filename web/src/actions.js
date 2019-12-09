@@ -74,8 +74,376 @@ async function run({ input, output, updateDocument }) {
   updateDocument({ ...output, entity })
 }
 
-const runnableMethods = {
-  run,
+//**************************************************************************//
+//**************************************************************************//
+//**************************************************************************//
+
+var srs = require('./srs.js').srs;
+
+
+const srs_run = async ({input, output, updateDocument}) => {
+    console.log(input)
+
+
+    runWorkflow({input, output, updateDocument});
+
+    return {}
 }
 
+const srs_cancel = async ({input, output, updateDocument}) => {
+    return {}
+}
+
+const runnableMethods = {
+  run,
+  srs_run,
+  srs_cancel
+}
+
+//**************************************************************************//
+//**************************************************************************//
+//**************************************************************************//
+
+var address = 'http://localhost:8085';
+
+var lastProgress = 'undefined';
+var lastExecutionId = 'undefined';
+
+//**************************************************************************//
+function cancelWorkflow() {
+	srs.cancel(address, null, lastExecutionId);
+}
+//**************************************************************************//
+function runWorkflow(request) {
+	// clear the log window
+	var progressId = undefined;
+	var sharedSecret = null;
+	var commandId = 'no.marintek.sima.workflow.run.batch';
+	//Example
+	//var task = 'Workflow_Example';
+	//var workflow = 'Workflow_Introduction';
+
+	// //load json
+	// var task = 'myTask';
+	// var workflow = 'workflow';
+
+	//FRA single line
+	// var task = 'FRA_WS_SR_singleLine';
+	// var workflow = 'WS_singleLineTension';
+
+	// // SRS
+	var task = 'SRS_Service';
+	var workflow = 'ULS_Intact';
+
+	var parameters = new Map();
+	parameters.set('task', task);
+	parameters.set('workflow', workflow);
+	parameters.set('distributed', 'false');
+	parameters.set('recursive', 'true');
+	
+	// //Example
+	//parameters.set('input', "Hs=3;Tp=10;waveDir=45");
+
+	// //load json
+	// //parameters.set('input', "myInput={\"container\":{\"number\":{\"name\":\"number\",\"unit\":\"m\",\"type\":\"marmo:containers:DimensionalScalar\",\"value\":2.0}}}");
+
+	// var container = {}
+	// container.sce = input.sce;
+	
+	// var sceTXT = JSON.stringify(container);
+	// console.log(sceTXT);
+
+	// parameters.set('input', "myInput=" + sceTXT);
+	
+	//SRS
+	var container = {}
+	container.sce = request.input.entity;	
+	var sceTXT = JSON.stringify(container);
+	console.log(sceTXT);
+	parameters.set('input', "dmt_sce=" + sceTXT);
+	//parameters.set('input', "lineNumber=16");
+
+	
+	//parameters.set('inputNode', "myinput");
+	//parameters.set('inputData', JSON.stringify(input));
+
+
+	srs.execute(progressId, address, sharedSecret, commandId, parameters
+		/* progress handler */
+		, function(progress){
+            console.log("************    GETTING PROGRESS *****************");
+
+            console.log(progress);
+            console.log(request.output);
+
+            var percentage = (progress.getWorked() * 100) / progress.getTotalwork();
+            request.output.entity.status.progress = percentage;
+			request.updateDocument(request.output);
+			
+		}		
+		/* log handler */
+		, function(response){
+			// copy the message to the log for reference
+			//let percentage = (response.getWorked() * 100) / response.getTotalwork();
+            console.log("************    GETTING RESPONSE *****************");
+			
+			console.log(response);
+			console.log(response.getText());
+		}
+		/* workflow completed handler */
+		, function(){
+			console.log('Workflow execution has completed');
+			var resPath = 'dmt_res';
+			srs.getWorkflowResult(address,sharedSecret, task, workflow, resPath, function(rs){
+				var result = JSON.parse(rs.getResult());
+				console.log("************    READING RESULTS *****************");
+				console.log(result);
+
+				parseResults(result, request.output.entity);
+				console.log(request.output);	
+
+        //request.output.entity.env =JSON.parse(JSON.stringify(request.input.entity.env));
+
+        //request.output.entity.results.safetyFactor = result.Heave.value[10];
+        //for (var propName in result){
+        //    var prop = result[propName];
+        //    console.log(prop);
+        //    if (prop.type == "marmo:containers:EquallySpacedSignal"){
+        //        delete prop.attributes;
+        //        console.log(prop);
+        //        prop.type = "SSR-DataSource/marmo/containers/EquallySpacedSignal";   
+        //        request.output.entity.results.signals.push(prop);
+        //    }
+        //}
+				request.updateDocument(request.output);
+			});
+		}
+		/* status handler */
+		, function(status){
+			if (status.code != 0){
+				switch (status.code){
+					case 13: 
+						alert('Could not execute workflow due to a server error. Please make sure all parameters are within range.'); 
+						break;
+					default: 
+						alert(status.metadata);
+				}
+			}		
+		});
+}
+//**************************************************************************//
+//**************************************************************************//
+
+function parseResults(simaRes, dmtRes){
+	console.log(simaRes);
+	for (var propName in simaRes){
+		var prop = simaRes[propName]
+		var simaType = prop.attributes.value.type;
+
+		if (simaType == 'report'){
+			var myReport = { 	"name": propName,
+								"description": "sima report.",
+								"type": "SSR-DataSource/mooringSRS/report/Section",
+								"title": propName,
+								"plots": [],
+								"tables": [] };
+
+			dmtRes.report = parseReport(propName, prop, myReport);
+			console.log(dmtRes);	
+
+		}
+	}	
+}
+
+function parseReport(name, repFrag, myReport){
+	console.log(name + " : parsing report fragment")
+	for (var propName in repFrag){
+		if (propName != 'attributes'){
+			var prop = repFrag[propName]
+			var simaType = prop.attributes.value.type;
+			console.log("   " + propName + ":" + simaType)
+
+			if (simaType == 'plot'){
+				myReport.plots.push(parsePlot(propName, prop));
+			}
+			else if (simaType == 'table'){
+				myReport.tables.push(parseTable(propName, prop));
+			}
+			else {
+				parseReport(propName, prop, myReport);
+			}
+
+		}
+	}
+
+	return myReport; 
+};
+
+function parseTable(name, stable){
+	var mytable = {
+		"name": name,
+		"description": "table.",
+		"type": "SSR-DataSource/mooringSRS/report/table/ColTable",
+		"title": name,
+		"caption": stable.attributes.value.caption,	
+		"transposed": ((String(stable.attributes.value.transposed) == 'true') ? true : false),
+		"strColumns": [],
+		"numColumns": [] }   
+
+	for (var propName in stable){
+		if (propName != 'attributes'){
+			var prop = stable[propName]
+			var simosType = prop.type;
+
+			if ( (simosType == 'marmo:containers:NonEquallySpacedSignal') ||
+				 (simosType == 'marmo:containers:EquallySpacedSignal') ){
+				//var numCol = numSignal_to_NumberColumn(propName, prop);
+				//mytable.numColumns.push(numCol);
+
+				var strCol = numSignal_to_StringColumn(propName, prop);
+				mytable.strColumns.push(strCol);
+
+			}	
+			else if (simosType == 'marmo:containers:StringArray'){
+				var strCol = strSignal_to_StrColumn(propName, prop);
+				mytable.strColumns.push(strCol);				
+			}			
+			else {
+				console.log("type: " + simosType + " on a column of a table is not known.");
+			}			
+
+		}
+	}	
+	return mytable;
+}
+
+function numSignal_to_NumberColumn(name, scol){
+	console.log("      " + name + " : parsing num column.")
+
+	var mycol = {
+    "name": scol.name,
+    "description": ((scol.description == undefined) ? "" : scol.description),
+	"type": "SSR-DataSource/mooringSRS/report/table/NumberColumn",
+	"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+	"label": ((scol.label == undefined) ? "" : scol.label),
+	"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+	"value": scol.value.slice()
+	};
+
+	return mycol;
+
+}
+
+function numSignal_to_StringColumn(name, scol){
+	console.log("      " + name + " : parsing num column.")
+
+	var mycol = {
+    "name": scol.name,
+    "description": ((scol.description == undefined) ? "" : scol.description),
+	"type": "SSR-DataSource/mooringSRS/report/table/NumberColumn",
+	"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+	"label": ((scol.label == undefined) ? "" : scol.label),
+	"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+	"value": scol.value.map(function(val) {
+								if (isNaN(val)){
+									return("NaN");
+								}
+								else {
+									return (String(Number(Number(val).toFixed(2))));
+								}
+							}) 
+	};
+
+	return mycol;
+
+}
+
+function strSignal_to_StrColumn(name, scol){
+	console.log("      " + name + " : parsing str column.")
+
+	var mycol = {
+		"name": scol.name,
+		"description": ((scol.description == undefined) ? "" : scol.description),
+		"type": "SSR-DataSource/mooringSRS/report/table/StringColumn",
+		"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+		"label": ((scol.attributes.value.label == undefined) ? "" : scol.attributes.value.label),
+		"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+		"value": scol.value.slice()
+		};
+	return mycol;
+
+}
+
+function parsePlot(name, splot){
+	console.log("   " + name + " : parsing plot.")
+
+	var myplot = {
+		"name": name,
+		"description": "plot.",
+		"type": "SSR-DataSource/mooringSRS/report/plot/XYPlot",
+		"xlabel": splot.attributes.value.xlabel,
+		"ylabel": splot.attributes.value.ylabel,
+		"title": splot.attributes.value.title,
+		"caption": splot.attributes.value.caption,
+		"lines": [] }                    
+
+	for (var propName in splot){
+		if (propName != 'attributes'){
+			var prop = splot[propName]
+			var simosType = prop.type;
+
+			if (simosType == 'marmo:containers:NonEquallySpacedSignal'){
+				var line = nesSignal_to_Line(propName, prop);
+				line.xlabel = myplot.xlabel;
+				line.label = myplot.ylabel;
+				
+				myplot.lines.push(line);
+			}
+
+		}
+	}	
+	console.log(myplot);	
+	return myplot
+}
+
+function nesSignal_to_Line(name, sline){
+	console.log("      " + name + " : parsing line.")
+
+	var myline = {
+    "name": sline.name,
+    "description": sline.description,
+	"type": "SSR-DataSource/mooringSRS/report/plot/Line",
+	"xname": sline.xname,
+	"xlabel": sline.xlabel,
+	"xdescription": sline.xdescription,
+	"xunit": sline.xunit,
+	"xvalue": sline.xvalue.slice(),
+	"value": sline.value.slice(),
+	"unit": sline.unit,
+	"label": sline.label,
+	"legend": sline.attributes.value.legend,
+	"style": getLineStyle(sline.attributes.value.lineStyle),
+	"width": sline.attributes.value.lineWidth,
+	"pointSize": sline.attributes.value.pointSize,
+	"pointStyle": getPointStyle(sline.attributes.value.pointStyle)
+	}
+
+	return myline;
+
+}
+
+function getLineStyle(sstyle){
+	if (sstyle == "Solid line"){
+		return "solid";
+	}
+	else {
+		return sstyle
+	}
+}
+
+function getPointStyle(sstyle){
+	return sstyle
+}
+//**************************************************************************//
+//**************************************************************************//
 export default runnableMethods

@@ -3,7 +3,8 @@
   "name": "DMTApplicationSettings",
   "description": "",
   "packages": ["CarPackage", "TodoPackage", "marmo", "mooringSRS"],
-  "models": ["system/DMT/Entity"],
+  "models": ["system/DMT/Entity",
+    "SSR-DataSource/mooringSRS/Scenario"],
   "actions": [
     {
       "name": "Todo Runnable",
@@ -25,6 +26,22 @@
       "input": "SSR-DataSource/CarPackage/Car",
       "output": "SSR-DataSource/CarPackage/Car",
       "method": "cancel"
-    }
+    },
+    {
+      "name": "SRS_Run",
+      "type": "system/SIMOS/Action",
+      "description": "",
+      "input": "SSR-DataSource/mooringSRS/Scenario",
+      "output": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "method": "srs_run"
+  },
+  {
+      "name": "SRS_Cancel",
+      "type": "system/SIMOS/Action",
+      "description": "",
+      "input": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "output": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "method": "srs_cancel"
+  } 
   ]
 }

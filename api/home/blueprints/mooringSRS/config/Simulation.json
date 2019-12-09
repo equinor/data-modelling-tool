@@ -1,0 +1,38 @@
+{
+    "name": "Simulation",
+    "description": "Simulation configuration.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "simulation config name.",
+            "default": "simulation",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string",
+            "description": "simulation config type"
+        },
+        {
+            "name": "simulationLength",
+            "type": "number",
+            "description": "simulation length in seconds.",
+            "default": "50",
+            "contained": true,
+            "optional": false
+        }
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

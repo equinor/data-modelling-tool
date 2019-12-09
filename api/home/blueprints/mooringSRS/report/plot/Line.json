@@ -1,13 +1,13 @@
 {
-    "name": "EquallySpacedSignal",
-    "description": "data model for an equally spaced signal.",
+    "name": "Line",
+    "description": "data model for a plot-line, this should extends from NonEquallySpacedSignal.",
     "type": "system/SIMOS/Blueprint",
     "attributes": [
         {
             "name": "name",
             "type": "string",
             "description": "variable name for named accessing",
-            "default": "equallySpacedSignal",
+            "default": "nonEquallySpacedSignal",
             "contained": true,
             "optional": false
         },
@@ -24,6 +24,47 @@
             "type": "string"
         },
         {
+            "name": "xname",
+            "type": "string",
+            "description": "name for the x value.",
+            "default": "time",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "xlabel",
+            "type": "string",
+            "description": "label for the x value.",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "xdescription",
+            "type": "string",
+            "description": "description for the x value.",
+            "default": "time",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "xunit",
+            "type": "string",
+            "description": "x signal unit",
+            "default": "s",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "xvalue",
+            "type": "number",
+            "description": "x data points.",
+            "default": "0.0",
+            "dimensions": "*",
+            "contained": true,
+            "optional": false
+        },
+        {
             "name": "value",
             "type": "number",
             "description": "data points.",
@@ -33,49 +74,9 @@
             "optional": false
         },
         {
-            "name": "xname",
+            "name": "unit",
             "type": "string",
-            "description": "name for the x value",
-            "default": "time",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "xdescription",
-            "type": "string",
-            "description": "description for the x-axis",
-            "default": "",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "xunit",
-            "type": "string",
-            "description": "x-axis unit.",
-            "default": "",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "xdelta",
-            "type": "number",
-            "description": "x-axis or index spacing.",
-            "default": 1,
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "xstart",
-            "type": "number",
-            "description": "x-axis or index start.",
-            "default": 0,
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "xlabel",
-            "type": "string",
-            "description": "label for the x-axis.",
+            "description": "signal unit",
             "default": "",
             "contained": true,
             "optional": false
@@ -83,7 +84,7 @@
         {
             "name": "label",
             "type": "string",
-            "description": "label for the y-axis.",
+            "description": "label for the y value.",
             "default": "",
             "contained": true,
             "optional": false
@@ -97,27 +98,36 @@
             "optional": false
         },
         {
-            "name": "unit",
+            "name": "style",
             "type": "string",
-            "description": "data unit.",
-            "default": "",
-            "contained": true,
-            "optional": false
-        }
+            "description": "",
+            "default": "solid"
+        },
+        {
+            "name": "width",
+            "type": "number",
+            "description": "",
+            "default": "1"
+        },
+        {
+            "name": "pointSize",
+            "type": "number",
+            "description": "",
+            "default": "4"
+        },
+        {
+            "name": "pointSize",
+            "type": "number",
+            "description": "",
+            "default": "0"
+        },    
+        {
+            "name": "pointStyle",
+            "type": "string",
+            "description": "",
+            "default": "None"
+        }  
     ],
     "storageRecipes": [],
-    "uiRecipes": [    {
-        "type": "system/SIMOS/UiRecipe",
-        "name": "ESS Plot View",
-        "description": "Some external plugin",
-        "plugin": "EXTERNAL",
-        "attributes": []
-      },
-      {
-        "type": "system/SIMOS/UiRecipe",
-        "name": "ESS Table View",
-        "description": "Some external plugin",
-        "plugin": "EXTERNAL",
-        "attributes": []
-      }]
+    "uiRecipes": []
 }

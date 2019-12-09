@@ -1,53 +1,53 @@
 {
-  "name": "Current",
-  "description": "Current model.",
-  "type": "system/SIMOS/Blueprint",
-  "attributes": [
-    {
-      "name": "name",
-      "type": "string",
-      "description": "variable name for named accessing",
-      "default": "current",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "description",
-      "type": "string",
-      "description": "instance description",
-      "default": "",
-      "contained": true,
-      "optional": false
-    },
-    { "name": "type", "type": "string" },
-    {
-      "name": "currentDepths",
-      "type": "number",
-      "description": "A list of current levels, positive downward, in [m].",
-      "default": "0.0",
-      "dimensions": "*",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "currentDirections",
-      "type": "number",
-      "description": "Current direction -going to- in [deg].",
-      "default": "0.0",
-      "dimensions": "*",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "currentVelocities",
-      "type": "number",
-      "description": "A list of current velocities at dfferent levels [m/s].",
-      "default": "0.0",
-      "dimensions": "*",
-      "contained": true,
-      "optional": false
-    }
-  ],
-  "storageRecipes": [],
-  "uiRecipes": []
+    "name": "Current",
+    "description": "Current model.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "type": "string",
+            "description": "variable name for named accessing",
+            "default": "current",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "type": "string",
+            "description": "instance description",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "type": "string"
+        },
+        {
+            "name": "currentDepths",
+            "type": "string",
+            "description": "A list of current levels, positive downward, in [m].",
+            "default": "0.0,-50,-150,-279,-300",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "currentDirections",
+            "type": "string",
+            "description": "Current direction -going to- in [deg].",
+            "default": "330,330,330,330,330",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "currentVelocities",
+            "type": "string",
+            "description": "A list of current velocities at dfferent levels [m/s].",
+            "default": "0.9,0.7,0.5,0.3,0.0",
+            "contained": true,
+            "optional": false
+        }
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
 }
