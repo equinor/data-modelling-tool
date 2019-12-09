@@ -127,16 +127,13 @@ function runWorkflow(request) {
 	// var task = 'myTask';
 	// var workflow = 'workflow';
 
-	// //SRS
-	// var task = 'SRS_Analysis';
-	// var workflow = 'ULS_Intact';
-
 	//FRA single line
-	var task = 'FRA_WS_SR_singleLine';
-	var workflow = 'WS_singleLineTension';
+	// var task = 'FRA_WS_SR_singleLine';
+	// var workflow = 'WS_singleLineTension';
 
-	//var task = 'SRS_Service';
-	//var workflow = 'ULS_Intact';
+	// // SRS
+	var task = 'SRS_Service';
+	var workflow = 'ULS_Intact';
 
 	var parameters = new Map();
 	parameters.set('task', task);
@@ -270,7 +267,7 @@ function parseReport(name, repFrag, myReport){
 				myReport.plots.push(parsePlot(propName, prop));
 			}
 			else if (simaType == 'table'){
-				parseTable(propName, prop);
+				myReport.tables.push(parseTable(propName, prop));
 			}
 			else {
 				parseReport(propName, prop, myReport);
@@ -283,9 +280,99 @@ function parseReport(name, repFrag, myReport){
 };
 
 function parseTable(name, stable){
-	return true;
+	var mytable = {
+		"name": name,
+		"description": "table.",
+		"type": "SSR-DataSource/mooringSRS/report/table/ColTable",
+		"title": name,
+		"caption": stable.attributes.value.caption,	
+		"transposed": ((String(stable.attributes.value.transposed) == 'true') ? true : false),
+		"strColumns": [],
+		"numColumns": [] }   
+
+	for (var propName in stable){
+		if (propName != 'attributes'){
+			var prop = stable[propName]
+			var simosType = prop.type;
+
+			if ( (simosType == 'marmo:containers:NonEquallySpacedSignal') ||
+				 (simosType == 'marmo:containers:EquallySpacedSignal') ){
+				//var numCol = numSignal_to_NumberColumn(propName, prop);
+				//mytable.numColumns.push(numCol);
+
+				var strCol = numSignal_to_StringColumn(propName, prop);
+				mytable.strColumns.push(strCol);
+
+			}	
+			else if (simosType == 'marmo:containers:StringArray'){
+				var strCol = strSignal_to_StrColumn(propName, prop);
+				mytable.strColumns.push(strCol);				
+			}			
+			else {
+				console.log("type: " + simosType + " on a column of a table is not known.");
+			}			
+
+		}
+	}	
+	return mytable;
 }
 
+function numSignal_to_NumberColumn(name, scol){
+	console.log("      " + name + " : parsing num column.")
+
+	var mycol = {
+    "name": scol.name,
+    "description": ((scol.description == undefined) ? "" : scol.description),
+	"type": "SSR-DataSource/mooringSRS/report/table/NumberColumn",
+	"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+	"label": ((scol.label == undefined) ? "" : scol.label),
+	"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+	"value": scol.value.slice()
+	};
+
+	return mycol;
+
+}
+
+function numSignal_to_StringColumn(name, scol){
+	console.log("      " + name + " : parsing num column.")
+
+	var mycol = {
+    "name": scol.name,
+    "description": ((scol.description == undefined) ? "" : scol.description),
+	"type": "SSR-DataSource/mooringSRS/report/table/NumberColumn",
+	"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+	"label": ((scol.label == undefined) ? "" : scol.label),
+	"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+	"value": scol.value.map(function(val) {
+								if (isNaN(val)){
+									return("NaN");
+								}
+								else {
+									return (String(Number(Number(val).toFixed(2))));
+								}
+							}) 
+	};
+
+	return mycol;
+
+}
+
+function strSignal_to_StrColumn(name, scol){
+	console.log("      " + name + " : parsing str column.")
+
+	var mycol = {
+		"name": scol.name,
+		"description": ((scol.description == undefined) ? "" : scol.description),
+		"type": "SSR-DataSource/mooringSRS/report/table/StringColumn",
+		"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+		"label": ((scol.attributes.value.label == undefined) ? "" : scol.attributes.value.label),
+		"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+		"value": scol.value.slice()
+		};
+	return mycol;
+
+}
 
 function parsePlot(name, splot){
 	console.log("   " + name + " : parsing plot.")
@@ -306,7 +393,7 @@ function parsePlot(name, splot){
 			var simosType = prop.type;
 
 			if (simosType == 'marmo:containers:NonEquallySpacedSignal'){
-				var line = parseNesSignal(propName, prop);
+				var line = nesSignal_to_Line(propName, prop);
 				line.xlabel = myplot.xlabel;
 				line.label = myplot.ylabel;
 				
@@ -319,7 +406,7 @@ function parsePlot(name, splot){
 	return myplot
 }
 
-function parseNesSignal(name, sline){
+function nesSignal_to_Line(name, sline){
 	console.log("      " + name + " : parsing line.")
 
 	var myline = {

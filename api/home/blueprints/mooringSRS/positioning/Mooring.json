@@ -34,9 +34,8 @@
         },
         {
             "name": "brokenLines",
-            "type": "number",
-            "dimensions": "*",
-            "default": "0.0",
+            "type": "string",
+            "default": "None",
             "description": "broken mooring line number.",
             "contained": true,
             "optional": false

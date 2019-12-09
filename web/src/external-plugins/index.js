@@ -33,6 +33,18 @@ import { Component } from 'react';
 import styled from 'styled-components';
 import { useTable } from 'react-table';
 
+import {useState} from 'react';
+import useCollapse from 'react-collapsed';
+
+import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
+
+/* ********************************************************* */
+//Custom views
+import {BlueprintTable} from './blueprint_views.js';
+import {SRSReportView} from './view_SRSReportView.js';
+
+/* ********************************************************* */
+
 const Styles = styled.div`
   padding: 1rem;
 
@@ -64,6 +76,8 @@ const Styles = styled.div`
   }
 `
 
+/* ********************************************************* */
+/* ********************************************************* */
 
 
 function PlotlyPoc() {
@@ -242,11 +256,11 @@ var propNames = ['currentDepths',
 var descs = ["Wave propagation direction -comming from- in [deg].",
              "Significant wave height in [m].",
              "Peak period in [s]."];
-for (var propi=0; propi<entity.currentDepths.length; propi++ ){
+for (var propi=0; propi<entity.currentDepths.split(',').length; propi++ ){
   data.push({
-    "currentDepths": entity.currentDepths[propi],
-    "currentDirections": entity.currentDirections[propi],
-    "currentVelocities": entity.currentVelocities[propi]
+    "currentDepths": entity.currentDepths.split(',')[propi],
+    "currentDirections": entity.currentDirections.split(',')[propi],
+    "currentVelocities": entity.currentVelocities.split(',')[propi]
   })
 }
 
@@ -268,94 +282,6 @@ tabs.push({data, columns})
 const ESSTablePlugin = ({ parent, document, children }) => {
   console.log(document);
   return(JSON.stringify(document))
-}
-//********************************************************//
-//********************************************************//
-
-const BlueprintTable = ({ parent, document, children }) => {
-  //console.log(document);
-  //console.log(parent);
-
-  var tabs = [];
-  var columns = [{
-    Header: "Blueprint",
-    columns: [
-      {
-        Header: "Name",
-        accessor: "name"
-      },                
-      {
-        Header: "Description",
-        accessor: "description"
-      }        
-    ]
-  }];
-  var data = [];
-    data.push({
-      "name": document.name,
-      "description": document.description
-    })
-
-  tabs.push({data, columns})
-
-  var columns = [{
-        Header: "Attributes",
-        columns: [
-          {
-            Header: "Name",
-            accessor: "name"
-          },          
-          {
-            Header: "Type",
-            accessor: "propType"
-          },
-          {
-            Header: "Dimension",
-            accessor: "dim"
-          },          
-          {
-            Header: "Description",
-            accessor: "description"
-          }        
-        ]
-      }];
-
-  var data = [];
-
-  for (var propi=0; propi<document.attributes.length; propi++ ){
-    var prop = document.attributes[propi];
-    var dim = 1;
-    if (prop.dimensions != undefined){
-      dim = prop.dimensions;
-    }
-
-    if (prop.name != 'type'){
-      data.push({
-        "name": prop.name,
-        "propType": prop.type,
-        "dim": dim,
-        "description": prop.description
-      })
-    }
-  }
-
-  tabs.push({data, columns})
-  //console.log(data);
-  //console.log(columns);
-
-
-
-  return (
-    <span style={{ paddingRight: 20 }}>
-    <Styles>
-      {tabs.map((item, index) => 
-       <div className="container" key={index}>
-            <Table columns={item.columns} data={item.data} />
-      </div>)}
-    </Styles>
-    </span>
-  );
-
 }
 
 //********************************************************//
@@ -427,18 +353,18 @@ const ESSPlotPlugin = ({ parent, document, children }) => {
 const getXLabel = (signal) =>{
   var label = "";
 
-  if (signal.xlabel != undefined){
+  if (signal.xlabel !== undefined){
     label = signal.xlabel;
   }
-  else if (signal.xname != undefined){
+  else if (signal.xname !== undefined){
     label = signal.xname;
-    if (signal.xunit != undefined){
+    if (signal.xunit !== undefined){
       label += " [" + signal.xunit + "]";
     }
   }
   else {
     label = "time";
-    if (signal.xunit != undefined){
+    if (signal.xunit !== undefined){
       label += " [" + signal.xunit + "]";
     }        
   }
@@ -449,18 +375,18 @@ const getXLabel = (signal) =>{
 const getYLabel = (signal) =>{
   var label = "";
 
-  if (signal.label != undefined){
+  if (signal.label !== undefined){
     label = signal.label;
   }
-  else if (signal.name != undefined){
+  else if (signal.name !== undefined){
     label = signal.name;
-    if (signal.unit != undefined){
+    if (signal.unit !== undefined){
       label += " [" + signal.unit + "]";
     }
   }
   else {
     label = "time";
-    if (signal.unit != undefined){
+    if (signal.unit !== undefined){
       label += " [" + signal.unit + "]";
     }        
   }
@@ -543,64 +469,7 @@ const SRSResultsView = ({ parent, document, children }) => {
    
 
 }
-//********************************************************//
-const SRSReportView = ({ parent, document, children }) => {
-  console.log(document);
 
-  var pdatas = [];
-
-  for (var sInd=0; sInd < document.plots.length; sInd++){
-    let signal = document.signals[sInd];
-    let pdata = {};
-    pdata['x'] = [0];
-    pdata['y'] = [0];
-
-    if (Array.isArray(signal.value)){
-      pdata['y'] = signal.value;
-      pdata['x'] = [];
-      for(var i=0; i<signal.value.length;i++){
-        pdata.x.push(signal.xstart + i*signal.xdelta);
-      }
-
-      pdata['xlabel'] = getXLabel(signal);
-      pdata['ylabel'] = getYLabel(signal);
-
-    }
-    pdatas.push(pdata);
-  }
-  console.log(pdatas);
-
-  return ( <div className="container">
-           { pdatas.map((item, index) =>(
-          <div className="container" key={index}>
-              <Plot
-                data={[
-                  {
-                    x: item.x,
-                    y: item.y,
-                    type: 'scatter',
-                    mode: 'lines+points',
-                    marker: {color: 'red'},
-                  }
-                ]}
-                layout={ {width: 620, height: 440, 
-                          title: "",
-                          xaxis: {
-                            title: item.xlabel,
-                            showgrid: true,
-                            zeroline: true
-                          },
-                          yaxis: {
-                            title: item.ylabel,
-                            showgrid: true,
-                            zeroline: true
-                          },} }
-              />
-            </div>) ) }
-            </div> )
-   
-
-}
 //********************************************************//
 const SRSStatusView = ({ parent, document, children }) => {
   console.log(document);

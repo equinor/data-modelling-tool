@@ -26,28 +26,33 @@
         },
         {
             "name": "caption",
-            "type": "string"
+            "type": "string",
+            "default": "",
+            "contained": true,
+            "optional": false
         },   
+        {
+            "name": "title",
+            "type": "string",
+            "default": "",
+            "contained": true,
+            "optional": false            
+        },          
         {
             "name": "transposed",
             "type": "boolean",
             "default":"false"
         },    
         {
-            "name": "stringColumns",
-            "type": "SSR-DataSource/marmo/containers/StringArray",
+            "name": "strColumns",
+            "type": "SSR-DataSource/mooringSRS/report/table/StringColumn",
             "dimensions": "*"
-        },
+        },    
         {
-            "name": "esColumns",
-            "type": "SSR-DataSource/marmo/containers/EquallySpacedSignal",
+            "name": "numColumns",
+            "type": "SSR-DataSource/mooringSRS/report/table/NumberColumn",
             "dimensions": "*"
-        },                                             
-        {
-            "name": "nesColumns",
-            "type": "SSR-DataSource/marmo/containers/NonEquallySpacedSignal",
-            "dimensions": "*"
-        }                
+        }         
     ],
     "storageRecipes": [],
     "uiRecipes": []

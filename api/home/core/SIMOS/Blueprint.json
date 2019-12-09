@@ -109,6 +109,13 @@
     },
     {
       "type": "system/SIMOS/UiRecipe",
+      "name": "Blueprint Table",
+      "description": "Some external plugin",
+      "plugin": "EXTERNAL",
+      "attributes": []
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
       "name": "My plugin",
       "description": "Some external plugin",
       "plugin": "EXTERNAL",

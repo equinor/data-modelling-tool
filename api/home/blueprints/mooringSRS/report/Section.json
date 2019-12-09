@@ -47,5 +47,11 @@
         }                   
     ],
     "storageRecipes": [],
-    "uiRecipes": []
+    "uiRecipes": [{
+        "type": "system/SIMOS/UiRecipe",
+        "name": "SRS Report View",
+        "description": "Some external plugin",
+        "plugin": "EXTERNAL",
+        "attributes": []
+      }]
 }
