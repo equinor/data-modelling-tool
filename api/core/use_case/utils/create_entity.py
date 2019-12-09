@@ -1,6 +1,9 @@
 from core.domain.dynamic_models import BlueprintAttribute, AttributeTypes, Blueprint
 from utils.data_structure.find import get
+import json
 
+# on changes in testdata, run command:
+# doit create:system:blueprints
 
 class CreateEntityException(Exception):
     def __init__(self, message: str):
@@ -51,9 +54,12 @@ class CreateEntity:
         default_value = attr.default
         type = attr.type
 
+        if default_value is not None and len(default_value) > 0 and attr.dimensions == '*':
+            return json.loads(default_value)
+
         if type == "boolean":
             if default_value == '':
-               return False
+                return False
             return bool(default_value)
         if type == "number":
             if default_value == '':
@@ -84,10 +90,7 @@ class CreateEntity:
                 if is_optional is not None and not is_optional:
                     default_value = CreateEntity.default_value(attr=attr, parent_type=parent_type)
                     if attr.name not in entity:
-                        if attr.dimensions == '*':
-                            entity[attr.name] = []
-                        else:
-                            entity[attr.name] = default_value
+                       entity[attr.name] = default_value
             else:
                 blueprint = self.blueprint_provider.get_blueprint(attr.type)
                 if attr.dimensions == "*":

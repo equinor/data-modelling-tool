@@ -25,7 +25,8 @@
       "description": "data points.",
       "dimensions": "*",
       "contained": true,
-      "optional": false
+      "optional": false,
+      "default": "[2,3,4]"
     },
     {
       "name": "value2",

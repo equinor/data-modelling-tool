@@ -36,7 +36,6 @@ export const EditPlugin = (props: EditPluginProps) => {
         }}
         onSubmit={(schemas: any) => {
           fixRecursive(schemas.formData, blueprintProvider)
-          console.log(schemas.formData)
           props.onSubmit(schemas)
         }}
       />
@@ -44,7 +43,6 @@ export const EditPlugin = (props: EditPluginProps) => {
   )
 }
 
-//todo insert empty array for recursive models.
 function fixRecursive(
   entity: KeyValue,
   blueprintProvider: BlueprintProvider
