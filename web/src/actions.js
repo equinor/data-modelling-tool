@@ -128,12 +128,12 @@ function runWorkflow(request) {
 	// var workflow = 'workflow';
 
 	//FRA single line
-	// var task = 'FRA_WS_SR_singleLine';
-	// var workflow = 'WS_singleLineTension';
+	var task = 'FRA_WS_SR_singleLine';
+	var workflow = 'WS_singleLineTension';
 
 	// // SRS
-	var task = 'SRS_Service';
-	var workflow = 'ULS_Intact';
+	// var task = 'SRS_Service';
+	// var workflow = 'ULS_Intact';
 
 	var parameters = new Map();
 	parameters.set('task', task);
@@ -216,6 +216,8 @@ function runWorkflow(request) {
         //    }
         //}
 				request.updateDocument(request.output);
+				request.updateDocument(request.output);
+
 			});
 		}
 		/* status handler */
