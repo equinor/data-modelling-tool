@@ -1,5 +1,6 @@
 from core.domain.dynamic_models import BlueprintAttribute, AttributeTypes, Blueprint
 from utils.data_structure.find import get
+from json import JSONDecodeError
 import json
 
 # on changes in testdata, run command:
@@ -55,7 +56,11 @@ class CreateEntity:
         type = attr.type
 
         if default_value is not None and len(default_value) > 0 and attr.dimensions == '*':
-            return json.loads(default_value)
+            try:
+                return json.loads(default_value)
+            except JSONDecodeError:
+                print(f"invalid default value: {default_value} for attribute: {attr}")
+                return []
 
         if type == "boolean":
             if default_value == '':
