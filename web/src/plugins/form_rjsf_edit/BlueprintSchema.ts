@@ -3,6 +3,7 @@ import {
   BlueprintAttribute,
   Blueprint as BlueprintType,
   UiRecipe,
+  Entity,
 } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import objectPath from 'object-path'
@@ -19,7 +20,6 @@ type SchemaProperty = {
   [key: string]: any
 }
 
-//@todo make uiAttribute recursive, like BlueprintUiSchema, needed to set required
 export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   private schema: KeyValue = {
     type: 'object',
@@ -32,6 +32,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
 
   constructor(
     blueprintType: BlueprintType,
+    document: Entity,
     blueprintProvider: BlueprintProvider,
     uiRecipe: UiRecipe,
     filter: IndexFilter,
@@ -44,13 +45,21 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     this.blueprintProvider = blueprintProvider
     const path = 'properties'
     objectPath.set(this.schema, 'required', this.getRequired(this))
-    this.processAttributes(path, this, blueprintType.attributes)
+    this.processAttributes(
+      path,
+      this,
+      document,
+      blueprintType.attributes,
+      false
+    )
   }
 
   private processAttributes(
     path: string = '',
     blueprint: Blueprint,
-    attributes: BlueprintAttribute[]
+    document: Entity,
+    attributes: BlueprintAttribute[],
+    exitRecursion: boolean
   ) {
     attributes
       .filter(this.filter) //@todo filter recursively on recipes and defaults.
@@ -59,7 +68,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
         if (this.isPrimitive(attr.type)) {
           this.appendPrimitive(newPath, blueprint, attr)
         } else {
-          this.processNested(newPath, blueprint, attr)
+          this.processNested(newPath, document, attr, exitRecursion)
         }
       })
   }
@@ -70,37 +79,37 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
 
   private processNested(
     path: string,
-    blueprint: Blueprint,
-    attr: BlueprintAttribute
+    nestedDocument: Entity,
+    attr: BlueprintAttribute,
+    exitRecursion: boolean
   ): void {
     const nestedBlueprintType:
       | BlueprintType
       | undefined = this.blueprintProvider.getBlueprintByType(attr.type)
     if (nestedBlueprintType) {
       const nestedBlueprint = new Blueprint(nestedBlueprintType)
-      if (nestedBlueprintType.name === blueprint.getBlueprintType().name) {
-        console.log('EditPlugin schema does not support self recursive types.')
-        return
-      }
 
       if (this.isArray(attr)) {
-        if (
-          nestedBlueprint.getBlueprintType().name !==
-          blueprint.getBlueprintType().name
-        ) {
-          const newPath = path + '.items.properties'
-          console.log(attr, nestedBlueprintType, path)
-          objectPath.set(this.schema, path, {
-            type: 'array',
-            items: {
-              required: this.getRequired(nestedBlueprint),
-              properties: {},
-            },
-          })
+        const newPath = path + '.items.properties'
+        objectPath.set(this.schema, path, {
+          type: 'array',
+          items: {
+            required: this.getRequired(nestedBlueprint),
+            properties: {},
+          },
+        })
+        if (!exitRecursion && nestedDocument && nestedDocument[attr.name]) {
+          if (nestedDocument[attr.name].length === 0) {
+            // stops recursion in the next level.
+            // do only one more recursion after this flag is changed.
+            exitRecursion = true
+          }
           this.processAttributes(
             newPath,
             nestedBlueprint,
-            nestedBlueprintType.attributes
+            nestedDocument[attr.name][0],
+            nestedBlueprintType.attributes,
+            exitRecursion
           )
         }
       } else {
@@ -110,11 +119,16 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
           required: this.getRequired(nestedBlueprint),
           properties: {},
         })
-        this.processAttributes(
-          newPath,
-          nestedBlueprint,
-          nestedBlueprintType.attributes
-        )
+
+        if (!exitRecursion) {
+          this.processAttributes(
+            newPath,
+            nestedBlueprint,
+            nestedDocument[attr.name],
+            nestedBlueprintType.attributes,
+            true
+          )
+        }
       }
     }
   }
@@ -154,7 +168,9 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
 
     let schemaProperty: SchemaProperty = {
       type: attr.type,
-      default: defaultValue,
+    }
+    if (defaultValue) {
+      schemaProperty.default = defaultValue
     }
     this.addEnumToProperty(blueprint, schemaProperty, attr)
     return schemaProperty

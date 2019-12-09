@@ -13,6 +13,12 @@
       "default": "system/SIMOS/StorageAttribute"
     },
     {
+      "type": "string",
+      "name": "attributeType",
+      "default": "system/SIMOS/BlueprintAttribute",
+      "optional": true
+    },
+    {
       "name": "label",
       "type": "string",
       "optional": true,

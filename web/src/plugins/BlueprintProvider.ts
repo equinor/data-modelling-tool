@@ -18,11 +18,14 @@ export class BlueprintProvider implements IBlueprintProvider {
   }
 
   public getNameFromType(type: string): string {
-    const split = type.split('/')
-    return split[split.length - 1]
+    if (type && type.indexOf('/') > -1) {
+      const split = type.split('/')
+      return split[split.length - 1]
+    }
+    return ''
   }
 
-  getBlueprintByType(type: string) {
+  getBlueprintByType(type: string): Blueprint | undefined {
     const name = this.getNameFromType(type)
     return this.blueprints.find(
       (blueprint: Blueprint) => blueprint.name === name
