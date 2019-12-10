@@ -34,22 +34,30 @@
       "input": "SSR-DataSource/mooringSRS/Scenario",
       "output": "SSR-DataSource/mooringSRS/run/RunOutput",
       "method": "srs_run"
-  },
-  {
-      "name": "SRS_Cancel",
+    },
+    {
+        "name": "SRS_Cancel",
+        "type": "system/SIMOS/Action",
+        "description": "",
+        "input": "SSR-DataSource/mooringSRS/run/RunOutput",
+        "output": "SSR-DataSource/mooringSRS/run/RunOutput",
+        "method": "srs_cancel"
+    },
+    {
+      "name": "Single_Run",
       "type": "system/SIMOS/Action",
       "description": "",
-      "input": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "input": "SSR-DataSource/mooringSRS/Scenario",
       "output": "SSR-DataSource/mooringSRS/run/RunOutput",
-      "method": "srs_cancel"
-  },
-  {
-    "name": "test_SRS_Run",
-    "type": "system/SIMOS/Action",
-    "description": "",
-    "input": "SSR-DataSource/mooringSRS/Scenario",
-    "output": "SSR-DataSource/mooringSRS/run/RunOutput",
-    "method": "test_srs_run"
-  }
+      "method": "single_run"
+    },    
+    {
+      "name": "test_Single_Run",
+      "type": "system/SIMOS/Action",
+      "description": "",
+      "input": "SSR-DataSource/mooringSRS/Scenario",
+      "output": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "method": "test_single_run"
+    }
   ]
 }

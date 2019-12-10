@@ -474,9 +474,29 @@ const SRSResultsView = ({ parent, document, children }) => {
 const SRSStatusView = ({ parent, document, children }) => {
   console.log(document);
 
+  return ( 
+          <div className="container">
+              <Plot
+                data={[
+                  {
+                    x: [document.progress],
+                    y: ['Progress'],
+                    type: 'bar',
+                    orientation: 'h'
+                  }
+                ]}
+                layout={ {width: 600, height: 200, 
+                          title: "",
+                          xaxis: {
+                            title: 'percentage',
+                            range: [0, 100]
+                          },
+                          yaxis: {
+                            title: ''
+                          },} }
+              />
+            </div>) 
  
-  return (document.progress);
-
 }
 //********************************************************//
 

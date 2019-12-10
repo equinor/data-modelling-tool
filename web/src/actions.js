@@ -79,37 +79,56 @@ async function run({ input, output, updateDocument }) {
 //**************************************************************************//
 
 var srs = require('./srs.js').srs;
-
-
+//**************************************************************************//
 const srs_run = async ({input, output, updateDocument}) => {
     console.log(input)
 
+	var request = {input, output, updateDocument};
+	request['task'] = 'SRS_Service';
+	request['workflow'] = 'ULS_Intact';
 
-    runWorkflow({input, output, updateDocument});
-
+	runWorkflow(request);
+	
     return {}
 }
-
+//**************************************************************************//
 const srs_cancel = async ({input, output, updateDocument}) => {
     return {}
 }
-
-var test_srsRes = require('./test_srs_data.js').srsRes;
-
-const test_srs_run = async ({input, output, updateDocument}) => {
+//**************************************************************************//
+const single_run = async ({input, output, updateDocument}) => {
     console.log(input)
 
-	output.entity = test_srsRes;
+	var request = {input, output, updateDocument};
+	request['task'] = 'FRA_WS_SR_singleLine';
+	request['workflow'] = 'WS_singleLineTension';
+
+    runWorkflow(request);
+
+    return {}
+}
+//**************************************************************************//
+var test_srsRes = require('./test_srs_data.js').srsRes;
+
+const test_single_run = async ({input, output, updateDocument}) => {
+    console.log(input)
+
+	test_srsRes.name = output.entity.name;
+	output.entity = {...test_srsRes};
+    console.log(output)
+
+	updateDocument(output);
 	updateDocument(output);
 
     return {}
 }
-
+//**************************************************************************//
 const runnableMethods = {
   run,
   srs_run,
   srs_cancel,
-  test_srs_run
+  single_run,
+  test_single_run
 }
 
 //**************************************************************************//
@@ -131,21 +150,9 @@ function runWorkflow(request) {
 	var progressId = undefined;
 	var sharedSecret = null;
 	var commandId = 'no.marintek.sima.workflow.run.batch';
-	//Example
-	//var task = 'Workflow_Example';
-	//var workflow = 'Workflow_Introduction';
 
-	// //load json
-	// var task = 'myTask';
-	// var workflow = 'workflow';
-
-	//FRA single line
-	var task = 'FRA_WS_SR_singleLine';
-	var workflow = 'WS_singleLineTension';
-
-	// // SRS
-	// var task = 'SRS_Service';
-	// var workflow = 'ULS_Intact';
+	var task = request.task;
+	var workflow = request.workflow;
 
 	var parameters = new Map();
 	parameters.set('task', task);
@@ -159,26 +166,12 @@ function runWorkflow(request) {
 	// //load json
 	// //parameters.set('input', "myInput={\"container\":{\"number\":{\"name\":\"number\",\"unit\":\"m\",\"type\":\"marmo:containers:DimensionalScalar\",\"value\":2.0}}}");
 
-	// var container = {}
-	// container.sce = input.sce;
-	
-	// var sceTXT = JSON.stringify(container);
-	// console.log(sceTXT);
-
-	// parameters.set('input', "myInput=" + sceTXT);
-	
 	//SRS
 	var container = {}
 	container.sce = request.input.entity;	
 	var sceTXT = JSON.stringify(container);
 	console.log(sceTXT);
 	parameters.set('input', "dmt_sce=" + sceTXT);
-	//parameters.set('input', "lineNumber=16");
-
-	
-	//parameters.set('inputNode', "myinput");
-	//parameters.set('inputData', JSON.stringify(input));
-
 
 	srs.execute(progressId, address, sharedSecret, commandId, parameters
 		/* progress handler */
@@ -210,25 +203,13 @@ function runWorkflow(request) {
 				var result = JSON.parse(rs.getResult());
 				console.log("************    READING RESULTS *****************");
 				console.log(result);
+				console.log(request.output);
 
 				parseResults(result, request.output.entity);
 				console.log(request.output);	
 
-        //request.output.entity.env =JSON.parse(JSON.stringify(request.input.entity.env));
-
-        //request.output.entity.results.safetyFactor = result.Heave.value[10];
-        //for (var propName in result){
-        //    var prop = result[propName];
-        //    console.log(prop);
-        //    if (prop.type == "marmo:containers:EquallySpacedSignal"){
-        //        delete prop.attributes;
-        //        console.log(prop);
-        //        prop.type = "SSR-DataSource/marmo/containers/EquallySpacedSignal";   
-        //        request.output.entity.results.signals.push(prop);
-        //    }
-        //}
 				request.updateDocument(request.output);
-				request.updateDocument(request.output);
+				//request.updateDocument(request.output);
 
 			});
 		}
@@ -260,7 +241,8 @@ function parseResults(simaRes, dmtRes){
 								"type": "SSR-DataSource/mooringSRS/report/Section",
 								"title": propName,
 								"plots": [],
-								"tables": [] };
+								"tables": [],
+								"sections": [] };
 
 			dmtRes.report = parseReport(propName, prop, myReport);
 			console.log(dmtRes);	
@@ -274,7 +256,10 @@ function parseReport(name, repFrag, myReport){
 	for (var propName in repFrag){
 		if (propName != 'attributes'){
 			var prop = repFrag[propName]
-			var simaType = prop.attributes.value.type;
+			var simaType = 'undefined';
+			if (typeof prop.attributes !== 'undefined') {
+				simaType = prop.attributes.value.type;
+			}
 			console.log("   " + propName + ":" + simaType)
 
 			if (simaType == 'plot'){
@@ -283,8 +268,23 @@ function parseReport(name, repFrag, myReport){
 			else if (simaType == 'table'){
 				myReport.tables.push(parseTable(propName, prop));
 			}
+			else if (simaType == 'section'){
+				var mysec = {
+					"name": propName,
+					"description": "report section.",
+					"type": "SSR-DataSource/mooringSRS/report/Section",
+					"title": propName,
+					"plots": [],	
+					"tables": [],
+					"sections": []};
+
+				myReport.sections.push(mysec)
+				parseReport(propName, prop, mysec);
+			}		
 			else {
-				parseReport(propName, prop, myReport);
+				if (typeof prop === 'object' && prop !== null) {
+					parseReport(propName, prop, myReport);
+				}
 			}
 
 		}
@@ -318,8 +318,16 @@ function parseTable(name, stable){
 				mytable.strColumns.push(strCol);
 
 			}	
+			else if (simosType == 'marmo:containers:DimensionalScalar'){
+				var strCol = numScalar_to_StringColumn(propName, prop);
+				mytable.strColumns.push(strCol);				
+			}	
+			else if (simosType == 'marmo:containers:SimpleString'){
+				var strCol = strSingle_to_StringColumn(propName, prop);
+				mytable.strColumns.push(strCol);				
+			}							
 			else if (simosType == 'marmo:containers:StringArray'){
-				var strCol = strSignal_to_StrColumn(propName, prop);
+				var strCol = strSignal_to_StringColumn(propName, prop);
 				mytable.strColumns.push(strCol);				
 			}			
 			else {
@@ -348,13 +356,47 @@ function numSignal_to_NumberColumn(name, scol){
 
 }
 
+function numScalar_to_StringColumn(name, scol){
+	console.log("      " + name + " : parsing num column.")
+
+	var mycol = {
+    "name": scol.name,
+    "description": ((scol.description == undefined) ? "" : scol.description),
+	"type": "SSR-DataSource/mooringSRS/report/table/StringColumn",
+	"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+	"label": ((scol.label == undefined) ? "" : scol.label),
+	"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+	"value": [( (isNaN(scol.value)) ? "NaN" : String(Number(Number(scol.value).toFixed(2))) )]
+	};
+
+	return mycol;
+
+}
+
+function strSingle_to_StringColumn(name, scol){
+	console.log("      " + name + " : parsing num column.")
+
+	var mycol = {
+    "name": scol.name,
+    "description": ((scol.description == undefined) ? "" : scol.description),
+	"type": "SSR-DataSource/mooringSRS/report/table/StringColumn",
+	"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
+	"label": ((scol.label == undefined) ? "" : scol.label),
+	"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
+	"value": [String(scol.value)]
+	};
+
+	return mycol;
+
+}
+
 function numSignal_to_StringColumn(name, scol){
 	console.log("      " + name + " : parsing num column.")
 
 	var mycol = {
     "name": scol.name,
     "description": ((scol.description == undefined) ? "" : scol.description),
-	"type": "SSR-DataSource/mooringSRS/report/table/NumberColumn",
+	"type": "SSR-DataSource/mooringSRS/report/table/StringColumn",
 	"header": ((scol.attributes.value.header == undefined) ? scol.name : scol.attributes.value.header),
 	"label": ((scol.label == undefined) ? "" : scol.label),
 	"fontSize": ((scol.attributes.value.fontsize == undefined) ? 10 : scol.attributes.value.fontsize),
@@ -372,7 +414,7 @@ function numSignal_to_StringColumn(name, scol){
 
 }
 
-function strSignal_to_StrColumn(name, scol){
+function strSignal_to_StringColumn(name, scol){
 	console.log("      " + name + " : parsing str column.")
 
 	var mycol = {

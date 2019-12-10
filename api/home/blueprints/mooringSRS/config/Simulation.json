@@ -31,8 +31,35 @@
             "default": "50",
             "contained": true,
             "optional": false
-        }
+        },
+        {
+            "name": "numberOfSeeds",
+            "type": "integer",
+            "description": "number of seeds to be run.",
+            "default": "3",
+            "contained": true,
+            "optional": false
+        }        
     ],
     "storageRecipes": [],
-    "uiRecipes": []
+    "uiRecipes": [{
+        "name": "Edit",
+        "type": "system/SIMOS/UiRecipe",
+        "description": "",
+        "plugin": "EDIT_PLUGIN",
+        "field": "",
+        "hideTab": false,
+        "options": [],
+        "attributes": []
+      },
+      {
+        "name": "Raw",
+        "type": "system/SIMOS/UiRecipe",
+        "description": "",
+        "plugin": "PREVIEW",
+        "field": "",
+        "hideTab": true,
+        "options": [],
+        "attributes": []
+      }]
 }

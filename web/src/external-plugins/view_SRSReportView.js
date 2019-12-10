@@ -35,6 +35,7 @@ import useCollapse from 'react-collapsed';
 
 import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
 
+
 /* ********************************************************* */
 //Custom views
 /* ********************************************************* */
@@ -235,22 +236,25 @@ const PlotView = ({ plotDoc }) => {
 //********************************************************//
 const CollapsedView = ({ doc }) => {
 
-  const [isOpen, setOpen] = useState(false);
-  const {getCollapseProps, getToggleProps} = useCollapse({isOpen});
-
-  const sectionTitle = doc.name;
-
-
+  var sectionTitle = "";
   let section;
+  var defaultState = false;
 
   if (doc.type.includes('XYPlot')) {
     section = <PlotView plotDoc={doc} />;
+    sectionTitle = "Plot: " + doc.caption;
+    defaultState = false;
   } else if (doc.type.includes('ColTable')){
     section = <TableView tabDoc={doc} />;
+    defaultState = true;
+    sectionTitle = "Table: " + doc.caption;
   }
   else {
     console.log(doc.type + " is not known. : view_SRSReportView");
   }  
+
+  const [isOpen, setOpen] = useState(defaultState);
+  const {getCollapseProps, getToggleProps} = useCollapse({isOpen});
 
   return (
     <Wrapper>
@@ -271,16 +275,45 @@ const CollapsedView = ({ doc }) => {
 
 }
 //********************************************************//
+const SectionView = ({ doc }) => {
+
+  const [isOpen, setOpen] = useState(true);
+  const {getCollapseProps, getToggleProps} = useCollapse({isOpen});
+
+  const sectionTitle = doc.name;
+
+  return (
+    <Wrapper>
+      <Toggle {...getToggleProps({
+          onClick: () => setOpen(oldOpen => !oldOpen),
+        })}>
+        <Icons>
+          {isOpen && <FaChevronDown />}
+          {!isOpen && <FaChevronRight />}
+        </Icons>
+        {sectionTitle}
+      </Toggle>
+      <Content {...getCollapseProps()}>
+        { doc.sections.map((item, index) =>(
+        <SectionView doc={item}/> )
+                  ) }         
+        { doc.tables.map((item, index) =>(
+        <CollapsedView doc={item}/> )
+                  ) }      
+        { doc.plots.map((item, index) =>(
+        <CollapsedView doc={item}/> )
+                 ) }      
+      </Content>
+    </Wrapper>
+  );
+
+}
+//********************************************************//
 const SRSReportView = ({ parent, document, children }) => {
 
   return (
     <div className="container">
-      { document.tables.map((item, index) =>(
-      <CollapsedView doc={item}/> )
-                 ) }      
-      { document.plots.map((item, index) =>(
-      <CollapsedView doc={item}/> )
-                 ) }      
+      <SectionView doc={document}/> 
     </div>
   )
 }

@@ -44,14 +44,7 @@
             "description": "Simulation configuration.",
             "contained": true,
             "optional": false
-        },
-        {
-            "name": "report",
-            "type": "SSR-DataSource/mooringSRS/report/Section",
-            "description": "",
-            "contained": true,
-            "optional": false
-        }                 
+        }            
     ],
     "storageRecipes": [],
     "uiRecipes": [ {
@@ -59,6 +52,26 @@
         "name": "SRS Sce 3DView",
         "description": "Some external plugin",
         "plugin": "EXTERNAL",
+        "attributes": []
+      },
+      {
+        "name": "Edit",
+        "type": "system/SIMOS/UiRecipe",
+        "description": "",
+        "plugin": "EDIT_PLUGIN",
+        "field": "",
+        "hideTab": false,
+        "options": [],
+        "attributes": []
+      },
+      {
+        "name": "Raw",
+        "type": "system/SIMOS/UiRecipe",
+        "description": "",
+        "plugin": "PREVIEW",
+        "field": "",
+        "hideTab": true,
+        "options": [],
         "attributes": []
       }]
 }

@@ -29,21 +29,7 @@
             "description": "status",
             "contained": true,
             "optional": true
-        },
-        {
-            "name": "env",
-            "type": "SSR-DataSource/mooringSRS/env/Environment",
-            "description": "input environment",
-            "contained": true,
-            "optional": true
-        },        
-        {
-            "name": "results",
-            "type": "SSR-DataSource/mooringSRS/run/RunResult",
-            "description": "results",
-            "contained": true,
-            "optional": true
-        },
+        },     
         {
             "name": "report",
             "type": "SSR-DataSource/mooringSRS/report/Section",
@@ -54,5 +40,25 @@
   
     ],
     "storageRecipes": [],
-    "uiRecipes": []
+    "uiRecipes": [
+        {
+          "name": "Edit",
+          "type": "system/SIMOS/UiRecipe",
+          "description": "",
+          "plugin": "EDIT_PLUGIN",
+          "field": "",
+          "hideTab": false,
+          "options": [],
+          "attributes": []
+        },
+        {
+          "name": "Raw",
+          "type": "system/SIMOS/UiRecipe",
+          "description": "",
+          "plugin": "PREVIEW",
+          "field": "",
+          "hideTab": true,
+          "options": [],
+          "attributes": []
+        }]
 }
