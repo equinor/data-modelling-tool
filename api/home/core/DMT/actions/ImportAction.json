@@ -1,0 +1,23 @@
+{
+  "name": "ImportAction",
+  "type": "system/SIMOS/Blueprint",
+  "description": "This describes a import action",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "filepath"
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": [{
+    "name": "Import",
+    "plugin": "EDIT_PLUGIN",
+    "type": "system/SIMOS/UiRecipe",
+    "attributes": [
+      {
+        "name": "filepath",
+        "type": "system/SIMOS/UiAttribute"
+      }
+    ]
+  }]
+}

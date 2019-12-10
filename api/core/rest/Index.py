@@ -43,9 +43,7 @@ def get_attribute(data_source_id: str, attribute: str, document_id: str):
     data_source = DataSource(id=data_source_id)
     document_repository = get_repository(data_source)
 
-    use_case = GenerateIndexUseCase(
-        document_repository=document_repository,
-    )
+    use_case = GenerateIndexUseCase(document_repository=document_repository,)
     result = use_case.single(
         data_source_id=data_source_id,
         data_source_name=data_source.name,

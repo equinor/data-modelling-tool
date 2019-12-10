@@ -4,6 +4,8 @@ import Form from '../../../components/Form'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { ContextMenuActionsFactory } from './ContextMenuActionsFactory'
 import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
+import { RegisteredPlugins } from '../layout-components/DocumentComponent'
+import { ActionEditPlugin } from './ActionEditPlugin'
 
 interface WithContextMenuProps {
   children: any
@@ -33,8 +35,11 @@ const WithContextMenu = (props: WithContextMenuProps) => {
       layout={layout}
       node={node}
       children={children}
-      render={({ actionConfig }: any) => {
+      render={({ actionConfig, setShowModal }: any) => {
         const { formProps } = actionConfig
+        if (formProps.plugin === RegisteredPlugins.EDIT_PLUGIN) {
+          return <ActionEditPlugin {...actionConfig} {...node} setShowModal={setShowModal}  />
+        }
         return (
           <>
             {actionConfig && formProps.fetchDocument && <Form {...formProps} />}
@@ -51,6 +56,7 @@ const WithContextMenu = (props: WithContextMenuProps) => {
     />
   )
 }
+
 export default WithContextMenu
 
 interface WithContextMenuModalProps {

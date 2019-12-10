@@ -71,7 +71,7 @@ export default ({
 function appendAttributes(blueprint: any, blueprints: any, uiSchema: any) {
   //only way to pass properties to a field is adding them to uiSchema next to the field.
   //for now, only support attribute field for blueprints.
-  if (uiSchema.attributes) {
+  if (uiSchema && uiSchema.attributes) {
     const uiRecipe = findRecipe(blueprint, 'EDIT')
     if (uiRecipe) {
       const uiAttribute = findUiAttribute(uiRecipe, 'attributes')
