@@ -1,5 +1,5 @@
 import json
-from flask import Blueprint, Response, request
+from flask import Blueprint, Response, request, send_file
 from classes.data_source import DataSource
 from core.serializers.add_file_json_serializer import AddFileSerializer
 from core.repository.repository_factory import get_repository
@@ -7,6 +7,7 @@ from core.serializers.dto_json_serializer import DTOSerializer
 from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
+from core.use_case.export_use_case import ExportUseCase, ExportRequestObject
 from core.use_case.remove_attribute_use_case import RemoveAttributeUseCase, RemoveAttributeRequestObject
 from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
@@ -117,3 +118,19 @@ def rename_file(data_source_id: str):
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
     )
+
+
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/export/<string:document_id>", methods=["GET"])
+def post(data_source_id: str, document_id: str):
+    data_source = DataSource(id=data_source_id)
+    document_repository = get_repository(data_source)
+    request_object = ExportRequestObject.from_dict({"documentId": document_id})
+    use_case = ExportUseCase(document_repository)
+    response = use_case.execute(request_object)
+
+    if response.type == res.ResponseSuccess.SUCCESS:
+        return send_file(
+            response.value, mimetype="application/zip", as_attachment=True, attachment_filename=f"{document_id}.zip"
+        )
+    else:
+        return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])

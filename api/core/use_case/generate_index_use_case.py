@@ -26,6 +26,7 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_rename_menu_action,
     get_remove_attribute_menu_item,
     get_rename_attribute_menu_action,
+    get_export_menu_item,
 )
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
@@ -218,6 +219,9 @@ class Tree:
                     node.is_root_package = document.is_root
             # Packages should not open a tab on click
             node.on_select = {}
+
+        if node.is_root_package:
+            node.menu_items.append(get_export_menu_item(data_source_id=data_source_id, document_id=document.uid))
 
         # Every node gets an delete and rename action
         node.menu_items.append(

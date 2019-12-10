@@ -201,3 +201,14 @@ def get_node_on_select(data_source_id: str, document: DTO[Union[Blueprint, Packa
             "schemaUrl": f"/api/v2/json-schema/{document.type}",
         },
     }
+
+
+def get_export_menu_item(data_source_id: str, document_id: str):
+    return {
+        "label": "Export",
+        "action": "DOWNLOAD",
+        "data": {
+            "url": f"/api/v2/explorer/{data_source_id}/export/{document_id}",
+            "prompt": {"title": "Export", "content": "Download the package"},
+        },
+    }
