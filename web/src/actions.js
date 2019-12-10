@@ -94,10 +94,22 @@ const srs_cancel = async ({input, output, updateDocument}) => {
     return {}
 }
 
+var test_srsRes = require('./test_srs_data.js').srsRes;
+
+const test_srs_run = async ({input, output, updateDocument}) => {
+    console.log(input)
+
+	output.entity = test_srsRes;
+	updateDocument(output);
+
+    return {}
+}
+
 const runnableMethods = {
   run,
   srs_run,
-  srs_cancel
+  srs_cancel,
+  test_srs_run
 }
 
 //**************************************************************************//
@@ -128,12 +140,12 @@ function runWorkflow(request) {
 	// var workflow = 'workflow';
 
 	//FRA single line
-	// var task = 'FRA_WS_SR_singleLine';
-	// var workflow = 'WS_singleLineTension';
+	var task = 'FRA_WS_SR_singleLine';
+	var workflow = 'WS_singleLineTension';
 
 	// // SRS
-	var task = 'SRS_Service';
-	var workflow = 'ULS_Intact';
+	// var task = 'SRS_Service';
+	// var workflow = 'ULS_Intact';
 
 	var parameters = new Map();
 	parameters.set('task', task);
