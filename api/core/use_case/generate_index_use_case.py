@@ -128,10 +128,10 @@ class Tree:
             if parent_node.blueprint and blueprint == parent_node.blueprint:
                 continue
 
-            is_array = attribute["dimensions"] == "*"
+            is_array = attribute["dimensions"] == '*'
             if is_array and attribute_type is not SIMOS.BLUEPRINT.value:
                 if attr_type not in PRIMITIVES:
-                    is_recursive = attr_type.split("/")[-1] == blueprint["name"]
+                    is_recursive = attr_type.split('/')[-1] == blueprint["name"]
                     if is_recursive and is_array and len(current_path) > 2:
                         # prevent generate endless nodes.
                         return
@@ -145,7 +145,7 @@ class Tree:
                     attribute["type"],
                     node,
                     False,
-                )
+                    )
 
 
 
