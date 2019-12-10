@@ -80,3 +80,19 @@ class DocumentService:
         document_repository.update(DTO(dotted_data.to_python(), uid=parent.uid))
         remove_children(DTO(attribute_document), document_repository)
         logger.info(f"Removed attribute '{attribute}' from '{parent.uid}'")
+
+    @staticmethod
+    def rename_attribute(parent_id: str, attribute: str, name: str, document_repository: DocumentRepository):
+        parent: DTO = document_repository.get(parent_id)
+        if not parent:
+            raise EntityNotFoundException(uid=parent_id)
+
+        parent = get_data_always_as_dict(parent)
+        dotted_data = DottedDict(parent.data)
+        attribute_document = dotted_data[attribute]
+        attribute_document["name"] = name
+        dotted_data[attribute] = attribute_document
+        document = DTO(dotted_data.to_python(), uid=parent.uid)
+        document_repository.update(document)
+        logger.info(f"Rename attribute '{attribute}' from '{parent.uid}'")
+        return document

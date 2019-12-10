@@ -27,7 +27,7 @@ def get_rename_menu_action(
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
             "url": f"/api/v2/explorer/{data_source_id}/rename-file",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
+            "nodeUrl": f"/api/v3/index/{data_source_id}",
             "request": {
                 "description": "${description}",
                 "parentId": parent_id,
@@ -59,6 +59,25 @@ def get_remove_attribute_menu_item(data_source_id: str, parent_id: str, attribut
             "url": f"/api/v2/explorer/{data_source_id}/remove-attribute",
             "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
             "request": {"parentId": parent_id, "attribute": attribute},
+        },
+    }
+
+
+def get_rename_attribute_menu_action(data_source_id: str, parent_id: str, type: str, name: str, attribute: str):
+    return {
+        "label": "Rename",
+        "action": "UPDATE",
+        "data": {
+            "dataUrl": f"/api/v2/documents/{data_source_id}/{parent_id}?attribute={attribute}",
+            "url": f"/api/v2/explorer/{data_source_id}/rename-attribute",
+            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
+            "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
+            "request": {
+                "description": "${description}",
+                "parentId": parent_id,
+                "name": "${name}",
+                "attribute": attribute,
+            },
         },
     }
 
@@ -122,7 +141,7 @@ def get_not_contained_menu_action(data_source_id: str, name: str, type: str, par
     }
 
 
-def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data):
+def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data, node_id: str):
     return {
         "label": "New",
         "menuItems": [
@@ -132,7 +151,7 @@ def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_
                 "data": {
                     "url": f"/api/v2/explorer/{data_source_id}/add-file",
                     "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-                    "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
+                    "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{node_id}",
                     "request": {
                         "type": type,
                         "description": "${description}",

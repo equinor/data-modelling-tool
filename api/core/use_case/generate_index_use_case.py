@@ -25,6 +25,7 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_create_root_package_menu_item,
     get_rename_menu_action,
     get_remove_attribute_menu_item,
+    get_rename_attribute_menu_action,
 )
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
@@ -32,8 +33,8 @@ from core.use_case.utils.get_ui_recipe import get_recipe
 from utils.group_by import group_by
 
 
-def find_attribute_by_title(name: str, attributes: List):
-    return next((x for x in attributes if x["title"] == name), None)
+def find_attribute_by_id(name: str, attributes: List):
+    return next((x for x in attributes if x["id"] == name), None)
 
 
 class Index:
@@ -83,7 +84,7 @@ class Tree:
         self, document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, is_array
     ):
         if is_array:
-            uid = f"{document_id}.{'.'.join(document_path)}.{instance['name']}"
+            uid = f"{document_id}.{'.'.join(document_path)}.{index}"
             current_path = document_path + [f"{index}"]
         else:
             uid = f"{document_id}.{'.'.join(document_path)}"
@@ -105,7 +106,7 @@ class Tree:
                 },
             },
             menu_items=[],
-            is_contained=True,
+            is_contained=False,
         )
 
         if is_array or instance.get("optional", False):
@@ -114,6 +115,27 @@ class Tree:
                     data_source_id, parent_id=parent_node.uid, attribute=".".join(current_path)
                 )
             )
+
+        if is_array:
+            attribute_blueprint = get_blueprint(instance["type"])
+            data = {}
+            for item in get_attribute_names(attribute_blueprint):
+                data[item] = ("${" + item + "}",)
+            contained_menu_action = get_contained_menu_action(
+                data_source_id=data_source_id,
+                name=".".join(document_path),
+                node_id=uid,
+                type=attribute_type,
+                parent_id=document_id,
+                data=data,
+            )
+            node.menu_items.append(contained_menu_action)
+
+        node.menu_items.append(
+            get_rename_attribute_menu_action(
+                data_source_id, parent_id=document_id, type=attribute_type, name=uid, attribute=".".join(current_path),
+            )
+        )
 
         blueprint = get_blueprint(attribute_type)
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
@@ -130,8 +152,8 @@ class Tree:
 
             if is_array and attribute_type is not SIMOS.BLUEPRINT.value:
                 if attr_type not in PRIMITIVES:
-                    is_recursive = attr_type.split('/')[-1] == blueprint["name"]
-                    is_array = attribute["dimensions"] == '*'
+                    is_recursive = attr_type.split("/")[-1] == blueprint["name"]
+                    is_array = attribute["dimensions"] == "*"
                     if is_recursive and is_array and len(current_path) > 2:
                         # prevent generate endless nodes.
                         return
@@ -144,10 +166,8 @@ class Tree:
                     data_source_id,
                     attribute["type"],
                     node,
-                    False,
+                    attribute["dimensions"] == "*",
                 )
-
-
 
     def generate_contained_nodes(
         self, data_source_id, document_id, document_path, attribute_type, values, parent_node
@@ -280,6 +300,7 @@ class Tree:
                 contained_menu_action = get_contained_menu_action(
                     data_source_id=data_source_id,
                     name=attribute_name,
+                    node_id=f"{document.uid}_{attribute_name}",
                     type=attribute["type"],
                     parent_id=document.uid,
                     data=data,
@@ -405,15 +426,17 @@ class GenerateIndexUseCase:
 
         del data[data_source_id]
 
-        for root_package in self.document_repository.find(filter={"isRoot": True}, single=False):
+        for root_package in self.document_repository.find(
+            filter={"type": "system/DMT/Package", "isRoot": True}, single=False
+        ):
             parent_id = find_parent(root_package, document_id, self.document_repository)
             if parent_id:
                 data[document_id]["parentId"] = parent_id
 
-        # Only return sub-part
+        # Only return node for attribute document
         if attribute:
             list_values = [v for v in data.values()]
-            attribute = find_attribute_by_title(attribute, list_values)
+            attribute = find_attribute_by_id(attribute, list_values)
             result = {attribute["id"]: attribute}
 
             def append_children(children):
