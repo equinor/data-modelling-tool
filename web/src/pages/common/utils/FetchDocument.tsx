@@ -4,9 +4,10 @@ import Api2 from '../../../api/Api2'
 type Props = {
   url: string
   render: any
+  updates?: any
 }
 
-export default ({ url, render }: Props) => {
+export default ({ url, render, updates }: Props) => {
   const [document, setDocument] = useState()
   const [loading, setLoading] = useState(false)
   useEffect(() => {
@@ -18,7 +19,7 @@ export default ({ url, render }: Props) => {
       },
       onError: (err: any) => setLoading(false),
     })
-  }, [url])
+  }, [url, updates])
 
   if (loading) {
     return <div>Loading...</div>

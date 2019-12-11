@@ -29,17 +29,22 @@ type ActionProps = {
 type Method = (props: ActionProps) => any
 
 // TODO: We must pass this entire function, not just a callBack
-function updateDocument(output: Output) {
+function updateDocument(output: Output, layout: any) {
   Api2.put({
     url: `/api/v2/documents/${output.dataSource}/${output.id}`,
     data: output.entity,
     onSuccess: (response: any) => {
+      layout.refreshByFilter(output.id)
       NotificationManager.success(`updated document: ${output.path}`)
     },
     onError: (error: any) => {
       NotificationManager.error(`failed to update document: ${output.path}`)
     },
   })
+}
+
+function sleep(ms: any) {
+  return new Promise(resolve => setTimeout(resolve, ms))
 }
 
 export const Action = (
@@ -117,8 +122,9 @@ export const Action = (
         const method: Method = Actions[methodToRun]
 
         async function handleUpdate(output: Output) {
-          await updateDocument(output)
-          layout.refresh(output.id)
+          await updateDocument(output, layout)
+          // layout.refresh(output.id)
+          //layout.refreshByFilter(output.id)
         }
 
         method({ input, output, updateDocument: handleUpdate })

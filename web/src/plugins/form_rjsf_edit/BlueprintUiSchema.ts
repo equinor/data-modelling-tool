@@ -153,7 +153,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         uiSchemaProperty['ui:disabled'] = true
       }
       if (uiAttribute.helpText) {
-        uiSchemaProperty["ui:help"] = uiAttribute.helpText
+        uiSchemaProperty['ui:help'] = uiAttribute.helpText
       }
       if (uiAttribute.field === 'attribute') {
         const fieldBlueprint = this.blueprintProvider.getBlueprintByType(

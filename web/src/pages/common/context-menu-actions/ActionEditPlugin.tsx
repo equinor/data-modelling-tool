@@ -15,7 +15,7 @@ type Props = {
 }
 
 export function ActionEditPlugin(props: Props) {
-  const {nodeData, parent} = props;
+  const { nodeData, parent } = props
   const {
     formProps: { fetchDocument },
     setShowModal,
@@ -37,15 +37,14 @@ export function ActionEditPlugin(props: Props) {
       uiRecipe={getImportActionBlueprint().uiRecipes[0]}
       onSubmit={(schemas: any) => {
         if (schemas.formData.filepath) {
-          const content: any = JSON.parse(schemas.formData.filepath);
-          const data = content
-            .filter((item: any) => {
-              //supports only one level
-              if (schemas.formData.onlyCurrentFolder) {
-                return item.path.split('/').length === 2
-              }
-              return true
-            })
+          const content: any = JSON.parse(schemas.formData.filepath)
+          const data = content.filter((item: any) => {
+            //supports only one level
+            if (schemas.formData.onlyCurrentFolder) {
+              return item.path.split('/').length === 2
+            }
+            return true
+          })
           Api2.post({
             url: '/api/v3/actions',
             data: {
@@ -54,13 +53,13 @@ export function ActionEditPlugin(props: Props) {
               parentId: nodeData.nodeId,
               data,
             },
-            onSuccess: ((res: any) => {
-                NotificationManager.success('', `Uploaded ${data.length} files.`)
-                setShowModal(false)
-            }),
-            onError: ((err: any) => {
+            onSuccess: (res: any) => {
+              NotificationManager.success('', `Uploaded ${data.length} files.`)
+              setShowModal(false)
+            },
+            onError: (err: any) => {
               console.log(err)
-            }),
+            },
           })
         }
       }}
@@ -76,26 +75,26 @@ function getImportActionBlueprint() {
     attributes: [
       {
         type: 'string',
-        name: 'name'
+        name: 'name',
       },
       {
         type: 'string',
-        name: 'type'
+        name: 'type',
       },
       {
         type: 'string',
-        name: 'description'
+        name: 'description',
       },
       {
         type: 'string',
         name: 'filepath',
         label: 'Folder',
-        description: 'the folder on the local machine.'
+        description: 'the folder on the local machine.',
       },
       {
         type: 'boolean',
         name: 'onlyCurrentFolder',
-        default: "false"
+        default: 'false',
       },
     ],
     storageRecipes: [],
@@ -107,15 +106,15 @@ function getImportActionBlueprint() {
         attributes: [
           {
             name: 'name',
-            widget: 'hidden'
+            widget: 'hidden',
           },
           {
             name: 'type',
-            widget: 'hidden'
+            widget: 'hidden',
           },
           {
             name: 'description',
-            widget: 'hidden'
+            widget: 'hidden',
           },
           {
             name: 'filepath',
@@ -126,8 +125,9 @@ function getImportActionBlueprint() {
           {
             name: 'onlyCurrentFolder',
             type: 'system/SIMOS/UiAttribute',
-            helpText: "Upload a flat package structure. Nested folders are not supported. Uncheck onlyCurrentFolder will not upload subfolders."
-          }
+            helpText:
+              'Upload a flat package structure. Nested folders are not supported. Uncheck onlyCurrentFolder will not upload subfolders.',
+          },
         ],
       },
     ],

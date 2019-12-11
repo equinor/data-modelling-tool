@@ -16,7 +16,7 @@
       "name": "Calculate",
       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
       "input": "SSR-DataSource/CarPackage/Car",
-      "output": "SSR-DataSource/CarPackage/Wheel",
+      "output": "SSR-DataSource/CarPackage/Car",
       "method": "run"
     },
     {

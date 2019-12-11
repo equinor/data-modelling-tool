@@ -38,7 +38,13 @@ const WithContextMenu = (props: WithContextMenuProps) => {
       render={({ actionConfig, setShowModal }: any) => {
         const { formProps } = actionConfig
         if (formProps.plugin === RegisteredPlugins.EDIT_PLUGIN) {
-          return <ActionEditPlugin {...actionConfig} {...node} setShowModal={setShowModal}  />
+          return (
+            <ActionEditPlugin
+              {...actionConfig}
+              {...node}
+              setShowModal={setShowModal}
+            />
+          )
         }
         return (
           <>
