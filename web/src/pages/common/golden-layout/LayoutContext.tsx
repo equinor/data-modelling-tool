@@ -63,9 +63,21 @@ export const LayoutProvider = ({ children, layout }: Props) => {
     if (!id) console.log('An empty ID was given. This will likely break')
     if (isOpen(layout, id)) {
       const components = layout.myLayout.root.getItemsById(id)
-      components[0].remove()
-      layout.myLayout.root.contentItems[0].addChild(components[0].config)
+      layout.myLayout.eventHub.emit('props-updated', components[0].config.id)
+      //components[0].remove()
+      //layout.myLayout.root.contentItems[0].addChild(components[0].config)
     }
+  }
+
+  const refreshByFilter = (filter: string) => {
+    const components = layout.myLayout.root.getItemsByFilter((item: any) => {
+      if ('id' in item.config) {
+        return item.config.id.startsWith(filter)
+      } else {
+        return false
+      }
+    })
+    components.forEach((component: any) => refresh(component.config.id))
   }
 
   return (
@@ -76,6 +88,7 @@ export const LayoutProvider = ({ children, layout }: Props) => {
         remove,
         update,
         refresh,
+        refreshByFilter,
       }}
     >
       {children}

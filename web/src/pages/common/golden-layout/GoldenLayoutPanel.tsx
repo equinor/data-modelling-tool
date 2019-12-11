@@ -5,22 +5,29 @@ class GoldenLayoutPanel extends React.Component<any, any> {
     super(props)
 
     this.setProps = this.setProps.bind(this)
+    this.propsUpdated = this.propsUpdated.bind(this)
   }
 
   state = {
     globalState: {},
+    updates: 1,
   }
 
-  /*
   componentDidMount() {
-    this.props.glEventHub.on('props-updated', this.setProps)
+    this.props.glEventHub.on('props-updated', this.propsUpdated)
+  }
+
+  propsUpdated(id: any) {
+    const { glContainer } = this.props
+    if (glContainer['_config'].id === id) {
+      this.setState({ updates: this.state.updates += 1 })
+      this.forceUpdate()
+    }
   }
 
   componentWillUnmount() {
     this.props.glEventHub.off('props-updated', this.setProps)
   }
-  */
-
   setProps(globalState: any) {
     this.setState(globalState)
   }
@@ -30,7 +37,7 @@ class GoldenLayoutPanel extends React.Component<any, any> {
 
     const props = {
       ...this.props,
-      globalState: this.state.globalState,
+      updates: this.state.updates,
     }
 
     return (

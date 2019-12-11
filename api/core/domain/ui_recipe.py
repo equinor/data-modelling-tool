@@ -28,7 +28,7 @@ class UIRecipe:
     def is_contained(self, attribute):
         attribute_name = attribute.name
         attribute_type = attribute.type
-        attribute_contained = attribute.contained
+        # attribute_contained = attribute.contained
         is_array = attribute.dimensions == "*"
 
         if attribute_name in self.ui_attributes:

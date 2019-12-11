@@ -1,5 +1,5 @@
 import React from 'react'
-import {Entity} from "../types";
+import { Entity } from '../types'
 
 type IndexItem = {
   path: string
@@ -7,7 +7,7 @@ type IndexItem = {
 }
 
 const FileUploadWidget = (props: any) => {
-  const {onChange} = props;
+  const { onChange } = props
   function handleFile(file: File, index: IndexItem[], numFiles: number) {
     let fileReader: FileReader
     fileReader = new FileReader()
@@ -23,16 +23,15 @@ const FileUploadWidget = (props: any) => {
             entity: json,
           }
           index.push(indexItem)
-
-        } catch(err) {
-          console.warn(err, content);
+        } catch (err) {
+          console.warn(err, content)
           alert(`The file ${relativePath} can't be parsed.`)
         }
 
         //hack to deal with async behavior fileReader.
         if (index.length === numFiles) {
           const indexStr = JSON.stringify(index)
-          onChange(indexStr);
+          onChange(indexStr)
         }
       }
     }
@@ -57,12 +56,9 @@ const FileUploadWidget = (props: any) => {
         directory="true"
         onChange={handleFiles}
       />
-      <div>
-        The
-      </div>
+      <div>The</div>
     </div>
   )
 }
 
 export default FileUploadWidget
-
