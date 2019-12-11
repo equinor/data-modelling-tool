@@ -6,7 +6,7 @@ from flask import Flask
 
 from config import Config
 from core.domain.schema import Factory
-from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
+from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System, Actions
 from core.utility import wipe_db
 from services.database import dmt_database
 from utils.logging import logger
@@ -21,6 +21,7 @@ def create_app(config):
     app.register_blueprint(DataSource.blueprint)
     app.register_blueprint(Index.blueprint)
     app.register_blueprint(System.blueprint)
+    app.register_blueprint(Actions.blueprint)
     app.secret_key = os.urandom(64)
     return app
 

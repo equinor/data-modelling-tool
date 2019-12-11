@@ -12,6 +12,7 @@ import values from 'lodash/values'
 import { IndexNode } from '../../../api/Api'
 import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import { toObject } from './actions/utils/to_object'
+import { importAction } from './actions/import'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -19,6 +20,7 @@ export enum ContextMenuActions {
   DELETE = 'DELETE',
   DOWNLOAD = 'DOWNLOAD',
   RUNNABLE = 'RUNNABLE',
+  IMPORT = 'IMPORT',
 }
 
 export interface ContextMenuActionProps {
@@ -80,6 +82,9 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
     }
     case ContextMenuActions.RUNNABLE: {
       return Action(action, node, setShowModal, createNodes, layout)
+    }
+    case ContextMenuActions.IMPORT: {
+      return importAction(action, setShowModal)
     }
 
     default:

@@ -1,4 +1,4 @@
-from typing import Union
+from typing import Union, Dict
 from core.domain.models import Blueprint, Package
 from core.domain.dto import DTO
 from core.enums import DMT
@@ -209,6 +209,18 @@ def get_export_menu_item(data_source_id: str, document_id: str):
         "action": "DOWNLOAD",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/export/{document_id}",
+            "prompt": {"title": "Export", "content": "Download the package"},
+        },
+    }
+
+
+def get_import_menu_item(data_source_id: str, document_id: str):
+    return {
+        "label": "Import",
+        "action": "IMPORT",
+        "data": {
+            "url": f"/api/v2/explorer/{data_source_id}/import/{document_id}",
+            "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/ImportAction",
             "prompt": {"title": "Export", "content": "Download the package"},
         },
     }
