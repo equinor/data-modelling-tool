@@ -3,6 +3,8 @@ version: "3.4"
 services:
   nginx:
     build: ./nginx/local
+    logging:
+      driver: "none"
 
   api:
     build:

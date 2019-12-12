@@ -13,6 +13,7 @@ class DocumentNode(NodeMixin):
         name: str,
         menu_items,
         on_select=None,
+        error=False,
         document: DTO = None,
         blueprint: Blueprint = None,
         parent: DocumentNode = None,
@@ -29,6 +30,7 @@ class DocumentNode(NodeMixin):
         if not on_select:
             on_select = None
         self.on_select = on_select
+        self.error = error
         self.menu_items = menu_items
         if not is_contained:
             is_contained = False
@@ -75,7 +77,11 @@ class DocumentNode(NodeMixin):
             "nodeType": "document-node",
             "children": [child.id for child in self.children],
             "type": "datasource" if not self.document else self.document.type,
-            "isRootPackage": self.is_root_package,
-            "meta": {"menuItems": self.menu_items, "onSelect": self.on_select},
+            "meta": {
+                "menuItems": self.menu_items,
+                "onSelect": self.on_select,
+                "error": self.error,
+                "isRootPackage": self.is_root_package,
+            },
         }
         return result
