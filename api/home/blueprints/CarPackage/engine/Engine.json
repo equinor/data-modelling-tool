@@ -64,6 +64,11 @@
       "description": "",
       "attributes": [
         {
+          "name": "name",
+          "type": "system/SIMOS/UiAttribute",
+          "mapping": "title"
+        },
+        {
           "name": "value1",
           "type": "system/SIMOS/UiAttribute",
           "mapping": "line"
@@ -81,6 +86,11 @@
       "plugin": "TABLE",
       "description": "",
       "attributes": [
+        {
+          "name": "name",
+          "type": "system/SIMOS/UiAttribute",
+          "mapping": "title"
+        },
         {
           "name": "value1",
           "type": "system/SIMOS/UiAttribute",
