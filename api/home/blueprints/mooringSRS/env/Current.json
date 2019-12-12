@@ -27,15 +27,15 @@
             "name": "currentDepths",
             "type": "string",
             "description": "A list of current levels, positive downward, in [m].",
-            "default": "0.0,-50,-150,-279,-300",
+            "default": "0.0,-50,-150,-297,-300",
             "contained": true,
             "optional": false
         },
         {
-            "name": "currentDirections",
-            "type": "string",
+            "name": "currentDirection",
+            "type": "number",
             "description": "Current direction -going to- in [deg].",
-            "default": "330,330,330,330,330",
+            "default": "330",
             "contained": true,
             "optional": false
         },
@@ -43,7 +43,7 @@
             "name": "currentVelocities",
             "type": "string",
             "description": "A list of current velocities at dfferent levels [m/s].",
-            "default": "0.9,0.7,0.5,0.3,0.0",
+            "default": "0.826, 0.504, 0.344, 0.244, 0.0",
             "contained": true,
             "optional": false
         }
