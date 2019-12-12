@@ -35,11 +35,33 @@
   "storageRecipes": [],
   "uiRecipes": [
     {
-      "name": "Raw",
+      "name": "CarView",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "PREVIEW",
-      "hideTab": false,
-      "attributes": []
+      "plugin": "VIEW",
+      "description": "",
+      "attributes": [
+        {
+          "name": "name",
+          "type": "system/SIMOS/UiAttribute",
+          "widget": "PREVIEW"
+        },
+        {
+          "name": "engine",
+          "type": "system/SIMOS/UiAttribute",
+          "uiRecipe": "EnginePlot"
+        },
+        {
+          "name": "engine",
+          "type": "system/SIMOS/UiAttribute",
+          "uiRecipe": "EngineTable"
+        },
+        {
+          "name": "wheels",
+          "type": "system/SIMOS/UiAttribute",
+          "widget": "PREVIEW"
+        }
+
+      ]
     }
   ]
 }

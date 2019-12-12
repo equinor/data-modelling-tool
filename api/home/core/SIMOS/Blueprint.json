@@ -28,13 +28,15 @@
       "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
       "name": "storageRecipes",
-      "optional": false
+      "optional": true,
+      "default": "[]"
     },
     {
       "type": "system/SIMOS/UiRecipe",
       "dimensions": "*",
       "name": "uiRecipes",
-      "optional": false
+      "optional": true,
+      "default": "[]"
     }
   ],
   "storageRecipes": [

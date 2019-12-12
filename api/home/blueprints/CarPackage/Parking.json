@@ -1,7 +1,7 @@
 {
   "type": "system/SIMOS/Blueprint",
-  "name": "Enum",
-  "description": "This describes an enum",
+  "name": "Parking",
+  "description": "",
   "attributes": [
     {
       "type": "string",
@@ -16,13 +16,9 @@
       "name": "description"
     },
     {
-      "type": "string",
-      "name": "labels",
-      "dimensions": "*"
-    },
-    {
-      "type": "string",
-      "name": "values",
+      "type": "SSR-DataSource/CarPackage/Car",
+      "name": "cars",
+      "optional": true,
       "dimensions": "*"
     }
   ],

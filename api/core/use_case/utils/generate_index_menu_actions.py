@@ -27,7 +27,7 @@ def get_rename_menu_action(
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
             "url": f"/api/v2/explorer/{data_source_id}/rename-file",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
+            "nodeUrl": f"/api/v3/index/{data_source_id}",
             "request": {
                 "description": "${description}",
                 "parentId": parent_id,
@@ -45,7 +45,6 @@ def get_delete_document_menu_item(data_source_id: str, parent_id: str, parent_at
         "action": "DELETE",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/remove-file",
-            "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
             "request": {"parentId": parent_id, "documentId": document_id, "attribute": parent_attribute},
         },
     }
@@ -57,8 +56,26 @@ def get_remove_attribute_menu_item(data_source_id: str, parent_id: str, attribut
         "action": "DELETE",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/remove-attribute",
-            "prompt": {"title": "Are you sure?", "content": "Would you like to remove this item?"},
             "request": {"parentId": parent_id, "attribute": attribute},
+        },
+    }
+
+
+def get_rename_attribute_menu_action(data_source_id: str, parent_id: str, type: str, name: str, attribute: str):
+    return {
+        "label": "Rename",
+        "action": "UPDATE",
+        "data": {
+            "dataUrl": f"/api/v2/documents/{data_source_id}/{parent_id}?attribute={attribute}",
+            "url": f"/api/v2/explorer/{data_source_id}/rename-attribute",
+            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
+            "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
+            "request": {
+                "description": "${description}",
+                "parentId": parent_id,
+                "name": "${name}",
+                "attribute": attribute,
+            },
         },
     }
 
@@ -122,7 +139,7 @@ def get_not_contained_menu_action(data_source_id: str, name: str, type: str, par
     }
 
 
-def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data):
+def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data, node_id: str):
     return {
         "label": "New",
         "menuItems": [
@@ -132,7 +149,7 @@ def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_
                 "data": {
                     "url": f"/api/v2/explorer/{data_source_id}/add-file",
                     "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-                    "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
+                    "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{node_id}",
                     "request": {
                         "type": type,
                         "description": "${description}",
@@ -153,7 +170,6 @@ def get_runnable_menu_action(data_source_id: str, document_id: str, runnable: di
         "action": "RUNNABLE",
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
-            "prompt": {"title": f"{runnable['name']}", "content": f"{runnable['description']}"},
             "runnable": runnable,
             "documentId": document_id,
             "dataSourceId": data_source_id,
@@ -165,10 +181,7 @@ def get_download_menu_action(data_source_id: str, document_id: str):
     return {
         "label": "Create Application",
         "action": "DOWNLOAD",
-        "data": {
-            "url": f"/api/v2/system/{data_source_id}/create-application/{document_id}",
-            "prompt": {"title": "Create Application", "content": "Download the application"},
-        },
+        "data": {"url": f"/api/v2/system/{data_source_id}/create-application/{document_id}"},
     }
 
 
@@ -180,5 +193,28 @@ def get_node_on_select(data_source_id: str, document: DTO[Union[Blueprint, Packa
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document.uid}",
             "schemaUrl": f"/api/v2/json-schema/{document.type}",
+        },
+    }
+
+
+def get_export_menu_item(data_source_id: str, document_id: str):
+    return {
+        "label": "Export",
+        "action": "DOWNLOAD",
+        "data": {
+            "url": f"/api/v2/explorer/{data_source_id}/export/{document_id}",
+            "prompt": {"title": "Export", "content": "Download the package"},
+        },
+    }
+
+
+def get_import_menu_item(data_source_id: str, document_id: str):
+    return {
+        "label": "Import",
+        "action": "IMPORT",
+        "data": {
+            "url": f"/api/v2/explorer/{data_source_id}/import/{document_id}",
+            "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/ImportAction",
+            "prompt": {"title": "Export", "content": "Download the package"},
         },
     }

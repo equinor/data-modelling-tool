@@ -28,15 +28,15 @@ class UIRecipe:
     def is_contained(self, attribute):
         attribute_name = attribute.name
         attribute_type = attribute.type
-        attribute_contained = attribute.contained
+        # attribute_contained = attribute.contained
         is_array = attribute.dimensions == "*"
 
         if attribute_name in self.ui_attributes:
             ui_attribute = self.ui_attributes[attribute_name]
             if ui_attribute.is_contained is not None:
                 return ui_attribute.is_contained
-        #todo contained should be set be defaults or overriden by the INDEX ui recipe.
-        #if attribute_contained:
+        # todo contained should be set be defaults or overriden by the INDEX ui recipe.
+        # if attribute_contained:
         #    return attribute_contained
         if attribute_type in PRIMITIVES:
             return DEFAULT_PRIMITIVE_CONTAINED
@@ -44,7 +44,7 @@ class UIRecipe:
         # is_contained is default false all types because entities should behave like that.
         # blueprints must have attributes, and to avoid setting contained true on every blueprint that
         # is made, we set attributes as contained.
-        if attribute_name == 'attributes':
+        if attribute_name == "attributes":
             return True
         else:
             if is_array:

@@ -139,10 +139,12 @@ const ViewList = (props: PluginProps) => {
 }
 
 const DocumentComponent = (props: any) => {
-  const { dataUrl } = props
+  const { dataUrl, updates } = props
+
   return (
     <Wrapper>
       <FetchDocument
+        updates={updates}
         url={dataUrl}
         render={(data: any) => {
           const document = data.document

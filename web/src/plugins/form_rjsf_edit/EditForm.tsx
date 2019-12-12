@@ -6,6 +6,7 @@ import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { Blueprint, KeyValue } from '../Blueprint'
 import { Blueprint as BlueprintType } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
+import FileDirectoryWidget from '../form-rjsf-widgets/FileDirectoryWidget'
 
 export interface EditPluginProps extends PluginProps {
   onSubmit: (data: any) => void
@@ -29,11 +30,9 @@ export const EditPlugin = (props: EditPluginProps) => {
           hidden: () => <div />,
         }}
         widgets={{
-          enumWidget: () => <div>EnumType widget</div>,
+          fileUploadWidget: FileDirectoryWidget,
         }}
-        onChange={(data: any) => {
-          console.log(data)
-        }}
+        onChange={() => {}}
         onSubmit={(schemas: any) => {
           fixRecursive(schemas.formData, blueprintProvider)
           props.onSubmit(schemas)

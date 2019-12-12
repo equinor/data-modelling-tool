@@ -69,7 +69,7 @@ class GetDocumentUseCase(uc.UseCase):
             self.add_dtos(dtos, attribute)
             if attribute_type not in PRIMITIVES:
                 # prevent infinite recursion.
-                child_blueprint_name = attribute_type.split('/')[-1]
+                child_blueprint_name = attribute_type.split("/")[-1]
                 type_in_children = next((x for x in children if x["name"] == child_blueprint_name), None)
                 if not type_in_children:
                     child_blueprint = get_blueprint(attribute_type)

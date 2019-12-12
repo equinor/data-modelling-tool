@@ -9,7 +9,12 @@ def create_system_blueprints():
     template_repository = TemplateRepositoryFromFile(schemas_location())
     factory = Factory(template_repository, read_from_file=True)
 
-    template_types = ["system/SIMOS/Blueprint", "system/SIMOS/Application", "system/DMT/Package", "system/SIMOS/AttributeTypes"]
+    template_types = [
+        "system/SIMOS/Blueprint",
+        "system/SIMOS/Application",
+        "system/DMT/Package",
+        "system/SIMOS/AttributeTypes",
+    ]
 
     overwrite = True
     for template_type in template_types:

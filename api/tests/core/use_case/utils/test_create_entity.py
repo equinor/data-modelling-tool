@@ -41,7 +41,7 @@ class CreateEntityTestCase(unittest.TestCase):
             "floatValues": [2.1, 3.1, 4.2],
             "intValues": [1, 5, 4, 2],
             "boolValues": [True, False, True],
-            "stringValues": ["one", "two", "three"]
+            "stringValues": ["one", "two", "three"],
         }
 
         blueprint_provider = BlueprintProviderTest()

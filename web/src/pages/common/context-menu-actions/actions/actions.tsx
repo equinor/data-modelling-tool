@@ -1,43 +1,56 @@
 import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
+
 import Actions from '../../../../actions'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import Api2, { BASE_CRUD } from '../../../../api/Api2'
-import axios from 'axios'
+import Api2 from '../../../../api/Api2'
+import saveToNewFile from './saveToNewFile'
+import saveInEntity from './saveInEntity'
+import noResult from './noResult'
+import { Entity } from '../../../../plugins/types'
 
-type Input = {
+enum ActionTypes {
+  separateResultFile = 'separateResultFile',
+  noResult = 'noResult',
+  resultInEntity = 'resultInEntity',
+}
+
+export type Input = {
   blueprint: string
-  entity: any
+  entity: Entity
   path: string
   id: string
 }
 
-type Output = {
+export type Output = {
   blueprint: string
   entity: any
-  path: string
   dataSource: string
   id: string
+  notify?: Boolean
 }
 
-type ActionProps = {
+export type ActionProps = {
   input: Input
-  output: Output
-  updateDocument: Function
+  output?: Output
+  updateDocument?: Function
 }
 
-type Method = (props: ActionProps) => any
+export type Method = (props: ActionProps) => any
 
-// TODO: We must pass this entire function, not just a callBack
-function updateDocument(output: Output) {
+function updateDocument(output: Output, layout: any) {
   Api2.put({
     url: `/api/v2/documents/${output.dataSource}/${output.id}`,
     data: output.entity,
     onSuccess: (response: any) => {
-      NotificationManager.success(`updated document: ${output.path}`)
+      layout.refreshByFilter(output.id)
+      output.notify &&
+        NotificationManager.success(
+          `updated document: ${response.data.data.name}`
+        )
     },
     onError: (error: any) => {
-      NotificationManager.error(`failed to update document: ${output.path}`)
+      NotificationManager.error(`failed to update document: ${output.id}`)
     },
   })
 }
@@ -47,94 +60,50 @@ export const Action = (
   node: TreeNodeRenderProps,
   setShowModal: Function,
   createNodes: Function,
-  layout: any
+  layout: any,
+  entity: Entity
 ) => {
-  let entity: any = {}
   const methodToRun: string = action.data.runnable.method
-  const dataSource = node.path.substr(0, node.path.indexOf('/'))
-
   // @ts-ignore
   if (!Actions[methodToRun]) {
     NotificationManager.error(`Runnable Method "${methodToRun}"`, 'Not Found')
+    return {}
+  }
+  // @ts-ignore
+  const method: Method = Actions[methodToRun]
+  const dataSource = node.path.substr(0, node.path.indexOf('/'))
+  async function handleUpdate(output: Output) {
+    await updateDocument(output, layout)
   }
 
-  // Getting the entity to include as input to external function
-  Api2.get({
-    // @ts-ignore
-    url: node.nodeData.meta.onSelect.data.dataUrl,
-    onSuccess: result => {
-      entity = result.document
-    },
-    onError: error => {
-      console.log(error)
-      NotificationManager.error('failed to fetch document: ' + error.statusText)
-    },
-  })
-
-  return {
-    // When clicking "submit" on an action, these things happen:
-    // 1. Creates a new file used by the external function to write status/result
-    // 2. Constructs the Input and Output objects used by the called function
-    // Mainly, the Input is the clicked entity, Output is the dataSource and document ID to write the result.
-    onSubmit: async (formData: any) => {
-      async function executeAction() {
-        // TODO: Validate formData. Should not be empty
-        // TODO: Catch request errors
-        let response = await axios.post('/api/v2/explorer/entities/add-file', {
-          attribute: 'content',
-          description: formData.description,
-          name: formData.name,
-          parentId: formData.destination,
-          type: action.data.runnable.output,
-        })
-
-        // TODO: We are missing parentID from response
-        // Possible to fetch destination node from api?
-        // Currently creates a temp child node
-        createNodes({
-          documentId: `${response.data.uid}`,
-          nodeUrl: `/api/v3/index/${dataSource}`,
-          node,
-          overrideParentId: formData.destination,
-        })
-
-        setShowModal(false)
-
-        const input: Input = {
-          blueprint: entity.type,
-          entity: entity,
-          path: node.path,
-          id: node.nodeData.nodeId,
-        }
-        const output: Output = {
-          blueprint: formData.type,
-          entity: response.data.data,
-          path: `${node.path}/${formData.name}`,
-          dataSource: dataSource,
-          id: response.data.uid,
-        }
-        // @ts-ignore
-        const method: Method = Actions[methodToRun]
-
-        async function handleUpdate(output: Output) {
-          await updateDocument(output)
-          layout.refresh(output.id)
-        }
-
-        method({ input, output, updateDocument: handleUpdate })
-      }
-
-      await executeAction()
-    },
-    // Function to fetch the document used to create the rjsc-form
-    fetchDocument: ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
-      Api2.get({
-        // TODO: Use a standard CREATE_ENTITY schema
-        url:
-          '/api/v2/json-schema/system/DMT/actions/NewActionResult?ui_recipe=DEFAULT_CREATE',
-        onSuccess: result => onSuccess({ template: result, document: {} }),
-        onError,
-      })
-    },
+  const input: Input = {
+    blueprint: entity.type,
+    entity: entity,
+    path: node.path,
+    id: node.nodeData.nodeId,
+  }
+  switch (action.data.runnable.actionType) {
+    case ActionTypes.noResult: {
+      return noResult(input, method, setShowModal)
+    }
+    case ActionTypes.resultInEntity: {
+      return saveInEntity(input, method, setShowModal, handleUpdate, dataSource)
+    }
+    case ActionTypes.separateResultFile: {
+      return saveToNewFile(
+        action.data.runnable.output,
+        input,
+        method,
+        node,
+        setShowModal,
+        createNodes,
+        handleUpdate,
+        dataSource
+      )
+    }
+    default:
+      console.log('Action:' + action + 'input: ' + input)
+      NotificationManager.error('No valid ActionType for ' + input.entity.name)
+      return {}
   }
 }
