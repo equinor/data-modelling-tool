@@ -1,0 +1,21 @@
+{
+  "name": "StatusEnum",
+  "description": "Valid Status values",
+  "type": "system/SIMOS/Enum",
+  "labels": [
+    "Not Started",
+    "Running",
+    "Canceled",
+    "Exited with error(s)",
+    "Completed with errors(s)",
+    "Complete"
+  ],
+  "values": [
+    "notStarted",
+    "running",
+    "canceled",
+    "exitedWithErrors",
+    "completedWithErrors",
+    "complete"
+  ]
+}

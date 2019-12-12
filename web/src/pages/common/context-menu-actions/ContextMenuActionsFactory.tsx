@@ -13,6 +13,7 @@ import { IndexNode } from '../../../api/Api'
 import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
+import { Entity } from '../../../plugins/types'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -27,17 +28,17 @@ export interface ContextMenuActionProps {
   node: TreeNodeRenderProps
   layout?: any
   setShowModal: SetShowModal
+  entity: Entity
 }
 
 interface CreateNodesProps {
   documentId: string
   nodeUrl: string
   node: TreeNodeRenderProps
-  overrideParentId?: string
 }
 
 const createNodes = (props: CreateNodesProps) => {
-  const { documentId, nodeUrl, node, overrideParentId } = props
+  const { documentId, nodeUrl, node } = props
   Api2.get({
     url: `${nodeUrl}/${documentId}`,
     onSuccess: result => {
@@ -46,8 +47,7 @@ const createNodes = (props: CreateNodesProps) => {
         new TreeNodeBuilderOld(node).build()
       )
       // TODO: Is it possible to move parent id to API? Seems hard.
-      const parentId =
-        overrideParentId || nodes[0]['parentId'] || node.nodeData.nodeId
+      const parentId = nodes[0]['parentId'] || node.nodeData.nodeId
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
       // Connect new nodes to parent in tree
@@ -57,8 +57,11 @@ const createNodes = (props: CreateNodesProps) => {
   })
 }
 
-const getFormProperties = (action: any, props: ContextMenuActionProps) => {
-  const { node, setShowModal, layout } = props
+const getFormProperties = (
+  action: any,
+  props: ContextMenuActionProps
+): Object => {
+  const { node, setShowModal, layout, entity } = props
 
   const showError = (error: any) => {
     console.error(error)
@@ -81,7 +84,7 @@ const getFormProperties = (action: any, props: ContextMenuActionProps) => {
       return downloadAction(action)
     }
     case ContextMenuActions.RUNNABLE: {
-      return Action(action, node, setShowModal, createNodes, layout)
+      return Action(action, node, setShowModal, createNodes, layout, entity)
     }
     case ContextMenuActions.IMPORT: {
       return importAction(action, setShowModal)

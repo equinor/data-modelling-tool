@@ -1,0 +1,47 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "WheelWithStatus",
+  "description": "This describes a wheel",
+  "attributes": [
+    {
+      "type": "system/SIMOS/Status",
+      "name": "status",
+      "optional": false
+    },
+    {
+      "type": "string",
+      "name": "name",
+      "optional": false
+    },
+    {
+      "type": "string",
+      "name": "description",
+      "optional": false
+    },
+    {
+      "type": "string",
+      "name": "type",
+      "optional": false,
+      "default": "SSR-DataSource/CarPackage/Wheel"
+    },
+    {
+      "type": "number",
+      "name": "diameter",
+      "optional": false,
+      "default": "120"
+    },
+    {
+      "name": "pressure",
+      "type": "number",
+      "optional": false
+    },
+    {
+      "name": "wheelsRecursive",
+      "type": "SSR-DataSource/CarPackage/Wheel",
+      "default": "SSR-DataSource/CarPackage/Wheel",
+      "dimensions": "*"
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

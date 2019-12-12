@@ -17,6 +17,14 @@
       "name": "description"
     },
     {
+      "name": "actionType",
+      "type": "string",
+      "enumType": "system/SIMOS/enums/ActionTypes",
+      "default": "separateResultFile",
+      "optional": true,
+      "description": "The type of the action."
+    },
+    {
       "type": "string",
       "name": "input",
       "description": "Reference to a Blueprint (Path without Datasource prefix)."
