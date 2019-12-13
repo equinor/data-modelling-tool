@@ -84,6 +84,7 @@ class GenerateView {
           case RegisteredPlugins.TABLE:
             return (
               <CollapsibleWrapper
+                key={'plugin ' + index}
                 useCollapsible={uiAttr.collapsible}
                 collapsed={true}
                 sectionTitle={'Table: ' + attrPluginProps.document.name}
@@ -96,6 +97,7 @@ class GenerateView {
             if (uiAttr.collapsible) {
               return (
                 <CollapsibleWrapper
+                  key={'plugin ' + index}
                   useCollapsible={uiAttr.collapsible}
                   collapsed={true}
                   sectionTitle={'Plot: ' + attrPluginProps.document.name}

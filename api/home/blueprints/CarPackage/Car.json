@@ -52,6 +52,16 @@
           "uiRecipe": "EngineTable"
         }
       ]
+    },
+    {
+      "name": "3d-View",
+      "type": "system/SIMOS/UiRecipe",
+      "description": "",
+      "plugin": "VIEW_3D",
+      "field": "",
+      "hideTab": false,
+      "options": [],
+      "attributes": []
     }
   ]
 }
