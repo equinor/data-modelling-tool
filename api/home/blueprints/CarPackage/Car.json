@@ -41,27 +41,27 @@
       "description": "",
       "attributes": [
         {
-          "name": "name",
-          "type": "system/SIMOS/UiAttribute",
-          "widget": "PREVIEW"
-        },
-        {
           "name": "engine",
           "type": "system/SIMOS/UiAttribute",
-          "uiRecipe": "EnginePlot"
+          "uiRecipe": "EnginePlot",
+          "collapsible": true
         },
         {
           "name": "engine",
           "type": "system/SIMOS/UiAttribute",
           "uiRecipe": "EngineTable"
-        },
-        {
-          "name": "wheels",
-          "type": "system/SIMOS/UiAttribute",
-          "widget": "PREVIEW"
         }
-
       ]
+    },
+    {
+      "name": "3d-View",
+      "type": "system/SIMOS/UiRecipe",
+      "description": "",
+      "plugin": "VIEW_3D",
+      "field": "",
+      "hideTab": false,
+      "options": [],
+      "attributes": []
     }
   ]
 }
