@@ -12,6 +12,7 @@ import { BlueprintProvider } from '../BlueprintProvider'
 import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
 import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
 import { PlotPlugin } from '..'
+import { CollapsibleWrapper } from '../../components/Collapsible'
 
 enum WIDGETS {
   PREVIEW = 'PREVIEW',
@@ -82,10 +83,29 @@ class GenerateView {
         switch (attrUiRecipe.plugin) {
           case RegisteredPlugins.TABLE:
             return (
-              <ReactTablePlugin key={'plugin' + index} {...attrPluginProps} />
+              <CollapsibleWrapper
+                useCollapsible={uiAttr.collapsible}
+                collapsed={true}
+                sectionTitle={'Table: ' + attrPluginProps.document.name}
+              >
+                <ReactTablePlugin key={'plugin' + index} {...attrPluginProps} />
+              </CollapsibleWrapper>
             )
+
           case RegisteredPlugins.PLOT:
-            return <PlotPlugin key={'plugin' + index} {...attrPluginProps} />
+            if (uiAttr.collapsible) {
+              return (
+                <CollapsibleWrapper
+                  useCollapsible={uiAttr.collapsible}
+                  collapsed={true}
+                  sectionTitle={'Plot: ' + attrPluginProps.document.name}
+                >
+                  <PlotPlugin key={'plugin' + index} {...attrPluginProps} />
+                </CollapsibleWrapper>
+              )
+            } else {
+              return <PlotPlugin key={'plugin' + index} {...attrPluginProps} />
+            }
         }
       }
     }
