@@ -50,6 +50,11 @@
           "name": "engine",
           "type": "system/SIMOS/UiAttribute",
           "uiRecipe": "EngineTable"
+        },
+        {
+          "name": "wheels",
+          "type": "system/SIMOS/UiAttribute",
+          "uiRecipe": "WheelTable"
         }
       ]
     },
