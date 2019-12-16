@@ -25,6 +25,12 @@
     },
     {
       "type": "string",
+      "name": "entities",
+      "dimensions": "*",
+      "description": "Entity Packages to be internalized"
+    },
+    {
+      "type": "string",
       "name": "models",
       "dimensions": "*",
       "description": "Models to create in application."
