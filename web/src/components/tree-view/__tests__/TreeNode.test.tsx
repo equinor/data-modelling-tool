@@ -17,6 +17,7 @@ describe('TreeNode', () => {
         isExpandable: true,
         isFolder: true,
         icon: NodeIconType.folder,
+        meta: {},
       },
       NodeRenderer: (props: TreeNodeRenderProps) => {
         return <h2>{props.nodeData.title}</h2>

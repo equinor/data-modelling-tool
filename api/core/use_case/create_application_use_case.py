@@ -214,7 +214,7 @@ def zip_package(ob, document, document_repository, path):
     json_data = json.dumps(remove_ids(document))
     binary_data = json_data.encode()
     write_to = f"{path}/{document['name']}.json"
-    print(f"Writing: {document['type']} to {write_to}")
+    logger.info(f"Writing: {document['type']} to {write_to}")
 
     if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)

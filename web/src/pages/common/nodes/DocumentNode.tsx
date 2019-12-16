@@ -24,6 +24,16 @@ export const DocumentNode = (props: DocumentNodeProps) => {
         }
         return (
           <WithContextMenu node={node} layout={layout} dataUrl={dataUrl}>
+            {!onSelect && (
+              <div>
+                {nodeData.title}
+                {meta.error && (
+                  <small style={{ paddingLeft: '15px' }}>
+                    An error occurred...
+                  </small>
+                )}
+              </div>
+            )}
             {onSelect && (
               <div
                 onClick={() => {
@@ -37,6 +47,11 @@ export const DocumentNode = (props: DocumentNodeProps) => {
                 }}
               >
                 {nodeData.title}
+                {meta.error && (
+                  <small style={{ paddingLeft: '15px' }}>
+                    An error occurred...
+                  </small>
+                )}
               </div>
             )}
           </WithContextMenu>

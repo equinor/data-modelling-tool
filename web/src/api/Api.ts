@@ -131,7 +131,6 @@ export type Datasource = {
 }
 
 export type IndexNode = {
-  isRootPackage: boolean
   id: string
   title: string
   nodeType: NodeType
