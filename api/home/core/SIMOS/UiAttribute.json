@@ -139,7 +139,7 @@
         {
           "name": "description",
           "type": "string",
-          "field": "hidden"
+          "widget": "textarea"
         },
         {
           "name": "dimensions",

@@ -132,13 +132,18 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   ): void {
     //@todo use uiAttribute to build the schema property. required, descriptions etc.
     const uiSchemaProperty: UiSchema = {}
+
+    if (attr.description) {
+      uiSchemaProperty['ui:description'] = attr.description
+    }
+
     if (uiAttribute) {
       if (uiAttribute.widget) {
         uiSchemaProperty['ui:widget'] = uiAttribute.widget
       }
-      if (attr.description) {
-        uiSchemaProperty['ui:description'] = attr.description
-      } else if (uiAttribute.description) {
+
+      // override attr description.
+      if (uiAttribute.description) {
         // override attr description.
         // not possible to set ui:description on checkbox.
         // https://github.com/rjsf-team/react-jsonschema-form/issues/827
@@ -169,6 +174,8 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         uiSchemaProperty['ui:field'] = uiAttribute.field
       }
     }
+    console.log(attr)
+    console.log(uiSchemaProperty)
     if (Object.keys(uiSchemaProperty).length > 0) {
       //path = this.createAttributePath(path, attr.name)
       objectPath.set(this.schema, path, uiSchemaProperty)
