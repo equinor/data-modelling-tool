@@ -6,13 +6,11 @@
     {
       "type": "string",
       "name": "name",
-      "default": "",
-      "description": "Edit|Preview"
+      "default": ""
     },
     {
       "type": "string",
-      "name": "type",
-      "description": "system/SIMOS/UiRecipe"
+      "name": "type"
     },
     {
       "type": "string",
@@ -91,7 +89,7 @@
         {
           "name": "description",
           "type": "system/SIMOS/UiAttribute",
-          "widget": "hidden"
+          "widget": "textarea"
         },
         {
           "name": "field",
