@@ -2,10 +2,10 @@ import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { CollapsibleField } from '../widgets/CollapsibleField'
-import { Props as DocumentFinderProps } from '../form-rjsf-widgets/DocumentFinderWidget'
-import DocumentFinderWidget from '../form-rjsf-widgets/DocumentFinderWidget'
 import { Blueprint } from '../types'
 import { castValues } from '../form-rjsf-widgets/utilFormData'
+import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
+import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
 
 interface Props {
   document: Blueprint | {}
@@ -14,24 +14,6 @@ interface Props {
   template: any
   onSubmit: (data: any) => void
 }
-
-const TypeSelectorWrapper = (props: DocumentFinderProps) => (
-  <DocumentFinderWidget
-    {...props}
-    title={'type'}
-    hint={'Select Blueprint'}
-    packagesOnly={false}
-  />
-)
-
-const DestinationPickerWrapper = (props: DocumentFinderProps) => (
-  <DocumentFinderWidget
-    {...props}
-    packagesOnly={true}
-    title={'destination'}
-    hint={'Select destination folder'}
-  />
-)
 
 export default ({
   document,
@@ -53,12 +35,11 @@ export default ({
       formData={formData}
       schema={schema}
       uiSchema={uiSchema}
-      //@ts-ignore
       fields={{
         attribute: AttributeWidget,
         collapsible: CollapsibleField,
-        type: TypeSelectorWrapper,
-        destination: DestinationPickerWrapper,
+        type: BlueprintSelectorWidget,
+        destination: DestinationSelectorWidget,
       }}
       onSubmit={onSubmit}
       onChange={schemas => {

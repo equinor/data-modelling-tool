@@ -136,15 +136,24 @@ const TreeNode = (props: TreeNodeProps) => {
   } as TreeNodeRenderProps
   return (
     <div>
-      <StyledTreeNode level={level} onClick={() => handleToggle(node)}>
-        <NodeIcon>
-          {node.isExpandable && node.isOpen && <FaChevronDown />}
-          {node.isExpandable && !node.isOpen && <FaChevronRight />}
-        </NodeIcon>
-        <NodeIcon marginRight={5}>
-          <GetIcon node={node} />
-        </NodeIcon>
-        <Content role="button">{NodeRenderer(renderProps)}</Content>
+      <StyledTreeNode level={level}>
+        <div
+          style={{ display: 'flex', flexDirection: 'row' }}
+          onClick={() => handleToggle(node)}
+        >
+          <NodeIcon>
+            {node.isExpandable && node.isOpen && <FaChevronDown />}
+            {node.isExpandable && !node.isOpen && <FaChevronRight />}
+          </NodeIcon>
+          <NodeIcon marginRight={5}>
+            <GetIcon node={node} />
+          </NodeIcon>
+        </div>
+        {(node.isFolder && (
+          <Content onClick={() => handleToggle(node)} role="button">
+            {NodeRenderer(renderProps)}
+          </Content>
+        )) || <Content role="button">{NodeRenderer(renderProps)}</Content>}
       </StyledTreeNode>
     </div>
   )

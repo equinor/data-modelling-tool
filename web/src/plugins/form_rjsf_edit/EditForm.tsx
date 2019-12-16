@@ -1,12 +1,15 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import { PluginProps } from '../types'
+import { Blueprint as BlueprintType, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { Blueprint, KeyValue } from '../Blueprint'
-import { Blueprint as BlueprintType } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import FileDirectoryWidget from '../form-rjsf-widgets/FileDirectoryWidget'
+import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
+import { CollapsibleField } from '../widgets/CollapsibleField'
+import PackageSelectorWidget from '../form-rjsf-widgets/PackagesSelectorWidget'
+import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
 
 export interface EditPluginProps extends PluginProps {
   onSubmit: (data: any) => void
@@ -27,12 +30,18 @@ export const EditPlugin = (props: EditPluginProps) => {
         uiSchema={config.uiSchema || {}}
         fields={{
           attribute: AttributeWidget,
+          collapsible: CollapsibleField,
+          destination: DestinationSelectorWidget,
+          blueprint: BlueprintSelectorWidget,
+          packages: PackageSelectorWidget,
           hidden: () => <div />,
         }}
         widgets={{
           fileUploadWidget: FileDirectoryWidget,
         }}
-        onChange={() => {}}
+        // onChange={schema => {
+        //   console.log(schema)
+        // }}
         onSubmit={(schemas: any) => {
           fixRecursive(schemas.formData, blueprintProvider)
           props.onSubmit(schemas)

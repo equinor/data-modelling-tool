@@ -3,7 +3,6 @@ import {
   BlueprintAttribute,
   Blueprint as BlueprintType,
   UiRecipe,
-  Entity,
 } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
@@ -165,6 +164,9 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       }
       if (uiAttribute.helpText) {
         uiSchemaProperty['ui:help'] = uiAttribute.helpText
+      }
+      if (attr.label) {
+        uiSchemaProperty['ui:label'] = attr.label
       }
       if (uiAttribute.field === 'attribute') {
         const fieldBlueprint = this.blueprintProvider.getBlueprintByType(

@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import DocumentFinderWidget from './DocumentFinderWidget'
 import { BlueprintAttribute } from '../types'
 import { isPrimitive } from '../pluginUtils'
+import BlueprintSelectorWidget from './BlueprintSelectorWidget'
 
 export const AttributeWrapper = styled.div`
   margin: 2px 2px;
@@ -93,7 +93,7 @@ export const NumberInput = (props: NumberInputProps) => {
   )
 }
 
-export const TypeInput = (props: any) => {
+export const TypeDropdown = (props: any) => {
   const { onChange, value } = props
   return (
     <select value={value} onChange={onChange}>
@@ -106,37 +106,11 @@ export const TypeInput = (props: any) => {
   )
 }
 
-type BlueprintInputProps = {
-  value: string
-  onChange: AttributeOnChange
-  attribute: BlueprintAttribute
-}
-
-export const BlueprintInput = (props: BlueprintInputProps) => {
-  const { onChange, value, attribute } = props
-  // Just so not to display "blueprint" as a "selected blueprint" when none is selected
-  let displayValue = value
-  if (value === DataType.BLUEPRINT) {
-    displayValue = ''
-  }
-  return (
-    <DocumentFinderWidget
-      value={displayValue}
-      onChange={(value: any) => {
-        onChange(attribute, value)
-      }}
-      attributeInput={true}
-      packagesOnly={false}
-      title={''}
-      hint={'Select Blueprint'}
-    />
-  )
-}
-
 type TypeProps = {
   onChange: AttributeOnChange
   attribute: BlueprintAttribute
   value: string
+  uiSchema: any
 }
 
 export const TypeWidget = (props: TypeProps) => {
@@ -145,10 +119,15 @@ export const TypeWidget = (props: TypeProps) => {
   const [selectedType, setSelectedType] = useState(
     typeValue || attribute.default
   )
-  const blueprintValue = isPrimitive(value) ? '' : value
+  let blueprintValue
+  if (typeValue === DataType.BLUEPRINT && value !== DataType.BLUEPRINT) {
+    blueprintValue = value
+  } else {
+    blueprintValue = ''
+  }
   return (
     <>
-      <TypeInput
+      <TypeDropdown
         value={selectedType}
         attribute={attribute}
         onChange={(event: any) => {
@@ -157,7 +136,13 @@ export const TypeWidget = (props: TypeProps) => {
         }}
       />
       {selectedType === DataType.BLUEPRINT && (
-        <BlueprintInput {...props} value={blueprintValue} />
+        <BlueprintSelectorWidget
+          onChange={(value: any) => {
+            onChange(attribute, value)
+          }}
+          formData={blueprintValue}
+          uiSchema={{}}
+        />
       )}
     </>
   )
