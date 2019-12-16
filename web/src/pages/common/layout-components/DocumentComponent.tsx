@@ -13,6 +13,8 @@ import { PluginProps, UiRecipe } from '../../../plugins/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
 import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
 import Api2 from '../../../api/Api2'
+// @ts-ignore
+import { Viewer3dPlugin } from '../../../plugins/3dviewer/Viewer3dPlugin'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -26,6 +28,7 @@ export enum RegisteredPlugins {
   PLOT = 'PLOT',
   EXTERNAL = 'EXTERNAL',
   TABLE = 'TABLE',
+  VIEW_3D = 'VIEW_3D',
 }
 
 const View = (props: any) => {
@@ -64,7 +67,8 @@ const View = (props: any) => {
   switch (uiRecipe.plugin) {
     case RegisteredPlugins.PREVIEW:
       return <BlueprintPreview {...pluginProps} />
-
+    case RegisteredPlugins.VIEW_3D:
+      return <Viewer3dPlugin {...pluginProps} />
     case RegisteredPlugins.VIEW:
       return <ViewPlugin {...pluginProps} />
 
