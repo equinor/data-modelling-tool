@@ -84,7 +84,7 @@ function validate(blueprint: Blueprint) {
             if (!item.name) {
               errors[key][index].addError('name must be set')
             }
-            if (!item.type) {
+            if (!item.type || item.type === 'blueprint') {
               errors[key][index].addError('type must be set')
             }
           })
