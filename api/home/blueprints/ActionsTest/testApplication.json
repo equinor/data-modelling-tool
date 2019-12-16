@@ -2,6 +2,7 @@
   "name": "ApplicationSettings",
   "type": "system/SIMOS/Application",
   "description": "",
+  "entities": [],
   "packages": [
     "ActionsTest"
   ],

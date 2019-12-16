@@ -3,6 +3,7 @@
   "name": "ApplicationSettings",
   "description": "",
   "packages": ["TodoDemo"],
+  "entities": [],
   "models": ["SSR-DataSource/TodoDemo/TodoList"],
   "actions": [
     {
