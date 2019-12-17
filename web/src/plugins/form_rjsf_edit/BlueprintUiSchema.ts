@@ -135,6 +135,9 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
 
     if (attr.description) {
       uiSchemaProperty['ui:description'] = attr.description
+      if (attr.type === 'boolean') {
+        uiSchemaProperty['ui:widget'] = 'checkbox'
+      }
     }
 
     if (uiAttribute) {
@@ -148,6 +151,9 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         // not possible to set ui:description on checkbox.
         // https://github.com/rjsf-team/react-jsonschema-form/issues/827
         uiSchemaProperty['ui:description'] = uiAttribute.description
+        if (attr.type === 'boolean') {
+          uiSchemaProperty['ui:widget'] = 'checkbox'
+        }
       }
       if (uiAttribute.disabled) {
         if (attr.default === '') {
