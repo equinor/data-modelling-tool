@@ -6,9 +6,10 @@ import {
   TextInput,
 } from './AttributeInputs'
 import { BlueprintAttribute } from '../types'
+import { Dimension } from '../Dimension'
 
 function getArrayType(dimensions: string | undefined) {
-  if (dimensions === '*') {
+  if (dimensions && Dimension.isArray(dimensions)) {
     return ArrayType.ARRAY
   }
   return ArrayType.SIMPLE
