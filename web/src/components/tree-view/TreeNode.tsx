@@ -149,11 +149,14 @@ const TreeNode = (props: TreeNodeProps) => {
             <GetIcon node={node} />
           </NodeIcon>
         </div>
-        {(node.isFolder && (
+        {node.isFolder && (
           <Content onClick={() => handleToggle(node)} role="button">
             {NodeRenderer(renderProps)}
           </Content>
-        )) || <Content role="button">{NodeRenderer(renderProps)}</Content>}
+        )}
+        {!node.isFolder && (
+          <Content role="button">{NodeRenderer(renderProps)}</Content>
+        )}
       </StyledTreeNode>
     </div>
   )

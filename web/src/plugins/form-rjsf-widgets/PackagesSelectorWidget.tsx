@@ -2,12 +2,10 @@ import React, { useEffect, useState } from 'react'
 import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
-import { NodeType } from '../../util/variables'
 import styled from 'styled-components'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import Modal from '../../components/modal/Modal'
-import { FaPlusSquare, FaTimes } from 'react-icons/fa'
-// import Button from '../../components/Button'
+import { FaTimes } from 'react-icons/fa'
 
 const api = new DmtApi()
 
@@ -101,6 +99,7 @@ export default ({ onChange, formData, uiSchema }: PackageSelectorProps) => {
     <PackagesWrapper>
       <div style={{ flexDirection: 'column' }}>
         <b>{uiSchema['ui:label']}</b>
+        <p>{uiSchema['ui:description']}</p>
         <table>
           <tbody>
             {(tableRows.length === 0 && (
@@ -131,13 +130,12 @@ export default ({ onChange, formData, uiSchema }: PackageSelectorProps) => {
         <DocumentTree
           render={(renderProps: TreeNodeRenderProps) => {
             const { nodeData } = renderProps
-            const type = nodeData.meta.type
             const value = `${renderProps.path}/${nodeData.title}`
 
             return (
               <NodeWrapper>
                 {nodeData.title}
-                {type === NodeType.PACKAGE && (
+                {nodeData.meta.isRootPackage && (
                   <input
                     type={'checkbox'}
                     checked={selectedPackages.includes(value) || false}
