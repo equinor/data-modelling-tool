@@ -121,6 +121,7 @@ export class DmtApi {
 export enum DataSourceType {
   Blueprints = 'blueprints',
   Entities = 'entities',
+  ALL = 'all',
 }
 
 export type Datasource = {

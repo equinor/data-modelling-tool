@@ -21,19 +21,22 @@
       "type": "string",
       "name": "packages",
       "dimensions": "*",
-      "description": "Blueprint Packages to be internalized"
+      "description": "Blueprint Packages to be internalized. Only supports packages within same DataSource",
+      "label": "Packages"
     },
     {
       "type": "string",
       "name": "entities",
       "dimensions": "*",
-      "description": "Entity Packages to be internalized"
+      "description": "Entity Packages to be internalized. Only supports packages within same DataSource",
+      "label": "Entities"
     },
     {
       "type": "string",
       "name": "models",
       "dimensions": "*",
-      "description": "Models to create in application."
+      "description": "Models to create in application. Only supports packages within same DataSource",
+      "label": "Models"
     },
     {
       "type": "system/SIMOS/Action",
@@ -53,6 +56,28 @@
           "name": "actions",
           "type": "system/SIMOS/Runnable",
           "contained": false
+        }
+      ]
+    },
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "Edit",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "packages",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "packages"
+        },
+        {
+          "name": "entities",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "packages"
+        },
+        {
+          "name": "models",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "packages"
         }
       ]
     }
