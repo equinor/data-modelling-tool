@@ -182,8 +182,6 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         uiSchemaProperty['ui:field'] = uiAttribute.field
       }
     }
-    console.log(attr)
-    console.log(uiSchemaProperty)
     if (Object.keys(uiSchemaProperty).length > 0) {
       //path = this.createAttributePath(path, attr.name)
       objectPath.set(this.schema, path, uiSchemaProperty)

@@ -15,8 +15,10 @@ const NodeWrapper = styled.div`
 `
 const ButtonWrapper = styled.div`
   display: flex;
-  margin: 10px;
   flex-direction: row-reverse;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
 `
 const PackagesWrapper = styled.div`
   display: flex;
@@ -24,6 +26,7 @@ const PackagesWrapper = styled.div`
   justify-content: space-between;
 `
 const TableCell = styled.td`
+  display: flex;
   border: 1px solid #cccccc;
   padding: 2px 5px;
 `
@@ -51,12 +54,11 @@ export default ({ onChange, formData, uiSchema }: PackageSelectorProps) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   function removePackage(value: string) {
-    setSelectedPackages(
-      selectedPackages.filter(e => {
-        return e !== value
-      })
-    )
-    onChange(selectedPackages)
+    const newSelectedPackages = selectedPackages.filter(e => {
+      return e !== value
+    })
+    setSelectedPackages(newSelectedPackages)
+    onChange(newSelectedPackages)
   }
 
   function handleChange(value: string) {
@@ -89,10 +91,15 @@ export default ({ onChange, formData, uiSchema }: PackageSelectorProps) => {
 
   const tableRows = selectedPackages.map(folder => (
     <tr key={folder} style={{ verticalAlign: 'baseline' }}>
-      <TableCell>{folder}</TableCell>
-      <div onClick={() => removePackage(folder)} style={{ cursor: 'pointer' }}>
-        <FaTimes style={{ color: '#E15353' }} />
-      </div>
+      <TableCell>
+        {folder}
+        <ButtonWrapper
+          onClick={() => removePackage(folder)}
+          style={{ marginLeft: '10px' }}
+        >
+          <FaTimes style={{ color: '#E15353' }} />
+        </ButtonWrapper>
+      </TableCell>
     </tr>
   ))
   return (
