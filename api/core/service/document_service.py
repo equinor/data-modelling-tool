@@ -21,7 +21,7 @@ def get_complete_document(document_uid: UUID, document_repository: DocumentRepos
     blueprint = get_blueprint(document.type)
 
     if not isinstance(document.data, dict):
-        data = document.data.to_dict(include_defaults=False)
+        data = document.data.to_dict(include_defaults=True)
     else:
         data = document.data
 
@@ -64,8 +64,35 @@ class DocumentService:
     def remove_attribute(parent: DTO, attribute: str, document_repository: DocumentRepository):
         parent = get_data_always_as_dict(parent)
         dotted_data = DottedDict(parent.data)
-        attribute_document = DTO(dotted_data[attribute])
-        del dotted_data[attribute]
+        attribute_document = dotted_data[attribute]
+
+        path = attribute.split(".")
+        if len(path) > 1:
+            path.pop()
+            instance = dotted_data["".join(path)].to_python()
+            if isinstance(instance, list):
+                del dotted_data[attribute]
+            else:
+                dotted_data[attribute] = {}
+        else:
+            dotted_data[attribute] = {}
+
         document_repository.update(DTO(dotted_data.to_python(), uid=parent.uid))
-        remove_children(attribute_document, document_repository)
+        remove_children(DTO(attribute_document), document_repository)
         logger.info(f"Removed attribute '{attribute}' from '{parent.uid}'")
+
+    @staticmethod
+    def rename_attribute(parent_id: str, attribute: str, name: str, document_repository: DocumentRepository):
+        parent: DTO = document_repository.get(parent_id)
+        if not parent:
+            raise EntityNotFoundException(uid=parent_id)
+
+        parent = get_data_always_as_dict(parent)
+        dotted_data = DottedDict(parent.data)
+        attribute_document = dotted_data[attribute]
+        attribute_document["name"] = name
+        dotted_data[attribute] = attribute_document
+        document = DTO(dotted_data.to_python(), uid=parent.uid)
+        document_repository.update(document)
+        logger.info(f"Rename attribute '{attribute}' from '{parent.uid}'")
+        return document

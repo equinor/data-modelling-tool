@@ -47,7 +47,7 @@ describe('BlueprintUiSchema', () => {
       ],
     }
     beforeEach(() => {
-      const blueprintProvider = new BlueprintProvider([])
+      const blueprintProvider = new BlueprintProvider([], [])
       schema = new BlueprintUiSchema(
         blueprint,
         blueprintProvider,
@@ -57,7 +57,7 @@ describe('BlueprintUiSchema', () => {
     })
 
     it('should have ui schema for basic blueprint', () => {
-      console.log(JSON.stringify(schema, null, 2))
+      // console.log(JSON.stringify(schema, null, 2))
       expect(schema).toMatchObject({
         name: {
           'ui:widget': 'textarea',
@@ -120,7 +120,7 @@ describe('BlueprintUiSchema', () => {
       },
     ]
     beforeEach(() => {
-      const blueprintProvider = new BlueprintProvider(blueprints)
+      const blueprintProvider = new BlueprintProvider(blueprints, [])
       schema = new BlueprintUiSchema(
         blueprint,
         blueprintProvider,
@@ -146,7 +146,7 @@ describe('BlueprintUiSchema', () => {
         },
       }
       // paste this into https://rjsf-team.github.io/react-jsonschema-form/
-      console.log(JSON.stringify(expected, null, 2))
+      // console.log(JSON.stringify(expected, null, 2))
       expect(schema).toMatchObject(expected)
     })
   })

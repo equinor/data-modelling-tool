@@ -6,13 +6,11 @@
     {
       "type": "string",
       "name": "name",
-      "default": "",
-      "description": "Edit|Preview"
+      "default": ""
     },
     {
       "type": "string",
-      "name": "type",
-      "description": "system/SIMOS/UiRecipe"
+      "name": "type"
     },
     {
       "type": "string",
@@ -69,7 +67,8 @@
           "name": "type",
           "type": "system/SIMOS/UiAttribute",
           "description": "system/SIMOS/UiRecipe",
-          "required": true
+          "required": true,
+          "disabled": true
         },
         {
           "name": "name",
@@ -90,7 +89,7 @@
         {
           "name": "description",
           "type": "system/SIMOS/UiAttribute",
-          "widget": "hidden"
+          "widget": "textarea"
         },
         {
           "name": "field",

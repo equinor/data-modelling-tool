@@ -6,6 +6,7 @@ import { BlueprintProvider } from '../BlueprintProvider'
 import { BlueprintUiSchema } from './BlueprintUiSchema'
 import { BlueprintSchema } from './BlueprintSchema'
 import { Blueprint, KeyValue } from '../Blueprint'
+import { EditPluginProps } from './EditForm'
 
 export type FormConfig = {
   data: any
@@ -15,7 +16,7 @@ export type FormConfig = {
 
 export type IndexFilter = (attr: BlueprintAttribute) => boolean
 
-export function createFormConfigs(pluginProps: PluginProps): FormConfig {
+export function createFormConfigs(pluginProps: EditPluginProps): FormConfig {
   const { document, blueprints, uiRecipe, dtos } = pluginProps
   const blueprintType = pluginProps.blueprint
   const indexRecipe = BlueprintUtil.findRecipe(blueprintType.uiRecipes, 'INDEX')
@@ -26,9 +27,11 @@ export function createFormConfigs(pluginProps: PluginProps): FormConfig {
   const blueprintProvider = new BlueprintProvider(blueprints, dtos)
   const blueprintSchema = new BlueprintSchema(
     blueprintType,
+    document,
     blueprintProvider,
     uiRecipe,
-    filter
+    filter,
+    pluginProps.rootDocument
   )
   const uiSchema = new BlueprintUiSchema(
     blueprintType,

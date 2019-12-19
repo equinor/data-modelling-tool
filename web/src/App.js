@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
 import DocumentEditorPage from './pages/DocumentEditorPage'
 import { Switch } from 'react-router'
+import { StatusProvider } from './pages/common/StatusContext'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -20,12 +21,12 @@ function App() {
   return (
     <Router>
       <GlobalStyle />
-
-      <NotificationContainer />
-
-      <Switch>
-        <Route exact path="/" component={DocumentEditorPage} />
-      </Switch>
+      <StatusProvider>
+        <NotificationContainer />
+        <Switch>
+          <Route exact path="/" component={DocumentEditorPage} />
+        </Switch>
+      </StatusProvider>
     </Router>
   )
 }

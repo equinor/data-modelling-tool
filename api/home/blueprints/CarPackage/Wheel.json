@@ -20,12 +20,118 @@
       "default": "SSR-DataSource/CarPackage/Wheel"
     },
     {
-      "type": "string",
+      "type": "number",
       "name": "diameter",
       "optional": false,
       "default": "120"
+    },
+    {
+      "name": "pressure",
+      "type": "number",
+      "optional": false
+    },
+    {
+      "name": "wheelsRecursive",
+      "type": "SSR-DataSource/CarPackage/Wheel",
+      "default": "[]",
+      "dimensions": "*"
     }
   ],
   "storageRecipes": [],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "description": "",
+      "plugin": "EDIT_PLUGIN",
+      "field": "",
+      "hideTab": false,
+      "options": [],
+      "attributes": [
+        {
+          "name": "wheelsRecursive",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "",
+          "label": "",
+          "uiRecipe": "",
+          "dimensions": "",
+          "enumType": "",
+          "field": "",
+          "widget": "",
+          "default": "",
+          "options": [],
+          "optional": false,
+          "contained": true,
+          "disabled": false,
+          "required": false,
+          "mapping": ""
+        }
+      ]
+    },
+    {
+      "name": "WheelTable",
+      "type": "system/SIMOS/UiRecipe",
+      "description": "",
+      "plugin": "TABLE",
+      "field": "",
+      "hideTab": true,
+      "options": [],
+      "attributes": [
+        {
+          "name": "name",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "",
+          "label": "",
+          "uiRecipe": "",
+          "dimensions": "",
+          "enumType": "",
+          "field": "",
+          "widget": "",
+          "default": "",
+          "options": [],
+          "optional": false,
+          "contained": true,
+          "disabled": false,
+          "required": false,
+          "mapping": "column"
+        },
+        {
+          "name": "description",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "",
+          "label": "",
+          "uiRecipe": "",
+          "dimensions": "",
+          "enumType": "",
+          "field": "",
+          "widget": "",
+          "default": "",
+          "options": [],
+          "optional": false,
+          "contained": true,
+          "disabled": false,
+          "required": false,
+          "mapping": "column"
+        },
+        {
+          "name": "diameter",
+          "type": "system/SIMOS/UiAttribute",
+          "description": "",
+          "label": "",
+          "uiRecipe": "",
+          "dimensions": "",
+          "enumType": "",
+          "field": "",
+          "widget": "",
+          "default": "",
+          "options": [],
+          "optional": false,
+          "contained": true,
+          "disabled": false,
+          "required": false,
+          "mapping": "column"
+        }
+      ]
+    }
+  ]
 }

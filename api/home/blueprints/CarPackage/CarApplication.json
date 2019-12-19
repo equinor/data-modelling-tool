@@ -2,12 +2,9 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "description": "",
-  "packages": [
-    "CarPackage"
-  ],
-  "models": [
-    "SSR-DataSource/CarPackage/Car"
-  ],
+  "packages": ["CarPackage"],
+  "entities": [],
+  "models": ["SSR-DataSource/CarPackage/Car"],
   "actions": [
     {
       "name": "Calculate",

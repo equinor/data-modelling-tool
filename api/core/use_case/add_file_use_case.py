@@ -1,3 +1,4 @@
+from core.use_case.update_document_use_case import update_document
 from core.use_case.utils.create_entity import CreateEntity
 from typing import Dict
 import stringcase
@@ -14,7 +15,7 @@ from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
 from utils.data_structure.find import get
 from utils.logging import logger
-
+from dotted.collection import DottedDict
 
 def get_required_attributes(type: str):
     return [
@@ -84,6 +85,8 @@ class AddFileUseCase(uc.UseCase):
         description: str = request_object.description
         attribute: str = stringcase.snakecase(request_object.attribute)
 
+        attribute_dot_path = request_object.attribute
+
         parent: DTO = self.document_repository.get(parent_id)
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
@@ -97,7 +100,11 @@ class AddFileUseCase(uc.UseCase):
             parent_data["content"] = parent_data.get("content", [])
 
         try:
-            get(parent_data, attribute)
+            dotted_data = DottedDict(parent_data)
+            try:
+                dotted_data[attribute_dot_path]
+            except KeyError:
+                get(parent_data, attribute_dot_path)
         except ValueError:
             raise ValueError(f"The attribute '{attribute}' is missing")
 
@@ -111,12 +118,17 @@ class AddFileUseCase(uc.UseCase):
             # only array types can be added from context menu.
             # single types in tree can only be clicked.
             if isinstance(parent_data, dict):
-                if attribute in parent_data:
-                    parent_data[attribute].append(entity)
+                try:
+                    dotted_data[attribute_dot_path].append(entity)
+                    parent.data = dotted_data.to_python()
+                    self.document_repository.update(parent)
+                except KeyError:
+                    pass
+
             else:
                 getattr(parent_data, attribute).append(entity)
-            logger.info(f"Added contained document")
-            self.document_repository.update(parent)
+                logger.info(f"Added contained document")
+                self.document_repository.update(parent)
             return res.ResponseSuccess(parent)
         else:
             file = DTO(data=entity)

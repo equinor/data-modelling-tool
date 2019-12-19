@@ -39,4 +39,7 @@ def get(obj, name: str, **kwargs):
             if use_default:
                 return kwargs["default"]
             raise e
-    return getattr(obj, name)
+    if use_default:
+        return getattr(obj, name, kwargs["default"])
+    else:
+        return getattr(obj, name)

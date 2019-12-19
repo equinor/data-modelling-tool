@@ -23,6 +23,12 @@ export enum NodeIconType {
   'default' = '',
 }
 
+export type NodeMetaData = {
+  [key: string]: any
+  isRootPackage?: boolean
+  error?: boolean
+}
+
 export type TreeNodeData = {
   nodeId: string
   nodeType: NodeType
@@ -30,13 +36,12 @@ export type TreeNodeData = {
   title: string
   isExpandable: boolean
   isRoot: boolean
-  isRootPackage: boolean
   icon?: NodeIconType
   isHidden?: boolean
   isFolder: boolean
   templateRef?: string
   children?: string[]
-  meta?: object
+  meta: NodeMetaData
 }
 
 interface Tree {
@@ -216,7 +221,6 @@ const Tree = (props: TreeProps) => {
                       node={node}
                       path={item.track.join('/')}
                       parent={item.parent}
-                      isRootPackage={false}
                       NodeRenderer={children}
                       handleToggle={handleToggle}
                       actions={{

@@ -3,6 +3,5 @@
   "type": "system/DMT/UiViewPlugin",
   "label": "View",
   "required": false,
-  "widgets": [
-  ]
+  "widgets": []
 }

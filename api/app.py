@@ -6,7 +6,7 @@ from flask import Flask
 
 from config import Config
 from core.domain.schema import Factory
-from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System
+from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System, Actions
 from core.utility import wipe_db
 from services.database import dmt_database
 from utils.logging import logger
@@ -21,6 +21,7 @@ def create_app(config):
     app.register_blueprint(DataSource.blueprint)
     app.register_blueprint(Index.blueprint)
     app.register_blueprint(System.blueprint)
+    app.register_blueprint(Actions.blueprint)
     app.secret_key = os.urandom(64)
     return app
 
@@ -38,8 +39,8 @@ def init_application():
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
 
-    logger.info(f"Importing demo entity package(s) {Config.DEMO_ENTITIES}")
-    for folder in Config.DEMO_ENTITIES:
+    logger.info(f"Importing entity package(s) {Config.ENTITY_APPLICATION_SETTINGS['entities']}")
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )

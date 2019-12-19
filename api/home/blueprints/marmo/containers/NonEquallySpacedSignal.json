@@ -1,1 +1,100 @@
-{"name":"NonEquallySpacedSignal","description":"data model for a non-equally spaced signal.","type":"system/SIMOS/Blueprint","attributes":[{"name":"name","type":"string","description":"variable name for named accessing","default":"nonEquallySpacedSignal","contained":true,"optional":false},{"name":"description","type":"string","description":"instance description","default":"","contained":true,"optional":false},{"name":"type","type":"string"},{"name":"xname","type":"string","description":"name for the x value.","default":"time","contained":true,"optional":false},{"name":"xlabel","type":"string","description":"label for the x value.","default":"","contained":true,"optional":false},{"name":"xdescription","type":"string","description":"description for the x value.","default":"time","contained":true,"optional":false},{"name":"xunit","type":"string","description":"x signal unit","default":"s","contained":true,"optional":false},{"name":"xvalue","type":"number","description":"x data points.","default":"0.0","dimensions":"*","contained":true,"optional":false},{"name":"value","type":"number","description":"data points.","default":"0.0","dimensions":"*","contained":true,"optional":false},{"name":"unit","type":"string","description":"signal unit","default":"","contained":true,"optional":false},{"name":"label","type":"string","description":"label for the y value.","default":"","contained":true,"optional":false},{"name":"legend","type":"string","description":"description of xy values to be used as legend.","default":"","contained":true,"optional":false}],"storageRecipes":[],"uiRecipes":[]}
+{
+  "name": "NonEquallySpacedSignal",
+  "description": "data model for a non-equally spaced signal.",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "type": "string",
+      "description": "variable name for named accessing",
+      "default": "nonEquallySpacedSignal",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "type": "string",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    { "name": "type", "type": "string" },
+    {
+      "name": "xname",
+      "type": "string",
+      "description": "name for the x value.",
+      "default": "time",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "xlabel",
+      "type": "string",
+      "description": "label for the x value.",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "xdescription",
+      "type": "string",
+      "description": "description for the x value.",
+      "default": "time",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "xunit",
+      "type": "string",
+      "description": "x signal unit",
+      "default": "s",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "xvalue",
+      "type": "number",
+      "description": "x data points.",
+      "default": "0.0",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "value",
+      "type": "number",
+      "description": "data points.",
+      "default": "0.0",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "unit",
+      "type": "string",
+      "description": "signal unit",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "label",
+      "type": "string",
+      "description": "label for the y value.",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "legend",
+      "type": "string",
+      "description": "description of xy values to be used as legend.",
+      "default": "",
+      "contained": true,
+      "optional": false
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

@@ -1,15 +1,23 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import { PluginProps } from '../types'
+import { Blueprint as BlueprintType, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { Blueprint, KeyValue } from '../Blueprint'
+import { BlueprintProvider } from '../BlueprintProvider'
+import FileDirectoryWidget from '../form-rjsf-widgets/FileDirectoryWidget'
+import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
+import { CollapsibleField } from '../widgets/CollapsibleField'
+import PackageSelectorWidget from '../form-rjsf-widgets/PackagesSelectorWidget'
+import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
 
-interface Props extends PluginProps {
+export interface EditPluginProps extends PluginProps {
   onSubmit: (data: any) => void
+  rootDocument: BlueprintType | undefined
 }
 
-export const EditPlugin = (props: Props) => {
+export const EditPlugin = (props: EditPluginProps) => {
+  const blueprintProvider = new BlueprintProvider(props.blueprints, props.dtos)
   const blueprint = new Blueprint(props.blueprint)
   const config: FormConfig = createFormConfigs(props)
   const formData = config.data
@@ -22,15 +30,49 @@ export const EditPlugin = (props: Props) => {
         uiSchema={config.uiSchema || {}}
         fields={{
           attribute: AttributeWidget,
+          collapsible: CollapsibleField,
+          destination: DestinationSelectorWidget,
+          blueprint: BlueprintSelectorWidget,
+          packages: PackageSelectorWidget,
           hidden: () => <div />,
         }}
         widgets={{
-          enumWidget: () => <div>EnumType widget</div>,
+          fileUploadWidget: FileDirectoryWidget,
         }}
-        onSubmit={props.onSubmit}
+        // onChange={schema => {
+        //   console.log(schema)
+        // }}
+        onSubmit={(schemas: any) => {
+          fixRecursive(schemas.formData, blueprintProvider)
+          props.onSubmit(schemas)
+        }}
       />
     </div>
   )
+}
+
+function fixRecursive(
+  entity: KeyValue,
+  blueprintProvider: BlueprintProvider
+): void {
+  const blueprintType:
+    | BlueprintType
+    | undefined = blueprintProvider.getBlueprintByType(entity.type)
+  if (blueprintType) {
+    const blueprint: Blueprint | undefined = new Blueprint(blueprintType)
+    blueprint.validateEntity(entity)
+    Object.keys(entity).forEach((key: string) => {
+      const attr = blueprint.getAttribute(key)
+      if (attr) {
+        if (blueprint.isArray(attr)) {
+          entity[attr.name].forEach((entityItem: KeyValue, index: number) => {
+            blueprint.validateEntity(entityItem)
+            fixRecursive(entityItem, blueprintProvider)
+          })
+        }
+      }
+    })
+  }
 }
 
 /**
@@ -51,7 +93,7 @@ function validate(blueprint: Blueprint) {
             if (!item.name) {
               errors[key][index].addError('name must be set')
             }
-            if (!item.type) {
+            if (!item.type || item.type === 'blueprint') {
               errors[key][index].addError('type must be set')
             }
           })

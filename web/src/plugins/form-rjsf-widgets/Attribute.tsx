@@ -14,6 +14,7 @@ import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
 import { isPrimitive } from '../pluginUtils'
 import { RequiredAttributesGroup } from '../form_rjsf_edit/RequiredAttributes'
+import { Dimension } from '../Dimension'
 
 const REQUIRED_ATTRIBUTES = ['name', 'description', 'type']
 
@@ -53,6 +54,7 @@ export const AttributeWidget = (props: Props) => {
   }
 
   const selectedType = formData['type']
+  const selectedDimensions = formData['dimensions']
   if (REQUIRED_ATTRIBUTES.includes(formData.name)) {
     return <RequiredAttributesGroup name={formData.name} type={formData.type} />
   }
@@ -63,7 +65,8 @@ export const AttributeWidget = (props: Props) => {
         const value = (formData as any)[name]
         let Widget: Function | null = getWidgetByName(
           blueprintAttribute,
-          selectedType
+          selectedType,
+          selectedDimensions || ''
         )
         if (Widget === null) {
           return null
@@ -94,7 +97,8 @@ export const AttributeWidget = (props: Props) => {
 
 function getWidgetByName(
   attribute: BlueprintAttribute,
-  selectedType: string
+  selectedType: string,
+  selectedDimensions: string
 ): Function | null {
   let widget: Function = (widgetNames as any)[attribute.name]
   if (attribute.name === 'default') {
@@ -102,7 +106,13 @@ function getWidgetByName(
       // type is a blueprint type string.
       return null
     }
-    widget = (widgetTypes as any)[selectedType]
+    if (Dimension.isArray(selectedDimensions)) {
+      // use string default
+      widget = (widgetTypes as any)['string']
+    } else {
+      //use real defaults.
+      widget = (widgetTypes as any)[selectedType]
+    }
   }
   return widget
 }

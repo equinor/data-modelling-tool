@@ -1,4 +1,5 @@
 import { BlueprintAttribute, Blueprint as BlueprintType } from './types'
+import { Dimension } from './Dimension'
 
 export type KeyValue = {
   [key: string]: any
@@ -45,7 +46,11 @@ export class Blueprint implements IBlueprint {
 
   // helper functions
   isArray(attr: BlueprintAttribute) {
-    return attr.dimensions === '*'
+    return new Dimension(attr).isArray()
+  }
+
+  public getBlueprintType(): BlueprintType {
+    return this.blueprintType
   }
 
   public getAttribute(name: string): BlueprintAttribute | undefined {
@@ -59,5 +64,29 @@ export class Blueprint implements IBlueprint {
   isPrimitive(type: string): boolean {
     //todo use AttributeTypes enum, available in the blueprint.
     return ['string', 'number', 'integer', 'number', 'boolean'].includes(type)
+  }
+
+  public validateEntity(entity: KeyValue) {
+    this.blueprintType.attributes.forEach((attr: BlueprintAttribute) => {
+      const value = entity[attr.name]
+      if (attr.optional !== true) {
+        if (this.isPrimitive(attr.type)) {
+          if (attr.default) {
+            //todo insert default?  need to do casting.
+          }
+        } else {
+          if (value === undefined && this.isArray(attr)) {
+            entity[attr.name] = []
+          }
+        }
+
+        // required
+        if (!entity[attr.name]) {
+          console.warn(
+            `non optional value is missing for ${attr.name} of type ${attr.type}, ${entity.type}`
+          )
+        }
+      }
+    })
   }
 }

@@ -1,66 +1,130 @@
 import React from 'react'
-import { BlueprintAttribute, PluginProps } from '../types'
-import ErrorBoundary from '../../components/ErrorBoundary'
-import TableWidget from '../widgets/table/TableWidget'
+import {
+  Blueprint as BlueprintType,
+  BlueprintAttribute,
+  Dto,
+  Entity,
+  PluginProps,
+} from '../types'
 import { Pre } from '../preview/PreviewPlugin'
+import { Blueprint, KeyValue } from '../Blueprint'
+import { BlueprintProvider } from '../BlueprintProvider'
+import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
+import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
+import { PlotPlugin } from '..'
+import { CollapsibleWrapper } from '../../components/Collapsible'
 
-// available on attribute level of this.
-enum ViewWidgets {
-  VIEW_WIDGET = 'view.widget',
-  TABLE_WIDGET = 'table.widget',
+enum WIDGETS {
+  PREVIEW = 'PREVIEW',
 }
 
-export const ViewPlugin = ({ blueprint, document, uiRecipe }: PluginProps) => {
-  const widgets = blueprint.attributes.map(
-    (parentAttribute: BlueprintAttribute, index: number) => {
-      const plugin = uiRecipe.plugin
-      const attribute = (document as any)[parentAttribute.name]
-      const key = `${plugin}-${index}`
-      switch (plugin) {
-        case ViewWidgets.VIEW_WIDGET:
-          return <DefaultView key={key} attribute={parentAttribute} />
-        case ViewWidgets.TABLE_WIDGET:
-          return (
-            <ErrorBoundary key={key}>
-              <TableWidget
-                blueprint={blueprint}
-                parentAttribute={parentAttribute}
-                attribute={attribute}
-              />
-            </ErrorBoundary>
-          )
-        default:
-          return <PreviewView key={key} attribute={attribute} />
+class GenerateView {
+  private uiRecipe: KeyValue
+  private blueprintProvider: any
+  private blueprintType: BlueprintType
+  private blueprint: Blueprint
+  private blueprints: BlueprintType[]
+  private document: Entity
+  private views: any[] = []
+  private dtos: Dto[] = []
+
+  constructor(props: PluginProps) {
+    this.uiRecipe = props.uiRecipe
+    this.document = props.document
+    this.blueprintType = props.blueprint
+    this.blueprints = props.blueprints
+    this.dtos = props.dtos
+    this.blueprintProvider = new BlueprintProvider(this.blueprints, this.dtos)
+    this.blueprint = new Blueprint(this.blueprintType)
+
+    this.uiRecipe.attributes.forEach((key: string, index: number) => {
+      const uiAttr: KeyValue = this.uiRecipe.attributes[index]
+      if (uiAttr) {
+        const attr = this.blueprint.getAttribute(uiAttr.name)
+        if (attr) {
+          const component = this.createComponentWithRecipe(uiAttr, attr, index)
+          if (component) {
+            this.views.push(component)
+          } else if (uiAttr.widget) {
+            const widget = this.createComponentWithWidget(uiAttr, index)
+            this.views.push(widget)
+          }
+        }
+      }
+    })
+  }
+
+  createComponentWithWidget(uiAttr: KeyValue, index: number): any {
+    switch (uiAttr.widget) {
+      case WIDGETS.PREVIEW:
+        const data = { [uiAttr.name]: this.document[uiAttr.name] }
+        return <PreviewView key={`widget-${index}`} data={data} />
+    }
+  }
+
+  createComponentWithRecipe(
+    uiAttr: KeyValue,
+    attr: BlueprintAttribute,
+    index: number
+  ): any {
+    const attributeType = this.blueprintProvider.getBlueprintByType(attr.type)
+    if (attributeType) {
+      const attrUiRecipe = attributeType.uiRecipes.find(
+        (uiRecipe: KeyValue) => uiRecipe.name === uiAttr.uiRecipe
+      )
+      if (attrUiRecipe) {
+        const attrPluginProps: PluginProps = {
+          document: this.document[uiAttr.name],
+          blueprint: attributeType,
+          blueprints: this.blueprints,
+          dtos: this.dtos,
+          uiRecipe: attrUiRecipe,
+        }
+        switch (attrUiRecipe.plugin) {
+          case RegisteredPlugins.TABLE:
+            return (
+              <CollapsibleWrapper
+                key={'plugin ' + index}
+                useCollapsible={uiAttr.collapsible}
+                collapsed={true}
+                sectionTitle={'Table: ' + attrPluginProps.document.name}
+              >
+                <ReactTablePlugin key={'plugin' + index} {...attrPluginProps} />
+              </CollapsibleWrapper>
+            )
+
+          case RegisteredPlugins.PLOT:
+            if (uiAttr.collapsible) {
+              return (
+                <CollapsibleWrapper
+                  key={'plugin ' + index}
+                  useCollapsible={uiAttr.collapsible}
+                  collapsed={true}
+                  sectionTitle={'Plot: ' + attrPluginProps.document.name}
+                >
+                  <PlotPlugin key={'plugin' + index} {...attrPluginProps} />
+                </CollapsibleWrapper>
+              )
+            } else {
+              return <PlotPlugin key={'plugin' + index} {...attrPluginProps} />
+            }
+        }
       }
     }
-  )
-  return (
-    <div>
-      <div>
-        <span style={{ paddingRight: 20 }}>{document.name}</span>
-        <span>{document.type}</span>
-      </div>
-      <div style={{ padding: 20 }}>{widgets}</div>
-    </div>
-  )
-}
-
-type DefaultViewProps = {
-  attribute: BlueprintAttribute
-}
-
-const PreviewView = ({ attribute }: DefaultViewProps) => {
-  return <Pre>{JSON.stringify(attribute, null, 2)}</Pre>
-}
-
-export const DefaultView = ({ attribute }: DefaultViewProps) => {
-  if (attribute.dimensions === '*') {
-    return <PreviewView attribute={attribute} />
+    return null
   }
-  return (
-    <div style={{ padding: '5px 0' }}>
-      <span style={{ marginRight: 20 }}>{attribute.name}</span>
-      <span>{attribute.type}</span>
-    </div>
-  )
+
+  getViews() {
+    return this.views
+  }
+}
+
+const PreviewView = ({ data }: any) => {
+  return <Pre>{JSON.stringify(data, null, 2)}</Pre>
+}
+
+export const ViewPlugin = (props: PluginProps) => {
+  const generateView = new GenerateView(props)
+  const viewComponents = generateView.getViews()
+  return <div>{viewComponents}</div>
 }

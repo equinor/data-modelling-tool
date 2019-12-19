@@ -2,6 +2,7 @@ export type BlueprintAttribute = {
   name: string
   type: string
   description?: string
+  label?: string
   optional?: boolean
   contained?: boolean
   enumType?: string

@@ -64,7 +64,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       if (this.isPrimitive(attr.type) || (uiAttribute && uiAttribute.field)) {
         this.appendPrimitive(newPath, blueprint, attr, uiAttribute)
       } else {
-        this.processNested(newPath, attr)
+        this.processNested(newPath, blueprint, attr)
       }
     })
   }
@@ -73,11 +73,21 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
     return path.length === 0 ? name : path + `.${name}`
   }
 
-  private processNested(path: string, attr: BlueprintAttribute): void {
+  private processNested(
+    path: string,
+    blueprint: Blueprint,
+    attr: BlueprintAttribute
+  ): void {
     const nestedBlueprintType:
       | BlueprintType
       | undefined = this.blueprintProvider.getBlueprintByType(attr.type)
     if (nestedBlueprintType) {
+      if (nestedBlueprintType.name === blueprint.getBlueprintType().name) {
+        console.log(
+          'EditPlugin uiSchema does not support self recursive types.'
+        )
+        return
+      }
       const nestedBlueprint = new Blueprint(nestedBlueprintType)
       if (this.isArray(attr)) {
         const newPath = path + '.items'
@@ -121,14 +131,42 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   ): void {
     //@todo use uiAttribute to build the schema property. required, descriptions etc.
     const uiSchemaProperty: UiSchema = {}
+
+    if (attr.description) {
+      uiSchemaProperty['ui:description'] = attr.description
+      if (attr.type === 'boolean') {
+        uiSchemaProperty['ui:widget'] = 'checkbox'
+      }
+    }
+
     if (uiAttribute) {
       if (uiAttribute.widget) {
         uiSchemaProperty['ui:widget'] = uiAttribute.widget
       }
+
+      // override attr description.
       if (uiAttribute.description) {
+        // override attr description.
+        // not possible to set ui:description on checkbox.
+        // https://github.com/rjsf-team/react-jsonschema-form/issues/827
         uiSchemaProperty['ui:description'] = uiAttribute.description
-      } else if (attr.description) {
-        uiSchemaProperty['ui:description'] = attr.description
+        if (attr.type === 'boolean') {
+          uiSchemaProperty['ui:widget'] = 'checkbox'
+        }
+      }
+      if (uiAttribute.disabled) {
+        if (attr.default === '') {
+          console.warn(
+            `please provide a defaultValue when attribute is disabled from editing, attr: ${attr}`
+          )
+        }
+        uiSchemaProperty['ui:disabled'] = true
+      }
+      if (uiAttribute.helpText) {
+        uiSchemaProperty['ui:help'] = uiAttribute.helpText
+      }
+      if (attr.label) {
+        uiSchemaProperty['ui:label'] = attr.label
       }
       if (uiAttribute.field === 'attribute') {
         const fieldBlueprint = this.blueprintProvider.getBlueprintByType(
@@ -144,6 +182,8 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         uiSchemaProperty['ui:field'] = uiAttribute.field
       }
     }
+    console.log(attr)
+    console.log(uiSchemaProperty)
     if (Object.keys(uiSchemaProperty).length > 0) {
       //path = this.createAttributePath(path, attr.name)
       objectPath.set(this.schema, path, uiSchemaProperty)

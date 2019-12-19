@@ -55,7 +55,6 @@ class MongoDbClient(DbClient):
 
     def update(self, uid: str, document: Dict) -> bool:
         try:
-            print(document)
             return self.handler[self.collection].update_one({"_id": uid}, {"$set": document}, upsert=True).acknowledged
         except Exception as error:
             print("ERROR", error)

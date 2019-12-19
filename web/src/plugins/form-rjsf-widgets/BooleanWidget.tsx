@@ -12,7 +12,7 @@ export function getBooleanValue(
   if (value === undefined) {
     //use default value
     if (typeof defaultValue === 'string' && defaultValue) {
-      return defaultValue === 'false' ? false : true
+      return defaultValue === 'true' ? true : false
     }
     if (typeof defaultValue === 'boolean') {
       return defaultValue

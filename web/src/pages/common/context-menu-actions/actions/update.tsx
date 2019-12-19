@@ -32,7 +32,8 @@ export const updateAction = (
   action: any,
   node: TreeNodeRenderProps,
   setShowModal: Function,
-  showError: Function
+  showError: Function,
+  createNodes: Function
 ) => {
   return {
     fetchDocument: fetchUpdate(action),
@@ -41,8 +42,13 @@ export const updateAction = (
       Api2.put({
         data: data,
         url: action.data.url,
-        onSuccess: (response: any) => {
-          postUpdate({ setShowModal, response, node })
+        onSuccess: (result: any) => {
+          //postUpdate({ setShowModal, response, node })
+          createNodes({
+            documentId: result.data.uid,
+            nodeUrl: action.data.nodeUrl,
+            node,
+          })
         },
         onError: (error: any) => showError(error),
       })

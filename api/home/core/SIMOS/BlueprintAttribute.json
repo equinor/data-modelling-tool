@@ -34,6 +34,12 @@
     },
     {
       "type": "string",
+      "name": "attributeType",
+      "default": "system/SIMOS/BlueprintAttribute",
+      "optional": true
+    },
+    {
+      "type": "string",
       "name": "dimensions",
       "optional": true,
       "default": ""
@@ -60,4 +66,3 @@
   "storageRecipes": [],
   "uiRecipes": []
 }
-

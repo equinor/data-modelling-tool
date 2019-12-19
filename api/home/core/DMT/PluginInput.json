@@ -7,24 +7,29 @@
       "type": "string",
       "name": "name",
       "description": "Name of the plugin."
-    }, {
+    },
+    {
       "type": "string",
       "name": "description",
       "description": "Description of the plugin."
-    }, {
+    },
+    {
       "type": "string",
       "name": "type",
       "description": "Type of the blueprint -> PluginBlueprint"
-    }, {
+    },
+    {
       "type": "string",
       "name": "blueprint",
       "description": "blueprint type is a input to a plugin"
-    }, {
+    },
+    {
       "type": "string",
       "name": "children",
       "dimensions": "*",
       "description": "A list of types that are direct children of the blueprint"
-    }, {
+    },
+    {
       "type": "boolean",
       "name": "inPlace",
       "description": "If the instance should replace blueprint types with the blueprint data. Only children is replaced, while grandchildren will still have references (type as string) to other blueprints. If inPlace is false, recursive code is probably necessary."

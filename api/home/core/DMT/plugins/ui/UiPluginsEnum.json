@@ -2,18 +2,6 @@
   "type": "system/SIMOS/Enum",
   "name": "UiPluginsEnum",
   "description": "This describes a list of attribute types",
-  "values": [
-    "",
-    "INDEX",
-    "EDIT_PLUGIN",
-    "PREVIEW",
-    "EXTERNAL"
-  ],
-  "labels": [
-    "",
-    "Index",
-    "Edit",
-    "Raw",
-    "External"
-  ]
+  "values": ["", "INDEX","EDIT_PLUGIN", "PREVIEW", "PLOT", "TABLE", "VIEW", "VIEW_3D", "EXTERNAL"],
+  "labels": ["", "Index", "Edit", "Raw", "Plot", "Table", "View", "3dView", "External"]
 }

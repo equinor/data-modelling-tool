@@ -1,6 +1,7 @@
 import { KeyValue } from './BlueprintUtil'
 import { isPrimitive } from './pluginUtils'
 import { UiRecipe } from './types'
+import { Dimension } from './Dimension'
 
 const INDEX_PRIMITIVE_CONTAINED = false
 const INDEX_ARRAY_CONTAINED = true
@@ -28,7 +29,7 @@ export class UtilIndexPlugin {
         }
       }
       // index plugin defaults
-      const isArray = attr.dimensions === '*'
+      const isArray = new Dimension(attr).isArray()
       const isType = !isPrimitive(attr.type)
 
       if (!isType) {

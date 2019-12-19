@@ -9,7 +9,11 @@ export const deleteAction = (
   layout: any
 ) => {
   return {
-    prompt: action.data.prompt,
+    prompt: {
+      title: 'Are you sure?',
+      content: 'Would you like to remove this item?',
+      buttonText: 'Delete',
+    },
     onSubmit: () => {
       Api2.post({
         url: action.data.url,

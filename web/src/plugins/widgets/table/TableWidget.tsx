@@ -1,6 +1,7 @@
 import React from 'react'
 import { Blueprint, BlueprintAttribute } from '../../types'
 import { Pre } from '../../preview/PreviewPlugin'
+import { Dimension } from '../../Dimension'
 
 type Props = {
   blueprint: Blueprint
@@ -17,7 +18,7 @@ type Props = {
  */
 export default ({ blueprint, parentAttribute, attribute }: Props) => {
   let values: any[] = []
-  if (parentAttribute.dimensions === '*') {
+  if (new Dimension(parentAttribute).isArray()) {
     values = (blueprint as any)[parentAttribute.name]
   }
   if (values.length === 0) {

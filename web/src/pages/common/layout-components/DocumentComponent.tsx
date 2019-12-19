@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import ReactJsonSchemaWrapper, {
   onFormSubmit,
 } from '../form/ReactJsonSchemaWrapper'
@@ -7,10 +7,14 @@ import FetchDocument from '../utils/FetchDocument'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
 import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
-import { EditPlugin, ViewPlugin } from '../../../plugins'
+import { EditPlugin, PlotPlugin, ViewPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { PluginProps, UiRecipe } from '../../../plugins/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
+import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
+import Api2 from '../../../api/Api2'
+// @ts-ignore
+import { Viewer3dPlugin } from '../../../plugins/3dviewer/Viewer3dPlugin'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -21,7 +25,10 @@ export enum RegisteredPlugins {
   EDIT_PLUGIN = 'EDIT_PLUGIN',
   EDIT = 'EDIT',
   VIEW = 'VIEW',
+  PLOT = 'PLOT',
   EXTERNAL = 'EXTERNAL',
+  TABLE = 'TABLE',
+  VIEW_3D = 'VIEW_3D',
 }
 
 const View = (props: any) => {
@@ -44,10 +51,24 @@ const View = (props: any) => {
     dtos,
   }
 
+  const [rootDocument, setRootDocument] = useState(undefined)
+
+  useEffect(() => {
+    if (!rootDocument && dataUrl.indexOf('.') > -1) {
+      //fetch root
+      const url = dataUrl.split('?')[0]
+      Api2.fetchDocument({
+        dataUrl: url,
+        onSuccess: (data: any) => setRootDocument(data.document),
+      })
+    }
+  })
+
   switch (uiRecipe.plugin) {
     case RegisteredPlugins.PREVIEW:
       return <BlueprintPreview {...pluginProps} />
-
+    case RegisteredPlugins.VIEW_3D:
+      return <Viewer3dPlugin {...pluginProps} />
     case RegisteredPlugins.VIEW:
       return <ViewPlugin {...pluginProps} />
 
@@ -58,6 +79,7 @@ const View = (props: any) => {
             return (
               <EditPlugin
                 {...pluginProps}
+                rootDocument={rootDocument}
                 onSubmit={onFormSubmit({ attribute: null, dataUrl, layout })}
               />
             )
@@ -77,6 +99,10 @@ const View = (props: any) => {
           uiRecipe={uiRecipe.name}
         />
       )
+    case RegisteredPlugins.PLOT:
+      return <PlotPlugin {...pluginProps} />
+    case RegisteredPlugins.TABLE:
+      return <ReactTablePlugin {...pluginProps} />
     case RegisteredPlugins.EXTERNAL:
       const ExternalPlugin = pluginHook(uiRecipe)
       if (ExternalPlugin) {
@@ -117,10 +143,12 @@ const ViewList = (props: PluginProps) => {
 }
 
 const DocumentComponent = (props: any) => {
-  const { dataUrl } = props
+  const { dataUrl, updates } = props
+
   return (
     <Wrapper>
       <FetchDocument
+        updates={updates}
         url={dataUrl}
         render={(data: any) => {
           const document = data.document

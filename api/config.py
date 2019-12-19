@@ -7,7 +7,7 @@ class Config:
     MONGO_PASSWORD = os.getenv("MONGO_INITDB_ROOT_PASSWORD", "maf")
     MONGO_URI = os.getenv("MONGO_AZURE_URI", "")
     MONGO_DB = os.getenv("ENVIRONMENT", os.getenv("RADIX_ENVIRONMENT", "local"))
-    LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "INFO")
+    LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "WARNING")
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "")
     BLUEPRINT_COLLECTION = "SSR-DataSource"
@@ -20,10 +20,6 @@ class Config:
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
-    try:
-        DEMO_ENTITIES = os.getenv("DEMO_ENTITIES").split(",")
-    except Exception:
-        DEMO_ENTITIES = []
     with open(DMT_SETTINGS_FILE) as json_file:
         DMT_APPLICATION_SETTINGS = json.load(json_file)
     with open(ENTITY_SETTINGS_FILE) as json_file:

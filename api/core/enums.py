@@ -3,6 +3,7 @@ from enum import Enum, auto
 
 class DataSourceType(Enum):
     MONGO = "mongo-db"
+    LOCAL = "localStorage"
 
     @staticmethod
     def has_value(value):
@@ -13,6 +14,7 @@ class DataSourceType(Enum):
 class DataSourceDocumentType(Enum):
     BLUEPRINT = "blueprints"
     ENTITIES = "entities"
+    ALL = "^(blueprints|entities)$"
 
     @staticmethod
     def has_value(value):

@@ -2,15 +2,9 @@
   "type": "system/SIMOS/Application",
   "name": "DMTApplicationSettings",
   "description": "",
-  "packages": [
-    "CarPackage",
-    "TodoPackage",
-    "marmo",
-    "mooringSRS"
-  ],
-  "models": [
-    "system/DMT/Entity"
-  ],
+  "entities": ["CarPackage"],
+  "packages": ["CarPackage", "ActionsTest","TodoPackage", "marmo", "mooringSRS"],
+  "models": ["system/DMT/Entity"],
   "actions": [
     {
       "name": "Todo Runnable",
@@ -23,7 +17,7 @@
       "name": "Calculate",
       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
       "input": "SSR-DataSource/CarPackage/Car",
-      "output": "SSR-DataSource/CarPackage/Wheel",
+      "output": "SSR-DataSource/CarPackage/Car",
       "method": "run"
     },
     {
@@ -32,6 +26,33 @@
       "input": "SSR-DataSource/CarPackage/Car",
       "output": "SSR-DataSource/CarPackage/Car",
       "method": "cancel"
+    },
+    {
+      "name": "ResultFile",
+      "type": "system/SIMOS/Action",
+      "description": "Save result in resultFile",
+      "input": "SSR-DataSource/ActionsTest/WheelWithStatus",
+      "output": "SSR-DataSource/ActionsTest/WheelWithStatus",
+      "method": "runResultFile",
+      "actionType": "separateResultFile"
+    },
+    {
+      "name": "NoResult",
+      "type": "system/SIMOS/Action",
+      "description": "No Result Action",
+      "input": "SSR-DataSource/ActionsTest/WheelWithStatus",
+      "output": "SSR-DataSource/ActionsTest/WheelWithStatus",
+      "method": "runNoResult",
+      "actionType": "noResult"
+    },
+    {
+      "name": "resultInEntity",
+      "type": "system/SIMOS/Action",
+      "description": "Save result in entity",
+      "actionType": "resultInEntity",
+      "input": "SSR-DataSource/ActionsTest/WheelWithStatus",
+      "output": "SSR-DataSource/ActionsTest/WheelWithStatus",
+      "method": "runResultInEntity"
     }
   ]
 }

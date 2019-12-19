@@ -14,6 +14,12 @@
     },
     {
       "type": "string",
+      "name": "attributeType",
+      "default": "system/SIMOS/BlueprintAttribute",
+      "optional": true
+    },
+    {
+      "type": "string",
       "name": "description",
       "optional": true,
       "default": ""
@@ -73,26 +79,37 @@
       "type": "boolean",
       "name": "optional",
       "optional": true,
-      "default": false
+      "default": "false"
     },
     {
       "type": "boolean",
       "name": "contained",
       "optional": true,
-      "default": true
+      "default": "true"
     },
     {
       "type": "boolean",
       "name": "disabled",
-      "default": false,
+      "default": "false",
       "optional": true
     },
     {
       "type": "boolean",
       "name": "required",
-      "default": false,
+      "default": "false",
       "optional": true,
       "description": ""
+    },
+    {
+      "name": "mapping",
+      "type": "string",
+      "optional": true
+    },
+    {
+      "name": "collapsible",
+      "type": "boolean",
+      "optional": true,
+      "default": "false"
     }
   ],
   "storageRecipes": [],
@@ -106,7 +123,7 @@
           "name": "type",
           "type": "string",
           "required": true,
-          "description": "system/SIMOS/UiAttribute"
+          "disabled": true
         },
         {
           "name": "label",
@@ -122,7 +139,7 @@
         {
           "name": "description",
           "type": "string",
-          "field": "hidden"
+          "widget": "textarea"
         },
         {
           "name": "dimensions",

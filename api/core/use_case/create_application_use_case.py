@@ -14,6 +14,7 @@ import pathlib
 import json
 import os
 
+from utils.logging import logger
 from core.enums import DMT
 from core.use_case.utils.get_storage_recipe import get_storage_recipe
 from core.use_case.utils.get_template import get_blueprint
@@ -214,7 +215,7 @@ def zip_package(ob, document, document_repository, path):
     json_data = json.dumps(remove_ids(document))
     binary_data = json_data.encode()
     write_to = f"{path}/{document['name']}.json"
-    print(f"Writing: {document['type']} to {write_to}")
+    logger.info(f"Writing: {document['type']} to {write_to}")
 
     if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)
@@ -236,6 +237,14 @@ def zip_package(ob, document, document_repository, path):
 
     for document_reference in document_references:
         zip_package(ob, document_reference, document_repository, f"{path}/{document['name']}")
+
+
+def strip_datasource(path):
+    elements = path.split("/")
+    if len(elements) == 1:
+        return path
+    else:
+        return elements[1]
 
 
 class CreateApplicationUseCase(uc.UseCase):
@@ -264,8 +273,11 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
-            for type in application.data["packages"]:
-                root_package: DTO = self.document_repository.find({"name": type})
+            for package in application.data["packages"]:
+                # TODO: Support including packages from different datasources
+                # This is a temp. hack
+                package = strip_datasource(package)
+                root_package: DTO = self.document_repository.find({"name": package})
                 zip_package(zip_file, root_package, self.document_repository, f"api/home/blueprints/")
 
         memory_file.seek(0)

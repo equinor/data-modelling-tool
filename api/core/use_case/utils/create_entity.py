@@ -1,5 +1,10 @@
 from core.domain.dynamic_models import BlueprintAttribute, AttributeTypes, Blueprint
 from utils.data_structure.find import get
+from json import JSONDecodeError
+import json
+
+# on changes in testdata, run command:
+# doit create:system:blueprints
 
 
 class CreateEntityException(Exception):
@@ -50,11 +55,25 @@ class CreateEntity:
         # @todo add exception handling
         default_value = attr.default
         type = attr.type
+
+        if default_value is not None and len(default_value) > 0 and attr.dimensions == "*":
+            try:
+                return json.loads(default_value)
+            except JSONDecodeError:
+                print(f"invalid default value: {default_value} for attribute: {attr}")
+                return []
+
         if type == "boolean":
+            if default_value == "":
+                return False
             return bool(default_value)
         if type == "number":
+            if default_value == "":
+                return 0.0
             return float(default_value)
         if type == "integer":
+            if default_value == "":
+                return 0
             return int(default_value)
         return default_value
 

@@ -1,0 +1,27 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "Parking",
+  "description": "",
+  "attributes": [
+    {
+      "type": "string",
+      "name": "name"
+    },
+    {
+      "type": "string",
+      "name": "type"
+    },
+    {
+      "type": "string",
+      "name": "description"
+    },
+    {
+      "type": "SSR-DataSource/CarPackage/Car",
+      "name": "cars",
+      "optional": true,
+      "dimensions": "*"
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}
