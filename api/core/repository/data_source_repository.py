@@ -10,9 +10,9 @@ class DataSourceRepository:
     collection = dmt_database[f"{Config.DATA_SOURCES_COLLECTION}"]
 
     def list(self, document_type: DataSourceDocumentType) -> List[DataSource]:
-        all_sources = [DataSource(id="local", host="client", name="Local workspace", type="localStorage")]
+        all_sources = [DataSource(id="local", host="client", name="Local workspace", type=DataSourceType.LOCAL.value)]
         for data_source in self.collection.find(
-            filter={"documentType": document_type.value}, projection=["host", "name", "type"]
+            filter={"documentType": {"$regex": document_type.value}}, projection=["host", "name", "type"]
         ):
             data_source["id"] = data_source.pop("_id")
             all_sources.append(

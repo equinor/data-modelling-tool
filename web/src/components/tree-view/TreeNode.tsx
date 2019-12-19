@@ -2,10 +2,11 @@ import React from 'react'
 import {
   FaChevronDown,
   FaChevronRight,
+  FaCircle,
   FaDatabase,
+  FaExclamationTriangle,
   FaFolder,
   FaFolderOpen,
-  FaCircle,
   FaLaptop,
   FaRegFileAlt,
 } from 'react-icons/fa'
@@ -42,7 +43,6 @@ export type TreeNodeProps = {
   NodeRenderer: Function
   level: number
   path: string
-  isRootPackage: boolean
   parent: string
   node: TreeNodeData
   actions: TreeNodeActions
@@ -80,6 +80,43 @@ export type TreeNodeRenderProps = {
 const Content = styled.div`
   width: 100%;
 `
+type Props = {
+  node: TreeNodeData
+}
+
+const GetIcon = ({ node }: Props) => {
+  if (node.meta.error)
+    return <FaExclamationTriangle style={{ color: 'orange' }} />
+
+  switch (node.icon) {
+    case NodeIconType.database:
+      return <FaDatabase style={{ color: 'gray' }} />
+    case NodeIconType.file:
+      return <FaRegFileAlt />
+    case NodeIconType.blueprint:
+      return <FaRegFileAlt style={{ color: '#2966FF' }} />
+    case NodeIconType.ref:
+      return <FaCircle />
+    case NodeIconType.laptop:
+      return <FaLaptop />
+    case NodeIconType.folder:
+      if (node.isOpen) {
+        if (node.meta.isRootPackage) {
+          return <FaFolderOpen style={{ color: '#8531A3' }} />
+        } else {
+          return <FaFolderOpen />
+        }
+      } else {
+        if (node.meta.isRootPackage) {
+          return <FaFolder style={{ color: '#8531A3' }} />
+        } else {
+          return <FaFolder />
+        }
+      }
+    default:
+      return <>NoIcon</>
+  }
+}
 
 const TreeNode = (props: TreeNodeProps) => {
   const {
@@ -87,12 +124,10 @@ const TreeNode = (props: TreeNodeProps) => {
     level,
     NodeRenderer,
     path,
-    isRootPackage,
     parent,
     actions,
     handleToggle,
   } = props
-
   const renderProps = {
     path,
     parent,
@@ -102,36 +137,26 @@ const TreeNode = (props: TreeNodeProps) => {
   return (
     <div>
       <StyledTreeNode level={level}>
-        <NodeIcon>
-          {node.isExpandable && node.isOpen && <FaChevronDown />}
-          {node.isExpandable && !node.isOpen && <FaChevronRight />}
-        </NodeIcon>
-
-        <NodeIcon marginRight={5}>
-          {node.icon === NodeIconType.database && (
-            <FaDatabase style={{ color: 'gray' }} />
-          )}
-          {node.icon === NodeIconType.file && <FaRegFileAlt />}
-          {node.icon === NodeIconType.blueprint && (
-            <FaRegFileAlt style={{ color: '#2966FF' }} />
-          )}
-          {node.icon === NodeIconType.ref && <FaCircle />}
-          {node.icon === NodeIconType.laptop && <FaLaptop />}
-          {node.icon === NodeIconType.folder &&
-            node.isOpen &&
-            ((node.isRootPackage && (
-              <FaFolderOpen style={{ color: 'orange' }} />
-            )) || <FaFolderOpen />)}
-          {node.icon === NodeIconType.folder &&
-            !node.isOpen &&
-            ((node.isRootPackage && (
-              <FaFolder style={{ color: 'orange' }} />
-            )) || <FaFolder />)}
-        </NodeIcon>
-
-        <Content role="button" onClick={() => handleToggle(node)}>
-          {NodeRenderer(renderProps)}
-        </Content>
+        <div
+          style={{ display: 'flex', flexDirection: 'row' }}
+          onClick={() => handleToggle(node)}
+        >
+          <NodeIcon>
+            {node.isExpandable && node.isOpen && <FaChevronDown />}
+            {node.isExpandable && !node.isOpen && <FaChevronRight />}
+          </NodeIcon>
+          <NodeIcon marginRight={5}>
+            <GetIcon node={node} />
+          </NodeIcon>
+        </div>
+        {node.isFolder && (
+          <Content onClick={() => handleToggle(node)} role="button">
+            {NodeRenderer(renderProps)}
+          </Content>
+        )}
+        {!node.isFolder && (
+          <Content role="button">{NodeRenderer(renderProps)}</Content>
+        )}
       </StyledTreeNode>
     </div>
   )

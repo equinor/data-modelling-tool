@@ -121,6 +121,7 @@ export class DmtApi {
 export enum DataSourceType {
   Blueprints = 'blueprints',
   Entities = 'entities',
+  ALL = 'all',
 }
 
 export type Datasource = {
@@ -131,7 +132,6 @@ export type Datasource = {
 }
 
 export type IndexNode = {
-  isRootPackage: boolean
   id: string
   title: string
   nodeType: NodeType

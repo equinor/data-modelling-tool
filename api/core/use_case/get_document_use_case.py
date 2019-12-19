@@ -73,8 +73,9 @@ class GetDocumentUseCase(uc.UseCase):
                 type_in_children = next((x for x in children if x["name"] == child_blueprint_name), None)
                 if not type_in_children:
                     child_blueprint = get_blueprint(attribute_type)
-                    children.append(child_blueprint.to_dict())
-                    self.add_children_types(children, dtos, child_blueprint)
+                    if not isinstance(child_blueprint, (dict, type(None))):
+                        children.append(child_blueprint.to_dict())
+                        self.add_children_types(children, dtos, child_blueprint)
 
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:

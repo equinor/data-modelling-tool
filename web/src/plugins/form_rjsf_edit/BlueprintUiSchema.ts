@@ -3,7 +3,6 @@ import {
   BlueprintAttribute,
   Blueprint as BlueprintType,
   UiRecipe,
-  Entity,
 } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
@@ -132,17 +131,28 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   ): void {
     //@todo use uiAttribute to build the schema property. required, descriptions etc.
     const uiSchemaProperty: UiSchema = {}
+
+    if (attr.description) {
+      uiSchemaProperty['ui:description'] = attr.description
+      if (attr.type === 'boolean') {
+        uiSchemaProperty['ui:widget'] = 'checkbox'
+      }
+    }
+
     if (uiAttribute) {
       if (uiAttribute.widget) {
         uiSchemaProperty['ui:widget'] = uiAttribute.widget
       }
-      if (attr.description) {
-        uiSchemaProperty['ui:description'] = attr.description
-      } else if (uiAttribute.description) {
+
+      // override attr description.
+      if (uiAttribute.description) {
         // override attr description.
         // not possible to set ui:description on checkbox.
         // https://github.com/rjsf-team/react-jsonschema-form/issues/827
         uiSchemaProperty['ui:description'] = uiAttribute.description
+        if (attr.type === 'boolean') {
+          uiSchemaProperty['ui:widget'] = 'checkbox'
+        }
       }
       if (uiAttribute.disabled) {
         if (attr.default === '') {
@@ -154,6 +164,9 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       }
       if (uiAttribute.helpText) {
         uiSchemaProperty['ui:help'] = uiAttribute.helpText
+      }
+      if (attr.label) {
+        uiSchemaProperty['ui:label'] = attr.label
       }
       if (uiAttribute.field === 'attribute') {
         const fieldBlueprint = this.blueprintProvider.getBlueprintByType(

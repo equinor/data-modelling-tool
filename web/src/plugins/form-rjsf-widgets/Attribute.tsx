@@ -14,6 +14,7 @@ import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
 import { isPrimitive } from '../pluginUtils'
 import { RequiredAttributesGroup } from '../form_rjsf_edit/RequiredAttributes'
+import { Dimension } from '../Dimension'
 
 const REQUIRED_ATTRIBUTES = ['name', 'description', 'type']
 
@@ -105,7 +106,7 @@ function getWidgetByName(
       // type is a blueprint type string.
       return null
     }
-    if (selectedDimensions === '*') {
+    if (Dimension.isArray(selectedDimensions)) {
       // use string default
       widget = (widgetTypes as any)['string']
     } else {

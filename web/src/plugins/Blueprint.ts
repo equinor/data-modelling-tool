@@ -1,4 +1,5 @@
 import { BlueprintAttribute, Blueprint as BlueprintType } from './types'
+import { Dimension } from './Dimension'
 
 export type KeyValue = {
   [key: string]: any
@@ -45,7 +46,7 @@ export class Blueprint implements IBlueprint {
 
   // helper functions
   isArray(attr: BlueprintAttribute) {
-    return attr.dimensions === '*'
+    return new Dimension(attr).isArray()
   }
 
   public getBlueprintType(): BlueprintType {

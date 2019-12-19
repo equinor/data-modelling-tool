@@ -79,6 +79,9 @@ class CreateEntity:
 
     @staticmethod
     def default_value(attr: BlueprintAttribute, parent_type: str):
+        # TODO: Use dimensions class
+        if attr.dimensions == "*":
+            return []
         if attr.name == "type":
             return parent_type
         return CreateEntity.parse_value(attr)

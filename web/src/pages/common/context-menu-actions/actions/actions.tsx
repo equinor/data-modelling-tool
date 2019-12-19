@@ -6,12 +6,10 @@ import { NotificationManager } from 'react-notifications'
 import Api2 from '../../../../api/Api2'
 import saveToNewFile from './saveToNewFile'
 import saveInEntity from './saveInEntity'
-import noResult from './noResult'
 import { Entity } from '../../../../plugins/types'
 
 enum ActionTypes {
   separateResultFile = 'separateResultFile',
-  noResult = 'noResult',
   resultInEntity = 'resultInEntity',
 }
 
@@ -82,28 +80,18 @@ export const Action = (
     path: node.path,
     id: node.nodeData.nodeId,
   }
-  switch (action.data.runnable.actionType) {
-    case ActionTypes.noResult: {
-      return noResult(input, method, setShowModal)
-    }
-    case ActionTypes.resultInEntity: {
-      return saveInEntity(input, method, setShowModal, handleUpdate, dataSource)
-    }
-    case ActionTypes.separateResultFile: {
-      return saveToNewFile(
-        action.data.runnable.output,
-        input,
-        method,
-        node,
-        setShowModal,
-        createNodes,
-        handleUpdate,
-        dataSource
-      )
-    }
-    default:
-      console.log('Action:' + action + 'input: ' + input)
-      NotificationManager.error('No valid ActionType for ' + input.entity.name)
-      return {}
+  if (action.data.runnable.actionType === ActionTypes.resultInEntity) {
+    return saveInEntity(input, method, setShowModal, handleUpdate, dataSource)
+  } else {
+    return saveToNewFile(
+      action.data.runnable.output,
+      input,
+      method,
+      node,
+      setShowModal,
+      createNodes,
+      handleUpdate,
+      dataSource
+    )
   }
 }

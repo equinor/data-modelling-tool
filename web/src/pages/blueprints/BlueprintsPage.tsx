@@ -45,15 +45,7 @@ export default () => {
       <br />
       <DocumentTree
         render={(renderProps: TreeNodeRenderProps) => {
-          //use components directly to control props better.
-          switch (renderProps.nodeData.nodeType) {
-            case NodeType.DOCUMENT_NODE:
-              return <DocumentNode node={renderProps} />
-            default:
-              return (props: TreeNodeRenderProps) => (
-                <div>{props.nodeData.title}</div>
-              )
-          }
+          return <DocumentNode node={renderProps} />
         }}
         dataSources={state.dataSources}
       />
