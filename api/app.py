@@ -49,6 +49,16 @@ def init_application():
 
 
 @app.cli.command()
+def reset_core_packages():
+    logger.warning(f"Dropping {Config.SYSTEM_COLLECTION} collection ")
+    dmt_database.drop_collection(f"{Config.SYSTEM_COLLECTION}")
+    logger.warning(f"Importing core packages...")
+    for folder in Config.SYSTEM_FOLDERS:
+        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
+    Factory.reset_cache()
+
+
+@app.cli.command()
 def drop_data_sources():
     print(f"Dropping collection data_sources")
     dmt_database.drop_collection("data_sources")
