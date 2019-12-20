@@ -1,10 +1,10 @@
 import React from 'react'
-import { Blueprint, BlueprintAttribute } from '../../types'
+import { BlueprintType, BlueprintAttribute } from '../../types'
 import { Pre } from '../../preview/PreviewPlugin'
 import { Dimension } from '../../Dimension'
 
 type Props = {
-  blueprint: Blueprint
+  blueprintType: BlueprintType
   parentAttribute: BlueprintAttribute
   attribute: BlueprintAttribute
 }
@@ -16,10 +16,10 @@ type Props = {
  * @param blueprint
  * @param attribute
  */
-export default ({ blueprint, parentAttribute, attribute }: Props) => {
+export default ({ blueprintType, parentAttribute, attribute }: Props) => {
   let values: any[] = []
   if (new Dimension(parentAttribute).isArray()) {
-    values = (blueprint as any)[parentAttribute.name]
+    values = (blueprintType as any)[parentAttribute.name]
   }
   if (values.length === 0) {
     // show the property name and value

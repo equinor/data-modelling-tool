@@ -44,9 +44,9 @@ const View = (props: any) => {
   } = props
 
   let pluginProps: PluginProps = {
-    blueprint,
+    blueprintType: blueprint,
     document,
-    blueprints,
+    blueprintTypes: blueprints,
     uiRecipe,
     dtos,
   }
@@ -90,7 +90,7 @@ const View = (props: any) => {
     case RegisteredPlugins.EDIT:
       return (
         <ReactJsonSchemaWrapper
-          blueprint={blueprint}
+          blueprintType={blueprint}
           blueprints={blueprints}
           document={document}
           schemaUrl={schemaUrl}
@@ -116,8 +116,8 @@ const View = (props: any) => {
 
 const ViewList = (props: PluginProps) => {
   const generateUiRecipeTabs = new GenerateUiRecipeTabs(
-    props.blueprint.uiRecipes,
-    getDefaultTabs(props.blueprint.uiRecipes)
+    props.blueprintType.uiRecipes,
+    getDefaultTabs(props.blueprintType.uiRecipes)
   )
   const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
   return (
@@ -157,8 +157,8 @@ const DocumentComponent = (props: any) => {
             <ViewList
               {...props}
               document={document}
-              blueprints={data.children}
-              blueprint={data.blueprint}
+              blueprintTypes={data.children}
+              blueprintType={data.blueprint}
               dtos={data.dtos || []}
             />
           )

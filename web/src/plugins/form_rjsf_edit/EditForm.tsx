@@ -1,6 +1,6 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import { Blueprint as BlueprintType, PluginProps } from '../types'
+import { BlueprintType, PluginProps } from '../types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { Blueprint, KeyValue } from '../Blueprint'
@@ -17,8 +17,11 @@ export interface EditPluginProps extends PluginProps {
 }
 
 export const EditPlugin = (props: EditPluginProps) => {
-  const blueprintProvider = new BlueprintProvider(props.blueprints, props.dtos)
-  const blueprint = new Blueprint(props.blueprint)
+  const blueprintProvider = new BlueprintProvider(
+    props.blueprintTypes,
+    props.dtos
+  )
+  const blueprint = new Blueprint(props.blueprintType)
   const config: FormConfig = createFormConfigs(props)
   const formData = config.data
   return (

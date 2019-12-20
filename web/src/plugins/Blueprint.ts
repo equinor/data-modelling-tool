@@ -1,4 +1,4 @@
-import { BlueprintAttribute, Blueprint as BlueprintType } from './types'
+import { BlueprintAttribute, BlueprintType } from './types'
 import { Dimension } from './Dimension'
 
 export type KeyValue = {
@@ -14,11 +14,11 @@ export class Blueprint implements IBlueprint {
   private uiRecipes: KeyValue = {}
   private blueprintType: BlueprintType
 
-  constructor(blueprint: BlueprintType) {
-    this.blueprintType = blueprint
-    this.addAttributes(this.attributes, blueprint.attributes)
+  constructor(blueprintType: BlueprintType) {
+    this.blueprintType = blueprintType
+    this.addAttributes(this.attributes, blueprintType.attributes)
 
-    blueprint.uiRecipes.forEach((recipe: any) => {
+    blueprintType.uiRecipes.forEach((recipe: any) => {
       const name = recipe.name
       if (name) {
         this.uiRecipes[name] = {}

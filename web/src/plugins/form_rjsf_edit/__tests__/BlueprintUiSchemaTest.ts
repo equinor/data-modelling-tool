@@ -1,4 +1,4 @@
-import { Blueprint as BlueprintType, UiRecipe } from '../../types'
+import { BlueprintType, UiRecipe } from '../../types'
 import { BlueprintUiSchema } from '../BlueprintUiSchema'
 import { BlueprintProvider } from '../../BlueprintProvider'
 import { RegisteredPlugins } from '../../../pages/common/layout-components/DocumentComponent'
@@ -13,7 +13,7 @@ export const uiRecipeTest: UiRecipe = {
 describe('BlueprintUiSchema', () => {
   describe('Basic ui schema', () => {
     let schema: any = null
-    const blueprint: BlueprintType = {
+    const blueprintType: BlueprintType = {
       name: '',
       description: '',
       type: '',
@@ -49,7 +49,7 @@ describe('BlueprintUiSchema', () => {
     beforeEach(() => {
       const blueprintProvider = new BlueprintProvider([], [])
       schema = new BlueprintUiSchema(
-        blueprint,
+        blueprintType,
         blueprintProvider,
         uiRecipeTest,
         () => true
@@ -68,7 +68,7 @@ describe('BlueprintUiSchema', () => {
 
   describe('Nested ui schema', () => {
     let schema: any = null
-    const blueprint: BlueprintType = {
+    const blueprintType: BlueprintType = {
       name: '',
       description: '',
       type: '',
@@ -122,7 +122,7 @@ describe('BlueprintUiSchema', () => {
     beforeEach(() => {
       const blueprintProvider = new BlueprintProvider(blueprints, [])
       schema = new BlueprintUiSchema(
-        blueprint,
+        blueprintType,
         blueprintProvider,
         uiRecipeTest,
         () => true

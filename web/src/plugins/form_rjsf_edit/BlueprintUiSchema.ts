@@ -1,9 +1,5 @@
 import { Blueprint, KeyValue } from '../Blueprint'
-import {
-  BlueprintAttribute,
-  Blueprint as BlueprintType,
-  UiRecipe,
-} from '../types'
+import { BlueprintAttribute, BlueprintType, UiRecipe } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
 import objectPath from 'object-path'
@@ -31,12 +27,12 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private filter: IndexFilter
 
   constructor(
-    blueprint: BlueprintType,
+    blueprintType: BlueprintType,
     blueprintProvider: BlueprintProvider,
     uiRecipe: UiRecipe,
     filter: IndexFilter
   ) {
-    super(blueprint)
+    super(blueprintType)
     this.uiRecipe = uiRecipe
     this.filter = filter
     this.blueprintProvider = blueprintProvider
@@ -47,7 +43,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       this.schema[key] = defaults[key]
     })
 
-    this.processAttributes('', this, blueprint.attributes)
+    this.processAttributes('', this, blueprintType.attributes)
   }
 
   private processAttributes(

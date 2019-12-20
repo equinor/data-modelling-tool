@@ -17,7 +17,7 @@ type BaseBlueprint = {
   description: string
 }
 
-export interface Blueprint extends BaseBlueprint {
+export interface BlueprintType extends BaseBlueprint {
   attributes: BlueprintAttribute[]
   uiRecipes: any[]
   storageRecipes?: any[]
@@ -29,9 +29,9 @@ export interface Entity extends BaseBlueprint {
 
 export type PluginProps = {
   uiRecipe: UiRecipe //tab name, righthand side content
-  blueprint: Blueprint
+  blueprintType: BlueprintType
   document: Entity
-  blueprints: Blueprint[]
+  blueprintTypes: BlueprintType[]
   dtos: Dto[]
 }
 

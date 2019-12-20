@@ -1,4 +1,4 @@
-import { BlueprintAttribute, PluginProps, UiRecipe } from '../types'
+import { BlueprintAttribute, UiRecipe } from '../types'
 import { BlueprintUtil } from '../BlueprintUtil'
 import { UtilIndexPlugin } from '../UtilIndexPlugin'
 import { isPrimitive } from '../pluginUtils'
@@ -17,14 +17,14 @@ export type FormConfig = {
 export type IndexFilter = (attr: BlueprintAttribute) => boolean
 
 export function createFormConfigs(pluginProps: EditPluginProps): FormConfig {
-  const { document, blueprints, uiRecipe, dtos } = pluginProps
-  const blueprintType = pluginProps.blueprint
+  const { document, blueprintTypes, uiRecipe, dtos } = pluginProps
+  const blueprintType = pluginProps.blueprintType
   const indexRecipe = BlueprintUtil.findRecipe(blueprintType.uiRecipes, 'INDEX')
 
   const blueprint = new Blueprint(blueprintType)
   const filter = filterAttributes(blueprint, uiRecipe, indexRecipe)
 
-  const blueprintProvider = new BlueprintProvider(blueprints, dtos)
+  const blueprintProvider = new BlueprintProvider(blueprintTypes, dtos)
   const blueprintSchema = new BlueprintSchema(
     blueprintType,
     document,

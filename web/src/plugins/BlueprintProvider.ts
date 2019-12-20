@@ -1,6 +1,6 @@
-import { Blueprint, Dto } from './types'
+import { BlueprintType, Dto } from './types'
 
-type GetBlueprint = (dto: Dto) => Blueprint | undefined
+type GetBlueprint = (dto: Dto) => BlueprintType | undefined
 type GetEntity = (dto: Dto) => Dto | undefined
 
 interface IBlueprintProvider {
@@ -9,11 +9,11 @@ interface IBlueprintProvider {
 }
 
 export class BlueprintProvider implements IBlueprintProvider {
-  private blueprints: Blueprint[]
+  private blueprintTypes: BlueprintType[]
   private dtos: Dto[]
 
-  constructor(blueprints: Blueprint[], dtos: Dto[]) {
-    this.blueprints = blueprints
+  constructor(blueprintTypes: BlueprintType[], dtos: Dto[]) {
+    this.blueprintTypes = blueprintTypes
     this.dtos = dtos
   }
 
@@ -25,10 +25,10 @@ export class BlueprintProvider implements IBlueprintProvider {
     return ''
   }
 
-  getBlueprintByType(type: string): Blueprint | undefined {
+  getBlueprintByType(type: string): BlueprintType | undefined {
     const name = this.getNameFromType(type)
-    return this.blueprints.find(
-      (blueprint: Blueprint) => blueprint.name === name
+    return this.blueprintTypes.find(
+      (blueprintType: BlueprintType) => blueprintType.name === name
     )
   }
 
@@ -37,7 +37,7 @@ export class BlueprintProvider implements IBlueprintProvider {
     return this.dtos.find((dto: Dto) => dto.data.name === name)
   }
 
-  getBlueprint(dto: Dto): Blueprint | undefined {
+  getBlueprint(dto: Dto): BlueprintType | undefined {
     //@todo use uid of dto.
     throw 'not implemented'
   }

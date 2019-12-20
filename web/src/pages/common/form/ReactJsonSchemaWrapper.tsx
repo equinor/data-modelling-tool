@@ -5,7 +5,7 @@ import { NotificationManager } from 'react-notifications'
 import FetchDocument from '../utils/FetchDocument'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { DefaultEditForm } from '../../../plugins'
-import { Blueprint } from '../../../plugins/types'
+import { BlueprintType } from '../../../plugins/types'
 
 interface Props {
   dataUrl: string
@@ -13,8 +13,8 @@ interface Props {
   document: any
   attribute: string
   uiRecipe: string
-  blueprint: Blueprint
-  blueprints: Blueprint[]
+  blueprintType: BlueprintType
+  blueprints: BlueprintType[]
 }
 
 export const onFormSubmit = ({ attribute, dataUrl, layout }: any) => {
@@ -48,7 +48,7 @@ const ReactJsonSchemaWrapper = (props: Props) => {
     attribute,
     uiRecipe,
     blueprints,
-    blueprint,
+    blueprintType,
   } = props
 
   return (
@@ -60,7 +60,7 @@ const ReactJsonSchemaWrapper = (props: Props) => {
             render={(data: any) => {
               return (
                 <DefaultEditForm
-                  blueprint={blueprint}
+                  blueprintType={blueprintType}
                   blueprints={blueprints}
                   document={document}
                   template={data}

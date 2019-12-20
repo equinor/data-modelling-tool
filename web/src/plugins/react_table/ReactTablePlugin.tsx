@@ -17,7 +17,7 @@ export const ReactTablePlugin = (props: PluginProps) => {
       .map((attr: KeyValue) => attr.name),
   }
 
-  const blueprint = new Blueprint(props.blueprint)
+  const blueprint = new Blueprint(props.blueprintType)
   const columns = React.useMemo(
     () => [
       {

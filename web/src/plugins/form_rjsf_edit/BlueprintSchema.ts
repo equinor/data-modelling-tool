@@ -1,10 +1,5 @@
 import { Blueprint, KeyValue } from '../Blueprint'
-import {
-  BlueprintAttribute,
-  Blueprint as BlueprintType,
-  UiRecipe,
-  Entity,
-} from '../types'
+import { BlueprintAttribute, BlueprintType, UiRecipe, Entity } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import objectPath from 'object-path'
 import { IndexFilter } from './CreateConfig'
@@ -28,7 +23,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   private uiRecipe: UiRecipe
   private blueprintProvider: BlueprintProvider
   private filter: (attr: BlueprintAttribute) => boolean
-  private rootBlueprint: BlueprintType | undefined
+  private rootBlueprintType: BlueprintType | undefined
 
   constructor(
     blueprintType: BlueprintType,
@@ -41,7 +36,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     super(blueprintType)
     this.filter = filter
     this.uiRecipe = uiRecipe
-    this.rootBlueprint = rootBlueprint
+    this.rootBlueprintType = rootBlueprint
     this.blueprintProvider = blueprintProvider
     const path = 'properties'
     objectPath.set(this.schema, 'required', this.getRequired(this))
@@ -199,13 +194,13 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   ): void {
     const attrBlueprintName = blueprint.getBlueprintType().name
     if (
-      this.rootBlueprint &&
+      this.rootBlueprintType &&
       attr.name === 'name' &&
       ['BlueprintAttribute', 'UiAttribute', 'StorageAttribute'].includes(
         attrBlueprintName
       )
     ) {
-      const validNames = this.rootBlueprint.attributes.map(
+      const validNames = this.rootBlueprintType.attributes.map(
         (attr: BlueprintAttribute) => attr.name
       )
       //create an enum for valid names.

@@ -1,7 +1,7 @@
 import { castValues } from '../utilFormData'
-import { Blueprint } from '../../types'
+import { BlueprintType } from '../../types'
 
-const emptyBlueprint: Blueprint = {
+const emptyBlueprintType: BlueprintType = {
   name: '',
   type: '',
   description: '',
@@ -22,7 +22,10 @@ describe('utilFormDataTest', () => {
       },
     ]
 
-    const entityCasted = castValues({ ...emptyBlueprint, attributes }, entity)
+    const entityCasted = castValues(
+      { ...emptyBlueprintType, attributes },
+      entity
+    )
     expect(entityCasted.boolValue).toEqual(true)
   })
 
@@ -37,7 +40,10 @@ describe('utilFormDataTest', () => {
       },
     ]
 
-    const entityCasted = castValues({ ...emptyBlueprint, attributes }, entity)
+    const entityCasted = castValues(
+      { ...emptyBlueprintType, attributes },
+      entity
+    )
     expect(entityCasted.intValue).toEqual(12)
   })
 
@@ -52,7 +58,10 @@ describe('utilFormDataTest', () => {
       },
     ]
 
-    const entityCasted = castValues({ ...emptyBlueprint, attributes }, entity)
+    const entityCasted = castValues(
+      { ...emptyBlueprintType, attributes },
+      entity
+    )
     expect(entityCasted.numberValue).toEqual(12.4)
   })
 
@@ -67,7 +76,10 @@ describe('utilFormDataTest', () => {
       },
     ]
 
-    const entityCasted = castValues({ ...emptyBlueprint, attributes }, entity)
+    const entityCasted = castValues(
+      { ...emptyBlueprintType, attributes },
+      entity
+    )
     expect(entityCasted.numberValue).toEqual(NaN)
   })
 })

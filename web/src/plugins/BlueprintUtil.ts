@@ -1,4 +1,4 @@
-import { Blueprint } from './types'
+import { BlueprintType } from './types'
 
 export type KeyValue = {
   [key: string]: any
@@ -8,10 +8,10 @@ export class BlueprintUtil {
   private attributes: KeyValue = {}
   private uiRecipes: KeyValue = {}
 
-  constructor(blueprint: Blueprint, pluginName: string) {
-    this.addAttributes(this.attributes, blueprint.attributes)
+  constructor(blueprintType: BlueprintType, pluginName: string) {
+    this.addAttributes(this.attributes, blueprintType.attributes)
 
-    blueprint.uiRecipes
+    blueprintType.uiRecipes
       .filter((recipe: any) => recipe.plugin === pluginName)
       .forEach((recipe: any) => {
         const pluginKey = recipe.plugin

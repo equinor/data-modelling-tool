@@ -2,15 +2,15 @@ import React, { useState } from 'react'
 import Form from 'react-jsonschema-form'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
 import { CollapsibleField } from '../widgets/CollapsibleField'
-import { Blueprint } from '../types'
+import { BlueprintType } from '../types'
 import { castValues } from '../form-rjsf-widgets/utilFormData'
 import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
 import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
 
 interface Props {
-  document: Blueprint | {}
-  blueprints: Blueprint[]
-  blueprint: Blueprint
+  document: BlueprintType | {}
+  blueprints: BlueprintType[]
+  blueprintType: BlueprintType
   template: any
   onSubmit: (data: any) => void
 }
@@ -19,7 +19,7 @@ export default ({
   document,
   template,
   onSubmit,
-  blueprint,
+  blueprintType,
   blueprints,
 }: Props) => {
   const [data, setData] = useState(document)
@@ -27,9 +27,9 @@ export default ({
   const uiSchema = template.uiSchema
 
   //support AttributeWidget
-  appendAttributes(blueprint, blueprints, uiSchema)
+  appendAttributes(blueprintType, blueprints, uiSchema)
 
-  const formData = castValues(blueprint, data)
+  const formData = castValues(blueprintType, data)
   return (
     <Form
       formData={formData}
@@ -58,7 +58,8 @@ function appendAttributes(blueprint: any, blueprints: any, uiSchema: any) {
       const uiAttribute = findUiAttribute(uiRecipe, 'attributes')
       if (uiAttribute.field === 'attribute') {
         const blueprintAttributes = blueprints.find(
-          (blueprint: Blueprint) => blueprint.name === 'BlueprintAttribute'
+          (blueprintType: BlueprintType) =>
+            blueprintType.name === 'BlueprintAttribute'
         )
         if (!uiSchema.attributes.items) {
           ;(uiSchema as any).attributes.items = {
@@ -81,9 +82,12 @@ export function findUiAttribute(uiRecipe: any, name: string): any {
   return {}
 }
 
-export function findRecipe(blueprint: Blueprint, uiRecipePlugin: string): any {
-  if (blueprint.uiRecipes) {
-    return blueprint.uiRecipes.find(
+export function findRecipe(
+  blueprintType: BlueprintType,
+  uiRecipePlugin: string
+): any {
+  if (blueprintType.uiRecipes) {
+    return blueprintType.uiRecipes.find(
       (recipe: any) => recipe.plugin === uiRecipePlugin
     )
   }
