@@ -18,7 +18,8 @@
     {
       "type": "string",
       "name": "manufacturer",
-      "optional": true
+      "optional": true,
+      "default": ""
     },
     {
       "type": "SSR-DataSource/CarPackage/Wheel",
