@@ -1,9 +1,5 @@
-import { BlueprintAttributeType, BlueprintType } from '../plugins/types'
+import { BlueprintAttributeType, BlueprintType, KeyValue } from './types'
 import { BlueprintAttribute } from './BlueprintAttribute'
-
-export type KeyValue = {
-  [key: string]: any
-}
 
 interface IBlueprint {
   getUiAttribute: (name: string, pluginName: string) => object | undefined

@@ -1,5 +1,10 @@
-import { Blueprint, KeyValue } from '../../domain/Blueprint'
-import { BlueprintAttributeType, BlueprintType, UiRecipe } from '../types'
+import { Blueprint } from '../../domain/Blueprint'
+import {
+  BlueprintAttributeType,
+  BlueprintType,
+  KeyValue,
+  UiRecipe,
+} from '../../domain/types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
 import objectPath from 'object-path'

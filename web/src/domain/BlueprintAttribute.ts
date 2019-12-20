@@ -1,4 +1,4 @@
-import { BlueprintAttributeType } from '../plugins/types'
+import { BlueprintAttributeType } from './types'
 
 export class BlueprintAttribute {
   private attr: BlueprintAttributeType
@@ -16,6 +16,13 @@ export class BlueprintAttribute {
 
   public static isArray(value: string) {
     return value === '*'
+  }
+
+  public isPrimitiveType(value: string): boolean {
+    // dont make this a static method. Needs to read attribute types later?
+    return ['string', 'number', 'integer', 'number', 'boolean'].includes(
+      this.attr.type
+    )
   }
 
   public isPrimitive(): boolean {

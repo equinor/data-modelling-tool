@@ -1,4 +1,4 @@
-import { BlueprintType } from '../types'
+import { BlueprintType } from '../../domain/types'
 
 export function castValues(blueprintType: BlueprintType, entity: any) {
   const newEntity = { ...entity }

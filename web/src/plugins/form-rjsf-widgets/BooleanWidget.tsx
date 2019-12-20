@@ -1,7 +1,7 @@
 //fallback when blueprint and blueprints cant be used.
 import Switch from 'react-switch'
 import React from 'react'
-import { BlueprintAttributeType } from '../types'
+import { BlueprintAttributeType } from '../../domain/types'
 import { AttributeOnChange } from './AttributeInputs'
 
 export function getBooleanValue(

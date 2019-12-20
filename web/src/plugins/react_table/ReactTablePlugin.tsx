@@ -1,6 +1,9 @@
 import React from 'react'
-import { BlueprintAttributeType, PluginProps } from '../types'
-import { KeyValue } from '../BlueprintUtil'
+import {
+  BlueprintAttributeType,
+  KeyValue,
+  PluginProps,
+} from '../../domain/types'
 import { ReactTable } from './ReactTable'
 import { Blueprint } from '../../domain/Blueprint'
 

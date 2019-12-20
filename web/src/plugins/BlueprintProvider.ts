@@ -1,4 +1,4 @@
-import { BlueprintType, Dto } from './types'
+import { BlueprintType, Dto } from '../domain/types'
 
 type GetBlueprint = (dto: Dto) => BlueprintType | undefined
 type GetEntity = (dto: Dto) => Dto | undefined

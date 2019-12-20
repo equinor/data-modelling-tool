@@ -1,10 +1,11 @@
-import { Blueprint, KeyValue } from '../../domain/Blueprint'
+import { Blueprint } from '../../domain/Blueprint'
 import {
   BlueprintAttributeType,
   BlueprintType,
   UiRecipe,
   Entity,
-} from '../types'
+  KeyValue,
+} from '../../domain/types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import objectPath from 'object-path'
 import { IndexFilter } from './CreateConfig'

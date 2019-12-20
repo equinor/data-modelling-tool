@@ -1,4 +1,4 @@
-import { BlueprintType, UiRecipe } from '../../types'
+import { BlueprintType, UiRecipe } from '../../../domain/types'
 import { BlueprintUiSchema } from '../BlueprintUiSchema'
 import { BlueprintProvider } from '../../BlueprintProvider'
 import { RegisteredPlugins } from '../../../pages/common/layout-components/DocumentComponent'

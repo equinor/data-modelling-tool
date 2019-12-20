@@ -1,12 +1,16 @@
-import { BlueprintAttributeType, UiRecipe } from '../types'
-import { BlueprintUtil } from '../BlueprintUtil'
+import {
+  BlueprintAttributeType,
+  BlueprintType,
+  KeyValue,
+  UiRecipe,
+} from '../../domain/types'
 import { UtilIndexPlugin } from '../UtilIndexPlugin'
-import { isPrimitive } from '../pluginUtils'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { BlueprintUiSchema } from './BlueprintUiSchema'
 import { BlueprintSchema } from './BlueprintSchema'
-import { Blueprint, KeyValue } from '../../domain/Blueprint'
+import { Blueprint } from '../../domain/Blueprint'
 import { EditPluginProps } from './EditForm'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 export type FormConfig = {
   data: any
@@ -55,9 +59,10 @@ function filterAttributes(
   const editRecipeAttributes: KeyValue | undefined = blueprint.getUiAttributes(
     uiRecipe.name
   )
-  return (attr: BlueprintAttributeType) => {
+  return (attrType: BlueprintAttributeType) => {
+    const attr = new BlueprintAttribute(attrType)
     if (editRecipeAttributes) {
-      const editRecipeAttr = editRecipeAttributes[attr.name]
+      const editRecipeAttr = editRecipeAttributes[attr.getName()]
       //use editRecipe contained if provided.
       if (editRecipeAttr && editRecipeAttr.contained !== undefined) {
         return editRecipeAttr.contained
@@ -65,13 +70,49 @@ function filterAttributes(
     }
 
     // defaults by edit plugin.
-    if (isPrimitive(attr.type) || attr.name === 'attributes') {
+    if (
+      attr.isPrimitiveType(attrType.type) ||
+      attr.getName() === 'attributes'
+    ) {
       return true
     }
 
     // keep opposite of index plugin.
     const filter = UtilIndexPlugin.filterByIndexPlugin(null, indexRecipe)
-    const inIndex = filter(attr)
+    const inIndex = filter(attrType)
     return !inIndex
+  }
+}
+
+class BlueprintUtil {
+  private attributes: KeyValue = {}
+  private uiRecipes: KeyValue = {}
+
+  constructor(blueprintType: BlueprintType, pluginName: string) {
+    this.addAttributes(this.attributes, blueprintType.attributes)
+
+    blueprintType.uiRecipes
+      .filter((recipe: any) => recipe.plugin === pluginName)
+      .forEach((recipe: any) => {
+        const pluginKey = recipe.plugin
+        if (pluginKey) {
+          this.uiRecipes[pluginKey] = {}
+          if (recipe.attributes) {
+            this.addAttributes(this.uiRecipes[pluginKey], recipe.attributes)
+          }
+        }
+      })
+  }
+
+  private addAttributes(container: KeyValue, attributes: any[]): void {
+    attributes.forEach((attr: any) => {
+      container[attr.name] = attr
+    })
+  }
+
+  public static findRecipe(recipes: any[], name: string): any {
+    if (recipes) {
+      return recipes.find((recipe: any) => recipe.name === name)
+    }
   }
 }

@@ -5,7 +5,7 @@ import { NotificationManager } from 'react-notifications'
 import FetchDocument from '../utils/FetchDocument'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { DefaultEditForm } from '../../../plugins'
-import { BlueprintType } from '../../../plugins/types'
+import { BlueprintType } from '../../../domain/types'
 
 interface Props {
   dataUrl: string

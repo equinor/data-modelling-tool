@@ -1,4 +1,4 @@
-import { BlueprintType, Entity } from '../../types'
+import { BlueprintType, Entity } from '../../../domain/types'
 import { BlueprintSchema } from '../BlueprintSchema'
 import { BlueprintProvider } from '../../BlueprintProvider'
 import { RegisteredPlugins } from '../../../pages/common/layout-components/DocumentComponent'

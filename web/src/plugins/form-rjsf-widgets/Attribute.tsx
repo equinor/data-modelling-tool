@@ -9,10 +9,9 @@ import {
 } from './AttributeInputs'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BlueprintAttributeType } from '../types'
+import { BlueprintAttributeType } from '../../domain/types'
 import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
-import { isPrimitive } from '../pluginUtils'
 import { RequiredAttributesGroup } from '../form_rjsf_edit/RequiredAttributes'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
@@ -60,11 +59,11 @@ export const AttributeWidget = (props: Props) => {
   }
   return (
     <AttributeGroup>
-      {attributes.map((blueprintAttribute: BlueprintAttributeType) => {
-        const { name } = blueprintAttribute
+      {attributes.map((blueprintAttributeType: BlueprintAttributeType) => {
+        const { name } = blueprintAttributeType
         const value = (formData as any)[name]
         let Widget: Function | null = getWidgetByName(
-          blueprintAttribute,
+          blueprintAttributeType,
           selectedType,
           selectedDimensions || ''
         )
@@ -72,10 +71,10 @@ export const AttributeWidget = (props: Props) => {
           return null
         }
         if (Widget === undefined) {
-          Widget = getWidgetByType(blueprintAttribute)
+          Widget = getWidgetByType(blueprintAttributeType)
         }
         if (Widget === undefined) {
-          console.warn('widget is not supported: ', blueprintAttribute)
+          console.warn('widget is not supported: ', blueprintAttributeType)
           return null
         }
         return (
@@ -86,7 +85,7 @@ export const AttributeWidget = (props: Props) => {
             <Widget
               onChange={onChange}
               value={value}
-              attribute={blueprintAttribute}
+              blueprintAttributeType={blueprintAttributeType}
             />
           </AttributeWrapper>
         )
@@ -96,13 +95,14 @@ export const AttributeWidget = (props: Props) => {
 }
 
 function getWidgetByName(
-  attribute: BlueprintAttributeType,
+  attributeType: BlueprintAttributeType,
   selectedType: string,
   selectedDimensions: string
 ): Function | null {
-  let widget: Function = (widgetNames as any)[attribute.name]
-  if (attribute.name === 'default') {
-    if (!isPrimitive(selectedType)) {
+  const attr = new BlueprintAttribute(attributeType)
+  let widget: Function = (widgetNames as any)[attr.getName()]
+  if (attr.getName() === 'default') {
+    if (!attr.isPrimitiveType(selectedType)) {
       // type is a blueprint type string.
       return null
     }
