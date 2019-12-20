@@ -130,7 +130,6 @@ export const TypeWidget = (props: TypeProps) => {
     <>
       <TypeDropdown
         value={selectedType}
-        attribute={attributeType}
         onChange={(event: any) => {
           setSelectedType(event.target.value)
           onChange(attributeType, event.target.value)

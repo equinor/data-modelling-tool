@@ -6,9 +6,9 @@ import { AttributeOnChange } from './AttributeInputs'
 
 export function getBooleanValue(
   value: string | boolean | undefined,
-  blueprintAttribute: BlueprintAttributeType
+  attributeType: BlueprintAttributeType
 ): boolean {
-  const defaultValue = blueprintAttribute.default
+  const defaultValue = attributeType.default
   if (value === undefined) {
     //use default value
     if (typeof defaultValue === 'string' && defaultValue) {
@@ -36,21 +36,21 @@ export function getBooleanValue(
 
 interface BoolDefaultInput {
   value: boolean | string
-  attribute: BlueprintAttributeType
+  attributeType: BlueprintAttributeType
   onChange: AttributeOnChange
 }
 
 export const BooleanWidget = (props: BoolDefaultInput) => {
-  const { onChange, attribute, value } = props
+  const { onChange, attributeType, value } = props
   const onChangeBool = (inputValue: boolean) => {
     let newValue: string | boolean = inputValue
-    if (attribute.type === 'string') {
+    if (attributeType.type === 'string') {
       newValue = inputValue + '' //cast to string
     }
-    onChange(attribute, newValue)
+    onChange(attributeType, newValue)
   }
 
-  const booleanValue = getBooleanValue(value, attribute)
+  const booleanValue = getBooleanValue(value, attributeType)
   return (
     <Switch
       onChange={onChangeBool}

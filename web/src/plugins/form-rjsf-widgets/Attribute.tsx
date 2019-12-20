@@ -43,10 +43,10 @@ export const AttributeWidget = (props: Props) => {
   //@todo add order in uiRecipe to change order of elements in the widget.
 
   const onChange: AttributeOnChange = (
-    attribute: BlueprintAttributeType,
+    attributeType: BlueprintAttributeType,
     value: string | boolean | number
   ): void => {
-    const name = attribute.name
+    const name = attributeType.name
     let newFormData = { ...formData, [name]: value }
     setFormData(newFormData)
     props.onChange(newFormData)
@@ -59,11 +59,11 @@ export const AttributeWidget = (props: Props) => {
   }
   return (
     <AttributeGroup>
-      {attributes.map((blueprintAttributeType: BlueprintAttributeType) => {
-        const { name } = blueprintAttributeType
+      {attributes.map((attributeType: BlueprintAttributeType) => {
+        const { name } = attributeType
         const value = (formData as any)[name]
         let Widget: Function | null = getWidgetByName(
-          blueprintAttributeType,
+          attributeType,
           selectedType,
           selectedDimensions || ''
         )
@@ -71,10 +71,10 @@ export const AttributeWidget = (props: Props) => {
           return null
         }
         if (Widget === undefined) {
-          Widget = getWidgetByType(blueprintAttributeType)
+          Widget = getWidgetByType(attributeType)
         }
         if (Widget === undefined) {
-          console.warn('widget is not supported: ', blueprintAttributeType)
+          console.warn('widget is not supported: ', attributeType)
           return null
         }
         return (
@@ -85,7 +85,7 @@ export const AttributeWidget = (props: Props) => {
             <Widget
               onChange={onChange}
               value={value}
-              blueprintAttributeType={blueprintAttributeType}
+              attributeType={attributeType}
             />
           </AttributeWrapper>
         )
@@ -117,8 +117,8 @@ function getWidgetByName(
   return widget
 }
 
-function getWidgetByType(attribute: BlueprintAttributeType): Function {
-  let widget: Function = (widgetTypes as any)[attribute.type]
+function getWidgetByType(attributeType: BlueprintAttributeType): Function {
+  let widget: Function = (widgetTypes as any)[attributeType.type]
   if (widget === undefined) {
     widget = TextInput
   }
