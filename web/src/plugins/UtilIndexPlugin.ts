@@ -1,7 +1,5 @@
-import { KeyValue } from './BlueprintUtil'
-import { isPrimitive } from './pluginUtils'
-import { UiRecipe } from './types'
-import { Dimension } from './Dimension'
+import { UiRecipe } from '../domain/types'
+import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 
 const INDEX_PRIMITIVE_CONTAINED = false
 const INDEX_ARRAY_CONTAINED = true
@@ -18,10 +16,11 @@ export class UtilIndexPlugin {
     indexRecipe: UiRecipe | undefined
   ) {
     //@todo read defaults from indexPlugin.
-    return (attr: any) => {
+    return (attrType: any) => {
+      const attr = new BlueprintAttribute(attrType)
       if (indexRecipe) {
         const indexAttribute: any = indexRecipe.attributes.find(
-          (indexAttr: any) => indexAttr.name === attr.name
+          (indexAttr: any) => indexAttr.name === attr.getName()
         )
         if (indexAttribute && indexAttribute.contained !== undefined) {
           // override defaults
@@ -29,13 +28,14 @@ export class UtilIndexPlugin {
         }
       }
       // index plugin defaults
-      const isArray = new Dimension(attr).isArray()
-      const isType = !isPrimitive(attr.type)
+
+      const isArray = new BlueprintAttribute(attrType).isArray()
+      const isType = !attr.isPrimitive()
 
       if (!isType) {
         return INDEX_PRIMITIVE_CONTAINED
       } else {
-        if (attr.name === 'attributes') {
+        if (attrType.name === 'attributes') {
           return true
         } else if (isArray) {
           return INDEX_ARRAY_CONTAINED
@@ -44,14 +44,5 @@ export class UtilIndexPlugin {
         }
       }
     }
-  }
-}
-
-export function getAttributeByName(
-  attributes: any,
-  name: string
-): KeyValue | undefined {
-  if (attributes) {
-    return attributes.find((attr: any) => attr.name === name)
   }
 }

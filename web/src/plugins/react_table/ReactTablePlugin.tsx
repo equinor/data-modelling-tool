@@ -1,8 +1,11 @@
 import React from 'react'
-import { BlueprintAttribute, PluginProps } from '../types'
-import { KeyValue } from '../BlueprintUtil'
+import {
+  BlueprintAttributeType,
+  KeyValue,
+  PluginProps,
+} from '../../domain/types'
 import { ReactTable } from './ReactTable'
-import { Blueprint } from '../Blueprint'
+import { Blueprint } from '../../domain/Blueprint'
 
 type RowData = {
   subRows: any[]
@@ -17,7 +20,7 @@ export const ReactTablePlugin = (props: PluginProps) => {
       .map((attr: KeyValue) => attr.name),
   }
 
-  const blueprint = new Blueprint(props.blueprint)
+  const blueprint = new Blueprint(props.blueprintType)
   const columns = React.useMemo(
     () => [
       {
@@ -44,7 +47,7 @@ export function getData(
   const rows: RowData[] = []
   try {
     mappings.columns.forEach((attrName: string) => {
-      const attr: BlueprintAttribute | undefined = blueprint.getAttribute(
+      const attr: BlueprintAttributeType | undefined = blueprint.getAttribute(
         attrName
       )
       if (attr) {

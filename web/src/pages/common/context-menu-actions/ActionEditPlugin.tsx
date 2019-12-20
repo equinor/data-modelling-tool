@@ -26,13 +26,13 @@ export function ActionEditPlugin(props: Props) {
   return (
     <EditPlugin
       rootDocument={getImportActionBlueprint()}
-      blueprint={getImportActionBlueprint()}
+      blueprintType={getImportActionBlueprint()}
       document={{
         name: '',
         type: '',
         description: '',
       }}
-      blueprints={[]}
+      blueprintTypes={[]}
       dtos={[]}
       uiRecipe={getImportActionBlueprint().uiRecipes[0]}
       onSubmit={(schemas: any) => {
