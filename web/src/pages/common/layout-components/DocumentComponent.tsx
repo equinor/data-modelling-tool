@@ -34,8 +34,8 @@ export enum RegisteredPlugins {
 const View = (props: any) => {
   const {
     schemaUrl,
-    blueprint,
-    blueprints,
+    blueprintType,
+    blueprintTypes,
     document,
     dataUrl,
     uiRecipe,
@@ -44,9 +44,9 @@ const View = (props: any) => {
   } = props
 
   let pluginProps: PluginProps = {
-    blueprintType: blueprint,
+    blueprintType,
     document,
-    blueprintTypes: blueprints,
+    blueprintTypes,
     uiRecipe,
     dtos,
   }
@@ -90,8 +90,8 @@ const View = (props: any) => {
     case RegisteredPlugins.EDIT:
       return (
         <ReactJsonSchemaWrapper
-          blueprintType={blueprint}
-          blueprints={blueprints}
+          blueprintType={blueprintType}
+          blueprints={blueprintTypes}
           document={document}
           schemaUrl={schemaUrl}
           dataUrl={dataUrl}

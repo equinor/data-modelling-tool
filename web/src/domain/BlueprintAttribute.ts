@@ -1,8 +1,8 @@
-import { BlueprintAttribute } from './types'
+import { BlueprintAttributeType } from '../plugins/types'
 
-export class Dimension {
-  private attr: BlueprintAttribute
-  constructor(attr: BlueprintAttribute) {
+export class BlueprintAttribute {
+  private attr: BlueprintAttributeType
+  constructor(attr: BlueprintAttributeType) {
     this.attr = attr
   }
 

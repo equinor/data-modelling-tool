@@ -1,4 +1,4 @@
-import { BlueprintAttribute } from './types'
+import { BlueprintAttributeType } from './types'
 
 /**
  * Utility function for working with blueprints and recipes.
@@ -18,8 +18,8 @@ export function isPrimitive(type: string): boolean {
  * @param attribute
  */
 export function parseAttributeDefault(
-  attribute: BlueprintAttribute
-): BlueprintAttribute {
+  attribute: BlueprintAttributeType
+): BlueprintAttributeType {
   if (typeof attribute.default === undefined) {
     return attribute
   }

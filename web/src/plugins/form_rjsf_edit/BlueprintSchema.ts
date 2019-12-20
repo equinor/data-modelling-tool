@@ -1,5 +1,10 @@
-import { Blueprint, KeyValue } from '../Blueprint'
-import { BlueprintAttribute, BlueprintType, UiRecipe, Entity } from '../types'
+import { Blueprint, KeyValue } from '../../domain/Blueprint'
+import {
+  BlueprintAttributeType,
+  BlueprintType,
+  UiRecipe,
+  Entity,
+} from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import objectPath from 'object-path'
 import { IndexFilter } from './CreateConfig'
@@ -22,7 +27,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   }
   private uiRecipe: UiRecipe
   private blueprintProvider: BlueprintProvider
-  private filter: (attr: BlueprintAttribute) => boolean
+  private filter: (attr: BlueprintAttributeType) => boolean
   private rootBlueprintType: BlueprintType | undefined
 
   constructor(
@@ -53,12 +58,12 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     path: string = '',
     blueprint: Blueprint,
     document: Entity,
-    attributes: BlueprintAttribute[],
+    attributes: BlueprintAttributeType[],
     exitRecursion: boolean
   ) {
     attributes
       .filter(this.filter) //@todo filter recursively on recipes and defaults.
-      .forEach((attr: BlueprintAttribute) => {
+      .forEach((attr: BlueprintAttributeType) => {
         const newPath = this.createAttributePath(path, attr.name)
         if (this.isPrimitive(attr.type)) {
           this.appendPrimitive(newPath, blueprint, attr)
@@ -75,7 +80,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   private processNested(
     path: string,
     nestedDocument: Entity,
-    attr: BlueprintAttribute,
+    attr: BlueprintAttributeType,
     exitRecursion: boolean
   ): void {
     const nestedBlueprintType:
@@ -131,7 +136,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   private appendPrimitive(
     path: string,
     blueprint: Blueprint,
-    attr: BlueprintAttribute
+    attr: BlueprintAttributeType
   ) {
     if (this.isArray(attr)) {
       objectPath.set(this.schema, path, {
@@ -149,7 +154,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
 
   private createSchemaProperty(
     blueprint: Blueprint,
-    attr: BlueprintAttribute
+    attr: BlueprintAttributeType
   ): SchemaProperty {
     let defaultValue: any = blueprint.isArray(attr) ? '' : attr.default
     if (defaultValue) {
@@ -190,7 +195,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   private addEnumToProperty(
     blueprint: Blueprint,
     property: SchemaProperty,
-    attr: BlueprintAttribute
+    attr: BlueprintAttributeType
   ): void {
     const attrBlueprintName = blueprint.getBlueprintType().name
     if (
@@ -201,7 +206,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
       )
     ) {
       const validNames = this.rootBlueprintType.attributes.map(
-        (attr: BlueprintAttribute) => attr.name
+        (attr: BlueprintAttributeType) => attr.name
       )
       //create an enum for valid names.
       property.title = 'name'

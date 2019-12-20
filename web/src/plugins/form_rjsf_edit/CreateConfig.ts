@@ -1,11 +1,11 @@
-import { BlueprintAttribute, UiRecipe } from '../types'
+import { BlueprintAttributeType, UiRecipe } from '../types'
 import { BlueprintUtil } from '../BlueprintUtil'
 import { UtilIndexPlugin } from '../UtilIndexPlugin'
 import { isPrimitive } from '../pluginUtils'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { BlueprintUiSchema } from './BlueprintUiSchema'
 import { BlueprintSchema } from './BlueprintSchema'
-import { Blueprint, KeyValue } from '../Blueprint'
+import { Blueprint, KeyValue } from '../../domain/Blueprint'
 import { EditPluginProps } from './EditForm'
 
 export type FormConfig = {
@@ -14,7 +14,7 @@ export type FormConfig = {
   uiSchema: any
 }
 
-export type IndexFilter = (attr: BlueprintAttribute) => boolean
+export type IndexFilter = (attr: BlueprintAttributeType) => boolean
 
 export function createFormConfigs(pluginProps: EditPluginProps): FormConfig {
   const { document, blueprintTypes, uiRecipe, dtos } = pluginProps
@@ -55,7 +55,7 @@ function filterAttributes(
   const editRecipeAttributes: KeyValue | undefined = blueprint.getUiAttributes(
     uiRecipe.name
   )
-  return (attr: BlueprintAttribute) => {
+  return (attr: BlueprintAttributeType) => {
     if (editRecipeAttributes) {
       const editRecipeAttr = editRecipeAttributes[attr.name]
       //use editRecipe contained if provided.

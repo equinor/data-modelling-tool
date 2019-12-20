@@ -5,11 +5,11 @@ import {
   AttributeOnChange,
   TextInput,
 } from './AttributeInputs'
-import { BlueprintAttribute } from '../types'
-import { Dimension } from '../Dimension'
+import { BlueprintAttributeType } from '../types'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 function getArrayType(dimensions: string | undefined) {
-  if (dimensions && Dimension.isArray(dimensions)) {
+  if (dimensions && BlueprintAttribute.isArray(dimensions)) {
     return ArrayType.ARRAY
   }
   return ArrayType.SIMPLE
@@ -18,7 +18,7 @@ function getArrayType(dimensions: string | undefined) {
 type Props = {
   onChange: AttributeOnChange
   value: string
-  attribute: BlueprintAttribute
+  attribute: BlueprintAttributeType
 }
 
 export const DimensionWidget = (props: Props) => {

@@ -1,7 +1,7 @@
 import { KeyValue } from './BlueprintUtil'
 import { isPrimitive } from './pluginUtils'
 import { UiRecipe } from './types'
-import { Dimension } from './Dimension'
+import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 
 const INDEX_PRIMITIVE_CONTAINED = false
 const INDEX_ARRAY_CONTAINED = true
@@ -29,7 +29,7 @@ export class UtilIndexPlugin {
         }
       }
       // index plugin defaults
-      const isArray = new Dimension(attr).isArray()
+      const isArray = new BlueprintAttribute(attr).isArray()
       const isType = !isPrimitive(attr.type)
 
       if (!isType) {

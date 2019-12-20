@@ -1,8 +1,8 @@
 import React from 'react'
-import { BlueprintAttribute, PluginProps } from '../types'
+import { BlueprintAttributeType, PluginProps } from '../types'
 import { KeyValue } from '../BlueprintUtil'
 import { ReactTable } from './ReactTable'
-import { Blueprint } from '../Blueprint'
+import { Blueprint } from '../../domain/Blueprint'
 
 type RowData = {
   subRows: any[]
@@ -44,7 +44,7 @@ export function getData(
   const rows: RowData[] = []
   try {
     mappings.columns.forEach((attrName: string) => {
-      const attr: BlueprintAttribute | undefined = blueprint.getAttribute(
+      const attr: BlueprintAttributeType | undefined = blueprint.getAttribute(
         attrName
       )
       if (attr) {

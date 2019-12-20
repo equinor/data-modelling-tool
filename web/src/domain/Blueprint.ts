@@ -1,5 +1,5 @@
-import { BlueprintAttribute, BlueprintType } from './types'
-import { Dimension } from './Dimension'
+import { BlueprintAttributeType, BlueprintType } from '../plugins/types'
+import { BlueprintAttribute } from './BlueprintAttribute'
 
 export type KeyValue = {
   [key: string]: any
@@ -45,15 +45,15 @@ export class Blueprint implements IBlueprint {
   }
 
   // helper functions
-  isArray(attr: BlueprintAttribute) {
-    return new Dimension(attr).isArray()
+  isArray(attr: BlueprintAttributeType) {
+    return new BlueprintAttribute(attr).isArray()
   }
 
   public getBlueprintType(): BlueprintType {
     return this.blueprintType
   }
 
-  public getAttribute(name: string): BlueprintAttribute | undefined {
+  public getAttribute(name: string): BlueprintAttributeType | undefined {
     return this.attributes[name]
   }
 
@@ -67,7 +67,7 @@ export class Blueprint implements IBlueprint {
   }
 
   public validateEntity(entity: KeyValue) {
-    this.blueprintType.attributes.forEach((attr: BlueprintAttribute) => {
+    this.blueprintType.attributes.forEach((attr: BlueprintAttributeType) => {
       const value = entity[attr.name]
       if (attr.optional !== true) {
         if (this.isPrimitive(attr.type)) {

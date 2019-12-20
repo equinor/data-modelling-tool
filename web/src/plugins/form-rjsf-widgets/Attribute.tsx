@@ -9,12 +9,12 @@ import {
 } from './AttributeInputs'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BlueprintAttribute } from '../types'
+import { BlueprintAttributeType } from '../types'
 import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
 import { isPrimitive } from '../pluginUtils'
 import { RequiredAttributesGroup } from '../form_rjsf_edit/RequiredAttributes'
-import { Dimension } from '../Dimension'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 const REQUIRED_ATTRIBUTES = ['name', 'description', 'type']
 
@@ -35,7 +35,7 @@ export const AttributeWidget = (props: Props) => {
   let { attributes } = props.uiSchema
 
   const initialState = { type: DataType.STRING, ...props.formData }
-  const [formData, setFormData] = useState<BlueprintAttribute>(initialState)
+  const [formData, setFormData] = useState<BlueprintAttributeType>(initialState)
 
   if (!attributes) {
     console.error('this widget depends on a attributes list.')
@@ -44,7 +44,7 @@ export const AttributeWidget = (props: Props) => {
   //@todo add order in uiRecipe to change order of elements in the widget.
 
   const onChange: AttributeOnChange = (
-    attribute: BlueprintAttribute,
+    attribute: BlueprintAttributeType,
     value: string | boolean | number
   ): void => {
     const name = attribute.name
@@ -60,7 +60,7 @@ export const AttributeWidget = (props: Props) => {
   }
   return (
     <AttributeGroup>
-      {attributes.map((blueprintAttribute: BlueprintAttribute) => {
+      {attributes.map((blueprintAttribute: BlueprintAttributeType) => {
         const { name } = blueprintAttribute
         const value = (formData as any)[name]
         let Widget: Function | null = getWidgetByName(
@@ -96,7 +96,7 @@ export const AttributeWidget = (props: Props) => {
 }
 
 function getWidgetByName(
-  attribute: BlueprintAttribute,
+  attribute: BlueprintAttributeType,
   selectedType: string,
   selectedDimensions: string
 ): Function | null {
@@ -106,7 +106,7 @@ function getWidgetByName(
       // type is a blueprint type string.
       return null
     }
-    if (Dimension.isArray(selectedDimensions)) {
+    if (BlueprintAttribute.isArray(selectedDimensions)) {
       // use string default
       widget = (widgetTypes as any)['string']
     } else {
@@ -117,7 +117,7 @@ function getWidgetByName(
   return widget
 }
 
-function getWidgetByType(attribute: BlueprintAttribute): Function {
+function getWidgetByType(attribute: BlueprintAttributeType): Function {
   let widget: Function = (widgetTypes as any)[attribute.type]
   if (widget === undefined) {
     widget = TextInput

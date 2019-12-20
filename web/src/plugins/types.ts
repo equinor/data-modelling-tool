@@ -1,4 +1,4 @@
-export type BlueprintAttribute = {
+export type BlueprintAttributeType = {
   name: string
   type: string
   description?: string
@@ -18,7 +18,7 @@ type BaseBlueprint = {
 }
 
 export interface BlueprintType extends BaseBlueprint {
-  attributes: BlueprintAttribute[]
+  attributes: BlueprintAttributeType[]
   uiRecipes: any[]
   storageRecipes?: any[]
 }
@@ -45,7 +45,7 @@ export type UiRecipe = {
 }
 
 export interface DocumentData extends BaseBlueprint {
-  attributes?: BlueprintAttribute[]
+  attributes?: BlueprintAttributeType[]
   [key: string]: any //entities can have any key - value pair.
 }
 

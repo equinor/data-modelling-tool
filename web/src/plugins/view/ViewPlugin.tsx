@@ -1,13 +1,13 @@
 import React from 'react'
 import {
   BlueprintType,
-  BlueprintAttribute,
+  BlueprintAttributeType,
   Dto,
   Entity,
   PluginProps,
 } from '../types'
 import { Pre } from '../preview/PreviewPlugin'
-import { Blueprint, KeyValue } from '../Blueprint'
+import { Blueprint, KeyValue } from '../../domain/Blueprint'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
 import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
@@ -67,7 +67,7 @@ class GenerateView {
 
   createComponentWithRecipe(
     uiAttr: KeyValue,
-    attr: BlueprintAttribute,
+    attr: BlueprintAttributeType,
     index: number
   ): any {
     const attributeType = this.blueprintProvider.getBlueprintByType(attr.type)

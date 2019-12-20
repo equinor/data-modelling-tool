@@ -1,12 +1,12 @@
 import React from 'react'
-import { BlueprintType, BlueprintAttribute } from '../../types'
+import { BlueprintType, BlueprintAttributeType } from '../../types'
 import { Pre } from '../../preview/PreviewPlugin'
-import { Dimension } from '../../Dimension'
+import { BlueprintAttribute } from '../../../domain/BlueprintAttribute'
 
 type Props = {
   blueprintType: BlueprintType
-  parentAttribute: BlueprintAttribute
-  attribute: BlueprintAttribute
+  parentAttribute: BlueprintAttributeType
+  attribute: BlueprintAttributeType
 }
 
 /**
@@ -18,7 +18,7 @@ type Props = {
  */
 export default ({ blueprintType, parentAttribute, attribute }: Props) => {
   let values: any[] = []
-  if (new Dimension(parentAttribute).isArray()) {
+  if (new BlueprintAttribute(parentAttribute).isArray()) {
     values = (blueprintType as any)[parentAttribute.name]
   }
   if (values.length === 0) {
@@ -36,13 +36,13 @@ export default ({ blueprintType, parentAttribute, attribute }: Props) => {
       <table>
         <thead>
           <tr>
-            {values.map((attr: BlueprintAttribute) => {
+            {values.map((attr: BlueprintAttributeType) => {
               return <th key={attr.name}>{attr.name}</th>
             })}
           </tr>
         </thead>
         <tbody>
-          {values.map((attr: BlueprintAttribute, index: number) => {
+          {values.map((attr: BlueprintAttributeType, index: number) => {
             const rowKey = `${index}-${attr.name}`
             return <Row key={rowKey} attribute={attr} />
           })}
@@ -53,7 +53,7 @@ export default ({ blueprintType, parentAttribute, attribute }: Props) => {
 }
 
 type RowProps = {
-  attribute: BlueprintAttribute
+  attribute: BlueprintAttributeType
 }
 
 const Row = ({ attribute }: RowProps) => {

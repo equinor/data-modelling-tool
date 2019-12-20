@@ -1,12 +1,12 @@
 //fallback when blueprint and blueprints cant be used.
 import Switch from 'react-switch'
 import React from 'react'
-import { BlueprintAttribute } from '../types'
+import { BlueprintAttributeType } from '../types'
 import { AttributeOnChange } from './AttributeInputs'
 
 export function getBooleanValue(
   value: string | boolean | undefined,
-  blueprintAttribute: BlueprintAttribute
+  blueprintAttribute: BlueprintAttributeType
 ): boolean {
   const defaultValue = blueprintAttribute.default
   if (value === undefined) {
@@ -36,7 +36,7 @@ export function getBooleanValue(
 
 interface BoolDefaultInput {
   value: boolean | string
-  attribute: BlueprintAttribute
+  attribute: BlueprintAttributeType
   onChange: AttributeOnChange
 }
 

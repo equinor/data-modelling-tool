@@ -1,5 +1,5 @@
-import { Blueprint, KeyValue } from '../Blueprint'
-import { BlueprintAttribute, BlueprintType, UiRecipe } from '../types'
+import { Blueprint, KeyValue } from '../../domain/Blueprint'
+import { BlueprintAttributeType, BlueprintType, UiRecipe } from '../types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
 import objectPath from 'object-path'
@@ -49,9 +49,9 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private processAttributes(
     path: string = '',
     blueprint: Blueprint,
-    attributes: BlueprintAttribute[]
+    attributes: BlueprintAttributeType[]
   ) {
-    attributes.filter(this.filter).forEach((attr: BlueprintAttribute) => {
+    attributes.filter(this.filter).forEach((attr: BlueprintAttributeType) => {
       const uiAttribute = blueprint.getUiAttribute(
         this.uiRecipe.name,
         attr.name
@@ -72,7 +72,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private processNested(
     path: string,
     blueprint: Blueprint,
-    attr: BlueprintAttribute
+    attr: BlueprintAttributeType
   ): void {
     const nestedBlueprintType:
       | BlueprintType
@@ -108,7 +108,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private appendPrimitive(
     path: string,
     blueprint: Blueprint,
-    attr: BlueprintAttribute,
+    attr: BlueprintAttributeType,
     uiAttr: any
   ) {
     if (this.isArray(attr)) {
@@ -122,7 +122,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private appendSchemaProperty(
     path: string,
     blueprint: Blueprint,
-    attr: BlueprintAttribute,
+    attr: BlueprintAttributeType,
     uiAttribute: any
   ): void {
     //@todo use uiAttribute to build the schema property. required, descriptions etc.

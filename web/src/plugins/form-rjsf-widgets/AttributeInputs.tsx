@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BlueprintAttribute } from '../types'
+import { BlueprintAttributeType } from '../types'
 import { isPrimitive } from '../pluginUtils'
 import BlueprintSelectorWidget from './BlueprintSelectorWidget'
 
@@ -19,7 +19,7 @@ export enum DataType {
 }
 
 interface InputProps {
-  attribute: BlueprintAttribute
+  attribute: BlueprintAttributeType
   onChange: AttributeOnChange
 }
 
@@ -108,7 +108,7 @@ export const TypeDropdown = (props: any) => {
 
 type TypeProps = {
   onChange: AttributeOnChange
-  attribute: BlueprintAttribute
+  attribute: BlueprintAttributeType
   value: string
   uiSchema: any
 }
