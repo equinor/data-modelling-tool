@@ -68,6 +68,13 @@
       "hideTab": false,
       "options": [],
       "attributes": []
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "Plotly",
+      "description": "Some external plugin",
+      "plugin": "EXTERNAL",
+      "attributes": []
     }
   ]
 }

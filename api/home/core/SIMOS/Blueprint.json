@@ -93,31 +93,6 @@
     },
     {
       "type": "system/SIMOS/UiRecipe",
-      "name": "View",
-      "description": "",
-      "plugin": "VIEW",
-      "attributes": [
-        {
-          "name": "name",
-          "type": "system/SIMOS/UiAttribute",
-          "widget": "view.widget"
-        },
-        {
-          "name": "uiRecipes",
-          "type": "system/SIMOS/UiAttribute",
-          "widget": "table.widget"
-        }
-      ]
-    },
-    {
-      "type": "system/SIMOS/UiRecipe",
-      "name": "My plugin",
-      "description": "Some external plugin",
-      "plugin": "EXTERNAL",
-      "attributes": []
-    },
-    {
-      "type": "system/SIMOS/UiRecipe",
       "name": "Edit",
       "description": "",
       "plugin": "EDIT_PLUGIN",

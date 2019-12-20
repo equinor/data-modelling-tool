@@ -15,7 +15,7 @@ const TestPlugin = ({ parent, document, children }) => {
 }
 
 const registeredPlugins = {
-  'My plugin': PlotlyPoc,
+  Plotly: PlotlyPoc,
 }
 
 export default function pluginHook(uiRecipe) {
