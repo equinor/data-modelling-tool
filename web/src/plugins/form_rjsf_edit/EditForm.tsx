@@ -88,9 +88,10 @@ function fixRecursive(
 function validate(blueprint: Blueprint) {
   return (formData: KeyValue, errors: any) => {
     Object.keys(formData).forEach((key: string) => {
-      const attr = blueprint.getAttribute(key)
+      const attr = blueprint.getBlueprintAttribute(key)
+
       if (attr) {
-        if (blueprint.isArray(attr) && !blueprint.isPrimitive(attr.type)) {
+        if (attr.isArray() && !attr.isPrimitive()) {
           const arr: any[] = formData[key]
           arr.forEach((item: any, index: number) => {
             if (!item.name) {

@@ -55,6 +55,13 @@ export class Blueprint implements IBlueprint {
     return this.attributes[name]
   }
 
+  public getBlueprintAttribute(name: string): BlueprintAttribute | undefined {
+    if (this.attributes[name]) {
+      return new BlueprintAttribute(this.attributes[name])
+    }
+    return undefined
+  }
+
   public getUiAttributes(uiRecipeName: string): KeyValue | undefined {
     return this.uiRecipes[uiRecipeName]
   }
