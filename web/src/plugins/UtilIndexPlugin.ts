@@ -1,4 +1,3 @@
-import { KeyValue } from './BlueprintUtil'
 import { isPrimitive } from './pluginUtils'
 import { UiRecipe } from './types'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
@@ -44,14 +43,5 @@ export class UtilIndexPlugin {
         }
       }
     }
-  }
-}
-
-export function getAttributeByName(
-  attributes: any,
-  name: string
-): KeyValue | undefined {
-  if (attributes) {
-    return attributes.find((attr: any) => attr.name === name)
   }
 }

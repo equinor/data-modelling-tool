@@ -30,9 +30,11 @@ export class Blueprint implements IBlueprint {
   }
 
   private addAttributes(container: KeyValue, attributes: any[]): void {
-    attributes.forEach((attr: any) => {
-      container[attr.name] = attr
-    })
+    if (attributes) {
+      attributes.forEach((attr: any) => {
+        container[attr.name] = attr
+      })
+    }
   }
 
   public getUiAttribute(
@@ -67,26 +69,29 @@ export class Blueprint implements IBlueprint {
   }
 
   public validateEntity(entity: KeyValue) {
-    this.blueprintType.attributes.forEach((attr: BlueprintAttributeType) => {
-      const value = entity[attr.name]
-      if (attr.optional !== true) {
-        if (this.isPrimitive(attr.type)) {
-          if (attr.default) {
-            //todo insert default?  need to do casting.
+    this.blueprintType.attributes.forEach(
+      (attrType: BlueprintAttributeType) => {
+        const attr = new BlueprintAttribute(attrType)
+        const value = entity[attr.getName()]
+        if (attrType.optional !== true) {
+          if (attr.isPrimitive()) {
+            if (attrType.default) {
+              //todo insert default?  need to do casting.
+            }
+          } else {
+            if (value === undefined && this.isArray(attrType)) {
+              entity[attrType.name] = []
+            }
           }
-        } else {
-          if (value === undefined && this.isArray(attr)) {
-            entity[attr.name] = []
-          }
-        }
 
-        // required
-        if (!entity[attr.name]) {
-          console.warn(
-            `non optional value is missing for ${attr.name} of type ${attr.type}, ${entity.type}`
-          )
+          // required
+          if (!entity[attrType.name]) {
+            console.warn(
+              `non optional value is missing for ${attrType.name} of type ${attrType.type}, ${entity.type}`
+            )
+          }
         }
       }
-    })
+    )
   }
 }
