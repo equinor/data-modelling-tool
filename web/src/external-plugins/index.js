@@ -259,7 +259,7 @@ var descs = ["Wave propagation direction -comming from- in [deg].",
 for (var propi=0; propi<entity.currentDepths.split(',').length; propi++ ){
   data.push({
     "currentDepths": entity.currentDepths.split(',')[propi],
-    "currentDirections": entity.currentDirections.split(',')[propi],
+    "currentDirections": entity.currentDirection,
     "currentVelocities": entity.currentVelocities.split(',')[propi]
   })
 }
@@ -527,7 +527,7 @@ const SRSSce3DView = ({ parent, document, children }) => {
 
 const registeredPlugins = {
   'My plugin': TestPlugin,
-  'My plugin': PlotlyPoc,
+  'Plotly': PlotlyPoc,
 
   'ESS Plot View': ESSPlotPlugin,
   'ESS Table View': ESSTablePlugin,

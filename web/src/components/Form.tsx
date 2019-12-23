@@ -44,7 +44,7 @@ export default ({ onSubmit, fetchDocument }: FormProps) => {
     <DefaultEditForm
       document={document}
       blueprints={[]}
-      blueprint={{
+      blueprintType={{
         name: '',
         description: '',
         type: '',

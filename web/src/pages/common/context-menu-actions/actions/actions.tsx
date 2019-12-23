@@ -6,7 +6,7 @@ import { NotificationManager } from 'react-notifications'
 import Api2 from '../../../../api/Api2'
 import saveToNewFile from './saveToNewFile'
 import saveInEntity from './saveInEntity'
-import { Entity } from '../../../../plugins/types'
+import { Entity } from '../../../../domain/types'
 
 enum ActionTypes {
   separateResultFile = 'separateResultFile',

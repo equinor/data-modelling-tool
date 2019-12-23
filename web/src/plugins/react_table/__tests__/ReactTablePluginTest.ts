@@ -1,5 +1,5 @@
 import { getData } from '../ReactTablePlugin'
-import { Blueprint } from '../../Blueprint'
+import { Blueprint } from '../../../domain/Blueprint'
 
 describe('ReactTablePlugin', () => {
   describe('Generate data from primitive arrays', () => {

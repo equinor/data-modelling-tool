@@ -1,5 +1,5 @@
 import React from 'react'
-import { Entity } from '../types'
+import { Entity } from '../../domain/types'
 
 type IndexItem = {
   path: string

@@ -13,7 +13,7 @@ import { IndexNode } from '../../../api/Api'
 import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
-import { Entity } from '../../../plugins/types'
+import { Entity } from '../../../domain/types'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
