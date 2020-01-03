@@ -34,7 +34,7 @@ def get(data_source_id: str, document_path: str):
     logger.info(f"Getting document '{document_path}' from data source '{data_source_id}'")
     ui_recipe = request.args.get("ui_recipe")
     attribute = request.args.get("attribute")
-    data_source = DataSource(id=data_source_id)
+    data_source = DataSource(uid=data_source_id)
     document_repository = get_repository(data_source)
     use_case = GetDocumentUseCase(document_repository)
     request_object = GetDocumentRequestObject.from_dict(
@@ -50,7 +50,7 @@ def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
     data = request.get_json()
     attribute = request.args.get("attribute")
-    data_source = DataSource(id=data_source_id)
+    data_source = DataSource(uid=data_source_id)
     document_repository = get_repository(data_source)
     request_object = UpdateDocumentRequestObject.from_dict(
         {"data": data, "document_id": document_id, "attribute": attribute}

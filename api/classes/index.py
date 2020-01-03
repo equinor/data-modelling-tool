@@ -2,8 +2,8 @@ from __future__ import annotations
 
 from anytree import NodeMixin
 
-from core.domain.models import Blueprint
-from core.domain.dto import DTO
+from classes.blueprint import Blueprint
+from classes.dto import DTO
 
 
 class DocumentNode(NodeMixin):

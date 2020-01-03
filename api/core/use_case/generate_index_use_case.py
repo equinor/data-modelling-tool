@@ -4,14 +4,12 @@ from typing import Dict, List
 from anytree import PreOrderIter, RenderTree
 
 from config import Config
-from core.domain.blueprint import Blueprint, get_attribute_names, get_attributes_with_reference
-from core.domain.dto import DTO
-from core.domain.entity import Entity
-from core.domain.index import DocumentNode
-from core.domain.recipe import PRIMITIVES, Recipe
-from core.domain.storage_recipe import StorageRecipe
+from classes.blueprint import get_attribute_names, get_none_primitive_types
+from classes.dto import DTO
+from classes.index import DocumentNode
+from classes.recipe import PRIMITIVES, Recipe
 from core.enums import DMT, SIMOS
-from core.repository.interface.document_repository import DocumentRepository
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.find_parent import find_parent
 from core.use_case.utils.generate_index_menu_actions import (
@@ -23,14 +21,12 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_export_menu_item,
     get_import_menu_item,
     get_node_on_select,
-    get_not_contained_menu_action,
     get_remove_attribute_menu_item,
     get_rename_attribute_menu_action,
     get_rename_menu_action,
     get_runnable_menu_action,
 )
-from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_blueprint import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_recipe
 from utils.data_structure.find import get
 from utils.group_by import group_by
@@ -59,9 +55,7 @@ def print_tree(root_node):
         print(treestr.ljust(8), node.uid, node.to_node()["nodeType"], node.document["type"] if node.document else "")
 
 
-def get_error_node(document: Entity, parent_node: DocumentNode, data_source_id: str) -> DocumentNode:
-    if not get(document, "uid", default=None):
-        document.uid = "noId"
+def get_error_node(document: DTO, parent_node: DocumentNode, data_source_id: str) -> DocumentNode:
     return DocumentNode(
         document=document,
         data_source_id=data_source_id,
@@ -74,24 +68,19 @@ def get_error_node(document: Entity, parent_node: DocumentNode, data_source_id: 
 
 class Tree:
     def __init__(
-        self, document_repository: DocumentRepository,
+        self, document_repository: Repository,
     ):
         self.document_repository = document_repository
 
-    def get_references(self, references) -> List[Entity]:
+    def get_references(self, references) -> List[DTO]:
         documents = []
         for ref in references:
             dto = self.document_repository.get(ref["_id"])
             if not dto:
                 logger.warning(f"The reference {ref['name']} was not found")
-                document = Entity({"name": ref["name"], "_not_found_": True, "uid": "notFound", "type": "notFound"})
-            else:
-                document = Entity(dto.data)
-                document.uid = dto.uid
-                if not hasattr(document, "uid"):
-                    document.uid = ref["_id"]
+                dto = DTO(data={"name": ref["name"], "_not_found_": True, "uid": "notFound", "type": "notFound"})
 
-            documents.append(document)
+            documents.append(dto)
         return documents
 
     def generate_contained_node(
@@ -107,11 +96,13 @@ class Tree:
         create_new_menu_items = []
         blueprint = get_blueprint(instance["type"])
         for attr in blueprint.attributes:
-            if '/' in attr.type:
-                if attr.dimensions == '*':
-                    attribute_name = '.'.join(document_path) + '.' + str(index) + '.' + attr.name
+            if "/" in attr.type:
+                if attr.dimensions == "*":
+                    attribute_name = ".".join(document_path) + "." + str(index) + "." + attr.name
                     create_new_menu_items.append(
-                        get_dynamic_create_menu_item(data_source_id, "Create " + attr.name, attr.type, document_id, attribute_name)
+                        get_dynamic_create_menu_item(
+                            data_source_id, "Create " + attr.name, attr.type, document_id, attribute_name
+                        )
                     )
 
         menu_items = [{"label": "New", "menuItems": create_new_menu_items}]
@@ -119,7 +110,7 @@ class Tree:
         node = DocumentNode(
             data_source_id=data_source_id,
             name=instance["name"],
-            document=DTO(Blueprint(name=instance["name"], description="", type=attribute_type), uid=uid),
+            document=DTO(data=instance, uid=uid),
             blueprint=None,
             parent=parent_node,
             on_select={
@@ -166,9 +157,9 @@ class Tree:
 
         blueprint = get_blueprint(attribute_type)
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
-        for attribute in get_attributes_with_reference(blueprint):
-            name = attribute["name"]
-            attr_type = attribute["type"]
+        for attribute in get_none_primitive_types(blueprint):
+            name = attribute.name
+            attr_type = attribute.type
 
             is_contained_in_ui = recipe.is_contained(attribute)
             if not is_contained_in_ui:
@@ -177,10 +168,10 @@ class Tree:
             if parent_node.blueprint and blueprint == parent_node.blueprint:
                 continue
 
-            is_array = attribute["dimensions"] == "*"
+            is_array = attribute.dimensions == "*"
             if is_array and attribute_type is not SIMOS.BLUEPRINT.value:
                 if attr_type not in PRIMITIVES:
-                    is_recursive = attr_type.split("/")[-1] == blueprint["name"]
+                    is_recursive = attr_type.split("/")[-1] == blueprint.name
                     if is_recursive and is_array and len(current_path) > 2:
                         # prevent generate endless nodes.
                         return
@@ -188,12 +179,12 @@ class Tree:
             self.generate_contained_node(
                 document_id,
                 current_path + [f"{name}"],
-                attribute,
+                attribute.to_dict(),
                 None,
                 data_source_id,
-                attribute["type"],
+                attribute.type,
                 node,
-                attribute["dimensions"] == "*",
+                attribute.dimensions == "*",
             )
 
     def generate_contained_nodes(
@@ -201,18 +192,16 @@ class Tree:
     ):
         for index, instance in enumerate(values):
             data = instance
-            if not isinstance(instance, dict):
-                data = instance.to_dict()
             try:
                 self.generate_contained_node(
                     document_id, document_path, data, index, data_source_id, attribute_type, parent_node, True
                 )
             except Exception as error:
                 logger.exception(error)
-                get_error_node(document=data, parent_node=parent_node, data_source_id=data_source_id)
+                get_error_node(document=DTO(data=data), parent_node=parent_node, data_source_id=data_source_id)
                 logger.warning(f"Caught error while processing document {document_path}: {error}")
 
-    def process_document(self, data_source_id, document, parent_node: DocumentNode, app_settings: Dict):
+    def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, app_settings: Dict):
         if get(document, "_not_found_", default=None):
             get_error_node(document, parent_node, data_source_id)
             return
@@ -240,15 +229,9 @@ class Tree:
             raise EntityNotFoundException(uid=document.type)
 
         if is_package:
-            # TODO: Fix this mess...
             # Set Package isRoot attribute
-            if isinstance(document, Entity) or isinstance(document, dict):
-                node.is_root_package = document["isRoot"]
-            elif isinstance(document, DTO):
-                if isinstance(document.data, dict):
-                    node.is_root_package = document.isRoot
-                else:
-                    node.is_root_package = document.is_root
+            node.is_root_package = document.data.get("isRoot")
+
             # Packages should not open a tab on click
             node.on_select = {}
 
@@ -290,7 +273,8 @@ class Tree:
         if document.type == SIMOS.APPLICATION.value:
             node.menu_items.append(get_download_menu_action(data_source_id, document.uid))
 
-        storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
+        # storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
+        # TODO: Fix blueprint class
         recipe: Recipe = get_recipe(blueprint=node.blueprint, plugin_name="INDEX")
 
         # If the node is a DMT-Package, add "Create New" from AppSettings, and newPackage
@@ -308,9 +292,9 @@ class Tree:
             node.menu_items.append({"label": "New", "menuItems": create_new_menu_items})
 
         # Use the blueprint to find attributes that contains references
-        for attribute in get_attributes_with_reference(node.blueprint):
-            attribute_name = attribute["name"]
-            is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
+        for attribute in get_none_primitive_types(node.blueprint):
+            attribute_name = attribute.name
+            # is_contained_in_storage = is_contained(attribute.name, attribute["type"])
 
             is_contained_in_ui = recipe.is_contained(attribute)
             if not is_contained_in_ui:
@@ -318,27 +302,18 @@ class Tree:
 
             # If the attribute is an array
             # TODO: Handle fixed size arrays
-            if attribute["dimensions"] == "*":
-                attribute_blueprint = get_blueprint(attribute["type"])
+            if attribute.dimensions == "*":
+                attribute_blueprint = get_blueprint(attribute.type)
 
                 data = {}
                 for item in get_attribute_names(attribute_blueprint):
                     data[item] = ("${" + item + "}",)
 
-                not_contained_menu_action = get_not_contained_menu_action(
-                    data_source_id=data_source_id,
-                    name=attribute_name,
-                    type=attribute["type"],
-                    # TODO: Should this be parent_node.id?
-                    parent_id=document.uid,
-                    data=data,
-                )
-
                 contained_menu_action = get_contained_menu_action(
                     data_source_id=data_source_id,
                     name=attribute_name,
                     node_id=f"{document.uid}_{attribute_name}",
-                    type=attribute["type"],
+                    type=attribute.type,
                     parent_id=document.uid,
                     data=data,
                 )
@@ -351,51 +326,47 @@ class Tree:
                         document=document,
                         blueprint=node.blueprint,
                         parent=node,
-                        menu_items=[contained_menu_action if is_contained_in_storage else not_contained_menu_action],
+                        menu_items=[contained_menu_action],
                         is_contained=True,
                     )
 
                 # Check if values for the attribute exists in current document,
                 # this means that we have added some documents to this array.
-                values = document.get_values(attribute_name)
-
-                # TODO: Fix this in DTO class. "get_values" returns "builtin_method_or_function"
-                if isinstance(values, list) and values != []:
+                if values := document.data.get(attribute_name):
                     # Values are stored in separate document
-                    if not is_contained_in_storage:
+                    if is_package:
                         # Get real documents
                         attribute_nodes.append({"documents": self.get_references(values), "node": attribute_node})
                     # Values are stored inside parent. We create placeholder nodes.
-                    if is_contained_in_storage:
+                    else:
                         self.generate_contained_nodes(
-                            data_source_id, document.uid, [attribute_name], attribute["type"], values, attribute_node,
+                            data_source_id, document.uid, [attribute_name], attribute.type, values, attribute_node,
                         )
             else:
-                values = document.get_values(attribute_name)
-                if values:
+                if values := document.data.get("attribute_name"):
                     # Values are stored in separate document
-                    if not is_contained_in_storage:
+                    if is_package:
                         attribute_nodes.append({"documents": self.get_references(values), "node": node})
                 else:
                     node.menu_items.append(
                         get_dynamic_create_menu_item(
                             data_source_id=data_source_id,
                             name=attribute_name,
-                            type=attribute["type"],
+                            type=attribute.type,
                             attribute=attribute_name,
                             parent_id=document.uid,
                         )
                     )
                 # TODO: After last menu_item is appended, sort the list.
 
-                if is_contained_in_storage:
+                if not is_package:
                     self.generate_contained_node(
                         document.uid,
                         [attribute_name],
-                        attribute,
+                        attribute.to_dict(),
                         None,
                         data_source_id,
-                        attribute["type"],
+                        attribute.type,
                         node,
                         False,
                     )
@@ -414,7 +385,7 @@ class Tree:
                     get_error_node(document=attribute_document, parent_node=parent_node, data_source_id=data_source_id)
                     logger.warning(f"Caught error while processing document {node.name}: {error}")
 
-    def execute(self, data_source_id: str, data_source_name: str, packages, application_page: str) -> Index:
+    def execute(self, data_source_id: str, data_source_name: str, packages: List[DTO], application_page: str) -> Index:
 
         index = Index(data_source_id=data_source_id)
 
@@ -433,13 +404,11 @@ class Tree:
 
         for package in packages:
             try:
-                entity = Entity(package.data)
-                entity.uid = package.uid
-                self.process_document(data_source_id, entity, root_node, app_settings)
+                self.process_document(data_source_id, package, root_node, app_settings)
             except Exception as error:
                 logger.exception(error)
-                get_error_node(entity, root_node, data_source_id)
-                logger.warning(f"Caught error while processing document {entity.name}: {error}")
+                get_error_node(package, root_node, data_source_id)
+                logger.warning(f"Caught error while processing document {package.name}: {error}")
 
         for node in PreOrderIter(root_node):
             index.add(node.to_node())
@@ -448,11 +417,8 @@ class Tree:
 
 
 class GenerateIndexUseCase:
-    def __init__(
-        self, document_repository: DocumentRepository,
-    ):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
-
         self.tree = Tree(document_repository)
 
     def execute(self, data_source_id: str, data_source_name: str, document_type: str) -> Index:

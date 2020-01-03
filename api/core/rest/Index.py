@@ -11,7 +11,7 @@ blueprint = Blueprint("index", __name__)
 
 @blueprint.route("/api/v3/index/<string:data_source_id>", methods=["GET"])
 def get(data_source_id: str):
-    data_source = DataSource(id=data_source_id)
+    data_source = DataSource(uid=data_source_id)
     document_repository = get_repository(data_source)
     use_case = GenerateIndexUseCase(document_repository=document_repository,)
     result = use_case.execute(
@@ -22,7 +22,7 @@ def get(data_source_id: str):
 
 @blueprint.route("/api/v3/index/<string:data_source_id>/<string:document_id>", methods=["GET"])
 def get_document(data_source_id: str, document_id: str):
-    data_source = DataSource(id=data_source_id)
+    data_source = DataSource(uid=data_source_id)
     document_repository = get_repository(data_source)
 
     use_case = GenerateIndexUseCase(document_repository)
@@ -40,7 +40,7 @@ def get_document(data_source_id: str, document_id: str):
     "/api/v3/index/<string:data_source_id>/attribute/<string:attribute>/<string:document_id>", methods=["GET"]
 )
 def get_attribute(data_source_id: str, attribute: str, document_id: str):
-    data_source = DataSource(id=data_source_id)
+    data_source = DataSource(uid=data_source_id)
     document_repository = get_repository(data_source)
 
     use_case = GenerateIndexUseCase(document_repository=document_repository,)

@@ -7,7 +7,7 @@ class Config:
     MONGO_PASSWORD = os.getenv("MONGO_INITDB_ROOT_PASSWORD", "maf")
     MONGO_URI = os.getenv("MONGO_AZURE_URI", "")
     MONGO_DB = os.getenv("ENVIRONMENT", os.getenv("RADIX_ENVIRONMENT", "local"))
-    LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "WARNING")
+    LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "INFO")
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "")
     BLUEPRINT_COLLECTION = "SSR-DataSource"

@@ -1,5 +1,7 @@
 from typing import List
 
+from classes.blueprint_attribute import BlueprintAttribute
+
 DEFAULT_PRIMITIVE_CONTAINED = True
 DEFAULT_ARRAY_CONTAINED = False
 DEFAULT_TYPE_CONTAINED = False
@@ -15,20 +17,15 @@ class UiAttribute:
 class UIRecipe:
     def __init__(self, name: str, attributes: List = None):
         self.name = name
-        self.ui_attributes = {}
-        if attributes:
-            self._convert_attributes(attributes)
+        attributes = attributes if attributes else []
+        self.ui_attributes = {
+            attribute["name"]: UiAttribute(name=attribute["name"], is_contained=attribute.get("contained", True))
+            for attribute in attributes
+        }
 
-    def _convert_attributes(self, attributes):
-        for attribute in attributes:
-            if not isinstance(attribute, UiAttribute):
-                attribute = UiAttribute(name=attribute.name, is_contained=attribute.contained)
-            self.ui_attributes[attribute.name] = attribute
-
-    def is_contained(self, attribute):
+    def is_contained(self, attribute: BlueprintAttribute):
         attribute_name = attribute.name
         attribute_type = attribute.type
-        # attribute_contained = attribute.contained
         is_array = attribute.dimensions == "*"
 
         if attribute_name in self.ui_attributes:
@@ -36,8 +33,6 @@ class UIRecipe:
             if ui_attribute.is_contained is not None:
                 return ui_attribute.is_contained
         # todo contained should be set be defaults or overriden by the INDEX ui recipe.
-        # if attribute_contained:
-        #    return attribute_contained
         if attribute_type in PRIMITIVES:
             return DEFAULT_PRIMITIVE_CONTAINED
 

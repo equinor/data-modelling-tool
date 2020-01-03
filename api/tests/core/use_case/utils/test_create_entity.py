@@ -1,11 +1,9 @@
 import unittest
-from typing import Optional
-from core.repository.file.document_repository import TemplateRepositoryFromFile
-
-
 from enum import Enum
 
-from core.domain.schema import Factory
+from classes.blueprint import Blueprint
+from classes.dto import DTO
+from core.repository.file import TemplateRepositoryFromFile
 from core.use_case.utils.create_entity import CreateEntity
 from utils.helper_functions import schemas_location
 
@@ -58,8 +56,7 @@ class CreateEntityTestCase(unittest.TestCase):
 
 class BlueprintProviderTest:
     def __init__(self):
-        file_repository_test = TemplateRepositoryFromFile(schemas_location())
-        self._factory_test = Factory(template_repository=file_repository_test, read_from_file=True)
+        self.file_repository_test = TemplateRepositoryFromFile(schemas_location())
 
-    def get_blueprint(self, template_type: str) -> Optional[type]:
-        return self._factory_test.create(template_type)
+    def get_blueprint(self, template_type: str) -> Blueprint:
+        return Blueprint(DTO(self.file_repository_test.get(template_type)))

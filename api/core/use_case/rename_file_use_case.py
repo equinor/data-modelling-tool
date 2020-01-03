@@ -1,11 +1,9 @@
-from core.domain.dto import DTO
-from core.enums import SIMOS
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityAlreadyExistsException, EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.use_case.utils.get_reference import get_ref_id
 from utils.logging import logger
 
 
@@ -44,7 +42,7 @@ class RenameFileRequestObject(req.ValidRequestObject):
 
 
 class RenameFileUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object: RenameFileRequestObject):
@@ -58,27 +56,21 @@ class RenameFileUseCase(uc.UseCase):
             raise EntityNotFoundException(document_id)
 
         if parent_id:
-            parent_document = self.document_repository.get(parent_id)
+            parent_document: DTO = self.document_repository.get(parent_id)
             if not parent_document:
                 raise EntityNotFoundException(parent_id)
 
-            references = list(filter(lambda x: x["name"] == name, parent_document.data[attribute]))
+            references = list(filter(lambda x: x["name"] == name, parent_document[attribute]))
             if len(references) > 0:
                 raise EntityAlreadyExistsException(name)
 
             # Remove old reference
-            parent_document.data[attribute] = [
-                ref for ref in parent_document.data["content"] if not get_ref_id(ref) == document.uid
-            ]
+            parent_document[attribute] = [ref for ref in parent_document["content"] if not ref["_id"] == document.uid]
             # Add new reference
             reference = {"_id": document.uid, "name": name, "type": document.type}
-            parent_document.data[attribute].append(reference)
+            parent_document[attribute].append(reference)
 
-        if document.type == SIMOS.BLUEPRINT.value:
-            document.data.name = name
-        else:
-            document.data["name"] = name
-
+        document.name = name
         self.document_repository.update(document)
         logger.info(f"Rename document '{document.uid}' to '{name}")
 

@@ -1,9 +1,9 @@
 # flake8: noqa: F401
 
 from config import Config
-from core.domain.dto import DTO
-from core.domain.storage_recipe import StorageRecipe
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from classes.storage_recipe import StorageRecipe
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -16,10 +16,9 @@ import os
 
 from core.enums import DMT
 from core.use_case.create_application_use_case import zip_package
-from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_blueprint import get_blueprint
 from jinja2 import Template
-from core.domain.blueprint import get_attributes_with_reference
+from classes.blueprint import get_none_primitive_types
 
 
 class ExportRequestObject(req.ValidRequestObject):
@@ -40,7 +39,7 @@ class ExportRequestObject(req.ValidRequestObject):
 
 
 class ExportUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object: ExportRequestObject):

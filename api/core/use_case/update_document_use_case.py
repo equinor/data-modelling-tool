@@ -1,18 +1,14 @@
 from typing import Dict
 
-import stringcase
-
-from core.domain.dto import DTO
-from core.domain.storage_recipe import StorageRecipe
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from classes.storage_recipe import StorageRecipe
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_blueprint import get_blueprint
 from utils.logging import logger
 from core.shared import response_object as res
 from core.shared import request_object as req
 from core.shared import use_case as uc
-from dotted.collection import DottedDict
 
 
 class UpdateDocumentRequestObject(req.ValidRequestObject):
@@ -73,7 +69,7 @@ def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, docum
             return reference
 
 
-def update_document(document_id, data: Dict, document_repository: DocumentRepository):
+def update_document(document_id, data: Dict, document_repository: Repository) -> DTO:
     document: DTO = document_repository.get(document_id)
 
     if not document:
@@ -83,27 +79,19 @@ def update_document(document_id, data: Dict, document_repository: DocumentReposi
     if not blueprint:
         raise EntityNotFoundException(uid=document.type)
 
-    storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
-
     for key in data.keys():
         # TODO: Sure we want this filter?
         attribute = next((x for x in blueprint.attributes if x.name == key), None)
         if not attribute:
             logger.error(f"Could not find attribute {key} in {document.uid}")
         else:
-            if isinstance(document.data, dict):
-                document.data[key] = update_attribute(attribute, data, storage_recipe, document_repository)
-            else:
-                setattr(
-                    document.data,
-                    stringcase.snakecase(key),
-                    update_attribute(attribute, data, storage_recipe, document_repository),
-                )
+            document[key] = update_attribute(attribute, data, blueprint.storage_recipes[0], document_repository)
+
     return document
 
 
 class UpdateDocumentUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object: UpdateDocumentRequestObject):
@@ -111,25 +99,12 @@ class UpdateDocumentUseCase(uc.UseCase):
         data: Dict = request_object.data
         attribute: Dict = request_object.attribute
 
-        dto: DTO = self.document_repository.get(document_id)
-        if not dto:
-            raise EntityNotFoundException(uid=document_id)
-
         if attribute:
-            # TODO: Use hasattr, setattr, and getattr
-            if isinstance(dto.data, dict):
-                _data = dto.data
-            else:
-                _data = dto.data.to_dict()
-            dotted_data = DottedDict(_data)
-            if attribute not in _data:
-                _data[attribute] = []
-            try:
-                # Update only sub part
-                dotted_data[attribute] = data
-                data = dotted_data.to_python()
-            except Exception:
-                raise
+            existing_data: DTO = self.document_repository.get(document_id).data
+            if not existing_data:
+                raise EntityNotFoundException(uid=document_id)
+            existing_data[attribute] = data
+            data = existing_data
 
         document = update_document(document_id, data, self.document_repository)
 

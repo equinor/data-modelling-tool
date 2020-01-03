@@ -1,13 +1,14 @@
 from dotted.collection import DottedDict
 
-from core.domain.dynamic_models import BlueprintAttribute
-from core.repository.interface.document_repository import DocumentRepository
+from classes.blueprint_attribute import BlueprintAttribute
+from classes.dto import DTO
+from core.repository import Repository
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.use_case.utils.get_template import get_entity
-from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_document_by_ref
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):
@@ -35,7 +36,7 @@ PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
 class GetDocumentUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object: GetDocumentRequestObject):
@@ -51,6 +52,10 @@ class GetDocumentUseCase(uc.UseCase):
         if attribute:
             dotted_data = DottedDict(data)
             data = dotted_data[attribute].to_python()
+
+        if "_id" in data:
+            document = document_service.get_by_uid(data["_id"], self.document_repository)
+            data = document.data
 
         blueprint = get_blueprint(data["type"])
 
@@ -79,8 +84,8 @@ class GetDocumentUseCase(uc.UseCase):
 
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:
-            enum_blueprint = get_entity(attribute.enum_type)
+            enum_blueprint: DTO = get_document_by_ref(attribute.enum_type)
             try:
-                dtos.append(enum_blueprint.to_dict(include_defaults=True))
+                dtos.append(enum_blueprint.to_dict())
             except AttributeError:
                 print(f"failed to append enumType {attribute}")
