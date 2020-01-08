@@ -1,68 +1,57 @@
 from typing import Dict
 from uuid import UUID
+
 from dotted.collection import DottedDict
-from stringcase import snakecase, camelcase
-from core.domain.dynamic_models import StorageRecipe
-from core.domain.dto import DTO
-from core.repository.interface.document_repository import DocumentRepository
+
+from classes.dto import DTO
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_document_children import get_document_children
-from core.use_case.utils.get_data_always_as_dict import get_data_always_as_dict
-from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_blueprint import get_blueprint
 from utils.logging import logger
 
 
-def get_complete_document(document_uid: UUID, document_repository: DocumentRepository) -> Dict:
+# TODO: Have this return a DTO? We are going DTO->Dict->DTO now
+def get_complete_document(document_uid: UUID, document_repository: Repository) -> Dict:
     document: DTO = document_repository.get(str(document_uid))
     if not document:
         raise EntityNotFoundException(uid=document_uid)
 
     blueprint = get_blueprint(document.type)
-
-    if not isinstance(document.data, dict):
-        data = document.data.to_dict(include_defaults=True)
-    else:
-        data = document.data
-
-    result = data
-
-    storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
+    result = document.data
 
     for attribute in blueprint.attributes:
-        attribute_name = snakecase(attribute.name)
-        key = camelcase(attribute_name)
-        attribute_type = attribute.type
-        if attribute_name in data:
-            if storage_recipe.is_contained(attribute_name, attribute_type):
-                result[key] = data[attribute_name]
+        attribute_name = attribute.name
+        key = attribute_name
+        if attribute_name in result:
+            if blueprint.storage_recipes[0].is_contained(attribute_name, attribute.type):
+                pass
             else:
                 if attribute.dimensions == "*":
-                    items = data[attribute_name]
+                    items = result[attribute_name]
                     documents = [get_complete_document(item["_id"], document_repository) for item in items]
                     result[key] = documents
                 else:
-                    result[key] = get_complete_document(data[attribute_name]["_id"], document_repository)
+                    result[key] = get_complete_document(result[attribute_name]["_id"], document_repository)
 
     return result
 
 
-def remove_children(document: DTO, document_repository: DocumentRepository):
+def remove_children(document: DTO, document_repository: Repository):
     children = get_document_children(document, document_repository)
     for child in children:
-        document_repository.delete(DTO(uid=child.uid, data={}))
+        document_repository.delete(child.uid)
         logger.info(f"Removed child document '{child.uid}'")
 
 
 class DocumentService:
     @staticmethod
-    def get_by_uid(document_uid: UUID, document_repository: DocumentRepository) -> DTO:
+    def get_by_uid(document_uid: UUID, document_repository: Repository) -> DTO:
         adict = get_complete_document(document_uid, document_repository)
         return DTO(data=adict, uid=document_uid)
 
     @staticmethod
-    def remove_attribute(parent: DTO, attribute: str, document_repository: DocumentRepository):
-        parent = get_data_always_as_dict(parent)
+    def remove_attribute(parent: DTO, attribute: str, document_repository: Repository):
         dotted_data = DottedDict(parent.data)
         attribute_document = dotted_data[attribute]
 
@@ -82,12 +71,11 @@ class DocumentService:
         logger.info(f"Removed attribute '{attribute}' from '{parent.uid}'")
 
     @staticmethod
-    def rename_attribute(parent_id: str, attribute: str, name: str, document_repository: DocumentRepository):
+    def rename_attribute(parent_id: str, attribute: str, name: str, document_repository: Repository):
         parent: DTO = document_repository.get(parent_id)
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
 
-        parent = get_data_always_as_dict(parent)
         dotted_data = DottedDict(parent.data)
         attribute_document = dotted_data[attribute]
         attribute_document["name"] = name

@@ -29,7 +29,7 @@
     {
       "name": "is_sedan",
       "type": "boolean",
-      "default": false
+      "default": "true"
     },
     {
       "name": "floatValues",

@@ -11,9 +11,9 @@ from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 import stringcase
 from jinja2 import Template
 
-from classes.data_source import DataSource, get_client
+from classes.data_source import DataSource
 from config import Config
-from core.repository.interface.document_repository import DocumentRepository
+from core.repository import Repository
 
 T = TypeVar("T")
 
@@ -313,7 +313,7 @@ class Factory:
 
     def __init__(
         self,
-        template_repository: DocumentRepository,
+        template_repository: Repository,
         _create_instance: bool = False,
         dump_site: Optional[str] = None,
         read_from_file: bool = False,
@@ -373,7 +373,7 @@ from __future__ import annotations
 from typing import List, Optional, Union, Any
 import stringcase
 import json
-from core.domain.dto import DTO
+from classes.dto import DTO
 
 
 class {{ get_name_of_metaclass(schema) }}(type):
@@ -523,7 +523,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             raise ValueError("'{{ get_name(attr) }}' is required, and cannot be set to None")
         {% endif -%}
         {% if attr.cast -%}
-        from core.domain.dto import DTO
+        from classes.dto import DTO
         {%- if attr.is_list %}
         if isinstance(value, list) and all(isinstance(element, dict) for element in value):
         {%- else %}
@@ -610,7 +610,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 {% endif %}
     @classmethod
     def _get_representation(cls, item, key: str = None, include_defaults: bool = True):
-        from core.domain.dto import DTO
+        from classes.dto import DTO
 
         if key:
             value = getattr(item, key)
@@ -639,7 +639,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
     @classmethod
     def from_dict(cls, adict):
-        from core.domain.dto import DTO
+        from classes.dto import DTO
         id_keys = ["_id", "id", "uid"]
         # FIXME: adict may not be a dict...
         if not isinstance(adict, dict):
@@ -723,7 +723,7 @@ from __future__ import annotations
 from typing import List, Optional, Union, Any
 import stringcase
 import json
-from core.domain.dto import DTO
+from classes.dto import DTO
 """
                 )
         return self.create(template_type, _create_instance=False)

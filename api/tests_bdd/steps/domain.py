@@ -1,13 +1,11 @@
+from anytree import NodeMixin, RenderTree
 from behave import given
 
 from classes.data_source import DataSource
-from core.domain.blueprint import Blueprint
-from core.domain.dto import DTO
-from core.domain.models import Package
-from core.repository.interface.document_repository import DocumentRepository
-from anytree import NodeMixin, RenderTree
-from core.repository.repository_factory import get_repository
+from classes.dto import DTO
 from core.enums import DMT, SIMOS
+from core.repository import Repository
+from core.repository.repository_factory import get_repository
 
 
 class TreeNode(NodeMixin):
@@ -50,34 +48,34 @@ def generate_tree_from_rows(node: TreeNode, rows):
 
 class Tree:
     def __init__(self, data_source_id, table):
-        self.data_source = DataSource(id=data_source_id)
+        self.data_source = DataSource(uid=data_source_id)
         self.table = table
         self.root = self._generate_tree()
 
     def add(self):
-        document_repository: DocumentRepository = get_repository(self.data_source)
+        document_repository: Repository = get_repository(self.data_source)
         for pre, fill, node in RenderTree(self.root):
             if node.type == SIMOS.BLUEPRINT.value:
-                document: DTO[Blueprint] = DTO(
-                    uid=node.uid, data=Blueprint(name=node.name, description=node.description, type=node.type)
+                document: DTO = DTO(
+                    uid=node.uid, data={"name": node.name, "description": node.description, "type": node.type}
                 )
                 document_repository.add(document)
                 print(f"Added blueprint {document.uid}")
             elif node.type == DMT.PACKAGE.value:
-                package: DTO[Package] = DTO(
-                    Package(
-                        name=node.name,
-                        description=node.description,
-                        type=node.type,
-                        is_root=node.dmt_is_root,
-                        content=node.extra()["content"],
-                    ),
+                package: DTO = DTO(
+                    data={
+                        "name": node.name,
+                        "description": node.description,
+                        "type": node.type,
+                        "isRoot": node.dmt_is_root,
+                        "content": node.extra()["content"],
+                    },
                     uid=node.uid,
                 )
                 document_repository.add(package)
                 print(f"Added package {package.uid}")
             else:
-                document: DTO[dict] = DTO(
+                document: DTO = DTO(
                     uid=node.uid, data={"name": node.name, "description": node.description, "type": node.type}
                 )
                 document_repository.add(document)

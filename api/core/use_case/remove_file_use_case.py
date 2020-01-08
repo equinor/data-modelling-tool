@@ -1,13 +1,10 @@
-from stringcase import snakecase
-
-from core.domain.dto import DTO
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.get_document_children import get_document_children
-from core.use_case.utils.get_reference import get_ref_id
 from utils.data_structure.find import get
 from utils.logging import logger
 
@@ -40,7 +37,7 @@ class RemoveFileRequestObject(req.ValidRequestObject):
 
 
 class RemoveFileUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object):
@@ -57,24 +54,18 @@ class RemoveFileUseCase(uc.UseCase):
             parent: DTO = self.document_repository.get(parent_id)
             if not parent:
                 raise EntityNotFoundException(uid=parent_id)
-            data = parent.data
-            if isinstance(data, dict):
-                data[attribute] = list(filter(lambda d: get_ref_id(d) != document.uid, get(data, attribute)))
-            else:
-                setattr(
-                    data,
-                    snakecase(attribute),
-                    list(filter(lambda d: get_ref_id(d) != document.uid, getattr(data, attribute))),
-                )
+
+            parent[attribute] = list(filter(lambda d: d["_id"] != document.uid, parent[attribute]))
+
             self.document_repository.update(parent)
 
         # Remove the actual document
-        self.document_repository.delete(document)
+        self.document_repository.delete(document.uid)
 
         # Remove children of the document
         children = get_document_children(document, self.document_repository)
         for child in children:
-            self.document_repository.delete(DTO(uid=child.uid, data={}))
+            self.document_repository.delete(child.uid)
             logger.info(f"Removed child document '{child.uid}'")
 
         logger.info(f"Removed document '{document.uid}'")

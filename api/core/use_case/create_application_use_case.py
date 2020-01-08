@@ -1,9 +1,9 @@
 # flake8: noqa: F401
 
 from config import Config
-from core.domain.dto import DTO
-from core.domain.storage_recipe import StorageRecipe
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from classes.storage_recipe import StorageRecipe
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -16,10 +16,9 @@ import os
 
 from utils.logging import logger
 from core.enums import DMT
-from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
+from core.use_case.utils.get_blueprint import get_blueprint
 from jinja2 import Template
-from core.domain.blueprint import get_attributes_with_reference
+from classes.blueprint import get_none_primitive_types
 
 API_DOCKERFILE = f"""\
 FROM mariner.azurecr.io/dmt/api:stable
@@ -198,45 +197,33 @@ def zip_all(ob, path, rel=""):
         pass
 
 
-def remove_ids(data):
-    for key in ["uid", "_id"]:
-        try:
-            del data[key]
-        except KeyError:
-            pass
-    return data
-
-
-def zip_package(ob, document, document_repository, path):
-    if isinstance(document.data, dict):
-        document = document.data
-    else:
-        document = document.data.to_dict()
-    json_data = json.dumps(remove_ids(document))
+def zip_package(ob, document: DTO, document_repository, path):
+    document.data.pop("_id", None)
+    document.data.pop("uid", None)
+    json_data = json.dumps(document.data)
     binary_data = json_data.encode()
-    write_to = f"{path}/{document['name']}.json"
+    write_to = f"{path}/{document.name}.json"
     logger.info(f"Writing: {document['type']} to {write_to}")
 
     if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
-    blueprint = get_blueprint(document["type"])
-    storage_recipe: StorageRecipe = get_storage_recipe(blueprint)
+    blueprint = get_blueprint(document.type)
 
     document_references = []
-    for attribute in get_attributes_with_reference(blueprint):
-        name = attribute["name"]
-        is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
-        if attribute.get("dimensions", "") == "*":
+    for attribute in get_none_primitive_types(blueprint):
+        name = attribute.name
+        is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.type)
+        if attribute.dimensions == "*":
             if not is_contained_in_storage:
-                if name in document:
+                if name in document.keys():
                     references = document[name]
                     for reference in references:
                         document_reference: DTO = document_repository.get(reference["_id"])
                         document_references.append(document_reference)
 
     for document_reference in document_references:
-        zip_package(ob, document_reference, document_repository, f"{path}/{document['name']}")
+        zip_package(ob, document_reference, document_repository, f"{path}/{document.name}")
 
 
 def strip_datasource(path):
@@ -248,7 +235,7 @@ def strip_datasource(path):
 
 
 class CreateApplicationUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object: CreateApplicationRequestObject):
@@ -265,7 +252,9 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_all(zip_file, f"{home_path}/core/SIMOS", rel="api/home/core/SIMOS")
             zip_all(zip_file, f"{home_path}/core/DMT", rel="api/home/core/DMT")
             zip_all(zip_file, f"{home_path}/data_sources", rel="api/home/data_sources")
-            json_data = json.dumps(remove_ids(application.data))
+            application.data.pop("_id", None)
+            application.data.pop("uid", None)
+            json_data = json.dumps(application.data)
             binary_data = json_data.encode()
             zip_file.writestr("api/home/settings.json", binary_data)
             runnable_file = generate_runnable_file(application.data["actions"])

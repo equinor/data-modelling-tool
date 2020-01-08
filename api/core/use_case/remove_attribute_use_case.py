@@ -1,6 +1,6 @@
 from core.service.document_service import DocumentService
-from core.domain.dto import DTO
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -29,7 +29,7 @@ class RemoveAttributeRequestObject(req.ValidRequestObject):
 
 
 class RemoveAttributeUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object):

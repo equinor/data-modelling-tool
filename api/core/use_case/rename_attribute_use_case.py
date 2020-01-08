@@ -1,6 +1,6 @@
 from core.service.document_service import DocumentService
 
-from core.repository.interface.document_repository import DocumentRepository
+from core.repository import Repository
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
@@ -32,7 +32,7 @@ class RenameAttributeRequestObject(req.ValidRequestObject):
 
 
 class RenameAttributeUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
+    def __init__(self, document_repository: Repository):
         self.document_repository = document_repository
 
     def process_request(self, request_object: RenameAttributeRequestObject):

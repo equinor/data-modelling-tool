@@ -1,7 +1,7 @@
 from typing import List
 
-from core.domain.blueprint import get_ui_recipe_from_blueprint
-from core.use_case.utils.get_template import get_blueprint
+from classes.blueprint import get_ui_recipe_from_blueprint
+from core.use_case.utils.get_blueprint import get_blueprint
 from utils.data_structure.find import get
 
 PRIMITIVES = ["string", "number", "integer", "boolean"]
@@ -69,10 +69,8 @@ def process_ui_recipe(ui_recipe, attributes):
 
     setting = {}
     for attribute in attributes:
-        name = get(attribute, "name")
-        result = process_attributes(
-            name, get(attribute, "type"), get(attribute, "dimensions"), get(ui_recipe, "attributes")
-        )
+        name = attribute.name
+        result = process_attributes(name, attribute.type, attribute.dimensions, ui_recipe.get("attributes"))
         setting[name] = result
 
     return setting
@@ -105,7 +103,7 @@ def form_to_ui_schema(blueprint, ui_recipe_name=None):
         ui_recipe = DEFAULT_CREATE_UI_RECIPE
         is_contained = ["name", "description"]
         attributes = []
-        for attribute in filter(lambda x: x.name not in is_contained, blueprint.attributes):
+        for attribute in [attr for attr in blueprint.attributes if attr.name not in is_contained]:
             attributes.append({"name": attribute.name, "contained": False})
         ui_recipe["attributes"] = attributes
         ui_recipes.append(ui_recipe)

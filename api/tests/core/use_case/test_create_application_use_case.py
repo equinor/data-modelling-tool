@@ -1,8 +1,8 @@
 # flake8: noqa: F401
 
 from unittest import mock
-from core.domain.dto import DTO
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from core.repository import Repository
 from core.use_case.create_application_use_case import (
     CreateApplicationUseCase,
     CreateApplicationRequestObject,
@@ -10,6 +10,8 @@ from core.use_case.create_application_use_case import (
 )
 
 APPLICATION_SETTING = {
+    "name": "TestApp",
+    "type": "system/SIMOS/Application",
     "packages": [],
     "actions": [
         {
@@ -110,7 +112,7 @@ def test_generate_runnable_file():
 
 
 def test_create():
-    document_repository: DocumentRepository = mock.Mock()
+    document_repository: Repository = mock.Mock()
     document_repository.get.return_value = DTO(data=APPLICATION_SETTING)
     use_case = CreateApplicationUseCase(document_repository=document_repository)
     data = {"applicationId": "NOT USED IN THIS TEST"}

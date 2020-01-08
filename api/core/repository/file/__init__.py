@@ -2,12 +2,12 @@ import json
 from pathlib import Path
 from typing import Union
 
-from core.domain.dto import DTO
-from core.repository.interface.document_repository import DocumentRepository
+from classes.dto import DTO
+from core.repository import Repository
 from core.repository.repository_exceptions import TemplateNotFound
 
 
-class TemplateRepositoryFromFile(DocumentRepository):
+class TemplateRepositoryFromFile(Repository):
     def __init__(self, location: Union[str, Path]):
         self.path = Path(location)
 
