@@ -16,9 +16,8 @@ import os
 
 from core.enums import DMT
 from core.use_case.create_application_use_case import zip_package
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from jinja2 import Template
-from classes.blueprint import get_none_primitive_types
 
 
 class ExportRequestObject(req.ValidRequestObject):

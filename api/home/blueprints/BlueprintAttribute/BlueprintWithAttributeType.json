@@ -1,0 +1,26 @@
+{
+    "_id": "6330e796-2709-46bd-8250-972bc79ded77",
+    "name": "TestBlueprint",
+    "description": "",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "name": "name"
+        },
+        {
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "name": "description"
+        },
+        {
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "name": "type",
+            "default": "system/SIMOS/Blueprint"
+        }
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

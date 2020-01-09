@@ -1,7 +1,6 @@
 from typing import List
 
-from classes.blueprint import get_ui_recipe_from_blueprint
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from utils.data_structure.find import get
 
 PRIMITIVES = ["string", "number", "integer", "boolean"]
@@ -117,7 +116,7 @@ def form_to_ui_schema(blueprint, ui_recipe_name=None):
 
     if ui_recipe_name:
         result[ui_recipe_name] = process_ui_recipe(
-            get_ui_recipe_from_blueprint(blueprint, ui_recipe_name), blueprint.attributes
+            blueprint.get_ui_recipe_from_blueprint(ui_recipe_name), blueprint.attributes
         )
     else:
         for ui_recipe in ui_recipes:

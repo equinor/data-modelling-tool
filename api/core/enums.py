@@ -1,4 +1,7 @@
-from enum import Enum, auto
+from enum import auto, Enum
+
+
+PRIMITIVES = {"string", "number", "integer", "boolean"}
 
 
 class DataSourceType(Enum):

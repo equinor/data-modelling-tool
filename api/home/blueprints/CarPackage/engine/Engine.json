@@ -42,20 +42,7 @@
       "optional": true
     }
   ],
-  "storageRecipes": [
-    {
-      "name": "DefaultStorageRecipe",
-      "type": "system/SIMOS/StorageRecipe",
-      "description": "",
-      "attributes": [
-        {
-          "name": "fuel_pump",
-          "type": "SSR-DataSource/CarPackage/subdir/subdir2/FuelPump",
-          "contained": false
-        }
-      ]
-    }
-  ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "name": "EnginePlot",

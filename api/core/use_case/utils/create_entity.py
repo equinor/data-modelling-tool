@@ -1,6 +1,7 @@
 import json
 from json import JSONDecodeError
 
+import core.utility
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from utils.data_structure.find import get
@@ -30,12 +31,12 @@ class CreateEntity:
         self.description = description
         self.type = type
         self.blueprint_provider = blueprint_provider
-        self.attribute_types = self.blueprint_provider.get_blueprint("system/SIMOS/AttributeTypes").to_dict()
-        self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint("system/SIMOS/BlueprintAttribute")
+        self.attribute_types = core.utility.get_blueprint("system/SIMOS/AttributeTypes").to_dict()
+        self.blueprint_attribute: Blueprint = core.utility.get_blueprint("system/SIMOS/BlueprintAttribute")
         self.attribute_optional: BlueprintAttribute = next(
             attr for attr in self.blueprint_attribute.attributes if get(attr, "name") == "optional"
         )
-        blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
+        blueprint: Blueprint = core.utility.get_blueprint(type)
         entity = {"name": name, "description": description}
         self._entity = self._get_entity(blueprint=blueprint, parent_type=type, entity=entity)
 
@@ -107,7 +108,7 @@ class CreateEntity:
                     if attr.name not in entity:
                         entity[attr.name] = default_value
             else:
-                blueprint = self.blueprint_provider.get_blueprint(attr.type)
+                blueprint = core.utility.get_blueprint(attr.type)
                 if attr.dimensions == "*":
                     entity[attr.name] = []
                 else:

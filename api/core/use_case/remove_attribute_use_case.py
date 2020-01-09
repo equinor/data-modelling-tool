@@ -1,7 +1,7 @@
-from core.service.document_service import DocumentService
 from classes.dto import DTO
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc

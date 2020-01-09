@@ -1,9 +1,9 @@
 # TODO: Make this prettier, maybe move to repository
-from classes.blueprint import Blueprint, get_none_primitive_types
+from classes.blueprint import Blueprint
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from utils.data_structure.find import get
 
 
@@ -13,7 +13,7 @@ def get_document_children(document: DTO, document_repository):
     result = []
     document_references = []
 
-    for attribute in get_none_primitive_types(blueprint):
+    for attribute in blueprint.get_none_primitive_types():
         name = get(attribute, "name")
         is_contained_in_storage = storage_recipe.is_contained(name, get(attribute, "type"))
         if attribute.dimensions == "*":

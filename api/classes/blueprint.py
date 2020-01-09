@@ -3,6 +3,7 @@ from typing import Dict, List
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import DefaultStorageRecipe, StorageRecipe
+from core.enums import PRIMITIVES
 
 
 def get_storage_recipes(storage_recipes_dict: List[Dict], attributes: List[Dict]):
@@ -47,20 +48,16 @@ class Blueprint:
     def __eq__(self, other):
         return self.to_dict() == other.to_dict()
 
+    def get_none_primitive_types(self) -> List[BlueprintAttribute]:
+        blueprints = [attribute for attribute in self.attributes if attribute.type not in PRIMITIVES]
+        return blueprints
 
-def get_none_primitive_types(blueprint: Blueprint) -> List[BlueprintAttribute]:
-    primitives = ["string", "number", "integer", "number", "boolean"]
-    blueprints = [attribute for attribute in blueprint.attributes if attribute.type not in primitives]
-    return blueprints
+    def get_attribute_names(self):
+        return [attribute.name for attribute in self.attributes]
 
-
-def get_attribute_names(blueprint: Blueprint):
-    return [attribute.name for attribute in blueprint.attributes]
-
-
-def get_ui_recipe_from_blueprint(blueprint: Blueprint, name=None):
-    if name:
-        return next((x for x in blueprint.ui_recipes if x["name"] == name), None)
-    else:
-        name = blueprint.ui_recipes[0] if len(blueprint.ui_recipes) > 0 else {}
-        return name
+    def get_ui_recipe_from_blueprint(self, name=None):
+        if name:
+            return next((x for x in self.ui_recipes if x["name"] == name), None)
+        else:
+            name = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
+            return name

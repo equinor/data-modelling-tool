@@ -1,6 +1,6 @@
 from classes.blueprint import Blueprint
 from classes.ui_recipe import UIRecipe
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
 
 PRIMITIVES = ["string", "number", "integer", "boolean"]

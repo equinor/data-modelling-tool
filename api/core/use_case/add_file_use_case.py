@@ -12,7 +12,7 @@ from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.use_case.utils.create_entity import CreateEntity
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from utils.data_structure.find import get
 from utils.logging import logger
 

@@ -7,8 +7,7 @@ from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.use_case.utils.get_blueprint import get_blueprint
-from core.utility import get_document_by_ref
+from core.utility import get_document_by_ref, get_blueprint
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):

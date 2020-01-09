@@ -1,5 +1,7 @@
+from functools import lru_cache
 from typing import List, Union
 
+from classes.blueprint import Blueprint
 from classes.data_source import DataSource
 from config import Config
 from classes.dto import DTO
@@ -62,3 +64,11 @@ def wipe_db():
     for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.SYSTEM_COLLECTION, "documents"]:
         print(f"Dropping collection '{name}'")
         dmt_database.drop_collection(name)
+
+
+@lru_cache(maxsize=Config.CACHE_MAX_SIZE)
+def get_blueprint(type: str) -> Blueprint:
+    document: DTO = get_document_by_ref(type)
+    if not document:
+        return None
+    return Blueprint(document)

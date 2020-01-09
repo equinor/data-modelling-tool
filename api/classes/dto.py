@@ -6,7 +6,7 @@ from uuid import UUID, uuid4
 # But to get and set any "non-standard" properties, use 'my_dto["my_key"]' instead of 'my_dto.data["my_key"]'.
 # The goal is to encapsulate the 'data' dict in the DTO class
 class DTO:
-    def __init__(self, data: Dict, uid: Optional[UUID] = None):
+    def __init__(self, data: Dict, uid: Optional[str] = None):
         if uid is None:
             for key in ["uid", "_id", "id"]:
                 try:

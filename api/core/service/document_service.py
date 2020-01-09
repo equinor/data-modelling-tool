@@ -1,19 +1,19 @@
 from typing import Dict
-from uuid import UUID
 
 from dotted.collection import DottedDict
 
 from classes.dto import DTO
+from classes.tree_node import Node
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.get_document_children import get_document_children
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from utils.logging import logger
 
 
 # TODO: Have this return a DTO? We are going DTO->Dict->DTO now
-def get_complete_document(document_uid: UUID, document_repository: Repository) -> Dict:
-    document: DTO = document_repository.get(str(document_uid))
+def get_complete_document(document_uid: str, document_repository: Repository) -> Dict:
+    document: DTO = document_repository.get(document_uid)
     if not document:
         raise EntityNotFoundException(uid=document_uid)
 
@@ -46,9 +46,16 @@ def remove_children(document: DTO, document_repository: Repository):
 
 class DocumentService:
     @staticmethod
-    def get_by_uid(document_uid: UUID, document_repository: Repository) -> DTO:
+    def get_by_uid(document_uid: str, document_repository: Repository) -> DTO:
         adict = get_complete_document(document_uid, document_repository)
+        node = Node(DTO(data=adict, uid=document_uid))
         return DTO(data=adict, uid=document_uid)
+
+    @staticmethod
+    def get_by_uid_return_tree_node(document_uid: str, document_repository: Repository) -> Node:
+        adict = get_complete_document(document_uid, document_repository)
+        node = Node(DTO(data=adict, uid=document_uid))
+        return node
 
     @staticmethod
     def remove_attribute(parent: DTO, attribute: str, document_repository: Repository):

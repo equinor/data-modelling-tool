@@ -4,7 +4,7 @@ from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from utils.logging import logger
 from core.shared import response_object as res
 from core.shared import request_object as req

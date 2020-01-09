@@ -5,7 +5,6 @@ from anytree import PreOrderIter, RenderTree
 
 from classes.blueprint_attribute import BlueprintAttribute
 from config import Config
-from classes.blueprint import get_attribute_names, get_none_primitive_types
 from classes.dto import DTO
 from classes.index import DocumentNode
 from classes.recipe import PRIMITIVES, Recipe
@@ -27,7 +26,7 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_rename_menu_action,
     get_runnable_menu_action,
 )
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_recipe
 from core.use_case.utils.sort_menu_items import sort_menu_items
 from utils.data_structure.find import get
@@ -138,7 +137,7 @@ class Tree:
         if is_array:
             attribute_blueprint = get_blueprint(instance["type"])
             data = {}
-            for item in get_attribute_names(attribute_blueprint):
+            for item in attribute_blueprint.get_attribute_names():
                 data[item] = ("${" + item + "}",)
             contained_menu_action = get_contained_menu_action(
                 data_source_id=data_source_id,
@@ -158,7 +157,7 @@ class Tree:
 
         blueprint = get_blueprint(attribute_type)
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
-        for attribute in get_none_primitive_types(blueprint):
+        for attribute in blueprint.get_none_primitive_types():
             name = attribute.name
             attr_type = attribute.type
 
@@ -192,16 +191,13 @@ class Tree:
         self, data_source_id, document_id, document_path, attribute_type, values: List[Dict], parent_node
     ):
         for index, instance in enumerate(values):
-            data = instance
-            if isinstance(data, BlueprintAttribute):
-                print(1)
             try:
                 self.generate_contained_node(
-                    document_id, document_path, data, index, data_source_id, attribute_type, parent_node, True
+                    document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, True
                 )
             except Exception as error:
                 logger.exception(error)
-                get_error_node(document=DTO(data=data), parent_node=parent_node, data_source_id=data_source_id)
+                get_error_node(document=DTO(data=instance), parent_node=parent_node, data_source_id=data_source_id)
                 logger.warning(f"Caught error while processing document {document_path}: {error}")
 
     def process_document(self, data_source_id, document: DTO, parent_node: DocumentNode, app_settings: Dict):
@@ -291,7 +287,7 @@ class Tree:
             node.menu_items.append({"label": "New", "menuItems": create_new_menu_items})
 
         # Use the blueprint to find attributes that contains references
-        for attribute in get_none_primitive_types(node.blueprint):
+        for attribute in node.blueprint.get_none_primitive_types():
             attribute_name = attribute.name
             # is_contained_in_storage = is_contained(attribute.name, attribute["type"])
 
@@ -305,7 +301,7 @@ class Tree:
                 attribute_blueprint = get_blueprint(attribute.type)
 
                 data = {}
-                for item in get_attribute_names(attribute_blueprint):
+                for item in attribute_blueprint.get_attribute_names():
                     data[item] = ("${" + item + "}",)
 
                 contained_menu_action = get_contained_menu_action(
