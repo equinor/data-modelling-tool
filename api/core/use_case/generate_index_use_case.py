@@ -3,6 +3,7 @@ from typing import Dict, List
 
 from anytree import PreOrderIter, RenderTree
 
+from classes.blueprint_attribute import BlueprintAttribute
 from config import Config
 from classes.blueprint import get_attribute_names, get_none_primitive_types
 from classes.dto import DTO
@@ -28,6 +29,7 @@ from core.use_case.utils.generate_index_menu_actions import (
 )
 from core.use_case.utils.get_blueprint import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_recipe
+from core.use_case.utils.sort_menu_items import sort_menu_items
 from utils.data_structure.find import get
 from utils.group_by import group_by
 from utils.logging import logger
@@ -84,7 +86,7 @@ class Tree:
         return documents
 
     def generate_contained_node(
-        self, document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, is_array
+        self, document_id, document_path, instance: Dict, index, data_source_id, attribute_type, parent_node, is_array
     ):
         if is_array:
             uid = f"{document_id}.{'.'.join(document_path)}.{index}"
@@ -104,8 +106,7 @@ class Tree:
                             data_source_id, "Create " + attr.name, attr.type, document_id, attribute_name
                         )
                     )
-
-        menu_items = [{"label": "New", "menuItems": create_new_menu_items}]
+        menu_items = [{"label": "New", "menuItems": create_new_menu_items}] if len(create_new_menu_items) > 0 else None
 
         node = DocumentNode(
             data_source_id=data_source_id,
@@ -188,10 +189,12 @@ class Tree:
             )
 
     def generate_contained_nodes(
-        self, data_source_id, document_id, document_path, attribute_type, values, parent_node
+        self, data_source_id, document_id, document_path, attribute_type, values: List[Dict], parent_node
     ):
         for index, instance in enumerate(values):
             data = instance
+            if isinstance(data, BlueprintAttribute):
+                print(1)
             try:
                 self.generate_contained_node(
                     document_id, document_path, data, index, data_source_id, attribute_type, parent_node, True
@@ -242,11 +245,7 @@ class Tree:
         # Every node gets an delete and rename action
         node.menu_items.append(
             get_rename_menu_action(
-                data_source_id=data_source_id,
-                document_id=document.uid,
-                type=document.type,
-                name=document.name,
-                parent_id=parent_node.uid,
+                data_source_id=data_source_id, document_id=document.uid, type=document.type, parent_id=parent_node.uid,
             )
         )
         node.menu_items.append(
@@ -342,21 +341,11 @@ class Tree:
                         self.generate_contained_nodes(
                             data_source_id, document.uid, [attribute_name], attribute.type, values, attribute_node,
                         )
+            # If the attribute is NOT an array
             else:
-                if values := document.data.get("attribute_name"):
-                    # Values are stored in separate document
-                    if is_package:
-                        attribute_nodes.append({"documents": self.get_references(values), "node": node})
-                else:
-                    node.menu_items.append(
-                        get_dynamic_create_menu_item(
-                            data_source_id=data_source_id,
-                            name=attribute_name,
-                            type=attribute.type,
-                            attribute=attribute_name,
-                            parent_id=document.uid,
-                        )
-                    )
+                if values := document.data.get(attribute_name) and is_package:
+                    attribute_nodes.append({"documents": self.get_references(values), "node": node})
+
                 # TODO: After last menu_item is appended, sort the list.
 
                 if not is_package:
@@ -370,6 +359,8 @@ class Tree:
                         node,
                         False,
                     )
+
+        node.menu_items = sort_menu_items(node.menu_items)
 
         for attribute_node in attribute_nodes:
             for attribute_document in attribute_node["documents"]:
@@ -399,7 +390,7 @@ class Tree:
         root_node = DocumentNode(
             data_source_id=data_source_id,
             name=data_source_name,
-            menu_items=[{"label": "New", "menuItems": [get_create_root_package_menu_item(data_source_id)]}],
+            menu_items=[get_create_root_package_menu_item(data_source_id)],
         )
 
         for package in packages:

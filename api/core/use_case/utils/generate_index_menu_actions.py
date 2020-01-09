@@ -16,7 +16,7 @@ def get_rename_document_menu_item(data_source_id: str, start_path: str, document
 
 
 def get_rename_menu_action(
-    data_source_id: str, document_id: str, type: str, name: str, parent_id: str, attribute: str = "content"
+    data_source_id: str, document_id: str, type: str, parent_id: str, attribute: str = "content"
 ):
     return {
         "label": "Rename",
@@ -81,6 +81,8 @@ def get_rename_attribute_menu_action(data_source_id: str, parent_id: str, type: 
 def get_dynamic_create_menu_item(
     data_source_id: str, name: str, type: str, parent_id: str = None, attribute: str = "content"
 ):
+    if name == None or name == "":
+        print(1)
     return {
         "label": f"{name}",
         "action": "CREATE",
@@ -101,7 +103,7 @@ def get_dynamic_create_menu_item(
 
 def get_create_root_package_menu_item(data_source_id: str):
     return {
-        "label": "Root Package",
+        "label": "Create Root Package",
         "action": "CREATE",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
@@ -113,6 +115,8 @@ def get_create_root_package_menu_item(data_source_id: str):
 
 
 def get_not_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data):
+    if type == None or type == "":
+        print(1)
     return {
         "label": "New",
         "menuItems": [
@@ -138,6 +142,8 @@ def get_not_contained_menu_action(data_source_id: str, name: str, type: str, par
 
 
 def get_contained_menu_action(data_source_id: str, name: str, type: str, parent_id: str, data, node_id: str):
+    if type == None or type == "":
+        print(1)
     return {
         "label": "New",
         "menuItems": [
