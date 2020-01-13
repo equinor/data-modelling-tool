@@ -31,7 +31,22 @@ Feature: Explorer - Add file
         "data":{
            "name":"new_document",
            "type":"system/SIMOS/Blueprint",
-           "storageRecipes":[]
+           "storageRecipes":[],
+           "attributes": [
+             {
+                "type": "string",
+                "name": "name"
+              },
+              {
+                "type": "string",
+                "name": "description"
+              },
+              {
+                "type": "string",
+                "name": "type",
+                "default": "system/SIMOS/Blueprint"
+              }
+           ]
         }
     }
     """

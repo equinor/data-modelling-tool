@@ -9,6 +9,8 @@ from utils.data_structure.find import get
 # doit create:system:blueprints
 from utils.form_to_schema import PRIMITIVES
 
+from core.enums import SIMOS
+
 
 class CreateEntityException(Exception):
     def __init__(self, message: str):
@@ -26,12 +28,8 @@ class InvalidDefaultValue(CreateEntityException):
 
 class CreateEntity:
     def __init__(self, blueprint_provider, type: str, description: str, name: str):
-        self.name = name
-        self.description = description
-        self.type = type
         self.blueprint_provider = blueprint_provider
-        self.attribute_types = self.blueprint_provider.get_blueprint("system/SIMOS/AttributeTypes").to_dict()
-        self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint("system/SIMOS/BlueprintAttribute")
+        self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint(SIMOS.BLUEPRINT_ATTRIBUTE.value)
         self.attribute_optional: BlueprintAttribute = next(
             attr for attr in self.blueprint_attribute.attributes if get(attr, "name") == "optional"
         )
@@ -39,20 +37,24 @@ class CreateEntity:
         entity = {"name": name, "description": description}
         self._entity = self._get_entity(blueprint=blueprint, parent_type=type, entity=entity)
 
+        if type == SIMOS.BLUEPRINT.value:
+            required_attributes = [
+                {"type": "string", "name": "name"},
+                {"type": "string", "name": "description"},
+                {"type": "string", "name": "type", "default": type},
+            ]
+            self._entity["attributes"] = required_attributes
+
     def is_optional(self, attribute: BlueprintAttribute):
         if attribute.optional is not None:
             return attribute.optional
 
+        # If attribute does not have optional defined, use the global default value
         if self.attribute_optional is not None:
-            return bool(self.attribute_optional.default)
+            return self.attribute_optional.default == "true"
 
-        # todo use default in optional attribute
+        # If blueprint attributes has forgot to define default value for optional
         return False
-
-    # TODO: This does not seem to work very well...
-    # @property
-    # def primitives(self):
-    #     return [type for type in self.attribute_types.get("values", []) if type != "blueprint"]
 
     @staticmethod
     def parse_value(attr: BlueprintAttribute):
