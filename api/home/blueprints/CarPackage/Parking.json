@@ -4,19 +4,23 @@
   "description": "",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "SSR-DataSource/CarPackage/Car",
+      "attributeType": "SSR-DataSource/CarPackage/Car",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "cars",
       "optional": true,
       "dimensions": "*"

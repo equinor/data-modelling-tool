@@ -1,10 +1,10 @@
 from typing import Dict, List
 
 from classes.blueprint_attribute import BlueprintAttribute
+from core.enums import PRIMITIVES
 
 DEFAULT_PRIMITIVE_CONTAINED = True
 DEFAULT_COMPLEX_CONTAINED = True
-PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
 class StorageRecipeAttribute:

@@ -4,24 +4,29 @@
   "description": "This describes an engine",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "power"
     },
     {
       "name": "value1",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "data points.",
       "dimensions": "*",
       "contained": true,
@@ -30,14 +35,15 @@
     },
     {
       "name": "value2",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "more data points.",
       "dimensions": "*",
       "contained": true,
       "optional": false
     },
     {
-      "type": "SSR-DataSource/CarPackage/engine/FuelPump",
+      "attributeType": "SSR-DataSource/CarPackage/engine/FuelPump", "type": "system/SIMOS/BlueprintAttribute",
       "name": "fuelPump",
       "optional": true
     }

@@ -97,12 +97,12 @@ class Tree:
         create_new_menu_items = []
         blueprint = get_blueprint(instance["type"])
         for attr in blueprint.attributes:
-            if "/" in attr.type:
+            if "/" in attr.attribute_type:
                 if attr.dimensions == "*":
                     attribute_name = ".".join(document_path) + "." + str(index) + "." + attr.name
                     create_new_menu_items.append(
                         get_dynamic_create_menu_item(
-                            data_source_id, "Create " + attr.name, attr.type, document_id, attribute_name
+                            data_source_id, "Create " + attr.name, attr.attribute_type, document_id, attribute_name
                         )
                     )
         menu_items = [{"label": "New", "menuItems": create_new_menu_items}] if len(create_new_menu_items) > 0 else None
@@ -159,7 +159,7 @@ class Tree:
         recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
         for attribute in blueprint.get_none_primitive_types():
             name = attribute.name
-            attr_type = attribute.type
+            attr_type = attribute.attribute_type
 
             is_contained_in_ui = recipe.is_contained(attribute)
             if not is_contained_in_ui:
@@ -182,7 +182,7 @@ class Tree:
                 attribute.to_dict(),
                 None,
                 data_source_id,
-                attribute.type,
+                attribute.attribute_type,
                 node,
                 attribute.dimensions == "*",
             )
@@ -298,7 +298,7 @@ class Tree:
             # If the attribute is an array
             # TODO: Handle fixed size arrays
             if attribute.dimensions == "*":
-                attribute_blueprint = get_blueprint(attribute.type)
+                attribute_blueprint = get_blueprint(attribute.attribute_type)
 
                 data = {}
                 for item in attribute_blueprint.get_attribute_names():
@@ -308,7 +308,7 @@ class Tree:
                     data_source_id=data_source_id,
                     name=attribute_name,
                     node_id=f"{document.uid}_{attribute_name}",
-                    type=attribute.type,
+                    type=attribute.attribute_type,
                     parent_id=document.uid,
                     data=data,
                 )
@@ -335,7 +335,12 @@ class Tree:
                     # Values are stored inside parent. We create placeholder nodes.
                     else:
                         self.generate_contained_nodes(
-                            data_source_id, document.uid, [attribute_name], attribute.type, values, attribute_node,
+                            data_source_id,
+                            document.uid,
+                            [attribute_name],
+                            attribute.attribute_type,
+                            values,
+                            attribute_node,
                         )
             # If the attribute is NOT an array
             else:
@@ -351,7 +356,7 @@ class Tree:
                         attribute.to_dict(),
                         None,
                         data_source_id,
-                        attribute.type,
+                        attribute.attribute_type,
                         node,
                         False,
                     )

@@ -49,7 +49,7 @@ class Blueprint:
         return self.to_dict() == other.to_dict()
 
     def get_none_primitive_types(self) -> List[BlueprintAttribute]:
-        blueprints = [attribute for attribute in self.attributes if attribute.type not in PRIMITIVES]
+        blueprints = [attribute for attribute in self.attributes if attribute.attribute_type not in PRIMITIVES]
         return blueprints
 
     def get_attribute_names(self):

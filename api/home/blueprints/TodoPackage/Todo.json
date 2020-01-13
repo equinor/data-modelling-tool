@@ -4,23 +4,28 @@
   "description": "This describes a todo",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "integer",
+      "attributeType": "integer",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "id"
     },
     {
-      "type": "integer",
+      "attributeType": "integer",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "userId"
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "completed"
     }
   ],

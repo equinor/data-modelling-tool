@@ -4,7 +4,8 @@
   "description": "This describes a add document",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     }
   ],

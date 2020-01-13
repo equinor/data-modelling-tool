@@ -3,7 +3,7 @@ from typing import List
 from core.utility import get_blueprint
 from utils.data_structure.find import get
 
-PRIMITIVES = ["string", "number", "integer", "boolean"]
+from core.enums import PRIMITIVES
 
 
 def find_attribute(name: str, attributes: List):
@@ -69,7 +69,7 @@ def process_ui_recipe(ui_recipe, attributes):
     setting = {}
     for attribute in attributes:
         name = attribute.name
-        result = process_attributes(name, attribute.type, attribute.dimensions, ui_recipe.get("attributes"))
+        result = process_attributes(name, attribute.attribute_type, attribute.dimensions, ui_recipe.get("attributes"))
         setting[name] = result
 
     return setting

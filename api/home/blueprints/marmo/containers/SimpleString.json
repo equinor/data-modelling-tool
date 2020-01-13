@@ -5,7 +5,8 @@
   "attributes": [
     {
       "name": "name",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "variable name for named accessing",
       "default": "simpleString",
       "contained": true,
@@ -13,16 +14,22 @@
     },
     {
       "name": "description",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "instance description",
       "default": "",
       "contained": true,
       "optional": false
     },
-    { "name": "type", "type": "string" },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
     {
       "name": "value",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "string.",
       "default": "",
       "contained": true,

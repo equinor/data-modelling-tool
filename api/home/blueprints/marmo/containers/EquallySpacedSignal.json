@@ -5,7 +5,8 @@
   "attributes": [
     {
       "name": "name",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "variable name for named accessing",
       "default": "equallySpacedSignal",
       "contained": true,
@@ -13,16 +14,22 @@
     },
     {
       "name": "description",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "instance description",
       "default": "",
       "contained": true,
       "optional": false
     },
-    { "name": "type", "type": "string" },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
     {
       "name": "value",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "data points.",
       "default": "0.0",
       "dimensions": "*",
@@ -31,7 +38,8 @@
     },
     {
       "name": "xname",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "name for the x value",
       "default": "time",
       "contained": true,
@@ -39,7 +47,8 @@
     },
     {
       "name": "xdescription",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "description for the x-axis",
       "default": "",
       "contained": true,
@@ -47,7 +56,8 @@
     },
     {
       "name": "xunit",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "x-axis unit.",
       "default": "",
       "contained": true,
@@ -55,7 +65,8 @@
     },
     {
       "name": "xdelta",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "x-axis or index spacing.",
       "default": 1,
       "contained": true,
@@ -63,7 +74,8 @@
     },
     {
       "name": "xstart",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "x-axis or index start.",
       "default": 0,
       "contained": true,
@@ -71,7 +83,8 @@
     },
     {
       "name": "xlabel",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "label for the x-axis.",
       "default": "",
       "contained": true,
@@ -79,7 +92,8 @@
     },
     {
       "name": "label",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "label for the y-axis.",
       "default": "",
       "contained": true,
@@ -87,7 +101,8 @@
     },
     {
       "name": "legend",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "description of xy values to be used as legend.",
       "default": "",
       "contained": true,
@@ -95,7 +110,8 @@
     },
     {
       "name": "unit",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "data unit.",
       "default": "",
       "contained": true,

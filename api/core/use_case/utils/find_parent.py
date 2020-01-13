@@ -14,7 +14,7 @@ def find_parent(document: DTO, target_id, document_repository):
 
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
-        is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
+        is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.attribute_type)
         if attribute.dimensions == "*":
             if not is_contained_in_storage:
                 if name in document.keys():

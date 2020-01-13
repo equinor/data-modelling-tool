@@ -15,7 +15,7 @@ def get_document_children(document: DTO, document_repository):
 
     for attribute in blueprint.get_none_primitive_types():
         name = get(attribute, "name")
-        is_contained_in_storage = storage_recipe.is_contained(name, get(attribute, "type"))
+        is_contained_in_storage = storage_recipe.is_contained(name, attribute.attribute_type)
         if attribute.dimensions == "*":
             if not is_contained_in_storage:
                 if get(document.data, name):

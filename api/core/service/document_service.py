@@ -24,7 +24,7 @@ def get_complete_document(document_uid: str, document_repository: Repository) ->
         attribute_name = attribute.name
         key = attribute_name
         if attribute_name in result:
-            if blueprint.storage_recipes[0].is_contained(attribute_name, attribute.type):
+            if blueprint.storage_recipes[0].is_contained(attribute_name, attribute.attribute_type):
                 pass
             else:
                 if attribute.dimensions == "*":
@@ -48,7 +48,7 @@ class DocumentService:
     @staticmethod
     def get_by_uid(document_uid: str, document_repository: Repository) -> DTO:
         adict = get_complete_document(document_uid, document_repository)
-        node = Node(DTO(data=adict, uid=document_uid))
+        # node = Node(DTO(data=adict, uid=document_uid))
         return DTO(data=adict, uid=document_uid)
 
     @staticmethod

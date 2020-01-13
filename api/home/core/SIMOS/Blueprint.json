@@ -4,20 +4,24 @@
   "description": "This describes a blueprint",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description",
       "default": "",
       "optional": true
     },
     {
+      "attributeType": "system/SIMOS/BlueprintAttribute",
       "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
       "name": "attributes",
@@ -25,6 +29,7 @@
       "contained": true
     },
     {
+      "attributeType": "system/SIMOS/BlueprintAttribute",
       "type": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
       "name": "storageRecipes",
@@ -32,6 +37,7 @@
       "default": "[]"
     },
     {
+      "attributeType": "system/SIMOS/BlueprintAttribute",
       "type": "system/SIMOS/UiRecipe",
       "dimensions": "*",
       "name": "uiRecipes",

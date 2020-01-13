@@ -4,15 +4,18 @@
   "description": "This describes a todo list",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "SSR-DataSource/TodoDemo/Todo",
+      "attributeType": "SSR-DataSource/TodoDemo/Todo",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "items",
       "dimensions": "*"
     }

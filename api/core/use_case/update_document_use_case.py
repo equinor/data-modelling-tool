@@ -1,5 +1,6 @@
 from typing import Dict
 
+from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from core.repository import Repository
@@ -50,8 +51,8 @@ def create_reference(data: Dict, document_repository, type: str):
     return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
 
 
-def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, document_repository):
-    is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
+def update_attribute(attribute: BlueprintAttribute, data: Dict, storage_recipe: StorageRecipe, document_repository):
+    is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.attribute_type)
     attribute_data = data[attribute.name]
 
     if is_contained_in_storage:
@@ -60,12 +61,12 @@ def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, docum
         if attribute.dimensions == "*":
             references = []
             for instance in attribute_data:
-                reference = create_reference(instance, document_repository, attribute.type)
+                reference = create_reference(instance, document_repository, attribute.attribute_type)
                 update_document(reference["_id"], instance, document_repository)
                 references.append(reference)
             return references
         else:
-            reference = create_reference(attribute_data, document_repository, attribute.type)
+            reference = create_reference(attribute_data, document_repository, attribute.attribute_type)
             return reference
 
 

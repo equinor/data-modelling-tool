@@ -4,44 +4,44 @@
     "type": "object",
     "properties": {
       "documentType": {
-        "type": "string",
+        "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
         "title": "documentType",
         "default": ""
       },
       "name": {
-        "type": "string",
+        "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
         "title": "Name",
         "minLength": 3,
         "pattern": "^[a-zA-Z0-9_\\-]*$"
       },
       "host": {
-        "type": "string",
+        "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
         "title": "Hostname"
       },
       "port": {
-        "type": "integer",
+        "attributeType": "integer", "type": "system/SIMOS/BlueprintAttribute",
         "title": "port",
         "default": 27017
       },
       "username": {
-        "type": "string",
+        "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
         "title": "Username"
       },
       "password": {
-        "type": "string",
+        "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
         "title": "Password"
       },
       "tls": {
-        "type": "boolean",
+        "attributeType": "boolean", "type": "system/SIMOS/BlueprintAttribute",
         "title": "TLS",
         "default": false
       },
       "database": {
-        "type": "string",
+        "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
         "title": "Database"
       },
       "collection": {
-        "type": "string",
+        "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
         "title": "Collection"
       }
     },
