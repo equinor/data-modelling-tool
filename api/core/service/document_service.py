@@ -5,7 +5,7 @@ from dotted.collection import DottedDict
 from classes.dto import DTO
 from classes.tree_node import Node
 from core.repository import Repository
-from core.repository.repository_exceptions import EntityNotFoundException
+from core.repository.repository_exceptions import EntityNotFoundException, EntityAlreadyExistsException
 from core.use_case.utils.get_document_children import get_document_children
 from core.utility import get_blueprint
 from utils.logging import logger
@@ -90,4 +90,33 @@ class DocumentService:
         document = DTO(dotted_data.to_python(), uid=parent.uid)
         document_repository.update(document)
         logger.info(f"Rename attribute '{attribute}' from '{parent.uid}'")
+        return document
+
+    def rename_document(
+        self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository
+    ):
+        document: DTO = document_repository.get(document_id)
+        if not document:
+            raise EntityNotFoundException(document_id)
+
+        if parent_id:
+            parent_document: DTO = document_repository.get(parent_id)
+            if not parent_document:
+                raise EntityNotFoundException(parent_id)
+
+            references = list(filter(lambda x: x["name"] == name, parent_document[attribute]))
+            if len(references) > 0:
+                raise EntityAlreadyExistsException(name)
+
+            # Remove old reference
+            parent_document[attribute] = [ref for ref in parent_document["content"] if not ref["_id"] == document.uid]
+            # Add new reference
+            reference = {"_id": document.uid, "name": name, "type": document.type}
+            parent_document[attribute].append(reference)
+
+        document.name = name
+        document_repository.update(document)
+
+        logger.info(f"Rename document '{document.uid}' to '{name}")
+
         return document
