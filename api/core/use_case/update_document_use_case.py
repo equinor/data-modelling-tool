@@ -8,7 +8,9 @@ from core.repository.repository_exceptions import EntityNotFoundException
 from core.utility import get_blueprint
 from utils.logging import logger
 from core.shared import response_object as res
+from core.service.document_service import DocumentService
 from core.shared import request_object as req
+from core.shared import response_object as res
 from core.shared import use_case as uc
 
 
@@ -30,13 +32,6 @@ class UpdateDocumentRequestObject(req.ValidRequestObject):
         else:
             data = adict["data"]
             print(data)
-            """
-            if "name" not in data:
-                invalid_req.add_error("name", "is missing")
-
-            if "type" not in data:
-                invalid_req.add_error("type", "is missing")
-            """
 
         if invalid_req.has_errors():
             return invalid_req
@@ -100,17 +95,9 @@ class UpdateDocumentUseCase(uc.UseCase):
         data: Dict = request_object.data
         attribute: Dict = request_object.attribute
 
-        if attribute:
-            existing_data: DTO = self.document_repository.get(document_id).data
-            if not existing_data:
-                raise EntityNotFoundException(uid=document_id)
-            existing_data[attribute] = data
-            data = existing_data
-
-        document = update_document(document_id, data, self.document_repository)
-
-        self.document_repository.update(document)
-
-        logger.info(f"Updated document '{document.uid}''")
+        document_service = DocumentService()
+        document = document_service.update_document(
+            document_id=document_id, data=data, attribute=attribute, document_repository=self.document_repository
+        )
 
         return res.ResponseSuccess(document)

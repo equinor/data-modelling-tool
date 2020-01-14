@@ -10,10 +10,21 @@ from core.use_case.utils.get_document_children import get_document_children
 from core.utility import get_blueprint
 from utils.logging import logger
 
-
 # TODO: Have this return a DTO? We are going DTO->Dict->DTO now
 def get_complete_document(document_uid: str, document_repository: Repository) -> Dict:
     document: DTO = document_repository.get(document_uid)
+from classes.storage_recipe import StorageRecipe
+
+
+def create_reference(data: Dict, document_repository, type: str):
+    data["type"] = type
+    file = DTO(data)
+    document_repository.add(file)
+    return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
+
+
+def get_complete_document(document_uid: UUID, document_repository: Repository) -> Dict:
+    document: DTO = document_repository.get(str(document_uid))
     if not document:
         raise EntityNotFoundException(uid=document_uid)
 
@@ -118,5 +129,61 @@ class DocumentService:
         document_repository.update(document)
 
         logger.info(f"Rename document '{document.uid}' to '{name}")
+
+        return document
+
+    def update_document(self, document_id: str, data: dict, attribute: str, document_repository: Repository):
+        def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, document_repository):
+            is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
+            attribute_data = data[attribute.name]
+
+            if is_contained_in_storage:
+                return attribute_data
+            else:
+                if attribute.dimensions == "*":
+                    references = []
+                    for instance in attribute_data:
+                        reference = create_reference(instance, document_repository, attribute.type)
+                        update_document(reference["_id"], instance, document_repository)
+                        references.append(reference)
+                    return references
+                else:
+                    reference = create_reference(attribute_data, document_repository, attribute.type)
+                    return reference
+
+        def update_document(document_id, data: Dict, document_repository: Repository) -> DTO:
+            document: DTO = document_repository.get(document_id)
+
+            if not document:
+                raise EntityNotFoundException(uid=document_id)
+
+            blueprint = get_blueprint(document.type)
+            if not blueprint:
+                raise EntityNotFoundException(uid=document.type)
+
+            for key in data.keys():
+                # TODO: Sure we want this filter?
+                attribute = next((x for x in blueprint.attributes if x.name == key), None)
+                if not attribute:
+                    logger.error(f"Could not find attribute {key} in {document.uid}")
+                else:
+                    document[key] = update_attribute(
+                        attribute, data, blueprint.storage_recipes[0], document_repository
+                    )
+
+            return document
+
+        if attribute:
+            existing_data: DTO = document_repository.get(document_id).data
+            if not existing_data:
+                raise EntityNotFoundException(uid=document_id)
+            existing_data[attribute] = data
+            data = existing_data
+
+        document = update_document(document_id, data, document_repository)
+
+        document_repository.update(document)
+
+        logger.info(f"Updated document '{document.uid}''")
 
         return document
