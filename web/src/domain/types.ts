@@ -7,6 +7,8 @@ export type BlueprintAttributeType = {
   type: string
   description?: string
   label?: string
+  //@todo remove optional here. #446
+  attributeType?: string
   optional?: boolean
   contained?: boolean
   enumType?: string

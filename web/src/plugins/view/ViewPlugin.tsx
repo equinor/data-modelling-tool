@@ -14,6 +14,7 @@ import { RegisteredPlugins } from '../../pages/common/layout-components/Document
 import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
 import { PlotPlugin } from '..'
 import { CollapsibleWrapper } from '../../components/Collapsible'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 enum WIDGETS {
   PREVIEW = 'PREVIEW',
@@ -68,10 +69,13 @@ class GenerateView {
 
   createComponentWithRecipe(
     uiAttr: KeyValue,
-    attr: BlueprintAttributeType,
+    attrType: BlueprintAttributeType,
     index: number
   ): any {
-    const attributeType = this.blueprintProvider.getBlueprintByType(attr.type)
+    const attr = new BlueprintAttribute(attrType)
+    const attributeType = this.blueprintProvider.getBlueprintByType(
+      attr.getAttributeType()
+    )
     if (attributeType) {
       const attrUiRecipe = attributeType.uiRecipes.find(
         (uiRecipe: KeyValue) => uiRecipe.name === uiAttr.uiRecipe

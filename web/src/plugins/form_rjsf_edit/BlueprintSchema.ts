@@ -9,6 +9,7 @@ import {
 import { BlueprintProvider } from '../BlueprintProvider'
 import objectPath from 'object-path'
 import { IndexFilter } from './CreateConfig'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 interface IBlueprintSchema {
   getSchema: () => object
@@ -64,12 +65,24 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   ) {
     attributes
       .filter(this.filter) //@todo filter recursively on recipes and defaults.
-      .forEach((attr: BlueprintAttributeType) => {
-        const newPath = this.createAttributePath(path, attr.name)
-        if (this.isPrimitive(attr.type)) {
-          this.appendPrimitive(newPath, blueprint, attr)
+      .map(
+        (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
+      )
+      .forEach((attr: BlueprintAttribute) => {
+        const newPath = this.createAttributePath(path, attr.getName())
+        if (attr.isPrimitive()) {
+          this.appendPrimitive(
+            newPath,
+            blueprint,
+            attr.getBlueprintAttributeType()
+          )
         } else {
-          this.processNested(newPath, document, attr, exitRecursion)
+          this.processNested(
+            newPath,
+            document,
+            attr.getBlueprintAttributeType(),
+            exitRecursion
+          )
         }
       })
   }
@@ -81,16 +94,19 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   private processNested(
     path: string,
     nestedDocument: Entity,
-    attr: BlueprintAttributeType,
+    attrType: BlueprintAttributeType,
     exitRecursion: boolean
   ): void {
+    const attr = new BlueprintAttribute(attrType)
     const nestedBlueprintType:
       | BlueprintType
-      | undefined = this.blueprintProvider.getBlueprintByType(attr.type)
+      | undefined = this.blueprintProvider.getBlueprintByType(
+      attr.getAttributeType()
+    )
     if (nestedBlueprintType) {
       const nestedBlueprint = new Blueprint(nestedBlueprintType)
 
-      if (this.isArray(attr)) {
+      if (this.isArray(attrType)) {
         const newPath = path + '.items.properties'
         objectPath.set(this.schema, path, {
           type: 'array',
@@ -99,8 +115,12 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
             properties: {},
           },
         })
-        if (!exitRecursion && nestedDocument && nestedDocument[attr.name]) {
-          if (nestedDocument[attr.name].length === 0) {
+        if (
+          !exitRecursion &&
+          nestedDocument &&
+          nestedDocument[attr.getName()]
+        ) {
+          if (nestedDocument[attrType.name].length === 0) {
             // stops recursion in the next level.
             // do only one more recursion after this flag is changed.
             exitRecursion = true
@@ -108,7 +128,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
           this.processAttributes(
             newPath,
             nestedBlueprint,
-            nestedDocument[attr.name][0],
+            nestedDocument[attr.getName()][0],
             nestedBlueprintType.attributes,
             exitRecursion
           )
@@ -125,7 +145,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
           this.processAttributes(
             newPath,
             nestedBlueprint,
-            nestedDocument[attr.name],
+            nestedDocument[attr.getName()],
             nestedBlueprintType.attributes,
             true
           )
@@ -155,25 +175,29 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
 
   private createSchemaProperty(
     blueprint: Blueprint,
-    attr: BlueprintAttributeType
+    attrType: BlueprintAttributeType
   ): SchemaProperty {
-    let defaultValue: any = blueprint.isArray(attr) ? '' : attr.default
+    const attr = new BlueprintAttribute(attrType)
+    let defaultValue: any = blueprint.isArray(attrType) ? '' : attrType.default
     if (defaultValue) {
-      if (attr.type === 'boolean') {
+      if (attr.getAttributeType() === 'boolean') {
         defaultValue = defaultValue === 'true' ? true : false
       }
-      if (attr.type === 'integer' || attr.type === 'number') {
+      if (
+        attr.getAttributeType() === 'integer' ||
+        attr.getAttributeType() === 'number'
+      ) {
         defaultValue = Number(defaultValue)
       }
     }
 
     let schemaProperty: SchemaProperty = {
-      type: attr.type,
+      type: attr.getAttributeType(),
     }
     if (defaultValue) {
       schemaProperty.default = defaultValue
     }
-    this.addEnumToProperty(blueprint, schemaProperty, attr)
+    this.addEnumToProperty(blueprint, schemaProperty, attrType)
     return schemaProperty
   }
 
