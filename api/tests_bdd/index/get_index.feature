@@ -15,7 +15,7 @@ Feature: Index
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
   Scenario: Get index
-    Given I access the resource url "/api/v3/index/data-source-name"
+    Given I access the resource url "/api/v4/index/data-source-name"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
@@ -27,7 +27,7 @@ Feature: Index
           "title":"data-source-name",
           "nodeType":"document-node",
           "children":[
-             "1"
+             "1.content"
           ]
        }
     }

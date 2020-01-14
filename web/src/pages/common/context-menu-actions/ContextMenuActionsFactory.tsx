@@ -46,8 +46,7 @@ const createNodes = (props: CreateNodesProps) => {
       const indexNodes = nodes.map((node: IndexNode) =>
         new TreeNodeBuilderOld(node).build()
       )
-      // TODO: Is it possible to move parent id to API? Seems hard.
-      const parentId = nodes[0]['parentId'] || node.nodeData.nodeId
+      const parentId = nodes[0]['parentId']
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
       // Connect new nodes to parent in tree

@@ -3,7 +3,7 @@
   "name": "DMTApplicationSettings",
   "description": "",
   "entities": ["CarPackage"],
-  "packages": ["BlueprintAttribute", "CarPackage"],
+  "packages": ["CarPackage","TodoDemo", "marmo", "mooringSRS"],
   "models": ["system/DMT/Entity"],
   "actions": [
     {

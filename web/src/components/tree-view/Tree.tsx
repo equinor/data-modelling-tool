@@ -26,6 +26,7 @@ export enum NodeIconType {
 export type NodeMetaData = {
   [key: string]: any
   isRootPackage?: boolean
+  isList?: boolean
   error?: boolean
 }
 

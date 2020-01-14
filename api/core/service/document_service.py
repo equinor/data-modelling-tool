@@ -76,7 +76,8 @@ def get_complete_document(
 ) -> Dict:
     document = get_document(document_uid=document_uid, document_repository=document_repository)
 
-    return get_resolved_document(document, document_repository, blueprint_provider)
+    temp = get_resolved_document(document, document_repository, blueprint_provider)
+    return temp
 
 
 def remove_children(document: DTO, document_repository: Repository):
@@ -93,8 +94,8 @@ class DocumentService:
         return DTO(data=adict, uid=document_uid)
 
     @staticmethod
-    def get_by_uid_return_tree_node(document_uid: str, document_repository: Repository) -> Node:
-        adict = get_complete_document(document_uid, document_repository)
+    def get_tree_node_by_uid(document_uid: str, repository: Repository) -> Node:
+        adict = get_complete_document(document_uid, repository)
         node = Node(DTO(data=adict, uid=document_uid))
         return node
 
@@ -301,8 +302,9 @@ class DocumentService:
             else:
                 getattr(parent_data, attribute).append(entity)
                 logger.info(f"Added contained document")
-
-            return document_repository.update(parent)
+            document_repository.update(parent)
+            new_id = f"{parent_id}.{attribute_dot_path}.{len(dotted_data[attribute_dot_path]) - 1}"
+            return {"uid": new_id}
         else:
 
             def get_required_attributes(type: str):

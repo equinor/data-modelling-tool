@@ -31,28 +31,12 @@
       "name": "content",
       "dimensions": "*",
       "optional": true
-    },
-    {
-      "attributeType": "system/SIMOS/StorageRecipe",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "dimensions": "*",
-      "name": "storageRecipes",
-      "optional": true,
-      "contained": true
-    },
-    {
-      "attributeType": "system/SIMOS/UiRecipe",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "dimensions": "*",
-      "name": "uiRecipes",
-      "optional": true,
-      "contained": true
     }
   ],
   "storageRecipes": [
     {
       "type": "system/SIMOS/StorageRecipe",
-      "name": "DefaultStorageRecipe",
+      "name": "TEST######",
       "description": "",
       "attributes": [
         {

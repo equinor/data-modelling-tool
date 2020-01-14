@@ -17,8 +17,8 @@ class StorageRecipeAttribute:
 
 
 class StorageRecipe:
-    def __init__(self, name: str, attributes=None):
-        attributes = attributes if attributes else {}
+    def __init__(self, name: str, attributes: List[Dict] = None):
+        attributes = attributes if attributes else []
         self.name = name
         self.storage_attributes = {
             attribute["name"]: StorageRecipeAttribute(attribute["name"], is_contained=attribute["contained"])
@@ -34,15 +34,18 @@ class StorageRecipe:
             return DEFAULT_COMPLEX_CONTAINED
 
     def to_dict(self) -> Dict:
-        return {self.name: {attribute.name: attribute.to_dict() for attribute in self.storage_attributes.values()}}
+        return {
+            "name": self.name,
+            "attributes": [attribute.to_dict() for attribute in self.storage_attributes.values()],
+        }
 
     def none_contained_attributes(self) -> List[str]:
-        return [attr.name for attr in self.storage_attributes.values() if not attr.is_contained]
+        return [attr.name for attr in self.storage_attributes if not attr.is_contained]
 
 
 class DefaultStorageRecipe(StorageRecipe):
     def __init__(self, attributes: List[BlueprintAttribute]):
         super().__init__("Default")
-        self.storage_recipe_attributes = {
-            attribute.name: StorageRecipeAttribute(attribute.name, is_contained=True) for attribute in attributes
-        }
+        self.storage_recipe_attributes = [
+            StorageRecipeAttribute(attribute.name, is_contained=True) for attribute in attributes
+        ]

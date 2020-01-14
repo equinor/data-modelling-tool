@@ -29,16 +29,16 @@
       "contained": true
     },
     {
-      "attributeType": "system/SIMOS/BlueprintAttribute",
-      "type": "system/SIMOS/StorageRecipe",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "system/SIMOS/StorageRecipe",
       "dimensions": "*",
       "name": "storageRecipes",
       "optional": true,
       "default": "[]"
     },
     {
-      "attributeType": "system/SIMOS/BlueprintAttribute",
-      "type": "system/SIMOS/UiRecipe",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "system/SIMOS/UiRecipe",
       "dimensions": "*",
       "name": "uiRecipes",
       "optional": true,

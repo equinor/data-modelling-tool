@@ -20,6 +20,11 @@ class DTO:
         self._type = data["type"]
         self.data = data
 
+    def get(self, key, default=None):
+        if default:
+            return self.data.get(key, default)
+        return self.data.get(key)
+
     def __getitem__(self, key):
         try:
             return self.data[key]
