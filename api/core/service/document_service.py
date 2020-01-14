@@ -101,6 +101,32 @@ class DocumentService:
         logger.info(f"Rename attribute '{attribute}' from '{parent.uid}'")
         return document
 
+    def remove_document(self, document_id: str, parent_id: str, attribute: str, document_repository: Repository):
+        document: DTO = document_repository.get(document_id)
+        if not document:
+            raise EntityNotFoundException(uid=document_id)
+
+        if parent_id:
+            # Remove reference from parent
+            parent: DTO = document_repository.get(parent_id)
+            if not parent:
+                raise EntityNotFoundException(uid=parent_id)
+
+            parent[attribute] = list(filter(lambda d: d["_id"] != document.uid, parent[attribute]))
+
+            document_repository.update(parent)
+
+        # Remove the actual document
+        document_repository.delete(document.uid)
+
+        # Remove children of the document
+        children = get_document_children(document, document_repository)
+        for child in children:
+            document_repository.delete(child.uid)
+            logger.info(f"Removed child document '{child.uid}'")
+
+        logger.info(f"Removed document '{document.uid}'")
+
     def rename_document(
         self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository
     ):
