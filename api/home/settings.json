@@ -2,7 +2,7 @@
   "type": "system/SIMOS/Application",
   "name": "DMTApplicationSettings",
   "description": "",
-  "entities": ["CarPackage"],
+  "entities": ["SRS_case", "SRS_results"],
   "packages": ["CarPackage", "ActionsTest", "TodoPackage", "marmo", "mooringSRS"],
   "models": ["system/DMT/Entity",
     "SSR-DataSource/mooringSRS/Scenario"],
