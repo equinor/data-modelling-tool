@@ -3,12 +3,11 @@ export type KeyValue = {
 }
 
 export type BlueprintAttributeType = {
-  name: string
   type: string
+  name: string
+  attributeType: string
   description?: string
   label?: string
-  //@todo remove optional here. #446
-  attributeType?: string
   optional?: boolean
   contained?: boolean
   enumType?: string

@@ -19,9 +19,9 @@ from utils.logging import logger
 
 def get_required_attributes(type: str):
     return [
-        {"type": "string", "name": "name"},
-        {"type": "string", "name": "description"},
-        {"type": "string", "name": "type", "default": type},
+        {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "name"},
+        {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "description"},
+        {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "type", "default": type},
     ]
 
 

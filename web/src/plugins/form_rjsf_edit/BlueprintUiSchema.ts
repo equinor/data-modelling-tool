@@ -68,7 +68,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         )
         const newPath = this.createAttributePath(path, attrName)
         if (
-          this.isPrimitive(attrType.type) ||
+          this.isPrimitive(attrType.attributeType) ||
           (uiAttribute && uiAttribute.field)
         ) {
           this.appendPrimitive(newPath, blueprint, attr, uiAttribute)

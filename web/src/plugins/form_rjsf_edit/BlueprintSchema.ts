@@ -69,7 +69,10 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
         (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
       )
       .forEach((attr: BlueprintAttribute) => {
-        const newPath = this.createAttributePath(path, attr.getName())
+        const newPath = BlueprintSchema.createAttributePath(
+          path,
+          attr.getName()
+        )
         if (attr.isPrimitive()) {
           this.appendPrimitive(
             newPath,
@@ -87,7 +90,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
       })
   }
 
-  private createAttributePath(path: string, name: string) {
+  private static createAttributePath(path: string, name: string) {
     return path.length === 0 ? name : path + `.${name}`
   }
 

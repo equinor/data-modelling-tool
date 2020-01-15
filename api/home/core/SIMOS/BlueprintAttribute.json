@@ -6,6 +6,13 @@
     {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
+      "name": "type",
+      "enumType": "system/SIMOS/AttributeTypes",
+      "optional": false
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name",
       "optional": false
     },
@@ -15,6 +22,20 @@
       "name": "description",
       "default": "",
       "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "attributeType",
+      "default": "system/SIMOS/BlueprintAttribute",
+      "optional": false
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "dimensions",
+      "optional": true,
+      "default": ""
     },
     {
       "name": "label",
@@ -27,27 +48,6 @@
       "name": "default",
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
-      "optional": true,
-      "default": ""
-    },
-    {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "type",
-      "enumType": "system/SIMOS/AttributeTypes",
-      "optional": false
-    },
-    {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "attributeType",
-      "default": "system/SIMOS/BlueprintAttribute",
-      "optional": true
-    },
-    {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "dimensions",
       "optional": true,
       "default": ""
     },
