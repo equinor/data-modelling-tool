@@ -30,7 +30,7 @@ class Blueprint:
     @classmethod
     def from_dict(cls, adict):
         instance = cls(name=adict["name"], description=adict.get("description", ""), type=adict["type"])
-        instance.attributes = adict.get("attributes", "")
+        instance.attributes = adict.get("attributes", [])
         instance.storage_recipes = adict.get("storageRecipes", [])
         instance.ui_recipes = adict.get("uiRecipes", [])
         return instance

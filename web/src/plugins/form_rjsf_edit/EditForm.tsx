@@ -1,12 +1,15 @@
 import React from 'react'
 import Form from 'react-jsonschema-form'
-import { PluginProps } from '../types'
+import { BlueprintType, KeyValue, PluginProps } from '../../domain/types'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import { AttributeWidget } from '../form-rjsf-widgets/Attribute'
-import { Blueprint, KeyValue } from '../Blueprint'
-import { Blueprint as BlueprintType } from '../types'
+import { Blueprint } from '../../domain/Blueprint'
 import { BlueprintProvider } from '../BlueprintProvider'
 import FileDirectoryWidget from '../form-rjsf-widgets/FileDirectoryWidget'
+import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
+import { CollapsibleField } from '../widgets/CollapsibleField'
+import PackageSelectorWidget from '../form-rjsf-widgets/PackagesSelectorWidget'
+import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
 
 export interface EditPluginProps extends PluginProps {
   onSubmit: (data: any) => void
@@ -14,8 +17,11 @@ export interface EditPluginProps extends PluginProps {
 }
 
 export const EditPlugin = (props: EditPluginProps) => {
-  const blueprintProvider = new BlueprintProvider(props.blueprints, props.dtos)
-  const blueprint = new Blueprint(props.blueprint)
+  const blueprintProvider = new BlueprintProvider(
+    props.blueprintTypes,
+    props.dtos
+  )
+  const blueprint = new Blueprint(props.blueprintType)
   const config: FormConfig = createFormConfigs(props)
   const formData = config.data
   return (
@@ -27,12 +33,18 @@ export const EditPlugin = (props: EditPluginProps) => {
         uiSchema={config.uiSchema || {}}
         fields={{
           attribute: AttributeWidget,
+          collapsible: CollapsibleField,
+          destination: DestinationSelectorWidget,
+          blueprint: BlueprintSelectorWidget,
+          packages: PackageSelectorWidget,
           hidden: () => <div />,
         }}
         widgets={{
           fileUploadWidget: FileDirectoryWidget,
         }}
-        onChange={() => {}}
+        // onChange={schema => {
+        //   console.log(schema)
+        // }}
         onSubmit={(schemas: any) => {
           fixRecursive(schemas.formData, blueprintProvider)
           props.onSubmit(schemas)
@@ -84,7 +96,7 @@ function validate(blueprint: Blueprint) {
             if (!item.name) {
               errors[key][index].addError('name must be set')
             }
-            if (!item.type) {
+            if (!item.type || item.type === 'blueprint') {
               errors[key][index].addError('type must be set')
             }
           })

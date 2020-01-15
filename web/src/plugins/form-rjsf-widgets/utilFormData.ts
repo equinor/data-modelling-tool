@@ -1,8 +1,8 @@
-import { Blueprint } from '../types'
+import { BlueprintAttributeType, BlueprintType } from '../../domain/types'
 
-export function castValues(blueprint: Blueprint, entity: any) {
+export function castValues(blueprintType: BlueprintType, entity: any) {
   const newEntity = { ...entity }
-  blueprint.attributes.forEach(attribute => {
+  blueprintType.attributes.forEach((attribute: BlueprintAttributeType) => {
     const key = attribute.name
     const value = (newEntity as any)[key]
     if (value) {

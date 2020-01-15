@@ -27,11 +27,13 @@
     {
       "type": "string",
       "name": "input",
+      "label": "Input",
       "description": "Reference to a Blueprint (Path without Datasource prefix)."
     },
     {
       "type": "string",
       "name": "output",
+      "label": "Output",
       "description": "Reference to a Blueprint (Path without Datasource prefix)."
     },
     {
@@ -41,5 +43,28 @@
     }
   ],
   "storageRecipes": [],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UIRecipe",
+      "name": "Edit",
+      "plugin": "EDIT_PLUGIN",
+      "attributes": [
+        {
+          "name": "type",
+          "type": "system/SIMOS/UiAttribute",
+          "disabled": true
+        },
+        {
+          "name": "input",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "blueprint"
+        },
+        {
+          "name": "output",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "blueprint"
+        }
+      ]
+    }
+  ]
 }

@@ -18,7 +18,8 @@
     {
       "type": "string",
       "name": "manufacturer",
-      "optional": true
+      "optional": true,
+      "default": ""
     },
     {
       "type": "SSR-DataSource/CarPackage/Wheel",
@@ -50,6 +51,11 @@
           "name": "engine",
           "type": "system/SIMOS/UiAttribute",
           "uiRecipe": "EngineTable"
+        },
+        {
+          "name": "wheels",
+          "type": "system/SIMOS/UiAttribute",
+          "uiRecipe": "WheelTable"
         }
       ]
     },
@@ -61,6 +67,13 @@
       "field": "",
       "hideTab": false,
       "options": [],
+      "attributes": []
+    },
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "Plotly",
+      "description": "Some external plugin",
+      "plugin": "EXTERNAL",
       "attributes": []
     }
   ]

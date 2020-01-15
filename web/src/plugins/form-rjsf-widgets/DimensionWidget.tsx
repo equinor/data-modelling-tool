@@ -5,10 +5,11 @@ import {
   AttributeOnChange,
   TextInput,
 } from './AttributeInputs'
-import { BlueprintAttribute } from '../types'
+import { BlueprintAttributeType } from '../../domain/types'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 function getArrayType(dimensions: string | undefined) {
-  if (dimensions === '*') {
+  if (dimensions && BlueprintAttribute.isArray(dimensions)) {
     return ArrayType.ARRAY
   }
   return ArrayType.SIMPLE
@@ -17,13 +18,13 @@ function getArrayType(dimensions: string | undefined) {
 type Props = {
   onChange: AttributeOnChange
   value: string
-  attribute: BlueprintAttribute
+  attributeType: BlueprintAttributeType
 }
 
 export const DimensionWidget = (props: Props) => {
-  const { onChange, value, attribute } = props
+  const { onChange, value, attributeType } = props
   const [array, setArray] = useState<ArrayType>(getArrayType(value))
-  const attributeName = attribute.name
+  const attributeName = attributeType.name
   const onChangeArray = (event: any) => {
     const arrayType = event.target.value
 
@@ -32,7 +33,7 @@ export const DimensionWidget = (props: Props) => {
       newValue = '*'
     }
     setArray(arrayType)
-    onChange(attribute, newValue)
+    onChange(attributeType, newValue)
   }
   return (
     <>
@@ -43,7 +44,11 @@ export const DimensionWidget = (props: Props) => {
       />
       {array === ArrayType.ARRAY && (
         <div style={{ display: 'flex', alignItems: 'baseline' }}>
-          <TextInput attribute={attribute} value={value} onChange={onChange} />{' '}
+          <TextInput
+            attributeType={attributeType}
+            value={value}
+            onChange={onChange}
+          />{' '}
           <span>Format: [size,size] Example: "[*,10,2000]"</span>
         </div>
       )}

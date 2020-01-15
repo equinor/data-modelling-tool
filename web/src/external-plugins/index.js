@@ -537,7 +537,7 @@ const SRSSce3DView = ({ parent, document, children }) => {
 
 const registeredPlugins = {
   'My plugin': TestPlugin,
-  'My plugin': PlotlyPoc,
+  'Plotly': PlotlyPoc,
 
   'ESS Plot View': ESSPlotPlugin,
   'ESS Table View': ESSTablePlugin,

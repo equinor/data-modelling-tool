@@ -1,5 +1,5 @@
 import { RegisteredPlugins } from './DocumentComponent'
-import { UiRecipe } from '../../../plugins/types'
+import { UiRecipe } from '../../../domain/types'
 
 /**
  * Requirements:

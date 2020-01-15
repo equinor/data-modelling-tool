@@ -39,12 +39,22 @@ def init_application():
             f"{Config.APPLICATION_HOME}/blueprints/{folder}", collection=Config.BLUEPRINT_COLLECTION, is_root=True
         )
 
-    logger.info(f"Importing demo entity package(s) {Config.DEMO_ENTITIES}")
-    for folder in Config.DEMO_ENTITIES:
+    logger.info(f"Importing entity package(s) {Config.ENTITY_APPLICATION_SETTINGS['entities']}")
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )
     logger.info("Resetting the cache of generated blueprints")
+    Factory.reset_cache()
+
+
+@app.cli.command()
+def reset_core_packages():
+    logger.warning(f"Dropping {Config.SYSTEM_COLLECTION} collection ")
+    dmt_database.drop_collection(f"{Config.SYSTEM_COLLECTION}")
+    logger.warning(f"Importing core packages...")
+    for folder in Config.SYSTEM_FOLDERS:
+        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
     Factory.reset_cache()
 
 

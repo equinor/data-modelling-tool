@@ -9,11 +9,11 @@ import {
 } from './AttributeInputs'
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BlueprintAttribute } from '../types'
+import { BlueprintAttributeType } from '../../domain/types'
 import { DimensionWidget } from './DimensionWidget'
 import { BooleanWidget } from './BooleanWidget'
-import { isPrimitive } from '../pluginUtils'
 import { RequiredAttributesGroup } from '../form_rjsf_edit/RequiredAttributes'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 const REQUIRED_ATTRIBUTES = ['name', 'description', 'type']
 
@@ -34,7 +34,7 @@ export const AttributeWidget = (props: Props) => {
   let { attributes } = props.uiSchema
 
   const initialState = { type: DataType.STRING, ...props.formData }
-  const [formData, setFormData] = useState<BlueprintAttribute>(initialState)
+  const [formData, setFormData] = useState<BlueprintAttributeType>(initialState)
 
   if (!attributes) {
     console.error('this widget depends on a attributes list.')
@@ -43,10 +43,10 @@ export const AttributeWidget = (props: Props) => {
   //@todo add order in uiRecipe to change order of elements in the widget.
 
   const onChange: AttributeOnChange = (
-    attribute: BlueprintAttribute,
+    attributeType: BlueprintAttributeType,
     value: string | boolean | number
   ): void => {
-    const name = attribute.name
+    const name = attributeType.name
     let newFormData = { ...formData, [name]: value }
     setFormData(newFormData)
     props.onChange(newFormData)
@@ -59,11 +59,11 @@ export const AttributeWidget = (props: Props) => {
   }
   return (
     <AttributeGroup>
-      {attributes.map((blueprintAttribute: BlueprintAttribute) => {
-        const { name } = blueprintAttribute
+      {attributes.map((attributeType: BlueprintAttributeType) => {
+        const { name } = attributeType
         const value = (formData as any)[name]
         let Widget: Function | null = getWidgetByName(
-          blueprintAttribute,
+          attributeType,
           selectedType,
           selectedDimensions || ''
         )
@@ -71,10 +71,10 @@ export const AttributeWidget = (props: Props) => {
           return null
         }
         if (Widget === undefined) {
-          Widget = getWidgetByType(blueprintAttribute)
+          Widget = getWidgetByType(attributeType)
         }
         if (Widget === undefined) {
-          console.warn('widget is not supported: ', blueprintAttribute)
+          console.warn('widget is not supported: ', attributeType)
           return null
         }
         return (
@@ -85,7 +85,7 @@ export const AttributeWidget = (props: Props) => {
             <Widget
               onChange={onChange}
               value={value}
-              attribute={blueprintAttribute}
+              attributeType={attributeType}
             />
           </AttributeWrapper>
         )
@@ -95,17 +95,18 @@ export const AttributeWidget = (props: Props) => {
 }
 
 function getWidgetByName(
-  attribute: BlueprintAttribute,
+  attributeType: BlueprintAttributeType,
   selectedType: string,
   selectedDimensions: string
 ): Function | null {
-  let widget: Function = (widgetNames as any)[attribute.name]
-  if (attribute.name === 'default') {
-    if (!isPrimitive(selectedType)) {
+  const attr = new BlueprintAttribute(attributeType)
+  let widget: Function = (widgetNames as any)[attr.getName()]
+  if (attr.getName() === 'default') {
+    if (!attr.isPrimitiveType(selectedType)) {
       // type is a blueprint type string.
       return null
     }
-    if (selectedDimensions === '*') {
+    if (BlueprintAttribute.isArray(selectedDimensions)) {
       // use string default
       widget = (widgetTypes as any)['string']
     } else {
@@ -116,8 +117,8 @@ function getWidgetByName(
   return widget
 }
 
-function getWidgetByType(attribute: BlueprintAttribute): Function {
-  let widget: Function = (widgetTypes as any)[attribute.type]
+function getWidgetByType(attributeType: BlueprintAttributeType): Function {
+  let widget: Function = (widgetTypes as any)[attributeType.type]
   if (widget === undefined) {
     widget = TextInput
   }

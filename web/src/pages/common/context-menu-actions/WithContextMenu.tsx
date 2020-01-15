@@ -140,7 +140,7 @@ const WithContextMenuModal = (props: WithContextMenuModalProps) => {
         }}
         menuItems={menuItems}
       >
-        {children || node.nodeData.title}
+        {children}
       </ContextMenu>
     </>
   )

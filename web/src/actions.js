@@ -166,7 +166,8 @@ const runnableMethods = {
 //**************************************************************************//
 //**************************************************************************//
 
-var address = 'http://localhost:8085';
+//var address = 'http://localhost:8085';
+var address = 'http://abel.sintef.no:8085';
 
 var lastProgress = 'undefined';
 var lastExecutionId = 'undefined';
@@ -179,7 +180,7 @@ function cancelWorkflow() {
 function runWorkflow(request) {
 	// clear the log window
 	var progressId = undefined;
-	var sharedSecret = null;
+	var sharedSecret = "s3cr3t-p4ssword";
 	var commandId = 'no.marintek.sima.workflow.run.batch';
 
 	var task = request.task;

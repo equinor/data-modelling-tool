@@ -3,6 +3,7 @@
   "name": "ApplicationSettings",
   "description": "",
   "packages": ["CarPackage"],
+  "entities": [],
   "models": ["SSR-DataSource/CarPackage/Car"],
   "actions": [
     {

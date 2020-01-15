@@ -1,15 +1,19 @@
-import { NodeIconType, TreeNodeData } from '../../../components/tree-view/Tree'
+import {
+  NodeIconType,
+  NodeMetaData,
+  TreeNodeData,
+} from '../../../components/tree-view/Tree'
 import { IndexNode } from '../../../api/Api'
 import { NodeType } from '../../../util/variables'
 
 type IndexNodeV2 = {
   id: string
   filename: string
-  isRootPackage: boolean
+  isRootPackage?: boolean
   nodeType: NodeType
   children?: string[]
   templateRef?: string
-  meta?: object
+  meta?: NodeMetaData
   type?: string
 }
 
@@ -20,7 +24,6 @@ export class TreeNodeBuilderOld {
     this.treeNode = createTreeNode({
       id: node.id,
       filename: node.title,
-      isRootPackage: node.isRootPackage,
       nodeType: node.nodeType,
       children: node.children,
       templateRef: node.templateRef,
@@ -52,7 +55,6 @@ function createTreeNode({
   templateRef = '',
   meta = {},
   type = '',
-  isRootPackage,
 }: IndexNodeV2) {
   return {
     nodeId: id,
@@ -63,24 +65,10 @@ function createTreeNode({
     isExpandable: isExpandable(type, children),
     isOpen: false,
     isRoot: type === NodeType.DATA_SOURCE,
-    isRootPackage,
     isHidden: false,
     children: children || [],
     icon: getNodeIcon(type, children),
     isFolder: true,
-  }
-}
-
-export class TreeNodeBuilder extends TreeNodeBuilderOld {
-  constructor(node: IndexNodeV2) {
-    super({
-      id: node.id,
-      title: node.filename,
-      nodeType: node.nodeType,
-      children: node.children,
-      type: '',
-      isRootPackage: node.isRootPackage,
-    })
   }
 }
 
