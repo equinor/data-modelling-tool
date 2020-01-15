@@ -151,7 +151,7 @@ const TransposedColTableData = (tabDoc) => {
                   "accessor": ("col_"+i+2)});
   }
     
-  console.log(columns)
+  //console.log(columns)
                     
   var data = [];
 
@@ -166,7 +166,7 @@ const TransposedColTableData = (tabDoc) => {
     data.push(row);
   }
 
-  console.log(data)
+  //console.log(data)
 
   return ({columns, data});
 
@@ -174,7 +174,7 @@ const TransposedColTableData = (tabDoc) => {
 
 const TableView = ({ tabDoc }) => {
   console.log("*** Making Table");
-  console.log(tabDoc);
+  //console.log(tabDoc);
 
   let tabData;
 
@@ -185,7 +185,7 @@ const TableView = ({ tabDoc }) => {
     tabData = ColTableData(tabDoc);
   }
 
-  console.log(tabData);
+  //console.log(tabData);
 
 
   return (
@@ -202,7 +202,7 @@ const TableView = ({ tabDoc }) => {
 //********************************************************//
 const PlotView = ({ plotDoc }) => {
   console.log("*** Making Plot");
-  console.log(plotDoc);
+  //console.log(plotDoc);
 
   var pdatas = [];
 
