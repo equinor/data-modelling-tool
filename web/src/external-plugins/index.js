@@ -26,7 +26,7 @@ import React from 'react';
 
 import Plot from 'react-plotly.js';
 
-//import {OBJModel} from 'react-3d-viewer';
+import {OBJModel} from 'react-3d-viewer';
 
 import { Component } from 'react';
 
@@ -259,7 +259,7 @@ var descs = ["Wave propagation direction -comming from- in [deg].",
 for (var propi=0; propi<entity.currentDepths.split(',').length; propi++ ){
   data.push({
     "currentDepths": entity.currentDepths.split(',')[propi],
-    "currentDirections": entity.currentDirections.split(',')[propi],
+    "currentDirections": entity.currentDirection,
     "currentVelocities": entity.currentVelocities.split(',')[propi]
   })
 }
@@ -488,7 +488,7 @@ const SRSStatusView = ({ parent, document, children }) => {
                 layout={ {width: 600, height: 200, 
                           title: "",
                           xaxis: {
-                            title: 'percentage',
+                            title: document.state,
                             range: [0, 100]
                           },
                           yaxis: {
@@ -503,14 +503,24 @@ const SRSStatusView = ({ parent, document, children }) => {
 const SRSSce3DView = ({ parent, document, children }) => {
   console.log(document);
 
+  return (
+    <>
+      <div>3d viewer</div>
+      <div style={{ display: 'flex', alignItems: 'top' }}>
+        <div style={{ display: 'inline-flex' }}>
+          <OBJModel width={600} height={600} src="./AasgardPlatform.obj" texPath="" />
+        </div>
+      </div>
+    </>
+  )
 
-  return "hello";
+  //return "hello";
     // return(
     //   <div>
     //     <OBJModel 
     //       width="400" height="400"  
     //       position={{x:0,y:0.0,z:0}} 
-    //       src="./platform.png"
+    //       src="./platform.obj"
     //       onLoad={()=>{
     //         //...
     //       }}

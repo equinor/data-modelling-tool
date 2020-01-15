@@ -213,7 +213,8 @@ function runWorkflow(request) {
             console.log(request.output);
 
             var percentage = (progress.getWorked() * 100) / progress.getTotalwork();
-            request.output.entity.status.progress = percentage;
+			request.output.entity.status.progress = percentage;
+			request.output.entity.status.state = progress.array[1];
 			request.updateDocument(request.output);
 			
 		}		
@@ -237,6 +238,7 @@ function runWorkflow(request) {
 				console.log(request.output);
 
 				parseResults(result, request.output.entity);
+				request.output.entity.status.state = "Finished.";				
 				console.log(request.output);	
 
 				request.updateDocument(request.output);

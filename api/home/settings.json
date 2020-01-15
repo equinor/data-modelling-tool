@@ -11,21 +11,24 @@
       "description": "Get and store all todos",
       "input": "SSR-DataSource/TodoDemo/TodoList",
       "output": "SSR-DataSource/TodoDemo/TodoList",
-      "method": "getTodoList"
+      "method": "getTodoList",
+      "actionType": "resultInEntity"
     },
     {
       "name": "Calculate",
       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
       "input": "SSR-DataSource/CarPackage/Car",
       "output": "SSR-DataSource/CarPackage/Car",
-      "method": "run"
+      "method": "run",
+      "actionType": "resultInEntity"
     },
     {
       "name": "Cancel",
       "description": "Cancel a car calculation",
       "input": "SSR-DataSource/CarPackage/Car",
       "output": "SSR-DataSource/CarPackage/Car",
-      "method": "cancel"
+      "method": "cancel",
+      "actionType": "resultInEntity"
     },
     {
       "name": "SRS_Run",
@@ -33,7 +36,8 @@
       "description": "",
       "input": "SSR-DataSource/mooringSRS/Scenario",
       "output": "SSR-DataSource/mooringSRS/run/RunOutput",
-      "method": "srs_run"
+      "method": "srs_run",
+      "actionType": "separateResultFile"
     },
     {
         "name": "SRS_Cancel",
@@ -41,7 +45,8 @@
         "description": "",
         "input": "SSR-DataSource/mooringSRS/run/RunOutput",
         "output": "SSR-DataSource/mooringSRS/run/RunOutput",
-        "method": "srs_cancel"
+        "method": "srs_cancel",
+        "actionType": "resultInEntity"
     },
     {
       "name": "Single_Run",
@@ -49,7 +54,8 @@
       "description": "",
       "input": "SSR-DataSource/mooringSRS/Scenario",
       "output": "SSR-DataSource/mooringSRS/run/RunOutput",
-      "method": "single_run"
+      "method": "single_run",
+      "actionType": "separateResultFile"
     },    
     {
       "name": "test_Single_Run",
@@ -57,7 +63,8 @@
       "description": "",
       "input": "SSR-DataSource/mooringSRS/Scenario",
       "output": "SSR-DataSource/mooringSRS/run/RunOutput",
-      "method": "test_single_run"
+      "method": "test_single_run",
+      "actionType": "separateResultFile"
     },
     {
       "name": "ResultFile",
