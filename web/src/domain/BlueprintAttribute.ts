@@ -40,18 +40,14 @@ export class BlueprintAttribute {
   }
 
   public getAttributeType(): string {
-    console.log(this.attr.attributeType, this.attr.type)
-    return this.attr.type
-    // if (this.attr.attributeType) {
-    //   return this.attr.attributeType
-    // }
-    // @todo remove when json files are migrated.
-    // throw 'Attribute type is missing. Issue #446'
+    return this.attr.attributeType
   }
 
   public isPrimitive(): boolean {
     //todo use AttributeTypes enum, available in the blueprint.
-    return ['string', 'number', 'integer', 'boolean'].includes(this.attr.type)
+    return ['string', 'number', 'integer', 'boolean'].includes(
+      this.attr.attributeType
+    )
   }
 
   public toString(): string {

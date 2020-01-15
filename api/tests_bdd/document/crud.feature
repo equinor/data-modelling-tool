@@ -40,21 +40,23 @@ Feature: Document 2
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "optional": true,
           "default": "",
           "name": "description"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "type"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "optional": true,
           "name": "extra"
         }
@@ -72,24 +74,29 @@ Feature: Document 2
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "type"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
         },
         {
-          "type": "test-source-name/TestData/ItemType",
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
           "optional": true,
           "name": "itemNotContained"
         },
         {
-          "type": "test-source-name/TestData/ItemType",
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
           "optional": true,
           "dimensions": "*",
           "name": "itemsNotContained"

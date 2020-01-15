@@ -44,8 +44,6 @@ class CreateEntityTestCase(unittest.TestCase):
 
         blueprint_provider = BlueprintProviderTest()
         type = "ds/test_data/complex/CarTest"
-        car_blueprint = blueprint_provider.get_blueprint(template_type=type)
-        print(car_blueprint)
 
         entity = CreateEntity(
             blueprint_provider=blueprint_provider, type=type, description="crappy car", name="Mercedes"

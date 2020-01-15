@@ -47,15 +47,15 @@ Feature: Index
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
         },
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "name": "extra"
         }
       ],
@@ -72,35 +72,35 @@ Feature: Index
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
         },
         {
-          "type": "string",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "name": "type"
         },
         {
-          "type": "test-source-name/TestData/ItemType",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "optional": true,
           "name": "itemNotContainedInStorage"
         },
         {
-          "type": "test-source-name/TestData/ItemType",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "dimensions": "*",
           "optional": true,
           "name": "itemsNotContainedInStorage"
         },
         {
-          "type": "test-source-name/TestData/ItemType",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "optional": true,
           "name": "itemNotContainedInUi"
         },
         {
-          "type": "test-source-name/TestData/ItemType",
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
           "dimensions": "*",
           "optional": true,
           "name": "itemsNotContainedInUi"

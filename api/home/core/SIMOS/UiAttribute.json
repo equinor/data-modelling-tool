@@ -4,58 +4,68 @@
   "description": "This describes an ui recipe attribute",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type",
       "default": "system/SIMOS/UiAttribute"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "attributeType",
       "default": "system/SIMOS/BlueprintAttribute",
       "optional": true
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description",
       "optional": true,
       "default": ""
     },
     {
       "name": "label",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "optional": true,
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "uiRecipe",
       "default": "",
       "optional": true
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "dimensions",
       "optional": true,
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "enumType",
       "optional": true,
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "field",
       "optional": true,
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "widget",
       "description": "Widget for this property",
       "optional": true,
@@ -63,38 +73,44 @@
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "default",
       "optional": true,
       "default": ""
     },
     {
-      "type": "system/SIMOS/UiAttributeOption",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "system/SIMOS/UiAttributeOption",
       "name": "options",
       "dimensions": "*",
       "contained": true,
       "optional": true
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "optional",
       "optional": true,
       "default": "false"
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "contained",
       "optional": true,
       "default": "true"
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "disabled",
       "default": "false",
       "optional": true
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "required",
       "default": "false",
       "optional": true,
@@ -102,12 +118,14 @@
     },
     {
       "name": "mapping",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "optional": true
     },
     {
       "name": "collapsible",
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "optional": true,
       "default": "false"
     }
@@ -121,59 +139,70 @@
       "attributes": [
         {
           "name": "type",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "required": true,
           "disabled": true
         },
         {
           "name": "label",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "optional": true,
           "default": ""
         },
         {
           "name": "name",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "required": true
         },
         {
           "name": "description",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "widget": "textarea"
         },
         {
           "name": "dimensions",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "hidden"
         },
         {
           "name": "uiRecipe",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "hidden"
         },
         {
           "name": "default",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "hidden"
         },
         {
           "name": "options",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "hidden"
         },
         {
           "name": "enumType",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "hidden"
         },
         {
           "name": "label",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "widget": "hidden"
         },
         {
           "name": "widget",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "description": "Supported: \"textarea\" | \"hidden\""
         },
         {

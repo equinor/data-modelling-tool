@@ -4,7 +4,7 @@
   "wheels": [],
   "description": "",
   "engine": {
-    "type": "SSR-DataSource/CarPackage/engine/Engine",
+    "attributeType": "SSR-DataSource/CarPackage/Car", "type": "system/SIMOS/BlueprintAttribute",
     "description": "",
     "name": "V60",
     "power": "100",

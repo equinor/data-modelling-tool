@@ -5,7 +5,8 @@
   "attributes": [
     {
       "name": "name",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "variable name for named accessing",
       "default": "runResult",
       "contained": true,
@@ -13,7 +14,8 @@
     },
     {
       "name": "description",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "instance description",
       "default": "",
       "contained": true,
@@ -21,11 +23,13 @@
     },
     {
       "name": "type",
-      "type": "string"
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
     },
     {
       "name": "safetyFactor",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "Line safety factor",
       "default": "0.0",
       "contained": true,
@@ -33,7 +37,8 @@
     },
     {
       "name": "signals",
-      "type": "SSR-DataSource/marmo/containers/EquallySpacedSignal",
+      "attributeType": "SSR-DataSource/marmo/containers/EquallySpacedSignal",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "",
       "dimensions": "*",
       "contained": true,

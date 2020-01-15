@@ -6,12 +6,12 @@ function createIndexAttribute(name: string, contained: boolean) {
 
 function createBlueprintAttribute(
   name: string,
-  type: string,
+  attributeType: string,
   isArray: boolean
 ) {
   return {
     name,
-    type,
+    attributeType: attributeType,
     dimensions: isArray ? '*' : '',
   }
 }

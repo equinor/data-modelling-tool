@@ -1,7 +1,7 @@
-from classes.blueprint import Blueprint, get_none_primitive_types
+from classes.blueprint import Blueprint
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 
 
 def find_parent(document: DTO, target_id, document_repository):
@@ -12,9 +12,9 @@ def find_parent(document: DTO, target_id, document_repository):
 
     document_references = []
 
-    for attribute in get_none_primitive_types(blueprint):
+    for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
-        is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
+        is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.attribute_type)
         if attribute.dimensions == "*":
             if not is_contained_in_storage:
                 if name in document.keys():

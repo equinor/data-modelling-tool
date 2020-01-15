@@ -24,6 +24,14 @@ const AttributeGroup = styled.div`
   border-radius: 5px;
 `
 
+const DisabledEdit = styled.code`
+  border: 1px solid;
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  color: grey;
+`
+
 type Props = {
   formData: any
   onChange: (value: any) => void
@@ -52,10 +60,15 @@ export const AttributeWidget = (props: Props) => {
     props.onChange(newFormData)
   }
 
-  const selectedType = formData['type']
+  const selectedType = formData['attributeType']
   const selectedDimensions = formData['dimensions']
   if (REQUIRED_ATTRIBUTES.includes(formData.name)) {
-    return <RequiredAttributesGroup name={formData.name} type={formData.type} />
+    return (
+      <RequiredAttributesGroup
+        name={formData.name}
+        attributeType={formData.attributeType}
+      />
+    )
   }
   return (
     <AttributeGroup>
@@ -76,6 +89,14 @@ export const AttributeWidget = (props: Props) => {
         if (Widget === undefined) {
           console.warn('widget is not supported: ', attributeType)
           return null
+        }
+        if (name === 'type') {
+          return (
+            <AttributeWrapper key={name}>
+              <label>type: </label>
+              <DisabledEdit>{value}</DisabledEdit>
+            </AttributeWrapper>
+          )
         }
         return (
           <AttributeWrapper key={name}>
@@ -126,7 +147,7 @@ function getWidgetByType(attributeType: BlueprintAttributeType): Function {
 }
 
 const widgetNames = {
-  type: TypeWidget,
+  attributeType: TypeWidget,
   dimensions: DimensionWidget,
   description: TextAreaWidget,
   enumType: TextInput,

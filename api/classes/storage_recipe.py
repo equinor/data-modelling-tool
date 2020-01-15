@@ -1,10 +1,10 @@
 from typing import Dict, List
 
 from classes.blueprint_attribute import BlueprintAttribute
+from core.enums import PRIMITIVES
 
 DEFAULT_PRIMITIVE_CONTAINED = True
 DEFAULT_COMPLEX_CONTAINED = True
-PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
 class StorageRecipeAttribute:
@@ -20,23 +20,24 @@ class StorageRecipe:
     def __init__(self, name: str, attributes=None):
         attributes = attributes if attributes else {}
         self.name = name
-        self.storage_recipe_attributes = {
+        self.storage_attributes = {
             attribute["name"]: StorageRecipeAttribute(attribute["name"], is_contained=attribute["contained"])
             for attribute in attributes
         }
 
     def is_contained(self, attribute_name, attribute_type):
-        if attribute_name in self.storage_recipe_attributes:
-            return self.storage_recipe_attributes[attribute_name].is_contained
+        if attribute_name in self.storage_attributes:
+            return self.storage_attributes[attribute_name].is_contained
         if attribute_type in PRIMITIVES:
             return DEFAULT_PRIMITIVE_CONTAINED
         else:
             return DEFAULT_COMPLEX_CONTAINED
 
     def to_dict(self) -> Dict:
-        return {
-            self.name: {attribute.name: attribute.to_dict() for attribute in self.storage_recipe_attributes.values()}
-        }
+        return {self.name: {attribute.name: attribute.to_dict() for attribute in self.storage_attributes.values()}}
+
+    def none_contained_attributes(self) -> List[str]:
+        return [attr.name for attr in self.storage_attributes.values() if not attr.is_contained]
 
 
 class DefaultStorageRecipe(StorageRecipe):

@@ -1,63 +1,74 @@
 {
-  "name": "CarTest",
   "type": "system/SIMOS/Blueprint",
+  "name": "CarTest",
   "attributes": [
     {
       "name": "name",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": "CarTest"
     },
     {
       "name": "type",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": "ds/test_data/complex/CarTest"
     },
     {
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "wheel",
-      "type": "ds/test_data/complex/WheelTest"
+      "attributeType": "ds/test_data/complex/WheelTest"
     },
     {
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "wheels",
-      "type": "ds/test_data/complex/WheelTest",
+      "attributeType": "ds/test_data/complex/WheelTest",
       "dimensions": "*"
     },
     {
       "name": "seats",
-      "type": "integer",
+      "attributeType": "integer",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": "2"
     },
     {
       "name": "is_sedan",
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": "true"
     },
     {
       "name": "floatValues",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
       "default": "[2.1,3.1,4.2]"
     },
     {
       "name": "intValues",
-      "type": "integer",
+      "attributeType": "integer",
+      "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
       "default": "[1,5,4,2]"
     },
     {
       "name": "boolValues",
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
       "default": "[true, false, true]"
     },
     {
       "name": "stringValues",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "dimensions": "*",
       "default": "[\"one\", \"two\", \"three\"]"
     },
     {
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "engine",
-      "type": "ds/test_data/complex/EngineTest"
+      "attributeType": "ds/test_data/complex/EngineTest"
     }
   ]
 }

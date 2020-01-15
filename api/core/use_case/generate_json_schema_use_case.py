@@ -1,5 +1,5 @@
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from utils.form_to_ui_schema import form_to_ui_schema
 from utils.form_to_schema import form_to_schema
 from core.shared import use_case as uc

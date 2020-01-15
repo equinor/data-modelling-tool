@@ -4,40 +4,47 @@
   "description": "This describes an action",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type",
       "default": "system/SIMOS/Action"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
       "name": "actionType",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "enumType": "system/SIMOS/enums/ActionTypes",
       "default": "separateResultFile",
       "optional": true,
       "description": "The type of the action."
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "input",
       "label": "Input",
       "description": "Reference to a Blueprint (Path without Datasource prefix)."
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "output",
       "label": "Output",
       "description": "Reference to a Blueprint (Path without Datasource prefix)."
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "method",
       "description": "What method to call inside runnable.tsx"
     }

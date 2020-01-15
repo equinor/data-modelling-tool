@@ -1,9 +1,9 @@
 from classes.blueprint import Blueprint
 from classes.ui_recipe import UIRecipe
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
 
-PRIMITIVES = ["string", "number", "integer", "boolean"]
+from core.enums import PRIMITIVES
 
 
 def process_attributes(blueprint: Blueprint, parent_blueprint: Blueprint, ui_recipe_name):
@@ -21,12 +21,12 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Blueprint, ui_rec
         if not is_contained:
             continue
 
-        if attribute.type in PRIMITIVES:
+        if attribute.attribute_type in PRIMITIVES:
             properties[attribute_name] = (
-                attribute.to_dict() if not is_array else {"type": "array", "items": attribute.to_dict()}
+                attribute.to_json_schema() if not is_array else {"type": "array", "items": attribute.to_json_schema()}
             )
         else:
-            nested_attributes.append({"name": attribute_name, "type": attribute.type, "is_array": is_array})
+            nested_attributes.append({"name": attribute_name, "type": attribute.attribute_type, "is_array": is_array})
 
     for nested_type in nested_attributes:
         attribute_name = nested_type["name"]

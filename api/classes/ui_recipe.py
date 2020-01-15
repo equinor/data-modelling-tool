@@ -1,11 +1,11 @@
 from typing import List
 
 from classes.blueprint_attribute import BlueprintAttribute
+from core.enums import PRIMITIVES
 
 DEFAULT_PRIMITIVE_CONTAINED = True
 DEFAULT_ARRAY_CONTAINED = False
 DEFAULT_TYPE_CONTAINED = False
-PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
 class UiAttribute:
@@ -25,7 +25,7 @@ class UIRecipe:
 
     def is_contained(self, attribute: BlueprintAttribute):
         attribute_name = attribute.name
-        attribute_type = attribute.type
+        attribute_type = attribute.attribute_type
         is_array = attribute.dimensions == "*"
 
         if attribute_name in self.ui_attributes:

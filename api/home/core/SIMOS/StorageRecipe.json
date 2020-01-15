@@ -4,20 +4,24 @@
   "description": "This describes a storage recipe",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type",
       "default": "system/SIMOS/StorageRecipe"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "system/SIMOS/StorageAttribute",
+      "attributeType": "system/SIMOS/StorageAttribute",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "attributes",
       "dimensions": "*",
       "contained": true

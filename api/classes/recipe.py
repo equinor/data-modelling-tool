@@ -2,7 +2,8 @@ from typing import List
 
 from utils.data_structure.find import get
 
-PRIMITIVES = ["string", "number", "integer", "boolean"]
+from classes.blueprint_attribute import BlueprintAttribute
+from core.enums import PRIMITIVES
 
 INDEX_PRIMITIVE_CONTAINED = False
 INDEX_ARRAY_CONTAINED = True
@@ -32,9 +33,9 @@ class Recipe:
         if self.plugin == "INDEX":
             return self.is_contained_in_index(attribute)
 
-    def is_contained_in_index(self, attribute):
-        attribute_name = get(attribute, "name")
-        attribute_type = get(attribute, "type")
+    def is_contained_in_index(self, attribute: BlueprintAttribute):
+        attribute_name = attribute.name
+        attribute_type = attribute.attribute_type
         is_array = get(attribute, "dimensions", default="") == "*"
 
         if attribute_name in self.recipe_attributes:

@@ -7,8 +7,9 @@ from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.use_case.utils.get_blueprint import get_blueprint
-from core.utility import get_document_by_ref
+from core.utility import get_document_by_ref, get_blueprint
+
+from core.enums import PRIMITIVES
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):
@@ -30,9 +31,6 @@ class GetDocumentRequestObject(req.ValidRequestObject):
         return cls(
             document_id=adict.get("document_id"), ui_recipe=adict.get("ui_recipe"), attribute=adict.get("attribute")
         )
-
-
-PRIMITIVES = ["string", "number", "integer", "boolean"]
 
 
 class GetDocumentUseCase(uc.UseCase):
@@ -70,7 +68,7 @@ class GetDocumentUseCase(uc.UseCase):
     # todo control recursive iterations iterations, decided by plugin?
     def add_children_types(self, children, dtos, blueprint):
         for attribute in blueprint.attributes:
-            attribute_type = attribute.type
+            attribute_type = attribute.attribute_type
             self.add_dtos(dtos, attribute)
             if attribute_type not in PRIMITIVES:
                 # prevent infinite recursion.

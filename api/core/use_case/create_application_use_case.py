@@ -16,9 +16,8 @@ import os
 
 from utils.logging import logger
 from core.enums import DMT
-from core.use_case.utils.get_blueprint import get_blueprint
+from core.utility import get_blueprint
 from jinja2 import Template
-from classes.blueprint import get_none_primitive_types
 
 API_DOCKERFILE = f"""\
 FROM mariner.azurecr.io/dmt/api:stable
@@ -211,9 +210,9 @@ def zip_package(ob, document: DTO, document_repository, path):
     blueprint = get_blueprint(document.type)
 
     document_references = []
-    for attribute in get_none_primitive_types(blueprint):
+    for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
-        is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.type)
+        is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.attribute_type)
         if attribute.dimensions == "*":
             if not is_contained_in_storage:
                 if name in document.keys():

@@ -12,7 +12,7 @@ const RequiredGroup = styled.code`
 
 interface FormData {
   name: string
-  type: string
+  attributeType: string
 }
 
 export const RequiredAttributesGroup = (formData: FormData) => {
@@ -23,8 +23,8 @@ export const RequiredAttributesGroup = (formData: FormData) => {
         {formData.name}
       </div>
       <div>
-        <b>type: </b>
-        {formData.type}
+        <b>attributeType: </b>
+        {formData.attributeType}
       </div>
       <div>
         <b>optional: </b>false
