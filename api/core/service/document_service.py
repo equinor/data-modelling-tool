@@ -2,18 +2,15 @@ from typing import Dict
 
 from dotted.collection import DottedDict
 
+from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
+from classes.storage_recipe import StorageRecipe
 from classes.tree_node import Node
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException, EntityAlreadyExistsException
 from core.use_case.utils.get_document_children import get_document_children
 from core.utility import get_blueprint
 from utils.logging import logger
-
-# TODO: Have this return a DTO? We are going DTO->Dict->DTO now
-def get_complete_document(document_uid: str, document_repository: Repository) -> Dict:
-    document: DTO = document_repository.get(document_uid)
-from classes.storage_recipe import StorageRecipe
 
 
 def create_reference(data: Dict, document_repository, type: str):
@@ -23,7 +20,8 @@ def create_reference(data: Dict, document_repository, type: str):
     return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
 
 
-def get_complete_document(document_uid: UUID, document_repository: Repository) -> Dict:
+# TODO: Have this return a DTO? We are going DTO->Dict->DTO now
+def get_complete_document(document_uid: str, document_repository: Repository) -> Dict:
     document: DTO = document_repository.get(str(document_uid))
     if not document:
         raise EntityNotFoundException(uid=document_uid)
@@ -133,8 +131,8 @@ class DocumentService:
         return document
 
     def update_document(self, document_id: str, data: dict, attribute: str, document_repository: Repository):
-        def update_attribute(attribute, data: Dict, storage_recipe: StorageRecipe, document_repository):
-            is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.type)
+        def update_attribute(attribute, data: BlueprintAttribute, storage_recipe: StorageRecipe, document_repository):
+            is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.attribute_type)
             attribute_data = data[attribute.name]
 
             if is_contained_in_storage:
@@ -143,12 +141,12 @@ class DocumentService:
                 if attribute.dimensions == "*":
                     references = []
                     for instance in attribute_data:
-                        reference = create_reference(instance, document_repository, attribute.type)
+                        reference = create_reference(instance, document_repository, attribute.attribute_type)
                         update_document(reference["_id"], instance, document_repository)
                         references.append(reference)
                     return references
                 else:
-                    reference = create_reference(attribute_data, document_repository, attribute.type)
+                    reference = create_reference(attribute_data, document_repository, attribute.attribute_type)
                     return reference
 
         def update_document(document_id, data: Dict, document_repository: Repository) -> DTO:
