@@ -21,6 +21,22 @@ services:
       - ./web/src:/code/src
       - ./web/libs:/code/src/libs
 
+  web2:
+    image: tutum/hello-world
+    expose:
+      - "80"
+
+  tests:
+    build:
+      context: web
+      dockerfile: Dockerfile.integration-tests
+    volumes:
+      - "./web/integration-tests:/integration-tests"
+      - "./web/screenshots:/screenshots"
+    command: "wait-for-it.sh web2:80 -- mocha --recursive /integration-tests"
+    depends_on:
+      - web2
+
   db:
     environment:
       MONGO_INITDB_ROOT_PASSWORD: maf
