@@ -22,9 +22,6 @@ class UpdateDocumentRequestObject(req.ValidRequestObject):
 
         if "data" not in adict:
             invalid_req.add_error("data", "is missing")
-        else:
-            data = adict["data"]
-            print(data)
 
         if invalid_req.has_errors():
             return invalid_req

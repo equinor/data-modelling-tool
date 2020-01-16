@@ -1,11 +1,9 @@
 from behave import then
 import json
 from deepdiff import DeepDiff
-from utils.data_structure.traverse import traverse_compare
 import pprint
-from pygments import highlight
-from pygments.lexers import JsonLexer
-from pygments.formatters import TerminalFormatter
+
+from utils.data_structure.compare import pretty_eq
 
 STATUS_CODES = {
     "OK": 200,
@@ -17,11 +15,6 @@ STATUS_CODES = {
     "Conflict": 409,
     "System Error": 500,
 }
-
-
-def print_pygments(json_object):
-    json_str = json.dumps(json_object, indent=2, sort_keys=True)
-    print(highlight(json_str, JsonLexer(), TerminalFormatter()))
 
 
 @then('the response status should be "{status}"')
@@ -49,28 +42,6 @@ def step_impl_equal(context):
         print(result)
         print(actual)
     assert result == {}
-
-
-def pretty_eq(expected, actual):
-    try:
-        a = traverse_compare(expected, actual)
-        b = []
-        if a != b:
-            print("Actual:")
-            print_pygments(actual)
-            print("Expected:")
-            print_pygments(expected)
-            print("Differences:")
-            print_pygments(a)
-        assert a == b
-    except KeyError:
-        print_pygments(actual)
-        raise Exception
-    except IndexError:
-        print_pygments(actual)
-        raise Exception
-    except Exception:
-        raise Exception
 
 
 @then("the response should contain")

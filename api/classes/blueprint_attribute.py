@@ -25,6 +25,9 @@ class BlueprintAttribute:
         self.contained = contained if contained else True
         self.enum_type = enum_type if enum_type else ""
 
+    def is_array(self):
+        return self.dimensions == "*"
+
     def to_dict(self):
         return {
             "name": self.name,

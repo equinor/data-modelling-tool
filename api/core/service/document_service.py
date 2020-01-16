@@ -1,6 +1,8 @@
+from pyclbr import Function
 from typing import Dict
 
 import stringcase
+from classes.blueprint import Blueprint
 from dotted.collection import DottedDict
 
 from classes.blueprint_attribute import BlueprintAttribute
@@ -26,30 +28,55 @@ def create_reference(data: Dict, document_repository, type: str):
     return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
 
 
-# TODO: Have this return a DTO? We are going DTO->Dict->DTO now
-def get_complete_document(document_uid: str, document_repository: Repository) -> Dict:
+def get_document(document_uid: str, document_repository: Repository):
     document: DTO = document_repository.get(str(document_uid))
+
     if not document:
         raise EntityNotFoundException(uid=document_uid)
 
-    blueprint = get_blueprint(document.type)
-    result = document.data
+    return document
 
-    for attribute in blueprint.attributes:
-        attribute_name = attribute.name
-        key = attribute_name
-        if attribute_name in result:
-            if blueprint.storage_recipes[0].is_contained(attribute_name, attribute.attribute_type):
-                pass
-            else:
-                if attribute.dimensions == "*":
-                    items = result[attribute_name]
-                    documents = [get_complete_document(item["_id"], document_repository) for item in items]
-                    result[key] = documents
+
+def get_resolved_document(document: DTO, document_repository: Repository, blueprint_provider: Function) -> Dict:
+    blueprint: Blueprint = blueprint_provider(document.type)
+
+    data: Dict = document.data
+    data["_blueprint"] = blueprint.to_dict()
+
+    for complex_attribute in blueprint.get_none_primitive_types():
+        attribute_name = complex_attribute.name
+        if attribute_name in data and data[attribute_name]:
+            storage_recipe: StorageRecipe = blueprint.storage_recipes[0]
+            if storage_recipe.is_contained(attribute_name, complex_attribute.attribute_type):
+                if complex_attribute.is_array():
+                    document.data[attribute_name] = [
+                        get_resolved_document(DTO(item), document_repository, blueprint_provider)
+                        for item in data[attribute_name]
+                    ]
                 else:
-                    result[key] = get_complete_document(result[attribute_name]["_id"], document_repository)
+                    data[attribute_name] = get_resolved_document(
+                        DTO(document.data[attribute_name]), document_repository, blueprint_provider
+                    )
+            else:
+                if complex_attribute.is_array():
+                    data[attribute_name] = [
+                        get_complete_document(item["_id"], document_repository, blueprint_provider)
+                        for item in data[attribute_name]
+                    ]
+                else:
+                    data[attribute_name] = get_complete_document(
+                        data[attribute_name]["_id"], document_repository, blueprint_provider
+                    )
 
-    return result
+    return data
+
+
+def get_complete_document(
+    document_uid: str, document_repository: Repository, blueprint_provider: Function = get_blueprint
+) -> Dict:
+    document = get_document(document_uid=document_uid, document_repository=document_repository)
+
+    return get_resolved_document(document, document_repository, blueprint_provider)
 
 
 def remove_children(document: DTO, document_repository: Repository):
@@ -63,7 +90,6 @@ class DocumentService:
     @staticmethod
     def get_by_uid(document_uid: str, document_repository: Repository) -> DTO:
         adict = get_complete_document(document_uid, document_repository)
-        # node = Node(DTO(data=adict, uid=document_uid))
         return DTO(data=adict, uid=document_uid)
 
     @staticmethod
@@ -84,9 +110,9 @@ class DocumentService:
             if isinstance(instance, list):
                 del dotted_data[attribute]
             else:
-                dotted_data[attribute] = {}
+                dotted_data[attribute] = None
         else:
-            dotted_data[attribute] = {}
+            dotted_data[attribute] = None
 
         document_repository.update(DTO(dotted_data.to_python(), uid=parent.uid))
         remove_children(DTO(attribute_document), document_repository)
