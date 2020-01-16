@@ -35,6 +35,9 @@ if [ "$1" = "pull" ]; then
   docker_login
   pull $2
 
+elif [ "$1" = "web_tests_integration" ]; then
+   docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run wait-for-it.sh web2:80 -- mocha --recursive /integration-tests
+
 elif [ "$1" = "tags" ]; then
   docker_tag_push "$2"
 
@@ -47,10 +50,12 @@ elif [ "$1" = "bdd_tests" ]; then
 elif [ "$1" = "web_tests" ]; then
    docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test
 
+
 elif [ "$1" = "build-api-dev-image" ]; then
   docker_login
   pull $API_IMAGE
   docker build --cache-from "$API_IMAGE" --target development --tag development ./api/
+
 
 else
     echo "Error: Invalid argument"

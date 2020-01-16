@@ -10,10 +10,19 @@ describe('ContextMenu', () => {
       // Debug mode !
       // headless: false,
       slowMo: 80,
+      args: [
+        // Required for Docker version of Puppeteer
+        '--no-sandbox',
+        '--disable-setuid-sandbox',
+        // This will write shared memory files into /tmp instead of /dev/shm,
+        // because Docker’s default for /dev/shm is 64MB
+        '--disable-dev-shm-usage',
+      ],
     })
+
     page = await browser.newPage()
     await page.setViewport({ width: 1366, height: 768 })
-    await page.goto('http://localhost:80', { waitUntil: 'domcontentloaded' })
+    await page.goto('http://web/', { waitUntil: 'domcontentloaded' })
     await page.waitForResponse((response: any) => response.ok())
     await page.waitForSelector('.react-contextmenu-wrapper')
     await page.screenshot({ path: './integration/screenshot.png' })

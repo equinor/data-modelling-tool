@@ -11,6 +11,7 @@ env:
     - FULL_IMAGE_REPO=$IMAGE_REGISTRY/$IMAGE_REPO
     - API_IMAGE=$FULL_IMAGE_REPO/api
     - WEB_IMAGE=$FULL_IMAGE_REPO/web
+    - WEB_E2E_IMAGE=$FULL_IMAGE_REPO/web2
     - NGINX_IMAGE=$FULL_IMAGE_REPO/nginx
 
 stages:
@@ -63,6 +64,11 @@ jobs:
       name: "Web - Tests"
       before_script: ./travis-scripts.sh pull $WEB_IMAGE
       script: ./travis-scripts.sh web_tests
+
+    - stage: tests
+      name: "Web - Integration Tests"
+      before_script: ./travis-scripts.sh pull $WEB_E2E_IMAGE
+      script: ./travis-scripts.sh web_tests_integration
 
     - stage: deploy-dev
       name: "Reset dev database"
