@@ -1,5 +1,6 @@
 from typing import Dict
 
+import stringcase
 from dotted.collection import DottedDict
 
 from classes.blueprint_attribute import BlueprintAttribute
@@ -11,6 +12,11 @@ from core.repository.repository_exceptions import EntityNotFoundException, Entit
 from core.use_case.utils.get_document_children import get_document_children
 from core.utility import get_blueprint
 from utils.logging import logger
+
+from core.use_case.utils.create_entity import CreateEntity
+
+from core.enums import DMT, SIMOS
+from utils.data_structure.find import get
 
 
 def create_reference(data: Dict, document_repository, type: str):
@@ -211,3 +217,85 @@ class DocumentService:
         logger.info(f"Updated document '{document.uid}''")
 
         return document
+
+    def add_document(
+        self,
+        parent_id: str,
+        type: str,
+        name: str,
+        description: str,
+        attribute_dot_path: str,
+        document_repository: Repository,
+    ):
+        attribute: str = stringcase.snakecase(attribute_dot_path)
+
+        parent: DTO = document_repository.get(parent_id)
+        if not parent:
+            raise EntityNotFoundException(uid=parent_id)
+
+        class BlueprintProvider:
+            def get_blueprint(self, type: str):
+                return get_blueprint(type)
+
+        blueprint_provider = BlueprintProvider()
+
+        entity: Dict = CreateEntity(blueprint_provider, name=name, type=type, description=description).entity
+
+        parent_data = parent.data
+
+        # Set empty content on package if no content
+        if parent.type == DMT.PACKAGE.value:
+            parent_data["content"] = parent_data.get("content", [])
+
+        try:
+            dotted_data = DottedDict(parent_data)
+            try:
+                dotted_data[attribute_dot_path]
+            except KeyError:
+                get(parent_data, attribute_dot_path)
+        except ValueError:
+            raise ValueError(f"The attribute '{attribute}' is missing")
+
+        parent_blueprint = get_blueprint(parent.type)
+        if not parent_blueprint:
+            raise EntityNotFoundException(uid=parent.type)
+
+        storage_recipe: StorageRecipe = parent_blueprint.storage_recipes[0]
+
+        if storage_recipe.is_contained(attribute, type):
+            # only array types can be added from context menu.
+            # single types in tree can only be clicked.
+            if isinstance(parent_data, dict):
+                try:
+                    dotted_data[attribute_dot_path].append(entity)
+                    parent.data = dotted_data.to_python()
+                except KeyError:
+                    pass
+
+            else:
+                getattr(parent_data, attribute).append(entity)
+                logger.info(f"Added contained document")
+
+            return document_repository.update(parent)
+        else:
+
+            def get_required_attributes(type: str):
+                return [
+                    {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "name"},
+                    {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "description"},
+                    {
+                        "type": "system/SIMOS/BlueprintAttribute",
+                        "attributeType": "string",
+                        "name": "type",
+                        "default": type,
+                    },
+                ]
+
+            file = DTO(data=entity)
+            if type == SIMOS.BLUEPRINT.value:
+                file.data["attributes"] = get_required_attributes(type=type)
+            get(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
+            document_repository.add(file)
+            logger.info(f"Added document '{file.uid}''")
+            document_repository.update(parent)
+            return file
