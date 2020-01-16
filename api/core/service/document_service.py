@@ -18,6 +18,7 @@ from core.use_case.utils.create_entity import CreateEntity
 from core.enums import DMT, SIMOS
 from utils.data_structure.find import get
 
+
 def create_reference(data: Dict, document_repository, type: str):
     data["type"] = type
     file = DTO(data)
@@ -217,12 +218,14 @@ class DocumentService:
 
         return document
 
-    def add_document(self, parent_id: str,
+    def add_document(
+        self,
+        parent_id: str,
         type: str,
         name: str,
         description: str,
         attribute_dot_path: str,
-        document_repository: Repository
+        document_repository: Repository,
     ):
         attribute: str = stringcase.snakecase(attribute_dot_path)
 
@@ -275,12 +278,17 @@ class DocumentService:
 
             return document_repository.update(parent)
         else:
+
             def get_required_attributes(type: str):
                 return [
                     {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "name"},
                     {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "description"},
-                    {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "type",
-                     "default": type},
+                    {
+                        "type": "system/SIMOS/BlueprintAttribute",
+                        "attributeType": "string",
+                        "name": "type",
+                        "default": type,
+                    },
                 ]
 
             file = DTO(data=entity)

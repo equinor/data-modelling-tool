@@ -5,6 +5,7 @@ from core.shared import use_case as uc
 from core.utility import get_blueprint
 from core.service.document_service import DocumentService
 
+
 class AddFileRequestObject(req.ValidRequestObject):
     def __init__(self, parent_id=None, name=None, description=None, type=None, attribute=None, path=None, data=None):
         self.parent_id = parent_id
