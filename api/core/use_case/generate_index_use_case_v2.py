@@ -83,7 +83,6 @@ def extend_index_with_node_tree(
         document=tree_node.dto if isinstance(tree_node, Node) else {},
         # TODO: Blueprint should be appended in or before TreeNode
         blueprint=tree_node.blueprint if isinstance(tree_node, Node) else None,
-        # blueprint=get_blueprint(tree_node.type),
         # If it's a package, no parent, so it will be left out of index. We add the package.content to index instead.
         parent=parent if not is_package else None,
         # List nodes should not be "clickable"

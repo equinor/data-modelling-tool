@@ -22,7 +22,6 @@ class Node(NodeBase):
         super().__init__(node_id=dto.uid, parent=parent, depth=depth)
         self.name: str = dto.name
         self.type = dto.type
-        # blueprint: Blueprint = get_blueprint(dto.type)
         self.blueprint: Blueprint = Blueprint.from_dict(dto["_blueprint"])
         # TODO: Might want to avoid this deepcopy of the dto. Could be expensive with big entities
         # Primitive data are added to the nodes .data, rest is a dict
@@ -31,7 +30,7 @@ class Node(NodeBase):
         for key, value in complex_types.items():
             # If the attribute is a list, we create a list-node that has no data, but has children
             if isinstance(value, list):
-                list_type = self.blueprint.type_of_attribute_name(key)
+                list_type = self.blueprint.get_attribute_type_by_key(key)
                 self.children.append(
                     ListNode(
                         data_list=value,

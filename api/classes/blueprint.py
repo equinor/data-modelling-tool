@@ -29,7 +29,7 @@ class Blueprint:
 
     @classmethod
     def from_dict(cls, adict):
-        instance = cls(DTO(adict, uid=adict.get("_id")))
+        instance = cls(DTO(adict))
         instance.attributes = [BlueprintAttribute.from_dict(attr) for attr in adict.get("attributes", [])]
         instance.storage_recipes = get_storage_recipes(adict.get("storageRecipes", []), instance.attributes)
         instance.ui_recipes = adict.get("uiRecipes", [])
@@ -62,5 +62,5 @@ class Blueprint:
             name = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
             return name
 
-    def type_of_attribute_name(self, key):
+    def get_attribute_type_by_key(self, key):
         return next((attr.attribute_type for attr in self.attributes if attr.name == key))

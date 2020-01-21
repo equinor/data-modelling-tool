@@ -7,8 +7,6 @@ from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
 from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
 from core.use_case.export_use_case import ExportUseCase, ExportRequestObject
-from core.use_case.remove_attribute_use_case import RemoveAttributeUseCase, RemoveAttributeRequestObject
-from core.use_case.remove_file_use_case import RemoveFileUseCase, RemoveFileRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
 from core.use_case.remove_use_case import RemoveUseCase_v2, RemoveFileRequestObject_v2
 from core.use_case.rename_attribute_use_case import RenameAttributeUseCase, RenameAttributeRequestObject
@@ -37,19 +35,6 @@ def add_file(data_source_id: str):
     )
 
 
-@blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-file", methods=["POST"])
-def remove_file(data_source_id: str):
-    db = DataSource(uid=data_source_id)
-    request_data = request.get_json()
-    document_repository = get_repository(db)
-    use_case = RemoveFileUseCase(document_repository=document_repository)
-    request_object = RemoveFileRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
-    )
-
-
 @blueprint.route("/api/v4/explorer/<string:data_source_id>/remove", methods=["POST"])
 def remove(data_source_id: str):
     db = DataSource(uid=data_source_id)
@@ -57,19 +42,6 @@ def remove(data_source_id: str):
     document_repository = get_repository(db)
     use_case = RemoveUseCase_v2(document_repository=document_repository)
     request_object = RemoveFileRequestObject_v2.from_dict(request_data)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
-    )
-
-
-@blueprint.route("/api/v2/explorer/<string:data_source_id>/remove-attribute", methods=["POST"])
-def remove_attribute(data_source_id: str):
-    db = DataSource(uid=data_source_id)
-    request_data = request.get_json()
-    document_repository = get_repository(db)
-    use_case = RemoveAttributeUseCase(document_repository=document_repository)
-    request_object = RemoveAttributeRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
