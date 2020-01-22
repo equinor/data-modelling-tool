@@ -67,9 +67,10 @@
       "plugin": "EDIT_PLUGIN",
       "attributes": [
         {
-          "name": "plugin",
+          "name": "name",
           "type": "system/SIMOS/UiAttribute",
-          "description": "PREVIEW | EDIT_PLUGIN | INDEX"
+          "required": true,
+          "description": "Name of ui view (tab). Override or create new tab. \"Preview\" | \"Edit\""
         },
         {
           "name": "type",
@@ -79,10 +80,9 @@
           "disabled": true
         },
         {
-          "name": "name",
+          "name": "plugin",
           "type": "system/SIMOS/UiAttribute",
-          "required": true,
-          "description": "Name of ui view (tab). Override or create new tab. \"Preview\" | \"Edit\""
+          "description": "PREVIEW | EDIT_PLUGIN | INDEX"
         },
         {
           "name": "options",

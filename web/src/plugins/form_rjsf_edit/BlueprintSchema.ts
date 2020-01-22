@@ -237,7 +237,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
         (attr: BlueprintAttributeType) => attr.name
       )
       //create an enum for valid names.
-      property.title = 'name'
+      property.title = attr.name
       property.type = 'string'
       property.default = ''
 
@@ -257,7 +257,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     else if (attr.enumType && attr.name !== 'type') {
       const dto = this.blueprintProvider.getDtoByType(attr.enumType)
       if (dto) {
-        property.title = 'name'
+        property.title = attr.name
         property.type = 'string'
         property.default = ''
         property.anyOf = dto.data.values.map((value: any, index: number) => {
