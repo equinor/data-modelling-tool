@@ -234,8 +234,9 @@ class DocumentService:
             existing_data: DTO = document_repository.get(document_id).data
             if not existing_data:
                 raise EntityNotFoundException(uid=document_id)
-            existing_data[attribute] = data
-            data = existing_data
+            dotted_data = DottedDict(existing_data)
+            dotted_data[attribute] = data
+            data = dotted_data.to_python()
 
         document = update_document(document_id, data, document_repository)
 
