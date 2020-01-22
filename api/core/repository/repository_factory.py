@@ -1,13 +1,14 @@
 from classes.data_source import DataSource
+from core.enums import DataSourceType
 from core.repository import Repository
 from core.repository.mongo import MongoDBClient
-from core.enums import DataSourceType
 
 
 def get_repository(data_source: DataSource):
     if data_source.type == DataSourceType.MONGO.value:
         return Repository(
-            MongoDBClient(
+            name=data_source.name,
+            db=MongoDBClient(
                 host=data_source.host,
                 username=data_source.username,
                 password=data_source.password,
@@ -15,5 +16,5 @@ def get_repository(data_source: DataSource):
                 tls=data_source.tls,
                 collection=data_source.collection,
                 port=data_source.port,
-            )
+            ),
         )

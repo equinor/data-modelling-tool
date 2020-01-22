@@ -5,6 +5,7 @@ from classes.blueprint import Blueprint
 from classes.data_source import DataSource
 from config import Config
 from classes.dto import DTO
+from core.repository.repository_exceptions import EntityNotFoundException
 from core.repository.repository_factory import get_repository
 from services.database import dmt_database
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
@@ -54,7 +55,7 @@ def get_document_by_ref(type_ref) -> DTO:
     document_repository = get_repository(data_source)
     type_id = get_document_uid_by_path(path, document_repository)
     if not type_id:
-        return
+        raise EntityNotFoundException(uid=type_ref)
     return document_repository.get(uid=type_id)
 
 
@@ -70,5 +71,5 @@ def wipe_db():
 def get_blueprint(type: str) -> Blueprint:
     document: DTO = get_document_by_ref(type)
     if not document:
-        return None
+        raise EntityNotFoundException(uid=type)
     return Blueprint(document)

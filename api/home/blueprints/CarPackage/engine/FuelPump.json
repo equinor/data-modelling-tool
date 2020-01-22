@@ -1,5 +1,4 @@
 {
-  "attributeType": "boolean",
   "type": "system/SIMOS/BlueprintAttribute",
   "name": "FuelPump",
   "description": "This describes a fuel pump",

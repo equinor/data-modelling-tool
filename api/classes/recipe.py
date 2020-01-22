@@ -29,15 +29,11 @@ class Recipe:
             name = get(attribute, "name")
             self.recipe_attributes[name] = RecipeAttribute(name=name, is_contained=get(attribute, "contained"))
 
-    def is_contained(self, attribute):
+    def is_contained(self, attribute: BlueprintAttribute):
         if self.plugin == "INDEX":
-            return self.is_contained_in_index(attribute)
+            return self.is_contained_in_index2(attribute)
 
-    def is_contained_in_index(self, attribute: BlueprintAttribute):
-        attribute_name = attribute.name
-        attribute_type = attribute.attribute_type
-        is_array = get(attribute, "dimensions", default="") == "*"
-
+    def is_contained_in_index2(self, attribute_name: str, attribute_type: str, is_array: bool):
         if attribute_name in self.recipe_attributes:
             ui_attribute = self.recipe_attributes[attribute_name]
             if ui_attribute is not None and ui_attribute.is_contained is not None:

@@ -28,14 +28,16 @@
     },
     {
       "name": "env",
-      "type": "SSR-DataSource/mooringSRS/env/Environment",
+      "attributeType": "SSR-DataSource/mooringSRS/env/Environment",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "environment",
       "contained": true,
       "optional": false
     },
     {
       "name": "output",
-      "type": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "attributeType": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "run output",
       "contained": true,
       "optional": true

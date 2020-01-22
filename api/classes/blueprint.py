@@ -6,7 +6,7 @@ from classes.storage_recipe import DefaultStorageRecipe, StorageRecipe
 from core.enums import PRIMITIVES
 
 
-def get_storage_recipes(storage_recipes_dict: List[Dict], attributes: List[Dict]):
+def get_storage_recipes(storage_recipes_dict: List[Dict], attributes: List[BlueprintAttribute]):
     if not storage_recipes_dict:
         return [DefaultStorageRecipe(attributes)]
     else:
@@ -29,9 +29,9 @@ class Blueprint:
 
     @classmethod
     def from_dict(cls, adict):
-        instance = cls(DTO(adict, uid=adict["_id"]))
-        instance.attributes = adict.get("attributes", [])
-        instance.storage_recipes = get_storage_recipes(adict.get("storageRecipes", []), adict.get("attributes", []))
+        instance = cls(DTO(adict))
+        instance.attributes = [BlueprintAttribute.from_dict(attr) for attr in adict.get("attributes", [])]
+        instance.storage_recipes = get_storage_recipes(adict.get("storageRecipes", []), instance.attributes)
         instance.ui_recipes = adict.get("uiRecipes", [])
         return instance
 
@@ -61,3 +61,6 @@ class Blueprint:
         else:
             name = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
             return name
+
+    def get_attribute_type_by_key(self, key):
+        return next((attr.attribute_type for attr in self.attributes if attr.name == key))

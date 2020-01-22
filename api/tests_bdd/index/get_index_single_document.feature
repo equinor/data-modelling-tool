@@ -148,37 +148,37 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Root Package)
-    Given I access the resource url "/api/v3/index/data-source-name/1"
+    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/1"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-       "1":{
+       "1.content":{
           "parentId": null,
           "filename":"blueprints",
           "title":"blueprints",
-          "id":"1",
+          "id":"1.content",
           "nodeType":"document-node",
-          "children":["2"],
+          "children":["2.content"],
           "type":"system/DMT/Package"
        }
     }
     """
 
   Scenario: Get index for single document (Package)
-    Given I access the resource url "/api/v3/index/data-source-name/2"
+    Given I access the resource url "/api/v4/index/data-source-name/1/2"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-       "2":{
+       "2.content":{
           "filename":"sub_package_1",
           "title":"sub_package_1",
-          "id":"2",
+          "id":"2.content",
           "nodeType":"document-node",
           "children":[],
           "type":"system/DMT/Package"
@@ -187,7 +187,7 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Blueprint)
-    Given I access the resource url "/api/v3/index/data-source-name/3"
+    Given I access the resource url "/api/v4/index/data-source-name/2/3"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
@@ -208,7 +208,7 @@ Feature: Index
 
   @skip
   Scenario: Get index for single document (Document)
-    Given I access the resource url "/api/v3/index/data-source-name/4"
+    Given I access the resource url "/api/v4/index/data-source-name/3/4"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"

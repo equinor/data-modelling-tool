@@ -1,4 +1,4 @@
-Feature: Explorer - Remove file
+Feature: Explorer - Remove
 
   Background: There are data sources in the system
 
@@ -15,14 +15,13 @@ Feature: Explorer - Remove file
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
   Scenario: Remove root package
-    Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
+    Given i access the resource url "/api/v4/explorer/data-source-name/remove"
     And data modelling tool templates are imported
     When i make a "POST" request
   """
   {
-    "documentId": "1",
-    "parentId": null,
-    "attribute": null
+    "documentId": "1.content",
+    "parentId": null
   }
   """
     Then the response status should be "OK"
@@ -58,14 +57,13 @@ Feature: Explorer - Remove file
   """
 
   Scenario: Remove file with no children
-    Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
+    Given i access the resource url "/api/v4/explorer/data-source-name/remove"
     And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
-      "parentId": "2",
-      "documentId": "3",
-      "attribute": "content"
+      "parentId": "2.content",
+      "documentId": "3.content"
     }
     """
     Then the response status should be "OK"
@@ -81,14 +79,13 @@ Feature: Explorer - Remove file
     """
 
   Scenario: Remove file with children
-    Given i access the resource url "/api/v2/explorer/data-source-name/remove-file"
+    Given i access the resource url "/api/v4/explorer/data-source-name/remove"
     And data modelling tool templates are imported
     When i make a "POST" request
   """
   {
-    "parentId": "1",
-    "documentId": "2",
-    "attribute": "content"
+    "parentId": "1.content",
+    "documentId": "2.content"
   }
   """
     Then the response status should be "OK"

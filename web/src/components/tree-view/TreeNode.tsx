@@ -9,6 +9,7 @@ import {
   FaFolderOpen,
   FaLaptop,
   FaRegFileAlt,
+  FaList,
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { NodeIconType, TreeNodeData } from './Tree'
@@ -92,6 +93,7 @@ const GetIcon = ({ node }: Props) => {
     case NodeIconType.database:
       return <FaDatabase style={{ color: 'gray' }} />
     case NodeIconType.file:
+      if (node.meta.isList) return <FaList />
       return <FaRegFileAlt />
     case NodeIconType.blueprint:
       return <FaRegFileAlt style={{ color: '#2966FF' }} />

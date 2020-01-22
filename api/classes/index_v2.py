@@ -4,11 +4,14 @@ from anytree import NodeMixin
 
 from classes.blueprint import Blueprint
 from classes.dto import DTO
+from core.use_case.utils.sort_menu_items import sort_menu_items
 
 
 class DocumentNode(NodeMixin):
     def __init__(
         self,
+        uid: str,
+        type: str,
         data_source_id: str,
         name: str,
         menu_items,
@@ -19,7 +22,10 @@ class DocumentNode(NodeMixin):
         parent: DocumentNode = None,
         is_contained=None,
         is_root_package=False,
+        is_list=False,
     ):
+        self.uid = uid
+        self.type = type
         self.data_source_id = data_source_id
         self.name = name
         self.document = document
@@ -36,52 +42,34 @@ class DocumentNode(NodeMixin):
             is_contained = False
         self.is_contained = is_contained
         self.is_root_package = is_root_package
-
-    @property
-    def uid(self):
-        if self.document:
-            return self.document.uid
-
-    @property
-    def start_path(self):
-        return "/".join([node.name for node in self.path])
-
-    @property
-    def id(self):
-        if self.is_contained:
-            return f"{self.document.uid}_{self.name}"
-        elif self.document:
-            return f"{self.document.uid}"
-        elif self.depth == 0:
-            return self.data_source_id
-        else:
-            raise Exception
+        self.is_list = is_list
 
     @property
     def parent_id(self):
         # If node is data source
         if not self.parent:
             return None
-        # If parent is data source
-        elif self.parent and not self.parent.document:
-            return None
         else:
-            return self.parent.id
+            return self.parent.uid
 
     def to_node(self):
         result = {
             "parentId": self.parent_id,
             "filename": self.name,
             "title": self.name,
-            "id": self.id,
+            "id": self.uid,
             "nodeType": "document-node",
-            "children": [child.id for child in self.children],
-            "type": "datasource" if not self.document else self.document.type,
+            "children": [child.uid for child in self.children],
+            "type": self.type,
             "meta": {
                 "menuItems": self.menu_items,
                 "onSelect": self.on_select,
                 "error": self.error,
                 "isRootPackage": self.is_root_package,
+                "isList": self.is_list,
             },
         }
         return result
+
+    def sort_menu_items(self):
+        self.menu_items = sort_menu_items(self.menu_items)

@@ -31,7 +31,7 @@ class AddRootPackageUseCase(uc.UseCase):
     def process_request(self, request_object):
         name: str = request_object.name
         type: str = request_object.type
-        document: DTO = DTO(data={"name": name, "type": type, "isRoot": True})
+        document: DTO = DTO(data={"name": name, "type": type, "isRoot": True, "content": []})
         self.document_repository.add(document)
         logger.info(f"Added root package '{document.uid}'")
 

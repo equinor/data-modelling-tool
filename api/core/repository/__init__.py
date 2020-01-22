@@ -5,7 +5,8 @@ from core.repository.db_client_interface import DBClientInterface
 
 
 class Repository:
-    def __init__(self, db: DBClientInterface):
+    def __init__(self, name: str, db: DBClientInterface):
+        self.name = name
         self.client = db
 
     def get(self, uid: str) -> DTO:

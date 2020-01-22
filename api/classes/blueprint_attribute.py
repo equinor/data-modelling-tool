@@ -1,5 +1,7 @@
 from typing import Optional
 
+from core.enums import DMT, SIMOS
+
 
 class BlueprintAttribute:
     def __init__(
@@ -16,7 +18,7 @@ class BlueprintAttribute:
     ):
         self.name = name
         self.attribute_type = attribute_type
-        self.type = "system/SIMOS/BlueprintAttribute"
+        self.type = SIMOS.BLUEPRINT_ATTRIBUTE.value
         self.description = description if description else ""
         self.label = label if label else ""
         self.default = default if default else ""
@@ -54,8 +56,6 @@ class BlueprintAttribute:
 
     @classmethod
     def from_dict(cls, adict):
-        if not adict.get("attributeType"):
-            print(adict["name"])
         instance = cls(
             name=adict["name"],
             attribute_type=adict["attributeType"],
