@@ -2,6 +2,8 @@ from pyclbr import Function
 from typing import Dict
 
 import stringcase
+from utils.data_structure.dot_notation import to_dot_notation
+
 from classes.blueprint import Blueprint
 from dotted.collection import DottedDict
 
@@ -37,11 +39,19 @@ def get_document(document_uid: str, document_repository: Repository):
     return document
 
 
-def get_resolved_document(document: DTO, document_repository: Repository, blueprint_provider: Function) -> Dict:
+def traverse(
+        document: DTO,
+        document_repository: Repository,
+        blueprint_provider: Function,
+        callback: Function,
+        path=None,
+) -> Dict:
+    if path is None:
+        path = []
+
     blueprint: Blueprint = blueprint_provider(document.type)
 
     data: Dict = document.data
-    data["_blueprint"] = blueprint.to_dict()
 
     for complex_attribute in blueprint.get_none_primitive_types():
         attribute_name = complex_attribute.name
@@ -49,33 +59,53 @@ def get_resolved_document(document: DTO, document_repository: Repository, bluepr
             storage_recipe: StorageRecipe = blueprint.storage_recipes[0]
             if storage_recipe.is_contained(attribute_name, complex_attribute.attribute_type):
                 if complex_attribute.is_array():
-                    document.data[attribute_name] = [
-                        get_resolved_document(DTO(item), document_repository, blueprint_provider)
-                        for item in data[attribute_name]
-                    ]
+                    for i, item in enumerate(data[attribute_name]):
+                        traverse(DTO(item), document_repository, blueprint_provider, callback,
+                                 path + [attribute_name, str(i)])
+
                 else:
-                    data[attribute_name] = get_resolved_document(
-                        DTO(document.data[attribute_name]), document_repository, blueprint_provider
+                    traverse(
+                        DTO(document.data[attribute_name]), document_repository, blueprint_provider, callback,
+                        path + [attribute_name]
                     )
             else:
                 if complex_attribute.is_array():
-                    data[attribute_name] = [
-                        get_complete_document(item["_id"], document_repository, blueprint_provider)
-                        for item in data[attribute_name]
-                    ]
+                    for i, item in enumerate(data[attribute_name]):
+                        traverse(get_document(item["_id"], document_repository), blueprint_provider, callback,
+                                 path + [attribute_name, str(i)])
+
                 else:
-                    data[attribute_name] = get_complete_document(
-                        data[attribute_name]["_id"], document_repository, blueprint_provider
+                    traverse(get_document(
+                        data[attribute_name]["_id"], document_repository), blueprint_provider, callback,
+                        path + [attribute_name]
                     )
 
-    return data
+    return callback(document, blueprint, path)
 
 
 def get_complete_document(
-    document_uid: str, document_repository: Repository, blueprint_provider: Function = get_blueprint
+        document_uid: str, document_repository: Repository, blueprint_provider: Function = get_blueprint
 ) -> Dict:
     document = get_document(document_uid=document_uid, document_repository=document_repository)
 
+    data = DottedDict({})
+
+    def add_data(document, blueprint, path):
+        dot_path = str(".".join(path))
+        if dot_path:
+            data[dot_path] = document.data
+        else:
+            data.update(document.data)
+
+    blueprints = {}
+
+    def add_blueprint(document, blueprint, path):
+        blueprints[document.type] = blueprint
+
+    traverse(document, document_repository, blueprint_provider, add_data)
+    traverse(document, document_repository, blueprint_provider, add_blueprint)
+
+    return data.to_python(), blueprints
     temp = get_resolved_document(document, document_repository, blueprint_provider)
     return temp
 
@@ -90,8 +120,9 @@ def remove_children(document: DTO, document_repository: Repository):
 class DocumentService:
     @staticmethod
     def get_by_uid(document_uid: str, document_repository: Repository) -> DTO:
-        adict = get_complete_document(document_uid, document_repository)
-        return DTO(data=adict, uid=document_uid)
+        data, blueprints = get_complete_document(document_uid, document_repository)
+        print(blueprints)
+        return DTO(data=data, uid=document_uid)
 
     @staticmethod
     def get_tree_node_by_uid(document_uid: str, repository: Repository) -> Node:
@@ -161,7 +192,7 @@ class DocumentService:
         logger.info(f"Removed document '{document.uid}'")
 
     def rename_document(
-        self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository
+            self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository
     ):
         document: DTO = document_repository.get(document_id)
         if not document:
@@ -247,13 +278,13 @@ class DocumentService:
         return document
 
     def add_document(
-        self,
-        parent_id: str,
-        type: str,
-        name: str,
-        description: str,
-        attribute_dot_path: str,
-        document_repository: Repository,
+            self,
+            parent_id: str,
+            type: str,
+            name: str,
+            description: str,
+            attribute_dot_path: str,
+            document_repository: Repository,
     ):
         attribute: str = stringcase.snakecase(attribute_dot_path)
 
