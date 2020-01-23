@@ -45,7 +45,7 @@ class GetDocumentUseCase(uc.UseCase):
 
         document = document_service.get_by_uid(document_uid=document_id, document_repository=self.document_repository)
 
-        data = document.data
+        data = document.to_dict()
 
         if attribute:
             dotted_data = DottedDict(data)
@@ -53,7 +53,7 @@ class GetDocumentUseCase(uc.UseCase):
 
         if "_id" in data:
             document = document_service.get_by_uid(data["_id"], self.document_repository)
-            data = document.data
+            data = document.to_dict()
 
         blueprint = get_blueprint(data["type"])
 

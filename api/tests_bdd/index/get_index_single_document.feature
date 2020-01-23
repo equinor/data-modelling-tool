@@ -157,7 +157,6 @@ Feature: Index
     {
        "1.content":{
           "parentId": null,
-          "filename":"blueprints",
           "title":"blueprints",
           "id":"1.content",
           "nodeType":"document-node",
@@ -176,7 +175,6 @@ Feature: Index
     """
     {
        "2.content":{
-          "filename":"sub_package_1",
           "title":"sub_package_1",
           "id":"2.content",
           "nodeType":"document-node",
@@ -196,7 +194,6 @@ Feature: Index
     {
        "3":{
           "parentId": null,
-          "filename":"document_1",
           "title":"document_1",
           "id":"3",
           "nodeType":"document-node",
@@ -217,7 +214,6 @@ Feature: Index
     {
        "4":{
          "parentId": null,
-         "filename":"custom_1",
          "title":"custom_1",
          "id":"4",
          "nodeType":"document-node",
@@ -229,7 +225,6 @@ Feature: Index
        },
        "4.itemNotContainedInUi_itemNotContainedInUi": {
          "children": [],
-         "filename": "itemNotContainedInUi",
          "id": "4.itemNotContainedInUi_itemNotContainedInUi",
          "nodeType": "document-node",
          "parentId": "4",
@@ -238,7 +233,6 @@ Feature: Index
       },
       "4_itemsNotContainedInUi": {
          "children": [],
-         "filename": "itemsNotContainedInUi",
          "id": "4_itemsNotContainedInUi",
          "nodeType": "document-node",
          "parentId": "4",

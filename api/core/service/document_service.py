@@ -1,5 +1,5 @@
 from pyclbr import Function
-from typing import Dict
+from typing import Dict, List
 
 import stringcase
 from utils.data_structure.dot_notation import to_dot_notation
@@ -10,7 +10,7 @@ from dotted.collection import DottedDict
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
-from classes.tree_node import Node
+from classes.tree_node import Node, ListNode
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException, EntityAlreadyExistsException
 from core.use_case.utils.get_document_children import get_document_children
@@ -40,74 +40,103 @@ def get_document(document_uid: str, document_repository: Repository):
 
 
 def traverse(
-        document: DTO,
-        document_repository: Repository,
-        blueprint_provider: Function,
-        callback: Function,
-        path=None,
+    document: DTO,
+    document_repository: Repository,
+    blueprint_provider: Function,
+    parent=None,
+    path=None,
+    attribute=None,
 ) -> Dict:
     if path is None:
-        path = []
+        path = [str(document.uid)]
 
     blueprint: Blueprint = blueprint_provider(document.type)
 
     data: Dict = document.data
 
+    node = Node(
+        name=document.name,
+        type=document.type,
+        node_id=str(".".join(path)),
+        dto=document,
+        blueprint=blueprint,
+        parent=parent,
+        attribute=attribute,
+    )
+
     for complex_attribute in blueprint.get_none_primitive_types():
         attribute_name = complex_attribute.name
         if attribute_name in data and data[attribute_name]:
             storage_recipe: StorageRecipe = blueprint.storage_recipes[0]
-            if storage_recipe.is_contained(attribute_name, complex_attribute.attribute_type):
-                if complex_attribute.is_array():
-                    for i, item in enumerate(data[attribute_name]):
-                        traverse(DTO(item), document_repository, blueprint_provider, callback,
-                                 path + [attribute_name, str(i)])
+            is_contained = storage_recipe.is_contained(attribute_name, complex_attribute.attribute_type)
 
+            if complex_attribute.is_array():
+                current_path = path + [attribute_name]
+
+                list_node = ListNode(
+                    node_id=str(".".join(current_path)),
+                    parent=node,
+                    name=attribute_name,
+                    type=complex_attribute.type,
+                    attribute=complex_attribute
+                )
+
+                if is_contained:
+                    for i, item in enumerate(data[attribute_name]):
+                        traverse(
+                            document=DTO(item),
+                            document_repository=document_repository,
+                            blueprint_provider=blueprint_provider,
+                            parent=list_node,
+                            path=current_path + [str(i)],
+                            attribute=complex_attribute,
+                        )
                 else:
-                    traverse(
-                        DTO(document.data[attribute_name]), document_repository, blueprint_provider, callback,
-                        path + [attribute_name]
-                    )
+                    for i, item in enumerate(data[attribute_name]):
+                        dto = get_document(item["_id"], document_repository)
+                        traverse(
+                            document=dto,
+                            document_repository=document_repository,
+                            blueprint_provider=blueprint_provider,
+                            parent=list_node,
+                            attribute=complex_attribute,
+                        )
             else:
-                if complex_attribute.is_array():
-                    for i, item in enumerate(data[attribute_name]):
-                        traverse(get_document(item["_id"], document_repository), blueprint_provider, callback,
-                                 path + [attribute_name, str(i)])
-
-                else:
-                    traverse(get_document(
-                        data[attribute_name]["_id"], document_repository), blueprint_provider, callback,
-                        path + [attribute_name]
+                if is_contained:
+                    dto = DTO(document.data[attribute_name])
+                    traverse(
+                        document=dto,
+                        document_repository=document_repository,
+                        blueprint_provider=blueprint_provider,
+                        parent=node,
+                        path=path + [attribute_name],
+                        attribute=complex_attribute,
                     )
-
-    return callback(document, blueprint, path)
+                else:
+                    dto = get_document(data[attribute_name]["_id"], document_repository)
+                    traverse(
+                        document=dto,
+                        document_repository=document_repository,
+                        blueprint_provider=blueprint_provider,
+                        parent=node,
+                        attribute=complex_attribute,
+                    )
+    return node
 
 
 def get_complete_document(
-        document_uid: str, document_repository: Repository, blueprint_provider: Function = get_blueprint
+    document_uid: str, document_repository: Repository, blueprint_provider: Function = get_blueprint
 ) -> Dict:
     document = get_document(document_uid=document_uid, document_repository=document_repository)
 
-    data = DottedDict({})
+    root = traverse(document, document_repository, blueprint_provider)
 
-    def add_data(document, blueprint, path):
-        dot_path = str(".".join(path))
-        if dot_path:
-            data[dot_path] = document.data
-        else:
-            data.update(document.data)
+    root.show_tree()
 
-    blueprints = {}
+    # for node in root:
+    #    print(node)
 
-    def add_blueprint(document, blueprint, path):
-        blueprints[document.type] = blueprint
-
-    traverse(document, document_repository, blueprint_provider, add_data)
-    traverse(document, document_repository, blueprint_provider, add_blueprint)
-
-    return data.to_python(), blueprints
-    temp = get_resolved_document(document, document_repository, blueprint_provider)
-    return temp
+    return root
 
 
 def remove_children(document: DTO, document_repository: Repository):
@@ -120,15 +149,11 @@ def remove_children(document: DTO, document_repository: Repository):
 class DocumentService:
     @staticmethod
     def get_by_uid(document_uid: str, document_repository: Repository) -> DTO:
-        data, blueprints = get_complete_document(document_uid, document_repository)
-        print(blueprints)
-        return DTO(data=data, uid=document_uid)
+        return get_complete_document(document_uid, document_repository)
 
     @staticmethod
     def get_tree_node_by_uid(document_uid: str, repository: Repository) -> Node:
-        adict = get_complete_document(document_uid, repository)
-        node = Node(DTO(data=adict, uid=document_uid))
-        return node
+        return get_complete_document(document_uid, repository)
 
     @staticmethod
     def remove_attribute(parent: DTO, attribute: str, document_repository: Repository):
@@ -192,7 +217,7 @@ class DocumentService:
         logger.info(f"Removed document '{document.uid}'")
 
     def rename_document(
-            self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository
+        self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository
     ):
         document: DTO = document_repository.get(document_id)
         if not document:
@@ -278,13 +303,13 @@ class DocumentService:
         return document
 
     def add_document(
-            self,
-            parent_id: str,
-            type: str,
-            name: str,
-            description: str,
-            attribute_dot_path: str,
-            document_repository: Repository,
+        self,
+        parent_id: str,
+        type: str,
+        name: str,
+        description: str,
+        attribute_dot_path: str,
+        document_repository: Repository,
     ):
         attribute: str = stringcase.snakecase(attribute_dot_path)
 

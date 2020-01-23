@@ -8,6 +8,8 @@ from core.repository import Repository
 from core.service.document_service import get_complete_document
 from utils.data_structure.compare import pretty_eq
 
+from classes.tree_node import Node
+
 
 class DocumentServiceTestCase(unittest.TestCase):
     def test_get_complete_document(self):
@@ -19,12 +21,16 @@ class DocumentServiceTestCase(unittest.TestCase):
             "type": "blueprint_1",
             "nested": {"name": "Nested", "description": "", "type": "blueprint_2"},
             "reference": {"_id": "2", "name": "Reference", "type": "blueprint_2"},
-            "references": [{"_id": "3", "name": "Reference 1", "type": "blueprint_2"}],
+            "references": [
+                {"_id": "3", "name": "Reference 1", "type": "blueprint_2"},
+                {"_id": "4", "name": "Reference 2", "type": "blueprint_2"},
+            ],
         }
 
         document_2 = {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
 
         document_3 = {"uid": "3", "name": "Reference 1", "description": "", "type": "blueprint_2"}
+        document_4 = {"uid": "4", "name": "Reference 2", "description": "", "type": "blueprint_2"}
 
         blueprint_1 = {
             "type": "system/SIMOS/Blueprint",
@@ -79,6 +85,8 @@ class DocumentServiceTestCase(unittest.TestCase):
                 return DTO(data=document_2.copy())
             if document_id == "3":
                 return DTO(data=document_3.copy())
+            if document_id == "4":
+                return DTO(data=document_4.copy())
             return None
 
         document_repository.get = mock_get
@@ -90,18 +98,20 @@ class DocumentServiceTestCase(unittest.TestCase):
                 return Blueprint(DTO(blueprint_2))
             return None
 
-        complete_document = get_complete_document(
+        root = get_complete_document(
             document_uid="1", document_repository=document_repository, blueprint_provider=get_blueprint
         )
 
-        assert isinstance(complete_document, dict)
+        assert isinstance(root, Node)
         actual = {
             "uid": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
-            "nested": {"name": "Nested", "description": "", "type": "blueprint_2"},
+            "nested": {"name": "Nested", "description": "", "type": "blueprint_3"},
             "reference": document_2,
-            "references": [document_3],
+            "references": [document_3, document_4],
         }
-        assert pretty_eq(actual, complete_document) is None
+        data = root.to_dict()
+
+        assert pretty_eq(actual, data) is None
