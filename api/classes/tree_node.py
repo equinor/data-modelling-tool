@@ -1,82 +1,211 @@
-from copy import deepcopy
-from typing import Dict, List, Union
-
+from typing import Union, Dict
 from classes.blueprint import Blueprint
-from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
+from utils.logging import logger
+
+
+class DictExporter:
+    @staticmethod
+    def to_dict(node):
+        data = {}
+
+        if node.dto.uid != "":
+            data["uid"] = node.dto.uid
+            # TODO: Can _id be removed?
+            data["_id"] = node.dto.uid
+
+        # Primitive
+        for attribute in node.blueprint.get_primitive_types():
+            if attribute.name in node.dto.data:
+                data[attribute.name] = node.dto.data[attribute.name]
+
+        # Complex
+        for node in node.children:
+            if node.is_array():
+                data[node.key] = [child.to_dict() for child in node.children]
+            else:
+                data[node.key] = node.to_dict()
+
+        return data
+
+
+class DictImporter:
+    @classmethod
+    def from_dict(cls, dto):
+        return cls._from_dict(dto, "root")
+
+    @classmethod
+    def _from_dict(cls, dto, key):
+        blueprint: Blueprint = Blueprint.from_dict(dto.data.pop("_blueprint"))
+
+        node = Node(key=key, blueprint=blueprint, dto=dto)
+
+        for attribute in blueprint.get_none_primitive_types():
+            if attribute.is_array():
+                items = dto.data.get(attribute.name, [])
+                data = {
+                    "name": attribute.name,
+                    "type": attribute.attribute_type,
+                    "attributeType": attribute.attribute_type,
+                }
+                list_node = ListNode(key=attribute.name, dto=DTO(uid="", data=data))
+                for i, item in enumerate(items):
+                    list_node.add_child(cls._from_dict(dto=DTO(uid=item.get("uid", ""), data=item), key=str(i)))
+                node.add_child(list_node)
+            else:
+                data = dto.data.get(attribute.name)
+                if data:
+                    node.add_child(cls._from_dict(dto=DTO(uid=data.get("uid", ""), data=data), key=attribute.name))
+                else:
+                    logger.warn(f"Data problem: {node}")
+        return node
 
 
 class NodeBase:
-    def __init__(self, node_id: str, parent=None, depth: int = 0):
+    def __init__(self, key: str = "", dto: DTO = None, parent=None, children=None):
+        if key is None:
+            raise Exception("Node requires a key")
+        self.key = key
+        self.dto = dto
+
         self.parent: Union[Node, ListNode] = parent
-        self.node_id: str = node_id
+        if parent:
+            parent.add_child(self)
+
         self.children = []
-        self.depth = depth + 1
+        if children is not None:
+            for child in children:
+                self.add_child(child)
+
+    @property
+    def node_id(self):
+        if self.dto.uid != "":
+            return self.dto.uid
+        else:
+            path = self.path()
+            return ".".join(path + [self.key])
+
+    @property
+    def name(self):
+        return self.dto.name
+
+    @property
+    def type(self):
+        return self.dto.type
+
+    def path(self):
+        path = []
+        parent = self.parent
+        while parent and parent.dto.uid == "":
+            path += [parent.key]
+            parent = parent.parent
+
+        return [parent.dto.uid] + path
+
+    def traverse(self):
+        """Iterate in pre-order depth-first search order (DFS)"""
+        yield self
+
+        # first, yield everything every one of the child nodes would yield.
+        for child in self.children:
+            for item in child.traverse():
+                # the two for loops is because there's multiple children,
+                # and we need to iterate over each one.
+                yield item
+
+    def traverse_reverse(self):
+        """Iterate up the tree"""
+        node = self
+        while node is not None:
+            yield node
+            node = node.parent
+
+    def __repr__(self):
+        return "{}: {} {} {} {}".format(
+            self.__class__.__name__, self.key, self.name, self.type, self.dto.uid if self.dto.uid != "" else ""
+        )
+
+    def show_tree(self, level=0):
+        print("%s%s" % ("." * level, self))
+        for node in self.children:
+            node.show_tree(level + 2)
+
+    def is_array(self):
+        return isinstance(self, ListNode)
+
+    def is_single(self):
+        return isinstance(self, Node)
+
+    def is_root(self):
+        if self.parent is None:
+            return True
+        else:
+            return False
+
+    def is_leaf(self):
+        if len(self.children) == 0:
+            return True
+        else:
+            return False
+
+    def add_child(self, node):
+        node.parent = self
+        self.children.append(node)
+
+    def depth(self):
+        """Depth of current node"""
+        if self.is_root():
+            return 0
+        else:
+            return 1 + self.parent.depth()
+
+    def search(self, node_id: str):
+        if self.node_id == node_id:
+            return self
+
+        for node in self.traverse():
+            if node.node_id == node_id:
+                return node
+
+        return None
+
+    def replace(self, node_id, new_node):
+        for node in self.traverse():
+            for i, n in enumerate(node.children):
+                if n.node_id == node_id:
+                    node.children[i] = new_node
+
+    def update(self, data: Dict):
+        if isinstance(data, dict):
+            for key in data.keys():
+                attribute = self.blueprint.get_attribute_by_key(key)
+                if not attribute:
+                    logger.error(f"Could not find attribute {key} in {self.dto.uid}")
+                else:
+                    if attribute.is_primitive():
+                        self.dto.data[key] = data[key]
+                    else:
+                        for child in self.children:
+                            if child.key == key:
+                                child.update(data[key])
+        else:
+            for i, item in enumerate(data):
+                self.children[i].update(item)
 
 
 class Node(NodeBase):
-    # Consumes a DTO with complete resolved references
-    # Everything is treated as an Entity, there is no special logic for Blueprints
-    # The result is a double linked tree data structure
-    def __init__(self, dto: DTO, parent=None, depth: int = 0):
-        super().__init__(node_id=dto.uid, parent=parent, depth=depth)
-        self.name: str = dto.name
-        self.type = dto.type
-        self.blueprint: Blueprint = Blueprint.from_dict(dto["_blueprint"])
-        # TODO: Might want to avoid this deepcopy of the dto. Could be expensive with big entities
-        # Primitive data are added to the nodes .data, rest is a dict
-        self.dto, complex_types = self.separate_complex_types_from_dto(deepcopy(dto), self.blueprint)
-        # Every complex type attribute get's its own node
-        for key, value in complex_types.items():
-            # If the attribute is a list, we create a list-node that has no data, but has children
-            if isinstance(value, list):
-                list_type = self.blueprint.get_attribute_type_by_key(key)
-                self.children.append(
-                    ListNode(
-                        data_list=value,
-                        name=key,
-                        node_id=f"{self.node_id}.{key}",
-                        parent=self,
-                        depth=self.depth,
-                        type=list_type,
-                    )
-                )
-            else:
-                if value:
-                    # If the element has it's own "_id", use that. Else we create a "dotted-id" by key.
-                    uid = value.get("uid", f"{self.node_id}.{key}")
-                    self.children.append(Node(dto=DTO(uid=uid, data=value), parent=self, depth=self.depth,))
+    def __init__(self, key: str, dto: DTO = None, blueprint: Blueprint = None, parent=None):
+        super().__init__(key=key, dto=dto, parent=parent)
+        self.blueprint = blueprint
+
+    def to_dict(self):
+        return DictExporter.to_dict(self)
 
     @staticmethod
-    def separate_complex_types_from_dto(dto: DTO, blueprint: Blueprint) -> (DTO, Dict):
-        complex_attribute_types: List[BlueprintAttribute] = blueprint.get_none_primitive_types()
-        # This 'none' allows entitites which lack a attribute given in its blueprint
-        complex_types = {}
-        for attr in complex_attribute_types:
-            complex_types.update({attr.name: dto.data.pop(attr.name, None)})
-        return dto, complex_types
+    def from_dict(dto: DTO):
+        return DictImporter.from_dict(dto)
 
 
 class ListNode(NodeBase):
-    def __init__(self, data_list: List, name: str, node_id: str, type: str, parent=None, depth: int = 0):
-        super().__init__(node_id=node_id, parent=parent, depth=depth)
-        self.name = name
-        self.type = type
-        # No need to remove primitive types here, as primitive types does not get it's own node.
-        # So every element in the input list is a complex type.
-        for i, element in enumerate(data_list):
-            # We have no case with a list within a list yet...
-            if isinstance(element, List):
-                self.children.append(
-                    ListNode(
-                        data_list=element,
-                        name=str(i),
-                        node_id=f"{self.node_id}.{str(i)}",
-                        parent=self,
-                        depth=self.depth,
-                        type="List",
-                    )
-                )
-            else:
-                node_id = element.get("uid", f"{self.node_id}.{str(i)}")
-                self.children.append(Node(dto=DTO(uid=node_id, data=element), parent=self, depth=self.depth))
+    def __init__(self, key: str, dto: DTO, parent=None):
+        super().__init__(key=key, dto=dto, parent=parent)

@@ -2,6 +2,7 @@ from pyclbr import Function
 from typing import Dict
 
 import stringcase
+
 from classes.blueprint import Blueprint
 from dotted.collection import DottedDict
 
@@ -89,15 +90,13 @@ def remove_children(document: DTO, document_repository: Repository):
 
 class DocumentService:
     @staticmethod
-    def get_by_uid(document_uid: str, document_repository: Repository) -> DTO:
-        adict = get_complete_document(document_uid, document_repository)
-        return DTO(data=adict, uid=document_uid)
+    def get_by_uid(document_uid: str, document_repository: Repository) -> Node:
+        node = Node.from_dict(DTO(get_complete_document(document_uid, document_repository)))
+        return node
 
     @staticmethod
     def get_tree_node_by_uid(document_uid: str, repository: Repository) -> Node:
-        adict = get_complete_document(document_uid, repository)
-        node = Node(DTO(data=adict, uid=document_uid))
-        return node
+        return Node.from_dict(DTO(get_complete_document(document_uid, repository)))
 
     @staticmethod
     def remove_attribute(parent: DTO, attribute: str, document_repository: Repository):
@@ -119,19 +118,15 @@ class DocumentService:
         remove_children(DTO(attribute_document), document_repository)
         logger.info(f"Removed attribute '{attribute}' from '{parent.uid}'")
 
-    @staticmethod
-    def rename_attribute(parent_id: str, attribute: str, name: str, document_repository: Repository):
-        parent: DTO = document_repository.get(parent_id)
-        if not parent:
-            raise EntityNotFoundException(uid=parent_id)
-
-        dotted_data = DottedDict(parent.data)
-        attribute_document = dotted_data[attribute]
-        attribute_document["name"] = name
-        dotted_data[attribute] = attribute_document
-        document = DTO(dotted_data.to_python(), uid=parent.uid)
+    def rename_attribute(self, parent_id: str, attribute: str, name: str, document_repository: Repository):
+        node: Node = self.get_by_uid(document_uid=parent_id, document_repository=document_repository)
+        attribute_node_id = f"{parent_id}.{attribute}"
+        attribute_node = node.search(attribute_node_id)
+        attribute_node.update({"name": name})
+        node.replace(attribute_node_id, attribute_node)
+        document = DTO(node.to_dict())
         document_repository.update(document)
-        logger.info(f"Rename attribute '{attribute}' from '{parent.uid}'")
+        logger.info(f"Rename attribute '{attribute}' from '{node.node_id}'")
         return document
 
     def remove_document(self, document_id: str, parent_id: str, attribute: str, document_repository: Repository):

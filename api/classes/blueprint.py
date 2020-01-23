@@ -52,6 +52,10 @@ class Blueprint:
         blueprints = [attribute for attribute in self.attributes if attribute.attribute_type not in PRIMITIVES]
         return blueprints
 
+    def get_primitive_types(self) -> List[BlueprintAttribute]:
+        blueprints = [attribute for attribute in self.attributes if attribute.attribute_type in PRIMITIVES]
+        return blueprints
+
     def get_attribute_names(self):
         return [attribute.name for attribute in self.attributes]
 
@@ -64,3 +68,6 @@ class Blueprint:
 
     def get_attribute_type_by_key(self, key):
         return next((attr.attribute_type for attr in self.attributes if attr.name == key))
+
+    def get_attribute_by_key(self, key):
+        return next((attr for attr in self.attributes if attr.name == key))
