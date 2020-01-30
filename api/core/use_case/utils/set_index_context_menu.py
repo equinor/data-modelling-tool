@@ -1,5 +1,7 @@
 from typing import Union
 
+from config import Config
+
 from classes.tree_node import Node
 from core.enums import DMT, SIMOS
 from core.use_case.utils.generate_index_menu_actions_v2 import (
@@ -11,6 +13,7 @@ from core.use_case.utils.generate_index_menu_actions_v2 import (
     get_rename_menu_action,
     get_runnable_menu_action,
     get_rename_attribute_menu_action,
+    get_create_root_package_menu_item,
 )
 from core.utility import get_blueprint
 from utils.group_by import group_by
@@ -18,9 +21,16 @@ from utils.group_by import group_by
 from core.use_case.utils.sort_menu_items import sort_menu_items
 
 
-def create_context_menu(node: Union[Node], data_source_id: str, app_settings: dict):
+def create_context_menu(node: Union[Node], data_source_id: str, application_page: str):
     menu_items = []
     create_new_menu_items = []
+
+    app_settings = (
+        Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
+    )
+
+    if node.type == "datasource":
+        menu_items.append(get_create_root_package_menu_item(data_source_id))
 
     is_package = node.type == DMT.PACKAGE.value
 

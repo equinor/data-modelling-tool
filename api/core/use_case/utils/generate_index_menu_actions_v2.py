@@ -78,7 +78,7 @@ def get_dynamic_create_menu_item(
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/add-file",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id}",
+            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id_split[0]}",
             "request": {
                 "type": type,
                 "parentId": node_id_split[0],

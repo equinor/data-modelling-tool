@@ -80,7 +80,10 @@ class NodeBase:
     @property
     def node_id(self):
         if self.dto.uid != "":
-            return self.dto.uid
+            node_id = self.dto.uid
+            # if self.type == DMT.PACKAGE.value:
+            #    node_id = f"{node_id}.content"
+            return node_id
         else:
             path = self.path()
             return ".".join(path + [self.key])

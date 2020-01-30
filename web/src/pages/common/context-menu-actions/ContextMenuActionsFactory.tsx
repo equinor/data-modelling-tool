@@ -47,6 +47,7 @@ const createNodes = (props: CreateNodesProps) => {
         new TreeNodeBuilderOld(node).build()
       )
       const parentId = nodes[0]['parentId']
+      console.log(parentId)
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
       // Connect new nodes to parent in tree

@@ -148,7 +148,7 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Root Package)
-    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/1"
+    Given I access the resource url "/api/v4/index/data-source-name/1/1"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"

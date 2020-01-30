@@ -174,7 +174,12 @@ const Tree = (props: TreeProps) => {
 
   const removeNode = (nodeId: string, parentId: string) => {
     if (parentId) {
-      dispatch(NodeActions.removeChild(parentId, nodeId))
+      console.log(state)
+      console.log(state[parentId])
+      console.log(nodeId in state[parentId])
+      if (nodeId in state[parentId]) {
+        dispatch(NodeActions.removeChild(parentId, nodeId))
+      }
     }
     dispatch(NodeActions.deleteNode(nodeId))
   }
