@@ -75,8 +75,9 @@ def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str
 
     for node in root.traverse():
         try:
-            recipe: Recipe = get_recipe(blueprint=node.blueprint if node.parent and node.is_single() else None,
-                                        plugin_name="INDEX")
+            recipe: Recipe = get_recipe(
+                blueprint=node.blueprint if node.parent and node.is_single() else None, plugin_name="INDEX"
+            )
 
             if node.parent and node.parent.type == DMT.PACKAGE.value:
                 continue

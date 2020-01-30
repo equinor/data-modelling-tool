@@ -43,8 +43,6 @@ class GetDocumentUseCase(uc.UseCase):
 
         document_service = DocumentService()
 
-        print(document_id)
-
         document = document_service.get_by_uid(document_uid=document_id, document_repository=self.document_repository)
 
         data = document.to_dict()

@@ -16,7 +16,6 @@ export const createAction = (
         data: data,
         url: action.data.url,
         onSuccess: (result: any) => {
-          console.log(result)
           createNodes({
             documentId: result.data.uid,
             nodeUrl: action.data.nodeUrl,

@@ -195,13 +195,14 @@ class NodeBase:
                 attribute = self.blueprint.get_attribute_by_key(key)
                 if not attribute:
                     logger.error(f"Could not find attribute {key} in {self.dto.uid}")
+                    continue
+
+                if attribute.is_primitive():
+                    self.dto.data[key] = data[key]
                 else:
-                    if attribute.is_primitive():
-                        self.dto.data[key] = data[key]
-                    else:
-                        for child in self.children:
-                            if child.key == key:
-                                child.update(data[key])
+                    for child in self.children:
+                        if child.key == key:
+                            child.update(data[key])
         else:
             for i, item in enumerate(data):
                 self.children[i].update(item)
