@@ -53,8 +53,8 @@ class DictImporter:
                     list_node.add_child(cls._from_dict(dto=DTO(uid=item.get("uid", ""), data=item), key=str(i)))
                 node.add_child(list_node)
             else:
-                data = dto.data.get(attribute.name)
-                if data:
+                # noqa
+                if data := dto.data.get(attribute.name):
                     node.add_child(cls._from_dict(dto=DTO(uid=data.get("uid", ""), data=data), key=attribute.name))
                 else:
                     logger.warn(f"Data problem: {node}")
@@ -62,9 +62,10 @@ class DictImporter:
 
 
 class NodeBase:
-    def __init__(self, key: str = "", dto: DTO = None, parent=None, children=None):
+    def __init__(self, key: str, dto: DTO = None, parent=None, children=None):
         if key is None:
             raise Exception("Node requires a key")
+
         self.key = key
         self.dto = dto
 

@@ -79,6 +79,42 @@ class TreenodeTestCase(unittest.TestCase):
         assert root.is_root()
         assert not nested.is_root()
 
+    def test_repace(self):
+        root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+
+        nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
+        nested_1 = Node(
+            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+        )
+
+        nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_2"}
+        nested_2 = Node(key="nested", dto=DTO(uid="", data=nested_2_data), blueprint=Blueprint.from_dict(blueprint_2))
+
+        actual_before = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {"name": "Nested 1", "description": "", "type": "blueprint_2"},
+        }
+
+        assert actual_before == root.to_dict()
+
+        root.replace("1.nested", nested_2)
+
+        actual_after_replaced = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {"name": "Nested 2", "description": "", "type": "blueprint_2"},
+        }
+
+        assert actual_after_replaced == root.to_dict()
+
     def test_depth(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
         root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
