@@ -37,15 +37,16 @@ def get_node(node: Union[Node], data_source_id: str, application_page: str) -> D
     children = []
     if node.type == DMT.PACKAGE.value:
         # Skip content node
-        if (len(node.children)) > 0:
-            content = node.children[0]
-            children = [child.node_id for child in content.children]
+        if node.has_children():
+            # Content node is always the only node in package
+            content_node = node.children[0]
+            children = [child.node_id for child in content_node.children]
     else:
         children = [child.node_id for child in node.children]
 
     parent_id = None
     if node.parent:
-        parent_id = node.parent.node_id
+        parent_id = node.parent_node_id
         # Adjust parent, since we skipped content node
         if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
             parent_id = node.parent.parent.node_id
@@ -74,15 +75,14 @@ def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str
 
     for node in root.traverse():
         try:
-            recipe: Recipe = get_recipe(blueprint=node.blueprint if node.is_single() else None, plugin_name="INDEX")
+            recipe: Recipe = get_recipe(blueprint=node.blueprint if node.parent and node.is_single() else None,
+                                        plugin_name="INDEX")
 
             if node.parent and node.parent.type == DMT.PACKAGE.value:
                 continue
 
-            if not recipe.is_contained_in_index2(node.name, node.type, node.is_array()):
-                continue
-
-            index[node.node_id] = get_node(node, data_source_id, application_page)
+            if recipe.is_contained_in_index2(node.key, node.attribute_type, node.is_array()):
+                index[node.node_id] = get_node(node, data_source_id, application_page)
 
         except Exception as error:
             logger.exception(error)
@@ -98,7 +98,7 @@ class GenerateIndexUseCase:
         root_packages = repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False)
         root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
         for root_package in root_packages:
-            root.add_child(DocumentService.get_tree_node_by_uid(document_uid=root_package.uid, repository=repository))
+            root.add_child(DocumentService.get_by_uid(document_uid=root_package.uid, document_repository=repository))
         root.show_tree()
         return extend_index_with_node_tree(root, data_source_id, application_page)
 
@@ -107,7 +107,7 @@ class GenerateIndexUseCase:
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        parent = DocumentService.get_tree_node_by_uid(document_uid=parent_id, repository=repository)
+        parent = DocumentService.get_by_uid(document_uid=parent_id, document_repository=repository)
         parent.show_tree()
         node = parent.search(document_id)
         return extend_index_with_node_tree(node, data_source_id, app_settings)

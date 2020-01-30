@@ -42,18 +42,17 @@ class DictImporter:
 
         for attribute in blueprint.get_none_primitive_types():
             if attribute.is_array():
-                items = dto.data.get(attribute.name, [])
+                children = dto.data.get(attribute.name, [])
                 data = {
                     "name": attribute.name,
                     "type": attribute.attribute_type,
                     "attributeType": attribute.attribute_type,
                 }
                 list_node = ListNode(key=attribute.name, dto=DTO(uid="", data=data))
-                for i, item in enumerate(items):
-                    list_node.add_child(cls._from_dict(dto=DTO(uid=item.get("uid", ""), data=item), key=str(i)))
+                for i, child in enumerate(children):
+                    list_node.add_child(cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i)))
                 node.add_child(list_node)
             else:
-                # noqa
                 if data := dto.data.get(attribute.name):
                     node.add_child(cls._from_dict(dto=DTO(uid=data.get("uid", ""), data=data), key=attribute.name))
                 else:
@@ -79,6 +78,13 @@ class NodeBase:
                 self.add_child(child)
 
     @property
+    def parent_node_id(self):
+        if not self.parent:
+            return None
+
+        return self.parent.node_id
+
+    @property
     def node_id(self):
         if self.dto.uid != "":
             node_id = self.dto.uid
@@ -96,6 +102,10 @@ class NodeBase:
     @property
     def type(self):
         return self.dto.type
+
+    @property
+    def attribute_type(self):
+        return self.dto.attribute_type
 
     def path(self):
         path = []
@@ -152,9 +162,9 @@ class NodeBase:
         else:
             return False
 
-    def add_child(self, node):
-        node.parent = self
-        self.children.append(node)
+    def add_child(self, child_node):
+        child_node.parent = self
+        self.children.append(child_node)
 
     def depth(self):
         """Depth of current node"""
@@ -195,6 +205,9 @@ class NodeBase:
         else:
             for i, item in enumerate(data):
                 self.children[i].update(item)
+
+    def has_children(self):
+        return len(self.children) > 0
 
 
 class Node(NodeBase):

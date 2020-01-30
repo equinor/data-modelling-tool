@@ -95,10 +95,6 @@ class DocumentService:
         return node
 
     @staticmethod
-    def get_tree_node_by_uid(document_uid: str, repository: Repository) -> Node:
-        return Node.from_dict(DTO(get_complete_document(document_uid, repository)))
-
-    @staticmethod
     def remove_attribute(parent: DTO, attribute: str, document_repository: Repository):
         dotted_data = DottedDict(parent.data)
         attribute_document = dotted_data[attribute]
