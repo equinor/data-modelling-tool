@@ -18,6 +18,7 @@ class DTO:
         self._uid = uid
         self._name = data["name"]
         self._type = data["type"]
+        self._attribute_type = data.get("attribute_type", "")
         self.data = data
 
     def get(self, key, default=None):
@@ -53,6 +54,10 @@ class DTO:
     @property
     def type(self) -> str:
         return self._type
+
+    @property
+    def attribute_type(self) -> str:
+        return self._attribute_type
 
     @type.setter
     def type(self, value: str):

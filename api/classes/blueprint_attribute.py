@@ -1,6 +1,7 @@
 from typing import Optional
 
-from core.enums import DMT, SIMOS
+from core.enums import SIMOS
+from core.enums import PRIMITIVES
 
 
 class BlueprintAttribute:
@@ -29,6 +30,9 @@ class BlueprintAttribute:
 
     def is_array(self):
         return self.dimensions == "*"
+
+    def is_primitive(self):
+        return self.attribute_type in PRIMITIVES
 
     def to_dict(self):
         return {

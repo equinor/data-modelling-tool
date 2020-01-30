@@ -14,6 +14,11 @@
       "name": "description"
     },
     {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "type"
+    },
+    {
       "attributeType": "integer",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "id"
@@ -27,6 +32,11 @@
       "attributeType": "boolean",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "completed"
+    },
+    {
+      "attributeType": "SSR-DataSource/TodoDemo/TodoList",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "list"
     }
   ],
   "storageRecipes": [],

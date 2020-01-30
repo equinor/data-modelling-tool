@@ -27,7 +27,7 @@ Feature: Index
           "title":"data-source-name",
           "nodeType":"document-node",
           "children":[
-             "1.content"
+             "1"
           ]
        }
     }

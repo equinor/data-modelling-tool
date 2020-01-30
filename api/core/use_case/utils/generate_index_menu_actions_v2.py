@@ -1,6 +1,6 @@
 from typing import Union
 
-from classes.tree_node import ListNode, Node
+from classes.tree_node import Node
 from core.enums import DMT
 
 
@@ -78,7 +78,7 @@ def get_dynamic_create_menu_item(
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/add-file",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id}",
+            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id_split[0]}",
             "request": {
                 "type": type,
                 "parentId": node_id_split[0],
@@ -124,7 +124,7 @@ def get_download_menu_action(data_source_id: str, document_id: str):
     }
 
 
-def get_node_on_select(data_source_id: str, tree_node: Union[Node, ListNode]):
+def get_node_on_select(data_source_id: str, tree_node: Union[Node]):
     split_node_id_attribute = tree_node.node_id.split(".", 1)
     attribute = f"?attribute={split_node_id_attribute[-1]}" if len(split_node_id_attribute) > 1 else ""
     return {

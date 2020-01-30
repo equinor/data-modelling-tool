@@ -148,20 +148,19 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Root Package)
-    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/1"
+    Given I access the resource url "/api/v4/index/data-source-name/1/1"
     And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-       "1.content":{
+       "1":{
           "parentId": null,
-          "filename":"blueprints",
           "title":"blueprints",
-          "id":"1.content",
+          "id":"1",
           "nodeType":"document-node",
-          "children":["2.content"],
+          "children":["2", "4"],
           "type":"system/DMT/Package"
        }
     }
@@ -175,13 +174,14 @@ Feature: Index
     And the response should contain
     """
     {
-       "2.content":{
-          "filename":"sub_package_1",
-          "title":"sub_package_1",
-          "id":"2.content",
-          "nodeType":"document-node",
-          "children":[],
-          "type":"system/DMT/Package"
+       "2": {
+         "id": "2",
+         "children": [
+           "3"
+         ],
+         "nodeType": "document-node",
+         "title": "sub_package_1",
+         "type": "system/DMT/Package"
        }
     }
     """
@@ -196,7 +196,6 @@ Feature: Index
     {
        "3":{
           "parentId": null,
-          "filename":"document_1",
           "title":"document_1",
           "id":"3",
           "nodeType":"document-node",
@@ -217,7 +216,6 @@ Feature: Index
     {
        "4":{
          "parentId": null,
-         "filename":"custom_1",
          "title":"custom_1",
          "id":"4",
          "nodeType":"document-node",
@@ -229,7 +227,6 @@ Feature: Index
        },
        "4.itemNotContainedInUi_itemNotContainedInUi": {
          "children": [],
-         "filename": "itemNotContainedInUi",
          "id": "4.itemNotContainedInUi_itemNotContainedInUi",
          "nodeType": "document-node",
          "parentId": "4",
@@ -238,7 +235,6 @@ Feature: Index
       },
       "4_itemsNotContainedInUi": {
          "children": [],
-         "filename": "itemsNotContainedInUi",
          "id": "4_itemsNotContainedInUi",
          "nodeType": "document-node",
          "parentId": "4",
