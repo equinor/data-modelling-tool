@@ -1,4 +1,7 @@
 from typing import Union, Dict
+
+from core.use_case.utils.get_ui_recipe import get_recipe
+
 from classes.blueprint import Blueprint
 from classes.dto import DTO
 from utils.logging import logger
@@ -226,3 +229,7 @@ class Node(NodeBase):
 class ListNode(NodeBase):
     def __init__(self, key: str, dto: DTO, parent=None):
         super().__init__(key=key, dto=dto, parent=parent)
+
+    @property
+    def blueprint(self):
+        return self.parent.blueprint
