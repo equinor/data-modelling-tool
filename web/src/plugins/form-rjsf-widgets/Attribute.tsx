@@ -41,8 +41,9 @@ type Props = {
 export const AttributeWidget = (props: Props) => {
   let { attributes } = props.uiSchema
 
-  const initialState = { type: DataType.STRING, ...props.formData }
-  const [formData, setFormData] = useState<BlueprintAttributeType>(initialState)
+  const [formData, setFormData] = useState<BlueprintAttributeType>(
+    props.formData
+  )
 
   if (!attributes) {
     console.error('this widget depends on a attributes list.')
