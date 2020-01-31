@@ -87,10 +87,7 @@ class NodeBase:
     @property
     def node_id(self):
         if self.dto.uid != "":
-            node_id = self.dto.uid
-            # if self.type == DMT.PACKAGE.value:
-            #    node_id = f"{node_id}.content"
-            return node_id
+            return self.dto.uid
         else:
             path = self.path()
             return ".".join(path + [self.key])
@@ -113,7 +110,9 @@ class NodeBase:
         while parent and parent.dto.uid == "":
             path += [parent.key]
             parent = parent.parent
-
+        # Since we build the path "bottom-up", it need's to be revered.
+        # eg. [parent, grand_parent, grand_grand_parent]
+        path.reverse()
         return [parent.dto.uid] + path
 
     def traverse(self):

@@ -108,7 +108,6 @@ class GenerateIndexUseCase:
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        parent = DocumentService.get_by_uid(document_uid=parent_id, document_repository=repository)
-        parent.show_tree()
+        parent = DocumentService.get_by_uid(document_uid=parent_id.split(".", 1)[0], document_repository=repository)
         node = parent.search(document_id)
         return extend_index_with_node_tree(node, data_source_id, app_settings)
