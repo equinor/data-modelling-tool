@@ -1,25 +1,22 @@
 from pyclbr import Function
-from typing import Dict
+from typing import Dict, List
 
 import stringcase
-
-from classes.blueprint import Blueprint
 from dotted.collection import DottedDict
 
+from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from classes.tree_node import Node
+from core.enums import DMT, SIMOS
 from core.repository import Repository
-from core.repository.repository_exceptions import EntityNotFoundException, EntityAlreadyExistsException
+from core.repository.repository_exceptions import EntityAlreadyExistsException, EntityNotFoundException
+from core.use_case.utils.create_entity import CreateEntity
 from core.use_case.utils.get_document_children import get_document_children
 from core.utility import get_blueprint
-from utils.logging import logger
-
-from core.use_case.utils.create_entity import CreateEntity
-
-from core.enums import DMT, SIMOS
 from utils.data_structure.find import get
+from utils.logging import logger
 
 
 def create_reference(data: Dict, document_repository, type: str):
@@ -96,27 +93,7 @@ class DocumentService:
         node = Node.from_dict(DTO(get_complete_document(document_uid, document_repository, self.blueprint_provider)))
         return node
 
-    @staticmethod
-    def remove_attribute(parent: DTO, attribute: str, document_repository: Repository):
-        dotted_data = DottedDict(parent.data)
-        attribute_document = dotted_data[attribute]
-
-        path = attribute.split(".")
-        if len(path) > 1:
-            path.pop()
-            instance = dotted_data["".join(path)].to_python()
-            if isinstance(instance, list):
-                del dotted_data[attribute]
-            else:
-                dotted_data[attribute] = None
-        else:
-            dotted_data[attribute] = None
-
-        document_repository.update(DTO(dotted_data.to_python(), uid=parent.uid))
-        remove_children(DTO(attribute_document), document_repository)
-        logger.info(f"Removed attribute '{attribute}' from '{parent.uid}'")
-
-    def rename_attribute(self, parent_id: str, attribute: str, name: str, document_repository: Repository):
+    def rename_attribute(self, parent_id: str, attribute: List[str], name: str, document_repository: Repository):
         node: Node = self.get_by_uid(document_uid=parent_id, document_repository=document_repository)
         attribute_node_id = f"{parent_id}.{attribute}"
         attribute_node = node.search(attribute_node_id)
@@ -127,31 +104,39 @@ class DocumentService:
         logger.info(f"Rename attribute '{attribute}' from '{node.node_id}'")
         return document
 
-    def remove_document(self, document_id: str, parent_id: str, attribute: str, document_repository: Repository):
-        document: DTO = document_repository.get(document_id)
+    def remove_document(
+        self,
+        document_id: str,
+        repository: Repository,
+        parent_id: str = None,
+        parent_attributes: List[str] = None,
+        document_attributes: List[str] = None,
+    ):
+        document: Node = self.get_by_uid(document_id, repository)
         if not document:
             raise EntityNotFoundException(uid=document_id)
 
-        if parent_id:
-            # Remove reference from parent
-            parent: DTO = document_repository.get(parent_id)
+        # Remove a node without any parent(root package)
+        if not parent_id:
+            # Remove the actual document
+            repository.delete(document.node_id)
+            # Remove children of the document
+            remove_children(DTO(document.to_dict()), repository)
+
+        else:
+            parent: Node = self.get_by_uid(parent_id, repository)
             if not parent:
                 raise EntityNotFoundException(uid=parent_id)
-
-            parent[attribute] = list(filter(lambda d: d["_id"] != document.uid, parent[attribute]))
-
-            document_repository.update(parent)
-
-        # Remove the actual document
-        document_repository.delete(document.uid)
-
-        # Remove children of the document
-        children = get_document_children(document, document_repository)
-        for child in children:
-            document_repository.delete(child.uid)
-            logger.info(f"Removed child document '{child.uid}'")
-
-        logger.info(f"Removed document '{document.uid}'")
+            # Target is contained in parent. Just delete and update.
+            if parent_id == document_id:
+                parent.delete_child(document_attributes)
+            # Target is a ref. Delete the document, and the reference.
+            else:
+                parent_attribute_node = parent.search(f"{parent_id}.{'.'.join(parent_attributes)}")
+                parent_attribute_node.remove_ref(document_id)
+                self.remove_document(document_id, repository)
+            repository.update(DTO(parent.to_dict()))
+        logger.info(f"Removed document '{document.node_id}'")
 
     def rename_document(
         self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository
