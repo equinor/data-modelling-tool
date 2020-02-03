@@ -118,8 +118,9 @@ export const TypeWidget = (props: TypeProps) => {
   const attr = new BlueprintAttribute(attributeType)
   const typeValue = attr.isPrimitiveType(value) ? value : DataType.BLUEPRINT
   const [selectedType, setSelectedType] = useState(
-    typeValue || attributeType.default
+    value ? typeValue : DataType.STRING
   )
+
   let blueprintValue
   if (typeValue === DataType.BLUEPRINT && value !== DataType.BLUEPRINT) {
     blueprintValue = value
@@ -129,7 +130,7 @@ export const TypeWidget = (props: TypeProps) => {
   return (
     <>
       <TypeDropdown
-        value={selectedType}
+        value={selectedType ? selectedType : DataType.BLUEPRINT}
         onChange={(event: any) => {
           setSelectedType(event.target.value)
           onChange(attributeType, event.target.value)

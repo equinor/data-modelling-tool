@@ -24,9 +24,7 @@ export class BlueprintAttribute {
 
   public isPrimitiveType(value: string): boolean {
     // dont make this a static method. Needs to read attribute types later?
-    return ['string', 'number', 'integer', 'number', 'boolean'].includes(
-      this.getAttributeType()
-    )
+    return ['string', 'number', 'integer', 'number', 'boolean'].includes(value)
   }
 
   /**
