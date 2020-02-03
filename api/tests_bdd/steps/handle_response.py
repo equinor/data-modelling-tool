@@ -3,7 +3,9 @@ import json
 from deepdiff import DeepDiff
 import pprint
 
+from dotted.collection import DottedDict
 from utils.data_structure.compare import pretty_eq
+from utils.data_structure.find import find
 
 STATUS_CODES = {
     "OK": 200,
@@ -50,6 +52,17 @@ def step_impl_contain(context):
     data = context.text or context.data
     expected = json.loads(data)
     pretty_eq(expected, actual)
+
+
+@then("the array at {dot_path} should be of length {length}")
+def step_impl_contain(context, dot_path, length):
+    actual = context.response_json
+    target = find(actual, dot_path.split("."))
+    result = len(target) == int(length)
+    if not result:
+        print(f"array is of length {len(target)}")
+        print("array:", target)
+    assert result
 
 
 @then("the response should be")

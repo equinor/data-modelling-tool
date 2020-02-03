@@ -1,8 +1,9 @@
 from typing import Dict, Union
 
+from core.repository.repository_exceptions import EntityNotFoundException
+
 from classes.dto import DTO
-from classes.recipe import Recipe
-from classes.tree_node import Node, NodeBase
+from classes.tree_node import Node, NodeBase, ListNode
 from config import Config
 from core.enums import DMT
 from core.repository import Repository
@@ -40,9 +41,9 @@ def get_node(node: Union[Node], data_source_id: str, application_page: str) -> D
         if node.has_children():
             # Content node is always the only node in package
             content_node = node.children[0]
-            children = [child.node_id for child in content_node.children]
+            children = [child.node_id for child in content_node.children if is_visible(child)]
     else:
-        children = [child.node_id for child in node.children]
+        children = [child.node_id for child in node.children if is_visible(child)]
 
     parent_id = None
     if node.parent:
@@ -70,20 +71,34 @@ def get_node(node: Union[Node], data_source_id: str, application_page: str) -> D
     }
 
 
+def get_ui_recipe(node, plugin_name):
+    parent_has_blueprint = hasattr(node.parent, "blueprint")
+    if parent_has_blueprint:
+        return get_recipe(blueprint=node.parent.blueprint, plugin_name=plugin_name)
+    return get_recipe(blueprint=None, plugin_name=plugin_name)
+
+
+def is_visible(node, plugin_name="INDEX"):
+    if node.is_root():
+        return True
+    return get_ui_recipe(node, plugin_name).is_contained_in_index2(
+        node.parent.key if node.parent.is_array() else node.key, node.attribute_type, node.is_array()
+    )
+
+
 def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str, application_page: str):
     index = {}
 
     for node in root.traverse():
         try:
-            recipe: Recipe = get_recipe(
-                blueprint=node.blueprint if node.parent and node.is_single() else None, plugin_name="INDEX"
-            )
-
+            # Skip package's content node
             if node.parent and node.parent.type == DMT.PACKAGE.value:
                 continue
 
-            if recipe.is_contained_in_index2(node.key, node.attribute_type, node.is_array()):
-                index[node.node_id] = get_node(node, data_source_id, application_page)
+            if not is_visible(node):
+                continue
+
+            index[node.node_id] = get_node(node, data_source_id, application_page)
 
         except Exception as error:
             logger.exception(error)
@@ -109,5 +124,10 @@ class GenerateIndexUseCase:
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
         parent = DocumentService.get_by_uid(document_uid=parent_id.split(".", 1)[0], document_repository=repository)
+        if not parent:
+            raise EntityNotFoundException(uid=parent_id)
+        parent.show_tree()
         node = parent.search(document_id)
+        if not node:
+            raise EntityNotFoundException(uid=document_id)
         return extend_index_with_node_tree(node, data_source_id, app_settings)
