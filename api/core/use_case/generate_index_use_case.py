@@ -3,7 +3,7 @@ from typing import Dict, Union
 from core.repository.repository_exceptions import EntityNotFoundException
 
 from classes.dto import DTO
-from classes.tree_node import Node, NodeBase, ListNode
+from classes.tree_node import Node, NodeBase
 from config import Config
 from core.enums import DMT
 from core.repository import Repository
