@@ -8,7 +8,7 @@ from core.shared import response_object as res
 from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
 from core.use_case.export_use_case import ExportUseCase, ExportRequestObject
 from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
-from core.use_case.remove_use_case import RemoveUseCase_v2, RemoveFileRequestObject_v2
+from core.use_case.remove_use_case import RemoveUseCase, RemoveFileRequestObject
 from core.use_case.rename_attribute_use_case import RenameAttributeUseCase, RenameAttributeRequestObject
 from core.use_case.rename_file_use_case import RenameFileUseCase, RenameFileRequestObject
 
@@ -40,8 +40,8 @@ def remove(data_source_id: str):
     db = DataSource(uid=data_source_id)
     request_data = request.get_json()
     document_repository = get_repository(db)
-    use_case = RemoveUseCase_v2(document_repository=document_repository)
-    request_object = RemoveFileRequestObject_v2.from_dict(request_data)
+    use_case = RemoveUseCase(document_repository=document_repository)
+    request_object = RemoveFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
