@@ -113,8 +113,9 @@ class GenerateIndexUseCase:
     def execute(data_source_id: str, repository: Repository, application_page: str) -> dict:
         root_packages = repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False)
         root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
+        document_service = DocumentService()
         for root_package in root_packages:
-            root.add_child(DocumentService.get_by_uid(document_uid=root_package.uid, document_repository=repository))
+            root.add_child(document_service.get_by_uid(document_uid=root_package.uid, document_repository=repository))
         root.show_tree()
         return extend_index_with_node_tree(root, data_source_id, application_page)
 
@@ -123,7 +124,8 @@ class GenerateIndexUseCase:
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        parent = DocumentService.get_by_uid(document_uid=parent_id.split(".", 1)[0], document_repository=repository)
+        document_service = DocumentService()
+        parent = document_service.get_by_uid(document_uid=parent_id.split(".", 1)[0], document_repository=repository)
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
         parent.show_tree()
