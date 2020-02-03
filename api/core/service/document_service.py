@@ -89,9 +89,11 @@ def remove_children(document: DTO, document_repository: Repository):
 
 
 class DocumentService:
-    @staticmethod
-    def get_by_uid(document_uid: str, document_repository: Repository) -> Node:
-        node = Node.from_dict(DTO(get_complete_document(document_uid, document_repository)))
+    def __init__(self, blueprint_provider: Function = get_blueprint):
+        self.blueprint_provider = blueprint_provider
+
+    def get_by_uid(self, document_uid: str, document_repository: Repository) -> Node:
+        node = Node.from_dict(DTO(get_complete_document(document_uid, document_repository, self.blueprint_provider)))
         return node
 
     @staticmethod

@@ -5,7 +5,7 @@ from classes.blueprint import Blueprint
 
 from classes.dto import DTO
 from core.repository import Repository
-from core.service.document_service import get_complete_document
+from core.service.document_service import get_complete_document, DocumentService
 from utils.data_structure.compare import pretty_eq
 
 blueprint_1 = {
@@ -53,7 +53,44 @@ blueprint_2 = {
 }
 
 
+def get_blueprint(type: str):
+    if type == "blueprint_1":
+        return Blueprint(DTO(blueprint_1))
+    if type == "blueprint_2":
+        return Blueprint(DTO(blueprint_2))
+    return None
+
+
 class DocumentServiceTestCase(unittest.TestCase):
+    def test_rename_attribute(self):
+        document_repository: Repository = mock.Mock()
+
+        document_1 = {
+            "uid": "1",
+            "name": "Parent",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {"name": "Nested", "description": "", "type": "blueprint_2"},
+        }
+
+        def mock_get(document_id: str):
+            if document_id == "1":
+                return DTO(data=document_1.copy())
+            return None
+
+        document_repository.get = mock_get
+
+        document_service = DocumentService(blueprint_provider=get_blueprint)
+        document = document_service.rename_attribute(
+            parent_id="1", attribute="nested", name="New name", document_repository=document_repository
+        )
+
+        assert isinstance(document.data, dict)
+
+        actual = {"uid": "1", "nested": {"name": "New name", "description": "", "type": "blueprint_2"}}
+
+        assert pretty_eq(actual, document.data) is None
+
     def test_get_complete_document(self):
 
         document_1 = {
@@ -70,7 +107,6 @@ class DocumentServiceTestCase(unittest.TestCase):
         }
 
         document_2 = {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
-
         document_3 = {"uid": "3", "name": "Reference 1", "description": "", "type": "blueprint_2"}
         document_4 = {"uid": "4", "name": "Reference 2", "description": "", "type": "blueprint_2"}
 
@@ -88,13 +124,6 @@ class DocumentServiceTestCase(unittest.TestCase):
             return None
 
         document_repository.get = mock_get
-
-        def get_blueprint(type: str):
-            if type == "blueprint_1":
-                return Blueprint(DTO(blueprint_1))
-            if type == "blueprint_2":
-                return Blueprint(DTO(blueprint_2))
-            return None
 
         root = get_complete_document(
             document_uid="1", document_repository=document_repository, blueprint_provider=get_blueprint
