@@ -62,6 +62,75 @@ def get_blueprint(type: str):
 
 
 class DocumentServiceTestCase(unittest.TestCase):
+    def test_remove_document(self):
+        document_repository: Repository = mock.Mock()
+
+        document_1 = {
+            "uid": "1",
+            "name": "Parent",
+            "description": "",
+            "type": "blueprint_1"
+        }
+
+        def mock_get(document_id: str):
+            if document_id == "1":
+                return DTO(data=document_1.copy())
+            return None
+
+        document_repository.get = mock_get
+
+        document_service = DocumentService(blueprint_provider=get_blueprint)
+        document_service.remove_document(document_id="1", parent_id=None, repository=document_repository)
+        document_repository.delete.assert_called_with("1")
+
+    def test_remove_nested(self):
+        document_repository: Repository = mock.Mock()
+
+        document_1 = {
+            "uid": "1",
+            "name": "Parent",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {"name": "Nested", "description": "", "type": "blueprint_2"},
+        }
+
+        def mock_get(document_id: str):
+            if document_id == "1":
+                return DTO(data=document_1.copy())
+            return None
+
+        document_repository.get = mock_get
+
+        document_service = DocumentService(blueprint_provider=get_blueprint)
+        document_service.remove_document(document_id="1.nested", parent_id="1", repository=document_repository)
+        document_repository.update.assert_called_once()
+
+    def test_remove_reference(self):
+        document_repository: Repository = mock.Mock()
+
+        document_1 = {
+            "uid": "1",
+            "name": "Parent",
+            "description": "",
+            "type": "blueprint_1",
+            "reference": {"_id": "2", "name": "Reference", "type": "blueprint_2"},
+        }
+        document_2 = {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
+
+        def mock_get(document_id: str):
+            if document_id == "1":
+                return DTO(data=document_1.copy())
+            if document_id == "2":
+                return DTO(data=document_2.copy())
+            return None
+
+        document_repository.get = mock_get
+
+        document_service = DocumentService(blueprint_provider=get_blueprint)
+        document_service.remove_document(document_id="2", parent_id="1", repository=document_repository)
+        document_repository.update.assert_called_once()
+        document_repository.delete.assert_called_with("2")
+
     def test_rename_attribute(self):
         document_repository: Repository = mock.Mock()
 
