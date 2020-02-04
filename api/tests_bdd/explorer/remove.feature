@@ -70,15 +70,24 @@ Feature: Explorer - Remove
     Then the response status should be "OK"
     Given I access the resource url "/api/v2/documents/data-source-name/1"
     When I make a "GET" request
-    Then the response should contain
+    Then the response at document.content should equal
+    """
+    [
+      {
+        "name": "sub_package_2",
+        "_id": "4",
+        "type" : "system/DMT/Package"
+      }
+    ]
+    """
+    Given I access the resource url "/api/v2/documents/data-source-name/2"
+    When I make a "GET" request
+    Then the response status should be "System Error"
+    And the response should equal
     """
     {
-      "content": [
-        {
-          "name": "sub_package_2",
-          "_id": "4"
-        }
-      ]
+      "type": "SYSTEM_ERROR",
+      "message": "EntityNotFoundException: 'The entity, with id 2 is not found'"
     }
     """
 

@@ -46,6 +46,19 @@ def step_impl_equal(context):
     assert result == {}
 
 
+@then("the response at {dot_path} should equal")
+def step_impl_equal_dot_path(context, dot_path):
+    actual = context.response_json
+    target = find(actual, dot_path.split("."))
+    data = context.text or context.data
+    expected = json.loads(data)
+    result = DeepDiff(target, expected, ignore_order=True)
+    if result != {}:
+        print("Actual:", target)
+        print("Expected:", expected)
+    assert result == {}
+
+
 @then("the response should contain")
 def step_impl_contain(context):
     actual = context.response_json
