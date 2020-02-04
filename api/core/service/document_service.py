@@ -46,7 +46,7 @@ def get_resolved_document(document: DTO, document_repository: Repository, bluepr
 
     for complex_attribute in blueprint.get_none_primitive_types():
         attribute_name = complex_attribute.name
-        if attribute_name in data and data[attribute_name]:
+        if attribute_name in data and data[attribute_name] is not None:
             storage_recipe: StorageRecipe = blueprint.storage_recipes[0]
             if storage_recipe.is_contained(attribute_name, complex_attribute.attribute_type):
                 if complex_attribute.is_array():

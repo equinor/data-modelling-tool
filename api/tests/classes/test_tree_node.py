@@ -150,6 +150,7 @@ class TreenodeTestCase(unittest.TestCase):
                         "type": "blueprint_2",
                         "_blueprint": blueprint_2,
                     },
+                    # wrong entity here. last nested is of type blueprint_3, which has name, type, description and reference, not _id, uid
                     "_blueprint": blueprint_3,
                 },
             },
@@ -158,7 +159,7 @@ class TreenodeTestCase(unittest.TestCase):
 
         root = Node.from_dict(DTO(document_1))
         result = [node.name for node in root.traverse()]
-        expected = ["Parent", "Nested 1", "Nested 2", "Reference", "references"]
+        expected = ["Parent", "Nested 1", "Nested 2", "Reference", "nested", "reference", "references"]
         assert result == expected
 
     def test_traverse_reverse(self):
@@ -331,9 +332,11 @@ class TreenodeTestCase(unittest.TestCase):
                         "name": "New name",
                         "type": "blueprint_2",
                         "description": "",
+                        "nested": {}
                     },
                 },
             },
+            "reference": {},
             "references": [],
         }
 
