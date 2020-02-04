@@ -3,15 +3,16 @@ Feature: Explorer - Remove
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name            | database | collection     | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name| local      | documents      | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | SSR-DataSource  | local      | SSR-DataSource | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system          | local      | system         | blueprints   | mongo-db |
+      | host | port  | username | password | tls   | name             | database | collection     | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents      | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local    | SSR-DataSource | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system           | local    | system         | blueprints   | mongo-db |
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                   |
       | 1   |            | blueprints    |             | system/DMT/Package     |
       | 2   | 1          | sub_package_1 |             | system/DMT/Package     |
+      | 4   | 1          | sub_package_2 |             | system/DMT/Package     |
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
   Scenario: Remove root package
@@ -20,7 +21,7 @@ Feature: Explorer - Remove
     When i make a "POST" request
   """
   {
-    "documentId": "1.content",
+    "documentId": "1",
     "parentId": null
   }
   """
@@ -62,8 +63,33 @@ Feature: Explorer - Remove
     When i make a "POST" request
     """
     {
+      "parentId": "1.content",
+      "documentId": "2"
+    }
+    """
+    Then the response status should be "OK"
+    Given I access the resource url "/api/v2/documents/data-source-name/1"
+    When I make a "GET" request
+    Then the response should contain
+    """
+    {
+      "content": [
+        {
+          "name": "sub_package_2",
+          "_id": "4"
+        }
+      ]
+    }
+    """
+
+  Scenario: Remove file with no children
+    Given i access the resource url "/api/v4/explorer/data-source-name/remove"
+    And data modelling tool templates are imported
+    When i make a "POST" request
+    """
+    {
       "parentId": "2.content",
-      "documentId": "3.content"
+      "documentId": "3"
     }
     """
     Then the response status should be "OK"
@@ -85,7 +111,7 @@ Feature: Explorer - Remove
   """
   {
     "parentId": "1.content",
-    "documentId": "2.content"
+    "documentId": "2"
   }
   """
     Then the response status should be "OK"

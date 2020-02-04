@@ -93,6 +93,13 @@ class NodeBase:
             for child in children:
                 self.add_child(child)
 
+    def has_uid(self):
+        return self.dto.uid != ""
+
+    @property
+    def uid(self):
+        return self.dto.uid
+
     @property
     def parent_node_id(self):
         if not self.parent:
@@ -225,7 +232,7 @@ class NodeBase:
     def has_children(self):
         return len(self.children) > 0
 
-    def delete_child(self, keys: List) -> None:
+    def remove_by_path(self, keys: List) -> None:
         if len(keys) == 1:
             for index, child in enumerate(self.children):
                 if child.key == keys[0]:
@@ -236,11 +243,11 @@ class NodeBase:
         except StopIteration:
             raise StopIteration(f"{keys[0]} not found on any children of {self.name}")
         keys.pop(0)
-        next_node.delete_child(keys)
+        next_node.remove_by_path(keys)
 
-    def remove_ref(self, target_id) -> None:
+    def remove_by_node_id(self, node_id) -> None:
         for i, c in enumerate(self.children):
-            if c.node_id == target_id:
+            if c.node_id == node_id:
                 self.children.pop(i)
 
 
@@ -255,6 +262,9 @@ class Node(NodeBase):
     @staticmethod
     def from_dict(dto: DTO):
         return DictImporter.from_dict(dto)
+
+    def remove(self):
+        self.parent.remove_by_node_id(self.node_id)
 
 
 class ListNode(NodeBase):

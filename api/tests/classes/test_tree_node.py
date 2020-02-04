@@ -154,7 +154,7 @@ class TreenodeTestCase(unittest.TestCase):
 
         assert actual_before == root.to_dict()
 
-        root.delete_child(["nested"])
+        root.remove_by_path(["nested"])
 
         actual_after_delete = {"_id": "1", "uid": "1", "name": "root", "description": "", "type": "blueprint_1"}
 
@@ -192,7 +192,7 @@ class TreenodeTestCase(unittest.TestCase):
 
         assert actual_before == root.to_dict()
 
-        root.delete_child(["nested", "nested2"])
+        root.remove_by_path(["nested", "nested2"])
 
         actual_after_delete = {
             "_id": "1",
@@ -261,7 +261,7 @@ class TreenodeTestCase(unittest.TestCase):
 
         assert actual_before == root.to_dict()
 
-        root.delete_child(["a_list", "0", "a_list", "1"])
+        root.remove_by_path(["a_list", "0", "a_list", "1"])
 
         actual_after_delete = {
             "_id": "1",

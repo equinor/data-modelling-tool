@@ -13,7 +13,6 @@ from core.enums import DMT, SIMOS
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityAlreadyExistsException, EntityNotFoundException
 from core.use_case.utils.create_entity import CreateEntity
-from core.use_case.utils.get_document_children import get_document_children
 from core.utility import get_blueprint
 from utils.data_structure.find import get
 from utils.logging import logger
@@ -78,13 +77,6 @@ def get_complete_document(
     return temp
 
 
-def remove_children(document: DTO, document_repository: Repository):
-    children = get_document_children(document, document_repository)
-    for child in children:
-        document_repository.delete(child.uid)
-        logger.info(f"Removed child document '{child.uid}'")
-
-
 class DocumentService:
     def __init__(self, blueprint_provider: Function = get_blueprint):
         self.blueprint_provider = blueprint_provider
@@ -104,39 +96,41 @@ class DocumentService:
         logger.info(f"Rename attribute '{attribute}' from '{node.node_id}'")
         return document
 
-    def remove_document(
-        self,
-        document_id: str,
-        repository: Repository,
-        parent_id: str = None,
-        parent_attributes: List[str] = None,
-        document_attributes: List[str] = None,
-    ):
+    def remove_document(self, document_id: str, repository: Repository, parent_id: str = None):
+        if parent_id:
+            parent: Node = self.get_by_uid(parent_id, repository)
+
+            if not parent:
+                raise EntityNotFoundException(uid=parent_id)
+
+            attribute_node = parent.search(document_id)
+
+            if not attribute_node:
+                raise EntityNotFoundException(uid=document_id)
+
+            if attribute_node.has_uid():
+                self._remove_document(document_id, repository)
+
+            attribute_node.remove()
+
+            repository.update(DTO(parent.to_dict()))
+        else:
+            self._remove_document(document_id, repository)
+
+    def _remove_document(self, document_id, repository):
         document: Node = self.get_by_uid(document_id, repository)
         if not document:
             raise EntityNotFoundException(uid=document_id)
 
-        # Remove a node without any parent(root package)
-        if not parent_id:
-            # Remove the actual document
-            repository.delete(document.node_id)
-            # Remove children of the document
-            remove_children(DTO(document.to_dict()), repository)
-
-        else:
-            parent: Node = self.get_by_uid(parent_id, repository)
-            if not parent:
-                raise EntityNotFoundException(uid=parent_id)
-            # Target is contained in parent. Just delete and update.
-            if parent_id == document_id:
-                parent.delete_child(document_attributes)
-            # Target is a ref. Delete the document, and the reference.
-            else:
-                parent_attribute_node = parent.search(f"{parent_id}.{'.'.join(parent_attributes)}")
-                parent_attribute_node.remove_ref(document_id)
-                self.remove_document(document_id, repository)
-            repository.update(DTO(parent.to_dict()))
+        # Remove the actual document
+        repository.delete(document.node_id)
         logger.info(f"Removed document '{document.node_id}'")
+
+        # Remove child references
+        for child in document.traverse():
+            if child.has_uid():
+                repository.delete(child.uid)
+                logger.info(f"Removed child '{child.uid}'")
 
     def rename_document(
         self, document_id: str, parent_id: str, name: str, attribute: str, document_repository: Repository

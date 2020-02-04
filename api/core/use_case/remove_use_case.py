@@ -31,19 +31,13 @@ class RemoveUseCase(uc.UseCase):
         self.repository = document_repository
 
     def process_request(self, request_object):
-        split_document_id: str = request_object.document_id.split(".")
+        document_id: str = request_object.document_id
         split_parent_id: str = request_object.parent_id.split(".") if request_object.parent_id else None
-        document_id = split_document_id[0]
         parent_id = None
-        parent_attribute_list = []
         if split_parent_id:
             parent_id = split_parent_id[0]
-            parent_attribute_list = split_parent_id[1:] if len(split_parent_id) > 1 else None
-        document_attribute_list = split_document_id[1:] if len(split_document_id) > 1 else None
 
         document_service = DocumentService()
-        document_service.remove_document(
-            document_id, self.repository, parent_id, parent_attribute_list, document_attribute_list
-        )
+        document_service.remove_document(document_id, self.repository, parent_id)
 
         return res.ResponseSuccess(True)
