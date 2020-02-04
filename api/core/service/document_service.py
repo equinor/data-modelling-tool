@@ -1,5 +1,5 @@
 from pyclbr import Function
-from typing import Dict, List
+from typing import Dict, List, Union
 
 import stringcase
 from core.enums import DMT, SIMOS
@@ -15,7 +15,7 @@ from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
-from classes.tree_node import Node
+from classes.tree_node import Node, ListNode
 
 
 def create_reference(data: Dict, document_repository, type: str):
@@ -42,7 +42,7 @@ def get_resolved_document(document: DTO, document_repository: Repository, bluepr
 
     for complex_attribute in blueprint.get_none_primitive_types():
         attribute_name = complex_attribute.name
-        if attribute_name in data and data[attribute_name] is not None:
+        if document.get(attribute_name):
             storage_recipe: StorageRecipe = blueprint.storage_recipes[0]
             if storage_recipe.is_contained(attribute_name, complex_attribute.attribute_type):
                 if complex_attribute.is_array():
@@ -81,6 +81,17 @@ class DocumentService:
     def __init__(self, repository_provider, blueprint_provider=get_blueprint):
         self.blueprint_provider = blueprint_provider
         self.repository_provider = repository_provider
+
+    def save(self, node: Union[Node, ListNode], data_source_id: str) -> None:
+        # Update none-contained attributes
+        for child in node.children:
+            # A list node is always contained on parent. Need to check the blueprint
+            if child.is_array() and not child.attribute_is_contained():
+                [self.save(x, data_source_id) for x in child.children]
+            elif child.not_contained():
+                self.save(child, data_source_id)
+        ref_dict = node.to_ref_dict()
+        self.repository_provider(data_source_id).update(DTO(ref_dict))
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         node = Node.from_dict(
@@ -121,7 +132,8 @@ class DocumentService:
 
             attribute_node.remove()
 
-            self.repository_provider(data_source_id).update(DTO(parent.to_dict()))
+            self.save(parent, data_source_id)
+
         else:
             self._remove_document(data_source_id, document_id)
 

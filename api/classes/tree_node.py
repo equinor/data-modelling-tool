@@ -1,7 +1,9 @@
-from typing import Union, Dict, List
+from typing import Dict, List, Union
+
+from utils.logging import logger
+
 from classes.blueprint import Blueprint
 from classes.dto import DTO
-from utils.logging import logger
 
 
 class DictExporter:
@@ -28,6 +30,34 @@ class DictExporter:
 
         return data
 
+    # Creates a "storage correct" dict from a Node. Writing references as references, and contained docs in full.
+    @staticmethod
+    def to_ref_dict(node):
+        data = {}
+
+        data["_id"] = node.dto.uid
+
+        # Primitive
+        for attribute in node.blueprint.get_primitive_types():
+            if attribute.name in node.dto.data:
+                data[attribute.name] = node.dto.data[attribute.name]
+
+        # Complex
+        for child in node.children:
+            if child.is_array():
+                if not child.attribute_is_contained():
+                    data[child.key] = [
+                        {"_id": child.uid, "type": child.type, "name": child.name} for child in child.children
+                    ]
+                else:
+                    data[child.key] = [child.to_ref_dict() for child in child.children]
+            else:
+                if child.not_contained():
+                    data[child.key] = {"_id": child.uid, "type": child.type, "name": child.name}
+                else:
+                    data[child.key] = child.to_dict()
+        return data
+
 
 class DictImporter:
     @classmethod
@@ -42,7 +72,7 @@ class DictImporter:
 
         for attribute in blueprint.get_none_primitive_types():
             if attribute.is_array():
-                children = dto.data.get(attribute.name, [])
+                children = dto.get(attribute.name, default=[])
                 data = {
                     "name": attribute.name,
                     "type": attribute.attribute_type,
@@ -53,9 +83,13 @@ class DictImporter:
                     list_node.add_child(cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i)))
                 node.add_child(list_node)
             else:
-                if attribute.name in dto.data:
-                    attribute_data = dto.data.get(attribute.name)
-                    node.add_child(cls._from_dict(dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name))
+                if attribute_data := dto.get(attribute.name):
+                    node.add_child(
+                        cls._from_dict(
+                            dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name
+                        )
+                    )
+                # TODO: This also catches empty entities, which is not an error.
                 else:
                     # add empty error node.
                     empty_data = {
@@ -63,18 +97,18 @@ class DictImporter:
                         "type": "",
                         "uid": "",
                         "errorMsg": "missing attribute",
-                        # blueprint is extracted in _from_dict method. name and type is needed since node from_dict is calling from_dict on the blueprint class.
-                        "_blueprint": {
-                            "name": "",
-                            "type": "",
-                        }
+                        # blueprint is extracted in _from_dict method.
+                        # name and type is needed since node from_dict is calling from_dict on the blueprint class.
+                        "_blueprint": {"name": "", "type": ""},
                     }
                     node.add_child(cls._from_dict(dto=DTO(uid=empty_data["uid"], data=empty_data), key=attribute.name))
                     logger.warning(f"Data problem: {node}")
         return node
 
+
 def create_error_node(cls, attribute) -> Dict:
     return cls._from_dict(dto=DTO(uid="", data={"name": attribute.name}), key="")
+
 
 class NodeBase:
     def __init__(self, key: str, dto: DTO = None, parent=None, children=None):
@@ -106,6 +140,12 @@ class NodeBase:
             return None
 
         return self.parent.node_id
+
+    def is_contained(self):
+        return self.uid == ""
+
+    def not_contained(self):
+        return not self.uid == ""
 
     @property
     def node_id(self):
@@ -256,8 +296,14 @@ class Node(NodeBase):
         super().__init__(key=key, dto=dto, parent=parent)
         self.blueprint = blueprint
 
+    def attribute_is_contained(self):
+        return self.blueprint.storage_recipes[0].is_contained(self.key)
+
     def to_dict(self):
         return DictExporter.to_dict(self)
+
+    def to_ref_dict(self):
+        return DictExporter.to_ref_dict(self)
 
     @staticmethod
     def from_dict(dto: DTO):
@@ -270,6 +316,9 @@ class Node(NodeBase):
 class ListNode(NodeBase):
     def __init__(self, key: str, dto: DTO, parent=None):
         super().__init__(key=key, dto=dto, parent=parent)
+
+    def attribute_is_contained(self):
+        return self.blueprint.storage_recipes[0].is_contained(self.key)
 
     @property
     def blueprint(self):
