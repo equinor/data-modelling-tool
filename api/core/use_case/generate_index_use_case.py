@@ -98,7 +98,11 @@ def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str
             if not is_visible(node):
                 continue
 
-            index[node.node_id] = get_node(node, data_source_id, application_page)
+            index_node = get_node(node, data_source_id, application_page)
+            if "errorMsg" in node.dto.data:
+                index[node.node_id] = get_error_node(node)
+            else:
+                index[node.node_id] = index_node
 
         except Exception as error:
             logger.exception(error)

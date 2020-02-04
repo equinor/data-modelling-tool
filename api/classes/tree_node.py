@@ -56,12 +56,28 @@ class DictImporter:
                     list_node.add_child(cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i)))
                 node.add_child(list_node)
             else:
-                if data := dto.data.get(attribute.name):
-                    node.add_child(cls._from_dict(dto=DTO(uid=data.get("uid", ""), data=data), key=attribute.name))
+                if attribute.name in dto.data:
+                    attribute_data = dto.data.get(attribute.name)
+                    node.add_child(cls._from_dict(dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name))
                 else:
-                    logger.warn(f"Data problem: {node}")
+                    # add empty error node.
+                    empty_data = {
+                        "name": attribute.name,
+                        "type": "",
+                        "uid": "",
+                        "errorMsg": "missing attribute",
+                        # blueprint is extracted in _from_dict method. name and type is needed since node from_dict is calling from_dict on the blueprint class.
+                        "_blueprint": {
+                            "name": "",
+                            "type": "",
+                        }
+                    }
+                    node.add_child(cls._from_dict(dto=DTO(uid=empty_data["uid"], data=empty_data), key=attribute.name))
+                    logger.warning(f"Data problem: {node}")
         return node
 
+def create_error_node(cls, attribute) -> Dict:
+    return cls._from_dict(dto=DTO(uid="", data={"name": attribute.name}), key="")
 
 class NodeBase:
     def __init__(self, key: str, dto: DTO = None, parent=None, children=None):
