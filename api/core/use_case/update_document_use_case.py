@@ -38,9 +38,7 @@ class UpdateDocumentUseCase(uc.UseCase):
         data: Dict = request_object.data
         attribute: Dict = request_object.attribute
 
-        document_service = DocumentService()
-        document = document_service.update_document(
-            document_id=document_id, data=data, attribute=attribute, document_repository=self.document_repository
-        )
+        document_service = DocumentService(document_repository=self.document_repository)
+        document = document_service.update_document(document_id=document_id, data=data, attribute=attribute)
 
         return res.ResponseSuccess(document)

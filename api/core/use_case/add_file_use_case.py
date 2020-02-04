@@ -66,14 +66,9 @@ class AddFileUseCase(uc.UseCase):
         description: str = request_object.description
         attribute_dot_path = request_object.attribute
 
-        document_service = DocumentService()
+        document_service = DocumentService(document_repository=self.document_repository)
         document = document_service.add_document(
-            parent_id=parent_id,
-            type=type,
-            name=name,
-            description=description,
-            attribute_dot_path=attribute_dot_path,
-            document_repository=self.document_repository,
+            parent_id=parent_id, type=type, name=name, description=description, attribute_dot_path=attribute_dot_path
         )
 
         return res.ResponseSuccess(document)

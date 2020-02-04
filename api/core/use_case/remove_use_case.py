@@ -28,7 +28,7 @@ class RemoveFileRequestObject(req.ValidRequestObject):
 
 class RemoveUseCase(uc.UseCase):
     def __init__(self, document_repository: Repository):
-        self.repository = document_repository
+        self.document_repository = document_repository
 
     def process_request(self, request_object):
         document_id: str = request_object.document_id
@@ -37,7 +37,7 @@ class RemoveUseCase(uc.UseCase):
         if split_parent_id:
             parent_id = split_parent_id[0]
 
-        document_service = DocumentService()
-        document_service.remove_document(document_id, self.repository, parent_id)
+        document_service = DocumentService(document_repository=self.document_repository)
+        document_service.remove_document(document_id, parent_id)
 
         return res.ResponseSuccess(True)

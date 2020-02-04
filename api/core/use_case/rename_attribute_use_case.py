@@ -40,7 +40,7 @@ class RenameAttributeUseCase(uc.UseCase):
         parent_id = request_object.parent_id
         attribute = request_object.attribute
 
-        document_service = DocumentService()
-        document = document_service.rename_attribute(parent_id, attribute, name, self.document_repository)
+        document_service = DocumentService(document_repository=self.document_repository)
+        document = document_service.rename_attribute(parent_id, attribute, name)
 
         return res.ResponseSuccess(document)

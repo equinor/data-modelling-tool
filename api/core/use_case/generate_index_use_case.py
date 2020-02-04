@@ -114,22 +114,22 @@ def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str
 
 class GenerateIndexUseCase:
     @staticmethod
-    def execute(data_source_id: str, repository: Repository, application_page: str) -> dict:
-        root_packages = repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False)
+    def execute(data_source_id: str, document_repository: Repository, application_page: str) -> dict:
+        root_packages = document_repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False)
         root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
-        document_service = DocumentService()
+        document_service = DocumentService(document_repository=document_repository)
         for root_package in root_packages:
-            root.add_child(document_service.get_by_uid(document_uid=root_package.uid, document_repository=repository))
+            root.add_child(document_service.get_by_uid(document_uid=root_package.uid))
         root.show_tree()
         return extend_index_with_node_tree(root, data_source_id, application_page)
 
-    def single(self, repository: Repository, document_id: str, application_page: str, parent_id: str) -> Dict:
-        data_source_id = repository.name
+    def single(self, document_repository: Repository, document_id: str, application_page: str, parent_id: str) -> Dict:
+        data_source_id = document_repository.name
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        document_service = DocumentService()
-        parent = document_service.get_by_uid(document_uid=parent_id.split(".", 1)[0], document_repository=repository)
+        document_service = DocumentService(document_repository=document_repository)
+        parent = document_service.get_by_uid(document_uid=parent_id.split(".", 1)[0])
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
         parent.show_tree()

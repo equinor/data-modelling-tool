@@ -49,13 +49,9 @@ class RenameFileUseCase(uc.UseCase):
         parent_id = request_object.parent_id
         attribute = request_object.attribute
 
-        document_service = DocumentService()
+        document_service = DocumentService(document_repository=self.document_repository)
         document = document_service.rename_document(
-            document_id=document_id,
-            parent_id=parent_id,
-            name=name,
-            attribute=attribute,
-            document_repository=self.document_repository,
+            document_id=document_id, parent_id=parent_id, name=name, attribute=attribute
         )
 
         return res.ResponseSuccess(document)
