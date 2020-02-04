@@ -1,7 +1,4 @@
-from typing import Union, Dict
-
-from core.use_case.utils.get_ui_recipe import get_recipe
-
+from typing import Union, Dict, List
 from classes.blueprint import Blueprint
 from classes.dto import DTO
 from utils.logging import logger
@@ -95,6 +92,13 @@ class NodeBase:
         if children is not None:
             for child in children:
                 self.add_child(child)
+
+    def has_uid(self):
+        return self.dto.uid != ""
+
+    @property
+    def uid(self):
+        return self.dto.uid
 
     @property
     def parent_node_id(self):
@@ -228,6 +232,24 @@ class NodeBase:
     def has_children(self):
         return len(self.children) > 0
 
+    def remove_by_path(self, keys: List) -> None:
+        if len(keys) == 1:
+            for index, child in enumerate(self.children):
+                if child.key == keys[0]:
+                    self.children.pop(index)
+                    return
+        try:
+            next_node = next((x for x in self.children if x.key == keys[0]))
+        except StopIteration:
+            raise StopIteration(f"{keys[0]} not found on any children of {self.name}")
+        keys.pop(0)
+        next_node.remove_by_path(keys)
+
+    def remove_by_node_id(self, node_id) -> None:
+        for i, c in enumerate(self.children):
+            if c.node_id == node_id:
+                self.children.pop(i)
+
 
 class Node(NodeBase):
     def __init__(self, key: str, dto: DTO = None, blueprint: Blueprint = None, parent=None):
@@ -240,6 +262,9 @@ class Node(NodeBase):
     @staticmethod
     def from_dict(dto: DTO):
         return DictImporter.from_dict(dto)
+
+    def remove(self):
+        self.parent.remove_by_node_id(self.node_id)
 
 
 class ListNode(NodeBase):

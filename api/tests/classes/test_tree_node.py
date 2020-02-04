@@ -65,6 +65,25 @@ blueprint_3 = {
     "uiRecipes": [],
 }
 
+blueprint_4 = {
+    "type": "system/SIMOS/Blueprint",
+    "name": "Blueprint4",
+    "description": "Second blueprint",
+    "attributes": [
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "name"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "type"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "description"},
+        {
+            "attributeType": "blueprint_4",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "name": "a_list",
+            "dimensions": "*",
+        },
+    ],
+    "storageRecipes": [],
+    "uiRecipes": [],
+}
+
 
 class TreenodeTestCase(unittest.TestCase):
     def test_is_root(self):
@@ -79,7 +98,7 @@ class TreenodeTestCase(unittest.TestCase):
         assert root.is_root()
         assert not nested.is_root()
 
-    def test_repace(self):
+    def test_replace(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
         root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
 
@@ -114,6 +133,153 @@ class TreenodeTestCase(unittest.TestCase):
         }
 
         assert actual_after_replaced == root.to_dict()
+
+    def test_delete_root_child(self):
+        root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+
+        nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
+        nested_1 = Node(
+            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+        )
+
+        actual_before = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {"name": "Nested 1", "description": "", "type": "blueprint_2"},
+        }
+
+        assert actual_before == root.to_dict()
+
+        root.remove_by_path(["nested"])
+
+        actual_after_delete = {"_id": "1", "uid": "1", "name": "root", "description": "", "type": "blueprint_1"}
+
+        assert actual_after_delete == root.to_dict()
+
+    def test_delete_nested_child(self):
+        root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+
+        nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
+        nested_1 = Node(
+            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+        )
+        nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_3"}
+        nested_2 = Node(
+            key="nested2",
+            dto=DTO(uid="", data=nested_2_data),
+            blueprint=Blueprint.from_dict(blueprint_2),
+            parent=nested_1,
+        )
+
+        actual_before = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {
+                "name": "Nested 1",
+                "description": "",
+                "type": "blueprint_2",
+                "nested2": {"name": "Nested 2", "description": "", "type": "blueprint_3"},
+            },
+        }
+
+        assert actual_before == root.to_dict()
+
+        root.remove_by_path(["nested", "nested2"])
+
+        actual_after_delete = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {"name": "Nested 1", "description": "", "type": "blueprint_2"},
+        }
+
+        assert actual_after_delete == root.to_dict()
+
+    def test_delete_list_element_of_nested_child(self):
+        document = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_4",
+            "_blueprint": blueprint_4,
+            "a_list": [
+                {
+                    "name": "Nested 1",
+                    "description": "",
+                    "type": "blueprint_4",
+                    "_blueprint": blueprint_4,
+                    "a_list": [
+                        {
+                            "name": "Nested 2 index 0",
+                            "description": "",
+                            "type": "blueprint_4",
+                            "_blueprint": blueprint_4,
+                            "a_list": [],
+                        },
+                        {
+                            "name": "Nested 2 index 1",
+                            "description": "",
+                            "type": "blueprint_4",
+                            "_blueprint": blueprint_4,
+                            "a_list": [],
+                        },
+                    ],
+                }
+            ],
+        }
+        root = Node.from_dict(DTO(document))
+
+        actual_before = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_4",
+            "a_list": [
+                {
+                    "name": "Nested 1",
+                    "description": "",
+                    "type": "blueprint_4",
+                    "a_list": [
+                        {"name": "Nested 2 index 0", "description": "", "type": "blueprint_4", "a_list": []},
+                        {"name": "Nested 2 index 1", "description": "", "type": "blueprint_4", "a_list": []},
+                    ],
+                }
+            ],
+        }
+
+        assert actual_before == root.to_dict()
+
+        root.remove_by_path(["a_list", "0", "a_list", "1"])
+
+        actual_after_delete = {
+            "_id": "1",
+            "uid": "1",
+            "name": "root",
+            "description": "",
+            "type": "blueprint_4",
+            "a_list": [
+                {
+                    "name": "Nested 1",
+                    "description": "",
+                    "type": "blueprint_4",
+                    "a_list": [{"name": "Nested 2 index 0", "description": "", "type": "blueprint_4", "a_list": []}],
+                }
+            ],
+        }
+
+        assert actual_after_delete == root.to_dict()
 
     def test_depth(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}

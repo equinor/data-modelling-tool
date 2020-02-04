@@ -89,7 +89,7 @@ def create_context_menu(node: Union[Node], data_source_id: str, application_page
     menu_items.append(
         get_delete_menu_item(
             data_source_id,
-            parent_id=node.parent.node_id if node.parent else None,
+            parent_id=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
             document_id=node.node_id,
             is_package_content=is_package,
         )
