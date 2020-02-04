@@ -22,7 +22,7 @@ class CreateEntityTestCase(unittest.TestCase):
             "engine": {
                 "description": "",
                 "fuelPump": {
-                    "name": "",
+                    "name": "fuelpumptest",
                     "description": "A standard fuel pump",
                     "type": "ds/test_data/complex/FuelPumpTest",
                 },
