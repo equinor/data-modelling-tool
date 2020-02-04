@@ -104,6 +104,10 @@ class CreateEntity:
             if attr.attribute_type in PRIMITIVES:
                 if is_optional is not None and not is_optional:
                     default_value = CreateEntity.default_value(attr=attr, parent_type=parent_type)
+
+                    if attr.name == "name" and len(default_value) == 0:
+                        default_value = parent_type.split('/')[-1].lower()
+
                     if attr.name not in entity:
                         entity[attr.name] = default_value
             else:
