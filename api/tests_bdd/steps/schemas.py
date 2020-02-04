@@ -1,13 +1,12 @@
 import json
 
 from behave import given
-
-from classes.data_source import DataSource
-from classes.dto import DTO
 from core.repository import Repository
 from core.repository.repository_factory import get_repository
-from config import Config
 from utils.package_import import import_package
+
+from classes.dto import DTO
+from config import Config
 
 
 @given("data modelling tool templates are imported")
@@ -18,7 +17,6 @@ def step_impl(context):
 
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')
 def step_impl_2(context, uid: str, data_source_id: str):
-    data_source = DataSource(uid=data_source_id)
     document: DTO = DTO(uid=uid, data=json.loads(context.text))
-    document_repository: Repository = get_repository(data_source)
+    document_repository: Repository = get_repository(data_source_id)
     document_repository.add(document)

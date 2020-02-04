@@ -1,19 +1,19 @@
-from dotted.collection import DottedDict
-
-from classes.blueprint_attribute import BlueprintAttribute
-from classes.dto import DTO
-from core.repository import Repository
+from core.enums import PRIMITIVES
+from core.repository.repository_factory import get_repository
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.utility import get_document_by_ref, get_blueprint
+from dotted.collection import DottedDict
 
-from core.enums import PRIMITIVES
+from classes.blueprint_attribute import BlueprintAttribute
+from classes.dto import DTO
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):
-    def __init__(self, document_id, ui_recipe, attribute):
+    def __init__(self, data_source_id, document_id, ui_recipe, attribute):
+        self.data_source_id = data_source_id
         self.document_id = document_id
         self.ui_recipe = ui_recipe
         self.attribute = attribute
@@ -22,6 +22,9 @@ class GetDocumentRequestObject(req.ValidRequestObject):
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
 
+        if "data_source_id" not in adict:
+            invalid_req.add_error("data_source_id", "is missing")
+
         if "document_id" not in adict:
             invalid_req.add_error("document_id", "is missing")
 
@@ -29,21 +32,25 @@ class GetDocumentRequestObject(req.ValidRequestObject):
             return invalid_req
 
         return cls(
-            document_id=adict.get("document_id"), ui_recipe=adict.get("ui_recipe"), attribute=adict.get("attribute")
+            data_source_id=adict.get("data_source_id"),
+            document_id=adict.get("document_id"),
+            ui_recipe=adict.get("ui_recipe"),
+            attribute=adict.get("attribute"),
         )
 
 
 class GetDocumentUseCase(uc.UseCase):
-    def __init__(self, document_repository: Repository):
-        self.document_repository = document_repository
+    def __init__(self, repository_provider=get_repository):
+        self.repository_provider = repository_provider
 
     def process_request(self, request_object: GetDocumentRequestObject):
+        data_source_id: str = request_object.data_source_id
         document_id: str = request_object.document_id
         attribute: str = request_object.attribute
 
-        document_service = DocumentService(document_repository=self.document_repository)
+        document_service = DocumentService(repository_provider=self.repository_provider)
 
-        document = document_service.get_by_uid(document_uid=document_id)
+        document = document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
 
         data = document.to_dict()
 
@@ -52,7 +59,7 @@ class GetDocumentUseCase(uc.UseCase):
             data = dotted_data[attribute].to_python()
 
         if "_id" in data:
-            document = document_service.get_by_uid(data["_id"])
+            document = document_service.get_by_uid(data_source_id=data_source_id, document_uid=data["_id"])
             data = document.to_dict()
 
         blueprint = get_blueprint(data["type"])

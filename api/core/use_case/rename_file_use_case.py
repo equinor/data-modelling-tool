@@ -1,4 +1,4 @@
-from core.repository import Repository
+from core.repository.repository_factory import get_repository
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -6,7 +6,8 @@ from core.shared import use_case as uc
 
 
 class RenameFileRequestObject(req.ValidRequestObject):
-    def __init__(self, document_id=None, name=None, parent_id=None, attribute=None):
+    def __init__(self, data_source_id=None, document_id=None, name=None, parent_id=None, attribute=None):
+        self.data_source_id = data_source_id
         self.document_id = document_id
         self.name = name
         self.parent_id = parent_id
@@ -15,6 +16,9 @@ class RenameFileRequestObject(req.ValidRequestObject):
     @classmethod
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
+
+        if "data_source_id" not in adict:
+            invalid_req.add_error("data_source_id", "is missing")
 
         if "parentId" not in adict:
             invalid_req.add_error("parentId", "is missing")
@@ -32,6 +36,7 @@ class RenameFileRequestObject(req.ValidRequestObject):
             return invalid_req
 
         return cls(
+            data_source_id=adict.get("data_source_id"),
             document_id=adict.get("documentId"),
             name=adict.get("name"),
             parent_id=adict.get("parentId"),
@@ -40,18 +45,19 @@ class RenameFileRequestObject(req.ValidRequestObject):
 
 
 class RenameFileUseCase(uc.UseCase):
-    def __init__(self, document_repository: Repository):
-        self.document_repository = document_repository
+    def __init__(self, repository_provider=get_repository):
+        self.repository_provider = repository_provider
 
     def process_request(self, request_object: RenameFileRequestObject):
+        data_source_id = request_object.data_source_id
         document_id = request_object.document_id
         name = request_object.name
         parent_id = request_object.parent_id
         attribute = request_object.attribute
 
-        document_service = DocumentService(document_repository=self.document_repository)
+        document_service = DocumentService(repository_provider=self.repository_provider)
         document = document_service.rename_document(
-            document_id=document_id, parent_id=parent_id, name=name, attribute=attribute
+            data_source_id=data_source_id, document_id=document_id, parent_id=parent_id, name=name, attribute=attribute
         )
 
         return res.ResponseSuccess(document)
