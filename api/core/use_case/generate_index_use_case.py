@@ -122,7 +122,6 @@ class GenerateIndexUseCase:
         root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
         for root_package in root_packages:
             root.add_child(document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid))
-        root.show_tree()
         return extend_index_with_node_tree(root, data_source_id, application_page)
 
     def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
@@ -133,7 +132,6 @@ class GenerateIndexUseCase:
         parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=parent_id.split(".", 1)[0])
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
-        parent.show_tree()
         node = parent.search(document_id)
         if not node:
             raise EntityNotFoundException(uid=document_id)

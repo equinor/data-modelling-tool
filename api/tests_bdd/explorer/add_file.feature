@@ -25,16 +25,7 @@ Feature: Explorer - Add file
     }
     """
     Then the response status should be "OK"
-    And the response should contain
-    """
-    {
-        "data":{
-           "name":"new_document",
-           "type":"system/SIMOS/Blueprint",
-           "storageRecipes":[]
-        }
-    }
-    """
+
     Given I access the resource url "/api/v2/documents/data-source-name/1"
     When I make a "GET" request
     Then the response status should be "OK"

@@ -1,21 +1,20 @@
 from pyclbr import Function
 from typing import Dict, List, Union
+from uuid import uuid4
 
-import stringcase
-from core.enums import DMT, SIMOS
-from core.repository import Repository
-from core.repository.repository_exceptions import EntityAlreadyExistsException, EntityNotFoundException
-from core.use_case.utils.create_entity import CreateEntity
-from core.utility import get_blueprint
 from dotted.collection import DottedDict
-from utils.data_structure.find import get
-from utils.logging import logger
 
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
-from classes.tree_node import Node, ListNode
+from classes.tree_node import ListNode, Node
+from core.enums import SIMOS
+from core.repository import Repository
+from core.repository.repository_exceptions import EntityAlreadyExistsException, EntityNotFoundException
+from core.use_case.utils.create_entity import CreateEntity
+from core.utility import get_blueprint
+from utils.logging import logger
 
 
 def create_reference(data: Dict, document_repository, type: str):
@@ -23,6 +22,14 @@ def create_reference(data: Dict, document_repository, type: str):
     file = DTO(data)
     document_repository.add(file)
     return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
+
+
+def get_required_attributes(type: str):
+    return [
+        {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "name"},
+        {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "description"},
+        {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "type", "default": type},
+    ]
 
 
 def get_document(document_uid: str, document_repository: Repository):
@@ -237,78 +244,28 @@ class DocumentService:
         return document
 
     def add_document(
-        self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_dot_path: str
+        self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
     ):
-        attribute: str = stringcase.snakecase(attribute_dot_path)
-
-        parent: DTO = self.repository_provider(data_source_id).get(parent_id)
-        if not parent:
+        # We can only add documents to lists. The only exception to this is root_packages, which has their own function
+        root: Node = self.get_by_uid(data_source_id, parent_id)
+        if not root:
             raise EntityNotFoundException(uid=parent_id)
+        parent = root.search(f"{parent_id}.{attribute_path}")
 
         class BlueprintProvider:
             def get_blueprint(self, type: str):
                 return get_blueprint(type)
 
-        blueprint_provider = BlueprintProvider()
+        entity: Dict = CreateEntity(BlueprintProvider(), name=name, type=type, description=description).entity
 
-        entity: Dict = CreateEntity(blueprint_provider, name=name, type=type, description=description).entity
+        # TODO: Child Nodes is not created
+        # @eaks, whats the best way? Node.from_dict()?
+        new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
+        new_node = Node(key=str(len(parent.children)), dto=DTO(entity, uid=new_node_id), blueprint=get_blueprint(type))
 
-        parent_data = parent.data
+        if type == SIMOS.BLUEPRINT.value:
+            new_node.update({"attributes": get_required_attributes(type=type)})
 
-        # Set empty content on package if no content
-        if parent.type == DMT.PACKAGE.value:
-            parent_data["content"] = parent_data.get("content", [])
-
-        try:
-            dotted_data = DottedDict(parent_data)
-            try:
-                dotted_data[attribute_dot_path]
-            except KeyError:
-                get(parent_data, attribute_dot_path)
-        except ValueError:
-            raise ValueError(f"The attribute '{attribute}' is missing")
-
-        parent_blueprint = get_blueprint(parent.type)
-        if not parent_blueprint:
-            raise EntityNotFoundException(uid=parent.type)
-
-        storage_recipe: StorageRecipe = parent_blueprint.storage_recipes[0]
-
-        if storage_recipe.is_contained(attribute, type):
-            # only array types can be added from context menu.
-            # single types in tree can only be clicked.
-            if isinstance(parent_data, dict):
-                try:
-                    dotted_data[attribute_dot_path].append(entity)
-                    parent.data = dotted_data.to_python()
-                except KeyError:
-                    pass
-
-            else:
-                getattr(parent_data, attribute).append(entity)
-                logger.info(f"Added contained document")
-            self.repository_provider(data_source_id).update(parent)
-            new_id = f"{parent_id}.{attribute_dot_path}.{len(dotted_data[attribute_dot_path]) - 1}"
-            return {"uid": new_id}
-        else:
-
-            def get_required_attributes(type: str):
-                return [
-                    {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "name"},
-                    {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "description"},
-                    {
-                        "type": "system/SIMOS/BlueprintAttribute",
-                        "attributeType": "string",
-                        "name": "type",
-                        "default": type,
-                    },
-                ]
-
-            file = DTO(data=entity)
-            if type == SIMOS.BLUEPRINT.value:
-                file.data["attributes"] = get_required_attributes(type=type)
-            get(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
-            self.repository_provider(data_source_id).add(file)
-            logger.info(f"Added document '{file.uid}''")
-            self.repository_provider(data_source_id).update(parent)
-            return file
+        parent.add_child(new_node)
+        self.save(root, data_source_id)
+        return {"uid": new_node.node_id}

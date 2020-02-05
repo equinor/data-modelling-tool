@@ -80,7 +80,7 @@ class AddFileUseCase(uc.UseCase):
             type=type,
             name=name,
             description=description,
-            attribute_dot_path=attribute_dot_path,
+            attribute_path=attribute_dot_path,
         )
 
         return res.ResponseSuccess(document)

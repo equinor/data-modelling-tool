@@ -45,12 +45,13 @@ class DictExporter:
         # Complex
         for child in node.children:
             if child.is_array():
+                # If the content of the list is not contained, i.e. references.
                 if not child.attribute_is_contained():
                     data[child.key] = [
                         {"_id": child.uid, "type": child.type, "name": child.name} for child in child.children
                     ]
                 else:
-                    data[child.key] = [child.to_ref_dict() for child in child.children]
+                    data[child.key] = [list_child.to_dict() for list_child in child.children]
             else:
                 if child.not_contained():
                     data[child.key] = {"_id": child.uid, "type": child.type, "name": child.name}
