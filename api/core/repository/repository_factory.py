@@ -4,7 +4,8 @@ from core.repository import Repository
 from core.repository.mongo import MongoDBClient
 
 
-def get_repository(data_source: DataSource):
+def get_repository(data_source_id: str):
+    data_source: DataSource = DataSource(uid=data_source_id)
     if data_source.type == DataSourceType.MONGO.value:
         return Repository(
             name=data_source.name,
@@ -17,4 +18,5 @@ def get_repository(data_source: DataSource):
                 collection=data_source.collection,
                 port=data_source.port,
             ),
+            document_type=data_source.documentType,
         )

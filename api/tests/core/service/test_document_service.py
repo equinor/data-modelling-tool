@@ -65,12 +65,7 @@ class DocumentServiceTestCase(unittest.TestCase):
     def test_remove_document(self):
         document_repository: Repository = mock.Mock()
 
-        document_1 = {
-            "uid": "1",
-            "name": "Parent",
-            "description": "",
-            "type": "blueprint_1"
-        }
+        document_1 = {"uid": "1", "name": "Parent", "description": "", "type": "blueprint_1"}
 
         def mock_get(document_id: str):
             if document_id == "1":
@@ -79,8 +74,12 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         document_repository.get = mock_get
 
-        document_service = DocumentService(blueprint_provider=get_blueprint)
-        document_service.remove_document(document_id="1", parent_id=None, repository=document_repository)
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return document_repository
+
+        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service.remove_document(data_source_id="testing", document_id="1", parent_id=None)
         document_repository.delete.assert_called_with("1")
 
     def test_remove_nested(self):
@@ -101,8 +100,12 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         document_repository.get = mock_get
 
-        document_service = DocumentService(blueprint_provider=get_blueprint)
-        document_service.remove_document(document_id="1.nested", parent_id="1", repository=document_repository)
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return document_repository
+
+        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service.remove_document(data_source_id="testing", document_id="1.nested", parent_id="1")
         document_repository.update.assert_called_once()
 
     def test_remove_reference(self):
@@ -126,8 +129,12 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         document_repository.get = mock_get
 
-        document_service = DocumentService(blueprint_provider=get_blueprint)
-        document_service.remove_document(document_id="2", parent_id="1", repository=document_repository)
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return document_repository
+
+        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service.remove_document(data_source_id="testing", document_id="2", parent_id="1")
         document_repository.update.assert_called_once()
         document_repository.delete.assert_called_with("2")
 
@@ -149,9 +156,13 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         document_repository.get = mock_get
 
-        document_service = DocumentService(blueprint_provider=get_blueprint)
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return document_repository
+
+        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
         document = document_service.rename_attribute(
-            parent_id="1", attribute="nested", name="New name", document_repository=document_repository
+            data_source_id="testing", parent_id="1", attribute="nested", name="New name"
         )
 
         assert isinstance(document.data, dict)

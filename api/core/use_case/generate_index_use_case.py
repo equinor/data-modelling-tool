@@ -1,17 +1,17 @@
 from typing import Dict, Union
 
-from core.repository.repository_exceptions import EntityNotFoundException
-
-from classes.dto import DTO
-from classes.tree_node import Node, NodeBase
-from config import Config
 from core.enums import DMT
-from core.repository import Repository
+from core.repository.repository_exceptions import EntityNotFoundException
+from core.repository.repository_factory import get_repository
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions_v2 import get_node_on_select
 from core.use_case.utils.get_ui_recipe import get_recipe
 from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
+
+from classes.dto import DTO
+from classes.tree_node import Node, NodeBase
+from config import Config
 
 
 def get_error_node(node: Union[Node]) -> Dict:
@@ -113,23 +113,24 @@ def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str
 
 
 class GenerateIndexUseCase:
-    @staticmethod
-    def execute(data_source_id: str, repository: Repository, application_page: str) -> dict:
-        root_packages = repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False)
+    def __init__(self, repository_provider=get_repository):
+        self.repository_provider = repository_provider
+
+    def execute(self, data_source_id: str, application_page: str) -> dict:
+        document_service = DocumentService(repository_provider=self.repository_provider)
+        root_packages = document_service.get_root_packages(data_source_id=data_source_id)
         root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
-        document_service = DocumentService()
         for root_package in root_packages:
-            root.add_child(document_service.get_by_uid(document_uid=root_package.uid, document_repository=repository))
+            root.add_child(document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid))
         root.show_tree()
         return extend_index_with_node_tree(root, data_source_id, application_page)
 
-    def single(self, repository: Repository, document_id: str, application_page: str, parent_id: str) -> Dict:
-        data_source_id = repository.name
+    def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        document_service = DocumentService()
-        parent = document_service.get_by_uid(document_uid=parent_id.split(".", 1)[0], document_repository=repository)
+        document_service = DocumentService(repository_provider=self.repository_provider)
+        parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=parent_id.split(".", 1)[0])
         if not parent:
             raise EntityNotFoundException(uid=parent_id)
         parent.show_tree()

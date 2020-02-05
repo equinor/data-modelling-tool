@@ -1,11 +1,10 @@
 from anytree import NodeMixin, RenderTree
 from behave import given
-
-from classes.data_source import DataSource
-from classes.dto import DTO
 from core.enums import DMT, SIMOS
 from core.repository import Repository
 from core.repository.repository_factory import get_repository
+
+from classes.dto import DTO
 
 
 class TreeNode(NodeMixin):
@@ -48,12 +47,12 @@ def generate_tree_from_rows(node: TreeNode, rows):
 
 class Tree:
     def __init__(self, data_source_id, table):
-        self.data_source = DataSource(uid=data_source_id)
+        self.data_source_id = data_source_id
         self.table = table
         self.root = self._generate_tree()
 
     def add(self):
-        document_repository: Repository = get_repository(self.data_source)
+        document_repository: Repository = get_repository(self.data_source_id)
         for pre, fill, node in RenderTree(self.root):
             if node.type == SIMOS.BLUEPRINT.value:
                 document: DTO = DTO(
@@ -88,7 +87,7 @@ class Tree:
 
     def _generate_tree(self):
         # This node is used for prefixing everything with data source
-        root_node = TreeNode(uid=None, name=self.data_source.name, description="", type="", parent=None)
+        root_node = TreeNode(uid=None, name=self.data_source_id, description="", type="", parent=None)
         package = list(filter(lambda row: row["parent_uid"] == "", self.table.rows))[0]
         if not package:
             raise Exception("Root package is not found, you need to specify root package")
