@@ -1,5 +1,5 @@
 from typing import Dict, Optional
-from uuid import UUID, uuid4
+from uuid import uuid4
 
 
 # For backwards compatibility, data is not a private property.
@@ -22,7 +22,7 @@ class DTO:
         self.data = data
 
     def get(self, key, default=None):
-        if default:
+        if default is not None:
             return self.data.get(key, default)
         return self.data.get(key)
 

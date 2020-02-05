@@ -25,7 +25,7 @@ class StorageRecipe:
             for attribute in attributes
         }
 
-    def is_contained(self, attribute_name, attribute_type):
+    def is_contained(self, attribute_name, attribute_type=None):
         if attribute_name in self.storage_attributes:
             return self.storage_attributes[attribute_name].is_contained
         if attribute_type in PRIMITIVES:
