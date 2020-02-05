@@ -17,9 +17,11 @@ class DictExporter:
             data["_id"] = node.dto.uid
 
         # Primitive
-        for attribute in node.blueprint.get_primitive_types():
-            if attribute.name in node.dto.data:
-                data[attribute.name] = node.dto.data[attribute.name]
+        # if complex attribute name is renamed in blueprint, then the blueprint is None in the entity.
+        if node.blueprint is not None:
+            for attribute in node.blueprint.get_primitive_types():
+                if attribute.name in node.dto.data:
+                    data[attribute.name] = node.dto.data[attribute.name]
 
         # Complex
         for node in node.children:
@@ -38,9 +40,11 @@ class DictExporter:
         data["_id"] = node.dto.uid
 
         # Primitive
-        for attribute in node.blueprint.get_primitive_types():
-            if attribute.name in node.dto.data:
-                data[attribute.name] = node.dto.data[attribute.name]
+        # if complex attribute name is renamed in blueprint, then the blueprint is None in the entity.
+        if node.blueprint is not None:
+            for attribute in node.blueprint.get_primitive_types():
+                if attribute.name in node.dto.data:
+                    data[attribute.name] = node.dto.data[attribute.name]
 
         # Complex
         for child in node.children:
@@ -67,44 +71,54 @@ class DictImporter:
 
     @classmethod
     def _from_dict(cls, dto, key):
-        blueprint: Blueprint = Blueprint.from_dict(dto.data.pop("_blueprint"))
+        try:
+            blueprint: Blueprint = Blueprint.from_dict(dto.data.pop("_blueprint"))
+            node = Node(key=key, blueprint=blueprint, dto=dto)
+        except KeyError as error:
+            logger.exception(error)
+            error_node = Node(key=dto.name, dto=DTO(data={
+                "name": dto.name,
+                "type": ""
+            }))
+            error_node.set_error("_blueprint is missing from dto")
+            return error_node
 
-        node = Node(key=key, blueprint=blueprint, dto=dto)
-
-        for attribute in blueprint.get_none_primitive_types():
-            if attribute.is_array():
-                children = dto.get(attribute.name, default=[])
-                data = {
-                    "name": attribute.name,
-                    "type": attribute.attribute_type,
-                    "attributeType": attribute.attribute_type,
-                }
-                list_node = ListNode(key=attribute.name, dto=DTO(uid="", data=data))
-                for i, child in enumerate(children):
-                    list_node.add_child(cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i)))
-                node.add_child(list_node)
-            else:
-                if attribute_data := dto.get(attribute.name):
-                    node.add_child(
-                        cls._from_dict(
-                            dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name
-                        )
-                    )
-                # TODO: This also catches empty entities, which is not an error.
-                else:
-                    # add empty error node.
-                    empty_data = {
+        try:
+            for attribute in blueprint.get_none_primitive_types():
+                if attribute.is_array():
+                    children = dto.data.get(attribute.name, [])
+                    data = {
                         "name": attribute.name,
-                        "type": "",
-                        "uid": "",
-                        "errorMsg": "missing attribute",
-                        # blueprint is extracted in _from_dict method.
-                        # name and type is needed since node from_dict is calling from_dict on the blueprint class.
-                        "_blueprint": {"name": "", "type": ""},
+                        "type": attribute.attribute_type,
+                        "attributeType": attribute.attribute_type,
                     }
-                    node.add_child(cls._from_dict(dto=DTO(uid=empty_data["uid"], data=empty_data), key=attribute.name))
-                    logger.warning(f"Data problem: {node}")
-        return node
+                    list_node = ListNode(key=attribute.name, dto=DTO(uid="", data=data))
+                    for i, child in enumerate(children):
+                        list_child_node = cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i))
+                        list_node.add_child(list_child_node)
+                        #todo implement error node handling.
+
+                    node.add_child(list_node)
+                else:
+                    if attribute.name in dto.data:
+                        attribute_data = dto.data.get(attribute.name)
+                        child_node = cls._from_dict(dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name)
+                        node.add_child(child_node)
+                    else:
+                        error_node = Node(key=attribute.name, dto=DTO(data={
+                            "name": attribute.name,
+                            # avoid DtoException
+                            "type": "",
+                        }))
+                        error_node.set_error(f"failed to add attribute node: {attribute.name}")
+                        # #524 #543 the following line break several unit tests related to save and remove in the service.
+                        # node.add_child(error_node)
+                        logger.warning(f"Data problem: {attribute.name}")
+            return node
+        except AttributeError as error:
+            logger.exception(error)
+            return Node(key=dto.name, title=dto.name)
+
 
 
 def create_error_node(cls, attribute) -> Dict:
@@ -118,7 +132,7 @@ class NodeBase:
 
         self.key = key
         self.dto = dto
-
+        self.has_error = False
         self.parent: Union[Node, ListNode] = parent
         if parent:
             parent.add_child(self)
@@ -291,11 +305,14 @@ class NodeBase:
             if c.node_id == node_id:
                 self.children.pop(i)
 
+    def has_error(self):
+        return self.error is not None
 
 class Node(NodeBase):
     def __init__(self, key: str, dto: DTO = None, blueprint: Blueprint = None, parent=None):
         super().__init__(key=key, dto=dto, parent=parent)
         self.blueprint = blueprint
+        self.error_message = None
 
     def attribute_is_contained(self):
         return self.blueprint.storage_recipes[0].is_contained(self.key)
@@ -312,6 +329,10 @@ class Node(NodeBase):
 
     def remove(self):
         self.parent.remove_by_node_id(self.node_id)
+
+    def set_error(self, error_message: str):
+        self.has_error = True
+        self.error_message = error_message
 
 
 class ListNode(NodeBase):

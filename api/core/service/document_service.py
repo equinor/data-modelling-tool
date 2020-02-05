@@ -63,10 +63,16 @@ def get_resolved_document(document: DTO, document_repository: Repository, bluepr
                     )
             else:
                 if complex_attribute.is_array():
-                    data[attribute_name] = [
-                        get_complete_document(item["_id"], document_repository, blueprint_provider)
-                        for item in data[attribute_name]
-                    ]
+                    children = []
+                    for item in data[attribute_name]:
+                        try:
+                            doc = get_complete_document(item["_id"], document_repository, blueprint_provider)
+                            children.append(doc)
+                        except Exception as error:
+                            logger.exception(error)
+                            #todo add error node to children.
+                            # children.append(error_node)
+                    data[attribute_name] = children
                 else:
                     data[attribute_name] = get_complete_document(
                         data[attribute_name]["_id"], document_repository, blueprint_provider
@@ -101,10 +107,18 @@ class DocumentService:
         self.repository_provider(data_source_id).update(DTO(ref_dict))
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
-        node = Node.from_dict(
-            DTO(get_complete_document(document_uid, self.repository_provider(data_source_id), self.blueprint_provider))
-        )
-        return node
+        try:
+            # document_uid = document_uid + "2" # impose error
+            complete_document = get_complete_document(document_uid, self.repository_provider(data_source_id), self.blueprint_provider)
+        except EntityNotFoundException as error:
+            # this is an edge case for packages where the reference in a package entity has wrong document id.
+            # the code caller of this method knows the name and node_type that belongs to the document_uid.
+            # Thus, the caller code should create the Node and add error information to that node.
+            logger.exception(error)
+            raise EntityNotFoundException(document_uid)
+
+        dto = DTO(complete_document)
+        return Node.from_dict(dto)
 
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(

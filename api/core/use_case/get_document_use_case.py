@@ -9,6 +9,7 @@ from dotted.collection import DottedDict
 
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
+from utils.logging import logger
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):
@@ -89,8 +90,12 @@ class GetDocumentUseCase(uc.UseCase):
 
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:
-            enum_blueprint: DTO = get_document_by_ref(attribute.enum_type)
             try:
+                enum_blueprint: DTO = get_document_by_ref(attribute.enum_type)
                 dtos.append(enum_blueprint.to_dict())
-            except AttributeError:
+            except AttributeError as error:
+                logger.exceptions(error)
+                print(f"failed to append enumType {attribute}")
+            except Exception as error:
+                logger.exceptions(error)
                 print(f"failed to append enumType {attribute}")

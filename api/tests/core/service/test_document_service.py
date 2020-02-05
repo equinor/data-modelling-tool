@@ -3,6 +3,7 @@ from unittest import mock
 
 from core.repository import Repository
 from core.service.document_service import DocumentService, get_complete_document
+from tests.util_tests import flatten_dict
 from utils.data_structure.compare import pretty_eq
 
 from classes.blueprint import Blueprint
@@ -269,7 +270,6 @@ class DocumentServiceTestCase(unittest.TestCase):
         contained_node: Node = node.search("1.references")
         contained_node.children.append(Node("0", DTO(doc_storage["2"]), contained_node.blueprint))
         document_service.save(node, "testing")
-
         assert document_1_after == doc_storage["1"]
 
     def test_save_delete(self):
@@ -327,7 +327,8 @@ class DocumentServiceTestCase(unittest.TestCase):
         contained_node.remove_by_path(["1"])
         document_service.save(node, "testing")
 
-        assert doc_1_after == doc_storage["1"]
+
+        assert flatten_dict(doc_1_after).items() <= flatten_dict(doc_storage["1"]).items()
         assert doc_storage["3"] is not None
 
     def test_get_complete_document(self):

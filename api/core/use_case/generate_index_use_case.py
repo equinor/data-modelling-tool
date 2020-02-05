@@ -52,6 +52,24 @@ def get_node(node: Union[Node], data_source_id: str, application_page: str) -> D
         if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
             parent_id = node.parent.parent.node_id
 
+    if node.has_error:
+        return {
+            "parentId": parent_id,
+            "title": node.name,
+            "id": node.node_id,
+            "nodeType": "document-node",
+            "children": [],
+            "type": node.type,
+            "meta": {
+                #todo add remove action?
+                "menuItems": [],
+                "onSelect": {},
+                "error": True,
+                "isRootPackage": node.is_root(),
+                "isList": node.is_array(),
+            },
+        }
+
     return {
         "parentId": parent_id,
         "title": node.name,
@@ -99,16 +117,11 @@ def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str
                 continue
 
             index_node = get_node(node, data_source_id, application_page)
-            if "errorMsg" in node.dto.data:
-                index[node.node_id] = get_error_node(node)
-            else:
-                index[node.node_id] = index_node
+            index[node.node_id] = index_node
 
         except Exception as error:
             logger.exception(error)
-            index[node.node_id] = get_error_node(node)
-            logger.warning(f"Caught error while processing document {node.name}: {error}")
-
+            logger.warning(f"Caught error while processing document: {error}")
     return index
 
 
@@ -121,7 +134,19 @@ class GenerateIndexUseCase:
         root_packages = document_service.get_root_packages(data_source_id=data_source_id)
         root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
         for root_package in root_packages:
-            root.add_child(document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid))
+            try:
+                root.add_child(document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid))
+            except EntityNotFoundException as error:
+                logger.exception(error, "unhandled exception.")
+                error_node: Node = Node(key=root_package.uid, dto=DTO(data={
+                    "name": root_package.name,
+                    "type": "",
+                }))
+                error_node.set_error(f"failed to add root package {root_package.name} to the root node")
+                root.add_child(error_node)
+            except Exception as error:
+                logger.exception(error, "unhandled exception.")
+
         return extend_index_with_node_tree(root, data_source_id, application_page)
 
     def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
