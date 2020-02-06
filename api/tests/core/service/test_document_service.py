@@ -270,7 +270,9 @@ class DocumentServiceTestCase(unittest.TestCase):
         contained_node: Node = node.search("1.references")
         contained_node.children.append(Node("0", DTO(doc_storage["2"]), contained_node.blueprint))
         document_service.save(node, "testing")
-        assert document_1_after == doc_storage["1"]
+
+        # assert document_1_after == doc_storage["1"]
+        assert flatten_dict(document_1_after).items() == flatten_dict(doc_storage["1"]).items()
 
     def test_save_delete(self):
         repository: Repository = mock.Mock()
