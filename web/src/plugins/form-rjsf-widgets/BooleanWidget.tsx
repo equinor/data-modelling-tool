@@ -44,10 +44,7 @@ export const BooleanWidget = (props: BoolDefaultInput) => {
   const { onChange, attributeType, value } = props
   const onChangeBool = (inputValue: boolean) => {
     let newValue: string | boolean = inputValue
-    if (attributeType.type === 'string') {
-      newValue = inputValue + '' //cast to string
-    }
-    onChange(attributeType, newValue)
+    onChange(attributeType, newValue + "")
   }
 
   const booleanValue = getBooleanValue(value, attributeType)
