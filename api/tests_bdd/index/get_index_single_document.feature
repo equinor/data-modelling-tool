@@ -8,6 +8,8 @@ Feature: Index
       | db   | 27017 | maf      | maf      | false | system           | local      | system     | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | test-source-name | local      | test       | blueprints   | mongo-db |
 
+    Given data modelling tool templates are imported
+
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                                    |
       | 1   |            | blueprints    |             | system/DMT/Package                      |
@@ -16,7 +18,6 @@ Feature: Index
 
   Scenario: Get index for single document (Root Package)
     Given I access the resource url "/api/v4/index/data-source-name/1/1"
-    And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -35,7 +36,6 @@ Feature: Index
 
   Scenario: Get index for single document (Package)
     Given I access the resource url "/api/v4/index/data-source-name/1/2"
-    And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -55,7 +55,6 @@ Feature: Index
 
   Scenario: Get index for single document (Blueprint)
     Given I access the resource url "/api/v4/index/data-source-name/2/3"
-    And data modelling tool templates are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
