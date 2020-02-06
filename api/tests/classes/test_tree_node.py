@@ -1,7 +1,7 @@
 import unittest
-
 from classes.blueprint import Blueprint
 from classes.dto import DTO
+from tests.util_tests import flatten_dict
 from utils.data_structure.compare import pretty_eq
 
 from classes.tree_node import Node, ListNode, DictExporter, DictImporter
@@ -325,7 +325,9 @@ class TreenodeTestCase(unittest.TestCase):
 
         root = Node.from_dict(DTO(document_1))
         result = [node.name for node in root.traverse()]
-        expected = ["Parent", "Nested 1", "Nested 2", "Reference", "nested", "reference", "references"]
+        # with error nodes
+        # expected = ["Parent", "Nested 1", "Nested 2", "Reference", "nested", "reference", "references"]
+        expected = ["Parent", "Nested 1", "Nested 2", "Reference", "references"]
         assert result == expected
 
     def test_traverse_reverse(self):
@@ -506,7 +508,13 @@ class TreenodeTestCase(unittest.TestCase):
             "references": [],
         }
 
-        assert actual == root.to_dict()
+        # reference and nested.nested.reference has uid and id generated since the tree now includes
+        # nodes when attributes are missing, needed for having error nodes in the index.
+
+        actual_flat = flatten_dict(actual)
+        expected_flat = flatten_dict(root.to_dict())
+        # less than only works on flat dictionaries.
+        assert actual_flat.items() <= expected_flat.items()
 
     def test_from_dict(self):
         document_1 = {

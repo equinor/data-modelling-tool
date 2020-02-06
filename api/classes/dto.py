@@ -1,5 +1,6 @@
 from typing import Dict, Optional
 from uuid import uuid4
+from utils.logging import logger
 
 
 # For backwards compatibility, data is not a private property.
@@ -16,8 +17,12 @@ class DTO:
         if uid is None:
             uid = uuid4()
         self._uid = uid
-        self._name = data["name"]
-        self._type = data["type"]
+        try:
+            self._name = data["name"]
+            self._type = data["type"]
+        except Exception as error:
+            logger.exception(error)
+
         self._attribute_type = data.get("attribute_type", "")
         self.data = data
 
