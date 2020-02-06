@@ -226,7 +226,7 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         node: Node = document_service.get_by_uid("testing", "1")
         contained_node: Node = node.search("4")
-        contained_node.update({"description": "TEST_MODIFY"})
+        contained_node.update(doc_4_after.copy())
         document_service.save(node, "testing")
 
         assert doc_1_after == doc_storage["1"]

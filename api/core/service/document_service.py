@@ -129,12 +129,10 @@ class DocumentService:
         node: Node = self.get_by_uid(data_source_id=data_source_id, document_uid=parent_id)
         attribute_node_id = f"{parent_id}.{attribute}"
         attribute_node = node.search(attribute_node_id)
-        attribute_node.update({"name": name})
-        node.replace(attribute_node_id, attribute_node)
-        document = DTO(node.to_dict())
-        self.repository_provider(data_source_id).update(document)
+        attribute_node.dto.data["name"] = name
+        self.save(node, data_source_id)
         logger.info(f"Rename attribute '{attribute}' from '{node.node_id}'")
-        return document
+        return node.dto
 
     def remove_document(self, data_source_id: str, document_id: str, parent_id: str = None):
         if parent_id:
@@ -200,62 +198,23 @@ class DocumentService:
 
         return document
 
-    def update_document(self, data_source_id: str, document_id: str, data: dict, attribute: str):
-        def update_attribute(attribute, data: BlueprintAttribute, storage_recipe: StorageRecipe, document_repository):
-            is_contained_in_storage = storage_recipe.is_contained(attribute.name, attribute.attribute_type)
-            attribute_data = data[attribute.name]
+    def update_document(self, data_source_id: str, document_id: str, data: dict, attribute_path: str):
+        root: Node = self.get_by_uid(data_source_id, document_id)
+        if not root:
+            raise EntityNotFoundException(uid=document_id)
 
-            if is_contained_in_storage:
-                return attribute_data
-            else:
-                if attribute.dimensions == "*":
-                    references = []
-                    for instance in attribute_data:
-                        reference = create_reference(instance, document_repository, attribute.attribute_type)
-                        update_document(reference["_id"], instance, document_repository)
-                        references.append(reference)
-                    return references
-                else:
-                    reference = create_reference(attribute_data, document_repository, attribute.attribute_type)
-                    return reference
+        target_node = root
 
-        def update_document(document_id, data: Dict, document_repository: Repository) -> DTO:
-            document: DTO = document_repository.get(uid=document_id)
+        # If it's a contained nested node, set the modify target based on dotted-path
+        if attribute_path:
+            target_node = root.search(f"{document_id}.{attribute_path}")
 
-            if not document:
-                raise EntityNotFoundException(uid=document_id)
+        target_node.update(data)
+        self.save(root, data_source_id)
 
-            blueprint = get_blueprint(document.type)
-            if not blueprint:
-                raise EntityNotFoundException(uid=document.type)
+        logger.info(f"Updated document '{target_node.node_id}''")
 
-            for key in data.keys():
-                # TODO: Sure we want this filter?
-                attribute = next((x for x in blueprint.attributes if x.name == key), None)
-                if not attribute:
-                    logger.error(f"Could not find attribute {key} in {document.uid}")
-                else:
-                    document[key] = update_attribute(
-                        attribute, data, blueprint.storage_recipes[0], document_repository
-                    )
-
-            return document
-
-        if attribute:
-            existing_data: DTO = self.repository_provider(data_source_id).get(document_id).data
-            if not existing_data:
-                raise EntityNotFoundException(uid=document_id)
-            dotted_data = DottedDict(existing_data)
-            dotted_data[attribute] = data
-            data = dotted_data.to_python()
-
-        document = update_document(document_id, data, self.repository_provider(data_source_id))
-
-        self.repository_provider(data_source_id).update(document)
-
-        logger.info(f"Updated document '{document.uid}''")
-
-        return document
+        return target_node.dto
 
     def add_document(
         self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
@@ -278,7 +237,8 @@ class DocumentService:
         new_node = Node(key=str(len(parent.children)), dto=DTO(entity, uid=new_node_id), blueprint=get_blueprint(type))
 
         if type == SIMOS.BLUEPRINT.value:
-            new_node.update({"attributes": get_required_attributes(type=type)})
+            new_node.dto["attribute"] = get_required_attributes(type=type)
+            # new_node.update({"attributes": })
 
         parent.add_child(new_node)
         self.save(root, data_source_id)

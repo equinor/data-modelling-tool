@@ -1,9 +1,12 @@
 from typing import Dict, List, Union
 
+from core.use_case.utils.create_entity import CreateEntity
 from utils.logging import logger
 
 from classes.blueprint import Blueprint
 from classes.dto import DTO
+
+from core.utility import get_blueprint
 
 
 class DictExporter:
@@ -266,23 +269,44 @@ class NodeBase:
                 if n.node_id == node_id:
                     node.children[i] = new_node
 
-    def update(self, data: Dict):
+    # Replace the entire data of the node with the input dict. If it matches the blueprint...
+    def update(self, data: Union[Dict, List]):
         if isinstance(data, dict):
+            data.pop("_id", None)
+            # TODO: "uid" should never be on the data dict
+            data.pop("uid", None)
+            # Modify and add for each key in posted data
             for key in data.keys():
                 attribute = self.blueprint.get_attribute_by_key(key)
                 if not attribute:
                     logger.error(f"Could not find attribute {key} in {self.dto.uid}")
                     continue
 
+                # Add/Modify primitive data
                 if attribute.is_primitive():
                     self.dto.data[key] = data[key]
+                # Add/Modify complex data
                 else:
                     for child in self.children:
                         if child.key == key:
                             child.update(data[key])
+
+            # Remove for every key in blueprint not in data
+            removed_attributes = [attr for attr in self.blueprint.attributes if attr.name not in data]
+            for attribute in removed_attributes:
+                # Pop primitive data
+                if attribute.is_primitive():
+                    self.dto.data.pop(attribute.name, None)
+                # Remove complex data
+                else:
+                    self.remove_by_path([attribute.name])
+
+        # If it's a ListNode, delete all content, and append for each in posted data
         else:
+            self.children = []
             for i, item in enumerate(data):
-                self.children[i].update(item)
+                new_node = Node(key=str(i), dto=DTO(item, uid=""), blueprint=get_blueprint(item["type"]))
+                self.children.append(new_node)
 
     def has_children(self):
         return len(self.children) > 0
@@ -293,10 +317,13 @@ class NodeBase:
                 if child.key == keys[0]:
                     self.children.pop(index)
                     return
-        try:
-            next_node = next((x for x in self.children if x.key == keys[0]))
-        except StopIteration:
-            raise StopIteration(f"{keys[0]} not found on any children of {self.name}")
+            return
+        # try:
+        next_node = next((x for x in self.children if x.key == keys[0]), None)
+        # except StopIteration:
+        #     raise StopIteration(f"{keys[0]} not found on any children of {self.name}")
+        if not next_node:
+            return
         keys.pop(0)
         next_node.remove_by_path(keys)
 

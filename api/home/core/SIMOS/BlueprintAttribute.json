@@ -28,7 +28,8 @@
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "attributeType",
-      "optional": false
+      "optional": false,
+      "default": "string"
     },
     {
       "attributeType": "string",
