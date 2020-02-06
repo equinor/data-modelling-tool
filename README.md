@@ -3,7 +3,7 @@
 [![Build Status](https://travis-ci.com/equinor/data-modelling-tool.svg?token=yR5pmi3sbtpmzTWwTfNG&branch=master)](https://travis-ci.com/equinor/data-modelling-tool)
 
 A tool for modelling and presenting blueprints.  
-Read more about the core concepts here: [DMT](README_DMT.md) and [plugins](README_Plugin.md)
+Read more about the core concepts here: [DMT](docs/README_DMT.md) and [plugins](docs/README_Plugin.md)
 
 ## Getting started
 
@@ -28,14 +28,7 @@ docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
 2. Run `docker-compose up`
 3. Visit [http://localhost:9000] in your web browser (Internet Explorer is not supported)
 
-### Extras
-You may also want to run `./bin/setup.sh`, which installs [DoIt](https://pydoit.org), and [pre-commit](https://github.com/pre-commit/pre-commit), if they are not installed already in a local, virtual environment.
-This will also install the run configurations for the IntelliJ products.
-It will also make the necessary changes in the `.idea` configurations.
 
-#### DoIt
-This is a tool similar to Makefile, but uses Python.
-With it, some targets are included; `doit list` for an overview of the available targets / commands, and what they do.
 
 ## Components README
 
@@ -43,6 +36,7 @@ With it, some targets are included; `doit list` for an overview of the available
 [WEB](web/README.md)
 
 ## Pre-commit
+The project provides a `.pre-commit-config.yaml`-file that is used to setup git _pre-commit hooks_.
 
 ```
 pip install pre-commit
@@ -54,10 +48,10 @@ Alternative pre-commit installations can be found [here](https://pre-commit.com/
 
 ## Database
 
-To populate the database for first-time-use, we will import all files in the `api/schemas/` directory.
+To populate the database for first-time-use;
 
 1. Start the project with `docker-compose up`
-2. Run the Flaks applications CLI command 'init-import' with;  
+2. Run the provided script within the running API container;  
    `docker-compose exec api ./reset-database.sh`
 
 ## Development environment
@@ -68,14 +62,4 @@ See below for more.
 Since this repository uses multiple technologies that PyCharm / WebStorm does not support out-of-the-box, some plugins have been included.
 When opening this repository in an IntelliJ IDE, you should be asked to install some plugins. 
 
-### Running / debugging
-Run / debugging configurations for the IntelliJ platform are included.
-The target `API` runs `docker-compose up`, and attaches the Python debugger to the `api` container. This allows setting breakpoints in the IDE.
-That is, when starting the `API` target, there is no need to run `docker-compose up` in a separate terminal (in PyCharm / WebStorm).
-There should not be an issue starting the application from the terminal, though.
 
-No other configuration should be necessary.
-
-There are multiple targets for debugging the client.
-Two of which are a work in progress.
-`WEB` will start a new Chrome browser, and stops at breakpoints in the code.

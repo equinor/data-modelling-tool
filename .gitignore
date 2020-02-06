@@ -81,6 +81,7 @@ lib-cov
 
 # Coverage directory used by tools like istanbul
 coverage
+.coverage
 
 # nyc test coverage
 .nyc_output
@@ -134,3 +135,6 @@ typings/
 
 .doit.db
 api/core/domain/dynamic_models/__init__.py
+
+/.mypy_cache/
+/api/.coverage
