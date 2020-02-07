@@ -214,7 +214,7 @@ class DocumentService:
 
         logger.info(f"Updated document '{target_node.node_id}''")
 
-        return target_node.dto
+        return {"data": target_node.to_dict()}
 
     def add_document(
         self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
@@ -238,7 +238,6 @@ class DocumentService:
 
         if type == SIMOS.BLUEPRINT.value:
             new_node.dto["attribute"] = get_required_attributes(type=type)
-            # new_node.update({"attributes": })
 
         parent.add_child(new_node)
         self.save(root, data_source_id)
