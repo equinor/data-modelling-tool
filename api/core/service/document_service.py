@@ -95,16 +95,33 @@ class DocumentService:
         self.blueprint_provider = blueprint_provider
         self.repository_provider = repository_provider
 
-    def save(self, node: Union[Node, ListNode], data_source_id: str) -> None:
+    # static method to keep the function pure, can be moved easily to util class or util method.
+    # The method belongs to DocumentService or in the service module because storage recipe is consumed.
+    @staticmethod
+    def updated_documents_from_node(node: Union[Node, ListNode], documents: []) -> List[Dict]:
+        # add all unique documents in the node, based on storage is not contained.
+        documents.append(DTO(node.to_ref_dict()))
+
         # Update none-contained attributes
         for child in node.children:
             # A list node is always contained on parent. Need to check the blueprint
             if child.is_array() and not child.attribute_is_contained():
-                [self.save(x, data_source_id) for x in child.children]
+                [DocumentService.updated_documents_from_node(x, documents) for x in child.children]
             elif child.not_contained():
-                self.save(child, data_source_id)
-        ref_dict = node.to_ref_dict()
-        self.repository_provider(data_source_id).update(DTO(ref_dict))
+                DocumentService.updated_documents_from_node(child, documents)
+        return documents
+
+    @staticmethod
+    def renamed_documents_from_node(node: Node, attribute_node_id: str, name: str) -> List[Dict]:
+        attribute_node = node.search(attribute_node_id)
+        attribute_node.update({"name": name})
+        node.replace(attribute_node_id, attribute_node)
+        return DTO(node.to_dict())
+
+    @staticmethod
+    def delete_documents_from_node(node: Node, documents: []) -> List[Dict]:
+        # todo implement
+        return documents
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
@@ -124,6 +141,13 @@ class DocumentService:
         return self.repository_provider(data_source_id).find(
             {"type": "system/DMT/Package", "isRoot": True}, single=False
         )
+
+    def save(self, node: Union[Node, ListNode], data_source_id: str) -> None:
+        documents = []
+        DocumentService.updated_documents_from_node(node, documents)
+        for document in documents:
+            # todo find datasource id of document.
+            self.repository_provider(data_source_id).update(document)
 
     def rename_attribute(self, data_source_id: str, parent_id: str, attribute: List[str], name: str):
         node: Node = self.get_by_uid(data_source_id=data_source_id, document_uid=parent_id)
