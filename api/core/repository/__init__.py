@@ -2,6 +2,8 @@ from typing import List, Union
 
 from classes.dto import DTO
 from core.repository.db_client_interface import DBClientInterface
+from core.repository.repository_exceptions import EntityNotFoundException
+from utils.logging import logger
 
 
 class Repository:
@@ -11,9 +13,12 @@ class Repository:
         self.document_type = document_type
 
     def get(self, uid: str) -> DTO:
-        result = self.client.get(uid)
-        if result:
+        try:
+            result = self.client.get(uid)
             return DTO(result)
+        except Exception as error:
+            logger.exception(error)
+            raise EntityNotFoundException(f"the document with uid: {uid} was not found")
 
     def find(self, filter: dict, single: bool = True) -> Union[DTO, List[DTO]]:
         result = self.client.find(filter)
