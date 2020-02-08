@@ -1,3 +1,4 @@
+@skip
 Feature: Explorer - Add file
 
   Background: There are data sources in the system
