@@ -80,10 +80,7 @@ class DictImporter:
             node = Node(key=key, blueprint=blueprint, dto=dto)
         except KeyError as error:
             logger.exception(error)
-            error_node = Node(key=dto.name, dto=DTO(data={
-                "name": dto.name,
-                "type": ""
-            }))
+            error_node = Node(key=dto.name, dto=DTO(data={"name": dto.name, "type": ""}))
             error_node.set_error("_blueprint is missing from dto")
             return error_node
 
@@ -100,20 +97,29 @@ class DictImporter:
                     for i, child in enumerate(children):
                         list_child_node = cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i))
                         list_node.add_child(list_child_node)
-                        #todo implement error node handling.
+                        # todo implement error node handling.
 
                     node.add_child(list_node)
                 else:
+                    # TODO: This check stops the Tree from generating child nodes if they have no data in the entity.
                     if attribute.name in dto.data:
                         attribute_data = dto.data.get(attribute.name)
-                        child_node = cls._from_dict(dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name)
+                        # TODO: attribute_data can be empty (optional complex), this method of creating Nodes failes with empty data.
+                        child_node = cls._from_dict(
+                            dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name
+                        )
                         node.add_child(child_node)
                     else:
-                        error_node = Node(key=attribute.name, dto=DTO(data={
-                            "name": attribute.name,
-                            # avoid DtoException
-                            "type": "",
-                        }))
+                        error_node = Node(
+                            key=attribute.name,
+                            dto=DTO(
+                                data={
+                                    "name": attribute.name,
+                                    # avoid DtoException
+                                    "type": "",
+                                }
+                            ),
+                        )
                         error_node.set_error(f"failed to add attribute node: {attribute.name}")
                         # #524 #543 the following line break several unit tests related to save and remove in the service.
                         # node.add_child(error_node)
@@ -121,8 +127,7 @@ class DictImporter:
             return node
         except AttributeError as error:
             logger.exception(error)
-            return Node(key=dto.name, title=dto.name)
-
+            return Node(key=dto.name)
 
 
 def create_error_node(cls, attribute) -> Dict:
@@ -344,6 +349,7 @@ class NodeBase:
 
     def has_error(self):
         return self.error is not None
+
 
 class Node(NodeBase):
     def __init__(self, key: str, dto: DTO = None, blueprint: Blueprint = None, parent=None):
