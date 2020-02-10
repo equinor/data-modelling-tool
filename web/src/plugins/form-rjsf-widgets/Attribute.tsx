@@ -1,7 +1,7 @@
 import {
   AttributeOnChange,
   AttributeWrapper,
-  DataType,
+  EnumTypePickerWidget,
   NumberInput,
   TextAreaWidget,
   TextInput,
@@ -151,7 +151,7 @@ const widgetNames = {
   attributeType: TypeWidget,
   dimensions: DimensionWidget,
   description: TextAreaWidget,
-  enumType: TextInput,
+  enumType: EnumTypePickerWidget,
 }
 
 const widgetTypes = {
