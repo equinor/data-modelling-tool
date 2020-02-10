@@ -69,6 +69,12 @@
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "engine",
       "attributeType": "ds/test_data/complex/EngineTest"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "engine2",
+      "optional": true,
+      "attributeType": "ds/test_data/complex/EngineTest"
     }
   ]
 }

@@ -34,6 +34,11 @@ class BlueprintAttribute:
     def is_primitive(self):
         return self.attribute_type in PRIMITIVES
 
+    def is_optional(self):
+        # todo get default from blueprint attribute optional's default value.
+        default_optional = False
+        return self.optional if self.optional is not None else default_optional
+
     def to_dict(self):
         return {
             "name": self.name,
