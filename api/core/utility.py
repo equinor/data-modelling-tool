@@ -68,7 +68,9 @@ def wipe_db():
 
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def get_blueprint(type: str) -> Blueprint:
-    document: DTO = get_document_by_ref(type)
-    if not document:
+    try:
+        document: DTO = get_document_by_ref(type)
+        return Blueprint(document)
+    except Exception as error:
+        logger.exception(error)
         raise EntityNotFoundException(uid=type)
-    return Blueprint(document)
