@@ -5,30 +5,26 @@ from core.enums import DMT
 
 
 def get_rename_menu_action(
-    data_source_id: str,
-    document_id: str,
-    type: str,
-    is_package_content: bool,
-    parent_id: str = "None",
-    attribute: str = "content",
+    data_source_id: str, dotted_document_id: str, type: str, parent_uid: str = None,
 ):
-    if is_package_content:
-        document_id = document_id.split(".", 1)[0]
+    parent_uid = parent_uid.split(".")[0] if parent_uid else None
+    document_split = dotted_document_id.split(".", 1)
+    attribute_arg = f"?attribute={document_split[1]}" if len(document_split) > 1 else ""
 
     return {
         "label": "Rename",
         "action": "UPDATE",
         "data": {
-            "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
-            "url": f"/api/v2/explorer/{data_source_id}/rename-file",
+            "dataUrl": f"/api/v2/documents/{data_source_id}/{document_split[0]}{attribute_arg}",
+            "url": f"/api/v2/explorer/{data_source_id}/rename",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v3/index/{data_source_id}",
+            # TODO: This is not right...
+            "nodeUrl": f"/api/v4/index/{data_source_id}/{parent_uid if parent_uid else dotted_document_id}",
             "request": {
                 "description": "${description}",
-                "parentId": parent_id,
+                "parentId": parent_uid,
                 "name": "${name}",
-                "documentId": document_id,
-                "attribute": attribute,
+                "documentId": dotted_document_id,
             },
         },
     }
@@ -45,25 +41,6 @@ def get_delete_menu_item(
         "data": {
             "url": f"/api/v4/explorer/{data_source_id}/remove",
             "request": {"parentId": parent_id, "documentId": document_id},
-        },
-    }
-
-
-def get_rename_attribute_menu_action(data_source_id: str, parent_id: str, type: str, name: str, attribute: str):
-    return {
-        "label": "Rename",
-        "action": "UPDATE",
-        "data": {
-            "dataUrl": f"/api/v2/documents/{data_source_id}/{parent_id}?attribute={attribute}",
-            "url": f"/api/v2/explorer/{data_source_id}/rename-attribute",
-            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v3/index/{data_source_id}/attribute/{name}",
-            "request": {
-                "description": "${description}",
-                "parentId": parent_id,
-                "name": "${name}",
-                "attribute": attribute,
-            },
         },
     }
 

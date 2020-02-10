@@ -16,15 +16,14 @@ Feature: Explorer - Add file
       | 3   | 1          | document_2   |             | system/SIMOS/Blueprint |
 
   Scenario: Rename package
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-file"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
       "parentId": null,
       "documentId": "1",
-      "name": "new_root_package_name",
-      "attribute": "content"
+      "name": "new_root_package_name"
     }
     """
     Then the response status should be "OK"
@@ -40,15 +39,14 @@ Feature: Explorer - Add file
     """
 
   Scenario: Rename blueprint
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-file"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
       "parentId": "1",
       "documentId": "2",
-      "name": "new_blueprint_name",
-      "attribute": "content"
+      "name": "new_blueprint_name"
     }
     """
     Then the response status should be "OK"
@@ -68,7 +66,7 @@ Feature: Explorer - Add file
     """
 
   Scenario: Try to rename a document that does not exists
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-file"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
     """
@@ -76,7 +74,6 @@ Feature: Explorer - Add file
       "parentId": "1",
       "documentId": "10",
       "name": "new_blueprint_name",
-      "attribute": "content"
     }
     """
     Then the response status should be "System Error"
@@ -89,7 +86,7 @@ Feature: Explorer - Add file
     """
 
   Scenario: Try to rename a document with a parent that does not exists
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-file"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
     """
@@ -97,7 +94,6 @@ Feature: Explorer - Add file
       "parentId": "10",
       "documentId": "2",
       "name": "new_blueprint_name",
-      "attribute": "content"
     }
     """
     Then the response status should be "System Error"
@@ -110,7 +106,7 @@ Feature: Explorer - Add file
     """
 
   Scenario: Try to rename a document to equal name as another document
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-file"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
     """
@@ -118,7 +114,6 @@ Feature: Explorer - Add file
       "parentId": "1",
       "documentId": "3",
       "name": "document_1",
-      "attribute": "content"
     }
     """
     Then the response status should be "System Error"

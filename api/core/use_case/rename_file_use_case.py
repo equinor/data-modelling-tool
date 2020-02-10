@@ -5,13 +5,12 @@ from core.shared import response_object as res
 from core.shared import use_case as uc
 
 
-class RenameFileRequestObject(req.ValidRequestObject):
-    def __init__(self, data_source_id=None, document_id=None, name=None, parent_id=None, attribute=None):
+class RenameRequestObject(req.ValidRequestObject):
+    def __init__(self, data_source_id=None, document_id=None, name=None, parent_id=None):
         self.data_source_id = data_source_id
         self.document_id = document_id
         self.name = name
         self.parent_id = parent_id
-        self.attribute = attribute
 
     @classmethod
     def from_dict(cls, adict):
@@ -29,9 +28,6 @@ class RenameFileRequestObject(req.ValidRequestObject):
         if "name" not in adict:
             invalid_req.add_error("name", "is missing")
 
-        if "attribute" not in adict:
-            invalid_req.add_error("attribute", "is missing")
-
         if invalid_req.has_errors():
             return invalid_req
 
@@ -40,24 +36,22 @@ class RenameFileRequestObject(req.ValidRequestObject):
             document_id=adict.get("documentId"),
             name=adict.get("name"),
             parent_id=adict.get("parentId"),
-            attribute=adict.get("attribute"),
         )
 
 
-class RenameFileUseCase(uc.UseCase):
+class RenameUseCase(uc.UseCase):
     def __init__(self, repository_provider=get_repository):
         self.repository_provider = repository_provider
 
-    def process_request(self, request_object: RenameFileRequestObject):
+    def process_request(self, request_object: RenameRequestObject):
         data_source_id = request_object.data_source_id
         document_id = request_object.document_id
         name = request_object.name
         parent_id = request_object.parent_id
-        attribute = request_object.attribute
 
         document_service = DocumentService(repository_provider=self.repository_provider)
         document = document_service.rename_document(
-            data_source_id=data_source_id, document_id=document_id, parent_id=parent_id, name=name, attribute=attribute
+            data_source_id=data_source_id, document_id=document_id, parent_uid=parent_id, name=name
         )
 
         return res.ResponseSuccess(document)

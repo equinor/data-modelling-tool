@@ -4,7 +4,7 @@ from config import Config
 
 from classes.tree_node import Node
 from core.enums import DMT, SIMOS
-from core.use_case.utils.generate_index_menu_actions_v2 import (
+from core.use_case.utils.generate_index_menu_actions import (
     get_delete_menu_item,
     get_download_menu_action,
     get_dynamic_create_menu_item,
@@ -12,7 +12,6 @@ from core.use_case.utils.generate_index_menu_actions_v2 import (
     get_import_menu_item,
     get_rename_menu_action,
     get_runnable_menu_action,
-    get_rename_attribute_menu_action,
     get_create_root_package_menu_item,
 )
 from core.utility import get_blueprint
@@ -61,31 +60,14 @@ def create_context_menu(node: Union[Node], data_source_id: str, application_page
                 )
             )
 
-    split_node_id_attribute = node.node_id.split(".", 1)
-    attribute = f"{split_node_id_attribute[-1]}" if len(split_node_id_attribute) > 1 else None
-
-    if attribute:
-        menu_items.append(
-            get_rename_attribute_menu_action(
-                data_source_id=data_source_id,
-                parent_id=split_node_id_attribute[0],
-                type=node.type,
-                attribute=attribute,
-                name=node.name,
-            )
+    menu_items.append(
+        get_rename_menu_action(
+            data_source_id=data_source_id,
+            dotted_document_id=node.node_id,
+            type=node.type,
+            parent_uid=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
         )
-    else:
-
-        # Every node gets an delete and rename action
-        menu_items.append(
-            get_rename_menu_action(
-                data_source_id=data_source_id,
-                document_id=node.node_id,
-                type=node.type,
-                is_package_content=is_package,
-                parent_id=node.parent.node_id if node.parent else None,
-            )
-        )
+    )
     menu_items.append(
         get_delete_menu_item(
             data_source_id,

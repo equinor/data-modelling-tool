@@ -1,16 +1,16 @@
 import json
 
+from flask import Blueprint, request, Response, send_file
+
 from core.repository.repository_factory import get_repository
 from core.serializers.dto_json_serializer import DTOSerializer
 from core.shared import response_object as res
-from core.use_case.add_file_use_case import AddFileUseCase, AddFileRequestObject
-from core.use_case.add_root_package_use_case import AddRootPackageUseCase, AddRootPackageRequestObject
-from core.use_case.export_use_case import ExportUseCase, ExportRequestObject
-from core.use_case.move_file_use_case import MoveFileUseCase, MoveFileRequestObject
-from core.use_case.remove_use_case import RemoveUseCase, RemoveFileRequestObject
-from core.use_case.rename_attribute_use_case import RenameAttributeUseCase, RenameAttributeRequestObject
-from core.use_case.rename_file_use_case import RenameFileUseCase, RenameFileRequestObject
-from flask import Blueprint, Response, request, send_file
+from core.use_case.add_file_use_case import AddFileRequestObject, AddFileUseCase
+from core.use_case.add_root_package_use_case import AddRootPackageRequestObject, AddRootPackageUseCase
+from core.use_case.export_use_case import ExportRequestObject, ExportUseCase
+from core.use_case.move_file_use_case import MoveFileRequestObject, MoveFileUseCase
+from core.use_case.remove_use_case import RemoveFileRequestObject, RemoveUseCase
+from core.use_case.rename_file_use_case import RenameRequestObject, RenameUseCase
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -46,18 +46,6 @@ def remove(data_source_id: str):
     )
 
 
-@blueprint.route("/api/v2/explorer/<string:data_source_id>/rename-attribute", methods=["PUT"])
-def rename_attribute(data_source_id: str):
-    request_data = request.get_json()
-    request_data["data_source_id"] = data_source_id
-    use_case = RenameAttributeUseCase()
-    request_object = RenameAttributeRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
-    )
-
-
 @blueprint.route("/api/v2/explorer/move-file", methods=["PUT"])
 def move_file():
     request_data = request.get_json()
@@ -82,12 +70,12 @@ def add_root_package(data_source_id: str):
     )
 
 
-@blueprint.route("/api/v2/explorer/<string:data_source_id>/rename-file", methods=["PUT"])
-def rename_file(data_source_id: str):
+@blueprint.route("/api/v2/explorer/<string:data_source_id>/rename", methods=["PUT"])
+def rename(data_source_id: str):
     request_data = request.get_json()
     request_data["data_source_id"] = data_source_id
-    use_case = RenameFileUseCase()
-    request_object = RenameFileRequestObject.from_dict(request_data)
+    use_case = RenameUseCase()
+    request_object = RenameRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
