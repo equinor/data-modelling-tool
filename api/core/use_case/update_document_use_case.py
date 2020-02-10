@@ -46,12 +46,11 @@ class UpdateDocumentUseCase(uc.UseCase):
         data_source_id = request_object.data_source_id
         document_id: str = request_object.document_id
         data: Dict = request_object.data
-        attribute: Dict = request_object.attribute
-        data_source_id: str = request_object.data_source_id
+        attribute_path: str = request_object.attribute
 
         document_service = DocumentService(repository_provider=self.repository_provider)
         document = document_service.update_document(
-            data_source_id=data_source_id, document_id=document_id, data=data, attribute=attribute
+            data_source_id=data_source_id, document_id=document_id, data=data, attribute_path=attribute_path
         )
 
         return res.ResponseSuccess(document)

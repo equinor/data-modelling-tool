@@ -5,8 +5,6 @@ from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from utils.data_structure.find import get
 
-# on changes in testdata, run command:
-# doit create:system:blueprints
 from utils.form_to_schema import PRIMITIVES
 
 
@@ -48,11 +46,6 @@ class CreateEntity:
 
         # todo use default in optional attribute
         return False
-
-    # TODO: This does not seem to work very well...
-    # @property
-    # def primitives(self):
-    #     return [type for type in self.attribute_types.get("values", []) if type != "blueprint"]
 
     @staticmethod
     def parse_value(attr: BlueprintAttribute):
@@ -106,7 +99,7 @@ class CreateEntity:
                     default_value = CreateEntity.default_value(attr=attr, parent_type=parent_type)
 
                     if attr.name == "name" and len(default_value) == 0:
-                        default_value = parent_type.split('/')[-1].lower()
+                        default_value = parent_type.split("/")[-1].lower()
 
                     if attr.name not in entity:
                         entity[attr.name] = default_value

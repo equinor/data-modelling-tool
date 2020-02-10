@@ -1,9 +1,13 @@
 from typing import Dict, List, Union
+from uuid import uuid4
 
+from core.use_case.utils.create_entity import CreateEntity
 from utils.logging import logger
 
 from classes.blueprint import Blueprint
 from classes.dto import DTO
+
+from core.utility import get_blueprint
 
 
 class DictExporter:
@@ -76,10 +80,7 @@ class DictImporter:
             node = Node(key=key, blueprint=blueprint, dto=dto)
         except KeyError as error:
             logger.exception(error)
-            error_node = Node(key=dto.name, dto=DTO(data={
-                "name": dto.name,
-                "type": ""
-            }))
+            error_node = Node(key=dto.name, dto=DTO(data={"name": dto.name, "type": ""}))
             error_node.set_error("_blueprint is missing from dto")
             return error_node
 
@@ -96,20 +97,29 @@ class DictImporter:
                     for i, child in enumerate(children):
                         list_child_node = cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i))
                         list_node.add_child(list_child_node)
-                        #todo implement error node handling.
+                        # todo implement error node handling.
 
                     node.add_child(list_node)
                 else:
+                    # TODO: This check stops the Tree from generating child nodes if they have no data in the entity.
                     if attribute.name in dto.data:
                         attribute_data = dto.data.get(attribute.name)
-                        child_node = cls._from_dict(dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name)
+                        # TODO: attribute_data can be empty (optional complex), this method of creating Nodes failes with empty data.
+                        child_node = cls._from_dict(
+                            dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name
+                        )
                         node.add_child(child_node)
                     else:
-                        error_node = Node(key=attribute.name, dto=DTO(data={
-                            "name": attribute.name,
-                            # avoid DtoException
-                            "type": "",
-                        }))
+                        error_node = Node(
+                            key=attribute.name,
+                            dto=DTO(
+                                data={
+                                    "name": attribute.name,
+                                    # avoid DtoException
+                                    "type": "",
+                                }
+                            ),
+                        )
                         error_node.set_error(f"failed to add attribute node: {attribute.name}")
                         # #524 #543 the following line break several unit tests related to save and remove in the service.
                         # node.add_child(error_node)
@@ -117,8 +127,7 @@ class DictImporter:
             return node
         except AttributeError as error:
             logger.exception(error)
-            return Node(key=dto.name, title=dto.name)
-
+            return Node(key=dto.name)
 
 
 def create_error_node(cls, attribute) -> Dict:
@@ -266,23 +275,56 @@ class NodeBase:
                 if n.node_id == node_id:
                     node.children[i] = new_node
 
-    def update(self, data: Dict):
+    # Replace the entire data of the node with the input dict. If it matches the blueprint...
+    def update(self, data: Union[Dict, List]):
         if isinstance(data, dict):
+            data.pop("_id", None)
+            # TODO: "uid" should never be on the data dict
+            data.pop("uid", None)
+            # Modify and add for each key in posted data
             for key in data.keys():
+                new_data = data[key]
                 attribute = self.blueprint.get_attribute_by_key(key)
                 if not attribute:
                     logger.error(f"Could not find attribute {key} in {self.dto.uid}")
-                    continue
 
+                # Add/Modify primitive data
                 if attribute.is_primitive():
-                    self.dto.data[key] = data[key]
+                    self.dto.data[key] = new_data
+                # Add/Modify complex data
                 else:
-                    for child in self.children:
+                    for index, child in enumerate(self.children):
                         if child.key == key:
-                            child.update(data[key])
+                            # This means we are creating a new, non-contained document. Lists are always contained.
+                            if not child.attribute_is_contained() and child.uid == "" and not child.is_array():
+                                new_node = Node(
+                                    key=key,
+                                    dto=DTO(new_data, uid=str(uuid4())),
+                                    blueprint=get_blueprint(new_data["type"]),
+                                )
+                                self.children[index] = new_node
+                            else:
+                                child.update(new_data)
+
+            # Remove for every key in blueprint not in data
+            removed_attributes = [attr for attr in self.blueprint.attributes if attr.name not in data]
+            for attribute in removed_attributes:
+                # Pop primitive data
+                if attribute.is_primitive():
+                    self.dto.data.pop(attribute.name, None)
+                # Remove complex data
+                else:
+                    self.remove_by_path([attribute.name])
+
+        # If it's a ListNode, delete all content, and append for each in posted data
         else:
+            self.children = []
             for i, item in enumerate(data):
-                self.children[i].update(item)
+                # Set uid base on containment and existing(lack of) uid
+                # This require the existing _id to be posted
+                uid = "" if self.attribute_is_contained() else item.get("_id", str(uuid4()))
+                new_node = Node(key=str(i), dto=DTO(item, uid=uid), blueprint=get_blueprint(item["type"]))
+                self.children.append(new_node)
 
     def has_children(self):
         return len(self.children) > 0
@@ -293,10 +335,10 @@ class NodeBase:
                 if child.key == keys[0]:
                     self.children.pop(index)
                     return
-        try:
-            next_node = next((x for x in self.children if x.key == keys[0]))
-        except StopIteration:
-            raise StopIteration(f"{keys[0]} not found on any children of {self.name}")
+            return
+        next_node = next((x for x in self.children if x.key == keys[0]), None)
+        if not next_node:
+            return
         keys.pop(0)
         next_node.remove_by_path(keys)
 
@@ -308,6 +350,7 @@ class NodeBase:
     def has_error(self):
         return self.error is not None
 
+
 class Node(NodeBase):
     def __init__(self, key: str, dto: DTO = None, blueprint: Blueprint = None, parent=None):
         super().__init__(key=key, dto=dto, parent=parent)
@@ -315,7 +358,7 @@ class Node(NodeBase):
         self.error_message = None
 
     def attribute_is_contained(self):
-        return self.blueprint.storage_recipes[0].is_contained(self.key)
+        return self.parent.blueprint.storage_recipes[0].is_contained(self.key)
 
     def to_dict(self):
         return DictExporter.to_dict(self)

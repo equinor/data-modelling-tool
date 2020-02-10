@@ -59,7 +59,6 @@ class Tree:
                     uid=node.uid, data={"name": node.name, "description": node.description, "type": node.type}
                 )
                 document_repository.add(document)
-                print(f"Added blueprint {document.uid}")
             elif node.type == DMT.PACKAGE.value:
                 package: DTO = DTO(
                     data={
@@ -72,13 +71,11 @@ class Tree:
                     uid=node.uid,
                 )
                 document_repository.add(package)
-                print(f"Added package {package.uid}")
             else:
                 document: DTO = DTO(
                     uid=node.uid, data={"name": node.name, "description": node.description, "type": node.type}
                 )
                 document_repository.add(document)
-                print(f"Added document {document.uid}")
 
     def print_tree(self):
         for pre, fill, node in RenderTree(self.root):

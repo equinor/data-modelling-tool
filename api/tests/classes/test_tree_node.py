@@ -462,19 +462,64 @@ class TreenodeTestCase(unittest.TestCase):
 
         root = Node.from_dict(DTO(document_1))
 
-        update_0 = {"name": "New name", "nested": {"description": "Some description"}}
+        update_0 = {
+            "name": "New name",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {
+                "name": "Nested",
+                "description": "Some description",
+                "type": "blueprint_2",
+                "nested": {
+                    "name": "Nested",
+                    "description": "",
+                    "type": "blueprint_3",
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                },
+            },
+        }
 
         root.update(update_0)
 
         assert pretty_eq(update_0, root.to_dict()) is None
 
-        update_1 = {"nested": {"nested": {"name": "New name"}}}
+        update_1 = {
+            "name": "New name",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {
+                "name": "Nested",
+                "description": "Some description",
+                "type": "blueprint_2",
+                "nested": {
+                    "name": "New name",
+                    "description": "",
+                    "type": "blueprint_3",
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                },
+            },
+        }
 
         root.update(update_1)
 
         assert pretty_eq(update_1, root.to_dict()) is None
 
-        update_2 = {"nested": {"nested": {"reference": {"name": "New name"}}}}
+        update_2 = {
+            "name": "New name",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {
+                "name": "Nested",
+                "description": "Some description",
+                "type": "blueprint_2",
+                "nested": {
+                    "name": "New name",
+                    "description": "",
+                    "type": "blueprint_3",
+                    "reference": {"_id": "2", "name": "New name", "description": "", "type": "blueprint_2",},
+                },
+            },
+        }
 
         root.update(update_2)
 
@@ -500,12 +545,9 @@ class TreenodeTestCase(unittest.TestCase):
                         "name": "New name",
                         "type": "blueprint_2",
                         "description": "",
-                        "nested": {}
                     },
                 },
             },
-            "reference": {},
-            "references": [],
         }
 
         # reference and nested.nested.reference has uid and id generated since the tree now includes
