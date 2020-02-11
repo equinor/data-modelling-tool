@@ -65,7 +65,6 @@ export default (props: Props) => {
             render={(renderProps: TreeNodeRenderProps) => {
               const { nodeData } = renderProps
               const type = nodeData.meta.type
-              console.log(type, blueprintFilter, type === blueprintFilter)
 
               return (
                 <>
