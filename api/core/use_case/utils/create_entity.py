@@ -54,7 +54,7 @@ class CreateEntity:
         type = attr.attribute_type
 
         # TODO: Generalize this "setting_defaults" and reuse everywhere (schema)
-        if default_value is not None and len(default_value) > 0 and attr.dimensions == "*":
+        if default_value is not None and len(default_value) > 0 and attr.is_array():
             try:
                 return json.loads(default_value)
             except JSONDecodeError:
@@ -105,8 +105,10 @@ class CreateEntity:
                         entity[attr.name] = default_value
             else:
                 blueprint = self.blueprint_provider.get_blueprint(attr.attribute_type)
-                if attr.dimensions == "*":
+                if attr.is_array():
                     entity[attr.name] = []
+                elif attr.is_optional():
+                    entity[attr.name] = {}
                 else:
                     entity[attr.name] = self._get_entity(
                         blueprint=blueprint, parent_type=attr.attribute_type, entity={}

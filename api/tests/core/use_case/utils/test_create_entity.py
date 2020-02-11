@@ -19,6 +19,7 @@ class CreateEntityTestCase(unittest.TestCase):
 
     def test_blueprint_entity(self):
         expected_entity = {
+            "engine2": {},
             "engine": {
                 "description": "",
                 "fuelPump": {
