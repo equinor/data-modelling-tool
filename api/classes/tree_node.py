@@ -287,6 +287,7 @@ class NodeBase:
                 attribute = self.blueprint.get_attribute_by_key(key)
                 if not attribute:
                     logger.error(f"Could not find attribute {key} in {self.dto.uid}")
+                    continue
 
                 # Add/Modify primitive data
                 if attribute.is_primitive():
