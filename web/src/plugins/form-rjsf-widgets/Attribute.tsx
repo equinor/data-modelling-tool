@@ -1,7 +1,7 @@
 import {
   AttributeOnChange,
   AttributeWrapper,
-  DataType,
+  EnumTypePickerWidget,
   NumberInput,
   TextAreaWidget,
   TextInput,
@@ -40,7 +40,6 @@ type Props = {
 
 export const AttributeWidget = (props: Props) => {
   let { attributes } = props.uiSchema
-
   const [formData, setFormData] = useState<BlueprintAttributeType>(
     props.formData
   )
@@ -140,7 +139,7 @@ function getWidgetByName(
 }
 
 function getWidgetByType(attributeType: BlueprintAttributeType): Function {
-  let widget: Function = (widgetTypes as any)[attributeType.type]
+  let widget: Function = (widgetTypes as any)[attributeType.attributeType]
   if (widget === undefined) {
     widget = TextInput
   }
@@ -151,7 +150,7 @@ const widgetNames = {
   attributeType: TypeWidget,
   dimensions: DimensionWidget,
   description: TextAreaWidget,
-  enumType: TextInput,
+  enumType: EnumTypePickerWidget,
 }
 
 const widgetTypes = {

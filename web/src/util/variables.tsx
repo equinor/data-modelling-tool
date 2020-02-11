@@ -7,6 +7,7 @@ export enum BlueprintEnum {
   BLUEPRINT = 'system/SIMOS/Blueprint',
   PACKAGE = 'system/DMT/Package',
   ENTITY = 'system/DMT/Entity',
+  ENUM = 'system/SIMOS/Enum',
 }
 
 export enum NodeType {

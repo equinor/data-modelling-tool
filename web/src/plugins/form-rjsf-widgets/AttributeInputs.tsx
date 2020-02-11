@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { BlueprintAttributeType } from '../../domain/types'
 import BlueprintSelectorWidget from './BlueprintSelectorWidget'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
+import { BlueprintEnum } from '../../util/variables'
+import DestinationSelectorWidget from './DestinationSelectorWidget'
+import { DataSourceType } from '../../api/Api'
 
 export const AttributeWrapper = styled.div`
   margin: 2px 2px;
@@ -145,6 +148,23 @@ export const TypeWidget = (props: TypeProps) => {
           uiSchema={{}}
         />
       )}
+    </>
+  )
+}
+
+export const EnumTypePickerWidget = (props: TypeProps) => {
+  const { onChange, attributeType, value = '' } = props
+  return (
+    <>
+      <DestinationSelectorWidget
+        datasourceType={DataSourceType.Blueprints}
+        blueprintFilter={BlueprintEnum.ENUM}
+        title=""
+        onChange={(value: any) => {
+          onChange(attributeType, value)
+        }}
+        formData={value}
+      />
     </>
   )
 }
