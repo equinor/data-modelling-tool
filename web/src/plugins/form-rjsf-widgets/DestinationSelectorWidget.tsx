@@ -67,7 +67,11 @@ export default (props: Props) => {
   const onSelect = (nodeId: string, nodePath: string) => {
     setDestination(nodePath)
     setShowModal(false)
-    onChange(nodeId)
+    if (blueprintFilter === BlueprintEnum.ENUM) {
+      onChange(nodePath)
+    } else {
+      onChange(nodeId)
+    }
   }
 
   return (
