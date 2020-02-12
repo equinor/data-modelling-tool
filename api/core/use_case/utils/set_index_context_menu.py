@@ -20,6 +20,9 @@ from utils.group_by import group_by
 from core.use_case.utils.sort_menu_items import sort_menu_items
 
 
+
+
+
 def create_context_menu(node: Union[Node], data_source_id: str, application_page: str):
     menu_items = []
     create_new_menu_items = []
@@ -71,14 +74,16 @@ def create_context_menu(node: Union[Node], data_source_id: str, application_page
                 parent_uid=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
             )
         )
-        menu_items.append(
-            get_delete_menu_item(
-                data_source_id,
-                parent_id=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
-                document_id=node.node_id,
-                is_package_content=is_package,
+        is_removable = node.blueprint.is_attr_removable(node.key)
+        if is_removable:
+            menu_items.append(
+                get_delete_menu_item(
+                    data_source_id,
+                    parent_id=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
+                    document_id=node.node_id,
+                    is_package_content=is_package,
+                )
             )
-        )
 
         # Runnable entities gets custom actions
         action_types = group_by(

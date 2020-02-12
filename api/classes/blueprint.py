@@ -71,3 +71,12 @@ class Blueprint:
 
     def get_attribute_by_key(self, key):
         return next((attr for attr in self.attributes if attr.name == key), None)
+
+    def is_attr_removable(self, attribute_name):
+        for attr in self.attributes:
+            if attr.name == attribute_name and not attr.is_primitive():
+                if attr.is_array():
+                    return False
+                elif not attr.is_optional():
+                    return False
+        return True
