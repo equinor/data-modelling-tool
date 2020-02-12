@@ -94,8 +94,8 @@ class GetDocumentUseCase(uc.UseCase):
                 enum_blueprint: DTO = get_document_by_ref(attribute.enum_type)
                 dtos.append(enum_blueprint.to_dict())
             except AttributeError as error:
-                logger.exceptions(error)
+                logger.exception(error)
                 print(f"failed to append enumType {attribute}")
             except Exception as error:
-                logger.exceptions(error)
+                logger.exception(error)
                 print(f"failed to append enumType {attribute}")
