@@ -143,35 +143,146 @@ class DocumentServiceTestCase(unittest.TestCase):
     def test_rename_attribute(self):
         document_repository: Repository = mock.Mock()
 
-        document_1 = {
-            "uid": "1",
-            "name": "Parent",
-            "description": "",
-            "type": "blueprint_1",
-            "nested": {"name": "Nested", "description": "", "type": "blueprint_2"},
+        doc_storage = {
+            "1": {
+                "uid": "1",
+                "name": "Parent",
+                "description": "",
+                "type": "blueprint_1",
+                "nested": {"name": "Nested", "description": "", "type": "blueprint_2"},
+            }
         }
 
         def mock_get(document_id: str):
             if document_id == "1":
-                return DTO(data=document_1.copy())
+                return DTO(data=doc_storage["1"])
             return None
 
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+
         document_repository.get = mock_get
+        document_repository.update = mock_update
 
         def repository_provider(data_source_id):
             if data_source_id == "testing":
                 return document_repository
 
         document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
-        document = document_service.rename_attribute(
-            data_source_id="testing", parent_id="1", attribute="nested", name="New name"
+        document_service.rename_document(
+            data_source_id="testing", parent_uid="1", document_id="1.nested", name="New name"
         )
 
-        assert isinstance(document.data, dict)
+        actual = {"name": "New name", "description": "", "type": "blueprint_2"}
 
-        actual = {"uid": "1", "nested": {"name": "New name", "description": "", "type": "blueprint_2"}}
+        assert pretty_eq(actual, doc_storage["1"]["nested"]) is None
 
-        assert pretty_eq(actual, document.data) is None
+    def test_rename_root_package(self):
+        document_repository: Repository = mock.Mock()
+
+        doc_storage = {
+            "1": {
+                "uid": "1",
+                "name": "RootPackage",
+                "description": "My root package",
+                "type": "blueprint_1",
+                "content": [],
+            }
+        }
+
+        def mock_get(document_id: str):
+            if document_id == "1":
+                return DTO(data=doc_storage["1"].copy())
+            return None
+
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+
+        document_repository.get = mock_get
+        document_repository.update = mock_update
+
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return document_repository
+
+        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service.rename_document(data_source_id="testing", document_id="1", name="New name")
+
+        actual = {"_id": "1", "name": "New name"}
+
+        assert pretty_eq(actual, doc_storage["1"]) is None
+
+    def test_rename_single_reference(self):
+        document_repository: Repository = mock.Mock()
+
+        doc_storage = {
+            "1": {
+                "_id": "1",
+                "name": "Parent",
+                "description": "",
+                "type": "blueprint_1",
+                "reference": {"_id": "2", "name": "Reference", "type": "blueprint_2"},
+            },
+            "2": {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
+        }
+
+        def mock_get(document_id: str):
+            return DTO(doc_storage[document_id])
+
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+
+        document_repository.get = mock_get
+        document_repository.update = mock_update
+
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return document_repository
+
+        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service.rename_document(data_source_id="testing", document_id="2", parent_uid="1", name="New name")
+
+        actual = {"_id": "1", "reference": {"_id": "2", "name": "New name", "type": "blueprint_2"}}
+        actual2 = {"_id": "2", "name": "New name", "type": "blueprint_2"}
+
+        assert pretty_eq(actual, doc_storage["1"]) is None
+        assert pretty_eq(actual2, doc_storage["2"]) is None
+
+    def test_rename_reference_list(self):
+        document_repository: Repository = mock.Mock()
+
+        doc_storage = {
+            "1": {
+                "_id": "1",
+                "name": "Parent",
+                "description": "",
+                "type": "blueprint_1",
+                "references": [{"_id": "2", "name": "Reference", "type": "blueprint_2"}],
+            },
+            "2": {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
+        }
+
+        def mock_get(document_id: str):
+            return DTO(doc_storage[document_id])
+
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+
+        document_repository.get = mock_get
+        document_repository.update = mock_update
+
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return document_repository
+
+        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service.rename_document(data_source_id="testing", document_id="2", parent_uid="1", name="New name")
+
+        actual = {"_id": "1", "references": [{"_id": "2", "name": "New name", "type": "blueprint_2"}]}
+        actual2 = {"_id": "2", "name": "New name", "type": "blueprint_2"}
+
+        assert pretty_eq(actual, doc_storage["1"]) is None
+        assert pretty_eq(actual2, doc_storage["2"]) is None
 
     def test_save_update(self):
         repository: Repository = mock.Mock()
@@ -328,7 +439,6 @@ class DocumentServiceTestCase(unittest.TestCase):
         contained_node: Node = node.search("1.references")
         contained_node.remove_by_path(["1"])
         document_service.save(node, "testing")
-
 
         assert flatten_dict(doc_1_after).items() <= flatten_dict(doc_storage["1"]).items()
         assert doc_storage["3"] is not None

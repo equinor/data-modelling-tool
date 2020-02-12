@@ -4,7 +4,7 @@ from core.enums import DMT
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.repository.repository_factory import get_repository
 from core.service.document_service import DocumentService
-from core.use_case.utils.generate_index_menu_actions_v2 import get_node_on_select
+from core.use_case.utils.generate_index_menu_actions import get_node_on_select
 from core.use_case.utils.get_ui_recipe import get_recipe
 from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
@@ -61,7 +61,7 @@ def get_node(node: Union[Node], data_source_id: str, application_page: str) -> D
             "children": [],
             "type": node.type,
             "meta": {
-                #todo add remove action?
+                # todo add remove action?
                 "menuItems": [],
                 "onSelect": {},
                 "error": True,
@@ -135,13 +135,12 @@ class GenerateIndexUseCase:
         root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
         for root_package in root_packages:
             try:
-                root.add_child(document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid))
+                root.add_child(
+                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid)
+                )
             except EntityNotFoundException as error:
                 logger.exception(error, "unhandled exception.")
-                error_node: Node = Node(key=root_package.uid, dto=DTO(data={
-                    "name": root_package.name,
-                    "type": "",
-                }))
+                error_node: Node = Node(key=root_package.uid, dto=DTO(data={"name": root_package.name, "type": "",}))
                 error_node.set_error(f"failed to add root package {root_package.name} to the root node")
                 root.add_child(error_node)
             except Exception as error:

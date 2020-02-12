@@ -237,13 +237,13 @@ Feature: Explorer - Remove file
     """
 
   Scenario: Rename attribute - the index ui recipe
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-attribute"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
   """
   {
     "parentId": "2",
-    "attribute": "uiRecipes.1",
+    "documentId": "2.uiRecipes.1",
     "name": "New Name"
   }
   """
@@ -278,13 +278,13 @@ Feature: Explorer - Remove file
   """
 
   Scenario: Rename attribute - the item
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-attribute"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
   """
   {
     "parentId": "6",
-    "attribute": "item",
+    "documentId": "6.item",
     "name": "New Name"
   }
   """

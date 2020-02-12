@@ -43,7 +43,6 @@ export const updateAction = (
         data: data,
         url: action.data.url,
         onSuccess: (result: any) => {
-          //postUpdate({ setShowModal, response, node })
           createNodes({
             documentId: result.data.uid,
             nodeUrl: action.data.nodeUrl,
