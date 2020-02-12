@@ -9,7 +9,7 @@
     "jquery": "3.4.0",
     "lodash": "^4.17.15",
     "object-path": "0.11.4",
-    "plotly.js": "^1.51.2",
+    "plotly.js": "^1.52.2",
     "react": "^16.8.6",
     "react-3d-viewer": "^1.0.12",
     "react-beautiful-dnd": "^11.0.5",
