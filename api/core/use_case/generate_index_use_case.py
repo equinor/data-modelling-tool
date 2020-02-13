@@ -51,6 +51,8 @@ def get_node(node: Union[Node], data_source_id: str, application_page: str) -> D
         # Adjust parent, since we skipped content node
         if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
             parent_id = node.parent.parent.node_id
+    else:
+        parent_id = data_source_id
 
     if node.has_error:
         return {
@@ -153,8 +155,15 @@ class GenerateIndexUseCase:
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
         document_service = DocumentService(repository_provider=self.repository_provider)
-        parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=parent_id.split(".", 1)[0])
-        if not parent:
+
+        parent_uid = parent_id.split(".", 1)[0]
+        if data_source_id == parent_uid:
+            document_uid = document_id
+        else:
+            document_uid = parent_uid
+
+        parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_uid)
+        if not parent and data_source_id != document_id:
             raise EntityNotFoundException(uid=parent_id)
         node = parent.search(document_id)
         if not node:

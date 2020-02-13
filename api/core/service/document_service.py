@@ -100,8 +100,16 @@ class DocumentService:
                 [self.save(x, data_source_id) for x in child.children]
             elif child.not_contained():
                 self.save(child, data_source_id)
-        ref_dict = node.to_ref_dict()
-        self.repository_provider(data_source_id).update(DTO(ref_dict))
+        try:
+            ref_dict = node.to_ref_dict()
+            dto =DTO(ref_dict)
+            self.repository_provider(data_source_id).update(dto)
+        except Exception as error:
+            # easier to control what is saved to mongo with #554. Now a document can fail to persist,
+            # but reference is still created causing EntityNotFoundExceptions raised
+            # on generate index, fetchDocuments etc.
+            logger.error(f"failed to save entity {dto.name}, {dto.attribute_type}, {dto.uid}")
+            logger.exception(error)
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
@@ -215,7 +223,7 @@ class DocumentService:
         # TODO: Child Nodes is not created
         # @eaks, whats the best way? Node.from_dict()?
         new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
-        new_node = Node(key=str(len(parent.children)), dto=DTO(entity, uid=new_node_id), blueprint=get_blueprint(type))
+        new_node = Node(key=str(len(parent.children)), dto=DTO(data=entity, uid=new_node_id), blueprint=get_blueprint(type))
 
         if type == SIMOS.BLUEPRINT.value:
             new_node.dto["attribute"] = get_required_attributes(type=type)
