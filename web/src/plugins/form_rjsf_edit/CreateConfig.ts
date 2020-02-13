@@ -110,9 +110,9 @@ class BlueprintUtil {
     })
   }
 
-  public static findRecipe(recipes: any[], name: string): any {
+  public static findRecipe(recipes: any[], plugin: string): any {
     if (recipes) {
-      return recipes.find((recipe: any) => recipe.name === name)
+      return recipes.find((recipe: any) => recipe.plugin === plugin)
     }
   }
 }
