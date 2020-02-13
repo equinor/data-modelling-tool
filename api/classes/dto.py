@@ -9,11 +9,14 @@ from utils.logging import logger
 class DTO:
     def __init__(self, data: Dict, uid: Optional[str] = None):
         if uid is None:
+            # todo why is id used?
             for key in ["uid", "_id", "id"]:
                 try:
                     uid = data[key]
+                    break
                 except (KeyError, AttributeError, TypeError):
                     pass
+
         if uid is None:
             uid = uuid4()
         self._uid = uid
