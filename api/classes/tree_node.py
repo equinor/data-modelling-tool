@@ -1,13 +1,10 @@
 from typing import Dict, List, Union
 from uuid import uuid4
 
-from core.use_case.utils.create_entity import CreateEntity
 from utils.logging import logger
 
 from classes.blueprint import Blueprint
 from classes.dto import DTO
-
-from core.utility import get_blueprint
 
 
 class DictExporter:
@@ -41,8 +38,11 @@ class DictExporter:
     def to_ref_dict(node):
         data = {}
 
-        data["_id"] = node.dto.uid
-
+        try:
+            data["_id"] = node.dto.uid
+        except Exception as error:
+            logger.error(error)
+            logger.exception(error)
         # Primitive
         # if complex attribute name is renamed in blueprint, then the blueprint is None in the entity.
         if node.blueprint is not None:
@@ -70,14 +70,13 @@ class DictExporter:
 
 class DictImporter:
     @classmethod
-    def from_dict(cls, dto):
-        return cls._from_dict(dto, "root")
+    def from_dict(cls, dto, blueprint_provider):
+        return cls._from_dict(dto, "root", blueprint_provider)
 
     @classmethod
-    def _from_dict(cls, dto, key):
+    def _from_dict(cls, dto, key, blueprint_provider):
         try:
-            blueprint: Blueprint = Blueprint.from_dict(dto.data.pop("_blueprint"))
-            node = Node(key=key, blueprint=blueprint, dto=dto)
+            node = Node(key=key, blueprint_provider=blueprint_provider, dto=dto)
         except KeyError as error:
             logger.exception(error)
             error_node = Node(key=dto.name, dto=DTO(data={"name": dto.name, "type": ""}))
@@ -85,7 +84,7 @@ class DictImporter:
             return error_node
 
         try:
-            for attribute in blueprint.get_none_primitive_types():
+            for attribute in node.blueprint.get_none_primitive_types():
                 if attribute.is_array():
                     children = dto.data.get(attribute.name, [])
                     data = {
@@ -93,22 +92,33 @@ class DictImporter:
                         "type": attribute.attribute_type,
                         "attributeType": attribute.attribute_type,
                     }
-                    list_node = ListNode(key=attribute.name, dto=DTO(uid="", data=data))
+                    list_node = ListNode(
+                        key=attribute.name, dto=DTO(uid="", data=data), blueprint_provider=blueprint_provider
+                    )
                     for i, child in enumerate(children):
-                        list_child_node = cls._from_dict(dto=DTO(uid=child.get("uid", ""), data=child), key=str(i))
+                        list_child_node = cls._from_dict(
+                            dto=DTO(uid=child.get("uid", ""), data=child),
+                            key=str(i),
+                            blueprint_provider=blueprint_provider,
+                        )
                         list_node.add_child(list_child_node)
                         # todo implement error node handling.
 
                     node.add_child(list_node)
                 else:
-                    # TODO: This check stops the Tree from generating child nodes if they have no data in the entity.
                     if attribute.name in dto.data:
                         attribute_data = dto.data.get(attribute.name)
-                        # TODO: attribute_data can be empty (optional complex), this method of creating Nodes failes with empty data.
-                        child_node = cls._from_dict(
-                            dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data), key=attribute.name
-                        )
-                        node.add_child(child_node)
+                        if bool(attribute_data):
+                            child_node = cls._from_dict(
+                                dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data),
+                                key=attribute.name,
+                                blueprint_provider=blueprint_provider,
+                            )
+                            node.add_child(child_node)
+                        else:
+                            # TODO: This check stops the Tree from generating child nodes if they have no data in the entity.
+                            # SOLUTION: dont add the node. Add context menu create item if its optional. #562
+                            pass
                     else:
                         error_node = Node(
                             key=attribute.name,
@@ -119,6 +129,7 @@ class DictImporter:
                                     "type": "",
                                 }
                             ),
+                            blueprint_provider=blueprint_provider,
                         )
                         error_node.set_error(f"failed to add attribute node: {attribute.name}")
                         # #524 #543 the following line break several unit tests related to save and remove in the service.
@@ -127,7 +138,7 @@ class DictImporter:
             return node
         except AttributeError as error:
             logger.exception(error)
-            return Node(key=dto.name)
+            return Node(key=dto.name, blueprint_provider=blueprint_provider)
 
 
 def create_error_node(cls, attribute) -> Dict:
@@ -135,7 +146,10 @@ def create_error_node(cls, attribute) -> Dict:
 
 
 class NodeBase:
-    def __init__(self, key: str, dto: DTO = None, parent=None, children=None):
+    def __init__(self, key: str, dto: DTO = None, parent=None, children=None, blueprint_provider=None):
+        if not blueprint_provider:
+            raise Exception("missing provider")
+        self.blueprint_provider = blueprint_provider
         if key is None:
             raise Exception("Node requires a key")
 
@@ -301,7 +315,7 @@ class NodeBase:
                                 new_node = Node(
                                     key=key,
                                     dto=DTO(new_data, uid=str(uuid4())),
-                                    blueprint=get_blueprint(new_data["type"]),
+                                    blueprint_provider=self.blueprint_provider,
                                 )
                                 self.children[index] = new_node
                             else:
@@ -324,7 +338,7 @@ class NodeBase:
                 # Set uid base on containment and existing(lack of) uid
                 # This require the existing _id to be posted
                 uid = "" if self.attribute_is_contained() else item.get("_id", str(uuid4()))
-                new_node = Node(key=str(i), dto=DTO(item, uid=uid), blueprint=get_blueprint(item["type"]))
+                new_node = Node(key=str(i), dto=DTO(item, uid=uid), blueprint_provider=self.blueprint_provider)
                 self.children.append(new_node)
 
     def has_children(self):
@@ -353,9 +367,12 @@ class NodeBase:
 
 
 class Node(NodeBase):
-    def __init__(self, key: str, dto: DTO = None, blueprint: Blueprint = None, parent=None):
-        super().__init__(key=key, dto=dto, parent=parent)
-        self.blueprint = blueprint
+    def __init__(self, key: str, dto: DTO = None, blueprint_provider=None, parent=None):
+        super().__init__(key=key, dto=dto, blueprint_provider=blueprint_provider, parent=parent)
+        try:
+            self.blueprint = blueprint_provider.get_blueprint(dto["type"])
+        except:
+            print("error")
         self.error_message = None
 
     def attribute_is_contained(self):
@@ -368,8 +385,8 @@ class Node(NodeBase):
         return DictExporter.to_ref_dict(self)
 
     @staticmethod
-    def from_dict(dto: DTO):
-        return DictImporter.from_dict(dto)
+    def from_dict(dto: DTO, blueprint_provider):
+        return DictImporter.from_dict(dto, blueprint_provider)
 
     def remove(self):
         self.parent.remove_by_node_id(self.node_id)
@@ -380,8 +397,8 @@ class Node(NodeBase):
 
 
 class ListNode(NodeBase):
-    def __init__(self, key: str, dto: DTO, parent=None):
-        super().__init__(key=key, dto=dto, parent=parent)
+    def __init__(self, key: str, dto: DTO, parent=None, blueprint_provider=None):
+        super().__init__(key=key, dto=dto, parent=parent, blueprint_provider=blueprint_provider)
 
     def attribute_is_contained(self):
         return self.blueprint.storage_recipes[0].is_contained(self.key)

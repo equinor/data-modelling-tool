@@ -82,5 +82,5 @@ class AddFileUseCase(uc.UseCase):
             description=description,
             attribute_path=attribute_dot_path,
         )
-
+        document_service.invalidate_cache()
         return res.ResponseSuccess(document)

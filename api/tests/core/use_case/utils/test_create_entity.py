@@ -43,19 +43,16 @@ class CreateEntityTestCase(unittest.TestCase):
             "stringValues": ["one", "two", "three"],
         }
 
-        blueprint_provider = BlueprintProviderTest()
+        file_repository_test = TemplateRepositoryFromFile(schemas_location())
+
+        class BlueprintProvider:
+            def get_blueprint(self, template_type: str):
+                return Blueprint(DTO(file_repository_test.get(template_type)))
+
         type = "ds/test_data/complex/CarTest"
 
         entity = CreateEntity(
-            blueprint_provider=blueprint_provider, type=type, description="crappy car", name="Mercedes"
+            blueprint_provider=BlueprintProvider(), type=type, description="crappy car", name="Mercedes"
         ).entity
 
         self.assertEqual(expected_entity, entity)
-
-
-class BlueprintProviderTest:
-    def __init__(self):
-        self.file_repository_test = TemplateRepositoryFromFile(schemas_location())
-
-    def get_blueprint(self, template_type: str) -> Blueprint:
-        return Blueprint(DTO(self.file_repository_test.get(template_type)))

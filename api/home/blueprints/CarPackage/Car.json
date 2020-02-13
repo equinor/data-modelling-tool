@@ -22,21 +22,18 @@
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "manufacturer",
-      "optional": true,
       "default": ""
     },
     {
       "attributeType": "SSR-DataSource/CarPackage/Wheel",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "wheels",
-      "optional": true,
       "dimensions": "*"
     },
     {
       "attributeType": "SSR-DataSource/CarPackage/engine/Engine",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "engine",
-      "optional": true
+      "name": "engine"
     }
   ],
   "storageRecipes": [],

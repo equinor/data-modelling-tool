@@ -184,7 +184,7 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     let defaultValue: any = blueprint.isArray(attrType) ? '' : attr.getDefault()
     if (defaultValue) {
       if (attr.getAttributeType() === 'boolean') {
-        defaultValue = defaultValue === 'true' ? true : false
+        defaultValue = defaultValue === 'false' ? false : true
       }
       if (
         attr.getAttributeType() === 'integer' ||

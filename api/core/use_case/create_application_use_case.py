@@ -8,6 +8,7 @@ from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
+from core.utility import BlueprintProvider
 import zipfile
 import io
 import pathlib
@@ -16,7 +17,6 @@ import os
 
 from utils.logging import logger
 from core.enums import DMT
-from core.utility import get_blueprint
 from jinja2 import Template
 
 API_DOCKERFILE = f"""\
@@ -207,7 +207,8 @@ def zip_package(ob, document: DTO, document_repository, path):
     if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
-    blueprint = get_blueprint(document.type)
+    blueprint_provider = BlueprintProvider()
+    blueprint = blueprint_provider.get_blueprint(document.type)
 
     document_references = []
     for attribute in blueprint.get_none_primitive_types():

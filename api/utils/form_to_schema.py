@@ -1,6 +1,6 @@
 from classes.blueprint import Blueprint
 from classes.ui_recipe import UIRecipe
-from core.utility import get_blueprint
+from core.utility import get_blueprint_cached
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
 
 from core.enums import PRIMITIVES
@@ -30,7 +30,7 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Blueprint, ui_rec
 
     for nested_type in nested_attributes:
         attribute_name = nested_type["name"]
-        nested_blueprint = get_blueprint(nested_type["type"])
+        nested_blueprint = get_blueprint_cached(nested_type["type"])
 
         if parent_blueprint and nested_blueprint == parent_blueprint:
             continue

@@ -53,5 +53,5 @@ class RenameUseCase(uc.UseCase):
         document = document_service.rename_document(
             data_source_id=data_source_id, document_id=document_id, parent_uid=parent_id, name=name
         )
-
+        document_service.invalidate_cache()
         return res.ResponseSuccess(document)

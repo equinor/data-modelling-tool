@@ -20,12 +20,8 @@ class DTO:
         if uid is None:
             uid = uuid4()
         self._uid = uid
-        try:
-            self._name = data["name"]
-            self._type = data["type"]
-        except Exception as error:
-            logger.exception(error)
-
+        self._name = data["name"]
+        self._type = data["type"]
         self._attribute_type = data.get("attribute_type", "")
         self.data = data
 

@@ -67,10 +67,32 @@ def wipe_db():
 
 
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
-def get_blueprint(type: str) -> Blueprint:
+def get_blueprint_cached(type: str) -> Blueprint:
     try:
+        print("fetching: ", type)
         document: DTO = get_document_by_ref(type)
         return Blueprint(document)
     except Exception as error:
         logger.exception(error)
         raise EntityNotFoundException(uid=type)
+
+
+class BlueprintProvider:
+    def __init__(self):
+        self.get_blueprint = get_blueprint_cached
+
+    def get_blueprint(self, type: str) -> Blueprint:
+        try:
+            print("fetching: ", type)
+            document: DTO = get_document_by_ref(type)
+            return Blueprint(document)
+        except Exception as error:
+            logger.exception(error)
+            raise EntityNotFoundException(uid=type)
+
+    def invalidate_cache(self):
+        try:
+            logger.debug("invalidate cache")
+            self.get_blueprint.cache_clear()
+        except Exception as error:
+            logger.warning("function is not instance of lru cache.", error)

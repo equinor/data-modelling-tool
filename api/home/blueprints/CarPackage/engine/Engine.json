@@ -44,8 +44,7 @@
     },
     {
       "attributeType": "SSR-DataSource/CarPackage/engine/FuelPump", "type": "system/SIMOS/BlueprintAttribute",
-      "name": "fuelPump",
-      "optional": true
+      "name": "fuelPump"
     }
   ],
   "storageRecipes": [],
