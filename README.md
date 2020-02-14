@@ -3,6 +3,7 @@
 [![Build Status](https://travis-ci.com/equinor/data-modelling-tool.svg?token=yR5pmi3sbtpmzTWwTfNG&branch=master)](https://travis-ci.com/equinor/data-modelling-tool)
 
 A tool for modelling and presenting blueprints.  
+Architecture [diagrams](docs/architecture.md)  
 Read more about the core concepts here: [DMT](docs/README_DMT.md) and [plugins](docs/README_Plugin.md)
 
 ## Getting started
