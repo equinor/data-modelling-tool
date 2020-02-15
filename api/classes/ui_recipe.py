@@ -26,7 +26,7 @@ class UIRecipe:
     def is_contained(self, attribute: BlueprintAttribute):
         attribute_name = attribute.name
         attribute_type = attribute.attribute_type
-        is_array = attribute.dimensions == "*"
+        is_array = attribute.is_array()
 
         if attribute_name in self.ui_attributes:
             ui_attribute = self.ui_attributes[attribute_name]

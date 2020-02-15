@@ -84,6 +84,8 @@ def get_ui_recipe(node, plugin_name):
 def is_visible(node, plugin_name="INDEX"):
     if node.is_root():
         return True
+    elif node.is_complex_array():
+        return False
     return get_ui_recipe(node, plugin_name).is_contained_in_index2(
         node.parent.key if node.parent.is_array() else node.key, node.attribute_type, node.is_array()
     )

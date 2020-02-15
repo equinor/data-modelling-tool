@@ -1,11 +1,13 @@
 import json
 from json import JSONDecodeError
+from typing import List, Union
 
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from utils.data_structure.find import get
 
 from utils.form_to_schema import PRIMITIVES
+from utils.get_data_type import get_data_type_from_dmt_type as get_data_type
 
 
 class CreateEntityException(Exception):
@@ -20,6 +22,33 @@ class CreateEntityException(Exception):
 class InvalidDefaultValue(CreateEntityException):
     def __init__(self, attr: BlueprintAttribute, blueprint_name: str):
         super().__init__(message=f"blueprint: {blueprint_name}, attribute: {attr.name} has empty default value.")
+
+
+def create_default_array(dimensions: List[str], type: Union[type, Blueprint]) -> List:
+    if len(dimensions) == 1:
+        # Return an empty list if size is "*".
+        if dimensions[0] == "*":
+            return []
+        # Return a list initialized with default values for the size of the array.
+        # TODO: Get default values from "system/SIMOS/BlueprintAttribute"
+        if isinstance(type, Blueprint):
+            return [{} for n in range(int(dimensions[0]))]
+        if type is int:
+            return [0 for n in range(int(dimensions[0]))]
+        if type is float:
+            return [0.00 for n in range(int(dimensions[0]))]
+        if type is str:
+            return ["" for n in range(int(dimensions[0]))]
+        if type is bool:
+            return [False for n in range(int(dimensions[0]))]
+
+    if dimensions[0] == "*":
+        # If the size of the rank is "*" we only create one nested list.
+        nested_list = [create_default_array(dimensions[1:], type)]
+    else:
+        # If the size of the rank in NOT "*", we expect an Integer, and create n number of nested lists.
+        nested_list = [create_default_array(dimensions[1:], type) for n in range(int(dimensions[0]))]
+    return nested_list
 
 
 class CreateEntity:
@@ -62,8 +91,10 @@ class CreateEntity:
                 return []
 
         if default_value == "":
-            if attr.dimensions == "*":
-                return []
+            if attr.is_array():
+                return create_default_array(
+                    attr.dimensions.split(","), get_data_type(attr.attribute_type, blueprint_provider)
+                )
             if type == "boolean":
                 return False
             if type == "number":

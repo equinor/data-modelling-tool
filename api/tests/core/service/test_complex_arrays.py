@@ -79,6 +79,7 @@ def get_blueprint(type: str):
 
 class ArraysDocumentServiceTestCase(unittest.TestCase):
     @staticmethod
+    # TODO: Refactor on Blueprint change in DOcService
     def test_create_complex_array():
         doc_storage = {
             "1": {
@@ -115,7 +116,7 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
         )
 
         actual_1 = {"_id": "1", "content": {"_id": "2", "name": "complexArraysEntity", "type": "higher_rank_array"}}
-        # Disable Black formatting
+        # Disable Black formatting for the matrix
         # fmt: off
         actual_2 = {
             "_id": "2",
@@ -240,6 +241,9 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
         )
 
         actual_1 = {
+            "_id": "1",
+            "name": "complexArraysEntity",
+            "type": "higher_rank_array",
             "1_dim-unfixed": [45, 65, 999999999999999999, 0, -12],
             "1_dim-fixed": [0, 0, 3, 326345, -91237],
             "2_dim-unfixed": [[23, 234, 123], [1, 1, 1, 1, 1, 1]],
@@ -275,4 +279,4 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
             ],
         }
         # fmt: on
-        assert pretty_eq(actual_1, doc_storage["1"]) is None
+        assert actual_1 == doc_storage["1"]

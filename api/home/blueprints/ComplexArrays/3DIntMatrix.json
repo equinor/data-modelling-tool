@@ -1,0 +1,28 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "3DIntMatrix",
+  "description": "A blueprint with a fixed size, three dimensional integer array",
+  "attributes": [
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "name"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "description"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "type"
+    },
+    {
+      "attributeType": "integer",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "3d_matrix",
+      "dimensions": "2,2,2"
+    }
+  ]
+}

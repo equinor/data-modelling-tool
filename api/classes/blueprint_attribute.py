@@ -29,7 +29,7 @@ class BlueprintAttribute:
         self.enum_type = enum_type if enum_type else ""
 
     def is_array(self):
-        return self.dimensions == "*"
+        return bool(self.dimensions)
 
     def is_primitive(self):
         return self.attribute_type in PRIMITIVES

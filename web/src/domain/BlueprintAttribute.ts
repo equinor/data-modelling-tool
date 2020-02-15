@@ -23,7 +23,7 @@ export class BlueprintAttribute {
   }
 
   public static isArray(value: string) {
-    return value === '*'
+    return value !== ''
   }
 
   public isPrimitiveType(value: string): boolean {
