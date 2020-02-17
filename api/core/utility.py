@@ -69,7 +69,6 @@ def wipe_db():
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def get_blueprint_cached(type: str) -> Blueprint:
     try:
-        print("fetching: ", type)
         document: DTO = get_document_by_ref(type)
         return Blueprint(document)
     except Exception as error:

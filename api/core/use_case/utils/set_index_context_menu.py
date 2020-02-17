@@ -21,14 +21,10 @@ from core.use_case.utils.sort_menu_items import sort_menu_items
 
 
 def create_context_menu(
-    node: Union[Node], data_source_id: str, application_page: str, blueprint_provider: BlueprintProvider
+    node: Union[Node], data_source_id: str, app_settings: dict, blueprint_provider: BlueprintProvider
 ):
     menu_items = []
     create_new_menu_items = []
-
-    app_settings = (
-        Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
-    )
     is_package = node.type == DMT.PACKAGE.value
 
     # Datasource Node can only add root-packages

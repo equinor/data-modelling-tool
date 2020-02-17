@@ -32,8 +32,8 @@ def get_error_node(node: Union[Node]) -> Dict:
     }
 
 
-def get_node(node: Union[Node], data_source_id: str, application_page: str, document_service) -> Dict:
-    menu_items = create_context_menu(node, data_source_id, application_page, document_service.blueprint_provider)
+def get_node(node: Union[Node], data_source_id: str, app_settings: dict, document_service) -> Dict:
+    menu_items = create_context_menu(node, data_source_id, app_settings, document_service.blueprint_provider)
 
     children = []
     if node.type == DMT.PACKAGE.value:
@@ -107,7 +107,7 @@ def is_visible(node, plugin_name="INDEX"):
 
 
 def extend_index_with_node_tree(
-    root: Union[Node, ListNode], data_source_id: str, application_page: str, document_service
+    root: Union[Node, ListNode], data_source_id: str, app_settings: dict, document_service
 ):
     index = {}
 
@@ -124,7 +124,7 @@ def extend_index_with_node_tree(
             if not is_visible(node):
                 continue
 
-            index_node = get_node(node, data_source_id, application_page, document_service)
+            index_node = get_node(node, data_source_id, app_settings, document_service)
             index[node.node_id] = index_node
 
         except Exception as error:
@@ -138,6 +138,9 @@ class GenerateIndexUseCase:
         self.repository_provider = repository_provider
 
     def execute(self, data_source_id: str, application_page: str) -> dict:
+        app_settings = (
+            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
+        )
         document_service = DocumentService(repository_provider=self.repository_provider)
         # make sure we're generating the index with correct blueprints.
         document_service.invalidate_cache()
@@ -164,7 +167,7 @@ class GenerateIndexUseCase:
             except Exception as error:
                 logger.exception(error, "unhandled exception.")
 
-        return extend_index_with_node_tree(root, data_source_id, application_page, document_service)
+        return extend_index_with_node_tree(root, data_source_id, app_settings, document_service)
 
     def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
         app_settings = (
