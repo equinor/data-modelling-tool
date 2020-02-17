@@ -81,6 +81,11 @@ export type TreeNodeRenderProps = {
 const Content = styled.div`
   width: 100%;
 `
+
+const ArrowPlaceholderIndent = styled.div`
+  width: 12px;
+  height: 18px;
+`
 type Props = {
   node: TreeNodeData
 }
@@ -146,6 +151,7 @@ const TreeNode = (props: TreeNodeProps) => {
           <NodeIcon>
             {node.isExpandable && node.isOpen && <FaChevronDown />}
             {node.isExpandable && !node.isOpen && <FaChevronRight />}
+            {!node.isExpandable && <ArrowPlaceholderIndent />}
           </NodeIcon>
           <NodeIcon marginRight={5}>
             <GetIcon node={node} />
