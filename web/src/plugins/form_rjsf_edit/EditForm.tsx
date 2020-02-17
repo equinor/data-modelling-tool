@@ -8,7 +8,10 @@ import { BlueprintProvider } from '../BlueprintProvider'
 import FileDirectoryWidget from '../form-rjsf-widgets/FileDirectoryWidget'
 import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
 import { CollapsibleField } from '../widgets/CollapsibleField'
-import PackageSelectorWidget from '../form-rjsf-widgets/PackagesSelectorWidget'
+import {
+  PackagesSelector,
+  BlueprintsSelector,
+} from '../form-rjsf-widgets/MultiSelectorWidget'
 import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
 
 export interface EditPluginProps extends PluginProps {
@@ -36,7 +39,8 @@ export const EditPlugin = (props: EditPluginProps) => {
           collapsible: CollapsibleField,
           destination: DestinationSelectorWidget,
           blueprint: BlueprintSelectorWidget,
-          packages: PackageSelectorWidget,
+          blueprints: BlueprintsSelector,
+          packages: PackagesSelector,
           hidden: () => <div />,
         }}
         widgets={{

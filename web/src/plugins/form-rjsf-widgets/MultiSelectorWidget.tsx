@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import Modal from '../../components/modal/Modal'
 import { FaTimes } from 'react-icons/fa'
+import { BlueprintEnum } from '../../util/variables'
 
 const api = new DmtApi()
 
@@ -42,13 +43,19 @@ const BlueButton = styled.button`
   border-radius: 4px;
 `
 
-type PackageSelectorProps = {
+type MultiSelectorProps = {
   onChange: Function
   formData: any
   uiSchema: any
+  typeFilter: Function
 }
 
-export default ({ onChange, formData, uiSchema }: PackageSelectorProps) => {
+const MultiSelector = ({
+  onChange,
+  formData,
+  uiSchema,
+  typeFilter,
+}: MultiSelectorProps) => {
   const [datasources, setDatasources] = useState<Datasource[]>([])
   const [selectedPackages, setSelectedPackages] = useState<string[]>(formData)
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -142,7 +149,7 @@ export default ({ onChange, formData, uiSchema }: PackageSelectorProps) => {
             return (
               <NodeWrapper>
                 {nodeData.title}
-                {nodeData.meta.isRootPackage && (
+                {typeFilter(nodeData) && (
                   <input
                     type={'checkbox'}
                     checked={selectedPackages.includes(value) || false}
@@ -159,4 +166,28 @@ export default ({ onChange, formData, uiSchema }: PackageSelectorProps) => {
       </Modal>
     </PackagesWrapper>
   )
+}
+
+export const PackagesSelector = ({ onChange, formData, uiSchema }: any) => {
+  function PackageFilter(nodeData: any) {
+    return nodeData.meta?.isRootPackage
+  }
+  return MultiSelector({
+    onChange,
+    formData,
+    uiSchema,
+    typeFilter: PackageFilter,
+  })
+}
+
+export const BlueprintsSelector = ({ onChange, formData, uiSchema }: any) => {
+  function BlueprintsFilter(nodeData: any) {
+    return nodeData?.meta?.type == BlueprintEnum.BLUEPRINT
+  }
+  return MultiSelector({
+    onChange,
+    formData,
+    uiSchema,
+    typeFilter: BlueprintsFilter,
+  })
 }

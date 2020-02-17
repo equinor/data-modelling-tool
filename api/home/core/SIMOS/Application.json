@@ -84,7 +84,7 @@
         {
           "name": "models",
           "type": "system/SIMOS/UiAttribute",
-          "field": "packages"
+          "field": "blueprints"
         }
       ]
     }
