@@ -180,6 +180,9 @@ class DocumentService:
             root_node: Node = self.get_by_uid(data_source_id, parent_uid)
             target_node = root_node.search(document_id)
 
+            if not target_node:
+                raise EntityNotFoundException(uid=document_id)
+
         target_node.dto["name"] = name
         self.save(root_node, data_source_id)
 

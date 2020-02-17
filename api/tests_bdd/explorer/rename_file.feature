@@ -1,4 +1,3 @@
-@skip
 Feature: Explorer - Add file
 
   Background: There are data sources in the system
@@ -9,6 +8,8 @@ Feature: Explorer - Add file
       | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local    | SSR-DataSource | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system           | local    | system         | blueprints   | mongo-db |
 
+    Given data modelling tool templates are imported
+
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name         | description | type                   |
       | 1   |            | root_package |             | system/DMT/Package     |
@@ -17,7 +18,6 @@ Feature: Explorer - Add file
 
   Scenario: Rename package
     Given i access the resource url "/api/v2/explorer/data-source-name/rename"
-    And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
@@ -30,17 +30,12 @@ Feature: Explorer - Add file
     And the response should contain
     """
     {
-     "data": {
-       "name": "new_root_package_name",
-       "type": "system/DMT/Package"
-      },
       "uid": "1"
     }
     """
 
   Scenario: Rename blueprint
     Given i access the resource url "/api/v2/explorer/data-source-name/rename"
-    And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
@@ -53,27 +48,18 @@ Feature: Explorer - Add file
     And the response should contain
     """
     {
-     "data": {
-       "attributes": [],
-       "description": "",
-       "name": "new_blueprint_name",
-       "storageRecipes": [],
-       "type": "system/SIMOS/Blueprint",
-       "uiRecipes": []
-      },
       "uid": "2"
     }
     """
 
   Scenario: Try to rename a document that does not exists
     Given i access the resource url "/api/v2/explorer/data-source-name/rename"
-    And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
       "parentId": "1",
       "documentId": "10",
-      "name": "new_blueprint_name",
+      "name": "new_blueprint_name"
     }
     """
     Then the response status should be "System Error"
@@ -87,13 +73,12 @@ Feature: Explorer - Add file
 
   Scenario: Try to rename a document with a parent that does not exists
     Given i access the resource url "/api/v2/explorer/data-source-name/rename"
-    And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
       "parentId": "10",
       "documentId": "2",
-      "name": "new_blueprint_name",
+      "name": "new_blueprint_name"
     }
     """
     Then the response status should be "System Error"
@@ -105,15 +90,15 @@ Feature: Explorer - Add file
     }
     """
 
+    @skip
   Scenario: Try to rename a document to equal name as another document
     Given i access the resource url "/api/v2/explorer/data-source-name/rename"
-    And data modelling tool templates are imported
     When i make a "PUT" request
     """
     {
       "parentId": "1",
       "documentId": "3",
-      "name": "document_1",
+      "name": "document_1"
     }
     """
     Then the response status should be "System Error"
