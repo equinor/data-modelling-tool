@@ -2,11 +2,14 @@ Feature: Explorer - Add file
 
   Background: There are data sources in the system
 
+
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name            | database | collection     | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name| local      | documents      | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | SSR-DataSource  | local      | SSR-DataSource | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system          | local      | system         | blueprints   | mongo-db |
+      | host | port  | username | password | tls   | name             | database | collection     | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents      | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local    | SSR-DataSource | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system           | local    | system         | blueprints   | mongo-db |
+
+    Given data modelling tool templates are imported
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name         | description | type               |
@@ -14,7 +17,6 @@ Feature: Explorer - Add file
 
   Scenario: Add file - not contained
     Given i access the resource url "/api/v2/explorer/data-source-name/add-file"
-    And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
@@ -25,7 +27,6 @@ Feature: Explorer - Add file
     }
     """
     Then the response status should be "OK"
-
     Given I access the resource url "/api/v2/documents/data-source-name/1"
     When I make a "GET" request
     Then the response status should be "OK"
@@ -52,7 +53,6 @@ Feature: Explorer - Add file
 
   Scenario: Add file with missing parameter name should fail
     Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"
-    And data modelling tool templates are imported
     When i make a "POST" request
     """
     {

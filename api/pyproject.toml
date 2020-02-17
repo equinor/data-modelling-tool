@@ -12,7 +12,6 @@ werkzeug = "^0.15.4"
 pymongo = "^3.8"
 jsonschema = "^3.0"
 dotted = "^0.1.8"
-anytree = "^2.7.0"
 stringcase = "^1.2"
 python-dotenv = "^0.10.3"
 

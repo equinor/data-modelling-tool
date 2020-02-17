@@ -8,6 +8,8 @@ Feature: Explorer - Remove
       | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local    | SSR-DataSource | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system           | local    | system         | blueprints   | mongo-db |
 
+    Given data modelling tool templates are imported
+
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                   |
       | 1   |            | blueprints    |             | system/DMT/Package     |
@@ -17,7 +19,6 @@ Feature: Explorer - Remove
 
   Scenario: Remove root package
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
-    And data modelling tool templates are imported
     When i make a "POST" request
   """
   {
@@ -59,7 +60,6 @@ Feature: Explorer - Remove
 
   Scenario: Remove file with no children
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
-    And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
@@ -85,7 +85,6 @@ Feature: Explorer - Remove
 
   Scenario: Remove file with no children
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
-    And data modelling tool templates are imported
     When i make a "POST" request
     """
     {
@@ -107,7 +106,6 @@ Feature: Explorer - Remove
 
   Scenario: Remove file with children
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
-    And data modelling tool templates are imported
     When i make a "POST" request
   """
   {
