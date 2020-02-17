@@ -32,14 +32,14 @@ class ErrorTreenodeTestCase(unittest.TestCase):
             "description": "",
             "type": "blueprint_1",
             # renamed nested to nested2
-            "nested2": {
-                "name": "Nested 1",
-                "description": "",
-                "type": "blueprint_2",
-
-            },
+            "nested2": {"name": "Nested 1", "description": "", "type": "blueprint_2"},
             "_blueprint": blueprint_1,
         }
-        root = Node.from_dict(DTO(document_1))
+
+        class BlueprintProvider:
+            def get_blueprint(type: str):
+                raise Exception("fix me")
+
+        root = Node.from_dict(DTO(document_1), BlueprintProvider())
         error_msg = root.children[0].error_message
         assert error_msg is not None

@@ -63,6 +63,14 @@ def get_blueprint(type: str):
     return None
 
 
+class BlueprintProvider:
+    def get_blueprint(self, type: str):
+        return get_blueprint(type)
+
+
+blueprint_provider = BlueprintProvider()
+
+
 class DocumentServiceTestCase(unittest.TestCase):
     def test_remove_document(self):
         document_repository: Repository = mock.Mock()
@@ -80,7 +88,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.remove_document(data_source_id="testing", document_id="1", parent_id=None)
         document_repository.delete.assert_called_with("1")
 
@@ -106,7 +116,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.remove_document(data_source_id="testing", document_id="1.nested", parent_id="1")
         document_repository.update.assert_called_once()
 
@@ -135,7 +147,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.remove_document(data_source_id="testing", document_id="2", parent_id="1")
         document_repository.update.assert_called_once()
         document_repository.delete.assert_called_with("2")
@@ -168,7 +182,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.rename_document(
             data_source_id="testing", parent_uid="1", document_id="1.nested", name="New name"
         )
@@ -205,7 +221,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.rename_document(data_source_id="testing", document_id="1", name="New name")
 
         actual = {"_id": "1", "name": "New name"}
@@ -239,7 +257,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.rename_document(data_source_id="testing", document_id="2", parent_uid="1", name="New name")
 
         actual = {"_id": "1", "reference": {"_id": "2", "name": "New name", "type": "blueprint_2"}}
@@ -275,7 +295,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.rename_document(data_source_id="testing", document_id="2", parent_uid="1", name="New name")
 
         actual = {"_id": "1", "references": [{"_id": "2", "name": "New name", "type": "blueprint_2"}]}
@@ -333,7 +355,9 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         repository.get = mock_get
         repository.update = mock_update
-        document_service = DocumentService(blueprint_provider=get_blueprint, repository_provider=repository_provider)
+        document_service = DocumentService(
+            blueprint_provider=blueprint_provider, repository_provider=repository_provider
+        )
 
         node: Node = document_service.get_by_uid("testing", "1")
         contained_node: Node = node.search("4")
@@ -375,11 +399,13 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return repository
 
-        document_service = DocumentService(blueprint_provider=get_blueprint, repository_provider=repository_provider)
+        document_service = DocumentService(
+            blueprint_provider=blueprint_provider, repository_provider=repository_provider
+        )
 
         node: Node = document_service.get_by_uid("testing", "1")
         contained_node: Node = node.search("1.references")
-        contained_node.children.append(Node("0", DTO(doc_storage["2"]), contained_node.blueprint))
+        contained_node.children.append(Node("0", DTO(doc_storage["2"]), blueprint_provider))
         document_service.save(node, "testing")
 
         # assert document_1_after == doc_storage["1"]
@@ -433,7 +459,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return repository
 
-        document_service = DocumentService(blueprint_provider=get_blueprint, repository_provider=repository_provider)
+        document_service = DocumentService(
+            blueprint_provider=blueprint_provider, repository_provider=repository_provider
+        )
 
         node: Node = document_service.get_by_uid("testing", "1")
         contained_node: Node = node.search("1.references")
@@ -477,7 +505,7 @@ class DocumentServiceTestCase(unittest.TestCase):
         document_repository.get = mock_get
 
         root = get_complete_document(
-            document_uid="1", document_repository=document_repository, blueprint_provider=get_blueprint
+            document_uid="1", document_repository=document_repository, blueprint_provider=blueprint_provider
         )
 
         assert isinstance(root, dict)

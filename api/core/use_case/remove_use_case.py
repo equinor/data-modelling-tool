@@ -48,5 +48,5 @@ class RemoveUseCase(uc.UseCase):
 
         document_service = DocumentService(repository_provider=self.repository_provider)
         document_service.remove_document(data_source_id, document_id, parent_id)
-
+        document_service.invalidate_cache()
         return res.ResponseSuccess(True)

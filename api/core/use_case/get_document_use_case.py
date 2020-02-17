@@ -4,7 +4,7 @@ from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.utility import get_document_by_ref, get_blueprint
+from core.utility import get_document_by_ref
 from dotted.collection import DottedDict
 
 from classes.blueprint_attribute import BlueprintAttribute
@@ -43,15 +43,14 @@ class GetDocumentRequestObject(req.ValidRequestObject):
 class GetDocumentUseCase(uc.UseCase):
     def __init__(self, repository_provider=get_repository):
         self.repository_provider = repository_provider
+        self.document_service = DocumentService(repository_provider=self.repository_provider)
 
     def process_request(self, request_object: GetDocumentRequestObject):
         data_source_id: str = request_object.data_source_id
         document_id: str = request_object.document_id
         attribute: str = request_object.attribute
 
-        document_service = DocumentService(repository_provider=self.repository_provider)
-
-        document = document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
+        document = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
 
         data = document.to_dict()
 
@@ -60,10 +59,10 @@ class GetDocumentUseCase(uc.UseCase):
             data = dotted_data[attribute].to_python()
 
         if "_id" in data:
-            document = document_service.get_by_uid(data_source_id=data_source_id, document_uid=data["_id"])
+            document = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=data["_id"])
             data = document.to_dict()
 
-        blueprint = get_blueprint(data["type"])
+        blueprint = self.document_service.blueprint_provider.get_blueprint(data["type"])
 
         children = []
         dtos = []
@@ -83,7 +82,7 @@ class GetDocumentUseCase(uc.UseCase):
                 child_blueprint_name = attribute_type.split("/")[-1]
                 type_in_children = next((x for x in children if x["name"] == child_blueprint_name), None)
                 if not type_in_children:
-                    child_blueprint = get_blueprint(attribute_type)
+                    child_blueprint = self.document_service.blueprint_provider.get_blueprint(attribute_type)
                     if not isinstance(child_blueprint, (dict, type(None))):
                         children.append(child_blueprint.to_dict())
                         self.add_children_types(children, dtos, child_blueprint)

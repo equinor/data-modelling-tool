@@ -63,7 +63,7 @@
       "name": "contained",
       "attributeType": "boolean",
       "type": "system/SIMOS/BlueprintAttribute",
-      "default": true,
+      "default": "true",
       "optional": true
     },
     {

@@ -52,5 +52,5 @@ class UpdateDocumentUseCase(uc.UseCase):
         document = document_service.update_document(
             data_source_id=data_source_id, document_id=document_id, data=data, attribute_path=attribute_path
         )
-
+        document_service.invalidate_cache()
         return res.ResponseSuccess(document)

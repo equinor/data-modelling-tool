@@ -10,7 +10,7 @@ from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
 
 from classes.dto import DTO
-from classes.tree_node import Node, NodeBase
+from classes.tree_node import Node, NodeBase, ListNode
 from config import Config
 
 
@@ -32,8 +32,8 @@ def get_error_node(node: Union[Node]) -> Dict:
     }
 
 
-def get_node(node: Union[Node], data_source_id: str, application_page: str) -> Dict:
-    menu_items = create_context_menu(node, data_source_id, application_page)
+def get_node(node: Union[Node], data_source_id: str, application_page: str, document_service) -> Dict:
+    menu_items = create_context_menu(node, data_source_id, application_page, document_service.blueprint_provider)
 
     children = []
     if node.type == DMT.PACKAGE.value:
@@ -106,7 +106,9 @@ def is_visible(node, plugin_name="INDEX"):
     )
 
 
-def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str, application_page: str):
+def extend_index_with_node_tree(
+    root: Union[Node, ListNode], data_source_id: str, application_page: str, document_service
+):
     index = {}
 
     for node in root.traverse():
@@ -115,10 +117,14 @@ def extend_index_with_node_tree(root: Union[Node, NodeBase], data_source_id: str
             if node.parent and node.parent.type == DMT.PACKAGE.value:
                 continue
 
+            # disable storageRecipe #572
+            if node.key == "storageRecipes":
+                continue
+
             if not is_visible(node):
                 continue
 
-            index_node = get_node(node, data_source_id, application_page)
+            index_node = get_node(node, data_source_id, application_page, document_service)
             index[node.node_id] = index_node
 
         except Exception as error:
@@ -133,8 +139,14 @@ class GenerateIndexUseCase:
 
     def execute(self, data_source_id: str, application_page: str) -> dict:
         document_service = DocumentService(repository_provider=self.repository_provider)
+        # make sure we're generating the index with correct blueprints.
+        document_service.invalidate_cache()
         root_packages = document_service.get_root_packages(data_source_id=data_source_id)
-        root = NodeBase(key="root", dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}))
+        root = NodeBase(
+            key="root",
+            dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}),
+            blueprint_provider=document_service.blueprint_provider,
+        )
         for root_package in root_packages:
             try:
                 root.add_child(
@@ -142,20 +154,25 @@ class GenerateIndexUseCase:
                 )
             except EntityNotFoundException as error:
                 logger.exception(error, "unhandled exception.")
-                error_node: Node = Node(key=root_package.uid, dto=DTO(data={"name": root_package.name, "type": "",}))
+                error_node: Node = Node(
+                    key=root_package.uid,
+                    dto=DTO(data={"name": root_package.name, "type": ""}),
+                    blueprint_provider=document_service.blueprint_provider,
+                )
                 error_node.set_error(f"failed to add root package {root_package.name} to the root node")
                 root.add_child(error_node)
             except Exception as error:
                 logger.exception(error, "unhandled exception.")
 
-        return extend_index_with_node_tree(root, data_source_id, application_page)
+        return extend_index_with_node_tree(root, data_source_id, application_page, document_service)
 
     def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
         document_service = DocumentService(repository_provider=self.repository_provider)
-
+        # make sure we're generating the index with correct blueprints.
+        document_service.invalidate_cache()
         parent_uid = parent_id.split(".", 1)[0]
         if data_source_id == parent_uid:
             document_uid = document_id
@@ -168,4 +185,4 @@ class GenerateIndexUseCase:
         node = parent.search(document_id)
         if not node:
             raise EntityNotFoundException(uid=document_id)
-        return extend_index_with_node_tree(node, data_source_id, app_settings)
+        return extend_index_with_node_tree(node, data_source_id, app_settings, document_service)

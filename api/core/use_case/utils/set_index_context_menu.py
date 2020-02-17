@@ -14,16 +14,15 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_runnable_menu_action,
     get_create_root_package_menu_item,
 )
-from core.utility import get_blueprint
+from core.utility import BlueprintProvider
 from utils.group_by import group_by
 
 from core.use_case.utils.sort_menu_items import sort_menu_items
 
 
-
-
-
-def create_context_menu(node: Union[Node], data_source_id: str, application_page: str):
+def create_context_menu(
+    node: Union[Node], data_source_id: str, application_page: str, blueprint_provider: BlueprintProvider
+):
     menu_items = []
     create_new_menu_items = []
 
@@ -42,16 +41,15 @@ def create_context_menu(node: Union[Node], data_source_id: str, application_page
             # Context menu: New Package
             create_new_menu_items.append(
                 get_dynamic_create_menu_item(
-                    data_source_id=data_source_id, name="Package", type=DMT.PACKAGE.value, node_id=node_id,
+                    data_source_id=data_source_id, name="Package", type=DMT.PACKAGE.value, node_id=node_id
                 )
             )
             # Context menu: New from app_settings
             for model in app_settings["models"]:
-                # TODO: Costly way to just get a name...
-                model_blueprint = get_blueprint(model)
+                model_blueprint = blueprint_provider.get_blueprint(model)
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(
-                        data_source_id=data_source_id, name=model_blueprint.name, type=model, node_id=node_id,
+                        data_source_id=data_source_id, name=model_blueprint.name, type=model, node_id=node_id
                     )
                 )
         else:
@@ -59,10 +57,7 @@ def create_context_menu(node: Union[Node], data_source_id: str, application_page
                 # List nodes can always append entities of it's own type
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(
-                        data_source_id=data_source_id,
-                        name=f"Create {node.name}",
-                        type=node.type,
-                        node_id=node.node_id,
+                        data_source_id=data_source_id, name=f"Create {node.name}", type=node.type, node_id=node.node_id
                     )
                 )
 
@@ -74,7 +69,13 @@ def create_context_menu(node: Union[Node], data_source_id: str, application_page
                 parent_uid=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
             )
         )
-        is_removable = node.blueprint.is_attr_removable(node.key)
+        is_removable = True
+
+        # type can be datasource, entities etc
+        if node.parent is not None and node.parent.type != "datasource":
+            parent_blueprint = blueprint_provider.get_blueprint(node.parent.type)
+            is_removable = parent_blueprint.is_attr_removable(node.key)
+
         if is_removable:
             menu_items.append(
                 get_delete_menu_item(
@@ -87,7 +88,7 @@ def create_context_menu(node: Union[Node], data_source_id: str, application_page
 
         # Runnable entities gets custom actions
         action_types = group_by(
-            items=app_settings["actions"], grouping_function=lambda runnable: runnable.get("input", ""),
+            items=app_settings["actions"], grouping_function=lambda runnable: runnable.get("input", "")
         )
 
         if node.type in action_types:

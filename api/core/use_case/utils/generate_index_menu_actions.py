@@ -4,9 +4,7 @@ from classes.tree_node import Node
 from core.enums import DMT
 
 
-def get_rename_menu_action(
-    data_source_id: str, dotted_document_id: str, type: str, parent_uid: str = None,
-):
+def get_rename_menu_action(data_source_id: str, dotted_document_id: str, type: str, parent_uid: str = None):
     parent_uid = parent_uid.split(".")[0] if parent_uid else None
     document_split = dotted_document_id.split(".", 1)
     attribute_arg = f"?attribute={document_split[1]}" if len(document_split) > 1 else ""
@@ -45,9 +43,7 @@ def get_delete_menu_item(
     }
 
 
-def get_dynamic_create_menu_item(
-    data_source_id: str, name: str, type: str, node_id: str = None,
-):
+def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node_id: str = None):
     node_id_split = node_id.split(".", 1)
     return {
         "label": f"{name}",

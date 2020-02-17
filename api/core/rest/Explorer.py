@@ -42,7 +42,7 @@ def remove(data_source_id: str):
     request_object = RemoveFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
     )
 
 
@@ -78,7 +78,7 @@ def rename(data_source_id: str):
     request_object = RenameRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type],
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
     )
 
 

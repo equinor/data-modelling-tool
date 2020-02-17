@@ -16,7 +16,7 @@ class Config:
     DATA_SOURCES_COLLECTION = "data_sources"
     DYNAMIC_MODELS = "dynamic_models"
     SYSTEM_COLLECTION = "system"
-    CACHE_MAX_SIZE = 0 if ENVIRONMENT == "local" else 0
+    CACHE_MAX_SIZE = 200 if ENVIRONMENT == "local" else 0
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent.absolute()}/home")
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"

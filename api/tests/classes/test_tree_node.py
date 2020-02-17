@@ -85,14 +85,30 @@ blueprint_4 = {
 }
 
 
+class BlueprintProvider:
+    def get_blueprint(self, type: str):
+        if type == "blueprint_1":
+            return Blueprint(DTO(data=blueprint_1))
+        if type == "blueprint_2":
+            return Blueprint(DTO(data=blueprint_1))
+        if type == "blueprint_3":
+            return Blueprint(DTO(data=blueprint_1))
+        if type == "blueprint_4":
+            return Blueprint(DTO(data=blueprint_4))
+        return None
+
+
+blueprint_provider = BlueprintProvider()
+
+
 class TreenodeTestCase(unittest.TestCase):
     def test_is_root(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
         nested = Node(
-            key="nested", dto=DTO(uid="", data=nested_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_data), blueprint_provider=blueprint_provider, parent=root
         )
 
         assert root.is_root()
@@ -100,15 +116,15 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_replace(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
         nested_1 = Node(
-            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint_provider=blueprint_provider, parent=root
         )
 
         nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_2"}
-        nested_2 = Node(key="nested", dto=DTO(uid="", data=nested_2_data), blueprint=Blueprint.from_dict(blueprint_2))
+        nested_2 = Node(key="nested", dto=DTO(uid="", data=nested_2_data), blueprint_provider=blueprint_provider)
 
         actual_before = {
             "_id": "1",
@@ -136,11 +152,11 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_delete_root_child(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
         nested_1 = Node(
-            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint_provider=blueprint_provider, parent=root
         )
 
         actual_before = {
@@ -162,18 +178,15 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_delete_nested_child(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
         nested_1 = Node(
-            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_1_data), blueprint_provider=blueprint_provider, parent=root
         )
         nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested2",
-            dto=DTO(uid="", data=nested_2_data),
-            blueprint=Blueprint.from_dict(blueprint_2),
-            parent=nested_1,
+            key="nested2", dto=DTO(uid="", data=nested_2_data), blueprint_provider=blueprint_provider, parent=nested_1
         )
 
         actual_before = {
@@ -212,33 +225,19 @@ class TreenodeTestCase(unittest.TestCase):
             "name": "root",
             "description": "",
             "type": "blueprint_4",
-            "_blueprint": blueprint_4,
             "a_list": [
                 {
                     "name": "Nested 1",
                     "description": "",
                     "type": "blueprint_4",
-                    "_blueprint": blueprint_4,
                     "a_list": [
-                        {
-                            "name": "Nested 2 index 0",
-                            "description": "",
-                            "type": "blueprint_4",
-                            "_blueprint": blueprint_4,
-                            "a_list": [],
-                        },
-                        {
-                            "name": "Nested 2 index 1",
-                            "description": "",
-                            "type": "blueprint_4",
-                            "_blueprint": blueprint_4,
-                            "a_list": [],
-                        },
+                        {"name": "Nested 2 index 0", "description": "", "type": "blueprint_4", "a_list": []},
+                        {"name": "Nested 2 index 1", "description": "", "type": "blueprint_4", "a_list": []},
                     ],
                 }
             ],
         }
-        root = Node.from_dict(DTO(document))
+        root = Node.from_dict(DTO(document), blueprint_provider)
 
         actual_before = {
             "_id": "1",
@@ -283,11 +282,11 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_depth(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
         nested = Node(
-            key="nested", dto=DTO(uid="", data=nested_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_data), blueprint_provider=blueprint_provider, parent=root
         )
 
         assert root.depth() == 0
@@ -303,7 +302,6 @@ class TreenodeTestCase(unittest.TestCase):
                 "name": "Nested 1",
                 "description": "",
                 "type": "blueprint_2",
-                "_blueprint": blueprint_2,
                 "nested": {
                     "name": "Nested 2",
                     "description": "",
@@ -314,37 +312,39 @@ class TreenodeTestCase(unittest.TestCase):
                         "name": "Reference",
                         "description": "",
                         "type": "blueprint_2",
-                        "_blueprint": blueprint_2,
                     },
-                    # wrong entity here. last nested is of type blueprint_3, which has name, type, description and reference, not _id, uid
-                    "_blueprint": blueprint_3,
                 },
             },
-            "_blueprint": blueprint_1,
         }
 
-        root = Node.from_dict(DTO(document_1))
+        root = Node.from_dict(DTO(document_1), blueprint_provider)
         result = [node.name for node in root.traverse()]
         # with error nodes
         # expected = ["Parent", "Nested 1", "Nested 2", "Reference", "nested", "reference", "references"]
-        expected = ["Parent", "Nested 1", "Nested 2", "Reference", "references"]
+        expected = [
+            "Parent",
+            "Nested 1",
+            "Nested 2",
+            "Reference",
+            "references",
+            "references",
+            "references",
+            "references",
+        ]
         assert result == expected
 
     def test_traverse_reverse(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
         nested = Node(
-            key="nested", dto=DTO(uid="", data=nested_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_data), blueprint_provider=blueprint_provider, parent=root
         )
 
         nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested",
-            dto=DTO(uid="", data=nested_2_data),
-            blueprint=Blueprint.from_dict(blueprint_3),
-            parent=nested,
+            key="nested", dto=DTO(uid="", data=nested_2_data), blueprint_provider=blueprint_provider, parent=nested
         )
 
         result = [node.name for node in nested_2.traverse_reverse()]
@@ -353,35 +353,34 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_node_id(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
         nested = Node(
-            key="nested", dto=DTO(uid="", data=nested_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_data), blueprint_provider=blueprint_provider, parent=root
         )
 
         nested_2_data = {"name": "Nested", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested",
-            dto=DTO(uid="", data=nested_2_data),
-            blueprint=Blueprint.from_dict(blueprint_3),
-            parent=nested,
+            key="nested", dto=DTO(uid="", data=nested_2_data), blueprint_provider=blueprint_provider, parent=nested
         )
 
         nested_2_reference_data = {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
         reference = Node(
             key="reference",
             dto=DTO(uid="2", data=nested_2_reference_data),
-            blueprint=Blueprint.from_dict(blueprint_2),
+            blueprint_provider=blueprint_provider,
             parent=nested_2,
         )
 
         list_data = {"name": "List", "type": "blueprint_3"}
-        list_node = ListNode(key="list", dto=DTO(uid="", data=list_data), parent=root)
+        list_node = ListNode(
+            key="list", dto=DTO(uid="", data=list_data), blueprint_provider=blueprint_provider, parent=root
+        )
 
         item_1_data = {"name": "Item 1", "description": "", "type": "blueprint_2"}
         item_1 = Node(
-            key="0", dto=DTO(uid="", data=item_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=list_node
+            key="0", dto=DTO(uid="", data=item_1_data), blueprint_provider=blueprint_provider, parent=list_node
         )
 
         assert root.node_id == "1"
@@ -402,7 +401,6 @@ class TreenodeTestCase(unittest.TestCase):
                 "name": "Nested",
                 "description": "",
                 "type": "blueprint_2",
-                "_blueprint": blueprint_2,
                 "nested": {
                     "name": "Nested",
                     "description": "",
@@ -413,15 +411,12 @@ class TreenodeTestCase(unittest.TestCase):
                         "name": "Reference",
                         "description": "",
                         "type": "blueprint_2",
-                        "_blueprint": blueprint_2,
                     },
-                    "_blueprint": blueprint_3,
                 },
             },
-            "_blueprint": blueprint_1,
         }
 
-        root = Node.from_dict(DTO(document_1))
+        root = Node.from_dict(DTO(document_1), blueprint_provider)
 
         child_1 = root.search("1.nested.nested")
 
@@ -441,7 +436,6 @@ class TreenodeTestCase(unittest.TestCase):
                 "name": "Nested",
                 "description": "",
                 "type": "blueprint_2",
-                "_blueprint": blueprint_2,
                 "nested": {
                     "name": "Nested",
                     "description": "",
@@ -452,15 +446,12 @@ class TreenodeTestCase(unittest.TestCase):
                         "name": "Reference",
                         "description": "",
                         "type": "blueprint_2",
-                        "_blueprint": blueprint_2,
                     },
-                    "_blueprint": blueprint_3,
                 },
             },
-            "_blueprint": blueprint_1,
         }
 
-        root = Node.from_dict(DTO(document_1))
+        root = Node.from_dict(DTO(document_1), blueprint_provider)
 
         update_0 = {
             "name": "New name",
@@ -474,7 +465,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "Nested",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
                 },
             },
         }
@@ -495,7 +486,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "New name",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
                 },
             },
         }
@@ -516,7 +507,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "New name",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "New name", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "New name", "description": "", "type": "blueprint_2"},
                 },
             },
         }
@@ -609,7 +600,7 @@ class TreenodeTestCase(unittest.TestCase):
             "_blueprint": blueprint_1,
         }
 
-        root = Node.from_dict(DTO(document_1))
+        root = Node.from_dict(DTO(document_1), blueprint_provider)
 
         actual = {
             "uid": "1",
@@ -710,41 +701,40 @@ class TreenodeTestCase(unittest.TestCase):
             ],
         }
 
-        root = DictImporter.from_dict(DTO(document_1))
+        root = DictImporter.from_dict(DTO(document_1), blueprint_provider)
 
         assert pretty_eq(actual, root.to_dict()) is None
 
     def test_to_dict(self):
         root_data = {"uid": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint=Blueprint.from_dict(blueprint_1))
+        root = Node(key="root", dto=DTO(uid="1", data=root_data), blueprint_provider=blueprint_provider)
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
         nested = Node(
-            key="nested", dto=DTO(uid="", data=nested_data), blueprint=Blueprint.from_dict(blueprint_2), parent=root
+            key="nested", dto=DTO(uid="", data=nested_data), blueprint_provider=blueprint_provider, parent=root
         )
 
         nested_2_data = {"name": "Nested", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested",
-            dto=DTO(uid="", data=nested_2_data),
-            blueprint=Blueprint.from_dict(blueprint_3),
-            parent=nested,
+            key="nested", dto=DTO(uid="", data=nested_2_data), blueprint_provider=blueprint_provider, parent=nested
         )
 
         nested_2_reference_data = {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
         Node(
             key="reference",
             dto=DTO(uid="2", data=nested_2_reference_data),
-            blueprint=Blueprint.from_dict(blueprint_2),
+            blueprint_provider=blueprint_provider,
             parent=nested_2,
         )
 
         list_data = {"name": "List", "type": "blueprint_3"}
-        list_node = ListNode(key="list", dto=DTO(uid="", data=list_data), parent=root)
+        list_node = ListNode(
+            key="list", dto=DTO(uid="", data=list_data), parent=root, blueprint_provider=blueprint_provider
+        )
 
         item_1_data = {"name": "Item 1", "description": "", "type": "blueprint_2"}
         item_1 = Node(
-            key="0", dto=DTO(uid="", data=item_1_data), blueprint=Blueprint.from_dict(blueprint_2), parent=list_node
+            key="0", dto=DTO(uid="", data=item_1_data), blueprint_provider=blueprint_provider, parent=list_node
         )
 
         actual_root = {

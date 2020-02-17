@@ -46,7 +46,7 @@ class BlueprintAttribute:
             "type": self.type,
             "description": self.description,
             "label": self.label,
-            "default": self.default if not self.attribute_type == "boolean" else True,
+            "default": self.default,
             "dimensions": self.dimensions,
             "optional": self.optional,
             "contained": self.contained,

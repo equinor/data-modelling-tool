@@ -10,7 +10,7 @@ from core.enums import SIMOS
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.create_entity import CreateEntity
-from core.utility import get_blueprint
+from core.utility import BlueprintProvider
 from utils.logging import logger
 
 
@@ -38,11 +38,12 @@ def get_document(document_uid: str, document_repository: Repository):
     return document
 
 
-def get_resolved_document(document: DTO, document_repository: Repository, blueprint_provider: Function) -> Dict:
-    blueprint: Blueprint = blueprint_provider(document.type)
+def get_resolved_document(
+    document: DTO, document_repository: Repository, blueprint_provider: BlueprintProvider
+) -> Dict:
+    blueprint: Blueprint = blueprint_provider.get_blueprint(document.type)
 
     data: Dict = document.data
-    data["_blueprint"] = blueprint.to_dict()
 
     for complex_attribute in blueprint.get_none_primitive_types():
         attribute_name = complex_attribute.name
@@ -79,7 +80,7 @@ def get_resolved_document(document: DTO, document_repository: Repository, bluepr
 
 
 def get_complete_document(
-    document_uid: str, document_repository: Repository, blueprint_provider: Function = get_blueprint
+    document_uid: str, document_repository: Repository, blueprint_provider: BlueprintProvider
 ) -> Dict:
     document = get_document(document_uid=document_uid, document_repository=document_repository)
 
@@ -88,9 +89,15 @@ def get_complete_document(
 
 
 class DocumentService:
-    def __init__(self, repository_provider, blueprint_provider=get_blueprint):
+    def __init__(self, repository_provider, blueprint_provider=BlueprintProvider()):
         self.blueprint_provider = blueprint_provider
         self.repository_provider = repository_provider
+
+    def get_blueprint(self):
+        return self.blueprint_provider
+
+    def invalidate_cache(self):
+        self.blueprint_provider.invalidate_cache()
 
     def save(self, node: Union[Node, ListNode], data_source_id: str) -> None:
         # Update none-contained attributes
@@ -100,16 +107,9 @@ class DocumentService:
                 [self.save(x, data_source_id) for x in child.children]
             elif child.not_contained():
                 self.save(child, data_source_id)
-        try:
-            ref_dict = node.to_ref_dict()
-            dto =DTO(ref_dict)
-            self.repository_provider(data_source_id).update(dto)
-        except Exception as error:
-            # easier to control what is saved to mongo with #554. Now a document can fail to persist,
-            # but reference is still created causing EntityNotFoundExceptions raised
-            # on generate index, fetchDocuments etc.
-            logger.error(f"failed to save entity {dto.name}, {dto.attribute_type}, {dto.uid}")
-            logger.exception(error)
+        ref_dict = node.to_ref_dict()
+        dto = DTO(ref_dict)
+        self.repository_provider(data_source_id).update(dto)
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
@@ -125,7 +125,7 @@ class DocumentService:
             raise EntityNotFoundException(document_uid)
 
         dto = DTO(complete_document)
-        return Node.from_dict(dto)
+        return Node.from_dict(dto, blueprint_provider=self.blueprint_provider)
 
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(
@@ -214,20 +214,16 @@ class DocumentService:
             raise EntityNotFoundException(uid=parent_id)
         parent = root.search(f"{parent_id}.{attribute_path}")
 
-        class BlueprintProvider:
-            def get_blueprint(self, type: str):
-                return get_blueprint(type)
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
-        entity: Dict = CreateEntity(BlueprintProvider(), name=name, type=type, description=description).entity
-
-        # TODO: Child Nodes is not created
-        # @eaks, whats the best way? Node.from_dict()?
         new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
-        new_node = Node(key=str(len(parent.children)), dto=DTO(data=entity, uid=new_node_id), blueprint=get_blueprint(type))
+        new_node = Node.from_dict(DTO(data=entity, uid=new_node_id), self.blueprint_provider)
 
         if type == SIMOS.BLUEPRINT.value:
-            new_node.dto["attribute"] = get_required_attributes(type=type)
+            new_node.dto["attributes"] = get_required_attributes(type=type)
 
         parent.add_child(new_node)
         self.save(root, data_source_id)
-        return {"uid": new_node.node_id}
+
+        # hack add items to array. with .root a page refresh is needed.
+        return {"uid": new_node.node_id.replace(".root", "")}
