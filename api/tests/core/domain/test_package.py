@@ -1,7 +1,6 @@
 from unittest import skip
 
-# TODO: Use the dynamic classes (remember that they must (possibly) be generated before this test runs)
-from core.domain.models import Blueprint
+from classes.blueprint import Blueprint
 
 
 @skip("not working")

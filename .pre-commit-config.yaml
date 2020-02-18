@@ -1,37 +1,55 @@
 repos:
 - repo: https://github.com/pre-commit/pre-commit-hooks
-  rev: v2.4.0
+  rev: v2.5.0
   hooks:
     - id: check-ast
       language_version: python3.8
     - id: check-merge-conflict
     - id: check-json
     - id: check-yaml
-    - id: flake8
-      args: ['--config=api/.flake8']
-      language_version: python3.8
+
+# Waiting for rev 3.8 to support ":="
+#- repo: https://gitlab.com/pycqa/flake8
+#  rev: 3.7.9
+#  hooks:
+#    - id: flake8
+#      args: ['--config=api/.flake8']
+#      language_version: python3.8
+
 - repo: https://github.com/ambv/black
   rev: 19.10b0
   hooks:
     - id: black
       language_version: python3.8
       files: ^api/.*\.py$
-- repo: https://github.com/Lucas-C/pre-commit-hooks-bandit
-  rev: v1.0.4
+
+
+- repo: https://github.com/PyCQA/bandit
+  rev: 1.6.2
   hooks:
-    - id: python-bandit-vulnerability-check
+    - id: bandit
       args: [-l, --recursive, -x, tests]
       files: ^api/.*\.py$
+
 - repo: https://github.com/prettier/prettier
-  rev: 1.18.2
+  rev: 1.19.1
   hooks:
     - id: prettier
       files: ^web/.*\.(ts|tsx|js|css|html|json)$
       args: ['--config=web/.prettierrc.js']
+
 - repo: local
   hooks:
-    - id: web tests
-      name: run web tests
+    - id: yarntest
+      name: Yarn tests
       entry: sh -c "cd web && CI=true npm run coverage"
       language: system
       files: ^web/.*\.(test.ts|test.tsx|test.js)$
+    - id: pytest
+      name: API Unit Tests with coverage
+      entry: sh -c "cd api && .venv/bin/python -m coverage run -m pytest tests"
+      language: system
+    - id: pycoverage
+      name: API Test Coverage Report
+      entry: sh -c "cd api && .venv/bin/python -m coverage report > coverage.txt"
+      language: system

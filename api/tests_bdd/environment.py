@@ -1,6 +1,5 @@
 from app import create_app
 from config import Config
-from core.domain.schema import Factory
 from core.utility import wipe_db
 from services.database import dmt_database
 from tests_bdd.results import print_overview_errors, print_overview_features
@@ -14,7 +13,6 @@ app.config["CACHE_MAX_SIZE"] = 0
 def before_all(context):
     context.errors = []
     context.features = []
-
     with app.app_context():
         wipe_db()
         dmt_database.drop_collection(Config.DATA_SOURCES_COLLECTION)
@@ -33,7 +31,6 @@ def after_all(context):
 def after_feature(context, feature):
     if "skip" in feature.tags:
         feature.skip("Marked with @skip")
-
     context.features.append(feature)
 
 
@@ -47,7 +44,6 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    Factory.reset_cache()
     wipe_db()
     dmt_database.drop_collection(Config.DATA_SOURCES_COLLECTION)
     if "data_sources" in context:

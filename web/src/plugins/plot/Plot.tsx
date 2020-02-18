@@ -1,12 +1,11 @@
 import React from 'react'
-import { PluginProps } from '../types'
+import { PluginProps, KeyValue } from '../../domain/types'
 import {
   VictoryTheme,
   VictoryChart,
   VictoryLine,
   VictoryContainer,
 } from 'victory'
-import { KeyValue } from '../BlueprintUtil'
 
 type DataItem = {
   x: number

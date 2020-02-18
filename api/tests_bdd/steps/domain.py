@@ -1,108 +1,77 @@
 from behave import given
-
-from classes.data_source import DataSource
-from core.domain.blueprint import Blueprint
-from core.domain.dto import DTO
-from core.domain.models import Package
-from core.repository.interface.document_repository import DocumentRepository
-from anytree import NodeMixin, RenderTree
-from core.repository.repository_factory import get_repository
 from core.enums import DMT, SIMOS
+from core.service.document_service import DocumentService
+from core.use_case.utils.create_entity import CreateEntity
+from core.utility import BlueprintProvider
+from classes.tree_node import Node, ListNode
+from core.repository.repository_factory import get_repository
+from classes.dto import DTO
+
+blueprint_provider = BlueprintProvider()
 
 
-class TreeNode(NodeMixin):
-    def __init__(self, uid, name, parent, description, type, is_root=False, **kwargs):
-        self.uid = uid
-        self.name = name
-        self.parent = parent
-        self.type = type
-        self.description = description
-        self.dmt_is_root = is_root
-
-    def extra(self):
-        if self.type == DMT.PACKAGE.value:
-            content = []
-            for child in self.children:
-                # Always contained
-                content.append({"_id": child.uid, "name": child.name, "type": child.type})
-            return {"content": content}
-        return {}
-
-
-def generate_tree_from_rows(node: TreeNode, rows):
+def generate_tree_from_rows(node: Node, rows):
     if len(rows) == 0:
         return node
 
-    # Add children to this node
-    children = []
-    for row in rows:
-        if row["parent_uid"] == node.uid:
-            children.append(TreeNode(**row.as_dict(), parent=node))
+    if node.type == DMT.PACKAGE.value:
+        content_node = node.search(f"{node.node_id}.content")
+        # Create content not if not exists
+        if not content_node:
+            data = {
+                "name": "content",
+                "type": DMT.PACKAGE.value,
+                "attributeType": SIMOS.BLUEPRINT_ATTRIBUTE.value,
+            }
+            content_node = ListNode(key="content", dto=DTO(uid="", data=data), blueprint_provider=blueprint_provider)
+            node.add_child(content_node)
+    else:
+        content_node = node
 
-    # Does the created children also have more children?
-    for child in children:
-        # Remove child from list before passing down
-        filtered = list(filter(lambda i: i["uid"] != node.uid, rows))
-        generate_tree_from_rows(child, filtered)
+    for row in rows:
+        # Add children (only to packages)
+        if row["parent_uid"] == node.dto.uid:
+            child_data = row.as_dict()
+            entity = CreateEntity(
+                blueprint_provider=blueprint_provider,
+                type=child_data["type"],
+                description=child_data["description"],
+                name=child_data["name"],
+            ).entity
+            child_node = Node(
+                key="", dto=DTO(uid=child_data["uid"], data=entity), blueprint_provider=blueprint_provider
+            )
+
+            print(f"adding {child_node.node_id} to {node.node_id}")
+            content_node.add_child(child_node)
+
+            if child_node.type == DMT.PACKAGE.value:
+                filtered = list(filter(lambda i: i["uid"] != node.uid, rows))
+                generate_tree_from_rows(child_node, filtered)
 
     return node
 
 
-class Tree:
-    def __init__(self, data_source_id, table):
-        self.data_source = DataSource(id=data_source_id)
-        self.table = table
-        self.root = self._generate_tree()
-
-    def add(self):
-        document_repository: DocumentRepository = get_repository(self.data_source)
-        for pre, fill, node in RenderTree(self.root):
-            if node.type == SIMOS.BLUEPRINT.value:
-                document: DTO[Blueprint] = DTO(
-                    uid=node.uid, data=Blueprint(name=node.name, description=node.description, type=node.type)
-                )
-                document_repository.add(document)
-                print(f"Added blueprint {document.uid}")
-            elif node.type == DMT.PACKAGE.value:
-                package: DTO[Package] = DTO(
-                    Package(
-                        name=node.name,
-                        description=node.description,
-                        type=node.type,
-                        is_root=node.dmt_is_root,
-                        content=node.extra()["content"],
-                    ),
-                    uid=node.uid,
-                )
-                document_repository.add(package)
-                print(f"Added package {package.uid}")
-            else:
-                document: DTO[dict] = DTO(
-                    uid=node.uid, data={"name": node.name, "description": node.description, "type": node.type}
-                )
-                document_repository.add(document)
-                print(f"Added document {document.uid}")
-
-    def print_tree(self):
-        for pre, fill, node in RenderTree(self.root):
-            treestr = "%s%s" % (pre, node.name)
-            print(treestr.ljust(8), f"uid = {node.uid}")
-
-    def _generate_tree(self):
-        # This node is used for prefixing everything with data source
-        root_node = TreeNode(uid=None, name=self.data_source.name, description="", type="", parent=None)
-        package = list(filter(lambda row: row["parent_uid"] == "", self.table.rows))[0]
-        if not package:
-            raise Exception("Root package is not found, you need to specify root package")
-        package_node = TreeNode(**package.as_dict(), parent=root_node, is_root=True)
-        rows = list(filter(lambda row: row["parent_uid"] != "", self.table.rows))
-        generate_tree_from_rows(package_node, rows)
-        return package_node
+def generate_tree(data_source_id: str, table):
+    root_data = {"name": data_source_id, "description": "", "type": ""}
+    root = Node(key=data_source_id, dto=DTO(uid=None, data=root_data), blueprint_provider=blueprint_provider)
+    root_package = list(filter(lambda row: row["parent_uid"] == "", table.rows))[0]
+    if not root_package:
+        raise Exception("Root package is not found, you need to specify root package")
+    root_package_data = root_package.as_dict()
+    root_package_data["isRoot"] = True
+    root_package_node = Node(
+        key="root", dto=DTO(data=root_package_data), blueprint_provider=blueprint_provider, parent=root
+    )
+    rows = list(filter(lambda row: row["parent_uid"] != "", table.rows))
+    generate_tree_from_rows(root_package_node, rows)
+    return root_package_node
 
 
-@given('there are documents for the data source "{data_source}" in collection "{collection}"')
-def step_impl_documents(context, data_source: str, collection: str):
+@given('there are documents for the data source "{data_source_id}" in collection "{collection}"')
+def step_impl_documents(context, data_source_id: str, collection: str):
     context.documents = {}
-    tree = Tree(data_source, context.table)
-    tree.print_tree()
-    tree.add()
+    tree = generate_tree(data_source_id, context.table)
+    tree.show_tree()
+    document_service = DocumentService(repository_provider=get_repository)
+    document_service.save(node=tree, data_source_id=data_source_id)

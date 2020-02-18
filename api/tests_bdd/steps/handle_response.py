@@ -1,11 +1,11 @@
 from behave import then
 import json
 from deepdiff import DeepDiff
-from utils.data_structure.traverse import traverse_compare
 import pprint
-from pygments import highlight
-from pygments.lexers import JsonLexer
-from pygments.formatters import TerminalFormatter
+
+from dotted.collection import DottedDict
+from utils.data_structure.compare import pretty_eq
+from utils.data_structure.find import find
 
 STATUS_CODES = {
     "OK": 200,
@@ -17,11 +17,6 @@ STATUS_CODES = {
     "Conflict": 409,
     "System Error": 500,
 }
-
-
-def print_pygments(json_object):
-    json_str = json.dumps(json_object, indent=2, sort_keys=True)
-    print(highlight(json_str, JsonLexer(), TerminalFormatter()))
 
 
 @then('the response status should be "{status}"')
@@ -51,26 +46,17 @@ def step_impl_equal(context):
     assert result == {}
 
 
-def pretty_eq(expected, actual):
-    try:
-        a = traverse_compare(expected, actual)
-        b = []
-        if a != b:
-            print("Actual:")
-            print_pygments(actual)
-            print("Expected:")
-            print_pygments(expected)
-            print("Differences:")
-            print_pygments(a)
-        assert a == b
-    except KeyError:
-        print_pygments(actual)
-        raise Exception
-    except IndexError:
-        print_pygments(actual)
-        raise Exception
-    except Exception:
-        raise Exception
+@then("the response at {dot_path} should equal")
+def step_impl_equal_dot_path(context, dot_path):
+    actual = context.response_json
+    target = find(actual, dot_path.split("."))
+    data = context.text or context.data
+    expected = json.loads(data)
+    result = DeepDiff(target, expected, ignore_order=True)
+    if result != {}:
+        print("Actual:", target)
+        print("Expected:", expected)
+    assert result == {}
 
 
 @then("the response should contain")
@@ -79,6 +65,17 @@ def step_impl_contain(context):
     data = context.text or context.data
     expected = json.loads(data)
     pretty_eq(expected, actual)
+
+
+@then("the array at {dot_path} should be of length {length}")
+def step_impl_contain(context, dot_path, length):
+    actual = context.response_json
+    target = find(actual, dot_path.split("."))
+    result = len(target) == int(length)
+    if not result:
+        print(f"array is of length {len(target)}")
+        print("array:", target)
+    assert result
 
 
 @then("the response should be")

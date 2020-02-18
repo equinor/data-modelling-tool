@@ -13,7 +13,7 @@ import { IndexNode } from '../../../api/Api'
 import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
-import { Entity } from '../../../plugins/types'
+import { Entity } from '../../../domain/types'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -46,8 +46,7 @@ const createNodes = (props: CreateNodesProps) => {
       const indexNodes = nodes.map((node: IndexNode) =>
         new TreeNodeBuilderOld(node).build()
       )
-      // TODO: Is it possible to move parent id to API? Seems hard.
-      const parentId = nodes[0]['parentId'] || node.nodeData.nodeId
+      const parentId = nodes[0]['parentId']
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
       // Connect new nodes to parent in tree

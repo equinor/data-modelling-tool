@@ -6,22 +6,26 @@
     {
       "name": "name",
       "optional": false,
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "Name of the widget."
     },
     {
       "name": "type",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": "system/SIMOS/UiWidget"
     },
     {
       "name": "optional",
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": false,
       "description": "Used to control what plugin in chosen."
     },
     {
-      "type": "system/SIMOS/UiAttribute",
+      "attributeType": "system/SIMOS/UiAttribute",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "options",
       "dimensions": "*",
       "description": "List of options for this widget. may be anything, title, another widget or styling."

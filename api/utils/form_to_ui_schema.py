@@ -1,10 +1,9 @@
 from typing import List
 
-from core.domain.blueprint import get_ui_recipe_from_blueprint
-from core.use_case.utils.get_template import get_blueprint
+from core.utility import get_blueprint_cached
 from utils.data_structure.find import get
 
-PRIMITIVES = ["string", "number", "integer", "boolean"]
+from core.enums import PRIMITIVES
 
 
 def find_attribute(name: str, attributes: List):
@@ -48,7 +47,7 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if attribute_type in PRIMITIVES:
         return get_attribute_config(ui_attribute)
     else:
-        blueprint = get_blueprint(attribute_type)
+        blueprint = get_blueprint_cached(attribute_type)
         if attribute_dimensions == "*":
             if field := get(ui_attribute, "field", default=None):
                 result["ui:field"] = field
@@ -69,10 +68,8 @@ def process_ui_recipe(ui_recipe, attributes):
 
     setting = {}
     for attribute in attributes:
-        name = get(attribute, "name")
-        result = process_attributes(
-            name, get(attribute, "type"), get(attribute, "dimensions"), get(ui_recipe, "attributes")
-        )
+        name = attribute.name
+        result = process_attributes(name, attribute.attribute_type, attribute.dimensions, ui_recipe.get("attributes"))
         setting[name] = result
 
     return setting
@@ -105,7 +102,7 @@ def form_to_ui_schema(blueprint, ui_recipe_name=None):
         ui_recipe = DEFAULT_CREATE_UI_RECIPE
         is_contained = ["name", "description"]
         attributes = []
-        for attribute in filter(lambda x: x.name not in is_contained, blueprint.attributes):
+        for attribute in [attr for attr in blueprint.attributes if attr.name not in is_contained]:
             attributes.append({"name": attribute.name, "contained": False})
         ui_recipe["attributes"] = attributes
         ui_recipes.append(ui_recipe)
@@ -119,7 +116,7 @@ def form_to_ui_schema(blueprint, ui_recipe_name=None):
 
     if ui_recipe_name:
         result[ui_recipe_name] = process_ui_recipe(
-            get_ui_recipe_from_blueprint(blueprint, ui_recipe_name), blueprint.attributes
+            blueprint.get_ui_recipe_from_blueprint(ui_recipe_name), blueprint.attributes
         )
     else:
         for ui_recipe in ui_recipes:

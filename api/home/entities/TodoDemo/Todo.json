@@ -1,0 +1,9 @@
+{
+  "type": "SSR-DataSource/TodoDemo/Todo",
+  "name": "Todo",
+  "list": {
+     "name": "List",
+     "type": "SSR-DataSource/TodoDemo/TodoList",
+     "items": []
+  }
+}

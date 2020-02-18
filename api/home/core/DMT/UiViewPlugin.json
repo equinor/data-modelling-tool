@@ -6,31 +6,37 @@
     {
       "name": "name",
       "optional": false,
-      "type": "string"
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
     },
     {
       "name": "description",
       "optional": true,
-      "type": "string"
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
     },
     {
       "name": "label",
       "description": "Label of a tab or label in a dropdown.",
-      "type": "string"
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
     },
     {
       "name": "type",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": "system/DMT/UiViewPlugin"
     },
     {
       "name": "required",
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": false,
       "description": "Whether this plugin is required or not, in tabs, for instance."
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "widgets",
       "dimensions": "*",
       "description": "List of type of the widgets this plugin supports."

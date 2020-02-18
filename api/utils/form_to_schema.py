@@ -1,22 +1,12 @@
-from typing import List
-
-from core.domain.models import Blueprint
-from core.domain.ui_recipe import UIRecipe
-from core.use_case.utils.get_template import get_blueprint
+from classes.blueprint import Blueprint
+from classes.ui_recipe import UIRecipe
+from core.utility import get_blueprint_cached
 from core.use_case.utils.get_ui_recipe import get_ui_recipe
 
-PRIMITIVES = ["string", "number", "integer", "boolean"]
+from core.enums import PRIMITIVES
 
 
-def find_attribute(name: str, attributes: List):
-    return next((x for x in attributes if x["name"] == name), None)
-
-
-def get_attribute_config(attribute):
-    return attribute.to_dict(include_defaults=False)
-
-
-def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
+def process_attributes(blueprint: Blueprint, parent_blueprint: Blueprint, ui_recipe_name):
     properties = {}
 
     ui_recipe: UIRecipe = get_ui_recipe(blueprint, ui_recipe_name)
@@ -31,17 +21,16 @@ def process_attributes(blueprint, parent_blueprint, ui_recipe_name):
         if not is_contained:
             continue
 
-        if attribute.type in PRIMITIVES:
-            attribute_config = get_attribute_config(attribute)
+        if attribute.attribute_type in PRIMITIVES:
             properties[attribute_name] = (
-                attribute_config if not is_array else {"type": "array", "items": attribute_config}
+                attribute.to_json_schema() if not is_array else {"type": "array", "items": attribute.to_json_schema()}
             )
         else:
-            nested_attributes.append({"name": attribute_name, "type": attribute.type, "is_array": is_array})
+            nested_attributes.append({"name": attribute_name, "type": attribute.attribute_type, "is_array": is_array})
 
     for nested_type in nested_attributes:
         attribute_name = nested_type["name"]
-        nested_blueprint = get_blueprint(nested_type["type"])
+        nested_blueprint = get_blueprint_cached(nested_type["type"])
 
         if parent_blueprint and nested_blueprint == parent_blueprint:
             continue

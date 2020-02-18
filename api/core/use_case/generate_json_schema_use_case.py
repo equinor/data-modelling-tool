@@ -1,6 +1,5 @@
-from core.domain.template import Template
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_template import get_blueprint
+from core.utility import BlueprintProvider
 from utils.form_to_ui_schema import form_to_ui_schema
 from utils.form_to_schema import form_to_schema
 from core.shared import use_case as uc
@@ -30,14 +29,13 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
     def process_request(self, request_object: GenerateJsonSchemaRequestObject):
         type = request_object.type
         ui_recipe_name = request_object.ui_recipe
-        blueprint = get_blueprint(type)
+        blueprint_provider = BlueprintProvider()
+        blueprint = blueprint_provider.get_blueprint(type)
 
         if not blueprint:
             raise EntityNotFoundException(uid=type)
 
         ui_recipes = form_to_ui_schema(blueprint)
         ui_schema = ui_recipes[ui_recipe_name] if ui_recipe_name in ui_recipes else {}
-        # TODO: Replace
-        template = Template(schema=form_to_schema(blueprint, ui_recipe_name), ui_schema=ui_schema)
-
-        return res.ResponseSuccess(template.to_dict())
+        blueprint_provider.invalidate_cache()
+        return res.ResponseSuccess({"schema": form_to_schema(blueprint, ui_recipe_name), "uiSchema": ui_schema})

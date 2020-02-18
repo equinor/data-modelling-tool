@@ -1,8 +1,11 @@
 import React, { useState } from 'react'
 import styled from 'styled-components'
-import { BlueprintAttribute } from '../types'
-import { isPrimitive } from '../pluginUtils'
+import { BlueprintAttributeType } from '../../domain/types'
 import BlueprintSelectorWidget from './BlueprintSelectorWidget'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
+import { BlueprintEnum } from '../../util/variables'
+import DestinationSelectorWidget from './DestinationSelectorWidget'
+import { DataSourceType } from '../../api/Api'
 
 export const AttributeWrapper = styled.div`
   margin: 2px 2px;
@@ -19,7 +22,7 @@ export enum DataType {
 }
 
 interface InputProps {
-  attribute: BlueprintAttribute
+  attributeType: BlueprintAttributeType
   onChange: AttributeOnChange
 }
 
@@ -39,35 +42,35 @@ interface TextInputProps extends InputProps {
 }
 
 export const TextInput = (props: TextInputProps) => {
-  const { onChange, attribute } = props
+  const { onChange, attributeType } = props
   let { value } = props
 
-  const name = attribute.name
-  if (value === undefined && attribute.default !== undefined) {
-    value = String(attribute.default)
+  const name = attributeType.name
+  if (value === undefined && attributeType.default !== undefined) {
+    value = String(attributeType.default)
   }
   return (
     <input
       type="text"
       name={name}
-      value={value || attribute.default || ''}
-      onChange={event => onChange(attribute, event.target.value)}
+      value={value || attributeType.default || ''}
+      onChange={event => onChange(attributeType, event.target.value)}
     />
   )
 }
 
 export const TextAreaWidget = (props: TextInputProps) => {
-  const { onChange, attribute } = props
+  const { onChange, attributeType } = props
   let { value } = props
 
-  if (value === undefined && attribute.default !== undefined) {
-    value = String(attribute.default)
+  if (value === undefined && attributeType.default !== undefined) {
+    value = String(attributeType.default)
   }
   return (
     <textarea
       style={{ width: 200, height: 40 }}
-      value={value || attribute.default || ''}
-      onChange={event => onChange(attribute, event.target.value)}
+      value={value || attributeType.default || ''}
+      onChange={event => onChange(attributeType, event.target.value)}
     />
   )
 }
@@ -77,18 +80,18 @@ interface NumberInputProps extends InputProps {
 }
 
 export const NumberInput = (props: NumberInputProps) => {
-  const { onChange, attribute } = props
+  const { onChange, attributeType } = props
   let { value } = props
-  const name = attribute.name
-  if (!value && attribute.default !== undefined) {
-    value = Number(attribute.default)
+  const name = attributeType.name
+  if (!value && attributeType.default !== undefined) {
+    value = Number(attributeType.default)
   }
   return (
     <input
       type="number"
       name={name}
       value={value}
-      onChange={event => onChange(attribute, event.target.value)}
+      onChange={event => onChange(attributeType, event.target.value)}
     />
   )
 }
@@ -108,17 +111,19 @@ export const TypeDropdown = (props: any) => {
 
 type TypeProps = {
   onChange: AttributeOnChange
-  attribute: BlueprintAttribute
+  attributeType: BlueprintAttributeType
   value: string
   uiSchema: any
 }
 
 export const TypeWidget = (props: TypeProps) => {
-  const { onChange, attribute, value } = props
-  const typeValue = isPrimitive(value) ? value : DataType.BLUEPRINT
+  const { onChange, attributeType, value } = props
+  const attr = new BlueprintAttribute(attributeType)
+  const typeValue = attr.isPrimitiveType(value) ? value : DataType.BLUEPRINT
   const [selectedType, setSelectedType] = useState(
-    typeValue || attribute.default
+    value ? typeValue : DataType.STRING
   )
+
   let blueprintValue
   if (typeValue === DataType.BLUEPRINT && value !== DataType.BLUEPRINT) {
     blueprintValue = value
@@ -128,22 +133,38 @@ export const TypeWidget = (props: TypeProps) => {
   return (
     <>
       <TypeDropdown
-        value={selectedType}
-        attribute={attribute}
+        value={selectedType ? selectedType : DataType.BLUEPRINT}
         onChange={(event: any) => {
           setSelectedType(event.target.value)
-          onChange(attribute, event.target.value)
+          onChange(attributeType, event.target.value)
         }}
       />
       {selectedType === DataType.BLUEPRINT && (
         <BlueprintSelectorWidget
           onChange={(value: any) => {
-            onChange(attribute, value)
+            onChange(attributeType, value)
           }}
           formData={blueprintValue}
           uiSchema={{}}
         />
       )}
+    </>
+  )
+}
+
+export const EnumTypePickerWidget = (props: TypeProps) => {
+  const { onChange, attributeType, value = '' } = props
+  return (
+    <>
+      <DestinationSelectorWidget
+        datasourceType={DataSourceType.Blueprints}
+        blueprintFilter={BlueprintEnum.ENUM}
+        title=""
+        onChange={(value: any) => {
+          onChange(attributeType, value)
+        }}
+        formData={value}
+      />
     </>
   )
 }

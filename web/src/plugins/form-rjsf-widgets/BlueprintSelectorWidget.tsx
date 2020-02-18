@@ -12,10 +12,16 @@ export type Props = {
   onChange: Function
   formData: any
   uiSchema: any
+  blueprintFilter?: BlueprintEnum
 }
 
 export default (props: Props) => {
-  const { onChange, formData, uiSchema } = props
+  const {
+    onChange,
+    formData,
+    uiSchema,
+    blueprintFilter = BlueprintEnum.BLUEPRINT,
+  } = props
   const [datasources, setDatasources] = useState<Datasource[]>([])
   const [blueprint, setBlueprint] = useState<string>(formData)
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -59,9 +65,10 @@ export default (props: Props) => {
             render={(renderProps: TreeNodeRenderProps) => {
               const { nodeData } = renderProps
               const type = nodeData.meta.type
+
               return (
                 <>
-                  {type === BlueprintEnum.BLUEPRINT ? (
+                  {type === blueprintFilter ? (
                     <div
                       onClick={() => {
                         onSelect(`${renderProps.path}/${nodeData.title}`)

@@ -1,16 +1,14 @@
 import json
 
-from core.domain.data_source import DataSource
-
 
 class CreateDataSourceSerializer(json.JSONEncoder):
-    def default(self, data_source: DataSource):
+    def default(self, data_source):
         try:
             to_serialize = {
-                "id": data_source.id,
-                "name": data_source.name,
-                "host": data_source.host,
-                "type": data_source.type,
+                "id": data_source["id"],
+                "name": data_source["name"],
+                "host": data_source["host"],
+                "type": data_source["type"],
             }
             return to_serialize
         except AttributeError:

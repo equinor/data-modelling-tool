@@ -1,11 +1,9 @@
 import unittest
-from typing import Optional
-from core.repository.file.document_repository import TemplateRepositoryFromFile
-
-
 from enum import Enum
 
-from core.domain.schema import Factory
+from classes.blueprint import Blueprint
+from classes.dto import DTO
+from core.repository.file import TemplateRepositoryFromFile
 from core.use_case.utils.create_entity import CreateEntity
 from utils.helper_functions import schemas_location
 
@@ -21,10 +19,11 @@ class CreateEntityTestCase(unittest.TestCase):
 
     def test_blueprint_entity(self):
         expected_entity = {
+            "engine2": {},
             "engine": {
                 "description": "",
                 "fuelPump": {
-                    "name": "",
+                    "name": "fuelpumptest",
                     "description": "A standard fuel pump",
                     "type": "ds/test_data/complex/FuelPumpTest",
                 },
@@ -44,22 +43,16 @@ class CreateEntityTestCase(unittest.TestCase):
             "stringValues": ["one", "two", "three"],
         }
 
-        blueprint_provider = BlueprintProviderTest()
+        file_repository_test = TemplateRepositoryFromFile(schemas_location())
+
+        class BlueprintProvider:
+            def get_blueprint(self, template_type: str):
+                return Blueprint(DTO(file_repository_test.get(template_type)))
+
         type = "ds/test_data/complex/CarTest"
-        car_blueprint = blueprint_provider.get_blueprint(template_type=type)
-        print(car_blueprint)
 
         entity = CreateEntity(
-            blueprint_provider=blueprint_provider, type=type, description="crappy car", name="Mercedes"
+            blueprint_provider=BlueprintProvider(), type=type, description="crappy car", name="Mercedes"
         ).entity
 
         self.assertEqual(expected_entity, entity)
-
-
-class BlueprintProviderTest:
-    def __init__(self):
-        file_repository_test = TemplateRepositoryFromFile(schemas_location())
-        self._factory_test = Factory(template_repository=file_repository_test, read_from_file=True)
-
-    def get_blueprint(self, template_type: str) -> Optional[type]:
-        return self._factory_test.create(template_type)

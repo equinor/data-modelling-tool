@@ -2,8 +2,8 @@
   "type": "system/SIMOS/Application",
   "name": "DMTApplicationSettings",
   "description": "",
-  "entities": ["CarPackage"],
-  "packages": ["CarPackage", "ActionsTest","TodoPackage", "marmo", "mooringSRS"],
+  "entities": ["CarPackage", "TodoDemo"],
+  "packages": ["CarPackage","TodoDemo", "marmo", "mooringSRS"],
   "models": ["system/DMT/Entity"],
   "actions": [
     {

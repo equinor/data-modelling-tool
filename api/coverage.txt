@@ -1,0 +1,41 @@
+Name                                                       Stmts   Miss    Cover   Missing
+------------------------------------------------------------------------------------------
+utils/form_to_schema.py                                       29     22    24.1%   10-46, 50
+core/use_case/utils/get_ui_recipe.py                          23     17    26.1%   9-19, 24-29
+core/use_case/add_file_use_case.py                            45     33    26.7%   21-28, 32-52, 66, 69-86
+classes/data_source.py                                        22     16    27.3%   9-12, 15-27
+core/utility.py                                               71     50    29.6%   22-36, 40-48, 53-58, 62-66, 71-76, 84-90, 93-97
+tests/core/use_case/test_add_file_to_package_use_case.py      20     14    30.0%   11-33
+core/repository/__init__.py                                   34     22    35.3%   11-13, 16-21, 24-33, 36-42, 45, 48
+classes/ui_recipe.py                                          33     20    39.4%   13-14, 19-21, 27-48, 53
+classes/recipe.py                                             40     24    40.0%   15-16, 21-25, 28-30, 33-34, 37-50, 55
+utils/helper_functions.py                                     15      9    40.0%   6-9, 13-17
+core/repository/mongo/__init__.py                             32     19    40.6%   13-22, 25-28, 31-35, 38-42, 45, 48, 51
+tests/core/domain/test_package.py                             24     14    41.7%   8-12, 17-19, 24-26, 31-34
+utils/data_structure/compare.py                               28     16    42.9%   9-10, 18-23, 25-32
+tests/classes/test_tree_error_node.py                         15      7    53.3%   29-45
+core/repository/repository_exceptions.py                      15      6    60.0%   3-4, 7, 12, 17, 22
+core/shared/use_case.py                                       13      5    61.5%   8, 11-13, 16
+core/repository/repository_factory.py                          8      3    62.5%   8-10
+classes/blueprint.py                                          53     19    64.2%   32-36, 49, 60, 63-67, 70, 76-82
+core/use_case/create_application_use_case.py                 108     36    66.7%   172, 175, 185, 193-194, 200-226, 230-234, 246, 268-270
+core/shared/response_object.py                                37     12    67.6%   20-21, 24-26, 30, 33, 37, 41, 45, 49-52
+utils/data_structure/find.py                                  37     12    67.6%   23-24, 28-30, 36-41, 43
+core/service/document_service.py                             137     41    70.1%   18-21, 25, 36, 54, 69-70, 97, 100, 120-125, 131, 140, 145, 160, 184, 194-209, 215-232
+core/repository/file/__init__.py                              32      8    75.0%   21, 25-26, 30-31, 34, 37, 40
+utils/data_structure/traverse.py                              35      8    77.1%   20, 53-55, 59-62
+tests/core/repository/mongo/test_document_repository.py        9      2    77.8%   12-13
+classes/dto.py                                                57     11    80.7%   30, 36-37, 44, 51, 55-56, 64, 68-69, 76
+classes/tree_node.py                                         259     47    81.9%   43-45, 62, 80-84, 139-141, 145, 151, 154, 165-166, 177-180, 183, 206, 238, 243-245, 251, 260-263, 278, 284, 303-304, 315-320, 329, 336-342, 345, 356, 366, 374-375
+core/shared/request_object.py                                 17      3    82.4%   6, 12, 20
+core/use_case/utils/create_entity.py                          84     14    83.3%   13-14, 17, 22, 44-48, 60-62, 66, 68, 70, 72
+core/enums.py                                                 28      4    85.7%   13-14, 24-25
+services/database.py                                           8      1    87.5%   10
+classes/storage_recipe.py                                     30      3    90.0%   16, 32, 43
+classes/blueprint_attribute.py                                30      2    93.3%   43, 57
+utils/group_by.py                                             17      1    94.1%   18
+tests/core/service/test_document_service.py                  224      6    97.3%   83, 111, 142, 173, 212, 503
+------------------------------------------------------------------------------------------
+TOTAL                                                       2081    527    74.7%
+
+25 files skipped due to complete coverage.

@@ -8,6 +8,8 @@ Feature: Index
       | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local      | SSR-DataSource | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system           | local      | system         | blueprints   | mongo-db |
 
+    Given data modelling tool templates are imported
+
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                   |
       | 1   |            | blueprints    |             | system/DMT/Package     |
@@ -15,8 +17,7 @@ Feature: Index
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
   Scenario: Get index
-    Given I access the resource url "/api/v3/index/data-source-name"
-    And data modelling tool templates are imported
+    Given I access the resource url "/api/v4/index/data-source-name"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain

@@ -5,7 +5,6 @@ import click
 from flask import Flask
 
 from config import Config
-from core.domain.schema import Factory
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System, Actions
 from core.utility import wipe_db
 from services.database import dmt_database
@@ -44,8 +43,6 @@ def init_application():
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
         )
-    logger.info("Resetting the cache of generated blueprints")
-    Factory.reset_cache()
 
 
 @app.cli.command()
@@ -55,7 +52,6 @@ def reset_core_packages():
     logger.warning(f"Importing core packages...")
     for folder in Config.SYSTEM_FOLDERS:
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
-    Factory.reset_cache()
 
 
 @app.cli.command()

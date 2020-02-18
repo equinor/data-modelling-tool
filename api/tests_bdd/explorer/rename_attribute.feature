@@ -60,19 +60,23 @@ Feature: Explorer - Remove file
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "type"
         },
         {
-          "type": "data-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "attributeType": "data-source-name/TestData/ItemType",
           "name": "item"
         }
       ],
@@ -102,19 +106,23 @@ Feature: Explorer - Remove file
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "type"
         },
         {
-          "type": "data-source-name/TestData/ItemTypeTwo",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "attributeType": "data-source-name/TestData/ItemTypeTwo",
           "name": "itemTwo"
         }
       ],
@@ -127,23 +135,27 @@ Feature: Explorer - Remove file
     """
     {
       "type": "system/SIMOS/Blueprint",
-          "name": "ItemTypeTwo",
+      "name": "ItemTypeTwo",
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "type"
         },
         {
-          "type": "data-source-name/TestData/ItemTypeThree",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "attributeType": "data-source-name/TestData/ItemTypeThree",
           "name": "itemThree"
         }
       ],
@@ -173,15 +185,18 @@ Feature: Explorer - Remove file
       "description": "",
       "attributes": [
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "name"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
         },
         {
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "name": "type"
         }
       ],
@@ -222,13 +237,13 @@ Feature: Explorer - Remove file
     """
 
   Scenario: Rename attribute - the index ui recipe
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-attribute"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
   """
   {
     "parentId": "2",
-    "attribute": "uiRecipes.1",
+    "documentId": "2.uiRecipes.1",
     "name": "New Name"
   }
   """
@@ -263,13 +278,13 @@ Feature: Explorer - Remove file
   """
 
   Scenario: Rename attribute - the item
-    Given i access the resource url "/api/v2/explorer/data-source-name/rename-attribute"
+    Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     And data modelling tool templates are imported
     When i make a "PUT" request
   """
   {
     "parentId": "6",
-    "attribute": "item",
+    "documentId": "6.item",
     "name": "New Name"
   }
   """

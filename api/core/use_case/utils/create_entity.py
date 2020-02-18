@@ -1,10 +1,11 @@
-from core.domain.dynamic_models import BlueprintAttribute, AttributeTypes, Blueprint
-from utils.data_structure.find import get
-from json import JSONDecodeError
 import json
+from json import JSONDecodeError
 
-# on changes in testdata, run command:
-# doit create:system:blueprints
+from classes.blueprint import Blueprint
+from classes.blueprint_attribute import BlueprintAttribute
+from utils.data_structure.find import get
+
+from utils.form_to_schema import PRIMITIVES
 
 
 class CreateEntityException(Exception):
@@ -27,11 +28,11 @@ class CreateEntity:
         self.description = description
         self.type = type
         self.blueprint_provider = blueprint_provider
-        self.attribute_types: AttributeTypes = self.blueprint_provider.get_blueprint("system/SIMOS/AttributeTypes")
+        self.attribute_types = self.blueprint_provider.get_blueprint("system/SIMOS/AttributeTypes").to_dict()
         self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint("system/SIMOS/BlueprintAttribute")
-        self.attribute_optional: BlueprintAttribute = [
+        self.attribute_optional: BlueprintAttribute = next(
             attr for attr in self.blueprint_attribute.attributes if get(attr, "name") == "optional"
-        ][0]
+        )
         blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
         entity = {"name": name, "description": description}
         self._entity = self._get_entity(blueprint=blueprint, parent_type=type, entity=entity)
@@ -46,18 +47,14 @@ class CreateEntity:
         # todo use default in optional attribute
         return False
 
-    @property
-    def primitives(self):
-        return [type for type in get(self.attribute_types, "values") if type != "blueprint"]
-
     @staticmethod
     def parse_value(attr: BlueprintAttribute):
         # @todo add exception handling
         default_value = attr.default
-        type = attr.type
+        type = attr.attribute_type
 
         # TODO: Generalize this "setting_defaults" and reuse everywhere (schema)
-        if default_value is not None and len(default_value) > 0 and attr.dimensions == "*":
+        if default_value is not None and len(default_value) > 0 and attr.is_array():
             try:
                 return json.loads(default_value)
             except JSONDecodeError:
@@ -97,15 +94,23 @@ class CreateEntity:
     def _get_entity(self, blueprint: Blueprint, parent_type: str, entity):
         for attr in blueprint.attributes:
             is_optional = self.is_optional(attr)
-            if attr.type in self.primitives:
+            if attr.attribute_type in PRIMITIVES:
                 if is_optional is not None and not is_optional:
                     default_value = CreateEntity.default_value(attr=attr, parent_type=parent_type)
+
+                    if attr.name == "name" and len(default_value) == 0:
+                        default_value = parent_type.split("/")[-1].lower()
+
                     if attr.name not in entity:
                         entity[attr.name] = default_value
             else:
-                blueprint = self.blueprint_provider.get_blueprint(attr.type)
-                if attr.dimensions == "*":
+                blueprint = self.blueprint_provider.get_blueprint(attr.attribute_type)
+                if attr.is_array():
                     entity[attr.name] = []
+                elif attr.is_optional():
+                    entity[attr.name] = {}
                 else:
-                    entity[attr.name] = self._get_entity(blueprint=blueprint, parent_type=attr.type, entity={})
+                    entity[attr.name] = self._get_entity(
+                        blueprint=blueprint, parent_type=attr.attribute_type, entity={}
+                    )
         return entity

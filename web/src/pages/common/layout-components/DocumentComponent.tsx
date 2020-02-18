@@ -9,7 +9,7 @@ import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
 import { EditPlugin, PlotPlugin, ViewPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
-import { PluginProps, UiRecipe } from '../../../plugins/types'
+import { PluginProps, UiRecipe } from '../../../domain/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
 import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
 import Api2 from '../../../api/Api2'
@@ -34,8 +34,8 @@ export enum RegisteredPlugins {
 const View = (props: any) => {
   const {
     schemaUrl,
-    blueprint,
-    blueprints,
+    blueprintType,
+    blueprintTypes,
     document,
     dataUrl,
     uiRecipe,
@@ -44,9 +44,9 @@ const View = (props: any) => {
   } = props
 
   let pluginProps: PluginProps = {
-    blueprint,
+    blueprintType,
     document,
-    blueprints,
+    blueprintTypes,
     uiRecipe,
     dtos,
   }
@@ -90,8 +90,8 @@ const View = (props: any) => {
     case RegisteredPlugins.EDIT:
       return (
         <ReactJsonSchemaWrapper
-          blueprint={blueprint}
-          blueprints={blueprints}
+          blueprintType={blueprintType}
+          blueprints={blueprintTypes}
           document={document}
           schemaUrl={schemaUrl}
           dataUrl={dataUrl}
@@ -116,8 +116,8 @@ const View = (props: any) => {
 
 const ViewList = (props: PluginProps) => {
   const generateUiRecipeTabs = new GenerateUiRecipeTabs(
-    props.blueprint.uiRecipes,
-    getDefaultTabs(props.blueprint.uiRecipes)
+    props.blueprintType.uiRecipes,
+    getDefaultTabs(props.blueprintType.uiRecipes)
   )
   const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
   return (
@@ -157,8 +157,8 @@ const DocumentComponent = (props: any) => {
             <ViewList
               {...props}
               document={document}
-              blueprints={data.children}
-              blueprint={data.blueprint}
+              blueprintTypes={data.children}
+              blueprintType={data.blueprint}
               dtos={data.dtos || []}
             />
           )

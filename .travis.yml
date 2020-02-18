@@ -23,9 +23,6 @@ stages:
   - name: update-core-prod
     if: branch = stable
 
-before_install:
-  - pip3 install doit
-
 jobs:
   include:
     - stage: build

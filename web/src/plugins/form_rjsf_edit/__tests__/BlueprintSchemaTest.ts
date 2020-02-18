@@ -1,4 +1,4 @@
-import { Blueprint as BlueprintType, Entity } from '../../types'
+import { BlueprintType, Entity } from '../../../domain/types'
 import { BlueprintSchema } from '../BlueprintSchema'
 import { BlueprintProvider } from '../../BlueprintProvider'
 import { RegisteredPlugins } from '../../../pages/common/layout-components/DocumentComponent'
@@ -13,22 +13,25 @@ const document: Entity = {
 describe('BlueprintSchema', () => {
   describe('Basic form', () => {
     let schema: any = null
-    const blueprint: BlueprintType = {
+    const blueprintType: BlueprintType = {
       name: '',
       description: '',
       type: '',
       attributes: [
         {
           name: 'name',
-          type: 'string',
+          attributeType: 'string',
+          type: 'system/SIMOS/BlueprintAttribute',
         },
         {
           name: 'pressure',
-          type: 'number',
+          attributeType: 'number',
+          type: 'system/SIMOS/BlueprintAttribute',
         },
         {
           name: 'diameter',
-          type: 'number',
+          attributeType: 'number',
+          type: 'system/SIMOS/BlueprintAttribute',
           dimensions: '*',
         },
       ],
@@ -37,7 +40,7 @@ describe('BlueprintSchema', () => {
     beforeEach(() => {
       const blueprintProvider = new BlueprintProvider([], [])
       schema = new BlueprintSchema(
-        blueprint,
+        blueprintType,
         document,
         blueprintProvider,
         uiRecipeTest,
@@ -71,18 +74,20 @@ describe('BlueprintSchema', () => {
 
   describe('Nested form', () => {
     let schema: any = null
-    const blueprint: BlueprintType = {
+    const blueprintType: BlueprintType = {
       name: '',
       description: '',
       type: '',
       attributes: [
         {
           name: 'name',
-          type: 'string',
+          attributeType: 'string',
+          type: 'system/SIMOS/BlueprintAttribute',
         },
         {
           name: 'wheels',
-          type: 'ds/Wheel',
+          attributeType: 'ds/Wheel',
+          type: 'system/SIMOS/BlueprintAttribute',
           dimensions: '*',
         },
       ],
@@ -107,15 +112,18 @@ describe('BlueprintSchema', () => {
         attributes: [
           {
             name: 'wheelName',
-            type: 'string',
+            attributeType: 'string',
+            type: 'system/SIMOS/BlueprintAttribute',
           },
           {
             name: 'diameter',
-            type: 'number',
+            attributeType: 'number',
+            type: 'system/SIMOS/BlueprintAttribute',
           },
           {
             name: 'recursiveWheels',
-            type: 'ds/Wheel',
+            attributeType: 'ds/Wheel',
+            type: 'system/SIMOS/BlueprintAttribute',
             dimensions: '*',
           },
         ],
@@ -143,7 +151,7 @@ describe('BlueprintSchema', () => {
     beforeEach(() => {
       const blueprintProvider = new BlueprintProvider(blueprints, [])
       schema = new BlueprintSchema(
-        blueprint,
+        blueprintType,
         document,
         blueprintProvider,
         uiRecipeTest,

@@ -61,16 +61,16 @@ async function run({ input, output, updateDocument }) {
 
   // If the browser is interrupted during this sleep, the rest of the function will NOT be executed.
   await sleep(10000)
-  entity = { description: 'a' }
+  entity.description = 'a'
   updateDocument({ ...output, entity })
   // updateDocument({ ...output, entity: myExternalSystemCall(input) })
 
   await sleep(2000)
-  entity = { description: 'b' }
+  entity.description = 'b'
   updateDocument({ ...output, entity })
 
   await sleep(5000)
-  entity = { description: 'c' }
+  entity.description = 'c'
   updateDocument({ ...output, entity })
 }
 

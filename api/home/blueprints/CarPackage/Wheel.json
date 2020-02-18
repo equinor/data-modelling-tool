@@ -4,35 +4,35 @@
   "description": "This describes a wheel",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
       "name": "name",
       "optional": false
     },
     {
-      "type": "string",
+      "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
       "name": "description",
       "optional": false
     },
     {
-      "type": "string",
+      "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
       "name": "type",
       "optional": false,
       "default": "SSR-DataSource/CarPackage/Wheel"
     },
     {
-      "type": "number",
+      "attributeType": "number", "type": "system/SIMOS/BlueprintAttribute",
       "name": "diameter",
       "optional": false,
       "default": "120"
     },
     {
       "name": "pressure",
-      "type": "number",
+      "attributeType": "number", "type": "system/SIMOS/BlueprintAttribute",
       "optional": false
     },
     {
       "name": "wheelsRecursive",
-      "type": "SSR-DataSource/CarPackage/Wheel",
+      "attributeType": "SSR-DataSource/CarPackage/Wheel", "type": "system/SIMOS/BlueprintAttribute",
       "default": "[]",
       "dimensions": "*"
     }

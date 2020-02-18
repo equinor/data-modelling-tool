@@ -1,14 +1,14 @@
 //fallback when blueprint and blueprints cant be used.
 import Switch from 'react-switch'
 import React from 'react'
-import { BlueprintAttribute } from '../types'
+import { BlueprintAttributeType } from '../../domain/types'
 import { AttributeOnChange } from './AttributeInputs'
 
 export function getBooleanValue(
   value: string | boolean | undefined,
-  blueprintAttribute: BlueprintAttribute
+  attributeType: BlueprintAttributeType
 ): boolean {
-  const defaultValue = blueprintAttribute.default
+  const defaultValue = attributeType.default
   if (value === undefined) {
     //use default value
     if (typeof defaultValue === 'string' && defaultValue) {
@@ -36,21 +36,22 @@ export function getBooleanValue(
 
 interface BoolDefaultInput {
   value: boolean | string
-  attribute: BlueprintAttribute
+  attributeType: BlueprintAttributeType
   onChange: AttributeOnChange
 }
 
 export const BooleanWidget = (props: BoolDefaultInput) => {
-  const { onChange, attribute, value } = props
+  const { onChange, attributeType, value } = props
   const onChangeBool = (inputValue: boolean) => {
     let newValue: string | boolean = inputValue
-    if (attribute.type === 'string') {
-      newValue = inputValue + '' //cast to string
+    if (attributeType.attributeType === 'boolean') {
+      onChange(attributeType, newValue)
+    } else {
+      onChange(attributeType, newValue + '')
     }
-    onChange(attribute, newValue)
   }
 
-  const booleanValue = getBooleanValue(value, attribute)
+  const booleanValue = getBooleanValue(value, attributeType)
   return (
     <Switch
       onChange={onChangeBool}

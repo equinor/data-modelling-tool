@@ -5,7 +5,8 @@
   "attributes": [
     {
       "name": "name",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "variable name for named accessing",
       "default": "environment",
       "contained": true,
@@ -13,30 +14,38 @@
     },
     {
       "name": "description",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "instance description",
       "default": "",
       "contained": true,
       "optional": false
     },
-    { "name": "type", "type": "string" },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
     {
       "name": "wave",
-      "type": "SSR-DataSource/mooringSRS/env/Wave",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "SSR-DataSource/mooringSRS/env/Wave",
       "description": "wave",
       "contained": true,
       "optional": true
     },
     {
       "name": "wind",
-      "type": "SSR-DataSource/mooringSRS/env/Wind",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "SSR-DataSource/mooringSRS/env/Wind",
       "description": "wind",
       "contained": true,
       "optional": true
     },
     {
       "name": "current",
-      "type": "SSR-DataSource/mooringSRS/env/Current",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "SSR-DataSource/mooringSRS/env/Current",
       "description": "current",
       "contained": true,
       "optional": true

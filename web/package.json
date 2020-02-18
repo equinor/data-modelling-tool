@@ -39,7 +39,9 @@
     "storybook": "start-storybook -p 6006",
     "build-storybook": "build-storybook",
     "prettier": "prettier --write './src/**/*.{ts,tsx,js,css,html,json}'",
-    "prettier:home": "prettier --write '../api/home/**/*.json'"
+    "prettier:home": "prettier --write '../api/home/**/*.json'",
+    "test:integration": "jest -c integration/jest.config.js",
+    "test:integrationWithWatch": "jest -c integration/jest.config.js --watch"
   },
   "eslintConfig": {
     "extends": "react-app"
@@ -72,11 +74,11 @@
     ]
   },
   "devDependencies": {
-    "@storybook/addon-actions": "^5.1.9",
-    "@storybook/addon-links": "^5.1.9",
-    "@storybook/addon-storyshots": "^5.1.9",
-    "@storybook/addons": "^5.1.9",
-    "@storybook/react": "^5.1.9",
+    "@storybook/addon-actions": "^5.3.13",
+    "@storybook/addon-links": "^5.3.13",
+    "@storybook/addon-storyshots": "^5.3.13",
+    "@storybook/addons": "^5.3.13",
+    "@storybook/react": "^5.3.13",
     "@types/jest": "^24.0.15",
     "@types/lodash": "^4.14.135",
     "@types/node": "^12.0.12",
@@ -92,9 +94,13 @@
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "husky": "^3.0.0",
+    "jest-puppeteer": "^4.4.0",
+    "pptr-testing-library": "^0.4.0",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
+    "puppeteer": "^2.0.0",
     "react-test-renderer": "^16.8.6",
-    "require-context.macro": "^1.0.4"
+    "require-context.macro": "^1.0.4",
+    "ts-jest": "^24.2.0"
   }
 }

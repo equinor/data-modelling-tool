@@ -5,7 +5,8 @@
   "attributes": [
     {
       "name": "name",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "variable name for named accessing",
       "default": "nonEquallySpacedSignal",
       "contained": true,
@@ -13,16 +14,22 @@
     },
     {
       "name": "description",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "instance description",
       "default": "",
       "contained": true,
       "optional": false
     },
-    { "name": "type", "type": "string" },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
     {
       "name": "xname",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "name for the x value.",
       "default": "time",
       "contained": true,
@@ -30,7 +37,8 @@
     },
     {
       "name": "xlabel",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "label for the x value.",
       "default": "",
       "contained": true,
@@ -38,7 +46,8 @@
     },
     {
       "name": "xdescription",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "description for the x value.",
       "default": "time",
       "contained": true,
@@ -46,7 +55,8 @@
     },
     {
       "name": "xunit",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "x signal unit",
       "default": "s",
       "contained": true,
@@ -54,7 +64,8 @@
     },
     {
       "name": "xvalue",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "x data points.",
       "default": "0.0",
       "dimensions": "*",
@@ -63,7 +74,8 @@
     },
     {
       "name": "value",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "data points.",
       "default": "0.0",
       "dimensions": "*",
@@ -72,7 +84,8 @@
     },
     {
       "name": "unit",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "signal unit",
       "default": "",
       "contained": true,
@@ -80,7 +93,8 @@
     },
     {
       "name": "label",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "label for the y value.",
       "default": "",
       "contained": true,
@@ -88,7 +102,8 @@
     },
     {
       "name": "legend",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "description of xy values to be used as legend.",
       "default": "",
       "contained": true,

@@ -1,18 +1,20 @@
 import React from 'react'
 import {
-  Blueprint as BlueprintType,
-  BlueprintAttribute,
+  BlueprintType,
+  BlueprintAttributeType,
   Dto,
   Entity,
   PluginProps,
-} from '../types'
+  KeyValue,
+} from '../../domain/types'
 import { Pre } from '../preview/PreviewPlugin'
-import { Blueprint, KeyValue } from '../Blueprint'
+import { Blueprint } from '../../domain/Blueprint'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
 import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
 import { PlotPlugin } from '..'
 import { CollapsibleWrapper } from '../../components/Collapsible'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 enum WIDGETS {
   PREVIEW = 'PREVIEW',
@@ -23,7 +25,7 @@ class GenerateView {
   private blueprintProvider: any
   private blueprintType: BlueprintType
   private blueprint: Blueprint
-  private blueprints: BlueprintType[]
+  private blueprintTypes: BlueprintType[]
   private document: Entity
   private views: any[] = []
   private dtos: Dto[] = []
@@ -31,10 +33,13 @@ class GenerateView {
   constructor(props: PluginProps) {
     this.uiRecipe = props.uiRecipe
     this.document = props.document
-    this.blueprintType = props.blueprint
-    this.blueprints = props.blueprints
+    this.blueprintType = props.blueprintType
+    this.blueprintTypes = props.blueprintTypes
     this.dtos = props.dtos
-    this.blueprintProvider = new BlueprintProvider(this.blueprints, this.dtos)
+    this.blueprintProvider = new BlueprintProvider(
+      this.blueprintTypes,
+      this.dtos
+    )
     this.blueprint = new Blueprint(this.blueprintType)
 
     this.uiRecipe.attributes.forEach((key: string, index: number) => {
@@ -64,10 +69,13 @@ class GenerateView {
 
   createComponentWithRecipe(
     uiAttr: KeyValue,
-    attr: BlueprintAttribute,
+    attrType: BlueprintAttributeType,
     index: number
   ): any {
-    const attributeType = this.blueprintProvider.getBlueprintByType(attr.type)
+    const attr = new BlueprintAttribute(attrType)
+    const attributeType = this.blueprintProvider.getBlueprintByType(
+      attr.getAttributeType()
+    )
     if (attributeType) {
       const attrUiRecipe = attributeType.uiRecipes.find(
         (uiRecipe: KeyValue) => uiRecipe.name === uiAttr.uiRecipe
@@ -75,8 +83,8 @@ class GenerateView {
       if (attrUiRecipe) {
         const attrPluginProps: PluginProps = {
           document: this.document[uiAttr.name],
-          blueprint: attributeType,
-          blueprints: this.blueprints,
+          blueprintType: attributeType,
+          blueprintTypes: this.blueprintTypes,
           dtos: this.dtos,
           uiRecipe: attrUiRecipe,
         }

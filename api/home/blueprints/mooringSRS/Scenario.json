@@ -5,7 +5,8 @@
   "attributes": [
     {
       "name": "name",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "variable name for named accessing",
       "default": "scenario",
       "contained": true,
@@ -13,7 +14,8 @@
     },
     {
       "name": "description",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "instance description",
       "default": "",
       "contained": true,
@@ -21,18 +23,21 @@
     },
     {
       "name": "type",
-      "type": "string"
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
     },
     {
       "name": "env",
-      "type": "SSR-DataSource/mooringSRS/env/Environment",
+      "attributeType": "SSR-DataSource/mooringSRS/env/Environment",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "environment",
       "contained": true,
       "optional": false
     },
     {
       "name": "output",
-      "type": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "attributeType": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "run output",
       "contained": true,
       "optional": true
