@@ -76,8 +76,7 @@ class CreateEntity:
         # todo use default in optional attribute
         return False
 
-    @staticmethod
-    def parse_value(attr: BlueprintAttribute):
+    def parse_value(self, attr: BlueprintAttribute):
         # @todo add exception handling
         default_value = attr.default
         type = attr.attribute_type
@@ -93,7 +92,7 @@ class CreateEntity:
         if default_value == "":
             if attr.is_array():
                 return create_default_array(
-                    attr.dimensions.split(","), get_data_type(attr.attribute_type, blueprint_provider)
+                    attr.dimensions.split(","), get_data_type(attr.attribute_type, self.blueprint_provider)
                 )
             if type == "boolean":
                 return False
@@ -110,11 +109,10 @@ class CreateEntity:
             return int(default_value)
         return default_value
 
-    @staticmethod
-    def default_value(attr: BlueprintAttribute, parent_type: str):
+    def default_value(self, attr: BlueprintAttribute, parent_type: str):
         if attr.name == "type":
             return parent_type
-        return CreateEntity.parse_value(attr)
+        return CreateEntity.parse_value(self, attr)
 
     @property
     def entity(self):
@@ -127,7 +125,7 @@ class CreateEntity:
             is_optional = self.is_optional(attr)
             if attr.attribute_type in PRIMITIVES:
                 if is_optional is not None and not is_optional:
-                    default_value = CreateEntity.default_value(attr=attr, parent_type=parent_type)
+                    default_value = CreateEntity.default_value(self, attr=attr, parent_type=parent_type)
 
                     if attr.name == "name" and len(default_value) == 0:
                         default_value = parent_type.split("/")[-1].lower()

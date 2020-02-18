@@ -11,13 +11,13 @@ class PrimitiveDataTypes(Enum):
     BOOL = "boolean"
 
     def to_py_type(self):
-        if self.BOOL:
+        if self is PrimitiveDataTypes.BOOL:
             return bool
-        elif self.INT:
+        elif self is PrimitiveDataTypes.INT:
             return int
-        elif self.NUM:
+        elif self is PrimitiveDataTypes.NUM:
             return float
-        elif self.STR:
+        elif self is PrimitiveDataTypes.STR:
             return str
 
 

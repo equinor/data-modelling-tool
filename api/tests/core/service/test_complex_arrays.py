@@ -4,8 +4,10 @@ from unittest import mock
 from classes.blueprint import Blueprint
 from classes.dto import DTO
 from core.repository import Repository
+from core.repository.file import TemplateRepositoryFromFile
 from core.service.document_service import DocumentService
 from utils.data_structure.compare import pretty_eq
+from utils.helper_functions import schemas_location
 
 package_blueprint = {
     "type": "system/SIMOS/Blueprint",
@@ -17,7 +19,6 @@ package_blueprint = {
             "attributeType": "string",
             "type": "system/SIMOS/BlueprintAttribute",
             "name": "description",
-            "default": "",
             "optional": True,
         },
         {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "type"},
@@ -29,6 +30,14 @@ package_blueprint = {
             "dimensions": "*",
             "optional": True,
         },
+    ],
+    "storageRecipes": [
+        {
+            "type": "system/SIMOS/StorageRecipe",
+            "name": "DefaultStorageRecipe",
+            "description": "",
+            "attributes": [{"name": "content", "type": "system/DMT/Entity", "contained": False},],
+        }
     ],
 }
 
@@ -67,20 +76,24 @@ higher_rank_array_blueprint = {
     ],
 }
 
+file_repository_test = TemplateRepositoryFromFile(schemas_location())
 
-def get_blueprint(type: str):
-    if type == "higher_rank_array":
-        return Blueprint(DTO(higher_rank_array_blueprint))
-    elif type == "package_blueprint":
-        return Blueprint(DTO(package_blueprint))
 
-    return None
+class BlueprintProvider:
+    def get_blueprint(self, template_type: str):
+        if template_type == "higher_rank_array":
+            return Blueprint(DTO(higher_rank_array_blueprint))
+        elif template_type == "package_blueprint":
+            return Blueprint(DTO(package_blueprint))
+        else:
+            return Blueprint(DTO(file_repository_test.get(template_type)))
+
+
+blueprint_provider = BlueprintProvider()
 
 
 class ArraysDocumentServiceTestCase(unittest.TestCase):
-    @staticmethod
-    # TODO: Refactor on Blueprint change in DOcService
-    def test_create_complex_array():
+    def test_create_complex_array(self):
         doc_storage = {
             "1": {
                 "uid": "1",
@@ -105,7 +118,9 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         document_service.add_document(
             data_source_id="testing",
             parent_id="1",
@@ -115,16 +130,15 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
             attribute_path="content",
         )
 
-        actual_1 = {"_id": "1", "content": {"_id": "2", "name": "complexArraysEntity", "type": "higher_rank_array"}}
+        actual_1 = {"_id": "1", "content": [{"name": "complexArraysEntity", "type": "higher_rank_array"}]}
         # Disable Black formatting for the matrix
         # fmt: off
         actual_2 = {
-            "_id": "2",
             "name": "complexArraysEntity",
             "type": "higher_rank_array",
             "1_dim-unfixed": [],
             "1_dim-fixed": [0, 0, 0, 0, 0],
-            "2_dim-unfixed": [[], []],
+            "2_dim-unfixed": [[]],
             "3_dim-mix": [
                 [
                     [
@@ -145,10 +159,9 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
         # fmt: on
 
         assert pretty_eq(actual_1, doc_storage["1"]) is None
-        assert pretty_eq(actual_2, doc_storage["2"]) is None
+        assert pretty_eq(actual_2, doc_storage[list(doc_storage)[1]]) is None
 
-    @staticmethod
-    def test_update_complex_array():
+    def test_update_complex_array(self):
 
         # fmt: off
         doc_storage = {
@@ -195,7 +208,9 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
             if data_source_id == "testing":
                 return document_repository
 
-        document_service = DocumentService(repository_provider=repository_provider, blueprint_provider=get_blueprint)
+        document_service = DocumentService(
+            repository_provider=repository_provider, blueprint_provider=blueprint_provider
+        )
         # fmt: off
         document_service.update_document(
             data_source_id="testing",
