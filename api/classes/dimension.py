@@ -3,7 +3,7 @@ from typing import List
 from utils.get_data_type import get_data_type_from_dmt_type
 
 
-class Matrix:
+class Dimension:
     def __init__(self, dimensions: str, attribute_type: str):
         self.dimensions: List[str] = dimensions.split(",")
         self.type: attribute_type = get_data_type_from_dmt_type(attribute_type)
@@ -47,3 +47,6 @@ class Matrix:
             raise Exception(f"This attribute is not an array!")
         self.value = create_default_array_recursive(self.dimensions, self.type)
         return self.value
+
+    def to_dict(self):
+        return ",".join(self.dimensions)

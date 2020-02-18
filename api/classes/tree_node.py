@@ -252,8 +252,7 @@ class NodeBase:
     def is_complex_array(self):
         if self.is_array():
             attribute: BlueprintAttribute = self.parent.blueprint.get_attribute_by_name(self.name)
-            if "," in attribute.dimensions:
-                return True
+            attribute.is_matrix()
 
     def is_single(self):
         return isinstance(self, Node)
