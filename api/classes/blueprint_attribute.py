@@ -1,5 +1,6 @@
 from typing import Optional
 
+from classes.matrix import Matrix
 from core.enums import SIMOS
 from core.enums import PRIMITIVES
 
@@ -23,13 +24,16 @@ class BlueprintAttribute:
         self.description = description if description else ""
         self.label = label if label else ""
         self.default = default if default else ""
-        self.dimensions = dimensions if dimensions else ""
+        self.dimensions: Matrix = Matrix(dimensions, self.attribute_type)
         self.optional = optional if optional else False
         self.contained = contained if contained else True
         self.enum_type = enum_type if enum_type else ""
 
     def is_array(self):
-        return bool(self.dimensions)
+        return self.dimensions.is_array()
+
+    def is_matrix(self):
+        return self.dimensions.is_matrix()
 
     def is_primitive(self):
         return self.attribute_type in PRIMITIVES
