@@ -1,14 +1,13 @@
 import unittest
 from unittest import mock
 
+from classes.blueprint import Blueprint
+from classes.dto import DTO
+from classes.tree_node import Node
 from core.repository import Repository
 from core.service.document_service import DocumentService, get_complete_document
 from tests.util_tests import flatten_dict
 from utils.data_structure.compare import pretty_eq
-
-from classes.blueprint import Blueprint
-from classes.dto import DTO
-from classes.tree_node import Node
 
 blueprint_1 = {
     "type": "system/SIMOS/Blueprint",
@@ -41,6 +40,31 @@ blueprint_1 = {
     "uiRecipes": [],
 }
 
+uncontained_blueprint = {
+    "type": "system/SIMOS/Blueprint",
+    "name": "uncontained_blueprint",
+    "description": "uncontained_blueprint",
+    "attributes": [
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "name"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "type"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "description"},
+        {
+            "attributeType": "blueprint_2",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "name": "uncontained_in_every_way",
+            "contained": False,
+        },
+    ],
+    "storageRecipes": [
+        {
+            "type": "system/SIMOS/StorageRecipe",
+            "name": "DefaultStorageRecipe",
+            "description": "",
+            "attributes": [{"name": "uncontained_in_every_way", "type": "does_this_matter?", "contained": False},],
+        }
+    ],
+}
+
 blueprint_2 = {
     "type": "system/SIMOS/Blueprint",
     "name": "Blueprint 2",
@@ -60,6 +84,8 @@ def get_blueprint(type: str):
         return Blueprint(DTO(blueprint_1))
     if type == "blueprint_2":
         return Blueprint(DTO(blueprint_2))
+    if type == "uncontained_blueprint":
+        return Blueprint(DTO(uncontained_blueprint))
     return None
 
 
@@ -93,6 +119,49 @@ class DocumentServiceTestCase(unittest.TestCase):
         )
         document_service.remove_document(data_source_id="testing", document_id="1", parent_id=None)
         document_repository.delete.assert_called_with("1")
+
+    def test_remove_document_with_model_and_storage_uncontained_children(self):
+        repository: Repository = mock.Mock()
+
+        doc_storage = {
+            "1": {
+                "uid": "1",
+                "name": "Parent",
+                "description": "",
+                "type": "uncontained_blueprint",
+                "uncontained_in_every_way": {"_id": "2", "name": "a_reference", "type": "blueprint_2"},
+            },
+            "2": {"uid": "2", "_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
+        }
+
+        def mock_get(document_id: str):
+            return DTO(doc_storage[document_id])
+
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+
+        def mock_delete(document_id: str):
+            try:
+                del doc_storage[document_id]
+            except KeyError:
+                pass
+
+        repository.get = mock_get
+        repository.update = mock_update
+        repository.delete = mock_delete
+
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return repository
+
+        document_service = DocumentService(
+            blueprint_provider=blueprint_provider, repository_provider=repository_provider
+        )
+        document_service.remove_document(data_source_id="testing", document_id="1", parent_id=None)
+        expected = {
+            "2": {"uid": "2", "_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
+        }
+        assert pretty_eq(expected, doc_storage) is None
 
     def test_remove_nested(self):
         document_repository: Repository = mock.Mock()

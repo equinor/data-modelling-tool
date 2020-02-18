@@ -157,7 +157,8 @@ class DocumentService:
 
         # Remove child references
         for child in document.traverse():
-            if child.has_uid():
+            # Only remove children if they ARE contained in model and NOT contained in storage
+            if child.has_uid() and child.is_model_contained():
                 self.repository_provider(data_source_id).delete(child.uid)
                 logger.info(f"Removed child '{child.uid}'")
 

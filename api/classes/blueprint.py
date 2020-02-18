@@ -72,6 +72,9 @@ class Blueprint:
     def get_attribute_by_name(self, key):
         return next((attr for attr in self.attributes if attr.name == key), None)
 
+    def get_model_contained_by_name(self, key):
+        return next((attr.contained for attr in self.attributes if attr.name == key), True)
+
     def is_attr_removable(self, attribute_name):
         for attr in self.attributes:
             if attr.name == attribute_name and not attr.is_primitive():

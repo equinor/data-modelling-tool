@@ -4,7 +4,7 @@ from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import PRIMITIVES
 
 DEFAULT_PRIMITIVE_CONTAINED = True
-DEFAULT_ARRAY_CONTAINED = False
+DEFAULT_ARRAY_CONTAINED = True
 DEFAULT_TYPE_CONTAINED = False
 
 

@@ -1,7 +1,5 @@
 from typing import Union
 
-from config import Config
-
 from classes.tree_node import Node
 from core.enums import DMT, SIMOS
 from core.use_case.utils.generate_index_menu_actions import (
@@ -13,6 +11,7 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_rename_menu_action,
     get_runnable_menu_action,
     get_create_root_package_menu_item,
+    get_create_reference_menu_item,
 )
 from core.utility import BlueprintProvider
 from utils.group_by import group_by
@@ -56,6 +55,13 @@ def create_context_menu(
                         data_source_id=data_source_id, name=f"Create {node.name}", type=node.type, node_id=node.node_id
                     )
                 )
+                # If the attribute is not storageContained, offer choice to insert a reference to existing entity
+                if not node.attribute_is_contained():
+                    create_new_menu_items.append(
+                        get_create_reference_menu_item(
+                            data_source_id=data_source_id, type=node.type, node_id=node.node_id
+                        )
+                    )
 
         menu_items.append(
             get_rename_menu_action(

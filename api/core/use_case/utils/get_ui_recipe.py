@@ -13,8 +13,8 @@ def get_ui_recipe(blueprint, ui_recipe_name) -> UIRecipe:
         if ui_recipe_name == "DEFAULT_CREATE":
             is_contained = ["name", "description"]
             attributes = []
-            for attribute in filter(lambda x: x.name not in is_contained, blueprint.attributes):
-                attributes.append({"name": attribute.name, "contained": False})
+            for attribute in blueprint.attributes:
+                attributes.append({"name": attribute.name, "contained": True})
             return UIRecipe(name=ui_recipe_name, attributes=attributes)
     return DefaultUIRecipe()
 

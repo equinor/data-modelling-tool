@@ -63,6 +63,20 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
     }
 
 
+def get_create_reference_menu_item(data_source_id: str, type: str, node_id: str = None):
+    node_id_split = node_id.split(".", 1)
+    return {
+        "label": f"Link to Existing Entity",
+        "action": "INSERT_REFERENCE",
+        "data": {
+            "url": f"/api/v2/documents/{data_source_id}/{node_id_split[0]}",
+            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
+            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id_split[0]}",
+            "request": {"attribute": node_id_split[1] if len(node_id_split) > 1 else None, "data": "${data}"},
+        },
+    }
+
+
 def get_create_root_package_menu_item(data_source_id: str):
     return {
         "label": "Create Root Package",

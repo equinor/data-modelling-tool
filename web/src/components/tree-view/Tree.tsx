@@ -28,6 +28,7 @@ export type NodeMetaData = {
   isRootPackage?: boolean
   isList?: boolean
   error?: boolean
+  dataSource?: string
 }
 
 export type TreeNodeData = {

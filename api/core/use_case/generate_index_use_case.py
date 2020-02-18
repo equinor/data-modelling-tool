@@ -70,6 +70,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
             "error": False,
             "isRootPackage": node.dto.get("isRoot") if node.is_single() else False,
             "isList": node.is_array(),
+            "dataSource": data_source_id,
         },
     }
 
@@ -100,10 +101,6 @@ def extend_index_with_node_tree(
         try:
             # Skip package's content node
             if node.parent and node.parent.type == DMT.PACKAGE.value:
-                continue
-
-            # disable storageRecipe #572
-            if node.key == "storageRecipes":
                 continue
 
             if not is_visible(node):

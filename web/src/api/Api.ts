@@ -100,6 +100,15 @@ export class DmtApi {
   addFile(): string {
     return '/api/v2/explorer/entities/add-file'
   }
+
+  updateFile(dataSource: string | undefined, documentId: string): string {
+    return `/api/v2/documents/${dataSource}/${documentId}`
+  }
+
+  getFile(dataSource: string | undefined, documentId: string): string {
+    return `/api/v2/documents/${dataSource}/${documentId}`
+  }
+
   applicationSettingsGet(settingsFile: string): string {
     return `/api/v2/system/settings?settingsFile=${settingsFile}`
   }
