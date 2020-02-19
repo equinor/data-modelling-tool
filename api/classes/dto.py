@@ -18,7 +18,7 @@ class DTO:
                     pass
 
         if uid is None:
-            uid = uuid4()
+            uid = str(uuid4())
         self._uid = uid
         self._name = data["name"]
         self._type = data["type"]

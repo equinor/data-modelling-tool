@@ -106,7 +106,7 @@ def create_context_menu(
         if node.type == SIMOS.APPLICATION.value:
             menu_items.append(get_download_menu_action(data_source_id, node.node_id))
 
-        is_root_package = node.is_single() and node.dto.get("isRoot")
+        is_root_package = node.is_single() and node.is_root()
 
         # If it's a root package we need some more
         if is_root_package:

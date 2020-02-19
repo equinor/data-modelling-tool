@@ -398,6 +398,7 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         doc_1_after = {
             "_id": "1",
+            "uid": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
@@ -409,7 +410,7 @@ class DocumentServiceTestCase(unittest.TestCase):
             ],
         }
 
-        doc_4_after = {"_id": "4", "name": "ref2", "description": "TEST_MODIFY", "type": "blueprint_2"}
+        doc_4_after = {"_id": "4", "uid": "4", "name": "ref2", "description": "TEST_MODIFY", "type": "blueprint_2"}
 
         def mock_get(document_id: str):
             return DTO(doc_storage[document_id])
@@ -441,11 +442,12 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         doc_storage = {
             "1": {"uid": "1", "name": "Parent", "description": "", "type": "blueprint_1", "references": []},
-            "2": {"uid": "2", "_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
+            "2": {"uid": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
         }
 
         document_1_after = {
             "_id": "1",
+            "uid": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
@@ -474,7 +476,7 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         node: Node = document_service.get_by_uid("testing", "1")
         contained_node: Node = node.search("1.references")
-        contained_node.children.append(Node("0", DTO(doc_storage["2"]), blueprint_provider))
+        contained_node.children.append(Node("0", uid="2", entity=doc_storage["2"], blueprint_provider=blueprint_provider))
         document_service.save(node, "testing")
 
         # assert document_1_after == doc_storage["1"]
