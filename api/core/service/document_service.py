@@ -219,11 +219,11 @@ class DocumentService:
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
+        if type == SIMOS.BLUEPRINT.value:
+            entity["attributes"] = get_required_attributes(type=type)
+
         new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
         new_node = Node.from_dict(DTO(data=entity, uid=new_node_id), self.blueprint_provider)
-
-        if type == SIMOS.BLUEPRINT.value:
-            new_node.dto["attributes"] = get_required_attributes(type=type)
 
         parent.add_child(new_node)
         self.save(root, data_source_id)
