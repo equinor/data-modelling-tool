@@ -14,9 +14,19 @@ from classes.tree_node import Node, NodeBase, ListNode
 from config import Config
 
 
-def get_error_node(node: Union[Node]) -> Dict:
+def get_parent_id(data_source_id: str, node: Union[Node, ListNode]):
+    if node.parent:
+        # Adjust parent, since we skipped content node
+        if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
+            return node.parent.parent.node_id
+        return node.parent_node_id
+    else:
+        return data_source_id
+
+
+def get_error_node(data_source_id: str, node: Union[Node]) -> Dict:
     return {
-        "parentId": node.parent.node_id if node.parent else None,
+        "parentId": get_parent_id(data_source_id, node),
         "title": node.name,
         "id": node.node_id,
         "nodeType": "document-node",
@@ -26,7 +36,7 @@ def get_error_node(node: Union[Node]) -> Dict:
             "menuItems": [],
             "onSelect": {},
             "error": True,
-            "isRootPackage": node.dto.get("isRoot") if node.is_single() else False,
+            "isRootPackage": node.is_root(),
             "isList": node.is_array(),
         },
     }
@@ -45,35 +55,8 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
     else:
         children = [child.node_id for child in node.children if is_visible(child)]
 
-    parent_id = None
-    if node.parent:
-        parent_id = node.parent_node_id
-        # Adjust parent, since we skipped content node
-        if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
-            parent_id = node.parent.parent.node_id
-    else:
-        parent_id = data_source_id
-
-    if node.has_error:
-        return {
-            "parentId": parent_id,
-            "title": node.name,
-            "id": node.node_id,
-            "nodeType": "document-node",
-            "children": [],
-            "type": node.type,
-            "meta": {
-                # todo add remove action?
-                "menuItems": [],
-                "onSelect": {},
-                "error": True,
-                "isRootPackage": node.is_root(),
-                "isList": node.is_array(),
-            },
-        }
-
     return {
-        "parentId": parent_id,
+        "parentId": get_parent_id(data_source_id, node),
         "title": node.name,
         "id": node.node_id,
         "nodeType": "document-node",
@@ -124,8 +107,10 @@ def extend_index_with_node_tree(
             if not is_visible(node):
                 continue
 
-            index_node = get_node(node, data_source_id, app_settings, document_service)
-            index[node.node_id] = index_node
+            if node.has_error:
+                index[node.node_id] = get_error_node(data_source_id, node)
+            else:
+                index[node.node_id] = get_node(node, data_source_id, app_settings, document_service)
 
         except Exception as error:
             logger.exception(error)
