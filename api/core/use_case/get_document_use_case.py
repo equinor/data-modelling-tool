@@ -5,7 +5,6 @@ from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.utility import get_document_by_ref
-from dotted.collection import DottedDict
 
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
