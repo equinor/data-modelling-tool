@@ -1,9 +1,14 @@
 {
   "type": "SSR-DataSource/TodoDemo/Todo",
   "name": "Todo",
+  "description": "Used for demonstration",
+  "todo_id": 1,
+  "user_id": 20,
+  "completed": false,
   "list": {
      "name": "List",
      "type": "SSR-DataSource/TodoDemo/TodoList",
+     "description": "",
      "items": []
   }
 }

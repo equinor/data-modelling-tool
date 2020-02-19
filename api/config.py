@@ -21,6 +21,7 @@ class Config:
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
+    VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", True)
     with open(DMT_SETTINGS_FILE) as json_file:
         DMT_APPLICATION_SETTINGS = json.load(json_file)
     with open(ENTITY_SETTINGS_FILE) as json_file:
