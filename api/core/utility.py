@@ -83,7 +83,7 @@ class BlueprintProvider:
     def get_blueprint(self, type: str) -> Blueprint:
         try:
             print("fetching: ", type)
-            document: DTO = get_document_by_ref(type)
+            document: DTO = self.get_blueprint(type)
             return Blueprint(document)
         except Exception as error:
             logger.exception(error)
