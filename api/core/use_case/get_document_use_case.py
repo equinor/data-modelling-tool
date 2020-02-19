@@ -52,24 +52,17 @@ class GetDocumentUseCase(uc.UseCase):
 
         document = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
 
-        data = document.to_dict()
-
         if attribute:
-            dotted_data = DottedDict(data)
-            data = dotted_data[attribute].to_python()
+            document = document.get_by_path(attribute.split("."))
 
-        if "_id" in data:
-            document = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=data["_id"])
-            data = document.to_dict()
-
-        blueprint = self.document_service.blueprint_provider.get_blueprint(data["type"])
+        blueprint = document.blueprint
 
         children = []
         dtos = []
         self.add_children_types(children, dtos, blueprint)
 
         return res.ResponseSuccess(
-            {"blueprint": blueprint.to_dict(), "document": data, "children": children, "dtos": dtos}
+            {"blueprint": blueprint.to_dict(), "document": document.to_dict(), "children": children, "dtos": dtos}
         )
 
     # todo control recursive iterations iterations, decided by plugin?
