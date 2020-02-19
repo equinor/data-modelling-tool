@@ -1,0 +1,27 @@
+{
+  "name": "3dIntArray",
+  "description": "Dimensions on the '3d_matrix'-attribute is '2,2,2'.",
+  "type": "SSR-DataSource/ComplexArrays/3DIntMatrix",
+  "3d_matrix": [
+    [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ]
+  ]
+}

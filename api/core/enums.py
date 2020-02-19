@@ -4,6 +4,23 @@ from enum import auto, Enum
 PRIMITIVES = {"string", "number", "integer", "boolean"}
 
 
+class PrimitiveDataTypes(Enum):
+    STR = "string"
+    NUM = "number"
+    INT = "integer"
+    BOOL = "boolean"
+
+    def to_py_type(self):
+        if self is PrimitiveDataTypes.BOOL:
+            return bool
+        elif self is PrimitiveDataTypes.INT:
+            return int
+        elif self is PrimitiveDataTypes.NUM:
+            return float
+        elif self is PrimitiveDataTypes.STR:
+            return str
+
+
 class DataSourceType(Enum):
     MONGO = "mongo-db"
     LOCAL = "localStorage"

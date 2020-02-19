@@ -69,7 +69,7 @@ class Blueprint:
     def get_attribute_type_by_key(self, key):
         return next((attr.attribute_type for attr in self.attributes if attr.name == key), None)
 
-    def get_attribute_by_key(self, key):
+    def get_attribute_by_name(self, key):
         return next((attr for attr in self.attributes if attr.name == key), None)
 
     def is_attr_removable(self, attribute_name):

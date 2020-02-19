@@ -1,4 +1,3 @@
-from pyclbr import Function
 from typing import Dict, Union
 from uuid import uuid4
 
@@ -190,7 +189,7 @@ class DocumentService:
 
         return {"uid": target_node.node_id}
 
-    def update_document(self, data_source_id: str, document_id: str, data: dict, attribute_path: str):
+    def update_document(self, data_source_id: str, document_id: str, data: dict, attribute_path: str = None):
         root: Node = self.get_by_uid(data_source_id, document_id)
         if not root:
             raise EntityNotFoundException(uid=document_id)

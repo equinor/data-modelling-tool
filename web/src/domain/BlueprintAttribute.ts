@@ -18,12 +18,16 @@ export class BlueprintAttribute {
     return this.attr.dimensions && this.attr.dimensions === '*'
   }
 
+  public isComplexArray() {
+    return this.attr.dimensions?.includes(',')
+  }
+
   public getDefault(): any {
     return this.attr.default
   }
 
   public static isArray(value: string) {
-    return value === '*'
+    return value !== ''
   }
 
   public isPrimitiveType(value: string): boolean {

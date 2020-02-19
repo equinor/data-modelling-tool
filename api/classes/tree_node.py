@@ -1,6 +1,8 @@
 from typing import Dict, List, Union
 from uuid import uuid4
 
+from classes.blueprint_attribute import BlueprintAttribute
+from core.use_case.utils.create_entity import CreateEntity
 from utils.logging import logger
 
 from classes.blueprint import Blueprint
@@ -247,6 +249,11 @@ class NodeBase:
     def is_array(self):
         return isinstance(self, ListNode)
 
+    def is_complex_array(self):
+        if self.is_array():
+            attribute: BlueprintAttribute = self.parent.blueprint.get_attribute_by_name(self.name)
+            attribute.is_matrix()
+
     def is_single(self):
         return isinstance(self, Node)
 
@@ -298,7 +305,7 @@ class NodeBase:
             # Modify and add for each key in posted data
             for key in data.keys():
                 new_data = data[key]
-                attribute = self.blueprint.get_attribute_by_key(key)
+                attribute = self.blueprint.get_attribute_by_name(key)
                 if not attribute:
                     logger.error(f"Could not find attribute {key} in {self.dto.uid}")
                     continue

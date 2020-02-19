@@ -4,7 +4,6 @@ from json import JSONDecodeError
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from utils.data_structure.find import get
-
 from utils.form_to_schema import PRIMITIVES
 
 
@@ -62,8 +61,9 @@ class CreateEntity:
                 return []
 
         if default_value == "":
-            if attr.dimensions == "*":
-                return []
+            if attr.is_array():
+                # TODO: If the dimensions in fixed. Instantiate proper entities in the matrix
+                return attr.dimensions.create_default_array()
             if type == "boolean":
                 return False
             if type == "number":
@@ -83,7 +83,7 @@ class CreateEntity:
     def default_value(attr: BlueprintAttribute, parent_type: str):
         if attr.name == "type":
             return parent_type
-        return CreateEntity.parse_value(attr)
+        return CreateEntity.parse_value(attr=attr)
 
     @property
     def entity(self):
@@ -106,7 +106,7 @@ class CreateEntity:
             else:
                 blueprint = self.blueprint_provider.get_blueprint(attr.attribute_type)
                 if attr.is_array():
-                    entity[attr.name] = []
+                    entity[attr.name] = attr.dimensions.create_default_array()
                 elif attr.is_optional():
                     entity[attr.name] = {}
                 else:

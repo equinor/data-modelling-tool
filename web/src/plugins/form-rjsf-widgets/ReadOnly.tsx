@@ -1,10 +1,13 @@
 import React from 'react'
+import { RequiredGroup } from '../../components/DisabledData'
 
-export const ReadOnly = (props: any) => {
+export const ReadOnlyWidget = (props: any) => {
+  const name = props.name
+  const data = JSON.stringify(props.formData)
   return (
-    <div>
-      <label className="control-label">{props.name}</label>
-      <div>{props.formData}</div>
-    </div>
+    <>
+      <b>{name}</b>
+      <RequiredGroup>{data}</RequiredGroup>
+    </>
   )
 }
