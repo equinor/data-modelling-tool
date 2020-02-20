@@ -21,17 +21,16 @@ simple_types: List[type] = [str, bool, int, float]
 
 
 def has_attribute(schema, name: str) -> bool:
-    has = False
     try:
         schema[name]
-        has = True
+        return True
     except (KeyError, TypeError):
         try:
             getattr(schema, name)
-            has = True
+            return True
         except AttributeError:
-            pass
-    return has
+            return False
+    return False
 
 
 def get_attribute(attr, item: str, use_default: bool = False, default=None) -> str:
@@ -65,6 +64,8 @@ def get_simple_types() -> str:
 def get_unprocessed(schema: Dict[str, Any]) -> Dict:
     _schema = {}
     for key, value in schema.items():
+        if is_special_key(key):
+            continue
         if f"__{key}__" not in schema:
             if isinstance(value, dict):
                 value = get_unprocessed(value)
@@ -101,7 +102,14 @@ def to_camel_case(name: str) -> str:
     return stringcase.camelcase(name)
 
 
+def is_special_key(key: str) -> bool:
+    # Special keys, that should be ignored
+    return key in ["__class__"]
+
+
 def is_internal(schema, key: str) -> bool:
+    if is_special_key(key):
+        return True
     return key.startswith("__") and key.endswith("__") and key.strip("__") in schema
 
 
@@ -171,10 +179,11 @@ def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
 
 
 class Attribute:
-    def __init__(self, data: Dict[str, Any], type: type, definition: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any], cls: type, type: type, definition: Dict[str, Any]):
         self.type = type
         self.__values__ = data
         self._definition = definition
+        self._cls = cls
 
     def __repr__(self):
         attributes = ["name", "optional", "contained"]
@@ -364,9 +373,10 @@ class Factory:
             return repository.find(filter={"name": name}, raw=True)
 
     # noinspection GrazieInspection
-    def class_from_schema(self, schema):
+    def class_from_schema(self, schema) -> str:
         # with open(f'{Path(__file__).parent}/schema.jinja2') as f:
         #     template = "\n".join(f.readlines())
+        # noinspection JinjaAutoinspect
         class_template = Template(
             """\
 from __future__ import annotations
@@ -599,7 +609,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
     def __new__(cls, *args, **kwargs):
         instance = {{ type_name(schema.type) }}(**{
-        {%- for key, value in schema.items() %}
+        {%- for key, value in schema.items() if not is_internal(schema, key) %}
             "{{ to_snake_case(key) }}": {% if value is string %}"{{ value }}"{% else %}{{ value }}{% endif %},
         {%- endfor %}
         })
@@ -644,6 +654,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         # FIXME: adict may not be a dict...
         if not isinstance(adict, dict):
             adict = adict.to_dict()
+        # TODO: Deal with the case where `id` is part of the legal attributes of the blueprint
         is_dto = any(key in id_keys for key in adict.keys())
         kwargs = {
             f"{cls._to_snake_case(key)}": value
@@ -686,11 +697,18 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         _attributes = Attributes()
 
         for attribute in attributes:
-            attribute_type = attribute["type"]
+            attribute_type = attribute["attribute_type"]
             if attribute_type not in self._types:
                 self._create(attribute_type, False)
             attribute_type = self._types[attribute_type]
-            _attributes.add(Attribute(attribute, type=attribute_type, definition=attribute_definition))
+            _attributes.add(
+                Attribute(
+                    attribute,
+                    cls=self.get_type_by_name(attribute["type"]),
+                    type=attribute_type,
+                    definition=attribute_definition,
+                )
+            )
         return _attributes
 
     def _get_attribute_definition(self, schema) -> Dict[str, Any]:
@@ -753,7 +771,7 @@ from classes.dto import DTO
             annotation = f"Optional[{annotation}]"
         return annotation
 
-    def get_type_by_name(self, name: str):
+    def get_type_by_name(self, name: str) -> type:
         if name not in self._types:
             self.to_be_compiled.add(name)
             return self._create(name, compile=False)
@@ -811,6 +829,7 @@ from classes.dto import DTO
         code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
         exec(code)  # nosec
         cls: type = locals()[schema["name"]]
+        cls.__code__ = definition
         if cls.__name__ not in globals():
             globals()[cls.__name__] = cls
         return cls
@@ -840,7 +859,9 @@ from classes.dto import DTO
         schema = snakify(self._get_schema(template_type))
         # Let at "dummy type" be available for others
         _cls = type(schema["name"], (), snakify(schema))
+        _cls.__schema__ = schema
         _cls.__completed__ = False
+        schema["__class__"] = _cls
         if not compile:
             return _cls
         if template_type not in self._types:
@@ -883,7 +904,7 @@ from classes.dto import DTO
         if has_attribute(Template, "attributes"):
             for attr in get_attribute(Template, "attributes"):
                 if to_snake_case(get_attribute(attr, "name")) == to_snake_case(name):
-                    template_type = get_attribute(attr, "type")
+                    template_type = get_attribute(attr, "attribute_type")
                     if isinstance(template_type, str) and template_type not in self._types:
                         self._create(template_type)
                     return self.type_name(template_type)

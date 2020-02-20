@@ -21,7 +21,7 @@
     {
       "attributeType": "integer",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "id"
+      "name": "todo_id"
     },
     {
       "attributeType": "integer",

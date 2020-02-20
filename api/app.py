@@ -41,7 +41,10 @@ def init_application():
     logger.info(f"Importing entity package(s) {Config.ENTITY_APPLICATION_SETTINGS['entities']}")
     for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
         import_package(
-            f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
+            f"{Config.APPLICATION_HOME}/entities/{folder}",
+            collection=Config.ENTITY_COLLECTION,
+            is_root=True,
+            is_entity=True,
         )
 
 
