@@ -3,7 +3,6 @@ import json
 from deepdiff import DeepDiff
 import pprint
 
-from dotted.collection import DottedDict
 from utils.data_structure.compare import pretty_eq
 from utils.data_structure.find import find
 

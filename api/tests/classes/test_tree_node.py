@@ -426,6 +426,41 @@ class TreenodeTestCase(unittest.TestCase):
 
         assert child_2.node_id == "2"
 
+    def test_get_by_keys(self):
+        document_1 = {
+            "uid": "1",
+            "name": "Parent",
+            "description": "",
+            "type": "blueprint_1",
+            "nested": {
+                "name": "Nested",
+                "description": "",
+                "type": "blueprint_2",
+                "nested": {
+                    "name": "Nested",
+                    "description": "",
+                    "type": "blueprint_3",
+                    "reference": {
+                        "_id": "2",
+                        "uid": "2",
+                        "name": "Reference",
+                        "description": "",
+                        "type": "blueprint_2",
+                    },
+                },
+            },
+        }
+
+        root = Node.from_dict(DTO(document_1), blueprint_provider)
+
+        child_1 = root.get_by_path(["nested", "nested"])
+
+        assert child_1.node_id == "1.nested.nested"
+
+        child_2 = root.get_by_path(["nested", "nested", "reference"])
+
+        assert child_2.node_id == "2"
+
     def test_update(self):
         document_1 = {
             "uid": "1",
