@@ -215,10 +215,12 @@ class DocumentService:
             entity["attributes"] = get_required_attributes(type=type)
 
         new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
+
         new_node = Node.from_dict(DTO(data=entity, uid=new_node_id), self.blueprint_provider)
+
+        new_node.key = str(len(parent.children)) if parent.is_array() else ""
 
         parent.add_child(new_node)
         self.save(root, data_source_id)
 
-        # hack add items to array. with .root a page refresh is needed.
-        return {"uid": new_node.node_id.replace(".root", "")}
+        return {"uid": new_node.node_id}

@@ -73,7 +73,7 @@ class DictExporter:
 class DictImporter:
     @classmethod
     def from_dict(cls, dto, blueprint_provider):
-        return cls._from_dict(dto, "root", blueprint_provider)
+        return cls._from_dict(dto, "", blueprint_provider)
 
     @classmethod
     def _from_dict(cls, dto, key, blueprint_provider):
