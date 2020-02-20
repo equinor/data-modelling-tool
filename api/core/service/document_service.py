@@ -13,13 +13,6 @@ from core.utility import BlueprintProvider
 from utils.logging import logger
 
 
-def create_reference(data: Dict, document_repository, type: str):
-    data["type"] = type
-    file = DTO(data)
-    document_repository.add(file)
-    return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
-
-
 def get_required_attributes(type: str):
     return [
         {"type": "system/SIMOS/BlueprintAttribute", "attributeType": "string", "name": "name"},
