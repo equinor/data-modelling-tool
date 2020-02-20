@@ -14,6 +14,7 @@ import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
 import { Entity } from '../../../domain/types'
+import { insertReferenceAction } from './actions/insertReference'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -22,6 +23,7 @@ export enum ContextMenuActions {
   DOWNLOAD = 'DOWNLOAD',
   RUNNABLE = 'RUNNABLE',
   IMPORT = 'IMPORT',
+  INSERT_REFERENCE = 'INSERT_REFERENCE',
 }
 
 export interface ContextMenuActionProps {
@@ -86,7 +88,10 @@ const getFormProperties = (
       return Action(action, node, setShowModal, createNodes, layout, entity)
     }
     case ContextMenuActions.IMPORT: {
-      return importAction(action, setShowModal)
+      return importAction(action)
+    }
+    case ContextMenuActions.INSERT_REFERENCE: {
+      return insertReferenceAction(action, node, setShowModal, createNodes)
     }
 
     default:

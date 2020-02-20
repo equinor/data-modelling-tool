@@ -25,8 +25,8 @@ class BlueprintAttribute:
         self.label = label if label else ""
         self.default = default if default else ""
         self.dimensions: Dimension = Dimension(dimensions, self.attribute_type)
-        self.optional = optional if optional else False
-        self.contained = contained if contained else True
+        self.optional = optional if optional is not None else False
+        self.contained = contained if contained is not None else True
         self.enum_type = enum_type if enum_type else ""
 
     def is_array(self):

@@ -181,8 +181,18 @@ class NodeBase:
 
         return self.parent.node_id
 
-    def is_contained(self):
+    def is_storage_contained(self):
         return self.uid == ""
+
+    # If the node is model contained in the parents blueprint
+    def is_model_contained(self) -> bool:
+        if not self.parent:
+            return True
+        if isinstance(self.parent, ListNode):
+            attribute = self.parent.blueprint.get_attribute_by_name(self.parent.key)
+        else:
+            attribute = self.parent.blueprint.get_attribute_by_name(self.key)
+        return attribute.contained
 
     def not_contained(self):
         return not self.uid == ""
@@ -420,6 +430,9 @@ class ListNode(NodeBase):
 
     def attribute_is_contained(self):
         return self.blueprint.storage_recipes[0].is_contained(self.key)
+
+    def to_dict(self):
+        return [child.to_dict() for child in self.children]
 
     @property
     def blueprint(self):
