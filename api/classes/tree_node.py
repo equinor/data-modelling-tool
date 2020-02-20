@@ -15,9 +15,6 @@ class DictExporter:
         data = {}
 
         if node.uid != "":
-            data["uid"] = node.uid
-            # TODO: Can _id be removed?
-            # nope, there's a check in update if dto uid == dto.data._id
             data["_id"] = node.uid
 
         # Primitive
@@ -39,13 +36,7 @@ class DictExporter:
     # Creates a "storage correct" dict from a Node. Writing references as references, and contained docs in full.
     @staticmethod
     def to_ref_dict(node):
-        data = {}
-
-        if node.uid != "":
-            data["uid"] = node.uid
-            # TODO: Can _id be removed?
-            # nope, there's a check in update if dto uid == dto.data._id
-        data["_id"] = node.uid
+        data = {"_id": node.uid}
 
         # Primitive
         # if complex attribute name is renamed in blueprint, then the blueprint is None in the entity.
@@ -101,7 +92,7 @@ class DictImporter:
                     )
                     for i, child in enumerate(children):
                         list_child_node = cls._from_dict(
-                            dto=DTO(uid=child.get("uid", ""), data=child),
+                            dto=DTO(uid=child.get("_id", ""), data=child),
                             key=str(i),
                             blueprint_provider=blueprint_provider,
                         )
@@ -114,7 +105,7 @@ class DictImporter:
                         attribute_data = dto.data.get(attribute.name)
                         if bool(attribute_data):
                             child_node = cls._from_dict(
-                                dto=DTO(uid=attribute_data.get("uid", ""), data=attribute_data),
+                                dto=DTO(uid=attribute_data.get("_id", ""), data=attribute_data),
                                 key=attribute.name,
                                 blueprint_provider=blueprint_provider,
                             )
@@ -226,9 +217,7 @@ class NodeBase:
             node = node.parent
 
     def __repr__(self):
-        return "{}: {} {} {} {}".format(
-            self.__class__.__name__, self.key, self.name, self.type, self.uid
-        )
+        return "{}: {} {} {} {}".format(self.__class__.__name__, self.key, self.name, self.type, self.uid)
 
     def show_tree(self, level=0):
         print("%s%s" % ("." * level, self))
@@ -290,8 +279,6 @@ class NodeBase:
         # todo move to node.
         if isinstance(data, dict):
             data.pop("_id", None)
-            # TODO: "uid" should never be on the data dict
-            data.pop("uid", None)
             # Modify and add for each key in posted data
             for key in data.keys():
                 new_data = data[key]
@@ -310,10 +297,7 @@ class NodeBase:
                             # This means we are creating a new, non-contained document. Lists are always contained.
                             if not child.attribute_is_contained() and child.uid == "" and not child.is_array():
                                 new_node = Node(
-                                    key=key,
-                                    uid=uuid4(),
-                                    entity=new_node,
-                                    blueprint_provider=self.blueprint_provider,
+                                    key=key, uid=uuid4(), entity=new_node, blueprint_provider=self.blueprint_provider,
                                 )
                                 self.children[index] = new_node
                             else:
@@ -387,7 +371,7 @@ class Node(NodeBase):
 
     @property
     def blueprint(self) -> Optional[Blueprint]:
-        if self.type != 'datasource':
+        if self.type != "datasource":
             return self.blueprint_provider.get_blueprint(self.type)
 
     def attribute_is_contained(self):
@@ -401,15 +385,15 @@ class Node(NodeBase):
 
     @property
     def name(self):
-        return self.entity.get('name', 'no name')
+        return self.entity.get("name", "no name")
 
     @property
     def type(self):
-        return self.entity.get('type', '')
+        return self.entity.get("type", "")
 
     @property
     def attribute_type(self):
-        return self.entity.get('attribute_type', '')
+        return self.entity.get("attribute_type", "")
 
     @staticmethod
     def from_dict(dto: DTO, blueprint_provider):
@@ -423,12 +407,11 @@ class Node(NodeBase):
         self.error_message = error_message
 
         # Replace the entire data of the node with the input dict. If it matches the blueprint...
+
     def update(self, data: Union[Dict, List]):
         # todo move to node.
         if isinstance(data, dict):
             data.pop("_id", None)
-            # TODO: "uid" should never be on the data dict
-            data.pop("uid", None)
             # Modify and add for each key in posted data
             for key in data.keys():
                 new_data = data[key]
@@ -443,11 +426,7 @@ class Node(NodeBase):
                         if child.key == key:
                             # This means we are creating a new, non-contained document. Lists are always contained.
                             if not child.attribute_is_contained() and child.uid == "" and not child.is_array():
-                                new_node = Node(
-                                    key=key,
-                                    entity=new_node,
-                                    blueprint_provider=self.blueprint_provider,
-                                )
+                                new_node = Node(key=key, entity=new_node, blueprint_provider=self.blueprint_provider,)
                                 self.children[index] = new_node
                             else:
                                 child.update(new_data)
@@ -487,15 +466,15 @@ class ListNode(NodeBase):
 
     @property
     def name(self):
-        return self.entity.get('name', 'no name')
+        return self.entity.get("name", "no name")
 
     @property
     def type(self):
-        return self.entity.get('type', '')
+        return self.entity.get("type", "")
 
     @property
     def attribute_type(self):
-        return self.entity.get('attribute_type', '')
+        return self.entity.get("attribute_type", "")
 
     @property
     def blueprint(self):

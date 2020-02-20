@@ -112,7 +112,7 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
     def test_create_complex_array(self):
         doc_storage = {
             "1": {
-                "uid": "1",
+                "_id": "1",
                 "name": "Package",
                 "description": "My package",
                 "type": "package_blueprint",
@@ -184,7 +184,6 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
         doc_storage = {
             "1": {
                 "_id": "1",
-                "uid": "1",
                 "name": "complexArraysEntity",
                 "type": "higher_rank_array",
                 "1_dim-unfixed": [],

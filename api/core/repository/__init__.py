@@ -36,7 +36,7 @@ class Repository:
         if (
             not document.name == document.data["name"]
             or not document.type == document.data["type"]
-            or not document.uid == document.data["uid"]
+            or not document.uid == document.data["_id"]
         ):
             raise ValueError("The meta data and tha 'data' object in the DTO does not match!")
         self.client.update(document.uid, document.data)

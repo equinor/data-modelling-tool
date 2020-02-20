@@ -101,7 +101,7 @@ class DocumentServiceTestCase(unittest.TestCase):
     def test_remove_document(self):
         document_repository: Repository = mock.Mock()
 
-        document_1 = {"uid": "1", "name": "Parent", "description": "", "type": "blueprint_1"}
+        document_1 = {"_id": "1", "name": "Parent", "description": "", "type": "blueprint_1"}
 
         def mock_get(document_id: str):
             if document_id == "1":
@@ -167,7 +167,7 @@ class DocumentServiceTestCase(unittest.TestCase):
         document_repository: Repository = mock.Mock()
 
         document_1 = {
-            "uid": "1",
+            "_id": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
@@ -195,13 +195,13 @@ class DocumentServiceTestCase(unittest.TestCase):
         document_repository: Repository = mock.Mock()
 
         document_1 = {
-            "uid": "1",
+            "_id": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
             "reference": {"_id": "2", "name": "Reference", "type": "blueprint_2"},
         }
-        document_2 = {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
+        document_2 = {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
 
         def mock_get(document_id: str):
             if document_id == "1":
@@ -228,7 +228,7 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         doc_storage = {
             "1": {
-                "uid": "1",
+                "_id": "1",
                 "name": "Parent",
                 "description": "",
                 "type": "blueprint_1",
@@ -267,7 +267,7 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         doc_storage = {
             "1": {
-                "uid": "1",
+                "_id": "1",
                 "name": "RootPackage",
                 "description": "My root package",
                 "type": "blueprint_1",
@@ -310,7 +310,7 @@ class DocumentServiceTestCase(unittest.TestCase):
                 "type": "blueprint_1",
                 "reference": {"_id": "2", "name": "Reference", "type": "blueprint_2"},
             },
-            "2": {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
+            "2": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
         }
 
         def mock_get(document_id: str):
@@ -348,7 +348,7 @@ class DocumentServiceTestCase(unittest.TestCase):
                 "type": "blueprint_1",
                 "references": [{"_id": "2", "name": "Reference", "type": "blueprint_2"}],
             },
-            "2": {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
+            "2": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
         }
 
         def mock_get(document_id: str):
@@ -380,7 +380,7 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         doc_storage = {
             "1": {
-                "uid": "1",
+                "_id": "1",
                 "name": "Parent",
                 "description": "",
                 "type": "blueprint_1",
@@ -391,14 +391,13 @@ class DocumentServiceTestCase(unittest.TestCase):
                     {"_id": "4", "name": "ref2", "type": "blueprint_2"},
                 ],
             },
-            "2": {"uid": "2", "_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
-            "3": {"uid": "3", "_id": "3", "name": "ref1", "description": "", "type": "blueprint_2"},
-            "4": {"uid": "4", "_id": "4", "name": "ref2", "description": "TEST", "type": "blueprint_2"},
+            "2": {"_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
+            "3": {"_id": "3", "name": "ref1", "description": "", "type": "blueprint_2"},
+            "4": {"_id": "4", "name": "ref2", "description": "TEST", "type": "blueprint_2"},
         }
 
         doc_1_after = {
             "_id": "1",
-            "uid": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
@@ -410,7 +409,7 @@ class DocumentServiceTestCase(unittest.TestCase):
             ],
         }
 
-        doc_4_after = {"_id": "4", "uid": "4", "name": "ref2", "description": "TEST_MODIFY", "type": "blueprint_2"}
+        doc_4_after = {"_id": "4", "name": "ref2", "description": "TEST_MODIFY", "type": "blueprint_2"}
 
         def mock_get(document_id: str):
             return DTO(doc_storage[document_id])
@@ -441,13 +440,12 @@ class DocumentServiceTestCase(unittest.TestCase):
         repository: Repository = mock.Mock()
 
         doc_storage = {
-            "1": {"uid": "1", "name": "Parent", "description": "", "type": "blueprint_1", "references": []},
-            "2": {"uid": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
+            "1": {"_id": "1", "name": "Parent", "description": "", "type": "blueprint_1", "references": []},
+            "2": {"_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
         }
 
         document_1_after = {
             "_id": "1",
-            "uid": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
@@ -476,7 +474,9 @@ class DocumentServiceTestCase(unittest.TestCase):
 
         node: Node = document_service.get_by_uid("testing", "1")
         contained_node: Node = node.search("1.references")
-        contained_node.children.append(Node("0", uid="2", entity=doc_storage["2"], blueprint_provider=blueprint_provider))
+        contained_node.children.append(
+            Node("0", uid="2", entity=doc_storage["2"], blueprint_provider=blueprint_provider)
+        )
         document_service.save(node, "testing")
 
         # assert document_1_after == doc_storage["1"]
@@ -488,7 +488,6 @@ class DocumentServiceTestCase(unittest.TestCase):
         doc_storage = {
             "1": {
                 "_id": "1",
-                "uid": "1",
                 "name": "Parent",
                 "description": "",
                 "type": "blueprint_1",
@@ -498,9 +497,9 @@ class DocumentServiceTestCase(unittest.TestCase):
                     {"_id": "4", "name": "a_reference", "type": "blueprint_2"},
                 ],
             },
-            "2": {"uid": "2", "_id": "2", "name": "a_reference", "description": "Index 1", "type": "blueprint_2"},
-            "3": {"uid": "3", "_id": "3", "name": "a_reference", "description": "Index 2", "type": "blueprint_2"},
-            "4": {"uid": "4", "_id": "4", "name": "a_reference", "description": "Index 3", "type": "blueprint_2"},
+            "2": {"_id": "2", "name": "a_reference", "description": "Index 1", "type": "blueprint_2"},
+            "3": {"_id": "3", "name": "a_reference", "description": "Index 2", "type": "blueprint_2"},
+            "4": {"_id": "4", "name": "a_reference", "description": "Index 3", "type": "blueprint_2"},
         }
 
         doc_1_after = {
@@ -544,7 +543,7 @@ class DocumentServiceTestCase(unittest.TestCase):
 
     def test_get_complete_document(self):
         document_1 = {
-            "uid": "1",
+            "_id": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
@@ -556,9 +555,9 @@ class DocumentServiceTestCase(unittest.TestCase):
             ],
         }
 
-        document_2 = {"uid": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
-        document_3 = {"uid": "3", "name": "Reference 1", "description": "", "type": "blueprint_2"}
-        document_4 = {"uid": "4", "name": "Reference 2", "description": "", "type": "blueprint_2"}
+        document_2 = {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
+        document_3 = {"_id": "3", "name": "Reference 1", "description": "", "type": "blueprint_2"}
+        document_4 = {"_id": "4", "name": "Reference 2", "description": "", "type": "blueprint_2"}
 
         document_repository: Repository = mock.Mock()
 
@@ -582,7 +581,7 @@ class DocumentServiceTestCase(unittest.TestCase):
         assert isinstance(root, dict)
 
         actual = {
-            "uid": "1",
+            "_id": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
