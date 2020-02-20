@@ -122,6 +122,11 @@
           "contained": true
         },
         {
+          "name": "type",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
           "name": "storageRecipes",
           "type": "system/SIMOS/StorageAttribute",
           "contained": true

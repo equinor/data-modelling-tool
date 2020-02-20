@@ -10,6 +10,7 @@ from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
 
 from classes.dto import DTO
+from classes.recipe import RecipePlugin
 from classes.tree_node import Node, ListNode
 from config import Config
 
@@ -75,19 +76,21 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
     }
 
 
-def get_ui_recipe(node, plugin_name):
+def get_ui_recipe(node, ui_recipe_name):
     parent_has_blueprint = hasattr(node.parent, "blueprint")
     if parent_has_blueprint:
-        return get_recipe(blueprint=node.parent.blueprint, plugin_name=plugin_name)
-    return get_recipe(blueprint=None, plugin_name=plugin_name)
+        return get_recipe(
+            blueprint=node.parent.blueprint, ui_recipe_name=ui_recipe_name, plugin_name=RecipePlugin.INDEX
+        )
+    return get_recipe(blueprint=None, ui_recipe_name=ui_recipe_name, plugin_name=RecipePlugin.INDEX)
 
 
-def is_visible(node, plugin_name="INDEX"):
+def is_visible(node, ui_recipe_name="INDEX"):
     if node.is_root():
         return True
     elif node.is_complex_array():
         return False
-    return get_ui_recipe(node, plugin_name).is_contained_in_index2(
+    return get_ui_recipe(node, ui_recipe_name).is_contained(
         node.parent.key if node.parent.is_array() else node.key, node.attribute_type, node.is_array()
     )
 

@@ -1,7 +1,7 @@
 from classes.blueprint import Blueprint
-from classes.ui_recipe import UIRecipe
+from classes.recipe import Recipe
 from core.utility import get_blueprint_cached
-from core.use_case.utils.get_ui_recipe import get_ui_recipe
+from core.use_case.utils.get_ui_recipe import get_recipe
 
 from core.enums import PRIMITIVES
 
@@ -9,14 +9,14 @@ from core.enums import PRIMITIVES
 def process_attributes(blueprint: Blueprint, parent_blueprint: Blueprint, ui_recipe_name):
     properties = {}
 
-    ui_recipe: UIRecipe = get_ui_recipe(blueprint, ui_recipe_name)
+    ui_recipe: Recipe = get_recipe(blueprint, ui_recipe_name)
 
     nested_attributes = []
     for attribute in blueprint.attributes:
         attribute_name = attribute.name
         is_array = attribute.dimensions == "*"
 
-        is_contained = ui_recipe.is_contained(attribute)
+        is_contained = ui_recipe.is_contained(attribute.name, attribute.attribute_type, attribute.is_array())
 
         if not is_contained:
             continue
