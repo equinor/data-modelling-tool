@@ -102,7 +102,7 @@ Feature: Explorer - Add contained node
     Then the response status should be "OK"
     And the response should contain
     """
-    {"uid": "1.meAgain.1.meAgain"}
+    {"uid": "1.meAgain.1.meAgain.0"}
     """
     Given I access the resource url "/api/v4/index/entities/1.meAgain.1/1.meAgain.1.meAgain"
     When I make a "GET" request
