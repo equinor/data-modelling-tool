@@ -40,6 +40,6 @@ utils/group_by.py                                             17      1    94.1%
 tests/utils/test_create_default_array.py                      28      1    96.4%   54
 tests/core/service/test_document_service.py                  249      7    97.2%   109, 141, 180, 211, 242, 281, 572
 ------------------------------------------------------------------------------------------
-TOTAL                                                       2284    579    74.6%
+TOTAL                                                       2285    579    74.7%
 
 25 files skipped due to complete coverage.

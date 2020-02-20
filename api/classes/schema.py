@@ -208,7 +208,7 @@ class Attribute:
 
     @property
     def is_list(self):
-        return self._get("dimensions", "").strip("\"'") == "*"
+        return bool(self._get("dimensions", "").strip("\"'"))
 
     @property
     def default(self):
