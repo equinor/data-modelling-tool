@@ -8,7 +8,7 @@ from core.enums import PRIMITIVES
 def process_attributes(blueprint: Blueprint, parent_blueprint: Blueprint, ui_recipe_name):
     properties = {}
 
-    ui_recipe: Recipe = blueprint.get_ui_recipe_from_blueprint(ui_recipe_name)
+    ui_recipe: Recipe = blueprint.get_ui_recipe(ui_recipe_name)
 
     nested_attributes = []
     for attribute in blueprint.attributes:

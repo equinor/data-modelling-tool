@@ -23,13 +23,15 @@ class RecipeAttribute:
 class Recipe:
     def __init__(self, name: str, attributes: List[BlueprintAttribute] = None):
         self.name = name
-        self.recipe_attributes = {
+        self.ui_attributes = {
             attribute["name"]: RecipeAttribute(name=attribute["name"], is_contained=attribute.get("contained", None))
             for attribute in attributes
         }
 
-    def is_contained(self, attribute_name: str, attribute_type: str, is_array: bool,
-                     plugin: RecipePlugin = RecipePlugin.DEFAULT):
+    def is_contained(
+        self, attribute_name: str, attribute_type: str, is_array: bool, plugin: RecipePlugin = RecipePlugin.DEFAULT
+    ):
+
         if plugin == RecipePlugin.INDEX:
             primitive_contained = False
             array_contained = True
@@ -39,18 +41,15 @@ class Recipe:
             array_contained = False
             single_contained = False
 
-        if attribute_name in self.recipe_attributes:
-            ui_attribute = self.recipe_attributes[attribute_name]
+        if attribute_name in self.ui_attributes:
+            ui_attribute = self.ui_attributes[attribute_name]
             if ui_attribute is not None and ui_attribute.is_contained is not None:
-                print(ui_attribute.to_dict())
                 return ui_attribute.is_contained
 
         if attribute_type in PRIMITIVES:
             return primitive_contained
         else:
-            if attribute_name == "attributes":
-                return False
-            elif is_array:
+            if is_array:
                 return array_contained
             else:
                 return single_contained
@@ -58,7 +57,7 @@ class Recipe:
     def to_dict(self) -> Dict:
         return {
             "name": self.name,
-            "attributes": [attribute.to_dict() for attribute in self.recipe_attributes.values()],
+            "attributes": [attribute.to_dict() for attribute in self.ui_attributes.values()],
         }
 
 
