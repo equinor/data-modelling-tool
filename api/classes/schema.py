@@ -6,7 +6,7 @@ import os
 from collections.abc import Iterable
 from pathlib import Path
 from types import CodeType
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, Tuple
 
 import stringcase
 from jinja2 import Template
@@ -233,6 +233,10 @@ class Attribute:
     @property
     def optional(self):
         return self._get("optional", False)
+
+    @property
+    def dimensions(self) -> Optional[str]:
+        return self._get("dimensions", None)
 
     def _get(self, name, default=None):
         return self.__values__.get(name, default)
@@ -535,6 +539,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {% if attr.cast -%}
         from classes.dto import DTO
         {%- if attr.is_list %}
+        # FIXME: Deal with multi-dimensional data
         if isinstance(value, list) and all(isinstance(element, dict) for element in value):
         {%- else %}
         if isinstance(value, dict):
@@ -542,17 +547,14 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             # TODO: Fill in missing keys, if they can be obtained
             # E.g. `self.type`
             value = {{ cast(attr, "value") }}
-        {% if attr.is_list -%}
-        if not (isinstance(value, list) and all({{ type_check(attr, "val") }} for val in value)):
-        {%- else -%}
-        if not ({{ type_check(attr, "value") }}):
-        {%- endif %}
+        if not {{ type_check(attr, "value") }}:
             {%- if attr.optional %}
             if value is not None:
-                raise ValueError
-            {%- else %}
-            raise ValueError
-            {% endif %}
+            {%- endif %}
+            {% if attr.optional %}    {% endif %}raise ValueError(
+                f"'{{ get_name(attr) }}' has an illegal value of {value}. "
+                f"Its type is expected to be of type {{ type_name(attr) }}."
+            )
         {%- endif %}
         self._{{ get_name(attr) }} = value
     {%- endfor %}
@@ -753,13 +755,31 @@ from classes.dto import DTO
             return attr.__name__
         return attr.type.__name__
 
-    def type_check(self, attr: Attribute, value_name: str) -> str:
+    def type_check(self, attr: Attribute, value_name: str, dimension: Optional[int] = None) -> str:
         type_name = self.type_name(attr)
-        check = ""
-        if attr.type not in simple_types:
-            check = f"(isinstance({value_name}, DTO) and isinstance({value_name}.data, {type_name}))"
-        check = f"{f'{check} or ' if check else ''}isinstance({value_name}, {type_name})"
-        return check
+        if attr.is_list:
+            dimensions = attr.dimensions.split(",")
+            if dimension is None:
+                dimension = len(dimensions)
+            counter_name = f"val_dim_{dimension}"
+            if dimension == 1:
+                cast = f"isinstance({counter_name}, {type_name})"
+            else:
+                cast = self.type_check(attr, f'{f"{counter_name}"}', dimension - 1)
+            check = f"isinstance({value_name}, list) and all({cast} for {counter_name} in {value_name})"
+        elif attr.type not in simple_types:
+            check = (
+                f"("
+                f"isinstance({value_name}, {type_name})"
+                f"or ("
+                f"isinstance({value_name}, DTO) "
+                f"and isinstance({value_name}.data, {type_name})"
+                f")"
+                f")"
+            )
+        else:
+            check = f"isinstance({value_name}, {type_name})"
+        return f"({check})"
 
     def type_annotation(self, attr: Attribute, may_be_dict: bool = False) -> str:
         annotation = f"{self.type_name(attr)}"
@@ -812,13 +832,23 @@ from classes.dto import DTO
             name = get_name(attr)
         return f"{self.type_name(attr)}{'.from_dict' if attr.type not in simple_types else ''}({name})"
 
-    def cast(self, attr: Attribute, name: Optional[str] = None) -> str:
+    def cast(self, attr: Attribute, name: Optional[str] = None, dimension: Optional[int] = None) -> str:
         if not attr.cast:
             if name is not None:
                 return name
             return get_name(attr)
         if attr.is_list:
-            return f"self.{get_name_of_list_class(attr)}({self.cast_as(attr, 'val')} for val in {get_name(attr) if name is None else name})"
+            dimensions = attr.dimensions.split(",")
+            if dimension is None:
+                dimension = len(dimensions)
+                value_name = get_name(attr) if name is None else name
+            else:
+                value_name = f"val_dim_{dimension}"
+            if dimension == 1:
+                return f"self.{get_name_of_list_class(attr)}({self.cast_as(attr, 'val')} for val in {value_name})"
+            else:
+                counter_name = f"val_dim_{dimension - 1}"
+                return f"self.{get_name_of_list_class(attr)}({self.cast(attr, f'{counter_name}', dimension - 1)} for {counter_name} in {value_name})"
         return f"{self.cast_as(attr, name)}"
 
     def compile(self, schema: Dict) -> type:
