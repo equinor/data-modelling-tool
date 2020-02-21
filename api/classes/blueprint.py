@@ -2,15 +2,25 @@ from typing import Dict, List
 
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
+from classes.recipe import DefaultRecipe, Recipe
 from classes.storage_recipe import DefaultStorageRecipe, StorageRecipe
 from core.enums import PRIMITIVES
 
 
-def get_storage_recipes(storage_recipes_dict: List[Dict], attributes: List[BlueprintAttribute]):
-    if not storage_recipes_dict:
+def get_storage_recipes(recipes: List[Dict], attributes: List[BlueprintAttribute]):
+    if not recipes:
         return [DefaultStorageRecipe(attributes)]
     else:
-        return [StorageRecipe(recipe["name"], recipe["attributes"]) for recipe in storage_recipes_dict]
+        return [StorageRecipe(name=recipe["name"], attributes=recipe["attributes"])
+                for recipe in recipes]
+
+
+def get_ui_recipe(recipes: List[Dict], attributes: List[BlueprintAttribute]):
+    if not recipes:
+        return [DefaultRecipe(attributes=attributes)]
+    else:
+        return [Recipe(name=recipe["name"], attributes=recipe["attributes"])
+                for recipe in recipes]
 
 
 class Blueprint:
@@ -24,15 +34,14 @@ class Blueprint:
         self.storage_recipes: List[StorageRecipe] = get_storage_recipes(
             dto.data.get("storageRecipes", []), self.attributes
         )
-        # TODO: Use uiRecipe class
-        self.ui_recipes = dto.data.get("uiRecipes", [])
+        self.ui_recipes: List[Recipe] = get_ui_recipe(dto.data.get("uiRecipes", []), dto.data.get("attributes", []))
 
     @classmethod
     def from_dict(cls, adict):
         instance = cls(DTO(adict))
         instance.attributes = [BlueprintAttribute.from_dict(attr) for attr in adict.get("attributes", [])]
         instance.storage_recipes = get_storage_recipes(adict.get("storageRecipes", []), instance.attributes)
-        instance.ui_recipes = adict.get("uiRecipes", [])
+        instance.ui_recipes = get_ui_recipe(adict.get("uiRecipes", []), adict.get("attributes", []))
         return instance
 
     def to_dict(self):
@@ -42,7 +51,7 @@ class Blueprint:
             "type": self.type,
             "attributes": [attribute.to_dict() for attribute in self.attributes],
             "storageRecipes": [recipe.to_dict() for recipe in self.storage_recipes],
-            "uiRecipes": self.ui_recipes,
+            "uiRecipes": [recipe.to_dict() for recipe in self.ui_recipes],
         }
 
     def __eq__(self, other):
@@ -61,10 +70,13 @@ class Blueprint:
 
     def get_ui_recipe_from_blueprint(self, name=None):
         if name:
-            return next((x for x in self.ui_recipes if x["name"] == name), None)
+            found = next((x for x in self.ui_recipes if x.name == name), None)
+            if found:
+                return found
+            else:
+                return DefaultRecipe(attributes=[attribute.to_dict() for attribute in self.attributes])
         else:
-            name = self.ui_recipes[0] if len(self.ui_recipes) > 0 else {}
-            return name
+            return self.ui_recipes[0]
 
     def get_attribute_type_by_key(self, key):
         return next((attr.attribute_type for attr in self.attributes if attr.name == key), None)

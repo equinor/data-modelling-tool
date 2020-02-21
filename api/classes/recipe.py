@@ -1,9 +1,9 @@
 from enum import Enum
-from typing import List
-
-from utils.data_structure.find import get
+from typing import List, Dict
 
 from core.enums import PRIMITIVES
+
+from classes.blueprint_attribute import BlueprintAttribute
 
 
 class RecipePlugin(Enum):
@@ -16,45 +16,52 @@ class RecipeAttribute:
         self.name = name
         self.is_contained = is_contained
 
+    def to_dict(self) -> Dict:
+        return {"name": self.name, "contained": self.is_contained}
+
 
 class Recipe:
-    def __init__(self, name: str, plugin_name: str, attributes: List = None):
+    def __init__(self, name: str, attributes: List[BlueprintAttribute] = None):
         self.name = name
-        self.plugin = plugin_name
-        self.recipe_attributes = {}
-        if attributes:
-            for attribute in attributes:
-                name = get(attribute, "name")
-                self.recipe_attributes[name] = RecipeAttribute(
-                    name=name, is_contained=attribute.get("contained", True)
-                )
+        self.recipe_attributes = {
+            attribute["name"]: RecipeAttribute(name=attribute["name"], is_contained=attribute.get("contained", None))
+            for attribute in attributes
+        }
 
-        if plugin_name == RecipePlugin.INDEX:
-            self.primitive_contained = False
-            self.array_contained = True
-            self.single_contained = True
+    def is_contained(self, attribute_name: str, attribute_type: str, is_array: bool,
+                     plugin: RecipePlugin = RecipePlugin.DEFAULT):
+        if plugin == RecipePlugin.INDEX:
+            primitive_contained = False
+            array_contained = True
+            single_contained = True
         else:
-            self.primitive_contained = True
-            self.array_contained = False
-            self.single_contained = False
+            primitive_contained = True
+            array_contained = False
+            single_contained = False
 
-    def is_contained(self, attribute_name: str, attribute_type: str, is_array: bool):
         if attribute_name in self.recipe_attributes:
             ui_attribute = self.recipe_attributes[attribute_name]
             if ui_attribute is not None and ui_attribute.is_contained is not None:
+                print(ui_attribute.to_dict())
                 return ui_attribute.is_contained
 
         if attribute_type in PRIMITIVES:
-            return self.primitive_contained
+            return primitive_contained
         else:
             if attribute_name == "attributes":
                 return False
             elif is_array:
-                return self.array_contained
+                return array_contained
             else:
-                return self.single_contained
+                return single_contained
+
+    def to_dict(self) -> Dict:
+        return {
+            "name": self.name,
+            "attributes": [attribute.to_dict() for attribute in self.recipe_attributes.values()],
+        }
 
 
 class DefaultRecipe(Recipe):
-    def __init__(self, plugin_name: RecipePlugin):
-        super().__init__("Default", plugin_name=plugin_name)
+    def __init__(self, attributes: List[BlueprintAttribute]):
+        super().__init__("Default", attributes=attributes)
