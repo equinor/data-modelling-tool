@@ -1,12 +1,9 @@
-from typing import Dict, List, Union, Optional
+from typing import Dict, List, Optional, Union
 from uuid import uuid4
 
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
-from core.use_case.utils.create_entity import CreateEntity
 from utils.logging import logger
-
-from classes.dto import DTO
 
 
 class DictExporter:
@@ -65,23 +62,23 @@ class DictExporter:
 
 class DictImporter:
     @classmethod
-    def from_dict(cls, dto, blueprint_provider):
-        return cls._from_dict(dto, "", blueprint_provider)
+    def from_dict(cls, entity, uid, blueprint_provider):
+        return cls._from_dict(entity, uid, "", blueprint_provider)
 
     @classmethod
-    def _from_dict(cls, dto, key, blueprint_provider):
+    def _from_dict(cls, entity: Dict, uid: str, key, blueprint_provider):
         try:
-            node = Node(key=key, uid=dto.uid, entity=dto.data, blueprint_provider=blueprint_provider)
+            node = Node(key=key, uid=uid, entity=entity, blueprint_provider=blueprint_provider)
         except KeyError as error:
             logger.exception(error)
-            error_node = Node(key=dto.name, uid="", entity={"name": dto.name, "type": ""})
+            error_node = Node(key=entity["name"], uid="", entity={"name": entity["name"], "type": ""})
             error_node.set_error("_blueprint is missing from dto")
             return error_node
 
         try:
             for attribute in node.blueprint.get_none_primitive_types():
                 if attribute.is_array():
-                    children = dto.data.get(attribute.name, [])
+                    children = entity.get(attribute.name, [])
                     data = {
                         "name": attribute.name,
                         "type": attribute.attribute_type,
@@ -92,20 +89,19 @@ class DictImporter:
                     )
                     for i, child in enumerate(children):
                         list_child_node = cls._from_dict(
-                            dto=DTO(uid=child.get("_id", ""), data=child),
-                            key=str(i),
-                            blueprint_provider=blueprint_provider,
+                            uid=child.get("_id", ""), entity=child, key=str(i), blueprint_provider=blueprint_provider,
                         )
                         list_node.add_child(list_child_node)
                         # todo implement error node handling.
 
                     node.add_child(list_node)
                 else:
-                    if attribute.name in dto.data:
-                        attribute_data = dto.data.get(attribute.name)
+                    if attribute.name in entity:
+                        attribute_data = entity.get(attribute.name)
                         if bool(attribute_data):
                             child_node = cls._from_dict(
-                                dto=DTO(uid=attribute_data.get("_id", ""), data=attribute_data),
+                                uid=attribute_data.get("_id", ""),
+                                entity=attribute_data,
                                 key=attribute.name,
                                 blueprint_provider=blueprint_provider,
                             )
@@ -132,7 +128,7 @@ class DictImporter:
             return node
         except AttributeError as error:
             logger.exception(error)
-            return Node(key=dto.name, uid="", blueprint_provider=blueprint_provider)
+            return Node(key=entity["name"], uid="", blueprint_provider=blueprint_provider)
 
 
 class NodeBase:
@@ -396,8 +392,8 @@ class Node(NodeBase):
         return self.entity.get("attribute_type", "")
 
     @staticmethod
-    def from_dict(dto: DTO, blueprint_provider):
-        return DictImporter.from_dict(dto, blueprint_provider)
+    def from_dict(entity, uid, blueprint_provider):
+        return DictImporter.from_dict(entity, uid, blueprint_provider)
 
     def remove(self):
         self.parent.remove_by_node_id(self.node_id)

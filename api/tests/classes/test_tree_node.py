@@ -223,7 +223,7 @@ class TreenodeTestCase(unittest.TestCase):
                 }
             ],
         }
-        root = Node.from_dict(DTO(document), blueprint_provider)
+        root = Node.from_dict(document, document.get("_id"), blueprint_provider)
 
         actual_before = {
             "_id": "1",
@@ -293,7 +293,7 @@ class TreenodeTestCase(unittest.TestCase):
             },
         }
 
-        root = Node.from_dict(DTO(document_1), blueprint_provider)
+        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
         result = [node.name for node in root.traverse()]
         # with error nodes
         # expected = ["Parent", "Nested 1", "Nested 2", "Reference", "nested", "reference", "references"]
@@ -379,7 +379,7 @@ class TreenodeTestCase(unittest.TestCase):
             },
         }
 
-        root = Node.from_dict(DTO(document_1), blueprint_provider)
+        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
 
         child_1 = root.search("1.nested.nested")
 
@@ -408,7 +408,7 @@ class TreenodeTestCase(unittest.TestCase):
             },
         }
 
-        root = Node.from_dict(DTO(document_1), blueprint_provider)
+        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
 
         child_1 = root.get_by_path(["nested", "nested"])
 
@@ -437,7 +437,7 @@ class TreenodeTestCase(unittest.TestCase):
             },
         }
 
-        root = Node.from_dict(DTO(document_1), blueprint_provider)
+        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
 
         update_0 = {
             "name": "New name",
@@ -579,7 +579,7 @@ class TreenodeTestCase(unittest.TestCase):
             "_blueprint": blueprint_1,
         }
 
-        root = Node.from_dict(DTO(document_1), blueprint_provider)
+        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
 
         actual = {
             "_id": "1",
@@ -680,7 +680,7 @@ class TreenodeTestCase(unittest.TestCase):
             ],
         }
 
-        root = DictImporter.from_dict(DTO(document_1), blueprint_provider)
+        root = DictImporter.from_dict(document_1, document_1.get("_id"), blueprint_provider)
 
         assert pretty_eq(actual, root.to_dict()) is None
 

@@ -117,7 +117,7 @@ class DocumentService:
             raise EntityNotFoundException(document_uid)
 
         dto = DTO(complete_document)
-        return Node.from_dict(dto, blueprint_provider=self.blueprint_provider)
+        return Node.from_dict(dto.data, dto.uid, blueprint_provider=self.blueprint_provider)
 
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(
@@ -217,7 +217,7 @@ class DocumentService:
 
         new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
 
-        new_node = Node.from_dict(DTO(data=entity, uid=new_node_id), self.blueprint_provider)
+        new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
 
         new_node.key = str(len(parent.children)) if parent.is_array() else ""
 

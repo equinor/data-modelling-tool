@@ -18,14 +18,14 @@ tests/classes/test_tree_error_node.py                         15      7    53.3%
 core/repository/repository_exceptions.py                      15      6    60.0%   3-4, 7, 12, 17, 22
 core/shared/use_case.py                                       13      5    61.5%   8, 11-13, 16
 core/repository/repository_factory.py                          8      3    62.5%   8-10
-classes/blueprint.py                                          53     19    64.2%   32-36, 49, 60, 63-67, 70, 76-82
+classes/blueprint.py                                          55     20    63.6%   32-36, 49, 60, 63-67, 70, 76, 79-85
 classes/dto.py                                                48     16    66.7%   19, 23-26, 29-33, 40, 44-45, 53, 57-58, 65
-core/use_case/create_application_use_case.py                 108     36    66.7%   172, 175, 185, 193-194, 200-226, 230-234, 246, 268-270
+core/use_case/create_application_use_case.py                 108     36    66.7%   172, 175, 185, 193-194, 200-228, 232-236, 248, 270-272
 core/shared/response_object.py                                37     12    67.6%   20-21, 24-26, 30, 33, 37, 41, 45, 49-52
 utils/data_structure/find.py                                  37     12    67.6%   23-24, 28-30, 36-41, 43
-core/service/document_service.py                             132     38    71.2%   17, 28, 46, 61-62, 89, 92, 112-117, 123, 132, 137, 152, 176, 186-201, 207-226
+core/service/document_service.py                             132     38    71.2%   17, 28, 46, 61-62, 89, 92, 112-117, 123, 132, 137, 152, 177, 187-202, 208-227
 core/repository/file/__init__.py                              32      8    75.0%   21, 25-26, 30-31, 34, 37, 40
-classes/tree_node.py                                         300     71    76.3%   57, 75-79, 133-135, 141, 145, 153-154, 161-164, 167, 210, 213-215, 221-223, 226, 235-238, 253, 259, 270-314, 317, 325, 339, 349, 386, 419-420, 429, 436-442, 460, 464
+classes/tree_node.py                                         307     73    76.2%   54, 72-76, 129-131, 137, 141, 149-150, 157-160, 163, 170, 216, 219-221, 227-229, 232, 241-244, 259, 265, 276-320, 323, 331, 345, 355, 392, 425-426, 435, 442-448, 461, 469, 473
 utils/data_structure/traverse.py                              35      8    77.1%   20, 53-55, 59-62
 tests/core/repository/mongo/test_document_repository.py        9      2    77.8%   12-13
 utils/get_data_type.py                                         9      2    77.8%   12-13
@@ -38,9 +38,9 @@ core/enums.py                                                 42      4    90.5%
 classes/blueprint_attribute.py                                33      3    90.9%   36, 47, 61
 utils/group_by.py                                             17      1    94.1%   18
 tests/utils/test_create_default_array.py                      28      1    96.4%   54
-tests/core/service/test_document_service.py                  224      7    96.9%   63, 83, 111, 142, 173, 212, 504
+tests/core/service/test_document_service.py                  249      8    96.8%   89, 109, 141, 180, 211, 242, 281, 573
 tests/classes/test_tree_node.py                              174      1    99.4%   98
 ------------------------------------------------------------------------------------------
-TOTAL                                                       2263    600    73.5%
+TOTAL                                                       2298    604    73.7%
 
 24 files skipped due to complete coverage.
