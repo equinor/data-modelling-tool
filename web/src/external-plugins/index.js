@@ -22,7 +22,8 @@ export default function pluginHook(uiRecipe) {
   return registeredPlugins[uiRecipe.name]
 }
 
-function PlotlyPoc() {
+function PlotlyPoc(props) {
+  const { updateEntity, document } = props
   return (
     <Plot
       data={[
@@ -35,6 +36,10 @@ function PlotlyPoc() {
         },
         { type: 'bar', x: [1, 2, 3], y: [2, 5, 3] },
       ]}
+      onClick={() => {
+        document.description = 'test update'
+        updateEntity(document)
+      }}
       layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
     />
   )
