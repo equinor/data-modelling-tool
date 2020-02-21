@@ -1,8 +1,11 @@
+from copy import deepcopy
 from typing import Dict, List, Optional, Union
 from uuid import uuid4
 
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
+from config import Config
+from core.enums import DMT
 from utils.logging import logger
 
 
@@ -10,6 +13,10 @@ class DictExporter:
     @staticmethod
     def to_dict(node):
         data = {}
+
+        # If it's an empty node, just return the empty object.
+        if not node.entity:
+            return node.entity
 
         if node.uid != "":
             data["_id"] = node.uid
@@ -66,77 +73,116 @@ class DictImporter:
         return cls._from_dict(entity, uid, "", blueprint_provider)
 
     @classmethod
-    def _from_dict(cls, entity: Dict, uid: str, key, blueprint_provider):
+    def _from_dict(
+        cls,
+        entity: Dict,
+        uid: str,
+        key,
+        blueprint_provider,
+        node_attribute: BlueprintAttribute = None,
+        recursion_depth: int = 0,
+    ):
+        if recursion_depth >= Config.MAX_ENTITY_RECURSION_DEPTH:
+            message = (
+                f"Reached maximum recursion depth while creating NodeTree ({recursion_depth}).\n"
+                f"Node: {node_attribute.name}, Type: {node_attribute.attribute_type}\n"
+                f'If your blueprints contains recursion, set the attribute as "optional". '
+            )
+            logger.error(message)
+            raise RecursionError(message)
+
+        # If no attribute, that means this was a "top-level" entity. We create a "fake" Attribute based on the Blueprint
+        if not node_attribute:
+            bp = blueprint_provider.get_blueprint(entity["type"])
+            node_attribute = BlueprintAttribute(bp.name, entity["type"], bp.description)
         try:
-            node = Node(key=key, uid=uid, entity=entity, blueprint_provider=blueprint_provider)
+            node = Node(
+                key=key, uid=uid, entity=entity, blueprint_provider=blueprint_provider, attribute=node_attribute
+            )
         except KeyError as error:
             logger.exception(error)
-            error_node = Node(key=entity["name"], uid="", entity={"name": entity["name"], "type": ""})
+            error_node = Node(
+                key=entity["name"], uid="", entity={"name": entity["name"], "type": ""}, attribute=node_attribute
+            )
             error_node.set_error("_blueprint is missing from dto")
             return error_node
 
         try:
-            for attribute in node.blueprint.get_none_primitive_types():
-                if attribute.is_array():
-                    children = entity.get(attribute.name, [])
-                    data = {
-                        "name": attribute.name,
-                        "type": attribute.attribute_type,
-                        "attributeType": attribute.attribute_type,
-                    }
+            for child_attribute in node.blueprint.get_none_primitive_types():
+                # This will stop creation of recursive blueprints (only if they are optional)
+                if child_attribute.is_optional() and not entity:
+                    continue
+
+                if child_attribute.is_array():
+                    children = entity.get(child_attribute.name, [])
+
                     list_node = ListNode(
-                        key=attribute.name, uid="", entity=data, blueprint_provider=blueprint_provider
+                        key=child_attribute.name,
+                        uid="",
+                        entity=children,
+                        blueprint_provider=blueprint_provider,
+                        attribute=child_attribute,
                     )
+
                     for i, child in enumerate(children):
+                        list_child_attribute = child_attribute
+
+                        # If the node is of type DMT/Package, we need to overwrite the attribute_type "Entity", and get it from the child.
+                        if node.type == DMT.PACKAGE.value:
+                            content_attribute: BlueprintAttribute = deepcopy(child_attribute)
+                            content_attribute.attribute_type = child["type"]
+                            list_child_attribute = content_attribute
+
                         list_child_node = cls._from_dict(
-                            uid=child.get("_id", ""), entity=child, key=str(i), blueprint_provider=blueprint_provider,
+                            uid=child.get("_id", ""),
+                            entity=child,
+                            key=str(i),
+                            blueprint_provider=blueprint_provider,
+                            node_attribute=list_child_attribute,
+                            recursion_depth=recursion_depth + 1,
                         )
                         list_node.add_child(list_child_node)
-                        # todo implement error node handling.
-
                     node.add_child(list_node)
                 else:
-                    if attribute.name in entity:
-                        attribute_data = entity.get(attribute.name)
-                        if bool(attribute_data):
-                            child_node = cls._from_dict(
-                                uid=attribute_data.get("_id", ""),
-                                entity=attribute_data,
-                                key=attribute.name,
-                                blueprint_provider=blueprint_provider,
-                            )
-                            node.add_child(child_node)
-                        else:
-                            # TODO: This check stops the Tree from generating child nodes if they have no data in the entity.
-                            # SOLUTION: dont add the node. Add context menu create item if its optional. #562
-                            pass
-                    else:
-                        error_node = Node(
-                            key=attribute.name,
-                            uid="",
-                            entity={
-                                "name": attribute.name,
-                                # avoid DtoException
-                                "type": "",
-                            },
-                            blueprint_provider=blueprint_provider,
-                        )
-                        error_node.set_error(f"failed to add attribute node: {attribute.name}")
-                        # #524 #543 the following line break several unit tests related to save and remove in the service.
-                        # node.add_child(error_node)
-                        logger.warning(f"Data problem: {attribute.name}")
+                    attribute_data = entity.get(child_attribute.name, {})
+                    child_node = cls._from_dict(
+                        uid=attribute_data.get("_id", ""),
+                        entity=attribute_data,
+                        key=child_attribute.name,
+                        blueprint_provider=blueprint_provider,
+                        node_attribute=child_attribute,
+                        recursion_depth=recursion_depth + 1,
+                    )
+                    node.add_child(child_node)
+                    # TODO: Not sure where this fits in now....
+                    # else:
+                    #     error_node = Node(
+                    #         key=child_attribute.name,
+                    #         uid="",
+                    #         entity={
+                    #             "name": child_attribute.name,
+                    #             # avoid DtoException
+                    #             "type": "",
+                    #         },
+                    #         blueprint_provider=blueprint_provider,
+                    #     )
+                    #     error_node.set_error(f"failed to add attribute node: {child_attribute.name}")
+                    #     # #524 #543 the following line break several unit tests related to save and remove in the service.
+                    #     # node.add_child(error_node)
+                    #     logger.warning(f"Data problem: {child_attribute.name}")
             return node
         except AttributeError as error:
             logger.exception(error)
-            return Node(key=entity["name"], uid="", blueprint_provider=blueprint_provider)
+            return Node(key=entity["name"], uid="", blueprint_provider=blueprint_provider, attribute=node_attribute)
 
 
 class NodeBase:
-    def __init__(self, key: str, uid: str = None, parent=None, children=None):
+    def __init__(self, key: str, attribute: BlueprintAttribute, uid: str = None, parent=None, children=None):
         if key is None:
             raise Exception("Node requires a key")
         self.key = key
         self.uid = uid
+        self.attribute: BlueprintAttribute = attribute
         if uid is None:
             self.uid = str(uuid4())
         self.has_error = False
@@ -161,16 +207,6 @@ class NodeBase:
 
     def is_storage_contained(self):
         return self.uid == ""
-
-    # If the node is model contained in the parents blueprint
-    def is_model_contained(self) -> bool:
-        if not self.parent:
-            return True
-        if isinstance(self.parent, ListNode):
-            attribute = self.parent.blueprint.get_attribute_by_name(self.parent.key)
-        else:
-            attribute = self.parent.blueprint.get_attribute_by_name(self.key)
-        return attribute.contained
 
     def not_contained(self):
         return not self.uid == ""
@@ -224,9 +260,7 @@ class NodeBase:
         return isinstance(self, ListNode)
 
     def is_complex_array(self):
-        if self.is_array():
-            attribute: BlueprintAttribute = self.parent.blueprint.get_attribute_by_name(self.name)
-            attribute.is_matrix()
+        return self.attribute.is_matrix()
 
     def is_single(self):
         return isinstance(self, Node)
@@ -316,7 +350,13 @@ class NodeBase:
                 # Set uid base on containment and existing(lack of) uid
                 # This require the existing _id to be posted
                 uid = "" if self.attribute_is_contained() else item.get("_id", str(uuid4()))
-                new_node = Node(key=str(i), uid=uid, entity=item, blueprint_provider=self.blueprint_provider)
+                new_node = Node(
+                    key=str(i),
+                    uid=uid,
+                    entity=item,
+                    blueprint_provider=self.blueprint_provider,
+                    attribute=self.attribute,
+                )
                 self.children.append(new_node)
 
     def has_children(self):
@@ -356,8 +396,16 @@ class NodeBase:
 
 
 class Node(NodeBase):
-    def __init__(self, key: str, uid: str = None, entity: Dict = {}, parent=None, blueprint_provider=None):
-        super().__init__(key=key, uid=uid, parent=parent)
+    def __init__(
+        self,
+        key: str,
+        attribute: BlueprintAttribute,
+        uid: str = None,
+        entity: Dict = {},
+        parent=None,
+        blueprint_provider=None,
+    ):
+        super().__init__(key=key, uid=uid, parent=parent, attribute=attribute)
         self.entity = entity
         self.blueprint_provider = blueprint_provider
         self.error_message = None
@@ -381,15 +429,11 @@ class Node(NodeBase):
 
     @property
     def name(self):
-        return self.entity.get("name", "no name")
+        return self.entity.get("name", self.attribute.name)
 
     @property
     def type(self):
-        return self.entity.get("type", "")
-
-    @property
-    def attribute_type(self):
-        return self.entity.get("attribute_type", "")
+        return self.attribute.attribute_type
 
     @staticmethod
     def from_dict(entity, uid, blueprint_provider):
@@ -413,6 +457,9 @@ class Node(NodeBase):
                 new_data = data[key]
 
                 attribute = self.blueprint.get_attribute_by_name(key)
+                if not attribute:
+                    logger.warn(f"key {key} was not found on blueprint {self.blueprint.name}")
+                    continue
                 # Add/Modify primitive data
                 if attribute.is_primitive():
                     self.entity[key] = new_data
@@ -449,8 +496,16 @@ class Node(NodeBase):
 
 
 class ListNode(NodeBase):
-    def __init__(self, key: str, uid: str = None, entity: Dict = {}, parent=None, blueprint_provider=None):
-        super().__init__(key=key, uid=uid, parent=parent)
+    def __init__(
+        self,
+        key: str,
+        attribute: BlueprintAttribute,
+        uid: str = None,
+        entity: Dict = {},
+        parent=None,
+        blueprint_provider=None,
+    ):
+        super().__init__(key=key, uid=uid, parent=parent, attribute=attribute)
         self.entity = entity
         self.blueprint_provider = blueprint_provider
 
@@ -462,15 +517,11 @@ class ListNode(NodeBase):
 
     @property
     def name(self):
-        return self.entity.get("name", "no name")
+        return self.attribute.name
 
     @property
     def type(self):
-        return self.entity.get("type", "")
-
-    @property
-    def attribute_type(self):
-        return self.entity.get("attribute_type", "")
+        return self.attribute.attribute_type
 
     @property
     def blueprint(self):

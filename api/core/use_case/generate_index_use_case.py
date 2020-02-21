@@ -1,5 +1,6 @@
 from typing import Dict, Union
 
+from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import DMT
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.repository.repository_factory import get_repository
@@ -76,6 +77,8 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
 def is_visible(node):
     if node.is_root():
         return True
+    elif not node.entity:
+        return False
     elif node.is_complex_array():
         return False
 
@@ -133,6 +136,7 @@ class GenerateIndexUseCase:
             uid=data_source_id,
             entity={"type": "datasource", "name": data_source_id},
             blueprint_provider=document_service.blueprint_provider,
+            attribute=BlueprintAttribute("root", "datasource"),
         )
         for root_package in root_packages:
             try:
@@ -146,6 +150,7 @@ class GenerateIndexUseCase:
                     uid=root_package.uid,
                     entity={"name": root_package.name, "type": ""},
                     blueprint_provider=document_service.blueprint_provider,
+                    attribute=BlueprintAttribute("root", "datasource"),
                 )
                 error_node.set_error(f"failed to add root package {root_package.name} to the root node")
                 root.add_child(error_node)

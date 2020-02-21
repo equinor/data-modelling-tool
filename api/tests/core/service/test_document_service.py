@@ -2,6 +2,7 @@ import unittest
 from unittest import mock
 
 from classes.blueprint import Blueprint
+from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.tree_node import Node
 from core.repository import Repository
@@ -78,20 +79,37 @@ blueprint_2 = {
     "uiRecipes": [],
 }
 
-
-def get_blueprint(type: str):
-    if type == "blueprint_1":
-        return Blueprint(DTO(blueprint_1))
-    if type == "blueprint_2":
-        return Blueprint(DTO(blueprint_2))
-    if type == "uncontained_blueprint":
-        return Blueprint(DTO(uncontained_blueprint))
-    return None
+blueprint_with_optional_attr = {
+    "type": "system/SIMOS/Blueprint",
+    "name": "Blueprint_w_optional_attr",
+    "description": "",
+    "attributes": [
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "name"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "type"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "description"},
+        {
+            "attributeType": "blueprint_2",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "name": "im_optional",
+            "optional": True,
+            "contained": True,
+        },
+    ],
+}
 
 
 class BlueprintProvider:
-    def get_blueprint(self, type: str):
-        return get_blueprint(type)
+    @staticmethod
+    def get_blueprint(type: str):
+        if type == "blueprint_1":
+            return Blueprint(DTO(blueprint_1))
+        if type == "blueprint_2":
+            return Blueprint(DTO(blueprint_2))
+        if type == "uncontained_blueprint":
+            return Blueprint(DTO(uncontained_blueprint))
+        if type == "blueprint_with_optional_attr":
+            return Blueprint(DTO(blueprint_with_optional_attr))
+        return None
 
 
 blueprint_provider = BlueprintProvider()
@@ -475,7 +493,13 @@ class DocumentServiceTestCase(unittest.TestCase):
         node: Node = document_service.get_by_uid("testing", "1")
         contained_node: Node = node.search("1.references")
         contained_node.children.append(
-            Node("0", uid="2", entity=doc_storage["2"], blueprint_provider=blueprint_provider)
+            Node(
+                "0",
+                uid="2",
+                entity=doc_storage["2"],
+                blueprint_provider=blueprint_provider,
+                attribute=BlueprintAttribute("references", "blueprint_2"),
+            )
         )
         document_service.save(node, "testing")
 
@@ -591,3 +615,47 @@ class DocumentServiceTestCase(unittest.TestCase):
         }
 
         assert pretty_eq(actual, root) is None
+
+    def test_update_single_optional_complex(self):
+        repository: Repository = mock.Mock()
+
+        doc_storage = {
+            "1": {
+                "_id": "1",
+                "name": "Parent",
+                "description": "",
+                "type": "blueprint_with_optional_attr",
+                "im_optional": {},
+            }
+        }
+
+        doc_1_after = {
+            "_id": "1",
+            "name": "Parent",
+            "description": "Test",
+            "type": "blueprint_with_optional_attr",
+            "im_optional": {},
+        }
+
+        def mock_get(document_id: str):
+            return DTO(doc_storage[document_id])
+
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+            return None
+
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return repository
+
+        repository.get = mock_get
+        repository.update = mock_update
+        document_service = DocumentService(
+            blueprint_provider=blueprint_provider, repository_provider=repository_provider
+        )
+
+        node: Node = document_service.get_by_uid("testing", "1")
+        node.update(doc_1_after)
+        document_service.save(node, "testing")
+
+        assert pretty_eq(doc_1_after, doc_storage["1"]) is None

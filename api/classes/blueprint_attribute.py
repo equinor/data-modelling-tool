@@ -13,7 +13,7 @@ class BlueprintAttribute:
         description: Optional[str] = None,
         label: Optional[str] = None,
         default: Optional[str] = None,
-        dimensions: Optional[str] = None,
+        dimensions: Optional[str] = "",
         optional: Optional[bool] = None,
         contained: Optional[bool] = None,
         enum_type: Optional[str] = None,
