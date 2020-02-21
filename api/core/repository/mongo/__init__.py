@@ -23,8 +23,6 @@ class MongoDBClient(DBClientInterface):
 
     def get(self, uid: str) -> Dict:
         result = self.handler[self.collection].find_one(filter={"_id": uid})
-        if result:
-            result["uid"] = uid
         return result
 
     def add(self, uid: str, document: Dict) -> bool:

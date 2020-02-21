@@ -176,7 +176,7 @@ class DocumentService:
             if not target_node:
                 raise EntityNotFoundException(uid=document_id)
 
-        target_node.dto["name"] = name
+        target_node.entity["name"] = name
         self.save(root_node, data_source_id)
 
         logger.info(f"Rename document '{target_node.node_id}' to '{name}")

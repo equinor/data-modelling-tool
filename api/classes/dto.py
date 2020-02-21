@@ -8,18 +8,7 @@ from utils.logging import logger
 # The goal is to encapsulate the 'data' dict in the DTO class
 class DTO:
     def __init__(self, data: Dict, uid: Optional[str] = None):
-        if uid is None:
-            # todo why is id used?
-            for key in ["uid", "_id", "id"]:
-                try:
-                    uid = data[key]
-                    break
-                except (KeyError, AttributeError, TypeError):
-                    pass
-
-        if uid is None:
-            uid = uuid4()
-        self._uid = uid
+        self._uid = uid if uid is not None else data.get("_id", str(uuid4()))
         self._name = data["name"]
         self._type = data["type"]
         self._attribute_type = data.get("attribute_type", "")

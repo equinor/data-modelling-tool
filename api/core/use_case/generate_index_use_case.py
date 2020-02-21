@@ -10,7 +10,7 @@ from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
 
 from classes.dto import DTO
-from classes.tree_node import Node, NodeBase, ListNode
+from classes.tree_node import Node, ListNode
 from config import Config
 
 
@@ -65,10 +65,10 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
         "meta": {
             "menuItems": menu_items,
             "onSelect": get_node_on_select(data_source_id, node)
-            if node.is_single() and node.type != DMT.PACKAGE.value
+            if node.is_single() and node.type != DMT.PACKAGE.value and node.type != "datasource"
             else {},
             "error": False,
-            "isRootPackage": node.dto.get("isRoot") if node.is_single() else False,
+            "isRootPackage": node.is_root() if node.is_single() else False,
             "isList": node.is_array(),
             "dataSource": data_source_id,
         },
@@ -129,9 +129,10 @@ class GenerateIndexUseCase:
         # make sure we're generating the index with correct blueprints.
         document_service.invalidate_cache()
         root_packages = document_service.get_root_packages(data_source_id=data_source_id)
-        root = NodeBase(
+        root = Node(
             key="root",
-            dto=DTO(uid=data_source_id, data={"type": "datasource", "name": data_source_id}),
+            uid=data_source_id,
+            entity={"type": "datasource", "name": data_source_id},
             blueprint_provider=document_service.blueprint_provider,
         )
         for root_package in root_packages:
@@ -143,7 +144,8 @@ class GenerateIndexUseCase:
                 logger.exception(error, "unhandled exception.")
                 error_node: Node = Node(
                     key=root_package.uid,
-                    dto=DTO(data={"name": root_package.name, "type": ""}),
+                    uid=root_package.uid,
+                    entity={"name": root_package.name, "type": ""},
                     blueprint_provider=document_service.blueprint_provider,
                 )
                 error_node.set_error(f"failed to add root package {root_package.name} to the root node")
