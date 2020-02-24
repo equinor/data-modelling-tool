@@ -3,10 +3,11 @@ from __future__ import annotations
 import hashlib
 import hmac
 import os
+import zlib
 from collections.abc import Iterable
 from pathlib import Path
 from types import CodeType
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, Tuple
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
 
 import stringcase
 from jinja2 import Template
@@ -52,9 +53,9 @@ def _get_definition(schema: Union[Dict, type], name: str) -> Optional[str]:
 
 
 def is_simple_type(element) -> bool:
-    if isinstance(element, object):
-        return type(element) in simple_types
-    return element in simple_types
+    if isinstance(element, type):
+        return element in simple_types
+    return type(element) in simple_types
 
 
 def get_simple_types() -> str:
@@ -282,6 +283,17 @@ def basic_types() -> Dict[str, type]:
     return {"string": str, "boolean": bool, "integer": int, "number": float}
 
 
+def compress(data: str) -> str:
+    compressed = zlib.compress(data.encode("UTF-8"), zlib.Z_BEST_COMPRESSION)
+    return str(compressed)
+
+
+def _get_dto() -> str:
+    with open(Path(__file__).parent / "dto.py") as f:
+        content = "\n".join(f.readlines())
+    return content
+
+
 TypeMapping = Dict[str, type]
 
 
@@ -359,6 +371,9 @@ class Factory:
             get_name_of_metaclass,
             self.get_escaped_default,
             default_as_loadable_json,
+            compress,
+            self.get_dependencies,
+            _get_dto,
         ]
         self.to_be_compiled = set()
 
@@ -383,11 +398,14 @@ class Factory:
         # noinspection JinjaAutoinspect
         class_template = Template(
             """\
+{%- block imports %}
 from __future__ import annotations
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Set
 import stringcase
 import json
 from classes.dto import DTO
+{%- endblock %}
+{%- block definition %}
 
 
 class {{ get_name_of_metaclass(schema) }}(type):
@@ -687,6 +705,68 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def __completed__(self):
         return True
 
+{% endblock %}
+    __code_generation: bytes = {{ compress(self.code_generation()) }}
+{% block code_generation  %}
+    __imports: bytes = {{ compress(self.imports()) }}
+    __definition: bytes = {{ compress(self.definition()) }}
+    __dmt_dependencies: List[bytes] = [
+        {{ compress(_get_dto()) }},
+    ]
+
+    @classmethod
+    def __code__(
+        cls,
+        include_dependencies: bool = False,
+        format_code=False,
+        include_imports: bool = True,
+        include_code_generation: bool = False,
+        keep_dmt_imports: bool = False,
+        _included_dependencies: Optional[Set[type]] = None,
+    ) -> str:
+        import zlib
+
+        def decompress(data: bytes) -> str:
+            return zlib.decompress(data).decode("UTF-8")
+
+        definition = ""
+        remove_dto_imports = False
+        if include_imports:
+            definition += decompress(cls.__imports)
+            if include_dependencies and not keep_dmt_imports:
+                remove_dto_imports = True
+                for dependency in cls.__dmt_dependencies:
+                    definition += decompress(dependency)
+        if include_dependencies:
+            if _included_dependencies is None:
+                _included_dependencies = set()
+            for dependency in {{ get_dependencies(schema) }}:
+                if dependency in _included_dependencies:
+                    continue
+                _included_dependencies.add(dependency)
+                definition += dependency.__code__(
+                    include_dependencies=True,
+                    format_code=False,
+                    include_imports=False,
+                    _included_dependencies=_included_dependencies,
+                )
+        definition += decompress(cls.__definition)
+        if include_code_generation:
+            try:
+                definition += decompress(cls.__code_generation)
+            except AttributeError:
+                pass
+        if remove_dto_imports:
+            for import_ in [
+                "from classes.dto import DTO",
+            ]: 
+                definition = definition.replace(import_, "")
+        if format_code:
+            import black
+            definition = black.format_str(definition, line_length=black.DEFAULT_LINE_LENGTH)
+        return definition
+{% endblock %}
+
 """
         )
         for macro in self.macros:
@@ -797,6 +877,15 @@ from classes.dto import DTO
             return self._create(name, compile=False)
         return self._types[name]
 
+    def get_dependencies(self, schema) -> str:
+        dependencies = []
+        if (parent := self.get_type_by_name(schema["type"])).__name__ != schema["name"]:
+            dependencies.append(parent)
+        for attr in schema.get("attributes", []):
+            if not is_simple_type(attr.type) and attr.type not in dependencies:
+                dependencies.append(attr.type)
+        return f"[{', '.join(dep.__name__ for dep in dependencies)}]"
+
     @staticmethod
     def get_escaped_default(attr: Attribute) -> str:
         if attr.default is not None:
@@ -859,7 +948,6 @@ from classes.dto import DTO
         code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
         exec(code)  # nosec
         cls: type = locals()[schema["name"]]
-        cls.__code__ = definition
         if cls.__name__ not in globals():
             globals()[cls.__name__] = cls
         return cls

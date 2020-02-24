@@ -1,19 +1,4 @@
 [[package]]
-category = "main"
-description = "Powerful and Lightweight Python Tree Data Structure.."
-name = "anytree"
-optional = false
-python-versions = "*"
-version = "2.8.0"
-
-[package.dependencies]
-six = ">=1.9.0"
-
-[package.extras]
-dev = ["check-manifest"]
-test = ["coverage"]
-
-[[package]]
 category = "dev"
 description = "A small Python module for determining appropriate platform-specific dirs, e.g. a \"user data dir\"."
 name = "appdirs"
@@ -150,17 +135,6 @@ ordered-set = ">=3.1"
 
 [package.extras]
 murmur = ["mmh3"]
-
-[[package]]
-category = "main"
-description = "Access dicts and lists with a dotted path notation."
-name = "dotted"
-optional = false
-python-versions = "*"
-version = "0.1.8"
-
-[package.dependencies]
-six = "*"
 
 [[package]]
 category = "dev"
@@ -597,14 +571,10 @@ termcolor = ["termcolor"]
 watchdog = ["watchdog"]
 
 [metadata]
-content-hash = "21905c7b2f4a79c912b20629ebab7b3b88ad4da37673c8695f4316a4ea6649ab"
+content-hash = "e7edd175409ecb5c69c57f503d528c16cd5e1fe220ac608ac3860504b63416d5"
 python-versions = "3.8.*"
 
 [metadata.files]
-anytree = [
-    {file = "anytree-2.8.0-py2.py3-none-any.whl", hash = "sha256:14c55ac77492b11532395049a03b773d14c7e30b22aa012e337b1e983de31521"},
-    {file = "anytree-2.8.0.tar.gz", hash = "sha256:3f0f93f355a91bc3e6245319bf4c1d50e3416cc7a35cc1133c1ff38306bbccab"},
-]
 appdirs = [
     {file = "appdirs-1.4.3-py2.py3-none-any.whl", hash = "sha256:d8b24664561d0d34ddfaec54636d502d7cea6e29c3eaf68f3df6180863e2166e"},
     {file = "appdirs-1.4.3.tar.gz", hash = "sha256:9e5896d1372858f8dd3344faf4e5014d21849c756c8d5701f78f8a103b372d92"},
@@ -680,9 +650,6 @@ coverage = [
 deepdiff = [
     {file = "deepdiff-4.0.7-py3-none-any.whl", hash = "sha256:6ab13e0cbb627dadc312deaca9bef38de88a737a9bbdbfbe6e3857748219c127"},
     {file = "deepdiff-4.0.7.tar.gz", hash = "sha256:1123762580af0904621136d117c8397392a244d3ff0fa0a50de57a7939582476"},
-]
-dotted = [
-    {file = "dotted-0.1.8.tar.gz", hash = "sha256:e0334688d854461b3b065e54b80781cd7cd2545e0692756c5244be0aeec41bdf"},
 ]
 entrypoints = [
     {file = "entrypoints-0.3-py2.py3-none-any.whl", hash = "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19"},
