@@ -3,6 +3,7 @@ from __future__ import annotations
 import hashlib
 import hmac
 import os
+import zlib
 from collections.abc import Iterable
 from pathlib import Path
 from types import CodeType
@@ -52,9 +53,9 @@ def _get_definition(schema: Union[Dict, type], name: str) -> Optional[str]:
 
 
 def is_simple_type(element) -> bool:
-    if isinstance(element, object):
-        return type(element) in simple_types
-    return element in simple_types
+    if isinstance(element, type):
+        return element in simple_types
+    return type(element) in simple_types
 
 
 def get_simple_types() -> str:
@@ -234,6 +235,10 @@ class Attribute:
     def optional(self):
         return self._get("optional", False)
 
+    @property
+    def dimensions(self) -> Optional[str]:
+        return self._get("dimensions", None)
+
     def _get(self, name, default=None):
         return self.__values__.get(name, default)
 
@@ -276,6 +281,17 @@ def remove_imports(definition: str) -> str:
 
 def basic_types() -> Dict[str, type]:
     return {"string": str, "boolean": bool, "integer": int, "number": float}
+
+
+def compress(data: str) -> str:
+    compressed = zlib.compress(data.encode("UTF-8"), zlib.Z_BEST_COMPRESSION)
+    return str(compressed)
+
+
+def _get_dto() -> str:
+    with open(Path(__file__).parent / "dto.py") as f:
+        content = "\n".join(f.readlines())
+    return content
 
 
 TypeMapping = Dict[str, type]
@@ -355,6 +371,9 @@ class Factory:
             get_name_of_metaclass,
             self.get_escaped_default,
             default_as_loadable_json,
+            compress,
+            self.get_dependencies,
+            _get_dto,
         ]
         self.to_be_compiled = set()
 
@@ -379,11 +398,14 @@ class Factory:
         # noinspection JinjaAutoinspect
         class_template = Template(
             """\
+{%- block imports %}
 from __future__ import annotations
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Set
 import stringcase
 import json
 from classes.dto import DTO
+{%- endblock %}
+{%- block definition %}
 
 
 class {{ get_name_of_metaclass(schema) }}(type):
@@ -535,6 +557,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {% if attr.cast -%}
         from classes.dto import DTO
         {%- if attr.is_list %}
+        # FIXME: Deal with multi-dimensional data
         if isinstance(value, list) and all(isinstance(element, dict) for element in value):
         {%- else %}
         if isinstance(value, dict):
@@ -542,17 +565,14 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             # TODO: Fill in missing keys, if they can be obtained
             # E.g. `self.type`
             value = {{ cast(attr, "value") }}
-        {% if attr.is_list -%}
-        if not (isinstance(value, list) and all({{ type_check(attr, "val") }} for val in value)):
-        {%- else -%}
-        if not ({{ type_check(attr, "value") }}):
-        {%- endif %}
+        if not {{ type_check(attr, "value") }}:
             {%- if attr.optional %}
             if value is not None:
-                raise ValueError
-            {%- else %}
-            raise ValueError
-            {% endif %}
+            {%- endif %}
+            {% if attr.optional %}    {% endif %}raise ValueError(
+                f"'{{ get_name(attr) }}' has an illegal value of {value}. "
+                f"Its type is expected to be of type {{ type_name(attr) }}."
+            )
         {%- endif %}
         self._{{ get_name(attr) }} = value
     {%- endfor %}
@@ -685,6 +705,68 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def __completed__(self):
         return True
 
+{% endblock %}
+    __code_generation: bytes = {{ compress(self.code_generation()) }}
+{% block code_generation  %}
+    __imports: bytes = {{ compress(self.imports()) }}
+    __definition: bytes = {{ compress(self.definition()) }}
+    __dmt_dependencies: List[bytes] = [
+        {{ compress(_get_dto()) }},
+    ]
+
+    @classmethod
+    def __code__(
+        cls,
+        include_dependencies: bool = False,
+        format_code=False,
+        include_imports: bool = True,
+        include_code_generation: bool = False,
+        keep_dmt_imports: bool = False,
+        _included_dependencies: Optional[Set[type]] = None,
+    ) -> str:
+        import zlib
+
+        def decompress(data: bytes) -> str:
+            return zlib.decompress(data).decode("UTF-8")
+
+        definition = ""
+        remove_dto_imports = False
+        if include_imports:
+            definition += decompress(cls.__imports)
+            if include_dependencies and not keep_dmt_imports:
+                remove_dto_imports = True
+                for dependency in cls.__dmt_dependencies:
+                    definition += decompress(dependency)
+        if include_dependencies:
+            if _included_dependencies is None:
+                _included_dependencies = set()
+            for dependency in {{ get_dependencies(schema) }}:
+                if dependency in _included_dependencies:
+                    continue
+                _included_dependencies.add(dependency)
+                definition += dependency.__code__(
+                    include_dependencies=True,
+                    format_code=False,
+                    include_imports=False,
+                    _included_dependencies=_included_dependencies,
+                )
+        definition += decompress(cls.__definition)
+        if include_code_generation:
+            try:
+                definition += decompress(cls.__code_generation)
+            except AttributeError:
+                pass
+        if remove_dto_imports:
+            for import_ in [
+                "from classes.dto import DTO",
+            ]: 
+                definition = definition.replace(import_, "")
+        if format_code:
+            import black
+            definition = black.format_str(definition, line_length=black.DEFAULT_LINE_LENGTH)
+        return definition
+{% endblock %}
+
 """
         )
         for macro in self.macros:
@@ -753,13 +835,31 @@ from classes.dto import DTO
             return attr.__name__
         return attr.type.__name__
 
-    def type_check(self, attr: Attribute, value_name: str) -> str:
+    def type_check(self, attr: Attribute, value_name: str, dimension: Optional[int] = None) -> str:
         type_name = self.type_name(attr)
-        check = ""
-        if attr.type not in simple_types:
-            check = f"(isinstance({value_name}, DTO) and isinstance({value_name}.data, {type_name}))"
-        check = f"{f'{check} or ' if check else ''}isinstance({value_name}, {type_name})"
-        return check
+        if attr.is_list:
+            dimensions = attr.dimensions.split(",")
+            if dimension is None:
+                dimension = len(dimensions)
+            counter_name = f"val_dim_{dimension}"
+            if dimension == 1:
+                cast = f"isinstance({counter_name}, {type_name})"
+            else:
+                cast = self.type_check(attr, f'{f"{counter_name}"}', dimension - 1)
+            check = f"isinstance({value_name}, list) and all({cast} for {counter_name} in {value_name})"
+        elif attr.type not in simple_types:
+            check = (
+                f"("
+                f"isinstance({value_name}, {type_name})"
+                f"or ("
+                f"isinstance({value_name}, DTO) "
+                f"and isinstance({value_name}.data, {type_name})"
+                f")"
+                f")"
+            )
+        else:
+            check = f"isinstance({value_name}, {type_name})"
+        return f"({check})"
 
     def type_annotation(self, attr: Attribute, may_be_dict: bool = False) -> str:
         annotation = f"{self.type_name(attr)}"
@@ -776,6 +876,15 @@ from classes.dto import DTO
             self.to_be_compiled.add(name)
             return self._create(name, compile=False)
         return self._types[name]
+
+    def get_dependencies(self, schema) -> str:
+        dependencies = []
+        if (parent := self.get_type_by_name(schema["type"])).__name__ != schema["name"]:
+            dependencies.append(parent)
+        for attr in schema.get("attributes", []):
+            if not is_simple_type(attr.type) and attr.type not in dependencies:
+                dependencies.append(attr.type)
+        return f"[{', '.join(dep.__name__ for dep in dependencies)}]"
 
     @staticmethod
     def get_escaped_default(attr: Attribute) -> str:
@@ -812,13 +921,23 @@ from classes.dto import DTO
             name = get_name(attr)
         return f"{self.type_name(attr)}{'.from_dict' if attr.type not in simple_types else ''}({name})"
 
-    def cast(self, attr: Attribute, name: Optional[str] = None) -> str:
+    def cast(self, attr: Attribute, name: Optional[str] = None, dimension: Optional[int] = None) -> str:
         if not attr.cast:
             if name is not None:
                 return name
             return get_name(attr)
         if attr.is_list:
-            return f"self.{get_name_of_list_class(attr)}({self.cast_as(attr, 'val')} for val in {get_name(attr) if name is None else name})"
+            dimensions = attr.dimensions.split(",")
+            if dimension is None:
+                dimension = len(dimensions)
+                value_name = get_name(attr) if name is None else name
+            else:
+                value_name = f"val_dim_{dimension}"
+            if dimension == 1:
+                return f"self.{get_name_of_list_class(attr)}({self.cast_as(attr, 'val')} for val in {value_name})"
+            else:
+                counter_name = f"val_dim_{dimension - 1}"
+                return f"self.{get_name_of_list_class(attr)}({self.cast(attr, f'{counter_name}', dimension - 1)} for {counter_name} in {value_name})"
         return f"{self.cast_as(attr, name)}"
 
     def compile(self, schema: Dict) -> type:
@@ -829,7 +948,6 @@ from classes.dto import DTO
         code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
         exec(code)  # nosec
         cls: type = locals()[schema["name"]]
-        cls.__code__ = definition
         if cls.__name__ not in globals():
             globals()[cls.__name__] = cls
         return cls

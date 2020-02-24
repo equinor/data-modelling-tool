@@ -13,6 +13,7 @@ pymongo = "^3.8"
 jsonschema = "^3.0"
 stringcase = "^1.2"
 python-dotenv = "^0.10.3"
+jinja2 = "^2.11.1"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"

@@ -1,6 +1,6 @@
 {
   "type": "system/SIMOS/Blueprint",
-  "name": "3DIntMatrix",
+  "name": "Matrix3DInt",
   "description": "A blueprint with a fixed size, three dimensional integer array",
   "attributes": [
     {
@@ -21,7 +21,7 @@
     {
       "attributeType": "integer",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "3d_matrix",
+      "name": "matrix_3d",
       "dimensions": "2,2,2"
     }
   ]
