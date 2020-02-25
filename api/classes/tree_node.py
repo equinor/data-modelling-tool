@@ -307,62 +307,6 @@ class NodeBase:
                     new_node.parent = node
                     node.children[i] = new_node
 
-    # Replace the entire data of the node with the input dict. If it matches the blueprint...
-    def update(self, data: Union[Dict, List]):
-        print(data)
-        # todo move to node.
-        if isinstance(data, dict):
-            data.pop("_id", None)
-            # Modify and add for each key in posted data
-            for key in data.keys():
-                new_data = data[key]
-                attribute = self.blueprint.get_attribute_by_name(key)
-                if not attribute:
-                    logger.error(f"Could not find attribute {key} in {self.uid}")
-                    continue
-
-                # Add/Modify primitive data
-                if attribute.is_primitive():
-                    self.entity[key] = new_data
-                # Add/Modify complex data
-                else:
-                    for index, child in enumerate(self.children):
-                        if child.key == key:
-                            # This means we are creating a new, non-contained document. Lists are always contained.
-                            if not child.attribute_is_contained() and child.uid == "" and not child.is_array():
-                                new_node = Node(
-                                    key=key, uid=uuid4(), entity=new_node, blueprint_provider=self.blueprint_provider,
-                                )
-                                self.children[index] = new_node
-                            else:
-                                child.update(new_data)
-
-            # Remove for every key in blueprint not in data
-            removed_attributes = [attr for attr in self.blueprint.attributes if attr.name not in data]
-            for attribute in removed_attributes:
-                # Pop primitive data
-                if attribute.is_primitive():
-                    self.entity.pop(attribute.name, None)
-                # Remove complex data
-                else:
-                    self.remove_by_path([attribute.name])
-
-        # If it's a ListNode, delete all content, and append for each in posted data
-        else:
-            self.children = []
-            for i, item in enumerate(data):
-                # Set uid base on containment and existing(lack of) uid
-                # This require the existing _id to be posted
-                uid = "" if self.attribute_is_contained() else item.get("_id", str(uuid4()))
-                new_node = Node(
-                    key=str(i),
-                    uid=uid,
-                    entity=item,
-                    blueprint_provider=self.blueprint_provider,
-                    attribute=self.attribute,
-                )
-                self.children.append(new_node)
-
     def has_children(self):
         return len(self.children) > 0
 
@@ -375,6 +319,17 @@ class NodeBase:
             return
         keys.pop(0)
         next_node = next_node.get_by_path(keys)
+        return next_node
+
+    def get_by_name_path(self, path: List):
+        if len(path) == 0:
+            return self
+
+        next_node = next((x for x in self.children if x.name == path[0]), None)
+        if not next_node:
+            return
+        path.pop(0)
+        next_node = next_node.get_by_name_path(path)
         return next_node
 
     def remove_by_path(self, keys: List) -> None:

@@ -46,7 +46,6 @@ def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
     data = request.get_json()
     attribute = request.args.get("attribute")
-    print(data)
     request_object = UpdateDocumentRequestObject.from_dict(
         {"data_source_id": data_source_id, "data": data, "document_id": document_id, "attribute": attribute}
     )

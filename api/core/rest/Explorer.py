@@ -12,6 +12,8 @@ from core.use_case.move_file_use_case import MoveFileRequestObject, MoveFileUseC
 from core.use_case.remove_use_case import RemoveFileRequestObject, RemoveUseCase
 from core.use_case.rename_file_use_case import RenameRequestObject, RenameUseCase
 
+from core.use_case.add_document_use_case import AddDocumentUseCase, AddDocumentRequestObject
+
 blueprint = Blueprint("explorer", __name__)
 
 STATUS_CODES = {
@@ -28,6 +30,18 @@ def add_file(data_source_id: str):
     request_data["data_source_id"] = data_source_id
     use_case = AddFileUseCase()
     request_object = AddFileRequestObject.from_dict(request_data)
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
+    )
+
+
+@blueprint.route("/api/v1/explorer/<string:data_source_id>/add-document", methods=["POST"])
+def add_document(data_source_id: str):
+    request_data = request.get_json()
+    request_data["data_source_id"] = data_source_id
+    use_case = AddDocumentUseCase()
+    request_object = AddDocumentRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]

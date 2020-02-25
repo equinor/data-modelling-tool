@@ -167,6 +167,27 @@ class DocumentService:
         memory_file.seek(0)
         return memory_file
 
+    def get_by_path(self, data_source_id: str, directory: str):
+        ref_elements = directory.split("/", 1)
+        package_name = ref_elements[0]
+
+        package: DTO = self.repository_provider(data_source_id).find(
+            {"type": "system/DMT/Package", "isRoot": True, "name": package_name}, single=True
+        )
+
+        complete_document = get_complete_document(
+            package.uid, self.repository_provider(data_source_id), self.blueprint_provider
+        )
+
+        dto = DTO(complete_document)
+        node = Node.from_dict(dto.data, dto.uid, blueprint_provider=self.blueprint_provider)
+
+        if len(ref_elements) > 1:
+            path = ref_elements[1]
+            return node.get_by_name_path(path.split("/"))
+        else:
+            return node
+
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(
             {"type": "system/DMT/Package", "isRoot": True}, single=False
@@ -273,6 +294,34 @@ class DocumentService:
             new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
             new_node.key = attribute_path.split(".")[-1]
             root.replace(parent.node_id, new_node)
+
+        self.save(root, data_source_id)
+
+        return {"uid": new_node.node_id}
+
+    def add(self, data_source_id: str, directory: str, document: dict):
+        root: Node = self.get_by_path(data_source_id, directory)
+        if not root:
+            raise EntityNotFoundException(uid=directory)
+
+        name = document["name"]
+        type = document["type"]
+        description = document["description"]
+
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
+
+        if type == SIMOS.BLUEPRINT.value:
+            entity["attributes"] = get_required_attributes(type=type)
+
+        parent = root.search(f"{root.uid}.content")
+
+        new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
+
+        new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
+
+        new_node.key = str(len(parent.children)) if parent.is_array() else ""
+
+        parent.add_child(new_node)
 
         self.save(root, data_source_id)
 
