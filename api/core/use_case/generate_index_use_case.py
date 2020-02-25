@@ -5,11 +5,9 @@ from core.repository.repository_exceptions import EntityNotFoundException
 from core.repository.repository_factory import get_repository
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
-from core.use_case.utils.get_ui_recipe import get_recipe
 from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
-
-from classes.dto import DTO
+from classes.recipe import RecipePlugin
 from classes.tree_node import Node, ListNode
 from config import Config
 
@@ -75,20 +73,21 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
     }
 
 
-def get_ui_recipe(node, plugin_name):
-    parent_has_blueprint = hasattr(node.parent, "blueprint")
-    if parent_has_blueprint:
-        return get_recipe(blueprint=node.parent.blueprint, plugin_name=plugin_name)
-    return get_recipe(blueprint=None, plugin_name=plugin_name)
-
-
-def is_visible(node, plugin_name="INDEX"):
+def is_visible(node):
     if node.is_root():
         return True
     elif node.is_complex_array():
         return False
-    return get_ui_recipe(node, plugin_name).is_contained_in_index2(
-        node.parent.key if node.parent.is_array() else node.key, node.attribute_type, node.is_array()
+
+    if node.parent.blueprint is None:
+        return True
+
+    ui_recipe = node.parent.blueprint.get_ui_recipe(name="INDEX")
+    return ui_recipe.is_contained(
+        node.parent.key if node.parent.is_array() else node.key,
+        node.attribute_type,
+        node.is_array(),
+        RecipePlugin.INDEX,
     )
 
 
