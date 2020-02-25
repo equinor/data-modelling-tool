@@ -8,6 +8,7 @@ from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
 from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
+
 from classes.recipe import RecipePlugin
 from classes.tree_node import Node, ListNode
 from config import Config
@@ -41,8 +42,8 @@ def get_error_node(data_source_id: str, node: Union[Node]) -> Dict:
     }
 
 
-def get_node(node: Union[Node], data_source_id: str, app_settings: dict, document_service) -> Dict:
-    menu_items = create_context_menu(node, data_source_id, app_settings, document_service.blueprint_provider)
+def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict:
+    menu_items = create_context_menu(node, data_source_id, app_settings)
 
     children = []
     if node.type == DMT.PACKAGE.value:
@@ -94,9 +95,7 @@ def is_visible(node):
     )
 
 
-def extend_index_with_node_tree(
-    root: Union[Node, ListNode], data_source_id: str, app_settings: dict, document_service
-):
+def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str, app_settings: dict):
     index = {}
 
     for node in root.traverse():
@@ -111,7 +110,7 @@ def extend_index_with_node_tree(
             if node.has_error:
                 index[node.node_id] = get_error_node(data_source_id, node)
             else:
-                index[node.node_id] = get_node(node, data_source_id, app_settings, document_service)
+                index[node.node_id] = get_node(node, data_source_id, app_settings)
 
         except Exception as error:
             logger.exception(error)
@@ -157,7 +156,7 @@ class GenerateIndexUseCase:
             except Exception as error:
                 logger.exception(error, "unhandled exception.")
 
-        return extend_index_with_node_tree(root, data_source_id, app_settings, document_service)
+        return extend_index_with_node_tree(root, data_source_id, app_settings)
 
     def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
         app_settings = (
@@ -178,4 +177,4 @@ class GenerateIndexUseCase:
         node = parent.search(document_id)
         if not node:
             raise EntityNotFoundException(uid=document_id)
-        return extend_index_with_node_tree(node, data_source_id, app_settings, document_service)
+        return extend_index_with_node_tree(node, data_source_id, app_settings)
