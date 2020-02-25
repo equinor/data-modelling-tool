@@ -78,7 +78,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
 def is_visible(node):
     if node.is_root():
         return True
-    elif not node.entity:
+    elif not node.entity and not node.is_array():
         return False
     elif node.is_complex_array():
         return False
