@@ -98,7 +98,7 @@ class BlueprintProvider:
         elif template_type == "package_blueprint":
             return Blueprint(DTO(package_blueprint))
         elif template_type == "basic_blueprint":
-            return Blueprint(DTO(package_blueprint))
+            return Blueprint(DTO(basic_blueprint))
         else:
             return Blueprint(DTO(file_repository_test.get(template_type)))
 
@@ -107,8 +107,6 @@ blueprint_provider = BlueprintProvider()
 
 
 class ArraysDocumentServiceTestCase(unittest.TestCase):
-    # TODO: This will fail until we can create "empty-nodes"
-    @unittest.skip("This needs optional attributes to work")
     def test_create_complex_array(self):
         doc_storage = {
             "1": {
@@ -153,7 +151,38 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
             "name": "complexArraysEntity",
             "type": "higher_rank_array",
             "1_dim-unfixed": [],
-            "1_dim-fixed_complex_type": [{}, {}, {}, {}, {}],
+            "1_dim-fixed_complex_type": [
+                {
+                 "name": "0",
+                 "type": "basic_blueprint",
+                 "description": "",
+                 "length": 0
+                },
+                {
+                    "name": "1",
+                    "type": "basic_blueprint",
+                    "description": "",
+                    "length": 0
+                },
+                {
+                    "name": "2",
+                    "type": "basic_blueprint",
+                    "description": "",
+                    "length": 0
+                },
+                {
+                    "name": "3",
+                    "type": "basic_blueprint",
+                    "description": "",
+                    "length": 0
+                },
+                {
+                    "name": "4",
+                    "type": "basic_blueprint",
+                    "description": "",
+                    "length": 0
+                },
+            ],
             "2_dim-unfixed": [[]],
             "3_dim-mix": [
                 [
@@ -177,7 +206,6 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
         assert pretty_eq(actual_1, doc_storage["1"]) is None
         assert pretty_eq(actual_2, doc_storage[list(doc_storage)[1]]) is None
 
-    @unittest.skip("Same as above")
     def test_update_complex_array(self):
 
         # fmt: off
@@ -187,7 +215,38 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
                 "name": "complexArraysEntity",
                 "type": "higher_rank_array",
                 "1_dim-unfixed": [],
-                "1_dim-fixed": [0, 0, 0, 0, 0],
+                "1_dim-fixed_complex_type": [
+                    {
+                        "name": "0",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 0
+                    },
+                    {
+                        "name": "1",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 0
+                    },
+                    {
+                        "name": "2",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 0
+                    },
+                    {
+                        "name": "3",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 0
+                    },
+                    {
+                        "name": "4",
+                        "type": "basic_blueprint",
+                        "description": "some description",
+                        "length": 0
+                    },
+                ],
                 "2_dim-unfixed": [[], []],
                 "3_dim-mix": [
                     [
@@ -236,7 +295,38 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
                 "name": "complexArraysEntity",
                 "type": "higher_rank_array",
                 "1_dim-unfixed": [45, 65, 999999999999999999, 0, -12],
-                "1_dim-fixed": [0, 0, 3, 326345, -91237],
+                "1_dim-fixed_complex_type": [
+                    {
+                        "name": "0",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 1
+                    },
+                    {
+                        "name": "1",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 23
+                    },
+                    {
+                        "name": "2",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 200
+                    },
+                    {
+                        "name": "3",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 345
+                    },
+                    {
+                        "name": "4",
+                        "type": "basic_blueprint",
+                        "description": "some other description",
+                        "length": 1
+                    },
+                ],
                 "2_dim-unfixed": [[23, 234, 123], [1, 1, 1, 1, 1, 1]],
                 "3_dim-mix": [
                     [
@@ -276,7 +366,38 @@ class ArraysDocumentServiceTestCase(unittest.TestCase):
             "name": "complexArraysEntity",
             "type": "higher_rank_array",
             "1_dim-unfixed": [45, 65, 999999999999999999, 0, -12],
-            "1_dim-fixed": [0, 0, 3, 326345, -91237],
+            "1_dim-fixed_complex_type": [
+                    {
+                        "name": "0",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 1
+                    },
+                    {
+                        "name": "1",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 23
+                    },
+                    {
+                        "name": "2",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 200
+                    },
+                    {
+                        "name": "3",
+                        "type": "basic_blueprint",
+                        "description": "",
+                        "length": 345
+                    },
+                    {
+                        "name": "4",
+                        "type": "basic_blueprint",
+                        "description": "some other description",
+                        "length": 1
+                    },
+                ],
             "2_dim-unfixed": [[23, 234, 123], [1, 1, 1, 1, 1, 1]],
             "3_dim-mix": [
                 [

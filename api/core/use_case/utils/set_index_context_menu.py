@@ -19,9 +19,7 @@ from utils.group_by import group_by
 from core.use_case.utils.sort_menu_items import sort_menu_items
 
 
-def create_context_menu(
-    node: Union[Node], data_source_id: str, app_settings: dict, blueprint_provider: BlueprintProvider
-):
+def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     menu_items = []
     create_new_menu_items = []
     is_package = node.type == DMT.PACKAGE.value
@@ -41,10 +39,9 @@ def create_context_menu(
             )
             # Context menu: New from app_settings
             for model in app_settings["models"]:
-                model_blueprint = blueprint_provider.get_blueprint(model)
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(
-                        data_source_id=data_source_id, name=model_blueprint.name, type=model, node_id=node_id
+                        data_source_id=data_source_id, name=model.split("/")[-1], type=model, node_id=node_id
                     )
                 )
         else:
@@ -75,8 +72,7 @@ def create_context_menu(
 
         # type can be datasource, entities etc
         if node.parent is not None and node.parent.type != "datasource":
-            parent_blueprint = blueprint_provider.get_blueprint(node.parent.type)
-            is_removable = parent_blueprint.is_attr_removable(node.key)
+            is_removable = node.is_array() or node.attribute.is_optional()
 
         if is_removable:
             menu_items.append(

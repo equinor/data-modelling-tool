@@ -1,10 +1,11 @@
 import unittest
+
 from classes.blueprint import Blueprint
+from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
+from classes.tree_node import DictExporter, DictImporter, ListNode, Node
 from tests.util_tests import flatten_dict
 from utils.data_structure.compare import pretty_eq
-
-from classes.tree_node import Node, ListNode, DictExporter, DictImporter
 
 blueprint_1 = {
     "type": "system/SIMOS/Blueprint",
@@ -59,7 +60,13 @@ blueprint_3 = {
         {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "name"},
         {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "type"},
         {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "description"},
-        {"attributeType": "blueprint_2", "type": "system/SIMOS/BlueprintAttribute", "name": "reference"},
+        # This have to be optional, or else we will have an infinite loop caused by recursion
+        {
+            "attributeType": "blueprint_2",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "name": "reference",
+            "optional": True,
+        },
     ],
     "storageRecipes": [],
     "uiRecipes": [],
@@ -84,17 +91,31 @@ blueprint_4 = {
     "uiRecipes": [],
 }
 
+recursive_blueprint = {
+    "type": "system/SIMOS/Blueprint",
+    "name": "recursive",
+    "description": "Second blueprint",
+    "attributes": [
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "name"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "type"},
+        {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "description"},
+        {"attributeType": "recursive_blueprint", "type": "system/SIMOS/BlueprintAttribute", "name": "im_me!"},
+    ],
+}
+
 
 class BlueprintProvider:
     def get_blueprint(self, type: str):
         if type == "blueprint_1":
             return Blueprint(DTO(data=blueprint_1))
         if type == "blueprint_2":
-            return Blueprint(DTO(data=blueprint_1))
+            return Blueprint(DTO(data=blueprint_2))
         if type == "blueprint_3":
-            return Blueprint(DTO(data=blueprint_1))
+            return Blueprint(DTO(data=blueprint_3))
         if type == "blueprint_4":
             return Blueprint(DTO(data=blueprint_4))
+        if type == "recursive_blueprint":
+            return Blueprint(DTO(data=recursive_blueprint))
         return None
 
 
@@ -104,23 +125,55 @@ blueprint_provider = BlueprintProvider()
 class TreenodeTestCase(unittest.TestCase):
     def test_is_root(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
-        nested = Node(key="nested", uid="", entity=nested_data, blueprint_provider=blueprint_provider, parent=root)
+        nested = Node(
+            key="nested",
+            uid="",
+            entity=nested_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         assert root.is_root()
         assert not nested.is_root()
 
     def test_replace(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
-        nested_1 = Node(key="nested", uid="", entity=nested_1_data, blueprint_provider=blueprint_provider, parent=root)
+        nested_1 = Node(
+            key="nested",
+            uid="",
+            entity=nested_1_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_2"}
-        nested_2 = Node(key="nested", uid="", entity=nested_2_data, blueprint_provider=blueprint_provider)
+        nested_2 = Node(
+            key="nested",
+            uid="",
+            entity=nested_2_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         actual_before = {
             "_id": "1",
@@ -146,10 +199,23 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_delete_root_child(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
-        nested_1 = Node(key="nested", uid="", entity=nested_1_data, blueprint_provider=blueprint_provider, parent=root)
+        nested_1 = Node(
+            key="nested",
+            uid="",
+            entity=nested_1_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         actual_before = {
             "_id": "1",
@@ -169,13 +235,31 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_delete_nested_child(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_1_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
-        nested_1 = Node(key="nested", uid="", entity=nested_1_data, blueprint_provider=blueprint_provider, parent=root)
+        nested_1 = Node(
+            key="nested",
+            uid="",
+            entity=nested_1_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
         nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested2", uid="", entity=nested_2_data, blueprint_provider=blueprint_provider, parent=nested_1
+            key="nested2",
+            uid="",
+            entity=nested_2_data,
+            blueprint_provider=blueprint_provider,
+            parent=nested_1,
+            attribute=BlueprintAttribute("", "blueprint_3"),
         )
 
         actual_before = {
@@ -266,10 +350,23 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_depth(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
-        nested = Node(key="nested", uid="", entity=nested_data, blueprint_provider=blueprint_provider, parent=root)
+        nested = Node(
+            key="nested",
+            uid="",
+            entity=nested_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         assert root.depth() == 0
         assert nested.depth() == 1
@@ -302,23 +399,41 @@ class TreenodeTestCase(unittest.TestCase):
             "Nested 1",
             "Nested 2",
             "Reference",
-            "references",
-            "references",
-            "references",
+            "nested",
+            "reference",
+            "nested",
             "references",
         ]
         assert result == expected
 
     def test_traverse_reverse(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_data = {"name": "Nested 1", "description": "", "type": "blueprint_2"}
-        nested = Node(key="nested", uid="", entity=nested_data, blueprint_provider=blueprint_provider, parent=root)
+        nested = Node(
+            key="nested",
+            uid="",
+            entity=nested_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         nested_2_data = {"name": "Nested 2", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested", uid="", entity=nested_2_data, blueprint_provider=blueprint_provider, parent=nested
+            key="nested",
+            uid="",
+            entity=nested_2_data,
+            blueprint_provider=blueprint_provider,
+            parent=nested,
+            attribute=BlueprintAttribute("", "blueprint_3"),
         )
 
         result = [node.name for node in nested_2.traverse_reverse()]
@@ -327,14 +442,32 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_node_id(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
-        nested = Node(key="nested", uid="", entity=nested_data, blueprint_provider=blueprint_provider, parent=root)
+        nested = Node(
+            key="nested",
+            uid="",
+            entity=nested_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         nested_2_data = {"name": "Nested", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested", uid="", entity=nested_2_data, blueprint_provider=blueprint_provider, parent=nested
+            key="nested",
+            uid="",
+            entity=nested_2_data,
+            blueprint_provider=blueprint_provider,
+            parent=nested,
+            attribute=BlueprintAttribute("", "blueprint_3"),
         )
 
         nested_2_reference_data = {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
@@ -344,13 +477,28 @@ class TreenodeTestCase(unittest.TestCase):
             entity=nested_2_reference_data,
             blueprint_provider=blueprint_provider,
             parent=nested_2,
+            attribute=BlueprintAttribute("", "blueprint_2"),
         )
 
         list_data = {"name": "List", "type": "blueprint_3"}
-        list_node = ListNode(key="list", uid="", entity=list_data, blueprint_provider=blueprint_provider, parent=root)
+        list_node = ListNode(
+            key="list",
+            uid="",
+            entity=list_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_3"),
+        )
 
         item_1_data = {"name": "Item 1", "description": "", "type": "blueprint_2"}
-        item_1 = Node(key="0", uid="", entity=item_1_data, blueprint_provider=blueprint_provider, parent=list_node)
+        item_1 = Node(
+            key="0",
+            uid="",
+            entity=item_1_data,
+            blueprint_provider=blueprint_provider,
+            parent=list_node,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         assert root.node_id == "1"
         assert nested.node_id == "1.nested"
@@ -408,7 +556,7 @@ class TreenodeTestCase(unittest.TestCase):
             },
         }
 
-        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
+        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider,)
 
         child_1 = root.get_by_path(["nested", "nested"])
 
@@ -606,6 +754,12 @@ class TreenodeTestCase(unittest.TestCase):
 
         assert pretty_eq(actual, root.to_dict()) is None
 
+    def test_recursive_from_dict(self):
+        document_1 = {"_id": "1", "name": "Parent", "description": "", "type": "recursive_blueprint", "im_me!": {}}
+
+        with self.assertRaises(RecursionError):
+            Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
+
     def test_from_dict_using_dict_importer(self):
         document_1 = {
             "_id": "1",
@@ -686,14 +840,32 @@ class TreenodeTestCase(unittest.TestCase):
 
     def test_to_dict(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
-        root = Node(key="root", uid="1", entity=root_data, blueprint_provider=blueprint_provider)
+        root = Node(
+            key="root",
+            uid="1",
+            entity=root_data,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_1"),
+        )
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
-        nested = Node(key="nested", uid="", entity=nested_data, blueprint_provider=blueprint_provider, parent=root)
+        nested = Node(
+            key="nested",
+            uid="",
+            entity=nested_data,
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         nested_2_data = {"name": "Nested", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
-            key="nested", uid="", entity=nested_2_data, blueprint_provider=blueprint_provider, parent=nested
+            key="nested",
+            uid="",
+            entity=nested_2_data,
+            blueprint_provider=blueprint_provider,
+            parent=nested,
+            attribute=BlueprintAttribute("", "blueprint_3"),
         )
 
         nested_2_reference_data = {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
@@ -703,13 +875,28 @@ class TreenodeTestCase(unittest.TestCase):
             entity=nested_2_reference_data,
             blueprint_provider=blueprint_provider,
             parent=nested_2,
+            attribute=BlueprintAttribute("", "blueprint_2"),
         )
 
         list_data = {"name": "List", "type": "blueprint_3"}
-        list_node = ListNode(key="list", uid="", entity=list_data, parent=root, blueprint_provider=blueprint_provider)
+        list_node = ListNode(
+            key="list",
+            uid="",
+            entity=list_data,
+            parent=root,
+            blueprint_provider=blueprint_provider,
+            attribute=BlueprintAttribute("", "blueprint_3"),
+        )
 
         item_1_data = {"name": "Item 1", "description": "", "type": "blueprint_2"}
-        item_1 = Node(key="0", uid="", entity=item_1_data, blueprint_provider=blueprint_provider, parent=list_node)
+        item_1 = Node(
+            key="0",
+            uid="",
+            entity=item_1_data,
+            blueprint_provider=blueprint_provider,
+            parent=list_node,
+            attribute=BlueprintAttribute("", "blueprint_2"),
+        )
 
         actual_root = {
             "_id": "1",
@@ -730,7 +917,7 @@ class TreenodeTestCase(unittest.TestCase):
             "list": [{"name": "Item 1", "description": "", "type": "blueprint_2"}],
         }
 
-        assert actual_root == DictExporter.to_dict(root)
+        self.assertEqual(actual_root, DictExporter.to_dict(root))
 
         actual_nested = {
             "name": "Nested",
@@ -744,8 +931,8 @@ class TreenodeTestCase(unittest.TestCase):
             },
         }
 
-        assert actual_nested == nested.to_dict()
+        self.assertEqual(actual_nested, nested.to_dict())
 
         item_1_actual = {"name": "Item 1", "description": "", "type": "blueprint_2"}
 
-        assert item_1_actual == item_1.to_dict()
+        self.assertEqual(item_1_actual, item_1.to_dict())

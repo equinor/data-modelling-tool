@@ -1,5 +1,6 @@
 from typing import Dict, Union
 
+from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import DMT
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.repository.repository_factory import get_repository
@@ -7,6 +8,7 @@ from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
 from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
+
 from classes.recipe import RecipePlugin
 from classes.tree_node import Node, ListNode
 from config import Config
@@ -40,8 +42,8 @@ def get_error_node(data_source_id: str, node: Union[Node]) -> Dict:
     }
 
 
-def get_node(node: Union[Node], data_source_id: str, app_settings: dict, document_service) -> Dict:
-    menu_items = create_context_menu(node, data_source_id, app_settings, document_service.blueprint_provider)
+def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict:
+    menu_items = create_context_menu(node, data_source_id, app_settings)
 
     children = []
     if node.type == DMT.PACKAGE.value:
@@ -66,7 +68,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
             if node.is_single() and node.type != DMT.PACKAGE.value and node.type != "datasource"
             else {},
             "error": False,
-            "isRootPackage": node.is_root() if node.is_single() else False,
+            "isRootPackage": node.type == DMT.PACKAGE.value and node.entity.get("isRoot"),
             "isList": node.is_array(),
             "dataSource": data_source_id,
         },
@@ -76,6 +78,8 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
 def is_visible(node):
     if node.is_root():
         return True
+    elif not node.entity:
+        return False
     elif node.is_complex_array():
         return False
 
@@ -84,16 +88,11 @@ def is_visible(node):
 
     ui_recipe = node.parent.blueprint.get_ui_recipe(name="INDEX")
     return ui_recipe.is_contained(
-        node.parent.key if node.parent.is_array() else node.key,
-        node.attribute_type,
-        node.is_array(),
-        RecipePlugin.INDEX,
+        node.parent.key if node.parent.is_array() else node.key, node.type, node.is_array(), RecipePlugin.INDEX,
     )
 
 
-def extend_index_with_node_tree(
-    root: Union[Node, ListNode], data_source_id: str, app_settings: dict, document_service
-):
+def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str, app_settings: dict):
     index = {}
 
     for node in root.traverse():
@@ -108,7 +107,7 @@ def extend_index_with_node_tree(
             if node.has_error:
                 index[node.node_id] = get_error_node(data_source_id, node)
             else:
-                index[node.node_id] = get_node(node, data_source_id, app_settings, document_service)
+                index[node.node_id] = get_node(node, data_source_id, app_settings)
 
         except Exception as error:
             logger.exception(error)
@@ -133,6 +132,7 @@ class GenerateIndexUseCase:
             uid=data_source_id,
             entity={"type": "datasource", "name": data_source_id},
             blueprint_provider=document_service.blueprint_provider,
+            attribute=BlueprintAttribute("root", "datasource"),
         )
         for root_package in root_packages:
             try:
@@ -146,13 +146,14 @@ class GenerateIndexUseCase:
                     uid=root_package.uid,
                     entity={"name": root_package.name, "type": ""},
                     blueprint_provider=document_service.blueprint_provider,
+                    attribute=BlueprintAttribute("root", "datasource"),
                 )
                 error_node.set_error(f"failed to add root package {root_package.name} to the root node")
                 root.add_child(error_node)
             except Exception as error:
                 logger.exception(error, "unhandled exception.")
 
-        return extend_index_with_node_tree(root, data_source_id, app_settings, document_service)
+        return extend_index_with_node_tree(root, data_source_id, app_settings)
 
     def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
         app_settings = (
@@ -173,4 +174,4 @@ class GenerateIndexUseCase:
         node = parent.search(document_id)
         if not node:
             raise EntityNotFoundException(uid=document_id)
-        return extend_index_with_node_tree(node, data_source_id, app_settings, document_service)
+        return extend_index_with_node_tree(node, data_source_id, app_settings)

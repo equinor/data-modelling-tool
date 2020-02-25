@@ -15,37 +15,43 @@ class Dimension:
     def is_matrix(self):
         return len(self.dimensions) > 1
 
-    def create_default_array(self):
-        def create_default_array_recursive(dimensions: List[str], type) -> List:
+    # If the inner most dimension is "*", the Dimension is unfixed
+    def is_unfixed(self):
+        return self.dimensions[-1] == "*"
+
+    def create_default_array(self, blueprint_provider, create_entity_class):
+        def create_default_array_recursive(dimensions: List[str]) -> List:
             if len(dimensions) == 1:
                 # Return an empty list if size is "*".
                 if dimensions[0] == "*":
                     return []
                 # Return a list initialized with default values for the size of the array.
-                # TODO: Get default values from "system/SIMOS/BlueprintAttribute"
-                # if isinstance(type, Blueprint):
-                if type is dict:
-                    return [{} for n in range(int(dimensions[0]))]
-                if type is int:
+                if not type(self.type) is type:
+                    # For fixed complex types, create the entity with default values. Set name from list index.
+                    return [
+                        create_entity_class(blueprint_provider, self.type, "", str(n)).entity
+                        for n in range(int(dimensions[0]))
+                    ]
+                if self.type is int:
                     return [0 for n in range(int(dimensions[0]))]
-                if type is float:
+                if self.type is float:
                     return [0.00 for n in range(int(dimensions[0]))]
-                if type is str:
+                if self.type is str:
                     return ["" for n in range(int(dimensions[0]))]
-                if type is bool:
+                if self.type is bool:
                     return [False for n in range(int(dimensions[0]))]
 
             if dimensions[0] == "*":
                 # If the size of the rank is "*" we only create one nested list.
-                nested_list = [create_default_array_recursive(dimensions[1:], type)]
+                nested_list = [create_default_array_recursive(dimensions[1:])]
             else:
                 # If the size of the rank in NOT "*", we expect an Integer, and create n number of nested lists.
-                nested_list = [create_default_array_recursive(dimensions[1:], type) for n in range(int(dimensions[0]))]
+                nested_list = [create_default_array_recursive(dimensions[1:]) for n in range(int(dimensions[0]))]
             return nested_list
 
         if self.dimensions == [""]:
             raise Exception(f"This attribute is not an array!")
-        self.value = create_default_array_recursive(self.dimensions, self.type)
+        self.value = create_default_array_recursive(self.dimensions)
         return self.value
 
     def to_dict(self):

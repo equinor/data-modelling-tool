@@ -9,6 +9,7 @@ class Config:
     MONGO_URI = os.getenv("MONGO_AZURE_URI", "")
     MONGO_DB = os.getenv("ENVIRONMENT", os.getenv("RADIX_ENVIRONMENT", "local"))
     LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "INFO")
+    MAX_ENTITY_RECURSION_DEPTH = os.getenv("MAX_ENTITY_RECURSION_DEPTH", 50)
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
     BLUEPRINT_COLLECTION = "SSR-DataSource"
