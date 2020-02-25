@@ -12,7 +12,7 @@ class RecipePlugin(Enum):
 
 
 class RecipeAttribute:
-    def __init__(self, name: str, is_contained: bool = None, field: str = None):
+    def __init__(self, name: str, is_contained: bool, field: str = None):
         self.name = name
         self.is_contained = is_contained
         self.field = field
@@ -26,7 +26,7 @@ class Recipe:
         self.name = name
         self.ui_attributes = {
             attribute["name"]: RecipeAttribute(
-                name=attribute["name"], is_contained=attribute.get("contained", None), field=attribute.get("field")
+                name=attribute["name"], is_contained=attribute.get("contained", True), field=attribute.get("field")
             )
             for attribute in attributes
         }
@@ -46,8 +46,7 @@ class Recipe:
 
         if attribute_name in self.ui_attributes:
             ui_attribute = self.ui_attributes[attribute_name]
-            if ui_attribute is not None and ui_attribute.is_contained is not None:
-                return ui_attribute.is_contained
+            return ui_attribute.is_contained
 
         if attribute_type in PRIMITIVES:
             return primitive_contained
