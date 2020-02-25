@@ -220,24 +220,28 @@ class DocumentService:
     def add_document(
         self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
     ):
-        # We can only add documents to lists. The only exception to this is root_packages, which has their own function
         root: Node = self.get_by_uid(data_source_id, parent_id)
         if not root:
             raise EntityNotFoundException(uid=parent_id)
-        parent = root.search(f"{parent_id}.{attribute_path}")
+        parent = root.get_by_path(attribute_path.split("."))
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
         if type == SIMOS.BLUEPRINT.value:
             entity["attributes"] = get_required_attributes(type=type)
 
-        new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
+        if isinstance(parent, ListNode):
+            new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
+            new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
+            new_node.key = str(len(parent.children)) if parent.is_array() else new_node.name
+            parent.add_child(new_node)
+        # This covers adding a new optional document (not appending to a list)
+        else:
+            new_node_id = str(uuid4()) if not parent.is_storage_contained() else ""
+            new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
+            new_node.key = attribute_path.split(".")[-1]
+            root.replace(parent.node_id, new_node)
 
-        new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
-
-        new_node.key = str(len(parent.children)) if parent.is_array() else ""
-
-        parent.add_child(new_node)
         self.save(root, data_source_id)
 
         return {"uid": new_node.node_id}

@@ -177,12 +177,11 @@ class DictImporter:
 
 
 class NodeBase:
-    def __init__(self, key: str, attribute: BlueprintAttribute, uid: str = None, parent=None, children=None):
+    def __init__(self, key: str, uid: str = None, parent=None, children=None):
         if key is None:
             raise Exception("Node requires a key")
         self.key = key
         self.uid = uid
-        self.attribute: BlueprintAttribute = attribute
         if uid is None:
             self.uid = str(uuid4())
         self.has_error = False
@@ -302,6 +301,7 @@ class NodeBase:
         for node in self.traverse():
             for i, n in enumerate(node.children):
                 if n.node_id == node_id:
+                    new_node.parent = node
                     node.children[i] = new_node
 
     # Replace the entire data of the node with the input dict. If it matches the blueprint...
@@ -405,7 +405,8 @@ class Node(NodeBase):
         parent=None,
         blueprint_provider=None,
     ):
-        super().__init__(key=key, uid=uid, parent=parent, attribute=attribute)
+        super().__init__(key=key, uid=uid, parent=parent)
+        self.attribute = attribute
         self.entity = entity
         self.blueprint_provider = blueprint_provider
         self.error_message = None
@@ -505,7 +506,8 @@ class ListNode(NodeBase):
         parent=None,
         blueprint_provider=None,
     ):
-        super().__init__(key=key, uid=uid, parent=parent, attribute=attribute)
+        super().__init__(key=key, uid=uid, parent=parent)
+        self.attribute = attribute
         self.entity = entity
         self.blueprint_provider = blueprint_provider
 
