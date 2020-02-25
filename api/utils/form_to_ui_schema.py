@@ -5,12 +5,8 @@ from utils.data_structure.find import get
 
 from core.enums import PRIMITIVES
 
-from classes.blueprint_attribute import BlueprintAttribute
-from classes.recipe import Recipe
-
 
 def find_attribute(name: str, attributes: List):
-    print(attributes)
     return next((x for x in attributes if x.name == name), None)
 
 

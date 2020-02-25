@@ -12,19 +12,22 @@ class RecipePlugin(Enum):
 
 
 class RecipeAttribute:
-    def __init__(self, name: str, is_contained: bool = None):
+    def __init__(self, name: str, is_contained: bool = None, field: str = None):
         self.name = name
         self.is_contained = is_contained
+        self.field = field
 
     def to_dict(self) -> Dict:
-        return {"name": self.name, "contained": self.is_contained}
+        return {"name": self.name, "contained": self.is_contained, "field": self.field}
 
 
 class Recipe:
     def __init__(self, name: str, attributes: List[BlueprintAttribute] = None):
         self.name = name
         self.ui_attributes = {
-            attribute["name"]: RecipeAttribute(name=attribute["name"], is_contained=attribute.get("contained", None))
+            attribute["name"]: RecipeAttribute(
+                name=attribute["name"], is_contained=attribute.get("contained", None), field=attribute.get("field")
+            )
             for attribute in attributes
         }
 

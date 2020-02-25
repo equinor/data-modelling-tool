@@ -10,7 +10,7 @@ utils/helper_functions.py                                     15      9    40.0%
 tests/core/domain/test_package.py                             24     14    41.7%   8-12, 17-19, 24-26, 31-34
 utils/data_structure/compare.py                               28     16    42.9%   9-10, 18-23, 25-32
 core/repository/mongo/__init__.py                             30     17    43.3%   13-22, 25-26, 29-33, 36-40, 43, 46, 49
-classes/recipe.py                                             39     19    51.3%   20, 35-55, 58, 66
+classes/recipe.py                                             40     19    52.5%   21, 38-58, 61, 69
 tests/classes/test_tree_error_node.py                         15      7    53.3%   29-45
 utils/data_structure/find.py                                  37     16    56.8%   23-24, 28-30, 34-45
 core/repository/repository_exceptions.py                      15      6    60.0%   3-4, 7, 12, 17, 22
@@ -40,6 +40,6 @@ tests/core/document_service/test_get.py                       32      1    96.9%
 tests/core/document_service/test_rename.py                    83      2    97.6%   31, 70
 tests/classes/test_tree_node.py                              182      1    99.5%   119
 ------------------------------------------------------------------------------------------
-TOTAL                                                       2390    500    79.1%
+TOTAL                                                       2391    500    79.1%
 
 28 files skipped due to complete coverage.
