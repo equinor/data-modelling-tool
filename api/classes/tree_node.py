@@ -249,7 +249,7 @@ class NodeBase:
             node = node.parent
 
     def __repr__(self):
-        return "{}: {} {} {} {}".format(self.__class__.__name__, self.key, self.name, self.type, self.uid)
+        return f"{self.__class__.__name__}: {self.key} {self.name} {self.type} {self.uid}"
 
     def show_tree(self, level=0):
         print("%s%s" % ("." * level, self))

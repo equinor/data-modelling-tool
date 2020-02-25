@@ -67,7 +67,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict, documen
             if node.is_single() and node.type != DMT.PACKAGE.value and node.type != "datasource"
             else {},
             "error": False,
-            "isRootPackage": node.is_root() if node.is_single() else False,
+            "isRootPackage": node.type == DMT.PACKAGE.value and node.entity.get("isRoot"),
             "isList": node.is_array(),
             "dataSource": data_source_id,
         },
