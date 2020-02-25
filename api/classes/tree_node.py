@@ -197,6 +197,9 @@ class NodeBase:
     def has_uid(self):
         return self.uid != ""
 
+    def is_empty(self):
+        return not self.entity
+
     @property
     def parent_node_id(self):
         if not self.parent:

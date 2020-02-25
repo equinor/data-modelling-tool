@@ -93,6 +93,7 @@ type Props = {
 const GetIcon = ({ node }: Props) => {
   if (node.meta.error)
     return <FaExclamationTriangle style={{ color: 'orange' }} />
+  if (node.meta.empty) return <b>{'{}'}</b>
 
   switch (node.icon) {
     case NodeIconType.database:
