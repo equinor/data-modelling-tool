@@ -7,12 +7,12 @@ import zlib
 from collections.abc import Iterable
 from pathlib import Path
 from types import CodeType
-from typing import Any, Callable, Dict, List, Optional, TypeVar, Union
+from typing import Any, Callable, Dict, List, Optional, TypeVar, Union, Set
 
 import stringcase
 from jinja2 import Template
 
-from classes.data_source import DataSource
+from classes.dto import DTO
 from config import Config
 from core.repository import Repository
 
@@ -243,6 +243,26 @@ class Attribute:
         return self.__values__.get(name, default)
 
 
+class __Blueprint__(type):
+    """ Used only for type annotation """
+
+    __completed__: bool
+    __schema__: dict
+    type: Union[str, __Blueprint__]
+
+    @classmethod
+    def __code__(
+        mcs,
+        include_dependencies: bool = False,
+        format_code=False,
+        include_imports: bool = True,
+        include_code_generation: bool = False,
+        keep_dmt_imports: bool = False,
+        _included_dependencies: Optional[Set[__Blueprint__]] = None,
+    ) -> str:
+        ...
+
+
 class Attributes:
     def __init__(self):
         self._attributes: List[Attribute] = []
@@ -288,13 +308,17 @@ def compress(data: str) -> str:
     return str(compressed)
 
 
-def _get_dto() -> str:
+def get_dto() -> str:
     with open(Path(__file__).parent / "dto.py") as f:
         content = "\n".join(f.readlines())
     return content
 
 
-TypeMapping = Dict[str, type]
+def get_project_line_length() -> int:
+    return Config.PY_PROJECT["tool"]["black"]["line-length"]
+
+
+TypeMapping = Dict[str, __Blueprint__]
 
 
 class TypeCache:
@@ -303,7 +327,7 @@ class TypeCache:
         self._fleeting = fleeting or {}
         self._static = basic_types()
 
-    def __getitem__(self, item: str) -> type:
+    def __getitem__(self, item: str) -> __Blueprint__:
         if self._is_template_internal(item):
             return self._permanent[item]
         elif self._is_static(item):
@@ -311,7 +335,7 @@ class TypeCache:
         else:
             return self._fleeting[item]
 
-    def __setitem__(self, key: str, value: type):
+    def __setitem__(self, key: str, value: __Blueprint__):
         if self._is_template_internal(key):
             self._permanent[key] = value
         else:
@@ -342,11 +366,13 @@ class Factory:
         _create_instance: bool = False,
         dump_site: Optional[str] = None,
         read_from_file: bool = False,
+        template_repository_getter: Optional[Callable[[str], Repository]] = None,
     ):
         self._types = TypeCache(self._internal_types)
         self._template_repository = template_repository
         self._read_from_file = read_from_file
         self._create_instance = _create_instance
+        self._template_repository_getter = template_repository_getter
         self.dump_site = dump_site
         self.macros = [
             self.type_name,
@@ -373,7 +399,8 @@ class Factory:
             default_as_loadable_json,
             compress,
             self.get_dependencies,
-            _get_dto,
+            get_dto,
+            get_project_line_length,
         ]
         self.to_be_compiled = set()
 
@@ -387,9 +414,20 @@ class Factory:
         if self._read_from_file:
             return self._template_repository.find({"type": template_type})
         else:
-            data_source_id, *_, name = template_type.split("/")
-            repository = self._template_repository.__class__(get_client(DataSource(data_source_id)))
-            return repository.find(filter={"name": name}, raw=True)
+            try:
+                data_source_id, *_, name = template_type.split("/")
+                repository = self._template_repository_getter(data_source_id)
+            except ValueError:
+                name = template_type
+                repository = self._template_repository
+            data = repository.find(filter={"name": name})
+            if isinstance(data, DTO):
+                data = data.data
+                try:
+                    del data["_id"]
+                except KeyError:
+                    pass
+            return data
 
     # noinspection GrazieInspection
     def class_from_schema(self, schema) -> str:
@@ -711,7 +749,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     __imports: bytes = {{ compress(self.imports()) }}
     __definition: bytes = {{ compress(self.definition()) }}
     __dmt_dependencies: List[bytes] = [
-        {{ compress(_get_dto()) }},
+        {{ compress(get_dto()) }},
     ]
 
     @classmethod
@@ -759,11 +797,14 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         if remove_dto_imports:
             for import_ in [
                 "from classes.dto import DTO",
-            ]: 
+            ]:
                 definition = definition.replace(import_, "")
         if format_code:
             import black
-            definition = black.format_str(definition, line_length=black.DEFAULT_LINE_LENGTH)
+            config = black.FileMode(
+                line_length={{ get_project_line_length() }},
+            )
+            definition = black.format_str(definition, mode=config)
         return definition
 {% endblock %}
 
@@ -913,7 +954,7 @@ from classes.dto import DTO
             f" = {self.get_default_value(attr)}" if attr.optional or attr.has_default else ""
         )
 
-    def signature(self, attributes: List[Attribute]) -> str:
+    def signature(self, attributes: Attributes) -> str:
         return f"{', '.join(self.variable_annotation(attr) for attr in attributes)}"
 
     def cast_as(self, attr: Attribute, name: Optional[str] = None) -> str:
@@ -940,14 +981,14 @@ from classes.dto import DTO
                 return f"self.{get_name_of_list_class(attr)}({self.cast(attr, f'{counter_name}', dimension - 1)} for {counter_name} in {value_name})"
         return f"{self.cast_as(attr, name)}"
 
-    def compile(self, schema: Dict) -> type:
+    def compile(self, schema: Dict) -> __Blueprint__:
         definition = self.class_from_schema(schema)
         if self.dump_site is not None:
             with open(self.dump_site, "a+") as f:
                 f.write(remove_imports(definition))
         code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
         exec(code)  # nosec
-        cls: type = locals()[schema["name"]]
+        cls: __Blueprint__ = locals()[schema["name"]]
         if cls.__name__ not in globals():
             globals()[cls.__name__] = cls
         return cls
@@ -959,7 +1000,7 @@ from classes.dto import DTO
 
     def create(
         self, template_type: str, _create_instance: bool = False, compile: bool = True, write_domain: bool = False
-    ):
+    ) -> Optional[__Blueprint__]:
         if write_domain:
             return self.write_domain(template_type)
         try:
@@ -973,10 +1014,23 @@ from classes.dto import DTO
                 self._create(template_type, _create_instance)
             return Template
 
+    def create_from_schema(self, schema: dict, template_type: str) -> __Blueprint__:
+        Template = self._create_from_schema(schema, template_type)
+        for template_type in self.to_be_compiled:
+            self._create(template_type)
+        return Template
+
     def _create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
-        schema = snakify(self._get_schema(template_type))
+        return self._create_from_schema(self._get_schema(template_type), template_type, _create_instance, compile)
+
+    def _create_from_schema(
+        self, schema: dict, template_type: str, _create_instance: bool = False, compile: bool = True
+    ) -> __Blueprint__:
+        if template_type in self._types and (_cls := self._types[template_type]).__completed__:
+            return _cls
+        schema = snakify(schema)
         # Let at "dummy type" be available for others
-        _cls = type(schema["name"], (), snakify(schema))
+        _cls: __Blueprint__ = type(schema["name"], (), schema)
         _cls.__schema__ = schema
         _cls.__completed__ = False
         schema["__class__"] = _cls

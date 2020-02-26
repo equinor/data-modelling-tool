@@ -34,6 +34,10 @@ server {
 #        # if you enabled --cookie-refresh, this is needed for it to work with auth_request
         auth_request_set $auth_cookie $upstream_http_set_cookie;
         add_header Set-Cookie $auth_cookie;
+
+        # Added because the code genration takes some time
+        fastcgi_read_timeout 60;
+
     }
     location / {
         proxy_pass http://web:3000/;

@@ -154,3 +154,14 @@ def get_import_menu_item(data_source_id: str, document_id: str, is_package_conte
             "prompt": {"title": "Export", "content": "Download the package"},
         },
     }
+
+
+def get_export_python_code_menu_item(data_source_id, document_id: str):
+    return {
+        "label": "Generate Python Code",
+        "action": "DOWNLOAD",
+        "data": {
+            "url": f"/api/v2/system/{data_source_id}/generate-python-code/{document_id}",
+            "prompt": {"title": "Export", "content": "Download generated Python code"},
+        },
+    }
