@@ -4,6 +4,7 @@ export const downloadAction = (action: any) => {
       title: 'Create Application',
       content: 'Download the application',
       buttonText: 'Download',
+      ...(action.data.prompt || {}),
     },
     onSubmit: () => {
       window.open(action.data.url)
