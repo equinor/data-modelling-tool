@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
-from typing import Callable, Union, Dict, Optional, List
+from typing import Callable, Union, Dict, Optional, List, Set, Sequence
 
 from classes.schema import Factory, get_dto
 from classes.dto import DTO
@@ -41,11 +41,14 @@ def is_package(blueprint: DTO):
     return blueprint.type == DMT.PACKAGE.value
 
 
+def get(obj, attr: str):
+    if isinstance(obj, dict):
+        return obj[attr]
+    return getattr(obj, attr)
+
+
 def is_simple(attribute) -> bool:
-    if isinstance(attribute, dict):
-        attribute_type = attribute["attribute_type"]
-    else:
-        attribute_type = attribute.attribute_type
+    attribute_type = get(attribute, "attribute_type")
     return attribute_type in ["string", "number", "integer", "boolean"]
 
 
@@ -55,6 +58,86 @@ def get_stringcase() -> str:
     with open(stringcase.__file__) as f:
         content = "\n".join(f.readlines())
     return content
+
+
+class Node:
+    def __init__(self, content: Optional[str], children: Optional[Sequence[Node]] = None):
+        self.content = content
+        self.parents: Set[Node] = set()
+        self.children: Set[Node] = set()
+        for child in children or []:
+            self.add(child)
+
+    def add(self, child: Node) -> None:
+        child.parents.add(self)
+        if child not in self.children:
+            self.children.add(child)
+
+    def remove(self, child: Node) -> None:
+        if child in self.children:
+            child.parents -= {self}
+            self.children -= {child}
+
+    def __str__(self):
+        return f"{self.__class__.__name__}(content={self.content})"
+
+
+class Nodes(list):
+    def __init__(self, *args: List[Node]):
+        super().__init__(*args)
+
+    def pop(self, **kwargs) -> Node:
+        node: Node = super().pop()
+        for child in list(node.children):  # Ensure that the underlying set may be changed
+            child.parents -= {node}
+        return node
+
+
+def create_graph(dependencies: Dict[str, Set[str]]) -> Dict[str, Node]:
+    nodes: Dict[str, Node] = {}
+
+    def create_node(name) -> Node:
+        try:
+            return nodes[name]
+        except KeyError:
+            _node = Node(name)
+            nodes[name] = _node
+            return _node
+
+    for template_type, children in dependencies.items():
+        node = create_node(template_type)
+        for child in children:
+            node.add(create_node(child))
+
+    return nodes
+
+
+def topological_sort(dependencies: Dict[str, Set[str]]) -> List[str]:
+    """ An implementation of [Khan's algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) """
+    nodes = create_graph(dependencies)
+    roots = Nodes([node for node in nodes.values() if not node.parents])
+    ordering = []
+
+    def pop() -> Node:
+        node = roots.pop()
+        del nodes[node.content]
+        return node
+
+    while len(roots) > 0:
+        node = pop()
+        ordering.append(node.content)
+        for child in node.children:
+            if not child.parents:
+                roots.append(child)
+    # We may still have circular dependencies.
+    # Due to how they are begotten, the "main" dependency is likely the first in the remaining nodes
+    return ordering + list(nodes.keys())
+
+
+def get_stub_import(template_type: str, blueprint: type) -> str:
+    # Same as in the `__code__` method of the generated code
+    import_path = template_type.replace("/", ".").replace("-", "_")
+    return f"from {import_path} import {blueprint.__name__}"
 
 
 class GeneratePythonCodeUseCase(uc.UseCase):
@@ -83,34 +166,33 @@ class GeneratePythonCodeUseCase(uc.UseCase):
             files[name] = blueprint
         return files
 
-    def get_dependency_graph(self, blueprint, data_source_id: str) -> Dict[str, set]:
+    def get_dependency_graph(self, blueprint, data_source_id: str) -> List[str]:
         blueprints = self.get_blueprints(blueprint, prefix=data_source_id)
         paths = {}
         dependencies = defaultdict(set)
         for path, blueprint in blueprints.items():
             paths[blueprint] = path
-        blueprints = list(blueprints.keys())
+        blueprints = set(blueprints.keys())
         while len(blueprints) > 0:
             template_type = blueprints.pop()
             if template_type not in dependencies:
                 blueprint = self.get(template_type)
                 for dependency in self.get_dependencies(blueprint):
+                    dependencies[template_type].add(dependency)
                     if dependency not in dependencies:
-                        dependencies[template_type].add(dependency)
-                        blueprints.append(dependency)
-                        _blueprint = self.get(dependency)
+                        blueprints.add(dependency)
         for _blueprint, _dependencies in dependencies.items():
             dependencies[_blueprint] = _dependencies - {_blueprint}
 
-        return dependencies
+        return topological_sort(dependencies)
 
     @staticmethod
-    def get_dependencies(blueprint) -> List[str]:
-        dependencies = [blueprint._type]
+    def get_dependencies(blueprint) -> Set[str]:
+        dependencies = {blueprint._type}
         try:
             for attribute in blueprint.attributes:
                 if not is_simple(attribute):
-                    dependencies.append(attribute.attribute_type)
+                    dependencies.add(get(attribute, "attribute_type"))
         except AttributeError:
             pass
         return dependencies
@@ -119,8 +201,8 @@ class GeneratePythonCodeUseCase(uc.UseCase):
         document_id: str = request_object.document_id
         data_source_id: str = request_object.data_source_id
 
-        blueprint: DTO = self.document_repository.get(document_id)
-        if not blueprint:
+        dto: DTO = self.document_repository.get(document_id)
+        if not dto:
             raise EntityNotFoundException(uid=document_id)
 
         memory_file = io.BytesIO()
@@ -144,23 +226,34 @@ class GeneratePythonCodeUseCase(uc.UseCase):
                         content = blueprint
                     else:
                         content = blueprint.__code__(
-                            include_dependencies=include_dependencies, format_code=format_code
+                            include_dependencies=include_dependencies,
+                            format_code=format_code,
+                            include_import_of_other_blueprints=True,
                         )
                     _dump(path, content)
 
             # Export stringcase
             write("stringcase.py", get_stringcase())
-            if is_package(blueprint):
+            if is_package(dto):
                 # Export the DTO class
                 write("classes/dto.py", get_dto())
-                blueprints = self.get_dependency_graph(blueprint, data_source_id)
-                for template_type, dependencies in blueprints.items():
-                    write(template_type, blueprint=self.get(template_type))
-                    for dependency in dependencies:
-                        write(dependency, blueprint=self.get(dependency))
+                template_types = self.get_dependency_graph(dto, data_source_id)
+                lookup: Dict[type, str] = {self.get(template_type): template_type for template_type in template_types}
+                for template_type in template_types:
+                    blueprint = self.get(template_type)
+                    if blueprint.__has_circular_dependencies__():
+                        write(template_type, blueprint, include_dependencies=True)
+                        for dependency in blueprint.__circular_dependencies__():
+                            dependency_type = lookup[dependency]
+                            if dependency_type == template_type:
+                                # Skip self-references
+                                continue
+                            write(dependency_type, get_stub_import(template_type, dependency))
+                    else:
+                        write(template_type, blueprint)
             else:
-                _blueprint = self.from_schema(blueprint.data)
-                write(blueprint.name, _blueprint, include_dependencies=True)
+                _blueprint = self.from_schema(dto.data)
+                write(dto.name, _blueprint, include_dependencies=True)
 
         memory_file.seek(0)
 

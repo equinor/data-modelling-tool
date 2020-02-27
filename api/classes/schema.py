@@ -262,6 +262,18 @@ class __Blueprint__(type):
     ) -> str:
         ...
 
+    @staticmethod
+    def __dependencies__() -> List[__Blueprint__]:
+        ...
+
+    @classmethod
+    def __has_circular_dependencies__(cls) -> bool:
+        ...
+
+    @classmethod
+    def __circular_dependencies__(cls) -> Set[__Blueprint__]:
+        ...
+
 
 class Attributes:
     def __init__(self):
@@ -752,12 +764,50 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {{ compress(get_dto()) }},
     ]
 
+    @staticmethod
+    def __dependencies__() -> List[type]:
+        return {{ get_dependencies(schema) }}
+
+    @classmethod
+    def __circular_dependencies__(cls) -> Set[type]:
+        def find_circle(blueprint) -> Tuple[bool, Optional[type], Set[type]]:
+            accessed = set()
+            dependencies = blueprint.__dependencies__()
+            found = False
+            node_in_circle = None
+            while len(dependencies) > 0 and not found:
+                dependency = dependencies.pop()
+                if dependency in accessed:
+                    found = True
+                    node_in_circle = dependency
+                else:
+                    accessed.add(dependency)
+                    dependencies.extend(dependency.__dependencies__())
+            return found, node_in_circle, accessed
+        found, node_in_circle, _ = find_circle(cls)
+
+        if not found and node_in_circle is not None:
+            return set()
+
+        _, _, accessed = find_circle(node_in_circle)
+        return accessed
+
+    @classmethod
+    def __has_circular_dependencies__(cls) -> bool:
+        if cls in (circle := cls.__circular_dependencies__()):
+            if len(circle) == 1:
+                # The blueprint is self-referential, which is fine
+                return False
+            return True
+        return False
+
     @classmethod
     def __code__(
         cls,
         include_dependencies: bool = False,
         format_code=False,
         include_imports: bool = True,
+        include_import_of_other_blueprints=False,
         include_code_generation: bool = False,
         keep_dmt_imports: bool = False,
         _included_dependencies: Optional[Set[type]] = None,
@@ -778,7 +828,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         if include_dependencies:
             if _included_dependencies is None:
                 _included_dependencies = set()
-            for dependency in {{ get_dependencies(schema) }}:
+            for dependency in cls.__dependencies__():
                 if dependency in _included_dependencies:
                     continue
                 _included_dependencies.add(dependency)
@@ -788,6 +838,15 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     include_imports=False,
                     _included_dependencies=_included_dependencies,
                 )
+        elif include_import_of_other_blueprints:
+            for dependency in cls.__dependencies__():
+                template_type = dependency._type
+                import_path = (
+                    template_type
+                        .replace("/", ".")
+                        .replace("-", "_")
+                )
+                definition += f"\\nfrom {import_path} import {dependency.__name__}"
         definition += decompress(cls.__definition)
         if include_code_generation:
             try:
@@ -1020,7 +1079,7 @@ from classes.dto import DTO
             self._create(template_type)
         return Template
 
-    def _create(self, template_type: str, _create_instance: bool = False, compile: bool = True):
+    def _create(self, template_type: str, _create_instance: bool = False, compile: bool = True) -> __Blueprint__:
         return self._create_from_schema(self._get_schema(template_type), template_type, _create_instance, compile)
 
     def _create_from_schema(
