@@ -1,13 +1,12 @@
 import json
-from flask import Blueprint, Response, request
-from classes.data_source import DataSource
+
 from core.serializers.dto_json_serializer import DTOSerializer
-from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaUseCase, GenerateJsonSchemaRequestObject
-from utils.logging import logger
-from core.use_case.get_document_use_case import GetDocumentUseCase, GetDocumentRequestObject
 from core.shared import response_object as res
-from core.repository.repository_factory import get_repository
+from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaUseCase, GenerateJsonSchemaRequestObject
+from core.use_case.get_document_use_case import GetDocumentUseCase, GetDocumentRequestObject
 from core.use_case.update_document_use_case import UpdateDocumentUseCase, UpdateDocumentRequestObject
+from flask import Blueprint, Response, request
+from utils.logging import logger
 
 blueprint = Blueprint("document", __name__)
 
@@ -29,19 +28,16 @@ def get_json_schema(type: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/v2/documents/<string:data_source_id>/<document_path>", methods=["GET"])
-def get(data_source_id: str, document_path: str):
-    logger.info(f"Getting document '{document_path}' from data source '{data_source_id}'")
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<document_id>", methods=["GET"])
+def get(data_source_id: str, document_id: str):
+    logger.info(f"Getting document '{document_id}' from data source '{data_source_id}'")
     ui_recipe = request.args.get("ui_recipe")
     attribute = request.args.get("attribute")
-    data_source = DataSource(id=data_source_id)
-    document_repository = get_repository(data_source)
-    use_case = GetDocumentUseCase(document_repository)
+    use_case = GetDocumentUseCase()
     request_object = GetDocumentRequestObject.from_dict(
-        {"document_id": document_path, "ui_recipe": ui_recipe, "attribute": attribute}
+        {"data_source_id": data_source_id, "document_id": document_id, "ui_recipe": ui_recipe, "attribute": attribute}
     )
     response = use_case.execute(request_object)
-    # TODO: Use DTOSerializer?
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
@@ -50,12 +46,10 @@ def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
     data = request.get_json()
     attribute = request.args.get("attribute")
-    data_source = DataSource(id=data_source_id)
-    document_repository = get_repository(data_source)
     request_object = UpdateDocumentRequestObject.from_dict(
-        {"data": data, "document_id": document_id, "attribute": attribute}
+        {"data_source_id": data_source_id, "data": data, "document_id": document_id, "attribute": attribute}
     )
-    update_use_case = UpdateDocumentUseCase(document_repository)
+    update_use_case = UpdateDocumentUseCase()
     response = update_use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]

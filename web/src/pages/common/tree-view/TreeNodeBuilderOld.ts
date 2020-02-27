@@ -10,6 +10,7 @@ type IndexNodeV2 = {
   id: string
   filename: string
   isRootPackage?: boolean
+  empty?: boolean
   nodeType: NodeType
   children?: string[]
   templateRef?: string
@@ -62,17 +63,17 @@ function createTreeNode({
     templateRef,
     nodeType,
     meta: { ...meta, type },
-    isExpandable: isExpandable(type, children),
+    isExpandable: isExpandable(type, children, meta),
     isOpen: false,
     isRoot: type === NodeType.DATA_SOURCE,
     isHidden: false,
     children: children || [],
-    icon: getNodeIcon(type, children),
+    icon: getNodeIcon(type),
     isFolder: true,
   }
 }
 
-function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
+function getNodeIcon(nodeType: string): NodeIconType {
   switch (nodeType) {
     case NodeType.PACKAGE:
       return NodeIconType.folder
@@ -89,7 +90,12 @@ function getNodeIcon(nodeType: string, children: string[]): NodeIconType {
   }
 }
 
-function isExpandable(nodeType: string, children: string[]): boolean {
+function isExpandable(
+  nodeType: string,
+  children: string[],
+  meta: any
+): boolean {
+  if (meta.empty) return false
   if (nodeType === NodeType.PACKAGE) {
     return true
   } else {

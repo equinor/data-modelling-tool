@@ -5,7 +5,8 @@
     "attributes": [
         {
             "name": "name",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "variable name for named accessing",
             "default": "current",
             "contained": true,
@@ -13,7 +14,8 @@
         },
         {
             "name": "description",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "instance description",
             "default": "",
             "contained": true,
@@ -25,7 +27,8 @@
         },
         {
             "name": "currentDepths",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "A list of current levels, positive downward, in [m].",
             "default": "0.0,-50,-150,-297,-300",
             "contained": true,
@@ -33,7 +36,8 @@
         },
         {
             "name": "currentDirection",
-            "type": "number",
+            "attributeType": "number",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "Current direction -going to- in [deg].",
             "default": "330",
             "contained": true,
@@ -41,7 +45,8 @@
         },
         {
             "name": "currentVelocities",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "A list of current velocities at dfferent levels [m/s].",
             "default": "0.826, 0.504, 0.344, 0.244, 0.0",
             "contained": true,

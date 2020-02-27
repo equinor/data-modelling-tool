@@ -4,33 +4,37 @@
   "description": "This describes a car",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "manufacturer",
       "optional": true,
       "default": ""
     },
     {
-      "type": "SSR-DataSource/CarPackage/Wheel",
+      "attributeType": "SSR-DataSource/CarPackage/Wheel",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "wheels",
-      "optional": true,
       "dimensions": "*"
     },
     {
-      "type": "SSR-DataSource/CarPackage/engine/Engine",
-      "name": "engine",
-      "optional": true
+      "attributeType": "SSR-DataSource/CarPackage/engine/Engine",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "engine"
     }
   ],
   "storageRecipes": [],

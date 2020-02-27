@@ -5,8 +5,7 @@ import click
 from flask import Flask
 
 from config import Config
-from core.domain.schema import Factory
-from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System, Actions
+from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System, Actions, Blueprints
 from core.utility import wipe_db
 from services.database import dmt_database
 from utils.logging import logger
@@ -22,6 +21,7 @@ def create_app(config):
     app.register_blueprint(Index.blueprint)
     app.register_blueprint(System.blueprint)
     app.register_blueprint(Actions.blueprint)
+    app.register_blueprint(Blueprints.blueprint)
     app.secret_key = os.urandom(64)
     return app
 
@@ -42,10 +42,11 @@ def init_application():
     logger.info(f"Importing entity package(s) {Config.ENTITY_APPLICATION_SETTINGS['entities']}")
     for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
         import_package(
-            f"{Config.APPLICATION_HOME}/entities/{folder}", collection=Config.ENTITY_COLLECTION, is_root=True
+            f"{Config.APPLICATION_HOME}/entities/{folder}",
+            collection=Config.ENTITY_COLLECTION,
+            is_root=True,
+            is_entity=True,
         )
-    logger.info("Resetting the cache of generated blueprints")
-    Factory.reset_cache()
 
 
 @app.cli.command()
@@ -55,7 +56,6 @@ def reset_core_packages():
     logger.warning(f"Importing core packages...")
     for folder in Config.SYSTEM_FOLDERS:
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
-    Factory.reset_cache()
 
 
 @app.cli.command()

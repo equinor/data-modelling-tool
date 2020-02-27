@@ -6,15 +6,18 @@
     {
       "name": "name",
       "optional": false,
-      "type": "string"
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
     },
     {
       "name": "type",
-      "type": "string"
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
     },
     {
       "name": "description",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "default": "",
       "optional": true
     }
@@ -28,7 +31,8 @@
       "attributes": [
         {
           "name": "type",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "type"
         }
       ]

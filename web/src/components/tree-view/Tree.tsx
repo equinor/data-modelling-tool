@@ -26,7 +26,10 @@ export enum NodeIconType {
 export type NodeMetaData = {
   [key: string]: any
   isRootPackage?: boolean
+  empty?: boolean
+  isList?: boolean
   error?: boolean
+  dataSource?: string
 }
 
 export type TreeNodeData = {
@@ -172,9 +175,7 @@ const Tree = (props: TreeProps) => {
   }
 
   const removeNode = (nodeId: string, parentId: string) => {
-    if (parentId) {
-      dispatch(NodeActions.removeChild(parentId, nodeId))
-    }
+    dispatch(NodeActions.removeChild(parentId, nodeId))
     dispatch(NodeActions.deleteNode(nodeId))
   }
 

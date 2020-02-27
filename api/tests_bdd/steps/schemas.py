@@ -2,29 +2,31 @@ import json
 
 from behave import given, when, then
 
-from classes.data_source import DataSource
-from core.domain.dto import DTO
-from core.domain.schema import Factory
-from core.repository.file.document_repository import TemplateRepositoryFromFile
-from core.repository.interface.document_repository import DocumentRepository
+from classes.schema import Factory
+from core.repository import Repository
+from core.repository.file import TemplateRepositoryFromFile
 from core.repository.repository_factory import get_repository
-from tests_bdd.steps.handle_response import pretty_eq
+from utils.data_structure.compare import pretty_eq
 from utils.helper_functions import schemas_location
-from config import Config
+from utils.logging import logger
 from utils.package_import import import_package
+
+from classes.dto import DTO
+from config import Config
 
 
 @given("data modelling tool templates are imported")
 def step_impl(context):
     for folder in Config.SYSTEM_FOLDERS:
+        logger.setLevel("ERROR")
         import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
+        logger.setLevel("INFO")
 
 
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')
 def step_impl_2(context, uid: str, data_source_id: str):
-    data_source = DataSource(id=data_source_id)
-    document: DTO[dict] = DTO(uid=uid, data=json.loads(context.text))
-    document_repository: DocumentRepository = get_repository(data_source)
+    document: DTO = DTO(uid=uid, data=json.loads(context.text))
+    document_repository: Repository = get_repository(data_source_id)
     document_repository.add(document)
 
 

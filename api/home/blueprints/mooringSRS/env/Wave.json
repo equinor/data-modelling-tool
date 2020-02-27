@@ -5,7 +5,8 @@
     "attributes": [
         {
             "name": "name",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",            
             "description": "wave condition name",
             "default": "wave",
             "contained": true,
@@ -13,7 +14,8 @@
         },
         {
             "name": "description",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",            
             "description": "wave condition description",
             "default": "",
             "contained": true,
@@ -21,12 +23,14 @@
         },
         {
             "name": "type",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",            
             "description": "wave condition type"
         },
         {
             "name": "significantWaveHeight",
-            "type": "number",
+            "attributeType": "number",
+            "type": "system/SIMOS/BlueprintAttribute",            
             "description": "Significant wave height in [m].",
             "default": "14.68655766",
             "contained": true,
@@ -34,7 +38,8 @@
         },
         {
             "name": "peakPeriod",
-            "type": "number",
+            "attributeType": "number",
+            "type": "system/SIMOS/BlueprintAttribute",            
             "description": "Peak period in [s].",
             "default": "17.24327883",
             "contained": true,
@@ -42,7 +47,8 @@
         },
         {
             "name": "waveDirection",
-            "type": "number",
+            "attributeType": "number",
+            "type": "system/SIMOS/BlueprintAttribute",            
             "description": "Wave propagation direction -comming from- in [deg].",
             "default": "330.0",
             "contained": true,

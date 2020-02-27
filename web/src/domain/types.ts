@@ -3,8 +3,9 @@ export type KeyValue = {
 }
 
 export type BlueprintAttributeType = {
-  name: string
   type: string
+  name: string
+  attributeType: string
   description?: string
   label?: string
   optional?: boolean

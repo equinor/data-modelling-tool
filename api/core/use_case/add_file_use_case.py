@@ -1,32 +1,24 @@
-from core.use_case.update_document_use_case import update_document
-from core.use_case.utils.create_entity import CreateEntity
-from typing import Dict
-import stringcase
-
-from core.domain.dto import DTO
-from core.domain.storage_recipe import StorageRecipe
-from core.enums import SIMOS, DMT
-from core.repository.interface.document_repository import DocumentRepository
-from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
-from utils.data_structure.find import get
-from utils.logging import logger
-from dotted.collection import DottedDict
+from core.service.document_service import DocumentService
 
-def get_required_attributes(type: str):
-    return [
-        {"type": "string", "name": "name"},
-        {"type": "string", "name": "description"},
-        {"type": "string", "name": "type", "default": type},
-    ]
+from core.repository.repository_factory import get_repository
 
 
 class AddFileRequestObject(req.ValidRequestObject):
-    def __init__(self, parent_id=None, name=None, description=None, type=None, attribute=None, path=None, data=None):
+    def __init__(
+        self,
+        data_source_id=None,
+        parent_id=None,
+        name=None,
+        description=None,
+        type=None,
+        attribute=None,
+        path=None,
+        data=None,
+    ):
+        self.data_source_id = data_source_id
         self.parent_id = parent_id
         self.name = name
         self.description = description
@@ -38,6 +30,9 @@ class AddFileRequestObject(req.ValidRequestObject):
     @classmethod
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
+
+        if "data_source_id" not in adict:
+            invalid_req.add_error("data_source_id", "is missing")
 
         if "parentId" not in adict:
             invalid_req.add_error("parentId", "is missing")
@@ -55,6 +50,7 @@ class AddFileRequestObject(req.ValidRequestObject):
             return invalid_req
 
         return cls(
+            data_source_id=adict.get("data_source_id"),
             parent_id=adict.get("parentId"),
             name=adict.get("name"),
             description=adict.get("description", ""),
@@ -65,77 +61,26 @@ class AddFileRequestObject(req.ValidRequestObject):
         )
 
 
-class BlueprintProvider:
-    def __init__(self, document_repository):
-        self.document_repository = document_repository
-
-    def get_blueprint(self, type: str):
-        return get_blueprint(type)
-
-
 class AddFileUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
-        self.document_repository = document_repository
-        self.blueprint_provider = BlueprintProvider(document_repository=self.document_repository)
+    def __init__(self, repository_provider=get_repository):
+        self.repository_provider = repository_provider
 
     def process_request(self, request_object: AddFileRequestObject):
+        data_source_id = request_object.data_source_id
         parent_id: str = request_object.parent_id
         name: str = request_object.name
         type: str = request_object.type
         description: str = request_object.description
-        attribute: str = stringcase.snakecase(request_object.attribute)
-
         attribute_dot_path = request_object.attribute
 
-        parent: DTO = self.document_repository.get(parent_id)
-        if not parent:
-            raise EntityNotFoundException(uid=parent_id)
-
-        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
-
-        parent_data = parent.data
-
-        # Set empty content on package if no content
-        if parent.type == DMT.PACKAGE.value:
-            parent_data["content"] = parent_data.get("content", [])
-
-        try:
-            dotted_data = DottedDict(parent_data)
-            try:
-                dotted_data[attribute_dot_path]
-            except KeyError:
-                get(parent_data, attribute_dot_path)
-        except ValueError:
-            raise ValueError(f"The attribute '{attribute}' is missing")
-
-        parent_blueprint = get_blueprint(parent.type)
-        if not parent_blueprint:
-            raise EntityNotFoundException(uid=parent.type)
-
-        storage_recipe: StorageRecipe = get_storage_recipe(parent_blueprint)
-
-        if storage_recipe.is_contained(attribute, type):
-            # only array types can be added from context menu.
-            # single types in tree can only be clicked.
-            if isinstance(parent_data, dict):
-                try:
-                    dotted_data[attribute_dot_path].append(entity)
-                    parent.data = dotted_data.to_python()
-                    self.document_repository.update(parent)
-                except KeyError:
-                    pass
-
-            else:
-                getattr(parent_data, attribute).append(entity)
-                logger.info(f"Added contained document")
-                self.document_repository.update(parent)
-            return res.ResponseSuccess(parent)
-        else:
-            file = DTO(data=entity)
-            if type == SIMOS.BLUEPRINT.value:
-                file.data["attributes"] = get_required_attributes(type=type)
-            get(parent_data, attribute).append({"_id": file.uid, "name": name, "type": type})
-            self.document_repository.add(file)
-            logger.info(f"Added document '{file.uid}''")
-            self.document_repository.update(parent)
-            return res.ResponseSuccess(file)
+        document_service = DocumentService(repository_provider=self.repository_provider)
+        document = document_service.add_document(
+            data_source_id=data_source_id,
+            parent_id=parent_id,
+            type=type,
+            name=name,
+            description=description,
+            attribute_path=attribute_dot_path,
+        )
+        document_service.invalidate_cache()
+        return res.ResponseSuccess(document)

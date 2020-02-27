@@ -9,6 +9,7 @@ import {
   FaFolderOpen,
   FaLaptop,
   FaRegFileAlt,
+  FaList,
 } from 'react-icons/fa'
 import styled from 'styled-components'
 import { NodeIconType, TreeNodeData } from './Tree'
@@ -80,6 +81,11 @@ export type TreeNodeRenderProps = {
 const Content = styled.div`
   width: 100%;
 `
+
+const ArrowPlaceholderIndent = styled.div`
+  width: 12px;
+  height: 18px;
+`
 type Props = {
   node: TreeNodeData
 }
@@ -92,6 +98,7 @@ const GetIcon = ({ node }: Props) => {
     case NodeIconType.database:
       return <FaDatabase style={{ color: 'gray' }} />
     case NodeIconType.file:
+      if (node.meta.isList) return <FaList />
       return <FaRegFileAlt />
     case NodeIconType.blueprint:
       return <FaRegFileAlt style={{ color: '#2966FF' }} />
@@ -144,6 +151,7 @@ const TreeNode = (props: TreeNodeProps) => {
           <NodeIcon>
             {node.isExpandable && node.isOpen && <FaChevronDown />}
             {node.isExpandable && !node.isOpen && <FaChevronRight />}
+            {!node.isExpandable && <ArrowPlaceholderIndent />}
           </NodeIcon>
           <NodeIcon marginRight={5}>
             <GetIcon node={node} />

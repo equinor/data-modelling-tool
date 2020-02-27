@@ -4,24 +4,29 @@
   "description": "This describes an engine",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "power"
     },
     {
       "name": "value1",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "data points.",
       "dimensions": "*",
       "contained": true,
@@ -30,32 +35,19 @@
     },
     {
       "name": "value2",
-      "type": "number",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
       "description": "more data points.",
       "dimensions": "*",
       "contained": true,
       "optional": false
     },
     {
-      "type": "SSR-DataSource/CarPackage/engine/FuelPump",
-      "name": "fuelPump",
-      "optional": true
+      "attributeType": "SSR-DataSource/CarPackage/engine/FuelPump", "type": "system/SIMOS/BlueprintAttribute",
+      "name": "fuelPump"
     }
   ],
-  "storageRecipes": [
-    {
-      "name": "DefaultStorageRecipe",
-      "type": "system/SIMOS/StorageRecipe",
-      "description": "",
-      "attributes": [
-        {
-          "name": "fuel_pump",
-          "type": "SSR-DataSource/CarPackage/subdir/subdir2/FuelPump",
-          "contained": false
-        }
-      ]
-    }
-  ],
+  "storageRecipes": [],
   "uiRecipes": [
     {
       "name": "EnginePlot",

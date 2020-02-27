@@ -2,7 +2,7 @@ import json
 from enum import Enum
 from flask import Blueprint, Response, request
 
-from core.domain.dto import DTO
+from classes.dto import DTO
 
 from classes.data_source import DataSource
 from core.repository.repository_factory import get_repository
@@ -25,8 +25,8 @@ def process_action():
 class ProcessAction:
     def __init__(self, request_data):
         data_source_id = request_data["dataSource"]
-        data_source = DataSource(id=data_source_id)
-        self.data_source = DataSource(id=data_source_id)
+        data_source = DataSource(uid=data_source_id)
+        self.data_source = DataSource(uid=data_source_id)
         self.document_repository = get_repository(data_source)
 
         # shared common request data properties

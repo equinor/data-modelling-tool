@@ -9,6 +9,7 @@ import { BlueprintProvider } from '../BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
 import objectPath from 'object-path'
 import { IndexFilter } from './CreateConfig'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 interface IBlueprintSchema {
   getSchema: () => object
@@ -56,18 +57,29 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
     blueprint: Blueprint,
     attributes: BlueprintAttributeType[]
   ) {
-    attributes.filter(this.filter).forEach((attr: BlueprintAttributeType) => {
-      const uiAttribute = blueprint.getUiAttribute(
-        this.uiRecipe.name,
-        attr.name
-      )
-      const newPath = this.createAttributePath(path, attr.name)
-      if (this.isPrimitive(attr.type) || (uiAttribute && uiAttribute.field)) {
-        this.appendPrimitive(newPath, blueprint, attr, uiAttribute)
-      } else {
-        this.processNested(newPath, blueprint, attr)
-      }
-    })
+    attributes
+      .filter(this.filter)
+      .forEach((attrType: BlueprintAttributeType) => {
+        const attr = new BlueprintAttribute(attrType)
+        const attrName = attr.getName()
+        const uiAttribute = blueprint.getUiAttribute(
+          this.uiRecipe.name,
+          attrName
+        )
+        const newPath = this.createAttributePath(path, attrName)
+        if (attr.isComplexArray()) {
+          objectPath.set(this.schema, newPath, { 'ui:field': 'matrix' })
+        } else {
+          if (
+            this.isPrimitive(attrType.attributeType) ||
+            (uiAttribute && uiAttribute.field)
+          ) {
+            this.appendPrimitive(newPath, blueprint, attr, uiAttribute)
+          } else {
+            this.processNested(newPath, blueprint, attr)
+          }
+        }
+      })
   }
 
   private createAttributePath(path: string, name: string) {
@@ -77,11 +89,13 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private processNested(
     path: string,
     blueprint: Blueprint,
-    attr: BlueprintAttributeType
+    attr: BlueprintAttribute
   ): void {
     const nestedBlueprintType:
       | BlueprintType
-      | undefined = this.blueprintProvider.getBlueprintByType(attr.type)
+      | undefined = this.blueprintProvider.getBlueprintByType(
+      attr.getAttributeType()
+    )
     if (nestedBlueprintType) {
       if (nestedBlueprintType.name === blueprint.getBlueprintType().name) {
         console.log(
@@ -90,7 +104,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         return
       }
       const nestedBlueprint = new Blueprint(nestedBlueprintType)
-      if (this.isArray(attr)) {
+      if (attr.isArray()) {
         const newPath = path + '.items'
         objectPath.set(this.schema, newPath, { items: {} })
         // update reference to nested item
@@ -113,10 +127,10 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private appendPrimitive(
     path: string,
     blueprint: Blueprint,
-    attr: BlueprintAttributeType,
+    attr: BlueprintAttribute,
     uiAttr: any
   ) {
-    if (this.isArray(attr)) {
+    if (attr.isArray()) {
       objectPath.set(this.schema, path + '.items', { items: {} })
       this.appendSchemaProperty(path, blueprint, attr, uiAttr)
     } else {
@@ -127,15 +141,15 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
   private appendSchemaProperty(
     path: string,
     blueprint: Blueprint,
-    attr: BlueprintAttributeType,
+    attr: BlueprintAttribute,
     uiAttribute: any
   ): void {
     //@todo use uiAttribute to build the schema property. required, descriptions etc.
-    const uiSchemaProperty: UiSchema = {}
 
-    if (attr.description) {
-      uiSchemaProperty['ui:description'] = attr.description
-      if (attr.type === 'boolean') {
+    const uiSchemaProperty: UiSchema = {}
+    if (attr.getDescription()) {
+      uiSchemaProperty['ui:description'] = attr.getDescription()
+      if (attr.getAttributeType() === 'boolean') {
         uiSchemaProperty['ui:widget'] = 'checkbox'
       }
     }
@@ -151,12 +165,12 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
         // not possible to set ui:description on checkbox.
         // https://github.com/rjsf-team/react-jsonschema-form/issues/827
         uiSchemaProperty['ui:description'] = uiAttribute.description
-        if (attr.type === 'boolean') {
+        if (attr.getAttributeType() === 'boolean') {
           uiSchemaProperty['ui:widget'] = 'checkbox'
         }
       }
       if (uiAttribute.disabled) {
-        if (attr.default === '') {
+        if (attr.getBlueprintAttributeType().default === '') {
           console.warn(
             `please provide a defaultValue when attribute is disabled from editing, attr: ${attr}`
           )
@@ -166,12 +180,12 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
       if (uiAttribute.helpText) {
         uiSchemaProperty['ui:help'] = uiAttribute.helpText
       }
-      if (attr.label) {
-        uiSchemaProperty['ui:label'] = attr.label
+      if (attr.getBlueprintAttributeType().label) {
+        uiSchemaProperty['ui:label'] = attr.getBlueprintAttributeType().label
       }
       if (uiAttribute.field === 'attribute') {
         const fieldBlueprint = this.blueprintProvider.getBlueprintByType(
-          attr.type
+          attr.getAttributeType()
         )
         const fieldProperty = {
           'ui:field': uiAttribute.field,

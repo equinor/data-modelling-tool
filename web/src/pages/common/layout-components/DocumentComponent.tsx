@@ -104,13 +104,33 @@ const View = (props: any) => {
     case RegisteredPlugins.TABLE:
       return <ReactTablePlugin {...pluginProps} />
     case RegisteredPlugins.EXTERNAL:
-      const ExternalPlugin = pluginHook(uiRecipe)
-      if (ExternalPlugin) {
-        return <ExternalPlugin {...props} />
-      }
+      return (
+        <LayoutContext.Consumer>
+          {(layout: any) => {
+            // wrap onFormSubmit to hide the rjsf specific schemas input.
+            // first invoke onFormSubmit witch returns a function with param schemas.
+            const onFormSubmitWrapper: Function = onFormSubmit({
+              attribute: null,
+              dataUrl,
+              layout,
+            })
+            // create a new function with param formData instead of schemas.
+            const updateEntity = (formData: any) => {
+              console.log(formData)
+              onFormSubmitWrapper({ formData })
+            }
+            // pass the wrapper function updateEntity to the plugins.
+            const ExternalPlugin = pluginHook(uiRecipe)
+            if (ExternalPlugin) {
+              return <ExternalPlugin {...props} updateEntity={updateEntity} />
+            }
+          }}
+        </LayoutContext.Consumer>
+      )
       break
+    default:
+      console.warn(`Plugin not supported: ${uiRecipe.plugin}`)
   }
-  console.warn(`Plugin not supported: ${uiRecipe.plugin}`)
   return <div>{`Plugin not supported: ${uiRecipe.plugin}`}</div>
 }
 

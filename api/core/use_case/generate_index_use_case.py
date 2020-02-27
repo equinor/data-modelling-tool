@@ -1,508 +1,175 @@
-from pathlib import Path
-from typing import Dict, List
+from typing import Dict, Union
 
-from anytree import PreOrderIter, RenderTree
-
-from config import Config
-from core.domain.blueprint import Blueprint, get_attribute_names, get_attributes_with_reference
-from core.domain.dto import DTO
-from core.domain.entity import Entity
-from core.domain.index import DocumentNode
-from core.domain.recipe import PRIMITIVES, Recipe
-from core.domain.storage_recipe import StorageRecipe
-from core.enums import DMT, SIMOS
-from core.repository.interface.document_repository import DocumentRepository
+from classes.blueprint_attribute import BlueprintAttribute
+from core.enums import DMT
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.find_parent import find_parent
-from core.use_case.utils.generate_index_menu_actions import (
-    get_contained_menu_action,
-    get_create_root_package_menu_item,
-    get_delete_document_menu_item,
-    get_download_menu_action,
-    get_dynamic_create_menu_item,
-    get_export_menu_item,
-    get_import_menu_item,
-    get_node_on_select,
-    get_not_contained_menu_action,
-    get_remove_attribute_menu_item,
-    get_rename_attribute_menu_action,
-    get_rename_menu_action,
-    get_runnable_menu_action,
-)
-from core.use_case.utils.get_storage_recipe import get_storage_recipe
-from core.use_case.utils.get_template import get_blueprint
-from core.use_case.utils.get_ui_recipe import get_recipe
-from utils.data_structure.find import get
-from utils.group_by import group_by
+from core.repository.repository_factory import get_repository
+from core.service.document_service import DocumentService
+from core.use_case.utils.generate_index_menu_actions import get_node_on_select
+from core.use_case.utils.set_index_context_menu import create_context_menu
 from utils.logging import logger
 
-
-def find_attribute_by_id(name: str, attributes: List):
-    return next((x for x in attributes if x["id"] == name), None)
-
-
-class Index:
-    def __init__(self, data_source_id: str):
-        self.data_source_id = data_source_id
-        self.index = {}
-
-    def add(self, adict):
-        self.index[adict["id"]] = adict
-
-    def to_dict(self, *, include_defaults: bool = True):
-        return self.index
+from classes.recipe import RecipePlugin
+from classes.tree_node import Node, ListNode
+from config import Config
 
 
-def print_tree(root_node):
-    for pre, fill, node in RenderTree(root_node):
-        treestr = "%s%s" % (pre, node.name)
-        print(treestr.ljust(8), node.uid, node.to_node()["nodeType"], node.document["type"] if node.document else "")
+def get_parent_id(data_source_id: str, node: Union[Node, ListNode]):
+    if node.parent:
+        # Adjust parent, since we skipped content node
+        if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
+            return node.parent.parent.node_id
+        return node.parent_node_id
+    else:
+        return data_source_id
 
 
-def get_error_node(document: Entity, parent_node: DocumentNode, data_source_id: str) -> DocumentNode:
-    if not get(document, "uid", default=None):
-        document.uid = "noId"
-    return DocumentNode(
-        document=document,
-        data_source_id=data_source_id,
-        name=get(document, "name", default=None),
-        parent=parent_node,
-        menu_items=[],
-        error=True,
+def get_error_node(data_source_id: str, node: Union[Node]) -> Dict:
+    return {
+        "parentId": get_parent_id(data_source_id, node),
+        "title": node.name,
+        "id": node.node_id,
+        "nodeType": "document-node",
+        "children": [],
+        "type": node.type,
+        "meta": {
+            "menuItems": [],
+            "onSelect": {},
+            "error": True,
+            "isRootPackage": node.is_root(),
+            "isList": node.is_array(),
+        },
+    }
+
+
+def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict:
+    menu_items = create_context_menu(node, data_source_id, app_settings)
+
+    children = []
+    if node.type == DMT.PACKAGE.value:
+        # Skip content node
+        if node.has_children():
+            # Content node is always the only node in package
+            content_node = node.children[0]
+            children = [child.node_id for child in content_node.children if is_visible(child)]
+    else:
+        children = [child.node_id for child in node.children if is_visible(child)]
+
+    return {
+        "parentId": get_parent_id(data_source_id, node),
+        "title": node.name,
+        "id": node.node_id,
+        "nodeType": "document-node",
+        "children": children,
+        "type": node.type,
+        "meta": {
+            "menuItems": menu_items,
+            "onSelect": get_node_on_select(data_source_id, node),
+            "error": False,
+            "isRootPackage": node.type == DMT.PACKAGE.value and node.entity.get("isRoot"),
+            "isList": node.is_array(),
+            "dataSource": data_source_id,
+            "empty": node.is_empty(),
+        },
+    }
+
+
+def is_visible(node):
+    if node.is_root():
+        return True
+    elif node.is_complex_array():
+        return False
+    elif node.is_empty() and not node.is_array():
+        return False
+    if node.parent.blueprint is None:
+        return True
+
+    ui_recipe = node.parent.blueprint.get_ui_recipe(name="INDEX")
+    return ui_recipe.is_contained(
+        node.parent.key if node.parent.is_array() else node.key, node.type, node.is_array(), RecipePlugin.INDEX,
     )
 
 
-class Tree:
-    def __init__(
-        self, document_repository: DocumentRepository,
-    ):
-        self.document_repository = document_repository
+def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str, app_settings: dict):
+    index = {}
 
-    def get_references(self, references) -> List[Entity]:
-        documents = []
-        for ref in references:
-            dto = self.document_repository.get(ref["_id"])
-            if not dto:
-                logger.warning(f"The reference {ref['name']} was not found")
-                document = Entity({"name": ref["name"], "_not_found_": True, "uid": "notFound", "type": "notFound"})
+    for node in root.traverse():
+        try:
+            # Skip package's content node
+            if node.parent and node.parent.type == DMT.PACKAGE.value:
+                continue
+
+            if not is_visible(node):
+                continue
+
+            if node.has_error:
+                index[node.node_id] = get_error_node(data_source_id, node)
             else:
-                document = Entity(dto.data)
-                document.uid = dto.uid
-                if not hasattr(document, "uid"):
-                    document.uid = ref["_id"]
+                index[node.node_id] = get_node(node, data_source_id, app_settings)
 
-            documents.append(document)
-        return documents
-
-    def generate_contained_node(
-        self, document_id, document_path, instance, index, data_source_id, attribute_type, parent_node, is_array
-    ):
-        if is_array:
-            uid = f"{document_id}.{'.'.join(document_path)}.{index}"
-            current_path = document_path + [f"{index}"]
-        else:
-            uid = f"{document_id}.{'.'.join(document_path)}"
-            current_path = document_path
-
-        create_new_menu_items = []
-        blueprint = get_blueprint(instance["type"])
-        for attr in blueprint.attributes:
-            if '/' in attr.type:
-                if attr.dimensions == '*':
-                    attribute_name = '.'.join(document_path) + '.' + str(index) + '.' + attr.name
-                    create_new_menu_items.append(
-                        get_dynamic_create_menu_item(data_source_id, "Create " + attr.name, attr.type, document_id, attribute_name)
-                    )
-
-        menu_items = [{"label": "New", "menuItems": create_new_menu_items}]
-
-        node = DocumentNode(
-            data_source_id=data_source_id,
-            name=instance["name"],
-            document=DTO(Blueprint(name=instance["name"], description="", type=attribute_type), uid=uid),
-            blueprint=None,
-            parent=parent_node,
-            on_select={
-                "uid": uid,
-                "title": instance["name"],
-                "component": "blueprint",
-                "data": {
-                    "dataUrl": f"/api/v2/documents/{data_source_id}"
-                    f"/{document_id}?attribute={'.'.join(current_path)}",
-                    "schemaUrl": f"/api/v2/json-schema/{attribute_type}",
-                },
-            },
-            menu_items=menu_items,
-            is_contained=False,
-        )
-
-        if is_array or instance.get("optional", False):
-            node.menu_items.append(
-                get_remove_attribute_menu_item(
-                    data_source_id, parent_id=parent_node.uid, attribute=".".join(current_path)
-                )
-            )
-
-        if is_array:
-            attribute_blueprint = get_blueprint(instance["type"])
-            data = {}
-            for item in get_attribute_names(attribute_blueprint):
-                data[item] = ("${" + item + "}",)
-            contained_menu_action = get_contained_menu_action(
-                data_source_id=data_source_id,
-                name=".".join(document_path),
-                node_id=uid,
-                type=attribute_type,
-                parent_id=document_id,
-                data=data,
-            )
-            node.menu_items.append(contained_menu_action)
-
-        node.menu_items.append(
-            get_rename_attribute_menu_action(
-                data_source_id, parent_id=document_id, type=attribute_type, name=uid, attribute=".".join(current_path),
-            )
-        )
-
-        blueprint = get_blueprint(attribute_type)
-        recipe: Recipe = get_recipe(blueprint=blueprint, plugin_name="INDEX")
-        for attribute in get_attributes_with_reference(blueprint):
-            name = attribute["name"]
-            attr_type = attribute["type"]
-
-            is_contained_in_ui = recipe.is_contained(attribute)
-            if not is_contained_in_ui:
-                continue
-
-            if parent_node.blueprint and blueprint == parent_node.blueprint:
-                continue
-
-            is_array = attribute["dimensions"] == "*"
-            if is_array and attribute_type is not SIMOS.BLUEPRINT.value:
-                if attr_type not in PRIMITIVES:
-                    is_recursive = attr_type.split("/")[-1] == blueprint["name"]
-                    if is_recursive and is_array and len(current_path) > 2:
-                        # prevent generate endless nodes.
-                        return
-
-            self.generate_contained_node(
-                document_id,
-                current_path + [f"{name}"],
-                attribute,
-                None,
-                data_source_id,
-                attribute["type"],
-                node,
-                attribute["dimensions"] == "*",
-            )
-
-    def generate_contained_nodes(
-        self, data_source_id, document_id, document_path, attribute_type, values, parent_node
-    ):
-        for index, instance in enumerate(values):
-            data = instance
-            if not isinstance(instance, dict):
-                data = instance.to_dict()
-            try:
-                self.generate_contained_node(
-                    document_id, document_path, data, index, data_source_id, attribute_type, parent_node, True
-                )
-            except Exception as error:
-                logger.exception(error)
-                get_error_node(document=data, parent_node=parent_node, data_source_id=data_source_id)
-                logger.warning(f"Caught error while processing document {document_path}: {error}")
-
-    def process_document(self, data_source_id, document, parent_node: DocumentNode, app_settings: Dict):
-        if get(document, "_not_found_", default=None):
-            get_error_node(document, parent_node, data_source_id)
-            return
-        # FIXME: Check that document is a reference
-        is_package = document.type == DMT.PACKAGE.value
-        parent_is_data_source = parent_node.document is None
-        attribute_nodes = []
-
-        # Set which attribute on the parent the child belongs in
-        if not parent_is_data_source and parent_node.document.type == DMT.PACKAGE.value:
-            parent_attribute = "content"
-        else:
-            parent_attribute = Path(parent_node.start_path).name
-
-        node = DocumentNode(
-            data_source_id=data_source_id,
-            name=document.name,
-            document=document,
-            blueprint=get_blueprint(document.type),
-            parent=parent_node,
-            on_select=get_node_on_select(data_source_id, document),
-            menu_items=[],
-        )
-        if not node.blueprint:
-            raise EntityNotFoundException(uid=document.type)
-
-        if is_package:
-            # TODO: Fix this mess...
-            # Set Package isRoot attribute
-            if isinstance(document, Entity) or isinstance(document, dict):
-                node.is_root_package = document["isRoot"]
-            elif isinstance(document, DTO):
-                if isinstance(document.data, dict):
-                    node.is_root_package = document.isRoot
-                else:
-                    node.is_root_package = document.is_root
-            # Packages should not open a tab on click
-            node.on_select = {}
-
-        if node.is_root_package:
-            node.menu_items.append(get_export_menu_item(data_source_id=data_source_id, document_id=document.uid))
-            node.menu_items.append(get_import_menu_item(data_source_id=data_source_id, document_id=document.uid))
-
-        # Every node gets an delete and rename action
-        node.menu_items.append(
-            get_rename_menu_action(
-                data_source_id=data_source_id,
-                document_id=document.uid,
-                type=document.type,
-                name=document.name,
-                parent_id=parent_node.uid,
-            )
-        )
-        node.menu_items.append(
-            get_delete_document_menu_item(
-                data_source_id, parent_id=parent_node.uid, parent_attribute=parent_attribute, document_id=document.uid,
-            )
-        )
-
-        # Runnable entities gets an custom action
-        action_types = group_by(
-            items=app_settings["actions"], grouping_function=lambda runnable: runnable.get("input", ""),
-        )
-
-        if document.type in action_types:
-            action_items = []
-
-            for action in action_types[document.type]:
-                action_items.append(
-                    get_runnable_menu_action(data_source_id=data_source_id, document_id=document.uid, runnable=action)
-                )
-            node.menu_items.append({"label": "Actions", "menuItems": action_items})
-
-        # Applications can be downloaded
-        if document.type == SIMOS.APPLICATION.value:
-            node.menu_items.append(get_download_menu_action(data_source_id, document.uid))
-
-        storage_recipe: StorageRecipe = get_storage_recipe(node.blueprint)
-        recipe: Recipe = get_recipe(blueprint=node.blueprint, plugin_name="INDEX")
-
-        # If the node is a DMT-Package, add "Create New" from AppSettings, and newPackage
-        if is_package:
-            create_new_menu_items = []
-            create_new_menu_items.append(
-                get_dynamic_create_menu_item(data_source_id, "Package", DMT.PACKAGE.value, document.uid)
-            )
-            for model in app_settings["models"]:
-                model_blueprint = get_blueprint(model)
-                create_new_menu_items.append(
-                    get_dynamic_create_menu_item(data_source_id, model_blueprint.name, model, document.uid)
-                )
-            attribute_node = node
-            node.menu_items.append({"label": "New", "menuItems": create_new_menu_items})
-
-        # Use the blueprint to find attributes that contains references
-        for attribute in get_attributes_with_reference(node.blueprint):
-            attribute_name = attribute["name"]
-            is_contained_in_storage = storage_recipe.is_contained(attribute["name"], attribute["type"])
-
-            is_contained_in_ui = recipe.is_contained(attribute)
-            if not is_contained_in_ui:
-                continue
-
-            # If the attribute is an array
-            # TODO: Handle fixed size arrays
-            if attribute["dimensions"] == "*":
-                attribute_blueprint = get_blueprint(attribute["type"])
-
-                data = {}
-                for item in get_attribute_names(attribute_blueprint):
-                    data[item] = ("${" + item + "}",)
-
-                not_contained_menu_action = get_not_contained_menu_action(
-                    data_source_id=data_source_id,
-                    name=attribute_name,
-                    type=attribute["type"],
-                    # TODO: Should this be parent_node.id?
-                    parent_id=document.uid,
-                    data=data,
-                )
-
-                contained_menu_action = get_contained_menu_action(
-                    data_source_id=data_source_id,
-                    name=attribute_name,
-                    node_id=f"{document.uid}_{attribute_name}",
-                    type=attribute["type"],
-                    parent_id=document.uid,
-                    data=data,
-                )
-
-                # Create a placeholder node that can contain real documents
-                if not is_package:
-                    attribute_node = DocumentNode(
-                        data_source_id=data_source_id,
-                        name=attribute_name,
-                        document=document,
-                        blueprint=node.blueprint,
-                        parent=node,
-                        menu_items=[contained_menu_action if is_contained_in_storage else not_contained_menu_action],
-                        is_contained=True,
-                    )
-
-                # Check if values for the attribute exists in current document,
-                # this means that we have added some documents to this array.
-                values = document.get_values(attribute_name)
-
-                # TODO: Fix this in DTO class. "get_values" returns "builtin_method_or_function"
-                if isinstance(values, list) and values != []:
-                    # Values are stored in separate document
-                    if not is_contained_in_storage:
-                        # Get real documents
-                        attribute_nodes.append({"documents": self.get_references(values), "node": attribute_node})
-                    # Values are stored inside parent. We create placeholder nodes.
-                    if is_contained_in_storage:
-                        self.generate_contained_nodes(
-                            data_source_id, document.uid, [attribute_name], attribute["type"], values, attribute_node,
-                        )
-            else:
-                values = document.get_values(attribute_name)
-                if values:
-                    # Values are stored in separate document
-                    if not is_contained_in_storage:
-                        attribute_nodes.append({"documents": self.get_references(values), "node": node})
-                else:
-                    node.menu_items.append(
-                        get_dynamic_create_menu_item(
-                            data_source_id=data_source_id,
-                            name=attribute_name,
-                            type=attribute["type"],
-                            attribute=attribute_name,
-                            parent_id=document.uid,
-                        )
-                    )
-                # TODO: After last menu_item is appended, sort the list.
-
-                if is_contained_in_storage:
-                    self.generate_contained_node(
-                        document.uid,
-                        [attribute_name],
-                        attribute,
-                        None,
-                        data_source_id,
-                        attribute["type"],
-                        node,
-                        False,
-                    )
-
-        for attribute_node in attribute_nodes:
-            for attribute_document in attribute_node["documents"]:
-                try:
-                    self.process_document(
-                        data_source_id=data_source_id,
-                        document=attribute_document,
-                        parent_node=attribute_node["node"],
-                        app_settings=app_settings,
-                    )
-                except Exception as error:
-                    logger.exception(error)
-                    get_error_node(document=attribute_document, parent_node=parent_node, data_source_id=data_source_id)
-                    logger.warning(f"Caught error while processing document {node.name}: {error}")
-
-    def execute(self, data_source_id: str, data_source_name: str, packages, application_page: str) -> Index:
-
-        index = Index(data_source_id=data_source_id)
-
-        # Set what Models the user can create on the data_source node and Package nodes
-        # TODO: More generic page1, page2, ...
-        app_settings = (
-            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
-        )
-
-        # The root-node (data_source) can always create a package
-        root_node = DocumentNode(
-            data_source_id=data_source_id,
-            name=data_source_name,
-            menu_items=[{"label": "New", "menuItems": [get_create_root_package_menu_item(data_source_id)]}],
-        )
-
-        for package in packages:
-            try:
-                entity = Entity(package.data)
-                entity.uid = package.uid
-                self.process_document(data_source_id, entity, root_node, app_settings)
-            except Exception as error:
-                logger.exception(error)
-                get_error_node(entity, root_node, data_source_id)
-                logger.warning(f"Caught error while processing document {entity.name}: {error}")
-
-        for node in PreOrderIter(root_node):
-            index.add(node.to_node())
-
-        return index
+        except Exception as error:
+            logger.exception(error)
+            logger.warning(f"Caught error while processing document: {error}")
+    return index
 
 
 class GenerateIndexUseCase:
-    def __init__(
-        self, document_repository: DocumentRepository,
-    ):
-        self.document_repository = document_repository
+    def __init__(self, repository_provider=get_repository):
+        self.repository_provider = repository_provider
 
-        self.tree = Tree(document_repository)
-
-    def execute(self, data_source_id: str, data_source_name: str, document_type: str) -> Index:
-        return self.tree.execute(
-            data_source_id=data_source_id,
-            data_source_name=data_source_name,
-            application_page=document_type,
-            packages=self.document_repository.find({"type": "system/DMT/Package", "isRoot": True}, single=False),
+    def execute(self, data_source_id: str, application_page: str) -> dict:
+        app_settings = (
+            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
+        document_service = DocumentService(repository_provider=self.repository_provider)
+        # make sure we're generating the index with correct blueprints.
+        document_service.invalidate_cache()
+        root_packages = document_service.get_root_packages(data_source_id=data_source_id)
+        root = Node(
+            key="root",
+            uid=data_source_id,
+            entity={"type": "datasource", "name": data_source_id},
+            blueprint_provider=document_service.blueprint_provider,
+            attribute=BlueprintAttribute("root", "datasource"),
+        )
+        for root_package in root_packages:
+            try:
+                root.add_child(
+                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid)
+                )
+            except EntityNotFoundException as error:
+                logger.exception(error, "unhandled exception.")
+                error_node: Node = Node(
+                    key=root_package.uid,
+                    uid=root_package.uid,
+                    entity={"name": root_package.name, "type": ""},
+                    blueprint_provider=document_service.blueprint_provider,
+                    attribute=BlueprintAttribute("root", "datasource"),
+                )
+                error_node.set_error(f"failed to add root package {root_package.name} to the root node")
+                root.add_child(error_node)
+            except Exception as error:
+                logger.exception(error, "unhandled exception.")
 
-    def single(
-        self, data_source_id: str, data_source_name: str, document_id: str, document_type: str, attribute: str = None
-    ) -> Dict:
-        document = self.document_repository.get(document_id)
-        uid = document.uid
-        # The tree can't handle dto, need to use one of the below
-        document = self.document_repository.get(document.uid)
+        return extend_index_with_node_tree(root, data_source_id, app_settings)
 
-        if not hasattr(document, "uid"):
-            document.uid = uid
+    def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
+        app_settings = (
+            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
+        )
+        document_service = DocumentService(repository_provider=self.repository_provider)
+        # make sure we're generating the index with correct blueprints.
+        document_service.invalidate_cache()
+        parent_uid = parent_id.split(".", 1)[0]
+        if data_source_id == parent_uid:
+            document_uid = document_id
+        else:
+            document_uid = parent_uid
 
-        data = self.tree.execute(
-            data_source_id=data_source_id,
-            data_source_name=data_source_name,
-            packages=[document],
-            application_page=document_type,
-        ).to_dict()
-
-        del data[data_source_id]
-
-        for root_package in self.document_repository.find(
-            filter={"type": "system/DMT/Package", "isRoot": True}, single=False
-        ):
-            parent_id = find_parent(root_package, document_id, self.document_repository)
-            if parent_id:
-                data[document_id]["parentId"] = parent_id
-
-        # Only return node for attribute document
-        if attribute:
-            list_values = [v for v in data.values()]
-            attribute = find_attribute_by_id(attribute, list_values)
-            result = {attribute["id"]: attribute}
-
-            def append_children(children):
-                for child in children:
-                    child_instance = data[child]
-                    result[child] = child_instance
-                    append_children(child_instance["children"])
-
-            append_children(attribute["children"])
-            return result
-
-        return data
+        parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_uid)
+        if not parent and data_source_id != document_id:
+            raise EntityNotFoundException(uid=parent_id)
+        node = parent.search(document_id)
+        if not node:
+            raise EntityNotFoundException(uid=document_id)
+        return extend_index_with_node_tree(node, data_source_id, app_settings)

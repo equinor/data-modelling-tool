@@ -74,25 +74,30 @@ function getImportActionBlueprint() {
     description: 'This describes a import action',
     attributes: [
       {
-        type: 'string',
+        attributeType: 'string',
+        type: 'system/SIMOS/BlueprintAttribute',
         name: 'name',
       },
       {
-        type: 'string',
+        attributeType: 'string',
+        type: 'system/SIMOS/BlueprintAttribute',
         name: 'type',
       },
       {
-        type: 'string',
+        attributeType: 'string',
+        type: 'system/SIMOS/BlueprintAttribute',
         name: 'description',
       },
       {
-        type: 'string',
+        attributeType: 'string',
+        type: 'system/SIMOS/BlueprintAttribute',
         name: 'filepath',
         label: 'Folder',
         description: 'the folder on the local machine.',
       },
       {
-        type: 'boolean',
+        attributeType: 'string',
+        type: 'system/SIMOS/BlueprintAttribute',
         name: 'onlyCurrentFolder',
         default: 'false',
       },

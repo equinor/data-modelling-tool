@@ -3,6 +3,9 @@ import styled from 'styled-components'
 import { BlueprintAttributeType } from '../../domain/types'
 import BlueprintSelectorWidget from './BlueprintSelectorWidget'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
+import { BlueprintEnum } from '../../util/variables'
+import DestinationSelectorWidget from './DestinationSelectorWidget'
+import { DataSourceType } from '../../api/Api'
 
 export const AttributeWrapper = styled.div`
   margin: 2px 2px;
@@ -118,8 +121,9 @@ export const TypeWidget = (props: TypeProps) => {
   const attr = new BlueprintAttribute(attributeType)
   const typeValue = attr.isPrimitiveType(value) ? value : DataType.BLUEPRINT
   const [selectedType, setSelectedType] = useState(
-    typeValue || attributeType.default
+    value ? typeValue : DataType.STRING
   )
+
   let blueprintValue
   if (typeValue === DataType.BLUEPRINT && value !== DataType.BLUEPRINT) {
     blueprintValue = value
@@ -129,7 +133,7 @@ export const TypeWidget = (props: TypeProps) => {
   return (
     <>
       <TypeDropdown
-        value={selectedType}
+        value={selectedType ? selectedType : DataType.BLUEPRINT}
         onChange={(event: any) => {
           setSelectedType(event.target.value)
           onChange(attributeType, event.target.value)
@@ -144,6 +148,23 @@ export const TypeWidget = (props: TypeProps) => {
           uiSchema={{}}
         />
       )}
+    </>
+  )
+}
+
+export const EnumTypePickerWidget = (props: TypeProps) => {
+  const { onChange, attributeType, value = '' } = props
+  return (
+    <>
+      <DestinationSelectorWidget
+        datasourceType={DataSourceType.Blueprints}
+        blueprintFilter={BlueprintEnum.ENUM}
+        title=""
+        onChange={(value: any) => {
+          onChange(attributeType, value)
+        }}
+        formData={value}
+      />
     </>
   )
 }
