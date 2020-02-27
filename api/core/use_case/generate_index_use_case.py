@@ -85,9 +85,7 @@ def is_visible(node):
         return True
 
     ui_recipe = node.parent.blueprint.get_ui_recipe(name="INDEX")
-    return ui_recipe.is_contained(
-        node.parent.key if node.parent.is_array() else node.key, node.type, node.is_array(), RecipePlugin.INDEX,
-    )
+    return ui_recipe.is_contained(node.attribute, RecipePlugin.INDEX)
 
 
 def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str, app_settings: dict):

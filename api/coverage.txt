@@ -10,13 +10,13 @@ utils/helper_functions.py                                     15      9    40.0%
 tests/core/domain/test_package.py                             24     14    41.7%   8-12, 17-19, 24-26, 31-34
 utils/data_structure/compare.py                               28     16    42.9%   9-10, 18-23, 25-32
 core/repository/mongo/__init__.py                             30     17    43.3%   13-22, 25-26, 29-33, 36-41, 44, 47, 50
+classes/recipe.py                                             40     19    52.5%   21, 30-49, 52, 60-61
 tests/classes/test_tree_error_node.py                         15      7    53.3%   29-45
-classes/recipe.py                                             39     18    53.8%   21, 38-57, 60, 68
 utils/data_structure/find.py                                  37     16    56.8%   23-24, 28-30, 34-45
 core/repository/repository_exceptions.py                      15      6    60.0%   3-4, 7, 12, 17, 22
 core/shared/use_case.py                                       13      5    61.5%   8, 11-13, 16
 core/repository/repository_factory.py                          8      3    62.5%   8-10
-classes/blueprint.py                                          58     20    65.5%   36-40, 53, 64, 67-71, 74, 80, 83-89
+classes/blueprint.py                                          58     20    65.5%   46-50, 63, 74, 77-81, 84, 90, 93-99
 classes/dto.py                                                48     16    66.7%   19, 23-26, 29-33, 40, 44-45, 53, 57-58, 65
 core/use_case/create_application_use_case.py                 108     36    66.7%   172, 175, 185, 193-194, 200-228, 232-236, 248, 270-272
 core/shared/response_object.py                                37     12    67.6%   20-21, 24-26, 30, 33, 37, 41, 45, 49-52
@@ -29,7 +29,7 @@ core/shared/request_object.py                                 17      3    82.4%
 core/service/document_service.py                             149     23    84.6%   17, 28, 50, 54-57, 71-72, 104, 107, 127-132, 139, 148, 153, 168, 193, 205, 211, 225, 231
 classes/dimension.py                                          38      5    86.8%   16, 20, 38, 53, 58
 services/database.py                                           8      1    87.5%   10
-core/use_case/utils/create_entity.py                          67      8    88.1%   12-13, 16, 21, 46-48, 56
+core/use_case/utils/create_entity.py                          76      8    89.5%   12-13, 16, 21, 46-48, 56
 classes/storage_recipe.py                                     30      3    90.0%   16, 32, 43
 core/enums.py                                                 43      4    90.7%   30-31, 41-42
 classes/blueprint_attribute.py                                33      3    90.9%   36, 47, 61
@@ -40,6 +40,6 @@ tests/core/document_service/test_get.py                       32      1    96.9%
 tests/core/document_service/test_rename.py                    83      2    97.6%   31, 70
 tests/classes/test_tree_node.py                              182      1    99.5%   119
 ------------------------------------------------------------------------------------------
-TOTAL                                                       2397    500    79.1%
+TOTAL                                                       2407    501    79.2%
 
 28 files skipped due to complete coverage.
