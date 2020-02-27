@@ -79,7 +79,7 @@ def is_visible(node):
         return True
     elif node.is_complex_array():
         return False
-    elif node.is_empty():
+    elif node.is_empty() and not node.is_array():
         return False
     if node.parent.blueprint is None:
         return True
