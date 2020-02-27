@@ -15,7 +15,7 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Blueprint, ui_rec
         attribute_name = attribute.name
         is_array = attribute.dimensions == "*"
 
-        is_contained = ui_recipe.is_contained(attribute.name, attribute.attribute_type, attribute.is_array())
+        is_contained = ui_recipe.is_contained(attribute)
 
         if not is_contained:
             continue

@@ -2,7 +2,7 @@ from typing import Dict, List
 
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
-from classes.recipe import DefaultRecipe, Recipe
+from classes.recipe import DefaultRecipe, Recipe, RecipeAttribute
 from classes.storage_recipe import DefaultStorageRecipe, StorageRecipe
 from core.enums import PRIMITIVES
 
@@ -15,7 +15,17 @@ def get_storage_recipes(recipes: List[Dict], attributes: List[BlueprintAttribute
 
 
 def get_ui_recipe(recipes: List[Dict]):
-    return [Recipe(name=recipe["name"], attributes=recipe["attributes"]) for recipe in recipes]
+    # TODO: Add a from_dict() on Recipe class. This should not be duplicated.
+    return [
+        Recipe(
+            name=recipe["name"],
+            attributes=[
+                RecipeAttribute(name=attr["name"], is_contained=attr.get("contained", True), field=attr.get("field"))
+                for attr in recipe["attributes"]
+            ],
+        )
+        for recipe in recipes
+    ]
 
 
 class Blueprint:
@@ -68,7 +78,7 @@ class Blueprint:
         if found:
             return found
         else:
-            return DefaultRecipe(attributes=[attribute.to_dict() for attribute in self.attributes])
+            return DefaultRecipe(attributes=[attribute for attribute in self.attributes])
 
     def get_attribute_type_by_key(self, key):
         return next((attr.attribute_type for attr in self.attributes if attr.name == key), None)
