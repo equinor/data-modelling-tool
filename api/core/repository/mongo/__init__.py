@@ -34,7 +34,8 @@ class MongoDBClient(DBClientInterface):
 
     def update(self, uid: str, document: Dict) -> bool:
         try:
-            return self.handler[self.collection].update_one({"_id": uid}, {"$set": document}, upsert=True).acknowledged
+            # Update replaces the entire document in the database with the posted document
+            return self.handler[self.collection].replace_one({"_id": uid}, document, upsert=True).acknowledged
         except Exception as error:
             print("ERROR", error)
             return False

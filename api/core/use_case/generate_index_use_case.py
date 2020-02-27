@@ -64,13 +64,12 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
         "type": node.type,
         "meta": {
             "menuItems": menu_items,
-            "onSelect": get_node_on_select(data_source_id, node)
-            if node.is_single() and node.type != DMT.PACKAGE.value and node.type != "datasource"
-            else {},
+            "onSelect": get_node_on_select(data_source_id, node),
             "error": False,
             "isRootPackage": node.type == DMT.PACKAGE.value and node.entity.get("isRoot"),
             "isList": node.is_array(),
             "dataSource": data_source_id,
+            "empty": node.is_empty(),
         },
     }
 
@@ -78,11 +77,10 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
 def is_visible(node):
     if node.is_root():
         return True
-    elif not node.entity and not node.is_array():
-        return False
     elif node.is_complex_array():
         return False
-
+    elif node.is_empty():
+        return False
     if node.parent.blueprint is None:
         return True
 

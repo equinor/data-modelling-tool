@@ -1,13 +1,10 @@
 import unittest
 from unittest import mock
 
-from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
-from classes.tree_node import Node
 from core.repository import Repository
-from core.service.document_service import DocumentService, get_complete_document
+from core.service.document_service import DocumentService
 from tests.core.document_service.common import blueprint_provider
-from tests.util_tests import flatten_dict
 from utils.data_structure.compare import pretty_eq
 
 
@@ -136,3 +133,45 @@ class DocumentServiceTestCase(unittest.TestCase):
         document_service.remove_document(data_source_id="testing", document_id="2", parent_id="1")
         document_repository.update.assert_called_once()
         document_repository.delete.assert_called_with("2")
+
+    def test_remove_optional(self):
+        repository: Repository = mock.Mock()
+
+        doc_storage = {
+            "1": {
+                "_id": "1",
+                "name": "Parent",
+                "description": "",
+                "type": "blueprint_with_optional_attr",
+                "im_optional": {"name": "old_entity", "type": "blueprint_2", "description": "This is my old entity"},
+            }
+        }
+
+        doc_1_after = {
+            "_id": "1",
+            "name": "Parent",
+            "description": "",
+            "type": "blueprint_with_optional_attr",
+            "im_optional": {},
+        }
+
+        def mock_get(document_id: str):
+            return DTO(doc_storage[document_id])
+
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+            return None
+
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return repository
+
+        repository.get = mock_get
+        repository.update = mock_update
+        document_service = DocumentService(
+            blueprint_provider=blueprint_provider, repository_provider=repository_provider
+        )
+
+        document_service.remove_document("testing", "1.im_optional", "1")
+
+        assert pretty_eq(doc_1_after, doc_storage["1"]) is None
