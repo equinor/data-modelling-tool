@@ -20,18 +20,6 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     create_new_menu_items = []
     is_package = node.type == DMT.PACKAGE.value
 
-    # Add create entry for optional attributes
-    for empty_child in [child for child in node.children if child.is_empty()]:
-        create_new_menu_items.append(
-            get_dynamic_create_menu_item(
-                data_source_id=data_source_id,
-                name=empty_child.name,
-                type=empty_child.type,
-                node_id=empty_child.node_id,
-                label=f"Create {empty_child.name}",
-            )
-        )
-
     # Datasource Node can only add root-packages
     if node.type == "datasource":
         menu_items.append(get_create_root_package_menu_item(data_source_id))
