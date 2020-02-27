@@ -44,7 +44,14 @@
             "description": "Simulation configuration.",
             "contained": true,
             "optional": false
-        }             
+        },
+        {
+            "name": "serverConfig",
+            "type": "SSR-DataSource/mooringSRS/config/SimaAppService",
+            "description": "Simulation configuration.",
+            "contained": true,
+            "optional": false
+        }           
     ],
     "storageRecipes": [],
     "uiRecipes": [ {
