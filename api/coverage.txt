@@ -29,7 +29,7 @@ core/shared/request_object.py                                 17      3    82.4%
 core/service/document_service.py                             149     23    84.6%   17, 28, 50, 54-57, 71-72, 104, 107, 127-132, 139, 148, 153, 168, 193, 205, 211, 225, 231
 classes/dimension.py                                          38      5    86.8%   16, 20, 38, 53, 58
 services/database.py                                           8      1    87.5%   10
-core/use_case/utils/create_entity.py                          76      8    89.5%   12-13, 16, 21, 46-48, 56
+core/use_case/utils/create_entity.py                          67      8    88.1%   12-13, 16, 21, 46-48, 56
 classes/storage_recipe.py                                     30      3    90.0%   16, 32, 43
 core/enums.py                                                 43      4    90.7%   30-31, 41-42
 classes/blueprint_attribute.py                                33      3    90.9%   36, 47, 61
@@ -40,6 +40,6 @@ tests/core/document_service/test_get.py                       32      1    96.9%
 tests/core/document_service/test_rename.py                    83      2    97.6%   31, 70
 tests/classes/test_tree_node.py                              182      1    99.5%   119
 ------------------------------------------------------------------------------------------
-TOTAL                                                       2406    500    79.2%
+TOTAL                                                       2397    500    79.1%
 
 28 files skipped due to complete coverage.

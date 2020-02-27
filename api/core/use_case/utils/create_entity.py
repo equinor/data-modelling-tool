@@ -30,8 +30,8 @@ class CreateEntity:
         self.attribute_types = self.blueprint_provider.get_blueprint(SIMOS.ATTRIBUTE_TYPES.value).to_dict()
         self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint(SIMOS.BLUEPRINT_ATTRIBUTE.value)
         blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
-        entity = {"name": name, "description": description}
-        self._entity = self._get_entity(blueprint=blueprint, parent_type=type, entity=entity)
+        entity = {"name": name, "description": description, "type": type}
+        self._entity = self._get_entity(blueprint=blueprint, entity=entity)
 
     @staticmethod
     def parse_value(attr: BlueprintAttribute, blueprint_provider):
@@ -65,31 +65,17 @@ class CreateEntity:
             return int(default_value)
         return default_value
 
-    @staticmethod
-    def default_value(attr: BlueprintAttribute, parent_type: str, blueprint_provider):
-        if attr.name == "type":
-            return parent_type
-        return CreateEntity.parse_value(attr=attr, blueprint_provider=blueprint_provider)
-
     @property
     def entity(self):
         return self._entity
 
     # add all non optional attributes with default value.
     # type is inserted based on the parent attributes type, or the initial type for root entity.
-    def _get_entity(self, blueprint: Blueprint, parent_type: str, entity):
+    def _get_entity(self, blueprint: Blueprint, entity):
         for attr in blueprint.attributes:
             if attr.attribute_type in PRIMITIVES:
-                if not attr.is_optional():
-                    default_value = CreateEntity.default_value(
-                        attr=attr, parent_type=parent_type, blueprint_provider=self.blueprint_provider
-                    )
-
-                    if attr.name == "name" and len(default_value) == 0:
-                        default_value = parent_type.split("/")[-1].lower()
-
-                    if attr.name not in entity:
-                        entity[attr.name] = default_value
+                if not attr.is_optional() and attr.name not in entity:
+                    entity[attr.name] = CreateEntity.parse_value(attr=attr, blueprint_provider=self.blueprint_provider)
             else:
                 blueprint = self.blueprint_provider.get_blueprint(attr.attribute_type)
                 if attr.is_array():
@@ -98,6 +84,6 @@ class CreateEntity:
                     entity[attr.name] = {}
                 else:
                     entity[attr.name] = self._get_entity(
-                        blueprint=blueprint, parent_type=attr.attribute_type, entity={}
+                        blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type},
                     )
         return entity
