@@ -1,0 +1,54 @@
+{
+    "name": "scenario",
+    "description": "",
+    "type": "SSR-DataSource/mooringSRS/Scenario",
+    "env": {
+        "name": "environment",
+        "description": "",
+        "type": "SSR-DataSource/mooringSRS/env/Environment",
+        "wave": {
+            "name": "wave",
+            "description": "",
+            "type": "SSR-DataSource/mooringSRS/env/Wave",
+            "significantWaveHeight": 14.68655766,
+            "peakPeriod": 17.24327883,
+            "waveDirection": 330.0
+        },
+        "wind": {
+            "name": "wind",
+            "description": "",
+            "type": "SSR-DataSource/mooringSRS/env/Wind",
+            "windDirection": 330.0,
+            "windVelocity": 31.73
+        },
+        "current": {
+            "name": "current",
+            "description": "",
+            "type": "SSR-DataSource/mooringSRS/env/Current",
+            "currentDepths": "0.0,-50,-150,-297,-300",
+            "currentDirection": 330.0,
+            "currentVelocities": "0.826, 0.504, 0.344, 0.244, 0.0"
+        }
+    },
+    "mooring": {
+        "name": "wave",
+        "description": "",
+        "type": "SSR-DataSource/mooringSRS/positioning/Mooring",
+        "lineNumber": 9.0,
+        "brokenLines": "None"
+    },
+    "simulation": {
+        "name": "simulation",
+        "simulationLength": 1000,
+        "numberOfSeeds": 20,
+        "description": "",
+        "type": "SSR-DataSource/mooringSRS/config/Simulation"
+    },
+    "serverConfig": {
+        "name": "serverConfig",
+        "address":"http://abel.sintef.no",
+        "port": 8085,
+        "description": "",
+        "type": "SSR-DataSource/mooringSRS/config/SimaAppService"
+    }    
+}
