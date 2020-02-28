@@ -45,8 +45,8 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
                 attributes = []
                 default_create_ui_recipe = Recipe(name=ui_recipe_name, attributes=attributes)
                 for attribute in [attr for attr in blueprint.attributes if attr.name not in is_contained]:
-                    default_create_ui_recipe.ui_attributes[attribute.name] = RecipeAttribute(
-                        name=attribute.name, is_contained=False
+                    default_create_ui_recipe.ui_attributes.append(
+                        RecipeAttribute(name=attribute.name, is_contained=False)
                     )
                 blueprint.ui_recipes.append(default_create_ui_recipe)
 
