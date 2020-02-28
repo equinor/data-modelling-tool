@@ -117,9 +117,19 @@
       "plugin": "INDEX",
       "attributes": [
         {
+          "name": "attributes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
           "name": "uiRecipes",
           "type": "system/SIMOS/UiAttribute",
           "contained": true
+        },
+        {
+          "name": "type",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
         },
         {
           "name": "storageRecipes",

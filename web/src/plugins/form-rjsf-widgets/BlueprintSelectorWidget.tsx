@@ -64,11 +64,10 @@ export default (props: Props) => {
           <DocumentTree
             render={(renderProps: TreeNodeRenderProps) => {
               const { nodeData } = renderProps
-              const type = nodeData.meta.type
 
               return (
                 <>
-                  {type === blueprintFilter ? (
+                  {nodeData.meta.type === blueprintFilter ? (
                     <div
                       onClick={() => {
                         onSelect(`${renderProps.path}/${nodeData.title}`)

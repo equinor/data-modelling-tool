@@ -15,7 +15,7 @@ export class GenerateUiRecipeTabs {
 
   private uiRecipeTabs: UiRecipe[] = []
 
-  constructor(uiRecipes: UiRecipe[], defaultTabs: UiRecipe[] | undefined) {
+  constructor(uiRecipes: UiRecipe[] | undefined, defaultTabs: UiRecipe[] | undefined) {
     this.uiRecipeTabs = defaultTabs ? defaultTabs : getDefaultTabs([])
 
     if (uiRecipes) {
@@ -55,7 +55,7 @@ function createUiRecipe(name: string, plugin: string): UiRecipe {
   return { name, plugin, attributes: [], type: 'system/SIMOS/UiRecipe' }
 }
 
-export function getDefaultTabs(uiRecipes: UiRecipe[]): UiRecipe[] {
+export function getDefaultTabs(uiRecipes: UiRecipe[] | undefined): UiRecipe[] {
   const defaultTabs: UiRecipe[] = []
   addDefaultTab(defaultTabs, uiRecipes, RegisteredPlugins.PREVIEW, 'Raw')
   addDefaultTab(defaultTabs, uiRecipes, RegisteredPlugins.EDIT_PLUGIN, 'Edit')
@@ -64,11 +64,11 @@ export function getDefaultTabs(uiRecipes: UiRecipe[]): UiRecipe[] {
 
 function addDefaultTab(
   defaultTabs: UiRecipe[],
-  recipes: UiRecipe[],
+  recipes: UiRecipe[] | undefined,
   plugin: RegisteredPlugins,
   name: string
 ): void {
-  const recipe: UiRecipe | undefined = recipes.find(
+  const recipe: UiRecipe | undefined = recipes && recipes.find(
     recipe => recipe.name === name
   )
   if (recipe) {

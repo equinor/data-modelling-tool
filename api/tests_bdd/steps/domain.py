@@ -1,11 +1,12 @@
 from behave import given
+
+from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import DMT, SIMOS
 from core.service.document_service import DocumentService
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from classes.tree_node import Node, ListNode
 from core.repository.repository_factory import get_repository
-from classes.dto import DTO
 
 blueprint_provider = BlueprintProvider()
 
@@ -23,14 +24,20 @@ def generate_tree_from_rows(node: Node, rows):
                 "type": DMT.PACKAGE.value,
                 "attributeType": SIMOS.BLUEPRINT_ATTRIBUTE.value,
             }
-            content_node = ListNode(key="content", dto=DTO(uid="", data=data), blueprint_provider=blueprint_provider)
+            content_node = ListNode(
+                key="content",
+                uid="",
+                entity=data,
+                blueprint_provider=blueprint_provider,
+                attribute=BlueprintAttribute("content", DMT.ENTITY.value),
+            )
             node.add_child(content_node)
     else:
         content_node = node
 
     for row in rows:
         # Add children (only to packages)
-        if row["parent_uid"] == node.dto.uid:
+        if row["parent_uid"] == node.uid:
             child_data = row.as_dict()
             entity = CreateEntity(
                 blueprint_provider=blueprint_provider,
@@ -39,7 +46,11 @@ def generate_tree_from_rows(node: Node, rows):
                 name=child_data["name"],
             ).entity
             child_node = Node(
-                key="", dto=DTO(uid=child_data["uid"], data=entity), blueprint_provider=blueprint_provider
+                key="",
+                uid=child_data["uid"],
+                entity=entity,
+                blueprint_provider=blueprint_provider,
+                attribute=BlueprintAttribute(child_data["name"], child_data["type"]),
             )
 
             print(f"adding {child_node.node_id} to {node.node_id}")
@@ -54,14 +65,19 @@ def generate_tree_from_rows(node: Node, rows):
 
 def generate_tree(data_source_id: str, table):
     root_data = {"name": data_source_id, "description": "", "type": ""}
-    root = Node(key=data_source_id, dto=DTO(uid=None, data=root_data), blueprint_provider=blueprint_provider)
+    root = Node(key=data_source_id, attribute=BlueprintAttribute(data_source_id, ""), uid=data_source_id)
     root_package = list(filter(lambda row: row["parent_uid"] == "", table.rows))[0]
     if not root_package:
         raise Exception("Root package is not found, you need to specify root package")
     root_package_data = root_package.as_dict()
     root_package_data["isRoot"] = True
     root_package_node = Node(
-        key="root", dto=DTO(data=root_package_data), blueprint_provider=blueprint_provider, parent=root
+        key="root",
+        uid=root_package["uid"],
+        entity=root_package_data,
+        blueprint_provider=blueprint_provider,
+        parent=root,
+        attribute=BlueprintAttribute("root", DMT.PACKAGE.value),
     )
     rows = list(filter(lambda row: row["parent_uid"] != "", table.rows))
     generate_tree_from_rows(root_package_node, rows)

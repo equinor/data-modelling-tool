@@ -67,13 +67,17 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
           attrName
         )
         const newPath = this.createAttributePath(path, attrName)
-        if (
-          this.isPrimitive(attrType.attributeType) ||
-          (uiAttribute && uiAttribute.field)
-        ) {
-          this.appendPrimitive(newPath, blueprint, attr, uiAttribute)
+        if (attr.isComplexArray()) {
+          objectPath.set(this.schema, newPath, { 'ui:field': 'matrix' })
         } else {
-          this.processNested(newPath, blueprint, attr)
+          if (
+            this.isPrimitive(attrType.attributeType) ||
+            (uiAttribute && uiAttribute.field)
+          ) {
+            this.appendPrimitive(newPath, blueprint, attr, uiAttribute)
+          } else {
+            this.processNested(newPath, blueprint, attr)
+          }
         }
       })
   }

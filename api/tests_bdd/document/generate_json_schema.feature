@@ -32,7 +32,6 @@ Feature: Document - Generate JSON Schema
     "schema": {
       "properties": {
         "description": {
-          "default": "Create an application by exporting Blueprints and Entities, and configuring context menus.",
           "type": "string"
         },
         "name": {

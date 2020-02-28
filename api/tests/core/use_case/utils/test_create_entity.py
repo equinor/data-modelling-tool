@@ -21,9 +21,10 @@ class CreateEntityTestCase(unittest.TestCase):
         expected_entity = {
             "engine2": {},
             "engine": {
+                "name": "engine",
                 "description": "",
                 "fuelPump": {
-                    "name": "fuelpumptest",
+                    "name": "fuelPump",
                     "description": "A standard fuel pump",
                     "type": "ds/test_data/complex/FuelPumpTest",
                 },
@@ -35,7 +36,7 @@ class CreateEntityTestCase(unittest.TestCase):
             "name": "Mercedes",
             "seats": 2,
             "type": "ds/test_data/complex/CarTest",
-            "wheel": {"name": "Wheel", "power": 0.0, "type": "ds/test_data/complex/WheelTest"},
+            "wheel": {"name": "wheel", "power": 0.0, "type": "ds/test_data/complex/WheelTest"},
             "wheels": [],
             "floatValues": [2.1, 3.1, 4.2],
             "intValues": [1, 5, 4, 2],

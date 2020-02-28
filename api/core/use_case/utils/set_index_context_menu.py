@@ -1,10 +1,8 @@
-from typing import Union
-
-from config import Config
-
 from classes.tree_node import Node
 from core.enums import DMT, SIMOS
 from core.use_case.utils.generate_index_menu_actions import (
+    get_create_reference_menu_item,
+    get_create_root_package_menu_item,
     get_delete_menu_item,
     get_download_menu_action,
     get_dynamic_create_menu_item,
@@ -12,17 +10,12 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_import_menu_item,
     get_rename_menu_action,
     get_runnable_menu_action,
-    get_create_root_package_menu_item,
 )
-from core.utility import BlueprintProvider
+from core.use_case.utils.sort_menu_items import sort_menu_items
 from utils.group_by import group_by
 
-from core.use_case.utils.sort_menu_items import sort_menu_items
 
-
-def create_context_menu(
-    node: Union[Node], data_source_id: str, app_settings: dict, blueprint_provider: BlueprintProvider
-):
+def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     menu_items = []
     create_new_menu_items = []
     is_package = node.type == DMT.PACKAGE.value
@@ -42,13 +35,23 @@ def create_context_menu(
             )
             # Context menu: New from app_settings
             for model in app_settings["models"]:
-                model_blueprint = blueprint_provider.get_blueprint(model)
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(
-                        data_source_id=data_source_id, name=model_blueprint.name, type=model, node_id=node_id
+                        data_source_id=data_source_id, name=model.split("/")[-1], type=model, node_id=node_id
                     )
                 )
         else:
+            # Add create entry for optional attributes (not for packages)
+            for empty_child in [child for child in node.children if child.is_empty() and not child.is_array()]:
+                create_new_menu_items.append(
+                    get_dynamic_create_menu_item(
+                        data_source_id=data_source_id,
+                        name=empty_child.name,
+                        type=empty_child.type,
+                        node_id=empty_child.node_id,
+                        label=f"Create {empty_child.name}",
+                    )
+                )
             if node.is_array():
                 # List nodes can always append entities of it's own type
                 create_new_menu_items.append(
@@ -56,6 +59,13 @@ def create_context_menu(
                         data_source_id=data_source_id, name=f"Create {node.name}", type=node.type, node_id=node.node_id
                     )
                 )
+                # If the attribute is not storageContained, offer choice to insert a reference to existing entity
+                if not node.attribute_is_contained():
+                    create_new_menu_items.append(
+                        get_create_reference_menu_item(
+                            data_source_id=data_source_id, type=node.type, node_id=node.node_id
+                        )
+                    )
 
         menu_items.append(
             get_rename_menu_action(
@@ -69,8 +79,7 @@ def create_context_menu(
 
         # type can be datasource, entities etc
         if node.parent is not None and node.parent.type != "datasource":
-            parent_blueprint = blueprint_provider.get_blueprint(node.parent.type)
-            is_removable = parent_blueprint.is_attr_removable(node.key)
+            is_removable = node.is_array() or node.attribute.is_optional()
 
         if is_removable:
             menu_items.append(
@@ -100,7 +109,7 @@ def create_context_menu(
         if node.type == SIMOS.APPLICATION.value:
             menu_items.append(get_download_menu_action(data_source_id, node.node_id))
 
-        is_root_package = node.is_single() and node.dto.get("isRoot")
+        is_root_package = node.is_single() and node.is_root()
 
         # If it's a root package we need some more
         if is_root_package:

@@ -1,55 +1,101 @@
-from typing import List
+from enum import Enum
+from typing import List, Dict
 
-from utils.data_structure.find import get
-
-from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import PRIMITIVES
 
-INDEX_PRIMITIVE_CONTAINED = False
-INDEX_ARRAY_CONTAINED = True
-INDEX_TYPE_CONTAINED = True
+from classes.blueprint_attribute import BlueprintAttribute
+
+
+class RecipePlugin(Enum):
+    INDEX = "INDEX"
+    DEFAULT = "DEFAULT"
 
 
 class RecipeAttribute:
-    def __init__(self, name: str, is_contained: bool = None):
+    def __init__(
+        self,
+        name: str,
+        is_contained: bool,
+        field: str = None,
+        collapsible: bool = None,
+        ui_recipe: str = None,
+        mapping: str = None,
+    ):
         self.name = name
         self.is_contained = is_contained
+        self.field = field
+        self.collapsible = collapsible
+        self.ui_recipe = ui_recipe
+        self.mapping = mapping
+
+    def to_dict(self) -> Dict:
+        result = {
+            "name": self.name,
+            "contained": self.is_contained,
+        }
+        if self.field:
+            result["field"] = (self.field,)
+        if self.collapsible:
+            result["collapsible"] = self.collapsible
+        if self.ui_recipe:
+            result["uiRecipe"] = self.ui_recipe
+        if self.mapping:
+            result["mapping"] = self.mapping
+
+        return result
 
 
 class Recipe:
-    def __init__(self, name: str, plugin_name: str, attributes: List = None):
+    def __init__(
+        self,
+        name: str,
+        attributes: List[RecipeAttribute] = None,
+        description: str = "",
+        plugin: str = "Default",
+        hide_tab: bool = False,
+    ):
         self.name = name
-        self.plugin = plugin_name
-        self.recipe_attributes = {}
-        if attributes:
-            self._convert_attributes(attributes)
+        self.ui_attributes = attributes
+        self.description = description
+        self.plugin = plugin
+        self.hide_tab = hide_tab
 
-    def _convert_attributes(self, attributes):
-        for attribute in attributes:
-            name = get(attribute, "name")
-            self.recipe_attributes[name] = RecipeAttribute(name=name, is_contained=get(attribute, "contained"))
+    def get_attribute_by_name(self, key):
+        return next((attr for attr in self.ui_attributes if attr.name == key), None)
 
-    def is_contained(self, attribute: BlueprintAttribute):
-        if self.plugin == "INDEX":
-            return self.is_contained_in_index2(attribute)
-
-    def is_contained_in_index2(self, attribute_name: str, attribute_type: str, is_array: bool):
-        if attribute_name in self.recipe_attributes:
-            ui_attribute = self.recipe_attributes[attribute_name]
-            if ui_attribute is not None and ui_attribute.is_contained is not None:
-                return ui_attribute.is_contained
-
-        if attribute_type in PRIMITIVES:
-            return INDEX_PRIMITIVE_CONTAINED
+    def is_contained(self, attribute: BlueprintAttribute, plugin: RecipePlugin = RecipePlugin.DEFAULT):
+        if plugin == RecipePlugin.INDEX:
+            primitive_contained = False
+            array_contained = True
+            single_contained = True
         else:
-            if attribute_name == "attributes":
-                return False
-            elif is_array:
-                return INDEX_ARRAY_CONTAINED
+            primitive_contained = True
+            array_contained = False
+            single_contained = False
+
+        ui_attribute = self.get_attribute_by_name(attribute.name)
+        if ui_attribute:
+            return ui_attribute.is_contained
+
+        if attribute.attribute_type in PRIMITIVES:
+            return primitive_contained
+        else:
+            if attribute.is_array():
+                return array_contained
             else:
-                return INDEX_TYPE_CONTAINED
+                return single_contained
+
+    def to_dict(self) -> Dict:
+        return {
+            "name": self.name,
+            "attributes": [attribute.to_dict() for attribute in self.ui_attributes],
+            "hideTab": self.hide_tab,
+            "plugin": self.plugin,
+            "description": self.description,
+        }
 
 
 class DefaultRecipe(Recipe):
-    def __init__(self, plugin_name: str):
-        super().__init__("Default", plugin_name=plugin_name)
+    def __init__(self, attributes: List[BlueprintAttribute]):
+        recipe_attributes = [RecipeAttribute(name=attr.name, is_contained=True) for attr in attributes]
+        super().__init__("Default", attributes=recipe_attributes)

@@ -7,7 +7,7 @@ from core.enums import PRIMITIVES
 
 
 def find_attribute(name: str, attributes: List):
-    return next((x for x in attributes if get(x, "name") == name), None)
+    return next((x for x in attributes if x.name == name), None)
 
 
 def get_attribute_config(attribute):
@@ -53,7 +53,7 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
                 result["ui:field"] = field
                 if field == "collapsible":
                     result["collapse"] = {"field": "ArrayField"}
-            attribute_ui_recipe = find_attribute(get(ui_attribute, "ui_recipe", default=""), blueprint.ui_recipes)
+            attribute_ui_recipe = blueprint.get_ui_recipe(get(ui_attribute, "ui_recipe", default=""))
             if attribute_ui_recipe:
                 result["items"] = process_ui_recipe(attribute_ui_recipe, blueprint.attributes)
     return result
@@ -63,63 +63,26 @@ def process_ui_recipe(ui_recipe, attributes):
     if field := get(ui_recipe, "field", default=None):
         return {"ui:field": field}
 
-    if plugin := get(ui_recipe, "plugin", default=None):
-        return {"plugin": plugin}
+    # if plugin := get(ui_recipe, "plugin", default=None):
+    # return {"plugin": plugin}
 
     setting = {}
     for attribute in attributes:
+
         name = attribute.name
-        result = process_attributes(name, attribute.attribute_type, attribute.dimensions, ui_recipe.get("attributes"))
+        result = process_attributes(name, attribute.attribute_type, attribute.dimensions, ui_recipe.ui_attributes)
         setting[name] = result
 
     return setting
 
 
-DEFAULT_PREVIEW_UI_RECIPE = {
-    "type": "system/SIMOS/UiRecipe",
-    "name": "PREVIEW",
-    "description": "",
-    "plugin": "PREVIEW",
-    "attributes": [],
-}
-
-DEFAULT_EDIT_UI_RECIPE = {"type": "system/SIMOS/UiRecipe", "name": "EDIT", "description": "", "attributes": []}
-
-DEFAULT_CREATE_UI_RECIPE = {
-    "type": "system/SIMOS/UIRecipe",
-    "name": "DEFAULT_CREATE",
-    "description": "",
-    "attributes": [],
-}
-
-
 def form_to_ui_schema(blueprint, ui_recipe_name=None):
     result = {}
 
-    ui_recipes = blueprint.ui_recipes.copy()
-
-    if not find_attribute("DEFAULT_CREATE", ui_recipes):
-        ui_recipe = DEFAULT_CREATE_UI_RECIPE
-        is_contained = ["name", "description"]
-        attributes = []
-        for attribute in [attr for attr in blueprint.attributes if attr.name not in is_contained]:
-            attributes.append({"name": attribute.name, "contained": False})
-        ui_recipe["attributes"] = attributes
-        ui_recipes.append(ui_recipe)
-
-    if not find_attribute("PREVIEW", ui_recipes):
-        ui_recipes.append(DEFAULT_PREVIEW_UI_RECIPE)
-
-    if not find_attribute("EDIT", ui_recipes):
-        # TODO: Set default widget types for attributes
-        ui_recipes.append(DEFAULT_EDIT_UI_RECIPE)
-
     if ui_recipe_name:
-        result[ui_recipe_name] = process_ui_recipe(
-            blueprint.get_ui_recipe_from_blueprint(ui_recipe_name), blueprint.attributes
-        )
+        result[ui_recipe_name] = process_ui_recipe(blueprint.get_ui_recipe(ui_recipe_name), blueprint.attributes)
     else:
-        for ui_recipe in ui_recipes:
+        for ui_recipe in blueprint.ui_recipes:
             result[get(ui_recipe, "name")] = process_ui_recipe(ui_recipe, blueprint.attributes)
 
     return result

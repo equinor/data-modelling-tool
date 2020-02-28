@@ -18,7 +18,7 @@ export class UtilIndexPlugin {
     //@todo read defaults from indexPlugin.
     return (attrType: any) => {
       const attr = new BlueprintAttribute(attrType)
-      if (indexRecipe) {
+      if (indexRecipe && indexRecipe.attributes) {
         const indexAttribute: any = indexRecipe.attributes.find(
           (indexAttr: any) => indexAttr.name === attr.getName()
         )

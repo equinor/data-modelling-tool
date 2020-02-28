@@ -1,5 +1,6 @@
 from typing import Optional
 
+from classes.dimension import Dimension
 from core.enums import SIMOS
 from core.enums import PRIMITIVES
 
@@ -12,7 +13,7 @@ class BlueprintAttribute:
         description: Optional[str] = None,
         label: Optional[str] = None,
         default: Optional[str] = None,
-        dimensions: Optional[str] = None,
+        dimensions: Optional[str] = "",
         optional: Optional[bool] = None,
         contained: Optional[bool] = None,
         enum_type: Optional[str] = None,
@@ -23,13 +24,16 @@ class BlueprintAttribute:
         self.description = description if description else ""
         self.label = label if label else ""
         self.default = default if default else ""
-        self.dimensions = dimensions if dimensions else ""
-        self.optional = optional if optional else False
-        self.contained = contained if contained else True
+        self.dimensions: Dimension = Dimension(dimensions, self.attribute_type)
+        self.optional = optional if optional is not None else False
+        self.contained = contained if contained is not None else True
         self.enum_type = enum_type if enum_type else ""
 
     def is_array(self):
-        return self.dimensions == "*"
+        return self.dimensions.is_array()
+
+    def is_matrix(self):
+        return self.dimensions.is_matrix()
 
     def is_primitive(self):
         return self.attribute_type in PRIMITIVES
@@ -47,7 +51,7 @@ class BlueprintAttribute:
             "description": self.description,
             "label": self.label,
             "default": self.default,
-            "dimensions": self.dimensions,
+            "dimensions": self.dimensions.to_dict(),
             "optional": self.optional,
             "contained": self.contained,
             "enumType": self.enum_type,

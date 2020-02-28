@@ -32,8 +32,11 @@ export const ReactTablePlugin = (props: PluginProps) => {
   )
 
   const data = React.useMemo(() => getData(mappings, document, blueprint), [])
-
-  return <ReactTable columns={columns} data={data} />
+  if (columns?.length && columns[0].columns.length) {
+    return <ReactTable columns={columns} data={data} />
+  }
+  console.warn('No table columns are configured. Make sure the recipe is configured correctly.')
+  return null;
 }
 
 export function getData(

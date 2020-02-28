@@ -1,14 +1,5 @@
-import styled from 'styled-components'
 import React from 'react'
-
-const RequiredGroup = styled.code`
-  border: 1px solid;
-  margin: 2px;
-  padding: 5px;
-  border-radius: 5px;
-  display: flex;
-  flex-flow: column;
-`
+import { RequiredGroup } from '../../components/DisabledData'
 
 interface FormData {
   name: string

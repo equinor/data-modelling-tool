@@ -213,7 +213,9 @@ def zip_package(ob, document: DTO, document_repository, path):
     document_references = []
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
-        is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.attribute_type)
+        is_contained_in_storage = blueprint.storage_recipes[0].is_storage_contained(
+            attribute.name, attribute.attribute_type
+        )
         if attribute.dimensions == "*":
             if not is_contained_in_storage:
                 if name in document.keys():

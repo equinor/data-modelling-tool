@@ -43,10 +43,10 @@ def get_delete_menu_item(
     }
 
 
-def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node_id: str = None):
+def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node_id: str = None, label: str = None):
     node_id_split = node_id.split(".", 1)
     return {
-        "label": f"{name}",
+        "label": label if label else name,
         "action": "CREATE",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/add-file",
@@ -59,6 +59,20 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
                 "name": "${name}",
                 "description": "${description}",
             },
+        },
+    }
+
+
+def get_create_reference_menu_item(data_source_id: str, type: str, node_id: str = None):
+    node_id_split = node_id.split(".", 1)
+    return {
+        "label": f"Link to Existing Entity",
+        "action": "INSERT_REFERENCE",
+        "data": {
+            "url": f"/api/v2/documents/{data_source_id}/{node_id_split[0]}",
+            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
+            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id_split[0]}",
+            "request": {"attribute": node_id_split[1] if len(node_id_split) > 1 else None, "data": "${data}"},
         },
     }
 
@@ -98,6 +112,10 @@ def get_download_menu_action(data_source_id: str, document_id: str):
 
 
 def get_node_on_select(data_source_id: str, tree_node: Union[Node]):
+    if tree_node.type in ["datasource", DMT.PACKAGE.value]:
+        return None
+    if tree_node.is_empty():
+        return None
     split_node_id_attribute = tree_node.node_id.split(".", 1)
     attribute = f"?attribute={split_node_id_attribute[-1]}" if len(split_node_id_attribute) > 1 else ""
     return {

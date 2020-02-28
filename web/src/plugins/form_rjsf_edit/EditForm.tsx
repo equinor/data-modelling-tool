@@ -13,6 +13,8 @@ import {
   BlueprintsSelector,
 } from '../form-rjsf-widgets/MultiSelectorWidget'
 import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
+import { ReadOnlyWidget } from '../form-rjsf-widgets/ReadOnly'
+import EntitySelectorWidget from '../form-rjsf-widgets/EntitySelectorWidget'
 
 export interface EditPluginProps extends PluginProps {
   onSubmit: (data: any) => void
@@ -41,6 +43,8 @@ export const EditPlugin = (props: EditPluginProps) => {
           blueprint: BlueprintSelectorWidget,
           blueprints: BlueprintsSelector,
           packages: PackagesSelector,
+          matrix: ReadOnlyWidget,
+          reference: EntitySelectorWidget,
           hidden: () => <div />,
         }}
         widgets={{

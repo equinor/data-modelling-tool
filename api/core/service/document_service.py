@@ -1,4 +1,3 @@
-from pyclbr import Function
 from typing import Dict, Union
 from uuid import uuid4
 
@@ -12,13 +11,6 @@ from core.repository.repository_exceptions import EntityNotFoundException
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from utils.logging import logger
-
-
-def create_reference(data: Dict, document_repository, type: str):
-    data["type"] = type
-    file = DTO(data)
-    document_repository.add(file)
-    return {"_id": file.uid, "name": file.data.get("name", ""), "type": type}
 
 
 def get_required_attributes(type: str):
@@ -47,22 +39,32 @@ def get_resolved_document(
 
     for complex_attribute in blueprint.get_none_primitive_types():
         attribute_name = complex_attribute.name
-        if document.get(attribute_name):
+        if complex_data := document.get(attribute_name):
             storage_recipe: StorageRecipe = blueprint.storage_recipes[0]
             if storage_recipe.is_contained(attribute_name, complex_attribute.attribute_type):
                 if complex_attribute.is_array():
-                    document.data[attribute_name] = [
-                        get_resolved_document(DTO(item), document_repository, blueprint_provider)
-                        for item in data[attribute_name]
-                    ]
+                    temp = []
+                    for item in complex_data:
+                        # Only optional, and unfixed array attributes are allowed to have empty{} items.
+                        if not item and (complex_attribute.is_optional() or complex_attribute.dimensions.is_unfixed()):
+                            temp.append({})
+                        else:
+                            try:
+                                temp.append(get_resolved_document(DTO(item), document_repository, blueprint_provider))
+                            except:
+                                error = f"The entity {item} is invalid! Type: {complex_attribute.attribute_type}"
+                                logger.error(error)
+                                raise Exception(error)
+
+                    document.data[attribute_name] = temp
                 else:
                     data[attribute_name] = get_resolved_document(
-                        DTO(document.data[attribute_name]), document_repository, blueprint_provider
+                        DTO(complex_data), document_repository, blueprint_provider
                     )
             else:
                 if complex_attribute.is_array():
                     children = []
-                    for item in data[attribute_name]:
+                    for item in complex_data:
                         try:
                             doc = get_complete_document(item["_id"], document_repository, blueprint_provider)
                             children.append(doc)
@@ -73,8 +75,13 @@ def get_resolved_document(
                     data[attribute_name] = children
                 else:
                     data[attribute_name] = get_complete_document(
-                        data[attribute_name]["_id"], document_repository, blueprint_provider
+                        complex_data["_id"], document_repository, blueprint_provider
                     )
+        # If there is no data, and the attribute is NOT optional, raise an exception
+        else:
+            if not complex_attribute.is_optional():
+                error = f"The entity {document.name} is invalid! None-optional type {attribute_name} is missing."
+                logger.error(error)
 
     return data
 
@@ -124,8 +131,9 @@ class DocumentService:
             logger.exception(error)
             raise EntityNotFoundException(document_uid)
 
-        dto = DTO(complete_document)
-        return Node.from_dict(dto, blueprint_provider=self.blueprint_provider)
+        return Node.from_dict(
+            complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
+        )
 
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(
@@ -165,7 +173,8 @@ class DocumentService:
 
         # Remove child references
         for child in document.traverse():
-            if child.has_uid():
+            # Only remove children if they ARE contained in model and NOT contained in storage
+            if child.has_uid() and child.attribute.contained:
                 self.repository_provider(data_source_id).delete(child.uid)
                 logger.info(f"Removed child '{child.uid}'")
 
@@ -183,14 +192,14 @@ class DocumentService:
             if not target_node:
                 raise EntityNotFoundException(uid=document_id)
 
-        target_node.dto["name"] = name
+        target_node.entity["name"] = name
         self.save(root_node, data_source_id)
 
         logger.info(f"Rename document '{target_node.node_id}' to '{name}")
 
         return {"uid": target_node.node_id}
 
-    def update_document(self, data_source_id: str, document_id: str, data: dict, attribute_path: str):
+    def update_document(self, data_source_id: str, document_id: str, data: dict, attribute_path: str = None):
         root: Node = self.get_by_uid(data_source_id, document_id)
         if not root:
             raise EntityNotFoundException(uid=document_id)
@@ -211,22 +220,28 @@ class DocumentService:
     def add_document(
         self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
     ):
-        # We can only add documents to lists. The only exception to this is root_packages, which has their own function
         root: Node = self.get_by_uid(data_source_id, parent_id)
         if not root:
             raise EntityNotFoundException(uid=parent_id)
-        parent = root.search(f"{parent_id}.{attribute_path}")
+        parent = root.get_by_path(attribute_path.split("."))
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
-        new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
-        new_node = Node.from_dict(DTO(data=entity, uid=new_node_id), self.blueprint_provider)
-
         if type == SIMOS.BLUEPRINT.value:
-            new_node.dto["attributes"] = get_required_attributes(type=type)
+            entity["attributes"] = get_required_attributes(type=type)
 
-        parent.add_child(new_node)
+        if isinstance(parent, ListNode):
+            new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
+            new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
+            new_node.key = str(len(parent.children)) if parent.is_array() else new_node.name
+            parent.add_child(new_node)
+        # This covers adding a new optional document (not appending to a list)
+        else:
+            new_node_id = str(uuid4()) if not parent.is_storage_contained() else ""
+            new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
+            new_node.key = attribute_path.split(".")[-1]
+            root.replace(parent.node_id, new_node)
+
         self.save(root, data_source_id)
 
-        # hack add items to array. with .root a page refresh is needed.
-        return {"uid": new_node.node_id.replace(".root", "")}
+        return {"uid": new_node.node_id}

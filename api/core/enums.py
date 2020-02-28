@@ -4,6 +4,23 @@ from enum import auto, Enum
 PRIMITIVES = {"string", "number", "integer", "boolean"}
 
 
+class PrimitiveDataTypes(Enum):
+    STR = "string"
+    NUM = "number"
+    INT = "integer"
+    BOOL = "boolean"
+
+    def to_py_type(self):
+        if self is PrimitiveDataTypes.BOOL:
+            return bool
+        elif self is PrimitiveDataTypes.INT:
+            return int
+        elif self is PrimitiveDataTypes.NUM:
+            return float
+        elif self is PrimitiveDataTypes.STR:
+            return str
+
+
 class DataSourceType(Enum):
     MONGO = "mongo-db"
     LOCAL = "localStorage"
@@ -35,6 +52,7 @@ class SIMOS(Enum):
     BLUEPRINT = "system/SIMOS/Blueprint"
     BLUEPRINT_ATTRIBUTE = "system/SIMOS/BlueprintAttribute"
     APPLICATION = "system/SIMOS/Application"
+    ATTRIBUTE_TYPES = "system/SIMOS/AttributeTypes"
 
 
 class DMT(Enum):

@@ -9,6 +9,7 @@ class Config:
     MONGO_URI = os.getenv("MONGO_AZURE_URI", "")
     MONGO_DB = os.getenv("ENVIRONMENT", os.getenv("RADIX_ENVIRONMENT", "local"))
     LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "INFO")
+    MAX_ENTITY_RECURSION_DEPTH = os.getenv("MAX_ENTITY_RECURSION_DEPTH", 50)
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
     BLUEPRINT_COLLECTION = "SSR-DataSource"
@@ -21,6 +22,7 @@ class Config:
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
+    VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", True)
     with open(DMT_SETTINGS_FILE) as json_file:
         DMT_APPLICATION_SETTINGS = json.load(json_file)
     with open(ENTITY_SETTINGS_FILE) as json_file:
