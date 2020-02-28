@@ -392,35 +392,37 @@ class Factory:
         self._create_instance = _create_instance
         self._template_repository_getter = template_repository_getter
         self.dump_site = dump_site
-        self.macros = [
-            self.type_name,
-            self.type_annotation,
-            self.signature,
-            unpack_if_not_simple,
-            get_name,
-            self.variable_annotation,
-            to_snake_case,
-            to_camel_case,
-            self.cast_as,
-            self.cast,
-            self.get_type,
-            get_unprocessed,
-            is_internal,
-            extract_casting,
-            snakify,
-            is_simple_type,
-            get_simple_types,
-            self.type_check,
-            get_name_of_list_class,
-            get_name_of_metaclass,
-            self.get_escaped_default,
-            default_as_loadable_json,
-            compress,
-            self.get_dependencies,
-            get_dto,
-            get_project_line_length,
-            self.get_type_mapping,
-        ]
+        self._class_template = self._create_class_template(
+            [
+                self.type_name,
+                self.type_annotation,
+                self.signature,
+                unpack_if_not_simple,
+                get_name,
+                self.variable_annotation,
+                to_snake_case,
+                to_camel_case,
+                self.cast_as,
+                self.cast,
+                self.get_type,
+                get_unprocessed,
+                is_internal,
+                extract_casting,
+                snakify,
+                is_simple_type,
+                get_simple_types,
+                self.type_check,
+                get_name_of_list_class,
+                get_name_of_metaclass,
+                self.get_escaped_default,
+                default_as_loadable_json,
+                compress,
+                self.get_dependencies,
+                get_dto,
+                get_project_line_length,
+                self.get_type_mapping,
+            ]
+        )
         self.to_be_compiled = set()
 
     @classmethod
@@ -448,11 +450,15 @@ class Factory:
                     pass
             return data
 
-    # noinspection GrazieInspection
     def class_from_schema(self, schema) -> str:
+        return self._class_template.render(schema=schema)
+
+    @staticmethod
+    def _create_class_template(macros):
         # with open(f'{Path(__file__).parent}/schema.jinja2') as f:
         #     template = "\n".join(f.readlines())
         # noinspection JinjaAutoinspect
+        # noinspection GrazieInspection
         class_template = Template(
             """\
 {%- block imports %}
@@ -884,9 +890,9 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
 """
         )
-        for macro in self.macros:
+        for macro in macros:
             class_template.globals[macro.__name__] = macro
-        return class_template.render(schema=schema)
+        return class_template
 
     def _process_attributes(self, schema: Dict[str, Any]) -> Attributes:
         attributes: List[Dict[str, str]] = schema["attributes"]
