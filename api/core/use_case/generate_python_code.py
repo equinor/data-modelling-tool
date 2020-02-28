@@ -16,6 +16,12 @@ import io
 from core.enums import DMT
 
 
+def get(obj, attr: str):
+    if isinstance(obj, dict):
+        return obj[attr]
+    return getattr(obj, attr)
+
+
 class GeneratePythonCodeRequestObject(req.ValidRequestObject):
     def __init__(self, document_id: str = None, data_source_id: str = None):
         self.document_id = document_id
@@ -39,12 +45,6 @@ class GeneratePythonCodeRequestObject(req.ValidRequestObject):
 
 def is_package(blueprint: DTO):
     return blueprint.type == DMT.PACKAGE.value
-
-
-def get(obj, attr: str):
-    if isinstance(obj, dict):
-        return obj[attr]
-    return getattr(obj, attr)
 
 
 def is_simple(attribute) -> bool:
