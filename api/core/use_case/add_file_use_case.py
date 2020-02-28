@@ -37,7 +37,7 @@ class AddFileRequestObject(req.ValidRequestObject):
         if "parentId" not in adict:
             invalid_req.add_error("parentId", "is missing")
 
-        if "name" not in adict:
+        if "name" not in adict or len(adict["name"]) == 0:
             invalid_req.add_error("name", "is missing")
 
         if "type" not in adict:
