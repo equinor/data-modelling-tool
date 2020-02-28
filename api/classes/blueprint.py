@@ -19,8 +19,18 @@ def get_ui_recipe(recipes: List[Dict]):
     return [
         Recipe(
             name=recipe["name"],
+            plugin=recipe.get("plugin", "Default"),
+            hide_tab=recipe.get("hideTab", False),
+            description=recipe.get("description", ""),
             attributes=[
-                RecipeAttribute(name=attr["name"], is_contained=attr.get("contained", True), field=attr.get("field"))
+                RecipeAttribute(
+                    name=attr["name"],
+                    is_contained=attr.get("contained", True),
+                    field=attr.get("field"),
+                    collapsible=attr.get("collapsible", None),
+                    ui_recipe=attr.get("uiRecipe", None),
+                    mapping=attr.get("mapping", None),
+                )
                 for attr in recipe["attributes"]
             ],
         )
