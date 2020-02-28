@@ -61,7 +61,7 @@ class GetDocumentUseCase(uc.UseCase):
         self.add_children_types(children, dtos, blueprint)
 
         return res.ResponseSuccess(
-            {"blueprint": blueprint.to_dict(), "document": document.to_dict(), "children": children, "dtos": dtos}
+            {"blueprint": blueprint.to_dict_raw(), "document": document.to_dict(), "children": children, "dtos": dtos}
         )
 
     # todo control recursive iterations iterations, decided by plugin?

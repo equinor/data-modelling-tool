@@ -33,6 +33,7 @@ class Blueprint:
         self.name = dto.name
         self.description = dto.data.get("description", "")
         self.type = dto.type
+        self.dto = dto
         self.attributes: List[BlueprintAttribute] = [
             BlueprintAttribute.from_dict(attribute) for attribute in dto.data.get("attributes", [])
         ]
@@ -48,6 +49,12 @@ class Blueprint:
         instance.storage_recipes = get_storage_recipes(adict.get("storageRecipes", []), instance.attributes)
         instance.ui_recipes = get_ui_recipe(adict.get("uiRecipes", []))
         return instance
+
+    def to_dict_raw(self):
+        data = self.dto.data
+        if "_id" in data:
+            data.pop('_id')
+        return data
 
     def to_dict(self):
         return {
