@@ -30,7 +30,7 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if not ui_attributes:
         return {}
 
-    ui_attribute = find_attribute(attribute_name, ui_attributes.values())
+    ui_attribute = find_attribute(attribute_name, ui_attributes)
 
     if not ui_attribute:
         return {}
@@ -63,11 +63,12 @@ def process_ui_recipe(ui_recipe, attributes):
     if field := get(ui_recipe, "field", default=None):
         return {"ui:field": field}
 
-    if plugin := get(ui_recipe, "plugin", default=None):
-        return {"plugin": plugin}
+    # if plugin := get(ui_recipe, "plugin", default=None):
+    # return {"plugin": plugin}
 
     setting = {}
     for attribute in attributes:
+
         name = attribute.name
         result = process_attributes(name, attribute.attribute_type, attribute.dimensions, ui_recipe.ui_attributes)
         setting[name] = result
