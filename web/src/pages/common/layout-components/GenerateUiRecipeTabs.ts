@@ -68,7 +68,7 @@ function addDefaultTab(
   plugin: RegisteredPlugins,
   name: string
 ): void {
-  const recipe: UiRecipe | undefined = recipes.find(
+  const recipe: UiRecipe | undefined = recipes && recipes.find(
     recipe => recipe.name === name
   )
   if (recipe) {
