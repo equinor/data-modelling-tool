@@ -62,6 +62,24 @@
   ],
   "uiRecipes": [
     {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "INDEX",
+      "description": "",
+      "plugin": "INDEX",
+      "attributes": [
+        {
+          "name": "attributes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "options",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        }
+      ]
+    },
+    {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "EDIT_PLUGIN",
