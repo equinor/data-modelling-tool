@@ -31,7 +31,7 @@ def get_ui_recipe(recipes: List[Dict]):
                     ui_recipe=attr.get("uiRecipe", None),
                     mapping=attr.get("mapping", None),
                 )
-                for attr in recipe["attributes"]
+                for attr in recipe.get("attributes", [])
             ],
         )
         for recipe in recipes
