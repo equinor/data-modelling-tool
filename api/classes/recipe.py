@@ -73,9 +73,9 @@ class Recipe:
             array_contained = False
             single_contained = False
 
-        attribute = self.get_attribute_by_name(attribute.name)
-        if attribute:
-            return attribute.is_contained
+        ui_attribute = self.get_attribute_by_name(attribute.name)
+        if ui_attribute:
+            return ui_attribute.is_contained
 
         if attribute.attribute_type in PRIMITIVES:
             return primitive_contained
