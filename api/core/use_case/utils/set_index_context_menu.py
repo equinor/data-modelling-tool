@@ -1,8 +1,8 @@
+from typing import Union
+
 from classes.tree_node import Node
 from core.enums import DMT, SIMOS
 from core.use_case.utils.generate_index_menu_actions import (
-    get_create_reference_menu_item,
-    get_create_root_package_menu_item,
     get_delete_menu_item,
     get_download_menu_action,
     get_dynamic_create_menu_item,
@@ -10,9 +10,14 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_import_menu_item,
     get_rename_menu_action,
     get_runnable_menu_action,
+    get_create_root_package_menu_item,
+    get_create_reference_menu_item,
+    get_export_python_code_menu_item,
 )
-from core.use_case.utils.sort_menu_items import sort_menu_items
+from core.utility import BlueprintProvider
 from utils.group_by import group_by
+
+from core.use_case.utils.sort_menu_items import sort_menu_items
 
 
 def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
@@ -41,17 +46,6 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                     )
                 )
         else:
-            # Add create entry for optional attributes (not for packages)
-            for empty_child in [child for child in node.children if child.is_empty() and not child.is_array()]:
-                create_new_menu_items.append(
-                    get_dynamic_create_menu_item(
-                        data_source_id=data_source_id,
-                        name=empty_child.name,
-                        type=empty_child.type,
-                        node_id=empty_child.node_id,
-                        label=f"Create {empty_child.name}",
-                    )
-                )
             if node.is_array():
                 # List nodes can always append entities of it's own type
                 create_new_menu_items.append(
@@ -125,6 +119,8 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                     data_source_id=data_source_id, document_id=node.node_id, is_package_content=is_package
                 )
             )
+        # Context menu: Export Python code
+        menu_items.append(get_export_python_code_menu_item(data_source_id=data_source_id, document_id=node.node_id,))
 
         if create_new_menu_items:
             menu_items.append({"label": "New", "menuItems": create_new_menu_items})
