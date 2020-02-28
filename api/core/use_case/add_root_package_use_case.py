@@ -15,7 +15,7 @@ class AddRootPackageRequestObject(req.ValidRequestObject):
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
 
-        if "name" not in adict:
+        if "name" not in adict or len(adict["name"]) == 0:
             invalid_req.add_error("name", "is missing")
 
         if invalid_req.has_errors():
