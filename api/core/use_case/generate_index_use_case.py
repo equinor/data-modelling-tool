@@ -84,7 +84,7 @@ def is_visible(node):
     if node.parent.blueprint is None:
         return True
 
-    ui_recipe = node.parent.blueprint.get_ui_recipe(name="INDEX")
+    ui_recipe = node.parent.blueprint.get_ui_recipe_by_plugin(name="INDEX")
     return ui_recipe.is_contained(node.attribute, RecipePlugin.INDEX)
 
 

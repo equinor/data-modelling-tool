@@ -63,7 +63,7 @@ class Blueprint:
     def to_dict_raw(self):
         data = self.dto.data
         if "_id" in data:
-            data.pop('_id')
+            data.pop("_id")
         return data
 
     def to_dict(self):
@@ -92,6 +92,13 @@ class Blueprint:
 
     def get_ui_recipe(self, name=None):
         found = next((x for x in self.ui_recipes if x.name == name), None)
+        if found:
+            return found
+        else:
+            return DefaultRecipe(attributes=[attribute for attribute in self.attributes])
+
+    def get_ui_recipe_by_plugin(self, name=None):
+        found = next((x for x in self.ui_recipes if x.plugin == name), None)
         if found:
             return found
         else:
