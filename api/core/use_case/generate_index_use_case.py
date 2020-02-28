@@ -64,7 +64,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
         "type": node.type,
         "meta": {
             "menuItems": menu_items,
-            "onSelect": get_node_on_select(data_source_id, node),
+            "onSelect": get_node_on_select(data_source_id, node) if node.is_single() else {},
             "error": False,
             "isRootPackage": node.type == DMT.PACKAGE.value and node.entity.get("isRoot"),
             "isList": node.is_array(),
