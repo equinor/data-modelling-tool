@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from collections import defaultdict
+from pathlib import Path
 from typing import Callable, Union, Dict, Optional, List, Set, Sequence
 
 from classes.schema import Factory, get_dto
@@ -239,6 +240,9 @@ class GeneratePythonCodeUseCase(uc.UseCase):
                 write("classes/dto.py", get_dto())
                 template_types = self.get_dependency_graph(dto, data_source_id)
                 lookup: Dict[type, str] = {self.get(template_type): template_type for template_type in template_types}
+                package_files = self.get_package_files(template_types)
+                for package_index, content in package_files.items():
+                    write(package_index, content)
                 for template_type in template_types:
                     blueprint = self.get(template_type)
                     if blueprint.__has_circular_dependencies__():
@@ -268,3 +272,10 @@ class GeneratePythonCodeUseCase(uc.UseCase):
 
     def get(self, template_type):
         return self._factory.create(template_type)
+
+    def get_package_files(self, template_types: List[str]) -> Dict[str, str]:
+        packages = defaultdict(str)
+        for template_type in template_types:
+            package = Path(template_type).parent / "__init__.py"
+            packages[f"{package}"] += f"{get_stub_import(template_type, blueprint=self.get(template_type))}\n"
+        return packages
