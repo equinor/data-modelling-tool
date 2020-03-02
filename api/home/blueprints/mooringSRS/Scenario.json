@@ -1,91 +1,93 @@
 {
-    "name": "Scenario",
-    "description": "A model for mooring SRS analysis scenario.",
-    "type": "system/SIMOS/Blueprint",
-    "attributes": [
-        {
-            "name": "name",
-            "attributeType": "string",
-            "type": "system/SIMOS/BlueprintAttribute",
-            "description": "Name for the Mooring SRS scenario.",
-            "default": "scenario",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "description",
-            "attributeType": "string",
-            "type": "system/SIMOS/BlueprintAttribute",
-            "description": "description of the Mooring SRS scenario.",
-            "default": "",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "type",
-            "attributeType": "string",
-            "type": "system/SIMOS/BlueprintAttribute",
-            "description": "Type of the scenario."
-        },
-        {
-            "name": "env",
-            "attributeType": "SSR-DataSource/mooringSRS/env/Environment",
-            "type": "system/SIMOS/BlueprintAttribute",
-            "description": "The environmental condition.",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "mooring",
-            "attributeType": "SSR-DataSource/mooringSRS/positioning/Mooring",
-            "type": "system/SIMOS/BlueprintAttribute",
-            "description": "The target mooring lines description.",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "simulation",
-            "attributeType": "SSR-DataSource/mooringSRS/config/Simulation",
-            "type": "system/SIMOS/BlueprintAttribute",
-            "description": "Simulation configuration.",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "serverConfig",
-            "attributeType": "SSR-DataSource/mooringSRS/config/SimaAppService",
-            "type": "system/SIMOS/BlueprintAttribute",
-            "description": "Simulation configuration.",
-            "contained": true,
-            "optional": false
-        }           
-    ],
-    "storageRecipes": [],
-    "uiRecipes": [ {
-        "type": "system/SIMOS/UiRecipe",
-        "name": "SRS Sce 3DView",
-        "description": "Some external plugin",
-        "plugin": "EXTERNAL",
-        "attributes": []
+  "name": "Scenario",
+  "description": "A model for mooring SRS analysis scenario.",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+      {
+          "name": "name",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "description": "Name for the Mooring SRS scenario.",
+          "default": "scenario",
+          "contained": true,
+          "optional": false,
+          "attributeType": "string"
       },
       {
-        "name": "Edit",
-        "type": "system/SIMOS/UiRecipe",
-        "description": "",
-        "plugin": "EDIT_PLUGIN",
-        "field": "",
-        "hideTab": false,
-        "options": [],
-        "attributes": []
+          "name": "description",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "description": "description of the Mooring SRS scenario.",
+          "default": "",
+          "contained": true,
+          "optional": false,
+          "attributeType": "string"
       },
       {
-        "name": "Raw",
-        "type": "system/SIMOS/UiRecipe",
-        "description": "",
-        "plugin": "PREVIEW",
-        "field": "",
-        "hideTab": true,
-        "options": [],
-        "attributes": []
-      }]
+          "name": "type",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "description": "Type of the scenario.",
+          "attributeType": "string"
+      },
+      {
+          "name": "env",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "description": "The environmental condition.",
+          "contained": true,
+          "optional": false,
+          "attributeType": "SSR-DataSource/mooringSRS/env/Environment"
+      },
+      {
+          "name": "mooring",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "description": "The target mooring lines description.",
+          "contained": true,
+          "optional": false,
+          "attributeType": "SSR-DataSource/mooringSRS/positioning/Mooring"
+      },
+      {
+          "name": "simulation",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "description": "Simulation configuration.",
+          "contained": true,
+          "optional": false,
+          "attributeType": "SSR-DataSource/mooringSRS/config/Simulation"
+      },
+      {
+          "name": "serverConfig",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "description": "Simulation configuration.",
+          "contained": true,
+          "optional": false,
+          "attributeType": "SSR-DataSource/mooringSRS/config/SimaAppService"
+      }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": [
+      {
+          "type": "system/SIMOS/UiRecipe",
+          "name": "SRS Sce 3DView",
+          "description": "Some external plugin",
+          "plugin": "EXTERNAL",
+          "attributes": []
+      },
+      {
+          "name": "Edit",
+          "type": "system/SIMOS/UiRecipe",
+          "description": "",
+          "plugin": "EDIT_PLUGIN",
+          "field": "",
+          "hideTab": false,
+          "options": [],
+          "attributes": []
+      },
+      {
+          "name": "Raw",
+          "type": "system/SIMOS/UiRecipe",
+          "description": "",
+          "plugin": "PREVIEW",
+          "field": "",
+          "hideTab": true,
+          "options": [],
+          "attributes": []
+      }
+  ]
 }

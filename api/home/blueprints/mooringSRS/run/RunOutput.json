@@ -24,7 +24,7 @@
         {
             "name": "type",
             "attributeType": "string",
-            "type": "system/SIMOS/BlueprintAttribute",
+            "type": "system/SIMOS/BlueprintAttribute"
         },
         {
             "name": "status",
@@ -33,7 +33,7 @@
             "description": "status",
             "contained": true,
             "optional": true
-        },     
+        },
         {
             "name": "report",
             "attributeType": "SSR-DataSource/mooringSRS/report/Section",
@@ -41,29 +41,29 @@
             "description": "",
             "contained": true,
             "optional": false
-        }         
-  
+        }
     ],
     "storageRecipes": [],
     "uiRecipes": [
         {
-          "name": "Edit",
-          "type": "system/SIMOS/UiRecipe",
-          "description": "",
-          "plugin": "EDIT_PLUGIN",
-          "field": "",
-          "hideTab": false,
-          "options": [],
-          "attributes": []
+            "name": "Edit",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "EDIT_PLUGIN",
+            "field": "",
+            "hideTab": false,
+            "options": [],
+            "attributes": []
         },
         {
-          "name": "Raw",
-          "type": "system/SIMOS/UiRecipe",
-          "description": "",
-          "plugin": "PREVIEW",
-          "field": "",
-          "hideTab": true,
-          "options": [],
-          "attributes": []
-        }]
+            "name": "Raw",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "PREVIEW",
+            "field": "",
+            "hideTab": true,
+            "options": [],
+            "attributes": []
+        }
+    ]
 }
