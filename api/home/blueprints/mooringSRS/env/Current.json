@@ -1,1 +1,80 @@
-{"name":"Current","description":"Current model.","type":"system/SIMOS/Blueprint","attributes":[{"name":"name","attributeType":"string","type":"system/SIMOS/BlueprintAttribute","description":"variable name for named accessing","default":"current","contained":true,"optional":false},{"name":"description","attributeType":"string","type":"system/SIMOS/BlueprintAttribute","description":"instance description","default":"","contained":true,"optional":false},{"name":"type","attributeType":"string","type":"system/SIMOS/BlueprintAttribute"},{"name":"currentDepths","attributeType":"string","type":"system/SIMOS/BlueprintAttribute","description":"A list of current levels, positive downward, in [m].","default":"0.0,-50,-150,-297,-300","contained":true,"optional":false},{"name":"currentDirection","attributeType":"number","type":"system/SIMOS/BlueprintAttribute","description":"Current direction -going to- in [deg].","default":"330","contained":true,"optional":false},{"name":"currentVelocities","attributeType":"string","type":"system/SIMOS/BlueprintAttribute","description":"A list of current velocities at dfferent levels [m/s].","default":"0.826, 0.504, 0.344, 0.244, 0.0","contained":true,"optional":false}],"storageRecipes":[],"uiRecipes":[{"name":"Edit","type":"system/SIMOS/UiRecipe","description":"","plugin":"EDIT_PLUGIN","field":"","hideTab":false,"options":[],"attributes":[]},{"name":"Raw","type":"system/SIMOS/UiRecipe","description":"","plugin":"PREVIEW","field":"","hideTab":true,"options":[],"attributes":[]}]}
+{
+    "name": "Current",
+    "description": "Current model.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "variable name for named accessing",
+            "default": "current",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "instance description",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute"
+        },
+        {
+            "name": "currentDepths",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "A list of current levels, positive downward, in [m].",
+            "default": "0.0,-50,-150,-297,-300",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "currentDirection",
+            "attributeType": "number",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "Current direction -going to- in [deg].",
+            "default": "330",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "currentVelocities",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "A list of current velocities at dfferent levels [m/s].",
+            "default": "0.826, 0.504, 0.344, 0.244, 0.0",
+            "contained": true,
+            "optional": false
+        }
+    ],
+    "storageRecipes": [],
+    "uiRecipes": [
+        {
+            "name": "Edit",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "EDIT_PLUGIN",
+            "field": "",
+            "hideTab": false,
+            "options": [],
+            "attributes": []
+        },
+        {
+            "name": "Raw",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "PREVIEW",
+            "field": "",
+            "hideTab": true,
+            "options": [],
+            "attributes": []
+        }
+    ]
+}

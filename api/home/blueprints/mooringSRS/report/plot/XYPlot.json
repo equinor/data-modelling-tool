@@ -1,1 +1,60 @@
-{"name":"XYPlot","description":"Description of a plot.","type":"system/SIMOS/Blueprint","attributes":[{"name":"name","attributeType":"string","type":"system/SIMOS/BlueprintAttribute","description":"","default":"plot","contained":true,"optional":false},{"name":"description","attributeType":"string","type":"system/SIMOS/BlueprintAttribute","description":"","default":"","contained":true,"optional":false},{"name":"type","attributeType":"string","type":"system/SIMOS/BlueprintAttribute","description":""},{"name":"xlabel","attributeType":"string","type":"system/SIMOS/BlueprintAttribute"},{"name":"ylabel","attributeType":"string","type":"system/SIMOS/BlueprintAttribute"},{"name":"title","attributeType":"string","type":"system/SIMOS/BlueprintAttribute"},{"name":"caption","attributeType":"string","type":"system/SIMOS/BlueprintAttribute"},{"name":"lines","attributeType":"SSR-DataSource/mooringSRS/report/plot/Line","type":"system/SIMOS/BlueprintAttribute","dimensions":"*"}],"storageRecipes":[],"uiRecipes":[]}
+{
+    "name": "XYPlot",
+    "description": "Description of a plot.",
+    "type": "system/SIMOS/Blueprint",
+    "attributes": [
+        {
+            "name": "name",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "",
+            "default": "plot",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "description",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "",
+            "default": "",
+            "contained": true,
+            "optional": false
+        },
+        {
+            "name": "type",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": ""
+        },
+        {
+            "name": "xlabel",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute"
+        },
+        {
+            "name": "ylabel",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute"
+        },
+        {
+            "name": "title",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute"
+        },
+        {
+            "name": "caption",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute"
+        },
+        {
+            "name": "lines",
+            "attributeType": "SSR-DataSource/mooringSRS/report/plot/Line",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "dimensions": "*",
+            "optional": true
+        }
+    ],
+    "storageRecipes": [],
+    "uiRecipes": []
+}

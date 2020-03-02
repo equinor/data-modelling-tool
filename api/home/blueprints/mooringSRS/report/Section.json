@@ -39,7 +39,7 @@
             "dimensions": "*",
             "description": "",
             "contained": true,
-            "optional": false,
+            "optional": true,
             "attributeType": "SSR-DataSource/mooringSRS/report/plot/XYPlot"
         },
         {
@@ -48,7 +48,7 @@
             "dimensions": "*",
             "description": "",
             "contained": true,
-            "optional": false,
+            "optional": true,
             "attributeType": "SSR-DataSource/mooringSRS/report/table/ColTable"
         },
         {
@@ -57,7 +57,7 @@
             "dimensions": "*",
             "description": "",
             "contained": true,
-            "optional": false,
+            "optional": true,
             "attributeType": "SSR-DataSource/mooringSRS/report/Section"
         }
     ],

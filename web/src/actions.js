@@ -139,11 +139,28 @@ var test_srsRes = require('./test_srs_data.js').srsRes;
 const test_single_run = async ({input, output, updateDocument}) => {
     console.log(input)
 
+	// var myStatus = { 	"name": "status",
+	// "description": "sima workflow run status.",
+	// "type": "SSR-DataSource/mooringSRS/run/RunStatus",
+	// "progress": 0.0,
+	// "state": "",
+	// "progressID": ""};
+	// var myReport = { 	"name": "report",
+	// 	"description": "sima report.",
+	// 	"type": "SSR-DataSource/mooringSRS/report/Section",
+	// 	"title": "report",
+	// 	"plots": [],
+	// 	"tables": [],
+	// 	"sections": [] };
+
+	// output.entity["status"] = myStatus;
+	// output.entity["report"] = myReport;
+
 	test_srsRes.name = output.entity.name;
 	output.entity = {...test_srsRes};
     console.log(output)
 
-	updateDocument(output);
+	//updateDocument(output);
 	updateDocument(output);
 
     return {}
@@ -197,6 +214,28 @@ function runWorkflow(request) {
 
 	// //load json
 	// //parameters.set('input', "myInput={\"container\":{\"number\":{\"name\":\"number\",\"unit\":\"m\",\"type\":\"marmo:containers:DimensionalScalar\",\"value\":2.0}}}");
+
+	console.log("******  request  *****")
+	console.log(request);
+
+	var myStatus = { 	"name": "status",
+						"description": "sima workflow run status.",
+						"type": "SSR-DataSource/mooringSRS/run/RunStatus",
+						"progress": 0.0,
+						"state": "",
+						"progressID": ""};
+	var myReport = { 	"name": "report",
+						"description": "sima report.",
+						"type": "SSR-DataSource/mooringSRS/report/Section",
+						"title": "report",
+						"plots": [],
+						"tables": [],
+						"sections": [] };
+
+	request.output.entity["status"] = myStatus;
+	request.output.entity["report"] = myReport;
+
+	console.log(request);
 
 	//SRS
 	var container = {}

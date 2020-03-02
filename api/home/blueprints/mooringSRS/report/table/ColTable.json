@@ -53,12 +53,14 @@
             "name": "strColumns",
             "type": "system/SIMOS/BlueprintAttribute",
             "dimensions": "*",
+            "optional": true,
             "attributeType": "SSR-DataSource/mooringSRS/report/table/StringColumn"
         },
         {
             "name": "numColumns",
             "type": "system/SIMOS/BlueprintAttribute",
             "dimensions": "*",
+            "optional": true,
             "attributeType": "SSR-DataSource/mooringSRS/report/table/NumberColumn"
         }
     ],
