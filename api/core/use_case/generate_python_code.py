@@ -229,6 +229,7 @@ class GeneratePythonCodeUseCase(uc.UseCase):
                         content = blueprint.__code__(
                             include_dependencies=include_dependencies,
                             format_code=format_code,
+                            include_code_generation=False,
                             include_import_of_other_blueprints=True,
                         )
                     _dump(path, content)

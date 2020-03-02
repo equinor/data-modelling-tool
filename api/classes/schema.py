@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+import base64
 import copy
 import hashlib
 import hmac
@@ -316,9 +317,25 @@ def basic_types() -> Dict[str, type]:
     return {"string": str, "boolean": bool, "integer": int, "number": float}
 
 
-def compress(data: str) -> str:
+def compress(data: str, format: bool = True, indent: int = 2) -> str:
     compressed = zlib.compress(data.encode("UTF-8"), zlib.Z_BEST_COMPRESSION)
-    return str(compressed)
+    encoded = str(base64.b85encode(compressed), "UTF-8")
+    if format:
+        encoded = format_long_line(encoded, indent)
+    return str(encoded)
+
+
+def format_long_line(data: str, indent: int) -> str:
+    """ Helper method for formatting long string, while black is missing this feature """
+    line_length = get_project_line_length() - (4 * indent + 3)
+    lines = []
+    index, n = 0, len(data)
+    while index < n:
+        end = index + line_length
+        lines.append(data[index : min(end, n)])
+        index = end
+    data = str(tuple(lines)).replace(",", "")
+    return data
 
 
 def get_dto() -> str:
@@ -466,6 +483,7 @@ from __future__ import annotations
 from typing import List, Optional, Union, Any, Set
 import stringcase
 import json
+import base64
 from classes.dto import DTO
 {%- endblock %}
 {%- block definition %}
@@ -777,10 +795,10 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 {% endblock %}
     __code_generation: bytes = {{ compress(self.code_generation()) }}
 {% block code_generation  %}
-    __imports: bytes = {{ compress(self.imports()) }}
-    __definition: bytes = {{ compress(self.definition()) }}
-    __dmt_dependencies: List[bytes] = [
-        {{ compress(get_dto()) }},
+    __imports: str = {{ compress(self.imports()) }}
+    __definition: str = {{ compress(self.definition()) }}
+    __dmt_dependencies: List[str] = [
+        {{ compress(get_dto(), indent=3) }},
     ]
 
     @staticmethod
@@ -834,6 +852,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         import zlib
 
         def decompress(data: bytes) -> str:
+            data = base64.b85decode(data)
             return zlib.decompress(data).decode("UTF-8")
 
         definition = ""
@@ -870,10 +889,19 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     definition += f"\\nfrom {import_path} import {dependency.__name__}"
         definition += decompress(cls.__definition)
         if include_code_generation:
-            try:
-                definition += decompress(cls.__code_generation)
-            except AttributeError:
-                pass
+            def format_long_line(data: str, indent: int) -> str:
+                ''' A copy of the method of the same name above '''
+                line_length = ({{ get_project_line_length() }} - (4 * indent + 3))
+                lines = []
+                index, n = 0, len(data)
+                while index < n:
+                    end = index + line_length
+                    lines.append(data[index:min(end, n)])
+                    index = end
+                data = str(tuple(lines)).replace(",", "")
+                return data
+            definition += f"    __code_generation: str = {format_long_line(cls.__code_generation, indent=2)}"
+            definition += decompress(cls.__code_generation)
         if remove_dto_imports:
             for import_ in [
                 "from classes.dto import DTO",
@@ -948,6 +976,7 @@ from __future__ import annotations
 from typing import List, Optional, Union, Any
 import stringcase
 import json
+base64
 from classes.dto import DTO
 """
                 )
