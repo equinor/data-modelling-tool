@@ -5,81 +5,90 @@
     "attributes": [
         {
             "name": "name",
-            "type": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "",
             "default": "report",
             "contained": true,
-            "optional": false
+            "optional": false,
+            "attributeType": "string"
         },
         {
             "name": "description",
-            "type": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "",
             "default": "",
             "contained": true,
-            "optional": false
+            "optional": false,
+            "attributeType": "string"
         },
         {
             "name": "type",
-            "type": "string",
-            "description": ""
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "",
+            "attributeType": "string"
         },
         {
             "name": "title",
-            "type": "string",
-            "description": ""
-        },        
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "",
+            "attributeType": "string"
+        },
         {
             "name": "plots",
-            "type": "SSR-DataSource/mooringSRS/report/plot/XYPlot",
+            "type": "system/SIMOS/BlueprintAttribute",
             "dimensions": "*",
             "description": "",
             "contained": true,
-            "optional": false
+            "optional": false,
+            "attributeType": "SSR-DataSource/mooringSRS/report/plot/XYPlot"
         },
         {
             "name": "tables",
-            "type": "SSR-DataSource/mooringSRS/report/table/ColTable",
+            "type": "system/SIMOS/BlueprintAttribute",
             "dimensions": "*",
             "description": "",
             "contained": true,
-            "optional": false
+            "optional": false,
+            "attributeType": "SSR-DataSource/mooringSRS/report/table/ColTable"
         },
         {
             "name": "sections",
-            "type": "SSR-DataSource/mooringSRS/report/Section",
+            "type": "system/SIMOS/BlueprintAttribute",
             "dimensions": "*",
             "description": "",
             "contained": true,
-            "optional": false
-        }                                
+            "optional": false,
+            "attributeType": "SSR-DataSource/mooringSRS/report/Section"
+        }
     ],
     "storageRecipes": [],
-    "uiRecipes": [{
-        "type": "system/SIMOS/UiRecipe",
-        "name": "SRS Report View",
-        "description": "Some external plugin",
-        "plugin": "EXTERNAL",
-        "attributes": []
-      },
-      {
-        "name": "Edit",
-        "type": "system/SIMOS/UiRecipe",
-        "description": "",
-        "plugin": "EDIT_PLUGIN",
-        "field": "",
-        "hideTab": true,
-        "options": [],
-        "attributes": []
-      },
-      {
-        "name": "Raw",
-        "type": "system/SIMOS/UiRecipe",
-        "description": "",
-        "plugin": "PREVIEW",
-        "field": "",
-        "hideTab": true,
-        "options": [],
-        "attributes": []
-      }]
+    "uiRecipes": [
+        {
+            "type": "system/SIMOS/UiRecipe",
+            "name": "SRS Report View",
+            "description": "Some external plugin",
+            "plugin": "EXTERNAL",
+            "attributes": []
+        },
+        {
+            "name": "Edit",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "EDIT_PLUGIN",
+            "field": "",
+            "hideTab": true,
+            "options": [],
+            "attributes": []
+        },
+        {
+            "name": "Raw",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "PREVIEW",
+            "field": "",
+            "hideTab": true,
+            "options": [],
+            "attributes": []
+        }
+    ]
 }

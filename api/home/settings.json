@@ -2,16 +2,9 @@
   "type": "system/SIMOS/Application",
   "name": "DMTApplicationSettings",
   "description": "",
-<<<<<<< HEAD
-  "entities": ["CarPackage"],
-  "packages": ["CarPackage", "ActionsTest", "TodoPackage", "marmo", "mooringSRS"],
-  "models": ["system/DMT/Entity",
-    "SSR-DataSource/mooringSRS/Scenario"],
-=======
-  "entities": ["CarPackage", "TodoDemo", "MatrixDemo"],
+  "entities": ["CarPackage", "TodoDemo", "MatrixDemo", "SRS_case", "SRS_results"],
   "packages": ["CarPackage", "Uncontained", "ComplexArrays", "TodoDemo", "marmo", "mooringSRS"],
-  "models": ["system/DMT/Entity"],
->>>>>>> origin/stable
+  "models": ["system/DMT/Entity", "SSR-DataSource/mooringSRS/Scenario"],
   "actions": [
     {
       "name": "Todo Runnable",

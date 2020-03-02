@@ -1,136 +1,56 @@
-<<<<<<< HEAD
 {
     "name": "Environment",
-    "description": "A model for enviromental condition.",
+    "description": "",
     "type": "system/SIMOS/Blueprint",
     "attributes": [
         {
             "name": "name",
-            "type": "string",
-            "description": "Enviromental condition name",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "variable name for named accessing",
             "default": "environment",
             "contained": true,
             "optional": false
         },
         {
             "name": "description",
-            "type": "string",
-            "description": "Enviromental condition description",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "description": "instance description",
             "default": "",
             "contained": true,
             "optional": false
         },
         {
             "name": "type",
-            "type": "string",
-            "description": "Enviromental condition type"
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute"
         },
         {
             "name": "wave",
-            "type": "SSR-DataSource/mooringSRS/env/Wave",
-            "description": "description of waves",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "attributeType": "SSR-DataSource/mooringSRS/env/Wave",
+            "description": "wave",
             "contained": true,
             "optional": true
         },
         {
             "name": "wind",
-            "type": "SSR-DataSource/mooringSRS/env/Wind",
-            "description": "description of wind",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "attributeType": "SSR-DataSource/mooringSRS/env/Wind",
+            "description": "wind",
             "contained": true,
             "optional": true
         },
         {
             "name": "current",
-            "type": "SSR-DataSource/mooringSRS/env/Current",
-            "description": "description of current",
+            "type": "system/SIMOS/BlueprintAttribute",
+            "attributeType": "SSR-DataSource/mooringSRS/env/Current",
+            "description": "current",
             "contained": true,
             "optional": true
         }
     ],
     "storageRecipes": [],
-    "uiRecipes": [{
-        "type": "system/SIMOS/UiRecipe",
-        "name": "SRS Env. Table",
-        "description": "Some external plugin",
-        "plugin": "EXTERNAL",
-        "attributes": []
-      },
-      {
-        "name": "Edit",
-        "type": "system/SIMOS/UiRecipe",
-        "description": "",
-        "plugin": "EDIT_PLUGIN",
-        "field": "",
-        "hideTab": false,
-        "options": [],
-        "attributes": []
-      },
-      {
-        "name": "Raw",
-        "type": "system/SIMOS/UiRecipe",
-        "description": "",
-        "plugin": "PREVIEW",
-        "field": "",
-        "hideTab": true,
-        "options": [],
-        "attributes": []
-      }    ]
+    "uiRecipes": []
 }
-=======
-{
-  "name": "Environment",
-  "description": "",
-  "type": "system/SIMOS/Blueprint",
-  "attributes": [
-    {
-      "name": "name",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "description": "variable name for named accessing",
-      "default": "environment",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "description",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "description": "instance description",
-      "default": "",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "type",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute"
-    },
-    {
-      "name": "wave",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "SSR-DataSource/mooringSRS/env/Wave",
-      "description": "wave",
-      "contained": true,
-      "optional": true
-    },
-    {
-      "name": "wind",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "SSR-DataSource/mooringSRS/env/Wind",
-      "description": "wind",
-      "contained": true,
-      "optional": true
-    },
-    {
-      "name": "current",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "SSR-DataSource/mooringSRS/env/Current",
-      "description": "current",
-      "contained": true,
-      "optional": true
-    }
-  ],
-  "storageRecipes": [],
-  "uiRecipes": []
-}
->>>>>>> origin/stable

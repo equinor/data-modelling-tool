@@ -1,12 +1,12 @@
 {
-<<<<<<< HEAD
     "name": "RunOutput",
     "description": "",
     "type": "system/SIMOS/Blueprint",
     "attributes": [
         {
             "name": "name",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "variable name for named accessing",
             "default": "runOutput",
             "contained": true,
@@ -14,7 +14,8 @@
         },
         {
             "name": "description",
-            "type": "string",
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "instance description",
             "default": "",
             "contained": true,
@@ -22,93 +23,47 @@
         },
         {
             "name": "type",
-            "type": "string"
+            "attributeType": "string",
+            "type": "system/SIMOS/BlueprintAttribute"
         },
         {
             "name": "status",
-            "type": "SSR-DataSource/mooringSRS/run/RunStatus",
+            "attributeType": "SSR-DataSource/mooringSRS/run/RunStatus",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "status",
             "contained": true,
             "optional": true
-        },     
+        },
         {
             "name": "report",
-            "type": "SSR-DataSource/mooringSRS/report/Section",
+            "attributeType": "SSR-DataSource/mooringSRS/report/Section",
+            "type": "system/SIMOS/BlueprintAttribute",
             "description": "",
             "contained": true,
             "optional": false
-        }         
-  
+        }
     ],
     "storageRecipes": [],
     "uiRecipes": [
         {
-          "name": "Edit",
-          "type": "system/SIMOS/UiRecipe",
-          "description": "",
-          "plugin": "EDIT_PLUGIN",
-          "field": "",
-          "hideTab": false,
-          "options": [],
-          "attributes": []
+            "name": "Edit",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "EDIT_PLUGIN",
+            "field": "",
+            "hideTab": false,
+            "options": [],
+            "attributes": []
         },
         {
-          "name": "Raw",
-          "type": "system/SIMOS/UiRecipe",
-          "description": "",
-          "plugin": "PREVIEW",
-          "field": "",
-          "hideTab": true,
-          "options": [],
-          "attributes": []
-        }]
+            "name": "Raw",
+            "type": "system/SIMOS/UiRecipe",
+            "description": "",
+            "plugin": "PREVIEW",
+            "field": "",
+            "hideTab": true,
+            "options": [],
+            "attributes": []
+        }
+    ]
 }
-=======
-  "name": "RunOutput",
-  "description": "",
-  "type": "system/SIMOS/Blueprint",
-  "attributes": [
-    {
-      "name": "name",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "description": "variable name for named accessing",
-      "default": "runOutput",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "description",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "description": "instance description",
-      "default": "",
-      "contained": true,
-      "optional": false
-    },
-    {
-      "name": "type",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute"
-    },
-    {
-      "name": "status",
-      "attributeType": "SSR-DataSource/mooringSRS/run/RunStatus",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "description": "status",
-      "contained": true,
-      "optional": true
-    },
-    {
-      "name": "results",
-      "attributeType": "SSR-DataSource/mooringSRS/run/RunResult",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "description": "results",
-      "contained": true,
-      "optional": true
-    }
-  ],
-  "storageRecipes": [],
-  "uiRecipes": []
-}
->>>>>>> origin/stable
