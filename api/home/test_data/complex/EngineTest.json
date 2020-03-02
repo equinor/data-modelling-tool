@@ -4,25 +4,29 @@
   "description": "This describes an engine",
   "attributes": [
     {
-      "type": "string",
-      "name": "name",
-      "optional": true
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description"
     },
     {
-      "type": "integer",
+      "attributeType": "integer",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "power",
       "default": "120"
     },
     {
-      "type": "ds/test_data/complex/FuelPumpTest",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "ds/test_data/complex/FuelPumpTest",
       "name": "fuelPump"
     }
   ]

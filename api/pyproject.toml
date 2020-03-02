@@ -11,10 +11,9 @@ flask = "^1.0"
 werkzeug = "^0.15.4"
 pymongo = "^3.8"
 jsonschema = "^3.0"
-dotted = "^0.1.8"
-anytree = "^2.7.0"
 stringcase = "^1.2"
 python-dotenv = "^0.10.3"
+jinja2 = "^2.11.1"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"
@@ -27,6 +26,8 @@ deepdiff = "4.0.7"
 pre-commit = "^1.18"
 pygments = "2.4.1"
 black = {version = "^18.3-alpha.0", allow-prereleases = true}
+coverage = "^5.0.3"
+flake8 = "^3.7.9"
 
 [tool.black]
 line-length = 119

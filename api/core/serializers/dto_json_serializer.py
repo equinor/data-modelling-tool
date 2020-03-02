@@ -1,5 +1,6 @@
 import json
-from core.domain.dto import DTO
+
+from classes.dto import DTO
 
 
 class DTOSerializer(json.JSONEncoder):

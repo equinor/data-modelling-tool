@@ -4,7 +4,8 @@
   "description": "This describes a rename action",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     }
   ],

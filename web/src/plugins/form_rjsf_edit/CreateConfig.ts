@@ -91,7 +91,7 @@ class BlueprintUtil {
   constructor(blueprintType: BlueprintType, pluginName: string) {
     this.addAttributes(this.attributes, blueprintType.attributes)
 
-    blueprintType.uiRecipes
+    blueprintType.uiRecipes && blueprintType.uiRecipes
       .filter((recipe: any) => recipe.plugin === pluginName)
       .forEach((recipe: any) => {
         const pluginKey = recipe.plugin
@@ -110,9 +110,9 @@ class BlueprintUtil {
     })
   }
 
-  public static findRecipe(recipes: any[], name: string): any {
+  public static findRecipe(recipes: any[] | undefined, plugin: string): any {
     if (recipes) {
-      return recipes.find((recipe: any) => recipe.name === name)
+      return recipes.find((recipe: any) => recipe.plugin === plugin)
     }
   }
 }

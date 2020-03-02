@@ -23,7 +23,7 @@ STATUS_CODES = {
 @blueprint.route("/api/v2/system/<string:data_source_id>/create-application/<string:application_id>", methods=["GET"])
 def post(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
-    data_source = DataSource(id=data_source_id)
+    data_source = DataSource(uid=data_source_id)
     document_repository = get_repository(data_source)
     request_object = CreateApplicationRequestObject.from_dict({"applicationId": application_id})
     use_case = CreateApplicationUseCase(document_repository)

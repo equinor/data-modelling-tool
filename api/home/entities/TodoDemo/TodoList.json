@@ -1,0 +1,6 @@
+{
+  "type": "SSR-DataSource/TodoDemo/TodoList",
+  "name": "TodoList",
+  "description": "An example of a list of todos",
+  "items": []
+}

@@ -4,58 +4,68 @@
   "description": "This describes a storage recipe attribute",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type",
       "default": "system/SIMOS/StorageAttribute"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "attributeType",
       "default": "system/SIMOS/BlueprintAttribute",
       "optional": true
     },
     {
       "name": "label",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "optional": true,
       "default": ""
     },
     {
       "name": "default",
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "optional": true,
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description",
       "default": "",
       "optional": true
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "dimensions",
       "optional": true,
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "enumType",
       "default": "",
       "optional": true
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "optional",
       "default": false,
       "optional": "true"
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "contained",
       "optional": true,
       "default": "true",
@@ -71,23 +81,27 @@
       "attributes": [
         {
           "name": "type",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "required": true,
           "disabled": true
         },
         {
           "name": "name",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "required": true
         },
         {
           "name": "enumType",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "hidden"
         },
         {
           "name": "description",
-          "type": "string",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
           "field": "hidden"
         }
       ]

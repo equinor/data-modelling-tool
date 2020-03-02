@@ -97,6 +97,18 @@ export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
     return `/api/v2/data-sources?documentType=${dataSourceType}`
   }
+  addFile(): string {
+    return '/api/v2/explorer/entities/add-file'
+  }
+
+  updateFile(dataSource: string | undefined, documentId: string): string {
+    return `/api/v2/documents/${dataSource}/${documentId}`
+  }
+
+  getFile(dataSource: string | undefined, documentId: string): string {
+    return `/api/v2/documents/${dataSource}/${documentId}`
+  }
+
   applicationSettingsGet(settingsFile: string): string {
     return `/api/v2/system/settings?settingsFile=${settingsFile}`
   }
@@ -106,7 +118,7 @@ export class DmtApi {
   }
 
   indexGet(datasourceId: string) {
-    return `/api/v3/index/${datasourceId}`
+    return `/api/v4/index/${datasourceId}`
   }
 
   indexPost(dataSourceId: string): string {
@@ -115,6 +127,10 @@ export class DmtApi {
 
   templatesDatasourceMongoGet() {
     return `/api/v2/json-schema/system/DMT/data-sources/MongoDataSource`
+  }
+
+  jsonSchemaGet(blueprint: string, ui_recipe: string) {
+    return `/api/v2/json-schema/${blueprint}?ui_recipe=${ui_recipe}`
   }
 }
 

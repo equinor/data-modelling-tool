@@ -4,48 +4,39 @@
   "description": "This is a blueprint for a package that contains documents and other packages",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description",
       "default": "",
       "optional": true
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "isRoot"
     },
     {
-      "type": "system/DMT/Entity",
+      "attributeType": "system/DMT/Entity",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "content",
       "dimensions": "*",
       "optional": true
-    },
-    {
-      "type": "system/SIMOS/StorageRecipe",
-      "dimensions": "*",
-      "name": "storageRecipes",
-      "optional": true,
-      "contained": true
-    },
-    {
-      "type": "system/SIMOS/UiRecipe",
-      "dimensions": "*",
-      "name": "uiRecipes",
-      "optional": true,
-      "contained": true
     }
   ],
   "storageRecipes": [
     {
       "type": "system/SIMOS/StorageRecipe",
-      "name": "DefaultStorageRecipe",
+      "name": "DEFAULT",
       "description": "",
       "attributes": [
         {
@@ -60,17 +51,13 @@
     {
       "type": "system/SIMOS/UiRecipe",
       "name": "DEFAULT_CREATE",
+      "plugin": "DEFAULT_CREATE",
       "description": "",
       "attributes": [
         {
-          "name": "description",
-          "type": "system/SIMOS/UiAttribute",
-          "widget": "textarea"
-        },
-        {
           "name": "isRoot",
           "type": "system/SIMOS/UiAttribute",
-          "widget": "hidden"
+          "contained": false
         },
         {
           "name": "type",

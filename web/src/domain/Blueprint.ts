@@ -14,15 +14,17 @@ export class Blueprint implements IBlueprint {
     this.blueprintType = blueprintType
     this.addAttributes(this.attributes, blueprintType.attributes)
 
-    blueprintType.uiRecipes.forEach((recipe: any) => {
-      const name = recipe.name
-      if (name) {
-        this.uiRecipes[name] = {}
-        if (recipe.attributes) {
-          this.addAttributes(this.uiRecipes[name], recipe.attributes)
+    if (blueprintType.uiRecipes) {
+      blueprintType.uiRecipes.forEach((recipe: any) => {
+        const name = recipe.name
+        if (name) {
+          this.uiRecipes[name] = {}
+          if (recipe.attributes) {
+            this.addAttributes(this.uiRecipes[name], recipe.attributes)
+          }
         }
-      }
-    })
+      })
+    }
   }
 
   private addAttributes(container: KeyValue, attributes: any[]): void {
@@ -53,6 +55,13 @@ export class Blueprint implements IBlueprint {
 
   public getAttribute(name: string): BlueprintAttributeType | undefined {
     return this.attributes[name]
+  }
+
+  public getBlueprintAttribute(name: string): BlueprintAttribute | undefined {
+    if (this.attributes[name]) {
+      return new BlueprintAttribute(this.attributes[name])
+    }
+    return undefined
   }
 
   public getUiAttributes(uiRecipeName: string): KeyValue | undefined {

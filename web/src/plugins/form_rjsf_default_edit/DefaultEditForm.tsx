@@ -6,6 +6,7 @@ import { BlueprintType } from '../../domain/types'
 import { castValues } from '../form-rjsf-widgets/utilFormData'
 import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
 import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
+import EntitySelectorWidget from '../form-rjsf-widgets/EntitySelectorWidget'
 
 interface Props {
   document: BlueprintType | {}
@@ -40,6 +41,7 @@ export default ({
         collapsible: CollapsibleField,
         type: BlueprintSelectorWidget,
         destination: DestinationSelectorWidget,
+        reference: EntitySelectorWidget,
       }}
       onSubmit={onSubmit}
       onChange={schemas => {
@@ -70,6 +72,10 @@ function appendAttributes(blueprint: any, blueprints: any, uiSchema: any) {
         }
       }
     }
+  }
+  // TODO: This is a hack. Needed because API form-to-schema does not work properly. And the EditPlugin stuff is not mature enough
+  if (uiSchema && uiSchema.reference) {
+    uiSchema.reference = { 'ui:field': 'reference' }
   }
 }
 

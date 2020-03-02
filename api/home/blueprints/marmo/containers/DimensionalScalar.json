@@ -1,53 +1,59 @@
 {
-    "name": "DimensionalScalar",
-    "description": "single scalar value with dimension",
-    "type": "system/SIMOS/Blueprint",
-    "attributes": [
-        {
-            "name": "name",
-            "type": "string",
-            "description": "variable name for named accessing",
-            "default": "dimensionalScalar",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "description",
-            "type": "string",
-            "description": "instance description",
-            "default": "",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "type",
-            "type": "string"
-        },
-        {
-            "name": "value",
-            "type": "number",
-            "description": "value",
-            "default": "0.0",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "label",
-            "type": "string",
-            "description": "label for the value.",
-            "default": "",
-            "contained": true,
-            "optional": false
-        },
-        {
-            "name": "unit",
-            "type": "string",
-            "description": "data unit.",
-            "default": "",
-            "contained": true,
-            "optional": false
-        }
-    ],
-    "storageRecipes": [],
-    "uiRecipes": []
+  "name": "DimensionalScalar",
+  "description": "single scalar value with dimension",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "variable name for named accessing",
+      "default": "dimensionalScalar",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "value",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "value",
+      "default": "0.0",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "label",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "label for the value.",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "unit",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "data unit.",
+      "default": "",
+      "contained": true,
+      "optional": false
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
 }

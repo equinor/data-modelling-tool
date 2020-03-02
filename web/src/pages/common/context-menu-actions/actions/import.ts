@@ -1,15 +1,7 @@
-import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 import Api2, { BASE_CRUD } from '../../../../api/Api2'
-import { processFormData } from './utils/request'
 import { RegisteredPlugins } from '../../layout-components/DocumentComponent'
 
-export const importAction = (
-  action: any,
-  setShowModal: Function,
-  node?: TreeNodeRenderProps,
-  showError?: Function,
-  createNodes?: Function
-) => {
+export const importAction = (action: any) => {
   return {
     selectedUiSchema: 'IMPORT',
     plugin: RegisteredPlugins.EDIT_PLUGIN,

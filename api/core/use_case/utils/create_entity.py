@@ -1,10 +1,10 @@
-from core.domain.dynamic_models import BlueprintAttribute, AttributeTypes, Blueprint
-from utils.data_structure.find import get
-from json import JSONDecodeError
 import json
+from json import JSONDecodeError
 
-# on changes in testdata, run command:
-# doit create:system:blueprints
+from classes.blueprint import Blueprint
+from classes.blueprint_attribute import BlueprintAttribute
+from core.enums import SIMOS
+from utils.form_to_schema import PRIMITIVES
 
 
 class CreateEntityException(Exception):
@@ -27,37 +27,20 @@ class CreateEntity:
         self.description = description
         self.type = type
         self.blueprint_provider = blueprint_provider
-        self.attribute_types: AttributeTypes = self.blueprint_provider.get_blueprint("system/SIMOS/AttributeTypes")
-        self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint("system/SIMOS/BlueprintAttribute")
-        self.attribute_optional: BlueprintAttribute = [
-            attr for attr in self.blueprint_attribute.attributes if get(attr, "name") == "optional"
-        ][0]
+        self.attribute_types = self.blueprint_provider.get_blueprint(SIMOS.ATTRIBUTE_TYPES.value).to_dict()
+        self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint(SIMOS.BLUEPRINT_ATTRIBUTE.value)
         blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
-        entity = {"name": name, "description": description}
-        self._entity = self._get_entity(blueprint=blueprint, parent_type=type, entity=entity)
-
-    def is_optional(self, attribute: BlueprintAttribute):
-        if attribute.optional is not None:
-            return attribute.optional
-
-        if self.attribute_optional is not None:
-            return bool(self.attribute_optional.default)
-
-        # todo use default in optional attribute
-        return False
-
-    @property
-    def primitives(self):
-        return [type for type in get(self.attribute_types, "values") if type != "blueprint"]
+        entity = {"name": name, "description": description, "type": type}
+        self._entity = self._get_entity(blueprint=blueprint, entity=entity)
 
     @staticmethod
-    def parse_value(attr: BlueprintAttribute):
+    def parse_value(attr: BlueprintAttribute, blueprint_provider):
         # @todo add exception handling
         default_value = attr.default
-        type = attr.type
+        type = attr.attribute_type
 
         # TODO: Generalize this "setting_defaults" and reuse everywhere (schema)
-        if default_value is not None and len(default_value) > 0 and attr.dimensions == "*":
+        if default_value is not None and len(default_value) > 0 and attr.is_array():
             try:
                 return json.loads(default_value)
             except JSONDecodeError:
@@ -65,8 +48,8 @@ class CreateEntity:
                 return []
 
         if default_value == "":
-            if attr.dimensions == "*":
-                return []
+            if attr.is_array():
+                return attr.dimensions.create_default_array(blueprint_provider, attr)
             if type == "boolean":
                 return False
             if type == "number":
@@ -82,30 +65,25 @@ class CreateEntity:
             return int(default_value)
         return default_value
 
-    @staticmethod
-    def default_value(attr: BlueprintAttribute, parent_type: str):
-        if attr.name == "type":
-            return parent_type
-        return CreateEntity.parse_value(attr)
-
     @property
     def entity(self):
         return self._entity
 
     # add all non optional attributes with default value.
     # type is inserted based on the parent attributes type, or the initial type for root entity.
-    def _get_entity(self, blueprint: Blueprint, parent_type: str, entity):
+    def _get_entity(self, blueprint: Blueprint, entity):
         for attr in blueprint.attributes:
-            is_optional = self.is_optional(attr)
-            if attr.type in self.primitives:
-                if is_optional is not None and not is_optional:
-                    default_value = CreateEntity.default_value(attr=attr, parent_type=parent_type)
-                    if attr.name not in entity:
-                        entity[attr.name] = default_value
+            if attr.attribute_type in PRIMITIVES:
+                if not attr.is_optional() and attr.name not in entity:
+                    entity[attr.name] = CreateEntity.parse_value(attr=attr, blueprint_provider=self.blueprint_provider)
             else:
-                blueprint = self.blueprint_provider.get_blueprint(attr.type)
-                if attr.dimensions == "*":
-                    entity[attr.name] = []
+                blueprint = self.blueprint_provider.get_blueprint(attr.attribute_type)
+                if attr.is_array():
+                    entity[attr.name] = attr.dimensions.create_default_array(self.blueprint_provider, CreateEntity)
+                elif attr.is_optional():
+                    entity[attr.name] = {}
                 else:
-                    entity[attr.name] = self._get_entity(blueprint=blueprint, parent_type=attr.type, entity={})
+                    entity[attr.name] = self._get_entity(
+                        blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type},
+                    )
         return entity

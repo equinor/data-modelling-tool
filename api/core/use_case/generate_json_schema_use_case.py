@@ -1,11 +1,13 @@
-from core.domain.template import Template
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.utils.get_template import get_blueprint
+from core.utility import BlueprintProvider
 from utils.form_to_ui_schema import form_to_ui_schema
 from utils.form_to_schema import form_to_schema
 from core.shared import use_case as uc
 from core.shared import response_object as res
 from core.shared import request_object as req
+
+from classes.blueprint_attribute import BlueprintAttribute
+from classes.recipe import Recipe, RecipeAttribute
 
 
 class GenerateJsonSchemaRequestObject(req.ValidRequestObject):
@@ -30,14 +32,25 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
     def process_request(self, request_object: GenerateJsonSchemaRequestObject):
         type = request_object.type
         ui_recipe_name = request_object.ui_recipe
-        blueprint = get_blueprint(type)
+        blueprint_provider = BlueprintProvider()
+        blueprint = blueprint_provider.get_blueprint(type)
 
         if not blueprint:
             raise EntityNotFoundException(uid=type)
 
+        if ui_recipe_name == "DEFAULT_CREATE":
+            ui_recipe = blueprint.get_ui_recipe(ui_recipe_name)
+            if ui_recipe.name != "DEFAULT_CREATE":
+                is_contained = ["name", "description"]
+                attributes = []
+                default_create_ui_recipe = Recipe(name=ui_recipe_name, attributes=attributes)
+                for attribute in [attr for attr in blueprint.attributes if attr.name not in is_contained]:
+                    default_create_ui_recipe.ui_attributes.append(
+                        RecipeAttribute(name=attribute.name, is_contained=False)
+                    )
+                blueprint.ui_recipes.append(default_create_ui_recipe)
+
         ui_recipes = form_to_ui_schema(blueprint)
         ui_schema = ui_recipes[ui_recipe_name] if ui_recipe_name in ui_recipes else {}
-        # TODO: Replace
-        template = Template(schema=form_to_schema(blueprint, ui_recipe_name), ui_schema=ui_schema)
-
-        return res.ResponseSuccess(template.to_dict())
+        blueprint_provider.invalidate_cache()
+        return res.ResponseSuccess({"schema": form_to_schema(blueprint, ui_recipe_name), "uiSchema": ui_schema})

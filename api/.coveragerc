@@ -1,0 +1,10 @@
+# .coveragerc to control coverage.py
+[run]
+omit =
+    .venv/*
+[report]
+sort = Cover
+precision = 1
+skip_covered = True
+show_missing = True
+ignore_errors = True

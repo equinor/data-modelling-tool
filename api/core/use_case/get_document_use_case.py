@@ -1,17 +1,19 @@
-from dotted.collection import DottedDict
-
-from core.domain.dynamic_models import BlueprintAttribute
-from core.repository.interface.document_repository import DocumentRepository
+from core.enums import PRIMITIVES
+from core.repository.repository_factory import get_repository
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.use_case.utils.get_template import get_entity
-from core.use_case.utils.get_template import get_blueprint
+from core.utility import get_document_by_ref
+
+from classes.blueprint_attribute import BlueprintAttribute
+from classes.dto import DTO
+from utils.logging import logger
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):
-    def __init__(self, document_id, ui_recipe, attribute):
+    def __init__(self, data_source_id, document_id, ui_recipe, attribute):
+        self.data_source_id = data_source_id
         self.document_id = document_id
         self.ui_recipe = ui_recipe
         self.attribute = attribute
@@ -20,6 +22,9 @@ class GetDocumentRequestObject(req.ValidRequestObject):
     def from_dict(cls, adict):
         invalid_req = req.InvalidRequestObject()
 
+        if "data_source_id" not in adict:
+            invalid_req.add_error("data_source_id", "is missing")
+
         if "document_id" not in adict:
             invalid_req.add_error("document_id", "is missing")
 
@@ -27,60 +32,61 @@ class GetDocumentRequestObject(req.ValidRequestObject):
             return invalid_req
 
         return cls(
-            document_id=adict.get("document_id"), ui_recipe=adict.get("ui_recipe"), attribute=adict.get("attribute")
+            data_source_id=adict.get("data_source_id"),
+            document_id=adict.get("document_id"),
+            ui_recipe=adict.get("ui_recipe"),
+            attribute=adict.get("attribute"),
         )
 
 
-PRIMITIVES = ["string", "number", "integer", "boolean"]
-
-
 class GetDocumentUseCase(uc.UseCase):
-    def __init__(self, document_repository: DocumentRepository):
-        self.document_repository = document_repository
+    def __init__(self, repository_provider=get_repository):
+        self.repository_provider = repository_provider
+        self.document_service = DocumentService(repository_provider=self.repository_provider)
 
     def process_request(self, request_object: GetDocumentRequestObject):
+        data_source_id: str = request_object.data_source_id
         document_id: str = request_object.document_id
         attribute: str = request_object.attribute
 
-        document_service = DocumentService()
-
-        document = document_service.get_by_uid(document_uid=document_id, document_repository=self.document_repository)
-
-        data = document.data
+        document = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
 
         if attribute:
-            dotted_data = DottedDict(data)
-            data = dotted_data[attribute].to_python()
+            document = document.get_by_path(attribute.split("."))
 
-        blueprint = get_blueprint(data["type"])
+        blueprint = document.blueprint
 
         children = []
         dtos = []
         self.add_children_types(children, dtos, blueprint)
 
         return res.ResponseSuccess(
-            {"blueprint": blueprint.to_dict(), "document": data, "children": children, "dtos": dtos}
+            {"blueprint": blueprint.to_dict_raw(), "document": document.to_dict(), "children": children, "dtos": dtos}
         )
 
     # todo control recursive iterations iterations, decided by plugin?
     def add_children_types(self, children, dtos, blueprint):
         for attribute in blueprint.attributes:
-            attribute_type = attribute.type
+            attribute_type = attribute.attribute_type
             self.add_dtos(dtos, attribute)
             if attribute_type not in PRIMITIVES:
                 # prevent infinite recursion.
                 child_blueprint_name = attribute_type.split("/")[-1]
                 type_in_children = next((x for x in children if x["name"] == child_blueprint_name), None)
                 if not type_in_children:
-                    child_blueprint = get_blueprint(attribute_type)
+                    child_blueprint = self.document_service.blueprint_provider.get_blueprint(attribute_type)
                     if not isinstance(child_blueprint, (dict, type(None))):
                         children.append(child_blueprint.to_dict())
                         self.add_children_types(children, dtos, child_blueprint)
 
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:
-            enum_blueprint = get_entity(attribute.enum_type)
             try:
-                dtos.append(enum_blueprint.to_dict(include_defaults=True))
-            except AttributeError:
+                enum_blueprint: DTO = get_document_by_ref(attribute.enum_type)
+                dtos.append(enum_blueprint.to_dict())
+            except AttributeError as error:
+                logger.exception(error)
+                print(f"failed to append enumType {attribute}")
+            except Exception as error:
+                logger.exception(error)
                 print(f"failed to append enumType {attribute}")

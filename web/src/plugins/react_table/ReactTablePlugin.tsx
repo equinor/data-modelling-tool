@@ -1,11 +1,8 @@
 import React from 'react'
-import {
-  BlueprintAttributeType,
-  KeyValue,
-  PluginProps,
-} from '../../domain/types'
+import { KeyValue, PluginProps } from '../../domain/types'
 import { ReactTable } from './ReactTable'
 import { Blueprint } from '../../domain/Blueprint'
+import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 type RowData = {
   subRows: any[]
@@ -35,8 +32,11 @@ export const ReactTablePlugin = (props: PluginProps) => {
   )
 
   const data = React.useMemo(() => getData(mappings, document, blueprint), [])
-
-  return <ReactTable columns={columns} data={data} />
+  if (columns?.length && columns[0].columns.length) {
+    return <ReactTable columns={columns} data={data} />
+  }
+  console.warn('No table columns are configured. Make sure the recipe is configured correctly.')
+  return null;
 }
 
 export function getData(
@@ -47,25 +47,24 @@ export function getData(
   const rows: RowData[] = []
   try {
     mappings.columns.forEach((attrName: string) => {
-      const attr: BlueprintAttributeType | undefined = blueprint.getAttribute(
-        attrName
-      )
+      const attr:
+        | BlueprintAttribute
+        | undefined = blueprint.getBlueprintAttribute(attrName)
       if (attr) {
-        if (blueprint.isArray(attr) && blueprint.isPrimitive(attr.type)) {
-          const values = document[attr.name]
+        if (attr.isArray() && attr.isPrimitive()) {
+          const values = document[attr.getName()]
           values.forEach((val: any, index: number) => {
             if (!rows[index]) {
               rows.push({
                 subRows: [],
               })
             }
-            rows[index][attr.name] = val
+            rows[index][attr.getName()] = val
           })
         }
 
-        //@todo use type and name in blueprint to check if document is array or not.
         // need blueprintProvider to avoid match on name.
-        if (!blueprint.isArray(attr) && typeof document.slice !== undefined) {
+        if (!attr.isArray() && typeof document.slice !== undefined) {
           const values = document
           values.forEach((val: any, index: number) => {
             if (!rows[index]) {
@@ -73,7 +72,7 @@ export function getData(
                 subRows: [],
               })
             }
-            rows[index][attr.name] = val[attr.name]
+            rows[index][attr.getName()] = val[attr.getName()]
           })
         }
       }

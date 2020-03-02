@@ -17,12 +17,14 @@ describe('ReactTablePlugin', () => {
       type: '',
       attributes: [
         {
-          type: 'number',
+          attributeType: 'number',
+          type: 'system/SIMOS/BlueprintAttribute',
           name: 'value1',
           dimensions: '*',
         },
         {
-          type: 'string',
+          attributeType: 'string',
+          type: 'system/SIMOS/BlueprintAttribute',
           name: 'value2',
           dimensions: '*',
         },
@@ -69,11 +71,13 @@ describe('ReactTablePlugin', () => {
       type: '',
       attributes: [
         {
-          type: 'string',
+          attributeType: 'string',
+          type: 'system/SIMOS/BlueprintAttribute',
           name: 'description',
         },
         {
-          type: 'string',
+          attributeType: 'string',
+          type: 'system/SIMOS/BlueprintAttribute',
           name: 'name',
         },
       ],

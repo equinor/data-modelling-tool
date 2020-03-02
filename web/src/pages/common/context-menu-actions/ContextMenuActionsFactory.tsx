@@ -14,6 +14,7 @@ import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
 import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
 import { Entity } from '../../../domain/types'
+import { insertReferenceAction } from './actions/insertReference'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -22,6 +23,7 @@ export enum ContextMenuActions {
   DOWNLOAD = 'DOWNLOAD',
   RUNNABLE = 'RUNNABLE',
   IMPORT = 'IMPORT',
+  INSERT_REFERENCE = 'INSERT_REFERENCE',
 }
 
 export interface ContextMenuActionProps {
@@ -46,8 +48,7 @@ const createNodes = (props: CreateNodesProps) => {
       const indexNodes = nodes.map((node: IndexNode) =>
         new TreeNodeBuilderOld(node).build()
       )
-      // TODO: Is it possible to move parent id to API? Seems hard.
-      const parentId = nodes[0]['parentId'] || node.nodeData.nodeId
+      const parentId = nodes[0]['parentId']
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
       // Connect new nodes to parent in tree
@@ -87,7 +88,10 @@ const getFormProperties = (
       return Action(action, node, setShowModal, createNodes, layout, entity)
     }
     case ContextMenuActions.IMPORT: {
-      return importAction(action, setShowModal)
+      return importAction(action)
+    }
+    case ContextMenuActions.INSERT_REFERENCE: {
+      return insertReferenceAction(action, node, setShowModal, createNodes)
     }
 
     default:

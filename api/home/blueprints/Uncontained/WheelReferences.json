@@ -1,0 +1,46 @@
+{
+  "name": "UncontainedWheels",
+  "type": "system/SIMOS/Blueprint",
+  "description": "",
+  "attributes": [
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "name",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "description",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "type",
+      "attributeType": "string",
+      "default": "system/SIMOS/Blueprint"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "RefToWheels",
+      "attributeType": "SSR-DataSource/CarPackage/Wheel",
+      "dimensions": "*",
+      "optional": true,
+      "contained": false
+    }
+  ],
+  "storageRecipes": [
+    {
+      "type": "system/SIMOS/StorageRecipe",
+      "name": "DEFAULT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "RefToWheels",
+          "type": "SSR-DataSource/CarPackage/Wheel",
+          "contained": false
+        }
+      ]
+    }
+  ],
+  "uiRecipes": []
+}

@@ -8,8 +8,13 @@ import { BlueprintProvider } from '../BlueprintProvider'
 import FileDirectoryWidget from '../form-rjsf-widgets/FileDirectoryWidget'
 import DestinationSelectorWidget from '../form-rjsf-widgets/DestinationSelectorWidget'
 import { CollapsibleField } from '../widgets/CollapsibleField'
-import PackageSelectorWidget from '../form-rjsf-widgets/PackagesSelectorWidget'
+import {
+  PackagesSelector,
+  BlueprintsSelector,
+} from '../form-rjsf-widgets/MultiSelectorWidget'
 import BlueprintSelectorWidget from '../form-rjsf-widgets/BlueprintSelectorWidget'
+import { ReadOnlyWidget } from '../form-rjsf-widgets/ReadOnly'
+import EntitySelectorWidget from '../form-rjsf-widgets/EntitySelectorWidget'
 
 export interface EditPluginProps extends PluginProps {
   onSubmit: (data: any) => void
@@ -36,7 +41,10 @@ export const EditPlugin = (props: EditPluginProps) => {
           collapsible: CollapsibleField,
           destination: DestinationSelectorWidget,
           blueprint: BlueprintSelectorWidget,
-          packages: PackageSelectorWidget,
+          blueprints: BlueprintsSelector,
+          packages: PackagesSelector,
+          matrix: ReadOnlyWidget,
+          reference: EntitySelectorWidget,
           hidden: () => <div />,
         }}
         widgets={{
@@ -88,9 +96,10 @@ function fixRecursive(
 function validate(blueprint: Blueprint) {
   return (formData: KeyValue, errors: any) => {
     Object.keys(formData).forEach((key: string) => {
-      const attr = blueprint.getAttribute(key)
+      const attr = blueprint.getBlueprintAttribute(key)
+
       if (attr) {
-        if (blueprint.isArray(attr) && !blueprint.isPrimitive(attr.type)) {
+        if (attr.isArray() && !attr.isPrimitive()) {
           const arr: any[] = formData[key]
           arr.forEach((item: any, index: number) => {
             if (!item.name) {

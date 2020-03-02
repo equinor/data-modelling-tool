@@ -3,8 +3,9 @@ export type KeyValue = {
 }
 
 export type BlueprintAttributeType = {
-  name: string
   type: string
+  name: string
+  attributeType: string
   description?: string
   label?: string
   optional?: boolean
@@ -23,7 +24,8 @@ type BaseBlueprint = {
 
 export interface BlueprintType extends BaseBlueprint {
   attributes: BlueprintAttributeType[]
-  uiRecipes: any[]
+  // uiRecipes and storageRecipes may be optional in a blueprint.
+  uiRecipes?: any[]
   storageRecipes?: any[]
 }
 

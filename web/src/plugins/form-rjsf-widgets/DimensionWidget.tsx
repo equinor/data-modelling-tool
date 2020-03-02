@@ -49,7 +49,9 @@ export const DimensionWidget = (props: Props) => {
             value={value}
             onChange={onChange}
           />{' '}
-          <span>Format: [size,size] Example: "[*,10,2000]"</span>
+          <span>
+            Comma separated size(s) of dimension(s). "*" means unfixed size
+          </span>
         </div>
       )}
     </>

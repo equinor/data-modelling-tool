@@ -1,7 +1,6 @@
-from typing import List
+from typing import List, Dict
 
 from config import Config
-from core.domain.data_source import DataSource
 from services.database import dmt_database
 from core.enums import DataSourceDocumentType, DataSourceType
 
@@ -9,19 +8,21 @@ from core.enums import DataSourceDocumentType, DataSourceType
 class DataSourceRepository:
     collection = dmt_database[f"{Config.DATA_SOURCES_COLLECTION}"]
 
-    def list(self, document_type: DataSourceDocumentType) -> List[DataSource]:
-        all_sources = [DataSource(id="local", host="client", name="Local workspace", type=DataSourceType.LOCAL.value)]
+    def list(self, document_type: DataSourceDocumentType) -> List[Dict]:
+        all_sources = [
+            {"id": "local", "host": "client", "name": "Local workspace", "type": DataSourceType.LOCAL.value}
+        ]
         for data_source in self.collection.find(
             filter={"documentType": {"$regex": document_type.value}}, projection=["host", "name", "type"]
         ):
             data_source["id"] = data_source.pop("_id")
             all_sources.append(
-                DataSource(
-                    id=data_source["id"],
-                    host=data_source["host"],
-                    name=data_source["name"],
-                    type=DataSourceType(data_source["type"]).value,
-                )
+                {
+                    "id": data_source["id"],
+                    "host": data_source["host"],
+                    "name": data_source["name"],
+                    "type": DataSourceType(data_source["type"]).value,
+                }
             )
         return all_sources
 

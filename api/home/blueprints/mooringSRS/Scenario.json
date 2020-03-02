@@ -1,4 +1,5 @@
 {
+<<<<<<< HEAD
     "name": "Scenario",
     "description": "A model for mooring SRS analysis scenario.",
     "type": "system/SIMOS/Blueprint",
@@ -75,3 +76,52 @@
         "attributes": []
       }]
 }
+=======
+  "name": "Scenario",
+  "description": "",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "variable name for named accessing",
+      "default": "scenario",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "env",
+      "attributeType": "SSR-DataSource/mooringSRS/env/Environment",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "environment",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "output",
+      "attributeType": "SSR-DataSource/mooringSRS/run/RunOutput",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "run output",
+      "contained": true,
+      "optional": true
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}
+>>>>>>> origin/stable

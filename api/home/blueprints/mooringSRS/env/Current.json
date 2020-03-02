@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 {
     "name": "Current",
     "description": "Current model.",
@@ -70,3 +71,67 @@
         "attributes": []
       }]
 }
+=======
+{
+  "name": "Current",
+  "description": "Current model.",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "variable name for named accessing",
+      "default": "current",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "currentDepths",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "A list of current levels, positive downward, in [m].",
+      "default": "0.0",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "currentDirections",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "Current direction -going to- in [deg].",
+      "default": "0.0",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "currentVelocities",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "A list of current velocities at dfferent levels [m/s].",
+      "default": "0.0",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}
+>>>>>>> origin/stable

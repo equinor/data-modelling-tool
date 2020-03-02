@@ -1,7 +1,7 @@
 import {
   AttributeOnChange,
   AttributeWrapper,
-  DataType,
+  EnumTypePickerWidget,
   NumberInput,
   TextAreaWidget,
   TextInput,
@@ -24,6 +24,14 @@ const AttributeGroup = styled.div`
   border-radius: 5px;
 `
 
+const DisabledEdit = styled.code`
+  border: 1px solid;
+  margin-left: 10px;
+  padding: 5px;
+  border-radius: 5px;
+  color: grey;
+`
+
 type Props = {
   formData: any
   onChange: (value: any) => void
@@ -32,9 +40,9 @@ type Props = {
 
 export const AttributeWidget = (props: Props) => {
   let { attributes } = props.uiSchema
-
-  const initialState = { type: DataType.STRING, ...props.formData }
-  const [formData, setFormData] = useState<BlueprintAttributeType>(initialState)
+  const [formData, setFormData] = useState<BlueprintAttributeType>(
+    props.formData
+  )
 
   if (!attributes) {
     console.error('this widget depends on a attributes list.')
@@ -52,10 +60,15 @@ export const AttributeWidget = (props: Props) => {
     props.onChange(newFormData)
   }
 
-  const selectedType = formData['type']
+  const selectedType = formData['attributeType']
   const selectedDimensions = formData['dimensions']
   if (REQUIRED_ATTRIBUTES.includes(formData.name)) {
-    return <RequiredAttributesGroup name={formData.name} type={formData.type} />
+    return (
+      <RequiredAttributesGroup
+        name={formData.name}
+        attributeType={formData.attributeType}
+      />
+    )
   }
   return (
     <AttributeGroup>
@@ -76,6 +89,14 @@ export const AttributeWidget = (props: Props) => {
         if (Widget === undefined) {
           console.warn('widget is not supported: ', attributeType)
           return null
+        }
+        if (name === 'type') {
+          return (
+            <AttributeWrapper key={name}>
+              <label>type: </label>
+              <DisabledEdit>{value}</DisabledEdit>
+            </AttributeWrapper>
+          )
         }
         return (
           <AttributeWrapper key={name}>
@@ -118,7 +139,7 @@ function getWidgetByName(
 }
 
 function getWidgetByType(attributeType: BlueprintAttributeType): Function {
-  let widget: Function = (widgetTypes as any)[attributeType.type]
+  let widget: Function = (widgetTypes as any)[attributeType.attributeType]
   if (widget === undefined) {
     widget = TextInput
   }
@@ -126,10 +147,10 @@ function getWidgetByType(attributeType: BlueprintAttributeType): Function {
 }
 
 const widgetNames = {
-  type: TypeWidget,
+  attributeType: TypeWidget,
   dimensions: DimensionWidget,
   description: TextAreaWidget,
-  enumType: TextInput,
+  enumType: EnumTypePickerWidget,
 }
 
 const widgetTypes = {

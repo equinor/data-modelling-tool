@@ -4,48 +4,56 @@
   "description": "This describes ui recipe",
   "attributes": [
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "name",
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "type"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "description",
       "optional": true,
       "default": ""
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "plugin",
       "optional": true,
       "default": "",
       "enumType": "system/DMT/plugins/ui/UiPluginsEnum"
     },
     {
-      "type": "string",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "field",
       "optional": true,
       "default": ""
     },
     {
       "name": "hideTab",
-      "type": "boolean",
+      "attributeType": "boolean",
+      "type": "system/SIMOS/BlueprintAttribute",
       "optional": true,
       "default": false
     },
     {
-      "type": "system/SIMOS/UiAttributeOption",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "system/SIMOS/UiAttributeOption",
       "name": "options",
       "dimensions": "*",
       "contained": true,
       "optional": true
     },
     {
-      "type": "system/SIMOS/UiAttribute",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "system/SIMOS/UiAttribute",
       "name": "attributes",
       "dimensions": "*",
       "optional": true,
@@ -54,14 +62,33 @@
   ],
   "uiRecipes": [
     {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "INDEX",
+      "description": "",
+      "plugin": "INDEX",
+      "attributes": [
+        {
+          "name": "attributes",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        },
+        {
+          "name": "options",
+          "type": "system/SIMOS/UiAttribute",
+          "contained": false
+        }
+      ]
+    },
+    {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "EDIT_PLUGIN",
       "attributes": [
         {
-          "name": "plugin",
+          "name": "name",
           "type": "system/SIMOS/UiAttribute",
-          "description": "PREVIEW | EDIT_PLUGIN | INDEX"
+          "required": true,
+          "description": "Name of ui view (tab). Override or create new tab. \"Preview\" | \"Edit\""
         },
         {
           "name": "type",
@@ -71,10 +98,9 @@
           "disabled": true
         },
         {
-          "name": "name",
+          "name": "plugin",
           "type": "system/SIMOS/UiAttribute",
-          "required": true,
-          "description": "Name of ui view (tab). Override or create new tab. \"Preview\" | \"Edit\""
+          "description": "PREVIEW | EDIT_PLUGIN | INDEX"
         },
         {
           "name": "options",
