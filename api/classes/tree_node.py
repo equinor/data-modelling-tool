@@ -330,7 +330,7 @@ class NodeBase:
                             # This means we are creating a new, non-contained document. Lists are always contained.
                             if not child.attribute_is_contained() and child.uid == "" and not child.is_array():
                                 new_node = Node(
-                                    key=key, uid=uuid4(), entity=new_node, blueprint_provider=self.blueprint_provider,
+                                    key=key, uid=uuid4(), entity=new_node, blueprint_provider=self.blueprint_provider
                                 )
                                 self.children[index] = new_node
                             else:
@@ -473,7 +473,7 @@ class Node(NodeBase):
                         if child.key == key:
                             # This means we are creating a new, non-contained document. Lists are always contained.
                             if not child.attribute_is_contained() and child.uid == "" and not child.is_array():
-                                new_node = Node(key=key, entity=new_node, blueprint_provider=self.blueprint_provider,)
+                                new_node = Node(key=key, entity=new_node, blueprint_provider=self.blueprint_provider)
                                 self.children[index] = new_node
                             else:
                                 child.update(new_data)

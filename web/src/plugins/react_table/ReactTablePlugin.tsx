@@ -35,8 +35,10 @@ export const ReactTablePlugin = (props: PluginProps) => {
   if (columns?.length && columns[0].columns.length) {
     return <ReactTable columns={columns} data={data} />
   }
-  console.warn('No table columns are configured. Make sure the recipe is configured correctly.')
-  return null;
+  console.warn(
+    'No table columns are configured. Make sure the recipe is configured correctly.'
+  )
+  return null
 }
 
 export function getData(

@@ -69,9 +69,7 @@ class DocumentServiceTestCase(unittest.TestCase):
             blueprint_provider=blueprint_provider, repository_provider=repository_provider
         )
         document_service.remove_document(data_source_id="testing", document_id="1", parent_id=None)
-        expected = {
-            "2": {"uid": "2", "_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"},
-        }
+        expected = {"2": {"uid": "2", "_id": "2", "name": "a_reference", "description": "", "type": "blueprint_2"}}
         assert pretty_eq(expected, doc_storage) is None
 
     def test_remove_nested(self):

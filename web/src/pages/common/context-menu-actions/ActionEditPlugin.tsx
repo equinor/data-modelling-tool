@@ -45,21 +45,21 @@ export function ActionEditPlugin(props: Props) {
             }
             return true
           })
-            Api2.postApiAction({
-              requestData:  {
-                action: 'UPLOAD',
-                datasource: parent, //only rootpackages can have import.
-                parentId: nodeData.nodeId,
-                data,
-              },
-              onSuccess: (res: any) => {
-                NotificationManager.success('', `Uploaded ${data.length} files.`)
-                setShowModal(false)
-              },
-              onError: (err: any) => {
-                console.log(err)
-              },
-            });
+          Api2.postApiAction({
+            requestData: {
+              action: 'UPLOAD',
+              datasource: parent, //only rootpackages can have import.
+              parentId: nodeData.nodeId,
+              data,
+            },
+            onSuccess: (res: any) => {
+              NotificationManager.success('', `Uploaded ${data.length} files.`)
+              setShowModal(false)
+            },
+            onError: (err: any) => {
+              console.log(err)
+            },
+          })
         }
       }}
     />

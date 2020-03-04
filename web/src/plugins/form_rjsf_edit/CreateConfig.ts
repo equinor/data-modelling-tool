@@ -91,17 +91,18 @@ class BlueprintUtil {
   constructor(blueprintType: BlueprintType, pluginName: string) {
     this.addAttributes(this.attributes, blueprintType.attributes)
 
-    blueprintType.uiRecipes && blueprintType.uiRecipes
-      .filter((recipe: any) => recipe.plugin === pluginName)
-      .forEach((recipe: any) => {
-        const pluginKey = recipe.plugin
-        if (pluginKey) {
-          this.uiRecipes[pluginKey] = {}
-          if (recipe.attributes) {
-            this.addAttributes(this.uiRecipes[pluginKey], recipe.attributes)
+    blueprintType.uiRecipes &&
+      blueprintType.uiRecipes
+        .filter((recipe: any) => recipe.plugin === pluginName)
+        .forEach((recipe: any) => {
+          const pluginKey = recipe.plugin
+          if (pluginKey) {
+            this.uiRecipes[pluginKey] = {}
+            if (recipe.attributes) {
+              this.addAttributes(this.uiRecipes[pluginKey], recipe.attributes)
+            }
           }
-        }
-      })
+        })
   }
 
   private addAttributes(container: KeyValue, attributes: any[]): void {
