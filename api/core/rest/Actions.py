@@ -6,10 +6,11 @@ from classes.dto import DTO
 
 from classes.data_source import DataSource
 from core.repository.repository_factory import get_repository
-
+from core.service.document_service import DocumentService
 
 class ApiActions(Enum):
-    UPLOAD = "UPLOAD"
+    UPLOAD = "UPLOAD",
+    UPDATE_RAW_DOCUMENT = "UPDATE_RAW_DOCUMENT"
 
 
 blueprint = Blueprint("actions", __name__)
@@ -24,19 +25,20 @@ def process_action():
 
 class ProcessAction:
     def __init__(self, request_data):
-        data_source_id = request_data["dataSource"]
-        data_source = DataSource(uid=data_source_id)
-        self.data_source = DataSource(uid=data_source_id)
-        self.document_repository = get_repository(data_source)
-
         # shared common request data properties
+        self.data_source_id = request_data["datasource"]
         self.action = request_data["action"]
         self.data = request_data["data"]
-        self.parent_id = request_data["parentId"]
+        self.request_data = request_data
+
+        repository_provider = get_repository
+        self.document_service = DocumentService(repository_provider=repository_provider)
 
     def process_action(self):
         if self.action == ApiActions.UPLOAD.value:
             return self._process_upload()
+        elif self.action == ApiActions.UPDATE_RAW_DOCUMENT.value:
+            return self._process_update_raw_document()
         else:
             return Response(
                 json.dumps({"status": f"action {self.action} is not supported"}),
@@ -46,14 +48,23 @@ class ProcessAction:
 
     def _process_upload(self):
         # todo implement use-case for upload.
-        package_dto = self.document_repository.get(self.parent_id)
+        parent_id = request_data["parentId"]
+        # todo use document_service with invalidate cache.
+#         package_dto = self.document_repository.get(parent_id)
+#         for document_data in self.data:
+#             dto = DTO(data=document_data["entity"])
+#             # assume everything is contained in storage until database service layer handle this.
+#             self.document_repository.add(dto)
+#             reference = {"_id": dto.uid, "name": dto.data.get("name", ""), "type": dto.data.get("type", "")}
+#             package_dto.get_values("content").append(reference)
+#
+#         self.update_raw_document.update(package_dto)
+        return Response(json.dumps({"status": "ok"}), mimetype="application/json", status=200)
 
-        for document_data in self.data:
-            dto = DTO(data=document_data["entity"])
-            # assume everything is contained in storage until database service layer handle this.
-            self.document_repository.add(dto)
-            reference = {"_id": dto.uid, "name": dto.data.get("name", ""), "type": dto.data.get("type", "")}
-            package_dto.get_values("content").append(reference)
-
-        self.document_repository.update(package_dto)
+    def _process_update_raw_document(self):
+        if "_id" not in self.data:
+            print('invalid usage of the action. Document must have an id, did you intend to create a new document?')
+        else:
+            uid = self.data["_id"]
+            self.document_service.update_raw_document(data_source_id=self.data_source_id, dto=DTO(uid=uid, data=self.data))
         return Response(json.dumps({"status": "ok"}), mimetype="application/json", status=200)

@@ -41,7 +41,8 @@ export const DocumentNode = (props: DocumentNodeProps) => {
                     onSelect.uid,
                     onSelect.title,
                     onSelect.component,
-                    onSelect.data
+                    // pass data object which holds context for this layout item.
+                    {...onSelect.data, node},
                   )
                   layout.focus(node.nodeData.nodeId)
                 }}

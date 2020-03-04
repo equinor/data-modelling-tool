@@ -9,10 +9,10 @@ import BlueprintPreview from '../../../plugins/preview/PreviewPlugin'
 import pluginHook from '../../../external-plugins/index'
 import { EditPlugin, PlotPlugin, ViewPlugin } from '../../../plugins'
 import { LayoutContext } from '../golden-layout/LayoutContext'
-import { PluginProps, UiRecipe } from '../../../domain/types'
+import {KeyValue, PluginProps, UiRecipe} from '../../../domain/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
 import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
-import Api2 from '../../../api/Api2'
+import Api2, {ApiAction} from '../../../api/Api2'
 // @ts-ignore
 import { Viewer3dPlugin } from '../../../plugins/3dviewer/Viewer3dPlugin'
 
@@ -41,6 +41,7 @@ const View = (props: any) => {
     uiRecipe,
     dtos,
     attribute,
+    datasource,
   } = props
 
   let pluginProps: PluginProps = {
@@ -115,9 +116,25 @@ const View = (props: any) => {
               layout,
             })
             // create a new function with param formData instead of schemas.
-            const updateEntity = (formData: any) => {
-              console.log(formData)
-              onFormSubmitWrapper({ formData })
+            const updateEntity = (formData: any, updateRaw: boolean) => {
+              if (updateRaw) {
+                  Api2.postApiAction({
+                    requestData: {
+                      data: formData,
+                      action: ApiAction.UPDATE_RAW_DOCUMENT,
+                      datasource,
+                    },
+                    onSuccess: () => {
+                      //@todo use toast
+                      console.log('updated raw document')
+                    },
+                    onError: () => {
+                      console.error('failed to update raw document.')
+                    }
+                  })
+              } else {
+                onFormSubmitWrapper({ formData }, updateRaw)
+              }
             }
             // pass the wrapper function updateEntity to the plugins.
             const ExternalPlugin = pluginHook(uiRecipe)
@@ -163,8 +180,10 @@ const ViewList = (props: PluginProps) => {
 }
 
 const DocumentComponent = (props: any) => {
-  const { dataUrl, updates } = props
-
+  const { dataUrl, updates, node } = props
+  //@todo add datasource to all nodes in the tree.
+  // a index node should know which datasource it belongs to without traversing the tree.
+  const datasource = node.path.split('/')[0];
   return (
     <Wrapper>
       <FetchDocument
@@ -177,6 +196,7 @@ const DocumentComponent = (props: any) => {
             <ViewList
               {...props}
               document={document}
+              datasource={datasource}
               blueprintTypes={data.children}
               blueprintType={data.blueprint}
               dtos={data.dtos || []}

@@ -245,3 +245,7 @@ class DocumentService:
         self.save(root, data_source_id)
 
         return {"uid": new_node.node_id}
+
+    def update_raw_document(self, data_source_id: str, dto: DTO):
+        self.repository_provider(data_source_id).update(dto)
+        self.invalidate_cache()

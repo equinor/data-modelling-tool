@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { DmtApi } from './Api'
+import {KeyValue} from "../domain/types";
 
 const api = new DmtApi()
 
@@ -29,6 +30,24 @@ interface Get {
   onSuccess: (res: any) => void
   onError: OnError
 }
+
+interface Action {
+  // non optional attributes of an action.
+  dataSource: string;
+  action: ApiAction;
+  data: KeyValue;
+}
+
+export enum ApiAction {
+  // match ApiActions.py enum.
+  UPLOAD= 'UPLOAD',
+  UPDATE_RAW_DOCUMENT= 'UPDATE_RAW_DOCUMENT',
+}
+
+interface UploadAction extends Action {
+  parentId: string;
+}
+
 
 export default class Api2 {
   static download({ url, data, onSuccess, onError = () => {} }: Post) {
@@ -125,6 +144,13 @@ export default class Api2 {
         onSuccess(data)
       })
       .catch(onError)
+  }
+
+  static postApiAction({ requestData, onSuccess, onError = () => {} }: any): void {
+    axios
+      .post('/api/v3/actions', requestData)
+      .then(({data}) => onSuccess(data))
+      .catch(onError);
   }
 }
 

@@ -38,7 +38,7 @@ function PlotlyPoc(props) {
       ]}
       onClick={() => {
         document.description = 'test update'
-        updateEntity(document)
+        updateEntity(document, true)
       }}
       layout={{ width: 320, height: 240, title: 'A Fancy Plot' }}
     />
