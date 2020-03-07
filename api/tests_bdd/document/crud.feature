@@ -24,7 +24,13 @@ Feature: Document 2
                 "_id": "2",
                 "name": "ItemType",
                 "type": "test-source-name/TestData/ItemType"
+            },
+            {
+                "_id": "4",
+                "name": "ItemTypeTwo",
+                "type": "test-source-name/TestData/ItemTypeTwo"
             }
+
         ],
         "isRoot": true,
         "storageRecipes":[],
@@ -37,6 +43,53 @@ Feature: Document 2
     {
       "type": "system/SIMOS/Blueprint",
       "name": "ItemType",
+      "description": "",
+      "attributes": [
+        {
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
+          "name": "name"
+        },
+        {
+          "attributeType": "string", "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "default": "",
+          "name": "description"
+        },
+        {
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "name": "type"
+        },
+        {
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "name": "extra"
+        },
+        {
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "name": "list"
+        },
+        {
+          "attributeType": "test-source-name/TestData/ItemTypeTwo",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "name": "complexList",
+          "dimensions" : "*"
+        }
+      ],
+      "storageRecipes":[],
+      "uiRecipes":[]
+    }
+    """
+
+    Given there exist document with id "4" in data source "test-source-name"
+    """
+    {
+      "type": "system/SIMOS/Blueprint",
+      "name": "ItemTypeTwo",
       "description": "",
       "attributes": [
         {
@@ -87,6 +140,19 @@ Feature: Document 2
           "attributeType": "string",
           "type": "system/SIMOS/BlueprintAttribute",
           "name": "description"
+        },
+        {
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "name": "itemContained"
+        },
+        {
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "dimensions": "*",
+          "name": "itemsContained"
         },
         {
           "attributeType": "test-source-name/TestData/ItemType",
@@ -206,10 +272,6 @@ Feature: Document 2
     }
     """
 
-    # Skip until we have proper entity creation on "load test-data".
-    # Current issue is caused by "get_complete_doc()" not creating a Node with a blueprint
-    # if the nested entity doesn't exist in database.
-   @skip
   Scenario: Update document (both contained and not contained)
     Given i access the resource url "/api/v2/documents/data-source-name/6"
     When i make a "PUT" request
@@ -218,14 +280,42 @@ Feature: Document 2
       "name": "new_name",
       "type": "test-source-name/TestData/TestContainer",
       "description": "some description",
+      "itemContained": {
+          "name": "item_contained",
+          "type": "test-source-name/TestData/ItemType",
+           "extra": "extra_1"
+      },
+      "itemsContained": [
+        {
+          "name": "item_1_contained",
+          "type": "test-source-name/TestData/ItemType",
+          "list": ["a", "b", "c"],
+          "complexList": [
+              {
+                "name": "item_1_contained",
+                "type": "test-source-name/TestData/ItemTypeTwo",
+                "extra": "extra_1"
+              }
+            ]
+        }
+      ],
       "itemNotContained": {
           "name": "item_single",
-          "type": "test-source-name/TestData/ItemType"
+          "type": "test-source-name/TestData/ItemType",
+           "extra": "extra_1"
       },
       "itemsNotContained": [
         {
           "name": "item_1",
-          "type": "test-source-name/TestData/ItemType"
+          "type": "test-source-name/TestData/ItemType",
+          "list": ["a", "b"],
+          "complexList": [
+              {
+                "name": "item_1",
+                "type": "test-source-name/TestData/ItemTypeTwo",
+                "extra": "extra_1"
+              }
+            ]
         }
       ]
     }
@@ -238,18 +328,48 @@ Feature: Document 2
         "name": "new_name",
         "type": "test-source-name/TestData/TestContainer",
         "description": "some description",
+        "itemContained": {
+          "name": "item_contained",
+          "type": "test-source-name/TestData/ItemType",
+           "extra": "extra_1"
+        },
+        "itemsContained": [
+        {
+            "name": "item_1_contained",
+            "type": "test-source-name/TestData/ItemType",
+            "list": ["a", "b", "c"],
+            "complexList": [
+                {
+                  "name": "item_1_contained",
+                  "type": "test-source-name/TestData/ItemTypeTwo",
+                  "extra": "extra_1"
+                }
+              ]
+          }
+        ],
         "itemNotContained": {
             "name": "item_single",
-            "type": "test-source-name/TestData/ItemType"
-        }
+            "type": "test-source-name/TestData/ItemType",
+            "extra": "extra_1"
+        },
+        "itemsNotContained": [
+          {
+            "name": "item_1",
+            "type": "test-source-name/TestData/ItemType",
+            "list": ["a", "b"],
+            "complexList": [
+              {
+                "name": "item_1",
+                "type": "test-source-name/TestData/ItemTypeTwo",
+                "extra": "extra_1"
+              }
+            ]
+          }
+        ]
       }
     }
     """
 
-    # Skip until we have proper entity creation on "load test-data".
-    # Current issue is caused by "get_complete_doc()" not creating a Node with a blueprint
-    # if the nested entity doesn't exist in database.
-    @skip
   Scenario: Update document (attribute and not contained)
     Given i access the resource url "/api/v2/documents/data-source-name/6?attribute=itemNotContained"
     And data modelling tool templates are imported
