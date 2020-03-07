@@ -210,6 +210,8 @@ class DocumentService:
         if attribute_path:
             target_node = root.search(f"{document_id}.{attribute_path}")
 
+        print("target_node", target_node)
+
         target_node.update(data)
         self.save(root, data_source_id)
 
