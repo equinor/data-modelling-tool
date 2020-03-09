@@ -36,7 +36,13 @@ export type ActionProps = {
 
 export type Method = (props: ActionProps) => any
 
-function updateDocument(output: Output, layout: any) {
+function updateDocument(
+  node: any,
+  output: Output,
+  layout: any,
+  parentId: any,
+  createNodes: Function
+) {
   Api2.put({
     url: `/api/v2/documents/${output.dataSource}/${output.id}`,
     data: output.entity,
@@ -46,10 +52,25 @@ function updateDocument(output: Output, layout: any) {
         NotificationManager.success(
           `updated document: ${response.data.data.name}`
         )
+      refresh(node, output, parentId, createNodes)
     },
     onError: (error: any) => {
       NotificationManager.error(`failed to update document: ${output.id}`)
     },
+  })
+}
+
+function refresh(
+  node: TreeNodeRenderProps,
+  output: any,
+  parentId: string,
+  createNodes: Function
+) {
+  // Create the result node in index tree
+  createNodes({
+    documentId: `${output.id}`,
+    nodeUrl: `/api/v4/index/${output.dataSource}/${parentId}`,
+    node,
   })
 }
 
@@ -70,8 +91,9 @@ export const Action = (
   // @ts-ignore
   const method: Method = Actions[methodToRun]
   const dataSource = node.path.substr(0, node.path.indexOf('/'))
-  async function handleUpdate(output: Output) {
-    await updateDocument(output, layout)
+
+  async function handleUpdate(output: Output, parentId: string) {
+    await updateDocument(node, output, layout, parentId, createNodes)
   }
 
   const input: Input = {
