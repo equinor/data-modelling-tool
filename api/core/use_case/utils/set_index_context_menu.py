@@ -108,7 +108,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                 get_export_python_code_menu_item(data_source_id=data_source_id, document_id=node.node_id,)
             )
 
-        is_root_package = node.is_single() and node.is_root()
+        is_root_package = node.is_single() and node.type == DMT.PACKAGE.value
 
         # If it's a root package we need some more
         if is_root_package:
