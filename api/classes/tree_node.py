@@ -415,7 +415,7 @@ class Node(NodeBase):
         self.error_message = None
 
     def is_root(self):
-        return super().is_root()
+        return super().is_root() or self.type == DMT.PACKAGE.value
 
     @property
     def blueprint(self) -> Optional[Blueprint]:
