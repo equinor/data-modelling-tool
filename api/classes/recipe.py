@@ -31,7 +31,7 @@ class RecipeAttribute:
     def to_dict(self) -> Dict:
         result = {"name": self.name, "contained": self.is_contained}
         if self.field:
-            result["field"] = (self.field,)
+            result["field"] = self.field
         if self.collapsible:
             result["collapsible"] = self.collapsible
         if self.ui_recipe:

@@ -141,8 +141,7 @@
           "name": "type",
           "attributeType": "string",
           "type": "system/SIMOS/BlueprintAttribute",
-          "required": true,
-          "disabled": true
+          "field": "hidden"
         },
         {
           "name": "label",
@@ -162,6 +161,18 @@
           "attributeType": "string",
           "type": "system/SIMOS/BlueprintAttribute",
           "widget": "textarea"
+        },
+        {
+          "name": "attributeType",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "field": "hidden"
+        },
+        {
+          "name": "type",
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "field": "hidden"
         },
         {
           "name": "dimensions",
