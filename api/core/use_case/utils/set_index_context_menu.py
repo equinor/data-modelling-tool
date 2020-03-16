@@ -105,7 +105,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
         else:
             # Context menu: Export Python code
             menu_items.append(
-                get_export_python_code_menu_item(data_source_id=data_source_id, document_id=node.node_id,)
+                get_export_python_code_menu_item(data_source_id=data_source_id, document_id=node.node_id)
             )
 
         is_root_package = node.is_single() and node.type == DMT.PACKAGE.value

@@ -58,7 +58,7 @@ def generate_python_code(data_source_id: str, document_id: str):
     logger.info(f"Compiling the blueprint '{document_id}', in '{data_source_id}' to Python code")
     document_repository = get_repository(data_source_id)
     request_object = GeneratePythonCodeRequestObject.from_dict(
-        {"documentId": document_id, "dataSourceId": data_source_id,}
+        {"documentId": document_id, "dataSourceId": data_source_id}
     )
     use_case = GeneratePythonCodeUseCase(document_repository, get_repository)
     response = use_case.execute(request_object)

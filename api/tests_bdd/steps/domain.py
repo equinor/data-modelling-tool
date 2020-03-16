@@ -19,11 +19,7 @@ def generate_tree_from_rows(node: Node, rows):
         content_node = node.search(f"{node.node_id}.content")
         # Create content not if not exists
         if not content_node:
-            data = {
-                "name": "content",
-                "type": DMT.PACKAGE.value,
-                "attributeType": SIMOS.BLUEPRINT_ATTRIBUTE.value,
-            }
+            data = {"name": "content", "type": DMT.PACKAGE.value, "attributeType": SIMOS.BLUEPRINT_ATTRIBUTE.value}
             content_node = ListNode(
                 key="content",
                 uid="",

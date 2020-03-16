@@ -69,9 +69,7 @@ class DictExporter:
 
 class DictImporter:
     @classmethod
-    def from_dict(
-        cls, entity, uid, blueprint_provider, key="", node_attribute: BlueprintAttribute = None,
-    ):
+    def from_dict(cls, entity, uid, blueprint_provider, key="", node_attribute: BlueprintAttribute = None):
         return cls._from_dict(entity, uid, key, blueprint_provider, node_attribute)
 
     @classmethod
