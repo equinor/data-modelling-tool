@@ -32,8 +32,30 @@ def replace_prefix(path, prefix, where):
     return f"{prefix}/{path[index + len(f'/{where}/'):]}"
 
 
+def _get_dependencies(schema):
+    template_repository = TemplateRepositoryFromFile(schemas_location())
+    factory = Factory(template_repository, read_from_file=True)
+    dependencies = factory._get_dependencies(schema)
+    return [f"{dependency.__name__}.json" for dependency in dependencies if dependency]
+
+
+def _ensure_sensible_import_order(path: str, documents: List[str]) -> List[str]:
+    _order = []
+    for document in documents:
+        with open(f"{path}/{document}") as f:
+            schema = json.load(f)
+        _order.extend(_get_dependencies(schema))
+    order = []
+    for element in _order:
+        if element not in order and element in documents:
+            order.append(element)
+    return order + [document for document in documents if document not in order]
+
+
 def _add_documents(path, documents, collection, is_entity=False) -> List[Dict]:
     docs = []
+    if Config.VERIFY_IMPORTS and collection == Config.SYSTEM_COLLECTION:
+        documents = _ensure_sensible_import_order(path, documents)
     for file in documents:
         logger.info(f"Working on {file}...")
         with open(f"{path}/{file}") as json_file:
