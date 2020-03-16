@@ -1,4 +1,6 @@
 #!/bin/sh
+set -euo pipefail
+
 if [ ! -e /code/home/first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
   echo "Importing data"
   /code/reset-database.sh
