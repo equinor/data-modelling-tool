@@ -60,15 +60,16 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                             data_source_id=data_source_id, type=node.type, node_id=node.node_id
                         )
                     )
-
-        menu_items.append(
-            get_rename_menu_action(
-                data_source_id=data_source_id,
-                dotted_document_id=node.node_id,
-                type=node.type,
-                parent_uid=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
+        # Everything besides listNodes can be renamed. Could be supported in future.
+        if not node.is_array():
+            menu_items.append(
+                get_rename_menu_action(
+                    data_source_id=data_source_id,
+                    dotted_document_id=node.node_id,
+                    type=node.type,
+                    parent_uid=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
+                )
             )
-        )
         is_removable = True
 
         # type can be datasource, entities etc
