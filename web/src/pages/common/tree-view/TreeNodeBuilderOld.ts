@@ -64,7 +64,7 @@ function createTreeNode({
     nodeType,
     meta: { ...meta, type },
     isExpandable: isExpandable(type, children, meta),
-    isOpen: type === NodeType.DATA_SOURCE || meta?.isRootPackage,
+    isOpen: type === NodeType.DATA_SOURCE || meta?.isRootPackage === true,
     isRoot: type === NodeType.DATA_SOURCE,
     isHidden: false,
     children: children || [],
