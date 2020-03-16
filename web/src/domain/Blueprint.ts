@@ -106,9 +106,13 @@ export class Blueprint implements IBlueprint {
    * (and complexity is likely to blow up, especially on the api)
    */
   private getIndexRecipeAttributes(): KeyValue | undefined {
-    const indexRecipe = this.uiRecipes['INDEX']
-    if (indexRecipe) {
-      return this.getUiAttributes(indexRecipe.name)
+    if (this.blueprintType.uiRecipes) {
+      const indexRecipe = this.blueprintType.uiRecipes.find(
+        recipe => recipe.plugin === 'INDEX'
+      )
+      if (indexRecipe) {
+        return this.getUiAttributes(indexRecipe.name)
+      }
     }
   }
 
@@ -138,8 +142,9 @@ export class Blueprint implements IBlueprint {
         return true
       }
 
-      if (indexAttribute?.contained === false) {
-        return true
+      // return opppsite of index recipe.
+      if (indexAttribute?.contained !== undefined) {
+        return !indexAttribute.contained
       }
       return false
     }
