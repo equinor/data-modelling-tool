@@ -1039,8 +1039,12 @@ from classes.dto import DTO
         if (parent := self.get_type_by_name(schema["type"])).__name__ != schema["name"]:
             dependencies.append(parent)
         for attr in schema.get("attributes", []):
-            if not is_simple_type(attr.type) and attr.type not in dependencies:
-                dependencies.append(attr.type)
+            try:
+                _type = attr.type
+            except AttributeError:
+                _type = self.get_type_by_name(attr["type"])
+            if not is_simple_type(_type) and _type not in dependencies:
+                dependencies.append(_type)
         return dependencies
 
     @staticmethod
