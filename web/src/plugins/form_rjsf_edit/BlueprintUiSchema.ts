@@ -148,7 +148,6 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
     uiAttribute: any
   ): void {
     //@todo use uiAttribute to build the schema property. required, descriptions etc.
-
     const uiSchemaProperty: UiSchema = {}
     if (attr.getDescription()) {
       uiSchemaProperty['ui:description'] = attr.getDescription()
@@ -195,7 +194,7 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
           attributes: (fieldBlueprint && fieldBlueprint.attributes) || [],
         }
         // attribute widget should be in an array.
-        objectPath.set(this.schema, path, { items: fieldProperty })
+        objectPath.set(this.schema, path, fieldProperty)
       } else if (uiAttribute.field) {
         uiSchemaProperty['ui:field'] = uiAttribute.field
       }
