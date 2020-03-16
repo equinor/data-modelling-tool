@@ -36,13 +36,13 @@ def has_attribute(schema, name: str) -> bool:
     return False
 
 
-def get_attribute(attr, item: str, use_default: bool = False, default=None) -> str:
+def get_attribute(item, attribute: str, use_default: bool = False, default=None) -> str:
     try:
-        return getattr(attr, item)
+        return getattr(item, attribute)
     except AttributeError:
         if use_default or default is not None:
-            return attr.get(item, default)
-        return attr[item]
+            return item.get(attribute, default)
+        return item[attribute]
 
 
 def _get_definition(schema: Union[Dict, type], name: str) -> Optional[str]:
@@ -1194,10 +1194,10 @@ from classes.dto import DTO
         template_type = _get_definition(schema, name)
         if template_type:
             return self.type_name(template_type)
-        template_type = get_attribute(schema, "type")
+        template_type = get_attribute(schema, attribute="type")
         Template = self.get_type_by_name(template_type)
         if has_attribute(Template, "attributes"):
-            for attr in get_attribute(Template, "attributes"):
+            for attr in get_attribute(Template, attribute="attributes"):
                 if to_snake_case(get_attribute(attr, "name")) == to_snake_case(name):
                     template_type = get_attribute(attr, "attribute_type")
                     if isinstance(template_type, str) and template_type not in self._types:
