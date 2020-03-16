@@ -106,7 +106,7 @@ export class Blueprint implements IBlueprint {
    * (and complexity is likely to blow up, especially on the api)
    */
   private getIndexRecipeAttributes(): KeyValue | undefined {
-    const indexRecipe = this.uiRecipes["INDEX"]
+    const indexRecipe = this.uiRecipes['INDEX']
     if (indexRecipe) {
       return this.getUiAttributes(indexRecipe.name)
     }

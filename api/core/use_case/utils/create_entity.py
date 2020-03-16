@@ -84,6 +84,6 @@ class CreateEntity:
                     entity[attr.name] = {}
                 else:
                     entity[attr.name] = self._get_entity(
-                        blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type},
+                        blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type}
                     )
         return entity

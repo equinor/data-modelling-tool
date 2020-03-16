@@ -41,7 +41,7 @@ class GeneratePythonCodeRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(document_id=adict.get("documentId"), data_source_id=adict.get("dataSourceId"),)
+        return cls(document_id=adict.get("documentId"), data_source_id=adict.get("dataSourceId"))
 
 
 def is_package(blueprint: DTO):
