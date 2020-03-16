@@ -468,6 +468,9 @@ class ListNode(NodeBase):
     def type(self):
         return self.attribute.attribute_type
 
+    def remove(self):
+        self.parent.remove_by_node_id(self.node_id)
+
     @property
     def blueprint(self):
         return self.parent.blueprint
