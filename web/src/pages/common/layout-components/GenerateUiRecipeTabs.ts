@@ -15,7 +15,10 @@ export class GenerateUiRecipeTabs {
 
   private uiRecipeTabs: UiRecipe[] = []
 
-  constructor(uiRecipes: UiRecipe[] | undefined, defaultTabs: UiRecipe[] | undefined) {
+  constructor(
+    uiRecipes: UiRecipe[] | undefined,
+    defaultTabs: UiRecipe[] | undefined
+  ) {
     this.uiRecipeTabs = defaultTabs ? defaultTabs : getDefaultTabs([])
 
     if (uiRecipes) {
@@ -68,9 +71,8 @@ function addDefaultTab(
   plugin: RegisteredPlugins,
   name: string
 ): void {
-  const recipe: UiRecipe | undefined = recipes && recipes.find(
-    recipe => recipe.name === name
-  )
+  const recipe: UiRecipe | undefined =
+    recipes && recipes.find(recipe => recipe.name === name)
   if (recipe) {
     if (!recipe.hideTab) {
       defaultTabs.push(createUiRecipe(name, plugin))
