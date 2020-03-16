@@ -1159,8 +1159,6 @@ from classes.dto import DTO
         schema["__class__"] = _cls
         if not compile:
             return _cls
-        if template_type not in self._types:
-            self._types[template_type] = _cls
         if "attributes" in schema:
             schema["__attributes__"] = schema["attributes"]
             schema["attributes"] = self._process_attributes(schema)
@@ -1206,8 +1204,10 @@ from classes.dto import DTO
         return self.get_type(Template, name)
 
     def _create_dummy(self, schema: dict, template_type: str) -> __Blueprint__:
-        _cls: __Blueprint__ = type(schema["name"], (), schema)
-        _cls.__schema__ = schema
-        _cls.__completed__ = False
-        self._types.lookup_table[_cls] = template_type
-        return _cls
+        if template_type not in self._types:
+            _cls: __Blueprint__ = type(schema["name"], (), schema)
+            _cls.__schema__ = schema
+            _cls.__completed__ = False
+            self._types.lookup_table[_cls] = template_type
+            self._types[template_type] = _cls
+        return self._types[template_type]
