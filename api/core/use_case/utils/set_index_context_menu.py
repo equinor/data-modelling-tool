@@ -73,7 +73,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
 
         # type can be datasource, entities etc
         if node.parent is not None and node.parent.type != "datasource":
-            is_removable = node.is_array() or node.attribute.is_optional()
+            is_removable = node.is_array() or node.attribute.is_optional() or node.parent.is_array()
 
         if is_removable:
             menu_items.append(
