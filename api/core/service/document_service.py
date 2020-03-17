@@ -7,10 +7,10 @@ from classes.blueprint import Blueprint
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from classes.tree_node import ListNode, Node
-from core.enums import SIMOS
+from core.enums import SIMOS, DMT
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.use_case.create_application_use_case import zip_tree_node
+from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from utils.logging import logger
@@ -109,18 +109,25 @@ class DocumentService:
     def invalidate_cache(self):
         self.blueprint_provider.invalidate_cache()
 
-    def save(self, node: Union[Node, ListNode], data_source_id: str, repository=None) -> None:
+    def save(self, node: Union[Node, ListNode], data_source_id: str, repository=None, path="") -> None:
+        # If not passed a custom repository to save into, use the DocumentService's repository
         if not repository:
             repository = self.repository_provider(data_source_id)
         # Update none-contained attributes
         for child in node.children:
             # A list node is always contained on parent. Need to check the blueprint
             if child.is_array() and not child.attribute_is_contained():
-                [self.save(x, data_source_id, repository) for x in child.children]
+                # If the node is a package, we build the path string to be used by "export zip"-repository
+                if node.type == DMT.PACKAGE.value:
+                    path = f"{path}/{node.name}/" if path else f"{node.name}"
+                [self.save(x, data_source_id, repository, path) for x in child.children]
             elif child.not_contained():
-                self.save(child, data_source_id, repository)
+                self.save(child, data_source_id, repository, path)
         ref_dict = node.to_ref_dict()
         dto = DTO(ref_dict)
+        # Expand this when adding new repositories requiring PATH
+        if isinstance(repository, ZipFileClient):
+            dto.data["__path__"] = path
         repository.update(dto)
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
@@ -146,9 +153,6 @@ class DocumentService:
                 document_uid, self.repository_provider(data_source_id), self.blueprint_provider
             )
         except EntityNotFoundException as error:
-            # this is an edge case for packages where the reference in a package entity has wrong document id.
-            # the code caller of this method knows the name and node_type that belongs to the document_uid.
-            # Thus, the caller code should create the Node and add error information to that node.
             logger.exception(error)
             raise EntityNotFoundException(document_uid)
 
@@ -157,7 +161,8 @@ class DocumentService:
             root_node: Node = Node.from_dict(
                 complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
             )
-            zip_tree_node(zip_file, root_node, data_source_id, f"{root_node.name}/", self.save)
+            # Save the selected node, using custom ZipFile repository
+            self.save(root_node, data_source_id, ZipFileClient(zip_file))
 
         memory_file.seek(0)
         return memory_file

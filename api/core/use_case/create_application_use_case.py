@@ -227,22 +227,6 @@ def zip_package(ob, document: DTO, document_repository, path):
         zip_package(ob, document_reference, document_repository, f"{path}/{document.name}")
 
 
-def zip_tree_node(zip_file, node, data_source_id, path, save_func):
-    class ZipRepository:
-        def update(self, dto: DTO):
-            dto.data.pop("_id", None)
-            dto.data.pop("uid", None)
-            json_data = json.dumps(dto.data)
-            binary_data = json_data.encode()
-            write_to = f"{path}/{dto.name}.json"
-            logger.info(f"Writing: {dto.type} to {write_to}")
-
-            if dto.type != DMT.PACKAGE.value:
-                zip_file.writestr(write_to, binary_data)
-
-    save_func(node, data_source_id, ZipRepository())
-
-
 def strip_datasource(path):
     elements = path.split("/")
     if len(elements) == 1:
