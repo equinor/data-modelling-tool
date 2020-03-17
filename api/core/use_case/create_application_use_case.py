@@ -1,23 +1,24 @@
 # flake8: noqa: F401
 
-from config import Config
+import io
+import json
+import os
+import pathlib
+import zipfile
+
+from jinja2 import Template
+
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
+from config import Config
+from core.enums import DMT
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.utility import BlueprintProvider
-import zipfile
-import io
-import pathlib
-import json
-import os
-
 from utils.logging import logger
-from core.enums import DMT
-from jinja2 import Template
 
 API_DOCKERFILE = f"""\
 FROM mariner.azurecr.io/dmt/api:stable
@@ -224,6 +225,22 @@ def zip_package(ob, document: DTO, document_repository, path):
 
     for document_reference in document_references:
         zip_package(ob, document_reference, document_repository, f"{path}/{document.name}")
+
+
+def zip_tree_node(zip_file, node, data_source_id, path, save_func):
+    class ZipRepository:
+        def update(self, dto: DTO):
+            dto.data.pop("_id", None)
+            dto.data.pop("uid", None)
+            json_data = json.dumps(dto.data)
+            binary_data = json_data.encode()
+            write_to = f"{path}/{dto.name}.json"
+            logger.info(f"Writing: {dto.type} to {write_to}")
+
+            if dto.type != DMT.PACKAGE.value:
+                zip_file.writestr(write_to, binary_data)
+
+    save_func(node, data_source_id, ZipRepository())
 
 
 def strip_datasource(path):

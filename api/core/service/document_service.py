@@ -1,3 +1,5 @@
+import io
+import zipfile
 from typing import Dict, Union
 from uuid import uuid4
 
@@ -8,6 +10,7 @@ from classes.tree_node import ListNode, Node
 from core.enums import SIMOS
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.use_case.create_application_use_case import zip_tree_node
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from utils.logging import logger
@@ -106,17 +109,19 @@ class DocumentService:
     def invalidate_cache(self):
         self.blueprint_provider.invalidate_cache()
 
-    def save(self, node: Union[Node, ListNode], data_source_id: str) -> None:
+    def save(self, node: Union[Node, ListNode], data_source_id: str, repository=None) -> None:
+        if not repository:
+            repository = self.repository_provider(data_source_id)
         # Update none-contained attributes
         for child in node.children:
             # A list node is always contained on parent. Need to check the blueprint
             if child.is_array() and not child.attribute_is_contained():
-                [self.save(x, data_source_id) for x in child.children]
+                [self.save(x, data_source_id, repository) for x in child.children]
             elif child.not_contained():
-                self.save(child, data_source_id)
+                self.save(child, data_source_id, repository)
         ref_dict = node.to_ref_dict()
         dto = DTO(ref_dict)
-        self.repository_provider(data_source_id).update(dto)
+        repository.update(dto)
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
@@ -134,6 +139,28 @@ class DocumentService:
         return Node.from_dict(
             complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
         )
+
+    def create_zip_export(self, data_source_id: str, document_uid: str) -> io.BytesIO:
+        try:
+            complete_document = get_complete_document(
+                document_uid, self.repository_provider(data_source_id), self.blueprint_provider
+            )
+        except EntityNotFoundException as error:
+            # this is an edge case for packages where the reference in a package entity has wrong document id.
+            # the code caller of this method knows the name and node_type that belongs to the document_uid.
+            # Thus, the caller code should create the Node and add error information to that node.
+            logger.exception(error)
+            raise EntityNotFoundException(document_uid)
+
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, mode="w") as zip_file:
+            root_node: Node = Node.from_dict(
+                complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
+            )
+            zip_tree_node(zip_file, root_node, data_source_id, f"{root_node.name}/", self.save)
+
+        memory_file.seek(0)
+        return memory_file
 
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(
