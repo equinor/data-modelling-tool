@@ -69,6 +69,22 @@ class CreateEntity:
     def entity(self):
         return self._entity
 
+    @staticmethod
+    def is_json(attr: BlueprintAttribute):
+        try:
+            json.loads(attr.default)
+            return True
+        except JSONDecodeError:
+            return False
+
+    @staticmethod
+    def parse_json(attr: BlueprintAttribute):
+        try:
+            return json.loads(attr.default)
+        except JSONDecodeError:
+            print(f"invalid default value: {attr.default} for attribute: {attr}")
+            return ""
+
     # add all non optional attributes with default value.
     # type is inserted based on the parent attributes type, or the initial type for root entity.
     def _get_entity(self, blueprint: Blueprint, entity):
@@ -80,10 +96,20 @@ class CreateEntity:
                 blueprint = self.blueprint_provider.get_blueprint(attr.attribute_type)
                 if attr.is_array():
                     entity[attr.name] = attr.dimensions.create_default_array(self.blueprint_provider, CreateEntity)
-                elif attr.is_optional():
-                    entity[attr.name] = {}
                 else:
-                    entity[attr.name] = self._get_entity(
-                        blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type}
-                    )
+                    if attr.is_optional():
+                        entity[attr.name] = {}
+
+                    elif CreateEntity.is_json(attr):
+                        value = CreateEntity.parse_json(attr)
+                        if len(value) > 0:
+                            entity[attr.name] = CreateEntity.parse_json(attr)
+                        else:
+                            entity[attr.name] = self._get_entity(
+                                blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type}
+                            )
+                    else:
+                        entity[attr.name] = self._get_entity(
+                            blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type}
+                        )
         return entity

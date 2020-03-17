@@ -17,7 +17,7 @@
       "name": "power",
       "attributeType": "number",
       "type": "system/SIMOS/BlueprintAttribute",
-      "default": "0"
+      "default": "0.0"
     }
   ]
 }
