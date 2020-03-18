@@ -1,6 +1,5 @@
 from typing import Dict, Optional
 from uuid import uuid4
-from utils.logging import logger
 
 
 # For backwards compatibility, data is not a private property.

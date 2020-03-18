@@ -2,6 +2,7 @@ import unittest
 from enum import Enum
 
 from classes.blueprint import Blueprint
+from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from core.repository.file import TemplateRepositoryFromFile
 from core.use_case.utils.create_entity import CreateEntity
@@ -57,3 +58,15 @@ class CreateEntityTestCase(unittest.TestCase):
         ).entity
 
         self.assertEqual(expected_entity, entity)
+
+    def test_is_not_json(self):
+        self.assertEqual(False, CreateEntity.is_json(BlueprintAttribute(name="", attribute_type="", default="")))
+        self.assertEqual(
+            False, CreateEntity.is_json(BlueprintAttribute(name="", attribute_type="", default=" [] some"))
+        )
+
+    def test_is_json(self):
+        self.assertEqual(True, CreateEntity.is_json(BlueprintAttribute(name="", attribute_type="", default=" [] ")))
+        self.assertEqual(
+            True, CreateEntity.is_json(BlueprintAttribute(name="", attribute_type="", default=' {"foo": "bar"} '))
+        )

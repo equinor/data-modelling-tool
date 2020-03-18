@@ -1,3 +1,5 @@
+import io
+import zipfile
 from typing import Dict, Union
 from uuid import uuid4
 
@@ -5,9 +7,10 @@ from classes.blueprint import Blueprint
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from classes.tree_node import ListNode, Node
-from core.enums import SIMOS
+from core.enums import SIMOS, DMT
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
+from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from utils.logging import logger
@@ -106,17 +109,26 @@ class DocumentService:
     def invalidate_cache(self):
         self.blueprint_provider.invalidate_cache()
 
-    def save(self, node: Union[Node, ListNode], data_source_id: str) -> None:
+    def save(self, node: Union[Node, ListNode], data_source_id: str, repository=None, path="") -> None:
+        # If not passed a custom repository to save into, use the DocumentService's repository
+        if not repository:
+            repository = self.repository_provider(data_source_id)
         # Update none-contained attributes
         for child in node.children:
             # A list node is always contained on parent. Need to check the blueprint
             if child.is_array() and not child.attribute_is_contained():
-                [self.save(x, data_source_id) for x in child.children]
+                # If the node is a package, we build the path string to be used by "export zip"-repository
+                if node.type == DMT.PACKAGE.value:
+                    path = f"{path}/{node.name}/" if path else f"{node.name}"
+                [self.save(x, data_source_id, repository, path) for x in child.children]
             elif child.not_contained():
-                self.save(child, data_source_id)
+                self.save(child, data_source_id, repository, path)
         ref_dict = node.to_ref_dict()
         dto = DTO(ref_dict)
-        self.repository_provider(data_source_id).update(dto)
+        # Expand this when adding new repositories requiring PATH
+        if isinstance(repository, ZipFileClient):
+            dto.data["__path__"] = path
+        repository.update(dto)
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
@@ -134,6 +146,26 @@ class DocumentService:
         return Node.from_dict(
             complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
         )
+
+    def create_zip_export(self, data_source_id: str, document_uid: str) -> io.BytesIO:
+        try:
+            complete_document = get_complete_document(
+                document_uid, self.repository_provider(data_source_id), self.blueprint_provider
+            )
+        except EntityNotFoundException as error:
+            logger.exception(error)
+            raise EntityNotFoundException(document_uid)
+
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, mode="w") as zip_file:
+            root_node: Node = Node.from_dict(
+                complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
+            )
+            # Save the selected node, using custom ZipFile repository
+            self.save(root_node, data_source_id, ZipFileClient(zip_file))
+
+        memory_file.seek(0)
+        return memory_file
 
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(
@@ -209,6 +241,8 @@ class DocumentService:
         # If it's a contained nested node, set the modify target based on dotted-path
         if attribute_path:
             target_node = root.search(f"{document_id}.{attribute_path}")
+
+        print("target_node", target_node)
 
         target_node.update(data)
         self.save(root, data_source_id)

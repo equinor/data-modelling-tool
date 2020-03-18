@@ -8,7 +8,6 @@ import {
 } from '../../domain/types'
 import { BlueprintProvider } from '../BlueprintProvider'
 import objectPath from 'object-path'
-import { IndexFilter } from './CreateConfig'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 
 interface IBlueprintSchema {
@@ -29,7 +28,6 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
   }
   private uiRecipe: UiRecipe
   private blueprintProvider: BlueprintProvider
-  private filter: (attr: BlueprintAttributeType) => boolean
   private rootBlueprintType: BlueprintType | undefined
 
   constructor(
@@ -37,16 +35,15 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     document: Entity,
     blueprintProvider: BlueprintProvider,
     uiRecipe: UiRecipe,
-    filter: IndexFilter,
     rootBlueprint: BlueprintType | undefined
   ) {
     super(blueprintType)
-    this.filter = filter
     this.uiRecipe = uiRecipe
     this.rootBlueprintType = rootBlueprint
     this.blueprintProvider = blueprintProvider
     const path = 'properties'
     objectPath.set(this.schema, 'required', this.getRequired(this))
+
     this.processAttributes(
       path,
       this,
@@ -64,10 +61,10 @@ export class BlueprintSchema extends Blueprint implements IBlueprintSchema {
     exitRecursion: boolean
   ) {
     attributes
-      .filter(this.filter) //@todo filter recursively on recipes and defaults.
       .map(
         (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
       )
+      .filter(blueprint.filterAttributesByUiRecipe(this.uiRecipe.name))
       .forEach((attr: BlueprintAttribute) => {
         const newPath = BlueprintSchema.createAttributePath(
           path,

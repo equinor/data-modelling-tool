@@ -83,9 +83,9 @@ def rename(data_source_id: str):
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/export/<string:document_id>", methods=["GET"])
-def post(data_source_id: str, document_id: str):
+def export(data_source_id: str, document_id: str):
     request_object = ExportRequestObject.from_dict({"data_source_id": data_source_id, "documentId": document_id})
-    use_case = ExportUseCase()
+    use_case = ExportUseCase(repository_provider=get_repository, data_source_id=data_source_id)
     response = use_case.execute(request_object)
 
     if response.type == res.ResponseSuccess.SUCCESS:

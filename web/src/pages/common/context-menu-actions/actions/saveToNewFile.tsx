@@ -62,7 +62,11 @@ export default (
           id: response.data.uid,
         }
 
-        method({ input, output, updateDocument: handleUpdate })
+        const handleUpdateWithTreeUpdate = (output: any) => {
+          handleUpdate(output, formData.destination)
+        }
+
+        method({ input, output, updateDocument: handleUpdateWithTreeUpdate })
       }
 
       await executeAction()

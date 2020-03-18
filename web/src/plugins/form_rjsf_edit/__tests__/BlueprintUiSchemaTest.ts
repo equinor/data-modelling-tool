@@ -54,8 +54,7 @@ describe('BlueprintUiSchema', () => {
       schema = new BlueprintUiSchema(
         blueprintType,
         blueprintProvider,
-        uiRecipeTest,
-        () => true
+        uiRecipeTest
       ).getSchema()
     })
 
@@ -93,7 +92,23 @@ describe('BlueprintUiSchema', () => {
           dimensions: '*',
         },
       ],
-      uiRecipes: [],
+      uiRecipes: [
+        {
+          name: 'Edit',
+          description: '',
+          plugin: 'EDIT_PLUGIN',
+          attributes: [
+            {
+              name: 'wheel',
+              contained: true,
+            },
+            {
+              name: 'wheels',
+              contained: true,
+            },
+          ],
+        },
+      ],
     }
     const blueprints: BlueprintType[] = [
       {
@@ -132,8 +147,7 @@ describe('BlueprintUiSchema', () => {
       schema = new BlueprintUiSchema(
         blueprintType,
         blueprintProvider,
-        uiRecipeTest,
-        () => true
+        uiRecipeTest
       ).getSchema()
     })
 

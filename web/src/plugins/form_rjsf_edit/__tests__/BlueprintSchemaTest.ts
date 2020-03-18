@@ -44,7 +44,6 @@ describe('BlueprintSchema', () => {
         document,
         blueprintProvider,
         uiRecipeTest,
-        () => true,
         undefined
       ).getSchema()
     })
@@ -100,6 +99,10 @@ describe('BlueprintSchema', () => {
               name: 'name',
               required: true,
             },
+            {
+              name: 'wheels',
+              contained: true,
+            },
           ],
         },
       ],
@@ -136,6 +139,10 @@ describe('BlueprintSchema', () => {
                 name: 'wheelName',
                 required: true,
               },
+              {
+                name: 'recursiveWheels',
+                contained: true,
+              },
             ],
           },
         ],
@@ -155,7 +162,6 @@ describe('BlueprintSchema', () => {
         document,
         blueprintProvider,
         uiRecipeTest,
-        () => true,
         undefined
       ).getSchema()
     })

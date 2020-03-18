@@ -72,6 +72,20 @@ async function run({ input, output, updateDocument }) {
   await sleep(5000)
   entity.description = 'c'
   updateDocument({ ...output, entity })
+
+  await sleep(5000)
+  entity['wheels'] = [
+    {
+      name: 'test5',
+      description: '',
+      type: 'SSR-DataSource/CarPackage/Wheel',
+      diameter: 120,
+      pressure: 0,
+      wheelsRecursive: [],
+    },
+  ]
+  output.notify = true
+  updateDocument({ ...output, entity })
 }
 
 async function runResultFile({ input, output, updateDocument }) {

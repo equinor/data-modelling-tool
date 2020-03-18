@@ -1,5 +1,6 @@
 import json
 
+from core.use_case.generate_python_code import GeneratePythonCodeUseCase, GeneratePythonCodeRequestObject
 from flask import Blueprint, Response, send_file
 
 from classes.data_source import DataSource
@@ -50,3 +51,21 @@ def get():
             mimetype="application/json",
             status=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
         )
+
+
+@blueprint.route("/api/v2/system/<string:data_source_id>/generate-python-code/<string:document_id>", methods=["GET"])
+def generate_python_code(data_source_id: str, document_id: str):
+    logger.info(f"Compiling the blueprint '{document_id}', in '{data_source_id}' to Python code")
+    document_repository = get_repository(data_source_id)
+    request_object = GeneratePythonCodeRequestObject.from_dict(
+        {"documentId": document_id, "dataSourceId": data_source_id}
+    )
+    use_case = GeneratePythonCodeUseCase(document_repository, get_repository)
+    response = use_case.execute(request_object)
+
+    if response.type == res.ResponseSuccess.SUCCESS:
+        return send_file(
+            response.value, mimetype="application/zip", as_attachment=True, attachment_filename="generated-code.zip"
+        )
+    else:
+        return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
