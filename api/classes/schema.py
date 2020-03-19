@@ -442,11 +442,14 @@ class Factory:
         )
         self.to_be_compiled = set()
 
+    def reset(self):
+        self.reset_cache()
+        self._types = TypeCache(self.__class__._internal_types)
+
     @classmethod
     def reset_cache(cls):
         del cls._internal_types
         cls._internal_types = {}
-        cls._types = TypeCache(cls._internal_types)
 
     def _get_schema(self, template_type: str) -> dict:
         if self._read_from_file:
