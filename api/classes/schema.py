@@ -107,7 +107,7 @@ def to_camel_case(name: str) -> str:
 
 def is_special_key(key: str) -> bool:
     # Special keys, that should be ignored
-    return key in ["__class__"]
+    return key in ["__class__", "__template_type__"]
 
 
 def is_internal(schema, key: str) -> bool:
@@ -250,6 +250,7 @@ class __Blueprint__(type):
 
     __completed__: bool
     __schema__: dict
+    __template_type__: str
     type: Union[str, __Blueprint__]
 
     @classmethod
@@ -581,7 +582,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {%- set name = get_name(attr) %}
         {%- if name == "type" %}
         {#- Deals with special cases #}
-        self.{{ name }} = "{{ schema.type }}"
+        self.{{ name }} = "{{ schema.__template_type__ }}"
         {%- else %}
         {%- if not is_simple_type(attr) and attr.default is string and attr.default %}
         if {{ name }} is None:
@@ -618,6 +619,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def __iter__(self):
         return self.attributes.__iter__
     {%- endif %}
+
+    __template_type__ = "{{ schema.__template_type__ }}"
 
     @property
     def __schema__(self):
@@ -674,7 +677,11 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
         representation = {
             {%- for attr in schema.attributes %}
+            {%- if attr.name == "type" %}
+            "type": self.__template_type__,
+            {%- else %}
             "{{ to_camel_case(attr.name) }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
+            {%- endif %}
             {%- endfor %}
         }
         if not include_defaults:
@@ -796,7 +803,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         return True
 
 {% endblock %}
-    __code_generation: bytes = {{ compress(self.code_generation()) }}
+    __code_generation: str = {{ compress(self.code_generation()) }}
 {% block code_generation  %}
     __imports: str = {{ compress(self.imports()) }}
     __definition: str = {{ compress(self.definition()) }}
@@ -1164,6 +1171,7 @@ from classes.dto import DTO
         # Let at "dummy type" be available for others
         _cls = self._create_dummy(schema, template_type)
         schema["__class__"] = _cls
+        schema["__template_type__"] = template_type
         if not compile:
             return _cls
         if "attributes" in schema:
@@ -1215,6 +1223,7 @@ from classes.dto import DTO
             _cls: __Blueprint__ = type(schema["name"], (), schema)
             _cls.__schema__ = schema
             _cls.__completed__ = False
+            _cls.__template_type__ = template_type
             self._types.lookup_table[_cls] = template_type
             self._types[template_type] = _cls
         return self._types[template_type]
