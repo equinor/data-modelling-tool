@@ -27,7 +27,14 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprin
                 attribute.to_json_schema() if not is_array else {"type": "array", "items": attribute.to_json_schema()}
             )
         else:
-            nested_attributes.append({"name": attribute_name, "type": attribute.attribute_type, "is_array": is_array})
+            nested_attributes.append(
+                {
+                    "name": attribute_name,
+                    "type": attribute.attribute_type,
+                    "is_array": is_array,
+                    "optional": attribute.optional,
+                }
+            )
 
     for nested_type in nested_attributes:
         attribute_name = nested_type["name"]
@@ -36,14 +43,10 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprin
         if parent_blueprint and nested_blueprint == parent_blueprint:
             continue
 
-        if nested_type["is_array"]:
-            properties[attribute_name] = {
-                "type": "array",
-                "items": process_attributes(nested_blueprint, blueprint, ui_recipe_name),
-            }
-        else:
-            properties[attribute_name] = process_attributes(nested_blueprint, blueprint, ui_recipe_name)
+        if nested_type["is_array"] or nested_type["optional"]:
+            continue
 
+        properties[attribute_name] = process_attributes(nested_blueprint, blueprint, ui_recipe_name)
     return {"type": "object", "properties": properties}
 
 
