@@ -1122,12 +1122,21 @@ from classes.dto import DTO
 
     def compile(self, schema: Dict) -> __Blueprint__:
         definition = self.class_from_schema(schema)
+        name = schema["name"]
+        path = f"<string/{name}>"
+        if Config.FLASK_DEBUG:
+            where = ".generated"
+            if not Path(where).exists():
+                os.mkdir(where)
+            path = f"{where}/{name}.py"
+            with open(path, "w") as f:
+                f.write(definition)
         if self.dump_site is not None:
             with open(self.dump_site, "a+") as f:
                 f.write(remove_imports(definition))
-        code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
+        code: CodeType = compile(definition, path, "exec", optimize=1)
         exec(code)  # nosec
-        cls: __Blueprint__ = locals()[schema["name"]]
+        cls: __Blueprint__ = locals()[name]
         if cls.__name__ not in globals():
             globals()[cls.__name__] = cls
         return cls
