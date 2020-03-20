@@ -182,11 +182,11 @@ def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
 
 
 class Attribute:
-    def __init__(self, data: Dict[str, Any], cls: type, type: type, definition: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any], attribute_type: type, type: type, definition: Dict[str, Any]):
         self.type = type
         self.__values__ = data
         self._definition = definition
-        self._cls = cls
+        self.attribute_type = attribute_type
 
     def __repr__(self):
         attributes = ["name", "optional", "contained"]
@@ -584,7 +584,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {#- Deals with special cases #}
         self.{{ name }} = "{{ schema.__template_type__ }}"
         {%- else %}
-        {%- if not is_simple_type(attr) and attr.default is string and attr.default %}
+        {%- if not is_simple_type(attr.attribute_type) and attr.default is string and attr.default %}
         if {{ name }} is None:
             import json
             {{ name }} = json.loads({{ default_as_loadable_json(attr) }})
@@ -949,8 +949,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             _attributes.add(
                 Attribute(
                     attribute,
-                    cls=self.get_type_by_name(attribute["type"]),
-                    type=attribute_type,
+                    type=self.get_type_by_name(attribute["type"]),
+                    attribute_type=attribute_type,
                     definition=attribute_definition,
                 )
             )
@@ -997,7 +997,7 @@ from classes.dto import DTO
             return self.get_type_by_name(attr).__name__
         elif isinstance(attr, type):
             return attr.__name__
-        return attr.type.__name__
+        return attr.attribute_type.__name__
 
     def type_check(self, attr: Attribute, value_name: str, dimension: Optional[int] = None) -> str:
         type_name = self.type_name(attr)
@@ -1060,12 +1060,12 @@ from classes.dto import DTO
     @staticmethod
     def get_escaped_default(attr: Attribute) -> str:
         if attr.default is not None:
-            if attr.type is str:
+            if attr.attribute_type is str:
                 return f'"{attr.default}"'
             elif isinstance(attr.default, str):
-                if attr.type is bool:
+                if attr.attribute_type is bool:
                     return {"false": False, "true": True}[attr.default.lower()]
-        if attr.default == "" and not is_simple_type(attr.type):
+        if attr.default == "" and not is_simple_type(attr.attribute_type):
             return str(None)
         return attr.default
 
@@ -1099,7 +1099,7 @@ from classes.dto import DTO
     def cast_as(self, attr: Attribute, name: Optional[str] = None) -> str:
         if name is None:
             name = get_name(attr)
-        return f"{self.type_name(attr)}{'.from_dict' if attr.type not in simple_types else ''}({name})"
+        return f"{self.type_name(attr)}{'.from_dict' if attr.attribute_type not in simple_types else ''}({name})"
 
     def cast(self, attr: Attribute, name: Optional[str] = None, dimension: Optional[int] = None) -> str:
         if not attr.cast:
