@@ -307,6 +307,9 @@ class Attributes:
     def has_attributes(self):
         return any(attribute.name == "attributes" for attribute in self)
 
+    def __len__(self):
+        return len(self._attributes)
+
 
 def remove_imports(definition: str) -> str:
     return "\n".join(
@@ -937,12 +940,19 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         attribute_definition = self._get_attribute_definition(schema)
         _attributes = Attributes()
 
+        _names = set()
         for attribute in attributes:
+            attribute_name = attribute["name"]
+            if attribute_name in _names:
+                raise ValueError(
+                    f"The attribute '{attribute_name}', id defined multiple times, for the blueprint {schema['name']}"
+                )
+            _names.add(attribute_name)
             attribute_type = attribute["attribute_type"]
             if attribute_type not in self._types:
                 self._create(attribute_type, False)
             attribute_type = self._types[attribute_type]
-            if attribute["name"] == "type":
+            if attribute_name == "type":
                 attribute = copy.copy(attribute)
                 attribute["optional"] = "true"
                 attribute["default"] = ""
