@@ -27,7 +27,6 @@
       "contained": true
     }
   ],
-  "storageRecipes": [],
   "uiRecipes": [
     {
       "name": "Edit",
@@ -36,12 +35,12 @@
       "attributes": [
         {
           "name": "description",
-          "type": "system/SIMOS/StorageAttribute",
+          "type": "system/SIMOS/UiAttribute",
           "field": "hidden"
         },
         {
           "name": "type",
-          "type": "system/SIMOS/StorageAttribute",
+          "type": "system/SIMOS/UiAttribute",
           "disabled": true
         }
       ]
