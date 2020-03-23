@@ -230,8 +230,7 @@ class Attribute:
 
     @property
     def enum_type(self):
-        enum_type = self._get("enum_type", None)
-        return enum_type
+        return self._get("enum_type", None)
 
     @property
     def optional(self):
