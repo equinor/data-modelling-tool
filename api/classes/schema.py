@@ -486,7 +486,7 @@ class Factory:
             """\
 {%- block imports %}
 from __future__ import annotations
-from typing import List, Optional, Union, Any, Set
+from typing import List, Optional, Union, Any, Set, Tuple
 import stringcase
 import json
 import base64
@@ -992,7 +992,7 @@ ANY CHANGES MADE TO THIS FILE, SHOULD BE DONE IN `core.domain.schema`
 To regenerate this file, run `doit create:system:blueprints`
 '''
 from __future__ import annotations
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Set, Tuple
 import stringcase
 import json
 base64
