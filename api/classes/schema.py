@@ -833,12 +833,13 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     accessed.add(dependency)
                     dependencies.extend(dependency.__dependencies__())
             return found, node_in_circle, accessed
-        found, node_in_circle, _ = find_circle(cls)
 
-        if not found and node_in_circle is not None:
+        _found, _node_in_circle, _ = find_circle(cls)
+
+        if not _found and _node_in_circle is not None:
             return set()
 
-        _, _, accessed = find_circle(node_in_circle)
+        _, _, accessed = find_circle(_node_in_circle)
         return accessed
 
     @classmethod
