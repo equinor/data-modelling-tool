@@ -831,7 +831,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     node_in_circle = dependency
                 else:
                     accessed.add(dependency)
-                    dependencies.extend(dependency.__dependencies__())
+                    dependencies.extend([dep for dep in dependency.__dependencies__() if dep is not dependency])
             return found, node_in_circle, accessed
 
         _found, _node_in_circle, _ = find_circle(cls)
