@@ -321,6 +321,17 @@ class NodeBase:
         next_node = next_node.get_by_path(keys)
         return next_node
 
+    def get_by_name_path(self, path: List):
+        if len(path) == 0:
+            return self
+
+        next_node = next((x for x in self.children if x.name == path[0]), None)
+        if not next_node:
+            return
+        path.pop(0)
+        next_node = next_node.get_by_name_path(path)
+        return next_node
+
     def remove_by_path(self, keys: List) -> None:
         if len(keys) == 1:
             for index, child in enumerate(self.children):
