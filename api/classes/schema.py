@@ -486,7 +486,7 @@ class Factory:
             """\
 {%- block imports %}
 from __future__ import annotations
-from typing import List, Optional, Union, Any, Set
+from typing import List, Optional, Union, Any, Set, Tuple
 import stringcase
 import json
 import base64
@@ -831,14 +831,15 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     node_in_circle = dependency
                 else:
                     accessed.add(dependency)
-                    dependencies.extend(dependency.__dependencies__())
+                    dependencies.extend([dep for dep in dependency.__dependencies__() if dep is not dependency])
             return found, node_in_circle, accessed
-        found, node_in_circle, _ = find_circle(cls)
 
-        if not found and node_in_circle is not None:
+        _found, _node_in_circle, _ = find_circle(cls)
+
+        if not _found and _node_in_circle is not None:
             return set()
 
-        _, _, accessed = find_circle(node_in_circle)
+        _, _, accessed = find_circle(_node_in_circle)
         return accessed
 
     @classmethod
@@ -992,7 +993,7 @@ ANY CHANGES MADE TO THIS FILE, SHOULD BE DONE IN `core.domain.schema`
 To regenerate this file, run `doit create:system:blueprints`
 '''
 from __future__ import annotations
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Set, Tuple
 import stringcase
 import json
 base64
