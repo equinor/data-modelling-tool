@@ -28,7 +28,7 @@ def get_json_schema(type: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
-@blueprint.route("/api/v2/documents/<string:data_source_id>/<document_id>", methods=["GET"])
+@blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["GET"])
 def get(data_source_id: str, document_id: str):
     logger.info(f"Getting document '{document_id}' from data source '{data_source_id}'")
     ui_recipe = request.args.get("ui_recipe")

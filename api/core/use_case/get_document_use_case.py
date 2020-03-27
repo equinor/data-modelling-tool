@@ -9,6 +9,7 @@ from core.utility import get_document_by_ref
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from utils.logging import logger
+from utils.uuid import is_valid_uuid
 
 
 class GetDocumentRequestObject(req.ValidRequestObject):
@@ -48,6 +49,11 @@ class GetDocumentUseCase(uc.UseCase):
         data_source_id: str = request_object.data_source_id
         document_id: str = request_object.document_id
         attribute: str = request_object.attribute
+
+        # If document_id is not a UUID, assume it's a path string
+        if not is_valid_uuid(document_id):
+            root_doc = get_document_by_ref(f"{data_source_id}/{document_id}")
+            document_id = root_doc.uid
 
         document = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
 
