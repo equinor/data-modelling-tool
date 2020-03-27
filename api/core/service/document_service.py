@@ -9,7 +9,7 @@ from classes.storage_recipe import StorageRecipe
 from classes.tree_node import ListNode, Node
 from core.enums import SIMOS, DMT
 from core.repository import Repository
-from core.repository.repository_exceptions import EntityNotFoundException
+from core.repository.repository_exceptions import EntityNotFoundException, FileNotFoundException
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
@@ -103,6 +103,10 @@ class DocumentService:
         self.blueprint_provider = blueprint_provider
         self.repository_provider = repository_provider
 
+    def create_dir_by_path(self, data_source_id, path):
+
+        print(123)
+
     def get_blueprint(self):
         return self.blueprint_provider
 
@@ -174,6 +178,8 @@ class DocumentService:
         package: DTO = self.repository_provider(data_source_id).find(
             {"type": "system/DMT/Package", "isRoot": True, "name": package_name}, single=True
         )
+        if not package:
+            raise FileNotFoundException(data_source_id, package_name, is_root=True)
 
         complete_document = get_complete_document(
             package.uid, self.repository_provider(data_source_id), self.blueprint_provider
@@ -299,6 +305,7 @@ class DocumentService:
 
         return {"uid": new_node.node_id}
 
+    # Add file by parent directory
     def add(self, data_source_id: str, directory: str, document: dict):
         root: Node = self.get_by_path(data_source_id, directory)
         if not root:

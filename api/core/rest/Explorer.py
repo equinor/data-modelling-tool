@@ -24,6 +24,7 @@ STATUS_CODES = {
 }
 
 
+# Add file by parent_id
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-file", methods=["POST"])
 def add_file(data_source_id: str):
     request_data = request.get_json()
@@ -36,6 +37,7 @@ def add_file(data_source_id: str):
     )
 
 
+# Add file by directory path
 @blueprint.route("/api/v1/explorer/<string:data_source_id>/add-document", methods=["POST"])
 def add_document(data_source_id: str):
     request_data = request.get_json()

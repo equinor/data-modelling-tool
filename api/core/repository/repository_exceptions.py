@@ -20,3 +20,16 @@ class EntityNotFoundException(RepositoryException):
 class TemplateNotFound(RepositoryException):
     def __init__(self, template_id):
         super().__init__(message=f"The template with ID, {template_id}, was not found")
+
+
+class FileNotFoundException(Exception):
+    def __init__(self, data_source_id=None, file=None, is_root=False):
+        self.data_source_id = data_source_id if data_source_id else None
+        self.file = file if file else None
+        self.is_root = is_root
+
+    def __str__(self):
+        if self.data_source_id and self.file:
+            return f"FileNotFoundException, data_source: {self.data_source_id} file: {self.file}"
+        else:
+            return f"FileNotFoundException has been raised"
