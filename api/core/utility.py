@@ -1,7 +1,12 @@
 from functools import lru_cache
 from typing import List, Union
 
-from core.repository.repository_exceptions import EntityNotFoundException
+from classes.tree_node import Node
+from core.repository.repository_exceptions import (
+    EntityNotFoundException,
+    FileNotFoundException,
+    RootPackageNotFoundException,
+)
 from core.repository.repository_factory import get_repository
 from utils.helper_functions import get_data_source_and_path, get_package_and_path
 from utils.logging import logger
@@ -40,7 +45,7 @@ def get_document_uid_by_path(path: str, repository) -> Union[str, None]:
     root_package_name, path_elements = get_package_and_path(path)
     root_package: DTO = repository.find({"name": root_package_name, "isRoot": True})
     if not root_package:
-        return None
+        raise RootPackageNotFoundException(repository.name, root_package_name)
     # Check if it's a root-package
     if not path_elements:
         return root_package.uid
@@ -56,6 +61,11 @@ def get_document_by_ref(type_ref) -> DTO:
     if not type_id:
         raise EntityNotFoundException(uid=type_ref)
     return document_repository.get(uid=type_id)
+
+
+def duplicate_filename(parent_node: Node, new_file_name: str):
+    if next((child for child in parent_node.children if child.name == new_file_name), None):
+        return True
 
 
 def wipe_db():

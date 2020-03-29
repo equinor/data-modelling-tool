@@ -9,10 +9,14 @@ from classes.storage_recipe import StorageRecipe
 from classes.tree_node import ListNode, Node
 from core.enums import SIMOS, DMT
 from core.repository import Repository
-from core.repository.repository_exceptions import EntityNotFoundException, FileNotFoundException
+from core.repository.repository_exceptions import (
+    EntityNotFoundException,
+    FileNotFoundException,
+    DuplicateFileNameInPackageException,
+)
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
-from core.utility import BlueprintProvider
+from core.utility import BlueprintProvider, duplicate_filename
 from utils.logging import logger
 
 
@@ -103,10 +107,6 @@ class DocumentService:
         self.blueprint_provider = blueprint_provider
         self.repository_provider = repository_provider
 
-    def create_dir_by_path(self, data_source_id, path):
-
-        print(123)
-
     def get_blueprint(self):
         return self.blueprint_provider
 
@@ -136,7 +136,6 @@ class DocumentService:
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
-            # document_uid = document_uid + "2" # impose error
             complete_document = get_complete_document(
                 document_uid, self.repository_provider(data_source_id), self.blueprint_provider
             )
@@ -282,7 +281,11 @@ class DocumentService:
         root: Node = self.get_by_uid(data_source_id, parent_id)
         if not root:
             raise EntityNotFoundException(uid=parent_id)
-        parent = root.get_by_path(attribute_path.split("."))
+        parent = root.get_by_path(attribute_path.split(".")) if attribute_path else root
+
+        # Check if a file/attributre with the same name already exists on the target
+        if duplicate_filename(parent, name):
+            raise DuplicateFileNameInPackageException(data_source_id, f"{parent.name}/{name}")
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
@@ -307,7 +310,9 @@ class DocumentService:
 
     # Add file by parent directory
     def add(self, data_source_id: str, directory: str, document: dict):
-        root: Node = self.get_by_path(data_source_id, directory)
+        # Convert filesystem path to NodeTree path
+        tree_path = "/content/".join(directory.split("/"))
+        root: Node = self.get_by_path(data_source_id, tree_path)
         if not root:
             raise EntityNotFoundException(uid=directory)
 
@@ -321,6 +326,10 @@ class DocumentService:
             entity["attributes"] = get_required_attributes(type=type)
 
         parent = root.search(f"{root.uid}.content")
+
+        # Check if a file with the same name already exists in the target package
+        if duplicate_filename(parent, name):
+            raise DuplicateFileNameInPackageException(data_source_id, directory)
 
         new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
 

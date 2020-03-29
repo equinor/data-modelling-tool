@@ -4,6 +4,7 @@ from unittest import mock
 from classes.dto import DTO
 from classes.tree_node import Node
 from core.repository import Repository
+from core.repository.repository_exceptions import DuplicateFileNameInPackageException
 from core.service.document_service import DocumentService
 from tests.core.document_service.common import blueprint_provider
 from utils.data_structure.compare import pretty_eq
@@ -149,3 +150,36 @@ class DocumentServiceTestCase(unittest.TestCase):
         )
 
         assert pretty_eq(doc_1_after, doc_storage["1"]) is None
+
+    def test_add_duplicate(self):
+        repository: Repository = mock.Mock()
+
+        doc_storage = {
+            "1": {
+                "_id": "1",
+                "name": "Parent",
+                "description": "",
+                "type": "blueprint_with_optional_attr",
+                "im_optional": {"name": "duplicate", "description": "", "type": "blueprint_2",},
+            }
+        }
+
+        def mock_get(document_id: str):
+            return DTO(doc_storage[document_id])
+
+        def mock_update(dto: DTO):
+            doc_storage[dto.uid] = dto.data
+            return None
+
+        def repository_provider(data_source_id):
+            if data_source_id == "testing":
+                return repository
+
+        repository.get = mock_get
+        repository.update = mock_update
+        document_service = DocumentService(
+            blueprint_provider=blueprint_provider, repository_provider=repository_provider
+        )
+
+        with self.assertRaises(DuplicateFileNameInPackageException):
+            document_service.add_document("testing", "1", "blueprint_2", "duplicate", "This is my new entity", "")

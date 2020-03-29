@@ -7,4 +7,4 @@ def is_valid_uuid(test_string: str, version: int = 4) -> bool:
     except ValueError:
         return False
 
-    return uid_obj == test_string
+    return str(uid_obj) == test_string
