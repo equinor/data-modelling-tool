@@ -1,4 +1,8 @@
-from core.repository.repository_exceptions import FileNotFoundException, EntityNotFoundException
+from core.repository.repository_exceptions import (
+    FileNotFoundException,
+    EntityNotFoundException,
+    InvalidDocumentNameException,
+)
 from core.shared import response_object as res
 import traceback
 
@@ -11,6 +15,8 @@ class UseCase(object):
             return self.process_request(request_object)
         except EntityNotFoundException as not_found:
             return res.ResponseFailure.build_resource_error(not_found.message)
+        except InvalidDocumentNameException as invalid_name:
+            return res.ResponseFailure.build_parameters_error(invalid_name.message)
         except FileNotFoundException as not_found:
             return res.ResponseFailure.build_resource_error(
                 f"The file '{not_found.file}' was not found on data source '{not_found.data_source_id}'"
