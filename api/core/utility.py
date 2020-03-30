@@ -1,5 +1,7 @@
+import re
 from functools import lru_cache
 from typing import List, Union
+from urllib import parse
 
 from classes.tree_node import Node
 from core.repository.repository_exceptions import (
@@ -65,6 +67,14 @@ def get_document_by_ref(type_ref) -> DTO:
 
 def duplicate_filename(parent_node: Node, new_file_name: str):
     if next((child for child in parent_node.children if child.name == new_file_name), None):
+        return True
+
+
+def url_safe_name(name: str) -> bool:
+    # Only allows alphanumeric, underscore, and dash
+    expression = re.compile("^[A-Za-z0-9_-]*$")
+    match = expression.match(name)
+    if match:
         return True
 
 

@@ -17,6 +17,13 @@ class EntityNotFoundException(RepositoryException):
         super().__init__(message=f"The entity, with id {uid} is not found")
 
 
+class InvalidDocumentNameException(RepositoryException):
+    def __init__(self, name):
+        super().__init__(
+            message=f"'{name}' is a invalid document name. Only alphanumeric, underscore, and dash are allowed characters"
+        )
+
+
 class TemplateNotFound(RepositoryException):
     def __init__(self, template_id):
         super().__init__(message=f"The template with ID, {template_id}, was not found")

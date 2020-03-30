@@ -13,10 +13,11 @@ from core.repository.repository_exceptions import (
     EntityNotFoundException,
     FileNotFoundException,
     DuplicateFileNameInPackageException,
+    InvalidDocumentNameException,
 )
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
-from core.utility import BlueprintProvider, duplicate_filename
+from core.utility import BlueprintProvider, duplicate_filename, url_safe_name
 from utils.logging import logger
 
 
@@ -278,6 +279,9 @@ class DocumentService:
     def add_document(
         self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
     ):
+        if not url_safe_name(name):
+            raise InvalidDocumentNameException(name)
+
         root: Node = self.get_by_uid(data_source_id, parent_id)
         if not root:
             raise EntityNotFoundException(uid=parent_id)
@@ -319,6 +323,9 @@ class DocumentService:
         name = document["name"]
         type = document["type"]
         description = document["description"]
+
+        if not url_safe_name(name):
+            raise InvalidDocumentNameException(name)
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 

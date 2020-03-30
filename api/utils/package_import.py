@@ -3,15 +3,15 @@ import os
 from typing import Dict, List, Union
 
 from classes.dto import DTO
-from config import Config
-from core.enums import DMT, SIMOS
-
 from classes.schema import Factory
+from config import Config
+from core.enums import DMT
 from core.repository.file import TemplateRepositoryFromFile
+from core.repository.repository_exceptions import InvalidDocumentNameException
+from core.utility import url_safe_name
 from services.database import dmt_database as dmt_db
-from utils.logging import logger
-
 from utils.helper_functions import schemas_location
+from utils.logging import logger
 
 
 def get_template_type(directory: str, file: str) -> str:
@@ -68,10 +68,10 @@ def _add_documents(path, documents, collection, is_entity=False) -> List[Dict]:
                 instance = Blueprint.from_dict(data)
             else:
                 Blueprint = factory.create(get_template_type(path, file))
-        if data["type"] == SIMOS.BLUEPRINT.value:
+
             document = DTO(data)
-        else:
-            document = DTO(data)
+            if not url_safe_name(document.name):
+                raise InvalidDocumentNameException(document.name)
         dmt_db[collection].replace_one({"_id": document.uid}, document.data, upsert=True)
         docs.append({"_id": document.uid, "name": document.name, "type": document.type})
     return docs
