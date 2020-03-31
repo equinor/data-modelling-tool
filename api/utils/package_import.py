@@ -4,7 +4,7 @@ from typing import Dict, List, Union
 
 from classes.dto import DTO
 from config import Config
-from core.enums import DMT, SIMOS
+from core.enums import DMT
 
 from classes.schema import Factory
 from core.repository.file import TemplateRepositoryFromFile
@@ -60,6 +60,7 @@ def _add_documents(path, documents, collection, is_entity=False) -> List[Dict]:
         logger.info(f"Working on {file}...")
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
+        # TODO: This does not work on all entities (empty non-optional lists?)
         if Config.VERIFY_IMPORTS:
             template_repository = TemplateRepositoryFromFile(schemas_location())
             factory = Factory(template_repository, read_from_file=True)
@@ -68,10 +69,9 @@ def _add_documents(path, documents, collection, is_entity=False) -> List[Dict]:
                 instance = Blueprint.from_dict(data)
             else:
                 Blueprint = factory.create(get_template_type(path, file))
-        if data["type"] == SIMOS.BLUEPRINT.value:
-            document = DTO(data)
-        else:
-            document = DTO(data)
+
+        document = DTO(data)
+
         dmt_db[collection].replace_one({"_id": document.uid}, document.data, upsert=True)
         docs.append({"_id": document.uid, "name": document.name, "type": document.type})
     return docs

@@ -14,9 +14,10 @@ class ZipFileClient(DBClientInterface):
     def update(self, dto: DTO):
         dto.data.pop("_id", None)
         dto.data.pop("uid", None)
+        write_to = f"{dto.data['__path__']}/{dto.name}.json"
+        dto.data.pop("__path__")
         json_data = json.dumps(dto.data)
         binary_data = json_data.encode()
-        write_to = f"{dto.data['__path__']}/{dto.name}.json"
         logger.info(f"Writing: {dto.type} to {write_to}")
 
         if dto.type != DMT.PACKAGE.value:
