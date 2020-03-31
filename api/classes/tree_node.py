@@ -6,6 +6,7 @@ from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from config import Config
 from core.enums import DMT
+from core.repository import EntityNotFoundException
 from utils.logging import logger
 
 
@@ -232,6 +233,21 @@ class NodeBase:
         path.reverse()
         return [parent.uid] + path
 
+    def filesystem_path(self):
+        path = []
+        parent = self.parent
+        while parent:
+            if parent.parent:
+                # Skip Packages "content"
+                if parent.parent.type == DMT.PACKAGE.value:
+                    parent = parent.parent
+            path += [parent.name]
+            parent = parent.parent
+        # Since we build the path "bottom-up", it need's to be revered.
+        # eg. [parent, grand_parent, grand_grand_parent]
+        path.reverse()
+        return path
+
     def traverse(self):
         """Iterate in pre-order depth-first search order (DFS)"""
         yield self
@@ -327,7 +343,7 @@ class NodeBase:
 
         next_node = next((x for x in self.children if x.name == path[0]), None)
         if not next_node:
-            return
+            raise EntityNotFoundException(path[0])
         path.pop(0)
         next_node = next_node.get_by_name_path(path)
         return next_node

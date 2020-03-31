@@ -1,6 +1,7 @@
 import json
 
-from core.use_case.generate_python_code import GeneratePythonCodeUseCase, GeneratePythonCodeRequestObject
+from core.use_case.generate_python_code import GeneratePythonCodeRequestObject, GeneratePythonCodeUseCase
+from core.use_case.generate_code_with_plugin import GenerateCodeWithPluginUseCase, GenerateCodeWithPluginRequestObject
 from flask import Blueprint, Response, send_file
 
 from classes.data_source import DataSource
@@ -61,6 +62,25 @@ def generate_python_code(data_source_id: str, document_id: str):
         {"documentId": document_id, "dataSourceId": data_source_id}
     )
     use_case = GeneratePythonCodeUseCase(document_repository, get_repository)
+    response = use_case.execute(request_object)
+
+    if response.type == res.ResponseSuccess.SUCCESS:
+        return send_file(
+            response.value, mimetype="application/zip", as_attachment=True, attachment_filename="generated-code.zip"
+        )
+    else:
+        return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+
+
+@blueprint.route(
+    "/api/system/<string:data_source_id>/generate-code/<string:plugin_name>/<path:document_path>", methods=["GET"]
+)
+def generate_code_with_plugin(data_source_id: str, plugin_name: str, document_path: str):
+    logger.info(f"Generating code for document {document_path}, with plugin {plugin_name}")
+    request_object = GenerateCodeWithPluginRequestObject.from_dict(
+        {"documentPath": document_path, "pluginName": plugin_name, "dataSourceId": data_source_id}
+    )
+    use_case = GenerateCodeWithPluginUseCase()
     response = use_case.execute(request_object)
 
     if response.type == res.ResponseSuccess.SUCCESS:
