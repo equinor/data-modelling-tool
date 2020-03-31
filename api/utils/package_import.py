@@ -60,6 +60,7 @@ def _add_documents(path, documents, collection, is_entity=False) -> List[Dict]:
         logger.info(f"Working on {file}...")
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
+        # TODO: This does not work on all entities (empty non-optional lists?)
         if Config.VERIFY_IMPORTS:
             template_repository = TemplateRepositoryFromFile(schemas_location())
             factory = Factory(template_repository, read_from_file=True)
@@ -69,9 +70,10 @@ def _add_documents(path, documents, collection, is_entity=False) -> List[Dict]:
             else:
                 Blueprint = factory.create(get_template_type(path, file))
 
-            document = DTO(data)
-            if not url_safe_name(document.name):
-                raise InvalidDocumentNameException(document.name)
+        document = DTO(data)
+        if not url_safe_name(document.name):
+            raise InvalidDocumentNameException(document.name)
+
         dmt_db[collection].replace_one({"_id": document.uid}, document.data, upsert=True)
         docs.append({"_id": document.uid, "name": document.name, "type": document.type})
     return docs
