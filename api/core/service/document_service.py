@@ -9,10 +9,15 @@ from classes.storage_recipe import StorageRecipe
 from classes.tree_node import ListNode, Node
 from core.enums import SIMOS, DMT
 from core.repository import Repository
-from core.repository.repository_exceptions import EntityNotFoundException
+from core.repository.repository_exceptions import (
+    EntityNotFoundException,
+    FileNotFoundException,
+    DuplicateFileNameInPackageException,
+    InvalidDocumentNameException,
+)
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
-from core.utility import BlueprintProvider
+from core.utility import BlueprintProvider, duplicate_filename, url_safe_name
 from utils.logging import logger
 
 
@@ -132,7 +137,6 @@ class DocumentService:
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
-            # document_uid = document_uid + "2" # impose error
             complete_document = get_complete_document(
                 document_uid, self.repository_provider(data_source_id), self.blueprint_provider
             )
@@ -174,6 +178,8 @@ class DocumentService:
         package: DTO = self.repository_provider(data_source_id).find(
             {"type": "system/DMT/Package", "isRoot": True, "name": package_name}, single=True
         )
+        if not package:
+            raise FileNotFoundException(data_source_id, package_name, is_root=True)
 
         complete_document = get_complete_document(
             package.uid, self.repository_provider(data_source_id), self.blueprint_provider
@@ -273,10 +279,17 @@ class DocumentService:
     def add_document(
         self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
     ):
+        if not url_safe_name(name):
+            raise InvalidDocumentNameException(name)
+
         root: Node = self.get_by_uid(data_source_id, parent_id)
         if not root:
             raise EntityNotFoundException(uid=parent_id)
-        parent = root.get_by_path(attribute_path.split("."))
+        parent = root.get_by_path(attribute_path.split(".")) if attribute_path else root
+
+        # Check if a file/attributre with the same name already exists on the target
+        if duplicate_filename(parent, name):
+            raise DuplicateFileNameInPackageException(data_source_id, f"{parent.name}/{name}")
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
@@ -299,8 +312,11 @@ class DocumentService:
 
         return {"uid": new_node.node_id}
 
+    # Add file by parent directory
     def add(self, data_source_id: str, directory: str, document: dict):
-        root: Node = self.get_by_path(data_source_id, directory)
+        # Convert filesystem path to NodeTree path
+        tree_path = "/content/".join(directory.split("/"))
+        root: Node = self.get_by_path(data_source_id, tree_path)
         if not root:
             raise EntityNotFoundException(uid=directory)
 
@@ -308,12 +324,19 @@ class DocumentService:
         type = document["type"]
         description = document["description"]
 
+        if not url_safe_name(name):
+            raise InvalidDocumentNameException(name)
+
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
         if type == SIMOS.BLUEPRINT.value:
             entity["attributes"] = get_required_attributes(type=type)
 
         parent = root.search(f"{root.uid}.content")
+
+        # Check if a file with the same name already exists in the target package
+        if duplicate_filename(parent, name):
+            raise DuplicateFileNameInPackageException(data_source_id, directory)
 
         new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
 

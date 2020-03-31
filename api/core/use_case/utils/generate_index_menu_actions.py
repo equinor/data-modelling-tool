@@ -85,7 +85,7 @@ def get_create_root_package_menu_item(data_source_id: str):
             "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
             "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": f"/api/v4/index/{data_source_id}/{data_source_id}",
-            "request": {"type": DMT.PACKAGE.value, "name": "${name}", "description": "${description}"},
+            "request": {"name": "${name}", "description": "${description}"},
         },
     }
 
