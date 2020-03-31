@@ -112,7 +112,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             )
             # Add any code generators added as plugins
             for generator in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
-                path = f"{'/'.join(node.filesystem_path())}/{node.name}"
+                path = node.filesystem_path()
                 path_wo_data_source = path.split("/", 1)[1]
                 code_generators.append(get_export_code_menu_item(data_source_id, generator, path_wo_data_source))
             menu_items.append({"label": "Generate Code", "menuItems": code_generators})

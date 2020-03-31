@@ -4,7 +4,6 @@ import importlib
 import json
 import sys
 
-from classes.blueprint import Blueprint
 from classes.tree_node import Node
 from config import Config
 from core.enums import DMT, SIMOS
@@ -46,20 +45,11 @@ class GenerateCodeWithPluginRequestObject(req.ValidRequestObject):
         )
 
 
-def blueprints_in_package(node, path):
+def blueprints_in_package(package_node, data_source_id):
     blueprints = {}
-
-    def recursive_blueprints_in_package(node, path):
-        if node.type == SIMOS.BLUEPRINT.value:
-            blueprints[f"{path}/{node.name}"] = node.to_dict()
-            return
-        for child in node.children:
-            if child.type == DMT.PACKAGE.value:
-                recursive_blueprints_in_package(child, path)
-
-    for child in node.children[0].children:
-        recursive_blueprints_in_package(child, path)
-
+    for child in package_node.traverse():
+        if child.type == SIMOS.BLUEPRINT.value:
+            blueprints[f"{data_source_id}/{child.filesystem_path()}"] = child.to_dict()
     return blueprints
 
 
@@ -72,7 +62,7 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
         plugin_name: str = request_object.plugin_name
         data_source_id: str = request_object.data_source_id
 
-        if not plugin_name in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
+        if plugin_name not in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
             raise PluginNotLoadedException(plugin_name)
 
         tree_path = "/content/".join(document_path.split("/"))
@@ -81,7 +71,7 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
         # If it's a package, find all blueprints in the package. Else, just add the one.
         blueprints = {}
         if document.type == DMT.PACKAGE.value:
-            blueprints.update(blueprints_in_package(document, f"{data_source_id}/{document_path}"))
+            blueprints.update(blueprints_in_package(document, data_source_id))
         else:
             blueprints[f"{data_source_id}/{document_path}"] = document.to_dict()
 
@@ -90,6 +80,9 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
         for key, value in blueprints.items():
             _related_bp = get_related_blueprints(key)
             referenced_blueprints.update(_related_bp)
+
+        # Add all "SIMOS SYSTEM" Blueprints
+        referenced_blueprints.update(get_related_blueprints(SIMOS.BLUEPRINT.value))
 
         # Merge all required blueprints to one dictionary
         blueprints.update(referenced_blueprints)

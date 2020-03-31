@@ -246,7 +246,7 @@ class NodeBase:
         # Since we build the path "bottom-up", it need's to be revered.
         # eg. [parent, grand_parent, grand_grand_parent]
         path.reverse()
-        return path
+        return f"{'/'.join(path)}/{self.name}"
 
     def traverse(self):
         """Iterate in pre-order depth-first search order (DFS)"""

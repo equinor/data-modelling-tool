@@ -1,14 +1,13 @@
 import json
 
-from core.use_case.generate_python_code import GeneratePythonCodeRequestObject, GeneratePythonCodeUseCase
-from core.use_case.generate_code_with_plugin import GenerateCodeWithPluginUseCase, GenerateCodeWithPluginRequestObject
 from flask import Blueprint, Response, send_file
 
-from classes.data_source import DataSource
 from core.repository.repository_factory import get_repository
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.use_case.create_application_use_case import CreateApplicationRequestObject, CreateApplicationUseCase
+from core.use_case.generate_code_with_plugin import GenerateCodeWithPluginRequestObject, GenerateCodeWithPluginUseCase
+from core.use_case.generate_python_code import GeneratePythonCodeRequestObject, GeneratePythonCodeUseCase
 from core.use_case.get_application_settings_use_case import GetApplicationSettingsUseCase
 from utils.logging import logger
 

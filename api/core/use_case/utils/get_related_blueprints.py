@@ -7,10 +7,8 @@ from core.utility import BlueprintProvider
 
 def get_related_blueprints(blueprint: str) -> Dict:
     get_blueprint = BlueprintProvider().get_blueprint
-    master_blueprint = get_blueprint(SIMOS.BLUEPRINT.value)
 
     related_blueprints = {}
-    related_blueprints[SIMOS.BLUEPRINT.value] = master_blueprint.to_dict()
 
     first = get_blueprint(blueprint)
     related_blueprints[blueprint] = first.to_dict()
@@ -27,8 +25,5 @@ def get_related_blueprints(blueprint: str) -> Dict:
         bp = get_blueprint(attr.attribute_type)
         related_blueprints[attr.attribute_type] = bp.to_dict()
         get_blueprints_recursive(bp)
-
-    # Add system blueprints
-    get_blueprints_recursive(master_blueprint)
 
     return related_blueprints
