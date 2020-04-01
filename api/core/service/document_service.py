@@ -85,9 +85,9 @@ def get_resolved_document(
                     data[attribute_name] = get_complete_document(
                         complex_data["_id"], document_repository, blueprint_provider
                     )
-        # If there is no data, and the attribute is NOT optional, raise an exception
+        # If there is no data, and the attribute is NOT optional AND not an array, raise an exception
         else:
-            if not complex_attribute.is_optional():
+            if not complex_attribute.is_optional() and not complex_attribute.is_array():
                 error = f"The entity {document.name} is invalid! None-optional type {attribute_name} is missing."
                 logger.error(error)
 
