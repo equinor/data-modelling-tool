@@ -13,6 +13,7 @@ from core.use_case.remove_use_case import RemoveFileRequestObject, RemoveUseCase
 from core.use_case.rename_file_use_case import RenameRequestObject, RenameUseCase
 
 from core.use_case.add_document_use_case import AddDocumentUseCase, AddDocumentRequestObject
+from core.use_case.seach_use_case import SearchUseCase, SearchRequestObject
 
 blueprint = Blueprint("explorer", __name__)
 
@@ -31,6 +32,17 @@ def add_file(data_source_id: str):
     request_data["data_source_id"] = data_source_id
     use_case = AddFileUseCase()
     request_object = AddFileRequestObject.from_dict(request_data)
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
+    )
+
+
+# Add file by parent_id
+@blueprint.route("/api/search/<string:data_source_id>", methods=["POST"])
+def search_entities(data_source_id: str):
+    use_case = SearchUseCase()
+    request_object = SearchRequestObject.from_dict({"data_source_id": data_source_id, "data": request.get_json()})
     response = use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]

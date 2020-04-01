@@ -1,9 +1,10 @@
 import io
 import zipfile
-from typing import Dict, Union
+from typing import Dict, Union, List
 from uuid import uuid4
 
 from classes.blueprint import Blueprint
+from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from classes.tree_node import ListNode, Node
@@ -14,6 +15,8 @@ from core.repository.repository_exceptions import (
     FileNotFoundException,
     DuplicateFileNameInPackageException,
     InvalidDocumentNameException,
+    InvalidAttributeException,
+    RepositoryException,
 )
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
@@ -349,3 +352,58 @@ class DocumentService:
         self.save(root, data_source_id)
 
         return {"uid": new_node.node_id}
+
+    def search(self, data_source_id, search_data):
+        repository = self.repository_provider(data_source_id)
+        type = search_data.pop("type")
+
+        # TODO: This looks strange. Change how we get the "get_blueprint()"
+        get_blueprint = self.get_blueprint().get_blueprint
+        blueprint = get_blueprint(type)
+
+        # Raise error if posted attribute not in blueprint
+        if invalid_type := next(
+            (key for key in search_data.keys() if key not in blueprint.get_attribute_names()), None
+        ):
+            raise InvalidAttributeException(invalid_type, type)
+
+        # Raise error if posted attribute value is not a string
+        if not_string := next(
+            ({key: value} for key, value in search_data.items() if not isinstance(value, str)), None
+        ):
+            raise RepositoryException(f"Search parameters must be strings. {not_string}")
+
+        # The entities 'type' must match exactly
+        process_search_data = {"type": type}
+
+        # TODO: This is limited to mongoDB repositories
+        # TODO: Can not search on nested entities
+        # TODO: Does not work with lists in any way
+        for key, search_value in search_data.items():
+            attribute: BlueprintAttribute = blueprint.get_attribute_by_name(key)
+
+            if attribute.is_array():
+                raise RepositoryException("Searching on list attributes are not supported.")
+
+            if search_value == "":
+                continue
+
+            if attribute.attribute_type == "string":
+                process_search_data[key] = {"$regex": f".*{search_value}.*", "$options": "i"}
+                continue
+
+            if attribute.attribute_type in ["number", "integer"]:
+                if search_value[0] == ">":
+                    process_search_data[key] = {"$gt": float(search_value[1:])}
+                    continue
+                if search_value[0] == "<":
+                    process_search_data[key] = {"$lt": float(search_value[1:])}
+                    continue
+                process_search_data[key] = float(search_value)
+
+        result: List[DTO] = repository.find(process_search_data, single=False)
+        result_list = {}
+        for doc in result:
+            result_list[doc.name] = doc.data
+
+        return result_list

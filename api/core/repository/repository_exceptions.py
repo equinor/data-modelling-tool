@@ -27,6 +27,11 @@ class InvalidDocumentNameException(RepositoryException):
         )
 
 
+class InvalidAttributeException(RepositoryException):
+    def __init__(self, attribute_name, type):
+        super().__init__(message=f"'{attribute_name}' is not a valid attribute in the '{type}'")
+
+
 class PluginNotLoadedException(RepositoryException):
     def __init__(self, plugin):
         super().__init__(
