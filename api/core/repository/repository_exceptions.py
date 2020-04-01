@@ -1,3 +1,6 @@
+from config import Config
+
+
 class RepositoryException(Exception):
     def __init__(self, message: str):
         super()
@@ -21,6 +24,13 @@ class InvalidDocumentNameException(RepositoryException):
     def __init__(self, name):
         super().__init__(
             message=f"'{name}' is a invalid document name. Only alphanumeric, underscore, and dash are allowed characters"
+        )
+
+
+class PluginNotLoadedException(RepositoryException):
+    def __init__(self, plugin):
+        super().__init__(
+            message=f"'{plugin}' is not loaded. Make sure it's a proper python module, and located at '{Config.APPLICATION_HOME}/code_generators/'. Plugins are only loaded at startup"
         )
 
 

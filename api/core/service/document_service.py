@@ -171,8 +171,8 @@ class DocumentService:
         memory_file.seek(0)
         return memory_file
 
-    def get_by_path(self, data_source_id: str, directory: str):
-        ref_elements = directory.split("/", 1)
+    def get_by_path(self, data_source_id: str, path: str):
+        ref_elements = path.split("/", 1)
         package_name = ref_elements[0]
 
         package: DTO = self.repository_provider(data_source_id).find(

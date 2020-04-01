@@ -1,5 +1,26 @@
 # Marine Analysis Framework API
 
+## Code generator plugins
+To use your own code generator, follow these steps;
+1. Create a python module (a directory with a `__init__.py`-file)
+2. Have the modules `main()` function adhere to the DMT-code-generator-standard
+    ```python
+    def main(dict_of_blueprints: dict) -> io.BytesIO:
+        zip_folder = create_code_from_blueprints()
+        return zip_folder
+    ```
+3. Using docker; mount you'r python module into the container `/code/home/code_generators/`
+    ```yaml
+    ...
+    volumes:
+      - ./plugins/awsome_fortran_code_generator:/code/home/code_generators/awsome_fortran_code_generator
+    ...
+    ```
+4. When the DMT-API starts, the plugin is loaded, and offered as an download option on Blueprints and Packages in the DMT Web interface.
+
+![custom_code_generator](../docs/custom_code_generator.png)
+
+
 ## Python packages
 
 This project uses [Poetry](https://poetry.eustace.io/docs/) for its Python package management.

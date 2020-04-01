@@ -1,23 +1,21 @@
-from typing import Union
-
 from classes.tree_node import Node
+from config import Config
 from core.enums import DMT, SIMOS
 from core.use_case.utils.generate_index_menu_actions import (
+    get_create_reference_menu_item,
+    get_create_root_package_menu_item,
     get_delete_menu_item,
     get_download_menu_action,
     get_dynamic_create_menu_item,
+    get_export_code_menu_item,
     get_export_menu_item,
+    get_export_python_code_menu_item,
     get_import_menu_item,
     get_rename_menu_action,
     get_runnable_menu_action,
-    get_create_root_package_menu_item,
-    get_create_reference_menu_item,
-    get_export_python_code_menu_item,
 )
-from core.utility import BlueprintProvider
-from utils.group_by import group_by
-
 from core.use_case.utils.sort_menu_items import sort_menu_items
+from utils.group_by import group_by
 
 
 def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
@@ -103,11 +101,21 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
         # Applications can be downloaded
         if node.type == SIMOS.APPLICATION.value:
             menu_items.append(get_download_menu_action(data_source_id, node.node_id))
-        else:
-            # Context menu: Export Python code
-            menu_items.append(
+
+        # Generate code only in DMTApp, and on Packages and Blueprints
+        if node.type in [SIMOS.BLUEPRINT.value, DMT.PACKAGE.value] and app_settings["name"] == "DMTAppSettings":
+            # Context menu: Export code
+            code_generators = []
+            # Always add default python code generator
+            code_generators.append(
                 get_export_python_code_menu_item(data_source_id=data_source_id, document_id=node.node_id)
             )
+            # Add any code generators added as plugins
+            for generator in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
+                path = node.filesystem_path()
+                path_wo_data_source = path.split("/", 1)[1]
+                code_generators.append(get_export_code_menu_item(data_source_id, generator, path_wo_data_source))
+            menu_items.append({"label": "Generate Code", "menuItems": code_generators})
 
         is_root_package = node.is_single() and node.type == DMT.PACKAGE.value
 

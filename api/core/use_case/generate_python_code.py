@@ -198,7 +198,7 @@ class GeneratePythonCodeUseCase(uc.UseCase):
             pass
         return dependencies
 
-    def process_request(self, request_object: GeneratePythonCodeRequestObject):
+    def process_request(self, request_object: GeneratePythonCodeRequestObject) -> io.BytesIO:
         document_id: str = request_object.document_id
         data_source_id: str = request_object.data_source_id
 

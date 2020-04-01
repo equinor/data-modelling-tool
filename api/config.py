@@ -30,5 +30,6 @@ class Config:
         PY_PROJECT = toml.load(toml_file)
     with open(DMT_SETTINGS_FILE) as json_file:
         DMT_APPLICATION_SETTINGS = json.load(json_file)
+        DMT_APPLICATION_SETTINGS["code_generators"] = os.listdir(f"{APPLICATION_HOME}/code_generators")
     with open(ENTITY_SETTINGS_FILE) as json_file:
         ENTITY_APPLICATION_SETTINGS = json.load(json_file)
