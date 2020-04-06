@@ -1,4 +1,5 @@
 from behave import given
+from config import Config
 
 from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import DMT, SIMOS
@@ -7,8 +8,12 @@ from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from classes.tree_node import Node, ListNode
 from core.repository.repository_factory import get_repository
+from dmss_api import DocumentApi, PackageApi, ExplorerApi
 
 blueprint_provider = BlueprintProvider()
+
+explorer_api = ExplorerApi()
+explorer_api.api_client.configuration.host = Config.DMSS_HOST
 
 
 def generate_tree_from_rows(node: Node, rows):
@@ -38,7 +43,7 @@ def generate_tree_from_rows(node: Node, rows):
             entity = CreateEntity(
                 blueprint_provider=blueprint_provider,
                 type=child_data["type"],
-                description=child_data["description"],
+                description=child_data.get("description", ""),
                 name=child_data["name"],
             ).entity
             child_node = Node(
@@ -60,7 +65,6 @@ def generate_tree_from_rows(node: Node, rows):
 
 
 def generate_tree(data_source_id: str, table):
-    root_data = {"name": data_source_id, "description": "", "type": ""}
     root = Node(key=data_source_id, attribute=BlueprintAttribute(data_source_id, ""), uid=data_source_id)
     root_package = list(filter(lambda row: row["parent_uid"] == "", table.rows))[0]
     if not root_package:
@@ -85,5 +89,6 @@ def step_impl_documents(context, data_source_id: str, collection: str):
     context.documents = {}
     tree = generate_tree(data_source_id, context.table)
     tree.show_tree()
-    document_service = DocumentService(repository_provider=get_repository)
-    document_service.save(node=tree, data_source_id=data_source_id)
+    # document_service = DocumentService(repository_provider=get_repository)
+    # document_service.save(node=tree, data_source_id=data_source_id)
+    explorer_api.add_document(data_source_id, {"data": tree.to_dict()})

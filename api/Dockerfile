@@ -1,6 +1,6 @@
 FROM python:3.8.0-alpine3.10 as development
 ENV PYTHONUNBUFFERED=1 FLASK_APP=/code/app.py PYTHONPATH=/code
-CMD /code/init.sh
+
 WORKDIR /code
 RUN apk update && \
     # Needed to compile a poetry dependecy(cryptography)
@@ -11,6 +11,8 @@ RUN apk update && \
 COPY pyproject.toml poetry.lock ./
 RUN poetry install
 COPY . /code
+ENTRYPOINT ["./init.sh"]
+CMD ["api"]
 
 FROM development as prod
 RUN poetry install --no-dev

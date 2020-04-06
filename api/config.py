@@ -26,6 +26,7 @@ class Config:
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
     VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
     PY_PROJECT_FILE = f"{Path(__file__).parent.absolute()}/pyproject.toml"
+    DMSS_HOST = "http://mainapi:5000/api/v1"
     with open(PY_PROJECT_FILE) as toml_file:
         PY_PROJECT = toml.load(toml_file)
     with open(DMT_SETTINGS_FILE) as json_file:

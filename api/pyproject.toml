@@ -6,6 +6,7 @@ authors = ["Stig Ofstad <stoo@equinor.com>","Christoffer","Eirik"]
 license = "TBD"
 
 [tool.poetry.dependencies]
+wasmer = "0.3.0"
 python = "3.8.*"
 flask = "^1.0"
 werkzeug = "^0.15.4"
@@ -15,6 +16,7 @@ stringcase = "^1.2"
 python-dotenv = "^0.10.3"
 jinja2 = "^2.11.1"
 black = {version = "^19.10-beta0", allow-prereleases = true}
+urllib3 = "1.25.8"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"

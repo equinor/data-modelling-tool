@@ -84,6 +84,7 @@ Feature: Explorer - Add file
     }
     """
 
+  @skip
   Scenario: Add file to parent that does not exists
     Given i access the resource url "/api/v2/explorer/data-source-name/add-file"
     When i make a "POST" request
