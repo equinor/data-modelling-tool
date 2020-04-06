@@ -6,11 +6,12 @@ from core.shared import use_case as uc
 
 
 class RenameRequestObject(req.ValidRequestObject):
-    def __init__(self, data_source_id=None, document_id=None, name=None, parent_id=None):
+    def __init__(self, data_source_id=None, document_id=None, name=None, parent_id=None, description=None):
         self.data_source_id = data_source_id
         self.document_id = document_id
         self.name = name
         self.parent_id = parent_id
+        self.description = description
 
     @classmethod
     def from_dict(cls, adict):
@@ -36,6 +37,7 @@ class RenameRequestObject(req.ValidRequestObject):
             document_id=adict.get("documentId"),
             name=adict.get("name"),
             parent_id=adict.get("parentId"),
+            description=adict.get("description")
         )
 
 
@@ -48,10 +50,15 @@ class RenameUseCase(uc.UseCase):
         document_id = request_object.document_id
         name = request_object.name
         parent_id = request_object.parent_id
+        description = request_object.description
 
         document_service = DocumentService(repository_provider=self.repository_provider)
         document = document_service.rename_document(
-            data_source_id=data_source_id, document_id=document_id, parent_uid=parent_id, name=name
+            data_source_id=data_source_id,
+            document_id=document_id,
+            parent_uid=parent_id,
+            name=name,
+            description=description
         )
         document_service.invalidate_cache()
         return res.ResponseSuccess(document)

@@ -244,7 +244,8 @@ Feature: Explorer - Remove file
   {
     "parentId": "2",
     "documentId": "2.uiRecipes.1",
-    "name": "New Name"
+    "name": "New Name",
+    "description": ""
   }
   """
     Then the response status should be "OK"
@@ -285,7 +286,8 @@ Feature: Explorer - Remove file
   {
     "parentId": "6",
     "documentId": "6.item",
-    "name": "New Name"
+    "name": "New Name",
+    "description": ""
   }
   """
     Then the response status should be "OK"

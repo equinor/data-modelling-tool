@@ -123,6 +123,9 @@ class GenerateIndexUseCase:
         # make sure we're generating the index with correct blueprints.
         document_service.invalidate_cache()
         root_packages = document_service.get_root_packages(data_source_id=data_source_id)
+
+        print("***********", root_packages)
+
         root = Node(
             key="root",
             uid=data_source_id,
@@ -133,18 +136,18 @@ class GenerateIndexUseCase:
         for root_package in root_packages:
             try:
                 root.add_child(
-                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid)
+                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package["uid"])
                 )
             except EntityNotFoundException as error:
                 logger.exception(error, "unhandled exception.")
                 error_node: Node = Node(
-                    key=root_package.uid,
-                    uid=root_package.uid,
-                    entity={"name": root_package.name, "type": ""},
+                    key=root_package["uid"],
+                    uid=root_package["uid"],
+                    entity={"name": root_package["name"], "type": ""},
                     blueprint_provider=document_service.blueprint_provider,
                     attribute=BlueprintAttribute("root", "datasource"),
                 )
-                error_node.set_error(f"failed to add root package {root_package.name} to the root node")
+                error_node.set_error(f"failed to add root package {root_package['name']} to the root node")
                 root.add_child(error_node)
             except Exception as error:
                 logger.exception(error, "unhandled exception.")

@@ -7,7 +7,6 @@ from core.use_case.get_document_by_path_use_case import GetDocumentByPathUseCase
 from core.use_case.get_document_use_case import GetDocumentUseCase, GetDocumentRequestObject
 from core.use_case.update_document_use_case import UpdateDocumentUseCase, UpdateDocumentRequestObject
 from flask import Blueprint, Response, request
-
 from core.utility import get_document_by_ref
 from utils.logging import logger
 

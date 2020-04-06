@@ -7,7 +7,6 @@
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "type",
-      "enumType": "system/SIMOS/AttributeTypes",
       "default": "system/SIMOS/BlueprintAttribute",
       "optional": false
     },

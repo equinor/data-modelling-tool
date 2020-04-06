@@ -13,6 +13,10 @@ from utils.package_import import import_package
 
 from classes.dto import DTO
 from config import Config
+from dmss_api import DocumentApi, PackageApi, ExplorerApi
+
+explorer_api = ExplorerApi()
+explorer_api.api_client.configuration.host = Config.DMSS_HOST
 
 
 @given("data modelling tool templates are imported")
@@ -26,8 +30,10 @@ def step_impl(context):
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')
 def step_impl_2(context, uid: str, data_source_id: str):
     document: DTO = DTO(uid=uid, data=json.loads(context.text))
-    document_repository: Repository = get_repository(data_source_id)
-    document_repository.add(document)
+    response = explorer_api.add_raw(data_source_id, document.to_dict())
+    print(response)
+    # document_repository: Repository = get_repository(data_source_id)
+    # document_repository.add(document)
 
 
 @when('I create a Python class from the template "{template_name}"')

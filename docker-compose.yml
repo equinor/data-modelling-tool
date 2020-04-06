@@ -16,8 +16,6 @@ services:
       context: ./api
     image: mariner.azurecr.io/dmt/api
     restart: unless-stopped
-    depends_on:
-      - db
     environment:
       ENVIRONMENT: azure
       MONGO_INITDB_ROOT_USERNAME: maf
@@ -28,10 +26,3 @@ services:
     build: ./web
     image: mariner.azurecr.io/dmt/web
     restart: unless-stopped
-
-  db:
-    image: mongo:3.4
-    command: --quiet
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: maf
-      MONGO_INITDB_ROOT_PASSWORD: maf
