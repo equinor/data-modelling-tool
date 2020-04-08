@@ -1,12 +1,12 @@
 #!/bin/sh
 set -euo pipefail
 
-if [ "$ENVIRONMENT" = 'local' ] ; then
+if [ "$ENVIRONMENT" = 'local' ] && [ "$FLASK_ENV" = 'development' ] ; then
     cd /dmss/
     python setup.py install
     cd /code/
   else
-    pip install dmss-api==0.2.0
+    pip install dmss-api==0.2.4
   fi
 
 if [ "$1" = 'api' ]; then

@@ -21,6 +21,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
       APPLICATION_HOME: /code/home
+      FLASK_ENV: development
 
   web:
     build: ./web
