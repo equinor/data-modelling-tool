@@ -54,16 +54,19 @@
         {
           "name": "attributes",
           "type": "system/SIMOS/StorageAttribute",
+          "dimensions": "*",
           "contained": true
         },
         {
           "name": "storageRecipes",
           "type": "system/SIMOS/StorageAttribute",
+          "dimensions": "*",
           "contained": true
         },
         {
           "name": "uiRecipes",
-          "type": "system/SIMOS/UiAttribute",
+          "type": "system/SIMOS/StorageAttribute",
+          "dimensions": "*",
           "contained": true
         }
       ]
@@ -71,13 +74,14 @@
   ],
   "uiRecipes": [
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "DEFAULT_CREATE",
       "description": "",
       "attributes": [
         {
           "name": "attributes",
           "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": false
         },
         {
@@ -88,11 +92,13 @@
         {
           "name": "storageRecipes",
           "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": false
         },
         {
           "name": "uiRecipes",
           "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": false
         }
       ]
@@ -119,11 +125,13 @@
         {
           "name": "attributes",
           "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": false
         },
         {
           "name": "uiRecipes",
           "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": true
         },
         {
@@ -133,7 +141,8 @@
         },
         {
           "name": "storageRecipes",
-          "type": "system/SIMOS/StorageAttribute",
+          "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": true
         }
       ]

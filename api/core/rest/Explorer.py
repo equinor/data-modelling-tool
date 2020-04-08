@@ -12,6 +12,9 @@ from core.use_case.move_file_use_case import MoveFileRequestObject, MoveFileUseC
 from core.use_case.remove_use_case import RemoveFileRequestObject, RemoveUseCase
 from core.use_case.rename_file_use_case import RenameRequestObject, RenameUseCase
 
+from core.use_case.add_document_use_case import AddDocumentUseCase, AddDocumentRequestObject
+from core.use_case.seach_use_case import SearchUseCase, SearchRequestObject
+
 blueprint = Blueprint("explorer", __name__)
 
 STATUS_CODES = {
@@ -22,12 +25,37 @@ STATUS_CODES = {
 }
 
 
+# Add file by parent_id
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-file", methods=["POST"])
 def add_file(data_source_id: str):
     request_data = request.get_json()
     request_data["data_source_id"] = data_source_id
     use_case = AddFileUseCase()
     request_object = AddFileRequestObject.from_dict(request_data)
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
+    )
+
+
+# Add file by parent_id
+@blueprint.route("/api/search/<string:data_source_id>", methods=["POST"])
+def search_entities(data_source_id: str):
+    use_case = SearchUseCase()
+    request_object = SearchRequestObject.from_dict({"data_source_id": data_source_id, "data": request.get_json()})
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
+    )
+
+
+# Add file by directory path
+@blueprint.route("/api/v1/explorer/<string:data_source_id>/add-document", methods=["POST"])
+def add_document(data_source_id: str):
+    request_data = request.get_json()
+    request_data["data_source_id"] = data_source_id
+    use_case = AddDocumentUseCase()
+    request_object = AddDocumentRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
@@ -83,9 +111,9 @@ def rename(data_source_id: str):
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/export/<string:document_id>", methods=["GET"])
-def post(data_source_id: str, document_id: str):
+def export(data_source_id: str, document_id: str):
     request_object = ExportRequestObject.from_dict({"data_source_id": data_source_id, "documentId": document_id})
-    use_case = ExportUseCase()
+    use_case = ExportUseCase(repository_provider=get_repository, data_source_id=data_source_id)
     response = use_case.execute(request_object)
 
     if response.type == res.ResponseSuccess.SUCCESS:

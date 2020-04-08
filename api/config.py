@@ -24,11 +24,12 @@ class Config:
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
     SYSTEM_FOLDERS = ["SIMOS", "DMT"]
-    VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", True)
+    VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
     PY_PROJECT_FILE = f"{Path(__file__).parent.absolute()}/pyproject.toml"
     with open(PY_PROJECT_FILE) as toml_file:
         PY_PROJECT = toml.load(toml_file)
     with open(DMT_SETTINGS_FILE) as json_file:
         DMT_APPLICATION_SETTINGS = json.load(json_file)
+        DMT_APPLICATION_SETTINGS["code_generators"] = os.listdir(f"{APPLICATION_HOME}/code_generators")
     with open(ENTITY_SETTINGS_FILE) as json_file:
         ENTITY_APPLICATION_SETTINGS = json.load(json_file)

@@ -1,4 +1,5 @@
 from classes.dto import DTO
+from core.enums import DMT
 from core.repository import Repository
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -7,9 +8,8 @@ from utils.logging import logger
 
 
 class AddRootPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, name=None, type=None):
+    def __init__(self, name=None):
         self.name = name
-        self.type = type
 
     @classmethod
     def from_dict(cls, adict):
@@ -21,7 +21,7 @@ class AddRootPackageRequestObject(req.ValidRequestObject):
         if invalid_req.has_errors():
             return invalid_req
 
-        return cls(name=adict.get("name"), type=adict.get("type", "system/DMT/Package"))
+        return cls(name=adict.get("name"))
 
 
 class AddRootPackageUseCase(uc.UseCase):
@@ -30,8 +30,7 @@ class AddRootPackageUseCase(uc.UseCase):
 
     def process_request(self, request_object):
         name: str = request_object.name
-        type: str = request_object.type
-        document: DTO = DTO(data={"name": name, "type": type, "isRoot": True, "content": []})
+        document: DTO = DTO(data={"name": name, "type": DMT.PACKAGE.value, "isRoot": True, "content": []})
         self.document_repository.add(document)
         logger.info(f"Added root package '{document.uid}'")
 

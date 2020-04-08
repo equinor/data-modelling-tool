@@ -6,6 +6,7 @@ from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from config import Config
 from core.enums import DMT
+from core.repository import EntityNotFoundException
 from utils.logging import logger
 
 
@@ -69,9 +70,7 @@ class DictExporter:
 
 class DictImporter:
     @classmethod
-    def from_dict(
-        cls, entity, uid, blueprint_provider, key="", node_attribute: BlueprintAttribute = None,
-    ):
+    def from_dict(cls, entity, uid, blueprint_provider, key="", node_attribute: BlueprintAttribute = None):
         return cls._from_dict(entity, uid, key, blueprint_provider, node_attribute)
 
     @classmethod
@@ -234,6 +233,21 @@ class NodeBase:
         path.reverse()
         return [parent.uid] + path
 
+    def filesystem_path(self):
+        path = []
+        parent = self.parent
+        while parent:
+            if parent.parent:
+                # Skip Packages "content"
+                if parent.parent.type == DMT.PACKAGE.value:
+                    parent = parent.parent
+            path += [parent.name]
+            parent = parent.parent
+        # Since we build the path "bottom-up", it need's to be revered.
+        # eg. [parent, grand_parent, grand_grand_parent]
+        path.reverse()
+        return f"{'/'.join(path)}/{self.name}"
+
     def traverse(self):
         """Iterate in pre-order depth-first search order (DFS)"""
         yield self
@@ -321,6 +335,17 @@ class NodeBase:
             return
         keys.pop(0)
         next_node = next_node.get_by_path(keys)
+        return next_node
+
+    def get_by_name_path(self, path: List):
+        if len(path) == 0:
+            return self
+
+        next_node = next((x for x in self.children if x.name == path[0]), None)
+        if not next_node:
+            raise EntityNotFoundException(path[0])
+        path.pop(0)
+        next_node = next_node.get_by_name_path(path)
         return next_node
 
     def remove_by_path(self, keys: List) -> None:
@@ -469,6 +494,9 @@ class ListNode(NodeBase):
     @property
     def type(self):
         return self.attribute.attribute_type
+
+    def remove(self):
+        self.parent.remove_by_node_id(self.node_id)
 
     @property
     def blueprint(self):

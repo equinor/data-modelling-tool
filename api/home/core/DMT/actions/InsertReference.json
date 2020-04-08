@@ -13,7 +13,7 @@
   "storageRecipes": [],
   "uiRecipes": [
     {
-      "type": "system/SIMOS/UIRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "name": "EDIT",
       "description": "",
       "attributes": [

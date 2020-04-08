@@ -1,15 +1,26 @@
-from typing import Dict, Union
+import io
+import zipfile
+from typing import Dict, Union, List
 from uuid import uuid4
 
 from classes.blueprint import Blueprint
+from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from classes.tree_node import ListNode, Node
-from core.enums import SIMOS
+from core.enums import SIMOS, DMT
 from core.repository import Repository
-from core.repository.repository_exceptions import EntityNotFoundException
+from core.repository.repository_exceptions import (
+    EntityNotFoundException,
+    FileNotFoundException,
+    DuplicateFileNameInPackageException,
+    InvalidDocumentNameException,
+    InvalidAttributeException,
+    RepositoryException,
+)
+from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
-from core.utility import BlueprintProvider
+from core.utility import BlueprintProvider, duplicate_filename, url_safe_name
 from utils.logging import logger
 
 
@@ -77,9 +88,9 @@ def get_resolved_document(
                     data[attribute_name] = get_complete_document(
                         complex_data["_id"], document_repository, blueprint_provider
                     )
-        # If there is no data, and the attribute is NOT optional, raise an exception
+        # If there is no data, and the attribute is NOT optional AND not an array, raise an exception
         else:
-            if not complex_attribute.is_optional():
+            if not complex_attribute.is_optional() and not complex_attribute.is_array():
                 error = f"The entity {document.name} is invalid! None-optional type {attribute_name} is missing."
                 logger.error(error)
 
@@ -106,21 +117,29 @@ class DocumentService:
     def invalidate_cache(self):
         self.blueprint_provider.invalidate_cache()
 
-    def save(self, node: Union[Node, ListNode], data_source_id: str) -> None:
+    def save(self, node: Union[Node, ListNode], data_source_id: str, repository=None, path="") -> None:
+        # If not passed a custom repository to save into, use the DocumentService's repository
+        if not repository:
+            repository = self.repository_provider(data_source_id)
         # Update none-contained attributes
         for child in node.children:
             # A list node is always contained on parent. Need to check the blueprint
             if child.is_array() and not child.attribute_is_contained():
-                [self.save(x, data_source_id) for x in child.children]
+                # If the node is a package, we build the path string to be used by "export zip"-repository
+                if node.type == DMT.PACKAGE.value:
+                    path = f"{path}/{node.name}/" if path else f"{node.name}"
+                [self.save(x, data_source_id, repository, path) for x in child.children]
             elif child.not_contained():
-                self.save(child, data_source_id)
+                self.save(child, data_source_id, repository, path)
         ref_dict = node.to_ref_dict()
         dto = DTO(ref_dict)
-        self.repository_provider(data_source_id).update(dto)
+        # Expand this when adding new repositories requiring PATH
+        if isinstance(repository, ZipFileClient):
+            dto.data["__path__"] = path
+        repository.update(dto)
 
     def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
         try:
-            # document_uid = document_uid + "2" # impose error
             complete_document = get_complete_document(
                 document_uid, self.repository_provider(data_source_id), self.blueprint_provider
             )
@@ -134,6 +153,49 @@ class DocumentService:
         return Node.from_dict(
             complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
         )
+
+    def create_zip_export(self, data_source_id: str, document_uid: str) -> io.BytesIO:
+        try:
+            complete_document = get_complete_document(
+                document_uid, self.repository_provider(data_source_id), self.blueprint_provider
+            )
+        except EntityNotFoundException as error:
+            logger.exception(error)
+            raise EntityNotFoundException(document_uid)
+
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, mode="w") as zip_file:
+            root_node: Node = Node.from_dict(
+                complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
+            )
+            # Save the selected node, using custom ZipFile repository
+            self.save(root_node, data_source_id, ZipFileClient(zip_file))
+
+        memory_file.seek(0)
+        return memory_file
+
+    def get_by_path(self, data_source_id: str, path: str):
+        ref_elements = path.split("/", 1)
+        package_name = ref_elements[0]
+
+        package: DTO = self.repository_provider(data_source_id).find(
+            {"type": "system/DMT/Package", "isRoot": True, "name": package_name}, single=True
+        )
+        if not package:
+            raise FileNotFoundException(data_source_id, package_name, is_root=True)
+
+        complete_document = get_complete_document(
+            package.uid, self.repository_provider(data_source_id), self.blueprint_provider
+        )
+
+        dto = DTO(complete_document)
+        node = Node.from_dict(dto.data, dto.uid, blueprint_provider=self.blueprint_provider)
+
+        if len(ref_elements) > 1:
+            path = ref_elements[1]
+            return node.get_by_name_path(path.split("/"))
+        else:
+            return node
 
     def get_root_packages(self, data_source_id: str):
         return self.repository_provider(data_source_id).find(
@@ -210,8 +272,6 @@ class DocumentService:
         if attribute_path:
             target_node = root.search(f"{document_id}.{attribute_path}")
 
-        print("target_node", target_node)
-
         target_node.update(data)
         self.save(root, data_source_id)
 
@@ -222,10 +282,17 @@ class DocumentService:
     def add_document(
         self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
     ):
+        if not url_safe_name(name):
+            raise InvalidDocumentNameException(name)
+
         root: Node = self.get_by_uid(data_source_id, parent_id)
         if not root:
             raise EntityNotFoundException(uid=parent_id)
-        parent = root.get_by_path(attribute_path.split("."))
+        parent = root.get_by_path(attribute_path.split(".")) if attribute_path else root
+
+        # Check if a file/attributre with the same name already exists on the target
+        if duplicate_filename(parent, name):
+            raise DuplicateFileNameInPackageException(data_source_id, f"{parent.name}/{name}")
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
 
@@ -247,3 +314,96 @@ class DocumentService:
         self.save(root, data_source_id)
 
         return {"uid": new_node.node_id}
+
+    # Add file by parent directory
+    def add(self, data_source_id: str, directory: str, document: dict):
+        # Convert filesystem path to NodeTree path
+        tree_path = "/content/".join(directory.split("/"))
+        root: Node = self.get_by_path(data_source_id, tree_path)
+        if not root:
+            raise EntityNotFoundException(uid=directory)
+
+        name = document["name"]
+        type = document["type"]
+        description = document["description"]
+
+        if not url_safe_name(name):
+            raise InvalidDocumentNameException(name)
+
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description=description).entity
+
+        if type == SIMOS.BLUEPRINT.value:
+            entity["attributes"] = get_required_attributes(type=type)
+
+        parent = root.search(f"{root.uid}.content")
+
+        # Check if a file with the same name already exists in the target package
+        if duplicate_filename(parent, name):
+            raise DuplicateFileNameInPackageException(data_source_id, directory)
+
+        new_node_id = str(uuid4()) if not parent.attribute_is_contained() else ""
+
+        new_node = Node.from_dict(entity, new_node_id, self.blueprint_provider)
+
+        new_node.key = str(len(parent.children)) if parent.is_array() else ""
+
+        parent.add_child(new_node)
+
+        self.save(root, data_source_id)
+
+        return {"uid": new_node.node_id}
+
+    def search(self, data_source_id, search_data):
+        repository = self.repository_provider(data_source_id)
+        type = search_data.pop("type")
+
+        # TODO: This looks strange. Change how we get the "get_blueprint()"
+        get_blueprint = self.get_blueprint().get_blueprint
+        blueprint = get_blueprint(type)
+
+        # Raise error if posted attribute not in blueprint
+        if invalid_type := next(
+            (key for key in search_data.keys() if key not in blueprint.get_attribute_names()), None
+        ):
+            raise InvalidAttributeException(invalid_type, type)
+
+        # Raise error if posted attribute value is not a string
+        if not_string := next(
+            ({key: value} for key, value in search_data.items() if not isinstance(value, str)), None
+        ):
+            raise RepositoryException(f"Search parameters must be strings. {not_string}")
+
+        # The entities 'type' must match exactly
+        process_search_data = {"type": type}
+
+        # TODO: This is limited to mongoDB repositories
+        # TODO: Can not search on nested entities
+        # TODO: Does not work with lists in any way
+        for key, search_value in search_data.items():
+            attribute: BlueprintAttribute = blueprint.get_attribute_by_name(key)
+
+            if attribute.is_array():
+                raise RepositoryException("Searching on list attributes are not supported.")
+
+            if search_value == "":
+                continue
+
+            if attribute.attribute_type == "string":
+                process_search_data[key] = {"$regex": f".*{search_value}.*", "$options": "i"}
+                continue
+
+            if attribute.attribute_type in ["number", "integer"]:
+                if search_value[0] == ">":
+                    process_search_data[key] = {"$gt": float(search_value[1:])}
+                    continue
+                if search_value[0] == "<":
+                    process_search_data[key] = {"$lt": float(search_value[1:])}
+                    continue
+                process_search_data[key] = float(search_value)
+
+        result: List[DTO] = repository.find(process_search_data, single=False)
+        result_list = {}
+        for doc in result:
+            result_list[doc.name] = doc.data
+
+        return result_list

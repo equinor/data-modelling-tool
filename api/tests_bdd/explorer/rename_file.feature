@@ -62,13 +62,10 @@ Feature: Explorer - Add file
       "name": "new_blueprint_name"
     }
     """
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
     """
-    {
-      "type": "SYSTEM_ERROR",
-      "message": "EntityNotFoundException: 'The entity, with id 10 is not found'"
-    }
+    {"type": "RESOURCE_ERROR", "message": "The entity, with id 10 is not found"}
     """
 
   Scenario: Try to rename a document with a parent that does not exists
@@ -81,13 +78,10 @@ Feature: Explorer - Add file
       "name": "new_blueprint_name"
     }
     """
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
     """
-    {
-      "type": "SYSTEM_ERROR",
-      "message": "EntityNotFoundException: 'The entity, with id 10 is not found'"
-    }
+    {"type": "RESOURCE_ERROR", "message": "The entity, with id 10 is not found"}
     """
 
     @skip

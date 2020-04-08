@@ -70,11 +70,13 @@
         {
           "name": "attributes",
           "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": false
         },
         {
           "name": "options",
           "type": "system/SIMOS/UiAttribute",
+          "dimensions": "*",
           "contained": false
         }
       ]
@@ -104,7 +106,8 @@
         },
         {
           "name": "options",
-          "type": "system/SIMOS/UiAttribute",
+          "type": "system/SIMOS/UiAttributeOption",
+          "dimensions": "*",
           "field": "hidden"
         },
         {

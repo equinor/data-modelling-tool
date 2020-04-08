@@ -99,4 +99,54 @@ export class Blueprint implements IBlueprint {
       }
     )
   }
+
+  /**
+   * Index recipe is one to one to blueprints.
+   * Not expecting a use case where multiple index recipes for one blueprint is needed.
+   * (and complexity is likely to blow up, especially on the api)
+   */
+  private getIndexRecipeAttributes(): KeyValue | undefined {
+    if (this.blueprintType.uiRecipes) {
+      const indexRecipe = this.blueprintType.uiRecipes.find(
+        recipe => recipe.plugin === 'INDEX'
+      )
+      if (indexRecipe) {
+        return this.getUiAttributes(indexRecipe.name)
+      }
+    }
+  }
+
+  /**
+   * Filter attributes by ui recipe.
+   * The recipes are
+   *
+   * @param editRecipeName
+   */
+  public filterAttributesByUiRecipe(editRecipeName = '') {
+    const indexAttributes = this.getIndexRecipeAttributes()
+    const editAttributes = this.getUiAttributes(editRecipeName)
+    return (attr: BlueprintAttribute) => {
+      const indexAttribute = indexAttributes && indexAttributes[attr.getName()]
+      const editAttribute = editAttributes && editAttributes[attr.getName()]
+      /* default edit plugin behavior.
+        const INDEX_PRIMITIVE_CONTAINED = false
+        const INDEX_ARRAY_CONTAINED = true
+        const INDEX_TYPE_CONTAINED = true
+      * */
+      if (attr.isPrimitive()) {
+        return true
+      }
+
+      // keep if contained in edit recipe.
+      if (editAttribute?.contained) {
+        return true
+      }
+
+      // return opppsite of index recipe.
+      if (indexAttribute?.contained !== undefined) {
+        return !indexAttribute.contained
+      }
+      return false
+    }
+  }
 }

@@ -36,13 +36,13 @@ def has_attribute(schema, name: str) -> bool:
     return False
 
 
-def get_attribute(attr, item: str, use_default: bool = False, default=None) -> str:
+def get_attribute(item, attribute: str, use_default: bool = False, default=None) -> str:
     try:
-        return getattr(attr, item)
+        return getattr(item, attribute)
     except AttributeError:
         if use_default or default is not None:
-            return attr.get(item, default)
-        return attr[item]
+            return item.get(attribute, default)
+        return item[attribute]
 
 
 def _get_definition(schema: Union[Dict, type], name: str) -> Optional[str]:
@@ -107,7 +107,7 @@ def to_camel_case(name: str) -> str:
 
 def is_special_key(key: str) -> bool:
     # Special keys, that should be ignored
-    return key in ["__class__"]
+    return key in ["__class__", "__template_type__"]
 
 
 def is_internal(schema, key: str) -> bool:
@@ -182,11 +182,11 @@ def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
 
 
 class Attribute:
-    def __init__(self, data: Dict[str, Any], cls: type, type: type, definition: Dict[str, Any]):
+    def __init__(self, data: Dict[str, Any], attribute_type: type, type: type, definition: Dict[str, Any]):
         self.type = type
         self.__values__ = data
         self._definition = definition
-        self._cls = cls
+        self.attribute_type = attribute_type
 
     def __repr__(self):
         attributes = ["name", "optional", "contained"]
@@ -230,8 +230,7 @@ class Attribute:
 
     @property
     def enum_type(self):
-        enum_type = self._get("enum_type", None)
-        return enum_type
+        return self._get("enum_type", None)
 
     @property
     def optional(self):
@@ -250,6 +249,7 @@ class __Blueprint__(type):
 
     __completed__: bool
     __schema__: dict
+    __template_type__: str
     type: Union[str, __Blueprint__]
 
     @classmethod
@@ -305,6 +305,9 @@ class Attributes:
     @property
     def has_attributes(self):
         return any(attribute.name == "attributes" for attribute in self)
+
+    def __len__(self):
+        return len(self._attributes)
 
 
 def remove_imports(definition: str) -> str:
@@ -442,11 +445,14 @@ class Factory:
         )
         self.to_be_compiled = set()
 
+    def reset(self):
+        self.reset_cache()
+        self._types = TypeCache(self.__class__._internal_types)
+
     @classmethod
     def reset_cache(cls):
         del cls._internal_types
         cls._internal_types = {}
-        cls._types = TypeCache(cls._internal_types)
 
     def _get_schema(self, template_type: str) -> dict:
         if self._read_from_file:
@@ -480,7 +486,7 @@ class Factory:
             """\
 {%- block imports %}
 from __future__ import annotations
-from typing import List, Optional, Union, Any, Set
+from typing import List, Optional, Union, Any, Set, Tuple
 import stringcase
 import json
 import base64
@@ -578,9 +584,9 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {%- set name = get_name(attr) %}
         {%- if name == "type" %}
         {#- Deals with special cases #}
-        self.{{ name }} = "{{ schema.type }}"
+        self.{{ name }} = "{{ schema.__template_type__ }}"
         {%- else %}
-        {%- if not is_simple_type(attr) and attr.default is string and attr.default %}
+        {%- if not is_simple_type(attr.attribute_type) and attr.default is string and attr.default %}
         if {{ name }} is None:
             import json
             {{ name }} = json.loads({{ default_as_loadable_json(attr) }})
@@ -615,6 +621,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def __iter__(self):
         return self.attributes.__iter__
     {%- endif %}
+
+    __template_type__ = "{{ schema.__template_type__ }}"
 
     @property
     def __schema__(self):
@@ -671,7 +679,11 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
         representation = {
             {%- for attr in schema.attributes %}
+            {%- if attr.name == "type" %}
+            "type": self.__template_type__,
+            {%- else %}
             "{{ to_camel_case(attr.name) }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
+            {%- endif %}
             {%- endfor %}
         }
         if not include_defaults:
@@ -793,7 +805,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         return True
 
 {% endblock %}
-    __code_generation: bytes = {{ compress(self.code_generation()) }}
+    __code_generation: str = {{ compress(self.code_generation()) }}
 {% block code_generation  %}
     __imports: str = {{ compress(self.imports()) }}
     __definition: str = {{ compress(self.definition()) }}
@@ -819,14 +831,15 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     node_in_circle = dependency
                 else:
                     accessed.add(dependency)
-                    dependencies.extend(dependency.__dependencies__())
+                    dependencies.extend([dep for dep in dependency.__dependencies__() if dep is not dependency])
             return found, node_in_circle, accessed
-        found, node_in_circle, _ = find_circle(cls)
 
-        if not found and node_in_circle is not None:
+        _found, _node_in_circle, _ = find_circle(cls)
+
+        if not _found and _node_in_circle is not None:
             return set()
 
-        _, _, accessed = find_circle(node_in_circle)
+        _, _, accessed = find_circle(_node_in_circle)
         return accessed
 
     @classmethod
@@ -927,20 +940,27 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         attribute_definition = self._get_attribute_definition(schema)
         _attributes = Attributes()
 
+        _names = set()
         for attribute in attributes:
+            attribute_name = attribute["name"]
+            if attribute_name in _names:
+                raise ValueError(
+                    f"The attribute '{attribute_name}', id defined multiple times, for the blueprint {schema['name']}"
+                )
+            _names.add(attribute_name)
             attribute_type = attribute["attribute_type"]
             if attribute_type not in self._types:
                 self._create(attribute_type, False)
             attribute_type = self._types[attribute_type]
-            if attribute["name"] == "type":
+            if attribute_name == "type":
                 attribute = copy.copy(attribute)
                 attribute["optional"] = "true"
                 attribute["default"] = ""
             _attributes.add(
                 Attribute(
                     attribute,
-                    cls=self.get_type_by_name(attribute["type"]),
-                    type=attribute_type,
+                    type=self.get_type_by_name(attribute["type"]),
+                    attribute_type=attribute_type,
                     definition=attribute_definition,
                 )
             )
@@ -973,7 +993,7 @@ ANY CHANGES MADE TO THIS FILE, SHOULD BE DONE IN `core.domain.schema`
 To regenerate this file, run `doit create:system:blueprints`
 '''
 from __future__ import annotations
-from typing import List, Optional, Union, Any
+from typing import List, Optional, Union, Any, Set, Tuple
 import stringcase
 import json
 base64
@@ -987,7 +1007,7 @@ from classes.dto import DTO
             return self.get_type_by_name(attr).__name__
         elif isinstance(attr, type):
             return attr.__name__
-        return attr.type.__name__
+        return attr.attribute_type.__name__
 
     def type_check(self, attr: Attribute, value_name: str, dimension: Optional[int] = None) -> str:
         type_name = self.type_name(attr)
@@ -1039,19 +1059,23 @@ from classes.dto import DTO
         if (parent := self.get_type_by_name(schema["type"])).__name__ != schema["name"]:
             dependencies.append(parent)
         for attr in schema.get("attributes", []):
-            if not is_simple_type(attr.type) and attr.type not in dependencies:
-                dependencies.append(attr.type)
+            try:
+                _type = attr.type
+            except AttributeError:
+                _type = self.get_type_by_name(attr["type"])
+            if not is_simple_type(_type) and _type not in dependencies:
+                dependencies.append(_type)
         return dependencies
 
     @staticmethod
     def get_escaped_default(attr: Attribute) -> str:
         if attr.default is not None:
-            if attr.type is str:
+            if attr.attribute_type is str:
                 return f'"{attr.default}"'
             elif isinstance(attr.default, str):
-                if attr.type is bool:
+                if attr.attribute_type is bool:
                     return {"false": False, "true": True}[attr.default.lower()]
-        if attr.default == "" and not is_simple_type(attr.type):
+        if attr.default == "" and not is_simple_type(attr.attribute_type):
             return str(None)
         return attr.default
 
@@ -1085,7 +1109,7 @@ from classes.dto import DTO
     def cast_as(self, attr: Attribute, name: Optional[str] = None) -> str:
         if name is None:
             name = get_name(attr)
-        return f"{self.type_name(attr)}{'.from_dict' if attr.type not in simple_types else ''}({name})"
+        return f"{self.type_name(attr)}{'.from_dict' if attr.attribute_type not in simple_types else ''}({name})"
 
     def cast(self, attr: Attribute, name: Optional[str] = None, dimension: Optional[int] = None) -> str:
         if not attr.cast:
@@ -1108,12 +1132,21 @@ from classes.dto import DTO
 
     def compile(self, schema: Dict) -> __Blueprint__:
         definition = self.class_from_schema(schema)
+        name = schema["name"]
+        path = f"<string/{name}>"
+        if Config.FLASK_DEBUG:
+            where = ".generated"
+            if not Path(where).exists():
+                os.mkdir(where)
+            path = f"{where}/{name}.py"
+            with open(path, "w") as f:
+                f.write(definition)
         if self.dump_site is not None:
             with open(self.dump_site, "a+") as f:
                 f.write(remove_imports(definition))
-        code: CodeType = compile(definition, f"<string/{schema['name']}>", "exec", optimize=1)
+        code: CodeType = compile(definition, path, "exec", optimize=1)
         exec(code)  # nosec
-        cls: __Blueprint__ = locals()[schema["name"]]
+        cls: __Blueprint__ = locals()[name]
         if cls.__name__ not in globals():
             globals()[cls.__name__] = cls
         return cls
@@ -1157,10 +1190,9 @@ from classes.dto import DTO
         # Let at "dummy type" be available for others
         _cls = self._create_dummy(schema, template_type)
         schema["__class__"] = _cls
+        schema["__template_type__"] = template_type
         if not compile:
             return _cls
-        if template_type not in self._types:
-            self._types[template_type] = _cls
         if "attributes" in schema:
             schema["__attributes__"] = schema["attributes"]
             schema["attributes"] = self._process_attributes(schema)
@@ -1194,10 +1226,10 @@ from classes.dto import DTO
         template_type = _get_definition(schema, name)
         if template_type:
             return self.type_name(template_type)
-        template_type = get_attribute(schema, "type")
+        template_type = get_attribute(schema, attribute="type")
         Template = self.get_type_by_name(template_type)
         if has_attribute(Template, "attributes"):
-            for attr in get_attribute(Template, "attributes"):
+            for attr in get_attribute(Template, attribute="attributes"):
                 if to_snake_case(get_attribute(attr, "name")) == to_snake_case(name):
                     template_type = get_attribute(attr, "attribute_type")
                     if isinstance(template_type, str) and template_type not in self._types:
@@ -1206,8 +1238,11 @@ from classes.dto import DTO
         return self.get_type(Template, name)
 
     def _create_dummy(self, schema: dict, template_type: str) -> __Blueprint__:
-        _cls: __Blueprint__ = type(schema["name"], (), schema)
-        _cls.__schema__ = schema
-        _cls.__completed__ = False
-        self._types.lookup_table[_cls] = template_type
-        return _cls
+        if template_type not in self._types:
+            _cls: __Blueprint__ = type(schema["name"], (), schema)
+            _cls.__schema__ = schema
+            _cls.__completed__ = False
+            _cls.__template_type__ = template_type
+            self._types.lookup_table[_cls] = template_type
+            self._types[template_type] = _cls
+        return self._types[template_type]

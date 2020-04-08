@@ -95,13 +95,8 @@ Feature: Explorer - Add file
       "attribute": "documents"
     }
     """
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
     """
-    {
-      "type": "SYSTEM_ERROR",
-      "message": "EntityNotFoundException: 'The entity, with id -1 is not found'"
-    }
+    {"type": "RESOURCE_ERROR", "message": "The entity, with id -1 is not found"}
     """
-
-

@@ -385,7 +385,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "Nested 2",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
                 },
             },
         }
@@ -394,16 +394,7 @@ class TreenodeTestCase(unittest.TestCase):
         result = [node.name for node in root.traverse()]
         # with error nodes
         # expected = ["Parent", "Nested 1", "Nested 2", "Reference", "nested", "reference", "references"]
-        expected = [
-            "Parent",
-            "Nested 1",
-            "Nested 2",
-            "Reference",
-            "nested",
-            "reference",
-            "nested",
-            "references",
-        ]
+        expected = ["Parent", "Nested 1", "Nested 2", "Reference", "nested", "reference", "nested", "references"]
         assert result == expected
 
     def test_traverse_reverse(self):
@@ -522,7 +513,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "Nested",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
                 },
             },
         }
@@ -551,12 +542,12 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "Nested",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
                 },
             },
         }
 
-        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider,)
+        root = Node.from_dict(document_1, document_1.get("_id"), blueprint_provider)
 
         child_1 = root.get_by_path(["nested", "nested"])
 
@@ -580,7 +571,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "Nested",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
                 },
             },
         }
@@ -663,7 +654,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "New name",
                     "type": "blueprint_3",
                     "description": "",
-                    "reference": {"_id": "2", "name": "New name", "type": "blueprint_2", "description": "",},
+                    "reference": {"_id": "2", "name": "New name", "type": "blueprint_2", "description": ""},
                 },
             },
         }
@@ -911,7 +902,7 @@ class TreenodeTestCase(unittest.TestCase):
                     "name": "Nested",
                     "description": "",
                     "type": "blueprint_3",
-                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2",},
+                    "reference": {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"},
                 },
             },
             "list": [{"name": "Item 1", "description": "", "type": "blueprint_2"}],

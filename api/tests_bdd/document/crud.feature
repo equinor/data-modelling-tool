@@ -203,7 +203,7 @@ Feature: Document 2
       | 6   | 3          | container_1   |             | test-source-name/TestData/TestContainer |
 
 
-  Scenario: Get document
+  Scenario: Get document by id
     Given I access the resource url "/api/v2/documents/data-source-name/1"
     When I make a "GET" request
     Then the response status should be "OK"
@@ -229,6 +229,28 @@ Feature: Document 2
           "storageRecipes":[],
           "uiRecipes":[]
        }
+    }
+    """
+
+  Scenario: Get document by path
+    Given I access the resource url "/api/v2/documents_by_path/data-source-name/package_1/sub_package_1/document_1"
+    When I make a "GET" request
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+       "blueprint":{
+          "name":"Package",
+          "type":"system/SIMOS/Blueprint"
+       },
+       "document":{
+          "_id": "4",
+          "name": "document_1",
+          "description": "",
+          "type": "system/DMT/Package",
+          "isRoot": false,
+          "content": []
+      }
     }
     """
 
