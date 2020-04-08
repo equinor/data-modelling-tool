@@ -16,7 +16,7 @@ from config import Config
 from dmss_api import DocumentApi, PackageApi, ExplorerApi
 
 explorer_api = ExplorerApi()
-explorer_api.api_client.configuration.host = Config.DMSS_HOST
+explorer_api.api_client.configuration.host = Config.DMSS_API
 
 
 @given("data modelling tool templates are imported")

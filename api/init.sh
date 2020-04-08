@@ -1,11 +1,27 @@
 #!/bin/sh
 set -euo pipefail
 
+# Wait until the service is ready before continuing.
+# This is to ensure that the service is initialized before the API tries to connect.
+service_is_ready() {
+  NAME=$1
+  HOST=$2
+  PORT=$3
+  echo "Using service $NAME: $HOST:$PORT"
+  i=1
+  while ! nc -z $HOST $PORT; do
+      sleep 1
+      i=$((i+1));
+      if [ $i -eq 60 ]; then
+          echo "Service $NAME '$HOST:$PORT' not responding. Exiting..."
+          exit 1
+      fi;
+  done
+}
+
 echo "FLASK_ENV: $FLASK_ENV"
 
-if [ "$FLASK_ENV" = 'testing' ] ; then
-  sleep 60
-fi
+service_is_ready "DMSS" $DMSS_HOST $DMSS_PORT
 
 if [ "$ENVIRONMENT" = 'local' ] && [ "$FLASK_ENV" = 'development' ] ; then
   cd /dmss/
