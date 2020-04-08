@@ -13,7 +13,7 @@ from dmss_api import DocumentApi, PackageApi, ExplorerApi
 blueprint_provider = BlueprintProvider()
 
 explorer_api = ExplorerApi()
-explorer_api.api_client.configuration.host = Config.DMSS_HOST
+explorer_api.api_client.configuration.host = Config.DMSS_API
 
 
 def generate_tree_from_rows(node: Node, rows):

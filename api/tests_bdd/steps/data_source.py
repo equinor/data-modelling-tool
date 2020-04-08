@@ -4,7 +4,7 @@ from config import Config
 from dmss_api import DatasourceApi
 
 api = DatasourceApi()
-api.api_client.configuration.host = Config.DMSS_HOST
+api.api_client.configuration.host = Config.DMSS_API
 
 
 @given("there are mongodb data sources")
