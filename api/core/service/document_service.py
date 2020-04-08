@@ -28,6 +28,7 @@ package_api.api_client.configuration.host = Config.DMSS_HOST
 explorer_api = ExplorerApi()
 explorer_api.api_client.configuration.host = Config.DMSS_HOST
 
+print(Config.DMSS_HOST)
 
 def get_complete_document(
         data_source_id: str, document_uid: str
