@@ -6,7 +6,8 @@ export default (
   input: Input,
   method: Method,
   setShowModal: Function,
-  handleUpdate: Function,
+  updateDocument: Function,
+  createEntity: Function,
   dataSource: string
 ) => {
   const [status, setStatus] = useContext(StatusContext)
@@ -25,7 +26,7 @@ export default (
     onSubmit: () => {
       // @ts-ignore
       setStatus(status => ({ ...status, [output.id]: output.entity.status }))
-      method({ input, output, updateDocument: handleUpdate })
+      method({ input, output, updateDocument, createEntity })
       setShowModal(false)
     },
   }

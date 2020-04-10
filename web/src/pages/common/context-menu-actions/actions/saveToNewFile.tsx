@@ -14,6 +14,7 @@ export default (
   setShowModal: Function,
   createNodes: Function,
   handleUpdate: Function,
+  createEntity: Function,
   dataSource: string
 ) => {
   return {
@@ -66,7 +67,12 @@ export default (
           handleUpdate(output, formData.destination)
         }
 
-        method({ input, output, updateDocument: handleUpdateWithTreeUpdate })
+        method({
+          input,
+          output,
+          updateDocument: handleUpdateWithTreeUpdate,
+          createEntity,
+        })
       }
 
       await executeAction()

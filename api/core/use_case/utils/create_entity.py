@@ -1,3 +1,5 @@
+import base64
+import hashlib
 import json
 from json import JSONDecodeError
 
@@ -5,6 +7,7 @@ from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import SIMOS
 from utils.form_to_schema import PRIMITIVES
+from utils.generate_name import generate_name
 
 
 class CreateEntityException(Exception):
@@ -22,15 +25,15 @@ class InvalidDefaultValue(CreateEntityException):
 
 
 class CreateEntity:
-    def __init__(self, blueprint_provider, type: str, description: str, name: str):
-        self.name = name
+    def __init__(self, blueprint_provider, type: str, description: str, name: str = None):
+        self.name = name if name else generate_name(type)
         self.description = description
         self.type = type
         self.blueprint_provider = blueprint_provider
         self.attribute_types = self.blueprint_provider.get_blueprint(SIMOS.ATTRIBUTE_TYPES.value).to_dict()
         self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint(SIMOS.BLUEPRINT_ATTRIBUTE.value)
         blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
-        entity = {"name": name, "description": description, "type": type}
+        entity = {"name": self.name, "description": description, "type": self.type}
         self._entity = self._get_entity(blueprint=blueprint, entity=entity)
 
     @staticmethod

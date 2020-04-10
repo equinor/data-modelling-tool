@@ -353,6 +353,14 @@ class DocumentService:
 
         return {"uid": new_node.node_id}
 
+    def get_entity(self, type: str, name: str = None):
+
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description="").entity
+        if type == SIMOS.BLUEPRINT.value:
+            entity["attributes"] = get_required_attributes(type=type)
+
+        return entity
+
     def search(self, data_source_id, search_data):
         repository = self.repository_provider(data_source_id)
         type = search_data.pop("type")

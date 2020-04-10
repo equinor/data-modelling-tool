@@ -51,13 +51,16 @@ function myExternalSystemCall(input) {
   }
 }
 
-async function run({ input, output, updateDocument }) {
+async function run({ input, output, updateDocument, createEntity }) {
   let entity = {
     ...output.entity,
     // This is an invalid attribute. Will not get written to database.
     hallo: 'Hey',
   }
   updateDocument({ ...output, entity })
+
+  // Using the passed "createEntity" function, we can get an empty, in-memory entity, of any type.
+  let newWheel = await createEntity('SSR-DataSource/CarPackage/Wheel')
 
   // If the browser is interrupted during this sleep, the rest of the function will NOT be executed.
   await sleep(10000)

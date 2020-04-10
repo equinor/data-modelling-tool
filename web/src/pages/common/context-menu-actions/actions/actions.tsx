@@ -7,6 +7,7 @@ import Api2 from '../../../../api/Api2'
 import saveToNewFile from './saveToNewFile'
 import saveInEntity from './saveInEntity'
 import { Entity } from '../../../../domain/types'
+import axios from 'axios'
 
 enum ActionTypes {
   separateResultFile = 'separateResultFile',
@@ -32,6 +33,7 @@ export type ActionProps = {
   input: Input
   output?: Output
   updateDocument?: Function
+  createEntity?: Function
 }
 
 export type Method = (props: ActionProps) => any
@@ -58,6 +60,18 @@ function updateDocument(
       NotificationManager.error(`failed to update document: ${output.id}`)
     },
   })
+}
+
+function createEntity(type: string) {
+  return axios
+    .post('/api/entity', { name: '', type: type })
+    .then(respose => {
+      return respose.data
+    })
+    .catch(error => {
+      NotificationManager.error(`failed to create entity from: ${type}`)
+      console.error(error)
+    })
 }
 
 function refresh(
@@ -103,7 +117,14 @@ export const Action = (
     id: node.nodeData.nodeId,
   }
   if (action.data.runnable.actionType === ActionTypes.resultInEntity) {
-    return saveInEntity(input, method, setShowModal, handleUpdate, dataSource)
+    return saveInEntity(
+      input,
+      method,
+      setShowModal,
+      handleUpdate,
+      createEntity,
+      dataSource
+    )
   } else {
     return saveToNewFile(
       action.data.runnable.output,
@@ -113,6 +134,7 @@ export const Action = (
       setShowModal,
       createNodes,
       handleUpdate,
+      createEntity,
       dataSource
     )
   }
