@@ -1,6 +1,6 @@
 from typing import List
 
-from core.utility import get_blueprint_cached
+from core.utility import get_blueprint
 from utils.data_structure.find import get
 
 from core.enums import PRIMITIVES
@@ -47,7 +47,7 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if attribute_type in PRIMITIVES:
         return get_attribute_config(ui_attribute)
     else:
-        blueprint = get_blueprint_cached(attribute_type)
+        blueprint = get_blueprint(attribute_type)
         if attribute_dimensions == "*":
             if field := get(ui_attribute, "field", default=None):
                 result["ui:field"] = field

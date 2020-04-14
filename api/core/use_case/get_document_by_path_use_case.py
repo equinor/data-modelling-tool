@@ -40,7 +40,7 @@ class GetDocumentByPathRequestObject(req.ValidRequestObject):
         )
 
 
-class GetDocumentByPathUseCase(uc.UseCase):
+class GetDMTDocumentByPathUseCase(uc.UseCase):
     def __init__(self, repository_provider=get_repository):
         self.repository_provider = repository_provider
         self.document_service = DocumentService(repository_provider=self.repository_provider)

@@ -52,5 +52,5 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
 
         ui_recipes = form_to_ui_schema(blueprint)
         ui_schema = ui_recipes[ui_recipe_name] if ui_recipe_name in ui_recipes else {}
-        blueprint_provider.invalidate_cache()
+
         return res.ResponseSuccess({"schema": form_to_schema(blueprint, ui_recipe_name), "uiSchema": ui_schema})

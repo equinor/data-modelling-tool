@@ -29,9 +29,7 @@ explorer_api = ExplorerApi()
 explorer_api.api_client.configuration.host = Config.DMSS_API
 
 
-def get_complete_document(
-        data_source_id: str, document_uid: str
-) -> Dict:
+def get_complete_document(data_source_id: str, document_uid: str) -> Dict:
     document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid)
     return document["document"]
 
@@ -40,9 +38,6 @@ class DocumentService:
     def __init__(self, repository_provider, blueprint_provider=BlueprintProvider()):
         self.blueprint_provider = blueprint_provider
         self.repository_provider = repository_provider
-
-    def get_blueprint(self):
-        return self.blueprint_provider
 
     def invalidate_cache(self):
         self.blueprint_provider.invalidate_cache()
@@ -83,9 +78,7 @@ class DocumentService:
 
     def create_zip_export(self, data_source_id: str, document_uid: str) -> io.BytesIO:
         try:
-            complete_document = get_complete_document(
-                data_source_id=data_source_id, document_uid=document_uid
-            )
+            complete_document = get_complete_document(data_source_id=data_source_id, document_uid=document_uid)
         except EntityNotFoundException as error:
             logger.exception(error)
             raise EntityNotFoundException(document_uid)
@@ -109,9 +102,7 @@ class DocumentService:
         if not package:
             raise FileNotFoundException(data_source_id, package_name, is_root=True)
 
-        complete_document = get_complete_document(
-            data_source_id=data_source_id, document_uid=package.uid
-        )
+        complete_document = get_complete_document(data_source_id=data_source_id, document_uid=package.uid)
 
         dto = DTO(complete_document)
         node = Node.from_dict(dto.data, dto.uid, blueprint_provider=self.blueprint_provider)
@@ -126,25 +117,18 @@ class DocumentService:
         return package_api.get(data_source_id)
 
     def remove_document(self, data_source_id: str, document_id: str, parent_id: str = None):
-        explorer_api.remove(data_source_id, {
-            "documentId": document_id,
-            "parentId": parent_id
-        })
+        explorer_api.remove(data_source_id, {"documentId": document_id, "parentId": parent_id})
 
-    def rename_document(self, data_source_id: str, document_id: str, name: str, parent_uid: str = None,
-                        description: str = ""):
-        return explorer_api.rename(data_source_id, {
-            "documentId": document_id,
-            "parentId": parent_uid,
-            "name": name,
-            "description": description
-        })
-
-    def update_document(self, data_source_id: str, document_id: str, data: dict, attribute_path: str = None):
-        return document_api.update(data_source_id, document_id, data)
+    def rename_document(
+        self, data_source_id: str, document_id: str, name: str, parent_uid: str = None, description: str = ""
+    ):
+        return explorer_api.rename(
+            data_source_id,
+            {"documentId": document_id, "parentId": parent_uid, "name": name, "description": description},
+        )
 
     def add_document(
-            self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
+        self, data_source_id: str, parent_id: str, type: str, name: str, description: str, attribute_path: str
     ):
         return explorer_api.add_to_parent(
             data_source_id,
@@ -165,19 +149,17 @@ class DocumentService:
         repository = self.repository_provider(data_source_id)
         type = search_data.pop("type")
 
-        # TODO: This looks strange. Change how we get the "get_blueprint()"
-        get_blueprint = self.get_blueprint().get_blueprint
-        blueprint = get_blueprint(type)
+        blueprint = self.blueprint_provider.get_blueprint(type)
 
         # Raise error if posted attribute not in blueprint
         if invalid_type := next(
-                (key for key in search_data.keys() if key not in blueprint.get_attribute_names()), None
+            (key for key in search_data.keys() if key not in blueprint.get_attribute_names()), None
         ):
             raise InvalidAttributeException(invalid_type, type)
 
         # Raise error if posted attribute value is not a string
         if not_string := next(
-                ({key: value} for key, value in search_data.items() if not isinstance(value, str)), None
+            ({key: value} for key, value in search_data.items() if not isinstance(value, str)), None
         ):
             raise RepositoryException(f"Search parameters must be strings. {not_string}")
 

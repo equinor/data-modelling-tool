@@ -59,11 +59,6 @@
       "plugin": "INDEX",
       "type": "system/SIMOS/UiRecipe",
       "attributes": [
-        {
-          "name": "actions",
-          "type": "system/SIMOS/Runnable",
-          "contained": false
-        }
       ]
     },
     {

@@ -17,6 +17,8 @@ services:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+      DMSS_HOST: mainapi
+      DMSS_PORT: "5000"
     ports:
       - "5000:5000"
     networks:

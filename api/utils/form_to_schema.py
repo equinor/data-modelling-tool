@@ -2,9 +2,9 @@ from typing import Optional
 
 from classes.blueprint import Blueprint
 from classes.recipe import Recipe
-from core.utility import get_blueprint_cached
 
 from core.enums import PRIMITIVES
+from core.utility import get_blueprint
 
 
 def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprint], ui_recipe_name):
@@ -38,7 +38,7 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprin
 
     for nested_type in nested_attributes:
         attribute_name = nested_type["name"]
-        nested_blueprint = get_blueprint_cached(nested_type["type"])
+        nested_blueprint = get_blueprint(nested_type["type"])
 
         if parent_blueprint and nested_blueprint == parent_blueprint:
             continue
