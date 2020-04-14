@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, request, Response
 
 from core.shared import response_object as res
-from core.use_case.create_entity import CreateEntityUseCase
+from core.use_case.instantiate_entity import InstantiateEntityUseCase
 from core.use_case.get_blueprints_use_case import GetBlueprintsRequestObject, GetBlueprintsUseCase
 from utils.logging import logger
 
@@ -29,6 +29,6 @@ def instantiate():
         raise Exception(msg)
 
     logger.info(f"Creating entity for type '{type}'")
-    use_case = CreateEntityUseCase()
+    use_case = InstantiateEntityUseCase()
     response = use_case.execute({"name": name, "type": type})
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])

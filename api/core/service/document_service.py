@@ -353,7 +353,7 @@ class DocumentService:
 
         return {"uid": new_node.node_id}
 
-    def get_entity(self, type: str, name: str = None):
+    def instantiate_entity(self, type: str, name: str = None):
 
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description="").entity
         if type == SIMOS.BLUEPRINT.value:
