@@ -7,6 +7,7 @@ from core.repository.repository_factory import get_repository
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
 from core.use_case.utils.set_index_context_menu import create_context_menu
+from services.data_modelling_document_service import package_api
 from utils.logging import logger
 
 from classes.recipe import RecipePlugin
@@ -122,9 +123,8 @@ class GenerateIndexUseCase:
         document_service = DocumentService(repository_provider=self.repository_provider)
         # make sure we're generating the index with correct blueprints.
         document_service.invalidate_cache()
-        root_packages = document_service.get_root_packages(data_source_id=data_source_id)
-
-        print("***********", root_packages)
+        # root_packages = document_service.get_root_packages(data_source_id=data_source_id)
+        root_packages = package_api.get(data_source_id)
 
         root = Node(
             key="root",
@@ -134,23 +134,24 @@ class GenerateIndexUseCase:
             attribute=BlueprintAttribute("root", "datasource"),
         )
         for root_package in root_packages:
+            package_data = root_package["data"]
             try:
                 root.add_child(
-                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package["uid"])
+                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=package_data["_id"])
                 )
             except EntityNotFoundException as error:
-                logger.exception(error, "unhandled exception.")
+                logger.exception(error)
                 error_node: Node = Node(
-                    key=root_package["uid"],
-                    uid=root_package["uid"],
-                    entity={"name": root_package["name"], "type": ""},
+                    key=package_data["_id"],
+                    uid=package_data["_id"],
+                    entity={"name": package_data["name"], "type": ""},
                     blueprint_provider=document_service.blueprint_provider,
                     attribute=BlueprintAttribute("root", "datasource"),
                 )
-                error_node.set_error(f"failed to add root package {root_package['name']} to the root node")
+                error_node.set_error(f"failed to add root package {package_data['name']} to the root node")
                 root.add_child(error_node)
             except Exception as error:
-                logger.exception(error, "unhandled exception.")
+                logger.exception(f"{error}, unhandled exception.")
 
         return extend_index_with_node_tree(root, data_source_id, app_settings)
 
@@ -160,7 +161,7 @@ class GenerateIndexUseCase:
         )
         document_service = DocumentService(repository_provider=self.repository_provider)
         # make sure we're generating the index with correct blueprints.
-        document_service.invalidate_cache()
+        # document_service.invalidate_cache()
         parent_uid = parent_id.split(".", 1)[0]
         if data_source_id == parent_uid:
             document_uid = document_id
