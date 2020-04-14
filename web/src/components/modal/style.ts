@@ -22,6 +22,7 @@ const ModalBody = styled.div`
   padding: 20px;
   border: 1px solid #888;
   width: 30%;
+  min-width: 300px;
 `
 
 const CloseButton = styled.span`
