@@ -6,7 +6,6 @@ from flask import Flask
 
 from config import Config
 from core.rest import DataSource, Document as DocumentBlueprint, Explorer, Index, System, Actions, Blueprints
-from core.utility import wipe_db
 from services.database import dmt_database
 from utils.logging import logger
 from utils.package_import import import_package
@@ -77,7 +76,3 @@ def import_data_source(file):
     except Exception as error:
         logger.error(f"Failed to import file {file}: {error}")
 
-
-@app.cli.command()
-def nuke_db():
-    wipe_db()

@@ -77,7 +77,7 @@
     {
       "plugin": "EDIT_PLUGIN",
       "name": "Edit",
-      "type": "systemSIMOS/UiRecipe",
+      "type": "system/SIMOS/UiRecipe",
       "attributes": [
         {
           "name": "type",

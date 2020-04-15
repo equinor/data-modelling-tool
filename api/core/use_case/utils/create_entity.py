@@ -3,8 +3,7 @@ from json import JSONDecodeError
 
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
-from core.enums import SIMOS
-from utils.form_to_schema import PRIMITIVES
+from core.enums import SIMOS, PRIMITIVES
 
 
 class CreateEntityException(Exception):
