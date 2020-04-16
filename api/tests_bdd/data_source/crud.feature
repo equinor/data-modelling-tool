@@ -21,6 +21,10 @@ Feature: Data Source
       },
       {
         "host": "db",
+        "name": "entities"
+      },
+      {
+        "host": "db",
         "name": "SSR-DataSource"
       }
     ]

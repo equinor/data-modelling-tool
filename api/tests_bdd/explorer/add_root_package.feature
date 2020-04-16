@@ -32,6 +32,7 @@ Feature: Explorer - Add Root Package
     }
     """
 
+  @skip
   Scenario: Add root package with missing parameter name should fail
     Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"
     And data modelling tool templates are imported
