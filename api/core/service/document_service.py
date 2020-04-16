@@ -11,7 +11,7 @@ from core.repository.repository_exceptions import (
 )
 from core.repository.zip_file import ZipFileClient
 from core.utility import BlueprintProvider
-from dmss_api import DocumentApi, PackageApi, ExplorerApi
+from dmss_api import DocumentApi, PackageApi, ExplorerApi, DatasourceApi
 from utils.logging import logger
 
 from classes.blueprint_attribute import BlueprintAttribute
@@ -28,6 +28,8 @@ package_api.api_client.configuration.host = Config.DMSS_API
 explorer_api = ExplorerApi()
 explorer_api.api_client.configuration.host = Config.DMSS_API
 
+datasource_api = DatasourceApi()
+datasource_api.api_client.configuration.host = Config.DMSS_API
 
 def get_complete_document(data_source_id: str, document_uid: str) -> Dict:
     document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid)
@@ -35,7 +37,7 @@ def get_complete_document(data_source_id: str, document_uid: str) -> Dict:
 
 
 class DocumentService:
-    def __init__(self, repository_provider, blueprint_provider=BlueprintProvider()):
+    def __init__(self, repository_provider=None, blueprint_provider=BlueprintProvider()):
         self.blueprint_provider = blueprint_provider
         self.repository_provider = repository_provider
 
@@ -116,6 +118,15 @@ class DocumentService:
     def get_root_packages(self, data_source_id: str):
         return package_api.get(data_source_id)
 
+    def get_all_data_sources(self):
+        return datasource_api.get_all()
+
+    def add_data_source(self, data_source_id, body):
+        return datasource_api.save(data_source_id, body)
+
+    def add_package(self, data_source_id: str, data: Dict):
+        explorer_api.add_package(data_source_id, data)
+
     def remove_document(self, data_source_id: str, document_id: str, parent_id: str = None):
         explorer_api.remove(data_source_id, {"documentId": document_id, "parentId": parent_id})
 
@@ -144,6 +155,14 @@ class DocumentService:
     # Add file by parent directory
     def add(self, data_source_id: str, directory: str, document: dict):
         return explorer_api.add_to_path(data_source_id, {document: document, directory: directory})
+
+    def instantiate_entity(self, type: str, name: str = None):
+
+        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description="").entity
+        if type == SIMOS.BLUEPRINT.value:
+            entity["attributes"] = get_required_attributes(type=type)
+
+        return entity
 
     def search(self, data_source_id, search_data):
         repository = self.repository_provider(data_source_id)
