@@ -51,6 +51,7 @@ Feature: Explorer - Add file
     }
     """
 
+  @skip
   Scenario: Add file with missing parameter name should fail
     Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"
     When i make a "POST" request

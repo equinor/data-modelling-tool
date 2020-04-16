@@ -123,10 +123,10 @@ class DocumentService:
         return datasource_api.get_all()
 
     def add_data_source(self, data_source_id, body):
-        return datasource_api.save(data_source_id, body)
+        return datasource_api.save(data_source_id, body=body)
 
     def add_package(self, data_source_id: str, data: Dict):
-        explorer_api.add_package(data_source_id, data)
+        return explorer_api.add_package(data_source_id, data)
 
     def remove_document(self, data_source_id: str, document_id: str, parent_id: str = None):
         explorer_api.remove(data_source_id, {"documentId": document_id, "parentId": parent_id})

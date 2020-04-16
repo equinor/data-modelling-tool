@@ -4,7 +4,7 @@ from config import Config
 from dmss_api import DatasourceApi
 
 api = DatasourceApi()
-api.api_client.configuration.host = Config.DMSS_HOST
+api.api_client.configuration.host = Config.DMSS_API
 
 
 @given("there are mongodb data sources")
@@ -26,6 +26,6 @@ def step_impl(context):
         }
         # dmt_database["data_sources"].insert_one(document)
         # dmt_database.drop_collection(row["collection"])
-        api.save(data_source_id=str(row["name"]), body=document)
+        api.save(str(row["name"]), body=document)
 
         context.data_sources[row["name"]] = document

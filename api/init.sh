@@ -24,8 +24,12 @@ echo "FLASK_ENV: $FLASK_ENV"
 service_is_ready "DMSS" $DMSS_HOST $DMSS_PORT
 
 if [ "$ENVIRONMENT" = 'local' ] && [ "$FLASK_ENV" = 'development' ] ; then
+  echo "Installing locally..."
   cd /dmss/
   python setup.py install
+  cd /code/
+else
+  pip install dmss-api==0.2.4
 fi
 
 if [ "$1" = 'api' ]; then
