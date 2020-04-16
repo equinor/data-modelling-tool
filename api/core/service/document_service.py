@@ -31,6 +31,7 @@ explorer_api.api_client.configuration.host = Config.DMSS_API
 datasource_api = DatasourceApi()
 datasource_api.api_client.configuration.host = Config.DMSS_API
 
+
 def get_complete_document(data_source_id: str, document_uid: str) -> Dict:
     document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid)
     return document["document"]
