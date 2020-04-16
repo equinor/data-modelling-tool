@@ -11,7 +11,10 @@ blueprint = Blueprint("index", __name__)
 def get(data_source_id: str):
     document_repository = get_repository(data_source_id)
     use_case = GenerateIndexUseCase()
-    result = use_case.execute(data_source_id=data_source_id, application_page=document_repository.document_type)
+    result = use_case.execute(
+        data_source_id=data_source_id,
+        application_page=document_repository.document_type if document_repository else "blueprints",
+    )
     return Response(json.dumps(result), mimetype="application/json", status=200)
 
 
@@ -23,7 +26,7 @@ def get_single_index(data_source_id: str, parent_id: str, document_id: str):
     result = use_case.single(
         data_source_id=data_source_id,
         document_id=document_id,
-        application_page=document_repository.document_type,
+        application_page=document_repository.document_type if document_repository else "blueprints",
         parent_id=parent_id,
     )
 

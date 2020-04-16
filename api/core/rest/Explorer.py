@@ -1,5 +1,6 @@
 import json
 
+from core.service.document_service import DocumentService
 from flask import Blueprint, request, Response, send_file
 
 from core.repository.repository_factory import get_repository
@@ -87,15 +88,9 @@ def move_file():
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-root-package", methods=["POST"])
 def add_root_package(data_source_id: str):
-    request_data = request.get_json()
-    document_repository = get_repository(data_source_id)
-    use_case = AddRootPackageUseCase(document_repository=document_repository)
-    request_object = AddRootPackageRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
+    document_service = DocumentService()
+    package = document_service.add_package(data_source_id, request.get_json())
+    return Response(json.dumps(package, cls=DTOSerializer), mimetype="application/json", status=200)
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/rename", methods=["PUT"])
