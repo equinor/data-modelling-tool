@@ -1,22 +1,16 @@
 import json
 
+from flask import Blueprint, request, Response
+
+from core.enums import STATUS_CODES
 from core.serializers.dto_json_serializer import DTOSerializer
-from core.shared import response_object as res
-from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaUseCase, GenerateJsonSchemaRequestObject
+from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaRequestObject, GenerateJsonSchemaUseCase
 from core.use_case.get_document_by_path_use_case import GetDMTDocumentByPathUseCase, GetDocumentByPathRequestObject
 from core.use_case.get_document_use_case import GetDMTDocumentUseCase, GetDocumentRequestObject
-from flask import Blueprint, Response, request
 from services.data_modelling_document_service import document_api
 from utils.logging import logger
 
 blueprint = Blueprint("document", __name__)
-
-STATUS_CODES = {
-    res.ResponseSuccess.SUCCESS: 200,
-    res.ResponseFailure.RESOURCE_ERROR: 404,
-    res.ResponseFailure.PARAMETERS_ERROR: 400,
-    res.ResponseFailure.SYSTEM_ERROR: 500,
-}
 
 
 @blueprint.route("/api/v2/json-schema/<path:type>", methods=["GET"])

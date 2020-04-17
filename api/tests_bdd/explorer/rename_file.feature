@@ -1,4 +1,4 @@
-Feature: Explorer - Add file
+Feature: Explorer - Rename file
 
   Background: There are data sources in the system
 
@@ -54,7 +54,6 @@ Feature: Explorer - Add file
     }
     """
 
-  @skip
   Scenario: Try to rename a document that does not exists
     Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     When i make a "PUT" request
@@ -72,7 +71,6 @@ Feature: Explorer - Add file
     {"type": "RESOURCE_ERROR", "message": "The entity, with id 10 is not found"}
     """
 
-  @skip
   Scenario: Try to rename a document with a parent that does not exists
     Given i access the resource url "/api/v2/explorer/data-source-name/rename"
     When i make a "PUT" request
