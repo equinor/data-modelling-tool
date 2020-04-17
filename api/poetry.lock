@@ -78,14 +78,6 @@ typed-ast = ">=1.4.0"
 d = ["aiohttp (>=3.3.2)", "aiohttp-cors"]
 
 [[package]]
-category = "main"
-description = "Python package for providing Mozilla's CA Bundle."
-name = "certifi"
-optional = false
-python-versions = "*"
-version = "2020.4.5.1"
-
-[[package]]
 category = "dev"
 description = "Validate configuration and produce human readable error messages."
 name = "cfgv"
@@ -151,20 +143,6 @@ name = "distlib"
 optional = false
 python-versions = "*"
 version = "0.3.0"
-
-[[package]]
-category = "main"
-description = "Data Modelling Storage Service API"
-name = "dmss-api"
-optional = false
-python-versions = "*"
-version = "0.2.5"
-
-[package.dependencies]
-certifi = "*"
-python-dateutil = "*"
-six = ">=1.10"
-urllib3 = ">=1.15"
 
 [[package]]
 category = "dev"
@@ -522,17 +500,6 @@ testing = ["argcomplete", "hypothesis (>=3.56)", "mock", "nose", "requests", "xm
 
 [[package]]
 category = "main"
-description = "Extensions to the standard Python datetime module"
-name = "python-dateutil"
-optional = false
-python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
-version = "2.8.1"
-
-[package.dependencies]
-six = ">=1.5"
-
-[[package]]
-category = "main"
 description = "Add .env support to your django/flask apps in development and deployments"
 name = "python-dotenv"
 optional = false
@@ -643,7 +610,7 @@ description = "Virtual Python Environment builder"
 name = "virtualenv"
 optional = false
 python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,>=2.7"
-version = "20.0.17"
+version = "20.0.18"
 
 [package.dependencies]
 appdirs = ">=1.4.3,<2"
@@ -697,7 +664,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "879f0ae0ebc408fe008836b149526f69dfe6dac0f3e8aa52fe2f7db9dc131c58"
+content-hash = "b8857f2cca805180003ff438d448a5e5d47fb75d399963690a24edc53cd827d1"
 python-versions = "3.8.*"
 
 [metadata.files]
@@ -724,10 +691,6 @@ behave = [
 black = [
     {file = "black-19.10b0-py36-none-any.whl", hash = "sha256:1b30e59be925fafc1ee4565e5e08abef6b03fe455102883820fe5ee2e4734e0b"},
     {file = "black-19.10b0.tar.gz", hash = "sha256:c2edb73a08e9e0e6f65a0e6af18b059b8b1cdd5bef997d7a0b181df93dc81539"},
-]
-certifi = [
-    {file = "certifi-2020.4.5.1-py2.py3-none-any.whl", hash = "sha256:1d987a998c75633c40847cc966fcf5904906c920a7f17ef374f5aa4282abd304"},
-    {file = "certifi-2020.4.5.1.tar.gz", hash = "sha256:51fcb31174be6e6664c5f69e3e1691a2d72a1a12e90f872cbdb1567eb47b6519"},
 ]
 cfgv = [
     {file = "cfgv-3.1.0-py2.py3-none-any.whl", hash = "sha256:1ccf53320421aeeb915275a196e23b3b8ae87dea8ac6698b1638001d4a486d53"},
@@ -783,10 +746,6 @@ deepdiff = [
 ]
 distlib = [
     {file = "distlib-0.3.0.zip", hash = "sha256:2e166e231a26b36d6dfe35a48c4464346620f8645ed0ace01ee31822b288de21"},
-]
-dmss-api = [
-    {file = "dmss-api-0.2.5.tar.gz", hash = "sha256:afdadae46efbe4fb43a361c65ad1105a1dd9a524481713aa8c6098984b34c45c"},
-    {file = "dmss_api-0.2.5-py3-none-any.whl", hash = "sha256:b2058e9a7429239779cd3bd29a379b749a4f4c9a76e7db9026c1e1cd21b77e52"},
 ]
 entrypoints = [
     {file = "entrypoints-0.3-py2.py3-none-any.whl", hash = "sha256:589f874b313739ad35be6e0cd7efde2a4e9b6fea91edcc34e58ecbb8dbe56d19"},
@@ -1001,10 +960,6 @@ pytest = [
     {file = "pytest-5.4.1-py3-none-any.whl", hash = "sha256:0e5b30f5cb04e887b91b1ee519fa3d89049595f428c1db76e73bd7f17b09b172"},
     {file = "pytest-5.4.1.tar.gz", hash = "sha256:84dde37075b8805f3d1f392cc47e38a0e59518fb46a431cfdaf7cf1ce805f970"},
 ]
-python-dateutil = [
-    {file = "python-dateutil-2.8.1.tar.gz", hash = "sha256:73ebfe9dbf22e832286dafa60473e4cd239f8592f699aa5adaf10050e6e1823c"},
-    {file = "python_dateutil-2.8.1-py2.py3-none-any.whl", hash = "sha256:75bb3f31ea686f1197762692a9ee6a7550b59fc6ca3a1f4b5d7e32fb98e2da2a"},
-]
 python-dotenv = [
     {file = "python-dotenv-0.10.5.tar.gz", hash = "sha256:f254bfd0c970d64ccbb6c9ebef3667ab301a71473569c991253a481f1c98dddc"},
     {file = "python_dotenv-0.10.5-py2.py3-none-any.whl", hash = "sha256:440c7c23d53b7d352f9c94d6f70860242c2f071cf5c029dd661ccb22d64ae42b"},
@@ -1094,8 +1049,8 @@ urllib3 = [
     {file = "urllib3-1.25.8.tar.gz", hash = "sha256:87716c2d2a7121198ebcb7ce7cccf6ce5e9ba539041cfbaeecfb641dc0bf6acc"},
 ]
 virtualenv = [
-    {file = "virtualenv-20.0.17-py2.py3-none-any.whl", hash = "sha256:00cfe8605fb97f5a59d52baab78e6070e72c12ca64f51151695407cc0eb8a431"},
-    {file = "virtualenv-20.0.17.tar.gz", hash = "sha256:c8364ec469084046c779c9a11ae6340094e8a0bf1d844330fc55c1cefe67c172"},
+    {file = "virtualenv-20.0.18-py2.py3-none-any.whl", hash = "sha256:5021396e8f03d0d002a770da90e31e61159684db2859d0ba4850fbea752aa675"},
+    {file = "virtualenv-20.0.18.tar.gz", hash = "sha256:ac53ade75ca189bc97b6c1d9ec0f1a50efe33cbf178ae09452dcd9fd309013c1"},
 ]
 wasmer = [
     {file = "wasmer-0.3.0-cp35-cp35m-macosx_10_7_x86_64.whl", hash = "sha256:75d854cb5acdc32f289ceb310a72d66190fa531dd126eac970ed6788939a5d40"},
