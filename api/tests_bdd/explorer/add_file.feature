@@ -51,7 +51,6 @@ Feature: Explorer - Add file
     }
     """
 
-  @skip
   Scenario: Add file with missing parameter name should fail
     Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"
     When i make a "POST" request
@@ -77,15 +76,8 @@ Feature: Explorer - Add file
     {}
     """
     Then the response status should be "Bad Request"
-    And the response should equal
-    """
-    {
-      "type": "PARAMETERS_ERROR",
-      "message": "parentId: is missing\nname: is missing\ntype: is missing\nattribute: is missing"
-    }
-    """
 
-  @skip
+
   Scenario: Add file to parent that does not exists
     Given i access the resource url "/api/v2/explorer/data-source-name/add-file"
     When i make a "POST" request

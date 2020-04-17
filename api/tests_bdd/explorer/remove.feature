@@ -17,7 +17,6 @@ Feature: Explorer - Remove
       | 4   | 1          | sub_package_2 |             | system/DMT/Package     |
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
-   @skip
   Scenario: Remove root package
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
     When i make a "POST" request
@@ -30,27 +29,26 @@ Feature: Explorer - Remove
     Then the response status should be "OK"
     Given I access the resource url "/api/v2/documents/data-source-name/1"
     When I make a "GET" request
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
   """
   {"type": "RESOURCE_ERROR", "message": "The entity, with id 1 is not found"}
   """
     Given I access the resource url "/api/v2/documents/data-source-name/2"
     When I make a "GET" request
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
   """
   {"type": "RESOURCE_ERROR", "message": "The entity, with id 2 is not found"}
   """
     Given I access the resource url "/api/v2/documents/data-source-name/3"
     When I make a "GET" request
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
   """
   {"type": "RESOURCE_ERROR", "message": "The entity, with id 3 is not found"}
   """
 
-  @skip
   Scenario: Remove file with no children
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
     When i make a "POST" request
@@ -67,13 +65,12 @@ Feature: Explorer - Remove
 
     Given I access the resource url "/api/v2/documents/data-source-name/2"
     When I make a "GET" request
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
     """
     {"type": "RESOURCE_ERROR", "message": "The entity, with id 2 is not found"}
     """
 
-  @skip
   Scenario: Remove file with no children
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
     When i make a "POST" request
@@ -86,13 +83,12 @@ Feature: Explorer - Remove
     Then the response status should be "OK"
     Given I access the resource url "/api/v2/documents/data-source-name/3"
     When I make a "GET" request
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should equal
     """
-    {"type": "SYSTEM_ERROR", "message": "The entity, with id 3 is not found"}
+    {"type": "RESOURCE_ERROR", "message": "The entity, with id 3 is not found"}
     """
 
-  @skip
   Scenario: Remove file with children
     Given i access the resource url "/api/v4/explorer/data-source-name/remove"
     When i make a "POST" request
@@ -105,16 +101,16 @@ Feature: Explorer - Remove
     Then the response status should be "OK"
     Given I access the resource url "/api/v2/documents/data-source-name/2"
     When I make a "GET" request
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should contain
   """
-  {"type": "SYSTEM_ERROR", "message": "The entity, with id 2 is not found"}
+  {"type": "RESOURCE_ERROR", "message": "The entity, with id 2 is not found"}
   """
     Given I access the resource url "/api/v2/documents/data-source-name/3"
     When I make a "GET" request
-    Then the response status should be "System Error"
+    Then the response status should be "Not Found"
     And the response should contain
   """
-  {"type": "SYSTEM_ERROR", "message": "The entity, with id 3 is not found"}
+  {"type": "RESOURCE_ERROR", "message": "The entity, with id 3 is not found"}
   """
 

@@ -2,6 +2,7 @@ import json
 
 from flask import Blueprint, Response, send_file
 
+from core.enums import STATUS_CODES
 from core.repository.repository_factory import get_repository
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -12,13 +13,6 @@ from core.use_case.get_application_settings_use_case import GetApplicationSettin
 from utils.logging import logger
 
 blueprint = Blueprint("system", __name__)
-
-STATUS_CODES = {
-    res.ResponseSuccess.SUCCESS: 200,
-    res.ResponseFailure.RESOURCE_ERROR: 404,
-    res.ResponseFailure.PARAMETERS_ERROR: 400,
-    res.ResponseFailure.SYSTEM_ERROR: 500,
-}
 
 
 @blueprint.route("/api/v2/system/<string:data_source_id>/create-application/<string:application_id>", methods=["GET"])
