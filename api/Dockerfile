@@ -4,7 +4,7 @@ ENV PYTHONUNBUFFERED=1 FLASK_APP=/code/app.py PYTHONPATH=/code
 WORKDIR /code
 RUN apk update && \
     # Needed to compile a poetry dependecy(cryptography)
-    apk add  gcc musl-dev python3-dev libffi-dev openssl-dev && \
+    apk add gcc musl-dev python3-dev libffi-dev openssl-dev && \
     pip install --upgrade pip && \
     pip install poetry && \
     poetry config virtualenvs.create false

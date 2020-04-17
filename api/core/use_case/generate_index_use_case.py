@@ -116,11 +116,15 @@ class GenerateIndexUseCase:
     def __init__(self, repository_provider=get_repository):
         self.repository_provider = repository_provider
 
-    def execute(self, data_source_id: str, application_page: str) -> dict:
+    def execute(self, data_source_id: str) -> dict:
+        document_service = DocumentService(repository_provider=self.repository_provider)
+
+        data_source = document_service.get_data_source(data_source_id)
+        application_page = data_source["documentType"]
+
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        document_service = DocumentService(repository_provider=self.repository_provider)
         # make sure we're generating the index with correct blueprints.
         document_service.invalidate_cache()
         # root_packages = document_service.get_root_packages(data_source_id=data_source_id)
@@ -155,11 +159,16 @@ class GenerateIndexUseCase:
 
         return extend_index_with_node_tree(root, data_source_id, app_settings)
 
-    def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
+    def single(self, data_source_id: str, document_id: str, parent_id: str) -> Dict:
+        document_service = DocumentService(repository_provider=self.repository_provider)
+
+        data_source = document_service.get_data_source(data_source_id)
+
+        application_page = data_source["documentType"]
+
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        document_service = DocumentService(repository_provider=self.repository_provider)
         # make sure we're generating the index with correct blueprints.
         # document_service.invalidate_cache()
         parent_uid = parent_id.split(".", 1)[0]
