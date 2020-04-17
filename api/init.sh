@@ -29,7 +29,7 @@ if [ "$ENVIRONMENT" = 'local' ] && [ "$FLASK_ENV" = 'development' ] ; then
   python setup.py install
   cd /code/
 else
-  pip install dmss-api==0.2.4
+  pip install dmss-api
 fi
 
 if [ "$1" = 'api' ]; then

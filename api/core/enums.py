@@ -1,7 +1,15 @@
 from enum import auto, Enum
 
+from core.shared import response_object
 
 PRIMITIVES = {"string", "number", "integer", "boolean"}
+
+STATUS_CODES = {
+    response_object.ResponseSuccess.SUCCESS: 200,
+    response_object.ResponseFailure.RESOURCE_ERROR: 404,
+    response_object.ResponseFailure.PARAMETERS_ERROR: 400,
+    response_object.ResponseFailure.SYSTEM_ERROR: 500,
+}
 
 
 class PrimitiveDataTypes(Enum):

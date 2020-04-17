@@ -18,7 +18,7 @@ services:
       ENVIRONMENT: local
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
     ports:
-      - "5000:5000"
+      - "5001:5000"
     networks:
       - data-modelling-storage-service_default
     external_links:

@@ -2,19 +2,11 @@ import json
 
 from flask import Blueprint, request, Response
 
-from core.shared import response_object as res
+from core.enums import STATUS_CODES
 from core.use_case.instantiate_entity import InstantiateEntityUseCase
-from core.use_case.get_blueprints_use_case import GetBlueprintsRequestObject, GetBlueprintsUseCase
 from utils.logging import logger
 
 blueprint = Blueprint("entities", __name__)
-
-STATUS_CODES = {
-    res.ResponseSuccess.SUCCESS: 200,
-    res.ResponseFailure.RESOURCE_ERROR: 404,
-    res.ResponseFailure.PARAMETERS_ERROR: 400,
-    res.ResponseFailure.SYSTEM_ERROR: 500,
-}
 
 
 @blueprint.route("/api/entity", methods=["POST"])
