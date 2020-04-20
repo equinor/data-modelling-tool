@@ -2,11 +2,85 @@ Feature: Document 2
 
   Background: There are data sources in the system
 
+    Given data modelling tool templates are imported
+
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
       | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents  | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | test-source-name | local    | test       | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system           | local    | system     | system       | mongo-db |
+
+    Given there exist document with id "3" in data source "test-source-name"
+    """
+    {
+      "type": "system/SIMOS/Blueprint",
+      "name": "TestContainer",
+      "description": "",
+      "attributes": [
+        {
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "name": "name"
+        },
+        {
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "name": "type"
+        },
+        {
+          "attributeType": "string",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "name": "description"
+        },
+        {
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "name": "itemContained"
+        },
+        {
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "dimensions": "*",
+          "name": "itemsContained"
+        },
+        {
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": false,
+          "name": "itemNotContained"
+        },
+        {
+          "attributeType": "test-source-name/TestData/ItemType",
+          "type": "system/SIMOS/BlueprintAttribute",
+          "optional": true,
+          "dimensions": "*",
+          "name": "itemsNotContained"
+        }
+      ],
+      "storageRecipes": [
+        {
+          "name": "DefaultStorageRecipe",
+          "type": "system/SIMOS/StorageRecipe",
+          "description": "",
+          "attributes": [
+            {
+              "name": "itemNotContained",
+              "type": "test-source-name/TestData/ItemType",
+              "contained": false
+            },
+            {
+              "name": "itemsNotContained",
+              "type": "test-source-name/TestData/ItemType",
+              "contained": false
+            }
+          ]
+        }
+      ],
+      "uiRecipes":[]
+    }
+    """
 
     Given there exist document with id "1" in data source "test-source-name"
     """
@@ -119,79 +193,7 @@ Feature: Document 2
     }
     """
 
-    Given there exist document with id "3" in data source "test-source-name"
-    """
-    {
-      "type": "system/SIMOS/Blueprint",
-      "name": "TestContainer",
-      "description": "",
-      "attributes": [
-        {
-          "attributeType": "string",
-          "type": "system/SIMOS/BlueprintAttribute",
-          "name": "name"
-        },
-        {
-          "attributeType": "string",
-          "type": "system/SIMOS/BlueprintAttribute",
-          "name": "type"
-        },
-        {
-          "attributeType": "string",
-          "type": "system/SIMOS/BlueprintAttribute",
-          "name": "description"
-        },
-        {
-          "attributeType": "test-source-name/TestData/ItemType",
-          "type": "system/SIMOS/BlueprintAttribute",
-          "optional": true,
-          "name": "itemContained"
-        },
-        {
-          "attributeType": "test-source-name/TestData/ItemType",
-          "type": "system/SIMOS/BlueprintAttribute",
-          "optional": true,
-          "dimensions": "*",
-          "name": "itemsContained"
-        },
-        {
-          "attributeType": "test-source-name/TestData/ItemType",
-          "type": "system/SIMOS/BlueprintAttribute",
-          "optional": false,
-          "name": "itemNotContained"
-        },
-        {
-          "attributeType": "test-source-name/TestData/ItemType",
-          "type": "system/SIMOS/BlueprintAttribute",
-          "optional": true,
-          "dimensions": "*",
-          "name": "itemsNotContained"
-        }
-      ],
-      "storageRecipes": [
-        {
-          "name": "DefaultStorageRecipe",
-          "type": "system/SIMOS/StorageRecipe",
-          "description": "",
-          "attributes": [
-            {
-              "name": "itemNotContained",
-              "type": "test-source-name/TestData/ItemType",
-              "contained": false
-            },
-            {
-              "name": "itemsNotContained",
-              "type": "test-source-name/TestData/ItemType",
-              "contained": false
-            }
-          ]
-        }
-      ],
-      "uiRecipes":[]
-    }
-    """
 
-    Given data modelling tool templates are imported
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                                    |

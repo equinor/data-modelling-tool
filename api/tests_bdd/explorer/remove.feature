@@ -102,14 +102,14 @@ Feature: Explorer - Remove
     Given I access the resource url "/api/v2/documents/data-source-name/2"
     When I make a "GET" request
     Then the response status should be "Not Found"
-    And the response should equal
+    And the response should contain
   """
   {"type": "RESOURCE_ERROR", "message": "The entity, with id 2 is not found"}
   """
     Given I access the resource url "/api/v2/documents/data-source-name/3"
     When I make a "GET" request
     Then the response status should be "Not Found"
-    And the response should equal
+    And the response should contain
   """
   {"type": "RESOURCE_ERROR", "message": "The entity, with id 3 is not found"}
   """

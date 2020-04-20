@@ -3,8 +3,8 @@ version: "3.4"
 services:
   nginx:
     build: ./nginx/local
-    logging:
-      driver: "none"
+    networks:
+      - data-modelling-storage-service_default
 
   api:
     build:
@@ -12,12 +12,18 @@ services:
     image: api-dev
     volumes:
       - ./api/:/code
+      - ../data-modelling-storage-service/gen/python:/dmss
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
     ports:
-      - "5000:5000"
+      - "5001:5000"
+    networks:
+      - data-modelling-storage-service_default
+    external_links:
+      - mainapi
+      - db
 
   web:
     build:
@@ -30,26 +36,9 @@ services:
       - NODE_ENV=development
     ports:
       - "9229:9229"
+    networks:
+      - data-modelling-storage-service_default
 
-  db:
-    volumes:
-      - ./data/db:/data/db
-    ports:
-      - "27017:27017"
-    logging:
-      driver: "none"
-
-  db-ui:
-    depends_on:
-      - db
-    image: mongo-express:0.49
-    ports:
-      - "8081:8081"
-    logging:
-      driver: "none"
-    environment:
-      ME_CONFIG_MONGODB_SERVER: db
-      ME_CONFIG_MONGODB_ADMINUSERNAME: maf
-      ME_CONFIG_MONGODB_ADMINPASSWORD: maf
-      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
-
+networks:
+  data-modelling-storage-service_default:
+    external: true

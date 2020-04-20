@@ -3,10 +3,11 @@ from typing import Dict, Union
 from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import DMT
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.repository.repository_factory import get_repository
+from core.repository.repository_factory import get_data_source
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
 from core.use_case.utils.set_index_context_menu import create_context_menu
+from services.data_modelling_document_service import package_api
 from utils.logging import logger
 
 from classes.recipe import RecipePlugin
@@ -112,17 +113,23 @@ def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str
 
 
 class GenerateIndexUseCase:
-    def __init__(self, repository_provider=get_repository):
+    def __init__(self, repository_provider=get_data_source):
         self.repository_provider = repository_provider
 
-    def execute(self, data_source_id: str, application_page: str) -> dict:
+    def execute(self, data_source_id: str) -> dict:
+        document_service = DocumentService(repository_provider=self.repository_provider)
+
+        data_source = document_service.get_data_source(data_source_id)
+        application_page = data_source["documentType"]
+
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        document_service = DocumentService(repository_provider=self.repository_provider)
         # make sure we're generating the index with correct blueprints.
         document_service.invalidate_cache()
-        root_packages = document_service.get_root_packages(data_source_id=data_source_id)
+        # root_packages = document_service.get_root_packages(data_source_id=data_source_id)
+        root_packages = package_api.get(data_source_id)
+
         root = Node(
             key="root",
             uid=data_source_id,
@@ -131,33 +138,39 @@ class GenerateIndexUseCase:
             attribute=BlueprintAttribute("root", "datasource"),
         )
         for root_package in root_packages:
+            package_data = root_package["data"]
             try:
                 root.add_child(
-                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=root_package.uid)
+                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=package_data["_id"])
                 )
             except EntityNotFoundException as error:
-                logger.exception(error, "unhandled exception.")
+                logger.exception(error)
                 error_node: Node = Node(
-                    key=root_package.uid,
-                    uid=root_package.uid,
-                    entity={"name": root_package.name, "type": ""},
+                    key=package_data["_id"],
+                    uid=package_data["_id"],
+                    entity={"name": package_data["name"], "type": ""},
                     blueprint_provider=document_service.blueprint_provider,
                     attribute=BlueprintAttribute("root", "datasource"),
                 )
-                error_node.set_error(f"failed to add root package {root_package.name} to the root node")
+                error_node.set_error(f"failed to add root package {package_data['name']} to the root node")
                 root.add_child(error_node)
             except Exception as error:
-                logger.exception(error, "unhandled exception.")
+                logger.exception(f"{error}, unhandled exception.")
 
         return extend_index_with_node_tree(root, data_source_id, app_settings)
 
-    def single(self, data_source_id: str, document_id: str, application_page: str, parent_id: str) -> Dict:
+    def single(self, data_source_id: str, document_id: str, parent_id: str) -> Dict:
+        document_service = DocumentService(repository_provider=self.repository_provider)
+
+        data_source = document_service.get_data_source(data_source_id)
+
+        application_page = data_source["documentType"]
+
         app_settings = (
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
-        document_service = DocumentService(repository_provider=self.repository_provider)
         # make sure we're generating the index with correct blueprints.
-        document_service.invalidate_cache()
+        # document_service.invalidate_cache()
         parent_uid = parent_id.split(".", 1)[0]
         if data_source_id == parent_uid:
             document_uid = document_id

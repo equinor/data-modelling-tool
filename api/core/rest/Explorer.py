@@ -2,82 +2,77 @@ import json
 
 from flask import Blueprint, request, Response, send_file
 
-from core.repository.repository_factory import get_repository
+from core.enums import STATUS_CODES
+from core.repository.repository_factory import get_data_source
+from core.rest.utils.dmss_api_wrapper import dmss_api_wrapper
 from core.serializers.dto_json_serializer import DTOSerializer
+from core.service.document_service import explorer_api
 from core.shared import response_object as res
-from core.use_case.add_file_use_case import AddFileRequestObject, AddFileUseCase
-from core.use_case.add_root_package_use_case import AddRootPackageRequestObject, AddRootPackageUseCase
 from core.use_case.export_use_case import ExportRequestObject, ExportUseCase
 from core.use_case.move_file_use_case import MoveFileRequestObject, MoveFileUseCase
-from core.use_case.remove_use_case import RemoveFileRequestObject, RemoveUseCase
-from core.use_case.rename_file_use_case import RenameRequestObject, RenameUseCase
-
-from core.use_case.add_document_use_case import AddDocumentUseCase, AddDocumentRequestObject
-from core.use_case.seach_use_case import SearchUseCase, SearchRequestObject
+from services.data_modelling_document_service import search_api
 
 blueprint = Blueprint("explorer", __name__)
 
-STATUS_CODES = {
-    res.ResponseSuccess.SUCCESS: 200,
-    res.ResponseFailure.RESOURCE_ERROR: 404,
-    res.ResponseFailure.PARAMETERS_ERROR: 400,
-    res.ResponseFailure.SYSTEM_ERROR: 500,
-}
 
-
-# Add file by parent_id
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-file", methods=["POST"])
 def add_file(data_source_id: str):
-    request_data = request.get_json()
-    request_data["data_source_id"] = data_source_id
-    use_case = AddFileUseCase()
-    request_object = AddFileRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
+    @dmss_api_wrapper
+    def dmss_call():
+        request_data = request.get_json()
+        return explorer_api.add_to_parent(
+            data_source_id,
+            {
+                "parentId": request_data.get("parentId"),
+                "type": request_data.get("type"),
+                "name": request_data.get("name"),
+                "description": request_data.get("description"),
+                "attribute": request_data.get("attribute"),
+            },
+            _preload_content=False,
+        )
+
+    return dmss_call()
 
 
-# Add file by parent_id
 @blueprint.route("/api/search/<string:data_source_id>", methods=["POST"])
 def search_entities(data_source_id: str):
-    use_case = SearchUseCase()
-    request_object = SearchRequestObject.from_dict({"data_source_id": data_source_id, "data": request.get_json()})
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
+    @dmss_api_wrapper
+    def dmss_call():
+        return search_api.search_entities(data_source_id, request.get_json())
+
+    return dmss_call()
 
 
 # Add file by directory path
 @blueprint.route("/api/v1/explorer/<string:data_source_id>/add-document", methods=["POST"])
 def add_document(data_source_id: str):
-    request_data = request.get_json()
-    request_data["data_source_id"] = data_source_id
-    use_case = AddDocumentUseCase()
-    request_object = AddDocumentRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
+    @dmss_api_wrapper
+    def dmss_call():
+        request_data = request.get_json()
+        return explorer_api.add_to_path(
+            data_source_id, {"document": request_data.get("document"), "directory": request_data.get("directory")}
+        )
+
+    return dmss_call()
 
 
 @blueprint.route("/api/v4/explorer/<string:data_source_id>/remove", methods=["POST"])
 def remove(data_source_id: str):
-    request_data = request.get_json()
-    request_data["data_source_id"] = data_source_id
-    use_case = RemoveUseCase()
-    request_object = RemoveFileRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
+    @dmss_api_wrapper
+    def dmss_call():
+        request_data = request.get_json()
+        return explorer_api.remove(
+            data_source_id, {"documentId": request_data.get("documentId"), "parentId": request_data.get("parentId")}
+        )
+
+    return dmss_call()
 
 
 @blueprint.route("/api/v2/explorer/move-file", methods=["PUT"])
 def move_file():
     request_data = request.get_json()
-    use_case = MoveFileUseCase(get_repository=get_repository)
+    use_case = MoveFileUseCase(get_repository=get_data_source)
     request_object = MoveFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
@@ -87,33 +82,36 @@ def move_file():
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/add-root-package", methods=["POST"])
 def add_root_package(data_source_id: str):
-    request_data = request.get_json()
-    document_repository = get_repository(data_source_id)
-    use_case = AddRootPackageUseCase(document_repository=document_repository)
-    request_object = AddRootPackageRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
+    @dmss_api_wrapper
+    def dmss_call():
+        request_data = request.get_json()
+        return explorer_api.add_package(data_source_id, request_data)
 
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
+    return dmss_call()
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/rename", methods=["PUT"])
 def rename(data_source_id: str):
-    request_data = request.get_json()
-    request_data["data_source_id"] = data_source_id
-    use_case = RenameUseCase()
-    request_object = RenameRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
+    @dmss_api_wrapper
+    def dmss_call():
+        request_data = request.get_json()
+        return explorer_api.rename(
+            data_source_id,
+            {
+                "documentId": request_data.get("documentId"),
+                "parentId": request_data.get("parentId"),
+                "name": request_data.get("name"),
+                "description": request_data.get("description"),
+            },
+        )
+
+    return dmss_call()
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/export/<string:document_id>", methods=["GET"])
 def export(data_source_id: str, document_id: str):
     request_object = ExportRequestObject.from_dict({"data_source_id": data_source_id, "documentId": document_id})
-    use_case = ExportUseCase(repository_provider=get_repository, data_source_id=data_source_id)
+    use_case = ExportUseCase(repository_provider=get_data_source, data_source_id=data_source_id)
     response = use_case.execute(request_object)
 
     if response.type == res.ResponseSuccess.SUCCESS:

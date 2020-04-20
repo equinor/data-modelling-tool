@@ -187,7 +187,8 @@ Feature: UI Recipe
           "attributes": [
             {
               "name": "itemStorageNotContained",
-              "contained": false
+              "contained": false,
+              "type": "system/SIMOS/StorageAttribute"
             }
           ]
         }

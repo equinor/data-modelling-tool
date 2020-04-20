@@ -2,6 +2,8 @@ import json
 import os
 from typing import Dict, List, Union
 
+from pymongo import MongoClient
+
 from classes.dto import DTO
 from classes.schema import Factory
 from config import Config
@@ -9,9 +11,11 @@ from core.enums import DMT
 from core.repository.file import TemplateRepositoryFromFile
 from core.repository.repository_exceptions import InvalidDocumentNameException
 from core.utility import url_safe_name
-from services.database import dmt_database as dmt_db
 from utils.helper_functions import schemas_location
 from utils.logging import logger
+
+client = MongoClient("db", username=Config.MONGO_USERNAME, password=Config.MONGO_PASSWORD)
+dmt_db = client[Config.MONGO_DB]
 
 
 def get_template_type(directory: str, file: str) -> str:
