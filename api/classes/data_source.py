@@ -1,22 +1,16 @@
-from flask import abort
-
-from services.database import dmt_database as db
+from core.repository.repository_exceptions import RepositoryException
+from services.data_modelling_document_service import datasource_api
 
 
 class DataSource:
-    @staticmethod
-    def _get_data_source_from_database(uid):
-        data_source = db.data_sources.find_one({"_id": uid})
-        if not data_source:
-            abort(404, f"Error: The data-source was not found. ID: {uid}")
-        return data_source
-
     def __init__(self, uid: str):
-        data_source_dict = self._get_data_source_from_database(uid)
+        data_source_dict = datasource_api.get_data_source(uid)
+        if not data_source_dict:
+            raise RepositoryException(f"Error: The data-source was not found. ID: {uid}")
 
         self.id = uid
         self.type = data_source_dict["type"]
-        self.host = data_source_dict["host"]
+        self.host = data_source_dict.get("host")
         self.port = data_source_dict["port"]
         self.username = data_source_dict["username"]
         self.password = data_source_dict["password"]

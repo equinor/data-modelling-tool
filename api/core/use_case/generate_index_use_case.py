@@ -3,7 +3,7 @@ from typing import Dict, Union
 from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import DMT
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.repository.repository_factory import get_repository
+from core.repository.repository_factory import get_data_source
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
 from core.use_case.utils.set_index_context_menu import create_context_menu
@@ -113,7 +113,7 @@ def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str
 
 
 class GenerateIndexUseCase:
-    def __init__(self, repository_provider=get_repository):
+    def __init__(self, repository_provider=get_data_source):
         self.repository_provider = repository_provider
 
     def execute(self, data_source_id: str) -> dict:

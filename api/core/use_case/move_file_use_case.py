@@ -1,12 +1,12 @@
 from pathlib import Path
 
-from classes.data_source import DataSource
 from classes.dto import DTO
 from core.repository import Repository
 from core.repository.repository_exceptions import EntityAlreadyExistsException, EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
+from core.utility import get_document_by_ref
 from utils.logging import logger
 
 
@@ -52,8 +52,7 @@ class MoveFileUseCase(uc.UseCase):
             raise EntityAlreadyExistsException(request_object.destination)
 
         # Remove source document
-        source_data_source = DataSource(uid=source_data_source_id)
-        source_document_repository: Repository = self.get_repository(source_data_source)
+        source_document_repository: Repository = self.get_repository(source_data_source_id)
         source_document: DTO = get_document_by_ref(request_object.source)
         if not source_document:
             raise EntityNotFoundException(uid=f"{str(source)}")
@@ -61,8 +60,7 @@ class MoveFileUseCase(uc.UseCase):
         logger.info(f"Removed document '{source_document.uid}' from data source '{source_data_source_id}'")
 
         # Add destination
-        destination_data_source = DataSource(uid=destination_data_source_uid)
-        destination_document_repository: Repository = self.get_repository(destination_data_source)
+        destination_document_repository: Repository = self.get_repository(destination_data_source_uid)
         data = source_document.data
         data["name"] = destination.name
         destination_document = DTO(uid=source_document.uid, data=data)

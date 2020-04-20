@@ -2,7 +2,7 @@ from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.tree_node import Node
 from core.enums import PRIMITIVES
-from core.repository.repository_factory import get_repository
+from core.repository.repository_factory import get_data_source
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -40,7 +40,7 @@ class GetDocumentRequestObject(req.ValidRequestObject):
 
 
 class GetDMTDocumentUseCase(uc.UseCase):
-    def __init__(self, repository_provider=get_repository):
+    def __init__(self, repository_provider=get_data_source):
         self.repository_provider = repository_provider
         self.document_service = DocumentService(repository_provider=self.repository_provider)
 

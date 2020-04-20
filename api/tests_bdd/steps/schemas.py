@@ -1,19 +1,16 @@
 import json
 
-from behave import given, when, then
-
-from classes.schema import Factory
-from core.repository import Repository
-from core.repository.file import TemplateRepositoryFromFile
-from core.repository.repository_factory import get_repository
-from utils.data_structure.compare import pretty_eq
-from utils.helper_functions import schemas_location
-from utils.logging import logger
+from behave import given, then, when
+from dmss_api import ExplorerApi
 from utils.package_import import import_package
 
 from classes.dto import DTO
+from classes.schema import Factory
 from config import Config
-from dmss_api import DocumentApi, PackageApi, ExplorerApi
+from core.repository.file import TemplateRepositoryFromFile
+from utils.data_structure.compare import pretty_eq
+from utils.helper_functions import schemas_location
+from utils.logging import logger
 
 explorer_api = ExplorerApi()
 explorer_api.api_client.configuration.host = Config.DMSS_API
@@ -32,8 +29,6 @@ def step_impl_2(context, uid: str, data_source_id: str):
     document: DTO = DTO(uid=uid, data=json.loads(context.text))
     response = explorer_api.add_raw(data_source_id, document.to_dict())
     print(response)
-    # document_repository: Repository = get_repository(data_source_id)
-    # document_repository.add(document)
 
 
 @when('I create a Python class from the template "{template_name}"')
