@@ -7,7 +7,7 @@ from core.service.document_service import DocumentService
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from classes.tree_node import Node, ListNode
-from core.repository.repository_factory import get_repository
+from core.repository.repository_factory import get_data_source
 from dmss_api import DocumentApi, PackageApi, ExplorerApi
 
 blueprint_provider = BlueprintProvider()

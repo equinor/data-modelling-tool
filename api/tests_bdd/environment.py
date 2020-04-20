@@ -1,13 +1,24 @@
+from pymongo import MongoClient
+
 from app import create_app
 from config import Config
-from core.utility import wipe_db
-from services.database import dmt_database
 from tests_bdd.results import print_overview_errors, print_overview_features
 
 app = create_app(Config)
 app.config["TESTING"] = True
 app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
 app.config["CACHE_MAX_SIZE"] = 0
+
+client = MongoClient("db", username=Config.MONGO_USERNAME, password=Config.MONGO_PASSWORD)
+dmt_database = client[Config.MONGO_DB]
+
+
+def wipe_db():
+    print("Dropping all collections")
+    # FIXME: Read names from the database
+    for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.SYSTEM_COLLECTION, "documents"]:
+        print(f"Dropping collection '{name}'")
+        dmt_database.drop_collection(name)
 
 
 def before_all(context):

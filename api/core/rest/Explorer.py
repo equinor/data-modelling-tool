@@ -3,7 +3,7 @@ import json
 from flask import Blueprint, request, Response, send_file
 
 from core.enums import STATUS_CODES
-from core.repository.repository_factory import get_repository
+from core.repository.repository_factory import get_data_source
 from core.rest.utils.dmss_api_wrapper import dmss_api_wrapper
 from core.serializers.dto_json_serializer import DTOSerializer
 from core.service.document_service import explorer_api
@@ -72,7 +72,7 @@ def remove(data_source_id: str):
 @blueprint.route("/api/v2/explorer/move-file", methods=["PUT"])
 def move_file():
     request_data = request.get_json()
-    use_case = MoveFileUseCase(get_repository=get_repository)
+    use_case = MoveFileUseCase(get_repository=get_data_source)
     request_object = MoveFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(
@@ -111,7 +111,7 @@ def rename(data_source_id: str):
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/export/<string:document_id>", methods=["GET"])
 def export(data_source_id: str, document_id: str):
     request_object = ExportRequestObject.from_dict({"data_source_id": data_source_id, "documentId": document_id})
-    use_case = ExportUseCase(repository_provider=get_repository, data_source_id=data_source_id)
+    use_case = ExportUseCase(repository_provider=get_data_source, data_source_id=data_source_id)
     response = use_case.execute(request_object)
 
     if response.type == res.ResponseSuccess.SUCCESS:
