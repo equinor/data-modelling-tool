@@ -1,5 +1,4 @@
 from core.enums import PRIMITIVES
-from core.repository.repository_factory import get_data_source
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -9,7 +8,6 @@ from core.utility import get_document_by_ref
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
 from utils.logging import logger
-from utils.uuid import is_valid_uuid
 
 
 class GetDocumentByPathRequestObject(req.ValidRequestObject):
@@ -41,9 +39,8 @@ class GetDocumentByPathRequestObject(req.ValidRequestObject):
 
 
 class GetDMTDocumentByPathUseCase(uc.UseCase):
-    def __init__(self, repository_provider=get_data_source):
-        self.repository_provider = repository_provider
-        self.document_service = DocumentService(repository_provider=self.repository_provider)
+    def __init__(self):
+        self.document_service = DocumentService()
 
     def process_request(self, request_object: GetDocumentByPathRequestObject):
         data_source_id: str = request_object.data_source_id

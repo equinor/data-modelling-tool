@@ -1,13 +1,13 @@
 import json
 from pathlib import Path
-from typing import Union
+from typing import Dict, Union
 
 from classes.dto import DTO
-from core.repository import Repository
 from core.repository.repository_exceptions import TemplateNotFound
+from core.repository.repository_interface import RepositoryInterface
 
 
-class TemplateRepositoryFromFile(Repository):
+class TemplateRepositoryFromFile(RepositoryInterface):
     def __init__(self, location: Union[str, Path]):
         self.path = Path(location)
 
@@ -29,6 +29,9 @@ class TemplateRepositoryFromFile(Repository):
     def find(self, filter: dict, single=None, raw=None) -> DTO:
         template_type = filter["type"]
         return self.get(template_type)
+
+    def find_one(self, filters: Dict) -> Dict:
+        raise NotImplementedError
 
     def add(self, document: DTO) -> None:
         raise NotImplementedError

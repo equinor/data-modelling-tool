@@ -16,7 +16,6 @@ from jinja2 import Template
 
 from classes.dto import DTO
 from config import Config
-from core.repository import Repository
 
 T = TypeVar("T")
 

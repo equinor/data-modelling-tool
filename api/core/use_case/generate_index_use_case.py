@@ -3,7 +3,6 @@ from typing import Dict, Union
 from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import DMT
 from core.repository.repository_exceptions import EntityNotFoundException
-from core.repository.repository_factory import get_data_source
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
 from core.use_case.utils.set_index_context_menu import create_context_menu
@@ -113,11 +112,8 @@ def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str
 
 
 class GenerateIndexUseCase:
-    def __init__(self, repository_provider=get_data_source):
-        self.repository_provider = repository_provider
-
     def execute(self, data_source_id: str) -> dict:
-        document_service = DocumentService(repository_provider=self.repository_provider)
+        document_service = DocumentService()
 
         data_source = document_service.get_data_source(data_source_id)
         application_page = data_source["documentType"]
@@ -126,7 +122,7 @@ class GenerateIndexUseCase:
             Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
         )
         # make sure we're generating the index with correct blueprints.
-        document_service.invalidate_cache()
+        document_service.blueprint_provider.invalidate_cache()
         # root_packages = document_service.get_root_packages(data_source_id=data_source_id)
         root_packages = package_api.get(data_source_id)
 
@@ -160,7 +156,7 @@ class GenerateIndexUseCase:
         return extend_index_with_node_tree(root, data_source_id, app_settings)
 
     def single(self, data_source_id: str, document_id: str, parent_id: str) -> Dict:
-        document_service = DocumentService(repository_provider=self.repository_provider)
+        document_service = DocumentService()
 
         data_source = document_service.get_data_source(data_source_id)
 

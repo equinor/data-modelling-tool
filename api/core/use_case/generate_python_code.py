@@ -6,7 +6,6 @@ from typing import Callable, Union, Dict, Optional, List, Set, Sequence
 
 from classes.schema import Factory, get_dto
 from classes.dto import DTO
-from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res

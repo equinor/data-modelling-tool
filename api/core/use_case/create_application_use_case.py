@@ -12,13 +12,13 @@ from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from config import Config
 from core.enums import DMT
-from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.utility import BlueprintProvider
 from utils.logging import logger
+from core.service.document_service import DocumentService
 
 API_DOCKERFILE = f"""\
 FROM mariner.azurecr.io/dmt/api:stable
@@ -197,7 +197,7 @@ def zip_all(ob, path, rel=""):
         pass
 
 
-def zip_package(ob, document: DTO, document_repository, path):
+def zip_package(ob, document: DTO, path):
     document.data.pop("_id", None)
     document.data.pop("uid", None)
     json_data = json.dumps(document.data)
@@ -224,7 +224,7 @@ def zip_package(ob, document: DTO, document_repository, path):
                         document_references.append(document_reference)
 
     for document_reference in document_references:
-        zip_package(ob, document_reference, document_repository, f"{path}/{document.name}")
+        zip_package(ob, document_reference, f"{path}/{document.name}")
 
 
 def strip_datasource(path):
@@ -236,13 +236,13 @@ def strip_datasource(path):
 
 
 class CreateApplicationUseCase(uc.UseCase):
-    def __init__(self, document_repository: Repository):
-        self.document_repository = document_repository
+    def __init__(self, datasource_id):
+        self.datasource_id = datasource_id
 
     def process_request(self, request_object: CreateApplicationRequestObject):
         application_id: str = request_object.application_id
-
-        application: DTO = self.document_repository.get(application_id)
+        document_service = DocumentService()
+        application: DTO = DTO(document_service.get_by_uid(self.datasource_id, application_id).to_dict())
         if not application:
             raise EntityNotFoundException(uid=application_id)
 
@@ -267,8 +267,8 @@ class CreateApplicationUseCase(uc.UseCase):
                 # TODO: Support including packages from different datasources
                 # This is a temp. hack
                 package = strip_datasource(package)
-                root_package: DTO = self.document_repository.find({"name": package})
-                zip_package(zip_file, root_package, self.document_repository, f"api/home/blueprints/")
+                root_package: DTO = DTO(document_service.get_by_path(self.datasource_id, package).to_dict())
+                zip_package(zip_file, root_package, f"api/home/blueprints/")
 
         memory_file.seek(0)
 

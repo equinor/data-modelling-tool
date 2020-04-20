@@ -1,10 +1,9 @@
 import json
 from enum import Enum
-from flask import Blueprint, Response, request
 
-from classes.dto import DTO
+from flask import Blueprint, request, Response
 
-from core.repository.repository_factory import get_data_source
+from core.service.document_service import DocumentService
 
 
 class ApiActions(Enum):
@@ -23,7 +22,8 @@ def process_action():
 
 class ProcessAction:
     def __init__(self, request_data):
-        self.document_repository = get_data_source(request_data["dataSource"])
+        self.data_source = request_data["dataSource"]
+        self.document_service = DocumentService()
 
         # shared common request data properties
         self.action = request_data["action"]
@@ -41,15 +41,26 @@ class ProcessAction:
             )
 
     def _process_upload(self):
-        # todo implement use-case for upload.
-        package_dto = self.document_repository.get(self.parent_id)
-
-        for document_data in self.data:
-            dto = DTO(data=document_data["entity"])
-            # assume everything is contained in storage until database service layer handle this.
-            self.document_repository.add(dto)
-            reference = {"_id": dto.uid, "name": dto.data.get("name", ""), "type": dto.data.get("type", "")}
-            package_dto.get_values("content").append(reference)
-
-        self.document_repository.update(package_dto)
-        return Response(json.dumps({"status": "ok"}), mimetype="application/json", status=200)
+        # TODO: Reimplement in DMSS
+        raise NotImplementedError
+        # package_dto = self.document_service.get_by_uid(self.data_source, self.parent_id)
+        #
+        # for document_data in self.data:
+        #     dto = DTO(data=document_data["entity"])
+        #     explorer_api.add_to_parent(
+        #         self.data_source,
+        #         {
+        #             "parentId": request_data.get("parentId"),
+        #             "type": request_data.get("type"),
+        #             "name": request_data.get("name"),
+        #             "description": request_data.get("description"),
+        #             "attribute": request_data.get("attribute"),
+        #         },
+        #         _preload_content=False,
+        #     )
+        #     # self.document_repository.add(dto)
+        #     reference = {"_id": dto.uid, "name": dto.name, "type": dto.type}
+        #     package_dto.get_values("content").append(reference)
+        #
+        # self.document_repository.update(package_dto)
+        # return Response(json.dumps({"status": "ok"}), mimetype="application/json", status=200)
