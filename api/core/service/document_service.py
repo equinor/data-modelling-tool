@@ -14,7 +14,7 @@ from core.repository.repository_exceptions import (
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
-from services.data_modelling_document_service import document_api, explorer_api, package_api
+from services.data_modelling_document_service import document_api, explorer_api, package_api, datasource_api
 from utils.logging import logger
 
 
@@ -113,3 +113,6 @@ class DocumentService:
             entity["attributes"] = get_required_attributes(type=type)
 
         return entity
+
+    def get_data_source(self, data_source_id: str):
+        return datasource_api.get_data_source(data_source_id)

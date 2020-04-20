@@ -21,7 +21,7 @@ def get_all_data_sources_by_document_type() -> Response:
 
 @blueprint.route("/api/v2/data-sources/<string:data_source_id>", methods=["POST"])
 def create_data_source(data_source_id: str) -> Response:
-    data_source = datasource_api.save(data_source_id, body=request.get_json())
+    data_source = datasource_api.save(data_source_id, request_body=request.get_json())
     return Response(
         json.dumps(data_source.to_dict(), cls=CreateDataSourceSerializer), mimetype="application/json", status=200,
     )

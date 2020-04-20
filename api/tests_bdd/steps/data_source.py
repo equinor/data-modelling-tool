@@ -26,6 +26,6 @@ def step_impl(context):
         }
         # dmt_database["data_sources"].insert_one(document)
         # dmt_database.drop_collection(row["collection"])
-        api.save(str(row["name"]), body=document)
+        api.save(str(row["name"]), request_body=document)
 
         context.data_sources[row["name"]] = document
