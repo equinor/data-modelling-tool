@@ -3,7 +3,7 @@ import os
 from flask import Flask
 
 from config import Config
-from core.rest import Actions, Blueprints, DataSource, Document as DocumentBlueprint, Explorer, Index, System
+from core.rest import Actions, Blueprints, DataSource, Document as DocumentBlueprint, Explorer, Index, System, Entity
 
 
 def create_app(config):
