@@ -24,17 +24,11 @@ def get_complete_document(data_source_id: str, document_uid: str) -> Dict:
 
 
 class DocumentService:
-    def __init__(self, repository_provider=None, blueprint_provider=BlueprintProvider()):
+    def __init__(self, blueprint_provider=BlueprintProvider()):
         self.blueprint_provider = blueprint_provider
-        self.repository_provider = repository_provider
 
-    def invalidate_cache(self):
-        self.blueprint_provider.invalidate_cache()
-
-    def save(self, node: Union[Node, ListNode], data_source_id: str, repository=None, path="") -> None:
-        # If not passed a custom repository to save into, use the DocumentService's repository
-        if not repository:
-            repository = self.repository_provider(data_source_id)
+    # This now only works with "local" repository. Like Zip or Filesystem
+    def save(self, node: Union[Node, ListNode], data_source_id: str, repository, path="") -> None:
         # Update none-contained attributes
         for child in node.children:
             # A list node is always contained on parent. Need to check the blueprint
@@ -57,9 +51,6 @@ class DocumentService:
             document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid)
             document = document["document"]
         except ApiException as error:
-            # this is an edge case for packages where the reference in a package entity has wrong document id.
-            # the code caller of this method knows the name and node_type that belongs to the document_uid.
-            # Thus, the caller code should create the Node and add error information to that node.
             logger.exception(error)
             raise EntityNotFoundException(document_uid)
 
@@ -87,7 +78,7 @@ class DocumentService:
         ref_elements = path.split("/", 1)
         package_name = ref_elements[0]
 
-        package: DTO = package_api.find_by_name(data_source_id=data_source_id, name=package_name)
+        package: DTO = DTO(package_api.find_by_name(data_source_id=data_source_id, name=package_name))
         if not package:
             raise FileNotFoundException(data_source_id, package_name, is_root=True)
 
@@ -107,11 +98,7 @@ class DocumentService:
         return explorer_api.add_to_path(data_source_id, {document: document, directory: directory})
 
     def instantiate_entity(self, type: str, name: str = None):
-
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description="").entity
-        if type == SIMOS.BLUEPRINT.value:
-            entity["attributes"] = get_required_attributes(type=type)
-
         return entity
 
     def get_data_source(self, data_source_id: str):

@@ -1,13 +1,11 @@
-from core.repository.repository_exceptions import EntityNotFoundException
-from core.utility import BlueprintProvider
-from utils.form_to_ui_schema import form_to_ui_schema
-from utils.form_to_schema import form_to_schema
-from core.shared import use_case as uc
-from core.shared import response_object as res
-from core.shared import request_object as req
-
-from classes.blueprint_attribute import BlueprintAttribute
 from classes.recipe import Recipe, RecipeAttribute
+from core.repository.repository_exceptions import EntityNotFoundException
+from core.shared import request_object as req
+from core.shared import response_object as res
+from core.shared import use_case as uc
+from core.utility import BlueprintProvider
+from utils.form_to_schema import form_to_schema
+from utils.form_to_ui_schema import form_to_ui_schema
 
 
 class GenerateJsonSchemaRequestObject(req.ValidRequestObject):

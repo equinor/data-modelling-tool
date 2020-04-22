@@ -12,7 +12,6 @@ from classes.dto import DTO
 from classes.storage_recipe import StorageRecipe
 from config import Config
 from core.enums import DMT
-from core.repository import Repository
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.service.document_service import DocumentService
 from core.shared import request_object as req

@@ -8,7 +8,6 @@ from classes.tree_node import Node
 from config import Config
 from core.enums import DMT, SIMOS
 from core.repository.repository_exceptions import PluginNotLoadedException
-from core.repository.repository_factory import get_data_source
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
@@ -55,7 +54,7 @@ def blueprints_in_package(package_node, data_source_id):
 
 class GenerateCodeWithPluginUseCase(uc.UseCase):
     def __init__(self):
-        self.document_service = DocumentService(repository_provider=get_data_source)
+        self.document_service = DocumentService()
 
     def process_request(self, request_object: GenerateCodeWithPluginRequestObject):
         document_path: str = request_object.document_path

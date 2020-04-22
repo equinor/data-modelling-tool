@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, Optional, List
 
 
-class DBClientInterface(ABC):
+class RepositoryInterface(ABC):
     @abstractmethod
     def add(self, uid: str, document: Dict) -> bool:
         """Get method to be implemented"""

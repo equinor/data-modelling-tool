@@ -3,7 +3,6 @@ import json
 from flask import Blueprint, request, Response, send_file
 
 from core.enums import STATUS_CODES
-from core.repository.repository_factory import get_data_source
 from core.rest.utils.dmss_api_wrapper import dmss_api_wrapper
 from core.serializers.dto_json_serializer import DTOSerializer
 from core.service.document_service import explorer_api
@@ -72,7 +71,7 @@ def remove(data_source_id: str):
 @blueprint.route("/api/v2/explorer/move-file", methods=["PUT"])
 def move_file():
     request_data = request.get_json()
-    use_case = MoveFileUseCase(get_repository=get_data_source)
+    use_case = MoveFileUseCase()
     request_object = MoveFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
     return Response(

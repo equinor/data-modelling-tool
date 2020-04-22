@@ -6,7 +6,7 @@ from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from config import Config
 from core.enums import DMT
-from core.repository import EntityNotFoundException
+from core.repository.repository_exceptions import EntityNotFoundException
 from utils.logging import logger
 
 
