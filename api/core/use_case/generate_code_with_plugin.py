@@ -1,8 +1,10 @@
 from __future__ import annotations
 
 import importlib
+import io
 import json
 import sys
+
 
 from classes.tree_node import Node
 from config import Config
@@ -96,5 +98,5 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
         spec.loader.exec_module(module)
 
         # Call the main function in the plugin module, with the dict of required blueprints as the single argument
-        result = module.main(blueprints)
-        return res.ResponseSuccess(json.dumps(result))
+        result: io.BytesIO = module.main(blueprints)
+        return res.ResponseSuccess(result)

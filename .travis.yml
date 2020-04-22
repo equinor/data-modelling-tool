@@ -16,12 +16,12 @@ env:
 stages:
   - build
   - tests
-  - name: deploy-dev
-    if: branch = master
-  - name: deploy-features
-    if: branch =~ ^features/.*$
-  - name: update-core-prod
-    if: branch = stable
+#  - name: deploy-dev
+#    if: branch = master
+#  - name: deploy-features
+#    if: branch =~ ^features/.*$
+#  - name: update-core-prod
+#    if: branch = stable
 
 jobs:
   include:
@@ -64,21 +64,21 @@ jobs:
       before_script: ./travis-scripts.sh pull $WEB_IMAGE
       script: ./travis-scripts.sh web_tests
 
-    - stage: deploy-dev
-      name: "Reset dev database"
-      before_script: ./travis-scripts.sh pull $API_IMAGE
-      script:
-        - docker-compose run -e ENVIRONMENT=dev api ./reset-database.sh
-
-    - stage: deploy-features
-      name: "Reset features database"
-      before_script: ./travis-scripts.sh pull $API_IMAGE
-      script:
-        - docker-compose run -e ENVIRONMENT=features api ./reset-database.sh
-
-    - stage: update-core-prod
-      name: "Update system collection in prod"
-      before_script: ./travis-scripts.sh pull $API_IMAGE
-      script:
-        - docker pull mariner.azurecr.io/dmt/api:stable
-        - docker run -e ENVIRONMENT=prod -e MONGO_AZURE_URI="$MONGO_AZURE_URI" mariner.azurecr.io/dmt/api:stable flask reset-core-packages
+#    - stage: deploy-dev
+#      name: "Reset dev database"
+#      before_script: ./travis-scripts.sh pull $API_IMAGE
+#      script:
+#        - docker-compose run -e ENVIRONMENT=dev api ./reset-database.sh
+#
+#    - stage: deploy-features
+#      name: "Reset features database"
+#      before_script: ./travis-scripts.sh pull $API_IMAGE
+#      script:
+#        - docker-compose run -e ENVIRONMENT=features api ./reset-database.sh
+#
+#    - stage: update-core-prod
+#      name: "Update system collection in prod"
+#      before_script: ./travis-scripts.sh pull $API_IMAGE
+#      script:
+#        - docker pull mariner.azurecr.io/dmt/api:stable
+#        - docker run -e ENVIRONMENT=prod -e MONGO_AZURE_URI="$MONGO_AZURE_URI" mariner.azurecr.io/dmt/api:stable flask reset-core-packages
