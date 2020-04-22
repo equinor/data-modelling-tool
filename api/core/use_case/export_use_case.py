@@ -37,8 +37,8 @@ class ExportRequestObject(req.ValidRequestObject):
 
 
 class ExportUseCase(uc.UseCase):
-    def __init__(self, repository_provider, data_source_id):
-        self.document_service = DocumentService(repository_provider=repository_provider)
+    def __init__(self, data_source_id):
+        self.document_service = DocumentService()
         self.data_source_id = data_source_id
 
     def process_request(self, request_object: ExportRequestObject):
