@@ -96,10 +96,8 @@ def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str
             # Skip package's content node
             if node.parent and node.parent.type == DMT.PACKAGE.value:
                 continue
-
             if not is_visible(node):
                 continue
-
             if node.has_error:
                 index[node.node_id] = get_error_node(data_source_id, node)
             else:

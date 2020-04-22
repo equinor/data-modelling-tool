@@ -58,6 +58,18 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                             data_source_id=data_source_id, type=node.type, node_id=node.node_id
                         )
                     )
+            else:
+                # Add create entry for optional attributes (not for packages)
+                for empty_child in [child for child in node.children if child.is_empty()]:
+                    create_new_menu_items.append(
+                        get_dynamic_create_menu_item(
+                            data_source_id=data_source_id,
+                            name=empty_child.name,
+                            type=empty_child.type,
+                            node_id=empty_child.node_id,
+                            label=f"Create {empty_child.name}",
+                        )
+                    )
         # Everything besides listNodes can be renamed. Could be supported in future.
         if not node.is_array():
             menu_items.append(
