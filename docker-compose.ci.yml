@@ -5,34 +5,28 @@ services:
     build:
       context: ./api
       target: development
-    image: development
-    volumes:
-      - ./api/home:/code/home
+    image: api-development
     environment:
       FLASK_DEBUG: 1
       FLASK_ENV: testing
       ENVIRONMENT: local
-      MONGO_INITDB_ROOT_PASSWORD: maf
-      DMSS_HOST: mainapi
-      DMSS_PORT: 5000
-    links:
-      - mainapi
-      - db
     depends_on:
-      - db
       - mainapi
 
   web:
+    build:
+      context: ./web
+      target: development
+    image: web-development
     environment:
       CI: "true"
-    volumes:
-      - ./web/src:/code/src
-      - ./web/libs:/code/src/libs
 
   db:
     image: mongo:3.4
     command: --quiet
     restart: unless-stopped
+    logging:
+      driver: "none"
     environment:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
@@ -46,7 +40,3 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
     depends_on:
       - db
-    links:
-      - db
-    ports:
-      - "5000:5000"

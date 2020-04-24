@@ -21,7 +21,7 @@ def pretty_eq(expected, actual):
             print_pygments(expected)
             print("Differences:")
             print_pygments(a)
-        assert a == b
+        assert a == b  # nosec
     except KeyError:
         print_pygments(actual)
         raise Exception

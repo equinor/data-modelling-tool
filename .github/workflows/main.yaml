@@ -1,0 +1,114 @@
+name: CI
+
+on:
+  push
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Set ENV variables
+        run: for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
+
+      - name: "Print ENVIRONMENT"
+        run: |
+          echo "$IMAGE_REPO"
+          echo "$IMAGE_REGISTRY"
+          echo "$FULL_IMAGE_REPO"
+          echo $API_IMAGE
+          echo $WEB_IMAGE
+          echo $NGINX_IMAGE
+          echo $GITHUB_REF
+          echo $GITHUB_SHA
+
+      - name: "Docker Login"
+        run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+
+      - name: "Pull latest"
+        run: docker pull $API_IMAGE
+
+      - name: "Build API test image"
+        run: docker build --cache-from $API_IMAGE --target development --tag api-development ./api
+
+      - name: "Black Linting"
+        run: docker run --rm api-development black --check --diff .
+
+      - name: "Bandit Static Code Security Analyzis"
+        run: docker run --rm api-development bandit --recursive .
+
+      - name: "Safety - Dependencies CVE Check"
+        run: docker run --rm api-development safety check
+
+      - name: "API UnitTests"
+        run: docker run --rm api-development pytest tests
+
+      - name: "API BDD Tests"
+        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run api behave
+
+  test-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Set ENV variables"
+        run: for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
+
+      - name: "Build Web Image"
+        run: |
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $WEB_IMAGE
+          docker build --cache-from $WEB_IMAGE --target development --tag web-development ./web
+
+      - name: "Web Tests"
+        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test
+
+
+  build-n-publish-web:
+    needs: test-web
+    if: github.ref == 'ref/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Set ENV variables"
+        run: |
+          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
+          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA"
+
+      - name: "Build and Publish Web"
+        run: |
+          echo "Tagging with $COMMIT_REF"
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $WEB_IMAGE
+          docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE ./web
+          docker tag $WEB_IMAGE $WEB_IMAGE:latest
+          docker tag $WEB_IMAGE $WEB_IMAGE:$COMMIT_REF
+          docker push $WEB_IMAGE
+          docker push $WEB_IMAGE:latest
+          docker push $WEB_IMAGE:$COMMIT_REF
+
+  build-n-publish-api:
+    needs: test-api
+    if: github.ref == 'ref/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Set ENV variables"
+        run: |
+          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
+          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA"
+
+      - name: "Build and Publish Web"
+        run: |
+          echo "Tagging with $COMMIT_REF"
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $API_IMAGE
+          docker build --cache-from $API_IMAGE --tag $API_IMAGE ./web
+          docker tag $API_IMAGE $API_IMAGE:latest
+          docker tag $API_IMAGE $API_IMAGE:$COMMIT_REF
+          docker push $API_IMAGE
+          docker push $API_IMAGE:latest
+          docker push $API_IMAGE:$COMMIT_REF

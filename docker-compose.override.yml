@@ -27,7 +27,7 @@ services:
 
   web:
     build:
-      target: dev
+      target: development
     image: web-dev
     volumes:
       - ./web/src:/code/src
