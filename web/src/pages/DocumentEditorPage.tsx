@@ -13,6 +13,8 @@ import {
 import { DocumentType } from '../util/variables'
 import EntitiesPage from './entities/EntitiesPage'
 import Api2 from '../api/Api2'
+import Header from './common/Header'
+import AddDatasource from './common/tree-view/AddDatasource'
 
 function wrapComponent(Component: any, state: any) {
   class Wrapped extends React.Component {
@@ -61,25 +63,22 @@ export default () => {
         <Row>
           {layout && (
             <Col xs={12} md={12} lg={3}>
-              <Wrapper>
-                <h4>Data Modelling Tool</h4>
-                {tabs.size > 1 ? (
-                  <Tabs>
-                    <TabList>
-                      <Tab>Blueprints</Tab>
-                      <Tab>Entities</Tab>
-                    </TabList>
-                    <TabPanel>
-                      <BlueprintsPage />
-                    </TabPanel>
-                    <TabPanel>
-                      <EntitiesPage />
-                    </TabPanel>
-                  </Tabs>
-                ) : (
-                  <EntitiesPage />
-                )}
-              </Wrapper>
+              {tabs.size > 1 ? (
+                <Tabs>
+                  <TabList>
+                    <Tab>Blueprints</Tab>
+                    <Tab>Entities</Tab>
+                  </TabList>
+                  <TabPanel>
+                    <BlueprintsPage />
+                  </TabPanel>
+                  <TabPanel>
+                    <EntitiesPage />
+                  </TabPanel>
+                </Tabs>
+              ) : (
+                <EntitiesPage />
+              )}
             </Col>
           )}
 
@@ -112,7 +111,3 @@ export default () => {
     </LayoutProvider>
   )
 }
-
-const Wrapper = styled.div`
-  padding: 20px;
-`
