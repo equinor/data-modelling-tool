@@ -10,6 +10,10 @@ export class BlueprintAttribute {
     return this.attr.name
   }
 
+  public getPrettyName(): string {
+    return this.attr.name.charAt(0).toUpperCase() + this.attr.name.substr(1)
+  }
+
   public getDescription(): string | undefined {
     return this.attr.description
   }
