@@ -1,14 +1,15 @@
 FROM node:12-alpine as base
-RUN npm install -g serve
+EXPOSE 80
 WORKDIR /code
+
+RUN npm install -g serve
 COPY package.json yarn.lock /code/
 RUN yarn install --frozen-lockfile
 COPY ./ /code/
 
-FROM base as dev
+FROM base as development
 CMD ["yarn", "start"]
 
 FROM base as prod
-EXPOSE 80
 RUN yarn build
 CMD ["serve", "--single", "build", "--listen", "80"]

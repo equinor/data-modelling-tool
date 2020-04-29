@@ -27,7 +27,7 @@ services:
 
   web:
     build:
-      target: dev
+      target: development
     image: web-dev
     stdin_open: true
     volumes:

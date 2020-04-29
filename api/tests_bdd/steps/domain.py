@@ -1,12 +1,12 @@
 from behave import given
-from config import Config
+from dmss_api import ExplorerApi
 
 from classes.blueprint_attribute import BlueprintAttribute
+from classes.tree_node import ListNode, Node
+from config import Config
 from core.enums import DMT, SIMOS
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
-from classes.tree_node import Node, ListNode
-from dmss_api import DocumentApi, PackageApi, ExplorerApi
 
 blueprint_provider = BlueprintProvider()
 
@@ -87,6 +87,4 @@ def step_impl_documents(context, data_source_id: str, collection: str):
     context.documents = {}
     tree = generate_tree(data_source_id, context.table)
     tree.show_tree()
-    # document_service = DocumentService(repository_provider=get_repository)
-    # document_service.save(node=tree, data_source_id=data_source_id)
-    explorer_api.add_document(data_source_id, {"data": tree.to_dict()})
+    explorer_api.add_raw(data_source_id, {"data": tree.to_dict()})

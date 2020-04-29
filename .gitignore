@@ -139,3 +139,4 @@ api/core/domain/dynamic_models/__init__.py
 /.mypy_cache/
 /api/.coverage
 .generated/
+api/.pytest_cache
