@@ -64,7 +64,6 @@ jobs:
       - name: "Web Tests"
         run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test
 
-
   build-n-publish-web:
     needs: test-web
     if: github.ref == 'refs/heads/master'
@@ -75,7 +74,7 @@ jobs:
       - name: "Set ENV variables"
         run: |
           for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
-          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA"
+          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA)"
 
       - name: "Build and Publish Web"
         run: |
@@ -99,16 +98,60 @@ jobs:
       - name: "Set ENV variables"
         run: |
           for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
-          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA"
+          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA)"
 
-      - name: "Build and Publish Web"
+      - name: "Build and Publish API"
         run: |
           echo "Tagging with $COMMIT_REF"
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $API_IMAGE
-          docker build --cache-from $API_IMAGE --tag $API_IMAGE ./web
+          docker build --cache-from $API_IMAGE --tag $API_IMAGE ./api
           docker tag $API_IMAGE $API_IMAGE:latest
           docker tag $API_IMAGE $API_IMAGE:$COMMIT_REF
           docker push $API_IMAGE
           docker push $API_IMAGE:latest
           docker push $API_IMAGE:$COMMIT_REF
+
+  release-api:
+    needs: test-api
+    if: contains(github.ref, 'tags')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Set ENV variables"
+        run: |
+          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
+          echo $GITHUB_REF
+          echo $(echo $GITHUB_REF | cut -d / -f 3)
+          echo "::set-env name=RELEASE_TAG::$(echo $GITHUB_REF | cut -d / -f 3)"
+
+      - name: "Build and Publish API Release"
+        run: |
+          echo "Tagging with $RELEASE_TAG"
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $API_IMAGE
+          docker build --cache-from $API_IMAGE --tag $API_IMAGE:$RELEASE_TAG ./api
+          docker push $API_IMAGE:$RELEASE_TAG
+
+  release-web:
+    needs: test-web
+    if: contains(github.ref, 'tags')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Set ENV variables"
+        run: |
+          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
+          echo $GITHUB_REF
+          echo $(echo $GITHUB_REF | cut -d / -f 3)
+          echo "::set-env name=RELEASE_TAG::$(echo $GITHUB_REF | cut -d / -f 3)"
+
+      - name: "Build and Publish Web Release"
+        run: |
+          echo "Tagging with $RELEASE_TAG"
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $WEB_IMAGE
+          docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE:$RELEASE_TAG ./web
+          docker push $WEB_IMAGE:$RELEASE_TAG
