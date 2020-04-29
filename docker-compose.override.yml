@@ -29,6 +29,7 @@ services:
     build:
       target: dev
     image: web-dev
+    stdin_open: true
     volumes:
       - ./web/src:/code/src
       - ./web/libs:/code/src/libs

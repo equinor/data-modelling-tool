@@ -17,6 +17,7 @@ const api = new DmtApi()
 
 export const Wrapper = styled.div`
   width: 100%;
+  padding-right: 20px;
 `
 
 export default () => {

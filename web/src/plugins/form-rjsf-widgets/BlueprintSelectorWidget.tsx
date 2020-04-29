@@ -48,9 +48,9 @@ export default (props: Props) => {
   return (
     <>
       <b>{uiSchema['ui:label']}</b>
-      <div>
+      <div style={{ width: '100%' }}>
         <input
-          style={{ width: '100%' }}
+          style={{ width: '100%', borderRadius: '5px' }}
           type="string"
           value={blueprint}
           readOnly={true}

@@ -15,6 +15,7 @@ import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
 import { PlotPlugin } from '..'
 import { CollapsibleWrapper } from '../../components/Collapsible'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
+import PreviewView from '../../components/CodeView'
 
 enum WIDGETS {
   PREVIEW = 'PREVIEW',
@@ -125,10 +126,6 @@ class GenerateView {
   getViews() {
     return this.views
   }
-}
-
-const PreviewView = ({ data }: any) => {
-  return <Pre>{JSON.stringify(data, null, 2)}</Pre>
 }
 
 export const ViewPlugin = (props: PluginProps) => {

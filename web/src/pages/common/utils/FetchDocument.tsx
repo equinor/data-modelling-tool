@@ -25,6 +25,7 @@ export default ({ url, render, updates }: Props) => {
     return <div>Loading...</div>
   }
 
+  // @ts-ignore
   if (document && Object.keys(document).length > 0) {
     return render(document)
   }
