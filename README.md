@@ -1,6 +1,6 @@
-# data-modelling-tool
+# Data Modelling Tool
 
-[![Build Status](https://travis-ci.com/equinor/data-modelling-tool.svg?token=yR5pmi3sbtpmzTWwTfNG&branch=master)](https://travis-ci.com/equinor/data-modelling-tool)
+![CI](https://github.com/equinor/data-modelling-tool/workflows/CI/badge.svg)
 
 A tool for modelling and presenting blueprints.  
 Architecture [diagrams](docs/architecture.md)  
@@ -29,23 +29,21 @@ docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
 2. Run `docker-compose up`
 3. Visit [http://localhost:9000] in your web browser (Internet Explorer is not supported)
 
-
-
 ## Components README
 
 [API](api/README.md)  
 [WEB](web/README.md)
 
 ## Pre-commit
+
 The project provides a `.pre-commit-config.yaml`-file that is used to setup git _pre-commit hooks_.
 
-```
+``` sh
 pip install pre-commit
 pre-commit install
 ```
 
 Alternative pre-commit installations can be found [here](https://pre-commit.com/#install).
-
 
 ## Database
 
@@ -56,11 +54,10 @@ To populate the database for first-time-use;
    `docker-compose exec api ./reset-database.sh`
 
 ## Development environment
+
 This repository includes configuration for the IntelliJ platform (including PyCharm and WebStorm).
 The most useful configuration included, is likely the run / debug configurations / targets.
 See below for more.
 
 Since this repository uses multiple technologies that PyCharm / WebStorm does not support out-of-the-box, some plugins have been included.
 When opening this repository in an IntelliJ IDE, you should be asked to install some plugins. 
-
-
