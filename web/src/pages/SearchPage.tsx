@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BlueprintSelectorWidget from '../plugins/form-rjsf-widgets/BlueprintSelectorWidget'
 import PreviewView from '../components/CodeView'
@@ -6,6 +6,9 @@ import PreviewView from '../components/CodeView'
 import { NotificationManager } from 'react-notifications'
 import Api2 from '../api/Api2'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
+import { FaEye } from 'react-icons/fa'
+// @ts-ignore
+import { Link } from 'react-router-dom'
 
 const Container = styled.div`
   display: flex;
@@ -18,10 +21,10 @@ const TypeHint = styled.text`
   margin-left: 5px;
 `
 
-const AttributeName = styled.label`
-  align-self: flex-end;
+const AttributeName = styled.b`
+  text-align: end;
   margin-right: 10px;
-  padding-right: 50px;
+  padding-right: 10px;
 `
 
 const TabelData = styled.td`
@@ -31,8 +34,9 @@ const TabelData = styled.td`
   max-width: 50px;
 `
 
-const TabelRow = styled.tr`
-  cursor: pointer;
+const ViewLinkTabelCell = styled.td`
+  overflow: hidden;
+  padding: 5px;
 `
 
 const QueryInstructions = styled.p`
@@ -52,15 +56,20 @@ const Group = styled.div`
 const FilterGroup = styled.div`
   display: flex;
   padding: 10px 0;
+  justify-content: flex-end;
 `
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
 `
 
+function EyeIcon() {
+  return <FaEye style={{ width: '20px', height: '20px', marginLeft: '3px' }} />
+}
+
 // Creates a text <input> with labels based on a BlueprintAttribute
-function DynamicAttributeFilter({ attr, onChange }: any) {
+function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
 
   return (
@@ -69,6 +78,7 @@ function DynamicAttributeFilter({ attr, onChange }: any) {
         <FilterGroup>
           <AttributeName>{attribute.getPrettyName()}:</AttributeName>
           <input
+            value={value || ''}
             type={'text'}
             onChange={(event: any) => {
               onChange({ [attribute.getName()]: event.target.value })
@@ -83,7 +93,9 @@ function DynamicAttributeFilter({ attr, onChange }: any) {
 
 // @ts-ignore
 function FilterContainer({ search, queryError }) {
-  const [filter, setFilter] = useState({})
+  const storedSearch = JSON.parse(localStorage.getItem('searchFilter') || '')
+  // @ts-ignore
+  const [filter, setFilter] = useState(storedSearch || {})
   const [attributes, setAttributes] = useState([])
 
   function fetchBlueprint(type: string) {
@@ -100,8 +112,22 @@ function FilterContainer({ search, queryError }) {
   }
 
   function onChange(filterChange: any) {
+    // @ts-ignore
     setFilter({ ...filter, ...filterChange })
   }
+
+  // When the filter changes, update the localStorage
+  useEffect(() => {
+    // @ts-ignore
+    localStorage.setItem('searchFilter', JSON.stringify(filter))
+  }, [filter])
+
+  // When the filters "type" value changes. Fetch the blueprint
+  useEffect(() => {
+    if (filter?.type) {
+      fetchBlueprint(filter.type)
+    }
+  }, [filter?.type])
 
   return (
     <Container>
@@ -117,11 +143,8 @@ function FilterContainer({ search, queryError }) {
           <FilterGroup>
             <label style={{ marginRight: '10px' }}>Type: </label>
             <BlueprintSelectorWidget
-              formData={''}
-              onChange={(event: any) => {
-                fetchBlueprint(event)
-                onChange({ type: event })
-              }}
+              formData={filter.type}
+              onChange={(event: any) => setFilter({ type: event })}
               uiSchema={{}}
             />
           </FilterGroup>
@@ -151,6 +174,8 @@ function FilterContainer({ search, queryError }) {
               <div style={{ flexFlow: 'column' }}>
                 {attributes.map(attribute => (
                   <DynamicAttributeFilter
+                    // @ts-ignore
+                    value={filter[attribute.name]}
                     attr={attribute}
                     onChange={onChange}
                   />
@@ -170,6 +195,9 @@ function FilterContainer({ search, queryError }) {
             </>
           )}
           <ButtonContainer>
+            <button type={'button'} onClick={() => setFilter({})}>
+              Reset
+            </button>
             <button type={'submit'}>Search</button>
           </ButtonContainer>
         </Group>
@@ -180,26 +208,29 @@ function FilterContainer({ search, queryError }) {
 
 // Return a TabelRow for an entity. Clickable to toggle view of the raw document
 function EntityRow({ entity }: any) {
-  const [documentVisible, setDocumentVisible] = useState(false)
+  const dataSource = 'entities'
   return (
     <>
-      <TabelRow onClick={() => setDocumentVisible(!documentVisible)}>
+      <tr>
         <TabelData>{entity.name}</TabelData>
         <TabelData>{entity.type}</TabelData>
         <TabelData>{entity.description}</TabelData>
-      </TabelRow>
-      <TabelRow>
-        {documentVisible && (
-          <TabelData colSpan={3}>
-            <PreviewView data={entity} />
-          </TabelData>
-        )}
-      </TabelRow>
+        <TabelData>{entity._id}</TabelData>
+        <ViewLinkTabelCell>
+          {/*<div style={{display: "flex", cursor: "pointer"}} onClick={()=>(<Link to=`/view/${dataSource}/${entity._id}`/>)}>*/}
+          <Link to={{ pathname: `/view/${dataSource}/${entity._id}` }}>
+            View
+            <EyeIcon />
+          </Link>
+
+          {/*</div>*/}
+        </ViewLinkTabelCell>
+      </tr>
     </>
   )
 }
 
-function ResultContainer({ result, setViewData }: any) {
+function ResultContainer({ result }: any) {
   return (
     <Container style={{ marginTop: '10px' }}>
       <b>Result</b>
@@ -210,13 +241,12 @@ function ResultContainer({ result, setViewData }: any) {
               <th>Name</th>
               <th>Type</th>
               <th>Description</th>
+              <th>Id</th>
+              <th style={{ width: '50px' }}></th>
             </tr>
+
             {result.map((entity: any) => (
-              <EntityRow
-                key={entity._id}
-                entity={entity}
-                onClick={(entity: string) => setViewData(entity)}
-              />
+              <EntityRow key={entity._id} entity={entity} />
             ))}
           </tbody>
         </table>

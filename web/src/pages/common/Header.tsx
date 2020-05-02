@@ -1,5 +1,6 @@
 // @ts-ignore
-import { useHistory, useLocation } from 'react-router-dom'
+// @ts-ignore
+import { Link, useLocation } from 'react-router-dom'
 import React from 'react'
 import styled from 'styled-components'
 
@@ -20,23 +21,20 @@ const TabStyled: any = styled.div`
 `
 
 export default () => {
-  const history = useHistory()
   const location = useLocation()
   return (
     <>
       <h4>Data Modelling Tool</h4>
-      <TabStyled
-        isSelected={location.pathname === '/'}
-        onClick={() => history.push('/')}
-      >
-        Browse/Edit
-      </TabStyled>
-      <TabStyled
-        isSelected={location.pathname === '/search'}
-        onClick={() => history.push('/search')}
-      >
-        Search
-      </TabStyled>
+      <Link to={'/'}>
+        <TabStyled isSelected={location.pathname === '/'}>
+          Browse/Edit
+        </TabStyled>
+      </Link>
+      <Link to={'/search'}>
+        <TabStyled isSelected={location.pathname === '/search'}>
+          Search
+        </TabStyled>
+      </Link>
     </>
   )
 }
