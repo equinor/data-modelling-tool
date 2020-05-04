@@ -9,7 +9,7 @@ type Props = {
 
 export default ({ url, render, updates }: Props) => {
   const [document, setDocument] = useState()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     Api2.fetchDocument({
       dataUrl: url,

@@ -20,11 +20,11 @@ export default () => {
   return (
     <>
       <Group>
-        <div style={{ display: 'flex' }}>
+        <div>
           <b>DataSource:</b>
           <text style={{ marginLeft: '5px' }}>{data_source}</text>
         </div>
-        <div style={{ display: 'flex' }}>
+        <div>
           <b>Entity:</b>
           <text style={{ marginLeft: '5px' }}>{entity_id}</text>
         </div>
