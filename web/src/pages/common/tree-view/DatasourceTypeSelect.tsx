@@ -11,6 +11,7 @@ export default (props: Props) => {
   const datasourceTypeOptions: DatasourceOption[] = [
     { label: '', value: '' },
     { label: 'mongo db', value: 'mongo-db' },
+    { label: 'Azure Blob Storage', value: 'azure-blob-storage' },
   ]
   return (
     <select

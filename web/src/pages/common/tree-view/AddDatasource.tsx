@@ -35,29 +35,27 @@ export default ({ documentType }: Props) => {
             setSelectedDatasourceType={setSelectedDatasourceType}
           />
         </div>
-        {selectedDatasourceType === 'mongo-db' && (
-          <Form
-            fetchDocument={Api2.fetchCreateDatasource(selectedDatasourceType)}
-            onSubmit={data => {
-              data.documentType = documentType
-              data.type = selectedDatasourceType
-              axios
-                .post(api.dataSourcesPost(data.name), data)
-                .then((res: any) => {
-                  NotificationManager.success(`Created datasource ${data.name}`)
-                  setShowModal(false)
-                  //@todo fix when endpoint is ready.
-                  // dispatch(EntitiesActions.addDatasource(res.data))
-                })
-                .catch(e => {
-                  NotificationManager.error(
-                    `Failed to create datasource ${data.name}`
-                  )
-                  console.log(e)
-                })
-            }}
-          />
-        )}
+        <Form
+          fetchDocument={Api2.fetchCreateDatasource(selectedDatasourceType)}
+          onSubmit={data => {
+            data.documentType = documentType
+            data.type = selectedDatasourceType
+            axios
+              .post(api.dataSourcesPost(data.name), data)
+              .then((res: any) => {
+                NotificationManager.success(`Created datasource ${data.name}`)
+                setShowModal(false)
+                //@todo fix when endpoint is ready.
+                // dispatch(EntitiesActions.addDatasource(res.data))
+              })
+              .catch(e => {
+                NotificationManager.error(
+                  `Failed to create datasource ${data.name}`
+                )
+                console.log(e)
+              })
+          }}
+        />
       </Modal>
       <Button
         onClick={() => {

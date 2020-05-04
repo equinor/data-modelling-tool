@@ -77,14 +77,10 @@ export default class Api2 {
 
   static fetchCreateDatasource(selectedDatasourceType: string) {
     return ({ onSuccess, onError }: BASE_CRUD): void => {
-      if (selectedDatasourceType === 'mongo-db') {
-        fetchTemplate({ url: api.templatesDatasourceMongoGet(), onSuccess })
-      } else {
-        //@todo use selectedDatasourceType to use other template than mongo db.
-        console.error(
-          `template for ${selectedDatasourceType} is not supported.`
-        )
-      }
+      fetchTemplate({
+        url: api.templatesDatasourceMongoGet(selectedDatasourceType),
+        onSuccess,
+      })
     }
   }
 

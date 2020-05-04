@@ -40,6 +40,7 @@ export abstract class BaseApi {
   }
 
   abstract async post(props: ApiPostProp): Promise<any>
+
   abstract async get(props: any): Promise<any>
 }
 
@@ -97,6 +98,7 @@ export class DmtApi {
   dataSourcesGet(dataSourceType: DataSourceType): string {
     return `/api/v2/data-sources?documentType=${dataSourceType}`
   }
+
   addFile(): string {
     return '/api/v2/explorer/entities/add-file'
   }
@@ -125,8 +127,15 @@ export class DmtApi {
     return `/api/index/${dataSourceId}`
   }
 
-  templatesDatasourceMongoGet() {
-    return `/api/v2/json-schema/system/DMT/data-sources/MongoDataSource`
+  templatesDatasourceMongoGet(selectedDatasourceType: string) {
+    let template = ''
+
+    // TODO: Cleanup constants
+    if (selectedDatasourceType == 'mongo-db') template = 'MongoDataSource'
+    if (selectedDatasourceType == 'azure-blob-storage')
+      template = 'AzureBlobStorageDataSource'
+
+    return `/api/v2/json-schema/system/DMT/data-sources/${template}`
   }
 
   jsonSchemaGet(blueprint: string, ui_recipe: string) {
