@@ -156,17 +156,6 @@ def get_import_menu_item(data_source_id: str, document_id: str, is_package_conte
     }
 
 
-def get_export_python_code_menu_item(data_source_id, document_id: str):
-    return {
-        "label": "Standard Python Generator",
-        "action": "DOWNLOAD",
-        "data": {
-            "url": f"/api/v2/system/{data_source_id}/generate-python-code/{document_id}",
-            "prompt": {"title": "Download", "content": "Download generated Python code"},
-        },
-    }
-
-
 def get_export_code_menu_item(data_source_id, plugin_name, document_path: str):
 
     return {

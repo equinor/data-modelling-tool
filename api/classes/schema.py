@@ -398,18 +398,11 @@ class Factory:
     _internal_types: Dict[str, type] = {}
 
     def __init__(
-        self,
-        template_repository: Repository,
-        _create_instance: bool = False,
-        dump_site: Optional[str] = None,
-        read_from_file: bool = False,
-        template_repository_getter: Optional[Callable[[str], Repository]] = None,
+        self, blueprints: Dict[str, dict], _create_instance: bool = False, dump_site: Optional[str] = None,
     ):
         self._types = TypeCache(self._internal_types)
-        self._template_repository = template_repository
-        self._read_from_file = read_from_file
+        self._blueprints = blueprints
         self._create_instance = _create_instance
-        self._template_repository_getter = template_repository_getter
         self.dump_site = dump_site
         self._class_template = self._create_class_template(
             [
@@ -454,23 +447,7 @@ class Factory:
         cls._internal_types = {}
 
     def _get_schema(self, template_type: str) -> dict:
-        if self._read_from_file:
-            return self._template_repository.find({"type": template_type})
-        else:
-            try:
-                data_source_id, *_, name = template_type.split("/")
-                repository = self._template_repository_getter(data_source_id)
-            except ValueError:
-                name = template_type
-                repository = self._template_repository
-            data = repository.find(filter={"name": name})
-            if isinstance(data, DTO):
-                data = data.data
-                try:
-                    del data["_id"]
-                except KeyError:
-                    pass
-            return data
+        return self._blueprints[template_type]
 
     def class_from_schema(self, schema) -> str:
         return self._class_template.render(schema=schema)
@@ -1073,12 +1050,12 @@ from classes.dto import DTO
                 return f'"{attr.default}"'
             elif isinstance(attr.default, str):
                 if attr.attribute_type is bool:
-                    return {"false": False, "true": True}[attr.default.lower()]
+                    return {"false": "False", "true": "True", "": "False"}[attr.default.lower()]
         if attr.default == "" and not is_simple_type(attr.attribute_type):
             return str(None)
         return attr.default
 
-    def get_default_value(self, attr: Attribute) -> str:
+    def get_default_value(self, attr: Attribute) -> Optional[str]:
         if attr.optional:
             return None
         if attr.type in simple_types or attr.default is None:
@@ -1152,7 +1129,7 @@ from classes.dto import DTO
 
     @classmethod
     def from_dict(cls, schema: Dict):
-        """ TODO: Function similarly to create, but without "self.template_repository" """
+        """ TODO: Function similarly to create, but without "self.blueprints" """
         pass
 
     def create(
