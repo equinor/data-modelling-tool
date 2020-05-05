@@ -4,10 +4,9 @@
 def create_system_blueprints():
     from classes.schema import Factory
     from core.repository.file import TemplateRepositoryFromFile
-    from utils.helper_functions import schemas_location
 
-    template_repository = TemplateRepositoryFromFile(schemas_location())
-    factory = Factory(template_repository, read_from_file=True)
+    template_repository = TemplateRepositoryFromFile()
+    factory = Factory(template_repository)
 
     template_types = [
         "system/SIMOS/Blueprint",
