@@ -17,9 +17,10 @@ class StorageRecipeAttribute:
 
 
 class StorageRecipe:
-    def __init__(self, name: str, attributes: List[Dict] = None):
+    def __init__(self, name: str, attributes: List[Dict] = None, description: str = ""):
         attributes = attributes if attributes else []
         self.name = name
+        self.description = description
         self.storage_attributes = {
             attribute["name"]: StorageRecipeAttribute(attribute["name"], is_contained=attribute["contained"])
             for attribute in attributes
@@ -37,6 +38,7 @@ class StorageRecipe:
         return {
             "name": self.name,
             "attributes": [attribute.to_dict() for attribute in self.storage_attributes.values()],
+            "description": self.description,
         }
 
     def none_contained_attributes(self) -> List[str]:
