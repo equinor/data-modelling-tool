@@ -38,7 +38,7 @@ def replace_prefix(path, prefix, where):
 
 def _get_dependencies(schema):
     template_repository = TemplateRepositoryFromFile(schemas_location())
-    factory = Factory(template_repository, read_from_file=True)
+    factory = Factory(template_repository)
     dependencies = factory._get_dependencies(schema)
     return [f"{dependency.__name__}.json" for dependency in dependencies if dependency]
 

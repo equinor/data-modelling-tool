@@ -1,17 +1,21 @@
 import json
 from pathlib import Path
-from typing import Dict, Union
+from typing import Optional, Union
 
-from classes.dto import DTO
 from core.repository.repository_exceptions import TemplateNotFound
-from core.repository.repository_interface import RepositoryInterface
+from utils.helper_functions import schemas_location
 
 
-class TemplateRepositoryFromFile(RepositoryInterface):
-    def __init__(self, location: Union[str, Path]):
+class TemplateRepositoryFromFile:
+    def __init__(self, location: Optional[Union[str, Path]] = None):
+        if location is None:
+            location = schemas_location()
         self.path = Path(location)
 
     def get(self, template_type: str):
+        return self[template_type]
+
+    def __getitem__(self, template_type: str) -> dict:
         data_source, *rest = template_type.split("/")
         template_type = "/".join(rest)
         path = self.path
@@ -25,19 +29,3 @@ class TemplateRepositoryFromFile(RepositoryInterface):
         except FileNotFoundError:
             raise TemplateNotFound(template_type)
         return schema
-
-    def find(self, filter: dict, single=None, raw=None) -> DTO:
-        template_type = filter["type"]
-        return self.get(template_type)
-
-    def find_one(self, filters: Dict) -> Dict:
-        raise NotImplementedError
-
-    def add(self, document: DTO) -> None:
-        raise NotImplementedError
-
-    def delete(self, document: DTO) -> None:
-        raise NotImplementedError
-
-    def update(self, document: DTO) -> None:
-        raise NotImplementedError

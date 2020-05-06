@@ -41,7 +41,7 @@
       "attributeType": "boolean",
       "type": "system/SIMOS/BlueprintAttribute",
       "optional": true,
-      "default": false
+      "default": "false"
     },
     {
       "type": "system/SIMOS/BlueprintAttribute",

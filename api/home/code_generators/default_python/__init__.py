@@ -2,14 +2,11 @@ from __future__ import annotations
 
 from collections import defaultdict
 from pathlib import Path
-from typing import Callable, Union, Dict, Optional, List, Set, Sequence
+from typing import Union, Dict, Optional, List, Set, Sequence
 
 from classes.schema import Factory, get_dto
 from classes.dto import DTO
-from core.repository.repository_exceptions import EntityNotFoundException
 from core.shared import request_object as req
-from core.shared import response_object as res
-from core.shared import use_case as uc
 import zipfile
 import io
 
@@ -140,11 +137,10 @@ def get_stub_import(template_type: str, blueprint: type) -> str:
     return f"from {import_path} import {blueprint.__name__}"
 
 
-class GeneratePythonCodeUseCase(uc.UseCase):
-    def __init__(self, document_repository: Repository, repository_getter: Callable[[str], Repository]):
-        self.document_repository = document_repository
-        self.repository_getter = repository_getter
-        self._factory = Factory(self.document_repository, template_repository_getter=self.repository_getter)
+class GeneratePythonCode:
+    def __init__(self, documents: Dict[str, dict]):
+        self.documents = documents
+        self._factory = Factory(self.documents)
 
     def get_blueprints(self, blueprint: DTO, files: dict = None, prefix: str = "") -> Dict[str, type]:
         if files is None:
@@ -156,7 +152,7 @@ class GeneratePythonCodeUseCase(uc.UseCase):
             name = f"{prefix}/{name}"
         if is_package(blueprint):
             for reference in blueprint["content"]:
-                dto = self.document_repository.get(reference["_id"])
+                dto = self.documents.get(reference["_id"])
                 self.get_blueprints(dto, files, name)
         else:
             try:
@@ -166,14 +162,10 @@ class GeneratePythonCodeUseCase(uc.UseCase):
             files[name] = blueprint
         return files
 
-    def get_dependency_graph(self, blueprint, data_source_id: str) -> List[str]:
-        blueprints = self.get_blueprints(blueprint, prefix=data_source_id)
-        paths = {}
+    def get_dependency_graph(self) -> List[str]:
         dependencies = defaultdict(set)
-        for path, blueprint in blueprints.items():
-            paths[blueprint] = path
-        blueprints = set(blueprints.keys())
-        while len(blueprints) > 0:
+        blueprints = set(self.documents.keys())
+        while blueprints:
             template_type = blueprints.pop()
             if template_type not in dependencies:
                 blueprint = self.get(template_type)
@@ -197,14 +189,7 @@ class GeneratePythonCodeUseCase(uc.UseCase):
             pass
         return dependencies
 
-    def process_request(self, request_object: GeneratePythonCodeRequestObject) -> io.BytesIO:
-        document_id: str = request_object.document_id
-        data_source_id: str = request_object.data_source_id
-
-        dto: DTO = self.document_repository.get(document_id)
-        if not dto:
-            raise EntityNotFoundException(uid=document_id)
-
+    def generate(self) -> io.BytesIO:
         memory_file = io.BytesIO()
         prefix = "dmt"
         with zipfile.ZipFile(memory_file, mode="w") as zip_file:
@@ -235,33 +220,29 @@ class GeneratePythonCodeUseCase(uc.UseCase):
 
             # Export stringcase
             write("stringcase.py", get_stringcase())
-            if is_package(dto):
-                # Export the DTO class
-                write("classes/dto.py", get_dto())
-                template_types = self.get_dependency_graph(dto, data_source_id)
-                lookup: Dict[type, str] = {self.get(template_type): template_type for template_type in template_types}
-                package_files = self.get_package_files(template_types)
-                for package_index, content in package_files.items():
-                    write(package_index, content)
-                for template_type in template_types:
-                    blueprint = self.get(template_type)
-                    if blueprint.__has_circular_dependencies__():
-                        write(template_type, blueprint, include_dependencies=True)
-                        for dependency in blueprint.__circular_dependencies__():
-                            dependency_type = lookup[dependency]
-                            if dependency_type == template_type:
-                                # Skip self-references
-                                continue
-                            write(dependency_type, get_stub_import(template_type, dependency))
-                    else:
-                        write(template_type, blueprint)
-            else:
-                _blueprint = self.from_schema(dto.data)
-                write(dto.name, _blueprint, include_dependencies=True)
+            write("classes/dto.py", get_dto())
+
+            template_types = self.get_dependency_graph()
+            lookup: Dict[type, str] = {self.get(template_type): template_type for template_type in template_types}
+            package_files = self.get_package_files(template_types)
+            for package_index, content in package_files.items():
+                write(package_index, content)
+            for template_type in template_types:
+                blueprint = self.get(template_type)
+                if blueprint.__has_circular_dependencies__():
+                    write(template_type, blueprint, include_dependencies=True)
+                    for dependency in blueprint.__circular_dependencies__():
+                        dependency_type = lookup[dependency]
+                        if dependency_type == template_type:
+                            # Skip self-references
+                            continue
+                        write(dependency_type, get_stub_import(template_type, dependency))
+                else:
+                    write(template_type, blueprint)
 
         memory_file.seek(0)
 
-        return res.ResponseSuccess(memory_file)
+        return memory_file
 
     def from_schema(self, schema: dict, template_type: Optional[str] = None):
         if template_type is None:
@@ -279,3 +260,8 @@ class GeneratePythonCodeUseCase(uc.UseCase):
             package = Path(template_type).parent / "__init__.py"
             packages[f"{package}"] += f"{get_stub_import(template_type, blueprint=self.get(template_type))}\n"
         return packages
+
+
+def main(documents: Dict[str, dict]) -> io.BytesIO:
+    code_generator = GeneratePythonCode(documents)
+    return code_generator.generate()

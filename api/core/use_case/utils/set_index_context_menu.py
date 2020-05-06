@@ -9,7 +9,6 @@ from core.use_case.utils.generate_index_menu_actions import (
     get_dynamic_create_menu_item,
     get_export_code_menu_item,
     get_export_menu_item,
-    get_export_python_code_menu_item,
     get_import_menu_item,
     get_rename_menu_action,
     get_runnable_menu_action,
@@ -118,10 +117,6 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
         if node.type in [SIMOS.BLUEPRINT.value, DMT.PACKAGE.value] and app_settings["name"] == "DMTAppSettings":
             # Context menu: Export code
             code_generators = []
-            # Always add default python code generator
-            code_generators.append(
-                get_export_python_code_menu_item(data_source_id=data_source_id, document_id=node.node_id)
-            )
             # Add any code generators added as plugins
             for generator in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
                 path = node.filesystem_path()
