@@ -188,7 +188,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 
 // @ts-ignore
 function FilterContainer({ search, queryError }) {
-  const storedSearch = JSON.parse(localStorage.getItem('searchFilter') || '')
+  const storedSearch = JSON.parse(localStorage.getItem('searchFilter') || '{}')
   // @ts-ignore
   const [filter, setFilter] = useState(storedSearch || {})
   const [attributes, setAttributes] = useState([])
