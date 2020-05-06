@@ -5,7 +5,6 @@ import BlueprintSelectorWidget from './BlueprintSelectorWidget'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 import { BlueprintEnum } from '../../util/variables'
 import DestinationSelectorWidget from './DestinationSelectorWidget'
-import { DataSourceType } from '../../api/Api'
 
 export const AttributeWrapper = styled.div`
   margin: 2px 2px;
@@ -157,7 +156,6 @@ export const EnumTypePickerWidget = (props: TypeProps) => {
   return (
     <>
       <DestinationSelectorWidget
-        datasourceType={DataSourceType.Blueprints}
         blueprintFilter={BlueprintEnum.ENUM}
         title=""
         onChange={(value: any) => {

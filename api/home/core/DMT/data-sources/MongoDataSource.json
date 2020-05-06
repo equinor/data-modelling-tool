@@ -17,19 +17,6 @@
       "type": "system/SIMOS/BlueprintAttribute"
     },
     {
-      "default": "blueprints",
-      "dimensions": "",
-      "optional": false,
-      "contained": true,
-      "enumType": {
-        "selected": ""
-      },
-      "name": "documentType",
-      "description": "blueprints or entities. Replace with enum",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute"
-    },
-    {
       "default": "",
       "dimensions": "",
       "optional": false,

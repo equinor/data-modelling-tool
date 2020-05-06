@@ -1,11 +1,14 @@
 from functools import lru_cache
 from pathlib import Path
-
 from typing import Union
 
 from classes.tree_node import Node
 from config import Config
 from core.enums import DMT
+
+
+def get_node_url(datasource, parent_id):
+    return f"/api/v4/index/{datasource}/{parent_id}"
 
 
 def get_rename_menu_action(data_source_id: str, dotted_document_id: str, type: str, parent_uid: str = None):
@@ -21,7 +24,7 @@ def get_rename_menu_action(data_source_id: str, dotted_document_id: str, type: s
             "url": f"/api/v2/explorer/{data_source_id}/rename",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             # TODO: This is not right...
-            "nodeUrl": f"/api/v4/index/{data_source_id}/{parent_uid if parent_uid else dotted_document_id}",
+            "nodeUrl": get_node_url(data_source_id, parent_uid if parent_uid else dotted_document_id),
             "request": {
                 "description": "${description}",
                 "parentId": parent_uid,
@@ -55,7 +58,7 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/add-file",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id_split[0]}",
+            "nodeUrl": get_node_url(data_source_id, node_id_split[0]),
             "request": {
                 "type": type,
                 "parentId": node_id_split[0],
@@ -75,7 +78,7 @@ def get_create_reference_menu_item(data_source_id: str, type: str, node_id: str 
         "data": {
             "url": f"/api/v2/documents/{data_source_id}/{node_id_split[0]}",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v4/index/{data_source_id}/{node_id_split[0]}",
+            "nodeUrl": get_node_url(data_source_id, node_id_split[0]),
             "request": {"attribute": node_id_split[1] if len(node_id_split) > 1 else None, "data": "${data}"},
         },
     }
@@ -88,7 +91,7 @@ def get_create_root_package_menu_item(data_source_id: str):
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
             "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
-            "nodeUrl": f"/api/v4/index/{data_source_id}/{data_source_id}",
+            "nodeUrl": get_node_url(data_source_id, data_source_id),
             "request": {"name": "${name}", "description": "${description}"},
         },
     }
@@ -161,7 +164,6 @@ def get_import_menu_item(data_source_id: str, document_id: str, is_package_conte
 
 
 def get_export_code_menu_item(data_source_id, plugin_name, document_path: str):
-
     return {
         "label": _get_plugin_label(plugin_name),
         "action": "DOWNLOAD",

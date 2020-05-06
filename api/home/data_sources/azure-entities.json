@@ -8,6 +8,5 @@
   "name": "entities",
   "database": "production",
   "collection": "entities",
-  "documentType": "entities",
   "_id": "entities"
 }

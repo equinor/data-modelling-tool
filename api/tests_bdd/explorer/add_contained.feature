@@ -3,11 +3,11 @@ Feature: Explorer - Add contained node
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name       | database | collection   | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | blueprints | local    | blueprints   | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | entities   | local    | entities     | entities     | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system     | local    | system       | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | apps       | local    | applications | applications | mongo-db |
+      | host | port  | username | password | tls   | name       | database | collection   |  type     |
+      | db   | 27017 | maf      | maf      | false | blueprints | local    | blueprints   |  mongo-db |
+      | db   | 27017 | maf      | maf      | false | entities   | local    | entities     |  mongo-db |
+      | db   | 27017 | maf      | maf      | false | system     | local    | system       |  mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps       | local    | applications |  mongo-db |
 
     Given there exist document with id "1" in data source "blueprints"
     """

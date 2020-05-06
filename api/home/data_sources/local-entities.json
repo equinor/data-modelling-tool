@@ -7,6 +7,5 @@
   "tls": false,
   "name": "entities",
   "database": "local",
-  "collection": "entities",
-  "documentType": "entities"
+  "collection": "entities"
 }

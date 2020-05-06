@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
-import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
+import { Datasource, DmtApi } from '../../api/Api'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import axios from 'axios'
 import { BlueprintEnum } from '../../util/variables'
@@ -10,8 +10,6 @@ const api = new DmtApi()
 
 export type Props = {
   onChange: Function
-  formData: any
-  uiSchema: any
 }
 
 type Reference = {
@@ -21,13 +19,13 @@ type Reference = {
 }
 
 export default (props: Props) => {
-  const { onChange, formData, uiSchema } = props
+  const { onChange } = props
   const [datasources, setDatasources] = useState<Datasource[]>([])
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
-    const url = api.dataSourcesGet(DataSourceType.ALL)
+    const url = api.dataSourcesGet()
     axios
       .get(url)
       .then((res: any) => {

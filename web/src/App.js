@@ -2,13 +2,14 @@ import React from 'react'
 import styled, { createGlobalStyle } from 'styled-components'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
-import DocumentEditorPage from './pages/DocumentEditorPage'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 
 import { Switch } from 'react-router'
 import { StatusProvider } from './pages/common/StatusContext'
 import Header from './pages/common/Header'
+import BlueprintsPage from './pages/BlueprintsPage'
+import EntitiesPage from './pages/EntitiesPage'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -34,8 +35,10 @@ function App() {
           <Header />
           <Switch>
             <Route exact path="/search" component={SearchPage} />
+            <Route exact path="/blueprints" component={BlueprintsPage} />
+            <Route exact path="/entities" component={EntitiesPage} />
             <Route path="/view/:data_source/:entity_id" component={ViewPage} />
-            <Route path="/" component={DocumentEditorPage} />
+            <Route path="/" component={BlueprintsPage} />
           </Switch>
         </Wrapper>
       </StatusProvider>

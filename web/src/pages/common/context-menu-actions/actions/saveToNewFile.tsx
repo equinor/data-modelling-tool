@@ -15,7 +15,8 @@ export default (
   createNodes: Function,
   handleUpdate: Function,
   createEntity: Function,
-  dataSource: string
+  dataSource: string,
+  application: string
 ) => {
   return {
     // Function to fetch the document used to create the rjsc-form
@@ -48,7 +49,9 @@ export default (
         // Create the result node in index tree
         createNodes({
           documentId: `${response.data.uid}`,
-          nodeUrl: `${api.indexGet(dataSource)}/${formData.destination}`,
+          nodeUrl: `${api.indexGet(dataSource, application)}/${
+            formData.destination
+          }`,
           node,
         })
 

@@ -66,3 +66,8 @@ class SIMOS(Enum):
 class DMT(Enum):
     PACKAGE = "system/SIMOS/Package"
     ENTITY = "system/SIMOS/Entity"
+
+
+class APPLICATION(Enum):
+    BLUEPRINTS = "DMT-Blueprints"
+    ENTITIES = "DMT-Entities"

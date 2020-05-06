@@ -3,9 +3,9 @@ Feature: Document - Generate JSON Schema
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name       | database | collection   | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | blueprints | local    | documents    | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | apps       | local    | applications | applications | mongo-db |
+      | host | port  | username | password | tls   | name       | database | collection   |  type     |
+      | db   | 27017 | maf      | maf      | false | blueprints | local    | documents    |  mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps       | local    | applications |  mongo-db |
 
     Given data modelling tool templates are imported
 

@@ -8,6 +8,5 @@
   "name": "SSR-DataSource",
   "database": "production",
   "collection": "SSR-DataSource",
-  "documentType": "blueprints",
   "_id": "SSR-DataSource"
 }

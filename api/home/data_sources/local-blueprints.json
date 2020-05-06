@@ -7,6 +7,5 @@
   "tls": false,
   "name": "SSR-DataSource",
   "database": "local",
-  "collection": "SSR-DataSource",
-  "documentType": "blueprints"
+  "collection": "SSR-DataSource"
 }
