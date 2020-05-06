@@ -38,11 +38,6 @@ export class TreeNodeBuilderOld {
     return this
   }
 
-  setOpen(open: boolean): TreeNodeBuilderOld {
-    this.treeNode.isOpen = open
-    return this
-  }
-
   build(): TreeNodeData {
     return this.treeNode
   }
@@ -64,7 +59,7 @@ function createTreeNode({
     nodeType,
     meta: { ...meta, type },
     isExpandable: isExpandable(type, children, meta),
-    isOpen: type === NodeType.DATA_SOURCE || meta?.isRootPackage === true,
+    isOpen: type === NodeType.DATA_SOURCE,
     isRoot: type === NodeType.DATA_SOURCE,
     isHidden: false,
     children: children || [],

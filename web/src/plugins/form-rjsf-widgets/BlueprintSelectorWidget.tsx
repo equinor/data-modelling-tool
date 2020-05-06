@@ -23,7 +23,6 @@ export default (props: Props) => {
     blueprintFilter = BlueprintEnum.BLUEPRINT,
   } = props
   const [datasources, setDatasources] = useState<Datasource[]>([])
-  const [blueprint, setBlueprint] = useState<string>(formData)
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
@@ -40,7 +39,6 @@ export default (props: Props) => {
   }, [])
 
   const onSelect = (value: string) => {
-    setBlueprint(value)
     setShowModal(false)
     onChange(value)
   }
@@ -52,7 +50,7 @@ export default (props: Props) => {
         <input
           style={{ width: '100%', borderRadius: '5px' }}
           type="string"
-          value={blueprint}
+          value={formData}
           readOnly={true}
           onClick={() => setShowModal(true)}
         />

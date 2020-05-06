@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BlueprintSelectorWidget from '../plugins/form-rjsf-widgets/BlueprintSelectorWidget'
 import PreviewView from '../components/CodeView'
@@ -6,6 +6,9 @@ import PreviewView from '../components/CodeView'
 import { NotificationManager } from 'react-notifications'
 import Api2 from '../api/Api2'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
+import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
+// @ts-ignore
+import { Link } from 'react-router-dom'
 
 const Container = styled.div`
   display: flex;
@@ -13,15 +16,16 @@ const Container = styled.div`
   width: 90%;
   margin: 0 20px;
 `
-const TypeHint = styled.text`
+
+const TypeHint = styled.div`
   align-self: flex-end;
   margin-left: 5px;
 `
 
-const AttributeName = styled.label`
-  align-self: flex-end;
+const AttributeName = styled.b`
+  text-align: end;
   margin-right: 10px;
-  padding-right: 50px;
+  padding-right: 10px;
 `
 
 const TabelData = styled.td`
@@ -29,10 +33,6 @@ const TabelData = styled.td`
   border: 1px solid black;
   padding: 5px;
   max-width: 50px;
-`
-
-const TabelRow = styled.tr`
-  cursor: pointer;
 `
 
 const QueryInstructions = styled.p`
@@ -49,41 +49,148 @@ const Group = styled.div`
   padding: 20px 20px;
   background-color: white;
 `
+
 const FilterGroup = styled.div`
   display: flex;
-  padding: 10px 0;
+  padding: 5px 0;
+  //justify-content: flex-start;
 `
 
 const ButtonContainer = styled.div`
   display: flex;
-  justify-content: center;
+  justify-content: space-evenly;
 `
 
-// Creates a text <input> with labels based on a BlueprintAttribute
-function DynamicAttributeFilter({ attr, onChange }: any) {
-  const attribute = new BlueprintAttribute(attr)
+const Collapsable = styled.div`
+  display: flex;
+  height: 25px;
+  align-items: center;
+  background-color: #d1d2d4;
+  border: #878a8c 1px solid;
+  cursor: pointer;
+  min-width: 30px;
+  padding-left: 10px;
+  padding-right: 10px;
+  &:hover {
+    border-color: #20a0ff;
+  }
+`
 
+const CollapsableTitle = styled.div`
+  display: flex;
+  justify-content: space-around;
+  padding-right: 24px;
+`
+
+function EyeIcon() {
+  return <FaEye style={{ width: '20px', height: '20px', marginLeft: '3px' }} />
+}
+
+function CollapsableFilter({ children, title, expanded, setExpanded }: any) {
+  if (expanded) {
+    return (
+      <>
+        <Collapsable onClick={() => setExpanded(!expanded)}>
+          <FaChevronDown />
+          <CollapsableTitle style={{ width: '-webkit-fill-available' }}>
+            <b>{title}</b>
+          </CollapsableTitle>
+        </Collapsable>
+        <div style={{ padding: '10px 5px' }}>{children}</div>
+      </>
+    )
+  } else {
+    return (
+      <Collapsable onClick={() => setExpanded(true)} style={{ height: '20px' }}>
+        <FaPlus />
+      </Collapsable>
+    )
+  }
+}
+
+// Creates a text <input> with labels based on a BlueprintAttribute
+function DynamicAttributeFilter({ value, attr, onChange }: any) {
+  const attribute = new BlueprintAttribute(attr)
+  const [expanded, setExpanded] = useState<boolean>(value)
+  const [nestedAttributes, setNestedAttributes] = useState([])
+
+  // Pass nested object to callback from parent
+  function nestedOnChange(filterChange: any) {
+    if (typeof filterChange === 'string') {
+      onChange({ [attribute.getName()]: filterChange })
+    } else {
+      onChange({ [attribute.getName()]: { ...value, ...filterChange } })
+    }
+  }
+
+  function fetchBlueprint(type: string) {
+    Api2.get({
+      url: `/api/v2/documents_by_path/${type}`,
+      onSuccess: (res: any) => {
+        setNestedAttributes(res.document.attributes)
+      },
+      onError: (err: any) => {
+        NotificationManager.error(`${err.message}`)
+        console.log(err)
+      },
+    })
+  }
+
+  useEffect(() => {
+    if (expanded && !attribute.isPrimitive()) {
+      fetchBlueprint(attribute.getAttributeType())
+    }
+  }, [expanded])
+
+  // Don't render anything for the "type" attribute
+  if (attribute.getName() === 'type') return null
+
+  // Filter for primitive attributes
+  if (attribute.isPrimitive())
+    return (
+      <FilterGroup>
+        <AttributeName>{attribute.getPrettyName()}:</AttributeName>
+        <input
+          value={value || ''}
+          type={'text'}
+          onChange={(event: any) => {
+            nestedOnChange(event.target.value)
+          }}
+        />
+        <TypeHint>{attribute.getAttributeType()}</TypeHint>
+      </FilterGroup>
+    )
+  // Filter for complex attributes
   return (
-    <>
-      {attribute.getName() !== 'type' && attribute.isPrimitive() && (
-        <FilterGroup>
-          <AttributeName>{attribute.getPrettyName()}:</AttributeName>
-          <input
-            type={'text'}
-            onChange={(event: any) => {
-              onChange({ [attribute.getName()]: event.target.value })
-            }}
-          />
-          <TypeHint>{attribute.getAttributeType()}</TypeHint>
-        </FilterGroup>
-      )}
-    </>
+    <FilterGroup>
+      <AttributeName>{attribute.getPrettyName()}:</AttributeName>
+      <Group style={{ padding: '0px 0px' }}>
+        <CollapsableFilter
+          title={attribute.getPrettyName()}
+          expanded={expanded}
+          setExpanded={setExpanded}
+        >
+          {nestedAttributes.map(attr => (
+            <DynamicAttributeFilter
+              // @ts-ignore
+              value={value?.[attr.name]}
+              // @ts-ignore
+              key={attr.name}
+              attr={attr}
+              onChange={nestedOnChange}
+            />
+          ))}
+        </CollapsableFilter>
+      </Group>
+    </FilterGroup>
   )
 }
 
 // @ts-ignore
 function FilterContainer({ search, queryError }) {
-  const [filter, setFilter] = useState({})
+  const storedSearch = JSON.parse(localStorage.getItem('searchFilter') || '')
+  // @ts-ignore
+  const [filter, setFilter] = useState(storedSearch || {})
   const [attributes, setAttributes] = useState([])
 
   function fetchBlueprint(type: string) {
@@ -100,8 +207,23 @@ function FilterContainer({ search, queryError }) {
   }
 
   function onChange(filterChange: any) {
+    // @ts-ignore
+
     setFilter({ ...filter, ...filterChange })
   }
+
+  // When the filter changes, update the localStorage
+  useEffect(() => {
+    // @ts-ignore
+    localStorage.setItem('searchFilter', JSON.stringify(filter))
+  }, [filter])
+
+  // When the filters "type" value changes. Fetch the blueprint
+  useEffect(() => {
+    if (filter?.type) {
+      fetchBlueprint(filter.type)
+    }
+  }, [filter?.type])
 
   return (
     <Container>
@@ -117,11 +239,8 @@ function FilterContainer({ search, queryError }) {
           <FilterGroup>
             <label style={{ marginRight: '10px' }}>Type: </label>
             <BlueprintSelectorWidget
-              formData={''}
-              onChange={(event: any) => {
-                fetchBlueprint(event)
-                onChange({ type: event })
-              }}
+              formData={filter?.type || ''}
+              onChange={(event: any) => setFilter({ type: event })}
               uiSchema={{}}
             />
           </FilterGroup>
@@ -131,6 +250,7 @@ function FilterContainer({ search, queryError }) {
                 display: 'flex',
                 flexFlow: 'row-reverse',
                 justifyContent: 'space-between',
+                overflow: 'auto',
               }}
             >
               {/*
@@ -145,20 +265,24 @@ function FilterContainer({ search, queryError }) {
                   Numbers can be exact, or with {'">"'} and {'"<"'} operators
                 </QueryInstructions>
                 <QueryInstructions>
-                  Filtering on complex types are not supported
+                  Arrays will be matched by "at least one element"
                 </QueryInstructions>
               </div>
               <div style={{ flexFlow: 'column' }}>
                 {attributes.map(attribute => (
                   <DynamicAttributeFilter
+                    // @ts-ignore
+                    value={filter[attribute.name]}
                     attr={attribute}
+                    // @ts-ignore
+                    key={attribute.name}
                     onChange={onChange}
                   />
                 ))}
               </div>
             </div>
           )}
-          <text>Query:</text>
+          Query:
           <PreviewView data={filter} />
           {queryError && (
             <>
@@ -170,6 +294,15 @@ function FilterContainer({ search, queryError }) {
             </>
           )}
           <ButtonContainer>
+            <button
+              type={'button'}
+              onClick={() => {
+                setAttributes([])
+                setFilter({})
+              }}
+            >
+              Reset
+            </button>
             <button type={'submit'}>Search</button>
           </ButtonContainer>
         </Group>
@@ -180,26 +313,26 @@ function FilterContainer({ search, queryError }) {
 
 // Return a TabelRow for an entity. Clickable to toggle view of the raw document
 function EntityRow({ entity }: any) {
-  const [documentVisible, setDocumentVisible] = useState(false)
+  const dataSource = 'entities'
   return (
     <>
-      <TabelRow onClick={() => setDocumentVisible(!documentVisible)}>
+      <tr>
         <TabelData>{entity.name}</TabelData>
         <TabelData>{entity.type}</TabelData>
         <TabelData>{entity.description}</TabelData>
-      </TabelRow>
-      <TabelRow>
-        {documentVisible && (
-          <TabelData colSpan={3}>
-            <PreviewView data={entity} />
-          </TabelData>
-        )}
-      </TabelRow>
+        <TabelData>{entity._id}</TabelData>
+        <td style={{ padding: '5px' }}>
+          <Link to={{ pathname: `/view/${dataSource}/${entity._id}` }}>
+            View
+            <EyeIcon />
+          </Link>
+        </td>
+      </tr>
     </>
   )
 }
 
-function ResultContainer({ result, setViewData }: any) {
+function ResultContainer({ result }: any) {
   return (
     <Container style={{ marginTop: '10px' }}>
       <b>Result</b>
@@ -210,13 +343,12 @@ function ResultContainer({ result, setViewData }: any) {
               <th>Name</th>
               <th>Type</th>
               <th>Description</th>
+              <th>Id</th>
+              <th style={{ width: '50px' }}></th>
             </tr>
+
             {result.map((entity: any) => (
-              <EntityRow
-                key={entity._id}
-                entity={entity}
-                onClick={(entity: string) => setViewData(entity)}
-              />
+              <EntityRow key={entity._id} entity={entity} />
             ))}
           </tbody>
         </table>

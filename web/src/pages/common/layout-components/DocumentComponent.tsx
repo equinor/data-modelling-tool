@@ -162,6 +162,15 @@ const ViewList = (props: PluginProps) => {
   )
 }
 
+const ErrorGroup = styled.div`
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(213, 18, 18, 0.71);
+  border-radius: 5px;
+  padding: 20px 20px;
+  background-color: #f6dfdf;
+`
+
 const DocumentComponent = (props: any) => {
   const { dataUrl, updates } = props
 
@@ -171,16 +180,27 @@ const DocumentComponent = (props: any) => {
         updates={updates}
         url={dataUrl}
         render={(data: any) => {
-          const document = data.document
+          const document = data?.document
 
           return (
-            <ViewList
-              {...props}
-              document={document}
-              blueprintTypes={data.children}
-              blueprintType={data.blueprint}
-              dtos={data.dtos || []}
-            />
+            <>
+              {document ? (
+                <ViewList
+                  {...props}
+                  document={document}
+                  blueprintTypes={data.children}
+                  blueprintType={data.blueprint}
+                  dtos={data.dtos || []}
+                />
+              ) : (
+                <ErrorGroup>
+                  <b>404</b>
+                  <b>
+                    No document found at <code>{dataUrl}</code>
+                  </b>
+                </ErrorGroup>
+              )}
+            </>
           )
         }}
       />

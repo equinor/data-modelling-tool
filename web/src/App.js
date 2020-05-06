@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
 import DocumentEditorPage from './pages/DocumentEditorPage'
 import SearchPage from './pages/SearchPage'
+import ViewPage from './pages/ViewPage'
 
 import { Switch } from 'react-router'
 import { StatusProvider } from './pages/common/StatusContext'
@@ -32,8 +33,9 @@ function App() {
         <Wrapper>
           <Header />
           <Switch>
-            <Route exact path="/" component={DocumentEditorPage} />
             <Route exact path="/search" component={SearchPage} />
+            <Route path="/view/:data_source/:entity_id" component={ViewPage} />
+            <Route path="/" component={DocumentEditorPage} />
           </Switch>
         </Wrapper>
       </StatusProvider>

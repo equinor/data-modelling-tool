@@ -9,7 +9,7 @@ type Props = {
 
 export default ({ url, render, updates }: Props) => {
   const [document, setDocument] = useState()
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(true)
   useEffect(() => {
     Api2.fetchDocument({
       dataUrl: url,
@@ -17,17 +17,15 @@ export default ({ url, render, updates }: Props) => {
         setDocument(data)
         setLoading(false)
       },
-      onError: (err: any) => setLoading(false),
+      onError: (err: any) => {
+        console.error(err.response.data.message)
+        setLoading(false)
+      },
     })
   }, [url, updates])
 
   if (loading) {
     return <div>Loading...</div>
   }
-
-  // @ts-ignore
-  if (document && Object.keys(document).length > 0) {
-    return render(document)
-  }
-  return null
+  return render(document)
 }
