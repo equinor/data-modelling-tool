@@ -17,7 +17,7 @@ python-dotenv = "^0.10.3"
 jinja2 = "^2.11.1"
 black = {version = "^19.10-beta0", allow-prereleases = true}
 urllib3 = "1.25.8"
-dmss-api = "^0.2.11"
+dmss-api = "^0.2.13"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"
