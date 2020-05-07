@@ -30,8 +30,8 @@ blueprint_1 = {
             "name": "DefaultStorageRecipe",
             "description": "",
             "attributes": [
-                {"name": "reference", "type": "system/DMT/Entity", "contained": False},
-                {"name": "references", "type": "system/DMT/Entity", "contained": False},
+                {"name": "reference", "type": "system/SIMOS/Entity", "contained": False},
+                {"name": "references", "type": "system/SIMOS/Entity", "contained": False},
             ],
         }
     ],

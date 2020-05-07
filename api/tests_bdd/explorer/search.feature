@@ -13,7 +13,7 @@ Feature: Explorer - Search entity
     {
         "name": "root_package",
         "description": "",
-        "type": "system/DMT/Package",
+        "type": "system/SIMOS/Package",
         "isRoot": true,
         "content": [
             {

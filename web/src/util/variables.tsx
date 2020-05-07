@@ -5,13 +5,13 @@ export enum DocumentType {
 
 export enum BlueprintEnum {
   BLUEPRINT = 'system/SIMOS/Blueprint',
-  PACKAGE = 'system/DMT/Package',
-  ENTITY = 'system/DMT/Entity',
+  PACKAGE = 'system/SIMOS/Package',
+  ENTITY = 'system/SIMOS/Entity',
   ENUM = 'system/SIMOS/Enum',
 }
 
 export enum NodeType {
-  PACKAGE = 'system/DMT/Package',
+  PACKAGE = 'system/SIMOS/Package',
   BLUEPRINT = 'system/SIMOS/Blueprint',
   BLUEPRINT_ATTRIBUTE = 'system/SIMOS/BlueprintAttribute',
   APPLICATION = 'system/SIMOS/Application',

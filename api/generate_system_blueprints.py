@@ -11,7 +11,7 @@ def create_system_blueprints():
     template_types = [
         "system/SIMOS/Blueprint",
         "system/SIMOS/Application",
-        "system/DMT/Package",
+        "system/SIMOS/Package",
         "system/SIMOS/AttributeTypes",
     ]
 

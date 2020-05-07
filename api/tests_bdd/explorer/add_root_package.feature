@@ -15,7 +15,7 @@ Feature: Explorer - Add Root Package
     """
     {
       "name": "new_root_package",
-      "type": "system/DMT/Package"
+      "type": "system/SIMOS/Package"
     }
     """
     Then the response status should be "OK"
@@ -25,7 +25,7 @@ Feature: Explorer - Add Root Package
         "data":{
            "name":"new_root_package",
            "description":null,
-           "type":"system/DMT/Package",
+           "type":"system/SIMOS/Package",
            "isRoot":true,
            "storageRecipes":[]
         }
@@ -38,7 +38,7 @@ Feature: Explorer - Add Root Package
     When i make a "POST" request
     """
     {
-      "type": "system/DMT/Package"
+      "type": "system/SIMOS/Package"
     }
     """
     Then the response status should be "Bad Request"

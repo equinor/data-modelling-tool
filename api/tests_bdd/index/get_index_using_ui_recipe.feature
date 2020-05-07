@@ -13,7 +13,7 @@ Feature: UI Recipe
     {
         "name": "TestPackage",
         "description": "",
-        "type": "system/DMT/Package",
+        "type": "system/SIMOS/Package",
         "content": [
             {
                 "_id": "4",
@@ -202,7 +202,7 @@ Feature: UI Recipe
     {
         "name": "Package",
         "description": "",
-        "type": "system/DMT/Package",
+        "type": "system/SIMOS/Package",
         "content": [
             {
                 "_id": "2",

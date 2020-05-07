@@ -13,7 +13,7 @@ Feature: Explorer - Remove file
     {
         "name": "TestData",
         "description": "",
-        "type": "system/DMT/Package",
+        "type": "system/SIMOS/Package",
         "content": [
             {
                 "_id": "2",
