@@ -17,8 +17,7 @@ def get_related_blueprints(blueprint: str) -> Dict:
         for attr in type.get_none_primitive_types():
             bp = get_blueprint(attr.attribute_type)
             related_blueprints[attr.attribute_type] = bp.to_dict()
-            # This means it's a recursive Blueprint. Don't dig down...
-            if bp != type:
+            if attr.attribute_type not in related_blueprints.keys():
                 get_blueprints_recursive(bp)
 
     for attr in first.get_none_primitive_types():
