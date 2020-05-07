@@ -17,6 +17,16 @@ server {
         proxy_set_header X-Request-Start $msec;
         fastcgi_read_timeout 60;
 
+        # Disable all cache
+        # TODO: Only disable cache for necessary resources
+        proxy_no_cache 1;
+        proxy_cache_bypass 1;
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+        if_modified_since off;
+        expires off;
+        etag off;
+
     }
     location / {
         proxy_pass http://web:3000/;
