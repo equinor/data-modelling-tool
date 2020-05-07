@@ -1,7 +1,0 @@
-{
-  "type": "system/SIMOS/Enum",
-  "name": "ActionTypes",
-  "description": "Different valid action types",
-  "values": ["separateResultFile","resultInEntity"],
-  "labels": ["Separate Result File", "Result In Entity"]
-}

@@ -13,13 +13,13 @@ Feature: Index
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                   |
-      | 1   |            | blueprints    |             | system/DMT/Package     |
-      | 2   | 1          | sub_package_1 |             | system/DMT/Package     |
+      | 1   |            | blueprints    |             | system/SIMOS/Package     |
+      | 2   | 1          | sub_package_1 |             | system/SIMOS/Package     |
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
     Given there are documents for the data source "entities-DS" in collection "test"
       | uid | parent_uid | name       | description | type               |
-      | 1   |            | entity |             | system/DMT/Package |
+      | 1   |            | entity |             | system/SIMOS/Package |
 
   Scenario: Get index for single document (Root Package)
     Given I access the resource url "/api/v4/index/data-source-name/1/1"
@@ -34,7 +34,7 @@ Feature: Index
           "id":"1",
           "nodeType":"document-node",
           "children":["2"],
-          "type":"system/DMT/Package"
+          "type":"system/SIMOS/Package"
        }
     }
     """
@@ -53,7 +53,7 @@ Feature: Index
         ],
         "nodeType": "document-node",
         "title": "sub_package_1",
-        "type": "system/DMT/Package",
+        "type": "system/SIMOS/Package",
         "meta": {
           "menuItems": [
             {
@@ -114,7 +114,7 @@ Feature: Index
       "1": {
         "id": "1",
         "title": "entity",
-        "type": "system/DMT/Package",
+        "type": "system/SIMOS/Package",
         "meta": {
           "menuItems": [
             {
@@ -129,10 +129,10 @@ Feature: Index
                   "action":"CREATE",
                   "data":{
                   "url":"/api/v2/explorer/entities-DS/add-file",
-                  "schemaUrl":"/api/v2/json-schema/system/DMT/Entity?ui_recipe=DEFAULT_CREATE",
+                  "schemaUrl":"/api/v2/json-schema/system/SIMOS/Entity?ui_recipe=DEFAULT_CREATE",
                   "nodeUrl":"/api/v4/index/entities-DS/1",
                   "request":{
-                    "type":"system/DMT/Entity",
+                    "type":"system/SIMOS/Entity",
                     "parentId":"1",
                     "attribute":"content",
                     "name":"${name}",

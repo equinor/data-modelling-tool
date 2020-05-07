@@ -4,7 +4,7 @@
   "description": "",
   "entities": ["CarPackage", "TodoDemo", "MatrixDemo"],
   "packages": ["CarPackage", "Uncontained", "ComplexArrays", "TodoDemo", "marmo", "mooringSRS"],
-  "models": ["system/DMT/Entity"],
+  "models": ["system/SIMOS/Entity"],
   "actions": [
     {
       "name": "Todo Runnable",

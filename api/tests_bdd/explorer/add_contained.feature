@@ -13,7 +13,7 @@ Feature: Explorer - Add contained node
     {
         "name": "root_package",
         "description": "",
-        "type": "system/DMT/Package",
+        "type": "system/SIMOS/Package",
         "isRoot": true,
         "content": [
             {

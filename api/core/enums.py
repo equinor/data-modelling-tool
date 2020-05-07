@@ -64,5 +64,5 @@ class SIMOS(Enum):
 
 
 class DMT(Enum):
-    PACKAGE = "system/DMT/Package"
-    ENTITY = "system/DMT/Entity"
+    PACKAGE = "system/SIMOS/Package"
+    ENTITY = "system/SIMOS/Entity"

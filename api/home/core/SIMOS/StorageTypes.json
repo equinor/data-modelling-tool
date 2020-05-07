@@ -1,7 +1,0 @@
-{
-  "type": "system/SIMOS/Enum",
-  "name": "StorageTypes",
-  "description": "This describes a storage type",
-  "values": ["small", "large"],
-  "labels": ["Small", "Large"]
-}

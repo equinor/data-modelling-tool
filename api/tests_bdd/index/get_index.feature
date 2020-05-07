@@ -12,8 +12,8 @@ Feature: Index
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                   |
-      | 1   |            | blueprints    |             | system/DMT/Package     |
-      | 2   | 1          | sub_package_1 |             | system/DMT/Package     |
+      | 1   |            | blueprints    |             | system/SIMOS/Package     |
+      | 2   | 1          | sub_package_1 |             | system/SIMOS/Package     |
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
   Scenario: Get index
