@@ -14,10 +14,9 @@ dmt_database = client[Config.MONGO_DB]
 
 
 def wipe_db():
-    print("Dropping all collections")
-    # FIXME: Read names from the database
+    print("Dropping collections:")
     for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.SYSTEM_COLLECTION, "documents"]:
-        print(f"Dropping collection '{name}'")
+        print(name)
         dmt_database.drop_collection(name)
 
 
@@ -31,7 +30,8 @@ def before_all(context):
 
 def wipe_added_data_sources(context):
     for data_source in context.data_sources.values():
-        dmt_database.drop_collection(data_source["collection"])
+        if data_source["collection"] != "system":
+            dmt_database.drop_collection(data_source["collection"])
 
 
 def after_all(context):

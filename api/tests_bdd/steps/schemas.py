@@ -1,19 +1,15 @@
 import json
 
 from behave import given, then, when
-from dmss_api import ExplorerApi
 from utils.package_import import import_package
 
 from classes.dto import DTO
 from classes.schema import Factory
 from config import Config
-from core.repository.file import TemplateRepositoryFromFile
 from utils.data_structure.compare import pretty_eq
 from utils.helper_functions import schemas_location
 from utils.logging import logger
-
-explorer_api = ExplorerApi()
-explorer_api.api_client.configuration.host = Config.DMSS_API
+from services.data_modelling_document_service import document_api, explorer_api, package_api, datasource_api
 
 
 @given("data modelling tool templates are imported")
@@ -31,16 +27,29 @@ def step_impl_2(context, uid: str, data_source_id: str):
     print(response)
 
 
+class TemplateRepositoryFromDMSS:
+    def get(self, template_type: str):
+        return self[template_type]
+
+    def __getitem__(self, template_type: str) -> dict:
+        data_source, *rest = template_type.split("/")
+        template_type = "/".join(rest)
+        document = document_api.get_by_path(data_source, template_type)
+        return document["document"]
+
+
 @when('I create a Python class from the template "{template_name}"')
 def step_impl_create_template(context, template_name: str):
-    document_repository = TemplateRepositoryFromFile(schemas_location())
-    factory = Factory(document_repository, read_from_file=True)
+    document_repository = TemplateRepositoryFromDMSS()
+    factory = Factory(document_repository)
     context.template_name = template_name
     context.template = factory.create(template_name)
 
 
 @then("it should be able to recreate the template")
 def step_impl_compare(context):
-    expected = TemplateRepositoryFromFile(schemas_location()).get(context.template_name)
+    expected = TemplateRepositoryFromDMSS().get(context.template_name)
     actual = context.template.to_dict()
+    # TODO: Why do we need to remove _id
+    del expected["_id"]
     pretty_eq(expected, actual)

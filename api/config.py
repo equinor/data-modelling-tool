@@ -18,12 +18,12 @@ class Config:
     ENTITY_COLLECTION = "entities"
     DATA_SOURCES_COLLECTION = "data_sources"
     DYNAMIC_MODELS = "dynamic_models"
-    SYSTEM_COLLECTION = "system"
+    SYSTEM_COLLECTION = "DMT-APP"
     CACHE_MAX_SIZE = 200 if ENVIRONMENT == "local" else 0
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent.absolute()}/home")
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
-    SYSTEM_FOLDERS = ["SIMOS", "DMT"]
+    SYSTEM_FOLDERS = ["DMT"]
     VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
     PY_PROJECT_FILE = f"{Path(__file__).parent.absolute()}/pyproject.toml"
     DMSS_HOST = os.getenv("DMSS_HOST", "mainapi")
