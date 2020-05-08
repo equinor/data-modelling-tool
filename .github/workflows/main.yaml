@@ -179,12 +179,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Prod on Radix
-          uses: equinor/radix-github-actions@master
-          with:
-            args: >
-              create job
-              deploy
-              --context $RADIX_CLUSTER
-              --from-config
-              -e prod
-              -f
+        uses: equinor/radix-github-actions@master
+        with:
+          args: >
+            create job
+            deploy
+            --context $RADIX_CLUSTER
+            --from-config
+            -e prod
+            -f
