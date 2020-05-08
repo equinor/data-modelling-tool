@@ -119,9 +119,11 @@ jobs:
           docker push $API_IMAGE:$COMMIT_REF
 
   deploy-master-to-radix:
-#    needs: [build-and-publish-api-master, build-and-publish-web-master]
+    needs: [build-and-publish-api-master, build-and-publish-web-master]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
+
       - name: Deploy Master on Radix
         uses: equinor/radix-github-actions@master
         with:
@@ -182,6 +184,8 @@ jobs:
     needs: [release-api, release-web]
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@master
+
       - name: Deploy Prod on Radix
         uses: equinor/radix-github-actions@master
         with:
