@@ -26,8 +26,14 @@ spec:
       environmentConfig:
         - environment: prod
           imageTagName: release
+          DMSS_HOST: api-dmss-dev.playground.radix.equinor.com
+          DMSS_PORT: 443
+          ENVIRONMENT: production
         - environment: dev
           imageTagName: latest
+          DMSS_HOST: api-dmss-dev.playground.radix.equinor.com
+          DMSS_PORT: 443
+          ENVIRONMENT: production
       ports:
         - name: flask
           port: 5000
