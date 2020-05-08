@@ -79,6 +79,10 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: "Set ENV variables"
+        run: |
+          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA)"
+
       - name: "Build and Publish Web"
         run: |
           echo "Tagging with $COMMIT_REF"
