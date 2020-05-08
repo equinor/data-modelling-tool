@@ -47,7 +47,7 @@ spec:
   dnsAppAlias:
     environment: prod
     component: oauth-proxy
-privateImageHubs:
-  mariner.azurecr.io:
-    username: mariner
-    email: stoo@equinor.com
+  privateImageHubs:
+    mariner.azurecr.io:
+      username: mariner
+      email: stoo@equinor.com
