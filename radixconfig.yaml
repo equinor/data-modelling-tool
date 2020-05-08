@@ -10,17 +10,24 @@ spec:
     - name: dev
       build:
         from: master
-    - name: features
-      build:
-        from: feature/*
   components:
     - name: web
-      src: ./web
+      image: mariner.azurecr.io/dmt/web:{imageTagName}
+      environmentConfig:
+        - environment: prod
+          imageTagName: release
+        - environment: dev
+          imageTagName: latest
       ports:
         - name: http
           port: 80
     - name: api
-      src: ./api
+      image: mariner.azurecr.io/dmt/api:{imageTagName}
+      environmentConfig:
+        - environment: prod
+          imageTagName: release
+        - environment: dev
+          imageTagName: latest
       ports:
         - name: flask
           port: 5000
@@ -40,3 +47,7 @@ spec:
   dnsAppAlias:
     environment: prod
     component: oauth-proxy
+privateImageHubs:
+  mariner.azurecr.io:
+    username: mariner
+    email: stoo@equinor.com

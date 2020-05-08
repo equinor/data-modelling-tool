@@ -3,14 +3,21 @@ name: CI
 on:
   push
 
+env:
+  APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.K8S_CREDENTIALS }}
+  IMAGE_REPO: dmt
+  IMAGE_REGISTRY: mariner.azurecr.io
+  FULL_IMAGE_REPO: mariner.azurecr.io/dmt
+  API_IMAGE: mariner.azurecr.io/dmt/api
+  WEB_IMAGE: mariner.azurecr.io/dmt/web
+  NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
+  RADIX_CLUSTER: playground
+
 jobs:
   test-api:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-
-      - name: Set ENV variables
-        run: for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
 
       - name: "Print ENVIRONMENT"
         run: |
@@ -56,9 +63,6 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      - name: "Set ENV variables"
-        run: for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
-
       - name: "Build Web Image"
         run: |
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
@@ -68,17 +72,12 @@ jobs:
       - name: "Web Tests"
         run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test
 
-  build-n-publish-web:
+  build-and-publish-web-master:
     needs: test-web
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-
-      - name: "Set ENV variables"
-        run: |
-          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
-          echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA)"
 
       - name: "Build and Publish Web"
         run: |
@@ -92,7 +91,7 @@ jobs:
           docker push $WEB_IMAGE:latest
           docker push $WEB_IMAGE:$COMMIT_REF
 
-  build-n-publish-api:
+  build-and-publish-api-master:
     needs: test-api
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
@@ -101,7 +100,6 @@ jobs:
 
       - name: "Set ENV variables"
         run: |
-          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
           echo "::set-env name=COMMIT_REF::$(git rev-parse --short $GITHUB_SHA)"
 
       - name: "Build and Publish API"
@@ -116,6 +114,21 @@ jobs:
           docker push $API_IMAGE:latest
           docker push $API_IMAGE:$COMMIT_REF
 
+  deploy-master-to-radix:
+    needs: [build-and-publish-api-master, build-and-publish-web-master]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Master on Radix
+          uses: equinor/radix-github-actions@master
+          with:
+            args: >
+              create job
+              deploy
+              --context $RADIX_CLUSTER
+              --from-config
+              -e dev
+              -f
+
   release-api:
     needs: test-api
     if: contains(github.ref, 'tags')
@@ -125,8 +138,6 @@ jobs:
 
       - name: "Set ENV variables"
         run: |
-          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
-          echo $GITHUB_REF
           echo $(echo $GITHUB_REF | cut -d / -f 3)
           echo "::set-env name=RELEASE_TAG::$(echo $GITHUB_REF | cut -d / -f 3)"
 
@@ -136,7 +147,9 @@ jobs:
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $API_IMAGE
           docker build --cache-from $API_IMAGE --tag $API_IMAGE:$RELEASE_TAG ./api
+          docker tag $API_IMAGE:$RELEASE_TAG $API_IMAGE:release
           docker push $API_IMAGE:$RELEASE_TAG
+          docker push $API_IMAGE:release
 
   release-web:
     needs: test-web
@@ -147,8 +160,6 @@ jobs:
 
       - name: "Set ENV variables"
         run: |
-          for v in `cat .github/ci-env` ; do echo "::set-env name=${v%%=*}::${v##*=}" ; done
-          echo $GITHUB_REF
           echo $(echo $GITHUB_REF | cut -d / -f 3)
           echo "::set-env name=RELEASE_TAG::$(echo $GITHUB_REF | cut -d / -f 3)"
 
@@ -158,4 +169,22 @@ jobs:
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $WEB_IMAGE
           docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE:$RELEASE_TAG ./web
+          docker tag $WEB_IMAGE:$RELEASE_TAG $WEB_IMAGE:release
           docker push $WEB_IMAGE:$RELEASE_TAG
+          docker push $WEB_IMAGE:release
+
+
+  deploy-release-to-radix:
+    needs: [release-api, release-web]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Deploy Prod on Radix
+          uses: equinor/radix-github-actions@master
+          with:
+            args: >
+              create job
+              deploy
+              --context $RADIX_CLUSTER
+              --from-config
+              -e prod
+              -f
