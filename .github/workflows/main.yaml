@@ -119,15 +119,15 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Deploy Master on Radix
-          uses: equinor/radix-github-actions@master
-          with:
-            args: >
-              create job
-              deploy
-              --context $RADIX_CLUSTER
-              --from-config
-              -e dev
-              -f
+        uses: equinor/radix-github-actions@master
+        with:
+          args: >
+            create job
+            deploy
+            --context $RADIX_CLUSTER
+            --from-config
+            -e dev
+            -f
 
   release-api:
     needs: test-api
