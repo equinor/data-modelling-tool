@@ -1,6 +1,6 @@
 {
   "name": "EditPlugin",
-  "type": "system/DMT/UiViewPlugin",
+  "type": "apps/DMT/UiViewPlugin",
   "label": "Edit Plugin",
   "required": true,
   "widgets": []

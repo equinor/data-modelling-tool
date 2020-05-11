@@ -7,6 +7,7 @@ Feature: Explorer - Remove file
       | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents      | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local    | SSR-DataSource | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system           | local    | system         | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps       | local    | applications | applications | mongo-db |
 
     Given there exist document with id "1" in data source "data-source-name"
     """

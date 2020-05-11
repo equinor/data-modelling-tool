@@ -31,6 +31,13 @@ if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ] ; then
   cd /code/
 fi
 
+if [ ! -e first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
+  echo "Importing data"
+  ./reset-application.sh
+  touch first-run-false
+fi
+
+
 if [ "$1" = 'api' ]; then
   service_is_ready "DMSS" $DMSS_HOST $DMSS_PORT
   flask run --host=0.0.0.0
