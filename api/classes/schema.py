@@ -556,6 +556,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     {%- endfor %}
 
     def __init__(self, {{ signature(schema.attributes) }}):
+        self.__id_key__ = None
+        self.__uid__ = None
         {%- for attr in schema.attributes %}
         {%- set name = get_name(attr) %}
         {%- if name == "type" %}
@@ -652,6 +654,11 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         # Hack to be able to call `to_dict()` of a class instance
         if self is None:
             self = {{ schema.name }}
+            id_key = None
+            uid = None
+        else:
+            id_key = self.__id_key__
+            uid = self.__uid__
 
         representation = {
             {%- for attr in schema.attributes %}
@@ -662,6 +669,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             {%- endif %}
             {%- endfor %}
         }
+        if id_key and uid:
+            representation[id_key] = uid
         if not include_defaults:
         {%- if schema.attributes.has_attributes %}
             def _get(attr, name: str):
@@ -685,6 +694,8 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         {%- else %}
             attributes = [{{ get_type(schema, "attributes") }}.from_dict(definition) for definition in self.attributes]
             defaults = {attr.name: attr.default for attr in attributes}
+            if id_key:
+                defaults[id_key] = uid
             representation = {
                 key: value
                 for key, value in representation.items()
@@ -744,7 +755,6 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
     @classmethod
     def from_dict(cls, adict):
-        from classes.dto import DTO
         id_keys = ["_id", "id", "uid"]
         # FIXME: adict may not be a dict...
         if not isinstance(adict, dict):
@@ -760,12 +770,16 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         model = cls(**kwargs)
         if is_dto:
             uid = None
+            id_key = None
             for key in id_keys:
                 try:
                     uid = adict[key]
+                    id_key = key
                 except KeyError:
                     pass
-            model = DTO(model, uid=uid)
+            if uid and id_key:
+                model.__id_key__ = id_key
+                model.__uid__ = uid
         return model
 
     @staticmethod
