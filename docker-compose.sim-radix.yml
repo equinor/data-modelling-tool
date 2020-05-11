@@ -15,6 +15,4 @@ services:
 
   web:
     image: radix-web
-    environment:
-      - NODE_ENV=development
 

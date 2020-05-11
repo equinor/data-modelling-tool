@@ -40,8 +40,6 @@ spec:
         - name: flask
           port: 5000
       publicPort: flask
-      secrets:
-        - MONGO_AZURE_URI
     - name: oauth-proxy
       src: ./oauth-proxy
       ports:
