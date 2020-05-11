@@ -1,0 +1,20 @@
+version: "3.4"
+
+services:
+  nginx:
+    image: radix-nginx
+    build: ./nginx/demo
+
+  api:
+    image: radix-api
+    environment:
+      ENVIRONMENT: production
+      DMSS_HOST: api-dmss-dev.playground.radix.equinor.com
+      DMSS_PORT: 443
+      MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+
+  web:
+    image: radix-web
+    environment:
+      - NODE_ENV=development
+
