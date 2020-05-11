@@ -1035,12 +1035,14 @@ from classes.dto import DTO
         if (parent := self.get_type_by_name(schema["type"])).__name__ != schema["name"]:
             dependencies.append(parent)
         for attr in schema.get("attributes", []):
-            try:
-                _type = attr.type
-            except AttributeError:
-                _type = self.get_type_by_name(attr["type"])
-            if not is_simple_type(_type) and _type not in dependencies:
-                dependencies.append(_type)
+            for item in ["type", "attribute_type"]:
+                try:
+                    # noinspection PyDeepBugsSwappedArgs
+                    _type = getattr(attr, item)
+                except AttributeError:
+                    _type = self.get_type_by_name(attr[item])
+                if not is_simple_type(_type) and _type not in dependencies:
+                    dependencies.append(_type)
         return dependencies
 
     @staticmethod
