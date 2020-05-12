@@ -19,3 +19,4 @@ COPY . .
 FROM base as prod
 RUN poetry export -f requirements.txt | pip install -r /dev/stdin
 COPY . .
+CMD ["api"]
