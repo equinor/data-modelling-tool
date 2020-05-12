@@ -1,15 +1,17 @@
-Feature: Document 2
+Feature: Document
 
   Background: There are data sources in the system
 
-    Given data modelling tool templates are imported
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents  | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | test-source-name | local    | test       | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system           | local    | system     | system       | mongo-db |
+      | host | port  | username | password | tls   | name             | database | collection   | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents    | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | test-source-name | local    | test         | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system           | local    | system       | system       | mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps             | local    | applications | applications | mongo-db |
 
+    Given data modelling tool templates are imported
+    
     Given there exist document with id "3" in data source "test-source-name"
     """
     {
@@ -197,10 +199,10 @@ Feature: Document 2
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                                    |
-      | 1   |            | package_1     |             | system/SIMOS/Package                      |
-      | 2   | 1          | sub_package_1 |             | system/SIMOS/Package                      |
-      | 3   | 1          | sub_package_2 |             | system/SIMOS/Package                      |
-      | 4   | 2          | document_1    |             | system/SIMOS/Package                      |
+      | 1   |            | package_1     |             | system/SIMOS/Package                    |
+      | 2   | 1          | sub_package_1 |             | system/SIMOS/Package                    |
+      | 3   | 1          | sub_package_2 |             | system/SIMOS/Package                    |
+      | 4   | 2          | document_1    |             | system/SIMOS/Package                    |
       | 5   | 2          | document_2    |             | system/SIMOS/Blueprint                  |
       | 6   | 3          | container_1   |             | test-source-name/TestData/TestContainer |
 

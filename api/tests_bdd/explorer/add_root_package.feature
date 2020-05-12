@@ -7,6 +7,7 @@ Feature: Explorer - Add Root Package
       | db   | 27017 | maf      | maf      | false | data-source-name| local      | documents      | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | SSR-DataSource  | local      | SSR-DataSource | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system          | local      | system         | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps       | local    | applications | applications | mongo-db |
 
   Scenario: Add root package
     Given i access the resource url "/api/v2/explorer/data-source-name/add-root-package"

@@ -8,6 +8,7 @@ Feature: Explorer - Add file
       | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents      | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local    | SSR-DataSource | blueprints   | mongo-db |
       | db   | 27017 | maf      | maf      | false | system           | local    | system         | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps       | local    | applications | applications | mongo-db |
 
     Given data modelling tool templates are imported
 

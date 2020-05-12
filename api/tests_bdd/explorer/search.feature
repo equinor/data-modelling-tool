@@ -3,10 +3,11 @@ Feature: Explorer - Search entity
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name       | database | collection     | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | blueprints | local    | blueprints     | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | entities   | local    | entities       | entities     | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system     | local    | system         | blueprints   | mongo-db |
+      | host | port  | username | password | tls   | name       | database | collection   | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | blueprints | local    | blueprints   | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | entities   | local    | entities     | entities     | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system     | local    | system       | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps       | local    | applications | applications | mongo-db |
 
     Given there exist document with id "1" in data source "blueprints"
     """
@@ -132,6 +133,7 @@ Feature: Explorer - Search entity
       }
     }
     """
+
   Scenario: Search with primitive filter, 1 hit
     Given i access the resource url "/api/search/entities"
     And data modelling tool templates are imported

@@ -15,7 +15,7 @@ export const insertReferenceAction = (
     fetchDocument: ({ onSuccess, onError = () => {} }: BASE_CRUD): void => {
       Api2.get({
         url: api.jsonSchemaGet(
-          'system/DMT/actions/InsertReference',
+          'apps/DMT/actions/InsertReference',
           'DEFAULT_CREATE'
         ),
         onSuccess: result => onSuccess({ template: result, document: {} }),

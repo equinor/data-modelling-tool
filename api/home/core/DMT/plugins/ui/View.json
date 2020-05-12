@@ -1,6 +1,6 @@
 {
   "name": "ViewPlugin",
-  "type": "system/DMT/UiViewPlugin",
+  "type": "apps/DMT/UiViewPlugin",
   "label": "View",
   "required": false,
   "widgets": []

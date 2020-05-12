@@ -135,7 +135,7 @@ export class DmtApi {
     if (selectedDatasourceType == 'azure-blob-storage')
       template = 'AzureBlobStorageDataSource'
 
-    return `/api/v2/json-schema/system/DMT/data-sources/${template}`
+    return `/api/v2/json-schema/apps/DMT/data-sources/${template}`
   }
 
   jsonSchemaGet(blueprint: string, ui_recipe: string) {

@@ -30,6 +30,7 @@ class Config:
     DMSS_PORT = os.getenv("DMSS_PORT", "5000")
     DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
     DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}/api/v1"
+    APPLICATION_DATA_SOURCE = "apps"
     with open(PY_PROJECT_FILE) as toml_file:
         PY_PROJECT = toml.load(toml_file)
     with open(DMT_SETTINGS_FILE) as json_file:

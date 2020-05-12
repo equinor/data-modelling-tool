@@ -23,7 +23,7 @@ export default (
       Api2.get({
         // TODO: Use a standard CREATE_ENTITY schema
         url: api.jsonSchemaGet(
-          'system/DMT/actions/NewActionResult',
+          'apps/DMT/actions/NewActionResult',
           'DEFAULT_CREATE'
         ),
         onSuccess: result => onSuccess({ template: result, document: {} }),

@@ -154,7 +154,7 @@ def get_import_menu_item(data_source_id: str, document_id: str, is_package_conte
         "action": "IMPORT",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/import/{document_id}",
-            "schemaUrl": f"/api/v2/json-schema/system/DMT/actions/ImportAction",
+            "schemaUrl": f"/api/v2/json-schema/apps/DMT/actions/ImportAction",
             "prompt": {"title": "Export", "content": "Download the package"},
         },
     }

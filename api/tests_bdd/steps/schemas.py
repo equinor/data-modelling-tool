@@ -16,7 +16,7 @@ from utils.package_import import import_package
 def step_impl(context):
     for folder in Config.SYSTEM_FOLDERS:
         logger.setLevel("ERROR")
-        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", collection=Config.SYSTEM_COLLECTION, is_root=True)
+        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", is_root=True)
         logger.setLevel("INFO")
 
 

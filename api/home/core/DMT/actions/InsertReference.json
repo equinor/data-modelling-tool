@@ -4,7 +4,7 @@
   "description": "Form to create a new reference",
   "attributes": [
     {
-      "attributeType": "system/DMT/Reference",
+      "attributeType": "apps/DMT/Reference",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "reference",
       "description": "Select an entity"

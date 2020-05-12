@@ -3,10 +3,11 @@ Feature: UI Recipe
   Background: There are data sources in the system
 
     Given there are mongodb data sources
-      | host | port  | username | password | tls   | name             | database | collection | documentType | type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents  | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | system           | local    | system     | blueprints   | mongo-db |
-      | db   | 27017 | maf      | maf      | false | test-source-name | local    | test       | blueprints   | mongo-db |
+      | host | port  | username | password | tls   | name             | database | collection   | documentType | type     |
+      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents    | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | system           | local    | system       | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | test-source-name | local    | test         | blueprints   | mongo-db |
+      | db   | 27017 | maf      | maf      | false | apps             | local    | applications | applications | mongo-db |
 
     Given there exist document with id "1" in data source "test-source-name"
     """
@@ -287,6 +288,7 @@ Feature: UI Recipe
       "description": ""
     }
     """
+
   Scenario: Get index for single document (Document)
     Given I access the resource url "/api/v4/index/data-source-name/1/2"
     And data modelling tool templates are imported
