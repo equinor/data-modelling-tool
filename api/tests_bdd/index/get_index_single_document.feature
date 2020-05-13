@@ -40,8 +40,8 @@ Feature: Index
     }
     """
 
-  Scenario: Get index for single document (Package)
-    Given I access the resource url "/api/v4/index/data-source-name/1/2"
+  Scenario: Get index for single Package (Blueprint)
+    Given I access the resource url "/api/v4/index/data-source-name/1/2?APPLICATION=DMT-Blueprints"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -73,6 +73,53 @@ Feature: Index
                   "nodeUrl":"/api/v4/index/data-source-name/2",
                   "request":{
                     "type":"system/SIMOS/Blueprint",
+                    "parentId":"2",
+                    "attribute":"content",
+                    "name":"${name}",
+                    "description":"${description}"
+                    }
+                  }
+                }
+            ]
+          }]
+        }
+      }
+    }
+    """
+
+  Scenario: Get index for single Package (Entities)
+    Given I access the resource url "/api/v4/index/data-source-name/1/2?APPLICATION=DMT-Entities"
+    When I make a "GET" request
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+      "2": {
+        "id": "2",
+        "children": [
+          "3"
+        ],
+        "nodeType": "document-node",
+        "title": "sub_package_1",
+        "type": "system/SIMOS/Package",
+        "meta": {
+          "menuItems": [
+            {
+              "label":"New",
+              "menuItems":[
+                {
+                  "label":"Package",
+                  "action":"CREATE"
+                },
+                {
+                  "label":"Entity",
+                  "action":"CREATE",
+                  "data":{
+                  "url":"/api/v2/explorer/data-source-name/add-file",
+                  "schemaUrl":"/api/v2/json-schema/system/SIMOS/Entity?ui_recipe=DEFAULT_CREATE",
+                  "nodeUrl":"/api/v4/index/data-source-name/2",
+                  "request":{
+                    "type":"system/SIMOS/Entity",
                     "parentId":"2",
                     "attribute":"content",
                     "name":"${name}",
