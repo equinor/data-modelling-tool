@@ -1,6 +1,6 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "DMTApplicationSettings",
+  "name": "DMT-Entities",
   "description": "",
   "entities": ["CarPackage", "TodoDemo", "MatrixDemo"],
   "packages": ["CarPackage", "Uncontained", "ComplexArrays", "TodoDemo", "marmo", "mooringSRS"],

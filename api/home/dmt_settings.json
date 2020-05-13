@@ -1,6 +1,6 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "DMTAppSettings",
+  "name": "DMT-Blueprints",
   "description": "",
   "packages": [],
   "entities": [],

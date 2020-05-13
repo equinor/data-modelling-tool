@@ -41,8 +41,9 @@ interface CreateNodesProps {
 
 const createNodes = (props: CreateNodesProps) => {
   const { documentId, nodeUrl, node } = props
+  console.log(props)
   Api2.get({
-    url: `${nodeUrl}/${documentId}`,
+    url: `${nodeUrl}/${documentId}?APPLICATION=${node.nodeData.meta.application}`,
     onSuccess: result => {
       const nodes: any = values(result)
       const indexNodes = nodes.map((node: IndexNode) =>

@@ -26,8 +26,11 @@ export default () => {
     <>
       <h4>Data Modelling Tool</h4>
       <Link to={'/'}>
-        <TabStyled isSelected={location.pathname === '/'}>
-          Browse/Edit
+        <TabStyled isSelected={location.pathname === '/'}>Blueprints</TabStyled>
+      </Link>
+      <Link to={'/entities'}>
+        <TabStyled isSelected={location.pathname === '/entities'}>
+          Entities
         </TabStyled>
       </Link>
       <Link to={'/search'}>

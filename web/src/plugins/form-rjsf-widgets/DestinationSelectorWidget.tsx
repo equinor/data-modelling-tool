@@ -2,8 +2,8 @@ import React, { useEffect, useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
-import { BlueprintEnum, NodeType } from '../../util/variables'
-import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
+import { BlueprintEnum } from '../../util/variables'
+import { Datasource, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import styled from 'styled-components'
 
@@ -35,7 +35,6 @@ export type Props = {
   onChange: (value: any) => void
   formData: any
   blueprintFilter?: BlueprintEnum
-  datasourceType?: DataSourceType
   title?: string
 }
 
@@ -44,7 +43,6 @@ export default (props: Props) => {
     onChange,
     formData,
     blueprintFilter = BlueprintEnum.PACKAGE,
-    datasourceType = DataSourceType.Entities,
     title = 'Destination',
   } = props
   const [destination, setDestination] = useState<string>(formData)
@@ -52,7 +50,7 @@ export default (props: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
-    const url = api.dataSourcesGet(datasourceType)
+    const url = api.dataSourcesGet()
     axios
       .get(url)
       .then((res: any) => {

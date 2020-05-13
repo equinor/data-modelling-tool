@@ -127,7 +127,6 @@ const View = (props: any) => {
           }}
         </LayoutContext.Consumer>
       )
-      break
     default:
       console.warn(`Plugin not supported: ${uiRecipe.plugin}`)
   }

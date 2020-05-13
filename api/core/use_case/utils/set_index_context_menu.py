@@ -1,6 +1,6 @@
 from classes.tree_node import Node
 from config import Config
-from core.enums import DMT, SIMOS
+from core.enums import APPLICATION, DMT, SIMOS
 from core.use_case.utils.generate_index_menu_actions import (
     get_create_reference_menu_item,
     get_create_root_package_menu_item,
@@ -21,6 +21,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     menu_items = []
     create_new_menu_items = []
     is_package = node.type == DMT.PACKAGE.value
+    application = app_settings["name"]
 
     # Datasource Node can only add root-packages
     if node.type == "datasource":
@@ -114,7 +115,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             menu_items.append(get_download_menu_action(data_source_id, node.node_id))
 
         # Generate code only in DMTApp, and on Packages and Blueprints
-        if node.type in [SIMOS.BLUEPRINT.value, DMT.PACKAGE.value] and app_settings["name"] == "DMTAppSettings":
+        if node.type in [SIMOS.BLUEPRINT.value, DMT.PACKAGE.value] and application == APPLICATION.BLUEPRINTS.value:
             # Context menu: Export code
             code_generators = []
             # Add any code generators added as plugins

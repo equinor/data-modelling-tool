@@ -1,6 +1,6 @@
-export enum DocumentType {
-  ENTITIES = 'entities',
-  BLUEPRINTS = 'blueprints',
+export enum Application {
+  ENTITIES = 'DMT-Entities',
+  BLUEPRINTS = 'DMT-Blueprints',
 }
 
 export enum BlueprintEnum {

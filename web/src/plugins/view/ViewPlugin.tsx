@@ -7,7 +7,6 @@ import {
   PluginProps,
   KeyValue,
 } from '../../domain/types'
-import { Pre } from '../preview/PreviewPlugin'
 import { Blueprint } from '../../domain/Blueprint'
 import { BlueprintProvider } from '../BlueprintProvider'
 import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'

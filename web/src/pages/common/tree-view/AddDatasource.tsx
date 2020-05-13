@@ -11,11 +11,7 @@ import Button from '../../../components/Button'
 import Api2 from '../../../api/Api2'
 const api = new DmtApi()
 
-type Props = {
-  documentType: string
-}
-
-export default ({ documentType }: Props) => {
+export default () => {
   const [showModal, setShowModal] = useState(false)
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
     'mongo-db'
@@ -38,7 +34,6 @@ export default ({ documentType }: Props) => {
         <Form
           fetchDocument={Api2.fetchCreateDatasource(selectedDatasourceType)}
           onSubmit={data => {
-            data.documentType = documentType
             data.type = selectedDatasourceType
             axios
               .post(api.dataSourcesPost(data.name), data)

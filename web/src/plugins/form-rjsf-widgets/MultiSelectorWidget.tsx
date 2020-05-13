@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
+import { Datasource, DmtApi } from '../../api/Api'
 import axios from 'axios'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import styled from 'styled-components'
@@ -84,7 +84,7 @@ const MultiSelector = ({
   }
 
   useEffect(() => {
-    const url = api.dataSourcesGet(DataSourceType.ALL)
+    const url = api.dataSourcesGet()
     axios
       .get(url)
       .then((res: any) => {
@@ -182,7 +182,7 @@ export const PackagesSelector = ({ onChange, formData, uiSchema }: any) => {
 
 export const BlueprintsSelector = ({ onChange, formData, uiSchema }: any) => {
   function BlueprintsFilter(nodeData: any) {
-    return nodeData?.meta?.type == BlueprintEnum.BLUEPRINT
+    return nodeData?.meta?.type === BlueprintEnum.BLUEPRINT
   }
   return MultiSelector({
     onChange,

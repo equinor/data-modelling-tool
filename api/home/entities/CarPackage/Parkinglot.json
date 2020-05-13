@@ -1,7 +1,0 @@
-{
-  "name": "Parkinglot",
-  "type": "SSR-DataSource/CarPackage/Parking",
-  "description": "",
-  "cars": [],
-  "wheels": {}
-}

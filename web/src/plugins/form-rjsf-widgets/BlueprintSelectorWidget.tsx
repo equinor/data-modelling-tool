@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
-import { Datasource, DataSourceType, DmtApi } from '../../api/Api'
+import { Datasource, DmtApi } from '../../api/Api'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
 import axios from 'axios'
@@ -26,7 +26,7 @@ export default (props: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
-    const url = api.dataSourcesGet(DataSourceType.Blueprints)
+    const url = api.dataSourcesGet()
     axios
       .get(url)
       .then((res: any) => {

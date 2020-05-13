@@ -181,7 +181,7 @@ description = "Data Modelling Storage Service API"
 name = "dmss-api"
 optional = false
 python-versions = "*"
-version = "0.2.15"
+version = "0.2.16"
 
 [package.dependencies]
 certifi = "*"
@@ -818,7 +818,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "fc223a59e29947e8ccd799442c39e03456cddba35c1ac624a9c4c2fec6800c41"
+content-hash = "5628d1d59d4c085ebc36486776540c37f4cabe858d9a31d93741b37a2bb87e1b"
 python-versions = "3.8.*"
 
 [metadata.files]
@@ -914,8 +914,8 @@ distlib = [
     {file = "distlib-0.3.0.zip", hash = "sha256:2e166e231a26b36d6dfe35a48c4464346620f8645ed0ace01ee31822b288de21"},
 ]
 dmss-api = [
-    {file = "dmss-api-0.2.15.tar.gz", hash = "sha256:c46fb377e54149eb1d46000d47d0b78071db2c017146ac0cbc9b27f3ccc7342e"},
-    {file = "dmss_api-0.2.15-py3-none-any.whl", hash = "sha256:69392228acb43ef67e5794f85966cb6523f28eeb22f9922588ded06b1bd54f74"},
+    {file = "dmss-api-0.2.16.tar.gz", hash = "sha256:f4c8bc5f48cb5df4dacce7fe4bb6ada1b0db0973e889f8e31d06774ce74bf759"},
+    {file = "dmss_api-0.2.16-py3-none-any.whl", hash = "sha256:a4890a537717cb182194b9f411644d5dd9715ea89c6df60c4b8e77bfa58e365b"},
 ]
 dparse = [
     {file = "dparse-0.5.1-py3-none-any.whl", hash = "sha256:e953a25e44ebb60a5c6efc2add4420c177f1d8404509da88da9729202f306994"},

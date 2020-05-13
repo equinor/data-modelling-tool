@@ -1,7 +1,7 @@
 from typing import Dict, Union
 
 from classes.blueprint_attribute import BlueprintAttribute
-from core.enums import DMT
+from core.enums import APPLICATION, DMT
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_on_select
@@ -70,6 +70,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
             "isList": node.is_array(),
             "dataSource": data_source_id,
             "empty": node.is_empty(),
+            "application": app_settings["name"],
         },
     }
 
@@ -110,14 +111,12 @@ def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str
 
 
 class GenerateIndexUseCase:
-    def execute(self, data_source_id: str) -> dict:
+    def execute(self, data_source_id: str, application: str = None) -> dict:
         document_service = DocumentService()
-
-        data_source = document_service.get_data_source(data_source_id)
-        application_page = data_source["documentType"]
-
         app_settings = (
-            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
+            Config.DMT_APPLICATION_SETTINGS
+            if application == APPLICATION.BLUEPRINTS.value
+            else Config.ENTITY_APPLICATION_SETTINGS
         )
         # make sure we're generating the index with correct blueprints.
         document_service.blueprint_provider.invalidate_cache()
@@ -153,18 +152,14 @@ class GenerateIndexUseCase:
 
         return extend_index_with_node_tree(root, data_source_id, app_settings)
 
-    def single(self, data_source_id: str, document_id: str, parent_id: str) -> Dict:
+    def single(self, data_source_id: str, document_id: str, parent_id: str, application: str = None) -> Dict:
         document_service = DocumentService()
 
-        data_source = document_service.get_data_source(data_source_id)
-
-        application_page = data_source["documentType"]
-
         app_settings = (
-            Config.DMT_APPLICATION_SETTINGS if application_page == "blueprints" else Config.ENTITY_APPLICATION_SETTINGS
+            Config.DMT_APPLICATION_SETTINGS
+            if application == APPLICATION.BLUEPRINTS.value
+            else Config.ENTITY_APPLICATION_SETTINGS
         )
-        # make sure we're generating the index with correct blueprints.
-        # document_service.invalidate_cache()
         parent_uid = parent_id.split(".", 1)[0]
         if data_source_id == parent_uid:
             document_uid = document_id

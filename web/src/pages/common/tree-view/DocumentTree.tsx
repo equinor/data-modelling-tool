@@ -8,16 +8,17 @@ const api = new IndexApi()
 interface PropTypes {
   dataSources: Datasource[]
   render: Function
+  application?: string
 }
 
 export default (props: PropTypes) => {
-  const { dataSources, render } = props
+  const { dataSources, render, application } = props
   const [loading, setLoading] = useState(false)
   const [documents, setDocuments] = useState({})
 
   useEffect(() => {
     const getDataSource = async (dataSource: Datasource) => {
-      return await api.get(dataSource)
+      return await api.get(dataSource, application)
     }
     const getAllDataSources = async () => {
       return await Promise.all(
@@ -35,7 +36,7 @@ export default (props: PropTypes) => {
       setDocuments(allDocuments)
       setLoading(false)
     })
-  }, [dataSources])
+  }, [dataSources, application])
 
   if (loading) {
     return <div>Loading...</div>

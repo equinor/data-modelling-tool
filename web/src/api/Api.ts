@@ -71,8 +71,9 @@ export class IndexApi extends BaseApi {
       })
   }
 
-  async get(datasource: Datasource) {
-    const url = this.dmtApi.indexGet(datasource.id)
+  // @ts-ignore
+  async get(datasource: Datasource, application) {
+    const url = this.dmtApi.indexGet(datasource.id, application)
     try {
       const res = !isLocal(datasource)
         ? (await axios(url)).data
@@ -95,8 +96,8 @@ export class IndexApi extends BaseApi {
 }
 
 export class DmtApi {
-  dataSourcesGet(dataSourceType: DataSourceType): string {
-    return `/api/v2/data-sources?documentType=${dataSourceType}`
+  dataSourcesGet(): string {
+    return `/api/v2/data-sources`
   }
 
   addFile(): string {
@@ -119,7 +120,9 @@ export class DmtApi {
     return `/api/v2/data-sources/${datasourceId}`
   }
 
-  indexGet(datasourceId: string) {
+  indexGet(datasourceId: string, application: string) {
+    if (application)
+      return `/api/v4/index/${datasourceId}?APPLICATION=${application}`
     return `/api/v4/index/${datasourceId}`
   }
 
@@ -131,8 +134,8 @@ export class DmtApi {
     let template = ''
 
     // TODO: Cleanup constants
-    if (selectedDatasourceType == 'mongo-db') template = 'MongoDataSource'
-    if (selectedDatasourceType == 'azure-blob-storage')
+    if (selectedDatasourceType === 'mongo-db') template = 'MongoDataSource'
+    if (selectedDatasourceType === 'azure-blob-storage')
       template = 'AzureBlobStorageDataSource'
 
     return `/api/v2/json-schema/apps/DMT/data-sources/${template}`
@@ -141,12 +144,6 @@ export class DmtApi {
   jsonSchemaGet(blueprint: string, ui_recipe: string) {
     return `/api/v2/json-schema/${blueprint}?ui_recipe=${ui_recipe}`
   }
-}
-
-export enum DataSourceType {
-  Blueprints = 'blueprints',
-  Entities = 'entities',
-  ALL = 'all',
 }
 
 export type Datasource = {
