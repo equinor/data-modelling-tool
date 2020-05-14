@@ -1,7 +1,7 @@
 import React from 'react'
 import { BlueprintType, BlueprintAttributeType } from '../../../domain/types'
-import { Pre } from '../../preview/PreviewPlugin'
 import { BlueprintAttribute } from '../../../domain/BlueprintAttribute'
+import { Pre } from '../../../components/JsonView'
 
 type Props = {
   blueprintType: BlueprintType

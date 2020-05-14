@@ -14,7 +14,7 @@ import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
 import { PlotPlugin } from '..'
 import { CollapsibleWrapper } from '../../components/Collapsible'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
-import PreviewView from '../../components/CodeView'
+import JsonView from '../../components/JsonView'
 
 enum WIDGETS {
   PREVIEW = 'PREVIEW',
@@ -63,7 +63,7 @@ class GenerateView {
     switch (uiAttr.widget) {
       case WIDGETS.PREVIEW:
         const data = { [uiAttr.name]: this.document[uiAttr.name] }
-        return <PreviewView key={`widget-${index}`} data={data} />
+        return <JsonView key={`widget-${index}`} data={data} />
     }
   }
 

@@ -15,6 +15,7 @@
     "react-beautiful-dnd": "^11.0.5",
     "react-collapsed": "2.2.2",
     "react-contextmenu": "^2.11.0",
+    "react-copy-to-clipboard": "^5.0.2",
     "react-dom": "^16.13.1",
     "react-icons": "3.7.0",
     "react-jsonschema-form": "^1.8.0",
