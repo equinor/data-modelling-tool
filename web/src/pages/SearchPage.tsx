@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import BlueprintSelectorWidget from '../plugins/form-rjsf-widgets/BlueprintSelectorWidget'
-import PreviewView from '../components/CodeView'
+import JsonView from '../components/JsonView'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import Api2 from '../api/Api2'
@@ -283,11 +283,11 @@ function FilterContainer({ search, queryError }) {
             </div>
           )}
           Query:
-          <PreviewView data={filter} />
+          <JsonView data={filter} />
           {queryError && (
             <>
               <text>Error:</text>
-              <PreviewView
+              <JsonView
                 data={queryError}
                 style={{ fontSize: '12px', color: 'red' }}
               />

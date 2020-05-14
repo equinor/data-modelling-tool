@@ -6,7 +6,7 @@ from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.utility import get_blueprint
+from core.utility import get_blueprint, get_document_by_ref
 from utils.logging import logger
 
 
@@ -81,7 +81,7 @@ class GetDMTDocumentUseCase(uc.UseCase):
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:
             try:
-                enum_blueprint: Blueprint = get_blueprint(attribute.enum_type)
+                enum_blueprint = get_document_by_ref(attribute.enum_type)
                 dtos.append(enum_blueprint.to_dict())
             except AttributeError as error:
                 logger.exception(error)

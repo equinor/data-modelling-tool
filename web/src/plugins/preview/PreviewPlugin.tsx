@@ -1,26 +1,21 @@
 import React from 'react'
-import styled from 'styled-components'
-import Header from '../../components/Header'
 import { PluginProps } from '../../domain/types'
-
-export const Pre = styled.pre`
-  white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
-  white-space: -pre-wrap; /* Opera */
-  white-space: -o-pre-wrap; /* Opera */
-  white-space: pre-wrap; /* CSS3 - Text module (Candidate Recommendation) http://www.w3.org/TR/css3-text/#white-space */
-  word-wrap: break-word; /* IE 5.5+ */
-`
+import JsonView from '../../components/JsonView'
+import Button from '../../components/Button'
+// @ts-ignore
+import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 export default (props: PluginProps) => {
   const { document } = props
   return (
     <div>
-      <Header>
-        <h3>Preview Blueprint</h3>
-      </Header>
-      <div>
-        <Pre>{JSON.stringify(document, null, 2)}</Pre>
+      <div style={{ textAlign: 'end' }}>
+        <CopyToClipboard text={JSON.stringify(document)}>
+          <Button style={{ marginBottom: '5px' }}>Copy</Button>
+        </CopyToClipboard>
       </div>
+
+      <JsonView data={document} />
     </div>
   )
 }
