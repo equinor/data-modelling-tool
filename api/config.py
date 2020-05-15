@@ -14,8 +14,6 @@ class Config:
     MAX_ENTITY_RECURSION_DEPTH = os.getenv("MAX_ENTITY_RECURSION_DEPTH", 50)
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
-    BLUEPRINT_COLLECTION = "SSR-DataSource"
-    ENTITY_COLLECTION = "entities"
     DATA_SOURCES_COLLECTION = "data_sources"
     DYNAMIC_MODELS = "dynamic_models"
     CACHE_MAX_SIZE = 200

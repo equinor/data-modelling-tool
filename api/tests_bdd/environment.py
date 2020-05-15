@@ -13,18 +13,10 @@ client = MongoClient("db", username=Config.MONGO_USERNAME, password=Config.MONGO
 dmt_database = client[Config.MONGO_DB]
 
 
-def wipe_db():
-    print("Dropping collections:")
-    for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, "documents"]:
-        print(name)
-        dmt_database.drop_collection(name)
-
-
 def before_all(context):
     context.errors = []
     context.features = []
     with app.app_context():
-        wipe_db()
         dmt_database.drop_collection(Config.DATA_SOURCES_COLLECTION)
 
 
@@ -55,7 +47,6 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    wipe_db()
     dmt_database.drop_collection(Config.DATA_SOURCES_COLLECTION)
     if "data_sources" in context:
         wipe_added_data_sources(context)
