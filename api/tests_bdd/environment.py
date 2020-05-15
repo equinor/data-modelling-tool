@@ -15,7 +15,7 @@ dmt_database = client[Config.MONGO_DB]
 
 def wipe_db():
     print("Dropping collections:")
-    for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, Config.SYSTEM_COLLECTION, "documents"]:
+    for name in [Config.BLUEPRINT_COLLECTION, Config.ENTITY_COLLECTION, "documents"]:
         print(name)
         dmt_database.drop_collection(name)
 

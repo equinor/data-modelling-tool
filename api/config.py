@@ -18,7 +18,6 @@ class Config:
     ENTITY_COLLECTION = "entities"
     DATA_SOURCES_COLLECTION = "data_sources"
     DYNAMIC_MODELS = "dynamic_models"
-    SYSTEM_COLLECTION = "DMT-APP"
     CACHE_MAX_SIZE = 200
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent.absolute()}/home")
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
