@@ -39,14 +39,12 @@ services:
     build: api
     restart: unless-stopped
     depends_on:
-      - db
+      - mainapi
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
-      MONGO_INITDB_ROOT_USERNAME: maf
-      MONGO_INITDB_ROOT_PASSWORD: maf
-      MONGO_INITDB_DATABASE: maf
-      MONGO_DATA_MODELING_TOOL_DATABASE: dmt
+      DMSS_HOST: mainapi
+      DMSS_PORT: 5000
 
   web:
     build: web
@@ -55,13 +53,23 @@ services:
   db:
     image: mongo:3.4
     command: --quiet
+    restart: unless-stopped
+    logging:
+      driver: "none"
     environment:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
-      MONGO_INITDB_DATABASE: maf
-    logging:
-      driver: "none"
 
+  mainapi:
+    image: mariner.azurecr.io/dmss:v0.2.17
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: local
+      MONGO_INITDB_ROOT_USERNAME: maf
+      MONGO_INITDB_ROOT_PASSWORD: maf
+    depends_on:
+      - db
+      
   nginx:
     depends_on:
       - api
