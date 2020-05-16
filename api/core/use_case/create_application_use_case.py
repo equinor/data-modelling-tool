@@ -21,13 +21,13 @@ from utils.logging import logger
 from core.service.document_service import DocumentService
 
 API_DOCKERFILE = f"""\
-FROM mariner.azurecr.io/dmt/api:stable
+FROM mariner.azurecr.io/dmt/api:latest
 COPY ./home {Config.APPLICATION_HOME}
 """
 
 WEB_DOCKERFILE = """\
-FROM mariner.azurecr.io/dmt/web:stable
-CMD ["yarn", "start"]
+FROM mariner.azurecr.io/dmt/web:latest
+# CMD ["yarn", "start"] TODO: Why is this here?
 COPY ./actions.js /code/src/actions.js
 """
 
@@ -42,6 +42,7 @@ services:
       - mainapi
     environment:
       FLASK_DEBUG: 1
+      FLASK_ENV: production
       ENVIRONMENT: local
       DMSS_HOST: mainapi
       DMSS_PORT: 5000
