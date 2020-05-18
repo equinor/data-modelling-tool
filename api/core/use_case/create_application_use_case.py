@@ -6,19 +6,18 @@ import os
 import pathlib
 import zipfile
 
+from core.repository.repository_exceptions import EntityNotFoundException
 from jinja2 import Template
 
 from classes.dto import DTO
-from classes.storage_recipe import StorageRecipe
 from config import Config
 from core.enums import DMT
-from core.repository.repository_exceptions import EntityNotFoundException
+from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
 from core.utility import BlueprintProvider
 from utils.logging import logger
-from core.service.document_service import DocumentService
 
 API_DOCKERFILE = f"""\
 FROM mariner.azurecr.io/dmt/api:latest
@@ -206,7 +205,7 @@ def zip_all(ob, path, rel=""):
         pass
 
 
-def zip_package(ob, document: DTO, path):
+def zip_package(ob, document: DTO, path, document_service, data_source_id):
     document.data.pop("_id", None)
     document.data.pop("uid", None)
     json_data = json.dumps(document.data)
@@ -219,21 +218,22 @@ def zip_package(ob, document: DTO, path):
 
     blueprint_provider = BlueprintProvider()
     blueprint = blueprint_provider.get_blueprint(document.type)
-
     document_references = []
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
         is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.attribute_type)
-        if attribute.dimensions == "*":
+        if attribute.is_array():
             if not is_contained_in_storage:
                 if name in document.keys():
                     references = document[name]
                     for reference in references:
-                        document_reference: DTO = document_repository.get(reference["_id"])
+                        document_reference: DTO = DTO(
+                            document_service.get_by_uid(data_source_id, reference["_id"]).to_dict()
+                        )
                         document_references.append(document_reference)
 
     for document_reference in document_references:
-        zip_package(ob, document_reference, f"{path}/{document.name}")
+        zip_package(ob, document_reference, f"{path}/{document.name}", document_service, data_source_id)
 
 
 def strip_datasource(path):
@@ -245,13 +245,13 @@ def strip_datasource(path):
 
 
 class CreateApplicationUseCase(uc.UseCase):
-    def __init__(self, datasource_id):
-        self.datasource_id = datasource_id
+    def __init__(self, data_source_id):
+        self.data_source_id = data_source_id
 
     def process_request(self, request_object: CreateApplicationRequestObject):
         application_id: str = request_object.application_id
         document_service = DocumentService()
-        application: DTO = DTO(document_service.get_by_uid(self.datasource_id, application_id).to_dict())
+        application: DTO = DTO(document_service.get_by_uid(self.data_source_id, application_id).to_dict())
         if not application:
             raise EntityNotFoundException(uid=application_id)
 
@@ -273,11 +273,12 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
             for package in application.data["packages"]:
-                # TODO: Support including packages from different datasources
+                logger.info(f"Add package: {package}")
+                # TODO: Support including packages from different data sources
                 # This is a temp. hack
                 package = strip_datasource(package)
-                root_package: DTO = DTO(document_service.get_by_path(self.datasource_id, package).to_dict())
-                zip_package(zip_file, root_package, f"api/home/blueprints/")
+                root_package: DTO = DTO(document_service.get_by_path(self.data_source_id, package).to_dict())
+                zip_package(zip_file, root_package, f"api/home/blueprints", document_service, self.data_source_id)
 
         memory_file.seek(0)
 

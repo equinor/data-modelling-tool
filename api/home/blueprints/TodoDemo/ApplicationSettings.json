@@ -1,14 +1,15 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "DMT-Entities",
+  "name": "ApplicationSettings",
   "description": "",
-  "entities": ["TodoDemo"],
   "packages": ["TodoDemo"],
-  "models": ["system/SIMOS/Entity"],
+  "entities": [],
+  "models": ["SSR-DataSource/TodoDemo/TodoList"],
   "actions": [
     {
-      "name": "Fetch work items",
-      "description": "Get more work",
+      "name": "Todo",
+      "type": "system/SIMOS/Action",
+      "description": "Get list of work items",
       "input": "SSR-DataSource/TodoDemo/TodoList",
       "output": "SSR-DataSource/TodoDemo/TodoList",
       "method": "getTodoList"

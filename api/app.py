@@ -5,6 +5,7 @@ from utils.package_import import import_package
 
 from config import Config
 from core.rest import Actions, Blueprints, DataSource, Document as DocumentBlueprint, Explorer, Index, System, Entity
+from utils.logging import logger
 
 
 def create_app(config):
@@ -35,8 +36,38 @@ def remove_application():
     except ApiException:
         pass
 
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
+        logger.info(f"Remove blueprint package: {folder}")
+        try:
+            explorer_api.remove_by_path("SSR-DataSource", {"directory": folder})
+        except ApiException:
+            pass
+
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
+        logger.info(f"Remove entity package: {folder}")
+        try:
+            explorer_api.remove_by_path("entities", {"directory": folder})
+        except ApiException:
+            pass
+
 
 @app.cli.command()
 def init_application():
     for folder in Config.SYSTEM_FOLDERS:
-        import_package(f"{Config.APPLICATION_HOME}/core/{folder}", is_root=True)
+        import_package(
+            f"{Config.APPLICATION_HOME}/core/{folder}", data_source=Config.APPLICATION_DATA_SOURCE, is_root=True
+        )
+
+    # TODO: how to specify target data source for blueprints and entities?
+
+    logger.info(f"Importing blueprint package(s) {Config.ENTITY_APPLICATION_SETTINGS['packages']}")
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
+        import_package(
+            f"{Config.APPLICATION_HOME}/blueprints/{folder}", data_source="SSR-DataSource", is_root=True,
+        )
+
+    logger.info(f"Importing entity package(s) {Config.ENTITY_APPLICATION_SETTINGS['entities']}")
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
+        import_package(
+            f"{Config.APPLICATION_HOME}/entities/{folder}", data_source="entities", is_root=True,
+        )
