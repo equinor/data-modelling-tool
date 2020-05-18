@@ -1,0 +1,43 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "TodoList",
+  "description": "This describes a todo list",
+  "attributes": [
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "name"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "description"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "type"
+    },
+    {
+      "attributeType": "SSR-DataSource/TodoDemo/Todo",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "items",
+      "dimensions": "*"
+    }
+  ],
+  "storageRecipes": [
+    {
+      "type": "system/SIMOS/StorageRecipe",
+      "name": "DefaultStorageRecipe",
+      "description": "",
+      "attributes": [
+        {
+          "name": "items",
+          "type": "SSR-DataSource/TodoDemo/Todo",
+          "contained": false
+        }
+      ]
+    }
+  ],
+  "uiRecipes": []
+}
