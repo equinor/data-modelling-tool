@@ -46,9 +46,9 @@ class DocumentService:
             dto.data["__path__"] = path
         repository.update(dto)
 
-    def get_by_uid(self, data_source_id: str, document_uid: str) -> Node:
+    def get_by_uid(self, data_source_id: str, document_uid: str, depth: int = 999) -> Node:
         try:
-            document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid)
+            document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid, depth=depth)
             document = document["document"]
         except ApiException as error:
             logger.exception(error)

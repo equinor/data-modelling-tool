@@ -23,7 +23,7 @@ Feature: Index
       | 1   |            | entity |             | system/SIMOS/Package |
 
   Scenario: Get index for single document (Root Package)
-    Given I access the resource url "/api/v4/index/data-source-name/1/1"
+    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/1"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -33,7 +33,7 @@ Feature: Index
           "parentId": null,
           "title":"blueprints",
           "id":"1",
-          "nodeType":"document-node",
+          "nodeType":"system/SIMOS/Package",
           "children":["2"],
           "type":"system/SIMOS/Package"
        }
@@ -52,7 +52,7 @@ Feature: Index
         "children": [
           "3"
         ],
-        "nodeType": "document-node",
+        "nodeType": "system/SIMOS/Package",
         "title": "sub_package_1",
         "type": "system/SIMOS/Package",
         "meta": {
@@ -99,7 +99,7 @@ Feature: Index
         "children": [
           "3"
         ],
-        "nodeType": "document-node",
+        "nodeType": "system/SIMOS/Package",
         "title": "sub_package_1",
         "type": "system/SIMOS/Package",
         "meta": {
@@ -153,7 +153,7 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Entity)
-    Given I access the resource url "/api/v4/index/entities-DS/1/1"
+    Given I access the resource url "/api/v4/index/entities-DS/entities-DS/1"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain

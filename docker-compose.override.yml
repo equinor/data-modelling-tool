@@ -17,8 +17,11 @@ services:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+    depends_on:
+      - web
+      - nginx
     ports:
-      - "5001:5000"
+      - "5000:5000"
     networks:
       - data-modelling-storage-service_default
     external_links:
@@ -32,7 +35,6 @@ services:
     stdin_open: true
     volumes:
       - ./web/src:/code/src
-      - ./web/libs:/code/src/libs
     environment:
       - NODE_ENV=development
     ports:

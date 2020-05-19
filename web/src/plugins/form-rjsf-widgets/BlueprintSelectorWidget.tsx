@@ -5,6 +5,7 @@ import { Datasource, DmtApi } from '../../api/Api'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
 import axios from 'axios'
+import { packageOnClick } from '../../pages/common/nodes/DocumentNode'
 
 const api = new DmtApi()
 
@@ -61,7 +62,7 @@ export default (props: Props) => {
         >
           <DocumentTree
             render={(renderProps: TreeNodeRenderProps) => {
-              const { nodeData } = renderProps
+              const { actions, nodeData } = renderProps
 
               return (
                 <>
@@ -74,7 +75,16 @@ export default (props: Props) => {
                       {nodeData.title}
                     </div>
                   ) : (
-                    <div>{nodeData.title}</div>
+                    <div
+                      onClick={() =>
+                        packageOnClick({
+                          onSelect: nodeData.meta.onSelect,
+                          node: { actions, nodeData },
+                        })
+                      }
+                    >
+                      {nodeData.title}
+                    </div>
                   )}
                 </>
               )

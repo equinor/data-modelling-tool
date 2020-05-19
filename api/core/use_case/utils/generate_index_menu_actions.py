@@ -4,7 +4,7 @@ from typing import Union
 
 from classes.tree_node import Node
 from config import Config
-from core.enums import DMT
+from core.enums import DMT, SIMOS
 
 
 def get_node_url(datasource, parent_id):
@@ -119,10 +119,15 @@ def get_download_menu_action(data_source_id: str, document_id: str):
 
 
 def get_node_on_select(data_source_id: str, tree_node: Union[Node]):
-    if tree_node.type in ["datasource", DMT.PACKAGE.value]:
-        return None
+    if tree_node.type in ["datasource"]:
+        return
     if tree_node.is_empty():
-        return None
+        return
+    if tree_node.type == DMT.PACKAGE.value:
+        if tree_node.parent.type == DMT.ENTITY.value:
+            return get_node_url(data_source_id, tree_node.parent.parent.node_id)
+        return get_node_url(data_source_id, tree_node.parent.node_id)
+
     split_node_id_attribute = tree_node.node_id.split(".", 1)
     attribute = f"?attribute={split_node_id_attribute[-1]}" if len(split_node_id_attribute) > 1 else ""
     return {

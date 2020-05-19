@@ -10,7 +10,7 @@ import { Action } from './actions/actions'
 import Api2 from '../../../api/Api2'
 import values from 'lodash/values'
 import { IndexNode } from '../../../api/Api'
-import { TreeNodeBuilderOld } from '../tree-view/TreeNodeBuilderOld'
+import { createTreeNode } from '../tree-view/TreeNodeBuilderOld'
 import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
 import { Entity } from '../../../domain/types'
@@ -39,16 +39,24 @@ interface CreateNodesProps {
   node: TreeNodeRenderProps
 }
 
-const createNodes = (props: CreateNodesProps) => {
+export const createNodes = (props: CreateNodesProps) => {
   const { documentId, nodeUrl, node } = props
-  console.log(props)
   Api2.get({
     url: `${nodeUrl}/${documentId}?APPLICATION=${node.nodeData.meta.application}`,
     onSuccess: result => {
       const nodes: any = values(result)
-      const indexNodes = nodes.map((node: IndexNode) =>
-        new TreeNodeBuilderOld(node).build()
-      )
+      const indexNodes = nodes.map((node: IndexNode) => {
+        return createTreeNode({
+          id: node.id,
+          filename: node.title,
+          nodeType: node.nodeType,
+          children: node.children,
+          templateRef: node.templateRef,
+          meta: node.meta,
+          type: node.type,
+          isOpen: documentId === node.id,
+        })
+      })
       const parentId = nodes[0]['parentId']
       node.actions.removeNode(nodes[0]['id'], parentId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
