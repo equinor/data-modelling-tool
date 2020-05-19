@@ -59,7 +59,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
         "parentId": get_parent_id(data_source_id, node),
         "title": node.name,
         "id": node.node_id,
-        "nodeType": "document-node",
+        "nodeType": "document-node" if node.type != DMT.PACKAGE.value else DMT.PACKAGE.value,
         "children": children,
         "type": node.type,
         "meta": {
@@ -89,10 +89,12 @@ def is_visible(node):
     return ui_recipe.is_contained(node.attribute, RecipePlugin.INDEX)
 
 
-def extend_index_with_node_tree(root: Union[Node, ListNode], data_source_id: str, app_settings: dict):
+def extend_index_with_node_tree(
+    root: Union[Node, ListNode], data_source_id: str, app_settings: dict, traverse_depth: int = 999
+):
     index = {}
 
-    for node in root.traverse():
+    for node in root.traverse(depth_limit=traverse_depth):
         try:
             # Skip package's content node
             if node.parent and node.parent.type == DMT.PACKAGE.value:
@@ -120,7 +122,6 @@ class GenerateIndexUseCase:
         )
         # make sure we're generating the index with correct blueprints.
         document_service.blueprint_provider.invalidate_cache()
-        # root_packages = document_service.get_root_packages(data_source_id=data_source_id)
         root_packages = package_api.get(data_source_id)
 
         root = Node(
@@ -134,7 +135,9 @@ class GenerateIndexUseCase:
             package_data = root_package["data"]
             try:
                 root.add_child(
-                    document_service.get_by_uid(data_source_id=data_source_id, document_uid=package_data["_id"])
+                    document_service.get_by_uid(
+                        data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
+                    )
                 )
             except EntityNotFoundException as error:
                 logger.exception(error)
@@ -150,7 +153,8 @@ class GenerateIndexUseCase:
             except Exception as error:
                 logger.exception(f"{error}, unhandled exception.")
 
-        return extend_index_with_node_tree(root, data_source_id, app_settings)
+        # This traverse depth will only fetch index of root-packages
+        return extend_index_with_node_tree(root, data_source_id, app_settings, traverse_depth=2)
 
     def single(self, data_source_id: str, document_id: str, parent_id: str, application: str = None) -> Dict:
         document_service = DocumentService()
@@ -172,4 +176,4 @@ class GenerateIndexUseCase:
         node = parent.search(document_id)
         if not node:
             raise EntityNotFoundException(uid=document_id)
-        return extend_index_with_node_tree(node, data_source_id, app_settings)
+        return extend_index_with_node_tree(node, data_source_id, app_settings, traverse_depth=3)

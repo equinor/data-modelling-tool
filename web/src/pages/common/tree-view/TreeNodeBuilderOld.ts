@@ -16,6 +16,7 @@ type IndexNodeV2 = {
   templateRef?: string
   meta?: NodeMetaData
   type?: string
+  isOpen?: boolean
 }
 
 export class TreeNodeBuilderOld {
@@ -43,7 +44,7 @@ export class TreeNodeBuilderOld {
   }
 }
 
-function createTreeNode({
+export function createTreeNode({
   id,
   filename,
   nodeType,
@@ -51,6 +52,7 @@ function createTreeNode({
   templateRef = '',
   meta = {},
   type = '',
+  isOpen = false,
 }: IndexNodeV2) {
   return {
     nodeId: id,
@@ -59,7 +61,7 @@ function createTreeNode({
     nodeType,
     meta: { ...meta, type },
     isExpandable: isExpandable(type, children, meta),
-    isOpen: type === NodeType.DATA_SOURCE,
+    isOpen: type === NodeType.DATA_SOURCE || isOpen,
     isRoot: type === NodeType.DATA_SOURCE,
     isHidden: false,
     children: children || [],

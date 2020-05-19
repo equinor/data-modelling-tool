@@ -10,7 +10,7 @@ import Header from '../components/Header'
 import { Wrapper } from './BlueprintsPage'
 import { DocumentNode } from './common/nodes/DocumentNode'
 import { TreeNodeRenderProps } from '../components/tree-view/TreeNode'
-import { Application, NodeType } from '../util/variables'
+import { Application } from '../util/variables'
 import DocumentEditorPage from './common/DocumentEditorWrapper'
 import AddDatasource from './common/tree-view/AddDatasource'
 
@@ -42,15 +42,7 @@ export default () => {
         <br />
         <DocumentTree
           render={(renderProps: TreeNodeRenderProps) => {
-            //use components directly to control props better.
-            switch (renderProps.nodeData.nodeType) {
-              case NodeType.DOCUMENT_NODE:
-                return <DocumentNode node={renderProps} />
-              default:
-                return (props: TreeNodeRenderProps) => (
-                  <div>{props.nodeData.title}</div>
-                )
-            }
+            return <DocumentNode node={renderProps} />
           }}
           dataSources={state.dataSources}
           application={Application.ENTITIES}

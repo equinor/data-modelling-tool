@@ -248,13 +248,19 @@ class NodeBase:
         path.reverse()
         return f"{'/'.join(path)}/{self.name}"
 
-    def traverse(self):
+    def traverse(self, depth_limit: int = 999, depth_count: int = 0):
         """Iterate in pre-order depth-first search order (DFS)"""
         yield self
+        # Stop the traversing if the depth limit is reached
+        depth_count += 1
+        if depth_limit <= depth_count:
+            if depth_count >= 999:
+                raise RecursionError(f"Reached max-nested-depth (999). Most likely some recursive entities")
+            return
 
         # first, yield everything every one of the child nodes would yield.
         for child in self.children:
-            for item in child.traverse():
+            for item in child.traverse(depth_limit, depth_count):
                 # the two for loops is because there's multiple children,
                 # and we need to iterate over each one.
                 yield item
