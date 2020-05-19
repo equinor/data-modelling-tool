@@ -17,6 +17,7 @@ python-dotenv = "^0.10.3"
 jinja2 = "^2.11.1"
 urllib3 = "1.25.8"
 dmss-api = "^0.2.18"
+toml = "^0.10.1"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"
