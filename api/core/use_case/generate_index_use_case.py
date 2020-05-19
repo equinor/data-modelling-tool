@@ -165,12 +165,21 @@ class GenerateIndexUseCase:
             else Config.ENTITY_APPLICATION_SETTINGS
         )
         parent_uid = parent_id.split(".", 1)[0]
+
+        # If root-package post DS-id as parent_id. We must create a parent node.
         if data_source_id == parent_uid:
-            document_uid = document_id
+            parent = Node(
+                key="root",
+                uid=data_source_id,
+                entity={"type": "datasource", "name": data_source_id},
+                blueprint_provider=document_service.blueprint_provider,
+                attribute=BlueprintAttribute("root", "datasource"),
+            )
+            parent.add_child(document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id))
         else:
             document_uid = parent_uid
+            parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_uid)
 
-        parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_uid)
         if not parent and data_source_id != document_id:
             raise EntityNotFoundException(uid=parent_id)
         node = parent.search(document_id)
