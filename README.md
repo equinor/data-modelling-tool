@@ -3,12 +3,36 @@
 ![CI](https://github.com/equinor/data-modelling-tool/workflows/CI/badge.svg)
 
 A tool for modelling and presenting blueprints.  
-Architecture [diagrams](docs/architecture.md)  
-Read more about the core concepts here: [DMT](docs/README_DMT.md) and [plugins](docs/README_Plugin.md)
 
-## Getting started
+## Getting Started
 
-We use docker-compose to run the project locally;
+How to get DMT up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+
+### Prerequisites
+
+In order to run DMT you need to have installed:
+
+- [Docker](https://www.docker.com/) 
+- [Docker Compose](https://docs.docker.com/compose/)
+- Git 
+
+### Installing
+
+Docker-compose is used for running the project locally. 
+
+DMT depends on the [Data Modelling Storage Service](https://github.com/equinor/data-modelling-storage-service) (DMSS) for storing documents and DMSS must be cloned in same directory as DMT, since DMSS is volume mounted inside DMT container at runtime.
+
+```
+git clone git@github.com:equinor/data-modelling-tool.git
+git clone git@github.com:equinor/data-modelling-storage service.git 
+cd data-modelling-tool
+```
+
+### Usage
+
+#### Running
+
+Run the following from the DMT root-level directory:
 
 For Linux;
 
@@ -20,23 +44,28 @@ For Windows;
 
 ``` bash
 docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
+```
+The DMT will be available at http://localhost
 
+#### Stopping
+
+``` bash 
+docker-compose down
 ```
 
-## Exported Application
+#### Reset 
 
-1. Unzip the downloaded file(e.g `unzip application.zip` )
-2. Run `docker-compose up`
-3. Visit [http://localhost:9000] in your web browser (Internet Explorer is not supported)
+To re-import blueprints and entities from [home directory](api/home).
 
-## Components README
+```
+docker-compose run --rm api ./reset-application.sh
+```
 
-[API](api/README.md)  
-[WEB](web/README.md)
+### Pre-commit
 
-## Pre-commit
+Code is among other things automatically prettified upon commit using precommit hooks.
 
-The project provides a `.pre-commit-config.yaml`-file that is used to setup git _pre-commit hooks_.
+The project provides a [.pre-commit-config.yaml](.pre-commit-config.yaml) file that is used to setup git _pre-commit hooks_.
 
 ``` sh
 pip install pre-commit
@@ -45,19 +74,25 @@ pre-commit install
 
 Alternative pre-commit installations can be found [here](https://pre-commit.com/#install).
 
-## Database
+### Running Tests
 
-To populate the database for first-time-use;
+Unit tests: ```docker-compose run --rm api pytest ```
 
-1. Start the project with `docker-compose up`
-2. Run the provided script within the running API container;  
-   `docker-compose exec api ./reset-database.sh`
+BDD tests: ```docker-compose run --rm api behave```
 
-## Development environment
+## Deployment
 
-This repository includes configuration for the IntelliJ platform (including PyCharm and WebStorm).
-The most useful configuration included, is likely the run / debug configurations / targets.
-See below for more.
+DMT is running in Radix, see [radixconfig.yaml](radixconfig.yaml) for deployment configuration.
 
-Since this repository uses multiple technologies that PyCharm / WebStorm does not support out-of-the-box, some plugins have been included.
-When opening this repository in an IntelliJ IDE, you should be asked to install some plugins. 
+## Documentation
+
+- [Architecture overview](docs/architecture.md)  
+- [API](api/README.md)  
+- [WEB](web/README.md)
+- [DMT](docs/README_DMT.md)
+- [plugins](docs/README_Plugin.md)
+
+
+## Contributing 
+
+Read our [contributors' guide](docs/contributors.md) to get started.

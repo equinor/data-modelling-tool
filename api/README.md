@@ -31,19 +31,13 @@ This project uses [Poetry](https://poetry.eustace.io/docs/) for its Python packa
 * To add packages run `poetry add myPackage` (Remember to rebuild the Docker image)
 
 ## Running / debugging
-Run / debugging configurations for the IntelliJ platform are included.
-The target `API` runs `docker-compose up`, and attaches the Python debugger to the `api` container. This allows setting breakpoints in the IDE.
-That is, when starting the `API` target, there is no need to run `docker-compose up` in a separate terminal (in PyCharm / WebStorm).
-There should not be an issue starting the application from the terminal, though.
 
-No other configuration should be necessary.
-
-There are multiple targets for debugging the client.
-Two of which are a work in progress.
-`WEB` will start a new Chrome browser, and stops at breakpoints in the code.
+TODO: How to add debug?
 
 ## Troubleshooting
+
 #### Intellij Docker issue with pydevd
+
 * Try open idea from terminal. 
 
 Mac:  /Applications/IntelliJ\ IDEA.app/Contents/MacOS/idea
