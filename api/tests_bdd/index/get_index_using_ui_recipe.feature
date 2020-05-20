@@ -287,7 +287,7 @@ Feature: UI Recipe
       "description": ""
     }
     """
-
+  @skip
   Scenario: Get index for single document (Document)
     Given I access the resource url "/api/v4/index/data-source-name/1/2"
     And data modelling tool templates are imported
@@ -311,6 +311,7 @@ Feature: UI Recipe
     """
     And the array at 2.children should be of length 2
 
+  @skip
   Scenario: Get index for single document (model- and storage-NOT-contained)
     Given I access the resource url "/api/v4/index/data-source-name/1/3"
     And data modelling tool templates are imported

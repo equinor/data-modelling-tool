@@ -63,6 +63,7 @@ export default (props: Props) => {
           <DocumentTree
             render={(renderProps: TreeNodeRenderProps) => {
               const { actions, nodeData } = renderProps
+              const [loading, setLoading] = useState(false)
 
               return (
                 <>
@@ -80,10 +81,16 @@ export default (props: Props) => {
                         packageOnClick({
                           onSelect: nodeData.meta.onSelect,
                           node: { actions, nodeData },
+                          setLoading,
                         })
                       }
                     >
                       {nodeData.title}
+                      {loading && (
+                        <small style={{ paddingLeft: '15px' }}>
+                          Loading...
+                        </small>
+                      )}
                     </div>
                   )}
                 </>

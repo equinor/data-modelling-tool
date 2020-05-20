@@ -5,7 +5,7 @@ from flask import Blueprint, request, Response, send_file
 from core.enums import STATUS_CODES
 from core.rest.utils.dmss_api_wrapper import dmss_api_wrapper
 from core.serializers.dto_json_serializer import DTOSerializer
-from core.service.document_service import explorer_api
+from core.service.document_service import explorer_api, get_cached_document
 from core.shared import response_object as res
 from core.use_case.export_use_case import ExportRequestObject, ExportUseCase
 from core.use_case.move_file_use_case import MoveFileRequestObject, MoveFileUseCase
@@ -31,6 +31,7 @@ def add_file(data_source_id: str):
             _preload_content=False,
         )
 
+    get_cached_document.cache_clear()
     return dmss_call()
 
 
@@ -53,6 +54,7 @@ def add_document(data_source_id: str):
             data_source_id, {"document": request_data.get("document"), "directory": request_data.get("directory")}
         )
 
+    get_cached_document.cache_clear()
     return dmss_call()
 
 
@@ -65,6 +67,7 @@ def remove(data_source_id: str):
             data_source_id, {"documentId": request_data.get("documentId"), "parentId": request_data.get("parentId")}
         )
 
+    get_cached_document.cache_clear()
     return dmss_call()
 
 
@@ -74,6 +77,7 @@ def move_file():
     use_case = MoveFileUseCase()
     request_object = MoveFileRequestObject.from_dict(request_data)
     response = use_case.execute(request_object)
+    get_cached_document.cache_clear()
     return Response(
         json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
     )
@@ -104,6 +108,7 @@ def rename(data_source_id: str):
             },
         )
 
+    get_cached_document.cache_clear()
     return dmss_call()
 
 
