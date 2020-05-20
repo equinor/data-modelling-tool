@@ -13,17 +13,14 @@ client = MongoClient("db", username=Config.MONGO_USERNAME, password=Config.MONGO
 dmt_database = client[Config.MONGO_DB]
 
 
+def wipe_added_data_sources(context):
+    for data_source in context.data_sources.values():
+        dmt_database.drop_collection(data_source)
+
+
 def before_all(context):
     context.errors = []
     context.features = []
-    with app.app_context():
-        dmt_database.drop_collection(Config.DATA_SOURCES_COLLECTION)
-
-
-def wipe_added_data_sources(context):
-    for data_source in context.data_sources.values():
-        if data_source["collection"] != "system":
-            dmt_database.drop_collection(data_source["collection"])
 
 
 def after_all(context):
@@ -47,7 +44,6 @@ def before_scenario(context, scenario):
 
 
 def after_scenario(context, scenario):
-    dmt_database.drop_collection(Config.DATA_SOURCES_COLLECTION)
     if "data_sources" in context:
         wipe_added_data_sources(context)
     context.ctx.pop()

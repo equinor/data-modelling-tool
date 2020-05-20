@@ -1,6 +1,7 @@
 import json
 
 from behave import given, then, when
+from dmss_api import ApiException
 
 from classes.dto import DTO
 from classes.schema import Factory
@@ -25,8 +26,11 @@ def step_impl(context):
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')
 def step_impl_2(context, uid: str, data_source_id: str):
     document: DTO = DTO(uid=uid, data=json.loads(context.text))
-    response = explorer_api.add_raw(data_source_id, document.to_dict())
-    print(response)
+    try:
+        response = explorer_api.add_raw(data_source_id, document.to_dict())
+        print(response)
+    except ApiException as error:
+        print(error)
 
 
 @when('I create a Python class from the template "{template_name}"')

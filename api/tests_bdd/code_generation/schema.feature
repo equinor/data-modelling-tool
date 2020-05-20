@@ -4,9 +4,9 @@ Feature: Class generation from schema
 
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name   | database | collection   | type     |
-      | db   | 27017 | maf      | maf      | false | system | local    | system       | mongo-db |
       | db   | 27017 | maf      | maf      | false | apps   | local    | applications | mongo-db |
 
+  @skip
   Scenario: There, and back again
     Given data modelling tool templates are imported
     When I create a Python class from the template "system/SIMOS/Blueprint"
