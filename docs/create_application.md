@@ -1,4 +1,4 @@
-## Exported Application
+## Create Applications
 
 1. Unzip the downloaded file(e.g `unzip application.zip` )
 2. Run `docker-compose up`
