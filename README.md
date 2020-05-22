@@ -24,3 +24,6 @@ This application uses the [Data Modelling Storage Service (DMSS)](docs/architect
 
 Resources to help get you started developing on DMT can be found [here](docs/developing.md)
 
+## Contributing 
+
+Read our [contributors' guide](docs/contributors.md) to get started.
