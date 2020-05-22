@@ -1,12 +1,14 @@
 import io
 import zipfile
+from functools import lru_cache
 from typing import Dict, Union
 
 from dmss_api import ApiException
 
 from classes.dto import DTO
 from classes.tree_node import ListNode, Node
-from core.enums import DMT, SIMOS
+from config import Config
+from core.enums import DMT
 from core.repository.repository_exceptions import (
     EntityNotFoundException,
     FileNotFoundException,
@@ -14,13 +16,25 @@ from core.repository.repository_exceptions import (
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
-from services.data_modelling_document_service import document_api, explorer_api, package_api, datasource_api
+from services.data_modelling_document_service import datasource_api, document_api, explorer_api, package_api
 from utils.logging import logger
 
 
 def get_complete_document(data_source_id: str, document_uid: str) -> Dict:
     document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid)
     return document["document"]
+
+
+@lru_cache(maxsize=Config.CACHE_MAX_SIZE)
+def get_cached_document(ds, doc, dep, blueprint_provider):
+    try:
+        document = document_api.get_by_id(data_source_id=ds, document_id=doc, depth=dep)
+        document = document["document"]
+    except ApiException as error:
+        logger.exception(error)
+        raise EntityNotFoundException(doc)
+
+    return Node.from_dict(document, document["_id"], blueprint_provider=blueprint_provider)
 
 
 class DocumentService:
@@ -45,6 +59,10 @@ class DocumentService:
         if isinstance(repository, ZipFileClient):
             dto.data["__path__"] = path
         repository.update(dto)
+
+    def get_by_uid_cached(self, data_source, document_uid, depth=999):
+        blueprint_provider = self.blueprint_provider
+        return get_cached_document(data_source, document_uid, depth, blueprint_provider)
 
     def get_by_uid(self, data_source_id: str, document_uid: str, depth: int = 999) -> Node:
         try:

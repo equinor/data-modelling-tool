@@ -15,6 +15,7 @@ import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
 import { Entity } from '../../../domain/types'
 import { insertReferenceAction } from './actions/insertReference'
+import { useEffect, useState } from 'react'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -37,13 +38,16 @@ interface CreateNodesProps {
   documentId: string
   nodeUrl: string
   node: TreeNodeRenderProps
+  loadingCallBack?: Function
 }
 
-export const createNodes = (props: CreateNodesProps) => {
-  const { documentId, nodeUrl, node } = props
+export const CreateNodes = (props: CreateNodesProps) => {
+  const { documentId, nodeUrl, node, loadingCallBack } = props
+
   Api2.get({
     url: `${nodeUrl}/${documentId}?APPLICATION=${node.nodeData.meta.application}`,
     onSuccess: result => {
+      if (loadingCallBack) loadingCallBack(false)
       const nodes: any = values(result)
       const indexNodes = nodes.map((node: IndexNode) => {
         return createTreeNode({
@@ -82,10 +86,10 @@ const getFormProperties = (
 
   switch (method) {
     case ContextMenuActions.CREATE: {
-      return createAction(action, node, setShowModal, showError, createNodes)
+      return createAction(action, node, setShowModal, showError, CreateNodes)
     }
     case ContextMenuActions.UPDATE: {
-      return updateAction(action, node, setShowModal, showError, createNodes)
+      return updateAction(action, node, setShowModal, showError, CreateNodes)
     }
     case ContextMenuActions.DELETE: {
       return deleteAction(action, node, setShowModal, showError, layout)
@@ -94,13 +98,13 @@ const getFormProperties = (
       return downloadAction(action)
     }
     case ContextMenuActions.RUNNABLE: {
-      return Action(action, node, setShowModal, createNodes, layout, entity)
+      return Action(action, node, setShowModal, CreateNodes, layout, entity)
     }
     case ContextMenuActions.IMPORT: {
       return importAction(action)
     }
     case ContextMenuActions.INSERT_REFERENCE: {
-      return insertReferenceAction(action, node, setShowModal, createNodes)
+      return insertReferenceAction(action, node, setShowModal, CreateNodes)
     }
 
     default:

@@ -30,7 +30,7 @@ def step_impl_2(context, uid: str, data_source_id: str):
         response = explorer_api.add_raw(data_source_id, document.to_dict())
         print(response)
     except ApiException as error:
-        print(error)
+        raise Exception(error)
 
 
 @when('I create a Python class from the template "{template_name}"')
