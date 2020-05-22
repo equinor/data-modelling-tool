@@ -2,97 +2,96 @@
 
 ![CI](https://github.com/equinor/data-modelling-tool/workflows/CI/badge.svg)
 
-A tool for modelling and presenting blueprints.  
+The main Web Application for the SIMOS Data Modelling Framework
 
-## Getting Started
+Read more about the core concepts of blueprints and models [here](docs/README_DMT.md)
 
-How to get DMT up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
+An web application for modelling, searching, and viewing blueprint based models.
+Features include;  
 
-### Prerequisites
+* Modelling blueprints
+* Creating models (entities)
+* [Searching and viewing blueprints and entities](docs/search.md)
+* [Creating applications](docs/create_application.md)
+* [Generating code for you'r models](#code-generator)
+* [Importing and Exporting models](docs/import_export.md)
+* [Custom views and edit widgets](docs/README_Plugin.md)
 
-In order to run DMT you need to have installed:
+This application uses the [Data Modelling Storage Service (DMSS)](docs/architecture.md) as a storage backend.
 
-- [Docker](https://www.docker.com/) 
-- [Docker Compose](https://docs.docker.com/compose/)
-- Git 
+## Developing DMT
 
-### Installing
+Resources to help get you started developing on DMT can be found [here](docs/developing.md)
 
-Docker-compose is used for running the project locally. 
+## Code Generator
 
-DMT depends on the [Data Modelling Storage Service](https://github.com/equinor/data-modelling-storage-service) (DMSS) for storing documents and DMSS must be cloned in same directory as DMT, since DMSS is volume mounted inside DMT container at runtime.
+DMT can generate code from you'r blueprints. This is useful for being able to programatically interact with you'r modells. For example; creating 10k entities of a complex model based on data from an excel sheet.  
+If you also need storage for your models, or making them available for searching and viewing in the DMT web application, [DMT Python3 Library](https://equinor.github.io/dmt-py/) can help with that.
 
-```
-git clone git@github.com:equinor/data-modelling-tool.git
-git clone git@github.com:equinor/data-modelling-storage service.git 
-cd data-modelling-tool
-```
+To download generated code for some blueprints;
 
-### Usage
+1. Navigate to the "Blueprints" page in the DMT app
+2. Right-click any package or blueprint
+3. Select "Generate Code" and choose you'r code generator
 
-#### Running
+![custom_code_generator](docs/custom_code_generator.png)
 
-Run the following from the DMT root-level directory:
+### Custom Code Generator
 
-For Linux;
+DMT currently ships with one Python3 code generator ([read more](docs/standard_code_gen.md)).
+This might not suit you'r needs (either you need a different language, or some special feature on the code itself), so DMT supports plugable code generators. The code generators can be written in any language, and generate code in any language.
 
-``` bash
-docker-compose up
-```
+To use your own code generator, follow these steps;
 
-For Windows;
+1. Create a python module (a directory with a `__init__.py`-file)
+2. (Optional) Create a file called `NAME.txt` with a single line with the desired display name.
+3. Have the modules `main()` function adhere to the DMT-code-generator-standard
 
-``` bash
-docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
-```
-The DMT will be available at http://localhost
+    ```python
+    def main(dict_of_blueprints: dict) -> io.BytesIO:
+        zip_folder = create_code_from_blueprints()
+        return zip_folder
+    ```
 
-#### Stopping
+   Input: A dictionary of all the blueprints referenced in the selected package/blueprint, in their entierty.
 
-``` bash 
-docker-compose down
-```
+   ```python
+   {
+      "SSR-DataSource/CarPackage/Car": {
+         "name": "Car",
+         "type": "system/SIMOS/Blueprint",
+         ...
+      }
+      "system/SIMOS/Blueprint": {
+         ...
+      }
+   }
+   ```
 
-#### Reset 
+   Output: A zip folder of the `io.BytesIO`-class  
+   Example;
 
-To re-import blueprints and entities from [home directory](api/home).
-
-```
-docker-compose run --rm api ./reset-application.sh
-```
-
-### Pre-commit
-
-Code is among other things automatically prettified upon commit using precommit hooks.
-
-The project provides a [.pre-commit-config.yaml](.pre-commit-config.yaml) file that is used to setup git _pre-commit hooks_.
-
-``` sh
-pip install pre-commit
-pre-commit install
-```
-
-Alternative pre-commit installations can be found [here](https://pre-commit.com/#install).
-
-### Running Tests
-
-Unit tests: ```docker-compose run --rm api pytest ```
-
-BDD tests: ```docker-compose run --rm api behave```
-
-## Deployment
-
-DMT is running in Radix, see [radixconfig.yaml](radixconfig.yaml) for deployment configuration.
-
-## Documentation
-
-- [Architecture overview](docs/architecture.md)  
-- [API](api/README.md)  
-- [WEB](web/README.md)
-- [DMT](docs/README_DMT.md)
-- [plugins](docs/README_Plugin.md)
+   ```python
+   import io
+   import zipfile
 
 
-## Contributing 
+   def main(list_of_blueprints):
+      memory_file = io.BytesIO()
+      with zipfile.ZipFile(memory_file, mode="w") as zip_file:
+         zip_file.writestr("python-code.py", str(list_of_blueprints))
 
-Read our [contributors' guide](docs/contributors.md) to get started.
+      memory_file.seek(0)
+      return memory_file
+   ```
+
+4. Using docker; mount you'r python module into the container `/code/home/code_generators/`
+
+    ```yaml
+    ...
+    volumes:
+      - ./plugins/awsome_fortran_cg:/code/home/code_generators/awsome_fortran_cg
+    ...
+    ```
+
+5. When the DMT-API restarts, the plugin is loaded, and offered as an option on "Generate Code".
