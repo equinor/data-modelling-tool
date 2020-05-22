@@ -1,8 +1,32 @@
-# Developing DMT
+## Getting Started
 
-## Getting started
+How to get DMT up and running on your local machine for development and testing purposes. See deployment for notes on how to deploy the project on a live system.
 
-We use docker-compose to run the project locally;
+### Prerequisites
+
+In order to run DMT you need to have installed:
+
+- [Docker](https://www.docker.com/) 
+- [Docker Compose](https://docs.docker.com/compose/)
+- Git 
+
+### Installing
+
+Docker-compose is used for running the project locally. 
+
+DMT depends on the [Data Modelling Storage Service](https://github.com/equinor/data-modelling-storage-service) (DMSS) for storing documents and DMSS must be cloned in same directory as DMT, since DMSS is volume mounted inside DMT container at runtime.
+
+```
+git clone git@github.com:equinor/data-modelling-tool.git
+git clone git@github.com:equinor/data-modelling-storage service.git 
+cd data-modelling-tool
+```
+
+### Usage
+
+#### Running
+
+Run the following from the DMT root-level directory:
 
 For Linux;
 
@@ -14,12 +38,28 @@ For Windows;
 
 ``` bash
 docker-compose.exe -f docker-compose.yml  -f docker-compose.windows.yml up
+```
+The DMT will be available at http://localhost
 
+#### Stopping
+
+``` bash 
+docker-compose down
 ```
 
-## Pre-commit
+#### Reset 
 
-The project provides a `.pre-commit-config.yaml`-file that is used to setup git _pre-commit hooks_.
+To re-import blueprints and entities from [home directory](api/home).
+
+```
+docker-compose run --rm api ./reset-application.sh
+```
+
+### Pre-commit
+
+Code is among other things automatically prettified upon commit using precommit hooks.
+
+The project provides a [.pre-commit-config.yaml](.pre-commit-config.yaml) file that is used to setup git _pre-commit hooks_.
 
 ``` sh
 pip install pre-commit
@@ -28,19 +68,8 @@ pre-commit install
 
 Alternative pre-commit installations can be found [here](https://pre-commit.com/#install).
 
-## Database
+### Running Tests
 
-To populate the database for first-time-use;
+Unit tests: ```docker-compose run --rm api pytest ```
 
-1. Start the project with `docker-compose up`
-2. Run the provided script within the running API container;  
-   `docker-compose exec api ./reset-database.sh`
-
-## Development environment
-
-This repository includes configuration for the IntelliJ platform (including PyCharm and WebStorm).
-The most useful configuration included, is likely the run / debug configurations / targets.
-See below for more.
-
-Since this repository uses multiple technologies that PyCharm / WebStorm does not support out-of-the-box, some plugins have been included.
-When opening this repository in an IntelliJ IDE, you should be asked to install some plugins.
+BDD tests: ```docker-compose run --rm api behave```
