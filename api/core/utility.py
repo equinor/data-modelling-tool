@@ -1,6 +1,7 @@
 import re
 from functools import lru_cache
 
+from dmss_api import ApiException
 
 from classes.blueprint import Blueprint
 from classes.dto import DTO
@@ -47,7 +48,7 @@ class BlueprintProvider:
     def get_blueprint(self, type: str) -> Blueprint:
         try:
             return Blueprint(get_document_by_ref(type))
-        except Exception as error:
+        except ApiException as error:
             logger.exception(error)
             raise EntityNotFoundException(uid=type)
 

@@ -87,5 +87,4 @@ def step_impl_documents(context, data_source_id: str, collection: str):
     context.documents = {}
     tree = generate_tree(data_source_id, context.table)
     tree.show_tree()
-    # explorer_api.add_raw(data_source_id,  tree.to_dict())
     explorer_api.add_document(data_source_id, {"data": tree.to_dict()})

@@ -10,7 +10,6 @@ wasmer = "0.3.0"
 python = "3.8.*"
 flask = "^1.0"
 werkzeug = "^0.15.4"
-pymongo = "^3.8"
 jsonschema = "^3.0"
 stringcase = "^1.2"
 python-dotenv = "^0.10.3"
@@ -34,6 +33,7 @@ flake8 = "^3.7.9"
 bandit = "^1.6.2"
 safety = "^1.8.7"
 black = "^19.10b0"
+pymongo = "^3.10.1"
 
 [tool.black]
 line-length = 119

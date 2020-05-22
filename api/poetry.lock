@@ -532,7 +532,7 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
 version = "2.4.1"
 
 [[package]]
-category = "main"
+category = "dev"
 description = "Python driver for MongoDB <http://www.mongodb.org>"
 name = "pymongo"
 optional = false
@@ -818,7 +818,7 @@ docs = ["sphinx", "jaraco.packaging (>=3.2)", "rst.linker (>=1.9)"]
 testing = ["jaraco.itertools", "func-timeout"]
 
 [metadata]
-content-hash = "6cf5c3f224488d2f2ee0869c0cd3de79ea637a9e8a0de99124f2bc9e21cd867e"
+content-hash = "38949851cf69f2884f895af8a91f33d7cd371086401bf90bced7d63b49bc67fb"
 python-versions = "3.8.*"
 
 [metadata.files]
