@@ -14,7 +14,6 @@ class Config:
     MAX_ENTITY_RECURSION_DEPTH = os.getenv("MAX_ENTITY_RECURSION_DEPTH", 50)
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
-    DATA_SOURCES_COLLECTION = "data_sources"
     DYNAMIC_MODELS = "dynamic_models"
     CACHE_MAX_SIZE = 200
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent.absolute()}/home")

@@ -2,8 +2,8 @@
   "type": "system/SIMOS/Application",
   "name": "DMT-Entities",
   "description": "",
-  "entities": ["TodoDemo"],
-  "packages": ["TodoDemo"],
+  "entities": ["entities/TodoDemo"],
+  "packages": ["SSR-DataSource/TodoDemo"],
   "models": ["system/SIMOS/Entity"],
   "actions": [
     {

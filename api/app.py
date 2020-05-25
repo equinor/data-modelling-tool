@@ -38,15 +38,17 @@ def remove_application():
 
     for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
         logger.info(f"Remove blueprint package: {folder}")
+        data_source, folder = folder.split("/", 1)
         try:
-            explorer_api.remove_by_path("SSR-DataSource", {"directory": folder})
+            explorer_api.remove_by_path(data_source, {"directory": folder})
         except ApiException:
             pass
 
     for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
+        data_source, folder = folder.split("/", 1)
         logger.info(f"Remove entity package: {folder}")
         try:
-            explorer_api.remove_by_path("entities", {"directory": folder})
+            explorer_api.remove_by_path(data_source, {"directory": folder})
         except ApiException:
             pass
 
@@ -62,12 +64,14 @@ def init_application():
 
     logger.info(f"Importing blueprint package(s) {Config.ENTITY_APPLICATION_SETTINGS['packages']}")
     for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
+        data_source, folder = folder.split("/", 1)
         import_package(
-            f"{Config.APPLICATION_HOME}/blueprints/{folder}", data_source="SSR-DataSource", is_root=True,
+            f"{Config.APPLICATION_HOME}/blueprints/{folder}", data_source=data_source, is_root=True,
         )
 
     logger.info(f"Importing entity package(s) {Config.ENTITY_APPLICATION_SETTINGS['entities']}")
     for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
+        data_source, folder = folder.split("/", 1)
         import_package(
-            f"{Config.APPLICATION_HOME}/entities/{folder}", data_source="entities", is_root=True,
+            f"{Config.APPLICATION_HOME}/entities/{folder}", data_source=data_source, is_root=True,
         )
