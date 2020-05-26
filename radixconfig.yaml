@@ -20,7 +20,7 @@ spec:
           imageTagName: latest
       ports:
         - name: http
-          port: 80
+          port: 3000
     - name: api
       image: mariner.azurecr.io/dmt/api:{imageTagName}
       environmentConfig:
@@ -40,19 +40,15 @@ spec:
         - name: flask
           port: 5000
       publicPort: flask
-    - name: oauth-proxy
-      src: ./oauth-proxy
+    - name: proxy
+      src: ./nginx
       ports:
         - name: nginx
-          port: 8081
+          port: 80
       publicPort: nginx
-      secrets:
-        - OAUTH2_PROXY_CLIENT_ID
-        - OAUTH2_PROXY_CLIENT_SECRET
-        - OAUTH2_REDIRECT_URL
   dnsAppAlias:
     environment: prod
-    component: oauth-proxy
+    component: proxy
   privateImageHubs:
     mariner.azurecr.io:
       username: mariner
