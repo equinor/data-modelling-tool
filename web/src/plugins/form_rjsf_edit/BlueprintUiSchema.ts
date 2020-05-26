@@ -133,7 +133,11 @@ export class BlueprintUiSchema extends Blueprint implements IBlueprintSchema {
     uiAttr: any
   ) {
     if (attr.isArray()) {
-      const newPath = path + '.items'
+      let newPath = path + '.items'
+      // if 'forEachElement' is false on a uiAttribute, don't apply the widget to every child. But to the entire array
+      if (uiAttr?.forEachElement === false) {
+        newPath = path
+      }
       objectPath.set(this.schema, newPath, {})
       this.appendSchemaProperty(newPath, blueprint, attr, uiAttr)
     } else {

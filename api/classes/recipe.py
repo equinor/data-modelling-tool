@@ -16,6 +16,7 @@ class RecipeAttribute:
         self,
         name: str,
         is_contained: bool,
+        for_each_element: bool = True,
         field: str = None,
         collapsible: bool = None,
         ui_recipe: str = None,
@@ -23,6 +24,7 @@ class RecipeAttribute:
     ):
         self.name = name
         self.is_contained = is_contained
+        self.for_each_element = for_each_element
         self.field = field
         self.collapsible = collapsible
         self.ui_recipe = ui_recipe
@@ -94,5 +96,7 @@ class Recipe:
 
 class DefaultRecipe(Recipe):
     def __init__(self, attributes: List[BlueprintAttribute]):
-        recipe_attributes = [RecipeAttribute(name=attr.name, is_contained=True) for attr in attributes]
+        recipe_attributes = [
+            RecipeAttribute(name=attr.name, is_contained=True, for_each_element=True) for attr in attributes
+        ]
         super().__init__("Default", attributes=recipe_attributes)

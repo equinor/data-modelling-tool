@@ -26,7 +26,8 @@ def get_ui_recipe(recipes: List[Dict]):
                 RecipeAttribute(
                     name=attr["name"],
                     is_contained=attr.get("contained", True),
-                    field=attr.get("field"),
+                    for_each_element=attr.get("forEachElement", True),
+                    field=attr.get("field", None),
                     collapsible=attr.get("collapsible", None),
                     ui_recipe=attr.get("uiRecipe", None),
                     mapping=attr.get("mapping", None),
