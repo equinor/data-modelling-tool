@@ -3,7 +3,7 @@ version: "3.4"
 services:
   nginx:
     image: radix-nginx
-    build: ./nginx/demo
+    build: nginx
 
   api:
     image: radix-api

@@ -2,7 +2,7 @@ version: "3.4"
 
 services:
   nginx:
-    build: ./nginx/local
+    build: ./nginx
     networks:
       - data-modelling-storage-service_default
 

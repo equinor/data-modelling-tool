@@ -1,5 +1,4 @@
 FROM node:12-alpine as base
-EXPOSE 80
 WORKDIR /code
 RUN npm install -g serve
 COPY package.json yarn.lock /code/
@@ -11,5 +10,5 @@ CMD ["yarn", "start"]
 
 FROM base as prod
 RUN yarn build
-EXPOSE 80
-CMD ["serve", "--single", "build", "--listen", "80"]
+EXPOSE 3000
+CMD ["serve", "--single", "build", "--listen", "3000"]
