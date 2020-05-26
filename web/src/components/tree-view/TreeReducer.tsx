@@ -15,6 +15,7 @@ export const REMOVE_CHILD = 'REMOVE_CHILD'
 export const SET_NODES = 'SET_NODES'
 export const ADD_NODES = 'ADD_NODES'
 export const REPLACE_NODE = 'REPLACE_NODE'
+export const HAS_CHILD = 'HAS_CHILD'
 
 const childIds = (state: any, action: any) => {
   switch (action.type) {
