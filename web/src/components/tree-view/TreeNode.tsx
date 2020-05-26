@@ -42,8 +42,9 @@ export type TreeNodeProps = {
 export type AddNode = (node: TreeNodeData, parentId: string) => void
 export type AddNodes = (nodes: object) => void
 export type AddChild = (parentId: string, childId: string) => void
+export type HasChild = (parentId: string, childId: string) => boolean
 export type UpdateNode = (node: TreeNodeData) => void
-export type RemoveNode = (nodeId: string, parentId: string) => void
+export type RemoveNode = (nodeId: string, parentId?: string) => void
 export type ReplaceNode = (
   parentId: string,
   oldId: string,
@@ -58,6 +59,7 @@ export type TreeNodeActions = {
   addChild: AddChild
   removeNode: RemoveNode
   replaceNode: ReplaceNode
+  hasChild: HasChild
 }
 
 export type TreeNodeRenderProps = {

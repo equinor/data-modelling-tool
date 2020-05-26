@@ -62,10 +62,12 @@ export const CreateNodes = (props: CreateNodesProps) => {
         })
       })
       const parentId = nodes[0]['parentId']
-      node.actions.removeNode(nodes[0]['id'], parentId)
+      const nodeId = nodes[0]['id']
+      node.actions.removeNode(nodeId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
-      // Connect new nodes to parent in tree
-      node.actions.addChild(parentId, nodes[0]['id'])
+      if (!node.actions.hasChild(parentId, nodeId)) {
+        node.actions.addChild(parentId, nodeId)
+      }
     },
     onError: (err: any) => console.error(Object.keys(err)),
   })
