@@ -15,7 +15,6 @@ interface WithContextMenuProps {
   children: any
   layout: any
   node: TreeNodeRenderProps
-  dataUrl: string
 }
 
 export type SetShowModal = (showModal: boolean) => void

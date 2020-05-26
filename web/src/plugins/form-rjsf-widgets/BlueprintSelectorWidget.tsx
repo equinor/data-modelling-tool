@@ -5,7 +5,7 @@ import { Datasource, DmtApi } from '../../api/Api'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
 import axios from 'axios'
-import { packageOnClick } from '../../pages/common/nodes/DocumentNode'
+import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
 
 const api = new DmtApi()
 
@@ -65,36 +65,36 @@ export default (props: Props) => {
               const { actions, nodeData } = renderProps
               const [loading, setLoading] = useState(false)
 
-              return (
-                <>
-                  {nodeData.meta.type === blueprintFilter ? (
-                    <div
-                      onClick={() => {
-                        onSelect(`${renderProps.path}/${nodeData.title}`)
-                      }}
-                    >
-                      {nodeData.title}
-                    </div>
-                  ) : (
-                    <div
-                      onClick={() =>
-                        packageOnClick({
-                          onSelect: nodeData.meta.onSelect,
-                          node: { actions, nodeData },
-                          setLoading,
-                        })
-                      }
-                    >
-                      {nodeData.title}
-                      {loading && (
-                        <small style={{ paddingLeft: '15px' }}>
-                          Loading...
-                        </small>
-                      )}
-                    </div>
-                  )}
-                </>
-              )
+              if (nodeData.meta.type === blueprintFilter) {
+                const onClick = () => {
+                  onSelect(`${renderProps.path}/${nodeData.title}`)
+                }
+                return (
+                  <div
+                    style={{ display: 'flex', flexDirection: 'row' }}
+                    onClick={onClick}
+                  >
+                    {renderProps.iconGroup(onClick)}
+                    {nodeData.title}
+                  </div>
+                )
+              } else {
+                return (
+                  <div style={{ display: 'flex', flexDirection: 'row' }}>
+                    {renderProps.iconGroup(
+                      treeNodeClick({
+                        indexUrl: nodeData.meta.indexUrl,
+                        node: { actions, nodeData },
+                        setLoading,
+                      })
+                    )}
+                    {nodeData.title}
+                    {loading && (
+                      <small style={{ paddingLeft: '15px' }}>Loading...</small>
+                    )}
+                  </div>
+                )
+              }
             }}
             dataSources={datasources}
           />

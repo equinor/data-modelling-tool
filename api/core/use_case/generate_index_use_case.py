@@ -4,7 +4,7 @@ from classes.blueprint_attribute import BlueprintAttribute
 from core.enums import APPLICATION, DMT
 from core.repository.repository_exceptions import EntityNotFoundException
 from core.service.document_service import DocumentService
-from core.use_case.utils.generate_index_menu_actions import get_node_on_select
+from core.use_case.utils.generate_index_menu_actions import get_node_fetch, get_node_index
 from core.use_case.utils.set_index_context_menu import create_context_menu
 from services.data_modelling_document_service import package_api
 from utils.logging import logger
@@ -64,7 +64,8 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
         "type": node.type,
         "meta": {
             "menuItems": menu_items,
-            "onSelect": get_node_on_select(data_source_id, node) if node.is_single() else {},
+            "fetchUrl": get_node_fetch(data_source_id, node) if node.is_single() else {},
+            "indexUrl": get_node_index(data_source_id, node),
             "error": False,
             "isRootPackage": node.type == DMT.PACKAGE.value and node.entity.get("isRoot"),
             "isList": node.is_array(),

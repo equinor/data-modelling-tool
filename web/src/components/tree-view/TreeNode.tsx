@@ -1,4 +1,6 @@
 import React from 'react'
+import styled from 'styled-components'
+import { NodeIconType, TreeNodeData } from './Tree'
 import {
   FaChevronDown,
   FaChevronRight,
@@ -8,11 +10,9 @@ import {
   FaFolder,
   FaFolderOpen,
   FaLaptop,
-  FaRegFileAlt,
   FaList,
+  FaRegFileAlt,
 } from 'react-icons/fa'
-import styled from 'styled-components'
-import { NodeIconType, TreeNodeData } from './Tree'
 
 type StyledTreeNode = {
   level: number
@@ -27,17 +27,6 @@ const StyledTreeNode = styled.div`
   &:hover {
     background: lightgray;
   }
-`
-
-type NodeIconProps = {
-  marginRight?: number
-  onClick?: any
-}
-
-const NodeIcon = styled.div`
-  font-size: 12px;
-  margin-right: ${(props: NodeIconProps) =>
-    props.marginRight ? props.marginRight : 5}px;
 `
 
 export type TreeNodeProps = {
@@ -76,6 +65,8 @@ export type TreeNodeRenderProps = {
   parent: string
   nodeData: TreeNodeData
   actions: TreeNodeActions
+  handleToggle: Function
+  iconGroup: Function
 }
 
 const Content = styled.div`
@@ -86,9 +77,19 @@ const ArrowPlaceholderIndent = styled.div`
   width: 12px;
   height: 18px;
 `
+type NodeIconProps = {
+  marginRight?: number
+  onClick?: any
+}
 type Props = {
   node: TreeNodeData
 }
+
+const NodeIcon = styled.div`
+  font-size: 12px;
+  margin-right: ${(props: NodeIconProps) =>
+    props.marginRight ? props.marginRight : 5}px;
+`
 
 const GetIcon = ({ node }: Props) => {
   if (node.meta.error)
@@ -135,36 +136,41 @@ const TreeNode = (props: TreeNodeProps) => {
     actions,
     handleToggle,
   } = props
+
+  const IconGroup = (onClick: Function) => {
+    return (
+      <div
+        style={{ display: 'flex', flexDirection: 'row' }}
+        onClick={() => {
+          onClick()
+          handleToggle(node)
+        }}
+      >
+        <NodeIcon>
+          {node.isExpandable && node.isOpen && <FaChevronDown />}
+          {node.isExpandable && !node.isOpen && <FaChevronRight />}
+          {!node.isExpandable && <ArrowPlaceholderIndent />}
+        </NodeIcon>
+        <NodeIcon marginRight={5}>
+          <GetIcon node={node} />
+        </NodeIcon>
+      </div>
+    )
+  }
+
   const renderProps = {
     path,
     parent,
     nodeData: node,
     actions,
+    handleToggle,
+    iconGroup: IconGroup,
   } as TreeNodeRenderProps
+
   return (
     <div>
       <StyledTreeNode level={level}>
-        <div
-          style={{ display: 'flex', flexDirection: 'row' }}
-          onClick={() => handleToggle(node)}
-        >
-          <NodeIcon>
-            {node.isExpandable && node.isOpen && <FaChevronDown />}
-            {node.isExpandable && !node.isOpen && <FaChevronRight />}
-            {!node.isExpandable && <ArrowPlaceholderIndent />}
-          </NodeIcon>
-          <NodeIcon marginRight={5}>
-            <GetIcon node={node} />
-          </NodeIcon>
-        </div>
-        {node.isFolder && (
-          <Content onClick={() => handleToggle(node)} role="button">
-            {NodeRenderer(renderProps)}
-          </Content>
-        )}
-        {!node.isFolder && (
-          <Content role="button">{NodeRenderer(renderProps)}</Content>
-        )}
+        <Content role="button">{NodeRenderer(renderProps)}</Content>
       </StyledTreeNode>
     </div>
   )

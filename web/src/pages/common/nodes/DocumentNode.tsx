@@ -1,83 +1,69 @@
 import React, { useState } from 'react'
 import WithContextMenu from '../context-menu-actions/WithContextMenu'
 import { LayoutContext } from '../golden-layout/LayoutContext'
-import { TreeNodeRenderProps } from '../../../components/tree-view/TreeNode'
-import { NodeType } from '../../../util/variables'
 import { CreateNodes } from '../context-menu-actions/ContextMenuActionsFactory'
 
-interface DocumentNodeProps {
-  node: TreeNodeRenderProps
-}
-
-function documentOnClick({ layout, onSelect, node }: any) {
-  layout.add(onSelect.uid, onSelect.title, onSelect.component, onSelect.data)
-  layout.focus(node.nodeData.nodeId)
-}
-
-export function packageOnClick({ onSelect, node, setLoading }: any) {
-  // Don't fetch index when closing a folder
-  if (!node.nodeData.isOpen) {
-    setLoading(true)
-    CreateNodes({
-      documentId: node.nodeData.nodeId,
-      nodeUrl: onSelect,
-      node: node,
-      loadingCallBack: setLoading,
-    })
+export function treeNodeClick({
+  layout,
+  node,
+  setLoading,
+  fetchUrl,
+  indexUrl,
+}: any) {
+  if (fetchUrl) {
+    layout.add(fetchUrl.uid, fetchUrl.title, fetchUrl.component, fetchUrl.data)
+    layout.focus(node.nodeData.nodeId)
+  }
+  if (indexUrl) {
+    // Don't fetch index when closing a node
+    if (!node.nodeData.isOpen) {
+      setLoading(true)
+      CreateNodes({
+        documentId: node.nodeData.nodeId,
+        nodeUrl: indexUrl,
+        node: node,
+        loadingCallBack: setLoading,
+      })
+    }
   }
 }
 
-export const DocumentNode = (props: DocumentNodeProps) => {
-  const { node } = props
-  const { nodeData } = node
-  const { meta } = nodeData
-  const { onSelect } = meta as any
+export const DocumentNode = (props: any) => {
+  const node = { ...props.node }
+  const meta = { ...node.nodeData.meta }
   const [loading, setLoading] = useState(false)
 
-  let onClick: Function
-  if (node.nodeData.nodeType === NodeType.PACKAGE) {
-    onClick = packageOnClick
-  } else {
-    onClick = documentOnClick
+  const onClick = (layout: any) => {
+    node.handleToggle(node.nodeData)
+    treeNodeClick({
+      layout,
+      fetchUrl: meta.fetchUrl,
+      indexUrl: meta.indexUrl,
+      node,
+      setLoading,
+    })
   }
 
   return (
     <LayoutContext.Consumer>
       {(layout: any) => {
-        let dataUrl = ''
-        if (node?.nodeData?.meta?.onSelect?.data) {
-          //@ts-ignore
-          dataUrl = node.nodeData.meta.onSelect.data.dataUrl
-        }
         return (
-          <WithContextMenu node={node} layout={layout} dataUrl={dataUrl}>
-            {!onSelect && (
-              <div>
-                {nodeData.title}
-                {meta.error && (
-                  <small style={{ paddingLeft: '15px' }}>
-                    An error occurred...
-                  </small>
-                )}
-              </div>
-            )}
-            {onSelect && (
-              <div
-                onClick={() => {
-                  onClick({ layout, onSelect, node, setLoading })
-                }}
-              >
-                {nodeData.title}
-                {loading && (
-                  <small style={{ paddingLeft: '15px' }}>Loading...</small>
-                )}
-                {meta.error && (
-                  <small style={{ paddingLeft: '15px' }}>
-                    An error occurred...
-                  </small>
-                )}
-              </div>
-            )}
+          <WithContextMenu node={node} layout={layout}>
+            <div
+              style={{ display: 'flex', flexDirection: 'row' }}
+              onClick={() => onClick(layout)}
+            >
+              {node.iconGroup(() => onClick(layout))}
+              {node.nodeData.title}
+              {loading && (
+                <small style={{ paddingLeft: '15px' }}>Loading...</small>
+              )}
+              {node.nodeData.error && (
+                <small style={{ paddingLeft: '15px' }}>
+                  An error occurred...
+                </small>
+              )}
+            </div>
           </WithContextMenu>
         )
       }}
