@@ -1,20 +1,17 @@
 import React from 'react'
-import ReactDOM from 'react-dom'
 import './index.css'
 import 'react-notifications/lib/notifications.css'
-import App from './App'
-import { ThemeProvider } from 'styled-components'
 
-const theme = {
-  flexboxgrid: {
-    gutterWidth: 0, // rem
-    outerMargin: 0, // rem
+import { runWithAdal } from 'react-adal'
+import { authContext } from './auth/adalConfig'
+
+const DO_NOT_LOGIN = false
+
+runWithAdal(
+  authContext,
+  () => {
+    // eslint-disable-next-line
+    require('./indexApp.js')
   },
-}
-
-ReactDOM.render(
-  <ThemeProvider theme={theme}>
-    <App />
-  </ThemeProvider>,
-  document.getElementById('root')
+  DO_NOT_LOGIN
 )

@@ -13207,6 +13207,11 @@ react-3d-viewer@^1.0.12:
     react-scroll-up "^1.3.3"
     three "^0.95.0"
 
+react-adal@^0.5.0:
+  version "0.5.0"
+  resolved "https://registry.yarnpkg.com/react-adal/-/react-adal-0.5.0.tgz#8a156812ed6475d18fe84052a184227dfb2b662e"
+  integrity sha512-etlKmBwux6vzYbl6hvFSCQkuHMpbE2Qn3MTP2EHz3xtifiP1tRacaIi1QtVlHtcCbt3KDjDTqu2uKZUjiPuyOA==
+
 react-app-polyfill@^1.0.6:
   version "1.0.6"
   resolved "https://registry.yarnpkg.com/react-app-polyfill/-/react-app-polyfill-1.0.6.tgz#890f8d7f2842ce6073f030b117de9130a5f385f0"
