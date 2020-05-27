@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { createGlobalStyle } from 'styled-components'
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
 import SearchPage from './pages/SearchPage'
@@ -10,6 +10,8 @@ import { StatusProvider } from './pages/common/StatusContext'
 import Header from './pages/common/Header'
 import BlueprintsPage from './pages/BlueprintsPage'
 import EntitiesPage from './pages/EntitiesPage'
+import { authContext } from './auth/adalConfig'
+import { AuthProvider } from './auth/AuthContext'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -25,24 +27,38 @@ const Wrapper = styled.div`
   padding: 20px;
 `
 
+const theme = {
+  flexboxgrid: {
+    gutterWidth: 0, // rem
+    outerMargin: 0, // rem
+  },
+}
+
 function App() {
   return (
-    <Router>
-      <GlobalStyle />
-      <StatusProvider>
-        <NotificationContainer />
-        <Wrapper>
-          <Header />
-          <Switch>
-            <Route exact path="/search" component={SearchPage} />
-            <Route exact path="/blueprints" component={BlueprintsPage} />
-            <Route exact path="/entities" component={EntitiesPage} />
-            <Route path="/view/:data_source/:entity_id" component={ViewPage} />
-            <Route path="/" component={BlueprintsPage} />
-          </Switch>
-        </Wrapper>
-      </StatusProvider>
-    </Router>
+    <ThemeProvider theme={theme}>
+      <Router>
+        <AuthProvider idToken={authContext.getCachedUser()}>
+          <GlobalStyle />
+          <StatusProvider>
+            <NotificationContainer />
+            <Wrapper>
+              <Header />
+              <Switch>
+                <Route exact path="/search" component={SearchPage} />
+                <Route exact path="/blueprints" component={BlueprintsPage} />
+                <Route exact path="/entities" component={EntitiesPage} />
+                <Route
+                  path="/view/:data_source/:entity_id"
+                  component={ViewPage}
+                />
+                <Route path="/" component={BlueprintsPage} />
+              </Switch>
+            </Wrapper>
+          </StatusProvider>
+        </AuthProvider>
+      </Router>
+    </ThemeProvider>
   )
 }
 
