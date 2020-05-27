@@ -64,6 +64,13 @@ export default (props: Props) => {
             render={(renderProps: TreeNodeRenderProps) => {
               const { actions, nodeData } = renderProps
               const [loading, setLoading] = useState(false)
+              const onNodeClick = () => {
+                treeNodeClick({
+                  indexUrl: nodeData.meta.indexUrl,
+                  node: { actions, nodeData },
+                  setLoading,
+                })
+              }
 
               if (nodeData.meta.type === blueprintFilter) {
                 const onClick = () => {
@@ -80,14 +87,11 @@ export default (props: Props) => {
                 )
               } else {
                 return (
-                  <div style={{ display: 'flex', flexDirection: 'row' }}>
-                    {renderProps.iconGroup(
-                      treeNodeClick({
-                        indexUrl: nodeData.meta.indexUrl,
-                        node: { actions, nodeData },
-                        setLoading,
-                      })
-                    )}
+                  <div
+                    style={{ display: 'flex', flexDirection: 'row' }}
+                    onClick={onNodeClick}
+                  >
+                    {renderProps.iconGroup(onNodeClick)}
                     {nodeData.title}
                     {loading && (
                       <small style={{ paddingLeft: '15px' }}>Loading...</small>
