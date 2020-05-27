@@ -13,19 +13,23 @@ To download generated code for some blueprints;
 
 ## Custom Code Generator
 
-DMT currently ships with one Python3 code generator ([read more](docs/standard_code_gen.md)).
+DMT currently ships with one Python3 code generator ([read more](/api/home/code_generators/default_python/README.md)).
 This might not suit your needs (either you need a different language, or some special feature on the code itself), so DMT supports plugable code generators. The code generators can be written in any language, and generate code in any language.
 
 To use your own code generator, follow these steps;
 
 1. Create a python module (a directory with a `__init__.py`-file)
-2. (Optional) Create a file called `NAME.txt` with a single line with the desired display name.
+2. (Optional) Create the files called
+   * `NAME.txt` with a single line with the desired display name.
+   * `README.md` with a description, and usage of the plugin, along with other relevant information
 3. Have the modules `main()` function adhere to the DMT-code-generator-standard
 
    ```python
+   import io
+
    def main(dict_of_blueprints: dict) -> io.BytesIO:
-       zip_folder = create_code_from_blueprints()
-       return zip_folder
+       """Entry point of the code generator"""
+       ...
    ```
 
    Input: A dictionary of all the blueprints referenced in the selected package/blueprint, in their entierty.
@@ -55,6 +59,7 @@ To use your own code generator, follow these steps;
       with zipfile.ZipFile(memory_file, mode="w") as zip_file:
          zip_file.writestr("python-code.py", str(list_of_blueprints))
 
+      # Important to do, otherwise the file will look empty
       memory_file.seek(0)
       return memory_file
    ```
