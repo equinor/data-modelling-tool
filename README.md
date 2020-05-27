@@ -18,7 +18,7 @@ Features include;
 - [Custom views and edit widgets](docs/README_Plugin.md)
 - [Code generators](docs/code_generators.md)
 
-This application uses the [Data Modelling Storage Service (DMSS)](docs/architecture.md) as a storage backend.
+This application uses the [Data Modelling Storage Service (DMSS)](docs/architecture.md#documentservice) as a storage backend.
 
 ## Developing DMT
 
