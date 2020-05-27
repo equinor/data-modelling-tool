@@ -18,9 +18,10 @@ TODO: How to add debug?
 
 #### Intellij Docker issue with pydevd
 
-* Try open idea from terminal. 
+* Try open idea from terminal.
 
 Mac:  /Applications/IntelliJ\ IDEA.app/Contents/MacOS/idea
 
-python: can't open file '/opt/.pycharm_helpers/pydev/pydevd.py': [Errno 2] No such file or directory
-https://chkr.at/wordpress/?p=227
+`python: can't open file '/opt/.pycharm_helpers/pydev/pydevd.py': [Errno 2] No such file or directory`
+
+<https://chkr.at/wordpress/?p=227>
