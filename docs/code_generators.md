@@ -64,7 +64,7 @@ To use your own code generator, follow these steps;
       return memory_file
    ```
 
-4. Using docker; mount you'r python module into  `/code/home/code_generators/`
+4. Using docker; mount your python module into  `/code/home/code_generators/`
 
  ```yaml
  ...
