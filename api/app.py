@@ -6,7 +6,10 @@ from utils.package_import import import_package
 from config import Config
 from core.rest import Actions, Blueprints, DataSource, Document as DocumentBlueprint, Explorer, Index, System, Entity
 from utils.logging import logger
-from services.data_modelling_document_service import datasource_api, document_api, explorer_api, package_api
+from services.data_modelling_document_service import datasource_api
+from core.service.document_service import explorer_api
+from dmss_api.exceptions import ApiException
+import json
 
 
 def create_app(config):
@@ -29,9 +32,6 @@ app = create_app(Config)
 
 @app.cli.command()
 def remove_application():
-    from core.service.document_service import explorer_api
-    from dmss_api.exceptions import ApiException
-
     try:
         explorer_api.remove_by_path(Config.APPLICATION_DATA_SOURCE, {"directory": "DMT"})
     except ApiException:
@@ -57,14 +57,12 @@ def remove_application():
 
 @app.cli.command()
 def init_application():
-    import json
-
     for filename in os.listdir(f"{Config.APPLICATION_HOME}/data_sources/"):
         with open(os.path.join(f"{Config.APPLICATION_HOME}/data_sources/", filename)) as file:
             document = json.load(file)
             try:
                 datasource_api.save(document["name"], request_body=document)
-            except Exception:
+            except ApiException:
                 pass
 
     for folder in Config.SYSTEM_FOLDERS:
