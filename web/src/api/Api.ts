@@ -6,10 +6,6 @@ import { TreeNodeBuilderOld } from '../pages/common/tree-view/TreeNodeBuilderOld
 import { TreeNodeData } from '../components/tree-view/Tree'
 import { NodeType } from '../util/variables'
 
-function isLocal(datasource: Datasource): boolean {
-  return datasource.id === 'local'
-}
-
 function toObject(acc: any, current: TreeNodeData) {
   ;(acc as any)[current.nodeId] = current
   return acc
@@ -59,11 +55,7 @@ export class IndexApi extends BaseApi {
     axios
       .post(url, index)
       .then(res => {
-        if (isLocal(datasource)) {
-          this.workspace.setItem(url, res.data)
-        } else {
-          console.log('We have an index! ', res)
-        }
+        console.log('We have an index! ', res)
         onSuccess()
       })
       .catch(e => {
@@ -75,9 +67,7 @@ export class IndexApi extends BaseApi {
   async get(datasource: Datasource, application) {
     const url = this.dmtApi.indexGet(datasource.id, application)
     try {
-      const res = !isLocal(datasource)
-        ? (await axios(url)).data
-        : this.workspace.getItem(url)
+      const res = (await axios(url)).data
 
       const nodes = values(res)
 

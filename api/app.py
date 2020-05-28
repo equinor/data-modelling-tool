@@ -6,6 +6,7 @@ from utils.package_import import import_package
 from config import Config
 from core.rest import Actions, Blueprints, DataSource, Document as DocumentBlueprint, Explorer, Index, System, Entity
 from utils.logging import logger
+from services.data_modelling_document_service import datasource_api, document_api, explorer_api, package_api
 
 
 def create_app(config):
@@ -34,6 +35,7 @@ def remove_application():
     try:
         explorer_api.remove_by_path(Config.APPLICATION_DATA_SOURCE, {"directory": "DMT"})
     except ApiException:
+        logger.info(f"Could not remove DMT")
         pass
 
     for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
@@ -55,12 +57,20 @@ def remove_application():
 
 @app.cli.command()
 def init_application():
+    import json
+
+    for filename in os.listdir(f"{Config.APPLICATION_HOME}/data_sources/"):
+        with open(os.path.join(f"{Config.APPLICATION_HOME}/data_sources/", filename)) as file:
+            document = json.load(file)
+            try:
+                datasource_api.save(document["name"], request_body=document)
+            except Exception:
+                pass
+
     for folder in Config.SYSTEM_FOLDERS:
         import_package(
             f"{Config.APPLICATION_HOME}/core/{folder}", data_source=Config.APPLICATION_DATA_SOURCE, is_root=True
         )
-
-    # TODO: how to specify target data source for blueprints and entities?
 
     logger.info(f"Importing blueprint package(s) {Config.ENTITY_APPLICATION_SETTINGS['packages']}")
     for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
