@@ -8,7 +8,7 @@
 //       "method": "run"
 //     },
 //
-// This action will be available on any entity of the type "SSR-DataSource/CarPackage/Car"(input).
+// This action will be available (right click) on any entity of the type "SSR-DataSource/CarPackage/Car"(input).
 // The name given in "method" must be the name of a function in this file, as well as being in the "runnableMethods" object at the end of this file.
 // The main use case for this custom function is to call SIMOS calculations, and update result objects.
 // The properties that are passed to the function looks like this;
@@ -32,7 +32,6 @@
 // Current limitations and caveats;
 // * updateDocument is a callBack. That means that if the web-browser get's interrupted(refresh,closed, etc.) the callBack is lost.
 // * The API uses a strict type system, so if the output entity does NOT match the output blueprint, that attribute will not be updated.
-// * The API uses an "update" strategy when writing the output entity. This means that it merges the existing document with the provided output entity.
 // * The output object must be left intact, and posted on every updateDocument call. Everything besides the output.entity object should be considered "read-only".
 // Here are a few examples;
 
@@ -51,14 +50,13 @@ function myExternalSystemCall(input) {
   }
 }
 
-async function run({ input, output, updateDocument, createEntity }) {
+async function simulateCrash({ input, output, updateDocument, createEntity }) {
   let entity = {
     ...output.entity,
     // This is an invalid attribute. Will not get written to database.
     hallo: 'Hey',
   }
   updateDocument({ ...output, entity })
-
   // Using the passed "createEntity" function, we can get an empty, in-memory entity, of any type.
   let newWheel = await createEntity('SSR-DataSource/CarPackage/Wheel')
 
@@ -66,7 +64,7 @@ async function run({ input, output, updateDocument, createEntity }) {
   await sleep(10000)
   entity.description = 'a'
   updateDocument({ ...output, entity })
-  // updateDocument({ ...output, entity: myExternalSystemCall(input) })
+  updateDocument({ ...output, entity: myExternalSystemCall(input) })
 
   await sleep(2000)
   entity.description = 'b'
@@ -91,37 +89,32 @@ async function run({ input, output, updateDocument, createEntity }) {
   updateDocument({ ...output, entity })
 }
 
-async function runResultFile({ input, output, updateDocument }) {
-  let entity = { diameter: 1 }
+async function runEngineResultFile({ input, output, updateDocument }) {
+  let entity = { ...input.entity, power: '200hk' }
   updateDocument({ ...output, entity })
 
   await sleep(5000)
-  entity = { diameter: 999999999999 }
+  // This will fail, as the Entity object are missing required attributes.
+  entity = { description: 'Updated description from action' }
   updateDocument({ ...output, entity })
 }
 
-async function runNoResult({ input, output, updateDocument }) {
-  await sleep(5000)
-  alert('hallo')
-}
-
-async function runResultInEntity({ input, output, updateDocument }) {
+async function runEngineResultInEntity({ input, output, updateDocument }) {
   let entity = input.entity
-  entity.diameter = 1
-  entity.status.progress = 50.12
-  updateDocument({ ...output, entity })
-
-  await sleep(5000)
-  entity.diameter = 999999999999
-  entity.status = { ...entity.status, progress: 100, message: 'Done!' }
+  entity.power = '94bhp'
+  entity.fuelPump = { name: 'My FuelPump', description: 'something' }
   updateDocument({ ...output, entity, notify: true })
 }
 
+function cancelSimulation() {
+  alert('Sending SIGTERM to ongoing job')
+}
+
 const runnableMethods = {
-  run,
-  runResultFile,
-  runNoResult,
-  runResultInEntity,
+  simulateCrash,
+  runEngineResultFile,
+  runEngineResultInEntity,
+  cancelSimulation,
 }
 
 export default runnableMethods

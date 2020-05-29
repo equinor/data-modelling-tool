@@ -52,12 +52,15 @@ function updateDocument(
       layout.refreshByFilter(output.id)
       output.notify &&
         NotificationManager.success(
-          `updated document: ${response.data.data.name}`
+          `Updated document: ${response.data.data.name}`
         )
       refresh(node, output, parentId, createNodes)
     },
     onError: (error: any) => {
-      NotificationManager.error(`failed to update document: ${output.id}`)
+      console.error(error?.response?.data)
+      NotificationManager.error(
+        `Failed to update document: ${error?.response?.data?.message}`
+      )
     },
   })
 }
@@ -116,16 +119,7 @@ export const Action = (
     path: node.path,
     id: node.nodeData.nodeId,
   }
-  if (action.data.runnable.actionType === ActionTypes.resultInEntity) {
-    return saveInEntity(
-      input,
-      method,
-      setShowModal,
-      handleUpdate,
-      createEntity,
-      dataSource
-    )
-  } else {
+  if (action.data.runnable.actionType === ActionTypes.separateResultFile) {
     return saveToNewFile(
       action.data.runnable.output,
       input,
@@ -135,8 +129,16 @@ export const Action = (
       createNodes,
       handleUpdate,
       createEntity,
-      dataSource,
-      ''
+      dataSource
+    )
+  } else {
+    return saveInEntity(
+      input,
+      method,
+      setShowModal,
+      handleUpdate,
+      createEntity,
+      dataSource
     )
   }
 }

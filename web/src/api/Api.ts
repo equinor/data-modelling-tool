@@ -110,7 +110,7 @@ export class DmtApi {
     return `/api/v2/data-sources/${datasourceId}`
   }
 
-  indexGet(datasourceId: string, application: string) {
+  indexGet(datasourceId: string, application?: string) {
     if (application)
       return `/api/v4/index/${datasourceId}?APPLICATION=${application}`
     return `/api/v4/index/${datasourceId}`

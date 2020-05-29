@@ -4,6 +4,8 @@ import Api2, { BASE_CRUD } from '../../../../api/Api2'
 import axios from 'axios'
 import { Input, Method, Output } from './actions'
 import { DmtApi } from '../../../../api/Api'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 
 const api = new DmtApi()
 export default (
@@ -15,8 +17,7 @@ export default (
   createNodes: Function,
   handleUpdate: Function,
   createEntity: Function,
-  dataSource: string,
-  application: string
+  dataSource: string
 ) => {
   return {
     // Function to fetch the document used to create the rjsc-form
@@ -38,31 +39,40 @@ export default (
         // TODO: Validate formData. Should not be empty
         // TODO: Catch request errors
         // Create the result file
-        let response = await axios.post(api.addFile(), {
-          attribute: 'content',
-          description: formData.description,
-          name: formData.name,
-          parentId: formData.destination,
-          type: outputType,
-        })
+        let response = await axios
+          .post(api.addFile(), {
+            attribute: 'content',
+            description: formData.description,
+            name: formData.name,
+            parentId: formData.destination,
+            type: outputType,
+          })
+          .catch(error => {
+            console.error(error)
+            NotificationManager.error(
+              `Failed to create new result file: ${error?.response?.data?.message}`
+            )
+          })
+        if (!response) return
 
         // Create the result node in index tree
         createNodes({
+          // @ts-ignore
           documentId: `${response.data.uid}`,
-          nodeUrl: `${api.indexGet(dataSource, application)}/${
-            formData.destination
-          }`,
+          nodeUrl: `${api.indexGet(dataSource)}/${formData.destination}`,
           node,
         })
 
         const output: Output = {
           blueprint: formData.type,
           entity: {
+            // @ts-ignore
             _id: response.data.uid,
             type: outputType,
             name: formData.name,
           },
           dataSource: dataSource,
+          // @ts-ignore
           id: response.data.uid,
         }
 
