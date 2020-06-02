@@ -111,7 +111,7 @@ const WithContextMenuModal = (props: WithContextMenuModalProps) => {
     if (action.type === ContextMenuActions.RUNNABLE) {
       Api2.get({
         // @ts-ignore
-        url: node.nodeData.meta.onSelect.data.dataUrl,
+        url: node.nodeData.meta.fetchUrl.data.dataUrl,
         onSuccess: result => {
           setEntity(result.document)
         },

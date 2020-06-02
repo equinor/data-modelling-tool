@@ -3,6 +3,7 @@ import json
 from flask import Blueprint, request, Response
 
 from core.enums import STATUS_CODES
+from core.rest.utils.dmss_api_wrapper import dmss_api_wrapper
 from core.serializers.dto_json_serializer import DTOSerializer
 from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaRequestObject, GenerateJsonSchemaUseCase
 from core.use_case.get_document_by_path_use_case import GetDMTDocumentByPathUseCase, GetDocumentByPathRequestObject
@@ -54,5 +55,9 @@ def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
     data = request.get_json()
     attribute = request.args.get("attribute")
-    response = document_api.update(data_source_id, document_id, data, attribute=attribute)
-    return Response(json.dumps(response, cls=DTOSerializer), mimetype="application/json", status=200)
+
+    @dmss_api_wrapper
+    def dmss_call():
+        return document_api.update(data_source_id, document_id, data, attribute=attribute)
+
+    return dmss_call()

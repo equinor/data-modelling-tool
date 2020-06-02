@@ -12,7 +12,7 @@ export default (
 ) => {
   const [status, setStatus] = useContext(StatusContext)
   const output: Output = {
-    blueprint: input.entity.type,
+    blueprint: input.blueprint,
     entity: input.entity,
     dataSource: dataSource,
     id: input.id,

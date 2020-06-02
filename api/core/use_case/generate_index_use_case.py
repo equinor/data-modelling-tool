@@ -71,6 +71,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
             "isList": node.is_array(),
             "dataSource": data_source_id,
             "empty": node.is_empty(),
+            "hasCustomAction": node.type in [e["input"] for e in app_settings["actions"]],
             "application": app_settings["name"],
         },
     }

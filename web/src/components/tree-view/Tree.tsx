@@ -30,6 +30,7 @@ export type NodeMetaData = {
   isList?: boolean
   error?: boolean
   dataSource?: string
+  hasCustomAction?: boolean
 }
 
 export type TreeNodeData = {

@@ -15,7 +15,6 @@ import { toObject } from './actions/utils/to_object'
 import { importAction } from './actions/import'
 import { Entity } from '../../../domain/types'
 import { insertReferenceAction } from './actions/insertReference'
-import { useEffect, useState } from 'react'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
