@@ -7,12 +7,18 @@ import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import Modal from '../../components/modal/Modal'
 import { FaTimes } from 'react-icons/fa'
 import { BlueprintEnum } from '../../util/variables'
+import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
 
 const api = new DmtApi()
 
 const NodeWrapper = styled.div`
   display: flex;
   justify-content: space-between;
+  flex-direction: row;
+`
+const IconTitleWrapper = styled.div`
+  display: flex;
+  flex-direction: row;
 `
 const ButtonWrapper = styled.div`
   display: flex;
@@ -56,8 +62,15 @@ const MultiSelector = ({
   uiSchema,
   typeFilter,
 }: MultiSelectorProps) => {
+  let initialState = formData
+  if (!Array.isArray(formData)) {
+    initialState = [formData]
+  }
+
   const [datasources, setDatasources] = useState<Datasource[]>([])
-  const [selectedPackages, setSelectedPackages] = useState<string[]>(formData)
+  const [selectedPackages, setSelectedPackages] = useState<string[]>(
+    initialState
+  )
   const [showModal, setShowModal] = useState<boolean>(false)
 
   function removePackage(value: string) {
@@ -70,11 +83,7 @@ const MultiSelector = ({
 
   function handleChange(value: string) {
     if (selectedPackages.includes(value)) {
-      setSelectedPackages(
-        selectedPackages.filter(e => {
-          return e !== value
-        })
-      )
+      setSelectedPackages(selectedPackages.filter(e => e !== value))
       onChange(selectedPackages)
     } else {
       selectedPackages.push(value)
@@ -143,19 +152,28 @@ const MultiSelector = ({
       >
         <DocumentTree
           render={(renderProps: TreeNodeRenderProps) => {
-            const { nodeData } = renderProps
+            const { nodeData, actions } = renderProps
             const value = `${renderProps.path}/${nodeData.title}`
 
             return (
               <NodeWrapper>
-                {nodeData.title}
+                <IconTitleWrapper
+                  onClick={() => {
+                    treeNodeClick({
+                      indexUrl: nodeData.meta.indexUrl,
+                      node: { actions, nodeData },
+                      setLoading: () => {},
+                    })
+                  }}
+                >
+                  {renderProps.iconGroup(() => {})}
+                  {nodeData.title}
+                </IconTitleWrapper>
                 {typeFilter(nodeData) && (
-                  <input
-                    type={'checkbox'}
-                    checked={selectedPackages.includes(value) || false}
-                    readOnly={true}
+                  <TreeNodeSelector
                     value={value}
-                    onClick={() => handleChange(value)}
+                    selectedPackages={selectedPackages}
+                    handleChange={handleChange}
                   />
                 )}
               </NodeWrapper>
@@ -165,6 +183,25 @@ const MultiSelector = ({
         />
       </Modal>
     </PackagesWrapper>
+  )
+}
+
+const TreeNodeSelector = (props: any) => {
+  const { value, selectedPackages, handleChange } = props
+  const [checked, setChecked] = useState(
+    selectedPackages.includes(value) || false
+  )
+  return (
+    <input
+      type={'checkbox'}
+      checked={checked}
+      readOnly={true}
+      value={value}
+      onClick={(e: any) => {
+        setChecked(e.target.checked)
+        handleChange(value)
+      }}
+    />
   )
 }
 
@@ -184,6 +221,7 @@ export const BlueprintsSelector = ({ onChange, formData, uiSchema }: any) => {
   function BlueprintsFilter(nodeData: any) {
     return nodeData?.meta?.type === BlueprintEnum.BLUEPRINT
   }
+
   return MultiSelector({
     onChange,
     formData,
