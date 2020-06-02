@@ -15,14 +15,14 @@ enum ActionTypes {
 }
 
 export type Input = {
-  blueprint: string
+  blueprint: any
   entity: Entity
   path: string
   id: string
 }
 
 export type Output = {
-  blueprint: string
+  blueprint: any
   entity: any
   dataSource: string
   id: string
