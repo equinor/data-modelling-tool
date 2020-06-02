@@ -2,6 +2,8 @@ import React, { useState } from 'react'
 import WithContextMenu from '../context-menu-actions/WithContextMenu'
 import { LayoutContext } from '../golden-layout/LayoutContext'
 import { CreateNodes } from '../context-menu-actions/ContextMenuActionsFactory'
+import { FaPlay } from 'react-icons/fa'
+import styled from 'styled-components'
 
 export function treeNodeClick({
   layout,
@@ -28,6 +30,20 @@ export function treeNodeClick({
   }
 }
 
+const RunIconWrapper = styled.div`
+  color: limegreen;
+  margin-left: 10px;
+  font-size: 10px;
+  align-self: center;
+`
+const RunIcon = () => {
+  return (
+    <RunIconWrapper>
+      <FaPlay style={{ display: 'block' }} />
+    </RunIconWrapper>
+  )
+}
+
 export const DocumentNode = (props: any) => {
   const node = { ...props.node }
   const meta = { ...node.nodeData.meta }
@@ -43,7 +59,6 @@ export const DocumentNode = (props: any) => {
       setLoading,
     })
   }
-
   return (
     <LayoutContext.Consumer>
       {(layout: any) => {
@@ -55,6 +70,7 @@ export const DocumentNode = (props: any) => {
             >
               {node.iconGroup(() => onClick(layout))}
               {node.nodeData.title}
+              {meta.hasCustomAction && <RunIcon />}
               {loading && (
                 <small style={{ paddingLeft: '15px' }}>Loading...</small>
               )}
