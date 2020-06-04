@@ -4,7 +4,6 @@ from flask import Blueprint, request, Response
 
 from core.enums import STATUS_CODES
 from core.rest.utils.dmss_api_wrapper import dmss_api_wrapper
-from core.serializers.dto_json_serializer import DTOSerializer
 from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaRequestObject, GenerateJsonSchemaUseCase
 from core.use_case.get_document_by_path_use_case import GetDMTDocumentByPathUseCase, GetDocumentByPathRequestObject
 from core.use_case.get_document_use_case import GetDMTDocumentUseCase, GetDocumentRequestObject
@@ -50,6 +49,8 @@ def get_by_path(data_source_id: str, document_path: str):
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
+# TODO: This should not be needed. But since we use same URL for get Doc and put, we still do.
+# Solution is to move get Doc to DMSS, or pass different URL for PUT
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])
 def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")

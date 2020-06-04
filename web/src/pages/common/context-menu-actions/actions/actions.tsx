@@ -53,14 +53,20 @@ function updateDocument(
     .then((response: any) => {
       layout.refreshByFilter(output.id)
       output.notify &&
-        NotificationManager.success(`Updated document: ${response.data.name}`)
+        NotificationManager.success(`Updated document: ${response.name}`)
       refresh(node, output, parentId, createNodes)
     })
     .catch((error: any) => {
-      console.error(error?.response?.data)
-      NotificationManager.error(
-        `Failed to update document: ${error?.response?.data?.message}`
-      )
+      console.error(error.url)
+      if (output.id.includes('.')) {
+        NotificationManager.error(
+          "Not implemented! Can't run actions on storageContained entities"
+        )
+      } else {
+        NotificationManager.error(
+          `Failed to update document: ${error.statusText}`
+        )
+      }
     })
 }
 
@@ -127,8 +133,7 @@ export const Action = (
       setShowModal,
       createNodes,
       handleUpdate,
-      createEntity,
-      dataSource
+      createEntity
     )
   } else {
     return saveInEntity(

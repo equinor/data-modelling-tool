@@ -4,7 +4,6 @@ import BlueprintSelectorWidget from '../plugins/form-rjsf-widgets/BlueprintSelec
 import JsonView from '../components/JsonView'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import Api2 from '../api/Api2'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore

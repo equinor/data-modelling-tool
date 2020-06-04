@@ -41,7 +41,7 @@ spec:
           port: 5000
       publicPort: flask
     - name: proxy
-      src: ./nginx
+      src: ./nginx/radix
       ports:
         - name: nginx
           port: 80

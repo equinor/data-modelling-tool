@@ -16,8 +16,7 @@ export default (
   setShowModal: Function,
   createNodes: Function,
   handleUpdate: Function,
-  createEntity: Function,
-  dataSource: string
+  createEntity: Function
 ) => {
   return {
     // Function to fetch the document used to create the rjsc-form
@@ -33,63 +32,63 @@ export default (
       })
     },
     onSubmit: async (formData: any) => {
+      const [dataSource, parentId] = formData.destination.split('/', 2)
+
       async function executeAction() {
         setShowModal(false)
 
-        // TODO: Validate formData. Should not be empty
-        // TODO: Catch request errors
         // Create the result file
-        // TODO: GET DATASOURCE
-        let response = await ExplorerAPI.addToParent({
+        await ExplorerAPI.addToParent({
           // @ts-ignore
-          dataSourceId: node,
+          dataSourceId: dataSource,
           inlineObject: {
             attribute: 'content',
             // @ts-ignore
             description: formData.description,
             name: formData.name,
-            parentId: formData.destination,
+            parentId: parentId,
             type: outputType,
           },
-        }).catch((error: any) => {
-          console.error(error)
-          NotificationManager.error(
-            `Failed to create new result file: ${error?.response?.data?.message}`
-          )
         })
-        if (!response) return
+          .then((response: any) => {
+            // Create the result node in index tree
+            createNodes({
+              // @ts-ignore
+              documentId: `${response.uid}`,
+              nodeUrl: `${api.indexGet(dataSource)}/${parentId}`,
+              node,
+            })
 
-        // Create the result node in index tree
-        createNodes({
-          // @ts-ignore
-          documentId: `${response.data.uid}`,
-          nodeUrl: `${api.indexGet(dataSource)}/${formData.destination}`,
-          node,
-        })
+            const output: Output = {
+              blueprint: formData.type,
+              entity: {
+                // @ts-ignore
+                _id: response.uid,
+                type: outputType,
+                name: formData.name,
+              },
+              dataSource: dataSource,
+              // @ts-ignore
+              id: response.uid,
+            }
 
-        const output: Output = {
-          blueprint: formData.type,
-          entity: {
-            // @ts-ignore
-            _id: response.data.uid,
-            type: outputType,
-            name: formData.name,
-          },
-          dataSource: dataSource,
-          // @ts-ignore
-          id: response.data.uid,
-        }
+            const handleUpdateWithTreeUpdate = (output: any) => {
+              handleUpdate(output, parentId)
+            }
 
-        const handleUpdateWithTreeUpdate = (output: any) => {
-          handleUpdate(output, formData.destination)
-        }
-
-        method({
-          input,
-          output,
-          updateDocument: handleUpdateWithTreeUpdate,
-          createEntity,
-        })
+            method({
+              input,
+              output,
+              updateDocument: handleUpdateWithTreeUpdate,
+              createEntity,
+            })
+          })
+          .catch((error: any) => {
+            console.error(error)
+            NotificationManager.error(
+              `Failed to create new result file: ${error?.response?.message}`
+            )
+          })
       }
 
       await executeAction()

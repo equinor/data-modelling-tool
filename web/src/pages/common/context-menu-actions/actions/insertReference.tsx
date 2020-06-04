@@ -23,6 +23,7 @@ export const insertReferenceAction = (
       })
     },
     onSubmit: async (formData: any) => {
+      alert('ERROR: Not Implemented. Inserting references is not implemented')
       setShowModal(false)
       const dataSource = node.nodeData.meta.dataSource
       const nodeIdSplit = node.nodeData.nodeId.split('.')
@@ -33,6 +34,7 @@ export const insertReferenceAction = (
       // Get current file
       // @ts-ignore
       const currentFileResponse = await DocumentAPI.getById({
+        // @ts-ignore
         dataSourceId: dataSource,
         documentId: nodeIdSplit[0],
       })
@@ -45,6 +47,7 @@ export const insertReferenceAction = (
 
       // @ts-ignore
       const referenceFileResponse = await DocumentAPI.getById({
+        // @ts-ignore
         dataSourceId: dataSource,
         documentId: refDocId,
       })
@@ -58,21 +61,19 @@ export const insertReferenceAction = (
         newData = referencedDocument
       }
 
-      const response = await DocumentAPI.update({
+      await DocumentAPI.update({
         // @ts-ignore
         dataSourceId: dataSource,
         documentId: nodeIdSplit[0],
         // @ts-ignore
         attribute: params,
         requestBody: newData,
-      })
-
-      createNodes({
+      }).then(()=>createNodes({
         documentId: node.nodeData.nodeId,
         // @ts-ignore
         nodeUrl: `${api.indexGet(dataSource)}/${node.parent}`,
         node,
-      })
+      }))
     },
   }
 }

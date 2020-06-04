@@ -4,7 +4,7 @@ from flask import Flask
 from utils.package_import import import_package
 
 from config import Config
-from core.rest import Blueprints, DataSource, Document as DocumentBlueprint, Explorer, Index, System, Entity
+from core.rest import Blueprints, Document as DocumentBlueprint, Explorer, Index, System, Entity
 from utils.logging import logger
 from services.data_modelling_document_service import datasource_api
 from core.service.document_service import explorer_api
@@ -17,7 +17,6 @@ def create_app(config):
     app.config.from_object(config)
     app.register_blueprint(DocumentBlueprint.blueprint)
     app.register_blueprint(Explorer.blueprint)
-    app.register_blueprint(DataSource.blueprint)
     app.register_blueprint(Index.blueprint)
     app.register_blueprint(System.blueprint)
     app.register_blueprint(Blueprints.blueprint)

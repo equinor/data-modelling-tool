@@ -3,13 +3,10 @@ import json
 from flask import Blueprint, Response, send_file
 
 from core.enums import STATUS_CODES
-from core.shared import request_object as req
 from core.shared import response_object as res
 from core.use_case.create_application_use_case import CreateApplicationRequestObject, CreateApplicationUseCase
 from core.use_case.generate_code_with_plugin import GenerateCodeWithPluginRequestObject, GenerateCodeWithPluginUseCase
 
-# from core.use_case.generate_python_code import GeneratePythonCodeRequestObject, GeneratePythonCodeUseCase
-from core.use_case.get_application_settings_use_case import GetApplicationSettingsUseCase
 from utils.logging import logger
 
 blueprint = Blueprint("system", __name__)
@@ -28,22 +25,6 @@ def post(data_source_id: str, application_id: str):
         )
     else:
         return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-
-
-@blueprint.route("/api/v2/system/settings", methods=["GET"])
-def get():
-    use_case = GetApplicationSettingsUseCase()
-    response = use_case.execute(req)
-    if response.type == res.ResponseSuccess.SUCCESS:
-        return Response(
-            json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[res.ResponseSuccess.SUCCESS]
-        )
-    else:
-        return Response(
-            json.dumps("Error: Failed to load the settings file."),
-            mimetype="application/json",
-            status=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
-        )
 
 
 @blueprint.route(

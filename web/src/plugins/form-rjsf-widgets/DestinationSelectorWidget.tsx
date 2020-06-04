@@ -59,12 +59,13 @@ export default (props: Props) => {
   }, [])
 
   const onSelect = (nodeId: string, nodePath: string) => {
+    const dataSource = nodePath.split('/', 1)[0]
     setDestination(nodePath)
     setShowModal(false)
     if (blueprintFilter === BlueprintEnum.ENUM) {
       onChange(nodePath)
     } else {
-      onChange(nodeId)
+      onChange(dataSource + '/' + nodeId)
     }
   }
 

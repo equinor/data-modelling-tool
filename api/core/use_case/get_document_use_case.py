@@ -1,4 +1,3 @@
-from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.tree_node import Node
 from core.enums import PRIMITIVES

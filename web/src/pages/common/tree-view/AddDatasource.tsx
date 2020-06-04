@@ -4,7 +4,6 @@ import Form from '../../../components/Form'
 import Modal from '../../../components/modal/Modal'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { DmtApi } from '../../../api/Api'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
 import Button from '../../../components/Button'
 import Api2 from '../../../api/Api2'
