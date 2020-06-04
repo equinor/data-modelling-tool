@@ -1,11 +1,11 @@
 import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 //@ts-ignore
 import Api2, { BASE_CRUD } from '../../../../api/Api2'
-import axios from 'axios'
 import { Input, Method, Output } from './actions'
 import { DmtApi } from '../../../../api/Api'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { ExplorerAPI } from '../../../../api/GenApi'
 
 const api = new DmtApi()
 export default (
@@ -39,20 +39,24 @@ export default (
         // TODO: Validate formData. Should not be empty
         // TODO: Catch request errors
         // Create the result file
-        let response = await axios
-          .post(api.addFile(), {
+        // TODO: GET DATASOURCE
+        let response = await ExplorerAPI.addToParent({
+          // @ts-ignore
+          dataSourceId: node,
+          inlineObject: {
             attribute: 'content',
+            // @ts-ignore
             description: formData.description,
             name: formData.name,
             parentId: formData.destination,
             type: outputType,
-          })
-          .catch(error => {
-            console.error(error)
-            NotificationManager.error(
-              `Failed to create new result file: ${error?.response?.data?.message}`
-            )
-          })
+          },
+        }).catch((error: any) => {
+          console.error(error)
+          NotificationManager.error(
+            `Failed to create new result file: ${error?.response?.data?.message}`
+          )
+        })
         if (!response) return
 
         // Create the result node in index tree

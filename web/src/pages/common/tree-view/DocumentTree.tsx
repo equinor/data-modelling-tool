@@ -22,6 +22,7 @@ export default (props: PropTypes) => {
     }
     const getAllDataSources = async () => {
       return await Promise.all(
+        // @ts-ignore
         dataSources.map(dataSource => getDataSource(dataSource))
       )
     }

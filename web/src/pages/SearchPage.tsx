@@ -9,6 +9,7 @@ import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
+import { DocumentAPI, SearchAPI } from '../api/GenApi'
 
 const Container = styled.div`
   display: flex;
@@ -108,6 +109,21 @@ function CollapsableFilter({ children, title, expanded, setExpanded }: any) {
   }
 }
 
+function FetchBlueprint({ type, setValue }: any) {
+  const splitType = type.split('/')
+  const dataSourceId = splitType.shift()
+  const path = splitType.join('/')
+  // @ts-ignore
+  DocumentAPI.getByPath({ dataSourceId, path })
+    .then((res: any) => {
+      setValue(res.document.attributes)
+    })
+    .catch((err: any) => {
+      NotificationManager.error(`${err.message}`)
+      console.log(err)
+    })
+}
+
 // Creates a text <input> with labels based on a BlueprintAttribute
 function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
@@ -123,22 +139,12 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
     }
   }
 
-  function fetchBlueprint(type: string) {
-    Api2.get({
-      url: `/api/v2/documents_by_path/${type}`,
-      onSuccess: (res: any) => {
-        setNestedAttributes(res.document.attributes)
-      },
-      onError: (err: any) => {
-        NotificationManager.error(`${err.message}`)
-        console.log(err)
-      },
-    })
-  }
-
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
-      fetchBlueprint(attribute.getAttributeType())
+      FetchBlueprint({
+        type: attribute.getAttributeType(),
+        setValue: setNestedAttributes,
+      })
     }
   }, [expanded])
 
@@ -193,19 +199,6 @@ function FilterContainer({ search, queryError }) {
   const [filter, setFilter] = useState(storedSearch || {})
   const [attributes, setAttributes] = useState([])
 
-  function fetchBlueprint(type: string) {
-    Api2.get({
-      url: `/api/v2/documents_by_path/${type}`,
-      onSuccess: (res: any) => {
-        setAttributes(res.document.attributes)
-      },
-      onError: (err: any) => {
-        NotificationManager.error(`${err.message}`)
-        console.log(err)
-      },
-    })
-  }
-
   function onChange(filterChange: any) {
     // @ts-ignore
 
@@ -221,7 +214,7 @@ function FilterContainer({ search, queryError }) {
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
     if (filter?.type) {
-      fetchBlueprint(filter.type)
+      FetchBlueprint({ type: filter.type, setValue: setAttributes })
     }
   }, [filter?.type])
 
@@ -363,13 +356,12 @@ export default () => {
 
   function search(query: any) {
     setQueryError('')
-    Api2.post({
-      url: '/api/search/entities',
-      data: query,
-      onSuccess: (res: any) => {
+    //TODO: Get DataSourceId from User
+    SearchAPI.searchEntities({ dataSourceId: 'entities', inlineObject4: query })
+      .then((res: any) => {
         // @ts-ignore
         let resultList = []
-        Object.keys(res.data).map(key => resultList.push(res.data[key]))
+        Object.keys(res).map(key => resultList.push(res[key]))
         if (resultList.length === 0) {
           NotificationManager.success('Search complete!\n No results')
         } else {
@@ -379,14 +371,13 @@ export default () => {
         }
         // @ts-ignore
         setResult(resultList)
-      },
-      onError: (err: any) => {
+      })
+      .catch((err: any) => {
         const message =
           err?.response?.data?.detail || err?.response?.data?.message
         setQueryError(message)
         console.log(err)
-      },
-    })
+      })
   }
 
   return (

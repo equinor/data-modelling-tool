@@ -4,8 +4,6 @@ import BlueprintReducer, {
   DocumentActions,
   initialState,
 } from './common/DocumentsReducer'
-import { DmtApi } from '../api/Api'
-import axios from 'axios'
 import DocumentTree from './common/tree-view/DocumentTree'
 import Header from '../components/Header'
 import AddDatasource from './common/tree-view/AddDatasource'
@@ -13,8 +11,7 @@ import { DocumentNode } from './common/nodes/DocumentNode'
 import { TreeNodeRenderProps } from '../components/tree-view/TreeNode'
 import { Application } from '../util/variables'
 import DocumentEditorPage from './common/DocumentEditorWrapper'
-
-const api = new DmtApi()
+import { DataSourceAPI } from '../api/GenApi'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -28,9 +25,9 @@ export default () => {
   useEffect(() => {
     //avoid unnecessary fetch.
     if (!state.dataSources.length) {
-      axios(api.dataSourcesGet())
+      DataSourceAPI.getAll()
         .then((res: any) => {
-          dispatch(DocumentActions.addDatasources(res.data))
+          dispatch(DocumentActions.addDatasources(res))
         })
         .catch((e: any) => {
           console.log(e)

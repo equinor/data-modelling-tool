@@ -45,22 +45,7 @@ export function ActionEditPlugin(props: Props) {
             }
             return true
           })
-          Api2.post({
-            url: '/api/v3/actions',
-            data: {
-              action: 'UPLOAD',
-              dataSource: parent, //only rootpackages can have import.
-              parentId: nodeData.nodeId,
-              data,
-            },
-            onSuccess: (res: any) => {
-              NotificationManager.success('', `Uploaded ${data.length} files.`)
-              setShowModal(false)
-            },
-            onError: (err: any) => {
-              console.log(err)
-            },
-          })
+          alert('This action is not implemented')
         }
       }}
     />

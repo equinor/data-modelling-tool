@@ -4,8 +4,6 @@ import EntitiesReducer, {
   DocumentActions,
   initialState,
 } from './common/DocumentsReducer'
-import { DmtApi } from '../api/Api'
-import axios from 'axios'
 import Header from '../components/Header'
 import { Wrapper } from './BlueprintsPage'
 import { DocumentNode } from './common/nodes/DocumentNode'
@@ -13,8 +11,7 @@ import { TreeNodeRenderProps } from '../components/tree-view/TreeNode'
 import { Application } from '../util/variables'
 import DocumentEditorPage from './common/DocumentEditorWrapper'
 import AddDatasource from './common/tree-view/AddDatasource'
-
-const api = new DmtApi()
+import { DataSourceAPI } from '../api/GenApi'
 
 export default () => {
   const [state, dispatch] = useReducer(EntitiesReducer, initialState)
@@ -22,9 +19,9 @@ export default () => {
   useEffect(() => {
     //avoid unnecessary fetch.
     if (!state.dataSources.length) {
-      axios(api.dataSourcesGet())
+      DataSourceAPI.getAll()
         .then((res: any) => {
-          dispatch(DocumentActions.addDatasources(res.data))
+          dispatch(DocumentActions.addDatasources(res))
         })
         .catch((e: any) => {
           console.log(e)

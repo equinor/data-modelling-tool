@@ -3,6 +3,31 @@ server {
     server_name localhost;
     client_max_body_size 2G;
 
+    location /dmss/ {
+        # TODO: If local else use RADIX Deployment
+        proxy_pass http://mainapi:5000/api/;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection upgrade;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Request-Start $msec;
+
+        # Disable all cache
+        # TODO: Only disable cache for necessary resources
+        proxy_no_cache 1;
+        proxy_cache_bypass 1;
+        add_header Last-Modified $date_gmt;
+        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
+        if_modified_since off;
+        expires off;
+        etag off;
+
+    }
+
     location /api/ {
         proxy_pass http://api:5000/api/;
 
