@@ -1,8 +1,23 @@
 # Create Applications
 
-1. Unzip the downloaded file(e.g `unzip application.zip` )
+Inside the context menu of DMT, select application and fill in name fo the application. You also need to specify what packages (blueprints) and entities that should be included in the application. You also specify what models (from the packages included) can be created in the application.
+
+1. Unzip the downloaded file(e.g `unzip application.zip` ). See application content for what's included in zip file.
 2. Run `docker-compose up`
 3. Visit [http://localhost:9000] in your web browser (Internet Explorer is not supported)
+
+## Application content
+
+```
+├── api/ - Backend
+├──── Dockerfile - Contains all the commands for running the backend
+├──── home - The home directory that contains application settings, blueprints, and entities
+├── web/ - Frontend
+├──── actions.js - Define custom actions here
+├──── Dockerfile - Contains all the commands for running frontend
+├── docker-compose.yml - Run configuration
+└── ...
+```
 
 ## Adding custom actions
 
