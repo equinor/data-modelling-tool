@@ -45,7 +45,9 @@ services:
       ENVIRONMENT: local
       DMSS_HOST: mainapi
       DMSS_PORT: 5000
-
+    volumes:
+      - ./api/home/:/code/home
+      
   web:
     build: web
     restart: unless-stopped
@@ -69,14 +71,32 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
     depends_on:
       - db
+    ports:
+      - "5000:5000"
       
   nginx:
+    links:
+      - web
+      - api
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx-local
+    image: mariner.azurecr.io/dmt/nginx
     ports:
       - "9000:80"
+      
+  db-ui:
+    image: mongo-express:0.49
+    restart: unless-stopped
+    ports:
+      - "8090:8081"
+    logging:
+      driver: "none"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: db
+      ME_CONFIG_MONGODB_ADMINUSERNAME: maf
+      ME_CONFIG_MONGODB_ADMINPASSWORD: maf
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
 """
 
 
@@ -272,6 +292,9 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
+
+            zip_file.writestr("api/home/dmt_settings.json", json.dumps(Config.ENTITY_APPLICATION_SETTINGS).encode())
+
             for package in application.data["packages"]:
                 logger.info(f"Add package: {package}")
                 # TODO: Support including packages from different data sources
