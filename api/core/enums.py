@@ -12,6 +12,14 @@ STATUS_CODES = {
 }
 
 
+class StorageDataTypes(Enum):
+    DEFAULT = "default"
+    LARGE = "large"
+    VERY_LARGE = "veryLarge"
+    VIDEO = "video"
+    BLOB = "blob"
+
+
 class PrimitiveDataTypes(Enum):
     STR = "string"
     NUM = "number"
