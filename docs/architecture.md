@@ -1,6 +1,6 @@
 # Architecture
 
-The long term goal of MAF is to have a federated, standardized, and well defined StorageService that can handle the storing and retrieving of data of different nature and requirements.
+The long term goal of SIMOS Data Modelling Framework is to have a federated, standardized, and well defined StorageService that can handle the storing and retrieving of data of different nature and requirements.
 
 For this to work, we need some components with responsibility of different layers of abstraction. All these components will need to support basic CRUD(Crate, Read, Update, Delete) functionality.
 

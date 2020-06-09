@@ -31,6 +31,7 @@ app = create_app(Config)
 @app.cli.command()
 def remove_application():
     try:
+        logger.info(f"Remove DMT application")
         explorer_api.remove_by_path(Config.APPLICATION_DATA_SOURCE, {"directory": "DMT"})
     except ApiException:
         logger.info(f"Could not remove DMT")
