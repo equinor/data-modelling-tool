@@ -1,7 +1,7 @@
 import Api2, { BASE_CRUD } from '../../../../api/Api2'
 import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 import { DmtApi } from '../../../../api/Api'
-import axios from 'axios'
+import { DocumentAPI } from '../../../../api/GenApi'
 
 const api = new DmtApi()
 
@@ -23,6 +23,7 @@ export const insertReferenceAction = (
       })
     },
     onSubmit: async (formData: any) => {
+      alert('ERROR: Not Implemented. Inserting references is not implemented')
       setShowModal(false)
       const dataSource = node.nodeData.meta.dataSource
       const nodeIdSplit = node.nodeData.nodeId.split('.')
@@ -31,19 +32,25 @@ export const insertReferenceAction = (
         params = { params: { attribute: nodeIdSplit[1] } }
       }
       // Get current file
-      const currentFileResponse = await axios.get(
-        api.getFile(dataSource, nodeIdSplit[0]),
-        params
-      )
+      // @ts-ignore
+      const currentFileResponse = await DocumentAPI.getById({
+        // @ts-ignore
+        dataSourceId: dataSource,
+        documentId: nodeIdSplit[0],
+      })
 
       // Get referenced file
       // TODO: Support diff dataSources
       // const refDataSource = formData.reference.id.split('/')[0]
       // const refDocId = formData.reference.id.split('/')[1]
       const refDocId = formData.reference.id
-      const referenceFileResponse = await axios.get(
-        api.getFile(dataSource, refDocId)
-      )
+
+      // @ts-ignore
+      const referenceFileResponse = await DocumentAPI.getById({
+        // @ts-ignore
+        dataSourceId: dataSource,
+        documentId: refDocId,
+      })
 
       let newData = currentFileResponse.data.document
       const referencedDocument = referenceFileResponse.data.document
@@ -54,18 +61,19 @@ export const insertReferenceAction = (
         newData = referencedDocument
       }
 
-      const response = await axios.put(
-        api.updateFile(dataSource, nodeIdSplit[0]),
-        newData,
-        params
-      )
-
-      createNodes({
+      await DocumentAPI.update({
+        // @ts-ignore
+        dataSourceId: dataSource,
+        documentId: nodeIdSplit[0],
+        // @ts-ignore
+        attribute: params,
+        requestBody: newData,
+      }).then(()=>createNodes({
         documentId: node.nodeData.nodeId,
         // @ts-ignore
         nodeUrl: `${api.indexGet(dataSource)}/${node.parent}`,
         node,
-      })
+      }))
     },
   }
 }

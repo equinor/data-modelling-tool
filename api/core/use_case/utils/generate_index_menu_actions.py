@@ -6,6 +6,8 @@ from classes.tree_node import Node
 from config import Config
 from core.enums import DMT, SIMOS
 
+DMSS_API = "/dmss/v1"
+
 
 def get_node_url(datasource, parent_id):
     return f"/api/v4/index/{datasource}/{parent_id}"
@@ -21,7 +23,7 @@ def get_rename_menu_action(data_source_id: str, dotted_document_id: str, type: s
         "action": "UPDATE",
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_split[0]}{attribute_arg}",
-            "url": f"/api/v2/explorer/{data_source_id}/rename",
+            "url": f"{DMSS_API}/explorer/{data_source_id}/rename",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             # TODO: This is not right...
             "nodeUrl": get_node_url(data_source_id, parent_uid if parent_uid else dotted_document_id),
@@ -44,7 +46,7 @@ def get_delete_menu_item(
         "label": "Remove",
         "action": "DELETE",
         "data": {
-            "url": f"/api/v4/explorer/{data_source_id}/remove",
+            "url": f"{DMSS_API}/explorer/{data_source_id}/remove",
             "request": {"parentId": parent_id, "documentId": document_id},
         },
     }
@@ -56,7 +58,7 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
         "label": label if label else name,
         "action": "CREATE",
         "data": {
-            "url": f"/api/v2/explorer/{data_source_id}/add-file",
+            "url": f"{DMSS_API}/explorer/{data_source_id}/add-to-parent",
             "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": get_node_url(data_source_id, node_id_split[0]),
             "request": {
@@ -89,7 +91,7 @@ def get_create_root_package_menu_item(data_source_id: str):
         "label": "Create Root Package",
         "action": "CREATE",
         "data": {
-            "url": f"/api/v2/explorer/{data_source_id}/add-root-package",
+            "url": f"{DMSS_API}/explorer/{data_source_id}/add-package",
             "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": get_node_url(data_source_id, data_source_id),
             "request": {"name": "${name}", "description": "${description}"},

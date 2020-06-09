@@ -95,7 +95,7 @@ async function runEngineResultFile({ input, output, updateDocument }) {
 
   await sleep(5000)
   // This will fail, as the Entity object are missing required attributes.
-  entity = { description: 'Updated description from action' }
+  entity = { ...entity, description: 'Updated description from action' }
   updateDocument({ ...output, entity })
 }
 

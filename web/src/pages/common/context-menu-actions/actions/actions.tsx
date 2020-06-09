@@ -3,11 +3,11 @@ import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 import Actions from '../../../../actions'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import Api2 from '../../../../api/Api2'
 import saveToNewFile from './saveToNewFile'
 import saveInEntity from './saveInEntity'
 import { Entity } from '../../../../domain/types'
 import axios from 'axios'
+import { DocumentAPI } from '../../../../api/GenApi'
 
 enum ActionTypes {
   separateResultFile = 'separateResultFile',
@@ -45,24 +45,29 @@ function updateDocument(
   parentId: any,
   createNodes: Function
 ) {
-  Api2.put({
-    url: `/api/v2/documents/${output.dataSource}/${output.id}`,
-    data: output.entity,
-    onSuccess: (response: any) => {
+  DocumentAPI.update({
+    documentId: output.id,
+    dataSourceId: output.dataSource,
+    requestBody: output.entity,
+  })
+    .then((response: any) => {
       layout.refreshByFilter(output.id)
       output.notify &&
-        NotificationManager.success(
-          `Updated document: ${response.data.data.name}`
-        )
+        NotificationManager.success(`Updated document: ${response.name}`)
       refresh(node, output, parentId, createNodes)
-    },
-    onError: (error: any) => {
-      console.error(error?.response?.data)
-      NotificationManager.error(
-        `Failed to update document: ${error?.response?.data?.message}`
-      )
-    },
-  })
+    })
+    .catch((error: any) => {
+      console.error(error.url)
+      if (output.id.includes('.')) {
+        NotificationManager.error(
+          "Not implemented! Can't run actions on storageContained entities"
+        )
+      } else {
+        NotificationManager.error(
+          `Failed to update document: ${error.statusText}`
+        )
+      }
+    })
 }
 
 function createEntity(type: string) {
@@ -128,8 +133,7 @@ export const Action = (
       setShowModal,
       createNodes,
       handleUpdate,
-      createEntity,
-      dataSource
+      createEntity
     )
   } else {
     return saveInEntity(

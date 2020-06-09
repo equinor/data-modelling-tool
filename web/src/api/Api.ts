@@ -86,30 +86,6 @@ export class IndexApi extends BaseApi {
 }
 
 export class DmtApi {
-  dataSourcesGet(): string {
-    return `/api/v2/data-sources`
-  }
-
-  addFile(): string {
-    return '/api/v2/explorer/entities/add-file'
-  }
-
-  updateFile(dataSource: string | undefined, documentId: string): string {
-    return `/api/v2/documents/${dataSource}/${documentId}`
-  }
-
-  getFile(dataSource: string | undefined, documentId: string): string {
-    return `/api/v2/documents/${dataSource}/${documentId}`
-  }
-
-  applicationSettingsGet(settingsFile: string): string {
-    return `/api/v2/system/settings?settingsFile=${settingsFile}`
-  }
-
-  dataSourcesPost(datasourceId: string) {
-    return `/api/v2/data-sources/${datasourceId}`
-  }
-
   indexGet(datasourceId: string, application?: string) {
     if (application)
       return `/api/v4/index/${datasourceId}?APPLICATION=${application}`

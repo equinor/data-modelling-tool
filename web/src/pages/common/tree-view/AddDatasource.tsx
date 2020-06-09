@@ -1,15 +1,13 @@
 import React, { useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
-import axios from 'axios'
 import Form from '../../../components/Form'
 import Modal from '../../../components/modal/Modal'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { DmtApi } from '../../../api/Api'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
 import Button from '../../../components/Button'
 import Api2 from '../../../api/Api2'
-const api = new DmtApi()
+import { DataSourceAPI } from '../../../api/GenApi'
 
 export default () => {
   const [showModal, setShowModal] = useState(false)
@@ -35,9 +33,8 @@ export default () => {
           fetchDocument={Api2.fetchCreateDatasource(selectedDatasourceType)}
           onSubmit={data => {
             data.type = selectedDatasourceType
-            axios
-              .post(api.dataSourcesPost(data.name), data)
-              .then((res: any) => {
+            DataSourceAPI.save({ dataSourceId: data.name, requestBody: data })
+              .then(() => {
                 NotificationManager.success(`Created datasource ${data.name}`)
                 setShowModal(false)
                 //@todo fix when endpoint is ready.

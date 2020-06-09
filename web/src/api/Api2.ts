@@ -31,18 +31,6 @@ interface Get {
 }
 
 export default class Api2 {
-  static download({ url, data, onSuccess, onError = () => {} }: Post) {
-    console.debug(`Download ${url}`)
-    axios({
-      url: url,
-      method: 'POST',
-      data: data,
-      responseType: 'blob', // important
-    })
-      .then(onSuccess)
-      .catch(onError)
-  }
-
   static post({ url, data, onSuccess, onError = () => {} }: Post) {
     console.debug(`Post ${url}`)
     axios
@@ -67,31 +55,12 @@ export default class Api2 {
       .catch(onError)
   }
 
-  static delete({ url, onSuccess, onError = () => {} }: Get) {
-    console.debug(`Delete ${url}`)
-    axios
-      .delete(url)
-      .then(response => onSuccess(response.data))
-      .catch(onError)
-  }
-
   static fetchCreateDatasource(selectedDatasourceType: string) {
     return ({ onSuccess, onError }: BASE_CRUD): void => {
       fetchTemplate({
         url: api.templatesDatasourceMongoGet(selectedDatasourceType),
         onSuccess,
       })
-    }
-  }
-
-  static fetchApplicationSettings(settingsFile: string) {
-    return ({ onSuccess, onError }: BASE_CRUD): void => {
-      axios
-        .get(api.applicationSettingsGet(settingsFile))
-        .then(({ data }) => {
-          onSuccess(data)
-        })
-        .catch(onError)
     }
   }
 

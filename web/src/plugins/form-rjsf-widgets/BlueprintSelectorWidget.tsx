@@ -1,13 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
-import { Datasource, DmtApi } from '../../api/Api'
+import { Datasource } from '../../api/Api'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
-import axios from 'axios'
 import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
-
-const api = new DmtApi()
+import { DataSourceAPI } from '../../api/GenApi'
 
 export type Props = {
   onChange: Function
@@ -27,11 +25,9 @@ export default (props: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
-    const url = api.dataSourcesGet()
-    axios
-      .get(url)
+    DataSourceAPI.getAll()
       .then((res: any) => {
-        const data: Datasource[] = res.data || []
+        const data: Datasource[] = res || []
         setDatasources(data)
       })
       .catch((err: any) => {

@@ -116,7 +116,7 @@ const WithContextMenuModal = (props: WithContextMenuModalProps) => {
           setEntity(result.document)
         },
         onError: error => {
-          console.error('failed to fetch document: ' + error.statusText)
+          console.error('Failed to fetch document: ' + error.statusText)
         },
       })
     }

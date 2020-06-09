@@ -11,22 +11,6 @@ const fetchUpdate = (action: any) => {
       onError,
     })
 }
-interface PostUpdateProps {
-  response: any
-  setShowModal: Function
-  node: TreeNodeRenderProps
-}
-
-export const postUpdate = ({
-  setShowModal,
-  response,
-  node,
-}: PostUpdateProps) => {
-  setShowModal(false)
-  const data = node.nodeData
-  data.title = response.data.data['name']
-  node.actions.updateNode(data)
-}
 
 export const updateAction = (
   action: any,

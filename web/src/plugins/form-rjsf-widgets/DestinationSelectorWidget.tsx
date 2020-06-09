@@ -3,11 +3,9 @@ import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
-import { Datasource, DmtApi } from '../../api/Api'
-import axios from 'axios'
+import { Datasource } from '../../api/Api'
 import styled from 'styled-components'
-
-const api = new DmtApi()
+import { DataSourceAPI } from '../../api/GenApi'
 
 const SelectDestinationButton = styled.button`
   padding: 2.5px;
@@ -50,11 +48,9 @@ export default (props: Props) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   useEffect(() => {
-    const url = api.dataSourcesGet()
-    axios
-      .get(url)
+    DataSourceAPI.getAll()
       .then((res: any) => {
-        const data: Datasource[] = res.data || []
+        const data: Datasource[] = res || []
         setDatasources(data)
       })
       .catch((err: any) => {
@@ -63,12 +59,13 @@ export default (props: Props) => {
   }, [])
 
   const onSelect = (nodeId: string, nodePath: string) => {
+    const dataSource = nodePath.split('/', 1)[0]
     setDestination(nodePath)
     setShowModal(false)
     if (blueprintFilter === BlueprintEnum.ENUM) {
       onChange(nodePath)
     } else {
-      onChange(nodeId)
+      onChange(dataSource + '/' + nodeId)
     }
   }
 
