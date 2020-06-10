@@ -7,7 +7,7 @@ import Modal from '../../components/modal/Modal'
 import { FaTimes } from 'react-icons/fa'
 import { BlueprintEnum } from '../../util/variables'
 import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
-import { DataSourceAPI } from '../../api/GenApi'
+import { DataSourceAPI } from '../../api/Api3'
 
 const NodeWrapper = styled.div`
   display: flex;
@@ -60,19 +60,16 @@ const MultiSelector = ({
   uiSchema,
   typeFilter,
 }: MultiSelectorProps) => {
-  let initialState = formData
-  if (!Array.isArray(formData)) {
-    initialState = [formData]
-  }
-
   const [datasources, setDatasources] = useState<Datasource[]>([])
-  const [selectedPackages, setSelectedPackages] = useState<string[]>(
-    initialState
-  )
+  const [selectedPackages, setSelectedPackages] = useState<string[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
 
+  useEffect(() => {
+    setSelectedPackages(formData || [])
+  }, [formData])
+
   function removePackage(value: string) {
-    const newSelectedPackages = selectedPackages.filter(e => {
+    const newSelectedPackages = selectedPackages.filter((e: any) => {
       return e !== value
     })
     setSelectedPackages(newSelectedPackages)
@@ -81,7 +78,7 @@ const MultiSelector = ({
 
   function handleChange(value: string) {
     if (selectedPackages.includes(value)) {
-      setSelectedPackages(selectedPackages.filter(e => e !== value))
+      setSelectedPackages(selectedPackages.filter((e: any) => e !== value))
       onChange(selectedPackages)
     } else {
       selectedPackages.push(value)
@@ -101,7 +98,7 @@ const MultiSelector = ({
       })
   }, [])
 
-  const tableRows = selectedPackages.map(folder => (
+  const tableRows = selectedPackages.map((folder: any) => (
     <tr key={folder} style={{ verticalAlign: 'baseline' }}>
       <TableCell>
         {folder}
@@ -117,8 +114,12 @@ const MultiSelector = ({
   return (
     <PackagesWrapper>
       <div style={{ flexDirection: 'column' }}>
-        <b>{uiSchema['ui:label']}</b>
-        <p>{uiSchema['ui:description']}</p>
+        {uiSchema && (
+          <>
+            <b>{uiSchema['ui:label']}</b>
+            <p>{uiSchema['ui:description']}</p>
+          </>
+        )}
         <table>
           <tbody>
             {(tableRows.length === 0 && (

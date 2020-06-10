@@ -8,7 +8,7 @@ import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import { DocumentAPI, SearchAPI } from '../api/GenApi'
+import { DocumentAPI, SearchAPI } from '../api/Api3'
 
 const Container = styled.div`
   display: flex;
@@ -61,7 +61,7 @@ const ButtonContainer = styled.div`
   justify-content: space-evenly;
 `
 
-const Collapsable = styled.div`
+const Collapsible = styled.div`
   display: flex;
   height: 25px;
   align-items: center;
@@ -76,7 +76,7 @@ const Collapsable = styled.div`
   }
 `
 
-const CollapsableTitle = styled.div`
+const CollapsibleTitle = styled.div`
   display: flex;
   justify-content: space-around;
   padding-right: 24px;
@@ -86,24 +86,24 @@ function EyeIcon() {
   return <FaEye style={{ width: '20px', height: '20px', marginLeft: '3px' }} />
 }
 
-function CollapsableFilter({ children, title, expanded, setExpanded }: any) {
+function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
   if (expanded) {
     return (
       <>
-        <Collapsable onClick={() => setExpanded(!expanded)}>
+        <Collapsible onClick={() => setExpanded(!expanded)}>
           <FaChevronDown />
-          <CollapsableTitle style={{ width: '-webkit-fill-available' }}>
+          <CollapsibleTitle style={{ width: '-webkit-fill-available' }}>
             <b>{title}</b>
-          </CollapsableTitle>
-        </Collapsable>
+          </CollapsibleTitle>
+        </Collapsible>
         <div style={{ padding: '10px 5px' }}>{children}</div>
       </>
     )
   } else {
     return (
-      <Collapsable onClick={() => setExpanded(true)} style={{ height: '20px' }}>
+      <Collapsible onClick={() => setExpanded(true)} style={{ height: '20px' }}>
         <FaPlus />
-      </Collapsable>
+      </Collapsible>
     )
   }
 }
@@ -170,7 +170,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
     <FilterGroup>
       <AttributeName>{attribute.getPrettyName()}:</AttributeName>
       <Group style={{ padding: '0px 0px' }}>
-        <CollapsableFilter
+        <CollapsibleFilter
           title={attribute.getPrettyName()}
           expanded={expanded}
           setExpanded={setExpanded}
@@ -185,7 +185,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
               onChange={nestedOnChange}
             />
           ))}
-        </CollapsableFilter>
+        </CollapsibleFilter>
       </Group>
     </FilterGroup>
   )

@@ -6,6 +6,7 @@ import styled from 'styled-components'
 import { AuthContext } from '../../auth/AuthContext'
 import Modal from '../../components/modal/Modal'
 import JsonView from '../../components/JsonView'
+import ConfigureApplication from '../../components/ConfigureApplication'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -30,13 +31,10 @@ const HeaderWrapper: any = styled.div`
 `
 
 const UserInfoBox = styled.div`
+  &:hover {
+    color: gray;
+  }
   cursor: pointer;
-`
-
-const ModalChildren = styled.div`
-  display: flex;
-  flex-flow: column;
-  align-items: center;
 `
 
 function UserInfo() {
@@ -50,12 +48,10 @@ function UserInfo() {
         open={expanded}
         title={'Logged in user info'}
       >
-        <ModalChildren>
-          <JsonView data={idToken.profile} />
-          <button type={'button'} onClick={() => setExpanded(false)}>
-            Close
-          </button>
-        </ModalChildren>
+        <JsonView data={idToken.profile} />
+        <button type={'button'} onClick={() => setExpanded(false)}>
+          Close
+        </button>
       </Modal>
     </UserInfoBox>
   )
@@ -69,19 +65,32 @@ export default () => {
         <h4>Data Modelling Tool</h4>
         <UserInfo />
       </HeaderWrapper>
-      <Link to={'/'}>
-        <TabStyled isSelected={location.pathname === '/'}>Blueprints</TabStyled>
-      </Link>
-      <Link to={'/entities'}>
-        <TabStyled isSelected={location.pathname === '/entities'}>
-          Entities
-        </TabStyled>
-      </Link>
-      <Link to={'/search'}>
-        <TabStyled isSelected={location.pathname === '/search'}>
-          Search
-        </TabStyled>
-      </Link>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div>
+          <Link to={'/'}>
+            <TabStyled isSelected={location.pathname === '/'}>
+              Blueprints
+            </TabStyled>
+          </Link>
+          <Link to={'/entities'}>
+            <TabStyled isSelected={location.pathname === '/entities'}>
+              Entities
+            </TabStyled>
+          </Link>
+          <Link to={'/search'}>
+            <TabStyled isSelected={location.pathname === '/search'}>
+              Search
+            </TabStyled>
+          </Link>
+        </div>
+        <ConfigureApplication />
+      </div>
     </>
   )
 }

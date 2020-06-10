@@ -2,6 +2,13 @@
 import React, { useEffect, useState } from 'react'
 import { createPortal } from 'react-dom'
 import { StyledModal } from './style'
+import styled from 'styled-components'
+
+const ModalChildren = styled.div`
+  display: flex;
+  flex-flow: column;
+  align-items: center;
+`
 
 // Creates a portal outside the DOM hierarchy
 function Portal(props: any) {
@@ -28,21 +35,27 @@ function Portal(props: any) {
 
 // A modal component which will be used by other components / pages
 function Modal(props: any) {
-  const { children, toggle, open, title } = props
+  const { children, toggle, open, title, width } = props
   return (
     <Portal>
       {open && (
-        <StyledModal.ModalWrapper onClick={toggle}>
-          <StyledModal.ModalBody onClick={event => event.stopPropagation()}>
-            <StyledModal.CloseButton onClick={toggle}>
-              &times;
-            </StyledModal.CloseButton>
-            <StyledModal.ModalHeader>
-              <h4>{title}</h4>
-            </StyledModal.ModalHeader>
-            {children}
-          </StyledModal.ModalBody>
-        </StyledModal.ModalWrapper>
+        <ModalChildren>
+          <StyledModal.ModalWrapper onClick={toggle}>
+            <StyledModal.ModalBody
+              onClick={event => event.stopPropagation()}
+              // @ts-ignore
+              width={width}
+            >
+              <StyledModal.CloseButton onClick={toggle}>
+                &times;
+              </StyledModal.CloseButton>
+              <StyledModal.ModalHeader>
+                <h4>{title}</h4>
+              </StyledModal.ModalHeader>
+              {children}
+            </StyledModal.ModalBody>
+          </StyledModal.ModalWrapper>
+        </ModalChildren>
       )}
     </Portal>
   )

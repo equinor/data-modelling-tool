@@ -4,7 +4,7 @@ import Modal from '../../components/modal/Modal'
 import { Datasource } from '../../api/Api'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
-import { DataSourceAPI } from '../../api/GenApi'
+import { DataSourceAPI } from '../../api/Api3'
 
 export type Props = {
   onChange: Function

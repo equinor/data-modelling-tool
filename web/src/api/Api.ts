@@ -5,6 +5,8 @@ import Workspace from '../util/localWorkspace'
 import { TreeNodeBuilderOld } from '../pages/common/tree-view/TreeNodeBuilderOld'
 import { TreeNodeData } from '../components/tree-view/Tree'
 import { NodeType } from '../util/variables'
+import * as runtime from '../gen/runtime'
+import { GetDataSourceRequest } from '../gen/apis'
 
 function toObject(acc: any, current: TreeNodeData) {
   ;(acc as any)[current.nodeId] = current

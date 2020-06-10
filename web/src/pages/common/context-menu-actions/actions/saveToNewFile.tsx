@@ -5,7 +5,7 @@ import { Input, Method, Output } from './actions'
 import { DmtApi } from '../../../../api/Api'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { ExplorerAPI } from '../../../../api/GenApi'
+import { ExplorerAPI } from '../../../../api/Api3'
 
 const api = new DmtApi()
 export default (

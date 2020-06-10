@@ -5,7 +5,7 @@ import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
 import { Datasource } from '../../api/Api'
 import styled from 'styled-components'
-import { DataSourceAPI } from '../../api/GenApi'
+import { DataSourceAPI } from '../../api/Api3'
 
 const SelectDestinationButton = styled.button`
   padding: 2.5px;

@@ -1,7 +1,7 @@
 import Api2, { BASE_CRUD } from '../../../../api/Api2'
 import { TreeNodeRenderProps } from '../../../../components/tree-view/TreeNode'
 import { DmtApi } from '../../../../api/Api'
-import { DocumentAPI } from '../../../../api/GenApi'
+import { DocumentAPI } from '../../../../api/Api3'
 
 const api = new DmtApi()
 
@@ -68,12 +68,14 @@ export const insertReferenceAction = (
         // @ts-ignore
         attribute: params,
         requestBody: newData,
-      }).then(()=>createNodes({
-        documentId: node.nodeData.nodeId,
-        // @ts-ignore
-        nodeUrl: `${api.indexGet(dataSource)}/${node.parent}`,
-        node,
-      }))
+      }).then(() =>
+        createNodes({
+          documentId: node.nodeData.nodeId,
+          // @ts-ignore
+          nodeUrl: `${api.indexGet(dataSource)}/${node.parent}`,
+          node,
+        })
+      )
     },
   }
 }

@@ -30,10 +30,17 @@ def get_application_settings():
 
 @blueprint.route("/api/system/settings", methods=["POST"])
 def set_application_settings():
+    if Config.ENVIRONMENT != "local":
+        return Response(
+            json.dumps("Changing systems settings can only be done in local deployments."),
+            mimetype="application/json",
+            status=403,
+        )
     try:
         with open(Config.ENTITY_SETTINGS_FILE, "w") as f:
             request_data = json.dumps(request.json)
             f.write(request_data)
+            Config.ENTITY_APPLICATION_SETTINGS = request.json
             return Response("OK", mimetype="application/json", status=STATUS_CODES[res.ResponseSuccess.SUCCESS])
     except Exception as error:
         return Response(

@@ -11,7 +11,7 @@ import { TreeNodeRenderProps } from '../components/tree-view/TreeNode'
 import { Application } from '../util/variables'
 import DocumentEditorPage from './common/DocumentEditorWrapper'
 import AddDatasource from './common/tree-view/AddDatasource'
-import { DataSourceAPI } from '../api/GenApi'
+import { DataSourceAPI } from '../api/Api3'
 
 export default () => {
   const [state, dispatch] = useReducer(EntitiesReducer, initialState)
