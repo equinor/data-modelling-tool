@@ -72,7 +72,7 @@ services:
     depends_on:
       - db
     ports:
-      - "5000:5000"
+      - "5010:5000"
       
   nginx:
     links:
@@ -282,6 +282,7 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_all(zip_file, f"{home_path}/core/SIMOS", rel="api/home/core/SIMOS")
             zip_all(zip_file, f"{home_path}/core/DMT", rel="api/home/core/DMT")
             zip_all(zip_file, f"{home_path}/data_sources", rel="api/home/data_sources")
+            zip_all(zip_file, f"{home_path}/code_generators", rel="api/home/code_generators")
             application.data.pop("_id", None)
             application.data.pop("uid", None)
             json_data = json.dumps(application.data)
