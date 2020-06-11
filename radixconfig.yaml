@@ -13,6 +13,7 @@ spec:
   components:
     - name: web
       image: mariner.azurecr.io/dmt/web:{imageTagName}
+      alwaysPullImageOnDeploy: true
       environmentConfig:
         - environment: prod
           imageTagName: release
@@ -23,6 +24,7 @@ spec:
           port: 3000
     - name: api
       image: mariner.azurecr.io/dmt/api:{imageTagName}
+      alwaysPullImageOnDeploy: true
       environmentConfig:
         - environment: prod
           imageTagName: release
