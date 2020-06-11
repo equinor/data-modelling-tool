@@ -53,6 +53,7 @@ services:
     restart: unless-stopped
     volumes:
       - ./web/external-plugins/:/code/src/external-plugins
+      - ./web/actions.js:/code/src/actions.js
 
   db:
     image: mongo:3.4
