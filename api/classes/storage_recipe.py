@@ -32,7 +32,7 @@ class StorageAttribute:
             "name": self.name,
             "contained": self.is_contained,
             "type": self.type,
-            "dataType": self.storage_type_affinity.value,
+            "storageTypeAffinity": self.storage_type_affinity.value,
             "label": self.label,
             "description": self.description,
         }
