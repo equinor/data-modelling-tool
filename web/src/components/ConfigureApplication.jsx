@@ -7,6 +7,7 @@ import BlueprintSelectorWidget from "../plugins/form-rjsf-widgets/BlueprintSelec
 import { BlueprintsSelector, PackagesSelector } from "../plugins/form-rjsf-widgets/MultiSelectorWidget"
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { cloneDeep } from "lodash"
 
 const ButtonWrapper = styled.div`
 padding-top: 5px;
@@ -50,7 +51,7 @@ function Action({ value, index, onChange }) {
                onClick={() => setCollapsed(true)}>
             <label>Action #{index}</label>
             <div>
-              <button onClick={()=>onChange(null)} style={{color: "red", marginRight: "10px" }}>Remove</button>
+              <button onClick={() => onChange(null)} style={{ color: "red", marginRight: "10px" }}>Remove</button>
               <FaChevronUp/>
             </div>
           </div>
@@ -74,16 +75,16 @@ function TextInput({ label, value, onChange }) {
   return (
       <div>
         <label style={{ paddingRight: "5px" }}>{label}:</label>
-        <input type={"text"} onChange={e => onChange(e.target.value)} value={value} style={{width: "100%"}}/>
+        <input type={"text"} onChange={e => onChange(e.target.value)} value={value} style={{ width: "100%" }}/>
       </div>
   )
 }
 
-function ActionTypesInput({value, onChange }) {
+function ActionTypesInput({ value, onChange }) {
   return (
       <div>
         <label style={{ paddingRight: "5px" }}>ActionType:</label>
-        <select id={"actionTypes"} value={value} style={{width: "100%"}} onChange={e =>onChange(e.target.value)}>
+        <select id={"actionTypes"} value={value} style={{ width: "100%" }} onChange={e => onChange(e.target.value)}>
           <option value={"separateResultFile"} label={"Separate Result File"}/>
           <option value={"resultInEntity"} label={"Result in entity"}/>
         </select>
@@ -104,10 +105,10 @@ function PackageInput({ label, value, onChange }) {
 function ModelInput({ label, value, onChange }) {
   return (
       <>
-      <label style={{ margin: "5px 0 0 0" }}>{label}:</label>
-      <ActionWrapper style={{ background: "white", margin: "0" }}>
-        <BlueprintsSelector formData={value} onChange={value => onChange(value)}/>
-      </ActionWrapper></>
+        <label style={{ margin: "5px 0 0 0" }}>{label}:</label>
+        <ActionWrapper style={{ background: "white", margin: "0" }}>
+          <BlueprintsSelector formData={value} onChange={value => onChange(value)}/>
+        </ActionWrapper></>
   )
 }
 
@@ -122,7 +123,7 @@ export default () => {
       SystemAPI.getSystemSettings()
           .then((result) => {
             setSettings(result.data)
-            setNewSettings(result.data)
+            setNewSettings(cloneDeep(result.data))
           })
           .catch((error) => {
             console.error(error)
@@ -134,10 +135,10 @@ export default () => {
     setNewSettings({ ...newSettings, [key]: value })
   }
 
-  function newAction(){
+  function newAction() {
     let newActions = newSettings.actions
-    newActions.push({name: "none", description: "", method: 'none', input: '', output: ''})
-    setNewSettings({...newSettings, actions: newActions})
+    newActions.push({ name: "none", description: "", method: 'none', input: '', output: '' })
+    setNewSettings({ ...newSettings, actions: newActions })
   }
 
   function actionsOnChange(index, value) {
@@ -184,9 +185,9 @@ export default () => {
           <PackageInput label={"Packages"} value={newSettings.packages}
                         onChange={(value) => onChange('packages', value)}/>
           <ModelInput label={"Models"} value={newSettings.models} onChange={(value) => onChange('models', value)}/>
-          <div style={{display: "flex", justifyContent: "space-between", margin: "10px 0 0 0"}}>
-            <label style={{margin: "0 5px"}}>Actions:</label>
-            <FaPlus style={{cursor: "pointer"}} onClick={()=>newAction()}/>
+          <div style={{ display: "flex", justifyContent: "space-between", margin: "10px 0 0 0" }}>
+            <label style={{ margin: "0 5px" }}>Actions:</label>
+            <FaPlus style={{ cursor: "pointer" }} onClick={() => newAction()}/>
           </div>
 
           {newSettings.actions && newSettings.actions.map((action, index) => {
@@ -196,7 +197,7 @@ export default () => {
             <button type={'button'} onClick={() => setModalOpen(false)}>
               Close
             </button>
-            <button type={'button'} onClick={() => setNewSettings(settings)}>
+            <button type={'button'} onClick={() => setNewSettings(cloneDeep(settings))}>
               Reset
             </button>
             <button type={'button'} onClick={() => saveSettings()}>

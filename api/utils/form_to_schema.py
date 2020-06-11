@@ -9,35 +9,31 @@ from core.utility import get_blueprint
 
 def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprint], ui_recipe_name):
     properties = {}
-
     ui_recipe: Recipe = blueprint.get_ui_recipe(ui_recipe_name)
-
     nested_attributes = []
+
     for attribute in blueprint.attributes:
-        attribute_name = attribute.name
-        is_array = attribute.dimensions == "*"
 
-        is_contained = ui_recipe.is_contained(attribute)
-
-        if not is_contained:
+        if not ui_recipe.is_contained(attribute):
             continue
 
-        if attribute.attribute_type in PRIMITIVES:
-            properties[attribute_name] = (
-                attribute.to_json_schema() if not is_array else {"type": "array", "items": attribute.to_json_schema()}
+        if attribute.is_primitive():
+            properties[attribute.name] = (
+                attribute.to_json_schema()
+                if not attribute.is_array()
+                else {"type": "array", "items": attribute.to_json_schema()}
             )
         else:
             nested_attributes.append(
                 {
-                    "name": attribute_name,
+                    "name": attribute.name,
                     "type": attribute.attribute_type,
-                    "is_array": is_array,
+                    "is_array": attribute.is_array(),
                     "optional": attribute.optional,
                 }
             )
 
     for nested_type in nested_attributes:
-        attribute_name = nested_type["name"]
         nested_blueprint = get_blueprint(nested_type["type"])
 
         if parent_blueprint and nested_blueprint == parent_blueprint:
@@ -46,7 +42,7 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprin
         if nested_type["is_array"] or nested_type["optional"]:
             continue
 
-        properties[attribute_name] = process_attributes(nested_blueprint, blueprint, ui_recipe_name)
+        properties[nested_type["name"]] = process_attributes(nested_blueprint, blueprint, ui_recipe_name)
     return {"type": "object", "properties": properties}
 
 
