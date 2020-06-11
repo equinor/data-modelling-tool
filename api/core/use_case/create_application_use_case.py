@@ -51,6 +51,8 @@ services:
   web:
     build: web
     restart: unless-stopped
+    volumes:
+      - ./web/external-plugins/:/code/src/external-plugins
 
   db:
     image: mongo:3.4
@@ -189,6 +191,45 @@ export default runnableMethods
     return class_template.render(runnable_models=runnable_models)
 
 
+def generate_external_plugins():
+    class_template = Template(
+        """\
+import React from 'react'
+
+/**
+ * How to use plugins in UI recipes:
+ * - UI recipe must match the name of the plugin
+ * - Select external from as plugin
+ *
+ * Work space for attaching plugin to the dmt tool.
+ * External dependencies:
+ * - option1: should either be provided by the DMT (in package.json)
+ * - option2: create a lib folder and add transpiled javascript files. Similar to dist folders in node_modules.
+ *
+ * External plugins must have a unique name, not conflicting with the DMT official plugin names.
+ */
+
+const TestPlugin = ({ parent, document, children }) => {
+  return 'MyPlugin'
+}
+
+const registeredPlugins = {
+  MyPlugin: MyPlugin,
+}
+
+export default function pluginHook(uiRecipe) {
+  return registeredPlugins[uiRecipe.name]
+}
+
+function MyPlugin(props) {
+  const { updateEntity, document } = props
+  return (<div>My Custom Plugin</div>)
+}
+"""
+    )
+    return class_template.render()
+
+
 class CreateApplicationRequestObject(req.ValidRequestObject):
     def __init__(self, application_id=None):
         self.application_id = application_id
@@ -293,8 +334,8 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
-
             zip_file.writestr("api/home/dmt_settings.json", json.dumps(Config.ENTITY_APPLICATION_SETTINGS).encode())
+            zip_file.writestr("web/external-plugins/index.js", generate_external_plugins())
 
             for package in application.data["packages"]:
                 logger.info(f"Add package: {package}")
