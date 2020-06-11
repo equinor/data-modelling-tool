@@ -40,10 +40,15 @@ class StorageAttribute:
 
 class StorageRecipe:
     def __init__(
-        self, name: str, attributes: List[Dict] = None, storageAffinity: str = StorageDataTypes.DEFAULT.value
+        self,
+        name: str,
+        attributes: List[Dict] = None,
+        storageAffinity: str = StorageDataTypes.DEFAULT.value,
+        description: str = "",
     ):
         attributes = attributes if attributes else []
         self.name = name
+        self.description = description
         self.storage_affinity = StorageDataTypes(storageAffinity)
         self.storage_attributes = {attribute["name"]: StorageAttribute(**attribute) for attribute in attributes}
 
@@ -58,6 +63,7 @@ class StorageRecipe:
     def to_dict(self) -> Dict:
         return {
             "name": self.name,
+            "description": self.description,
             "storageAffinity": self.storage_affinity.value,
             "attributes": [attribute.to_dict() for attribute in self.storage_attributes.values()],
         }
