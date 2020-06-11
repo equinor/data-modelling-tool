@@ -42,7 +42,11 @@ export default (props: Props) => {
 
   return (
     <>
-      {uiSchema && <b>{uiSchema['ui:label']}</b>}
+      {uiSchema?.['ui:label'] == null ? (
+        <label>Type</label>
+      ) : (
+        <b>{uiSchema['ui:label']}</b>
+      )}
       <div style={{ width: '100%' }}>
         <input
           style={{ width: '100%', borderRadius: '5px' }}
