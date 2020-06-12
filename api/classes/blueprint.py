@@ -16,6 +16,7 @@ def get_storage_recipes(recipes: List[Dict], attributes: List[BlueprintAttribute
                 name=recipe["name"],
                 storageAffinity=recipe.get("storageAffinity", StorageDataTypes.DEFAULT.value),
                 attributes=recipe["attributes"],
+                description=recipe["description"],
             )
             for recipe in recipes
         ]
