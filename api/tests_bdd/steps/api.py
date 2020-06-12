@@ -32,7 +32,7 @@ def step_make_request(context, method):
     if method == "PUT":
         context.response = context.client.put(context.url, data=data, content_type="application/json", headers=headers)
     elif method == "POST":
-        context.response = context.client.post(
+        context.response = context.client.create_application(
             context.url, data=data, content_type="application/json", headers=headers
         )
     elif method == "GET":

@@ -1,6 +1,7 @@
 import json
 
-from flask import Blueprint, Response, send_file
+from config import Config
+from flask import Blueprint, request, Response, send_file
 
 from core.enums import STATUS_CODES
 from core.shared import response_object as res
@@ -12,8 +13,45 @@ from utils.logging import logger
 blueprint = Blueprint("system", __name__)
 
 
+@blueprint.route("/api/system/settings", methods=["GET"])
+def get_application_settings():
+    try:
+        with open(Config.ENTITY_SETTINGS_FILE) as f:
+            return Response(
+                json.dumps(json.load(f)), mimetype="application/json", status=STATUS_CODES[res.ResponseSuccess.SUCCESS]
+            )
+    except Exception as error:
+        return Response(
+            json.dumps("Error: Failed to load the settings file."),
+            mimetype="application/json",
+            status=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
+        )
+
+
+@blueprint.route("/api/system/settings", methods=["POST"])
+def set_application_settings():
+    if Config.ENVIRONMENT != "local":
+        return Response(
+            json.dumps("Changing systems settings can only be done in local deployments."),
+            mimetype="application/json",
+            status=403,
+        )
+    try:
+        with open(Config.ENTITY_SETTINGS_FILE, "w") as f:
+            request_data = json.dumps(request.json)
+            f.write(request_data)
+            Config.ENTITY_APPLICATION_SETTINGS = request.json
+            return Response("OK", mimetype="application/json", status=STATUS_CODES[res.ResponseSuccess.SUCCESS])
+    except Exception as error:
+        return Response(
+            json.dumps("Error: Failed to save the settings file."),
+            mimetype="application/json",
+            status=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
+        )
+
+
 @blueprint.route("/api/v2/system/<string:data_source_id>/create-application/<string:application_id>", methods=["GET"])
-def post(data_source_id: str, application_id: str):
+def create_application(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
     request_object = CreateApplicationRequestObject.from_dict({"applicationId": application_id})
     use_case = CreateApplicationUseCase(data_source_id)

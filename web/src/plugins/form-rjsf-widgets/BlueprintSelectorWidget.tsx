@@ -5,7 +5,7 @@ import { Datasource } from '../../api/Api'
 import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import { BlueprintEnum } from '../../util/variables'
 import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
-import { DataSourceAPI } from '../../api/GenApi'
+import { DataSourceAPI } from '../../api/Api3'
 
 export type Props = {
   onChange: Function
@@ -42,7 +42,11 @@ export default (props: Props) => {
 
   return (
     <>
-      <b>{uiSchema['ui:label']}</b>
+      {uiSchema?.['ui:label'] == null ? (
+        <label>Type</label>
+      ) : (
+        <b>{uiSchema['ui:label']}</b>
+      )}
       <div style={{ width: '100%' }}>
         <input
           style={{ width: '100%', borderRadius: '5px' }}

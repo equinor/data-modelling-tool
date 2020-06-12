@@ -62,7 +62,7 @@ class BlueprintAttribute:
             "name": self.name,
             "type": self.attribute_type,
             "description": self.description,
-            "label": self.label,
+            "title": self.label,
             "default": self.default if not self.attribute_type == "boolean" else True,
             "optional": self.optional,
         }

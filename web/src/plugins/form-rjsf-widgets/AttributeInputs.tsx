@@ -144,7 +144,8 @@ export const TypeWidget = (props: TypeProps) => {
             onChange(attributeType, value)
           }}
           formData={blueprintValue}
-          uiSchema={{}}
+          // Hide the label on the BlueprintSelectorWidget
+          uiSchema={{ 'ui:label': '' }}
         />
       )}
     </>

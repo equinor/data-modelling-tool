@@ -11,7 +11,7 @@ import { DocumentNode } from './common/nodes/DocumentNode'
 import { TreeNodeRenderProps } from '../components/tree-view/TreeNode'
 import { Application } from '../util/variables'
 import DocumentEditorPage from './common/DocumentEditorWrapper'
-import { DataSourceAPI } from '../api/GenApi'
+import { DataSourceAPI } from '../api/Api3'
 
 export const Wrapper = styled.div`
   width: 100%;

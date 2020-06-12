@@ -21,7 +21,8 @@ const ModalBody = styled.div`
   margin: auto;
   padding: 20px;
   border: 1px solid #888;
-  width: 30%;
+  // @ts-ignore
+  width: ${props => props.width || '30%'};
   min-width: 300px;
 `
 

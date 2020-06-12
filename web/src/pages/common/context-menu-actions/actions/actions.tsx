@@ -7,7 +7,7 @@ import saveToNewFile from './saveToNewFile'
 import saveInEntity from './saveInEntity'
 import { Entity } from '../../../../domain/types'
 import axios from 'axios'
-import { DocumentAPI } from '../../../../api/GenApi'
+import { DocumentAPI } from '../../../../api/Api3'
 
 enum ActionTypes {
   separateResultFile = 'separateResultFile',
