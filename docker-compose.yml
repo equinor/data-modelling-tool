@@ -8,6 +8,9 @@ services:
     image: mariner.azurecr.io/dmt/nginx
     ports:
       - "80:80"
+    links:
+      - web
+      - api
 
   api:
     build:

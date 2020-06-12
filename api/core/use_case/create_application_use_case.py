@@ -45,10 +45,15 @@ services:
       ENVIRONMENT: local
       DMSS_HOST: mainapi
       DMSS_PORT: 5000
-
+    volumes:
+      - ./api/home/:/code/home
+      
   web:
     build: web
     restart: unless-stopped
+    volumes:
+      - ./web/external-plugins/:/code/src/external-plugins
+      - ./web/actions.js:/code/src/actions.js
 
   db:
     image: mongo:3.4
@@ -69,14 +74,32 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
     depends_on:
       - db
+    ports:
+      - "5010:5000"
       
   nginx:
+    links:
+      - web
+      - api
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx-local
+    image: mariner.azurecr.io/dmt/nginx
     ports:
       - "9000:80"
+      
+  db-ui:
+    image: mongo-express:0.49
+    restart: unless-stopped
+    ports:
+      - "8090:8081"
+    logging:
+      driver: "none"
+    environment:
+      ME_CONFIG_MONGODB_SERVER: db
+      ME_CONFIG_MONGODB_ADMINUSERNAME: maf
+      ME_CONFIG_MONGODB_ADMINPASSWORD: maf
+      ME_CONFIG_MONGODB_ENABLE_ADMIN: "true"
 """
 
 
@@ -167,6 +190,45 @@ export default runnableMethods
 """
     )
     return class_template.render(runnable_models=runnable_models)
+
+
+def generate_external_plugins():
+    class_template = Template(
+        """\
+import React from 'react'
+
+/**
+ * How to use plugins in UI recipes:
+ * - UI recipe must match the name of the plugin
+ * - Select external from as plugin
+ *
+ * Work space for attaching plugin to the dmt tool.
+ * External dependencies:
+ * - option1: should either be provided by the DMT (in package.json)
+ * - option2: create a lib folder and add transpiled javascript files. Similar to dist folders in node_modules.
+ *
+ * External plugins must have a unique name, not conflicting with the DMT official plugin names.
+ */
+
+const TestPlugin = ({ parent, document, children }) => {
+  return 'MyPlugin'
+}
+
+const registeredPlugins = {
+  MyPlugin: MyPlugin,
+}
+
+export default function pluginHook(uiRecipe) {
+  return registeredPlugins[uiRecipe.name]
+}
+
+function MyPlugin(props) {
+  const { updateEntity, document } = props
+  return (<div>My Custom Plugin</div>)
+}
+"""
+    )
+    return class_template.render()
 
 
 class CreateApplicationRequestObject(req.ValidRequestObject):
@@ -262,6 +324,7 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_all(zip_file, f"{home_path}/core/SIMOS", rel="api/home/core/SIMOS")
             zip_all(zip_file, f"{home_path}/core/DMT", rel="api/home/core/DMT")
             zip_all(zip_file, f"{home_path}/data_sources", rel="api/home/data_sources")
+            zip_all(zip_file, f"{home_path}/code_generators", rel="api/home/code_generators")
             application.data.pop("_id", None)
             application.data.pop("uid", None)
             json_data = json.dumps(application.data)
@@ -272,6 +335,9 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
+            zip_file.writestr("api/home/dmt_settings.json", json.dumps(Config.ENTITY_APPLICATION_SETTINGS).encode())
+            zip_file.writestr("web/external-plugins/index.js", generate_external_plugins())
+
             for package in application.data["packages"]:
                 logger.info(f"Add package: {package}")
                 # TODO: Support including packages from different data sources
