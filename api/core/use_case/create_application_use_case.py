@@ -84,7 +84,7 @@ services:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx
+    image: mariner.azurecr.io/dmt/nginx:0.8
     ports:
       - "9000:80"
       
