@@ -3,8 +3,10 @@ server {
     server_name localhost;
     client_max_body_size 2G;
 
+    access_log /dev/stdout combined;
+    error_log /dev/stdout;
+
     location /dmss/ {
-        # TODO: If local else use RADIX Deployment
         proxy_pass https://api-dmss-dev.playground.radix.equinor.com/api/;
 
         proxy_http_version 1.1;
@@ -16,8 +18,11 @@ server {
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Request-Start $msec;
 
-        # Disable all cache
-        # TODO: Only disable cache for necessary resources
+    }
+
+    # Matches explorer/<datasource>/export and system/<datasource>/generate-code
+    location ~ \/explorer\/([a-zA-Z_\-]*)\/export\/|\/system\/([a-zA-Z_\-]*)\/generate-code\/ {
+        # Disable all cache for generated content (.zip)
         proxy_no_cache 1;
         proxy_cache_bypass 1;
         add_header Last-Modified $date_gmt;
@@ -25,10 +30,8 @@ server {
         if_modified_since off;
         expires off;
         etag off;
-    }
 
-    location /api/ {
-        proxy_pass http://api:5000/api/;
+        proxy_pass http://api:5000$request_uri;
 
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
@@ -38,21 +41,20 @@ server {
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Request-Start $msec;
-
-        # Disable all cache
-        # TODO: Only disable cache for necessary resources
-        proxy_no_cache 1;
-        proxy_cache_bypass 1;
-        add_header Last-Modified $date_gmt;
-        add_header Cache-Control 'no-store, no-cache, must-revalidate, proxy-revalidate, max-age=0';
-        if_modified_since off;
-        expires off;
-        etag off;
-
+    }
+    location /api/ {
+        proxy_pass http://api:5000/api/;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection upgrade;
+        proxy_set_header Host $http_host;
+        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_set_header X-Forwarded-For $remote_addr;
+        proxy_set_header X-Forwarded-Port $server_port;
+        proxy_set_header X-Request-Start $msec;
     }
     location / {
         proxy_pass http://web:3000/;
-        # Passthrough for websocket
         proxy_http_version 1.1;
         proxy_set_header Upgrade $http_upgrade;
         proxy_set_header Connection "upgrade";
