@@ -20,12 +20,12 @@ from core.utility import BlueprintProvider
 from utils.logging import logger
 
 API_DOCKERFILE = f"""\
-FROM mariner.azurecr.io/dmt/api:latest
+FROM mariner.azurecr.io/dmt/api:0.8
 COPY ./home {Config.APPLICATION_HOME}
 """
 
 WEB_DOCKERFILE = """\
-FROM mariner.azurecr.io/dmt/web:latest
+FROM mariner.azurecr.io/dmt/web:0.8
 # CMD ["yarn", "start"] TODO: Why is this here?
 COPY ./actions.js /code/src/actions.js
 """
@@ -66,7 +66,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
 
   mainapi:
-    image: mariner.azurecr.io/dmss:v0.2.17
+    image: mariner.azurecr.io/dmss:v0.2.21
     restart: unless-stopped
     environment:
       ENVIRONMENT: local
