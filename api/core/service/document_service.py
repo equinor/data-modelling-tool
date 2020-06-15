@@ -60,9 +60,9 @@ class DocumentService:
             dto.data["__path__"] = path
         repository.update(dto)
 
-    def get_by_uid_cached(self, data_source, document_uid, depth=999):
+    def get_by_uid_cached(self, data_source_id, document_uid, depth=999):
         blueprint_provider = self.blueprint_provider
-        return get_cached_document(data_source, document_uid, depth, blueprint_provider)
+        return get_cached_document(data_source_id, document_uid, depth, blueprint_provider)
 
     def get_by_uid(self, data_source_id: str, document_uid: str, depth: int = 999) -> Node:
         try:

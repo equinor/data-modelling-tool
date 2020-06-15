@@ -136,8 +136,8 @@ class GenerateIndexUseCase:
             package_data = root_package["data"]
             try:
                 root.add_child(
-                    document_service.get_by_uid_cached(
-                        data_source=data_source_id, document_uid=package_data["_id"], depth=0
+                    document_service.get_by_uid(
+                        data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
                     )
                 )
             except EntityNotFoundException as error:
@@ -177,11 +177,11 @@ class GenerateIndexUseCase:
                 attribute=BlueprintAttribute("root", "datasource"),
             )
             parent.add_child(
-                document_service.get_by_uid_cached(data_source=data_source_id, document_uid=document_id, depth=0)
+                document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id, depth=0)
             )
         else:
             document_uid = parent_uid
-            parent = document_service.get_by_uid_cached(data_source=data_source_id, document_uid=document_uid, depth=1)
+            parent = document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_uid, depth=1)
 
         if not parent and data_source_id != document_id:
             raise EntityNotFoundException(uid=parent_id)
