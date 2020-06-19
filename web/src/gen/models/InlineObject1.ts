@@ -24,13 +24,19 @@ export interface InlineObject1 {
    * @type {string}
    * @memberof InlineObject1
    */
-  documentId: string
+  directory?: string
   /**
    *
    * @type {string}
    * @memberof InlineObject1
    */
-  parentId?: string | null
+  document?: string
+  /**
+   *
+   * @type {Array<Blob>}
+   * @memberof InlineObject1
+   */
+  files?: Array<Blob>
 }
 
 export function InlineObject1FromJSON(json: any): InlineObject1 {
@@ -45,8 +51,9 @@ export function InlineObject1FromJSONTyped(
     return json
   }
   return {
-    documentId: json['documentId'],
-    parentId: !exists(json, 'parentId') ? undefined : json['parentId'],
+    directory: !exists(json, 'directory') ? undefined : json['directory'],
+    document: !exists(json, 'document') ? undefined : json['document'],
+    files: !exists(json, 'files') ? undefined : json['files'],
   }
 }
 
@@ -58,7 +65,8 @@ export function InlineObject1ToJSON(value?: InlineObject1 | null): any {
     return null
   }
   return {
-    documentId: value.documentId,
-    parentId: value.parentId,
+    directory: value.directory,
+    document: value.document,
+    files: value.files,
   }
 }

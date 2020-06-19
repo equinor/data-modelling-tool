@@ -356,7 +356,7 @@ export default () => {
   function search(query: any) {
     setQueryError('')
     //TODO: Get DataSourceId from User
-    SearchAPI.searchEntities({ dataSourceId: 'entities', inlineObject4: query })
+    SearchAPI.searchEntities({ dataSourceId: 'entities', inlineObject5: query })
       .then((res: any) => {
         // @ts-ignore
         let resultList = []

@@ -1,7 +1,7 @@
 {
   "type": "system/SIMOS/Application",
   "name": "DMT-Entities",
-  "description": "",
+  "description": "ASD",
   "entities": ["entities/TodoDemo", "entities/ActionsDemo"],
   "packages": ["SSR-DataSource/TodoDemo"],
   "models": ["system/SIMOS/Entity"],
@@ -12,23 +12,20 @@
       "input": "SSR-DataSource/TodoDemo/TodoList",
       "output": "SSR-DataSource/TodoDemo/TodoList",
       "method": "getTodoList"
-    },
-    {
+    }, {
       "name": "Simulate Crash",
       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
       "input": "SSR-DataSource/CarPackage/Car",
       "output": "SSR-DataSource/CarPackage/Car",
       "method": "simulateCrash",
       "actionType": "separateResultFile"
-    },
-    {
+    }, {
       "name": "Cancel simulation",
       "description": "Cancel a car calculation",
       "input": "SSR-DataSource/CarPackage/Car",
       "output": "SSR-DataSource/CarPackage/Car",
       "method": "cancelSimulation"
-    },
-    {
+    }, {
       "name": "Engine With Result File",
       "type": "system/SIMOS/Action",
       "description": "Save result in resultFile",
@@ -36,8 +33,7 @@
       "output": "SSR-DataSource/CarPackage/engine/Engine",
       "method": "runEngineResultFile",
       "actionType": "separateResultFile"
-    },
-    {
+    }, {
       "name": "Engine with result In Entity",
       "type": "system/SIMOS/Action",
       "description": "Save result in entity",

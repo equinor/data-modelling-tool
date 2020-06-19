@@ -24,7 +24,13 @@ export interface InlineObject2 {
    * @type {string}
    * @memberof InlineObject2
    */
-  directory: string
+  documentId: string
+  /**
+   *
+   * @type {string}
+   * @memberof InlineObject2
+   */
+  parentId?: string | null
 }
 
 export function InlineObject2FromJSON(json: any): InlineObject2 {
@@ -39,7 +45,8 @@ export function InlineObject2FromJSONTyped(
     return json
   }
   return {
-    directory: json['directory'],
+    documentId: json['documentId'],
+    parentId: !exists(json, 'parentId') ? undefined : json['parentId'],
   }
 }
 
@@ -51,6 +58,7 @@ export function InlineObject2ToJSON(value?: InlineObject2 | null): any {
     return null
   }
   return {
-    directory: value.directory,
+    documentId: value.documentId,
+    parentId: value.parentId,
   }
 }

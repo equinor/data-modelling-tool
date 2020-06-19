@@ -14,14 +14,14 @@
 
 import * as runtime from '../runtime'
 import {
-  InlineObject4,
-  InlineObject4FromJSON,
-  InlineObject4ToJSON,
+  InlineObject5,
+  InlineObject5FromJSON,
+  InlineObject5ToJSON,
 } from '../models'
 
 export interface SearchEntitiesRequest {
   dataSourceId: string
-  inlineObject4: InlineObject4
+  inlineObject5: InlineObject5
 }
 
 /**
@@ -45,12 +45,12 @@ export class SearchApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.inlineObject4 === null ||
-      requestParameters.inlineObject4 === undefined
+      requestParameters.inlineObject5 === null ||
+      requestParameters.inlineObject5 === undefined
     ) {
       throw new runtime.RequiredError(
-        'inlineObject4',
-        'Required parameter requestParameters.inlineObject4 was null or undefined when calling searchEntities.'
+        'inlineObject5',
+        'Required parameter requestParameters.inlineObject5 was null or undefined when calling searchEntities.'
       )
     }
 
@@ -68,7 +68,7 @@ export class SearchApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: InlineObject4ToJSON(requestParameters.inlineObject4),
+      body: InlineObject5ToJSON(requestParameters.inlineObject5),
     })
 
     return new runtime.JSONApiResponse<any>(response)

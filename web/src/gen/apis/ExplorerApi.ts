@@ -17,15 +17,15 @@ import {
   InlineObject,
   InlineObjectFromJSON,
   InlineObjectToJSON,
-  InlineObject1,
-  InlineObject1FromJSON,
-  InlineObject1ToJSON,
   InlineObject2,
   InlineObject2FromJSON,
   InlineObject2ToJSON,
   InlineObject3,
   InlineObject3FromJSON,
   InlineObject3ToJSON,
+  InlineObject4,
+  InlineObject4FromJSON,
+  InlineObject4ToJSON,
   InlineResponse2001,
   InlineResponse2001FromJSON,
   InlineResponse2001ToJSON,
@@ -53,7 +53,9 @@ export interface AddToParentRequest {
 
 export interface AddToPathRequest {
   dataSourceId: string
-  requestBody: { [key: string]: object }
+  directory?: string
+  document?: string
+  files?: Array<Blob>
 }
 
 export interface MoveRequest {
@@ -63,17 +65,17 @@ export interface MoveRequest {
 
 export interface RemoveRequest {
   dataSourceId: string
-  inlineObject1: InlineObject1
+  inlineObject2: InlineObject2
 }
 
 export interface RemoveByPathRequest {
   dataSourceId: string
-  inlineObject2: InlineObject2
+  inlineObject3: InlineObject3
 }
 
 export interface RenameRequest {
   dataSourceId: string
-  inlineObject3: InlineObject3
+  inlineObject4: InlineObject4
 }
 
 /**
@@ -318,21 +320,38 @@ export class ExplorerApi extends runtime.BaseAPI {
       )
     }
 
-    if (
-      requestParameters.requestBody === null ||
-      requestParameters.requestBody === undefined
-    ) {
-      throw new runtime.RequiredError(
-        'requestBody',
-        'Required parameter requestParameters.requestBody was null or undefined when calling addToPath.'
-      )
-    }
-
     const queryParameters: runtime.HTTPQuery = {}
 
     const headerParameters: runtime.HTTPHeaders = {}
 
-    headerParameters['Content-Type'] = 'application/json'
+    const consumes: runtime.Consume[] = [{ contentType: 'multipart/form-data' }]
+    // @ts-ignore: canConsumeForm may be unused
+    const canConsumeForm = runtime.canConsumeForm(consumes)
+
+    let formParams: { append(param: string, value: any): any }
+    let useForm = false
+    // use FormData to transmit files using content-type "multipart/form-data"
+    useForm = canConsumeForm
+    if (useForm) {
+      formParams = new FormData()
+    } else {
+      formParams = new URLSearchParams()
+    }
+
+    if (requestParameters.directory !== undefined) {
+      formParams.append('directory', requestParameters.directory as any)
+    }
+
+    if (requestParameters.document !== undefined) {
+      formParams.append('document', requestParameters.document as any)
+    }
+
+    if (requestParameters.files) {
+      formParams.append(
+        'files',
+        requestParameters.files.join(runtime.COLLECTION_FORMATS['csv'])
+      )
+    }
 
     const response = await this.request({
       path: `/explorer/{dataSourceId}/add-to-path`.replace(
@@ -342,7 +361,7 @@ export class ExplorerApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: requestParameters.requestBody,
+      body: formParams,
     })
 
     return new runtime.JSONApiResponse<any>(response)
@@ -431,12 +450,12 @@ export class ExplorerApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.inlineObject1 === null ||
-      requestParameters.inlineObject1 === undefined
+      requestParameters.inlineObject2 === null ||
+      requestParameters.inlineObject2 === undefined
     ) {
       throw new runtime.RequiredError(
-        'inlineObject1',
-        'Required parameter requestParameters.inlineObject1 was null or undefined when calling remove.'
+        'inlineObject2',
+        'Required parameter requestParameters.inlineObject2 was null or undefined when calling remove.'
       )
     }
 
@@ -454,7 +473,7 @@ export class ExplorerApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: InlineObject1ToJSON(requestParameters.inlineObject1),
+      body: InlineObject2ToJSON(requestParameters.inlineObject2),
     })
 
     return new runtime.JSONApiResponse<any>(response)
@@ -485,12 +504,12 @@ export class ExplorerApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.inlineObject2 === null ||
-      requestParameters.inlineObject2 === undefined
+      requestParameters.inlineObject3 === null ||
+      requestParameters.inlineObject3 === undefined
     ) {
       throw new runtime.RequiredError(
-        'inlineObject2',
-        'Required parameter requestParameters.inlineObject2 was null or undefined when calling removeByPath.'
+        'inlineObject3',
+        'Required parameter requestParameters.inlineObject3 was null or undefined when calling removeByPath.'
       )
     }
 
@@ -508,7 +527,7 @@ export class ExplorerApi extends runtime.BaseAPI {
       method: 'POST',
       headers: headerParameters,
       query: queryParameters,
-      body: InlineObject2ToJSON(requestParameters.inlineObject2),
+      body: InlineObject3ToJSON(requestParameters.inlineObject3),
     })
 
     return new runtime.JSONApiResponse<any>(response)
@@ -539,12 +558,12 @@ export class ExplorerApi extends runtime.BaseAPI {
     }
 
     if (
-      requestParameters.inlineObject3 === null ||
-      requestParameters.inlineObject3 === undefined
+      requestParameters.inlineObject4 === null ||
+      requestParameters.inlineObject4 === undefined
     ) {
       throw new runtime.RequiredError(
-        'inlineObject3',
-        'Required parameter requestParameters.inlineObject3 was null or undefined when calling rename.'
+        'inlineObject4',
+        'Required parameter requestParameters.inlineObject4 was null or undefined when calling rename.'
       )
     }
 
@@ -562,7 +581,7 @@ export class ExplorerApi extends runtime.BaseAPI {
       method: 'PUT',
       headers: headerParameters,
       query: queryParameters,
-      body: InlineObject3ToJSON(requestParameters.inlineObject3),
+      body: InlineObject4ToJSON(requestParameters.inlineObject4),
     })
 
     return new runtime.JSONApiResponse<any>(response)

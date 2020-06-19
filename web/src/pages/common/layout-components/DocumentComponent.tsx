@@ -15,6 +15,7 @@ import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
 import Api2 from '../../../api/Api2'
 // @ts-ignore
 import { Viewer3dPlugin } from '../../../plugins/3dviewer/Viewer3dPlugin'
+import { ViewerPDFPlugin } from '../../../plugins/PDFViewer'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -29,6 +30,7 @@ export enum RegisteredPlugins {
   EXTERNAL = 'EXTERNAL',
   TABLE = 'TABLE',
   VIEW_3D = 'VIEW_3D',
+  VIEW_PDF = 'VIEW_PDF',
 }
 
 const View = (props: any) => {
@@ -69,6 +71,8 @@ const View = (props: any) => {
       return <BlueprintPreview {...pluginProps} />
     case RegisteredPlugins.VIEW_3D:
       return <Viewer3dPlugin {...pluginProps} />
+    case RegisteredPlugins.VIEW_PDF:
+      return <ViewerPDFPlugin {...pluginProps} />
     case RegisteredPlugins.VIEW:
       return <ViewPlugin {...pluginProps} />
 
@@ -161,7 +165,7 @@ const ViewList = (props: PluginProps) => {
   )
 }
 
-const ErrorGroup = styled.div`
+export const ErrorGroup = styled.div`
   display: flex;
   flex-direction: column;
   border: 1px solid rgba(213, 18, 18, 0.71);

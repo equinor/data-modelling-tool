@@ -18,7 +18,7 @@ body {
 
 .lm_content {
   background: white !important;
-  overflow: scroll !important;
+  overflow: auto !important;
 }
 .lm_goldenlayout {
   background: white !important;
