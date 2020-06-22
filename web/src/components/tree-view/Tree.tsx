@@ -6,11 +6,6 @@ import TreeReducer, {
   NodeActions,
 } from '../../components/tree-view/TreeReducer'
 import SearchTree from './SearchTree'
-import DragDropContext from '../dnd/DragDropContext'
-import DroppableWrapper from '../dnd/DroppableWrapper'
-import DraggableWrapper from '../dnd/DraggableWrapper'
-// @ts-ignore
-import { DragStart } from 'react-beautiful-dnd'
 import { NodeType } from '../../util/variables'
 
 export enum NodeIconType {
@@ -55,7 +50,6 @@ interface Tree {
 type TreeProps = {
   children: Function
   tree: Tree
-  isDragEnabled: boolean
   render?: Function
 }
 
@@ -130,7 +124,7 @@ const getRootNodes = (rootNode: TreeNodeData, state: Tree) => [
 ]
 
 const Tree = (props: TreeProps) => {
-  const { isDragEnabled, tree, children } = props
+  const { tree, children } = props
 
   const [state, dispatch] = useReducer(TreeReducer, tree)
 
@@ -139,18 +133,6 @@ const Tree = (props: TreeProps) => {
   }, [tree])
 
   const handleSearch = (term: string) => dispatch(Actions.filterTree(term))
-
-  const handleDrag = (result: any) => {
-    if (!result.destination) {
-      return
-    }
-
-    // TODO
-  }
-
-  const onDragStart = (result: DragStart) => {
-    dispatch(NodeActions.toggleNode(result.draggableId))
-  }
 
   const handleToggle = (node: TreeNodeData): void => {
     dispatch(NodeActions.toggleNode(node.nodeId))
@@ -208,52 +190,38 @@ const Tree = (props: TreeProps) => {
   return (
     <>
       <SearchTree onChange={handleSearch} />
-      <DragDropContext onDragEnd={handleDrag} onDragStart={onDragStart}>
-        {rootNodes.map((rootNode, index) => {
-          return (
-            <DroppableWrapper
-              key={index}
-              droppableId={`${rootNode[0].currentItem.nodeId}`}
-            >
-              {rootNode.map((item: any, index: number) => {
-                const node: TreeNodeData = item.currentItem
-                return (
-                  <DraggableWrapper
-                    key={node.nodeId + '_' + index}
-                    draggableId={`${node.nodeId}`}
-                    index={index}
-                    isDragEnabled={isDragEnabled}
-                  >
-                    <TreeNode
-                      level={item.level}
-                      node={node}
-                      path={item.track.join('/')}
-                      parent={item.parent}
-                      NodeRenderer={children}
-                      handleToggle={handleToggle}
-                      actions={{
-                        addNode,
-                        addNodes,
-                        addChild,
-                        updateNode,
-                        removeNode,
-                        replaceNode,
-                        hasChild,
-                      }}
-                    />
-                  </DraggableWrapper>
-                )
-              })}
-            </DroppableWrapper>
-          )
-        })}
-      </DragDropContext>
+      {rootNodes.map(rootNode => {
+        return (
+          <div style={{ background: 'white' }}>
+            {rootNode.map((item: any) => {
+              const node: TreeNodeData = item.currentItem
+              return (
+                <div>
+                  <TreeNode
+                    level={item.level}
+                    node={node}
+                    path={item.track.join('/')}
+                    parent={item.parent}
+                    NodeRenderer={children}
+                    handleToggle={handleToggle}
+                    actions={{
+                      addNode,
+                      addNodes,
+                      addChild,
+                      updateNode,
+                      removeNode,
+                      replaceNode,
+                      hasChild,
+                    }}
+                  />
+                </div>
+              )
+            })}
+          </div>
+        )
+      })}
     </>
   )
-}
-
-Tree.defaultProps = {
-  isDragEnabled: false,
 }
 
 export default Tree
