@@ -6,27 +6,21 @@ import { BlueprintEnum } from '../../util/variables'
 import { Datasource } from '../../api/Api'
 import styled from 'styled-components'
 import { DataSourceAPI } from '../../api/Api3'
+import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
 
 const SelectDestinationButton = styled.button`
-  padding: 2.5px;
-  font-size: 0.8em;
+  padding: 0 2.5px;
   background-color: whitesmoke;
   outline: 0;
-  @include transition(background-color 0.3s ease);
-  border: 2px solid dodgerblue;
-  border-radius: 6px;
+  border: 2px solid #2085e7;
+  border-radius: 5px;
   &:hover {
-    background-color: gray;
+    background-color: #d4d2d2;
   }
 
   &:active {
     background-color: darken(gray, 10);
   }
-`
-
-const NodeWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
 `
 
 export type Props = {
@@ -87,24 +81,54 @@ export default (props: Props) => {
         >
           <DocumentTree
             render={(renderProps: TreeNodeRenderProps) => {
-              const { nodeData } = renderProps
+              const [loading, setLoading] = useState(false)
+              const { actions, nodeData } = renderProps
               const type = nodeData.meta.type
+
               return (
-                <NodeWrapper>
-                  {nodeData.title}
+                <div style={{ display: 'flex' }}>
+                  {renderProps.iconGroup(() => {
+                    treeNodeClick({
+                      indexUrl: nodeData.meta.indexUrl,
+                      node: { actions, nodeData },
+                      setLoading,
+                    })
+                  })}
+                  <div
+                    onClick={() =>
+                      treeNodeClick({
+                        indexUrl: nodeData.meta.indexUrl,
+                        node: { actions, nodeData },
+                        setLoading,
+                      })
+                    }
+                  >
+                    {nodeData.title}
+                    {loading && (
+                      <small style={{ paddingLeft: '15px' }}>Loading...</small>
+                    )}
+                  </div>
                   {type === blueprintFilter && (
-                    <SelectDestinationButton
-                      onClick={() => {
-                        onSelect(
-                          nodeData.nodeId,
-                          `${renderProps.path}/${nodeData.title}`
-                        )
+                    <div
+                      style={{
+                        display: 'flex',
+                        width: '100%',
+                        flexFlow: 'row-reverse',
                       }}
                     >
-                      Select
-                    </SelectDestinationButton>
+                      <SelectDestinationButton
+                        onClick={() => {
+                          onSelect(
+                            nodeData.nodeId,
+                            `${renderProps.path}/${nodeData.title}`
+                          )
+                        }}
+                      >
+                        Select
+                      </SelectDestinationButton>
+                    </div>
                   )}
-                </NodeWrapper>
+                </div>
               )
             }}
             dataSources={datasources}

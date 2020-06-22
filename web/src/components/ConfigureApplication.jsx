@@ -63,9 +63,9 @@ function Action({ value, index, onChange }) {
           <label style={{ padding: "5px" }}>{"Input type"}:</label>
           {/*
         // @ts-ignore */}
-          <BlueprintSelectorWidget onChange={(e) => onChange({ ...value, input: e })} formData={value.input}/>
+          <BlueprintSelectorWidget onChange={(e) => onChange({ ...value, input: e })} formData={value.input} uiSchema={{ 'ui:label': '' }}/>
           <label style={{ padding: "5px" }}>{"Output type"}:</label>
-          <BlueprintSelectorWidget onChange={(e) => onChange({ ...value, output: e })} formData={value.output}/>
+          <BlueprintSelectorWidget onChange={(e) => onChange({ ...value, output: e })} formData={value.output} uiSchema={{ 'ui:label': '' }}/>
         </ActionWrapper>
     )
   }
