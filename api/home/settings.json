@@ -1,7 +1,7 @@
 {
   "type": "system/SIMOS/Application",
   "name": "DMT-Entities",
-  "description": "ASD",
+  "description": "Settings for the Entity application of the Data Modelling Tool",
   "entities": ["entities/TodoDemo", "entities/ActionsDemo"],
   "packages": ["SSR-DataSource/TodoDemo"],
   "models": ["system/SIMOS/Entity"],

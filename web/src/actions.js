@@ -90,13 +90,19 @@ async function simulateCrash({ input, output, updateDocument, createEntity }) {
 }
 
 async function runEngineResultFile({ input, output, updateDocument }) {
-  let entity = { ...input.entity, power: '200hk' }
-  updateDocument({ ...output, entity })
+  output.entity.power = 'test'
+  updateDocument(output)
 
-  await sleep(5000)
-  // This will fail, as the Entity object are missing required attributes.
-  entity = { ...entity, description: 'Updated description from action' }
-  updateDocument({ ...output, entity })
+  await sleep(2000)
+  output.entity.description = 'Updated description from action1'
+  updateDocument(output)
+  await sleep(2000)
+  output.entity.description = 'Updated description from action2'
+  updateDocument(output)
+
+  await sleep(2000)
+  output.entity.description = 'Updated description from action3'
+  updateDocument(output)
 }
 
 async function runEngineResultInEntity({ input, output, updateDocument }) {

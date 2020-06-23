@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { ErrorGroup } from '../pages/common/layout-components/DocumentComponent'
 import styled from 'styled-components'
 import { formatBytes } from '../util/formatBytes'
 import { BlobAPI } from '../api/Api3'
+import { ErrorGroup } from "../components/Wrappers"
 
 const MetaDataWrapper = styled.div`
   margin-right: 10px;
