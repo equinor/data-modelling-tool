@@ -462,7 +462,7 @@ class Factory:
             """\
 {%- block imports %}
 from __future__ import annotations
-from typing import List, Optional, Union, Any, Set, Tuple
+from typing import List, Optional, Union, Any, Set, Tuple, Dict
 import stringcase
 import json
 import base64
