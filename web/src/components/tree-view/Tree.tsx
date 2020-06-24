@@ -190,13 +190,13 @@ const Tree = (props: TreeProps) => {
   return (
     <>
       <SearchTree onChange={handleSearch} />
-      {rootNodes.map(rootNode => {
+      {rootNodes.map((rootNode, index) => {
         return (
-          <div style={{ background: 'white' }}>
-            {rootNode.map((item: any) => {
+          <div key={'root_' + index} style={{ background: 'white' }}>
+            {rootNode.map((item: any, index: number) => {
               const node: TreeNodeData = item.currentItem
               return (
-                <div>
+                <div key={node.nodeId + '_' + index}>
                   <TreeNode
                     level={item.level}
                     node={node}
