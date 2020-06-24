@@ -63,20 +63,6 @@ def get_simple_types() -> str:
     return f"[{', '.join(type_.__name__ for type_ in simple_types)}]"
 
 
-def get_unprocessed(schema: Dict[str, Any]) -> Dict:
-    _schema = {}
-    for key, value in schema.items():
-        if is_special_key(key):
-            continue
-        if f"__{key}__" not in schema:
-            if isinstance(value, dict):
-                value = get_unprocessed(value)
-            elif isinstance(value, type):
-                value = get_unprocessed(value.__schema__)
-            _schema[key.strip("__")] = value
-    return _schema
-
-
 def unpack_if_not_simple(value: str, _type: type) -> str:
     unpack = ""
     if _type not in simple_types:
@@ -106,7 +92,7 @@ def to_camel_case(name: str) -> str:
 
 def is_special_key(key: str) -> bool:
     # Special keys, that should be ignored
-    return key in ["__class__", "__template_type__"]
+    return key in ["__class__", "__template_type__", "__raw__"]
 
 
 def is_internal(schema, key: str) -> bool:
@@ -417,7 +403,6 @@ class Factory:
                 self.cast_as,
                 self.cast,
                 self.get_type,
-                get_unprocessed,
                 is_internal,
                 extract_casting,
                 snakify,
@@ -604,7 +589,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
     @property
     def __schema__(self):
-        return {{ get_unprocessed(schema) }}
+        return {{ schema.__raw__ }}
     {%- if schema.attributes.has_attributes %}
 
 {#
@@ -1181,6 +1166,7 @@ from classes.dto import DTO
         schema = snakify(schema)
         # Let at "dummy type" be available for others
         _cls = self._create_dummy(schema, template_type)
+        schema["__raw__"] = self._blueprints[template_type]
         schema["__class__"] = _cls
         schema["__template_type__"] = template_type
         if not compile:
