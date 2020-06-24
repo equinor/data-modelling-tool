@@ -86,10 +86,6 @@ def to_snake_case(name: str) -> str:
     return stringcase.snakecase(name)
 
 
-def to_camel_case(name: str) -> str:
-    return stringcase.camelcase(name)
-
-
 def is_special_key(key: str) -> bool:
     # Special keys, that should be ignored
     return key in ["__class__", "__template_type__", "__raw__"]
@@ -167,11 +163,14 @@ def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
 
 
 class Attribute:
-    def __init__(self, data: Dict[str, Any], attribute_type: type, type: type, definition: Dict[str, Any]):
+    def __init__(
+        self, data: Dict[str, Any], attribute_type: type, type: type, definition: Dict[str, Any], original_name: str
+    ):
         self.type = type
         self.__values__ = data
         self._definition = definition
         self.attribute_type = attribute_type
+        self.original_name = original_name
 
     def __repr__(self):
         attributes = ["name", "optional", "contained"]
@@ -399,7 +398,6 @@ class Factory:
                 get_name,
                 self.variable_annotation,
                 to_snake_case,
-                to_camel_case,
                 self.cast_as,
                 self.cast,
                 self.get_type,
@@ -650,7 +648,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             {%- if attr.name == "type" %}
             "type": self.__template_type__,
             {%- else %}
-            "{{ to_camel_case(attr.name) }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
+            "{{ attr.original_name }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
             {%- endif %}
             {%- endfor %}
         }
@@ -694,7 +692,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         if self is None:
             self = {{ schema.name }}
         return {
-            self._to_camel_case(key): self._get_representation(self, key, include_defaults)
+            self._get_original_key_name(key): self._get_representation(self, key, include_defaults)
             for key in self.keys()
         }
 
@@ -724,7 +722,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         if isinstance(value, list):
             return [cls._get_representation(val, include_defaults=include_defaults) for val in value]
         elif isinstance(value, dict):
-            return {cls._to_camel_case(key): cls._get_representation(val, include_defaults=include_defaults) for key, val in value.items()}
+            return {self._get_original_key_name(key): cls._get_representation(val, include_defaults=include_defaults) for key, val in value.items()}
         elif callable(value):
             value = value()
         elif isinstance(value, DTO):
@@ -771,13 +769,18 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def _to_snake_case(value: str) -> str:
         return stringcase.snakecase(value)
 
-    @staticmethod
-    def _to_camel_case(value: str) -> str:
-        return stringcase.camelcase(value)
-
     @property
     def __completed__(self):
         return True
+
+    @property
+    def _original_key_names(self) -> Dict[str, str]:
+        if not hasattr(self, "__original_key_names"):
+            self.__original_key_names = {to_snake_case(key): key for key in self.__schema__.keys()}
+        return self.__original_key_names
+
+    def _get_original_key_name(self, key: str) -> str:
+        return self._original_key_names[key]
 
 {% endblock %}
     __code_generation: str = {{ compress(self.code_generation()) }}
@@ -937,6 +940,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     type=self.get_type_by_name(attribute["type"]),
                     attribute_type=attribute_type,
                     definition=attribute_definition,
+                    original_name=attribute_name,
                 )
             )
         return _attributes
