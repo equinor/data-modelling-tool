@@ -24,7 +24,25 @@ export interface InlineObject4 {
    * @type {string}
    * @memberof InlineObject4
    */
-  type: string
+  description?: string | null
+  /**
+   *
+   * @type {string}
+   * @memberof InlineObject4
+   */
+  documentId: string
+  /**
+   *
+   * @type {string}
+   * @memberof InlineObject4
+   */
+  name: string
+  /**
+   *
+   * @type {string}
+   * @memberof InlineObject4
+   */
+  parentId?: string | null
 }
 
 export function InlineObject4FromJSON(json: any): InlineObject4 {
@@ -39,7 +57,10 @@ export function InlineObject4FromJSONTyped(
     return json
   }
   return {
-    type: json['type'],
+    description: !exists(json, 'description') ? undefined : json['description'],
+    documentId: json['documentId'],
+    name: json['name'],
+    parentId: !exists(json, 'parentId') ? undefined : json['parentId'],
   }
 }
 
@@ -51,6 +72,9 @@ export function InlineObject4ToJSON(value?: InlineObject4 | null): any {
     return null
   }
   return {
-    type: value.type,
+    description: value.description,
+    documentId: value.documentId,
+    name: value.name,
+    parentId: value.parentId,
   }
 }

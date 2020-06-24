@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-export const BASE_PATH = ''.replace(/\/+$/, '')
+export const BASE_PATH = 'http://127.0.0.1:8000/api/v1'.replace(/\/+$/, '')
 
 const isBlob = (value: any) =>
   typeof Blob !== 'undefined' && value instanceof Blob

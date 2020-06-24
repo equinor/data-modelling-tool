@@ -16,34 +16,34 @@ import { exists, mapValues } from '../runtime'
 /**
  *
  * @export
- * @interface InlineObject3
+ * @interface InlineObject5
  */
-export interface InlineObject3 {
+export interface InlineObject5 {
   /**
    *
    * @type {string}
-   * @memberof InlineObject3
+   * @memberof InlineObject5
    */
-  directory: string
+  type: string
 }
 
-export function InlineObject3FromJSON(json: any): InlineObject3 {
-  return InlineObject3FromJSONTyped(json, false)
+export function InlineObject5FromJSON(json: any): InlineObject5 {
+  return InlineObject5FromJSONTyped(json, false)
 }
 
-export function InlineObject3FromJSONTyped(
+export function InlineObject5FromJSONTyped(
   json: any,
   ignoreDiscriminator: boolean
-): InlineObject3 {
+): InlineObject5 {
   if (json === undefined || json === null) {
     return json
   }
   return {
-    directory: json['directory'],
+    type: json['type'],
   }
 }
 
-export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
+export function InlineObject5ToJSON(value?: InlineObject5 | null): any {
   if (value === undefined) {
     return undefined
   }
@@ -51,6 +51,6 @@ export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
     return null
   }
   return {
-    directory: value.directory,
+    type: value.type,
   }
 }

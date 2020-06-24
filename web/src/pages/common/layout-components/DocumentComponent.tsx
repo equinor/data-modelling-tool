@@ -1,7 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import ReactJsonSchemaWrapper, {
-  onFormSubmit,
-} from '../form/ReactJsonSchemaWrapper'
+import ReactJsonSchemaWrapper, { onFormSubmit } from '../form/ReactJsonSchemaWrapper'
 import styled from 'styled-components'
 import FetchDocument from '../utils/FetchDocument'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
@@ -15,6 +13,8 @@ import { ReactTablePlugin } from '../../../plugins/react_table/ReactTablePlugin'
 import Api2 from '../../../api/Api2'
 // @ts-ignore
 import { Viewer3dPlugin } from '../../../plugins/3dviewer/Viewer3dPlugin'
+import { ViewerPDFPlugin } from '../../../plugins/PDFViewer'
+import { ErrorGroup } from "../../../components/Wrappers"
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -29,6 +29,7 @@ export enum RegisteredPlugins {
   EXTERNAL = 'EXTERNAL',
   TABLE = 'TABLE',
   VIEW_3D = 'VIEW_3D',
+  VIEW_PDF = 'VIEW_PDF',
 }
 
 const View = (props: any) => {
@@ -69,6 +70,8 @@ const View = (props: any) => {
       return <BlueprintPreview {...pluginProps} />
     case RegisteredPlugins.VIEW_3D:
       return <Viewer3dPlugin {...pluginProps} />
+    case RegisteredPlugins.VIEW_PDF:
+      return <ViewerPDFPlugin {...pluginProps} />
     case RegisteredPlugins.VIEW:
       return <ViewPlugin {...pluginProps} />
 
@@ -160,15 +163,6 @@ const ViewList = (props: PluginProps) => {
     </Tabs>
   )
 }
-
-const ErrorGroup = styled.div`
-  display: flex;
-  flex-direction: column;
-  border: 1px solid rgba(213, 18, 18, 0.71);
-  border-radius: 5px;
-  padding: 20px 20px;
-  background-color: #f6dfdf;
-`
 
 const DocumentComponent = (props: any) => {
   const { dataUrl, updates } = props

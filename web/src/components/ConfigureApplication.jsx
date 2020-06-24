@@ -155,7 +155,6 @@ export default () => {
   }
 
   function saveSettings() {
-    console.log(newSettings)
     SystemAPI.postSystemSettings(newSettings)
         .then(async () => {
           NotificationManager.success('Reloading...', 'Settings updated.')

@@ -4,6 +4,7 @@ import {
   ExplorerApi,
   DocumentApi,
   SearchApi,
+  BlobApi,
 } from '../gen'
 import axios from 'axios'
 
@@ -12,6 +13,7 @@ const DMSSConfiguration = new Configuration({ basePath: '/dmss/v1' })
 
 export const DataSourceAPI = new DatasourceApi(DMSSConfiguration)
 export const DocumentAPI = new DocumentApi(DMSSConfiguration)
+export const BlobAPI = new BlobApi(DMSSConfiguration)
 export const ExplorerAPI = new ExplorerApi(DMSSConfiguration)
 export const SearchAPI = new SearchApi(DMSSConfiguration)
 
