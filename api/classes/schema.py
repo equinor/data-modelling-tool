@@ -63,20 +63,6 @@ def get_simple_types() -> str:
     return f"[{', '.join(type_.__name__ for type_ in simple_types)}]"
 
 
-def get_unprocessed(schema: Dict[str, Any]) -> Dict:
-    _schema = {}
-    for key, value in schema.items():
-        if is_special_key(key):
-            continue
-        if f"__{key}__" not in schema:
-            if isinstance(value, dict):
-                value = get_unprocessed(value)
-            elif isinstance(value, type):
-                value = get_unprocessed(value.__schema__)
-            _schema[key.strip("__")] = value
-    return _schema
-
-
 def unpack_if_not_simple(value: str, _type: type) -> str:
     unpack = ""
     if _type not in simple_types:
@@ -100,13 +86,9 @@ def to_snake_case(name: str) -> str:
     return stringcase.snakecase(name)
 
 
-def to_camel_case(name: str) -> str:
-    return stringcase.camelcase(name)
-
-
 def is_special_key(key: str) -> bool:
     # Special keys, that should be ignored
-    return key in ["__class__", "__template_type__"]
+    return key in ["__class__", "__template_type__", "__raw__"]
 
 
 def is_internal(schema, key: str) -> bool:
@@ -181,11 +163,14 @@ def load_from_pickle(representation: BinaryRepresentation) -> Optional[Factory]:
 
 
 class Attribute:
-    def __init__(self, data: Dict[str, Any], attribute_type: type, type: type, definition: Dict[str, Any]):
+    def __init__(
+        self, data: Dict[str, Any], attribute_type: type, type: type, definition: Dict[str, Any], original_name: str
+    ):
         self.type = type
         self.__values__ = data
         self._definition = definition
         self.attribute_type = attribute_type
+        self.original_name = original_name
 
     def __repr__(self):
         attributes = ["name", "optional", "contained"]
@@ -413,11 +398,9 @@ class Factory:
                 get_name,
                 self.variable_annotation,
                 to_snake_case,
-                to_camel_case,
                 self.cast_as,
                 self.cast,
                 self.get_type,
-                get_unprocessed,
                 is_internal,
                 extract_casting,
                 snakify,
@@ -462,7 +445,7 @@ class Factory:
             """\
 {%- block imports %}
 from __future__ import annotations
-from typing import List, Optional, Union, Any, Set, Tuple
+from typing import List, Optional, Union, Any, Set, Tuple, Dict
 import stringcase
 import json
 import base64
@@ -604,7 +587,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
 
     @property
     def __schema__(self):
-        return {{ get_unprocessed(schema) }}
+        return {{ schema.__raw__ }}
     {%- if schema.attributes.has_attributes %}
 
 {#
@@ -665,7 +648,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
             {%- if attr.name == "type" %}
             "type": self.__template_type__,
             {%- else %}
-            "{{ to_camel_case(attr.name) }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
+            "{{ attr.original_name }}": self._get_representation(self, "{{ get_name(attr) }}", include_defaults),
             {%- endif %}
             {%- endfor %}
         }
@@ -709,7 +692,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         if self is None:
             self = {{ schema.name }}
         return {
-            self._to_camel_case(key): self._get_representation(self, key, include_defaults)
+            self._get_original_key_name(key): self._get_representation(self, key, include_defaults)
             for key in self.keys()
         }
 
@@ -739,7 +722,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
         if isinstance(value, list):
             return [cls._get_representation(val, include_defaults=include_defaults) for val in value]
         elif isinstance(value, dict):
-            return {cls._to_camel_case(key): cls._get_representation(val, include_defaults=include_defaults) for key, val in value.items()}
+            return {self._get_original_key_name(key): cls._get_representation(val, include_defaults=include_defaults) for key, val in value.items()}
         elif callable(value):
             value = value()
         elif isinstance(value, DTO):
@@ -786,13 +769,18 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
     def _to_snake_case(value: str) -> str:
         return stringcase.snakecase(value)
 
-    @staticmethod
-    def _to_camel_case(value: str) -> str:
-        return stringcase.camelcase(value)
-
     @property
     def __completed__(self):
         return True
+
+    @property
+    def _original_key_names(self) -> Dict[str, str]:
+        if not hasattr(self, "__original_key_names"):
+            self.__original_key_names = {to_snake_case(key): key for key in self.__schema__.keys()}
+        return self.__original_key_names
+
+    def _get_original_key_name(self, key: str) -> str:
+        return self._original_key_names[key]
 
 {% endblock %}
     __code_generation: str = {{ compress(self.code_generation()) }}
@@ -952,6 +940,7 @@ class {{ schema.name }}(metaclass={{ get_name_of_metaclass(schema) }}):
                     type=self.get_type_by_name(attribute["type"]),
                     attribute_type=attribute_type,
                     definition=attribute_definition,
+                    original_name=attribute_name,
                 )
             )
         return _attributes
@@ -1181,6 +1170,7 @@ from classes.dto import DTO
         schema = snakify(schema)
         # Let at "dummy type" be available for others
         _cls = self._create_dummy(schema, template_type)
+        schema["__raw__"] = self._blueprints[template_type]
         schema["__class__"] = _cls
         schema["__template_type__"] = template_type
         if not compile:
