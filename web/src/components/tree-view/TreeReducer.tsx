@@ -20,6 +20,10 @@ export const HAS_CHILD = 'HAS_CHILD'
 const childIds = (state: any, action: any) => {
   switch (action.type) {
     case ADD_CHILD:
+      if (state.includes(action.childId)) {
+        console.warn(`trying to add already existing child  ${action.childId}`)
+        return state
+      }
       return [...state, action.childId]
     case REMOVE_CHILD:
       return state.filter((id: any) => id !== action.childId)
