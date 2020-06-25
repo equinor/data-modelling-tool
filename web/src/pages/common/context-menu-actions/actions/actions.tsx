@@ -54,6 +54,7 @@ function updateDocument(
       layout.refreshByFilter(output.id)
       output.notify &&
         NotificationManager.success(`Updated document: ${response.name}`)
+
       refresh(node, output, parentId, createNodes)
     })
     .catch((error: any) => {

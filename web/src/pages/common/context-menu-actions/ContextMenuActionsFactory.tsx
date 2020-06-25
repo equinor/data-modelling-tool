@@ -64,9 +64,7 @@ export const CreateNodes = (props: CreateNodesProps) => {
       const nodeId = nodes[0]['id']
       node.actions.removeNode(nodeId)
       node.actions.addNodes(indexNodes.reduce(toObject, {}))
-      if (!node.actions.hasChild(parentId, nodeId)) {
-        node.actions.addChild(parentId, nodeId)
-      }
+      node.actions.addChild(parentId, nodeId)
     },
     onError: (err: any) => console.error(Object.keys(err)),
   })
