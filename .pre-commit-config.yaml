@@ -36,7 +36,7 @@ repos:
   hooks:
     - id: prettier
       files: ^web/.*\.(ts|tsx|js|css|html|json)$
-      args: ['--config=web/.prettierrc.js']
+      args: ['--config=web/.prettierrc.js', '--ignore-path=web/.prettierignore']
 
 - repo: local
   hooks:

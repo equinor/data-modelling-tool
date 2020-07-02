@@ -233,7 +233,7 @@ function FilterContainer({ search, queryError }) {
             <BlueprintSelectorWidget
               formData={filter?.type || ''}
               onChange={(event: any) => setFilter({ type: event })}
-              uiSchema={{}}
+              uiSchema={{ 'ui:label': '' }}
             />
           </FilterGroup>
           {attributes.length !== 0 && (
@@ -356,7 +356,7 @@ export default () => {
   function search(query: any) {
     setQueryError('')
     //TODO: Get DataSourceId from User
-    SearchAPI.searchEntities({ dataSourceId: 'entities', inlineObject5: query })
+    SearchAPI.searchEntities({ dataSourceId: 'entities', requestBody: query })
       .then((res: any) => {
         // @ts-ignore
         let resultList = []
