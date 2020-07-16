@@ -1,0 +1,34 @@
+version: "3.4"
+
+services:
+  nginx:
+    restart: unless-stopped
+    build:
+      context: ./nginx
+    image: mariner.azurecr.io/dmt/nginx
+    ports:
+      - "80:80"
+    links:
+      - web
+      - api
+
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile.win10
+    image: mariner.azurecr.io/dmt/api
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: azure
+      MONGO_INITDB_ROOT_USERNAME: maf
+      MONGO_INITDB_ROOT_PASSWORD: maf
+      APPLICATION_HOME: /code/home
+      FLASK_ENV: development
+      DMSS_HOST: mainapi
+      DMSS_PORT: 5000
+  web:
+    build: 
+      context: ./web
+      dockerfile: Dockerfile.win10
+    image: mariner.azurecr.io/dmt/web
+    restart: unless-stopped

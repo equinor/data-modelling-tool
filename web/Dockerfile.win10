@@ -1,0 +1,22 @@
+FROM node:12-alpine as base
+WORKDIR /code
+RUN npm config set proxy http://www-proxy.statoil.no:80
+RUN npm config set https-proxy http://www-proxy.statoil.no:80
+RUN npm config set strict-ssl false
+RUN npm install -g serve
+COPY package.json yarn.lock /code/
+RUN yarn config set "strict-ssl" false -g
+ENV PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=1
+RUN yarn install --frozen-lockfile
+ENV REACT_APP_AUTH=0
+ENV REACT_APP_AUTH_CLIENT_ID=97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
+ENV REACT_APP_AUTH_TENANT=3aa4a235-b6e2-48d5-9195-7fcf05b459b0
+COPY ./ /code/
+
+FROM base as development
+CMD ["yarn", "start"]
+
+FROM base as prod
+RUN yarn build
+EXPOSE 3000
+CMD ["serve", "--single", "build", "--listen", "3000"]
