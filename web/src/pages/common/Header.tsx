@@ -7,6 +7,7 @@ import { AuthContext } from '../../auth/AuthContext'
 import Modal from '../../components/modal/Modal'
 import JsonView from '../../components/JsonView'
 import ConfigureApplication from '../../components/ConfigureApplication'
+import { Config } from "../../App"
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -14,8 +15,7 @@ const TabStyled: any = styled.div`
   display: inline-block;
   margin-bottom: 20px;
   cursor: pointer;
-  border-bottom-color: ${(props: any) =>
-    props.isSelected ? 'black' : 'white'};
+  border-bottom-color: ${(props: any) =>  props.isSelected ? 'black' : 'white'};
   border-bottom-style: solid;
   border-bottom-width: ${(props: any) => (props.isSelected ? '2px' : '0px')};
 
@@ -48,7 +48,7 @@ function UserInfo() {
         open={expanded}
         title={'Logged in user info'}
       >
-        <JsonView data={idToken.profile} />
+        <JsonView data={idToken.profile}/>
         <button type={'button'} onClick={() => setExpanded(false)}>
           Close
         </button>
@@ -63,7 +63,7 @@ export default () => {
     <>
       <HeaderWrapper>
         <h4>Data Modelling Tool</h4>
-        <UserInfo />
+        <UserInfo/>
       </HeaderWrapper>
       <div
         style={{
@@ -73,23 +73,32 @@ export default () => {
         }}
       >
         <div>
-          <Link to={'/'}>
-            <TabStyled isSelected={location.pathname === '/'}>
-              Blueprints
-            </TabStyled>
-          </Link>
-          <Link to={'/entities'}>
-            <TabStyled isSelected={location.pathname === '/entities'}>
-              Entities
-            </TabStyled>
-          </Link>
+          {Config.exportedApp ?
+            <Link to={'/'}>
+              <TabStyled isSelected={location.pathname === '/'}>
+                Entities
+              </TabStyled>
+            </Link> :
+            <>
+              <Link to={'/'}>
+                <TabStyled isSelected={location.pathname === '/'}>
+                  Blueprints
+                </TabStyled>
+              </Link>
+              <Link to={'/entities'}>
+                <TabStyled isSelected={location.pathname === '/entities'}>
+                  Entities
+                </TabStyled>
+              </Link>
+            </>
+          }
           <Link to={'/search'}>
             <TabStyled isSelected={location.pathname === '/search'}>
               Search
             </TabStyled>
           </Link>
         </div>
-        <ConfigureApplication />
+        <ConfigureApplication/>
       </div>
     </>
   )

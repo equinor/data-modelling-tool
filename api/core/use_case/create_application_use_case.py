@@ -28,6 +28,7 @@ WEB_DOCKERFILE = """\
 FROM mariner.azurecr.io/dmt/web:0.8
 # Overwrite the CMD from the prod image that uses the pre-build js-bundle. yarn start will reflect changes made in the actions.js
 CMD ["yarn", "start"]
+ENV REACT_APP_EXPORTED_APP=1
 COPY ./actions.js /code/src/actions.js
 """
 
