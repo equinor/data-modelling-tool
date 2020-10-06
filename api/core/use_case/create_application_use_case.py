@@ -26,7 +26,8 @@ COPY ./home {Config.APPLICATION_HOME}
 
 WEB_DOCKERFILE = """\
 FROM mariner.azurecr.io/dmt/web:0.8
-# CMD ["yarn", "start"] TODO: Why is this here?
+# Overwrite the CMD from the prod image that uses the pre-build js-bundle. yarn start will reflect changes made in the actions.js
+CMD ["yarn", "start"]
 COPY ./actions.js /code/src/actions.js
 """
 
@@ -47,13 +48,14 @@ services:
       DMSS_PORT: 5000
     volumes:
       - ./api/home/:/code/home
-      
+
   web:
     build: web
     restart: unless-stopped
     volumes:
       - ./web/external-plugins/:/code/src/external-plugins
       - ./web/actions.js:/code/src/actions.js
+    stdin_open: true
 
   db:
     image: mongo:3.4
@@ -76,7 +78,7 @@ services:
       - db
     ports:
       - "5010:5000"
-      
+
   nginx:
     links:
       - web
@@ -87,7 +89,7 @@ services:
     image: mariner.azurecr.io/dmt/nginx:0.8
     ports:
       - "9000:80"
-      
+
   db-ui:
     image: mongo-express:0.49
     restart: unless-stopped
@@ -179,7 +181,7 @@ const {{ runnable_model["method"] }} = async ({input, output, updateDocument}) =
     return {}
 }
 {% endfor %}
-        
+
 const runnableMethods = {
 {% for runnable_model in runnable_models %}
     {{ runnable_model["method"] }},
