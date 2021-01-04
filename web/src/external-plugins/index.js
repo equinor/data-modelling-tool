@@ -1,5 +1,6 @@
 import React from 'react'
 import Plot from 'react-plotly.js'
+import { BlueprintTable } from './dmt/views/BlueprintTable.js'
 
 /**
  * Work space for attaching plugin to the dmt tool.
@@ -15,6 +16,7 @@ const TestPlugin = ({ parent, document, children }) => {
 }
 
 const registeredPlugins = {
+  'Table(BP)': BlueprintTable,
   Plotly: PlotlyPoc,
 }
 
