@@ -1,5 +1,5 @@
 #!/bin/sh
-set -euo pipefail
+set -eu
 
 ENVIRON=${ENVIRONMENT:="production"}
 FLA_ENV=${FLASK_ENV:="production"}
