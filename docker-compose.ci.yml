@@ -32,7 +32,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
 
   mainapi:
-    image: mariner.azurecr.io/dmss
+    image: ${DMSS_IMAGE}
     restart: unless-stopped
     environment:
       ENVIRONMENT: local

@@ -9,12 +9,14 @@ from utils.logging import logger
 from services.data_modelling_document_service import datasource_api
 from core.service.document_service import explorer_api
 from dmss_api.exceptions import ApiException
+from load_generators import load_generators
 import json
 
 
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
+    Config.DMT_CODE_GENERATORS = load_generators(Config.APPLICATION_HOME)
     app.register_blueprint(DocumentBlueprint.blueprint)
     app.register_blueprint(Explorer.blueprint)
     app.register_blueprint(Index.blueprint)

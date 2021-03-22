@@ -141,3 +141,4 @@ api/core/domain/dynamic_models/__init__.py
 .generated/
 api/.pytest_cachefirst-run-false
 api/first-run-false
+api/.vscode/launch.json

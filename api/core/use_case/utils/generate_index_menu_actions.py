@@ -1,6 +1,6 @@
 from functools import lru_cache
 from pathlib import Path
-from typing import Union
+from typing import Dict, Union
 
 from classes.tree_node import Node
 from config import Config
@@ -192,10 +192,10 @@ def get_export_code_menu_item(data_source_id, plugin_name, document_path: str):
 
 @lru_cache
 def _get_plugin_label(plugin_name: str) -> str:
-    name_path = Path(f"{Config.APPLICATION_HOME}/code_generators/{plugin_name}/NAME.txt")
-    if name_path.exists():
-        with open(name_path) as f:
-            label = f.read().strip()
-    else:
-        label = f"{plugin_name} code generator"
-    return label
+    generators: Dict[str, Dict] = Config.DMT_CODE_GENERATORS
+    generator = generators.get(plugin_name)
+    default_label = f"{plugin_name} code generator"
+    if generator:
+        return generator.get("label", default_label)
+
+    return default_label

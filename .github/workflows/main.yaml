@@ -8,6 +8,7 @@ env:
   IMAGE_REPO: dmt
   IMAGE_REGISTRY: mariner.azurecr.io
   FULL_IMAGE_REPO: mariner.azurecr.io/dmt
+  DMSS_IMAGE: mariner.azurecr.io/dmss
   API_IMAGE: mariner.azurecr.io/dmt/api
   WEB_IMAGE: mariner.azurecr.io/dmt/web
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx

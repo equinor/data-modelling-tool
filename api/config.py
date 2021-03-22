@@ -1,7 +1,7 @@
 import json
 import os
 from pathlib import Path
-
+from typing import Dict
 import toml
 
 
@@ -24,13 +24,21 @@ class Config:
     PY_PROJECT_FILE = f"{Path(__file__).parent.absolute()}/pyproject.toml"
     DMSS_HOST = os.getenv("DMSS_HOST", "mainapi")
     DMSS_PORT = os.getenv("DMSS_PORT", "5000")
-    DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
-    DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}/api/v1"
+    default_schema = "http" if ENVIRONMENT != "production" else "https"
+    DMSS_SCHEMA = os.getenv("DMSS_SCHEMA", default_schema)
+    default_api = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}/api/v1"
+    DMSS_API = os.getenv("DMSS_API", default_api)
+    DMSS_IMAGE = os.getenv("DMSS_IMAGE", "dmss:latest")
+    NGINX_IMAGE = os.getenv("NGINX_IMAGE", "nginx:0.8")
+    WEB_IMAGE = os.getenv("WEB_IMAGE", "dmt-web:latest")
+    API_IMAGE = os.getenv("API_IMAGE", "dmt-api:latest")
     APPLICATION_DATA_SOURCE = "apps"
+    DMT_CODE_GENERATORS: Dict[str, Dict] = {}
+    PLUGIN_PATH = "plugin_path"
+
     with open(PY_PROJECT_FILE) as toml_file:
         PY_PROJECT = toml.load(toml_file)
     with open(DMT_SETTINGS_FILE) as json_file:
         DMT_APPLICATION_SETTINGS = json.load(json_file)
-        DMT_APPLICATION_SETTINGS["code_generators"] = os.listdir(f"{APPLICATION_HOME}/code_generators")
     with open(ENTITY_SETTINGS_FILE) as json_file:
         ENTITY_APPLICATION_SETTINGS = json.load(json_file)

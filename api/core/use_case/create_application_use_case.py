@@ -19,20 +19,26 @@ from core.shared import use_case as uc
 from core.utility import BlueprintProvider
 from utils.logging import logger
 
-API_DOCKERFILE = f"""\
-FROM mariner.azurecr.io/dmt/api:0.8
+
+def api_docker_file(image: str):
+    return f"""\
+FROM {image}
 COPY ./home {Config.APPLICATION_HOME}
 """
 
-WEB_DOCKERFILE = """\
-FROM mariner.azurecr.io/dmt/web:0.8
+
+def web_docker_file(image: str):
+    return f"""\
+FROM {image}
 # Overwrite the CMD from the prod image that uses the pre-build js-bundle. yarn start will reflect changes made in the actions.js
 CMD ["yarn", "start"]
 ENV REACT_APP_EXPORTED_APP=1
 COPY ./actions.js /code/src/actions.js
 """
 
-DOCKER_COMPOSE = """\
+
+def docker_compose_file(mainapi: str, nginx: str):
+    return f"""\
 version: "3.4"
 
 services:
@@ -69,7 +75,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
 
   mainapi:
-    image: mariner.azurecr.io/dmss:v0.2.21
+    image: {mainapi}
     restart: unless-stopped
     environment:
       ENVIRONMENT: local
@@ -87,7 +93,7 @@ services:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx:0.8
+    image: {nginx}
     ports:
       - "9000:80"
 
@@ -323,6 +329,11 @@ class CreateApplicationUseCase(uc.UseCase):
         home_path = pathlib.Path(Config.APPLICATION_HOME)
 
         memory_file = io.BytesIO()
+        mainapi = Config.DMSS_IMAGE
+        nginx = Config.NGINX_IMAGE
+        web_image = Config.WEB_IMAGE
+        dmt_api = Config.API_IMAGE
+
         with zipfile.ZipFile(memory_file, mode="w") as zip_file:
             zip_all(zip_file, f"{home_path}/core/SIMOS", rel="api/home/core/SIMOS")
             zip_all(zip_file, f"{home_path}/core/DMT", rel="api/home/core/DMT")
@@ -335,9 +346,9 @@ class CreateApplicationUseCase(uc.UseCase):
             zip_file.writestr("api/home/settings.json", binary_data)
             runnable_file = generate_runnable_file(application.data["actions"])
             zip_file.writestr("web/actions.js", runnable_file)
-            zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
-            zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
-            zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
+            zip_file.writestr("docker-compose.yml", docker_compose_file(mainapi, nginx))
+            zip_file.writestr("web/Dockerfile", web_docker_file(web_image))
+            zip_file.writestr("api/Dockerfile", api_docker_file(dmt_api))
             zip_file.writestr("api/home/dmt_settings.json", json.dumps(Config.ENTITY_APPLICATION_SETTINGS).encode())
             zip_file.writestr("web/external-plugins/index.js", generate_external_plugins())
 

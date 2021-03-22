@@ -63,7 +63,8 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
         plugin_name: str = request_object.plugin_name
         data_source_id: str = request_object.data_source_id
 
-        if plugin_name not in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
+        generators = Config.DMT_CODE_GENERATORS
+        if plugin_name not in generators:
             raise PluginNotLoadedException(plugin_name)
 
         tree_path = "/content/".join(document_path.split("/"))
@@ -90,9 +91,9 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
 
         # Load the plugin module
         # docs: https://docs.python.org/3/library/importlib.html#importing-a-source-file-directly
-        spec = importlib.util.spec_from_file_location(
-            plugin_name, f"{Config.APPLICATION_HOME}/code_generators/{plugin_name}/__init__.py"
-        )
+        generator = generators[plugin_name]
+        plugin_path = generator[Config.PLUGIN_PATH]
+        spec = importlib.util.spec_from_file_location(plugin_name, plugin_path)
         module = importlib.util.module_from_spec(spec)
         sys.modules[plugin_name] = module
         spec.loader.exec_module(module)
