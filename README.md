@@ -2,15 +2,13 @@
 
 ![CI](https://github.com/equinor/data-modelling-tool/workflows/CI/badge.svg)
 
-The data modelling tool is a tool that can be used for modelling complex domain models.
+The data modelling tool is a tool for modelling complex domain models.
 
 Some features:
 
 * Create, view, and search models
-* Create custom applications that includes models
+* Create applications containing custom views, models, and actions
 * Generate code that reflects models
-* Create custom views for your models
-* Create and execute actions on models
 
 ## Documentation
 

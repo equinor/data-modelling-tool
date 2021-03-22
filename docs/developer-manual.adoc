@@ -6,6 +6,13 @@
 
 How to get DMT up and running on your local machine for development and testing purposes.
 
+== Repositories
+
+* https://github.com/equinor/data-modelling-tool - The Data Modelling Tool
+* https://github.com/equinor/data-modelling-storage-service - Storage Service for documents
+* https://github.com/equinor/data-modelling-tool-demo-app - Example of Custom Application
+* https://github.com/equinor/dmt-py - Library to talk to the Data Modelling Storage Service directly from Python
+
 == Developing
 
 === Prerequisites
@@ -196,7 +203,7 @@ The Component diagram shows how a container is made up of a number of components
 
 ==== API Architecture
 
-We follow xref:developer-manual/clean-architecture.adoc[the Clean Architecture] style and structure the codebase accordingly for our API's.
+We follow xref:clean-architecture.adoc[the Clean Architecture] style and structure the codebase accordingly for our API's.
 
 This diagram is showing the flow (rather than all) of the components within the APIs.
 

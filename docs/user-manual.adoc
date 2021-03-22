@@ -7,12 +7,7 @@
 == The Essentials
 
 === What is Data Modelling Tool?
-
-Data modeling Tool (DMT) is a tool and framework for standardizing and simplifying processes of building applications by automating mechanisms for data and process modeling, data storage, front-end development and analysis orchestration.
-
 Data modeling tool (DMT) is a tool for modeling and presentation of data models (based on blueprints). DMT consists of a user interface for creating blueprints and data models, as well as an API for storing, querying, retrieving and sharing data models and their blueprints.
-
-A tool for modelling, searching, and viewing blueprint based models.
 
 === Installation
 
@@ -132,7 +127,7 @@ A recipe for how to present data.
 
 === Creating applications
 
-Inside the context menu of Data Modelling Tool, select application and fill in name of the application. You also need to specify what packages (blueprints) and entities that should be included in the application. You also specify what models (from the packages included) can be created in the application.
+Right Click a folder in Data Modelling Tool,  select "New Application", and input the name of the application. You also need to specify what packages (blueprints) and entities that should be included in the application. You also specify what models (from the packages included) can be created in the application.
 
 1. Unzip the downloaded file (e.g `unzip application.zip` ).
 2. Run `docker-compose up`
