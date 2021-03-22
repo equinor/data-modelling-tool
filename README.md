@@ -2,28 +2,25 @@
 
 ![CI](https://github.com/equinor/data-modelling-tool/workflows/CI/badge.svg)
 
-The main Web Application for the SIMOS Data Modelling Framework
+The data modelling tool is a tool that can be used for modelling complex domain models.
 
-Read more about the core concepts of blueprints and models [here](docs/README_DMT.md)
+Some features:
 
-A web application for modelling, searching, and viewing blueprint based models.  
-Features include;
+* Create, view, and search models
+* Create custom applications that includes models
+* Generate code that reflects models
+* Create custom views for your models
+* Create and execute actions on models
 
-- Modelling blueprints
-- Creating models (entities)
-- Browsing, Searching and viewing blueprints and entities
-- [Creating applications](docs/create_application.md)
-- [Generating code for your models](docs/code_generators.md)
-- [Importing and Exporting models](docs/import_export.md)
-- [Custom views and edit widgets](docs/README_Plugin.md)
-- [Code generators](docs/code_generators.md)
+## Documentation
 
-This application uses the [Data Modelling Storage Service (DMSS)](docs/architecture.md#documentservice) as a storage backend.
+You can find the Data Modelling Tool documentation [here](https://potential-train-e73e8904.pages.github.io/).
 
-## Developing DMT
+## Developing
+ 
+Please see [developer docs](https://potential-train-e73e8904.pages.github.io/developer-manual.html) for how to get the Data Modelling Tool up and running on your local machine for development and testing purposes.
 
-Resources to help get you started developing on DMT can be found [here](docs/developing.md)
+## Contributing 
 
-## Contributing
+Read our [contributors' guide](https://potential-train-e73e8904.pages.github.io/contribute-guide.html) to get started.
 
-Read our [contributors' guide](docs/contributors.md) to get started.
