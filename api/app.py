@@ -27,6 +27,7 @@ def create_app(config):
 
 app = create_app(Config)
 
+
 @app.cli.command()
 def remove_application():
     try:

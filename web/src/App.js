@@ -14,7 +14,7 @@ import { authContext } from './auth/adalConfig'
 import { AuthProvider } from './auth/AuthContext'
 
 export const Config = {
-  exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP)===1
+  exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -56,7 +56,10 @@ function App() {
                   path="/view/:data_source/:entity_id"
                   component={ViewPage}
                 />
-                <Route path="/" component={Config.exportedApp ? EntitiesPage : BlueprintsPage} />
+                <Route
+                  path="/"
+                  component={Config.exportedApp ? EntitiesPage : BlueprintsPage}
+                />
               </Switch>
             </Wrapper>
           </StatusProvider>

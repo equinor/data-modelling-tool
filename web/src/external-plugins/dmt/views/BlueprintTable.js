@@ -1,6 +1,6 @@
 /**
  * A Table view for a Blueprint using react-table
- *   
+ *
  */
 
 import React from 'react'
@@ -85,7 +85,6 @@ function Table({ columns, data }) {
 //********************************************************//
 
 const BlueprintTable = ({ parent, document, children }) => {
-
   var tabs = []
   var columns = []
   var data = []
@@ -98,7 +97,7 @@ const BlueprintTable = ({ parent, document, children }) => {
           Header: 'Name',
           accessor: 'name',
         },
-	      {
+        {
           Header: 'Description',
           accessor: 'description',
         },
@@ -117,14 +116,14 @@ const BlueprintTable = ({ parent, document, children }) => {
 
   columns = [
     {
-	    Header: 'Attributes',
+      Header: 'Attributes',
       columns: [
         {
           Header: 'Name',
           accessor: 'name',
         },
         {
-		Header: 'Type',
+          Header: 'Type',
           accessor: 'propType',
         },
         {

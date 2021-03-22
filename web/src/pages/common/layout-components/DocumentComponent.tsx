@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
-import ReactJsonSchemaWrapper, { onFormSubmit } from '../form/ReactJsonSchemaWrapper'
+import ReactJsonSchemaWrapper, {
+  onFormSubmit,
+} from '../form/ReactJsonSchemaWrapper'
 import styled from 'styled-components'
 import FetchDocument from '../utils/FetchDocument'
 import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
@@ -14,7 +16,7 @@ import Api2 from '../../../api/Api2'
 // @ts-ignore
 import { Viewer3dPlugin } from '../../../plugins/3dviewer/Viewer3dPlugin'
 import { ViewerPDFPlugin } from '../../../plugins/PDFViewer'
-import { ErrorGroup } from "../../../components/Wrappers"
+import { ErrorGroup } from '../../../components/Wrappers'
 
 const Wrapper = styled.div`
   padding: 20px;
