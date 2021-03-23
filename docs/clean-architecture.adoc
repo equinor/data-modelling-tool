@@ -1,0 +1,187 @@
+= The Clean Architecture
+:toc: left
+:icons: font
+:hide-uri-scheme:
+:source-highlighter: rouge
+
+We follow the https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html[the Clean Architecture] style and structure the codebase accordingly for our API's.
+
+== What is the Clean Architecture?
+
+It is a layered approach for a https://www.youtube.com/watch?v=wtCQalq7L-E[more civilized age].
+
+image::images/clean-architecture.jpeg[The Clean Architecture]
+
+[quote, The most important rule]
+____
+Source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle. In particular, the name of something declared in an outer circle must not be mentioned by the code in the an inner circle. That includes, functions, classes. variables, or any other named software entity.
+____
+
+[quote, The golden rule]
+____
+Talk inward with simple structures and talk outwards through interfaces.
+____
+
+The use cases and entities are the heart of our application and should have a minimal set of external library dependencies.
+
+=== What does clean mean?
+
+You know *where* things are, *why* components are there, and *what* something is.
+
+=== Benefits
+
+This architecture is framework independent (or as much as it can be). This means it doesn’t matter which database, frameworks, UI, external services you are using, the entities and the business logic of the application will always stay the same.
+
+It is also designed so that every part of the architecture is easy testable.
+
+=== Concepts
+
+==== Entities
+
+Entities are the enterprise business objects of our application. These should not be affected by any change external to them, and these should be the most stable code within your application.
+
+==== Use Cases
+
+Use cases implement and encapsulate all the business rules. Each use case orchestrates all of the logic for a specific business use case.
+* Controllers and Presenters - Our controller, presenters, and gateways are intermediate layers. You can think of them as an entry and exit gates to the use cases .
+
+==== Adapters
+
+Interface Adapters - Data is converted from the form most convenient for entities and use cases to the format most convenient for some external agency such as the Database or the Web.
+
+
+==== Frameworks and Drivers
+
+Tools such as the Database, the Web Framework, etc Glue code that communicates to the next circle inwards.
+
+//=== Directory Structure
+//
+//```bash
+//|-- api
+//|    |-- domain
+//|    |	|-request_object.py
+//|    |	|-response_object.py
+//|    |	`-use_case.py
+//|    |-- entity
+//|    |	`-entity.py
+//|    |-- exception
+//|    |	|-exception.py
+//|    |	`- *_exception.py
+//|    |-- serializer
+//|    	`-serializer.py
+//```
+
+
+== A simple example
+
+[quote, Work in progress]
+____
+This simple example is still not complete, but points out the basics.
+____
+
+===  Use case
+
+Use cases class exists for the sole purpose of injecting adapters like repositories. Use cases use simple entities, and don’t know about framework models.
+
+[source, python]
+----
+# notes/use_cases.py
+
+from .entities import Note
+from api.core.shared import request_object as req
+from api.core.shared import response_object as res
+from api.core.shared import use_case as uc
+
+class AddNoteRequestObject(req.ValidRequestObject):
+    def __init__(self, title=None, description=None):
+        self.title = title
+        self.description = description
+
+    @classmethod
+    def from_dict(cls, adict):
+        invalid_req = req.InvalidRequestObject()
+
+        if "title" not in adict:
+            invalid_req.add_error("title", "is missing")
+
+        if invalid_req.has_errors():
+            return invalid_req
+
+        return cls(
+           uid=adict.get("title"),
+           data=adict.get("description")
+        )
+
+
+class AddNoteUseCase(uc.UseCase):
+  def __init__(self, repo):
+    self.repo = repo
+
+  def execute(self, request_object: AddNoteRequestObject):
+    note = Note(
+      request_object.title,
+      request_object.description
+    )
+    self.repo.add(note)
+    return res.ResponseSuccess(note)
+----
+
+=== Entity
+
+Entities are just simple classes.
+
+[source, python]
+----
+# notes/entities.py:
+
+class Note():
+  def __init__(self, title, description, id=None):
+    self.id = id
+    self.title = title
+    self.description = description
+----
+
+=== Service
+
+[source, python]
+----
+
+class NoteService(object):
+    self.repo = repo
+
+    def add(self, note):
+       return self.repo.add(note)
+----
+
+=== Repository
+
+The storage layer takes entities & returns entities, hides storage details.
+
+[source, python]
+----
+# adapters/orm_storage.py:
+
+from notes.models import Note
+
+class Repo():
+  def add(self, note):
+    orm_note = Note.from_entity(note)
+    orm_note.save()
+    return orm_note.to_entity()
+----
+
+===== Controllers
+
+[source, python]
+----
+def add_note():
+    request_data = request.get_json()
+    use_case = AddNoteUseCase()
+    request_object = AddNoteRequestObject.from_dict(request_data)
+    response = use_case.execute(request_object)
+    return Response(
+        json.dumps(response.value, cls=DTOSerializer),
+        mimetype="application/json",
+        status=STATUS_CODES[response.type]
+    )
+----

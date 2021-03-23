@@ -1,0 +1,14 @@
+= Data Modelling Tool
+:toc:
+:icons: font
+:hide-uri-scheme:
+
+An application for modelling, searching, and viewing domain models based on blueprints.
+
+== Get started
+
+Everything you need to know about Data Modelling Tool.
+
+* The xref:user-manual.adoc[User docs] if you want to learn how to use DMT.
+* The xref:developer-manual.adoc[Developer docs] if you want to start developing.
+* The xref:contribute-guide.adoc[Contribute guide] if you want to contribute.
