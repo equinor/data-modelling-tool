@@ -20,6 +20,8 @@ services:
     image: web-development
     environment:
       CI: "true"
+    depends_on:
+      - api
 
   db:
     image: mongo:3.4

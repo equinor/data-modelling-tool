@@ -50,13 +50,8 @@ jobs:
       - name: "API UnitTests"
         run: docker run --rm api-development pytest tests
 
-      - name: "Reset database"
-        run: |
-          docker-compose -f docker-compose.yml  -f docker-compose.ci.yml up -d
-          docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run mainapi ./api/reset-database.sh
-
       - name: "API BDD Tests"
-        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run api behave
+        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave
   test-web:
     runs-on: ubuntu-latest
     steps:
