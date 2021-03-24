@@ -52,14 +52,13 @@ jobs:
       - name: "API UnitTests"
         run: docker run --rm api-development pytest tests
 
-      - name: "start docker containers"
-        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+      - name: "Run BDD tests"
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+          docker exec $DMSS_CONTAINER_NAME ./api/reset-database.sh
+          docker exec $DMT_API_CONTAINER_NAME behave
 
-      - name: "reset database"
-        run: docker exec $DMSS_CONTAINER_NAME ./api/reset-database.sh
 
-      - name: "run DBB tests"
-        run: docker exec $DMT_API_CONTAINER_NAME behave
 
   test-web:
     runs-on: ubuntu-latest
