@@ -35,23 +35,23 @@ jobs:
       - name: "Docker Login"
         run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
 
-      - name: "Pull latest"
-        run: docker pull $API_IMAGE
+      #- name: "Pull latest"
+      #  run: docker pull $API_IMAGE
 
-      - name: "Build API test image"
-        run: docker build --cache-from $API_IMAGE --target development --tag api-development ./api
+      #- name: "Build API test image"
+      #  run: docker build --cache-from $API_IMAGE --target development --tag api-development ./api
 
-      - name: "Black Linting"
-        run: docker run --rm api-development black --check --diff .
+      #- name: "Black Linting"
+      #  run: docker run --rm api-development black --check --diff .
 
-      - name: "Bandit Static Code Security Analyzis"
-        run: docker run --rm api-development bandit --recursive .
+      #- name: "Bandit Static Code Security Analyzis"
+      #  run: docker run --rm api-development bandit --recursive .
 
-      - name: "Safety - Dependencies CVE Check"
-        run: docker run --rm api-development safety check
+      #- name: "Safety - Dependencies CVE Check"
+      #  run: docker run --rm api-development safety check
 
-      - name: "API UnitTests"
-        run: docker run --rm api-development pytest tests
+      #- name: "API UnitTests"
+      #  run: docker run --rm api-development pytest tests
 
 
       - name: "Run BDD tests"
