@@ -5,6 +5,9 @@ WORKDIR /code
 RUN apt-get update -y && apt-get full-upgrade -y && apt-get install -y \
     netcat \
     nodejs
+# for some reason I could not install curl on the previus RUN command....
+RUN apt-get install curl -y
+
 RUN pip install --upgrade pip && \
     pip install poetry
 COPY pyproject.toml poetry.lock ./

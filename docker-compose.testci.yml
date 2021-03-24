@@ -1,15 +1,6 @@
 version: "3.4"
 
 services:
-  nginx:
-    restart: unless-stopped
-    build:
-      context: ./nginx
-    ports:
-      - "80:80"
-    links:
-      - web
-      - api
 
   api:
     build:
@@ -35,21 +26,7 @@ services:
     ports:
       - "5000:5000"
 
-  web:
-    build:
-      context: ./web
-      target: development
-    image: web-dev
-    stdin_open: true
-    volumes:
-      - ./web/src:/code/src
-    environment:
-      - NODE_ENV=development
-      - CHOKIDAR_USEPOLLING=true
-    ports:
-      - "3000:3000"
-    depends_on:
-      - api
+
 
   db:
     image: mongo:3.4
@@ -68,5 +45,12 @@ services:
       ENVIRONMENT: local
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
+      FLASK_RUN_PORT: 5000
+      FLASK_DEBUG: 1
+      MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+      APPLICATION_HOME: /usr/src/app/api/home
+    ports:
+      - "8000:5000"
     depends_on:
       - db
+
