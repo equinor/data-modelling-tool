@@ -57,7 +57,7 @@ jobs:
       - name: "Run BDD tests"
         run: |
           docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
-          docker exec $DMT_API_CONTAINER_NAME behave
+          docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run api behave
 
 
 
