@@ -1,0 +1,72 @@
+version: "3.4"
+
+services:
+  nginx:
+    restart: unless-stopped
+    build:
+      context: ./nginx
+    ports:
+      - "80:80"
+    links:
+      - web
+      - api
+
+  api:
+    build:
+      context: ./api
+      target: development
+    image: api-dev
+    volumes:
+      - ./api/:/code
+      - ../data-modelling-storage-service/gen/python:/dmss
+    environment:
+      FLASK_DEBUG: 1
+      ENVIRONMENT: local
+      MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+      CHOKIDAR_USEPOLLING: "true"
+      MONGO_INITDB_ROOT_USERNAME: maf
+      MONGO_INITDB_ROOT_PASSWORD: maf
+      APPLICATION_HOME: /code/home
+      FLASK_ENV: development
+      DMSS_HOST: mainapi
+      DMSS_PORT: 5000
+    depends_on:
+      - mainapi
+    ports:
+      - "5000:5000"
+
+  web:
+    build:
+      context: ./web
+      target: development
+    image: web-dev
+    stdin_open: true
+    volumes:
+      - ./web/src:/code/src
+    environment:
+      - NODE_ENV=development
+      - CHOKIDAR_USEPOLLING=true
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+
+  db:
+    image: mongo:3.4
+    command: --quiet
+    restart: unless-stopped
+    logging:
+      driver: "none"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: maf
+      MONGO_INITDB_ROOT_PASSWORD: maf
+
+  mainapi:
+    image: mariner.azurecr.io/dmss
+    restart: unless-stopped
+    environment:
+      ENVIRONMENT: local
+      MONGO_INITDB_ROOT_USERNAME: maf
+      MONGO_INITDB_ROOT_PASSWORD: maf
+    depends_on:
+      - db

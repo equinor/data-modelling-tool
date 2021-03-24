@@ -53,15 +53,11 @@ jobs:
       #- name: "API UnitTests"
       #  run: docker run --rm api-development pytest tests
 
-
       - name: "Run BDD tests"
         run: |
-          docker pull $DMSS_IMAGE
-          docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+          docker-compose -f docker-compose.testci.yml up --build -d
           docker exec $DMSS_CONTAINER_NAME ./api/reset-database.sh
           docker exec $DMT_API_CONTAINER_NAME behave
-
-
 
   test-web:
     runs-on: ubuntu-latest
