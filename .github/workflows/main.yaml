@@ -9,6 +9,7 @@ env:
   FULL_IMAGE_REPO: mariner.azurecr.io/dmt
   API_IMAGE: mariner.azurecr.io/dmt/api
   WEB_IMAGE: mariner.azurecr.io/dmt/web
+  DMSS_IMAGE: mariner.azurecr.io/dmss
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
   RADIX_CLUSTER: playground
   DMSS_CONTAINER_NAME: /data-modelling-tool_mainapi_1
@@ -52,8 +53,10 @@ jobs:
       - name: "API UnitTests"
         run: docker run --rm api-development pytest tests
 
+
       - name: "Run BDD tests"
         run: |
+          docker pull $DMSS_IMAGE
           docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
           docker exec $DMSS_CONTAINER_NAME ./api/reset-database.sh
           docker exec $DMT_API_CONTAINER_NAME behave
