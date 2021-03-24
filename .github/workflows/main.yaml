@@ -11,6 +11,8 @@ env:
   WEB_IMAGE: mariner.azurecr.io/dmt/web
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
   RADIX_CLUSTER: playground
+  DMSS_CONTAINER_NAME: /data-modelling-tool_mainapi_1
+  DMT_API_CONTAINER_NAME: /data-modelling-tool_api_1
 
 jobs:
   test-api:
@@ -50,11 +52,15 @@ jobs:
       - name: "API UnitTests"
         run: docker run --rm api-development pytest tests
 
-      - name: "reset database"
-        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run mainapi ./api/reset-database.sh
+      - name: "start docker containers"
+        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml up -d
 
-      - name: "API BDD Tests"
-        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave
+      - name: "reset database"
+        run: docker exec $DMSS_CONTAINER_NAME ./api/reset-database.sh
+
+      - name: "run DBB tests"
+        run: docker exec $DMT_API_CONTAINER_NAME behave
+        
   test-web:
     runs-on: ubuntu-latest
     steps:
