@@ -11,7 +11,7 @@ service_is_ready() {
   HOST=$2
   PORT=$3
   attempt_counter=0
-  max_attempts=20
+  max_attempts=100
   echo "Using service $NAME: $HOST:$PORT"
   echo "Waiting for DMSS..."
   until $(curl --output /dev/null --silent --head --fail http://localhost:8000/api/v1/data-sources); do
@@ -20,9 +20,9 @@ service_is_ready() {
       exit 1
     fi
 
-    printf 'Waiting for DMSS...'
+    echo "Waiting for DMSS... (${attempt_counter})"
     attempt_counter=$(($attempt_counter+1))
-    sleep 3
+    sleep 5
   done
   echo "DMSS is ready!"
 }
