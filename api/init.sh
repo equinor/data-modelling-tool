@@ -27,13 +27,13 @@ service_is_ready() {
   echo "DMSS is ready!"
 }
 
-if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ] ; then
-  echo "Installing locally..."
-  pip uninstall dmss-api -y
-  cd /dmss/
-  python setup.py install
-  cd /code/
-fi
+# if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ] ; then
+#  echo "Installing locally..."
+#  pip uninstall dmss-api -y
+#  cd /dmss/
+#  python setup.py install
+#  cd /code/
+#fi
 
 if [ ! -e first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
   service_is_ready "DMSS" $DMSS_HOST $DMSS_PORT
