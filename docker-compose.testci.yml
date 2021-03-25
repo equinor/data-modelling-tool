@@ -7,6 +7,9 @@ services:
       context: ./api
       target: development
     image: api-dev
+    volumes:
+      - ./api/:/code
+      - ../data-modelling-storage-service/gen/python:/dmss
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local

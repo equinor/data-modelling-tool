@@ -53,6 +53,11 @@ jobs:
       #- name: "API UnitTests"
       #  run: docker run --rm api-development pytest tests
 
+      - name: "clone dmss repo"
+        run: git clone https://github.com/equinor/data-modelling-storage-service.git
+
+      - name: "ls"
+        run: ls -l
 
       - name: "Run BDD tests"
         run: |
