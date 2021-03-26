@@ -1,8 +1,8 @@
 import { BlueprintType, Entity } from '../../../domain/types'
 import { BlueprintSchema } from '../BlueprintSchema'
 import { BlueprintProvider } from '../../BlueprintProvider'
-import { RegisteredPlugins } from '../../../pages/common/layout-components/DocumentComponent'
 import { uiRecipeTest } from './BlueprintUiSchemaTest'
+import { RegisteredPlugins } from '../../../pages/editor/layout-components/DocumentComponent'
 
 const document: Entity = {
   name: '',

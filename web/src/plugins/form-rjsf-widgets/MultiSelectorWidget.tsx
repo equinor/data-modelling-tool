@@ -1,13 +1,12 @@
 import React, { useEffect, useState } from 'react'
-import { Datasource } from '../../api/Api'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import styled from 'styled-components'
-import DocumentTree from '../../pages/common/tree-view/DocumentTree'
 import Modal from '../../components/modal/Modal'
 import { FaTimes } from 'react-icons/fa'
-import { BlueprintEnum } from '../../util/variables'
-import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
-import { DataSourceAPI } from '../../api/Api3'
+import { BlueprintEnum } from '../../utils/variables'
+import Tree from '../../components/tree-view/Tree'
+import { IIndex, useIndex } from '../../context/index/IndexProvider'
+import useOpenOrExpand from '../../hooks/useOpenOrExpand'
 
 const NodeWrapper = styled.div`
   display: flex;
@@ -60,10 +59,18 @@ const MultiSelector = ({
   uiSchema,
   typeFilter,
 }: MultiSelectorProps) => {
-  const [datasources, setDatasources] = useState<Datasource[]>([])
   const [selectedPackages, setSelectedPackages] = useState<string[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
+  const index: IIndex = useIndex()
+  const openOrExpand: Function = useOpenOrExpand()
 
+  const handleOpenOrExpand = (props: any) => {
+    openOrExpand({
+      nodeId: props.nodeData.nodeId,
+      fetchUrl: props.nodeData.meta.fetchUrl,
+      indexUrl: props.nodeData.meta.indexUrl,
+    })
+  }
   useEffect(() => {
     setSelectedPackages(formData || [])
   }, [formData])
@@ -86,17 +93,6 @@ const MultiSelector = ({
       onChange(selectedPackages)
     }
   }
-
-  useEffect(() => {
-    DataSourceAPI.getAll()
-      .then((res: any) => {
-        const data: Datasource[] = res || []
-        setDatasources(data)
-      })
-      .catch((err: any) => {
-        console.log(err)
-      })
-  }, [])
 
   const tableRows = selectedPackages.map((folder: any) => (
     <tr key={folder} style={{ verticalAlign: 'baseline' }}>
@@ -147,23 +143,22 @@ const MultiSelector = ({
         open={showModal}
         title={'Select packages to include'}
       >
-        <DocumentTree
-          render={(renderProps: TreeNodeRenderProps) => {
-            const { nodeData, actions } = renderProps
+        <Tree
+          state={index.models.tree.models.tree}
+          operations={index.models.tree.operations}
+        >
+          {(renderProps: TreeNodeRenderProps) => {
+            const { nodeData } = renderProps
             const value = `${renderProps.path}/${nodeData.title}`
 
             return (
               <NodeWrapper>
                 <IconTitleWrapper
-                  onClick={() => {
-                    treeNodeClick({
-                      indexUrl: nodeData.meta.indexUrl,
-                      node: { actions, nodeData },
-                      setLoading: () => {},
-                    })
-                  }}
+                  onClick={() => handleOpenOrExpand(renderProps)}
                 >
-                  {renderProps.iconGroup(() => {})}
+                  {renderProps.iconGroup(() => {
+                    handleOpenOrExpand(renderProps)
+                  })}
                   {nodeData.title}
                 </IconTitleWrapper>
                 {typeFilter(nodeData) && (
@@ -176,8 +171,7 @@ const MultiSelector = ({
               </NodeWrapper>
             )
           }}
-          dataSources={datasources}
-        />
+        </Tree>
       </Modal>
     </PackagesWrapper>
   )

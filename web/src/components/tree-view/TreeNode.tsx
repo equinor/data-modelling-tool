@@ -24,6 +24,7 @@ const StyledTreeNode = styled.div`
   align-items: center;
   padding: 5px 8px;
   padding-left: ${(props: StyledTreeNode) => props.level * 20}px;
+
   &:hover {
     background: lightgray;
   }
@@ -144,8 +145,7 @@ const TreeNode = (props: TreeNodeProps) => {
       <div
         style={{ display: 'flex', flexDirection: 'row' }}
         onClick={() => {
-          onClick()
-          handleToggle(node)
+          onClick(node)
         }}
       >
         <NodeIcon>

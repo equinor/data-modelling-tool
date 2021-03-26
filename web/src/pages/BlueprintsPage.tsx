@@ -1,56 +1,18 @@
-import React, { useEffect, useReducer } from 'react'
-import styled from 'styled-components'
-import BlueprintReducer, {
-  DocumentActions,
-  initialState,
-} from './common/DocumentsReducer'
-import DocumentTree from './common/tree-view/DocumentTree'
-import Header from '../components/Header'
-import AddDatasource from './common/tree-view/AddDatasource'
-import { DocumentNode } from './common/nodes/DocumentNode'
-import { TreeNodeRenderProps } from '../components/tree-view/TreeNode'
-import { Application } from '../util/variables'
-import DocumentEditorPage from './common/DocumentEditorWrapper'
-import { DataSourceAPI } from '../api/Api3'
+import React from 'react'
+import { Application } from '../utils/variables'
+import Editor from './editor/Editor'
+import DashboardProvider from '../context/dashboard/DashboardProvider'
+import DataSourceAPI from '../services/api/DataSourceAPI'
 
-export const Wrapper = styled.div`
-  width: 100%;
-  padding-right: 20px;
-`
+const dataSourceAPI = new DataSourceAPI()
 
 export default () => {
-  const [state, dispatch] = useReducer(BlueprintReducer, initialState)
-
-  //not use useFetch hook because response should be dispatched to the reducer.
-  useEffect(() => {
-    //avoid unnecessary fetch.
-    if (!state.dataSources.length) {
-      DataSourceAPI.getAll()
-        .then((res: any) => {
-          dispatch(DocumentActions.addDatasources(res))
-        })
-        .catch((e: any) => {
-          console.log(e)
-        })
-    }
-  }, [state.dataSources.length])
-
   return (
-    <DocumentEditorPage>
-      <Wrapper>
-        <Header>
-          <div />
-          <AddDatasource />
-        </Header>
-        <br />
-        <DocumentTree
-          render={(renderProps: TreeNodeRenderProps) => {
-            return <DocumentNode node={renderProps} />
-          }}
-          dataSources={state.dataSources}
-          application={Application.BLUEPRINTS}
-        />
-      </Wrapper>
-    </DocumentEditorPage>
+    <DashboardProvider
+      dataSourceApi={dataSourceAPI}
+      application={Application.BLUEPRINTS}
+    >
+      <Editor />
+    </DashboardProvider>
   )
 }

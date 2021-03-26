@@ -1,10 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
-import { Datasource } from '../../api/Api'
-import DocumentTree from '../../pages/common/tree-view/DocumentTree'
-import { BlueprintEnum } from '../../util/variables'
-import { DataSourceAPI } from '../../api/Api3'
+import { BlueprintEnum } from '../../utils/variables'
+import Tree from '../../components/tree-view/Tree'
+import { IIndex, useIndex } from '../../context/index/IndexProvider'
 
 export type Props = {
   onChange: Function
@@ -18,20 +17,9 @@ type Reference = {
 
 export default (props: Props) => {
   const { onChange } = props
-  const [datasources, setDatasources] = useState<Datasource[]>([])
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  useEffect(() => {
-    DataSourceAPI.getAll()
-      .then((res: any) => {
-        const data: Datasource[] = res || []
-        setDatasources(data)
-      })
-      .catch((err: any) => {
-        console.log(err)
-      })
-  }, [])
+  const index: IIndex = useIndex()
 
   const onSelect = (value: Reference) => {
     setSelectedEntity(value.name)
@@ -55,8 +43,11 @@ export default (props: Props) => {
           open={showModal}
           title={'Select an Entity'}
         >
-          <DocumentTree
-            render={(renderProps: TreeNodeRenderProps) => {
+          <Tree
+            state={index.models.tree.models.tree}
+            operations={index.models.tree.operations}
+          >
+            {(renderProps: TreeNodeRenderProps) => {
               const { nodeData } = renderProps
               const reference: Reference = {
                 name: nodeData.title,
@@ -87,8 +78,7 @@ export default (props: Props) => {
                 </>
               )
             }}
-            dataSources={datasources}
-          />
+          </Tree>
         </Modal>
       </div>
     </>

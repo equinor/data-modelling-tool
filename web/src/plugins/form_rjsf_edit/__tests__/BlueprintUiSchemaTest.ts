@@ -1,7 +1,7 @@
 import { BlueprintType, UiRecipe } from '../../../domain/types'
 import { BlueprintUiSchema } from '../BlueprintUiSchema'
 import { BlueprintProvider } from '../../BlueprintProvider'
-import { RegisteredPlugins } from '../../../pages/common/layout-components/DocumentComponent'
+import { RegisteredPlugins } from '../../../pages/editor/layout-components/DocumentComponent'
 
 export const uiRecipeTest: UiRecipe = {
   name: 'Edit',

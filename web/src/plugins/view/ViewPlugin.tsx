@@ -9,12 +9,12 @@ import {
 } from '../../domain/types'
 import { Blueprint } from '../../domain/Blueprint'
 import { BlueprintProvider } from '../BlueprintProvider'
-import { RegisteredPlugins } from '../../pages/common/layout-components/DocumentComponent'
 import { ReactTablePlugin } from '../react_table/ReactTablePlugin'
 import { PlotPlugin } from '..'
 import { CollapsibleWrapper } from '../../components/Collapsible'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
 import JsonView from '../../components/JsonView'
+import { RegisteredPlugins } from '../../pages/editor/layout-components/DocumentComponent'
 
 enum WIDGETS {
   PREVIEW = 'PREVIEW',
@@ -128,6 +128,7 @@ class GenerateView {
 }
 
 export const ViewPlugin = (props: PluginProps) => {
+  console.log('ViewPlugin', props)
   const generateView = new GenerateView(props)
   const viewComponents = generateView.getViews()
   return <div>{viewComponents}</div>

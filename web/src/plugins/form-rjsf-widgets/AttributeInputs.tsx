@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { BlueprintAttributeType } from '../../domain/types'
 import BlueprintSelectorWidget from './BlueprintSelectorWidget'
 import { BlueprintAttribute } from '../../domain/BlueprintAttribute'
-import { BlueprintEnum } from '../../util/variables'
+import { BlueprintEnum } from '../../utils/variables'
 import DestinationSelectorWidget from './DestinationSelectorWidget'
 
 export const AttributeWrapper = styled.div`

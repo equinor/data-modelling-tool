@@ -8,7 +8,20 @@ import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import { DocumentAPI, SearchAPI } from '../api/Api3'
+import { SearchAPI } from '../api/StorageServiceAPI'
+import { Application } from '../utils/variables'
+import DashboardProvider, {
+  IDashboard,
+  useDashboard,
+} from '../context/dashboard/DashboardProvider'
+import IndexProvider from '../context/index/IndexProvider'
+import { IndexAPI } from '../services/api/IndexAPI'
+import DataSourceAPI from '../services/api/DataSourceAPI'
+import { DocumentAPI } from '../services/api/DocumentAPI'
+
+const indexAPI = new IndexAPI()
+const documentAPI = new DocumentAPI()
+const dataSourceAPI = new DataSourceAPI()
 
 const Container = styled.div`
   display: flex;
@@ -71,6 +84,7 @@ const Collapsible = styled.div`
   min-width: 30px;
   padding-left: 10px;
   padding-right: 10px;
+
   &:hover {
     border-color: #20a0ff;
   }
@@ -113,7 +127,8 @@ function FetchBlueprint({ type, setValue }: any) {
   const dataSourceId = splitType.shift()
   const path = splitType.join('/')
   // @ts-ignore
-  DocumentAPI.getByPath({ dataSourceId, path })
+  documentAPI
+    .getByPath(dataSourceId, path)
     .then((res: any) => {
       setValue(res.document.attributes)
     })
@@ -197,6 +212,7 @@ function FilterContainer({ search, queryError }) {
   // @ts-ignore
   const [filter, setFilter] = useState(storedSearch || {})
   const [attributes, setAttributes] = useState([])
+  const dashboard: IDashboard = useDashboard()
 
   function onChange(filterChange: any) {
     // @ts-ignore
@@ -218,88 +234,98 @@ function FilterContainer({ search, queryError }) {
   }, [filter?.type])
 
   return (
-    <Container>
-      <b>Filter</b>
-      <form
-        onSubmit={event => {
-          event.preventDefault()
-          event.stopPropagation()
-          search(filter)
-        }}
-      >
-        <Group>
-          <FilterGroup>
-            <label style={{ marginRight: '10px' }}>Type: </label>
-            <BlueprintSelectorWidget
-              formData={filter?.type || ''}
-              onChange={(event: any) => setFilter({ type: event })}
-              uiSchema={{ 'ui:label': '' }}
-            />
-          </FilterGroup>
-          {attributes.length !== 0 && (
-            <div
-              style={{
-                display: 'flex',
-                flexFlow: 'row-reverse',
-                justifyContent: 'space-between',
-                overflow: 'auto',
-              }}
-            >
-              {/*
-          // @ts-ignore */}
-              <div
-                style={{ flexFlow: 'column', width: '-webkit-fill-available' }}
-              >
-                <QueryInstructions>
-                  Strings will be matched by case insensitive wild card
-                </QueryInstructions>
-                <QueryInstructions>
-                  Numbers can be exact, or with {'">"'} and {'"<"'} operators
-                </QueryInstructions>
-                <QueryInstructions>
-                  Arrays will be matched by "at least one element"
-                </QueryInstructions>
-              </div>
-              <div style={{ flexFlow: 'column' }}>
-                {attributes.map(attribute => (
-                  <DynamicAttributeFilter
-                    // @ts-ignore
-                    value={filter[attribute.name]}
-                    attr={attribute}
-                    // @ts-ignore
-                    key={attribute.name}
-                    onChange={onChange}
-                  />
-                ))}
-              </div>
-            </div>
-          )}
-          Query:
-          <JsonView data={filter} />
-          {queryError && (
-            <>
-              <text>Error:</text>
-              <JsonView
-                data={queryError}
-                style={{ fontSize: '12px', color: 'red' }}
+    <IndexProvider
+      indexApi={indexAPI}
+      documentApi={documentAPI}
+      dataSources={dashboard.models.dataSources.models.dataSources}
+      application={dashboard.models.application}
+    >
+      <Container>
+        <b>Filter</b>
+        <form
+          onSubmit={event => {
+            event.preventDefault()
+            event.stopPropagation()
+            search(filter)
+          }}
+        >
+          <Group>
+            <FilterGroup>
+              <label style={{ marginRight: '10px' }}>Type: </label>
+              <BlueprintSelectorWidget
+                formData={filter?.type || ''}
+                onChange={(event: any) => setFilter({ type: event })}
+                uiSchema={{ 'ui:label': '' }}
               />
-            </>
-          )}
-          <ButtonContainer>
-            <button
-              type={'button'}
-              onClick={() => {
-                setAttributes([])
-                setFilter({})
-              }}
-            >
-              Reset
-            </button>
-            <button type={'submit'}>Search</button>
-          </ButtonContainer>
-        </Group>
-      </form>
-    </Container>
+            </FilterGroup>
+            {attributes.length !== 0 && (
+              <div
+                style={{
+                  display: 'flex',
+                  flexFlow: 'row-reverse',
+                  justifyContent: 'space-between',
+                  overflow: 'auto',
+                }}
+              >
+                {/*
+          // @ts-ignore */}
+                <div
+                  style={{
+                    flexFlow: 'column',
+                    width: '-webkit-fill-available',
+                  }}
+                >
+                  <QueryInstructions>
+                    Strings will be matched by case insensitive wild card
+                  </QueryInstructions>
+                  <QueryInstructions>
+                    Numbers can be exact, or with {'">"'} and {'"<"'} operators
+                  </QueryInstructions>
+                  <QueryInstructions>
+                    Arrays will be matched by "at least one element"
+                  </QueryInstructions>
+                </div>
+                <div style={{ flexFlow: 'column' }}>
+                  {attributes.map(attribute => (
+                    <DynamicAttributeFilter
+                      // @ts-ignore
+                      value={filter[attribute.name]}
+                      attr={attribute}
+                      // @ts-ignore
+                      key={attribute.name}
+                      onChange={onChange}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+            Query:
+            <JsonView data={filter} />
+            {queryError && (
+              <>
+                <text>Error:</text>
+                <JsonView
+                  data={queryError}
+                  style={{ fontSize: '12px', color: 'red' }}
+                />
+              </>
+            )}
+            <ButtonContainer>
+              <button
+                type={'button'}
+                onClick={() => {
+                  setAttributes([])
+                  setFilter({})
+                }}
+              >
+                Reset
+              </button>
+              <button type={'submit'}>Search</button>
+            </ButtonContainer>
+          </Group>
+        </form>
+      </Container>
+    </IndexProvider>
   )
 }
 
@@ -380,9 +406,12 @@ export default () => {
   }
 
   return (
-    <>
+    <DashboardProvider
+      dataSourceApi={dataSourceAPI}
+      application={Application.ENTITIES}
+    >
       <FilterContainer search={search} queryError={queryError} />
       <ResultContainer result={result} />
-    </>
+    </DashboardProvider>
   )
 }

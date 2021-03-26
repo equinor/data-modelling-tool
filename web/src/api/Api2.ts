@@ -1,10 +1,7 @@
 import axios from 'axios'
-import { DmtApi } from './Api'
-
-const api = new DmtApi()
 
 /**
- * Standardize client side api by forcing onSuccess callback to pass a DocumentData back.
+ * TODO: Remove this whole API.
  */
 type OnSuccess = (data: any) => void
 type OnError = (err: any) => void
@@ -13,6 +10,7 @@ export interface BASE_CRUD {
   onSuccess: OnSuccess
   onError?: OnError
 }
+
 interface FetchTemplate extends BASE_CRUD {
   url: string
 }
@@ -30,8 +28,27 @@ interface Get {
   onError: OnError
 }
 
+interface Post2 {
+  url: string
+  data: object
+}
+
+const templatesDatasourceMongoGet = (selectedDatasourceType: string) => {
+  let template = ''
+
+  // TODO: Cleanup constants
+  if (selectedDatasourceType === 'mongo-db') template = 'MongoDataSource'
+  if (selectedDatasourceType === 'azure-blob-storage')
+    template = 'AzureBlobStorageDataSource'
+
+  return `/api/v2/json-schema/apps/DMT/data-sources/${template}`
+}
+
 export default class Api2 {
-  static post({ url, data, onSuccess, onError = () => {} }: Post) {
+  static post({
+                url, data, onSuccess, onError = () => {
+    },
+              }: Post) {
     console.debug(`Post ${url}`)
     axios
       .post(url, data)
@@ -39,7 +56,16 @@ export default class Api2 {
       .catch(onError)
   }
 
-  static put({ url, data, onSuccess, onError = () => {} }: Post) {
+  static post2({ url, data }: Post2) {
+    console.debug(`Post ${url}`)
+    return axios
+      .post(url, data)
+  }
+
+  static put({
+               url, data, onSuccess, onError = () => {
+    },
+             }: Post) {
     console.debug(`Put ${url}`)
     axios
       .put(url, data)
@@ -47,7 +73,16 @@ export default class Api2 {
       .catch(onError)
   }
 
-  static get({ url, onSuccess, onError = () => {} }: Get) {
+  static put2({ url, data }: Post2) {
+    console.debug(`Put ${url}`)
+    return axios
+      .put(url, data)
+  }
+
+  static get({
+               url, onSuccess, onError = () => {
+    },
+             }: Get) {
     console.debug(`Get ${url}`)
     axios
       .get(url)
@@ -55,21 +90,23 @@ export default class Api2 {
       .catch(onError)
   }
 
+
   static fetchCreateDatasource(selectedDatasourceType: string) {
     return ({ onSuccess, onError }: BASE_CRUD): void => {
       fetchTemplate({
-        url: api.templatesDatasourceMongoGet(selectedDatasourceType),
+        url: templatesDatasourceMongoGet(selectedDatasourceType),
         onSuccess,
       })
     }
   }
 
   static fetchWithTemplate({
-    urlSchema,
-    urlData,
-    onSuccess,
-    onError = () => {},
-  }: any): void {
+                             urlSchema,
+                             urlData,
+                             onSuccess,
+                             onError = () => {
+                             },
+                           }: any): void {
     axios
       .all([axios.get(urlSchema), axios.get(urlData)])
       .then(
@@ -78,12 +115,15 @@ export default class Api2 {
             document: dataRes.data.document,
             template: schemaRes.data,
           })
-        })
+        }),
       )
       .catch(onError)
   }
 
-  static fetchDocument({ dataUrl, onSuccess, onError = () => {} }: any): void {
+  static fetchDocument({
+                         dataUrl, onSuccess, onError = () => {
+    },
+                       }: any): void {
     axios
       .get(dataUrl)
       .then(({ data }) => {
@@ -94,10 +134,11 @@ export default class Api2 {
 }
 
 function fetchTemplate({
-  url,
-  onSuccess,
-  onError = () => {},
-}: FetchTemplate): void {
+                         url,
+                         onSuccess,
+                         onError = () => {
+                         },
+                       }: FetchTemplate): void {
   axios(url)
     .then((res: any) => {
       onSuccess({

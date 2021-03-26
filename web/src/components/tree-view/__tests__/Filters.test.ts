@@ -1,5 +1,5 @@
 import { filterNodes } from '../Filters'
-import { NodeType } from '../../../util/variables'
+import { NodeType } from '../../../utils/variables'
 
 const data = {
   '/root': {

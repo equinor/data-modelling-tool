@@ -2,8 +2,8 @@ import React from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import DocumentComponent from "./editor/layout-components/DocumentComponent";
 // @ts-ignore
-import DocumentComponent from './common/layout-components/DocumentComponent'
 
 const Group = styled.div`
   display: flex;

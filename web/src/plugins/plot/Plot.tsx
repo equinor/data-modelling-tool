@@ -60,6 +60,9 @@ export const PlotPlugin = (props: PluginProps) => {
   }
 
   function createPlotData(attrName: string): DataItem[] {
+    if (!(attrName in document)) {
+      return []
+    }
     return document[attrName].map((value: number, index: number) => {
       return {
         x: index + 1,
@@ -67,6 +70,7 @@ export const PlotPlugin = (props: PluginProps) => {
       }
     })
   }
+
   return (
     <div style={{}}>
       <div style={{ width: 'fit-content', marginTop: 30 }}>

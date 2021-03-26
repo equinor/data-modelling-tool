@@ -23,7 +23,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     is_package = node.type == DMT.PACKAGE.value
     application = app_settings["name"]
 
-    # Datasource Node can only add root-packages
+    # DataSource Node can only add root-packages
     if node.type == "datasource":
         menu_items.append(get_create_root_package_menu_item(data_source_id))
     else:
@@ -77,7 +77,8 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                     data_source_id=data_source_id,
                     dotted_document_id=node.node_id,
                     type=node.type,
-                    parent_uid=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
+                    parent_uid=node.parent.node_id if node.parent and node.parent.type != "datasource" else node.parent.name,
+                    parent_type=node.parent.type
                 )
             )
         is_removable = True
