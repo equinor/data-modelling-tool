@@ -25,7 +25,9 @@ class Config:
     DMSS_HOST = os.getenv("DMSS_HOST", "mainapi")
     DMSS_PORT = os.getenv("DMSS_PORT", "5000")
     DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
-    DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}/api/v1"
+    USING_CI = os.getenv("USING_CI", False)
+    #DMSS_API = "mariner.azurecr.io/dmss://mainapi:5000/api/v1" if USING_CI else f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}/api/v1"
+    DMSS_API = "mariner.azurecr.io/dmss://mainapi:5000/api/v1/"
     APPLICATION_DATA_SOURCE = "apps"
     with open(PY_PROJECT_FILE) as toml_file:
         PY_PROJECT = toml.load(toml_file)

@@ -16,7 +16,7 @@ service_is_ready() {
   echo "Waiting for DMSS..."
   if [ "$USING_CI" = 'True' ] ;
     then
-      DMSS_API_ENDPOINT="mariner.azurecr.io/dmss://mainapi:8000/api/v1/data-sources"
+      DMSS_API_ENDPOINT="mariner.azurecr.io/dmss://mainapi:5000/api/v1/data-sources"
     else
      DMSS_API_ENDPOINT="http://localhost:8000/api/v1/data-sources"
   fi
