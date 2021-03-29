@@ -11,6 +11,7 @@ services:
       FLASK_ENV: testing
       ENVIRONMENT: local
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+      USING_CI: "True"
     ports:
       - "5000:5000"
     depends_on:
