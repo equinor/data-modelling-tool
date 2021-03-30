@@ -14,12 +14,8 @@ service_is_ready() {
   max_attempts=100
   echo "Using service $NAME: $HOST:$PORT"
   echo "Waiting for DMSS..."
-  if [ "$USING_CI" = 'True' ] ;
-    then
-      DMSS_API_ENDPOINT="mariner.azurecr.io/dmss://mainapi:5000/api/v1/data-sources"
-    else
-     DMSS_API_ENDPOINT="http://localhost:8000/api/v1/data-sources"
-  fi
+  DMSS_API_ENDPOINT="http://mainapi:5000/api/v1/data-sources"
+
   until $(curl --output /dev/null --head --fail $DMSS_API_ENDPOINT); do
     if [ ${attempt_counter} -eq ${max_attempts} ];then
       echo "Max attempts reached."
