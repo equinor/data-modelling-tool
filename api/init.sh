@@ -37,6 +37,7 @@ if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ] ; then
 fi
 
 if [ ! -e first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
+  service_is_ready "DMSS" $DMSS_HOST $DMSS_PORT
   echo "Importing data"
   ./reset-application.sh
   touch first-run-false
