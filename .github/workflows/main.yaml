@@ -29,6 +29,7 @@ jobs:
           echo $NGINX_IMAGE
           echo $GITHUB_REF
           echo $GITHUB_SHA
+          echo $DMT_API_CONTAINER_NAME
 
       - name: "Docker Login"
         run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
@@ -43,7 +44,7 @@ jobs:
         run: docker run --rm api-development black --check --diff .
 
       - name: "Bandit Static Code Security Analyzis"
-        run: docker run --rm api-development bandit --recursive .
+        run: docker run --rm api-development bandit --recursive . --exclude ./.venv,./tests,./tests_bdd
 
       - name: "Safety - Dependencies CVE Check"
         run: docker run --rm api-development safety check
