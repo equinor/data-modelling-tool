@@ -1,6 +1,6 @@
-Feature: test
+Feature: test connection
 
-Scenario: Get index for single document (model- and storage-NOT-contained)
+Scenario: test connection
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection   |  type     |
       | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents    |  mongo-db |

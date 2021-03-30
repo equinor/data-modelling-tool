@@ -53,17 +53,6 @@ jobs:
       #- name: "API UnitTests"
       #  run: docker run --rm api-development pytest tests
 
-
-
-      #- name: "clone dmss repo"
-      #  run: |
-      #    cd ..
-      #    git clone https://github.com/equinor/data-modelling-storage-service.git
-      #    cd data-modelling-tool
-
-      #- name: "ls"
-      #  run: ls -l
-
       - name: "Run BDD tests"
         run: |
           docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
