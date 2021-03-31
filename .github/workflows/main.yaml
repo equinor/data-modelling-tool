@@ -53,7 +53,7 @@ jobs:
       - name: "API BDD Tests"
         run: |
           docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
-          docker-compose -f docker-compose.yml -f docker-compose.ci.yml exec api ./init.sh behave
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml exec -T api ./init.sh behave
   test-web:
     runs-on: ubuntu-latest
     steps:
