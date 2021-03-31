@@ -16,13 +16,13 @@ service_is_ready() {
   echo "Waiting for DMSS..."
   DMSS_API_ENDPOINT="http://mainapi:5000/api/v1/data-sources"
   until $(curl --output /dev/null --fail $DMSS_API_ENDPOINT); do
-    if [ ${attempt_counter} -eq ${max_attempts} ];then
+    if [ ${ATTEMPT_COUNTER} -eq ${MAX_ATTEMPTS} ];then
       echo "Max attempts reached."
       exit 1
     fi
 
-    echo "Waiting for DMSS... (${attempt_counter})"
-    attempt_counter=$(($attempt_counter+1))
+    echo "Waiting for DMSS... (${ATTEMPT_COUNTER})"
+    ATTEMPT_COUNTER=$((ATTEMPT_COUNTER+1))
     sleep 5
   done
   echo "DMSS is ready!"
