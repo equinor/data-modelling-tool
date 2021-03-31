@@ -11,6 +11,7 @@ env:
   WEB_IMAGE: mariner.azurecr.io/dmt/web
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
   RADIX_CLUSTER: playground
+  DMT_API_CONTAINER_NAME: /data-modelling-tool_api_1
 
 jobs:
   test-api:
@@ -28,6 +29,7 @@ jobs:
           echo $NGINX_IMAGE
           echo $GITHUB_REF
           echo $GITHUB_SHA
+          echo $DMT_API_CONTAINER_NAME
 
       - name: "Docker Login"
         run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
@@ -53,7 +55,7 @@ jobs:
       - name: "API BDD Tests"
         run: |
           docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
-          docker-compose -f docker-compose.yml -f docker-compose.ci.yml exec -T api ./init.sh behave
+          docker exec $DMT_API_CONTAINER_NAME ./init.sh behave
   test-web:
     runs-on: ubuntu-latest
     steps:
