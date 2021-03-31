@@ -10,8 +10,8 @@ service_is_ready() {
   NAME=$1
   HOST=$2
   PORT=$3
-  attempt_counter=0
-  max_attempts=100
+  ATTEMPT_COUNTER=0
+  MAX_ATTEMPTS=100
   echo "Using service $NAME: $HOST:$PORT"
   echo "Waiting for DMSS..."
   DMSS_API_ENDPOINT="http://mainapi:5000/api/v1/data-sources"
