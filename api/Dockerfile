@@ -4,7 +4,8 @@ WORKDIR /code
 
 RUN apt-get update -y && apt-get full-upgrade -y && apt-get install -y \
     netcat \
-    nodejs
+    nodejs \
+    curl
 RUN pip install --upgrade pip && \
     pip install poetry
 COPY pyproject.toml poetry.lock ./

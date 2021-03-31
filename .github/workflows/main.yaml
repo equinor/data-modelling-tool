@@ -1,7 +1,6 @@
 name: CI
 
-on:
-  push
+on: push
 
 env:
   APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.K8S_CREDENTIALS }}
@@ -12,6 +11,7 @@ env:
   WEB_IMAGE: mariner.azurecr.io/dmt/web
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
   RADIX_CLUSTER: playground
+  DMT_API_CONTAINER_NAME: /data-modelling-tool_api_1
 
 jobs:
   test-api:
@@ -29,6 +29,7 @@ jobs:
           echo $NGINX_IMAGE
           echo $GITHUB_REF
           echo $GITHUB_SHA
+          echo $DMT_API_CONTAINER_NAME
 
       - name: "Docker Login"
         run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
@@ -43,7 +44,7 @@ jobs:
         run: docker run --rm api-development black --check --diff .
 
       - name: "Bandit Static Code Security Analyzis"
-        run: docker run --rm api-development bandit --recursive .
+        run: docker run --rm api-development bandit --recursive . --exclude ./.venv,./tests,./tests_bdd
 
       - name: "Safety - Dependencies CVE Check"
         run: docker run --rm api-development safety check
@@ -53,9 +54,8 @@ jobs:
 
       - name: "API BDD Tests"
         run: |
-          docker-compose -f docker-compose.yml  -f docker-compose.ci.yml up -d
-          docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run mainapi ./api/reset-database.sh
-          docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run api behave
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
+          docker exec $DMT_API_CONTAINER_NAME ./init.sh behave
   test-web:
     runs-on: ubuntu-latest
     steps:
@@ -176,7 +176,6 @@ jobs:
           docker tag $WEB_IMAGE:$RELEASE_TAG $WEB_IMAGE:release
           docker push $WEB_IMAGE:$RELEASE_TAG
           docker push $WEB_IMAGE:release
-
 
   deploy-release-to-radix:
     needs: [release-api, release-web]

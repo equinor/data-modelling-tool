@@ -10,17 +10,22 @@ service_is_ready() {
   NAME=$1
   HOST=$2
   PORT=$3
+  ATTEMPT_COUNTER=0
+  MAX_ATTEMPTS=100
   echo "Using service $NAME: $HOST:$PORT"
-  i=1
-  while ! nc -z $HOST $PORT; do
-      echo "Service $NAME '$HOST:$PORT' not responding. Retrying..."
-      sleep 3
-      i=$((i+1));
-      if [ $i -eq 60 ]; then
-          echo "Service $NAME '$HOST:$PORT' not responding. Exiting..."
-          exit 1
-      fi;
+  echo "Waiting for DMSS..."
+  DMSS_API_ENDPOINT="http://mainapi:5000/api/v1/data-sources"
+  until $(curl --output /dev/null --fail $DMSS_API_ENDPOINT); do
+    if [ ${ATTEMPT_COUNTER} -eq ${MAX_ATTEMPTS} ];then
+      echo "Max attempts reached."
+      exit 1
+    fi
+
+    echo "Waiting for DMSS... (${ATTEMPT_COUNTER})"
+    ATTEMPT_COUNTER=$((ATTEMPT_COUNTER+1))
+    sleep 5
   done
+  echo "DMSS is ready!"
 }
 
 if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ] ; then
@@ -32,6 +37,7 @@ if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ] ; then
 fi
 
 if [ ! -e first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
+  service_is_ready "DMSS" $DMSS_HOST $DMSS_PORT
   echo "Importing data"
   ./reset-application.sh
   touch first-run-false
