@@ -5,7 +5,7 @@ import {
   DocumentApi,
   SearchApi,
   BlobApi,
-} from '../gen'
+} from '../../../gen'
 import axios from 'axios'
 
 const DMT_BASE_PATH = `api/`
@@ -13,9 +13,9 @@ const DMSSConfiguration = new Configuration({ basePath: '/dmss/v1' })
 
 export const dataSourceAPI = new DatasourceApi(DMSSConfiguration)
 export const documentAPI = new DocumentApi(DMSSConfiguration)
-export const BlobAPI = new BlobApi(DMSSConfiguration)
-export const ExplorerAPI = new ExplorerApi(DMSSConfiguration)
-export const SearchAPI = new SearchApi(DMSSConfiguration)
+export const blobAPI = new BlobApi(DMSSConfiguration)
+export const explorerAPI = new ExplorerApi(DMSSConfiguration)
+export const searchAPI = new SearchApi(DMSSConfiguration)
 
 class SystemApi {
   async getSystemSettings() {

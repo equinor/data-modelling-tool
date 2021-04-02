@@ -1,6 +1,6 @@
 import { IDocumentAPI } from './interfaces/DocumentAPI'
 import apiProvider from './utilities/Provider'
-import { documentAPI } from '../../api/StorageServiceAPI'
+import { documentAPI, explorerAPI } from './configs/StorageServiceAPI'
 
 export class DocumentAPI implements IDocumentAPI {
   create(url: string, data: any): Promise<any> {
@@ -12,8 +12,16 @@ export class DocumentAPI implements IDocumentAPI {
     return apiProvider.post(url, data)
   }
 
+  addToParent(dataSourceId: string, data: any): Promise<any> {
+    return explorerAPI.addToParent({ dataSourceId, inlineObject: data })
+  }
+
   getByPath(dataSourceId: string, path: string): Promise<any> {
     return documentAPI.getByPath({ dataSourceId, path })
+  }
+
+  getById(dataSourceId: string, documentId: string): Promise<any> {
+    return documentAPI.getById({ dataSourceId, documentId })
   }
 
   remove(url: string, data: any): Promise<any> {
@@ -27,6 +35,20 @@ export class DocumentAPI implements IDocumentAPI {
      * Can we build this url from client? /api/v2/documents/{data_source_id}/{document_split[0]}{attribute_arg}
      */
     return apiProvider.put(url, data)
+  }
+
+  updateById(
+    dataSourceId: string,
+    documentId: string,
+    attribute: string,
+    data: any
+  ): Promise<any> {
+    return documentAPI.update({
+      dataSourceId: dataSourceId,
+      documentId: documentId,
+      requestBody: data,
+      attribute: attribute,
+    })
   }
 }
 

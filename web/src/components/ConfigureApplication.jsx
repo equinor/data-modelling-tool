@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaChevronDown, FaChevronUp, FaCog, FaPlus } from 'react-icons/fa'
 import styled from 'styled-components'
 import Modal from './modal/Modal'
-import { SystemAPI } from '../api/StorageServiceAPI'
+import { SystemAPI } from '../services/api/configs/StorageServiceAPI'
 import BlueprintSelectorWidget from '../plugins/form-rjsf-widgets/BlueprintSelectorWidget'
 import {
   BlueprintsSelector,

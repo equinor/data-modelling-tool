@@ -1,17 +1,11 @@
-import { IIndex, useIndex } from '../context/index/IndexProvider'
-import {
-  IDashboard,
-  useDashboard,
-} from '../context/dashboard/DashboardProvider'
 import { useModalContext } from '../context/modal/ModalContext'
-import { useContext } from 'react'
-import { StatusContext } from '../context/status/StatusContext'
-import { documentAPI, ExplorerAPI } from '../api/StorageServiceAPI'
+import { documentAPI } from '../services/api/configs/StorageServiceAPI'
 import Actions from '../actions'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { createEntity } from './utils/createEntity'
 import { Entity } from '../domain/types'
+import useExplorer, { IUseExplorer } from './useExplorer'
 
 export enum ActionTypes {
   separateResultFile = 'separateResultFile',
@@ -43,6 +37,7 @@ export type Output = {
   id: string
   notify?: Boolean
   attribute?: string
+  parentId?: string
 }
 
 export type ActionProps = {
@@ -50,6 +45,7 @@ export type ActionProps = {
   output?: Output
   updateDocument?: Function
   createEntity?: Function
+  explorer?: IUseExplorer
 }
 
 export type Method = (props: ActionProps) => any
@@ -83,14 +79,13 @@ const getInput = async (
   }
 
   const result = await documentAPI.getById(requestParameters)
-
   const document = result.document
 
   const input: Input = {
     // @ts-ignore
     blueprint: document.type,
     // @ts-ignore
-    entity: document,
+    entity: attribute ? document[attribute] : document,
     path: path,
     id: id,
     attribute: attribute,
@@ -100,37 +95,22 @@ const getInput = async (
 }
 
 export default function useRunnable() {
-  const index: IIndex = useIndex()
-
   const { closeModal } = useModalContext()
-
-  const dashboard: IDashboard = useDashboard()
-
-  const [status, setStatus] = useContext(StatusContext)
+  const explorer = useExplorer()
 
   const updateDocument = async (output: Output, parentId: string) => {
-    const updateData: any = {
-      documentId: output.id,
-      dataSourceId: output.dataSource,
-      requestBody: output.entity,
-    }
-
-    if (output.attribute) {
-      updateData['attribute'] = output.attribute
-    }
-
-    documentAPI
-      .update(updateData)
-      .then((response: any) => {
-        dashboard.models.layout.operations.refreshByFilter(output.id)
+    explorer
+      .updateById({
+        dataSourceId: output.dataSource,
+        documentId: output.id,
+        attribute: output.attribute || '',
+        data: output.entity,
+        nodeUrl: `/api/v4/index/${output.dataSource}/${parentId ||
+          output.parentId}`,
+      })
+      .then((result: any) => {
         output.notify &&
-          NotificationManager.success(`Updated document: ${response.name}`)
-        index.operations.add(
-          `${output.id}`,
-          // @ts-ignore
-          `/api/v4/index/${output.dataSource}/${parentId || output.parentId}`,
-          true
-        )
+          NotificationManager.success(`Updated document: ${result.data.name}`)
       })
       .catch((error: any) => {
         NotificationManager.error(`Failed to update document: ${error}`)
@@ -150,7 +130,6 @@ export default function useRunnable() {
   ) => {
     const method: Method = getMethod(methodToRun)
     const input: Input = await getInput(dataSourceId, documentId, path)
-
     const output: Output = {
       blueprint: input.blueprint,
       entity: input.entity,
@@ -161,7 +140,13 @@ export default function useRunnable() {
       parentId: parentId,
     }
 
-    method({ input, output, updateDocument: handleUpdate, createEntity })
+    method({
+      input,
+      output,
+      updateDocument: handleUpdate,
+      createEntity,
+      explorer,
+    })
 
     closeModal()
   }
@@ -182,37 +167,33 @@ export default function useRunnable() {
       destinationParentId,
     ] = data.destination.split('/', 2)
 
-    // Create the result file
-    await ExplorerAPI.addToParent({
+    const content = {
+      attribute: 'content',
       // @ts-ignore
-      dataSourceId: destinationDataSourceId,
-      inlineObject: {
-        attribute: 'content',
-        // @ts-ignore
-        description: data.description,
-        name: data.name,
-        parentId: destinationParentId,
-        type: outputType,
-      },
-    })
-      .then((response: any) => {
-        index.operations.add(
-          `${response.uid}`,
-          `/api/v4/index/${destinationDataSourceId}/${destinationParentId}`,
-          true
-        )
+      description: data.description,
+      name: data.name,
+      parentId: destinationParentId,
+      type: outputType,
+    }
 
+    explorer
+      .addToParent({
+        dataSourceId: destinationDataSourceId,
+        data: content,
+        nodeUrl: `/api/v4/index/${destinationDataSourceId}/${destinationParentId}`,
+      })
+      .then((result: any) => {
         const output: Output = {
           blueprint: data.type,
           entity: {
             // @ts-ignore
-            _id: response.uid,
+            _id: result.uid,
             type: outputType,
             name: data.name,
           },
           dataSource: destinationDataSourceId,
           // @ts-ignore
-          id: response.uid,
+          id: result.uid,
         }
 
         const handleUpdateWithTreeUpdate = (output: any) => {
@@ -224,6 +205,7 @@ export default function useRunnable() {
           output,
           updateDocument: handleUpdateWithTreeUpdate,
           createEntity,
+          explorer,
         })
       })
       .catch((error: any) => {

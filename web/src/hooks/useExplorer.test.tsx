@@ -60,7 +60,9 @@ const getMocks = () => {
       type: NodeType.PACKAGE,
       parentId: '',
       children: [],
-      meta: {},
+      meta: {
+        indexUrl: '/api/v1/index/1',
+      },
     },
     '2': {
       id: '2',
@@ -180,7 +182,7 @@ describe('the explorer hook', () => {
             .isOpen
         ).toEqual(false)
         await act(async () => {
-          response.result.current.toggle({ nodeId: '1', indexUrl: '/url' })
+          response.result.current.toggle({ nodeId: '1' })
         })
       })
       it('should maximize document in tree', async () => {
@@ -192,12 +194,13 @@ describe('the explorer hook', () => {
       it('should add (fetch children)', async () => {
         expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
         expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
-          '/url',
+          '/api/v1/index/1',
           '1',
           application
         )
       })
     })
+
     describe('and document is not expandable', () => {
       beforeEach(async () => {
         expect(

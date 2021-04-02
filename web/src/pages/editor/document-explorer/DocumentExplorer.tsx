@@ -26,7 +26,6 @@ export default () => {
   const handleToggle = (props: any) => {
     toggle({
       nodeId: props.nodeData.nodeId,
-      indexUrl: props.nodeData.meta.indexUrl,
     })
   }
 
@@ -38,7 +37,6 @@ export default () => {
     ) {
       toggle({
         nodeId: props.nodeData.nodeId,
-        indexUrl: props.nodeData.meta.indexUrl,
       })
     } else {
       open({

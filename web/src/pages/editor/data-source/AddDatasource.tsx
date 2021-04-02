@@ -7,7 +7,7 @@ import { NotificationManager } from 'react-notifications'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
 import Button from '../../../components/Button'
 import Api2 from '../../../api/Api2'
-import { dataSourceAPI } from '../../../api/StorageServiceAPI'
+import { dataSourceAPI } from '../../../services/api/configs/StorageServiceAPI'
 
 export default () => {
   const [showModal, setShowModal] = useState(false)

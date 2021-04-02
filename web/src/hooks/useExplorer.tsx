@@ -23,7 +23,6 @@ const validate = (data: any) => {
 
 interface ToggleProps {
   nodeId: string
-  indexUrl?: string
 }
 
 interface OpenProps {
@@ -34,6 +33,12 @@ interface OpenProps {
 interface CreateProps {
   data: any
   dataUrl: string
+  nodeUrl: string
+}
+
+interface AddToParentProps {
+  dataSourceId: string
+  data: any
   nodeUrl: string
 }
 
@@ -50,8 +55,16 @@ interface UpdateProps {
   updateUrl: string
 }
 
+interface UpdateByIdProps {
+  dataSourceId: string
+  documentId: string
+  attribute: string
+  data: any
+  nodeUrl: string
+}
+
 export interface IUseExplorer {
-  toggle({ nodeId, indexUrl }: ToggleProps): void
+  toggle({ nodeId }: ToggleProps): void
 
   open({ nodeId, fetchUrl }: OpenProps): void
 
@@ -60,6 +73,16 @@ export interface IUseExplorer {
   remove({ nodeId, parent, url, data }: RemoveProps): void
 
   update({ data, updateUrl, nodeUrl }: UpdateProps): void
+
+  updateById({
+    dataSourceId,
+    documentId,
+    attribute,
+    data,
+    nodeUrl,
+  }: UpdateByIdProps): Promise<any>
+
+  addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
 
   index: IIndex
 
@@ -71,11 +94,16 @@ export default function useExplorer(): IUseExplorer {
   const index: IIndex = useIndex()
   const { closeModal } = useModalContext()
 
-  const toggle = ({ nodeId, indexUrl }: ToggleProps) => {
-    index.models.tree.operations.toggle(nodeId)
+  const toggle = ({ nodeId }: ToggleProps) => {
     const node: TreeNodeData = index.models.tree.operations.getNode(nodeId)
-    if (indexUrl && node.isExpandable && !node.isOpen) {
-      index.operations.add(nodeId, indexUrl)
+    if (!node) {
+      const message = `Document not found: ${nodeId}`
+      NotificationManager.error(message)
+      throw message
+    }
+    index.models.tree.operations.toggle(nodeId)
+    if (node.meta.indexUrl && node.isExpandable && !node.isOpen) {
+      return index.operations.add(nodeId, node.meta.indexUrl)
     }
   }
 
@@ -100,6 +128,22 @@ export default function useExplorer(): IUseExplorer {
     }
   }
 
+  const addToParent = async ({
+    dataSourceId,
+    data,
+    nodeUrl,
+  }: AddToParentProps) => {
+    if (validate(data)) {
+      return index.operations
+        .addToParent(dataSourceId, data)
+        .then((result: any) => {
+          closeModal()
+          index.operations.add(result.uid, nodeUrl, true)
+          return result
+        })
+    }
+  }
+
   const remove = async ({ nodeId, parent, url, data }: RemoveProps) => {
     index.operations
       .remove(nodeId, parent, url, data)
@@ -119,5 +163,36 @@ export default function useExplorer(): IUseExplorer {
         )
     })
   }
-  return { toggle, open, create, remove, update, index, dashboard }
+
+  const updateById = async ({
+    dataSourceId,
+    documentId,
+    attribute,
+    data,
+    nodeUrl,
+  }: UpdateByIdProps) => {
+    return index.operations
+      .updateById(dataSourceId, documentId, attribute, data)
+      .then(result => {
+        closeModal()
+        index.operations
+          .add(documentId, nodeUrl)
+          .then(() =>
+            dashboard.models.layout.operations.refreshByFilter(documentId)
+          )
+        return result
+      })
+  }
+
+  return {
+    toggle,
+    open,
+    create,
+    remove,
+    update,
+    updateById,
+    addToParent,
+    index,
+    dashboard,
+  }
 }

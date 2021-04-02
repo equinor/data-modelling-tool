@@ -1,5 +1,5 @@
 import { DataSources, IDataSourceAPI } from './interfaces/DataSourceAPI'
-import { dataSourceAPI } from '../../api/StorageServiceAPI'
+import { dataSourceAPI } from './configs/StorageServiceAPI'
 
 export class DataSourceAPI implements IDataSourceAPI {
   getAll(): Promise<DataSources> {

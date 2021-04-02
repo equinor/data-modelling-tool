@@ -24,11 +24,27 @@ export interface IOperations {
   remove(nodeId: string, parent: string, url: string, data: any): Promise<void>
 
   update(data: any, updateUrl: string): Promise<void>
+
+  // Needed in runnable
+  updateById(
+    dataSourceId: string,
+    documentId: string,
+    attribute: string,
+    data: any
+  ): Promise<void>
+
+  addToParent(dataSourceId: string, data: any): Promise<any>
+}
+
+export interface IServices {
+  documentApi: IDocumentAPI
+  indexApi: IIndexAPI
 }
 
 export interface IIndex {
   models: IModels
   operations: IOperations
+  services: IServices
 }
 
 const IndexContext = createContext<IIndex>(null!)
@@ -120,6 +136,10 @@ const IndexProvider = ({
     return documentApi.create(dataUrl, data)
   }
 
+  const addToParent = async (dataSourceId: string, data: any) => {
+    return documentApi.addToParent(dataSourceId, data)
+  }
+
   const remove = async (
     nodeId: string,
     parent: string,
@@ -135,6 +155,15 @@ const IndexProvider = ({
     return documentApi.update(updateUrl, data)
   }
 
+  const updateById = async (
+    dataSourceId: string,
+    documentId: string,
+    attribute: string,
+    data: any
+  ) => {
+    return documentApi.updateById(dataSourceId, documentId, attribute, data)
+  }
+
   const value: IIndex = {
     models: {
       tree,
@@ -144,6 +173,12 @@ const IndexProvider = ({
       create,
       remove,
       update,
+      updateById,
+      addToParent,
+    },
+    services: {
+      indexApi,
+      documentApi,
     },
   }
 

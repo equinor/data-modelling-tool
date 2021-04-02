@@ -5,5 +5,16 @@ export interface IDocumentAPI {
 
   update(url: string, data: any): Promise<any>
 
+  updateById(
+    dataSourceId: string,
+    documentId: string,
+    attribute: string,
+    data: any
+  ): Promise<any>
+
   getByPath(dataSourceId: string, path: string): Promise<any>
+
+  getById(dataSourceId: string, documentId: string): Promise<any>
+
+  addToParent(dataSourceId: string, data: any): Promise<any>
 }
