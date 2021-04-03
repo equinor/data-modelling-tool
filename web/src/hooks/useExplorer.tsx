@@ -145,12 +145,14 @@ export default function useExplorer(): IUseExplorer {
   }
 
   const remove = async ({ nodeId, parent, url, data }: RemoveProps) => {
-    index.operations
-      .remove(nodeId, parent, url, data)
-      // @ts-ignore
-      .then(dashboard.models.layout.operations.remove(nodeId))
-      // .then(index.models.tree.operations.removeNode(nodeId, parent))
-      .then(closeModal())
+    return (
+      index.operations
+        .remove(nodeId, parent, url, data)
+        // @ts-ignore
+        .then(dashboard.models.layout.operations.remove(nodeId))
+        // .then(index.models.tree.operations.removeNode(nodeId, parent))
+        .then(closeModal())
+    )
   }
 
   const update = async ({ data, updateUrl, nodeUrl }: UpdateProps) => {

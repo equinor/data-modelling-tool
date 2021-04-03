@@ -46,6 +46,64 @@ export default () => {
     }
   }
 
+  const handleAction = (
+    id: any,
+    action: string,
+    data: any,
+    label: string,
+    props: any
+  ) => {
+    const actionInputData = {
+      action: {
+        node: props,
+        action: { type: action, data },
+      },
+    }
+
+    switch (action) {
+      case ContextMenuActions.CREATE:
+        openModal(CreateAction, {
+          dialog: { title: `Create ${label}` },
+          props: actionInputData,
+        })
+        break
+      case ContextMenuActions.UPDATE:
+        openModal(UpdateAction, {
+          dialog: { title: `Update ${props.nodeData.nodeId}` },
+          props: actionInputData,
+        })
+        break
+      case ContextMenuActions.DELETE: {
+        openModal(DeleteAction, {
+          dialog: { title: `Delete ${props.nodeData.nodeId}` },
+          props: actionInputData,
+        })
+        break
+      }
+      case ContextMenuActions.DOWNLOAD:
+        openModal(DownloadAction, {
+          dialog: { title: `Download ${props.nodeData.nodeId}` },
+          props: actionInputData,
+        })
+        break
+      case ContextMenuActions.RUNNABLE:
+        switch (data.runnable.actionType) {
+          case ActionTypes.resultInEntity:
+            openModal(SaveToExistingDocument, {
+              dialog: { title: `Runnable` },
+              props: actionInputData,
+            })
+            break
+          case ActionTypes.separateResultFile:
+            openModal(SaveToNewDocument, {
+              dialog: { title: `Run command ${props.nodeData.nodeId}` },
+              props: actionInputData,
+            })
+            break
+        }
+    }
+  }
+
   return (
     <>
       <Tree
@@ -57,62 +115,9 @@ export default () => {
             <ContextMenu
               id={props.nodeData.nodeId}
               menuItems={props.nodeData.meta.menuItems}
-              onClick={(id: any, action: string, data: any, label: string) => {
-                const actionInputData = {
-                  action: {
-                    node: props,
-                    action: { type: action, data },
-                  },
-                }
-                if (action === ContextMenuActions.CREATE) {
-                  openModal(CreateAction, {
-                    dialog: {
-                      title: `Create ${label}`,
-                    },
-                    props: actionInputData,
-                  })
-                } else if (action === ContextMenuActions.UPDATE) {
-                  openModal(UpdateAction, {
-                    dialog: {
-                      title: `Update ${props.nodeData.nodeId}`,
-                    },
-                    props: actionInputData,
-                  })
-                } else if (action === ContextMenuActions.DELETE) {
-                  openModal(DeleteAction, {
-                    dialog: {
-                      title: `Delete ${props.nodeData.nodeId}`,
-                    },
-                    props: actionInputData,
-                  })
-                } else if (action === ContextMenuActions.DOWNLOAD) {
-                  openModal(DownloadAction, {
-                    dialog: {
-                      title: `Download ${props.nodeData.nodeId}`,
-                    },
-                    props: actionInputData,
-                  })
-                } else if (action === ContextMenuActions.RUNNABLE) {
-                  if (data.runnable.actionType === ActionTypes.resultInEntity) {
-                    openModal(SaveToExistingDocument, {
-                      dialog: {
-                        title: `Runnable}`,
-                      },
-                      props: actionInputData,
-                    })
-                  }
-                  if (
-                    data.runnable.actionType === ActionTypes.separateResultFile
-                  ) {
-                    openModal(SaveToNewDocument, {
-                      dialog: {
-                        title: `Run command ${props.nodeData.nodeId}`,
-                      },
-                      props: actionInputData,
-                    })
-                  }
-                }
-              }}
+              onClick={(id: any, action: string, data: any, label: string) =>
+                handleAction(id, action, data, label, props)
+              }
             >
               <DocumentNode
                 onToggle={() => handleToggle(props)}
@@ -126,5 +131,3 @@ export default () => {
     </>
   )
 }
-
-// TODO: useCreateAction(`Create ${label}`, type)

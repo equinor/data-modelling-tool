@@ -13,7 +13,9 @@ def get_node_url(datasource, parent_id):
     return f"/api/v4/index/{datasource}/{parent_id}"
 
 
-def get_rename_menu_action(data_source_id: str, dotted_document_id: str, type: str, parent_uid: str = None, parent_type: str = None):
+def get_rename_menu_action(
+    data_source_id: str, dotted_document_id: str, type: str, parent_uid: str = None, parent_type: str = None
+):
     parent_uid = parent_uid.split(".")[0] if parent_uid else None
     document_split = dotted_document_id.split(".", 1)
     attribute_arg = f"?attribute={document_split[1]}" if len(document_split) > 1 else ""
@@ -95,7 +97,7 @@ def get_create_root_package_menu_item(data_source_id: str):
             "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": get_node_url(data_source_id, data_source_id),
             "request": {"name": "${name}", "description": "${description}"},
-            "type": DMT.PACKAGE.value
+            "type": DMT.PACKAGE.value,
         },
     }
 

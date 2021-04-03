@@ -3,7 +3,7 @@ import './index.css'
 import 'react-notifications/lib/notifications.css'
 
 import { runWithAdal } from 'react-adal'
-import { authContext } from './auth/adalConfig'
+import { authContext } from './context/auth/adalConfig'
 import App from './App'
 import ReactDOM from 'react-dom'
 

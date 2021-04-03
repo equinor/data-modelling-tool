@@ -10,7 +10,7 @@ import { StatusProvider } from './context/status/StatusContext'
 import Header from './AppHeader'
 import BlueprintsPage from './pages/BlueprintsPage'
 import EntitiesPage from './pages/EntitiesPage'
-import { authContext } from './auth/adalConfig'
+import { authContext } from './context/auth/adalConfig'
 import { AuthProvider } from './context/auth/AuthContext'
 
 export const Config = {

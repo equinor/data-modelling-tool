@@ -128,7 +128,6 @@ class GenerateView {
 }
 
 export const ViewPlugin = (props: PluginProps) => {
-  console.log('ViewPlugin', props)
   const generateView = new GenerateView(props)
   const viewComponents = generateView.getViews()
   return <div>{viewComponents}</div>
