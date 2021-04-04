@@ -348,9 +348,9 @@ This is a plugin based component, that has one interface towards the DataSource,
     └── /fonts
     └── /hooks
     └── /pages
-    └── /plugins
     └── /services
     └── /utils
+    /plugins
 ```
 
 ==== Components
@@ -385,7 +385,7 @@ Controllers (containers) are the top-level components that turn on all the featu
 
 ==== Plugins
 
-See own chapter in user docs for how to use plugins.
+See own chapter in xref:user-manual.adoc[user docs] for how to use plugins.
 
 ==== Services
 

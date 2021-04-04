@@ -54,6 +54,6 @@ def get_by_path(data_source_id: str, document_path: str):
 def put(data_source_id: str, document_id: str):
     logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
     data = request.get_json()
-    attribute = request.args.get("attribute")
+    attribute = request.args.get("attribute", "")
 
     return dmss_api.document_update(data_source_id, document_id, data, attribute=attribute)

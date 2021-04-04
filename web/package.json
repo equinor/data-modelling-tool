@@ -1,110 +1,26 @@
 {
-  "name": "web",
-  "version": "0.1.0",
+  "name": "@dmt/root",
+  "version": "1.0.0",
   "private": true,
-  "dependencies": {
-    "axios": "^0.18.1",
-    "golden-layout": "1.5.9",
-    "jquery": "3.5.0",
-    "lodash": "^4.17.19",
-    "object-path": "0.11.4",
-    "plotly.js": "^1.51.2",
-    "react": "^16.13.1",
-    "react-3d-viewer": "^1.0.12",
-    "react-adal": "^0.5.0",
-    "react-beautiful-dnd": "^11.0.5",
-    "react-collapsed": "2.2.2",
-    "react-contextmenu": "^2.11.0",
-    "react-copy-to-clipboard": "^5.0.2",
-    "react-dom": "^16.13.1",
-    "react-icons": "3.7.0",
-    "react-jsonschema-form": "^1.8.0",
-    "react-notifications": "^1.4.3",
-    "react-plotly.js": "^2.4.0",
-    "react-router-dom": "^5.1.2",
-    "react-scripts": "^3.4.1",
-    "react-styled-flexboxgrid": "3.1.0",
-    "react-switch": "^5.0.1",
-    "react-table": "^7.0.0-beta.27",
-    "styled-components": "^5.1.0",
-    "to-json-schema": "^0.2.3",
-    "typescript": "^3.8.3",
-    "victory": "33.1.1"
-  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "tsc": "tsc",
-    "coverage": "react-scripts test --coverage --watchAll=false",
-    "storybook": "start-storybook -p 6006",
-    "build-storybook": "build-storybook",
-    "prettier": "prettier --write './src/**/*.{ts,tsx,js,css,html,json}'",
-    "prettier:home": "prettier --write '../api/home/**/*.json'",
-    "test:integration": "jest -c integration/jest.config.js",
-    "test:integrationWithWatch": "jest -c integration/jest.config.js --watch"
+    "start": "yarn workspace @dmt/web run start",
+    "build": "yarn workspace @dmt/web run build",
+    "test": "yarn build && jest test",
+    "test:watch": "jest --watch --coverage --no-cache",
+    "test:watchAll": "yarn build && jest --watchAll --coverage --notify"
   },
-  "eslintConfig": {
-    "extends": "react-app"
-  },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged && npm run coverage"
-    }
-  },
-  "jest": {
-    "collectCoverageFrom": [
-      "./src/**/*.{js,jsx,ts,tsx}"
-    ],
-    "coverageReporters": [
-      "json-summary",
-      "text",
-      "lcov"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
-  "devDependencies": {
-    "@storybook/addon-actions": "^5.3.13",
-    "@storybook/addon-links": "^5.3.13",
-    "@storybook/addon-storyshots": "^5.3.13",
-    "@storybook/addons": "^5.3.13",
-    "@storybook/react": "^5.3.13",
-    "@testing-library/react": "^11.2.6",
-    "@testing-library/react-hooks": "^5.1.1",
-    "@types/jest": "^24.0.15",
-    "@types/lodash": "^4.14.135",
-    "@types/node": "^12.0.12",
-    "@types/object-path": "^0.11.0",
-    "@types/react": "^16.8.23",
-    "@types/react-beautiful-dnd": "^11.0.3",
-    "@types/react-dom": "^16.8.4",
-    "@types/react-jsonschema-form": "^1.6.2",
-    "@types/react-plotly.js": "^2.2.4",
-    "@types/react-table": "^6.8.5",
-    "@types/styled-components": "^4.1.18",
-    "@types/victory": "^33.0.1",
-    "eslint-config-prettier": "^6.0.0",
-    "eslint-plugin-prettier": "^3.1.0",
-    "husky": "^3.0.0",
-    "jest-puppeteer": "^4.4.0",
-    "jest-mock-extended": "^1.0.13",
-    "pptr-testing-library": "^0.4.0",
-    "prettier": "^1.18.2",
-    "pretty-quick": "^1.11.1",
-    "puppeteer": "^2.0.0",
-    "react-test-renderer": "^16.8.6",
-    "require-context.macro": "^1.0.4",
-    "ts-jest": "^24.2.0"
-  }
+  "main": "dist/index",
+  "types": "dist/index",
+  "files": [
+    "dist"
+  ],
+  "workspaces": [
+    "app",
+    "plugins/*",
+    "custom-plugins/*"
+  ],
+  "nohoist": [
+    "workspaces/**/webpack-dev-server",
+    "**/babel-loader"
+  ]
 }

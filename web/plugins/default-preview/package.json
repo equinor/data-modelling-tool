@@ -1,0 +1,10 @@
+{
+  "name": "@dmt/default-preview",
+  "version": "1.0.0",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "@dmt/common": "1.0.0",
+    "@dmt/core-plugins": "1.0.0",
+    "react-copy-to-clipboard": "^5.0.2"
+  }
+}
