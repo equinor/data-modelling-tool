@@ -79,7 +79,7 @@ jobs:
 
       - name: "Set ENV variables"
         run: |
-          echo "COMMIT_REF=$(git rev-parse --short $GITHUB_SHA)"
+          echo "COMMIT_REF=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
 
       - name: "Build and Publish Web"
         run: |
@@ -102,7 +102,7 @@ jobs:
 
       - name: "Set ENV variables"
         run: |
-          echo "COMMIT_REF=$(git rev-parse --short $GITHUB_SHA)"
+          echo "COMMIT_REF=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
 
       - name: "Build and Publish API"
         run: |
