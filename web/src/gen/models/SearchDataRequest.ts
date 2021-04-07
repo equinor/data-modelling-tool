@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Data Modelling Storage Service API
- * Data storage service for DMT
+ * Data Modelling Storage Service
+ * API for basic data modelling interaction
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -16,32 +16,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineResponse2001
+ * @interface SearchDataRequest
  */
-export interface InlineResponse2001 {
+export interface SearchDataRequest {
     /**
      * 
      * @type {string}
-     * @memberof InlineResponse2001
+     * @memberof SearchDataRequest
      */
-    uid?: string;
+    type: string;
 }
 
-export function InlineResponse2001FromJSON(json: any): InlineResponse2001 {
-    return InlineResponse2001FromJSONTyped(json, false);
+export function SearchDataRequestFromJSON(json: any): SearchDataRequest {
+    return SearchDataRequestFromJSONTyped(json, false);
 }
 
-export function InlineResponse2001FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineResponse2001 {
+export function SearchDataRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SearchDataRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'uid': !exists(json, 'uid') ? undefined : json['uid'],
+        'type': json['type'],
     };
 }
 
-export function InlineResponse2001ToJSON(value?: InlineResponse2001 | null): any {
+export function SearchDataRequestToJSON(value?: SearchDataRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -50,7 +50,7 @@ export function InlineResponse2001ToJSON(value?: InlineResponse2001 | null): any
     }
     return {
         
-        'uid': value.uid,
+        'type': value.type,
     };
 }
 

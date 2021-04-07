@@ -6,7 +6,7 @@ from core.repository.repository_exceptions import EntityNotFoundException
 from core.service.document_service import DocumentService
 from core.use_case.utils.generate_index_menu_actions import get_node_fetch, get_node_index
 from core.use_case.utils.set_index_context_menu import create_context_menu
-from services.data_modelling_document_service import package_api
+from services.data_modelling_document_service import dmss_api
 from utils.logging import logger
 
 from classes.recipe import RecipePlugin
@@ -123,7 +123,7 @@ class GenerateIndexUseCase:
             else Config.ENTITY_APPLICATION_SETTINGS
         )
         # make sure we're generating the index with correct blueprints.
-        root_packages = package_api.get(data_source_id)
+        root_packages = dmss_api.package_get(data_source_id)
 
         root = Node(
             key="root",

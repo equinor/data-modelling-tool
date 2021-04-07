@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Data Modelling Storage Service API
- * Data storage service for DMT
+ * Data Modelling Storage Service
+ * API for basic data modelling interaction
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -16,32 +16,32 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject3
+ * @interface EntityName
  */
-export interface InlineObject3 {
+export interface EntityName {
     /**
      * 
      * @type {string}
-     * @memberof InlineObject3
+     * @memberof EntityName
      */
-    directory: string;
+    name: string;
 }
 
-export function InlineObject3FromJSON(json: any): InlineObject3 {
-    return InlineObject3FromJSONTyped(json, false);
+export function EntityNameFromJSON(json: any): EntityName {
+    return EntityNameFromJSONTyped(json, false);
 }
 
-export function InlineObject3FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject3 {
+export function EntityNameFromJSONTyped(json: any, ignoreDiscriminator: boolean): EntityName {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'directory': json['directory'],
+        'name': json['name'],
     };
 }
 
-export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
+export function EntityNameToJSON(value?: EntityName | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -50,7 +50,7 @@ export function InlineObject3ToJSON(value?: InlineObject3 | null): any {
     }
     return {
         
-        'directory': value.directory,
+        'name': value.name,
     };
 }
 

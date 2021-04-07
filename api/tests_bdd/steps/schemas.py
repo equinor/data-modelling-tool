@@ -7,7 +7,7 @@ from classes.dto import DTO
 from classes.schema import Factory
 from config import Config
 from core.repository.dmss.TemplateRepositoryFromDMSS import TemplateRepositoryFromDMSS
-from services.data_modelling_document_service import explorer_api
+from services.data_modelling_document_service import dmss_api
 from utils.data_structure.compare import pretty_eq
 from utils.logging import logger
 from utils.package_import import import_package
@@ -27,7 +27,7 @@ def step_impl(context):
 def step_impl_2(context, uid: str, data_source_id: str):
     document: DTO = DTO(uid=uid, data=json.loads(context.text))
     try:
-        response = explorer_api.add_raw(data_source_id, document.to_dict())
+        response = dmss_api.explorer_add_raw(data_source_id, document.to_dict())
         print(response)
     except ApiException as error:
         raise Exception(error)

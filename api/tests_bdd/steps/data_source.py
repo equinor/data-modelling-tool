@@ -1,25 +1,18 @@
 from behave import given
 from pymongo import MongoClient
 
-from config import Config
-
-from dmss_api import DatasourceApi
-
-api = DatasourceApi()
-api.api_client.configuration.host = Config.DMSS_API
+from services.data_modelling_document_service import dmss_api
 
 db_client = MongoClient("db", username="maf", password="maf")["local"]
 
 
 @given("there are mongodb data sources")
 def step_impl(context):
-
     context.data_sources = {}
     for row in context.table:
         # Delete old dataSource
-        db_client["data_sources"].remove(row["name"])
+        db_client["data_sources"].delete_one({"_id": row["name"]})
         document = {
-            "_id": row["name"],
             "name": row["name"],
             "repositories": {
                 f"{row['name']}": {
@@ -27,7 +20,7 @@ def step_impl(context):
                     "port": int(row["port"]),
                     "username": row["username"],
                     "password": row["password"],
-                    "tls": row["tls"],
+                    "tls": False,
                     "name": row["name"].strip(),
                     "database": row["database"],
                     "collection": row["collection"],
@@ -35,6 +28,6 @@ def step_impl(context):
                 }
             },
         }
-        api.save(str(row["name"]), request_body=document)
+        dmss_api.data_source_save(str(row["name"]), data_source_request=document)
         db_client.drop_collection(row["collection"])
         context.data_sources[row["name"]] = row["collection"]

@@ -8,7 +8,7 @@ from classes.dto import DTO
 from classes.tree_node import Node
 from config import Config
 from core.repository.repository_exceptions import EntityNotFoundException
-from services.data_modelling_document_service import document_api
+from services.data_modelling_document_service import dmss_api
 from utils.logging import logger
 
 
@@ -29,7 +29,7 @@ def url_safe_name(name: str) -> bool:
 def get_document_by_ref(type_ref) -> DTO:
     data_source = type_ref.split("/", 1)[0]
     path = type_ref.split("/", 1)[1]
-    response = document_api.get_by_path(data_source, path)
+    response = dmss_api.document_get_by_path(data_source, path=path)
     document = response.get("document", None)
     if not document:
         raise EntityNotFoundException(type_ref)

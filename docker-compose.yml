@@ -25,6 +25,7 @@ services:
       FLASK_ENV: development
       DMSS_HOST: mainapi
       DMSS_PORT: 5000
+
   web:
     build: ./web
     image: mariner.azurecr.io/dmt/web

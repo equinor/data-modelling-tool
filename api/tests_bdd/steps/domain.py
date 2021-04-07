@@ -1,18 +1,13 @@
 from behave import given
-from dmss_api import ExplorerApi
 
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.tree_node import ListNode, Node
-from config import Config
 from core.enums import DMT, SIMOS
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
+from services.data_modelling_document_service import dmss_api
 
 blueprint_provider = BlueprintProvider()
-
-explorer_api = ExplorerApi()
-explorer_api.api_client.configuration.host = Config.DMSS_API
-
 
 def generate_tree_from_rows(node: Node, rows):
     if len(rows) == 0:
@@ -87,4 +82,4 @@ def step_impl_documents(context, data_source_id: str, collection: str):
     context.documents = {}
     tree = generate_tree(data_source_id, context.table)
     tree.show_tree()
-    explorer_api.add_document(data_source_id, {"data": tree.to_dict()})
+    dmss_api.explorer_add_document(data_source_id, tree.to_dict())
