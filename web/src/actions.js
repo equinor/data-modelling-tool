@@ -112,11 +112,70 @@ async function runEngineResultInEntity({ input, output, updateDocument }) {
   updateDocument({ ...output, entity, notify: true })
 }
 
+const getTodoList = async ({
+  input,
+  output,
+  updateDocument,
+  createEntity,
+  explorer,
+}) => {
+  explorer.toggle({ nodeId: input.id })
+  await sleep(2000)
+  explorer.toggle({ nodeId: input.id })
+  await sleep(2000)
+  explorer.toggle({ nodeId: input.id })
+
+  let entity = {
+    ...output.entity,
+  }
+
+  const type = output.blueprint.split('/')
+  const blueprint = await explorer.index.services.documentApi.getByPath(
+    type.shift(),
+    type.join('/')
+  )
+  const todoItem = blueprint.document.attributes.find(
+    attribute => attribute.name === 'items'
+  )
+
+  const nodeUrl = `/api/v4/index/${output.dataSource}/${output.id}`
+  const content = {
+    attribute: 'items',
+    // @ts-ignore
+    description: 'Some description',
+    name: 'Item3',
+    parentId: output.id,
+    type: todoItem.attributeType,
+  }
+  // Explorer.create is basically the same as using add to parent,
+  // since the URL add-to-parent is set on backend.
+  const item1 = await explorer.addToParent({
+    dataSourceId: output.dataSource,
+    data: content,
+    nodeUrl: nodeUrl,
+  })
+  entity.items.push({
+    _id: item1.uid,
+    type: todoItem.attributeType,
+    name: content.name,
+  })
+  explorer.updateById({
+    dataSourceId: output.dataSource,
+    documentId: item1.uid,
+    attribute: '',
+    data: await createEntity(todoItem.attributeType),
+    nodeUrl,
+  })
+
+  updateDocument({ ...output, entity, notify: true })
+}
+
 function cancelSimulation() {
   alert('Sending SIGTERM to ongoing job')
 }
 
 const runnableMethods = {
+  getTodoList,
   simulateCrash,
   runEngineResultFile,
   runEngineResultInEntity,

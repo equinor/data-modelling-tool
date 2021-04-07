@@ -23,12 +23,12 @@ export interface MenuItem {
 
 type DmtMenuItemsProps = {
   id: string
-  onClickContextMenu: Function
+  onClick: Function
   menuItems: MenuItem[]
 }
 
 const renderMenuItems = (props: DmtMenuItemsProps) => {
-  const { id, menuItems, onClickContextMenu } = props
+  const { id, menuItems, onClick } = props
   return menuItems.map((menuItem: MenuItem, index: number) => {
     const key = `menuitem-${id}-${index}`
     if (Object.keys(menuItem).length === 0) {
@@ -38,7 +38,7 @@ const renderMenuItems = (props: DmtMenuItemsProps) => {
         <DmtSubMenu
           id={id}
           key={key}
-          onClickContextMenu={onClickContextMenu}
+          onClick={onClick}
           menuItems={menuItem.menuItems}
           label={menuItem.label}
         />
@@ -48,7 +48,7 @@ const renderMenuItems = (props: DmtMenuItemsProps) => {
         <DmtMenuItem
           key={key}
           id={id}
-          onClickContextMenu={onClickContextMenu}
+          onClick={onClick}
           menuItem={menuItem}
         />
       )
@@ -60,7 +60,7 @@ type DmtSubMenuProps = {
   id: string
   label: string
   menuItems: MenuItem[]
-  onClickContextMenu: Function
+  onClick: Function
 }
 
 const UnClickable = ({ children }: any) => (
@@ -68,11 +68,11 @@ const UnClickable = ({ children }: any) => (
 )
 
 const DmtSubMenu = (props: DmtSubMenuProps) => {
-  const { id, label, onClickContextMenu, menuItems } = props
+  const { id, label, onClick, menuItems } = props
 
   const menuItemsComponents = renderMenuItems({
     id,
-    onClickContextMenu,
+    onClick,
     menuItems,
   })
 
@@ -86,7 +86,7 @@ const DmtSubMenu = (props: DmtSubMenuProps) => {
 type DmtMenuItemProps = {
   id: string
   menuItem: MenuItem
-  onClickContextMenu: Function
+  onClick: Function
 }
 
 const IconWrapper = styled.span`
@@ -94,14 +94,14 @@ const IconWrapper = styled.span`
 `
 
 const DmtMenuItem = (props: DmtMenuItemProps) => {
-  const { id, onClickContextMenu, menuItem } = props
+  const { id, onClick, menuItem } = props
   return (
     <MenuItem
       data={{ action: menuItem.action }}
       onClick={e => {
         // click on menu item. Prevent onClick to propagate to components beneath
         e.stopPropagation()
-        onClickContextMenu(id, menuItem.action, menuItem.data)
+        onClick(id, menuItem.action, menuItem.data, menuItem.label)
       }}
       attributes={attributes}
     >
@@ -118,16 +118,16 @@ const DmtMenuItem = (props: DmtMenuItemProps) => {
 export interface ContextMenuProps {
   id: string
   menuItems: MenuItem[]
-  onClickContextMenu: Function
-  children: any
+  onClick: Function
+  children?: any
 }
 
 export default (props: ContextMenuProps) => {
-  const { id, menuItems, onClickContextMenu } = props
+  const { id, menuItems, onClick } = props
 
   const menuItemsComponents = renderMenuItems({
     id,
-    onClickContextMenu,
+    onClick,
     menuItems,
   })
 

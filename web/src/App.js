@@ -6,15 +6,15 @@ import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 
 import { Switch } from 'react-router'
-import { StatusProvider } from './pages/common/StatusContext'
-import Header from './pages/common/Header'
+import { StatusProvider } from './context/status/StatusContext'
+import Header from './AppHeader'
 import BlueprintsPage from './pages/BlueprintsPage'
 import EntitiesPage from './pages/EntitiesPage'
-import { authContext } from './auth/adalConfig'
-import { AuthProvider } from './auth/AuthContext'
+import { authContext } from './context/auth/adalConfig'
+import { AuthProvider } from './context/auth/AuthContext'
 
 export const Config = {
-  exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP)===1
+  exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -25,7 +25,7 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-  
+
 `
 const Wrapper = styled.div`
   padding: 20px;
@@ -56,7 +56,10 @@ function App() {
                   path="/view/:data_source/:entity_id"
                   component={ViewPage}
                 />
-                <Route path="/" component={Config.exportedApp ? EntitiesPage : BlueprintsPage} />
+                <Route
+                  path="/"
+                  component={Config.exportedApp ? EntitiesPage : BlueprintsPage}
+                />
               </Switch>
             </Wrapper>
           </StatusProvider>

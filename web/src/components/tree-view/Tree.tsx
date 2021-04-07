@@ -1,12 +1,8 @@
 import values from 'lodash/values'
-import React, { useEffect, useReducer } from 'react'
+import React from 'react'
 import TreeNode from './TreeNode'
-import TreeReducer, {
-  Actions,
-  NodeActions,
-} from '../../components/tree-view/TreeReducer'
 import SearchTree from './SearchTree'
-import { NodeType } from '../../util/variables'
+import { NodeType } from '../../utils/variables'
 
 export enum NodeIconType {
   'file' = 'file',
@@ -41,6 +37,7 @@ export type TreeNodeData = {
   templateRef?: string
   children?: string[]
   meta: NodeMetaData
+  isLoading: boolean
 }
 
 interface Tree {
@@ -48,9 +45,11 @@ interface Tree {
 }
 
 type TreeProps = {
-  children: Function
-  tree: Tree
+  tree?: Tree
   render?: Function
+  operations?: any
+  state?: any
+  children: Function
 }
 
 /**
@@ -124,72 +123,34 @@ const getRootNodes = (rootNode: TreeNodeData, state: Tree) => [
 ]
 
 const Tree = (props: TreeProps) => {
-  const { tree, children } = props
+  const { state, children, operations } = props
 
-  const [state, dispatch] = useReducer(TreeReducer, tree)
-
-  useEffect(() => {
-    dispatch(Actions.setNodes(tree))
-  }, [tree])
-
-  const handleSearch = (term: string) => dispatch(Actions.filterTree(term))
-
-  const handleToggle = (node: TreeNodeData): void => {
-    dispatch(NodeActions.toggleNode(node.nodeId))
+  if (!state) {
+    return <></>
   }
 
-  const addNode = (node: TreeNodeData, parentId: string) => {
-    dispatch(NodeActions.createNode({ ...node, isOpen: true }))
-    if (parentId) {
-      dispatch(NodeActions.addChild(parentId, node.nodeId))
-    }
-  }
-
-  const addNodes = (nodes: object) => {
-    dispatch(Actions.addNodes(nodes))
-  }
-
-  const addChild = (parentId: string, childId: string) => {
-    dispatch(NodeActions.addChild(parentId, childId))
-  }
-
-  const updateNode = (node: TreeNodeData) => {
-    dispatch(NodeActions.updateNode(node.nodeId, node.title))
-  }
-
-  const hasChild = (parentId: string, childId: string): any => {
-    return state[parentId].children.includes(childId)
-  }
-
-  const removeNode = (nodeId: string, parentId?: string) => {
-    if (parentId) {
-      dispatch(NodeActions.removeChild(parentId, nodeId))
-    }
-    dispatch(NodeActions.deleteNode(nodeId))
-  }
-
-  const replaceNode = (
-    parentId: string,
-    oldId: string,
-    newId: string,
-    title: string
-  ) => {
-    dispatch(NodeActions.removeChild(parentId, oldId))
-    dispatch(NodeActions.replaceNode(oldId, newId))
-    dispatch(NodeActions.addChild(parentId, newId))
-    dispatch(NodeActions.updateNode(newId, title))
-  }
+  const {
+    addNode,
+    addNodes,
+    addChild,
+    updateNode,
+    removeNode,
+    replaceNode,
+    hasChild,
+    toggle,
+    search,
+  } = operations
 
   const rootNodes = values(state)
     .filter((node: TreeNodeData) => node.isRoot)
     .filter((node: TreeNodeData) => !node.isHidden)
-    .map(rootNode => {
+    .map((rootNode: any) => {
       return getRootNodes(rootNode, state)
     })
 
   return (
     <>
-      <SearchTree onChange={handleSearch} />
+      <SearchTree onChange={search} />
       {rootNodes.map((rootNode, index) => {
         return (
           <div key={'root_' + index} style={{ background: 'white' }}>
@@ -203,7 +164,7 @@ const Tree = (props: TreeProps) => {
                     path={item.track.join('/')}
                     parent={item.parent}
                     NodeRenderer={children}
-                    handleToggle={handleToggle}
+                    handleToggle={toggle}
                     actions={{
                       addNode,
                       addNodes,

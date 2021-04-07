@@ -23,7 +23,6 @@ describe('Tree', () => {
     const testRenderer = TestRenderer.create(
       <Tree tree={tree}>
         {(node: IndexNode) => {
-          console.log(node)
           if (node.nodeType === 'root-package') {
             return <h2>{node.title}</h2>
           }

@@ -1,5 +1,5 @@
 import reducer, { Actions, NodeActions } from '../TreeReducer'
-import { NodeType } from '../../../util/variables'
+import { NodeType } from '../../../utils/variables'
 
 describe('tree reducer', () => {
   it('should provide the initial state', () => {
@@ -38,19 +38,27 @@ describe('tree reducer', () => {
     const stateBefore = {}
     const nodeId = 'New treeNodeData'
     const action = NodeActions.createNode({
+      isExpandable: false,
+      isFolder: false,
+      isLoading: false,
+      meta: {},
       nodeId: 'New treeNodeData',
       children: [],
-      nodeType: NodeType.subPackage,
+      nodeType: NodeType.PACKAGE,
       isRoot: false,
       title: 'New treeNodeData',
       isOpen: true,
     })
     const stateAfter = {
       [nodeId]: {
+        isExpandable: false,
+        isFolder: false,
+        isLoading: false,
+        meta: {},
         nodeId: nodeId,
         children: [],
         isRoot: false,
-        nodeType: NodeType.subPackage,
+        nodeType: NodeType.PACKAGE,
         title: nodeId,
         isOpen: true,
       },

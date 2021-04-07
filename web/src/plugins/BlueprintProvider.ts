@@ -39,10 +39,10 @@ export class BlueprintProvider implements IBlueprintProvider {
 
   getBlueprint(dto: Dto): BlueprintType | undefined {
     //@todo use uid of dto.
-    throw 'not implemented'
+    throw new Error('not implemented')
   }
 
   getEntity(dto: Dto): Dto | undefined {
-    throw 'not implemented'
+    throw new Error('not implemented')
   }
 }

@@ -2,8 +2,11 @@ import React from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
+import DocumentComponent from './editor/layout-components/DocumentComponent'
+import { Application } from '../utils/variables'
+import DashboardProvider from '../context/dashboard/DashboardProvider'
+import DataSourceAPI from '../services/api/DataSourceAPI'
 // @ts-ignore
-import DocumentComponent from './common/layout-components/DocumentComponent'
 
 const Group = styled.div`
   display: flex;
@@ -14,11 +17,16 @@ const Group = styled.div`
   background-color: white;
 `
 
+const dataSourceAPI = new DataSourceAPI()
+
 export default () => {
   const { data_source, entity_id } = useParams()
 
   return (
-    <>
+    <DashboardProvider
+      dataSourceApi={dataSourceAPI}
+      application={Application.ENTITIES}
+    >
       <Group>
         <div>
           <b>DataSource:</b>
@@ -32,6 +40,6 @@ export default () => {
       <DocumentComponent
         dataUrl={`/api/v2/documents/${data_source}/${entity_id}`}
       />
-    </>
+    </DashboardProvider>
   )
 }

@@ -336,6 +336,69 @@ This is a plugin based component, that has one interface towards the DataSource,
 - [x] DataSource: Considers storage preferences based on StorageRecipe
 - [ ] DataSource: Supports streaming data
 
+== Project structure
+
+=== Web
+
+```
+/web
+└── /src
+    └── /components
+    └── /context
+    └── /fonts
+    └── /hooks
+    └── /pages
+    └── /plugins
+    └── /services
+    └── /utils
+```
+
+==== Components
+
+Re-usable components that only display data and handle user events (from keypresses, button clicks, hover states, etc).
+
+The components folder contains a collection of UI components like buttons, custom input fields, modals, etc., that will be shared and used across files in the project.
+
+==== Context
+
+Context providers and consumers used in the application.
+
+The hooks used by the provider components (e.g. dashboard and index) are different from the hooks found in the hooks/ directory. The hooks in the hooks/ directory can be used anywhere in the application, and they can be used any number of times. The hooks in the context directory are intended to be used by the provider component only. Using these hooks elsewhere in the application may cause problems as these hooks should not be used more than once in an application.
+
+==== Hooks
+
+At this level, we're often handling concerns like auth, logging, or even more domain-specific things like todos, users, calendar, or even chess. Consider an interaction-layer (useChess) React hook that contained all your chess game logic.
+
+The hooks are the application logic, that is the logic that makes a decision as to what happens next. Some refer to this layer as app logic, which works as well because these are all of the operations of your app. The interaction layer contains the discrete set of commands and queries that your users will carry out.
+
+These are the use cases. Having great visibility into these use cases enables us to get pretty structured with our integration testing as well. We can functionally test every use case with edge cases using Given-When-Then style tests. If you're familiar with Domain-Driven Design concepts, this is the Application Service equivalent. For example for the useTodo hook that provides the function createTodoIfNotExists:
+
+```
+Given no todos exist,
+when I perform CreateTodo,
+then I should see one todo.
+```
+
+==== Pages
+
+Controllers (containers) are the top-level components that turn on all the features for a particular page. The pages folder reflects the routes of the application. Each component inside this folder has its own route. A page component will contain children from components folder, parts folder, or its own subfolder. It has its own state, and usually call some services as well.
+
+==== Plugins
+
+See own chapter in user docs for how to use plugins.
+
+==== Services
+
+Networking and data fetching (infrastructure). Performing API calls and reporting metadata state.
+
+==== Utils
+
+The utils folder is just a place to locate some utility functions that used repeatedly in the project. Files in the utils folder should only contain some functions like date formatting, string conversion, etc.
+
+==== Parts (currently not used)
+
+It contains a reusable components that used in the pages. The difference is that components in parts folder reflect parts of a page, like footer, sidebar, and header, while the components folder contains standalone UI components like button, form, or input field. Sometime, A component in parts can use some components from the components folder.
+
 // == Copyright and licensing information
 
 // == Author(s)

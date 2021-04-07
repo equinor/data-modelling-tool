@@ -4,6 +4,7 @@ import {
   hideNodesWithNoMatchingDescendants,
 } from './Filters'
 import { TreeNodeData } from './Tree'
+import values from 'lodash/values'
 
 export const TOGGLE_NODE = 'TOGGLE_NODE'
 export const FILTER_TREE = 'FILTER_TREE'
@@ -15,7 +16,8 @@ export const REMOVE_CHILD = 'REMOVE_CHILD'
 export const SET_NODES = 'SET_NODES'
 export const ADD_NODES = 'ADD_NODES'
 export const REPLACE_NODE = 'REPLACE_NODE'
-export const HAS_CHILD = 'HAS_CHILD'
+export const SET_LOADING = ''
+export const REPLACE_NODES = 'REPLACE_NODES'
 
 const childIds = (state: any, action: any) => {
   switch (action.type) {
@@ -66,6 +68,11 @@ export const NodeActions = {
     nodeId: oldId,
     newId: newId,
   }),
+  setLoading: (nodeId: string, isLoading: boolean) => ({
+    type: SET_LOADING,
+    nodeId,
+    isLoading,
+  }),
 }
 
 const node = (state: any, action: any) => {
@@ -94,6 +101,12 @@ const node = (state: any, action: any) => {
         nodeId: action.newId,
       }
       return state
+    case SET_LOADING:
+      return {
+        ...state,
+        isLoading: action.isLoading,
+      }
+
     default:
       return state
   }
@@ -103,6 +116,7 @@ export interface TreeActions {
   filterTree: (filter: string) => any
   setNodes: (nodes: object) => void
   addNodes: (nodes: object) => void
+  replaceNodes: (nodes: object) => void
 }
 
 export const Actions: TreeActions = {
@@ -118,11 +132,21 @@ export const Actions: TreeActions = {
     type: ADD_NODES,
     nodes: nodes,
   }),
+  replaceNodes: (nodes: object) => ({
+    type: REPLACE_NODES,
+    nodes: nodes,
+  }),
 }
 
 const getAllDescendantIds = (state: any, nodeId: string) => {
   if (!state.hasOwnProperty(nodeId)) {
-    console.warn(`Node ${nodeId} does not exist in state`)
+    // console.warn(`Node ${nodeId} does not exist in state`)
+    return []
+  }
+  if (
+    state[nodeId].children === undefined ||
+    state[nodeId].children.length === 0
+  ) {
     return []
   }
   return state[nodeId].children.reduce(
@@ -141,6 +165,9 @@ const deleteMany = (state: any, ids: any) => {
 }
 
 export default (state: any = {}, action: any) => {
+  // Set initial state
+  if (action.type === undefined) return state
+
   switch (action.type) {
     case FILTER_TREE:
       const filter = action.filter.trim()
@@ -159,10 +186,19 @@ export default (state: any = {}, action: any) => {
     case ADD_NODES:
       return { ...action.nodes, ...state }
 
+    case REPLACE_NODES:
+      values(action.nodes).forEach((node: any) => {
+        if (node.nodeId in state) {
+          state[node.nodeId] = node
+        }
+      })
+      return state
+
     default:
       // The rest of actions are on single treeNodeData
       const { nodeId } = action
       if (typeof nodeId === 'undefined') {
+        console.error('Undefined nodeId', state, action)
         return state
       }
 

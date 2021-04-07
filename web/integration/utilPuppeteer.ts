@@ -76,7 +76,7 @@ export default class UtilPuppeteer {
     }
   }
 
-  // test util
+  // test utils
   public async isVisible(page: any, text: string, element: string) {
     try {
       await page.waitForXPath(this.xpathEquals(text, element), {

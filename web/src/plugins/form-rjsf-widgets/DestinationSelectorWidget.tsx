@@ -1,12 +1,11 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
-import DocumentTree from '../../pages/common/tree-view/DocumentTree'
-import { BlueprintEnum } from '../../util/variables'
-import { Datasource } from '../../api/Api'
+import { BlueprintEnum } from '../../utils/variables'
 import styled from 'styled-components'
-import { DataSourceAPI } from '../../api/Api3'
-import { treeNodeClick } from '../../pages/common/nodes/DocumentNode'
+import Tree from '../../components/tree-view/Tree'
+import { IIndex, useIndex } from '../../context/index/IndexProvider'
+import useOpenOrExpand from '../../hooks/useOpenOrExpand'
 
 const SelectDestinationButton = styled.button`
   padding: 0 2.5px;
@@ -14,6 +13,7 @@ const SelectDestinationButton = styled.button`
   outline: 0;
   border: 2px solid #2085e7;
   border-radius: 5px;
+
   &:hover {
     background-color: #d4d2d2;
   }
@@ -38,19 +38,17 @@ export default (props: Props) => {
     title = 'Destination',
   } = props
   const [destination, setDestination] = useState<string>(formData)
-  const [datasources, setDatasources] = useState<Datasource[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
+  const index: IIndex = useIndex()
+  const openOrExpand: Function = useOpenOrExpand()
 
-  useEffect(() => {
-    DataSourceAPI.getAll()
-      .then((res: any) => {
-        const data: Datasource[] = res || []
-        setDatasources(data)
-      })
-      .catch((err: any) => {
-        console.log(err)
-      })
-  }, [])
+  const handleOpenOrExpand = (props: any) => {
+    openOrExpand({
+      nodeId: props.nodeData.nodeId,
+      fetchUrl: props.nodeData.meta.fetchUrl,
+      indexUrl: props.nodeData.meta.indexUrl,
+    })
+  }
 
   const onSelect = (nodeId: string, nodePath: string) => {
     const dataSource = nodePath.split('/', 1)[0]
@@ -79,32 +77,22 @@ export default (props: Props) => {
           open={showModal}
           title={'Select a folder as destination'}
         >
-          <DocumentTree
-            render={(renderProps: TreeNodeRenderProps) => {
-              const [loading, setLoading] = useState(false)
+          <Tree
+            state={index.models.tree.models.tree}
+            operations={index.models.tree.operations}
+          >
+            {(renderProps: TreeNodeRenderProps) => {
               const { actions, nodeData } = renderProps
               const type = nodeData.meta.type
 
               return (
                 <div style={{ display: 'flex' }}>
                   {renderProps.iconGroup(() => {
-                    treeNodeClick({
-                      indexUrl: nodeData.meta.indexUrl,
-                      node: { actions, nodeData },
-                      setLoading,
-                    })
+                    handleOpenOrExpand(renderProps)
                   })}
-                  <div
-                    onClick={() =>
-                      treeNodeClick({
-                        indexUrl: nodeData.meta.indexUrl,
-                        node: { actions, nodeData },
-                        setLoading,
-                      })
-                    }
-                  >
+                  <div onClick={() => handleOpenOrExpand(renderProps)}>
                     {nodeData.title}
-                    {loading && (
+                    {nodeData.isLoading && (
                       <small style={{ paddingLeft: '15px' }}>Loading...</small>
                     )}
                   </div>
@@ -131,8 +119,7 @@ export default (props: Props) => {
                 </div>
               )
             }}
-            dataSources={datasources}
-          />
+          </Tree>
         </Modal>
       </div>
     </>
