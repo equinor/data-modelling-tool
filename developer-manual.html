@@ -681,6 +681,11 @@ pre.rouge {
 <li><a href="#_current_architecture_status">Current architecture status</a></li>
 </ul>
 </li>
+<li><a href="#_project_structure">Project structure</a>
+<ul class="sectlevel2">
+<li><a href="#_web">Web</a></li>
+</ul>
+</li>
 <li><a href="#_how_to_contribute">How to contribute?</a></li>
 </ul>
 </div>
@@ -970,6 +975,95 @@ Requests coming into the DataSource will look something like this; <code>Fetch d
 </div>
 </div>
 <div class="sect1">
+<h2 id="_project_structure">Project structure</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_web">Web</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>/web
+└── /src
+    └── /components
+    └── /context
+    └── /fonts
+    └── /hooks
+    └── /pages
+    └── /plugins
+    └── /services
+    └── /utils</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_components">Components</h4>
+<div class="paragraph">
+<p>Re-usable components that only display data and handle user events (from keypresses, button clicks, hover states, etc).</p>
+</div>
+<div class="paragraph">
+<p>The components folder contains a collection of UI components like buttons, custom input fields, modals, etc., that will be shared and used across files in the project.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_context">Context</h4>
+<div class="paragraph">
+<p>Context providers and consumers used in the application.</p>
+</div>
+<div class="paragraph">
+<p>The hooks used by the provider components (e.g. dashboard and index) are different from the hooks found in the hooks/ directory. The hooks in the hooks/ directory can be used anywhere in the application, and they can be used any number of times. The hooks in the context directory are intended to be used by the provider component only. Using these hooks elsewhere in the application may cause problems as these hooks should not be used more than once in an application.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_hooks">Hooks</h4>
+<div class="paragraph">
+<p>At this level, we&#8217;re often handling concerns like auth, logging, or even more domain-specific things like todos, users, calendar, or even chess. Consider an interaction-layer (useChess) React hook that contained all your chess game logic.</p>
+</div>
+<div class="paragraph">
+<p>The hooks are the application logic, that is the logic that makes a decision as to what happens next. Some refer to this layer as app logic, which works as well because these are all of the operations of your app. The interaction layer contains the discrete set of commands and queries that your users will carry out.</p>
+</div>
+<div class="paragraph">
+<p>These are the use cases. Having great visibility into these use cases enables us to get pretty structured with our integration testing as well. We can functionally test every use case with edge cases using Given-When-Then style tests. If you&#8217;re familiar with Domain-Driven Design concepts, this is the Application Service equivalent. For example for the useTodo hook that provides the function createTodoIfNotExists:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>Given no todos exist,
+when I perform CreateTodo,
+then I should see one todo.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pages">Pages</h4>
+<div class="paragraph">
+<p>Controllers (containers) are the top-level components that turn on all the features for a particular page. The pages folder reflects the routes of the application. Each component inside this folder has its own route. A page component will contain children from components folder, parts folder, or its own subfolder. It has its own state, and usually call some services as well.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins">Plugins</h4>
+<div class="paragraph">
+<p>See own chapter in user docs for how to use plugins.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_services">Services</h4>
+<div class="paragraph">
+<p>Networking and data fetching (infrastructure). Performing API calls and reporting metadata state.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_utils">Utils</h4>
+<div class="paragraph">
+<p>The utils folder is just a place to locate some utility functions that used repeatedly in the project. Files in the utils folder should only contain some functions like date formatting, string conversion, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parts_currently_not_used">Parts (currently not used)</h4>
+<div class="paragraph">
+<p>It contains a reusable components that used in the pages. The difference is that components in parts folder reflect parts of a page, like footer, sidebar, and header, while the components folder contains standalone UI components like button, form, or input field. Sometime, A component in parts can use some components from the components folder.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
 <h2 id="_how_to_contribute">How to contribute?</h2>
 <div class="sectionbody">
 <div class="paragraph">
@@ -983,7 +1077,7 @@ Requests coming into the DataSource will look something like this; <code>Fetch d
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-06 09:32:44 UTC
+Last updated 2021-04-07 19:40:48 UTC
 </div>
 </div>
 </body>
