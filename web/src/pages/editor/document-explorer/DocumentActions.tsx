@@ -55,7 +55,7 @@ const formDataGivenByRequest = (requestData: any, formData: any) => {
 
 export const CreateAction = (props: any) => {
   const { action } = props
-  const { create } = useExplorer()
+  const { create } = useExplorer({})
 
   const handleSubmit = (formData: any) => {
     const data = formDataGivenByRequest(action.action.data.request, formData)
@@ -90,7 +90,7 @@ export const CreateAction = (props: any) => {
 
 export const UpdateAction = (props: any) => {
   const { action } = props
-  const { update } = useExplorer()
+  const { update } = useExplorer({})
 
   const handleSubmit = (formData: any) => {
     const data = formDataGivenByRequest(action.action.data.request, formData)
@@ -126,7 +126,7 @@ export const UpdateAction = (props: any) => {
 
 export const DeleteAction = (props: any) => {
   const { action } = props
-  const { remove } = useExplorer()
+  const { remove } = useExplorer({})
 
   const handleRemove = () => {
     remove({

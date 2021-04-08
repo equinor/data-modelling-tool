@@ -3,7 +3,11 @@ import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
 import { BlueprintEnum } from '../../utils/variables'
 import Tree from '../../components/tree-view/Tree'
-import { IIndex, useIndex } from '../../context/index/IndexProvider'
+import {
+  IDashboard,
+  useDashboard,
+} from '../../context/dashboard/DashboardProvider'
+import { IIndex, useIndex } from '../../hooks/useIndex'
 
 export type Props = {
   onChange: Function
@@ -19,7 +23,11 @@ export default (props: Props) => {
   const { onChange } = props
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
-  const index: IIndex = useIndex()
+  const dashboard: IDashboard = useDashboard()
+  const index: IIndex = useIndex({
+    application: dashboard.models.application,
+    dataSources: dashboard.models.dataSources.models.dataSources,
+  })
 
   const onSelect = (value: Reference) => {
     setSelectedEntity(value.name)

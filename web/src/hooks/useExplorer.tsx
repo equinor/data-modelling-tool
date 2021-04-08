@@ -1,4 +1,3 @@
-import { IIndex, useIndex } from '../context/index/IndexProvider'
 import { TreeNodeData } from '../components/tree-view/Tree'
 import {
   IDashboard,
@@ -8,6 +7,12 @@ import { BlueprintEnum } from '../utils/variables'
 import { useModalContext } from '../context/modal/ModalContext'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { IDocumentAPI } from '../services/api/interfaces/DocumentAPI'
+import DocumentAPI from '../services/api/DocumentAPI'
+import {
+  IGlobalIndex,
+  useGlobalIndex,
+} from '../context/global-index/IndexProvider'
 
 const validate = (data: any) => {
   if (data.name === undefined || data.name === '') {
@@ -84,27 +89,23 @@ export interface IUseExplorer {
 
   addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
 
-  index: IIndex
+  index: IGlobalIndex
 
   dashboard: IDashboard
 }
 
-export default function useExplorer(): IUseExplorer {
+interface ExplorerProps {
+  documentAPI?: IDocumentAPI
+}
+
+export default function useExplorer(props: ExplorerProps): IUseExplorer {
+  const { documentAPI = new DocumentAPI() } = props
   const dashboard: IDashboard = useDashboard()
-  const index: IIndex = useIndex()
+  const index: IGlobalIndex = useGlobalIndex()
   const { closeModal } = useModalContext()
 
   const toggle = ({ nodeId }: ToggleProps) => {
-    const node: TreeNodeData = index.models.tree.operations.getNode(nodeId)
-    if (!node) {
-      const message = `Document not found: ${nodeId}`
-      NotificationManager.error(message)
-      throw message
-    }
-    index.models.tree.operations.toggle(nodeId)
-    if (node.meta.indexUrl && node.isExpandable && !node.isOpen) {
-      return index.operations.add(nodeId, node.meta.indexUrl)
-    }
+    return index.models.index.operations.toggle(nodeId)
   }
 
   const open = ({ nodeId, fetchUrl }: OpenProps) => {
@@ -121,9 +122,9 @@ export default function useExplorer(): IUseExplorer {
 
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
-      index.operations.create(data, dataUrl, nodeUrl).then((result: any) => {
+      documentAPI.create(dataUrl, data).then((result: any) => {
         closeModal()
-        index.operations.add(result.uid, nodeUrl, true)
+        index.models.index.operations.add(result.uid, nodeUrl, true)
       })
     }
   }
@@ -134,31 +135,29 @@ export default function useExplorer(): IUseExplorer {
     nodeUrl,
   }: AddToParentProps) => {
     if (validate(data)) {
-      return index.operations
-        .addToParent(dataSourceId, data)
-        .then((result: any) => {
-          closeModal()
-          index.operations.add(result.uid, nodeUrl, true)
-          return result
-        })
+      return documentAPI.addToParent(dataSourceId, data).then((result: any) => {
+        closeModal()
+        index.models.index.operations.add(result.uid, nodeUrl, true)
+        return result
+      })
     }
   }
 
   const remove = async ({ nodeId, parent, url, data }: RemoveProps) => {
-    return (
-      index.operations
-        .remove(nodeId, parent, url, data)
+    return documentAPI.remove(url, data).then(() => {
+      index.models.index.operations
+        .remove(nodeId, parent)
         // @ts-ignore
         .then(dashboard.models.layout.operations.remove(nodeId))
-        // .then(index.models.tree.operations.removeNode(nodeId, parent))
         .then(closeModal())
-    )
+      return true
+    })
   }
 
   const update = async ({ data, updateUrl, nodeUrl }: UpdateProps) => {
-    index.operations.update(data, updateUrl).then((result: any) => {
+    return documentAPI.update(data, updateUrl).then((result: any) => {
       closeModal()
-      index.operations
+      index.models.index.operations
         .add(result.uid, nodeUrl)
         .then(() =>
           dashboard.models.layout.operations.refreshByFilter(result.uid)
@@ -173,11 +172,11 @@ export default function useExplorer(): IUseExplorer {
     data,
     nodeUrl,
   }: UpdateByIdProps) => {
-    return index.operations
+    return documentAPI
       .updateById(dataSourceId, documentId, attribute, data)
       .then(result => {
         closeModal()
-        index.operations
+        index.models.index.operations
           .add(documentId, nodeUrl)
           .then(() =>
             dashboard.models.layout.operations.refreshByFilter(documentId)

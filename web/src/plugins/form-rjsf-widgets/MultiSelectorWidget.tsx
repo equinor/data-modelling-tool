@@ -5,8 +5,11 @@ import Modal from '../../components/modal/Modal'
 import { FaTimes } from 'react-icons/fa'
 import { BlueprintEnum } from '../../utils/variables'
 import Tree from '../../components/tree-view/Tree'
-import { IIndex, useIndex } from '../../context/index/IndexProvider'
-import useOpenOrExpand from '../../hooks/useOpenOrExpand'
+import {
+  IDashboard,
+  useDashboard,
+} from '../../context/dashboard/DashboardProvider'
+import { IIndex, useIndex } from '../../hooks/useIndex'
 
 const NodeWrapper = styled.div`
   display: flex;
@@ -61,15 +64,14 @@ const MultiSelector = ({
 }: MultiSelectorProps) => {
   const [selectedPackages, setSelectedPackages] = useState<string[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
-  const index: IIndex = useIndex()
-  const openOrExpand: Function = useOpenOrExpand()
+  const dashboard: IDashboard = useDashboard()
+  const index: IIndex = useIndex({
+    application: dashboard.models.application,
+    dataSources: dashboard.models.dataSources.models.dataSources,
+  })
 
   const handleOpenOrExpand = (props: any) => {
-    openOrExpand({
-      nodeId: props.nodeData.nodeId,
-      fetchUrl: props.nodeData.meta.fetchUrl,
-      indexUrl: props.nodeData.meta.indexUrl,
-    })
+    index.operations.toggle(props.nodeData.nodeId)
   }
   useEffect(() => {
     setSelectedPackages(formData || [])
