@@ -6,7 +6,7 @@ import {
   IDashboard,
   useDashboard,
 } from '../../context/dashboard/DashboardProvider'
-import IndexProvider from '../../context/index/IndexProvider'
+import IndexProvider from '../../context/global-index/IndexProvider'
 import { LayoutComponents } from '../../context/dashboard/useLayout'
 import { ModalProvider } from '../../context/modal/ModalContext'
 import DocumentExplorer from './document-explorer/DocumentExplorer'
@@ -15,7 +15,6 @@ import GoldenLayoutPanel from '../../components/golden-layout/GoldenLayoutPanel'
 import AddDatasource from './data-source/AddDatasource'
 import styled from 'styled-components'
 import { IndexAPI } from '../../services/api/IndexAPI'
-import { DocumentAPI } from '../../services/api/DocumentAPI'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -49,7 +48,6 @@ const LAYOUT_CONFIG = {
 }
 
 const indexAPI = new IndexAPI()
-const documentAPI = new DocumentAPI()
 
 export default () => {
   const dashboard: IDashboard = useDashboard()
@@ -57,7 +55,6 @@ export default () => {
   return (
     <IndexProvider
       indexApi={indexAPI}
-      documentApi={documentAPI}
       dataSources={dashboard.models.dataSources.models.dataSources}
       application={dashboard.models.application}
     >

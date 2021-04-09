@@ -96,7 +96,7 @@ const getInput = async (
 
 export default function useRunnable() {
   const { closeModal } = useModalContext()
-  const explorer = useExplorer()
+  const explorer = useExplorer({})
 
   const updateDocument = async (output: Output, parentId: string) => {
     explorer

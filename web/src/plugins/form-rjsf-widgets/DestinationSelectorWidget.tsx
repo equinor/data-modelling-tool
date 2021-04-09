@@ -4,8 +4,11 @@ import Modal from '../../components/modal/Modal'
 import { BlueprintEnum } from '../../utils/variables'
 import styled from 'styled-components'
 import Tree from '../../components/tree-view/Tree'
-import { IIndex, useIndex } from '../../context/index/IndexProvider'
-import useOpenOrExpand from '../../hooks/useOpenOrExpand'
+import {
+  IDashboard,
+  useDashboard,
+} from '../../context/dashboard/DashboardProvider'
+import { IIndex, useIndex } from '../../hooks/useIndex'
 
 const SelectDestinationButton = styled.button`
   padding: 0 2.5px;
@@ -39,15 +42,14 @@ export default (props: Props) => {
   } = props
   const [destination, setDestination] = useState<string>(formData)
   const [showModal, setShowModal] = useState<boolean>(false)
-  const index: IIndex = useIndex()
-  const openOrExpand: Function = useOpenOrExpand()
+  const dashboard: IDashboard = useDashboard()
+  const index: IIndex = useIndex({
+    application: dashboard.models.application,
+    dataSources: dashboard.models.dataSources.models.dataSources,
+  })
 
   const handleOpenOrExpand = (props: any) => {
-    openOrExpand({
-      nodeId: props.nodeData.nodeId,
-      fetchUrl: props.nodeData.meta.fetchUrl,
-      indexUrl: props.nodeData.meta.indexUrl,
-    })
+    index.operations.toggle(props.nodeData.nodeId)
   }
 
   const onSelect = (nodeId: string, nodePath: string) => {

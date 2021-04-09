@@ -12,15 +12,18 @@ import {
   UpdateAction,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
-import { IIndex, useIndex } from '../../../context/index/IndexProvider'
 import { useModalContext } from '../../../context/modal/ModalContext'
 import useExplorer from '../../../hooks/useExplorer'
 import { NodeType } from '../../../utils/variables'
 import { ActionTypes } from '../../../hooks/useRunnable'
+import {
+  IGlobalIndex,
+  useGlobalIndex,
+} from '../../../context/global-index/IndexProvider'
 
 export default () => {
-  const index: IIndex = useIndex()
-  const { toggle, open } = useExplorer()
+  const index: IGlobalIndex = useGlobalIndex()
+  const { toggle, open } = useExplorer({})
   const { openModal } = useModalContext()
 
   const handleToggle = (props: any) => {
@@ -107,8 +110,8 @@ export default () => {
   return (
     <>
       <Tree
-        state={index.models.tree.models.tree}
-        operations={index.models.tree.operations}
+        state={index.models.index.models.tree.models.tree}
+        operations={index.models.index.models.tree.operations}
       >
         {(props: TreeNodeRenderProps) => {
           return (

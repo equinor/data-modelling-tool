@@ -14,7 +14,7 @@ import DashboardProvider, {
   IDashboard,
   useDashboard,
 } from '../context/dashboard/DashboardProvider'
-import IndexProvider from '../context/index/IndexProvider'
+import IndexProvider from '../context/global-index/IndexProvider'
 import { IndexAPI } from '../services/api/IndexAPI'
 import DataSourceAPI from '../services/api/DataSourceAPI'
 import { DocumentAPI } from '../services/api/DocumentAPI'
@@ -236,7 +236,6 @@ function FilterContainer({ search, queryError }) {
   return (
     <IndexProvider
       indexApi={indexAPI}
-      documentApi={documentAPI}
       dataSources={dashboard.models.dataSources.models.dataSources}
       application={dashboard.models.application}
     >

@@ -3,9 +3,12 @@ import { TreeNodeRenderProps } from '../../components/tree-view/TreeNode'
 import Modal from '../../components/modal/Modal'
 import { BlueprintEnum } from '../../utils/variables'
 import Tree from '../../components/tree-view/Tree'
-import { IIndex, useIndex } from '../../context/index/IndexProvider'
-import useOpenOrExpand from '../../hooks/useOpenOrExpand'
-import { useModalContext } from '../../context/modal/ModalContext'
+
+import { IIndex, useIndex } from '../../hooks/useIndex'
+import {
+  IDashboard,
+  useDashboard,
+} from '../../context/dashboard/DashboardProvider'
 
 export type Props = {
   onChange: Function
@@ -22,15 +25,14 @@ export default (props: Props) => {
     blueprintFilter = BlueprintEnum.BLUEPRINT,
   } = props
   const [showModal, setShowModal] = useState<boolean>(false)
-  const index: IIndex = useIndex()
-  const openOrExpand: Function = useOpenOrExpand()
+  const dashboard: IDashboard = useDashboard()
+  const index: IIndex = useIndex({
+    application: dashboard.models.application,
+    dataSources: dashboard.models.dataSources.models.dataSources,
+  })
 
   const handleOpenOrExpand = (props: any) => {
-    openOrExpand({
-      nodeId: props.nodeData.nodeId,
-      fetchUrl: props.nodeData.meta.fetchUrl,
-      indexUrl: props.nodeData.meta.indexUrl,
-    })
+    index.operations.toggle(props.nodeData.nodeId)
   }
 
   const onSelect = (value: string) => {

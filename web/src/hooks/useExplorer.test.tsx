@@ -1,6 +1,5 @@
 import React from 'react'
 
-import IndexProvider from '../context/index/IndexProvider'
 import DashboardProvider, {
   IDashboard,
   DashboardConsumer,
@@ -15,13 +14,13 @@ import {
 import { IIndexAPI, IndexNodes } from '../services/api/interfaces/IndexAPI'
 import { Application, NodeType } from '../utils/variables'
 import { IDocumentAPI } from '../services/api/interfaces/DocumentAPI'
+import IndexProvider from '../context/global-index/IndexProvider'
 
 const wrapper: React.FC = ({
   children,
   application,
   dataSourceApi,
   indexApi,
-  documentApi,
 }: any) => (
   <DashboardProvider application={application} dataSourceApi={dataSourceApi}>
     <DashboardConsumer>
@@ -31,7 +30,6 @@ const wrapper: React.FC = ({
             dataSources={dashboard.models.dataSources.models.dataSources}
             application={dashboard.models.application}
             indexApi={indexApi}
-            documentApi={documentApi}
           >
             {children}
           </IndexProvider>
@@ -134,14 +132,22 @@ describe('the explorer hook', () => {
   beforeEach(async () => {
     mocks = getMocks()
     await act(async () => {
-      response = renderHook(useExplorer, {
-        wrapper,
-        initialProps: { ...mocks, application },
-      })
+      response = renderHook(
+        () =>
+          useExplorer({
+            documentAPI: mocks.documentApi,
+          }),
+        {
+          wrapper,
+          initialProps: { ...mocks, application },
+        }
+      )
       // We need to wait for the tree and other things to be ready.
       await response.waitFor(() => {
         expect(
-          response.result.current.index.models.tree.operations.getNode('1')
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '1'
+          )
         ).toBeDefined()
       })
       response.result.current.dashboard.models.layout.operations.registerLayout(
@@ -162,10 +168,14 @@ describe('the explorer hook', () => {
     })
     it('should contain two documents in the tree', () => {
       expect(
-        response.result.current.index.models.tree.operations.getNode('1')
+        response.result.current.index.models.index.models.tree.operations.getNode(
+          '1'
+        )
       ).toBeDefined()
       expect(
-        response.result.current.index.models.tree.operations.getNode('2')
+        response.result.current.index.models.index.models.tree.operations.getNode(
+          '2'
+        )
       ).toBeDefined()
     })
   })
@@ -174,12 +184,14 @@ describe('the explorer hook', () => {
     describe('and document is expandable', () => {
       beforeEach(async () => {
         expect(
-          response.result.current.index.models.tree.operations.getNode('1')
-            .isExpandable
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '1'
+          ).isExpandable
         ).toEqual(true)
         expect(
-          response.result.current.index.models.tree.operations.getNode('1')
-            .isOpen
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '1'
+          ).isOpen
         ).toEqual(false)
         await act(async () => {
           response.result.current.toggle({ nodeId: '1' })
@@ -187,8 +199,9 @@ describe('the explorer hook', () => {
       })
       it('should maximize document in tree', async () => {
         expect(
-          response.result.current.index.models.tree.operations.getNode('1')
-            .isOpen
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '1'
+          ).isOpen
         ).toEqual(true)
       })
       it('should add (fetch children)', async () => {
@@ -204,12 +217,14 @@ describe('the explorer hook', () => {
     describe('and document is not expandable', () => {
       beforeEach(async () => {
         expect(
-          response.result.current.index.models.tree.operations.getNode('2')
-            .isExpandable
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '2'
+          ).isExpandable
         ).toEqual(false)
         expect(
-          response.result.current.index.models.tree.operations.getNode('2')
-            .isOpen
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '2'
+          ).isOpen
         ).toEqual(false)
         await act(async () => {
           response.result.current.toggle({ nodeId: '2' })
@@ -217,8 +232,9 @@ describe('the explorer hook', () => {
       })
       it('should maximize document in tree', async () => {
         expect(
-          response.result.current.index.models.tree.operations.getNode('2')
-            .isOpen
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '2'
+          ).isOpen
         ).toEqual(true)
       })
       it('should not add (fetch children)', async () => {
@@ -290,7 +306,9 @@ describe('the explorer hook', () => {
     })
     it('should the document be added to the tree', async () => {
       expect(
-        response.result.current.index.models.tree.operations.getNode('1000')
+        response.result.current.index.models.index.models.tree.operations.getNode(
+          '1000'
+        )
       ).toEqual({
         children: [],
         icon: 'blueprint',
@@ -314,6 +332,7 @@ describe('the explorer hook', () => {
   describe('when remove is called', () => {
     beforeEach(async () => {
       await act(async () => {
+        mocks.documentApi.remove.mockImplementation(() => Promise.resolve())
         response.result.current.remove({
           nodeId: '2',
           parent: '',
@@ -327,7 +346,9 @@ describe('the explorer hook', () => {
     })
     it('should the document be removed from the tree', async () => {
       expect(
-        response.result.current.index.models.tree.operations.getNode('2')
+        response.result.current.index.models.index.models.tree.operations.getNode(
+          '2'
+        )
       ).toBeUndefined()
     })
   })
@@ -371,7 +392,9 @@ describe('the explorer hook', () => {
     it('should the document be updated in the tree', async () => {
       expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
       expect(
-        response.result.current.index.models.tree.operations.getNode('1')
+        response.result.current.index.models.index.models.tree.operations.getNode(
+          '1'
+        )
       ).toEqual({
         children: [],
         icon: 'folder',
