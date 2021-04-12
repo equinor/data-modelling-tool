@@ -9,6 +9,7 @@ from services.data_modelling_document_service import dmss_api
 
 blueprint_provider = BlueprintProvider()
 
+
 def generate_tree_from_rows(node: Node, rows):
     if len(rows) == 0:
         return node

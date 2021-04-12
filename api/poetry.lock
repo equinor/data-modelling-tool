@@ -95,7 +95,7 @@ d = ["aiohttp (>=3.3.2)", "aiohttp-cors"]
 name = "certifi"
 version = "2020.12.5"
 description = "Python package for providing Mozilla's CA Bundle."
-category = "main"
+category = "dev"
 optional = false
 python-versions = "*"
 
@@ -175,17 +175,15 @@ python-versions = "*"
 
 [[package]]
 name = "dmss-api"
-version = "0.3"
-description = "Data Modelling Storage Service API"
+version = "0.3.1"
+description = "Data Modelling Storage Service"
 category = "main"
 optional = false
-python-versions = "*"
+python-versions = ">=3.6"
 
 [package.dependencies]
-certifi = "*"
 python-dateutil = "*"
-six = ">=1.10"
-urllib3 = ">=1.15"
+urllib3 = ">=1.25.3"
 
 [[package]]
 name = "dparse"
@@ -898,8 +896,8 @@ distlib = [
     {file = "distlib-0.3.1.zip", hash = "sha256:edf6116872c863e1aa9d5bb7cb5e05a022c519a4594dc703843343a9ddd9bff1"},
 ]
 dmss-api = [
-    {file = "dmss-api-0.3.tar.gz", hash = "sha256:fb7219915c7b4929f8dbbd19b7fa140851258bce7c401522c6a3d3bc25c3290d"},
-    {file = "dmss_api-0.3-py3-none-any.whl", hash = "sha256:5c9a108b689a0aee02fb33df351b738b24d7b0ceaab8a5a833f58308fb83d78a"},
+    {file = "dmss-api-0.3.1.tar.gz", hash = "sha256:7d1bf1fb7fb2a7f1266f233ae54a1ce96ff68b3257c6c69260f12598ae26cfe9"},
+    {file = "dmss_api-0.3.1-py3-none-any.whl", hash = "sha256:b83b11268bc71e88763fd78e21c0b8dec939a4a753dae57c9de0a300c80ba235"},
 ]
 dparse = [
     {file = "dparse-0.5.1-py3-none-any.whl", hash = "sha256:e953a25e44ebb60a5c6efc2add4420c177f1d8404509da88da9729202f306994"},

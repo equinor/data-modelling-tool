@@ -71,7 +71,9 @@ class DocumentService:
         if reset_bp_cache:
             self.blueprint_provider.invalidate_cache()
         try:
-            document = dmss_api.document_get_by_id(data_source_id=data_source_id, document_id=document_uid, depth=depth)
+            document = dmss_api.document_get_by_id(
+                data_source_id=data_source_id, document_id=document_uid, depth=depth
+            )
             document = document["document"]
         except ApiException as error:
             logger.exception(error)
