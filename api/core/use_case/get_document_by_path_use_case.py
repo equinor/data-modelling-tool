@@ -1,9 +1,9 @@
+from classes.tree_node import Node
 from core.enums import PRIMITIVES
 from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.utility import get_document_by_ref
 
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
@@ -44,11 +44,11 @@ class GetDMTDocumentByPathUseCase(uc.UseCase):
 
     def process_request(self, request_object: GetDocumentByPathRequestObject):
         data_source_id: str = request_object.data_source_id
-        root_doc = get_document_by_ref(f"{data_source_id}/{request_object.path}")
-        document_id = root_doc.uid
+
+        root_doc = self.document_service.document_provider(f"{data_source_id}/{request_object.path}")
         attribute: str = request_object.attribute
 
-        document = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
+        document = Node.from_dict(root_doc, root_doc["_id"], blueprint_provider=self.document_service.blueprint_provider)
 
         if attribute:
             document = document.get_by_path(attribute.split("."))
@@ -83,7 +83,8 @@ class GetDMTDocumentByPathUseCase(uc.UseCase):
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:
             try:
-                enum_blueprint: DTO = get_document_by_ref(attribute.enum_type)
+                enum_blueprint: DTO = DTO(self.document_service.document_provider(attribute.enum_type))
+                # enum_blueprint: DTO = get_document_by_ref(attribute.enum_type)
                 dtos.append(enum_blueprint.to_dict())
             except AttributeError as error:
                 logger.exception(error)

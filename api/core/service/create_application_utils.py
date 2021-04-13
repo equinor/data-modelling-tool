@@ -32,7 +32,7 @@ def zip_all(ob, path, rel=""):
         pass
 
 
-def zip_package(ob, document: DTO, path, document_service, data_source_id):
+def zip_package(ob: ZipFile, document: DTO, path: str, document_service: DocumentService, data_source_id: str):
     document.data.pop("_id", None)
     document.data.pop("uid", None)
     json_data = json.dumps(document.data)
@@ -54,8 +54,7 @@ def zip_package(ob, document: DTO, path, document_service, data_source_id):
                 if name in document.keys():
                     references = document[name]
                     for reference in references:
-                        document_reference: DTO = DTO(
-                            document_service.get_by_uid(data_source_id, reference["_id"]).to_dict()
+                        document_reference: DTO = DTO(document_service.uid_document_provider(data_source_id, reference["_id"])
                         )
                         document_references.append(document_reference)
 
@@ -73,7 +72,7 @@ def strip_datasource(path):
 
 
 
-def zip_all(ob: ZipFile, path, real_name=""):
+def zip_all(ob: ZipFile, path: str, real_name=""):
     basename = os.path.basename(path)
     if os.path.isdir(path):
         if real_name == "":
@@ -114,7 +113,7 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
                     references = document[name]
                     for reference in references:
                         document_reference: DTO = DTO(
-                            document_service.get_by_uid(data_source_id, reference["_id"]).to_dict()
+                            document_service.uid_document_provider(data_source_id, reference["_id"])
                         )
                         document_references.append(document_reference)
 

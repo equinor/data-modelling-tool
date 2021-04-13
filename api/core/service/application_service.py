@@ -14,15 +14,19 @@ from utils.logging import logger
 
 
 class ApplicationService:
+    """
+    Service for DMT specific features.
+    Basic DMSS CRUD features resides in DocumentService.
+    """
     def __init__(self, document_service: DocumentService = None):
-        self.document_service = document_service if document_service else DocumentService()
+        self.document_service: DocumentService = document_service if document_service else DocumentService()
 
     def instantiate_entity(self, type: str, name: str = None):
         entity: dict = CreateEntity(self.document_service.blueprint_provider, name=name, type=type, description="").entity
         return entity
 
     def create_application(self, data_source_id: str, application_id: str) -> io.BytesIO:
-        application: DTO = DTO(self.document_service.get_by_uid(data_source_id, application_id).to_dict())
+        application: DTO = DTO(self.document_service.uid_document_provider(data_source_id, application_id))
         if not application:
             raise EntityNotFoundException(uid=application_id)
 
@@ -53,7 +57,7 @@ class ApplicationService:
                 # TODO: Support including packages from different data sources
                 # This is a temp. hack
                 package = strip_datasource(package)
-                root_package: DTO = DTO(self.document_service.get_by_path(data_source_id, package).to_dict())
+                root_package: DTO = DTO(self.document_service.document_provider(f"{data_source_id}/{package}"))
                 zip_package(zip_file, root_package, f"api/home/blueprints", self.document_service, data_source_id)
 
         memory_file.seek(0)

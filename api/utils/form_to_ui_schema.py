@@ -1,6 +1,6 @@
 from typing import List
 
-from core.utility import get_blueprint
+from core.utility import  BlueprintProvider
 from utils.data_structure.find import get
 
 from core.enums import PRIMITIVES
@@ -26,6 +26,7 @@ def get_attribute_config(attribute):
 
 def process_attributes(attribute_name: str, attribute_type: str, attribute_dimensions: str, ui_attributes):
     result = {}
+    blueprint_provider = BlueprintProvider()
 
     if not ui_attributes:
         return {}
@@ -47,7 +48,7 @@ def process_attributes(attribute_name: str, attribute_type: str, attribute_dimen
     if attribute_type in PRIMITIVES:
         return get_attribute_config(ui_attribute)
     else:
-        blueprint = get_blueprint(attribute_type)
+        blueprint = blueprint_provider.get_blueprint(attribute_type)
         if attribute_dimensions == "*":
             if field := get(ui_attribute, "field", default=None):
                 result["ui:field"] = field

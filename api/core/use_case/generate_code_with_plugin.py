@@ -67,7 +67,8 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
             raise PluginNotLoadedException(plugin_name)
 
         tree_path = "/content/".join(document_path.split("/"))
-        document: Node = self.document_service.get_by_path(data_source_id=data_source_id, path=tree_path)
+        raw_document = self.document_service.document_provider(f"{data_source_id}/{tree_path}")
+        document: Node = Node.from_dict(raw_document, raw_document["_id"], self.document_service.blueprint_provider)
 
         # If it's a package, find all blueprints in the package. Else, just add the one.
         blueprints = {}

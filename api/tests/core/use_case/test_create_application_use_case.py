@@ -2,10 +2,8 @@
 import unittest
 from unittest import mock
 from classes.dto import DTO
-from core.use_case.create_application_use_case import (
-    CreateApplicationUseCase,
-    CreateApplicationRequestObject,
-)
+from core.service.application_service import ApplicationService
+from core.service.document_service import DocumentService
 
 APPLICATION_SETTING = {
     "name": "TestApp",
@@ -113,9 +111,7 @@ class CreateApplication(unittest.TestCase):
     def test_create(self):
         document_repository = mock.Mock()
         document_repository.get.return_value = DTO(data=APPLICATION_SETTING)
-        use_case = CreateApplicationUseCase(data_source_id="test")
-        data = {"applicationId": "NOT USED IN THIS TEST"}
-        request_object = CreateApplicationRequestObject.from_dict(data)
-        response_object = use_case.execute(request_object)
-        assert bool(response_object) is True
-        document_repository.get.assert_called_with(data["applicationId"])
+        document_service = DocumentService(blueprint_provider=document_repository)
+        application_service = ApplicationService(document_service)
+        actual = application_service.create_application("test", "NOT USED IN THIS TEST")
+        print(actual)

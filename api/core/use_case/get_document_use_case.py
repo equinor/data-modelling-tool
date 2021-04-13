@@ -5,7 +5,6 @@ from core.service.document_service import DocumentService
 from core.shared import request_object as req
 from core.shared import response_object as res
 from core.shared import use_case as uc
-from core.utility import get_blueprint, get_document_by_ref
 from utils.logging import logger
 
 
@@ -46,7 +45,7 @@ class GetDMTDocumentUseCase(uc.UseCase):
         document_id: str = request_object.document_id
         attribute: str = request_object.attribute
 
-        document: Node = self.document_service.get_by_uid(data_source_id=data_source_id, document_uid=document_id)
+        document: Node = self.document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=document_id)
 
         if attribute:
             document = document.get_by_path(attribute.split("."))
@@ -72,7 +71,7 @@ class GetDMTDocumentUseCase(uc.UseCase):
                 child_blueprint_name = attribute_type.split("/")[-1]
                 type_in_children = next((x for x in children if x["name"] == child_blueprint_name), None)
                 if not type_in_children:
-                    child_blueprint = get_blueprint(attribute_type)
+                    child_blueprint = self.document_service.blueprint_provider.get_blueprint(attribute_type)
                     if not isinstance(child_blueprint, (dict, type(None))):
                         children.append(child_blueprint.to_dict())
                         self.add_children_types(children, dtos, child_blueprint)
@@ -80,8 +79,7 @@ class GetDMTDocumentUseCase(uc.UseCase):
     def add_dtos(self, dtos, attribute: BlueprintAttribute):
         if attribute.enum_type and len(attribute.enum_type) > 0:
             try:
-                enum_blueprint = get_document_by_ref(attribute.enum_type)
-                dtos.append(enum_blueprint.to_dict())
+                dtos.append(self.document_service.document_provider(attribute.enum_type))
             except AttributeError as error:
                 logger.exception(error)
                 print(f"failed to append enumType {attribute}")

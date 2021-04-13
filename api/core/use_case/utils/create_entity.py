@@ -1,12 +1,9 @@
-import base64
-import hashlib
 import json
 from json import JSONDecodeError
 
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
-from core.enums import SIMOS
-from utils.form_to_schema import PRIMITIVES
+from core.enums import SIMOS, PRIMITIVES
 from utils.generate_name import generate_name
 
 
