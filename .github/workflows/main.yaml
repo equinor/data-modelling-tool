@@ -150,7 +150,7 @@ jobs:
           echo "Tagging with $RELEASE_TAG"
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $API_IMAGE
-          docker build --cache-from $API_IMAGE --tag $API_IMAGE:$RELEASE_TAG ./api
+          DOCKER_BUILDKIT=1 docker build --cache-from $API_IMAGE --tag $API_IMAGE:$RELEASE_TAG ./api
           docker tag $API_IMAGE:$RELEASE_TAG $API_IMAGE:release
           docker push $API_IMAGE:$RELEASE_TAG
           docker push $API_IMAGE:release
