@@ -1,4 +1,4 @@
-from services.data_modelling_document_service import document_api
+from services.data_modelling_document_service import dmss_api
 
 
 class TemplateRepositoryFromDMSS:
@@ -8,5 +8,5 @@ class TemplateRepositoryFromDMSS:
     def __getitem__(self, template_type: str) -> dict:
         data_source, *rest = template_type.split("/")
         template_type = "/".join(rest)
-        document = document_api.get_by_path(data_source, template_type)
+        document = dmss_api.get_by_path(data_source, template_type)
         return document["document"]

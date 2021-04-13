@@ -5,10 +5,9 @@ from typing import Dict, List, Union
 from core.repository.repository_exceptions import InvalidDocumentNameException
 
 from classes.dto import DTO
-from config import Config
 from core.enums import DMT
-from core.service.document_service import explorer_api
 from core.utility import url_safe_name
+from services.data_modelling_document_service import dmss_api
 from utils.logging import logger
 
 
@@ -24,7 +23,8 @@ def _add_documents(path, data_source, documents) -> List[Dict]:
         if not url_safe_name(document.name):
             raise InvalidDocumentNameException(document.name)
 
-        explorer_api.add_raw(data_source, document.to_dict())
+        # dmss_api.explorer_add_raw(data_source, {"name": "test", "type": "test", "bjarte": "test"})
+        dmss_api.explorer_add_raw(data_source, document.to_dict())
         docs.append({"_id": document.uid, "name": document.name, "type": document.type})
     return docs
 
@@ -43,6 +43,6 @@ def import_package(path, data_source: str, is_root: bool = False) -> Union[Dict]
         package["content"].append(import_package(f"{path}/{folder}", data_source=data_source, is_root=False))
 
     package = DTO(package)
-    explorer_api.add_raw(data_source, package.to_dict())
+    dmss_api.explorer_add_raw(data_source, package.to_dict())
     logger.info(f"Imported package {package.name}")
     return {"_id": package.uid, "name": package.name, "type": package.type}

@@ -10,8 +10,7 @@
       "tls": false,
       "name": "local",
       "database": "local",
-      "collection": "local",
-      "documentType": "applications"
+      "collection": "local"
     }
   }
 }

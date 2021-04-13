@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Data Modelling Storage Service API
- * Data storage service for DMT
+ * Data Modelling Storage Service
+ * API for basic data modelling interaction
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -16,53 +16,53 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject4
+ * @interface RenameRequest
  */
-export interface InlineObject4 {
+export interface RenameRequest {
     /**
      * 
      * @type {string}
-     * @memberof InlineObject4
-     */
-    description?: string | null;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject4
-     */
-    documentId: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject4
+     * @memberof RenameRequest
      */
     name: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineObject4
+     * @memberof RenameRequest
      */
-    parentId?: string | null;
+    parentId?: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RenameRequest
+     */
+    documentId: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RenameRequest
+     */
+    dataSourceId?: string;
 }
 
-export function InlineObject4FromJSON(json: any): InlineObject4 {
-    return InlineObject4FromJSONTyped(json, false);
+export function RenameRequestFromJSON(json: any): RenameRequest {
+    return RenameRequestFromJSONTyped(json, false);
 }
 
-export function InlineObject4FromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject4 {
+export function RenameRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): RenameRequest {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'description': !exists(json, 'description') ? undefined : json['description'],
-        'documentId': json['documentId'],
         'name': json['name'],
         'parentId': !exists(json, 'parentId') ? undefined : json['parentId'],
+        'documentId': json['documentId'],
+        'dataSourceId': !exists(json, 'data_source_id') ? undefined : json['data_source_id'],
     };
 }
 
-export function InlineObject4ToJSON(value?: InlineObject4 | null): any {
+export function RenameRequestToJSON(value?: RenameRequest | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -71,10 +71,10 @@ export function InlineObject4ToJSON(value?: InlineObject4 | null): any {
     }
     return {
         
-        'description': value.description,
-        'documentId': value.documentId,
         'name': value.name,
         'parentId': value.parentId,
+        'documentId': value.documentId,
+        'data_source_id': value.dataSourceId,
     };
 }
 

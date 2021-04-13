@@ -7,18 +7,18 @@ RUN apt-get update -y && apt-get full-upgrade -y && apt-get install -y \
     nodejs \
     curl
 RUN pip install --upgrade pip && \
-    pip install poetry
+    pip install poetry && \
+    poetry config virtualenvs.create false
 COPY pyproject.toml poetry.lock ./
 
 FROM base as development
-# poetry install is not cachable. So we install with pip
-RUN poetry export -f requirements.txt --dev | pip install -r /dev/stdin
+RUN poetry install
 ENTRYPOINT ["./init.sh"]
 CMD ["api"]
 COPY . .
 
 FROM base as prod
-RUN poetry export -f requirements.txt | pip install -r /dev/stdin
+RUN poetry install --no-dev
 ENTRYPOINT ["./init.sh"]
 CMD ["api"]
 COPY . .

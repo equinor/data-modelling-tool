@@ -15,9 +15,9 @@ stringcase = "^1.2"
 python-dotenv = "^0.10.3"
 jinja2 = "^2.11.1"
 urllib3 = "^1.25.9"
-dmss-api = "^0.2.19"
 toml = "^0.10.1"
 black = "^19.10b0"
+dmss-api = "^0.3"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"

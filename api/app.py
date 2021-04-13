@@ -6,8 +6,7 @@ from utils.package_import import import_package
 from config import Config
 from core.rest import Blueprints, Document as DocumentBlueprint, Explorer, Index, System, Entity
 from utils.logging import logger
-from services.data_modelling_document_service import datasource_api
-from core.service.document_service import explorer_api
+from services.data_modelling_document_service import dmss_api
 from dmss_api.exceptions import ApiException
 import json
 
@@ -32,7 +31,7 @@ app = create_app(Config)
 def remove_application():
     try:
         logger.info(f"Remove DMT application")
-        explorer_api.remove_by_path(Config.APPLICATION_DATA_SOURCE, {"directory": "DMT"})
+        dmss_api.explorer_remove_by_path(Config.APPLICATION_DATA_SOURCE, {"directory": "DMT"})
     except ApiException:
         logger.info(f"Could not remove DMT")
         pass
@@ -41,7 +40,7 @@ def remove_application():
         logger.info(f"Remove blueprint package: {folder}")
         data_source, folder = folder.split("/", 1)
         try:
-            explorer_api.remove_by_path(data_source, {"directory": folder})
+            dmss_api.explorer_remove_by_path(data_source, {"directory": folder})
         except ApiException:
             pass
 
@@ -49,7 +48,7 @@ def remove_application():
         data_source, folder = folder.split("/", 1)
         logger.info(f"Remove entity package: {folder}")
         try:
-            explorer_api.remove_by_path(data_source, {"directory": folder})
+            dmss_api.explorer_remove_by_path(data_source, {"directory": folder})
         except ApiException:
             pass
 
@@ -60,7 +59,7 @@ def init_application():
         with open(os.path.join(f"{Config.APPLICATION_HOME}/data_sources/", filename)) as file:
             document = json.load(file)
             try:
-                datasource_api.save(document["name"], request_body=document)
+                dmss_api.data_source_save(document["name"], data_source_request=document)
             except ApiException:
                 pass
 

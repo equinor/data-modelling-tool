@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Data Modelling Storage Service API
- * Data storage service for DMT
+ * Data Modelling Storage Service
+ * API for basic data modelling interaction
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -13,7 +13,7 @@
  */
 
 
-export const BASE_PATH = "http://127.0.0.1:8000/api/v1".replace(/\/+$/, "");
+export const BASE_PATH = "http://localhost".replace(/\/+$/, "");
 
 const isBlob = (value: any) => typeof Blob !== 'undefined' && value instanceof Blob;
 
@@ -62,8 +62,8 @@ export class BaseAPI {
             url += '?' + this.configuration.queryParamsStringify(context.query);
         }
         const body = ((typeof FormData !== "undefined" && context.body instanceof FormData) || context.body instanceof URLSearchParams || isBlob(context.body))
-	    ? context.body
-	    : JSON.stringify(context.body);
+        ? context.body
+        : JSON.stringify(context.body);
 
         const headers = Object.assign({}, this.configuration.headers, context.headers);
         const init = {
@@ -183,7 +183,7 @@ export class Configuration {
         return undefined;
     }
 
-    get headers():  HTTPHeaders | undefined {
+    get headers(): HTTPHeaders | undefined {
         return this.configuration.headers;
     }
 
@@ -226,6 +226,9 @@ export function querystring(params: HTTPQuery, prefix: string = ''): string {
                 const multiValue = value.map(singleValue => encodeURIComponent(String(singleValue)))
                     .join(`&${encodeURIComponent(fullKey)}=`);
                 return `${encodeURIComponent(fullKey)}=${multiValue}`;
+            }
+            if (value instanceof Date) {
+                return `${encodeURIComponent(fullKey)}=${encodeURIComponent(value.toISOString())}`;
             }
             if (value instanceof Object) {
                 return querystring(value as HTTPQuery, fullKey);

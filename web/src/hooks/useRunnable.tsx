@@ -1,5 +1,5 @@
 import { useModalContext } from '../context/modal/ModalContext'
-import { documentAPI } from '../services/api/configs/StorageServiceAPI'
+import { dmssApi } from '../services/api/configs/StorageServiceAPI'
 import Actions from '../actions'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -78,7 +78,7 @@ const getInput = async (
     requestParameters['attribute'] = attribute
   }
 
-  const result = await documentAPI.getById(requestParameters)
+  const result = await dmssApi.documentGetById(requestParameters)
   const document = result.document
 
   const input: Input = {

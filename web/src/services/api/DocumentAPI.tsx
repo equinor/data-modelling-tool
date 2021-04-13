@@ -1,6 +1,6 @@
 import { IDocumentAPI } from './interfaces/DocumentAPI'
 import apiProvider from './utilities/Provider'
-import { documentAPI, explorerAPI } from './configs/StorageServiceAPI'
+import { dmssApi } from './configs/StorageServiceAPI'
 
 export class DocumentAPI implements IDocumentAPI {
   create(url: string, data: any): Promise<any> {
@@ -13,15 +13,18 @@ export class DocumentAPI implements IDocumentAPI {
   }
 
   addToParent(dataSourceId: string, data: any): Promise<any> {
-    return explorerAPI.addToParent({ dataSourceId, inlineObject: data })
+    return dmssApi.explorerAddToParent({
+      dataSourceId,
+      addToParentRequest: data,
+    })
   }
 
   getByPath(dataSourceId: string, path: string): Promise<any> {
-    return documentAPI.getByPath({ dataSourceId, path })
+    return dmssApi.documentGetByPath({ dataSourceId, path })
   }
 
   getById(dataSourceId: string, documentId: string): Promise<any> {
-    return documentAPI.getById({ dataSourceId, documentId })
+    return dmssApi.documentGetById({ dataSourceId, documentId })
   }
 
   remove(url: string, data: any): Promise<any> {
@@ -43,11 +46,11 @@ export class DocumentAPI implements IDocumentAPI {
     attribute: string,
     data: any
   ): Promise<any> {
-    return documentAPI.update({
-      dataSourceId: dataSourceId,
-      documentId: documentId,
-      requestBody: data,
-      attribute: attribute,
+    return dmssApi.documentUpdate({
+      dataSourceId,
+      documentId,
+      body: data,
+      attribute,
     })
   }
 }

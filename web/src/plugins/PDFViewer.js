@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from '../utils/formatBytes'
-import { blobAPI } from '../services/api/configs/StorageServiceAPI'
+import { dmssApi } from '../services/api/configs/StorageServiceAPI'
 import { ErrorGroup } from '../components/Wrappers'
 
 const MetaDataWrapper = styled.div`
@@ -19,7 +19,7 @@ const TagWrapper = styled.div`
 
 export const ViewerPDFPlugin = props => {
   const document = props.document
-  const [dataSource, uid] = document.blob_reference.split('/')
+  const [dataSourceId, blobId] = document.blob_reference.split('/')
 
   const [blobUrl, setBlobUrl] = useState('')
   const [loading, setLoading] = useState(true)
@@ -27,8 +27,8 @@ export const ViewerPDFPlugin = props => {
 
   useEffect(() => {
     setError(null)
-    blobAPI
-      .getBlobById({ dataSourceId: dataSource, blobId: uid })
+    dmssApi
+      .blobGetById({ dataSourceId, blobId })
       .then(result => {
         const blob = new Blob([result], { type: 'application/pdf' })
         setBlobUrl(window.URL.createObjectURL(blob))

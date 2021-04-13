@@ -8,7 +8,7 @@ import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import { searchAPI } from '../services/api/configs/StorageServiceAPI'
+import { dmssApi } from '../services/api/configs/StorageServiceAPI'
 import { Application } from '../utils/variables'
 import DashboardProvider, {
   IDashboard,
@@ -381,8 +381,10 @@ export default () => {
   function search(query: any) {
     setQueryError('')
     //TODO: Get DataSourceId from User
-    searchAPI
-      .searchEntities({ dataSourceId: 'entities', requestBody: query })
+    dmssApi.search({
+        dataSourceId: 'entities',
+        searchDataRequest: query,
+      })
       .then((res: any) => {
         // @ts-ignore
         let resultList = []

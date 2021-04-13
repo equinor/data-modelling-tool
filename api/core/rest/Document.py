@@ -3,11 +3,10 @@ import json
 from flask import Blueprint, request, Response
 
 from core.enums import STATUS_CODES
-from core.rest.utils.dmss_api_wrapper import dmss_api_wrapper
 from core.use_case.generate_json_schema_use_case import GenerateJsonSchemaRequestObject, GenerateJsonSchemaUseCase
 from core.use_case.get_document_by_path_use_case import GetDMTDocumentByPathUseCase, GetDocumentByPathRequestObject
 from core.use_case.get_document_use_case import GetDMTDocumentUseCase, GetDocumentRequestObject
-from services.data_modelling_document_service import document_api
+from services.data_modelling_document_service import dmss_api
 from utils.logging import logger
 
 blueprint = Blueprint("document", __name__)
@@ -57,8 +56,4 @@ def put(data_source_id: str, document_id: str):
     data = request.get_json()
     attribute = request.args.get("attribute")
 
-    @dmss_api_wrapper
-    def dmss_call():
-        return document_api.update(data_source_id, document_id, data, attribute=attribute)
-
-    return dmss_call()
+    return dmss_api.document_update(data_source_id, document_id, data, attribute=attribute)

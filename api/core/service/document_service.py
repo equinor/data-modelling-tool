@@ -16,19 +16,19 @@ from core.repository.repository_exceptions import (
 from core.repository.zip_file import ZipFileClient
 from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
-from services.data_modelling_document_service import datasource_api, document_api, explorer_api, package_api
+from services.data_modelling_document_service import dmss_api
 from utils.logging import logger
 
 
 def get_complete_document(data_source_id: str, document_uid: str) -> Dict:
-    document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid)
+    document = dmss_api.document_get_by_id(data_source_id=data_source_id, document_id=document_uid)
     return document["document"]
 
 
 @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def get_cached_document(ds, doc, dep, blueprint_provider):
     try:
-        document = document_api.get_by_id(data_source_id=ds, document_id=doc, depth=dep)
+        document = dmss_api.document_get_by_id(data_source_id=ds, document_id=doc, depth=dep)
         document = document["document"]
     except ApiException as error:
         logger.exception(error)
@@ -71,7 +71,9 @@ class DocumentService:
         if reset_bp_cache:
             self.blueprint_provider.invalidate_cache()
         try:
-            document = document_api.get_by_id(data_source_id=data_source_id, document_id=document_uid, depth=depth)
+            document = dmss_api.document_get_by_id(
+                data_source_id=data_source_id, document_id=document_uid, depth=depth
+            )
             document = document["document"]
         except ApiException as error:
             logger.exception(error)
@@ -101,7 +103,7 @@ class DocumentService:
         ref_elements = path.split("/", 1)
         package_name = ref_elements[0]
 
-        package: DTO = DTO(package_api.find_by_name(data_source_id=data_source_id, name=package_name))
+        package: DTO = DTO(dmss_api.package_find_by_name(data_source_id=data_source_id, name=package_name))
         if not package:
             raise FileNotFoundException(data_source_id, package_name, is_root=True)
 
@@ -118,11 +120,11 @@ class DocumentService:
 
     # Add file by parent directory
     def add(self, data_source_id: str, directory: str, document: dict):
-        return explorer_api.add_to_path(data_source_id, {document: document, directory: directory})
+        return dmss_api.explorer_add_to_path(data_source_id, {document: document, directory: directory})
 
     def instantiate_entity(self, type: str, name: str = None):
         entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description="").entity
         return entity
 
     def get_data_source(self, data_source_id: str):
-        return datasource_api.get_data_source(data_source_id)
+        return dmss_api.data_source_get(data_source_id)

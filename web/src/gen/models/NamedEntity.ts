@@ -1,8 +1,8 @@
 /* tslint:disable */
 /* eslint-disable */
 /**
- * Data Modelling Storage Service API
- * Data storage service for DMT
+ * Data Modelling Storage Service
+ * API for basic data modelling interaction
  *
  * The version of the OpenAPI document: 0.1.0
  * 
@@ -16,53 +16,39 @@ import { exists, mapValues } from '../runtime';
 /**
  * 
  * @export
- * @interface InlineObject
+ * @interface NamedEntity
  */
-export interface InlineObject {
+export interface NamedEntity {
     /**
      * 
      * @type {string}
-     * @memberof InlineObject
-     */
-    attribute: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject
+     * @memberof NamedEntity
      */
     name: string;
     /**
      * 
      * @type {string}
-     * @memberof InlineObject
-     */
-    parentId: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof InlineObject
+     * @memberof NamedEntity
      */
     type: string;
 }
 
-export function InlineObjectFromJSON(json: any): InlineObject {
-    return InlineObjectFromJSONTyped(json, false);
+export function NamedEntityFromJSON(json: any): NamedEntity {
+    return NamedEntityFromJSONTyped(json, false);
 }
 
-export function InlineObjectFromJSONTyped(json: any, ignoreDiscriminator: boolean): InlineObject {
+export function NamedEntityFromJSONTyped(json: any, ignoreDiscriminator: boolean): NamedEntity {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'attribute': json['attribute'],
         'name': json['name'],
-        'parentId': json['parentId'],
         'type': json['type'],
     };
 }
 
-export function InlineObjectToJSON(value?: InlineObject | null): any {
+export function NamedEntityToJSON(value?: NamedEntity | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -71,9 +57,7 @@ export function InlineObjectToJSON(value?: InlineObject | null): any {
     }
     return {
         
-        'attribute': value.attribute,
         'name': value.name,
-        'parentId': value.parentId,
         'type': value.type,
     };
 }

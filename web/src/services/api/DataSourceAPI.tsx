@@ -1,10 +1,12 @@
 import { DataSources, IDataSourceAPI } from './interfaces/DataSourceAPI'
-import { dataSourceAPI } from './configs/StorageServiceAPI'
+import { dmssApi } from './configs/StorageServiceAPI'
 
 export class DataSourceAPI implements IDataSourceAPI {
   getAll(): Promise<DataSources> {
     // @ts-ignore
-    return dataSourceAPI.getAll()
+    return dmssApi.dataSourceGetAll().then(value => {
+      return JSON.parse(value)
+    })
   }
 }
 

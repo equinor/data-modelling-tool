@@ -7,7 +7,7 @@ import { NotificationManager } from 'react-notifications'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
 import Button from '../../../components/Button'
 import Api2 from '../../../api/Api2'
-import { dataSourceAPI } from '../../../services/api/configs/StorageServiceAPI'
+import { dmssApi } from '../../../services/api/configs/StorageServiceAPI'
 
 export default () => {
   const [showModal, setShowModal] = useState(false)
@@ -33,8 +33,11 @@ export default () => {
           fetchDocument={Api2.fetchCreateDatasource(selectedDatasourceType)}
           onSubmit={data => {
             data.type = selectedDatasourceType
-            dataSourceAPI
-              .save({ dataSourceId: data.name, requestBody: data })
+            dmssApi
+              .dataSourceSave({
+                dataSourceId: data.name,
+                dataSourceRequest: data,
+              })
               .then(() => {
                 NotificationManager.success(`Created datasource ${data.name}`)
                 setShowModal(false)
