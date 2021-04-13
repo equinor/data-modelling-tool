@@ -2,15 +2,14 @@ from typing import Optional
 
 from classes.blueprint import Blueprint
 from classes.recipe import Recipe
-
-from core.enums import PRIMITIVES
-from core.utility import get_blueprint
+from core.utility import BlueprintProvider
 
 
 def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprint], ui_recipe_name):
     properties = {}
     ui_recipe: Recipe = blueprint.get_ui_recipe(ui_recipe_name)
     nested_attributes = []
+    blueprint_provider = BlueprintProvider()
 
     for attribute in blueprint.attributes:
 
@@ -34,7 +33,7 @@ def process_attributes(blueprint: Blueprint, parent_blueprint: Optional[Blueprin
             )
 
     for nested_type in nested_attributes:
-        nested_blueprint = get_blueprint(nested_type["type"])
+        nested_blueprint = blueprint_provider.get_blueprint(nested_type["type"])
 
         if parent_blueprint and nested_blueprint == parent_blueprint:
             continue

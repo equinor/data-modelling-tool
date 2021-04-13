@@ -87,7 +87,7 @@ class DictImporter:
             message = (
                 f"Reached maximum recursion depth while creating NodeTree ({recursion_depth}).\n"
                 f"Node: {node_attribute.name}, Type: {node_attribute.attribute_type}\n"
-                f'If your blueprints contains recursion, set the attribute as "optional". '
+                f'If your blueprints contains recursion, the recursive attribute must be "optional". '
             )
             logger.error(message)
             raise RecursionError(message)
@@ -105,7 +105,6 @@ class DictImporter:
             error_node = Node(
                 key=entity["name"], uid="", entity={"name": entity["name"], "type": ""}, attribute=node_attribute
             )
-            error_node.set_error("_blueprint is missing from dto")
             return error_node
 
         try:
@@ -155,22 +154,6 @@ class DictImporter:
                         recursion_depth=recursion_depth + 1,
                     )
                     node.add_child(child_node)
-                    # TODO: Not sure where this fits in now....
-                    # else:
-                    #     error_node = Node(
-                    #         key=child_attribute.name,
-                    #         uid="",
-                    #         entity={
-                    #             "name": child_attribute.name,
-                    #             # avoid DtoException
-                    #             "type": "",
-                    #         },
-                    #         blueprint_provider=blueprint_provider,
-                    #     )
-                    #     error_node.set_error(f"failed to add attribute node: {child_attribute.name}")
-                    #     # #524 #543 the following line break several unit tests related to save and remove in the service.
-                    #     # node.add_child(error_node)
-                    #     logger.warning(f"Data problem: {child_attribute.name}")
             return node
         except AttributeError as error:
             logger.exception(error)

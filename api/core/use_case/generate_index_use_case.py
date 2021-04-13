@@ -136,7 +136,7 @@ class GenerateIndexUseCase:
             package_data = root_package["data"]
             try:
                 root.add_child(
-                    document_service.get_by_uid(
+                    document_service.get_node_by_uid(
                         data_source_id=data_source_id, document_uid=package_data["_id"], depth=0, reset_bp_cache=False
                     )
                 )
@@ -177,13 +177,13 @@ class GenerateIndexUseCase:
                 attribute=BlueprintAttribute("root", "datasource"),
             )
             parent.add_child(
-                document_service.get_by_uid(
+                document_service.get_node_by_uid(
                     data_source_id=data_source_id, document_uid=document_id, depth=0, reset_bp_cache=False
                 )
             )
         else:
             document_uid = parent_uid
-            parent = document_service.get_by_uid(
+            parent = document_service.get_node_by_uid(
                 data_source_id=data_source_id, document_uid=document_uid, depth=1, reset_bp_cache=False
             )
 

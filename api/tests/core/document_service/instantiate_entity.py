@@ -4,8 +4,7 @@ import unittest
 from api.classes.dto import DTO
 from api.core.service.document_service import DocumentService
 from classes.blueprint import Blueprint
-from core.repository.file import TemplateRepositoryFromFile
-from utils.helper_functions import schemas_location
+from core.repository.file import LocalFileRepository
 
 basic_blueprint = {
     "type": "system/SIMOS/Blueprint",
@@ -19,7 +18,7 @@ basic_blueprint = {
     ],
 }
 
-file_repository_test = TemplateRepositoryFromFile(schemas_location())
+file_repository_test = LocalFileRepository()
 
 
 class BlueprintProvider:

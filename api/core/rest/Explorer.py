@@ -1,27 +1,12 @@
 import json
 
-from flask import Blueprint, request, Response, send_file
+from flask import Blueprint, Response, send_file
 
 from core.enums import STATUS_CODES
-from core.serializers.dto_json_serializer import DTOSerializer
-from core.service.document_service import get_cached_document
 from core.shared import response_object as res
 from core.use_case.export_use_case import ExportRequestObject, ExportUseCase
-from core.use_case.move_file_use_case import MoveFileRequestObject, MoveFileUseCase
 
 blueprint = Blueprint("explorer", __name__)
-
-
-@blueprint.route("/api/v2/explorer/move-file", methods=["PUT"])
-def move_file():
-    request_data = request.get_json()
-    use_case = MoveFileUseCase()
-    request_object = MoveFileRequestObject.from_dict(request_data)
-    response = use_case.execute(request_object)
-    get_cached_document.cache_clear()
-    return Response(
-        json.dumps(response.value, cls=DTOSerializer), mimetype="application/json", status=STATUS_CODES[response.type]
-    )
 
 
 @blueprint.route("/api/v2/explorer/<string:data_source_id>/export/<string:document_id>", methods=["GET"])
