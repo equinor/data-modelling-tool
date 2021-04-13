@@ -127,7 +127,9 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const toggle = ({ nodeId }: ToggleProps) => {
-    return index.models.index.operations.toggle(nodeId)
+    index.models.index.operations
+      .toggle(nodeId)
+      .catch(err => NotificationManager.error(err))
   }
 
   const open = ({ nodeId, dataSourceId, fetchUrl }: OpenProps) => {
@@ -139,15 +141,20 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         { ...fetchUrl.data, documentId: fetchUrl.uid, dataSourceId: dataSourceId },
       )
       dashboard.models.layout.operations.focus(nodeId)
+    } else {
+      NotificationManager.error('Not able to open selected document.')
     }
   }
 
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
-      documentAPI.create(dataUrl, data).then((result: any) => {
-        closeModal()
-        index.models.index.operations.add(result.uid, nodeUrl, true)
-      })
+      documentAPI
+        .create(dataUrl, data)
+        .then((result: any) => {
+          closeModal()
+          index.models.index.operations.add(result.uid, nodeUrl, true)
+        })
+        .catch(NotificationManager.error('Could not create document.'))
     }
   }
 
@@ -157,34 +164,45 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
                                nodeUrl,
                              }: AddToParentProps) => {
     if (validate(data)) {
-      return documentAPI.addToParent(dataSourceId, data).then((result: any) => {
-        closeModal()
-        index.models.index.operations.add(result.uid, nodeUrl, true)
-        return result
-      })
+      return documentAPI
+        .addToParent(dataSourceId, data)
+        .then((result: any) => {
+          closeModal()
+          index.models.index.operations.add(result.uid, nodeUrl, true)
+          return result
+        })
+        .catch(
+          NotificationManager.error('Not able to add element to document.')
+        )
     }
   }
 
   const remove = async ({ nodeId, parent, url, data }: RemoveProps) => {
-    return documentAPI.remove(url, data).then(() => {
-      index.models.index.operations
-        .remove(nodeId, parent)
-        // @ts-ignore
-        .then(dashboard.models.layout.operations.remove(nodeId))
-        .then(closeModal())
-      return true
-    })
+    return documentAPI
+      .remove(url, data)
+      .then(() => {
+        index.models.index.operations
+          .remove(nodeId, parent)
+          // @ts-ignore
+          .then(dashboard.models.layout.operations.remove(nodeId))
+          .then(closeModal())
+        return true
+      })
+      .catch(NotificationManager.error('Could not remove selected document.'))
   }
 
   const update = async ({ data, updateUrl, nodeUrl }: UpdateProps) => {
-    return documentAPI.update(updateUrl, data).then((result: any) => {
-      closeModal()
-      index.models.index.operations
-        .add(result.uid, nodeUrl)
-        .then(() =>
-          dashboard.models.layout.operations.refreshByFilter(result.uid),
-        )
-    })
+    return documentAPI
+      .update(updateUrl, data)
+      .then((result: any) => {
+        closeModal()
+        index.models.index.operations
+          .add(result.uid, nodeUrl)
+          .then(() =>
+            dashboard.models.layout.operations.refreshByFilter(result.uid)
+          )
+      })
+      .catch(NotificationManager.error('Could not update selected document.'))
   }
 
   const updateById = async ({
@@ -205,6 +223,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           )
         return result
       })
+      .catch(NotificationManager.error('Could not update selected document.'))
   }
 
   return {
