@@ -14,7 +14,6 @@ from core.repository.repository_exceptions import (
     FileNotFoundException,
 )
 from core.repository.zip_file import ZipFileClient
-from core.use_case.utils.create_entity import CreateEntity
 from core.utility import BlueprintProvider
 from services.data_modelling_document_service import dmss_api
 from utils.logging import logger
@@ -82,16 +81,11 @@ class DocumentService:
         return Node.from_dict(document, document["_id"], blueprint_provider=self.blueprint_provider)
 
     def create_zip_export(self, data_source_id: str, document_uid: str) -> io.BytesIO:
-        try:
-            complete_document = get_complete_document(data_source_id=data_source_id, document_uid=document_uid)
-        except EntityNotFoundException as error:
-            logger.exception(error)
-            raise EntityNotFoundException(document_uid)
-
+        document = dmss_api.document_get_by_id(data_source_id, document_uid)["document"]
         memory_file = io.BytesIO()
         with zipfile.ZipFile(memory_file, mode="w") as zip_file:
             root_node: Node = Node.from_dict(
-                complete_document, complete_document.get("_id"), blueprint_provider=self.blueprint_provider
+                document, document.get("_id"), blueprint_provider=self.blueprint_provider
             )
             # Save the selected node, using custom ZipFile repository
             self.save(root_node, data_source_id, ZipFileClient(zip_file))
@@ -99,7 +93,7 @@ class DocumentService:
         memory_file.seek(0)
         return memory_file
 
-    def get_by_path(self, data_source_id: str, path: str):
+    def get_by_path(self, data_source_id: str, path: str) -> Node:
         ref_elements = path.split("/", 1)
         package_name = ref_elements[0]
 
@@ -107,7 +101,7 @@ class DocumentService:
         if not package:
             raise FileNotFoundException(data_source_id, package_name, is_root=True)
 
-        complete_document = get_complete_document(data_source_id=data_source_id, document_uid=package.uid)
+        complete_document = dmss_api.document_get_by_id(data_source_id=data_source_id, document_id=package.uid)["document"]
 
         dto = DTO(complete_document)
         node = Node.from_dict(dto.data, dto.uid, blueprint_provider=self.blueprint_provider)
@@ -122,9 +116,4 @@ class DocumentService:
     def add(self, data_source_id: str, directory: str, document: dict):
         return dmss_api.explorer_add_to_path(data_source_id, {document: document, directory: directory})
 
-    def instantiate_entity(self, type: str, name: str = None):
-        entity: Dict = CreateEntity(self.blueprint_provider, name=name, type=type, description="").entity
-        return entity
 
-    def get_data_source(self, data_source_id: str):
-        return dmss_api.data_source_get(data_source_id)

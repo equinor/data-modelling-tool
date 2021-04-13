@@ -87,7 +87,7 @@ class DictImporter:
             message = (
                 f"Reached maximum recursion depth while creating NodeTree ({recursion_depth}).\n"
                 f"Node: {node_attribute.name}, Type: {node_attribute.attribute_type}\n"
-                f'If your blueprints contains recursion, set the attribute as "optional". '
+                f'If your blueprints contains recursion, the recursive attribute must be "optional". '
             )
             logger.error(message)
             raise RecursionError(message)

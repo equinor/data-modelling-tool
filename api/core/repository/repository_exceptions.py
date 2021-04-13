@@ -39,11 +39,6 @@ class PluginNotLoadedException(RepositoryException):
         )
 
 
-class TemplateNotFound(RepositoryException):
-    def __init__(self, template_id):
-        super().__init__(message=f"The template with ID, {template_id}, was not found")
-
-
 class RootPackageNotFoundException(Exception):
     def __init__(self, data_source_id=None, file=None):
         self.data_source_id = data_source_id if data_source_id else None

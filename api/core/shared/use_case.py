@@ -1,3 +1,5 @@
+from dmss_api.exceptions import ServiceException
+
 from core.repository.repository_exceptions import (
     FileNotFoundException,
     EntityNotFoundException,
@@ -13,6 +15,8 @@ class UseCase(object):
             return res.ResponseFailure.build_from_invalid_request_object(request_object)
         try:
             return self.process_request(request_object)
+        except ServiceException as dmss_exception:
+            return res.ResponseFailure.build_resource_error(dmss_exception)
         except EntityNotFoundException as not_found:
             return res.ResponseFailure.build_resource_error(not_found.message)
         except InvalidDocumentNameException as invalid_name:

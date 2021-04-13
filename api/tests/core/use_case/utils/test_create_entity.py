@@ -1,25 +1,15 @@
 import unittest
-from enum import Enum
-from unittest import mock, skip
 from classes.blueprint import Blueprint
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.dto import DTO
-from core.repository.file import TemplateRepositoryFromFile
+from core.repository.file import LocalFileRepository
 from core.use_case.utils.create_entity import CreateEntity
-from utils.helper_functions import schemas_location
-
-
-class Types(Enum):
-    BLUEPRINT = "system/SIMOS/Blueprint"
-    BLUEPRINT_ATTRIBUTE = "system/SIMOS/BlueprintAttribute"
 
 
 class CreateEntityTestCase(unittest.TestCase):
     def setUp(self):
         self.maxDiff = None
 
-    # TODO: provide blueprints
-    @skip
     def test_blueprint_entity(self):
         expected_entity = {
             "engine2": {},
@@ -29,17 +19,17 @@ class CreateEntityTestCase(unittest.TestCase):
                 "fuelPump": {
                     "name": "fuelPump",
                     "description": "A standard fuel pump",
-                    "type": "ds/test_data/complex/FuelPumpTest",
+                    "type": "test_data/complex/FuelPumpTest",
                 },
                 "power": 120,
-                "type": "ds/test_data/complex/EngineTest",
+                "type": "test_data/complex/EngineTest",
             },
             "is_sedan": True,
             "description": "crappy car",
             "name": "Mercedes",
             "seats": 2,
-            "type": "ds/test_data/complex/CarTest",
-            "wheel": {"name": "wheel", "power": 0.0, "type": "ds/test_data/complex/WheelTest"},
+            "type": "test_data/complex/CarTest",
+            "wheel": {"name": "wheel", "power": 0.0, "type": "test_data/complex/WheelTest"},
             "wheels": [],
             "floatValues": [2.1, 3.1, 4.2],
             "intValues": [1, 5, 4, 2],
@@ -47,13 +37,13 @@ class CreateEntityTestCase(unittest.TestCase):
             "stringValues": ["one", "two", "three"],
         }
 
-        file_repository_test = TemplateRepositoryFromFile(schemas_location())
+        file_repository_test = LocalFileRepository()
 
         class BlueprintProvider:
             def get_blueprint(self, template_type: str):
                 return Blueprint(DTO(file_repository_test.get(template_type)))
 
-        type = "ds/test_data/complex/CarTest"
+        type = "test_data/complex/CarTest"
 
         entity = CreateEntity(
             blueprint_provider=BlueprintProvider(), type=type, description="crappy car", name="Mercedes"
