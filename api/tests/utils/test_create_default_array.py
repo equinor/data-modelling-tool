@@ -3,10 +3,8 @@ import unittest
 from classes.blueprint import Blueprint
 from classes.dimension import Dimension
 from classes.dto import DTO
-from core.repository.file import TemplateRepositoryFromFile
-from core.use_case.utils.create_entity import CreateEntity
-from utils.helper_functions import schemas_location
-from unittest import mock, skip
+from core.repository.file import LocalFileRepository
+from core.service.create_entity_utils import CreateEntity
 
 package_blueprint = {
     "type": "system/SIMOS/Blueprint",
@@ -87,7 +85,7 @@ higher_rank_array_blueprint = {
     ],
 }
 
-file_repository_test = TemplateRepositoryFromFile(schemas_location())
+file_repository = LocalFileRepository()
 
 
 class BlueprintProvider:
@@ -99,13 +97,12 @@ class BlueprintProvider:
         elif template_type == "basic_blueprint":
             return Blueprint(DTO(basic_blueprint))
         else:
-            return Blueprint(DTO(file_repository_test.get(template_type)))
+            return Blueprint(DTO(file_repository.get(template_type)))
 
 
 blueprint_provider = BlueprintProvider()
 
-# TODO: provide blueprints
-@skip
+
 class DefaultArrayTestCase(unittest.TestCase):
     def test_creation_of_default_array_simple(self):
         default_array = Dimension("*", "integer").create_default_array(blueprint_provider, CreateEntity)

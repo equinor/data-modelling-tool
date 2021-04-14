@@ -1,9 +1,9 @@
 import unittest
 from unittest import skip
 
+from classes.blueprint import Blueprint
 from classes.dto import DTO
 from classes.tree_node import Node
-
 
 blueprint_1 = {
     "type": "system/SIMOS/Blueprint",
@@ -20,26 +20,26 @@ blueprint_1 = {
 }
 
 
+class BlueprintProvider:
+    @staticmethod
+    def get_blueprint(type: str):
+        return Blueprint(DTO(blueprint_1))
+
+
 class ErrorTreenodeTestCase(unittest.TestCase):
 
-    # error node breaks tests in document service.
-    # add uncommented line in tree_node from_dict to enable this test.
+    # Can't find a good way to make the Node creation fail...
     @skip
     def test_error_node_renamed(self):
         document_1 = {
-            "uid": "1",
+            "_id": "1",
             "name": "Parent",
             "description": "",
             "type": "blueprint_1",
-            # renamed nested to nested2
-            "nested2": {"name": "Nested 1", "description": "", "type": "blueprint_2"},
-            "_blueprint": blueprint_1,
+            # changed type: blueprint_2 -> blueprint_3
+            "nested": {"name": "Nested 1", "description": "", "type": "blueprint_3"},
         }
 
-        class BlueprintProvider:
-            def get_blueprint(type: str):
-                raise Exception("fix me")
-
-        root = Node.from_dict(DTO(document_1), BlueprintProvider())
+        root = Node.from_dict(document_1, document_1["_id"], BlueprintProvider())
         error_msg = root.children[0].error_message
         assert error_msg is not None

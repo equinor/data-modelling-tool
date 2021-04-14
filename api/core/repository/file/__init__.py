@@ -2,30 +2,24 @@ import json
 from pathlib import Path
 from typing import Optional, Union
 
-from core.repository.repository_exceptions import TemplateNotFound
-from utils.helper_functions import schemas_location
 
-
-class TemplateRepositoryFromFile:
+class LocalFileRepository:
     def __init__(self, location: Optional[Union[str, Path]] = None):
         if location is None:
-            location = schemas_location()
+            # If running locally, in a development environment, the SIMOS blueprints are expected to be found
+            # in the dmss repo next to this repo.
+            # If SIMOS blueprints are not found, expect them to be in this repo at "./api/dmss" (cloned during CI)
+            dev_path = f"{str(Path(__file__).parent.parent.parent.parent.parent.parent)}/data-modelling-storage-service/api/home/"
+            location = (
+                dev_path
+                if Path(dev_path).is_dir()
+                else f"{str(Path(__file__).parent.parent.parent.parent)}/dmss/api/home"
+            )
         self.path = Path(location)
 
-    def get(self, template_type: str):
-        return self[template_type]
-
-    def __getitem__(self, template_type: str) -> dict:
-        data_source, *rest = template_type.split("/")
-        template_type = "/".join(rest)
-        path = self.path
-        if data_source == "system":
-            path = path / "core"
-        elif data_source == "SSR-DataSource":
-            path = path / "blueprints"
+    def get(self, doc_ref: str) -> dict:
         try:
-            with open(str(path / f"{template_type}.json")) as f:
-                schema = json.load(f)
+            with open(str(self.path / f"{doc_ref}.json")) as f:
+                return json.load(f)
         except FileNotFoundError:
-            raise TemplateNotFound(template_type)
-        return schema
+            raise FileNotFoundError(f"'{doc_ref}' not found. Are DMSS core blueprints available at {self.path}?")

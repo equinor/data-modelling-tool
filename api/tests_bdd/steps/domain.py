@@ -3,7 +3,7 @@ from behave import given
 from classes.blueprint_attribute import BlueprintAttribute
 from classes.tree_node import ListNode, Node
 from core.enums import DMT, SIMOS
-from core.use_case.utils.create_entity import CreateEntity
+from core.service.create_entity_utils import CreateEntity
 from core.utility import BlueprintProvider
 from services.data_modelling_document_service import dmss_api
 

@@ -2,11 +2,9 @@ import json
 import os
 from typing import Dict, List, Union
 
-from core.repository.repository_exceptions import InvalidDocumentNameException
 
 from classes.dto import DTO
 from core.enums import DMT
-from core.utility import url_safe_name
 from services.data_modelling_document_service import dmss_api
 from utils.logging import logger
 
@@ -20,10 +18,6 @@ def _add_documents(path, data_source, documents) -> List[Dict]:
             data = json.load(json_file)
 
         document = DTO(data)
-        if not url_safe_name(document.name):
-            raise InvalidDocumentNameException(document.name)
-
-        # dmss_api.explorer_add_raw(data_source, {"name": "test", "type": "test", "bjarte": "test"})
         dmss_api.explorer_add_raw(data_source, document.to_dict())
         docs.append({"_id": document.uid, "name": document.name, "type": document.type})
     return docs

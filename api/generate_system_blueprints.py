@@ -3,9 +3,9 @@
 
 def create_system_blueprints():
     from classes.schema import Factory
-    from core.repository.file import TemplateRepositoryFromFile
+    from core.repository.file import LocalFileRepository
 
-    template_repository = TemplateRepositoryFromFile()
+    template_repository = LocalFileRepository()
     factory = Factory(template_repository)
 
     template_types = [

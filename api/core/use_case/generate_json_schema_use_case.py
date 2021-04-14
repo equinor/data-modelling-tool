@@ -26,6 +26,7 @@ class GenerateJsonSchemaRequestObject(req.ValidRequestObject):
         return cls(type=adict.get("type"), ui_recipe=adict.get("ui_recipe"))
 
 
+# TODO: Update these to use DocumentService
 class GenerateJsonSchemaUseCase(uc.UseCase):
     def process_request(self, request_object: GenerateJsonSchemaRequestObject):
         type = request_object.type

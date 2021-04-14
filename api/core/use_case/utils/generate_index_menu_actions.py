@@ -6,7 +6,7 @@ from classes.tree_node import Node
 from config import Config
 from core.enums import DMT, SIMOS
 
-DMSS_API = "/dmss/v1"
+DMSS_API = "/dmss/api/v1"
 
 
 def get_node_url(datasource, parent_id):
