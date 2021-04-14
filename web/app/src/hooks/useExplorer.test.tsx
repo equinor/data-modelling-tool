@@ -333,27 +333,50 @@ describe('the explorer hook', () => {
   })
 
   describe('when remove is called', () => {
-    beforeEach(async () => {
-      await act(async () => {
-        mocks.documentApi.remove.mockImplementation(() => Promise.resolve())
-        response.result.current.remove({
-          nodeId: '2',
-          parent: '',
-          url: '/',
-          data: {},
+    describe('on a document that exists', () => {
+      beforeEach(async () => {
+        await act(async () => {
+          mocks.documentApi.remove.mockImplementation(() => Promise.resolve())
+          response.result.current.remove({
+            nodeId: '2',
+            parent: '',
+            url: '/',
+            data: {},
+          })
         })
       })
+      it('should the document be removed from the server ', async () => {
+        expect(mocks.documentApi.remove).toHaveBeenCalledTimes(1)
+      })
+      it('should the document be removed from the tree', async () => {
+        expect(
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '2'
+          )
+        ).toBeUndefined()
+      })
     })
-    it('should the document be removed from the server ', async () => {
-      expect(mocks.documentApi.remove).toHaveBeenCalledTimes(1)
+
+    describe('on a document that does not exists', () => {
+      beforeEach(async () => {
+        await act(async () => {
+          mocks.documentApi.remove.mockImplementation(() => Promise.resolve())
+          response.result.current.remove({
+            nodeId: '99999999',
+            parent: '',
+            url: '/',
+            data: {},
+          })
+        })
+      })
+      it('some stuff???', () => {
+        console.log(response.result.all)
+        wtf does result contain?????
+      })
+      
     })
-    it('should the document be removed from the tree', async () => {
-      expect(
-        response.result.current.index.models.index.models.tree.operations.getNode(
-          '2'
-        )
-      ).toBeUndefined()
-    })
+    
+    
   })
 
   describe('when update is called', () => {
