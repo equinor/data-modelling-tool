@@ -11,17 +11,14 @@ import {
   IGlobalIndex,
   useGlobalIndex,
 } from '../context/global-index/IndexProvider'
+import { useEffect, useState } from 'react'
+import { LayoutComponents } from '../context/dashboard/useLayout'
 
-const validate = (data: any) => {
-  if (data.name === undefined || data.name === '') {
-    NotificationManager.error('Name is required')
-    return false
-  }
-  if (data.type === BlueprintEnum.ENTITY && data.type === undefined) {
-    NotificationManager.error('Type is required')
-    return false
-  }
-  return true
+interface FetchUrl {
+  uid: string
+  data: object
+  title: string
+  component: LayoutComponents
 }
 
 interface GetProps {
@@ -42,7 +39,7 @@ interface ToggleProps {
 interface OpenProps {
   dataSourceId: string
   nodeId: string
-  fetchUrl: any
+  fetchUrl: FetchUrl
 }
 
 interface CreateProps {
@@ -106,6 +103,8 @@ export interface IUseExplorer {
   index: IGlobalIndex
 
   dashboard: IDashboard
+
+  errorMessage: String | null
 }
 
 interface ExplorerProps {
@@ -117,6 +116,26 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const dashboard: IDashboard = useDashboard()
   const index: IGlobalIndex = useGlobalIndex()
   const { closeModal } = useModalContext()
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  useEffect(() => {
+    if (errorMessage) {
+      NotificationManager.error(errorMessage)
+    }
+  }, [errorMessage])
+
+  const validate = (data: any) => {
+    if (data.name === undefined || data.name === '') {
+      const errorMessage: string = 'Name is required'
+      setErrorMessage(errorMessage)
+      return false
+    }
+    if (data.type === BlueprintEnum.ENTITY || data.type === undefined) {
+      const errorMessage: string = 'Type is required'
+      setErrorMessage(errorMessage)
+      return false
+    }
+    return true
+  }
 
   const get = ({ dataSourceId, documentId, attribute }: GetProps) => {
     return documentAPI.getById(dataSourceId, documentId, attribute)
@@ -129,7 +148,9 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const toggle = ({ nodeId }: ToggleProps) => {
     index.models.index.operations
       .toggle(nodeId)
-      .catch(err => NotificationManager.error(err))
+      .catch(error =>
+        setErrorMessage(`Could not toggle this document (${error})`)
+      )
   }
 
   const open = ({ nodeId, dataSourceId, fetchUrl }: OpenProps) => {
@@ -140,9 +161,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         fetchUrl.component,
         { ...fetchUrl.data, documentId: fetchUrl.uid, dataSourceId: dataSourceId },
       )
-      dashboard.models.layout.operations.focus(nodeId)
-    } else {
-      NotificationManager.error('Not able to open selected document.')
+      dashboard.models.layout.operations.focus('nodeId') //i dont think this line does anything. when clicking on a document it is opened and focused in the dashboard.
     }
   }
 
@@ -154,7 +173,10 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           closeModal()
           index.models.index.operations.add(result.uid, nodeUrl, true)
         })
-        .catch(NotificationManager.error('Could not create document.'))
+        .catch(error => {
+          setErrorMessage(`Could not create document. Received error: ${error}`)
+          closeModal()
+        })
     }
   }
 
@@ -171,9 +193,10 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           index.models.index.operations.add(result.uid, nodeUrl, true)
           return result
         })
-        .catch(
-          NotificationManager.error('Not able to add element to document.')
-        )
+        .catch(error => {
+          closeModal()
+          setErrorMessage(`Not able to add element to document. (${error})`)
+        })
     }
   }
 
@@ -184,11 +207,17 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         index.models.index.operations
           .remove(nodeId, parent)
           // @ts-ignore
-          .then(dashboard.models.layout.operations.remove(nodeId))
-          .then(closeModal())
+          .then((result: any) => {
+            dashboard.models.layout.operations.remove(nodeId)
+            closeModal()
+          })
+        //todo: maybe add catech here? not it's possible though...
         return true
       })
-      .catch(NotificationManager.error('Could not remove selected document.'))
+      .catch(error => {
+        setErrorMessage(`Could not remove document. Received error: ${error}`)
+        closeModal()
+      })
   }
 
   const update = async ({ data, updateUrl, nodeUrl }: UpdateProps) => {
@@ -201,8 +230,11 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           .then(() =>
             dashboard.models.layout.operations.refreshByFilter(result.uid)
           )
+        //todo: maybe add a catch here? not sure if it's possible though...
       })
-      .catch(NotificationManager.error('Could not update selected document.'))
+      .catch(error =>
+        setErrorMessage(`Could not update selected document. (${error})`)
+      )
   }
 
   const updateById = async ({
@@ -223,7 +255,10 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           )
         return result
       })
-      .catch(NotificationManager.error('Could not update selected document.'))
+      .catch(error => {
+        setErrorMessage(`Could not update selected document. (${error})`)
+        closeModal()
+      })
   }
 
   return {
@@ -238,5 +273,6 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     addToParent,
     index,
     dashboard,
+    errorMessage,
   }
 }
