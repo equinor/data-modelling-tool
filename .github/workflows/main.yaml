@@ -42,7 +42,7 @@ jobs:
           eval $(ssh-agent)
           export GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=no' &&
           ssh-add - <<< "${{ secrets.DMSS_DEPLOY_KEY }}" &&
-          git clone git@github.com:equinor/data-modelling-storage-service api/dmss
+          git clone git@github.com:equinor/data-modelling-storage-service api/src/dmss
 
       - name: "Build API test image"
         run: docker build --cache-from $API_IMAGE --target development --tag api-development ./api
@@ -51,7 +51,7 @@ jobs:
         run: docker run --rm api-development black --check --diff .
 
       - name: "Bandit Static Code Security Analyzis"
-        run: docker run --rm api-development bandit --recursive . --exclude ./.venv,./tests,./tests_bdd,./dmss
+        run: docker run --rm api-development bandit --recursive . --exclude ./tests,./dmss
 
       - name: "Safety - Dependencies CVE Check"
         run: docker run --rm api-development safety check
@@ -60,9 +60,8 @@ jobs:
         run: docker run --rm api-development pytest tests
 
       - name: "API BDD Tests"
-        run: |
-          docker-compose -f docker-compose.yml -f docker-compose.ci.yml up --build -d
-          docker exec $DMT_API_CONTAINER_NAME ./init.sh behave
+        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave
+
   test-web:
     runs-on: ubuntu-latest
     steps:

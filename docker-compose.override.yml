@@ -11,8 +11,9 @@ services:
       target: development
     image: api-dev
     volumes:
-      - ./api/:/code
+      - ./api/src/:/code
       - ../data-modelling-storage-service/gen/dmss_api:/dmss_api
+      - ../data-modelling-storage-service:/data-modelling-storage-service
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
@@ -24,7 +25,7 @@ services:
     networks:
       - data-modelling-storage-service_default
     external_links:
-      - mainapi
+      - dmss
       - db
 
   web:

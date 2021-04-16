@@ -8,21 +8,12 @@ repos:
     - id: check-json
     - id: check-yaml
 
-# Waiting for rev 3.8 to support ":="
-#- repo: https://gitlab.com/pycqa/flake8
-#  rev: 3.7.9
-#  hooks:
-#    - id: flake8
-#      args: ['--config=api/.flake8']
-#      language_version: python3.8
-
 - repo: https://github.com/ambv/black
   rev: 19.10b0
   hooks:
     - id: black
       language_version: python3.8
-      files: ^api/.*\.py$
-
+      files: ^api/src/.*\.py$
 
 - repo: https://github.com/PyCQA/bandit
   rev: 1.6.2
@@ -40,12 +31,17 @@ repos:
 
 - repo: local
   hooks:
+    - id: flake8
+      # The provided hook fails to read config file. Therefore this wrapper.
+      name: Python style checking
+      entry: sh -c "api/.venv/bin/python -m flake8 --config=api/.flake8 api/src"
+      language: system
     - id: yarntest
       name: Yarn tests
       entry: sh -c "cd web && CI=true npm run coverage"
       language: system
       files: ^web/.*\.(test.ts|test.tsx|test.js)$
     - id: pytest
-      name: API Unit Tests with coverage
-      entry: sh -c "docker run --rm api-dev pytest tests"
+      name: API Unit Tests
+      entry: sh -c "docker run --rm api-dev pytest"
       language: system

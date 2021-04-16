@@ -23,7 +23,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
       APPLICATION_HOME: /code/home
       FLASK_ENV: development
-      DMSS_HOST: mainapi
+      DMSS_HOST: dmss
       DMSS_PORT: 5000
 
   web:
