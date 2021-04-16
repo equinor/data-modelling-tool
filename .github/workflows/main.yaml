@@ -201,8 +201,8 @@ jobs:
             -f
 
   store-images-as-artifacts:
-    needs: [build-and-publish-api-master, build-and-publish-web-master]
-    if: github.ref == 'refs/heads/store-docker-image-as-artifacts'
+    # needs: [build-and-publish-api-master, build-and-publish-web-master]
+    #if: github.ref == 'refs/heads/store-docker-image-as-artifacts'
     runs-on: ubuntu-latest
     steps:
       - name: build latest API image
