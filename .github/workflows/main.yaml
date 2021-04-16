@@ -211,17 +211,11 @@ jobs:
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $WEB_IMAGE
           docker pull $API_IMAGE
-
-      - name: pull images from docker hub
-        run: |
-          docker pull nginx:alpine
-          docker pull python:3.8-slim
-          docker pull node:12-alpine
-          docker images
+          docker pull $NGINX_IMAGE
 
       - name: save docker images
         run: |
-          docker save $API_IMAGE $WEB_IMAGE nginx:alpine python:3.8-slim node:12-alpine > DMT_IMAGES.tar
+          docker save $API_IMAGE $WEB_IMAGE $NGINX_IMAGE > DMT_IMAGES.tar
           ls -sh DMT_IMAGES.tar
 
       - name: upload images as artifacts
