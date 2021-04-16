@@ -206,22 +206,21 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - name: build latest API image
+      - name: pull latest DMT images
         run: |
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
-          docker pull $API_IMAGE
-          docker build --cache-from $API_IMAGE --tag $API_IMAGE ./api
-          docker tag $API_IMAGE $API_IMAGE:latest
-
-      - name: build latest WEB image
-        run: |
           docker pull $WEB_IMAGE
-          docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE ./web
-          docker tag $WEB_IMAGE $WEB_IMAGE:latest
+          docker pull $API_IMAGE
+
+      - name: pull images from docker hub
+        run: |
+          docker pull nginx:alpine
+          docker pull python:3.8-slim
+          docker pull node:12-alpine
 
       - name: save docker images
         run: |
-          docker save $API_IMAGE $WEB_IMAGE > DMT_IMAGES.tar
+          docker save $API_IMAGE $WEB_IMAGE nginx:alpine pthon:3.8-slim node:12-alpine > DMT_IMAGES.tar
           ls -sh DMT_IMAGES.tar
 
       - name: upload images as artifacts
