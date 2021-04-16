@@ -221,7 +221,7 @@ jobs:
 
       - name: save docker images
         run: |
-          docker save $API_IMAGE $WEB_IMAGE nginx:alpine pthon:3.8-slim node:12-alpine > DMT_IMAGES.tar
+          docker save $API_IMAGE $WEB_IMAGE nginx:alpine python:3.8-slim node:12-alpine > DMT_IMAGES.tar
           ls -sh DMT_IMAGES.tar
 
       - name: upload images as artifacts
