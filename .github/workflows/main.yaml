@@ -224,7 +224,7 @@ jobs:
           ls -sh DMT_IMAGES.tar
 
       - name: upload images as artifacts
-      - uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v2
         with:
           name: dmt-artifact
           path: DMT_IMAGES.tar
