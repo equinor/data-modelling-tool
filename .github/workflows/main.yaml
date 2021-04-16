@@ -217,6 +217,7 @@ jobs:
           docker pull nginx:alpine
           docker pull python:3.8-slim
           docker pull node:12-alpine
+          docker images
 
       - name: save docker images
         run: |
