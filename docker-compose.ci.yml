@@ -11,7 +11,7 @@ services:
       FLASK_ENV: testing
       ENVIRONMENT: local
     depends_on:
-      - mainapi
+      - dmss
 
   web:
     build:
@@ -31,7 +31,7 @@ services:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
 
-  mainapi:
+  dmss:
     image: mariner.azurecr.io/dmss
     restart: unless-stopped
     environment:

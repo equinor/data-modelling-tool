@@ -2,6 +2,7 @@
 exclude =
     .venv,
     __pycache__
+    src/tests
 statistics = True
 show-source = True
 max-line-length = 119

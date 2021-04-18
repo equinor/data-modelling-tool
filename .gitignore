@@ -3,7 +3,7 @@
 
 data/
 h5/
-/api/home/first-run-false
+/api/src/home/first-run-false
 
 ### macOS ###
 # General
@@ -141,3 +141,4 @@ api/core/domain/dynamic_models/__init__.py
 .generated/
 api/.pytest_cachefirst-run-false
 api/first-run-false
+/api/src/first-run-false
