@@ -157,7 +157,7 @@ jobs:
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $API_IMAGE
           DOCKER_BUILDKIT=1 docker build --cache-from $API_IMAGE --tag $API_IMAGE:$RELEASE_TAG ./api
-          docker tag $API_IMAGE:$RELEASE_TAG $API_IMAGE:release 
+          docker tag $API_IMAGE:$RELEASE_TAG $API_IMAGE:release
           docker push $API_IMAGE:$RELEASE_TAG
           docker push $API_IMAGE:release
 
