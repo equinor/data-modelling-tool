@@ -66,7 +66,9 @@ def init_application():
 
     for folder in Config.SYSTEM_FOLDERS:
         import_package(
-            f"{Config.APPLICATION_HOME}/core/{folder}", data_source=Config.APPLICATION_DATA_SOURCE, is_root=True
+            f"{Config.APPLICATION_HOME}/applications/{folder}",
+            data_source=Config.APPLICATION_DATA_SOURCE,
+            is_root=True,
         )
 
     logger.info(f"Importing blueprint package(s) {Config.ENTITY_APPLICATION_SETTINGS['packages']}")

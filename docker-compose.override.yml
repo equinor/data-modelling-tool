@@ -2,6 +2,7 @@ version: "3.4"
 
 services:
   nginx:
+    image: nginx-dev
     build: ./nginx
     networks:
       - data-modelling-storage-service_default
@@ -34,7 +35,8 @@ services:
     image: web-dev
     stdin_open: true
     volumes:
-      - ./web/src:/code/src
+      - ./web/app/src:/code/app/src
+      - ./web/plugins:/code/plugins
     environment:
       - NODE_ENV=development
     ports:

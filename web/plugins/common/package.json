@@ -1,0 +1,9 @@
+{
+  "name": "@dmt/common",
+  "version": "1.0.0",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "lodash": "^4.17.19",
+    "styled-components": "^5.2.3"
+  }
+}

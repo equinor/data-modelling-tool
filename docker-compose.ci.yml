@@ -16,7 +16,7 @@ services:
   web:
     build:
       context: ./web
-      target: development
+      target: base
     image: web-development
     environment:
       CI: "true"

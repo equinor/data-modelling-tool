@@ -40,5 +40,13 @@
     }
   ],
   "storageRecipes": [],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "Edit",
+      "description": "Default Form",
+      "plugin": "default-form",
+      "attributes": []
+    }
+  ]
 }

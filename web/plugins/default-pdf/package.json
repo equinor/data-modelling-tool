@@ -1,0 +1,8 @@
+{
+  "name": "@dmt/default-pdf",
+  "version": "1.0.0",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "@dmt/core-plugins": "1.0.0"
+  }
+}
