@@ -211,7 +211,7 @@ const Inner = (props: any) => {
         <label style={{ marginRight: '10px' }}>Type: </label>
 
       </FilterGroup>
-      {attributes.length !== 0 && (
+      {attributes.length === 0 && (
         <div
           style={{
             display: 'flex',
@@ -395,7 +395,10 @@ export default () => {
       dataSourceId: 'entities',
       searchDataRequest: query,
     })
-      .then((res: any) => {
+      .then((result: any) => {
+        // todo: fix response type in dmss library and move to service layer
+        const res = JSON.parse(result)
+
         // @ts-ignore
         let resultList = []
         Object.keys(res).map(key => resultList.push(res[key]))
