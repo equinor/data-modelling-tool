@@ -161,7 +161,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         fetchUrl.component,
         { ...fetchUrl.data, documentId: fetchUrl.uid, dataSourceId: dataSourceId },
       )
-      dashboard.models.layout.operations.focus('nodeId') //i dont think this line does anything. when clicking on a document it is opened and focused in the dashboard.
+      dashboard.models.layout.operations.focus(nodeId)
     }
   }
 
