@@ -17,6 +17,7 @@ import {
   IDocumentAPI
 } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
+import { LayoutComponents } from '../context/dashboard/useLayout'
 
 const wrapper: React.FC = ({
   children,
@@ -183,64 +184,80 @@ describe('the explorer hook', () => {
   })
 
   describe('when toggle is called', () => {
-    describe('and document is expandable', () => {
-      beforeEach(async () => {
-        expect(
-          response.result.current.index.models.index.models.tree.operations.getNode(
-            '1'
-          ).isExpandable
-        ).toEqual(true)
-        expect(
-          response.result.current.index.models.index.models.tree.operations.getNode(
-            '1'
-          ).isOpen
-        ).toEqual(false)
-        await act(async () => {
-          response.result.current.toggle({ nodeId: '1' })
+    describe('on a document that exists', () => {
+      describe('and document is expandable', () => {
+        beforeEach(async () => {
+          expect(
+            response.result.current.index.models.index.models.tree.operations.getNode(
+              '1'
+            ).isExpandable
+          ).toEqual(true)
+          expect(
+            response.result.current.index.models.index.models.tree.operations.getNode(
+              '1'
+            ).isOpen
+          ).toEqual(false)
+          await act(async () => {
+            response.result.current.toggle({ nodeId: '1' })
+          })
+        })
+        it('should maximize document in tree', async () => {
+          expect(
+            response.result.current.index.models.index.models.tree.operations.getNode(
+              '1'
+            ).isOpen
+          ).toEqual(true)
+        })
+        it('should add (fetch children)', async () => {
+          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
+          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
+            '/api/v1/index/1',
+            '1',
+            application
+          )
         })
       })
-      it('should maximize document in tree', async () => {
-        expect(
-          response.result.current.index.models.index.models.tree.operations.getNode(
-            '1'
-          ).isOpen
-        ).toEqual(true)
-      })
-      it('should add (fetch children)', async () => {
-        expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
-        expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
-          '/api/v1/index/1',
-          '1',
-          application
-        )
+
+      describe('and document is not expandable', () => {
+        beforeEach(async () => {
+          expect(
+            response.result.current.index.models.index.models.tree.operations.getNode(
+              '2'
+            ).isExpandable
+          ).toEqual(false)
+          expect(
+            response.result.current.index.models.index.models.tree.operations.getNode(
+              '2'
+            ).isOpen
+          ).toEqual(false)
+          await act(async () => {
+            response.result.current.toggle({ nodeId: '2' })
+          })
+        })
+        it('should maximize document in tree', async () => {
+          expect(
+            response.result.current.index.models.index.models.tree.operations.getNode(
+              '2'
+            ).isOpen
+          ).toEqual(true)
+        })
+        it('should not add (fetch children)', async () => {
+          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(0)
+        })
       })
     })
 
-    describe('and document is not expandable', () => {
+    describe('on a document that does not exist', () => {
+      const nodeId: string = '999'
       beforeEach(async () => {
-        expect(
-          response.result.current.index.models.index.models.tree.operations.getNode(
-            '2'
-          ).isExpandable
-        ).toEqual(false)
-        expect(
-          response.result.current.index.models.index.models.tree.operations.getNode(
-            '2'
-          ).isOpen
-        ).toEqual(false)
         await act(async () => {
-          response.result.current.toggle({ nodeId: '2' })
+          response.result.current.toggle({ nodeId: nodeId })
         })
       })
-      it('should maximize document in tree', async () => {
-        expect(
-          response.result.current.index.models.index.models.tree.operations.getNode(
-            '2'
-          ).isOpen
-        ).toEqual(true)
-      })
-      it('should not add (fetch children)', async () => {
-        expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(0)
+      it('toggle() should set an errorMessage in useExplorer', async () => {
+        expect(response.result.current.errorMessage).toBe(
+          `Could not toggle this document (Node not found: ${nodeId})`
+        )
       })
     })
   })
@@ -256,7 +273,8 @@ describe('the explorer hook', () => {
         fetchUrl: {
           uid: '1',
           title: '1',
-          component: 'blueprint',
+          component: LayoutComponents.blueprint,
+          // @ts-ignore
           data: '/url',
         },
       })
@@ -267,153 +285,279 @@ describe('the explorer hook', () => {
   })
 
   describe('when create is called', () => {
-    let documentToCreate = {
-      data: {
-        name: 'Document name',
-        type: NodeType.BLUEPRINT,
-      },
-      dataUrl: 'url/data',
-      nodeUrl: 'url/node',
-    }
-
-    beforeEach(async () => {
-      const createdDocument = {
-        uid: '1000',
-      }
-      mocks.documentApi.create.mockReturnValue(Promise.resolve(createdDocument))
-
-      const indexNodes = {
-        '1000': {
-          id: '1000',
-          title: 'Node 1000',
-          nodeType: NodeType.BLUEPRINT,
+    describe('on a document that exists', () => {
+      let documentToCreate = {
+        data: {
+          name: 'Document name',
           type: NodeType.BLUEPRINT,
-          parentId: '',
-          children: [],
-          meta: {},
         },
+        dataUrl: 'url/data',
+        nodeUrl: 'url/node',
       }
-      mocks.indexApi.getIndexByDocument.mockReturnValue(
-        Promise.resolve(indexNodes)
-      )
-      await act(async () => {
-        response.result.current.create(documentToCreate)
-      })
-    })
-    it('should the document be saved to the server', async () => {
-      expect(mocks.documentApi.create).toHaveBeenCalledTimes(1)
-      expect(mocks.documentApi.create).toHaveBeenCalledWith(
-        documentToCreate.dataUrl,
-        documentToCreate.data
-      )
-    })
-    it('should the document be added to the tree', async () => {
-      expect(
-        response.result.current.index.models.index.models.tree.operations.getNode(
-          '1000'
+      beforeEach(async () => {
+        const createdDocument = {
+          uid: '1000',
+        }
+        mocks.documentApi.create.mockReturnValue(
+          Promise.resolve(createdDocument)
         )
-      ).toEqual({
-        children: [],
-        icon: 'blueprint',
-        isExpandable: false,
-        isFolder: true,
-        isHidden: false,
-        isLoading: false,
-        isOpen: true,
-        isRoot: false,
-        meta: {
-          type: 'system/SIMOS/Blueprint',
-        },
-        nodeId: '1000',
-        nodeType: 'system/SIMOS/Blueprint',
-        templateRef: '',
-        title: 'Node 1000',
+
+        const indexNodes = {
+          '1000': {
+            id: '1000',
+            title: 'Node 1000',
+            nodeType: NodeType.BLUEPRINT,
+            type: NodeType.BLUEPRINT,
+            parentId: '',
+            children: [],
+            meta: {},
+          },
+        }
+        mocks.indexApi.getIndexByDocument.mockReturnValue(
+          Promise.resolve(indexNodes)
+        )
+        await act(async () => {
+          response.result.current.create(documentToCreate)
+        })
       })
+      it('should the document be saved to the server', async () => {
+        expect(mocks.documentApi.create).toHaveBeenCalledTimes(1)
+        expect(mocks.documentApi.create).toHaveBeenCalledWith(
+          documentToCreate.dataUrl,
+          documentToCreate.data
+        )
+      })
+      it('should the document be added to the tree', async () => {
+        expect(
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '1000'
+          )
+        ).toEqual({
+          children: [],
+          icon: 'blueprint',
+          isExpandable: false,
+          isFolder: true,
+          isHidden: false,
+          isLoading: false,
+          isOpen: true,
+          isRoot: false,
+          meta: {
+            type: 'system/SIMOS/Blueprint',
+          },
+          nodeId: '1000',
+          nodeType: 'system/SIMOS/Blueprint',
+          templateRef: '',
+          title: 'Node 1000',
+        })
+      })
+    })
+
+    describe('creating a document', () => {
+      let documentWithoutName = {
+        data: {
+          name: '',
+          type: NodeType.BLUEPRINT,
+        },
+        dataUrl: 'url/data',
+        nodeUrl: 'url/node',
+      }
+      let documentWithoutType = {
+        data: {
+          name: 'Example name',
+          type: undefined,
+        },
+        dataUrl: 'url/data',
+        nodeUrl: 'url/node',
+      }
+      let documentWithWrongDataUrl = {
+        data: {
+          name: 'Document name',
+          type: NodeType.BLUEPRINT,
+        },
+        dataUrl: '??????',
+        nodeUrl: '??????',
+      }
+      beforeEach(async () => {
+        const createdDocument = {
+          uid: '1000',
+        }
+        mocks.documentApi.create.mockReturnValue(
+          Promise.resolve(createdDocument)
+        )
+
+        const indexNodes = {
+          '1000': {
+            id: '1000',
+            title: 'Node 1000',
+            nodeType: NodeType.BLUEPRINT,
+            type: NodeType.BLUEPRINT,
+            parentId: '',
+            children: [],
+            meta: {},
+          },
+        }
+        mocks.indexApi.getIndexByDocument.mockReturnValue(
+          Promise.resolve(indexNodes)
+        )
+      })
+      it('with wrong name should create an errorMessage', async () => {
+        await act(async () => {
+          response.result.current.create(documentWithoutName)
+        })
+        expect(response.result.current.errorMessage).toBe('Name is required')
+      })
+      it('with undefined type should create an errorMessage', async () => {
+        await act(async () => {
+          response.result.current.create(documentWithoutType)
+        })
+        expect(response.result.current.errorMessage).toBe('Type is required')
+      })
+      // todo: make wrong dataURL return error
+      /*
+      it('with wrong dataURL should create an errorMessage', async () => {
+        await act(async () => {
+          response.result.current.create(documentWithWrongDataUrl)
+        })
+        expect(
+          response.result.current.errorMessage
+        ).toBe('????') //todo - does not catch error here....
+      })
+      */
     })
   })
 
   describe('when remove is called', () => {
-    beforeEach(async () => {
-      await act(async () => {
-        mocks.documentApi.remove.mockImplementation(() => Promise.resolve())
-        response.result.current.remove({
-          nodeId: '2',
-          parent: '',
-          url: '/',
-          data: {},
+    describe('and documentApi returns a resolved promise', () => {
+      beforeEach(async () => {
+        await act(async () => {
+          mocks.documentApi.remove.mockImplementation(() => Promise.resolve())
+          response.result.current.remove({
+            nodeId: '2',
+            parent: '',
+            url: '/',
+            data: {},
+          })
         })
       })
+      it('should the document be removed from the server ', async () => {
+        expect(mocks.documentApi.remove).toHaveBeenCalledTimes(1)
+      })
+      it('should the document be removed from the tree', async () => {
+        expect(
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '2'
+          )
+        ).toBeUndefined()
+      })
     })
-    it('should the document be removed from the server ', async () => {
-      expect(mocks.documentApi.remove).toHaveBeenCalledTimes(1)
-    })
-    it('should the document be removed from the tree', async () => {
-      expect(
-        response.result.current.index.models.index.models.tree.operations.getNode(
-          '2'
+
+    describe('and document api returns a rejected promise', () => {
+      beforeEach(async () => {
+        await act(async () => {
+          mocks.documentApi.remove.mockImplementation(() =>
+            Promise.reject(new Error('error'))
+          )
+          response.result.current.remove({
+            nodeId: '9999',
+            parent: '',
+            url: '????',
+            data: { valueA: 'A' },
+          })
+        })
+      })
+      it('should create an errorMessage', () => {
+        expect(response.result.current.errorMessage).toBe(
+          'Could not remove document. Received error: Error: error'
         )
-      ).toBeUndefined()
+      })
     })
   })
 
   describe('when update is called', () => {
-    beforeEach(async () => {
-      const updatedDocument = {
-        uid: '1',
-      }
-      mocks.documentApi.update.mockReturnValue(Promise.resolve(updatedDocument))
+    describe('and documentApi returns a resolved promise', () => {
+      beforeEach(async () => {
+        const updatedDocument = {
+          uid: '1',
+        }
+        mocks.documentApi.update.mockReturnValue(
+          Promise.resolve(updatedDocument)
+        )
 
-      const indexNodes = {
-        '1': {
-          id: '1',
-          title: 'New name',
-          nodeType: NodeType.PACKAGE,
-          type: NodeType.PACKAGE,
-          parentId: '',
-          children: [],
-          meta: {},
-        },
-      }
-
-      mocks.indexApi.getIndexByDocument.mockReturnValue(
-        Promise.resolve(indexNodes)
-      )
-      await act(async () => {
-        response.result.current.update({
-          data: {
-            name: 'New name',
+        const indexNodes = {
+          '1': {
+            id: '1',
+            title: 'New name',
+            nodeType: NodeType.PACKAGE,
+            type: NodeType.PACKAGE,
+            parentId: '',
+            children: [],
+            meta: {},
           },
-          updateUrl: '/',
-          nodeUrl: '/',
+        }
+
+        mocks.indexApi.getIndexByDocument.mockReturnValue(
+          Promise.resolve(indexNodes)
+        )
+        await act(async () => {
+          response.result.current.update({
+            data: {
+              name: 'New name',
+            },
+            updateUrl: '/',
+            nodeUrl: '/',
+          })
+        })
+      })
+
+      it('should the document be updated to the server', async () => {
+        expect(mocks.documentApi.update).toHaveBeenCalledTimes(1)
+      })
+      it('should the document be updated in the tree', async () => {
+        expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
+        expect(
+          response.result.current.index.models.index.models.tree.operations.getNode(
+            '1'
+          )
+        ).toEqual({
+          children: [],
+          icon: 'folder',
+          isExpandable: true,
+          isFolder: true,
+          isHidden: false,
+          isLoading: false,
+          isOpen: true,
+          isRoot: false,
+          meta: {
+            type: 'system/SIMOS/Package',
+          },
+          nodeId: '1',
+          nodeType: 'system/SIMOS/Package',
+          templateRef: '',
+          title: 'New name',
         })
       })
     })
 
-    it('should the document be updated to the server', async () => {
-      expect(mocks.documentApi.update).toHaveBeenCalledTimes(1)
-    })
-    it('should the document be updated in the tree', async () => {
-      expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
-      expect(
-        response.result.current.index.models.index.models.tree.operations.getNode(
-          '1'
+    describe('on a documentApi returns a rejected promise', () => {
+      beforeEach(async () => {
+        mocks.documentApi.update.mockReturnValue(
+          Promise.reject(new Error('error'))
         )
-      ).toEqual({
-        children: [],
-        icon: 'folder',
-        isExpandable: true,
-        isFolder: true,
-        isHidden: false,
-        isLoading: false,
-        isOpen: true,
-        isRoot: false,
-        meta: {
-          type: 'system/SIMOS/Package',
-        },
-        nodeId: '1',
-        nodeType: 'system/SIMOS/Package',
-        templateRef: '',
-        title: 'New name',
+
+        await act(async () => {
+          response.result.current.update({
+            data: {
+              name: 'New name',
+            },
+            updateUrl: '/',
+            nodeUrl: '/',
+          })
+        })
+      })
+      it('should create an errorMessage', () => {
+        expect(response.result.current.errorMessage).toBe(
+          'Could not update selected document. (Error: error)'
+        )
       })
     })
   })

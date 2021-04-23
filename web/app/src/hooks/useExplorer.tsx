@@ -11,17 +11,14 @@ import {
   IGlobalIndex,
   useGlobalIndex,
 } from '../context/global-index/IndexProvider'
+import { useEffect, useState } from 'react'
+import { LayoutComponents } from '../context/dashboard/useLayout'
 
-const validate = (data: any) => {
-  if (data.name === undefined || data.name === '') {
-    NotificationManager.error('Name is required')
-    return false
-  }
-  if (data.type === BlueprintEnum.ENTITY && data.type === undefined) {
-    NotificationManager.error('Type is required')
-    return false
-  }
-  return true
+interface FetchUrl {
+  uid: string
+  data: object
+  title: string
+  component: LayoutComponents
 }
 
 interface GetProps {
@@ -42,7 +39,7 @@ interface ToggleProps {
 interface OpenProps {
   dataSourceId: string
   nodeId: string
-  fetchUrl: any
+  fetchUrl: FetchUrl
 }
 
 interface CreateProps {
@@ -106,6 +103,8 @@ export interface IUseExplorer {
   index: IGlobalIndex
 
   dashboard: IDashboard
+
+  errorMessage: String | null
 }
 
 interface ExplorerProps {
@@ -117,6 +116,26 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const dashboard: IDashboard = useDashboard()
   const index: IGlobalIndex = useGlobalIndex()
   const { closeModal } = useModalContext()
+  const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  useEffect(() => {
+    if (errorMessage) {
+      NotificationManager.error(errorMessage)
+    }
+  }, [errorMessage])
+
+  const validate = (data: any) => {
+    if (data.name === undefined || data.name === '') {
+      const errorMessage: string = 'Name is required'
+      setErrorMessage(errorMessage)
+      return false
+    }
+    if (data.type === BlueprintEnum.ENTITY || data.type === undefined) {
+      const errorMessage: string = 'Type is required'
+      setErrorMessage(errorMessage)
+      return false
+    }
+    return true
+  }
 
   const get = ({ dataSourceId, documentId, attribute }: GetProps) => {
     return documentAPI.getById(dataSourceId, documentId, attribute)
@@ -127,7 +146,11 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const toggle = ({ nodeId }: ToggleProps) => {
-    return index.models.index.operations.toggle(nodeId)
+    index.models.index.operations
+      .toggle(nodeId)
+      .catch((error: any) =>
+        setErrorMessage(`Could not toggle this document (${error})`)
+      )
   }
 
   const open = ({ nodeId, dataSourceId, fetchUrl }: OpenProps) => {
@@ -144,10 +167,15 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
 
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
-      documentAPI.create(dataUrl, data).then((result: any) => {
-        closeModal()
-        index.models.index.operations.add(result.uid, nodeUrl, true)
-      })
+      documentAPI
+        .create(dataUrl, data)
+        .then((result: any) => {
+          closeModal()
+          index.models.index.operations.add(result.uid, nodeUrl, true)
+        })
+        .catch((error: any) => {
+          setErrorMessage(`Could not create document. Received error: ${error}`)
+        })
     }
   }
 
@@ -157,34 +185,53 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
                                nodeUrl,
                              }: AddToParentProps) => {
     if (validate(data)) {
-      return documentAPI.addToParent(dataSourceId, data).then((result: any) => {
-        closeModal()
-        index.models.index.operations.add(result.uid, nodeUrl, true)
-        return result
-      })
+      return documentAPI
+        .addToParent(dataSourceId, data)
+        .then((result: any) => {
+          closeModal()
+          index.models.index.operations.add(result.uid, nodeUrl, true)
+          return result
+        })
+        .catch((error: any) => {
+          setErrorMessage(`Not able to add element to document. (${error})`)
+        })
     }
   }
 
   const remove = async ({ nodeId, parent, url, data }: RemoveProps) => {
-    return documentAPI.remove(url, data).then(() => {
-      index.models.index.operations
-        .remove(nodeId, parent)
-        // @ts-ignore
-        .then(dashboard.models.layout.operations.remove(nodeId))
-        .then(closeModal())
-      return true
-    })
+    return documentAPI
+      .remove(url, data)
+      .then(() => {
+        index.models.index.operations
+          .remove(nodeId, parent)
+          // @ts-ignore
+          .then((result: any) => {
+            dashboard.models.layout.operations.remove(nodeId)
+            closeModal()
+          })
+        //todo: maybe add catech here? not it's possible though...
+        return true
+      })
+      .catch((error: any) => {
+        setErrorMessage(`Could not remove document. Received error: ${error}`)
+      })
   }
 
   const update = async ({ data, updateUrl, nodeUrl }: UpdateProps) => {
-    return documentAPI.update(updateUrl, data).then((result: any) => {
-      closeModal()
-      index.models.index.operations
-        .add(result.uid, nodeUrl)
-        .then(() =>
-          dashboard.models.layout.operations.refreshByFilter(result.uid),
-        )
-    })
+    return documentAPI
+      .update(updateUrl, data)
+      .then((result: any) => {
+        closeModal()
+        index.models.index.operations
+          .add(result.uid, nodeUrl)
+          .then(() =>
+            dashboard.models.layout.operations.refreshByFilter(result.uid)
+          )
+        //todo: maybe add a catch here? not sure if it's possible though...
+      })
+      .catch((error: any) =>
+        setErrorMessage(`Could not update selected document. (${error})`)
+      )
   }
 
   const updateById = async ({
@@ -196,7 +243,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
                             }: UpdateByIdProps) => {
     return documentAPI
       .updateById(dataSourceId, documentId, attribute, data)
-      .then(result => {
+      .then((result: any) => {
         closeModal()
         index.models.index.operations
           .add(documentId, nodeUrl)
@@ -204,6 +251,9 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
             dashboard.models.layout.operations.refreshByFilter(documentId),
           )
         return result
+      })
+      .catch((error: any) => {
+        setErrorMessage(`Could not update selected document. (${error})`)
       })
   }
 
@@ -219,5 +269,6 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     addToParent,
     index,
     dashboard,
+    errorMessage,
   }
 }

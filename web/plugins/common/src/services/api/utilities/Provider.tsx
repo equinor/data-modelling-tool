@@ -12,14 +12,18 @@ const post = (resource: string, model: any) => {
   return axios
     .post(`${resource}`, model)
     .then(handleResponse)
-    .catch(handleError)
+    .catch(err => {
+      throw new Error(err)
+    })
 }
 
 const put = (resource: string, model: any) => {
   return axios
     .put(`${resource}`, model)
     .then(handleResponse)
-    .catch(handleError)
+    .catch(err => {
+      throw new Error(err)
+    })
 }
 
 const patch = (resource: string, model: any) => {
