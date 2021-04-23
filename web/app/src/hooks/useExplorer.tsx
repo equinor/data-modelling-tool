@@ -148,7 +148,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const toggle = ({ nodeId }: ToggleProps) => {
     index.models.index.operations
       .toggle(nodeId)
-      .catch(error =>
+      .catch((error: any) =>
         setErrorMessage(`Could not toggle this document (${error})`)
       )
   }
@@ -173,9 +173,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           closeModal()
           index.models.index.operations.add(result.uid, nodeUrl, true)
         })
-        .catch(error => {
+        .catch((error: any) => {
           setErrorMessage(`Could not create document. Received error: ${error}`)
-          closeModal()
         })
     }
   }
@@ -193,8 +192,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           index.models.index.operations.add(result.uid, nodeUrl, true)
           return result
         })
-        .catch(error => {
-          closeModal()
+        .catch((error: any) => {
           setErrorMessage(`Not able to add element to document. (${error})`)
         })
     }
@@ -214,9 +212,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         //todo: maybe add catech here? not it's possible though...
         return true
       })
-      .catch(error => {
+      .catch((error: any) => {
         setErrorMessage(`Could not remove document. Received error: ${error}`)
-        closeModal()
       })
   }
 
@@ -232,7 +229,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           )
         //todo: maybe add a catch here? not sure if it's possible though...
       })
-      .catch(error =>
+      .catch((error: any) =>
         setErrorMessage(`Could not update selected document. (${error})`)
       )
   }
@@ -246,7 +243,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
                             }: UpdateByIdProps) => {
     return documentAPI
       .updateById(dataSourceId, documentId, attribute, data)
-      .then(result => {
+      .then((result: any) => {
         closeModal()
         index.models.index.operations
           .add(documentId, nodeUrl)
@@ -255,9 +252,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
           )
         return result
       })
-      .catch(error => {
+      .catch((error: any) => {
         setErrorMessage(`Could not update selected document. (${error})`)
-        closeModal()
       })
   }
 
