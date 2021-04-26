@@ -155,7 +155,7 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Get By Id
      */
-    async blobGetByIdRaw(requestParameters: BlobGetByIdRequest): Promise<runtime.ApiResponse<any>> {
+    async blobGetByIdRaw(requestParameters: BlobGetByIdRequest): Promise<runtime.ApiResponse<Blob>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
             throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling blobGetById.');
         }
@@ -175,13 +175,13 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.BlobApiResponse(response);
     }
 
     /**
      * Get By Id
      */
-    async blobGetById(requestParameters: BlobGetByIdRequest): Promise<any> {
+    async blobGetById(requestParameters: BlobGetByIdRequest): Promise<Blob> {
         const response = await this.blobGetByIdRaw(requestParameters);
         return await response.value();
     }
