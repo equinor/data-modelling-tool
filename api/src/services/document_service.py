@@ -2,6 +2,7 @@ import io
 import zipfile
 from typing import Union
 
+from domain_classes.blueprint import Blueprint
 from domain_classes.dto import DTO
 from domain_classes.tree_node import ListNode, Node
 from enums import DMT
@@ -19,6 +20,11 @@ class DocumentService:
         self.blueprint_provider = blueprint_provider
         self.document_provider = document_provider
         self.uid_document_provider = uid_document_provider
+
+    def get_blueprint(self, type: str) -> Blueprint:
+        blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
+        blueprint.realize_extends(self.blueprint_provider.get_blueprint)
+        return blueprint
 
     # This now only works with "local" repository. Like Zip or Filesystem
     def save(self, node: Union[Node, ListNode], data_source_id: str, repository, path="") -> None:
@@ -46,13 +52,13 @@ class DocumentService:
         if reset_bp_cache:
             self.blueprint_provider.invalidate_cache()
         document = self.uid_document_provider(data_source_id, document_uid, depth)
-        return Node.from_dict(document, document["_id"], blueprint_provider=self.blueprint_provider)
+        return Node.from_dict(document, document["_id"], blueprint_provider=self.get_blueprint)
 
     def create_zip_export(self, data_source_id: str, document_uid: str) -> io.BytesIO:
         document = self.uid_document_provider(data_source_id, document_uid)["document"]
         memory_file = io.BytesIO()
         with zipfile.ZipFile(memory_file, mode="w") as zip_file:
-            root_node: Node = Node.from_dict(document, document.get("_id"), blueprint_provider=self.blueprint_provider)
+            root_node: Node = Node.from_dict(document, document.get("_id"), blueprint_provider=self.get_blueprint)
             # Save the selected node, using custom ZipFile repository
             self.save(root_node, data_source_id, ZipFileClient(zip_file))
 

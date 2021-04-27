@@ -35,9 +35,9 @@ class CreateEntity:
         self.description = description
         self.type = type
         self.blueprint_provider = blueprint_provider
-        self.attribute_types = self.blueprint_provider.get_blueprint(SIMOS.ATTRIBUTE_TYPES.value).to_dict()
-        self.blueprint_attribute: Blueprint = self.blueprint_provider.get_blueprint(SIMOS.BLUEPRINT_ATTRIBUTE.value)
-        blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
+        self.attribute_types = self.blueprint_provider(SIMOS.ATTRIBUTE_TYPES.value).to_dict()
+        self.blueprint_attribute: Blueprint = self.blueprint_provider(SIMOS.BLUEPRINT_ATTRIBUTE.value)
+        blueprint: Blueprint = self.blueprint_provider(type)
         entity = {"name": self.name, "description": description, "type": self.type}
         self._entity = self._get_entity(blueprint=blueprint, entity=entity)
 
@@ -101,7 +101,7 @@ class CreateEntity:
                 if not attr.is_optional() and attr.name not in entity:
                     entity[attr.name] = CreateEntity.parse_value(attr=attr, blueprint_provider=self.blueprint_provider)
             else:
-                blueprint = self.blueprint_provider.get_blueprint(attr.attribute_type)
+                blueprint = self.blueprint_provider(attr.attribute_type)
                 if attr.is_array():
                     entity[attr.name] = attr.dimensions.create_default_array(self.blueprint_provider, CreateEntity)
                 else:

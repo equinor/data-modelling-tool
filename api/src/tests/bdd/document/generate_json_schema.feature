@@ -38,7 +38,7 @@ Feature: Document - Generate JSON Schema
           "type": "string"
         },
         "type": {
-          "default": "system/SIMOS/Application",
+          "default": "",
           "type": "string"
         }
       },

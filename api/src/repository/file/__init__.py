@@ -9,8 +9,10 @@ class LocalFileRepository:
             # If running locally, in a development environment, the SIMOS blueprints are expected to be found
             # in the dmss repo next to this repo.
             # If SIMOS blueprints are not found, expect them to be in this repo at "./src/dmss" (cloned during CI)
-            dev_path = f"{str(Path(__file__).parent.parent.parent.parent.parent.parent)}\
-                /data-modelling-storage-service/src/home/"
+            dev_path = (
+                f"{str(Path(__file__).parent.parent.parent.parent.parent.parent)}"
+                "/data-modelling-storage-service/src/home/"
+            )
             print(dev_path)
             print(Path(dev_path).is_dir())
             location = dev_path if Path(dev_path).is_dir() else "/code/dmss/src/home"

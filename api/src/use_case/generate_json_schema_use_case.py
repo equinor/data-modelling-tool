@@ -3,7 +3,7 @@ from repository.repository_exceptions import EntityNotFoundException
 from restful import request_object as req
 from restful import response_object as res
 from restful import use_case as uc
-from utils.blueprint_provider import BlueprintProvider
+from services.document_service import DocumentService
 from utils.form_to_schema import form_to_schema
 from utils.form_to_ui_schema import form_to_ui_schema
 
@@ -31,8 +31,7 @@ class GenerateJsonSchemaUseCase(uc.UseCase):
     def process_request(self, request_object: GenerateJsonSchemaRequestObject):
         type = request_object.type
         ui_recipe_name = request_object.ui_recipe
-        blueprint_provider = BlueprintProvider()
-        blueprint = blueprint_provider.get_blueprint(type)
+        blueprint = DocumentService().get_blueprint(type)
 
         if not blueprint:
             raise EntityNotFoundException(uid=type)

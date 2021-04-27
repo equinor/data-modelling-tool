@@ -95,7 +95,7 @@ class DictImporter:
         # If no attribute, that means this was a "top-level" entity.
         # We create a "fake" Attribute based on the Blueprint
         if not node_attribute:
-            bp = blueprint_provider.get_blueprint(entity["type"])
+            bp = blueprint_provider(entity["type"])
             node_attribute = BlueprintAttribute(bp.name, entity["type"], bp.description)
         try:
             node = Node(
@@ -383,7 +383,7 @@ class Node(NodeBase):
     @property
     def blueprint(self) -> Optional[Blueprint]:
         if self.type != "datasource":
-            return self.blueprint_provider.get_blueprint(self.type)
+            return self.blueprint_provider(self.type)
 
     def attribute_is_contained(self):
         return self.parent.blueprint.storage_recipes[0].is_contained(self.key)
