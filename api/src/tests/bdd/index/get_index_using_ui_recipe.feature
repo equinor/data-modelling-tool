@@ -290,7 +290,7 @@ Feature: UI Recipe
   @skip
   Scenario: Get index for single document (Document)
     Given I access the resource url "/api/v4/index/data-source-name/1/2"
-    And data modelling tool templates are imported
+    And data modelling tool blueprints are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -314,7 +314,7 @@ Feature: UI Recipe
   @skip
   Scenario: Get index for single document (model- and storage-NOT-contained)
     Given I access the resource url "/api/v4/index/data-source-name/1/3"
-    And data modelling tool templates are imported
+    And data modelling tool blueprints are imported
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain

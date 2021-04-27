@@ -8,6 +8,6 @@ Feature: Class generation from schema
 
   @skip
   Scenario: There, and back again
-    Given data modelling tool templates are imported
+    Given data modelling tool blueprints are imported
     When I create a Python class from the template "system/SIMOS/Blueprint"
     Then it should be able to recreate the template

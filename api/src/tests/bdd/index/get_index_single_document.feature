@@ -9,7 +9,7 @@ Feature: Index
       | db   | 27017 | maf      | maf      | false | entities-DS      | local    | test         |  mongo-db |
       | db   | 27017 | maf      | maf      | false | apps             | local    | applications |  mongo-db |
 
-    Given data modelling tool templates are imported
+    Given data modelling tool blueprints are imported
 
     Given there are documents for the data source "data-source-name" in collection "documents"
       | uid | parent_uid | name          | description | type                   |
