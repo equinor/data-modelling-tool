@@ -1119,7 +1119,7 @@ Any entity of this type will have a "Run --&gt; &lt;action_name&gt;" in it's con
 <div class="ulist">
 <ul>
 <li>
-<p>Show entities in a custom display</p>
+<p>Show custom display for certain documents</p>
 </li>
 </ul>
 </div>
@@ -1127,7 +1127,21 @@ Any entity of this type will have a "Run --&gt; &lt;action_name&gt;" in it's con
 <div class="sect3">
 <h4 id="_loading_custom_plugins">Loading custom plugins</h4>
 <div class="paragraph">
-<p>Add the plugin content  (index.tsx, package.json and other files) under /custom-plugins folder.</p>
+<p>Add the custom plugins under the /custom-plugins folder like shown here.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>/web
+└── /custom-plugins
+    └── /custom-plugin
+        └── package.json
+        └── src
+            └── index.tsx
+    └── /some-other-plugin
+        └── package.json
+        └── src
+            └── index.tsx</code></pre>
+</div>
 </div>
 <div class="paragraph">
 <p>Add the plugin (package name), e.g a plugin called custom-plugin, into the config.js file like this.</p>
@@ -1369,7 +1383,7 @@ Example;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-27 20:39:11 UTC
+Last updated 2021-04-27 20:47:25 UTC
 </div>
 </div>
 </body>
