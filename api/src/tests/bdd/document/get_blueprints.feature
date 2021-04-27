@@ -7,7 +7,7 @@ Feature: Document - Generate JSON Schema
       | db   | 27017 | maf      | maf      | false | blueprints | local    | documents    |  mongo-db |
       | db   | 27017 | maf      | maf      | false | apps       | local    | applications |  mongo-db |
 
-    Given data modelling tool templates are imported
+    Given data modelling tool blueprints are imported
 
     Given there exist document with id "1" in data source "blueprints"
     """

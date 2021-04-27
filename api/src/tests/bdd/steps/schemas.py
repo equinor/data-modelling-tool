@@ -13,14 +13,13 @@ from utils.logging import logger
 from utils.package_import import import_package
 
 
-@given("data modelling tool templates are imported")
+@given("data modelling tool blueprints are imported")
 def step_impl(context):
-    for folder in Config.SYSTEM_FOLDERS:
-        logger.setLevel("ERROR")
-        import_package(
-            f"{Config.APPLICATION_HOME}/core/{folder}", data_source=Config.APPLICATION_DATA_SOURCE, is_root=True
-        )
-        logger.setLevel("INFO")
+    logger.setLevel("ERROR")
+    import_package(
+        f"{Config.APPLICATION_HOME}/applications/DMT", data_source=Config.APPLICATION_DATA_SOURCE, is_root=True
+    )
+    logger.setLevel("INFO")
 
 
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')

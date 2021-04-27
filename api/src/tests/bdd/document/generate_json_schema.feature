@@ -10,7 +10,7 @@ Feature: Document - Generate JSON Schema
 
   Scenario: Generate Blueprint
     Given i access the resource url "/api/v2/json-schema/system/SIMOS/Blueprint"
-    And data modelling tool templates are imported
+    And data modelling tool blueprints are imported
     When i make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -23,7 +23,7 @@ Feature: Document - Generate JSON Schema
 
   Scenario: Generate Application
     Given i access the resource url "/api/v2/json-schema/system/SIMOS/Application"
-    And data modelling tool templates are imported
+    And data modelling tool blueprints are imported
     When i make a "GET" request
     Then the response status should be "OK"
     And the response should contain

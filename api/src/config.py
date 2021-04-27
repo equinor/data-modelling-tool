@@ -17,7 +17,6 @@ class Config:
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent}/home")
     DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
     ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
-    SYSTEM_FOLDERS = ["DMT"]
     VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
     DMSS_HOST = os.getenv("DMSS_HOST", "dmss")
     DMSS_PORT = os.getenv("DMSS_PORT", "5000")

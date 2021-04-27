@@ -1,14 +1,13 @@
+import json
 import os
 
+from dmss_api.exceptions import ApiException
 from flask import Flask
 
 from config import Config
-from controllers import blueprints, explorer, entity, index, document as DocumentBlueprint, system
-from utils.logging import logger
+from controllers import blueprints, document as DocumentBlueprint, entity, explorer, index, system
 from services.dmss import dmss_api
-from dmss_api.exceptions import ApiException
-import json
-
+from utils.logging import logger
 from utils.package_import import import_package
 
 
@@ -31,40 +30,47 @@ app = create_app(Config)
 @app.cli.command()
 def remove_application():
     try:
-        logger.info("Remove DMT application")
+        logger.info("############## REMOVING DMT FILES ################")
+        logger.info(
+            (
+                "Removing DMT application specific files from"
+                f" the configured DMSS instance; {Config.DMSS_HOST}:{Config.DMSS_PORT}"
+            )
+        )
         dmss_api.explorer_remove_by_path(Config.APPLICATION_DATA_SOURCE, {"directory": "DMT"})
-    except ApiException:
-        logger.info("Could not remove DMT")
-        pass
+    except ApiException as error:
+        if error.status == 404:
+            logger.warning("Could not find the DMT application in DMSS...")
+            pass
+        else:
+            raise error
 
-    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
-        logger.info(f"Remove blueprint package: {folder}")
+    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"] + Config.ENTITY_APPLICATION_SETTINGS["entities"]:
+        logger.info(f"Deleting package '{folder}' from DMSS...")
         data_source, folder = folder.split("/", 1)
         try:
             dmss_api.explorer_remove_by_path(data_source, {"directory": folder})
-        except ApiException:
-            pass
-
-    for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
-        data_source, folder = folder.split("/", 1)
-        logger.info(f"Remove entity package: {folder}")
-        try:
-            dmss_api.explorer_remove_by_path(data_source, {"directory": folder})
-        except ApiException:
-            pass
+        except ApiException as error:
+            if error.status == 404:
+                logger.warning(f"Could not find '{folder}' in DMSS...")
+                pass
+            else:
+                raise error
+    logger.info("############## DONE ################")
 
 
 @app.cli.command()
 def init_application():
+    logger.info("############## IMPORTING DMT FILES ################")
     for filename in os.listdir(f"{Config.APPLICATION_HOME}/data_sources/"):
-        with open(os.path.join(f"{Config.APPLICATION_HOME}/data_sources/", filename)) as file:
+        with open(f"{Config.APPLICATION_HOME}/data_sources/{filename}") as file:
             document = json.load(file)
             try:
                 dmss_api.data_source_save(document["name"], data_source_request=document)
             except ApiException:
                 pass
 
-    for folder in Config.SYSTEM_FOLDERS:
+    for folder in os.listdir(f"{Config.APPLICATION_HOME}/applications/"):
         import_package(
             f"{Config.APPLICATION_HOME}/applications/{folder}",
             data_source=Config.APPLICATION_DATA_SOURCE,
@@ -84,3 +90,4 @@ def init_application():
         import_package(
             f"{Config.APPLICATION_HOME}/entities/{folder}", data_source=data_source, is_root=True,
         )
+    logger.info("############## DONE ################")
