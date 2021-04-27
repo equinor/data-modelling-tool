@@ -137,16 +137,25 @@ Right Click a folder in Data Modelling Tool,  select "New Application", and inpu
 
 The application content for what's included in zip file will look like this.
 
-```
-├── api/ - Backend
-├──── Dockerfile - Contains all the commands for running the backend
-├──── home - The home directory that contains application settings, blueprints, and entities
-├── web/ - Frontend
-├──── actions.js - Define custom actions here
-├──── Dockerfile - Contains all the commands for running frontend
-├── docker-compose.yml - Run configuration
-└── ...
-```
+[plantuml, format=svg]
+----
+!include asciidoctor-style.iuml
+legend
+custom-application
+|_ api/ - Backend
+   |_ Dockerfile - Contains all the commands for running the backend
+   |_ home/ - Contains application settings, blueprints, and entities
+|_ web/ - Frontend
+   |_ custom-plugins/ - Contains custom plugins
+     |_ a-custom-plugin/ - A custom plugin
+   |_ config.js - Define what plugins should be loaded
+   |_ actions.js - Define custom actions here
+   |_ Dockerfile - Contains all the commands for running frontend
+|_ docker-compose.yml - Run configuration
+|_ ...
+end legend
+----
+
 
 === Adding custom actions
 
@@ -252,6 +261,123 @@ const runnableMethods = {
 
 export default runnableMethods
 ----
+
+=== Adding custom plugins
+
+Add functionality and customize your applications using custom plugins.
+
+Custom plugins are Node.js packages that implement the DMT APIs (interfaces).
+
+There will be many types of custom plugins, but for now we support only UI plugins.
+
+==== What is a Plugin?
+
+All plugins should be placed under the /custom-plugins folder.
+
+Custom plugins are Node.js packages that implement DMT APIs (interfaces). For larger, more complex custom applications, plugins let you modularize your site customizations into site-specific functionality.
+
+One of the best ways to add functionality to DMT applications is through the plugin system. DMT applications is designed to be extensible, which means plugins are able to extend and modify just about everything DMT does.
+
+Of the many possibilities, plugins can:
+
+* Show custom display for certain documents
+
+==== Loading custom plugins
+
+Add the custom plugins under the /custom-plugins folder like shown here.
+
+[plantuml, format=svg]
+----
+!include asciidoctor-style.iuml
+legend
+web/
+|_ custom-plugins/
+  |_ a-custom-plugin/
+    |_ package.json
+    |_ src/
+      |_ index.tsx
+|_ config.js
+end legend
+----
+
+Add the plugin (package name), e.g a plugin called custom-plugin, into the config.js file like this.
+
+[source, javascript]
+----
+export default {
+  plugins: [
+    // These are default included, but can be removed if wanted
+    import('@dmt/default-form'),
+    import('@dmt/default-pdf'),
+    import('@dmt/default-preview'),
+    // The extra plugin to be loaded
+    import('custom-plugin')
+  ],
+}
+----
+
+Then, build the docker container again, so that the plugin will be installed.
+
+==== Creating own plugins
+
+You may be looking to build a plugin that doesn’t exist yet, or you may just be curious to know more about the anatomy of a custom plugin (file structure, etc).
+
+A package.json is required.
+
+[source, json]
+----
+{
+  "name": "@dmt/custom-plugin",
+  "version": "1.0.0",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "@dmt/core-plugins": "x.x.x"
+  }
+}
+----
+
+===== Creating a UI plugin
+
+This is the template for a UI plugin.
+
+[source, jsx]
+----
+import * as React from 'react'
+import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
+
+export const pluginName = 'custom-plugin'
+export const pluginType = DmtPluginType.UI
+
+export const PluginComponent = (props: DmtUIPlugin) => {
+  return (
+    <div>
+      Plugin content goes here!
+    </div>
+  )
+}
+----
+
+Everything returned from the PluginComponent will be rendered.
+
+The UI plugin recipes will use the pluginName in the plugin field, which means that this UI recipe will use that plugin, like this.
+
+[source, json]
+----
+{
+  "uiRecipes": [
+    {
+      "name": "A custom view",
+      "type": "system/SIMOS/UiRecipe",
+      "description": "This shows a custom view",
+      "plugin": "custom-plugin",
+      "options": [],
+      "attributes": []
+    }
+  ]
+}
+----
+
+
 
 == Part 4 - Code Generators
 

@@ -19,7 +19,3 @@ RUN yarn build
 WORKDIR /code/app
 EXPOSE 3000
 CMD ["serve", "--single", "build", "--listen", "3000"]
-
-
-
-# RUN cd plugins/ && find . -maxdepth 1 -type d \( ! -name . \) -exec sh -c "cd '{}' && yarn install " \;
