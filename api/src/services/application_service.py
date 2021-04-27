@@ -13,9 +13,10 @@ from utils.create_application_utils import (
     DOCKER_COMPOSE,
     WEB_DOCKERFILE,
     API_DOCKERFILE,
-    generate_external_plugins,
+    generate_plugins,
     strip_datasource,
     zip_package,
+    generate_plugins_readme,
 )
 from services.document_service import DocumentService
 from utils.create_entity_utils import CreateEntity
@@ -83,7 +84,8 @@ class ApplicationService:
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
             zip_file.writestr("api/home/dmt_settings.json", json.dumps(Config.ENTITY_APPLICATION_SETTINGS).encode())
-            zip_file.writestr("web/external-plugins/index.js", generate_external_plugins())
+            zip_file.writestr("web/config.js", generate_plugins())
+            zip_file.writestr("web/custom-plugins/README.md", generate_plugins_readme())
 
             for package in application.data["packages"]:
                 logger.info(f"Add package: {package}")
