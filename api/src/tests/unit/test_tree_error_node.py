@@ -20,10 +20,8 @@ blueprint_1 = {
 }
 
 
-class BlueprintProvider:
-    @staticmethod
-    def get_blueprint(type: str):
-        return Blueprint(DTO(blueprint_1))
+def get_blueprint(type: str):
+    return Blueprint(DTO(blueprint_1))
 
 
 class ErrorTreenodeTestCase(unittest.TestCase):
@@ -40,6 +38,6 @@ class ErrorTreenodeTestCase(unittest.TestCase):
             "nested": {"name": "Nested 1", "description": "", "type": "blueprint_3"},
         }
 
-        root = Node.from_dict(document_1, document_1["_id"], BlueprintProvider())
+        root = Node.from_dict(document_1, document_1["_id"], get_blueprint)
         error_msg = root.children[0].error_message
         assert error_msg is not None

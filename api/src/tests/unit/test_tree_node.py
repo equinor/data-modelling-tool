@@ -105,23 +105,21 @@ recursive_blueprint = {
 }
 
 
-class BlueprintProvider:
-    def get_blueprint(self, type: str):
-        if type == "blueprint_1":
-            return Blueprint(DTO(data=blueprint_1))
-        if type == "blueprint_2":
-            return Blueprint(DTO(data=blueprint_2))
-        if type == "blueprint_3":
-            return Blueprint(DTO(data=blueprint_3))
-        if type == "blueprint_4":
-            return Blueprint(DTO(data=blueprint_4))
-        if type == "recursive_blueprint":
-            return Blueprint(DTO(data=recursive_blueprint))
-        return None
+def get_blueprint(type: str):
+    if type == "blueprint_1":
+        return Blueprint(DTO(data=blueprint_1))
+    if type == "blueprint_2":
+        return Blueprint(DTO(data=blueprint_2))
+    if type == "blueprint_3":
+        return Blueprint(DTO(data=blueprint_3))
+    if type == "blueprint_4":
+        return Blueprint(DTO(data=blueprint_4))
+    if type == "recursive_blueprint":
+        return Blueprint(DTO(data=recursive_blueprint))
+    return None
 
 
-document_service = DocumentService(BlueprintProvider())
-blueprint_provider = document_service.get_blueprint
+blueprint_provider = get_blueprint
 
 
 class TreenodeTestCase(unittest.TestCase):

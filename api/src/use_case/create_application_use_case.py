@@ -27,8 +27,7 @@ class CreateApplicationUseCase(uc.UseCase):
         self.data_source_id = data_source_id
 
     def process_request(self, request_object: CreateApplicationRequestObject):
-        document_service = DocumentService()
-        application_service = ApplicationService(document_service)
+        application_service = ApplicationService(DocumentService())
         return response_object.ResponseSuccess(
             application_service.create_application(self.data_source_id, request_object.application_id)
         )

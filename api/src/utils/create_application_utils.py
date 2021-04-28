@@ -9,7 +9,6 @@ from config import Config
 from domain_classes.dto import DTO
 from enums import DMT
 from services.document_service import DocumentService
-from utils.blueprint_provider import BlueprintProvider
 
 from utils.logging import logger
 
@@ -43,8 +42,7 @@ def zip_package(ob: ZipFile, document: DTO, path: str, document_service: Documen
     if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
-    blueprint_provider = BlueprintProvider()
-    blueprint = blueprint_provider.get_blueprint(document.type)
+    blueprint = document_service.get_blueprint(document.type)
     document_references = []
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
@@ -100,8 +98,7 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
     if document["type"] != DMT.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
-    blueprint_provider = BlueprintProvider()
-    blueprint = blueprint_provider.get_blueprint(document.type)
+    blueprint = document_service.get_blueprint(document.type)
     document_references = []
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name

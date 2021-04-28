@@ -45,20 +45,20 @@ export const DocumentNode = (props: any) => {
   const meta = { ...node.nodeData.meta }
 
   return (
-      <Wrapper>
-        {node.iconGroup(() => onToggle())}
-        <div style={{width: '100%'}} onClick={() => onOpen()}> 
-          {node.nodeData.title}
-          {meta.hasCustomAction && <RunIcon />}
-          {node.nodeData.isLoading && (
-            <small style={{ paddingLeft: '15px' }}>
-              <Spinner size="1.2em" />
-            </small>
-          )}
-          {node.nodeData.meta.error && (
-            <small style={{ paddingLeft: '15px' }}>An error occurred...</small>
-          )}
-        </div>
-      </Wrapper>
+    <Wrapper>
+      {node.iconGroup(() => onToggle())}
+      <div style={{ width: '100%' }} onClick={() => onOpen()}>
+        {node.nodeData.title}
+        {meta.hasCustomAction && <RunIcon />}
+        {node.nodeData.isLoading && (
+          <small style={{ paddingLeft: '15px' }}>
+            <Spinner size="1.2em" />
+          </small>
+        )}
+        {node.nodeData.meta.error && (
+          <small style={{ paddingLeft: '15px' }}>An error occurred...</small>
+        )}
+      </div>
+    </Wrapper>
   )
 }

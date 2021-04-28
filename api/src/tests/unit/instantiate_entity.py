@@ -21,17 +21,16 @@ basic_blueprint = {
 file_repository_test = LocalFileRepository()
 
 
-class BlueprintProvider:
-    def get_blueprint(self, type: str):
-        if type == "basic_blueprint":
-            return Blueprint(DTO(basic_blueprint))
-        else:
-            return Blueprint(DTO(file_repository_test.get(type)))
+def get_blueprint(type: str):
+    if type == "basic_blueprint":
+        return Blueprint(DTO(basic_blueprint))
+    else:
+        return Blueprint(DTO(file_repository_test.get(type)))
 
 
 class InstantiateEntity(unittest.TestCase):
     def test_instantiate_simple(self):
-        document_service = DocumentService(blueprint_provider=BlueprintProvider())
+        document_service = DocumentService(blueprint_provider=get_blueprint)
         expected = {"name": "myName", "description": "", "type": "basic_blueprint", "length": 0}
         entity = document_service.instantiate_entity("basic_blueprint", "myName")
 
@@ -39,7 +38,7 @@ class InstantiateEntity(unittest.TestCase):
 
     @unittest.skip
     def test_instantiate_blueprint(self):
-        document_service = DocumentService(blueprint_provider=BlueprintProvider())
+        document_service = DocumentService(blueprint_provider=get_blueprint)
         expected = {"name": "myBlueprint", "description": "", "type": "basic_blueprint", "length": 0}
         entity = document_service.instantiate_entity("system/SIMOS/Blueprint", "myBlueprint")
 

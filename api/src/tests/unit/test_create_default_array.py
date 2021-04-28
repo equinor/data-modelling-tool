@@ -89,19 +89,18 @@ higher_rank_array_blueprint = {
 file_repository = LocalFileRepository()
 
 
-class BlueprintProvider:
-    def get_blueprint(self, template_type: str):
-        if template_type == "higher_rank_array":
-            return Blueprint(DTO(higher_rank_array_blueprint))
-        elif template_type == "package_blueprint":
-            return Blueprint(DTO(package_blueprint))
-        elif template_type == "basic_blueprint":
-            return Blueprint(DTO(basic_blueprint))
-        else:
-            return Blueprint(DTO(file_repository.get(template_type)))
+def get_blueprint(template_type: str):
+    if template_type == "higher_rank_array":
+        return Blueprint(DTO(higher_rank_array_blueprint))
+    elif template_type == "package_blueprint":
+        return Blueprint(DTO(package_blueprint))
+    elif template_type == "basic_blueprint":
+        return Blueprint(DTO(basic_blueprint))
+    else:
+        return Blueprint(DTO(file_repository.get(template_type)))
 
 
-blueprint_provider = DocumentService(BlueprintProvider()).get_blueprint
+blueprint_provider = get_blueprint
 
 
 class DefaultArrayTestCase(unittest.TestCase):
