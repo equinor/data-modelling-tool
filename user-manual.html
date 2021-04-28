@@ -690,7 +690,6 @@ pre.rouge {
 <ul class="sectlevel2">
 <li><a href="#_creating_applications">Creating applications</a></li>
 <li><a href="#_adding_custom_actions">Adding custom actions</a></li>
-<li><a href="#_adding_custom_plugins">Adding custom plugins</a></li>
 </ul>
 </li>
 <li><a href="#_part_4_code_generators">Part 4 - Code Generators</a>
@@ -931,9 +930,16 @@ pre.rouge {
 <div class="paragraph">
 <p>The application content for what&#8217;s included in zip file will look like this.</p>
 </div>
-<div class="imageblock">
+<div class="listingblock">
 <div class="content">
-<img src="diag-c2dc47d89fb9fac341c3cc9014e568bd.svg" alt="Diagram" width="601" height="285">
+<pre class="rouge highlight"><code>├── api/ - Backend
+├──── Dockerfile - Contains all the commands for running the backend
+├──── home - The home directory that contains application settings, blueprints, and entities
+├── web/ - Frontend
+├──── actions.js - Define custom actions here
+├──── Dockerfile - Contains all the commands for running frontend
+├── docker-compose.yml - Run configuration
+└── ...</code></pre>
 </div>
 </div>
 </div>
@@ -1080,137 +1086,6 @@ Any entity of this type will have a "Run --&gt; &lt;action_name&gt;" in it's con
 <span class="p">}</span>
 
 <span class="k">export</span> <span class="k">default</span> <span class="nx">runnableMethods</span></code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_adding_custom_plugins">Adding custom plugins</h3>
-<div class="paragraph">
-<p>Add functionality and customize your applications using custom plugins.</p>
-</div>
-<div class="paragraph">
-<p>Custom plugins are Node.js packages that implement the DMT APIs (interfaces).</p>
-</div>
-<div class="paragraph">
-<p>There will be many types of custom plugins, but for now we support only UI plugins.</p>
-</div>
-<div class="sect3">
-<h4 id="_what_is_a_plugin">What is a Plugin?</h4>
-<div class="paragraph">
-<p>All plugins should be placed under the /custom-plugins folder.</p>
-</div>
-<div class="paragraph">
-<p>Custom plugins are Node.js packages that implement DMT APIs (interfaces). For larger, more complex custom applications, plugins let you modularize your site customizations into site-specific functionality.</p>
-</div>
-<div class="paragraph">
-<p>One of the best ways to add functionality to DMT applications is through the plugin system. DMT applications is designed to be extensible, which means plugins are able to extend and modify just about everything DMT does.</p>
-</div>
-<div class="paragraph">
-<p>Of the many possibilities, plugins can:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>Show custom display for certain documents</p>
-</li>
-</ul>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_loading_custom_plugins">Loading custom plugins</h4>
-<div class="paragraph">
-<p>Add the custom plugins under the /custom-plugins folder like shown here.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="diag-82a7b3971ba9d3c36e4cf44ad9e74eeb.svg" alt="Diagram" width="208" height="186">
-</div>
-</div>
-<div class="paragraph">
-<p>Add the plugin (package name), e.g a plugin called custom-plugin, into the config.js file like this.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="javascript"><span class="k">export</span> <span class="k">default</span> <span class="p">{</span>
-  <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span>
-    <span class="c1">// These are default included, but can be removed if wanted</span>
-    <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">@dmt/default-form</span><span class="dl">'</span><span class="p">),</span>
-    <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">@dmt/default-pdf</span><span class="dl">'</span><span class="p">),</span>
-    <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">@dmt/default-preview</span><span class="dl">'</span><span class="p">),</span>
-    <span class="c1">// The extra plugin to be loaded</span>
-    <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">custom-plugin</span><span class="dl">'</span><span class="p">)</span>
-  <span class="p">],</span>
-<span class="p">}</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Then, build the docker container again, so that the plugin will be installed.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_creating_own_plugins">Creating own plugins</h4>
-<div class="paragraph">
-<p>You may be looking to build a plugin that doesn’t exist yet, or you may just be curious to know more about the anatomy of a custom plugin (file structure, etc).</p>
-</div>
-<div class="paragraph">
-<p>A package.json is required.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
-  </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"@dmt/custom-plugin"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"main"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/index.tsx"</span><span class="p">,</span><span class="w">
-  </span><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"@dmt/core-plugins"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x.x.x"</span><span class="w">
-  </span><span class="p">}</span><span class="w">
-</span><span class="p">}</span></code></pre>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_creating_a_ui_plugin">Creating a UI plugin</h5>
-<div class="paragraph">
-<p>This is the template for a UI plugin.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="jsx"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">React</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">react</span><span class="dl">'</span>
-<span class="k">import</span> <span class="p">{</span> <span class="nx">DmtPluginType</span><span class="p">,</span> <span class="nx">DmtUIPlugin</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@dmt/core-plugins</span><span class="dl">'</span>
-
-<span class="k">export</span> <span class="kd">const</span> <span class="nx">pluginName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">custom-plugin</span><span class="dl">'</span>
-<span class="k">export</span> <span class="kd">const</span> <span class="nx">pluginType</span> <span class="o">=</span> <span class="nx">DmtPluginType</span><span class="p">.</span><span class="nx">UI</span>
-
-<span class="k">export</span> <span class="kd">const</span> <span class="nx">PluginComponent</span> <span class="o">=</span> <span class="p">(</span><span class="nx">props</span><span class="p">:</span> <span class="nx">DmtUIPlugin</span><span class="p">)</span> <span class="o">=&gt;</span> <span class="p">{</span>
-  <span class="k">return</span> <span class="p">(</span>
-    <span class="p">&lt;</span><span class="nt">div</span><span class="p">&gt;</span>
-      Plugin content goes here!
-    <span class="p">&lt;/</span><span class="nt">div</span><span class="p">&gt;</span>
-  <span class="p">)</span>
-<span class="p">}</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Everything returned from the PluginComponent will be rendered.</p>
-</div>
-<div class="paragraph">
-<p>The UI plugin recipes will use the pluginName in the plugin field, which means that this UI recipe will use that plugin, like this.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="json"><span class="p">{</span><span class="w">
-  </span><span class="nl">"uiRecipes"</span><span class="p">:</span><span class="w"> </span><span class="p">[</span><span class="w">
-    </span><span class="p">{</span><span class="w">
-      </span><span class="nl">"name"</span><span class="p">:</span><span class="w"> </span><span class="s2">"A custom view"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"type"</span><span class="p">:</span><span class="w"> </span><span class="s2">"system/SIMOS/UiRecipe"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"description"</span><span class="p">:</span><span class="w"> </span><span class="s2">"This shows a custom view"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"plugin"</span><span class="p">:</span><span class="w"> </span><span class="s2">"custom-plugin"</span><span class="p">,</span><span class="w">
-      </span><span class="nl">"options"</span><span class="p">:</span><span class="w"> </span><span class="p">[],</span><span class="w">
-      </span><span class="nl">"attributes"</span><span class="p">:</span><span class="w"> </span><span class="p">[]</span><span class="w">
-    </span><span class="p">}</span><span class="w">
-  </span><span class="p">]</span><span class="w">
-</span><span class="p">}</span></code></pre>
-</div>
 </div>
 </div>
 </div>
@@ -1367,7 +1242,7 @@ Example;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-04-28 06:38:02 UTC
+Last updated 2021-04-28 09:44:07 UTC
 </div>
 </div>
 </body>
