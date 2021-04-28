@@ -4,6 +4,7 @@ from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from domain_classes.dto import DTO
 from domain_classes.tree_node import DictExporter, DictImporter, ListNode, Node
+from services.document_service import DocumentService
 from tests.unit.util_tests import flatten_dict
 from utils.data_structure.compare import pretty_eq
 
@@ -119,7 +120,8 @@ class BlueprintProvider:
         return None
 
 
-blueprint_provider = BlueprintProvider()
+document_service = DocumentService(BlueprintProvider())
+blueprint_provider = document_service.get_blueprint
 
 
 class TreenodeTestCase(unittest.TestCase):

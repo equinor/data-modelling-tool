@@ -3,23 +3,11 @@ import json
 from flask import Blueprint, request, Response
 
 from enums import STATUS_CODES
-from use_case.generate_json_schema_use_case import GenerateJsonSchemaRequestObject, GenerateJsonSchemaUseCase
 from use_case.get_document_by_path_use_case import GetDMTDocumentByPathUseCase, GetDocumentByPathRequestObject
 from use_case.get_document_use_case import GetDMTDocumentUseCase, GetDocumentRequestObject
-from services.dmss import dmss_api
 from utils.logging import logger
 
 blueprint = Blueprint("document", __name__)
-
-
-@blueprint.route("/api/v2/json-schema/<path:type>", methods=["GET"])
-def get_json_schema(type: str):
-    logger.info(f"Getting json-schema '{type}'")
-    ui_recipe = request.args.get("ui_recipe")
-    use_case = GenerateJsonSchemaUseCase()
-    request_object = GenerateJsonSchemaRequestObject.from_dict({"type": type, "ui_recipe": ui_recipe})
-    response = use_case.execute(request_object)
-    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
 
 
 @blueprint.route("/api/v2/documents/<string:data_source_id>/<path:document_id>", methods=["GET"])
@@ -46,14 +34,3 @@ def get_by_path(data_source_id: str, document_path: str):
     )
     response = use_case.execute(request_object)
     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-
-
-# TODO: This should not be needed. But since we use same URL for get Doc and put, we still do.
-# Solution is to move get Doc to DMSS, or pass different URL for PUT
-@blueprint.route("/api/v2/documents/<string:data_source_id>/<string:document_id>", methods=["PUT"])
-def put(data_source_id: str, document_id: str):
-    logger.info(f"Updating document '{document_id}' in data source '{data_source_id}'")
-    data = request.get_json()
-    attribute = request.args.get("attribute", "")
-
-    return dmss_api.document_update(data_source_id, document_id, data, attribute=attribute)

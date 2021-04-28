@@ -36,12 +36,7 @@ export class DocumentAPI implements IDocumentAPI {
   }
 
   update(url: string, data: any): Promise<any> {
-    /**
-     * TODO: Move update logic away from API and here like:
-     *
-     * Can we build this url from client? /api/v2/documents/{data_source_id}/{document_split[0]}{attribute_arg}
-     */
-    return apiProvider.put(url, data)
+    return dmssApi.documentUpdate(data)
   }
 
   updateById(

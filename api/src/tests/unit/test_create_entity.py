@@ -3,6 +3,7 @@ from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from domain_classes.dto import DTO
 from repository.file import LocalFileRepository
+from services.document_service import DocumentService
 from utils.create_entity_utils import CreateEntity
 
 
@@ -46,7 +47,10 @@ class CreateEntityTestCase(unittest.TestCase):
         type = "test_data/complex/CarTest"
 
         entity = CreateEntity(
-            blueprint_provider=BlueprintProvider(), type=type, description="crappy car", name="Mercedes"
+            blueprint_provider=DocumentService(BlueprintProvider()).get_blueprint,
+            type=type,
+            description="crappy car",
+            name="Mercedes",
         ).entity
 
         self.assertEqual(expected_entity, entity)

@@ -4,6 +4,7 @@ from domain_classes.blueprint import Blueprint
 from domain_classes.dimension import Dimension
 from domain_classes.dto import DTO
 from repository.file import LocalFileRepository
+from services.document_service import DocumentService
 from utils.create_entity_utils import CreateEntity
 
 package_blueprint = {
@@ -100,7 +101,7 @@ class BlueprintProvider:
             return Blueprint(DTO(file_repository.get(template_type)))
 
 
-blueprint_provider = BlueprintProvider()
+blueprint_provider = DocumentService(BlueprintProvider()).get_blueprint
 
 
 class DefaultArrayTestCase(unittest.TestCase):
