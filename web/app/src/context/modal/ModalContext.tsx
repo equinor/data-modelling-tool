@@ -16,7 +16,7 @@ const ModalWrapper = styled.div`
   overflow-y: scroll;
   overflow-x: hidden;
   padding: 4rem 0;
-  z-index: 1;
+  z-index: 2;
   background-color: rgba(0, 0, 0, 0.4);
 `
 
