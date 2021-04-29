@@ -48,7 +48,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                 # List nodes can always append entities of it's own type
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(
-                        data_source_id=data_source_id, name=f"Create {node.name}", type=node.type, node_id=node.node_id
+                        data_source_id=data_source_id, name=node.name, type=node.type, node_id=node.node_id
                     )
                 )
                 # If the attribute is not storageContained, offer choice to insert a reference to existing entity
@@ -67,7 +67,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                             name=empty_child.name,
                             type=empty_child.type,
                             node_id=empty_child.node_id,
-                            label=f"Create {empty_child.name}",
+                            label=empty_child.name,
                         )
                     )
         # Everything besides listNodes can be renamed. Could be supported in future.
