@@ -7,7 +7,6 @@ type Props = {
   render: any
 }
 
-
 export default ({ dataSourceId, documentId, render }: Props) => {
   const explorer: IUseExplorer = useExplorer({})
   const [document, setDocument] = useState()

@@ -63,7 +63,7 @@ export const treeNodes = (
   nodeId: string,
   tree: any,
   path: any = [],
-  track: any = [],
+  track: any = []
 ): [] => {
   const node: any = tree[nodeId]
 
@@ -88,7 +88,7 @@ export const treeNodes = (
         currentItem.nodeId,
         tree,
         currentPath,
-        currentTrack,
+        currentTrack
       )
       // append to the accumulator
       return [

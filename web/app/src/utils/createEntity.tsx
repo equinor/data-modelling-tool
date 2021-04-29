@@ -8,10 +8,10 @@ import { NotificationManager } from 'react-notifications'
 export function createEntity(type: string) {
   return axios
     .post('/api/entity', { name: '', type: type })
-    .then(respose => {
+    .then((respose) => {
       return respose.data
     })
-    .catch(error => {
+    .catch((error) => {
       NotificationManager.error(`failed to create entity from: ${type}`)
       console.error(error)
     })

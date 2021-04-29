@@ -2,7 +2,6 @@ import * as React from 'react'
 
 import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
 import { useEffect, useState } from 'react'
-import { BlueprintProvider } from './BlueprintProvider'
 import { Blueprint } from './domain/Blueprint'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import Form from 'react-jsonschema-form'
@@ -11,13 +10,26 @@ import { ReadOnlyWidget } from './widgets/ReadOnly'
 import FileDirectoryWidget from './widgets/FileDirectoryWidget'
 import { CollapsibleField } from './components/CollapsibleField'
 import { BlueprintType, KeyValue } from './domain/types'
-import { EntityPicker, BlueprintsPicker, PackagesPicker, BlueprintPicker, DestinationPicker } from '@dmt/common'
+import {
+  EntityPicker,
+  BlueprintsPicker,
+  PackagesPicker,
+  BlueprintPicker,
+  DestinationPicker,
+} from '@dmt/common'
 
 export const pluginName = 'default-form'
 export const pluginType = DmtPluginType.UI
 
 export const PluginComponent = (props: DmtUIPlugin) => {
-  const { type, documentId, dataSourceId, uiRecipeName, explorer, onSubmit } = props
+  const {
+    type,
+    documentId,
+    dataSourceId,
+    uiRecipeName,
+    explorer,
+    onSubmit,
+  } = props
 
   const [document, setDocument] = useState(undefined)
   const [documentType, setDocumentType] = useState(type)
@@ -29,24 +41,31 @@ export const PluginComponent = (props: DmtUIPlugin) => {
   useEffect(() => {
     if (dataSourceId && documentId) {
       const target = documentId.split('.')
-      explorer.get({ dataSourceId, documentId: target.shift(), attribute: target.join('.') }).then((result: any) => {
-        setDocument(result.document)
-        setDocumentType(result.document.type)
-      })
+      explorer
+        .get({
+          dataSourceId,
+          documentId: target.shift(),
+          attribute: target.join('.'),
+        })
+        .then((result: any) => {
+          setDocument(result.document)
+          setDocumentType(result.document.type)
+        })
     }
   }, [dataSourceId, documentId])
 
   const [config, setConfig] = useState(undefined)
-  const blueprintProvider = new BlueprintProvider(explorer)
   useEffect(() => {
     // @ts-ignore
-    if ((!config && documentType !== undefined) || (config && config.type !== documentType)) {
+    if (
+      (!config && documentType !== undefined) ||
+      (config && config.type !== documentType)
+    ) {
       createFormConfigs({
         type: documentType,
         document,
         uiRecipeName,
         explorer,
-        blueprintProvider,
       }).then((config: FormConfig) => {
         // @ts-ignore
         setConfig(config)
@@ -84,7 +103,7 @@ export const PluginComponent = (props: DmtUIPlugin) => {
           fileUploadWidget: FileDirectoryWidget,
         }}
         onSubmit={(schemas: any) => {
-          fixRecursive(documentType, schemas.formData, blueprintProvider)
+          fixRecursive(documentType, schemas.formData, explorer)
           onSubmit(schemas.formData)
         }}
       />
@@ -95,9 +114,11 @@ export const PluginComponent = (props: DmtUIPlugin) => {
 async function fixRecursive(
   documentType: string,
   entity: KeyValue,
-  blueprintProvider: BlueprintProvider,
+  explorer: any
 ): Promise<void> {
-  const blueprintType: | BlueprintType | undefined = await blueprintProvider.getBlueprintByType(documentType)
+  const blueprintType: BlueprintType | undefined = await explorer.getBlueprint(
+    documentType
+  )
 
   if (blueprintType) {
     const blueprint: Blueprint | undefined = new Blueprint(blueprintType)
@@ -108,7 +129,7 @@ async function fixRecursive(
         if (blueprint.isArray(attr)) {
           entity[attr.name].forEach((entityItem: KeyValue, index: number) => {
             blueprint.validateEntity(entityItem)
-            fixRecursive(entityItem.type, entityItem, blueprintProvider)
+            fixRecursive(entityItem.type, entityItem, explorer)
           })
         }
       }

@@ -24,9 +24,6 @@ import {
     EntityName,
     EntityNameFromJSON,
     EntityNameToJSON,
-    GetDocumentByPathResponse,
-    GetDocumentByPathResponseFromJSON,
-    GetDocumentByPathResponseToJSON,
     GetDocumentResponse,
     GetDocumentResponseFromJSON,
     GetDocumentResponseToJSON,
@@ -53,6 +50,10 @@ import {
 export interface BlobGetByIdRequest {
     dataSourceId: string;
     blobId: string;
+}
+
+export interface BlueprintGetRequest {
+    typeRef: string;
 }
 
 export interface DataSourceGetRequest {
@@ -183,6 +184,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async blobGetById(requestParameters: BlobGetByIdRequest): Promise<Blob> {
         const response = await this.blobGetByIdRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Fetch the Blueprint of a type (including extended attributes)
+     * Get Blueprint
+     */
+    async blueprintGetRaw(requestParameters: BlueprintGetRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.typeRef === null || requestParameters.typeRef === undefined) {
+            throw new runtime.RequiredError('typeRef','Required parameter requestParameters.typeRef was null or undefined when calling blueprintGet.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/blueprint/{type_ref}`.replace(`{${"type_ref"}}`, encodeURIComponent(String(requestParameters.typeRef))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Fetch the Blueprint of a type (including extended attributes)
+     * Get Blueprint
+     */
+    async blueprintGet(requestParameters: BlueprintGetRequest): Promise<object> {
+        const response = await this.blueprintGetRaw(requestParameters);
         return await response.value();
     }
 
@@ -331,7 +364,7 @@ export class DefaultApi extends runtime.BaseAPI {
      * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
      * Get By Path
      */
-    async documentGetByPathRaw(requestParameters: DocumentGetByPathRequest): Promise<runtime.ApiResponse<GetDocumentByPathResponse>> {
+    async documentGetByPathRaw(requestParameters: DocumentGetByPathRequest): Promise<runtime.ApiResponse<object>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
             throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling documentGetByPath.');
         }
@@ -359,14 +392,14 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GetDocumentByPathResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse<any>(response);
     }
 
     /**
      * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
      * Get By Path
      */
-    async documentGetByPath(requestParameters: DocumentGetByPathRequest): Promise<GetDocumentByPathResponse> {
+    async documentGetByPath(requestParameters: DocumentGetByPathRequest): Promise<object> {
         const response = await this.documentGetByPathRaw(requestParameters);
         return await response.value();
     }

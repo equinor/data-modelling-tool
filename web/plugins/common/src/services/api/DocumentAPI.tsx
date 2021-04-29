@@ -22,8 +22,15 @@ export class DocumentAPI implements IDocumentAPI {
   getByPath(dataSourceId: string, path: string): Promise<any> {
     return dmssApi.documentGetByPath({ dataSourceId, path })
   }
+  getBlueprint(typeRef: string): Promise<any> {
+    return dmssApi.blueprintGet({ typeRef: typeRef })
+  }
 
-  getById(dataSourceId: string, documentId: string, attribute?: string): Promise<any> {
+  getById(
+    dataSourceId: string,
+    documentId: string,
+    attribute?: string
+  ): Promise<any> {
     if (attribute) {
       return dmssApi.documentGetById({ dataSourceId, documentId, attribute })
     } else {
@@ -43,7 +50,7 @@ export class DocumentAPI implements IDocumentAPI {
     dataSourceId: string,
     documentId: string,
     attribute: string,
-    data: any,
+    data: any
   ): Promise<any> {
     return dmssApi.documentUpdate({
       dataSourceId,

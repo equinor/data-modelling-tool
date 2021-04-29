@@ -9,17 +9,14 @@ export interface IModels {
   dataSources: DataSource[]
 }
 
-export interface IOperations {
-}
+export interface IOperations {}
 
 export interface IDataSources {
   models: IModels
   operations: IOperations
 }
 
-export const useDataSources = (
-  dataSourceApi: IDataSourceAPI,
-): IDataSources => {
+export const useDataSources = (dataSourceApi: IDataSourceAPI): IDataSources => {
   const [state, dispatch] = useReducer(DataSourceReducer, initialState)
 
   if (!dataSourceApi) dataSourceApi = new DataSourceAPI()

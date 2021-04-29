@@ -18,7 +18,8 @@ export class GenerateUiRecipeTabs {
     if (uiRecipes) {
       uiRecipes.forEach((uiRecipe: UiRecipe) => {
         const existingIndex = this.uiRecipeTabs.findIndex(
-          (tab: UiRecipe) => tab.name === uiRecipe.name && tab.plugin === uiRecipe.plugin
+          (tab: UiRecipe) =>
+            tab.name === uiRecipe.name && tab.plugin === uiRecipe.plugin
         )
         if (this.isUiPlugin(uiRecipe.name) && !uiRecipe.hideTab) {
           if (existingIndex > -1) {
@@ -32,7 +33,7 @@ export class GenerateUiRecipeTabs {
   }
 
   private isUiPlugin(plugin: string) {
-    return !["INDEX", "DEFAULT_CREATE"].includes(plugin)
+    return !['INDEX', 'DEFAULT_CREATE'].includes(plugin)
   }
 
   private replaceUiRecipe(atIndex: number, uiRecipe: UiRecipe) {
@@ -67,7 +68,7 @@ function addDefaultTab(
   name: string
 ): void {
   const recipe: UiRecipe | undefined =
-    recipes && recipes.find(recipe => recipe.name === name)
+    recipes && recipes.find((recipe) => recipe.name === name)
   if (recipe) {
     if (!recipe.hideTab) {
       defaultTabs.push(createUiRecipe(name, plugin))

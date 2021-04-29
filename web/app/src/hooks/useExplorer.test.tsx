@@ -14,7 +14,7 @@ import {
   IDataSourceAPI,
   IIndexAPI,
   IndexNodes,
-  IDocumentAPI
+  IDocumentAPI,
 } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'

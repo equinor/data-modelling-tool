@@ -6,8 +6,7 @@ export interface IModels {
   index: IIndex
 }
 
-export interface IOperations {
-}
+export interface IOperations {}
 
 export interface IGlobalIndex {
   models: IModels

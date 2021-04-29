@@ -17,7 +17,7 @@ const nodeMatchesOrHasMatchingDescendants: any = (
   return (
     matcher(filter, node) || // i match
     (node &&
-    node.children && // or i have decendents and one of them match
+      node.children && // or i have decendents and one of them match
       node.children.length &&
       !!node.children.find((childNode: string) =>
         nodeMatchesOrHasMatchingDescendants(

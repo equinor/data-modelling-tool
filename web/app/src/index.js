@@ -22,7 +22,7 @@ if (authEnabled) {
       // eslint-disable-next-line
       require('./indexApp.js')
     },
-    DO_NOT_LOGIN,
+    DO_NOT_LOGIN
   )
 } else {
   ReactDOM.render(<App />, document.getElementById('root'))

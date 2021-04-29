@@ -16,7 +16,7 @@ export default (props: Props) => {
   return (
     <select
       value={selectedDatasourceType}
-      onChange={e => {
+      onChange={(e) => {
         setSelectedDatasourceType(e.target.value)
       }}
       style={{ margin: '0 10px' }}

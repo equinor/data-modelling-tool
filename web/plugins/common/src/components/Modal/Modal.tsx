@@ -43,7 +43,7 @@ export const Modal = (props: any) => {
         <ModalChildren>
           <StyledModal.ModalWrapper onClick={toggle}>
             <StyledModal.ModalBody
-              onClick={event => event.stopPropagation()}
+              onClick={(event) => event.stopPropagation()}
               // @ts-ignore
               width={width}
             >

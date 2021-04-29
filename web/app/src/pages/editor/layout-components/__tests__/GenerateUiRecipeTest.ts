@@ -32,17 +32,14 @@ describe('GenerateUiRecipeTabs', () => {
 
   it('should add a tab from a ui plugin', () => {
     const input = [
-        {
-          name: 'my tab',
-          type: 'system/SIMOS/UiRecipe',
-          plugin: 'INDEX',
-          attributes: [],
-        },
-      ]
-    const generateUiTabs = new GenerateUiRecipeTabs(
-      input,
-      getDefaultTabs([])
-    )
+      {
+        name: 'my tab',
+        type: 'system/SIMOS/UiRecipe',
+        plugin: 'INDEX',
+        attributes: [],
+      },
+    ]
+    const generateUiTabs = new GenerateUiRecipeTabs(input, getDefaultTabs([]))
     const tabs = generateUiTabs.getTabs()
     expect(tabs).toHaveLength(3)
   })

@@ -48,7 +48,7 @@ export const CollapsibleWrapper = (props: CollapsibleWrapperProps) => {
 
 export const Collapsible = (props: Props) => {
   const { getCollapseProps, getToggleProps, isOpen } = useCollapse(
-    props.collapsed,
+    props.collapsed
   )
 
   return (

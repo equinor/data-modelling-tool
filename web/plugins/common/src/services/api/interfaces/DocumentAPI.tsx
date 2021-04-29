@@ -14,7 +14,13 @@ export interface IDocumentAPI {
 
   getByPath(dataSourceId: string, path: string): Promise<any>
 
-  getById(dataSourceId: string, documentId: string, attribute?: string): Promise<any>
+  getBlueprint(typeRef: string): Promise<any>
+
+  getById(
+    dataSourceId: string,
+    documentId: string,
+    attribute?: string
+  ): Promise<any>
 
   addToParent(dataSourceId: string, data: any): Promise<any>
 }

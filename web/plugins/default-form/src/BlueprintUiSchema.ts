@@ -1,11 +1,10 @@
 import { Blueprint } from './domain/Blueprint'
 import {
   BlueprintAttributeType,
-  BlueprintType, Entity,
+  BlueprintType,
   KeyValue,
   UiRecipe,
 } from './domain/types'
-import { BlueprintProvider } from './BlueprintProvider'
 import { UiSchema } from 'react-jsonschema-form'
 // @ts-ignore
 import objectPath from 'object-path'
@@ -39,15 +38,18 @@ export class BlueprintUiSchema implements IBlueprintSchema {
   private uiRecipe: UiRecipe
   private blueprintType: BlueprintType
   private inputBlueprint: Blueprint
+  private blueprintProvider: Function
 
   constructor(
     blueprintType: BlueprintType,
     uiRecipe: UiRecipe,
-    uiRecipeName: string
+    uiRecipeName: string,
+    blueprintProvider: Function
   ) {
     this.uiRecipe = uiRecipe
     this.blueprintType = blueprintType
     this.inputBlueprint = new Blueprint(blueprintType)
+    this.blueprintProvider = blueprintProvider
     // add defaults before the recursive part.
     // defaults can be overridden in uiRecipe.
     if (uiRecipeName == 'DEFAULT_CREATE') {
@@ -57,47 +59,64 @@ export class BlueprintUiSchema implements IBlueprintSchema {
     }
   }
 
-  public async execute(blueprintProvider: BlueprintProvider) {
-    return this.processAttributes('', this.inputBlueprint, this.blueprintType.attributes, blueprintProvider)
+  // @ts-ignore
+  public async execute(blueprintProvider: Function) {
+    return this.processAttributes(
+      '',
+      this.inputBlueprint,
+      this.blueprintType.attributes,
+      this.blueprintProvider
+    )
   }
 
   private async processAttributes(
     path: string = '',
     blueprint: Blueprint,
     attributes: BlueprintAttributeType[],
-    blueprintProvider: BlueprintProvider,
+    blueprintProvider: Function
   ) {
     const listOfAttr = attributes
-      .map(attrType => new BlueprintAttribute(attrType))
+      .map((attrType) => new BlueprintAttribute(attrType))
       .filter(blueprint.filterAttributesByUiRecipe(this.uiRecipe.name))
 
-    return await Promise.all(listOfAttr.map(async (attr: BlueprintAttribute) => {
-      const attrName = attr.getName()
+    return await Promise.all(
+      listOfAttr.map(async (attr: BlueprintAttribute) => {
+        const attrName = attr.getName()
 
-      const uiAttribute = blueprint.getUiAttribute(
-        this.uiRecipe.name,
-        attrName,
-      )
+        const uiAttribute = blueprint.getUiAttribute(
+          this.uiRecipe.name,
+          attrName
+        )
 
-      const newPath = this.createAttributePath(path, attrName)
+        const newPath = BlueprintUiSchema.createAttributePath(path, attrName)
 
-      if (attr.isComplexArray()) {
-        objectPath.set(this.schema, newPath, { 'ui:field': 'matrix' })
-      } else {
-        if (
-          this.inputBlueprint.isPrimitive(attr.getAttributeType()) ||
-          (uiAttribute && uiAttribute.field)
-        ) {
-          return this.appendPrimitive(newPath, blueprint, attr, uiAttribute, blueprintProvider)
+        if (attr.isComplexArray()) {
+          objectPath.set(this.schema, newPath, { 'ui:field': 'matrix' })
         } else {
-          await this.processNested(newPath, blueprint, attr, blueprintProvider)
+          if (
+            this.inputBlueprint.isPrimitive(attr.getAttributeType()) ||
+            (uiAttribute && uiAttribute.field)
+          ) {
+            return this.appendPrimitive(
+              newPath,
+              attr,
+              uiAttribute,
+              blueprintProvider
+            )
+          } else {
+            await this.processNested(
+              newPath,
+              blueprint,
+              attr,
+              blueprintProvider
+            )
+          }
         }
-      }
-    }))
+      })
+    )
   }
 
-
-  private createAttributePath(path: string, name: string) {
+  private static createAttributePath(path: string, name: string) {
     return path.length === 0 ? name : path + `.${name}`
   }
 
@@ -105,18 +124,16 @@ export class BlueprintUiSchema implements IBlueprintSchema {
     path: string,
     blueprint: Blueprint,
     attr: BlueprintAttribute,
-    blueprintProvider: BlueprintProvider,
+    blueprintProvider: Function
   ): Promise<void> {
     const nestedBlueprintType:
       | BlueprintType
-      | undefined = await blueprintProvider.getBlueprintByType(
-      attr.getAttributeType(),
-    )
+      | undefined = await blueprintProvider(attr.getAttributeType())
 
     if (nestedBlueprintType) {
       if (nestedBlueprintType.name === blueprint.getBlueprintType().name) {
         console.log(
-          'EditPlugin uiSchema does not support self recursive types.',
+          'EditPlugin uiSchema does not support self recursive types.'
         )
         return
       }
@@ -133,7 +150,7 @@ export class BlueprintUiSchema implements IBlueprintSchema {
           newPath,
           nestedBlueprint,
           nestedBlueprintType.attributes,
-          blueprintProvider,
+          blueprintProvider
         )
       } else {
         // update reference to nested item¨
@@ -142,7 +159,7 @@ export class BlueprintUiSchema implements IBlueprintSchema {
           path,
           nestedBlueprint,
           nestedBlueprintType.attributes,
-          blueprintProvider,
+          blueprintProvider
         )
       }
     }
@@ -150,10 +167,9 @@ export class BlueprintUiSchema implements IBlueprintSchema {
 
   private async appendPrimitive(
     path: string,
-    blueprint: Blueprint,
     attr: BlueprintAttribute,
     uiAttr: any,
-    blueprintProvider: BlueprintProvider,
+    blueprintProvider: Function
   ) {
     if (attr.isArray()) {
       let newPath = path + '.items'
@@ -163,18 +179,17 @@ export class BlueprintUiSchema implements IBlueprintSchema {
       }
       objectPath.set(this.schema, newPath, {})
 
-      await this.appendSchemaProperty(newPath, blueprint, attr, uiAttr, blueprintProvider)
+      await this.appendSchemaProperty(newPath, attr, uiAttr, blueprintProvider)
     } else {
-      await this.appendSchemaProperty(path, blueprint, attr, uiAttr, blueprintProvider)
+      await this.appendSchemaProperty(path, attr, uiAttr, blueprintProvider)
     }
   }
 
   private async appendSchemaProperty(
     path: string,
-    blueprint: Blueprint,
     attr: BlueprintAttribute,
     uiAttribute: any,
-    blueprintProvider: any,
+    blueprintProvider: Function
   ): Promise<void> {
     //@todo use uiAttribute to build the schema property. required, descriptions etc.
     const uiSchemaProperty: UiSchema = {}
@@ -203,7 +218,7 @@ export class BlueprintUiSchema implements IBlueprintSchema {
       if (uiAttribute.disabled) {
         if (attr.getBlueprintAttributeType().default === '') {
           console.warn(
-            `please provide a defaultValue when attribute is disabled from editing, attr: ${attr}`,
+            `please provide a defaultValue when attribute is disabled from editing, attr: ${attr}`
           )
         }
         uiSchemaProperty['ui:disabled'] = true
@@ -215,9 +230,7 @@ export class BlueprintUiSchema implements IBlueprintSchema {
         uiSchemaProperty['ui:label'] = attr.getBlueprintAttributeType().label
       }
       if (uiAttribute.field === 'attribute') {
-        const fieldBlueprint = await blueprintProvider.getBlueprintByType(
-          attr.getAttributeType(),
-        )
+        const fieldBlueprint = await blueprintProvider(attr.getAttributeType())
         const fieldProperty = {
           'ui:field': uiAttribute.field,
           attributes: (fieldBlueprint && fieldBlueprint.attributes) || [],

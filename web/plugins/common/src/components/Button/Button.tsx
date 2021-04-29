@@ -20,18 +20,18 @@ export const Button = styled.button`
   background-image: none;
   border: 1px solid #ccc;
   border-radius: 4px;
-  
-  color: #333; 
+
+  color: #333;
   background-color: #fff;
-  
+
   :disabled {
     opacity: 0.4;
   }
-  
+
   :hover {
     box-shadow: 0 0 2px gray;
   }
-  
+
   ${(props: any) =>
     props.primary &&
     css`
@@ -39,7 +39,7 @@ export const Button = styled.button`
       background: #45c0dc;
       border-color: #45c0dc;
     `}
-  
+
   ${(props: any) =>
     props.success &&
     css`
@@ -65,12 +65,12 @@ export const Button = styled.button`
     `}
   
    ${(props: any) =>
-     props.danger &&
-     css`
-       color: #fff;
-       background: #d9534f;
-       border-color: #d9534f;
-     `}
+    props.danger &&
+    css`
+      color: #fff;
+      background: #d9534f;
+      border-color: #d9534f;
+    `}
 `
 
 export default Button

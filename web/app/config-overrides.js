@@ -1,6 +1,10 @@
-var path = require('path');
+var path = require('path')
 
-const { removeModuleScopePlugin, override, babelInclude } = require('customize-cra');
+const {
+  removeModuleScopePlugin,
+  override,
+  babelInclude,
+} = require('customize-cra')
 
 module.exports = function (config, env) {
   return Object.assign(
@@ -14,5 +18,5 @@ module.exports = function (config, env) {
         path.resolve('../custom-plugins'),
       ])
     )(config, env)
-  );
-};
+  )
+}

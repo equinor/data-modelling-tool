@@ -15,7 +15,7 @@ const TabStyled: any = styled.div`
   margin-bottom: 20px;
   cursor: pointer;
   border-bottom-color: ${(props: any) =>
-          props.isSelected ? 'black' : 'white'};
+    props.isSelected ? 'black' : 'white'};
   border-bottom-style: solid;
   border-bottom-width: ${(props: any) => (props.isSelected ? '2px' : '0px')};
 

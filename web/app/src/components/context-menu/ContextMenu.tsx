@@ -45,12 +45,7 @@ const renderMenuItems = (props: DmtMenuItemsProps) => {
       )
     } else {
       return (
-        <DmtMenuItem
-          key={key}
-          id={id}
-          onClick={onClick}
-          menuItem={menuItem}
-        />
+        <DmtMenuItem key={key} id={id} onClick={onClick} menuItem={menuItem} />
       )
     }
   })
@@ -98,7 +93,7 @@ const DmtMenuItem = (props: DmtMenuItemProps) => {
   return (
     <MenuItem
       data={{ action: menuItem.action }}
-      onClick={e => {
+      onClick={(e) => {
         // click on menu item. Prevent onClick to propagate to components beneath
         e.stopPropagation()
         onClick(id, menuItem.action, menuItem.data, menuItem.label)

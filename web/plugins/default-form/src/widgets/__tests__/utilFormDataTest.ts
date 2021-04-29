@@ -16,7 +16,7 @@ describe('utilFormDataTest', () => {
     const entity = {
       boolValue: 'true',
     }
-    const attributes : BlueprintType [] = [
+    const attributes: BlueprintType[] = [
       {
         name: 'boolValue',
         type: 'boolean',

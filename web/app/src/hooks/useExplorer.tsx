@@ -5,7 +5,7 @@ import {
 import { useModalContext } from '../context/modal/ModalContext'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintEnum, IDocumentAPI, DocumentAPI } from '@dmt/common'
+import { BlueprintEnum, DocumentAPI, IDocumentAPI } from '@dmt/common'
 
 import {
   IGlobalIndex,
@@ -78,6 +78,8 @@ interface UpdateByIdProps {
 export interface IUseExplorer {
   get({ dataSourceId, documentId, attribute }: GetProps): void
 
+  getBlueprint(typeRef: string): void
+
   getByPath({ dataSourceId, path }: GetByPathProps): void
 
   toggle({ nodeId }: ToggleProps): void
@@ -91,12 +93,12 @@ export interface IUseExplorer {
   update({ data, updateUrl, nodeUrl }: UpdateProps): void
 
   updateById({
-               dataSourceId,
-               documentId,
-               attribute,
-               data,
-               nodeUrl,
-             }: UpdateByIdProps): Promise<any>
+    dataSourceId,
+    documentId,
+    attribute,
+    data,
+    nodeUrl,
+  }: UpdateByIdProps): Promise<any>
 
   addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
 
@@ -113,6 +115,7 @@ interface ExplorerProps {
 
 export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const { documentAPI = new DocumentAPI() } = props
+  const [blueprintCache, setBlueprintCache] = useState<any>({})
   const dashboard: IDashboard = useDashboard()
   const index: IGlobalIndex = useGlobalIndex()
   const { closeModal } = useModalContext()
@@ -141,6 +144,20 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     return documentAPI.getById(dataSourceId, documentId, attribute)
   }
 
+  // TODO: This cache does not really work, as a new instance of useExplorer is created in every form
+  const getBlueprint = (typeRef: string) => {
+    // Check if blueprint is in cache
+    if (typeRef in blueprintCache) {
+      console.log(`Found ${typeRef} in cache!`)
+      return blueprintCache[typeRef]
+    } else {
+      const blueprint = documentAPI.getBlueprint(typeRef)
+      //  Update cache
+      setBlueprintCache({ ...blueprintCache, [typeRef]: blueprint })
+      return blueprint
+    }
+  }
+
   const getByPath = ({ dataSourceId, path }: GetByPathProps) => {
     return documentAPI.getByPath(dataSourceId, path)
   }
@@ -159,7 +176,11 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         fetchUrl.uid,
         fetchUrl.title,
         fetchUrl.component,
-        { ...fetchUrl.data, documentId: fetchUrl.uid, dataSourceId: dataSourceId },
+        {
+          ...fetchUrl.data,
+          documentId: fetchUrl.uid,
+          dataSourceId: dataSourceId,
+        }
       )
       dashboard.models.layout.operations.focus(nodeId)
     }
@@ -180,10 +201,10 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const addToParent = async ({
-                               dataSourceId,
-                               data,
-                               nodeUrl,
-                             }: AddToParentProps) => {
+    dataSourceId,
+    data,
+    nodeUrl,
+  }: AddToParentProps) => {
     if (validate(data)) {
       return documentAPI
         .addToParent(dataSourceId, data)
@@ -235,12 +256,12 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const updateById = async ({
-                              dataSourceId,
-                              documentId,
-                              attribute,
-                              data,
-                              nodeUrl,
-                            }: UpdateByIdProps) => {
+    dataSourceId,
+    documentId,
+    attribute,
+    data,
+    nodeUrl,
+  }: UpdateByIdProps) => {
     return documentAPI
       .updateById(dataSourceId, documentId, attribute, data)
       .then((result: any) => {
@@ -248,7 +269,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         index.models.index.operations
           .add(documentId, nodeUrl)
           .then(() =>
-            dashboard.models.layout.operations.refreshByFilter(documentId),
+            dashboard.models.layout.operations.refreshByFilter(documentId)
           )
         return result
       })
@@ -259,6 +280,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
 
   return {
     get,
+    getBlueprint,
     getByPath,
     toggle,
     open,

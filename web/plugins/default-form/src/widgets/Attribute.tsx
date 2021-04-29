@@ -40,10 +40,9 @@ type Props = {
 }
 
 export const AttributeWidget = (props: Props) => {
-
   let { attributes } = props.uiSchema
   const [formData, setFormData] = useState<BlueprintAttributeType>(
-    props.formData,
+    props.formData
   )
 
   if (!attributes) {
@@ -54,7 +53,7 @@ export const AttributeWidget = (props: Props) => {
 
   const onChange: AttributeOnChange = (
     attributeType: BlueprintAttributeType,
-    value: string | boolean | number,
+    value: string | boolean | number
   ): void => {
     const name = attributeType.name
     let newFormData = { ...formData, [name]: value }
@@ -82,7 +81,7 @@ export const AttributeWidget = (props: Props) => {
           attributeType,
           // @ts-ignore
           selectedType,
-          selectedDimensions || '',
+          selectedDimensions || ''
         )
         if (Widget === null) {
           return null
@@ -122,7 +121,7 @@ export const AttributeWidget = (props: Props) => {
 function getWidgetByName(
   attributeType: BlueprintAttributeType,
   selectedType: string,
-  selectedDimensions: string,
+  selectedDimensions: string
 ): Function | null {
   const attr = new BlueprintAttribute(attributeType)
   let widget: Function = (widgetNames as any)[attr.getName()]

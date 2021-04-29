@@ -13,13 +13,9 @@ const HeaderItem = styled.div`
 `
 
 export default (props: any) => {
-    const {children} = props
-    const items = [children].map((child: any, index: number) => {
-        return <HeaderItem key={`${index}`}>{child}</HeaderItem>
-    })
-    return (
-        <HeaderWrapper>
-            {items}
-        </HeaderWrapper>
-    )
+  const { children } = props
+  const items = [children].map((child: any, index: number) => {
+    return <HeaderItem key={`${index}`}>{child}</HeaderItem>
+  })
+  return <HeaderWrapper>{items}</HeaderWrapper>
 }

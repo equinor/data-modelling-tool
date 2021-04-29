@@ -39,11 +39,6 @@
   "eslintConfig": {
     "extends": "react-app"
   },
-  "husky": {
-    "hooks": {
-      "pre-commit": "pretty-quick --staged && npm run coverage"
-    }
-  },
   "browserslist": {
     "production": [
       ">0.2%",

@@ -14,27 +14,26 @@ const Wrapper = styled.div`
 `
 
 const View = (props: any) => {
-  const {
-    dataSourceId,
-    documentId,
-    uiRecipe,
-  } = props
+  const { dataSourceId, documentId, uiRecipe } = props
 
   const explorer: IUseExplorer = useExplorer({})
   const [loading, setLoading] = useState(false)
 
-
   const onSubmit = (formData: any) => {
     setLoading(true)
-    const node = explorer.index.models.index.models.tree.operations.getNode(documentId)
+    const node = explorer.index.models.index.models.tree.operations.getNode(
+      documentId
+    )
     const target = documentId.split('.')
-    explorer.updateById({
-      dataSourceId,
-      documentId: target.shift(),
-      attribute: target.join('.'),
-      data: formData,
-      nodeUrl: node.meta.indexUrl,
-    }).then(() => setLoading(false))
+    explorer
+      .updateById({
+        dataSourceId,
+        documentId: target.shift(),
+        attribute: target.join('.'),
+        data: formData,
+        nodeUrl: node.meta.indexUrl,
+      })
+      .then(() => setLoading(false))
   }
 
   if (loading) return <div>Loading...</div>
@@ -48,7 +47,8 @@ const View = (props: any) => {
       documentId={documentId}
       explorer={explorer}
       uiRecipeName={uiRecipe.name}
-      onSubmit={onSubmit} />
+      onSubmit={onSubmit}
+    />
   )
 }
 
@@ -60,7 +60,7 @@ type ViewListProps = {
 const ViewList = (props: ViewListProps) => {
   const generateUiRecipeTabs = new GenerateUiRecipeTabs(
     props.blueprintType.uiRecipes,
-    getDefaultTabs(props.blueprintType.uiRecipes),
+    getDefaultTabs(props.blueprintType.uiRecipes)
   )
   const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
 
@@ -109,7 +109,10 @@ const DocumentComponent = (props: any) => {
                   <ErrorGroup>
                     <b>404</b>
                     <b>
-                      No document found <code>{dataSourceId}/{documentId}</code>
+                      No document found{' '}
+                      <code>
+                        {dataSourceId}/{documentId}
+                      </code>
                     </b>
                   </ErrorGroup>
                 )}

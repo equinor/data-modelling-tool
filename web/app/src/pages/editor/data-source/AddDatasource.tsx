@@ -23,7 +23,7 @@ const AddDataSourceComponent = () => {
   const explorer: IUseExplorer = useExplorer({})
 
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
-    'mongo-db',
+    'mongo-db'
   )
 
   const ExternalPlugin = getUIPlugin('default-form')
@@ -41,9 +41,7 @@ const AddDataSourceComponent = () => {
         // dispatch(EntitiesActions.addDatasource(res.data))
       })
       .catch((e: any) => {
-        NotificationManager.error(
-          `Failed to create datasource ${data.name}`,
-        )
+        NotificationManager.error(`Failed to create datasource ${data.name}`)
         console.log(e)
       })
   }
@@ -59,7 +57,8 @@ const AddDataSourceComponent = () => {
         <ExternalPlugin
           type={constructType(selectedDatasourceType)}
           explorer={explorer}
-          onSubmit={handleOnSubmit} />
+          onSubmit={handleOnSubmit}
+        />
       </div>
     </>
   )
@@ -68,7 +67,6 @@ const AddDataSourceComponent = () => {
 export default () => {
   const { openModal } = useModalContext()
 
-
   const open = () => {
     const modalProps = {}
     openModal(AddDataSourceComponent, {
@@ -76,7 +74,6 @@ export default () => {
       props: modalProps,
     })
   }
-
 
   return (
     <div>

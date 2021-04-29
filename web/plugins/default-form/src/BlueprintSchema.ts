@@ -6,10 +6,10 @@ import {
   Entity,
   KeyValue,
 } from './domain/types'
-import { BlueprintProvider } from './BlueprintProvider'
 // @ts-ignore
 import objectPath from 'object-path'
 import { BlueprintAttribute } from './domain/BlueprintAttribute'
+import { DocumentAPI } from '@dmt/common'
 
 interface IBlueprintSchema {
   getSchema: () => object
@@ -31,20 +31,23 @@ export class BlueprintSchema implements IBlueprintSchema {
   private rootBlueprintType: BlueprintType | undefined
   private blueprintType: BlueprintType
   private blueprint: Blueprint
-
+  private blueprintProvider: Function
+  private documentAPI = new DocumentAPI()
   constructor(
     blueprintType: BlueprintType,
     uiRecipe: UiRecipe,
-    rootBlueprint?: BlueprintType | undefined,
+    blueprintProvider: Function,
+    rootBlueprint?: BlueprintType | undefined
   ) {
     this.uiRecipe = uiRecipe
     this.rootBlueprintType = rootBlueprint
     this.blueprintType = blueprintType
     this.blueprint = new Blueprint(blueprintType)
+    this.blueprintProvider = blueprintProvider
     objectPath.set(this.schema, 'required', this.getRequired(this.blueprint))
   }
 
-  public async execute(document: Entity, blueprintProvider: BlueprintProvider) {
+  public async execute(document: Entity, blueprintProvider: Function) {
     const path = 'properties'
 
     return this.processAttributes(
@@ -53,7 +56,7 @@ export class BlueprintSchema implements IBlueprintSchema {
       document,
       this.blueprintType.attributes,
       blueprintProvider,
-      false,
+      false
     )
   }
 
@@ -62,19 +65,23 @@ export class BlueprintSchema implements IBlueprintSchema {
     blueprint: Blueprint,
     document: Entity,
     attributes: BlueprintAttributeType[],
-    blueprintProvider: BlueprintProvider,
-    exitRecursion: boolean,
+    blueprintProvider: Function,
+    exitRecursion: boolean
   ) {
-
-
     const blueprintAttributes: BlueprintAttribute[] = attributes
-      .map((attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType))
+      .map(
+        (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
+      )
       .filter(blueprint.filterAttributesByUiRecipe(this.uiRecipe.name))
 
     const skip: string[] = this.getNotContained(blueprint)
 
-    await Promise.all(blueprintAttributes.map(async (attribute: BlueprintAttribute) => {
-        const newPath = BlueprintSchema.createAttributePath(path, attribute.getName())
+    await Promise.all(
+      blueprintAttributes.map(async (attribute: BlueprintAttribute) => {
+        const newPath = BlueprintSchema.createAttributePath(
+          path,
+          attribute.getName()
+        )
 
         if (!skip.includes(attribute.getName())) {
           if (attribute.isPrimitive()) {
@@ -82,7 +89,7 @@ export class BlueprintSchema implements IBlueprintSchema {
               newPath,
               blueprint,
               attribute.getBlueprintAttributeType(),
-              blueprintProvider,
+              blueprintProvider
             )
           } else {
             await this.processNested(
@@ -90,11 +97,11 @@ export class BlueprintSchema implements IBlueprintSchema {
               document,
               attribute.getBlueprintAttributeType(),
               blueprintProvider,
-              exitRecursion,
+              exitRecursion
             )
           }
         }
-      }),
+      })
     )
   }
 
@@ -106,16 +113,14 @@ export class BlueprintSchema implements IBlueprintSchema {
     path: string,
     nestedDocument: Entity,
     attrType: BlueprintAttributeType,
-    blueprintProvider: BlueprintProvider,
-    exitRecursion: boolean,
+    blueprintProvider: Function,
+    exitRecursion: boolean
   ): Promise<void> {
     const attr = new BlueprintAttribute(attrType)
 
     const nestedBlueprintType:
       | BlueprintType
-      | undefined = await blueprintProvider.getBlueprintByType(
-      attr.getAttributeType(),
-    )
+      | undefined = await blueprintProvider(attr.getAttributeType())
 
     if (nestedBlueprintType) {
       const nestedBlueprint = new Blueprint(nestedBlueprintType)
@@ -145,7 +150,7 @@ export class BlueprintSchema implements IBlueprintSchema {
             nestedDocument[attr.getName()][0],
             nestedBlueprintType.attributes,
             blueprintProvider,
-            exitRecursion,
+            exitRecursion
           )
         }
       } else {
@@ -163,7 +168,7 @@ export class BlueprintSchema implements IBlueprintSchema {
             nestedDocument[attr.getName()],
             nestedBlueprintType.attributes,
             blueprintProvider,
-            true,
+            true
           )
         }
       }
@@ -174,18 +179,22 @@ export class BlueprintSchema implements IBlueprintSchema {
     path: string,
     blueprint: Blueprint,
     attr: BlueprintAttributeType,
-    blueprintProvider: BlueprintProvider,
+    blueprintProvider: Function
   ) {
     if (this.blueprint.isArray(attr)) {
       objectPath.set(this.schema, path, {
         type: 'array',
-        items: await this.createSchemaProperty(blueprint, attr, blueprintProvider),
+        items: await this.createSchemaProperty(
+          blueprint,
+          attr,
+          blueprintProvider
+        ),
       })
     } else {
       objectPath.set(
         this.schema,
         path,
-        await this.createSchemaProperty(blueprint, attr, blueprintProvider),
+        await this.createSchemaProperty(blueprint, attr, blueprintProvider)
       )
     }
   }
@@ -193,7 +202,7 @@ export class BlueprintSchema implements IBlueprintSchema {
   private async createSchemaProperty(
     blueprint: Blueprint,
     attrType: BlueprintAttributeType,
-    blueprintProvider: BlueprintProvider,
+    blueprintProvider: Function
   ): Promise<SchemaProperty> {
     const attr = new BlueprintAttribute(attrType)
     let defaultValue: any = blueprint.isArray(attrType) ? '' : attr.getDefault()
@@ -215,16 +224,20 @@ export class BlueprintSchema implements IBlueprintSchema {
     if (defaultValue) {
       schemaProperty.default = defaultValue
     }
-    await this.addEnumToProperty(blueprint, schemaProperty, attrType, blueprintProvider)
+    await this.addEnumToProperty(
+      blueprint,
+      schemaProperty,
+      attrType,
+      blueprintProvider
+    )
     return schemaProperty
   }
 
   getRequired(blueprint: Blueprint) {
     const uiAttributes: KeyValue | undefined = blueprint.getUiAttributes(
-      this.uiRecipe.name,
+      this.uiRecipe.name
     )
     if (uiAttributes) {
-
       return Object.values(uiAttributes)
         .filter((attr: any) => attr.required)
         .map((attr: any) => attr.name)
@@ -234,7 +247,7 @@ export class BlueprintSchema implements IBlueprintSchema {
 
   getNotContained(blueprint: Blueprint) {
     const uiAttributes: KeyValue | undefined = blueprint.getUiAttributes(
-      this.uiRecipe.name,
+      this.uiRecipe.name
     )
     if (uiAttributes) {
       return Object.values(uiAttributes)
@@ -252,7 +265,7 @@ export class BlueprintSchema implements IBlueprintSchema {
     blueprint: Blueprint,
     property: SchemaProperty,
     attr: BlueprintAttributeType,
-    blueprintProvider: BlueprintProvider,
+    blueprintProvider: Function
   ): Promise<void> {
     const attrBlueprintName = blueprint.getBlueprintType().name
 
@@ -260,12 +273,11 @@ export class BlueprintSchema implements IBlueprintSchema {
       this.rootBlueprintType &&
       attr.name === 'name' &&
       ['BlueprintAttribute', 'UiAttribute', 'StorageAttribute'].includes(
-        attrBlueprintName,
+        attrBlueprintName
       )
     ) {
-
       const validNames = this.rootBlueprintType.attributes.map(
-        (attr: BlueprintAttributeType) => attr.name,
+        (attr: BlueprintAttributeType) => attr.name
       )
       //create an enum for valid names.
       property.title = attr.name
@@ -286,7 +298,11 @@ export class BlueprintSchema implements IBlueprintSchema {
 
     //@todo pass uiAttribute to only add enum if desired?
     else if (attr.enumType && attr.name !== 'type') {
-      const document = await blueprintProvider.getDtoByType(attr.enumType)
+      const response = await this.documentAPI.getByPath(
+        attr.enumType.split('/', 1)[0],
+        attr.enumType.split('/', 1)[1]
+      )
+      const document = response.document
       if (document) {
         property.title = attr.name
         property.type = 'string'

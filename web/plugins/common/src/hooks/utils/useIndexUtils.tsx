@@ -1,10 +1,6 @@
 // @ts-ignore
 import values from 'lodash/values'
-import {
-  NodeIconType,
-  NodeMetaData,
-  TreeNodeData,
-} from '../../components/Tree'
+import { NodeIconType, NodeMetaData, TreeNodeData } from '../../components/Tree'
 import { NodeType } from '../../utils/variables'
 import { IndexNode, IndexNodes } from '../../services'
 

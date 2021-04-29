@@ -10,18 +10,14 @@ interface LoadPluginProps {
 export const getUIPlugin = (uiRecipeName: string) => {
   const pluginName = uiRecipeName.trim()
   if (pluginName in uiPlugins) return uiPlugins[pluginName]
-  return (() => <div>Did not find the plugin: {pluginName} </div>)
+  return () => <div>Did not find the plugin: {pluginName} </div>
 }
 
 export const loadPlugins = (input: LoadPluginProps) => {
   const { plugins } = input
   plugins.forEach((plugin: any) => {
     plugin.then((loadedPlugin: DmtPlugin) => {
-      const {
-        pluginName,
-        pluginType,
-        PluginComponent,
-      } = loadedPlugin
+      const { pluginName, pluginType, PluginComponent } = loadedPlugin
       console.log(`Added plugin: ${pluginName}`)
       switch (pluginType) {
         case DmtPluginType.UI:

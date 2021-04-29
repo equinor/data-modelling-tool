@@ -4,7 +4,8 @@ import { DocumentNode } from './DocumentNode'
 import {
   ContextMenuActions,
   DeleteAction,
-  DownloadAction, formDataGivenByRequest,
+  DownloadAction,
+  formDataGivenByRequest,
   SaveToExistingDocument,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
@@ -32,7 +33,7 @@ export default () => {
   const handleOpen = (props: any) => {
     if (
       [NodeType.PACKAGE, NodeType.DATA_SOURCE].includes(
-        props.nodeData.meta.type,
+        props.nodeData.meta.type
       )
     ) {
       explorer.toggle({
@@ -52,9 +53,8 @@ export default () => {
     action: string,
     data: any,
     label: string,
-    node: TreeNodeRenderProps,
+    node: TreeNodeRenderProps
   ) => {
-
     const actionInputData = {
       action: {
         node: node,
@@ -133,7 +133,6 @@ export default () => {
             break
           case ActionTypes.separateResultFile:
             const handleSubmit = async (formData: any) => {
-
               const outputType = data.runnable.output
               await runAndSaveToNewDocument(
                 data.dataSourceId,
@@ -141,7 +140,7 @@ export default () => {
                 node.path,
                 formData,
                 outputType,
-                data.runnable.method,
+                data.runnable.method
               )
             }
             const separateResultFileProps = {

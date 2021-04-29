@@ -1,7 +1,4 @@
-import {
-  DataSource,
-  DataSources,
-}  from '@dmt/common'
+import { DataSource, DataSources } from '@dmt/common'
 
 const ADD_DATA_SOURCES = 'ADD_DATA_SOURCES'
 const ADD_DATA_SOURCE = 'ADD_DATA_SOURCE'

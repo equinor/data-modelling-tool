@@ -1,9 +1,17 @@
 // @ts-ignore
 import React, { useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
-import { Application, DataSourceAPI, IIndex, Modal, Tree, TreeNodeRenderProps, useDataSources, useIndex } from '../../'
+import {
+  Application,
+  DataSourceAPI,
+  IIndex,
+  Modal,
+  Tree,
+  TreeNodeRenderProps,
+  useDataSources,
+  useIndex,
+} from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
-
 
 export type EntityPickerProps = {
   onChange: Function
@@ -20,7 +28,7 @@ export const EntityPicker = (props: EntityPickerProps) => {
   const [selectedEntity, setSelectedEntity] = useState<string>('')
   const [showModal, setShowModal] = useState<boolean>(false)
   const dataSourceAPI = new DataSourceAPI()
-  const dataSources : IDataSources = useDataSources(dataSourceAPI)
+  const dataSources: IDataSources = useDataSources(dataSourceAPI)
   const index: IIndex = useIndex({
     application: Application.ENTITIES,
     dataSources: dataSources.models.dataSources,
@@ -38,7 +46,7 @@ export const EntityPicker = (props: EntityPickerProps) => {
       <div>
         <input
           style={{ width: '100%' }}
-          type='string'
+          type="string"
           value={selectedEntity}
           readOnly={true}
           onClick={() => setShowModal(true)}

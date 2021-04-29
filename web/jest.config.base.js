@@ -3,20 +3,12 @@ module.exports = {
   roots: ['<rootDir>/src'],
   testEnvironment: 'node',
   collectCoverage: true,
-  collectCoverageFrom: [
-    '<rootDir>/**/*.{ts,tsx,js}',
-  ],
+  collectCoverageFrom: ['<rootDir>/**/*.{ts,tsx,js}'],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'ts-jest',
   },
   // testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
-  moduleFileExtensions: [
-    'ts',
-    'tsx',
-    'js',
-    'jsx',
-    'node',
-  ],
+  moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'node'],
   coverageDirectory: '<rootDir>/coverage/',
   verbose: true,
   coverageThreshold: {
@@ -27,9 +19,5 @@ module.exports = {
       statements: 15,
     },
   },
-  coverageReporters: [
-    'json-summary',
-    'text',
-    'lcov',
-  ],
+  coverageReporters: ['json-summary', 'text', 'lcov'],
 }
