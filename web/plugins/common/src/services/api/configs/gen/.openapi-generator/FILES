@@ -5,7 +5,6 @@ models/AddToParentRequest.ts
 models/DataSourceRequest.ts
 models/DataSourceType.ts
 models/EntityName.ts
-models/GetDocumentByPathResponse.ts
 models/GetDocumentResponse.ts
 models/HTTPValidationError.ts
 models/MoveRequest.ts

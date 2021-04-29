@@ -41,7 +41,9 @@ export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
     uiRecipeName,
     (typeRef: string) => explorer.getBlueprint(typeRef)
   )
-  await uiSchemaGenerator.execute()
+  await uiSchemaGenerator.execute((typeRef: string) =>
+    explorer.getBlueprint(typeRef)
+  )
   const uiSchema = uiSchemaGenerator.getSchema()
 
   return {

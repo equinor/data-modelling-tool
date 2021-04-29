@@ -5,7 +5,7 @@ import {
 import { useModalContext } from '../context/modal/ModalContext'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintEnum, IDocumentAPI, DocumentAPI } from '@dmt/common'
+import { BlueprintEnum, DocumentAPI, IDocumentAPI } from '@dmt/common'
 
 import {
   IGlobalIndex,
@@ -115,6 +115,7 @@ interface ExplorerProps {
 
 export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const { documentAPI = new DocumentAPI() } = props
+  const [blueprintCache, setBlueprintCache] = useState<any>({})
   const dashboard: IDashboard = useDashboard()
   const index: IGlobalIndex = useGlobalIndex()
   const { closeModal } = useModalContext()
@@ -142,8 +143,19 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const get = ({ dataSourceId, documentId, attribute }: GetProps) => {
     return documentAPI.getById(dataSourceId, documentId, attribute)
   }
+
+  // TODO: This cache does not really work, as a new instance of useExplorer is created in every form
   const getBlueprint = (typeRef: string) => {
-    return documentAPI.getBlueprint(typeRef)
+    // Check if blueprint is in cache
+    if (typeRef in blueprintCache) {
+      console.log(`Found ${typeRef} in cache!`)
+      return blueprintCache[typeRef]
+    } else {
+      const blueprint = documentAPI.getBlueprint(typeRef)
+      //  Update cache
+      setBlueprintCache({ ...blueprintCache, [typeRef]: blueprint })
+      return blueprint
+    }
   }
 
   const getByPath = ({ dataSourceId, path }: GetByPathProps) => {

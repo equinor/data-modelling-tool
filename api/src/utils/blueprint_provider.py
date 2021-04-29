@@ -27,7 +27,6 @@ class BlueprintProvider:
             raise EntityNotFoundException(uid=type)
 
 
-# TODO: 'get_blueprint' should be a wrapper for this that returns a Blueprint
 def get_document(fully_qualified_path: str) -> dict:
     """
     The default DMSS document getter.
@@ -37,7 +36,7 @@ def get_document(fully_qualified_path: str) -> dict:
     # TODO: Update dmss endpoint to handle a singe ID string
     # TODO: Update dmss endpoint to only return the raw document, not the blueprint(?)
     data_source, path = fully_qualified_path.split("/", 1)
-    return dmss_api.document_get_by_path(data_source, path=path)["document"]
+    return dmss_api.document_get_by_path(data_source, path=path)
 
 
 # TODO: remove when everything uses 'get_document'

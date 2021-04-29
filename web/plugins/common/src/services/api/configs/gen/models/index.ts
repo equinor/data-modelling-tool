@@ -2,7 +2,6 @@ export * from './AddToParentRequest';
 export * from './DataSourceRequest';
 export * from './DataSourceType';
 export * from './EntityName';
-export * from './GetDocumentByPathResponse';
 export * from './GetDocumentResponse';
 export * from './HTTPValidationError';
 export * from './MoveRequest';

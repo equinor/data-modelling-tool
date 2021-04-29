@@ -38,7 +38,7 @@ repos:
       language: system
     - id: yarntest
       name: Yarn tests
-      entry: sh -c "cd web && yarn test"
+      entry: sh -c "cd web && CI=true yarn test"
       language: system
       files: ^web/.*\.(test.ts|test.tsx|test.js)$
     - id: pytest

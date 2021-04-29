@@ -23,7 +23,7 @@ export class DocumentAPI implements IDocumentAPI {
     return dmssApi.documentGetByPath({ dataSourceId, path })
   }
   getBlueprint(typeRef: string): Promise<any> {
-    return dmssApi.getBlueprint({ typeRef: typeRef })
+    return dmssApi.blueprintGet({ typeRef: typeRef })
   }
 
   getById(

@@ -59,6 +59,7 @@ export class BlueprintUiSchema implements IBlueprintSchema {
     }
   }
 
+  // @ts-ignore
   public async execute(blueprintProvider: Function) {
     return this.processAttributes(
       '',
