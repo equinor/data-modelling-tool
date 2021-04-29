@@ -33,7 +33,7 @@ describe('Tree', () => {
           }
           return null
         }}
-      </Tree>,
+      </Tree>
     )
     const testInstance = testRenderer.root
 

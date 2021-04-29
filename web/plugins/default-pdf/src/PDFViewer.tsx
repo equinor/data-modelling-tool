@@ -80,9 +80,9 @@ export const ViewerPDFPlugin = (props: any) => {
               <div style={{ display: 'flex', flexDirection: 'row' }}>
                 <label>Tags:</label>
                 {document.tags &&
-                document.tags.map((tag: any) => {
-                  return <TagWrapper>{tag}</TagWrapper>
-                })}
+                  document.tags.map((tag: any) => {
+                    return <TagWrapper>{tag}</TagWrapper>
+                  })}
               </div>
             </MetaDataWrapper>
             <MetaDataWrapper>

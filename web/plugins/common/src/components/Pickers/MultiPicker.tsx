@@ -61,16 +61,16 @@ type MultiSelectorProps = {
 }
 
 const MultiSelector = ({
-                         onChange,
-                         formData,
-                         uiSchema,
-                         typeFilter,
-                       }: MultiSelectorProps) => {
+  onChange,
+  formData,
+  uiSchema,
+  typeFilter,
+}: MultiSelectorProps) => {
   const [selectedPackages, setSelectedPackages] = useState<string[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const dataSourceAPI = new DataSourceAPI()
-  const dataSources : IDataSources = useDataSources(dataSourceAPI)
+  const dataSources: IDataSources = useDataSources(dataSourceAPI)
   const index: IIndex = useIndex({
     application: Application.ENTITIES,
     dataSources: dataSources.models.dataSources,
@@ -78,7 +78,6 @@ const MultiSelector = ({
 
   const handleOpenOrExpand = (props: any) => {
     index.operations.toggle(props.nodeData.nodeId)
-
   }
   useEffect(() => {
     setSelectedPackages(formData || [])
@@ -127,12 +126,12 @@ const MultiSelector = ({
         )}
         <table>
           <tbody>
-          {(tableRows.length === 0 && (
-            <tr key={'none'}>
-              <TableCell>none</TableCell>
-            </tr>
-          )) ||
-          tableRows}
+            {(tableRows.length === 0 && (
+              <tr key={'none'}>
+                <TableCell>none</TableCell>
+              </tr>
+            )) ||
+              tableRows}
           </tbody>
         </table>
       </div>
@@ -189,7 +188,7 @@ const MultiSelector = ({
 const TreeNodeSelector = (props: any) => {
   const { value, selectedPackages, handleChange } = props
   const [checked, setChecked] = useState(
-    selectedPackages.includes(value) || false,
+    selectedPackages.includes(value) || false
   )
   return (
     <input
@@ -205,7 +204,12 @@ const TreeNodeSelector = (props: any) => {
   )
 }
 
-export const PackagesPicker = ({ onChange, formData, uiSchema, explorer }: any) => {
+export const PackagesPicker = ({
+  onChange,
+  formData,
+  uiSchema,
+  explorer,
+}: any) => {
   function PackageFilter(nodeData: any) {
     return nodeData.meta?.isRootPackage
   }
@@ -214,11 +218,16 @@ export const PackagesPicker = ({ onChange, formData, uiSchema, explorer }: any) 
     onChange,
     formData,
     uiSchema,
-    typeFilter: PackageFilter
+    typeFilter: PackageFilter,
   })
 }
 
-export const BlueprintsPicker = ({ onChange, formData, uiSchema, explorer }: any) => {
+export const BlueprintsPicker = ({
+  onChange,
+  formData,
+  uiSchema,
+  explorer,
+}: any) => {
   function BlueprintsFilter(nodeData: any) {
     return nodeData?.meta?.type === BlueprintEnum.BLUEPRINT
   }
@@ -227,6 +236,6 @@ export const BlueprintsPicker = ({ onChange, formData, uiSchema, explorer }: any
     onChange,
     formData,
     uiSchema,
-    typeFilter: BlueprintsFilter
+    typeFilter: BlueprintsFilter,
   })
 }

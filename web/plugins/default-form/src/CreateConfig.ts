@@ -9,32 +9,39 @@ export type FormConfig = {
 }
 
 export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
-  const { type, document, uiRecipeName, blueprintProvider } = pluginProps
+  const { type, document, uiRecipeName, explorer } = pluginProps
 
   const rootBlueprint = undefined
 
-  const blueprint = await blueprintProvider.getBlueprintByType(type)
+  const blueprint = await explorer.getBlueprint(type)
 
   if (!blueprint) throw `Did not found the blueprint ${type}`
 
-  const uiRecipe = blueprint.uiRecipes.find((uiRecipe: any) => uiRecipe.name === uiRecipeName) || {}
+  const uiRecipe =
+    blueprint.uiRecipes.find(
+      (uiRecipe: any) => uiRecipe.name === uiRecipeName
+    ) || {}
 
   console.log('Using UI recipe:', uiRecipe)
 
   const schemaGenerator = new BlueprintSchema(
     blueprint,
     uiRecipe,
-    rootBlueprint,
+    (typeRef: string) => explorer.getBlueprint(typeRef),
+    rootBlueprint
   )
-  await schemaGenerator.execute(document, blueprintProvider)
+  await schemaGenerator.execute(document, (typeRef: string) =>
+    explorer.getBlueprint(typeRef)
+  )
   const schema = schemaGenerator.getSchema()
 
   const uiSchemaGenerator = new BlueprintUiSchema(
     blueprint,
     uiRecipe,
-    uiRecipeName
+    uiRecipeName,
+    (typeRef: string) => explorer.getBlueprint(typeRef)
   )
-  await uiSchemaGenerator.execute(blueprintProvider)
+  await uiSchemaGenerator.execute()
   const uiSchema = uiSchemaGenerator.getSchema()
 
   return {

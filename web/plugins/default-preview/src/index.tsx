@@ -15,15 +15,19 @@ export const PluginComponent = (props: DmtUIPlugin) => {
   useEffect(() => {
     if (dataSourceId && documentId) {
       const target = documentId.split('.')
-      explorer.get({ dataSourceId, documentId: target.shift(), attribute: target.join('.') }).then((result: any) => {
-        setDocument(result.document)
-      })
+      explorer
+        .get({
+          dataSourceId,
+          documentId: target.shift(),
+          attribute: target.join('.'),
+        })
+        .then((result: any) => {
+          setDocument(result.document)
+        })
     }
   }, [dataSourceId, documentId])
 
   if (!document) return <div>Loading...</div>
 
-  return (
-    <PreviewPlugin document={document} />
-  )
+  return <PreviewPlugin document={document} />
 }

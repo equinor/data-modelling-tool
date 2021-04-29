@@ -78,6 +78,8 @@ interface UpdateByIdProps {
 export interface IUseExplorer {
   get({ dataSourceId, documentId, attribute }: GetProps): void
 
+  getBlueprint(typeRef: string): void
+
   getByPath({ dataSourceId, path }: GetByPathProps): void
 
   toggle({ nodeId }: ToggleProps): void
@@ -91,12 +93,12 @@ export interface IUseExplorer {
   update({ data, updateUrl, nodeUrl }: UpdateProps): void
 
   updateById({
-               dataSourceId,
-               documentId,
-               attribute,
-               data,
-               nodeUrl,
-             }: UpdateByIdProps): Promise<any>
+    dataSourceId,
+    documentId,
+    attribute,
+    data,
+    nodeUrl,
+  }: UpdateByIdProps): Promise<any>
 
   addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
 
@@ -140,6 +142,9 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const get = ({ dataSourceId, documentId, attribute }: GetProps) => {
     return documentAPI.getById(dataSourceId, documentId, attribute)
   }
+  const getBlueprint = (typeRef: string) => {
+    return documentAPI.getBlueprint(typeRef)
+  }
 
   const getByPath = ({ dataSourceId, path }: GetByPathProps) => {
     return documentAPI.getByPath(dataSourceId, path)
@@ -159,7 +164,11 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         fetchUrl.uid,
         fetchUrl.title,
         fetchUrl.component,
-        { ...fetchUrl.data, documentId: fetchUrl.uid, dataSourceId: dataSourceId },
+        {
+          ...fetchUrl.data,
+          documentId: fetchUrl.uid,
+          dataSourceId: dataSourceId,
+        }
       )
       dashboard.models.layout.operations.focus(nodeId)
     }
@@ -180,10 +189,10 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const addToParent = async ({
-                               dataSourceId,
-                               data,
-                               nodeUrl,
-                             }: AddToParentProps) => {
+    dataSourceId,
+    data,
+    nodeUrl,
+  }: AddToParentProps) => {
     if (validate(data)) {
       return documentAPI
         .addToParent(dataSourceId, data)
@@ -235,12 +244,12 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const updateById = async ({
-                              dataSourceId,
-                              documentId,
-                              attribute,
-                              data,
-                              nodeUrl,
-                            }: UpdateByIdProps) => {
+    dataSourceId,
+    documentId,
+    attribute,
+    data,
+    nodeUrl,
+  }: UpdateByIdProps) => {
     return documentAPI
       .updateById(dataSourceId, documentId, attribute, data)
       .then((result: any) => {
@@ -248,7 +257,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         index.models.index.operations
           .add(documentId, nodeUrl)
           .then(() =>
-            dashboard.models.layout.operations.refreshByFilter(documentId),
+            dashboard.models.layout.operations.refreshByFilter(documentId)
           )
         return result
       })
@@ -259,6 +268,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
 
   return {
     get,
+    getBlueprint,
     getByPath,
     toggle,
     open,

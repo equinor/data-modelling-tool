@@ -1,12 +1,10 @@
-const base = require('../jest.config.base');
-const packageJson = require('./package');
+const base = require('../jest.config.base')
+const packageJson = require('./package')
 
 module.exports = {
-    ...base,
-    testEnvironment: 'jsdom',
-    name: packageJson.name,
-    displayName: packageJson.name,
-    setupFilesAfterEnv: [
-      "<rootDir>/src/setupTests.js"
-    ]
-};
+  ...base,
+  testEnvironment: 'jsdom',
+  name: packageJson.name,
+  displayName: packageJson.name,
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.js'],
+}

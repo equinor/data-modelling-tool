@@ -1,10 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Tree, TreeNodeData } from '../components/Tree'
-import {
-  IIndexAPI,
-  IndexNode,
-  IndexNodes,
-} from '../services'
+import { IIndexAPI, IndexNode, IndexNodes } from '../services'
 import { ITree, useTree } from '../components/Tree'
 // @ts-ignore
 import values from 'lodash/values'
@@ -42,12 +38,12 @@ export const useIndex = (props: IndexProps): IIndex => {
   const populateIndex = async (): Promise<void> => {
     const indexes: IndexNodes[] = await Promise.all(
       dataSources.map((dataSource: DataSource) =>
-        indexApi.getIndexByDataSource(dataSource.id, application),
-      ),
+        indexApi.getIndexByDataSource(dataSource.id, application)
+      )
     )
     const combinedIndex = indexes
       .map((indexNode: IndexNodes) => toTreeNodes(indexNode))
-      .map(treeNode => treeNode.reduce(toObject, {}))
+      .map((treeNode) => treeNode.reduce(toObject, {}))
       .reduce((obj, item) => {
         return {
           ...obj,
@@ -66,18 +62,18 @@ export const useIndex = (props: IndexProps): IIndex => {
   const add = async (
     documentId: string,
     nodeUrl: string,
-    visible: boolean = false,
+    visible: boolean = false
   ) => {
     try {
       tree.operations.setIsLoading(documentId, true)
       const result = await indexApi.getIndexByDocument(
         nodeUrl,
         documentId,
-        application,
+        application
       )
 
       const treeNodes: TreeNodeData[] = toTreeNodes(result)
-        .map(node => {
+        .map((node) => {
           // Open the specified node by default (or by demand).
           if (node.nodeId === documentId || visible) {
             node.isOpen = true

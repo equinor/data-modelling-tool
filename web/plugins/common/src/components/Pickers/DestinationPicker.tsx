@@ -2,7 +2,16 @@
 import React, { useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import styled from 'styled-components'
-import { Application, DataSourceAPI, IIndex, Modal, Tree, TreeNodeRenderProps, useDataSources, useIndex } from '../../'
+import {
+  Application,
+  DataSourceAPI,
+  IIndex,
+  Modal,
+  Tree,
+  TreeNodeRenderProps,
+  useDataSources,
+  useIndex,
+} from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
 
 const SelectDestinationButton = styled.button`
@@ -39,7 +48,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const dataSourceAPI = new DataSourceAPI()
-  const dataSources : IDataSources = useDataSources(dataSourceAPI)
+  const dataSources: IDataSources = useDataSources(dataSourceAPI)
   const index: IIndex = useIndex({
     application: Application.BLUEPRINTS,
     dataSources: dataSources.models.dataSources,
@@ -66,7 +75,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
       <div>
         <input
           style={{ width: '100%' }}
-          type='string'
+          type="string"
           value={destination}
           readOnly={true}
           onClick={() => setShowModal(true)}
@@ -107,7 +116,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
                         onClick={() => {
                           onSelect(
                             nodeData.nodeId,
-                            `${renderProps.path}/${nodeData.title}`,
+                            `${renderProps.path}/${nodeData.title}`
                           )
                         }}
                       >

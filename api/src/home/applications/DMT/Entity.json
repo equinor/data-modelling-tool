@@ -1,27 +1,9 @@
 {
   "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/NamedEntity"],
   "description": "Blueprint for a DMT reference",
   "name": "Entity",
-  "attributes": [
-    {
-      "name": "name",
-      "optional": false,
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute"
-    },
-    {
-      "name": "type",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute"
-    },
-    {
-      "name": "description",
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "default": "",
-      "optional": true
-    }
-  ],
+  "attributes": [],
   "storageRecipes": [],
   "uiRecipes": [
     {
@@ -33,7 +15,7 @@
           "name": "type",
           "attributeType": "string",
           "type": "system/SIMOS/BlueprintAttribute",
-          "field": "type"
+          "field": "blueprint"
         }
       ]
     }

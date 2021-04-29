@@ -18,7 +18,7 @@ describe('TreeNode', () => {
         isFolder: true,
         icon: NodeIconType.folder,
         meta: {},
-        isLoading: false
+        isLoading: false,
       },
       NodeRenderer: (props: TreeNodeRenderProps) => {
         return <h2>{props.nodeData.title}</h2>
@@ -30,7 +30,9 @@ describe('TreeNode', () => {
         removeNode: () => {},
         addChild: () => {},
         addNodes: () => {},
-        hasChild: () => { return true },
+        hasChild: () => {
+          return true
+        },
       },
       handleToggle: () => {},
       level: 0,

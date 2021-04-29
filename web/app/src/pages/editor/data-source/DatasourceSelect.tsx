@@ -30,7 +30,7 @@ export default (props: Props) => {
   return (
     <select
       value={selectedDatasource}
-      onChange={e => {
+      onChange={(e) => {
         setSelectedDatasource(e.target.value)
       }}
       style={{ margin: '0 10px' }}

@@ -11,11 +11,11 @@ export enum ContextMenuActions {
   RUNNABLE = 'RUNNABLE',
 }
 
-const fillTemplate = function(templateString: string, templateVars: object) {
+const fillTemplate = function (templateString: string, templateVars: object) {
   // eslint-disable-next-line no-new-func
   let func = new Function(
     ...Object.keys(templateVars),
-    'return `' + templateString + '`;',
+    'return `' + templateString + '`;'
   )
   return func(...Object.values(templateVars))
 }
@@ -26,7 +26,7 @@ interface Adict {
 
 export const formDataGivenByRequest = (requestData: any, formData: any) => {
   const data = {} as any
-  Object.keys(requestData).forEach(key => {
+  Object.keys(requestData).forEach((key) => {
     if (key in formData) {
       data[key] = formData[key]
     } else if (typeof requestData[key] === 'object') {
@@ -49,7 +49,6 @@ export const formDataGivenByRequest = (requestData: any, formData: any) => {
   })
   return data
 }
-
 
 export const DeleteAction = (props: any) => {
   const { action } = props
@@ -101,7 +100,7 @@ export const SaveToExistingDocument = (props: any) => {
       action.action.data.documentId,
       action.node.path,
       action.action.data.runnable.method,
-      action.node.parent,
+      action.node.parent
     )
   }
 

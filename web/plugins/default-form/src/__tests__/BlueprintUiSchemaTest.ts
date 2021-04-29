@@ -1,6 +1,5 @@
 import { BlueprintType, UiRecipe } from '../domain/types'
 import { BlueprintUiSchema } from '../BlueprintUiSchema'
-import { BlueprintProvider } from '../BlueprintProvider'
 import { act } from '@testing-library/react-hooks'
 
 export const uiRecipeTest: UiRecipe = {
@@ -51,13 +50,13 @@ describe('BlueprintUiSchema', () => {
     }
     beforeEach(async () => {
       await act(async () => {
-        const blueprintProvider = new BlueprintProvider({})
         const schemaGenerator = new BlueprintUiSchema(
           blueprintType,
           uiRecipeTest,
-          ''
+          '',
+          () => {}
         )
-        await schemaGenerator.execute(blueprintProvider)
+        await schemaGenerator.execute(() => {})
         schema = schemaGenerator.getSchema()
       })
     })
@@ -148,13 +147,13 @@ describe('BlueprintUiSchema', () => {
     ]
     beforeEach(async () => {
       await act(async () => {
-        const blueprintProvider = new BlueprintProvider({})
         const schemaGenerator = new BlueprintUiSchema(
           blueprintType,
           uiRecipeTest,
-          ''
+          '',
+          () => {}
         )
-        await schemaGenerator.execute(blueprintProvider)
+        await schemaGenerator.execute(() => {})
         schema = schemaGenerator.getSchema()
       })
     })

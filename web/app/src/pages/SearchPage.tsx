@@ -12,7 +12,15 @@ import DashboardProvider, {
   useDashboard,
 } from '../context/dashboard/DashboardProvider'
 import IndexProvider from '../context/global-index/IndexProvider'
-import { IndexAPI, DocumentAPI, DataSourceAPI, dmssApi, Application, JsonView, BlueprintPicker } from '@dmt/common'
+import {
+  IndexAPI,
+  DocumentAPI,
+  DataSourceAPI,
+  dmssApi,
+  Application,
+  JsonView,
+  BlueprintPicker,
+} from '@dmt/common'
 
 const indexAPI = new IndexAPI()
 const documentAPI = new DocumentAPI()
@@ -186,7 +194,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
           expanded={expanded}
           setExpanded={setExpanded}
         >
-          {nestedAttributes.map(attr => (
+          {nestedAttributes.map((attr) => (
             <DynamicAttributeFilter
               // @ts-ignore
               value={value?.[attr.name]}
@@ -203,13 +211,19 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 }
 
 const Inner = (props: any) => {
-  const { attributes, setFilter, setAttributes, filter, queryError, onChange } = props
+  const {
+    attributes,
+    setFilter,
+    setAttributes,
+    filter,
+    queryError,
+    onChange,
+  } = props
 
   return (
     <Group>
       <FilterGroup>
         <label style={{ marginRight: '10px' }}>Type: </label>
-
       </FilterGroup>
       {attributes.length === 0 && (
         <div
@@ -313,7 +327,12 @@ function FilterContainer({ search, queryError }) {
   }, [filter?.type])
 
   const innerProps = {
-    attributes, setFilter, setAttributes, filter, queryError, onChange
+    attributes,
+    setFilter,
+    setAttributes,
+    filter,
+    queryError,
+    onChange,
   }
 
   return (
@@ -325,7 +344,7 @@ function FilterContainer({ search, queryError }) {
       <Container>
         <b>Filter</b>
         <form
-          onSubmit={event => {
+          onSubmit={(event) => {
             event.preventDefault()
             event.stopPropagation()
             search(filter)
@@ -366,17 +385,17 @@ function ResultContainer({ result }: any) {
       <Group>
         <table>
           <tbody>
-          <tr>
-            <th>Name</th>
-            <th>Type</th>
-            <th>Description</th>
-            <th>Id</th>
-            <th style={{ width: '50px' }}></th>
-          </tr>
+            <tr>
+              <th>Name</th>
+              <th>Type</th>
+              <th>Description</th>
+              <th>Id</th>
+              <th style={{ width: '50px' }}></th>
+            </tr>
 
-          {result.map((entity: any) => (
-            <EntityRow key={entity._id} entity={entity} />
-          ))}
+            {result.map((entity: any) => (
+              <EntityRow key={entity._id} entity={entity} />
+            ))}
           </tbody>
         </table>
       </Group>
@@ -391,22 +410,23 @@ export default () => {
   function search(query: any) {
     setQueryError('')
     //TODO: Get DataSourceId from User
-    dmssApi.search({
-      dataSourceId: 'entities',
-      searchDataRequest: query,
-    })
+    dmssApi
+      .search({
+        dataSourceId: 'entities',
+        searchDataRequest: query,
+      })
       .then((result: any) => {
         // todo: fix response type in dmss library and move to service layer
         const res = JSON.parse(result)
 
         // @ts-ignore
         let resultList = []
-        Object.keys(res).map(key => resultList.push(res[key]))
+        Object.keys(res).map((key) => resultList.push(res[key]))
         if (resultList.length === 0) {
           NotificationManager.success('Search complete!\n No results')
         } else {
           NotificationManager.success(
-            `Search complete!\n ${resultList.length} results`,
+            `Search complete!\n ${resultList.length} results`
           )
         }
         // @ts-ignore

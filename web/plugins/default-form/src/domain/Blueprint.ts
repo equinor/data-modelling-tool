@@ -112,7 +112,7 @@ export class Blueprint implements IBlueprint {
   private getIndexRecipeAttributes(): KeyValue | undefined {
     if (this.blueprintType.uiRecipes) {
       const indexRecipe = this.blueprintType.uiRecipes.find(
-        recipe => recipe.plugin === 'INDEX'
+        (recipe) => recipe.plugin === 'INDEX'
       )
       if (indexRecipe) {
         return this.getUiAttributes(indexRecipe.name)

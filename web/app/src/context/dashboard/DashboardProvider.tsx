@@ -8,8 +8,7 @@ export interface IModels {
   application: string
 }
 
-export interface IOperations {
-}
+export interface IOperations {}
 
 export interface IDashboard {
   models: IModels
@@ -24,7 +23,7 @@ export const useDashboard = () => {
   const context = useContext(DashboardContext)
   if (!context) {
     throw new Error(
-      'useDashboardContext must be used within a DashboardProvider',
+      'useDashboardContext must be used within a DashboardProvider'
     )
   }
   return context
@@ -37,10 +36,10 @@ interface DashboardProviderProps {
 }
 
 const DashboardProvider = ({
-                             dataSourceApi,
-                             children,
-                             application,
-                           }: DashboardProviderProps) => {
+  dataSourceApi,
+  children,
+  application,
+}: DashboardProviderProps) => {
   const layout: ILayout = useLayout()
   const dataSources: IDataSources = useDataSources(dataSourceApi)
 

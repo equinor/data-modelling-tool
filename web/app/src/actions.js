@@ -36,7 +36,7 @@
 // Here are a few examples;
 
 function sleep(ms) {
-  return new Promise(resolve => setTimeout(resolve, ms))
+  return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
 function myExternalSystemCall(input) {
@@ -132,10 +132,10 @@ const getTodoList = async ({
   const type = output.blueprint.split('/')
   const blueprint = await explorer.getByPath({
     dataSourceId: type.shift(),
-    path: type.join('/')
+    path: type.join('/'),
   })
   const todoItem = blueprint.document.attributes.find(
-    attribute => attribute.name === 'items'
+    (attribute) => attribute.name === 'items'
   )
 
   const nodeUrl = `/api/v4/index/${output.dataSource}/${output.id}`

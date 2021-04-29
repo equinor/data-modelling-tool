@@ -133,6 +133,10 @@ export interface ExplorerRenameRequest {
     renameRequest: RenameRequest;
 }
 
+export interface GetBlueprintRequest {
+    typeRef: string;
+}
+
 export interface PackageFindByNameRequest {
     dataSourceId: string;
     name: string;
@@ -786,6 +790,38 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async explorerRename(requestParameters: ExplorerRenameRequest): Promise<any> {
         const response = await this.explorerRenameRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Fetch the Blueprint of a type (including extended attributes)
+     * Get Blueprint
+     */
+    async getBlueprintRaw(requestParameters: GetBlueprintRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.typeRef === null || requestParameters.typeRef === undefined) {
+            throw new runtime.RequiredError('typeRef','Required parameter requestParameters.typeRef was null or undefined when calling getBlueprint.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/blueprint/{type_ref}`.replace(`{${"type_ref"}}`, encodeURIComponent(String(requestParameters.typeRef))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Fetch the Blueprint of a type (including extended attributes)
+     * Get Blueprint
+     */
+    async getBlueprint(requestParameters: GetBlueprintRequest): Promise<object> {
+        const response = await this.getBlueprintRaw(requestParameters);
         return await response.value();
     }
 

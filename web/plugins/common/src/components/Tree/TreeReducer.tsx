@@ -157,7 +157,7 @@ const getAllDescendantIds = (state: any, nodeId: string) => {
       childId,
       ...getAllDescendantIds(state, childId),
     ],
-    [],
+    []
   )
 }
 const deleteMany = (state: any, ids: any) => {
@@ -177,7 +177,7 @@ export default (state: any = {}, action: any) => {
       let expandedNodes = expandNodesWithMatchingDescendants(
         state,
         filteredNodes,
-        filter,
+        filter
       )
       let nodesAsObject = keyBy(expandedNodes, 'nodeId')
       return { ...nodesAsObject }

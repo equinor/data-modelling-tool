@@ -105,8 +105,9 @@ export default function useRunnable() {
         documentId: output.id,
         attribute: output.attribute || '',
         data: output.entity,
-        nodeUrl: `/api/v4/index/${output.dataSource}/${parentId ||
-          output.parentId}`,
+        nodeUrl: `/api/v4/index/${output.dataSource}/${
+          parentId || output.parentId
+        }`,
       })
       .then((result: any) => {
         output.notify &&

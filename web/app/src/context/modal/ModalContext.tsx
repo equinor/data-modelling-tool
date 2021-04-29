@@ -103,10 +103,10 @@ export const ModalProvider = ({ children }) => {
           setContent({ open: true, content, data })
         },
         closeModal: () => {
-          setContent(state => ({ ...state, open: false }))
+          setContent((state) => ({ ...state, open: false }))
 
           setTimeout(() => {
-            setContent(state => ({ ...state, content: null }))
+            setContent((state) => ({ ...state, content: null }))
           }, 500)
         },
       }}

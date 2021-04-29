@@ -71,33 +71,33 @@ function Action({ value, index, onChange }) {
         <TextInput
           label={'Name'}
           value={value.name}
-          onChange={e => onChange({ ...value, name: e })}
+          onChange={(e) => onChange({ ...value, name: e })}
         />
         <TextInput
           label={'Description'}
           value={value.description}
-          onChange={e => onChange({ ...value, description: e })}
+          onChange={(e) => onChange({ ...value, description: e })}
         />
         <TextInput
           label={'Method'}
           value={value.method}
-          onChange={e => onChange({ ...value, method: e })}
+          onChange={(e) => onChange({ ...value, method: e })}
         />
         <ActionTypesInput
           value={value.actionType}
-          onChange={e => onChange({ ...value, actionType: e })}
+          onChange={(e) => onChange({ ...value, actionType: e })}
         />
         <label style={{ padding: '5px' }}>{'Input type'}:</label>
         {/*
         // @ts-ignore */}
         <BlueprintPicker
-          onChange={e => onChange({ ...value, input: e })}
+          onChange={(e) => onChange({ ...value, input: e })}
           formData={value.input}
           uiSchema={{ 'ui:label': '' }}
         />
         <label style={{ padding: '5px' }}>{'Output type'}:</label>
         <BlueprintPicker
-          onChange={e => onChange({ ...value, output: e })}
+          onChange={(e) => onChange({ ...value, output: e })}
           formData={value.output}
           uiSchema={{ 'ui:label': '' }}
         />
@@ -112,7 +112,7 @@ function TextInput({ label, value, onChange }) {
       <label style={{ paddingRight: '5px' }}>{label}:</label>
       <input
         type={'text'}
-        onChange={e => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
         value={value}
         style={{ width: '100%' }}
       />
@@ -128,7 +128,7 @@ function ActionTypesInput({ value, onChange }) {
         id={'actionTypes'}
         value={value}
         style={{ width: '100%' }}
-        onChange={e => onChange(e.target.value)}
+        onChange={(e) => onChange(e.target.value)}
       >
         <option value={'separateResultFile'} label={'Separate Result File'} />
         <option value={'resultInEntity'} label={'Result in entity'} />
@@ -144,7 +144,7 @@ function PackageInput({ label, value, onChange }) {
       <ActionWrapper style={{ background: 'white', margin: '0' }}>
         <PackagesPicker
           formData={value}
-          onChange={value => onChange(value)}
+          onChange={(value) => onChange(value)}
         />
       </ActionWrapper>
     </>
@@ -158,7 +158,7 @@ function ModelInput({ label, value, onChange }) {
       <ActionWrapper style={{ background: 'white', margin: '0' }}>
         <BlueprintsPicker
           formData={value}
-          onChange={value => onChange(value)}
+          onChange={(value) => onChange(value)}
         />
       </ActionWrapper>
     </>
@@ -173,12 +173,13 @@ export default () => {
 
   useEffect(() => {
     if (modalOpen) {
-      systemAPI.getSystemSettings()
-        .then(result => {
+      systemAPI
+        .getSystemSettings()
+        .then((result) => {
           setSettings(result.data)
           setNewSettings(cloneDeep(result.data))
         })
-        .catch(error => {
+        .catch((error) => {
           console.error(error)
         })
     }
@@ -214,14 +215,15 @@ export default () => {
   }
 
   function saveSettings() {
-    systemAPI.postSystemSettings(newSettings)
+    systemAPI
+      .postSystemSettings(newSettings)
       .then(async () => {
         NotificationManager.success('Reloading...', 'Settings updated.')
         // Add delay to user can read toast and feel some feedback
-        await new Promise(r => setTimeout(r, 2000))
+        await new Promise((r) => setTimeout(r, 2000))
         window.location.reload()
       })
-      .catch(error => NotificationManager.error(`${error.message}`))
+      .catch((error) => NotificationManager.error(`${error.message}`))
   }
 
   return (
@@ -238,27 +240,27 @@ export default () => {
         <TextInput
           label={'Name'}
           value={newSettings.name}
-          onChange={value => onChange('name', value)}
+          onChange={(value) => onChange('name', value)}
         />
         <TextInput
           label={'Description'}
           value={newSettings.description}
-          onChange={value => onChange('description', value)}
+          onChange={(value) => onChange('description', value)}
         />
         <PackageInput
           label={'Entities'}
           value={newSettings.entities}
-          onChange={value => onChange('entities', value)}
+          onChange={(value) => onChange('entities', value)}
         />
         <PackageInput
           label={'Packages'}
           value={newSettings.packages}
-          onChange={value => onChange('packages', value)}
+          onChange={(value) => onChange('packages', value)}
         />
         <ModelInput
           label={'Models'}
           value={newSettings.models}
-          onChange={value => onChange('models', value)}
+          onChange={(value) => onChange('models', value)}
         />
         <div
           style={{
@@ -272,15 +274,15 @@ export default () => {
         </div>
 
         {newSettings.actions &&
-        newSettings.actions.map((action, index) => {
-          return (
-            <Action
-              value={action}
-              onChange={value => actionsOnChange(index, value)}
-              index={index + 1}
-            />
-          )
-        })}
+          newSettings.actions.map((action, index) => {
+            return (
+              <Action
+                value={action}
+                onChange={(value) => actionsOnChange(index, value)}
+                index={index + 1}
+              />
+            )
+          })}
         <div
           style={{
             display: 'flex',

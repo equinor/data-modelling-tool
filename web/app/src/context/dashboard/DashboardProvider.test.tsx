@@ -1,11 +1,7 @@
 import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
 import DashboardProvider, { useDashboard } from './DashboardProvider'
-import {
-  Application,
-  DataSources,
-  IDataSourceAPI,
-} from '@dmt/common'
+import { Application, DataSources, IDataSourceAPI } from '@dmt/common'
 import { mock } from 'jest-mock-extended'
 
 const wrapper: React.FC = ({ children, application, api }: any) => (

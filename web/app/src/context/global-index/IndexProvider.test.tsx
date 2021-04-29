@@ -5,11 +5,11 @@ import { mock } from 'jest-mock-extended'
 import { DataSource, IDocumentAPI, Application, IIndexAPI } from '@dmt/common'
 
 const wrapper: React.FC = ({
-                             children,
-                             indexApi,
-                             dataSources,
-                             application,
-                           }: any) => (
+  children,
+  indexApi,
+  dataSources,
+  application,
+}: any) => (
   <IndexProvider
     indexApi={indexApi}
     dataSources={dataSources}

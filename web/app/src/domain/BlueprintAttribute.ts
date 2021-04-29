@@ -57,7 +57,7 @@ export class BlueprintAttribute {
   public isPrimitive(): boolean {
     //todo use AttributeTypes enum, available in the blueprint.
     return ['string', 'number', 'integer', 'boolean'].includes(
-      this.attr.attributeType as string,
+      this.attr.attributeType as string
     )
   }
 

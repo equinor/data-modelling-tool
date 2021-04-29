@@ -4,7 +4,7 @@ import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import DocumentComponent from './editor/layout-components/DocumentComponent'
 import DashboardProvider from '../context/dashboard/DashboardProvider'
-import { Application, DataSourceAPI }  from '@dmt/common'
+import { Application, DataSourceAPI } from '@dmt/common'
 // @ts-ignore
 
 const Group = styled.div`

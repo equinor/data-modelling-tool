@@ -31,7 +31,7 @@ export enum ArrayType {
 
 export type AttributeOnChange = (
   name: any,
-  value: string | boolean | number,
+  value: string | boolean | number
 ) => void
 
 interface TextInputProps extends InputProps {
@@ -48,10 +48,10 @@ export const TextInput = (props: TextInputProps) => {
   }
   return (
     <input
-      type='text'
+      type="text"
       name={name}
       value={value || attributeType.default || ''}
-      onChange={event => onChange(attributeType, event.target.value)}
+      onChange={(event) => onChange(attributeType, event.target.value)}
     />
   )
 }
@@ -67,7 +67,7 @@ export const TextAreaWidget = (props: TextInputProps) => {
     <textarea
       style={{ width: 200, height: 40 }}
       value={value || attributeType.default || ''}
-      onChange={event => onChange(attributeType, event.target.value)}
+      onChange={(event) => onChange(attributeType, event.target.value)}
     />
   )
 }
@@ -85,10 +85,10 @@ export const NumberInput = (props: NumberInputProps) => {
   }
   return (
     <input
-      type='number'
+      type="number"
       name={name}
       value={value}
-      onChange={event => onChange(attributeType, event.target.value)}
+      onChange={(event) => onChange(attributeType, event.target.value)}
     />
   )
 }
@@ -118,7 +118,7 @@ export const TypeWidget = (props: TypeProps) => {
   const attr = new BlueprintAttribute(attributeType)
   const typeValue = attr.isPrimitiveType(value) ? value : DataType.BLUEPRINT
   const [selectedType, setSelectedType] = useState(
-    value ? typeValue : DataType.STRING,
+    value ? typeValue : DataType.STRING
   )
 
   let blueprintValue
@@ -157,7 +157,7 @@ export const EnumTypePickerWidget = (props: TypeProps) => {
     <>
       <DestinationPicker
         blueprintFilter={BlueprintEnum.ENUM}
-        title=''
+        title=""
         onChange={(value: any) => {
           onChange(attributeType, value)
         }}
@@ -175,7 +175,7 @@ export const ArrayRadioGroup = (props: any) => {
         <input
           onChange={onChange}
           style={{ marginLeft: '10px' }}
-          type='radio'
+          type="radio"
           value={ArrayType.SIMPLE}
           checked={array === ArrayType.SIMPLE}
         />
@@ -185,7 +185,7 @@ export const ArrayRadioGroup = (props: any) => {
         <input
           onChange={onChange}
           style={{ marginLeft: '10px' }}
-          type='radio'
+          type="radio"
           value={ArrayType.ARRAY}
           checked={array === ArrayType.ARRAY}
         />

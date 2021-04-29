@@ -78,9 +78,11 @@ export default () => {
                 registerComponents={(myLayout: any) => {
                   myLayout.registerComponent(
                     LayoutComponents.blueprint,
-                    wrapComponent(DocumentComponent),
+                    wrapComponent(DocumentComponent)
                   )
-                  dashboard.models.layout.operations.registerLayout({ myLayout })
+                  dashboard.models.layout.operations.registerLayout({
+                    myLayout,
+                  })
                 }}
               />
             </Col>
