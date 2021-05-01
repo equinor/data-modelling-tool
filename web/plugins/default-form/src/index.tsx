@@ -9,7 +9,7 @@ import { AttributeWidget } from './widgets/Attribute'
 import { ReadOnlyWidget } from './widgets/ReadOnly'
 import FileDirectoryWidget from './widgets/FileDirectoryWidget'
 import { CollapsibleField } from './components/CollapsibleField'
-import { BlueprintType, KeyValue } from './domain/types'
+import { KeyValue } from './domain/types'
 import {
   EntityPicker,
   BlueprintsPicker,
@@ -103,38 +103,11 @@ export const PluginComponent = (props: DmtUIPlugin) => {
           fileUploadWidget: FileDirectoryWidget,
         }}
         onSubmit={(schemas: any) => {
-          fixRecursive(documentType, schemas.formData, explorer)
           onSubmit(schemas.formData)
         }}
       />
     </div>
   )
-}
-
-async function fixRecursive(
-  documentType: string,
-  entity: KeyValue,
-  explorer: any
-): Promise<void> {
-  const blueprintType: BlueprintType | undefined = await explorer.getBlueprint(
-    documentType
-  )
-
-  if (blueprintType) {
-    const blueprint: Blueprint | undefined = new Blueprint(blueprintType)
-    blueprint.validateEntity(entity)
-    Object.keys(entity).forEach((key: string) => {
-      const attr = blueprint.getAttribute(key)
-      if (attr) {
-        if (blueprint.isArray(attr)) {
-          entity[attr.name].forEach((entityItem: KeyValue, index: number) => {
-            blueprint.validateEntity(entityItem)
-            fixRecursive(entityItem.type, entityItem, explorer)
-          })
-        }
-      }
-    })
-  }
 }
 
 /**
