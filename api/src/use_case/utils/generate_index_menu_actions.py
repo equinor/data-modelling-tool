@@ -96,8 +96,7 @@ def get_create_root_package_menu_item(data_source_id: str):
             "url": f"{DMSS_API}/explorer/{data_source_id}/add-package",
             "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": get_node_url(data_source_id, data_source_id),
-            "request": {"name": "${name}", "description": "${description}"},
-            "type": DMT.PACKAGE.value,
+            "request": {"name": "${name}", "description": "${description}", "type": DMT.PACKAGE.value},
         },
     }
 
