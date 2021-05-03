@@ -2,7 +2,7 @@ import styled from 'styled-components'
 
 const ModalWrapper = styled.div`
   position: fixed;
-  z-index: 1;
+  z-index: 3;
   padding-top: 100px;
   left: 0;
   top: 0;
