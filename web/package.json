@@ -5,7 +5,7 @@
   "scripts": {
     "start": "yarn workspace @dmt/web run start",
     "build": "yarn workspace @dmt/web run build",
-    "test": "yarn build && jest test",
+    "test": "jest test",
     "test:watch": "jest --watch --coverage --no-cache",
     "test:watchAll": "yarn build && jest --watchAll --coverage --notify"
   },

@@ -77,33 +77,6 @@ export class Blueprint implements IBlueprint {
     return ['string', 'number', 'integer', 'number', 'boolean'].includes(type)
   }
 
-  public validateEntity(entity: KeyValue) {
-    this.blueprintType.attributes.forEach(
-      (attrType: BlueprintAttributeType) => {
-        const attr = new BlueprintAttribute(attrType)
-        const value = entity[attr.getName()]
-        if (attrType.optional !== true) {
-          if (attr.isPrimitive()) {
-            if (attrType.default) {
-              //todo insert default?  need to do casting.
-            }
-          } else {
-            if (value === undefined && this.isArray(attrType)) {
-              entity[attrType.name] = []
-            }
-          }
-
-          // required
-          if (!entity[attrType.name]) {
-            console.warn(
-              `non optional value is missing for ${attrType.name} of type ${attrType.type}, ${entity.type}`
-            )
-          }
-        }
-      }
-    )
-  }
-
   /**
    * Index recipe is one to one to blueprints.
    * Not expecting a use case where multiple index recipes for one blueprint is needed.
