@@ -15,7 +15,7 @@ export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
 
   const blueprint = await explorer.getBlueprint(type)
 
-  if (!blueprint) throw new Error(`Did not found the blueprint ${type}`)
+  if (!blueprint) throw new Error(`Could not find the blueprint '${type}'`)
 
   const uiRecipe =
     blueprint.uiRecipes.find(
