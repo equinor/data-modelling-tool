@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List
+from typing import Dict, List
 
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from domain_classes.dto import DTO
@@ -16,7 +16,6 @@ def get_storage_recipes(recipes: List[Dict], attributes: List[BlueprintAttribute
                 name=recipe["name"],
                 storageAffinity=recipe.get("storageAffinity", StorageDataTypes.DEFAULT.value),
                 attributes=recipe["attributes"],
-                description=recipe["description"],
             )
             for recipe in recipes
         ]
@@ -131,41 +130,3 @@ class Blueprint:
                 elif not attr.is_optional():
                     return False
         return True
-
-    def realize_extends(self, blueprint_provider: Callable[[str], "Blueprint"]):
-        """
-        Recursive
-        Inherits attributes, storage-, and ui-recipies from "extended" blueprints
-        Overrides attributes with similar names from ancestor blueprints, except from DefaultStorageRecipe
-        """
-        new_attributes: Dict[str, BlueprintAttribute] = {}
-        new_storage_recipes: Dict[str, StorageRecipe] = {}
-        new_ui_recipes: Dict[str, Recipe] = {}
-
-        for base in self.extends:
-            base_blueprint: Blueprint = blueprint_provider(base)
-            base_blueprint.realize_extends(blueprint_provider)
-            # Overrides left. attribute names are CASE-INSENSITIVE
-            # DefaultStorageRecipes does not override recipes from base
-            new_attributes.update({attr.name.lower(): attr for attr in base_blueprint.attributes})
-            new_storage_recipes.update(
-                {
-                    attr.name.lower(): attr
-                    for attr in base_blueprint.storage_recipes
-                    if not isinstance(attr, DefaultStorageRecipe)
-                }
-            )
-            new_ui_recipes.update({attr.name.lower(): attr for attr in base_blueprint.ui_recipes})
-
-        new_attributes.update({attr.name.lower(): attr for attr in self.attributes})
-        new_storage_recipes.update(
-            {attr.name.lower(): attr for attr in self.storage_recipes if not isinstance(attr, DefaultStorageRecipe)}
-        )
-        new_ui_recipes.update({attr.name.lower(): attr for attr in self.ui_recipes})
-
-        self.attributes = [attr for attr in new_attributes.values()]
-        # Make sure storage_recipes are not empty (use DefaultStorageRecipe)
-        self.storage_recipes = (
-            [attr for attr in new_storage_recipes.values()] if new_storage_recipes else self.storage_recipes
-        )
-        self.ui_recipes = [attr for attr in new_ui_recipes.values()]

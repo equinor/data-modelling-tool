@@ -3,6 +3,7 @@ import json
 from pathlib import Path
 from zipfile import ZipFile
 
+from domain_classes.blueprint import Blueprint
 from domain_classes.dto import DTO
 from config import Config
 from repository.repository_exceptions import EntityNotFoundException
@@ -29,6 +30,27 @@ class ApplicationService:
 
     def __init__(self, document_service: DocumentService = None):
         self.document_service: DocumentService = document_service if document_service else DocumentService()
+
+    def get_related_blueprints(self, blueprint: str) -> dict:
+
+        related_blueprints = {}
+
+        first = self.document_service.get_blueprint(blueprint)
+        related_blueprints[blueprint] = first.to_dict()
+
+        def get_blueprints_recursive(type: Blueprint):
+            for attr in type.get_none_primitive_types():
+                bp = self.document_service.get_blueprint(attr.attribute_type)
+                related_blueprints[attr.attribute_type] = bp.to_dict()
+                if attr.attribute_type not in related_blueprints.keys():
+                    get_blueprints_recursive(bp)
+
+        for attr in first.get_none_primitive_types():
+            bp = self.document_service.get_blueprint(attr.attribute_type)
+            related_blueprints[attr.attribute_type] = bp.to_dict()
+            get_blueprints_recursive(bp)
+
+        return related_blueprints
 
     def instantiate_entity(self, type: str, name: str = None):
         entity: dict = CreateEntity(

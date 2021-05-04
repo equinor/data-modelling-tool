@@ -9,11 +9,11 @@ from domain_classes.tree_node import Node
 from config import Config
 from enums import DMT, SIMOS
 from repository.repository_exceptions import PluginNotLoadedException
+from services.application_service import ApplicationService
 from services.document_service import DocumentService
 from restful import request_object as req
 from restful import response_object as res
 from restful import use_case as uc
-from use_case.utils.get_related_blueprints import get_related_blueprints
 
 
 class GenerateCodeWithPluginRequestObject(req.ValidRequestObject):
@@ -56,6 +56,7 @@ def blueprints_in_package(package_node, data_source_id):
 class GenerateCodeWithPluginUseCase(uc.UseCase):
     def __init__(self):
         self.document_service = DocumentService()
+        self.application_service = ApplicationService(self.document_service)
 
     def process_request(self, request_object: GenerateCodeWithPluginRequestObject):
         document_path: str = request_object.document_path
@@ -79,11 +80,11 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
         # Find all blueprints referenced in the requested blueprints
         referenced_blueprints = {}
         for key, value in blueprints.items():
-            _related_bp = get_related_blueprints(key)
+            _related_bp = self.application_service.get_related_blueprints(key)
             referenced_blueprints.update(_related_bp)
 
         # Add all "SIMOS SYSTEM" Blueprints
-        referenced_blueprints.update(get_related_blueprints(SIMOS.BLUEPRINT.value))
+        referenced_blueprints.update(self.application_service.get_related_blueprints(SIMOS.BLUEPRINT.value))
 
         # Merge all required blueprints to one dictionary
         blueprints.update(referenced_blueprints)

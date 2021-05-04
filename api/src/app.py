@@ -5,7 +5,7 @@ from dmss_api.exceptions import ApiException
 from flask import Flask
 
 from config import Config
-from controllers import blueprints, document as DocumentBlueprint, entity, explorer, index, system
+from controllers import blueprints, entity, explorer, index, system
 from services.dmss import dmss_api
 from utils.logging import logger
 from utils.package_import import import_package
@@ -14,7 +14,6 @@ from utils.package_import import import_package
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
-    app.register_blueprint(DocumentBlueprint.blueprint)
     app.register_blueprint(explorer.blueprint)
     app.register_blueprint(index.blueprint)
     app.register_blueprint(system.blueprint)

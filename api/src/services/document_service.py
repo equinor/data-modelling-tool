@@ -7,13 +7,13 @@ from domain_classes.dto import DTO
 from domain_classes.tree_node import ListNode, Node
 from enums import DMT
 from repository.zip_file import ZipFileClient
-from utils.blueprint_provider import BlueprintProvider, get_document, get_document_by_uid
+from services.dmss import get_blueprint, get_document, get_document_by_uid
 
 
 class DocumentService:
     def __init__(
         self,
-        blueprint_provider=BlueprintProvider(),
+        blueprint_provider=get_blueprint,
         document_provider=get_document,
         uid_document_provider=get_document_by_uid,
     ):
@@ -22,9 +22,8 @@ class DocumentService:
         self.uid_document_provider = uid_document_provider
 
     def get_blueprint(self, type: str) -> Blueprint:
-        blueprint: Blueprint = self.blueprint_provider.get_blueprint(type)
-        blueprint.realize_extends(self.blueprint_provider.get_blueprint)
-        return blueprint
+        # Assumes resolved blueprints
+        return Blueprint.from_dict(self.blueprint_provider(type))
 
     # This now only works with "local" repository. Like Zip or Filesystem
     def save(self, node: Union[Node, ListNode], data_source_id: str, repository, path="") -> None:
