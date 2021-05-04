@@ -7,24 +7,10 @@ import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import DashboardProvider, {
-  IDashboard,
-  useDashboard,
-} from '../context/dashboard/DashboardProvider'
-import IndexProvider from '../context/global-index/IndexProvider'
-import {
-  IndexAPI,
-  DocumentAPI,
-  DataSourceAPI,
-  dmssApi,
-  Application,
-  JsonView,
-  BlueprintPicker,
-} from '@dmt/common'
+import { BlueprintPicker, DocumentAPI, JsonView } from '@dmt/common'
+import useLocalStorage from '../hooks/useLocalStorage'
 
-const indexAPI = new IndexAPI()
 const documentAPI = new DocumentAPI()
-const dataSourceAPI = new DataSourceAPI()
 
 const Container = styled.div`
   display: flex;
@@ -125,22 +111,6 @@ function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
   }
 }
 
-function FetchBlueprint({ type, setValue }: any) {
-  const splitType = type.split('/')
-  const dataSourceId = splitType.shift()
-  const path = splitType.join('/')
-  // @ts-ignore
-  documentAPI
-    .getByPath(dataSourceId, path)
-    .then((res: any) => {
-      setValue(res.document.attributes)
-    })
-    .catch((err: any) => {
-      NotificationManager.error(`${err.message}`)
-      console.log(err)
-    })
-}
-
 // Creates a text <input> with labels based on a BlueprintAttribute
 function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
@@ -158,10 +128,15 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
-      FetchBlueprint({
-        type: attribute.getAttributeType(),
-        setValue: setNestedAttributes,
-      })
+      documentAPI
+        .getBlueprint(attribute.getAttributeType())
+        .then((result) => {
+          setNestedAttributes(result.attributes)
+        })
+        .catch((error) => {
+          NotificationManager.error(`${error.message}`)
+          console.log(error)
+        })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expanded])
@@ -210,150 +185,115 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   )
 }
 
-const Inner = (props: any) => {
-  const {
-    attributes,
-    setFilter,
-    setAttributes,
-    filter,
-    queryError,
-    onChange,
-  } = props
+function FilterContainer({ search, queryError }) {
+  const [filter, setFilter] = useLocalStorage('searchFilter', {})
+  const [attributes, setAttributes] = useState([])
+
+  function onChange(filterChange: any) {
+    setFilter({ ...filter, ...filterChange })
+  }
+
+  // When the filters "type" value changes. Fetch the blueprint
+  useEffect(() => {
+    if (filter?.type) {
+      documentAPI
+        .getBlueprint(filter.type)
+        .then((result) => {
+          setAttributes(result.attributes)
+        })
+        .catch((error) => {
+          NotificationManager.error(`${error.message}`)
+          console.log(error)
+        })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filter?.type])
 
   return (
-    <Group>
-      <FilterGroup>
-        <label style={{ marginRight: '10px' }}>Type: </label>
-      </FilterGroup>
-      {attributes.length === 0 && (
-        <div
-          style={{
-            display: 'flex',
-            flexFlow: 'row-reverse',
-            justifyContent: 'space-between',
-            overflow: 'auto',
-          }}
-        >
-          {
+    <Container>
+      <b>Filter</b>
+      <form
+        onSubmit={(event) => {
+          event.preventDefault()
+          event.stopPropagation()
+          search(filter)
+        }}
+      >
+        <Group>
+          <FilterGroup>
+            <label style={{ marginRight: '10px' }}>Type: </label>
             <BlueprintPicker
               formData={filter?.type || ''}
               onChange={(event: any) => setFilter({ type: event })}
               uiSchema={{ 'ui:label': '' }}
             />
-          }
-          <div
-            style={{
-              flexFlow: 'column',
-              width: '-webkit-fill-available',
-            }}
-          >
-            <QueryInstructions>
-              Strings will be matched by case insensitive wild card
-            </QueryInstructions>
-            <QueryInstructions>
-              Numbers can be exact, or with {'">"'} and {'"<"'} operators
-            </QueryInstructions>
-            <QueryInstructions>
-              Arrays will be matched by "at least one element"
-            </QueryInstructions>
-          </div>
-          <div style={{ flexFlow: 'column' }}>
-            {attributes.map((attribute: any) => (
-              <DynamicAttributeFilter
-                // @ts-ignore
-                value={filter[attribute.name]}
-                attr={attribute}
-                // @ts-ignore
-                key={attribute.name}
-                onChange={onChange}
+          </FilterGroup>
+          {attributes.length !== 0 && (
+            <div
+              style={{
+                display: 'flex',
+                flexFlow: 'row-reverse',
+                justifyContent: 'space-between',
+                overflow: 'auto',
+              }}
+            >
+              {}
+              <div
+                style={{
+                  flexFlow: 'column',
+                  width: '-webkit-fill-available',
+                }}
+              >
+                <QueryInstructions>
+                  Strings will be matched by case insensitive wild card
+                </QueryInstructions>
+                <QueryInstructions>
+                  Numbers can be exact, or with {'">"'} and {'"<"'} operators
+                </QueryInstructions>
+                <QueryInstructions>
+                  Arrays will be matched by "at least one element"
+                </QueryInstructions>
+              </div>
+              <div style={{ flexFlow: 'column' }}>
+                {attributes.map((attribute: any) => (
+                  <DynamicAttributeFilter
+                    // @ts-ignore
+                    value={filter[attribute.name]}
+                    attr={attribute}
+                    // @ts-ignore
+                    key={attribute.name}
+                    onChange={onChange}
+                  />
+                ))}
+              </div>
+            </div>
+          )}
+          Query:
+          <JsonView data={filter} />
+          {queryError && (
+            <>
+              <text>Error:</text>
+              <JsonView
+                data={queryError}
+                style={{ fontSize: '12px', color: 'red' }}
               />
-            ))}
-          </div>
-        </div>
-      )}
-      Query:
-      <JsonView data={filter} />
-      {queryError && (
-        <>
-          <text>Error:</text>
-          <JsonView
-            data={queryError}
-            style={{ fontSize: '12px', color: 'red' }}
-          />
-        </>
-      )}
-      <ButtonContainer>
-        <button
-          type={'button'}
-          onClick={() => {
-            setAttributes([])
-            setFilter({})
-          }}
-        >
-          Reset
-        </button>
-        <button type={'submit'}>Search</button>
-      </ButtonContainer>
-    </Group>
-  )
-}
-
-// @ts-ignore
-function FilterContainer({ search, queryError }) {
-  const storedSearch = JSON.parse(localStorage.getItem('searchFilter') || '{}')
-  // @ts-ignore
-  const [filter, setFilter] = useState(storedSearch || {})
-  const [attributes, setAttributes] = useState([])
-  const dashboard: IDashboard = useDashboard()
-
-  function onChange(filterChange: any) {
-    // @ts-ignore
-
-    setFilter({ ...filter, ...filterChange })
-  }
-
-  // When the filter changes, update the localStorage
-  useEffect(() => {
-    // @ts-ignore
-    localStorage.setItem('searchFilter', JSON.stringify(filter))
-  }, [filter])
-
-  // When the filters "type" value changes. Fetch the blueprint
-  useEffect(() => {
-    if (filter?.type) {
-      FetchBlueprint({ type: filter.type, setValue: setAttributes })
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter?.type])
-
-  const innerProps = {
-    attributes,
-    setFilter,
-    setAttributes,
-    filter,
-    queryError,
-    onChange,
-  }
-
-  return (
-    <IndexProvider
-      indexApi={indexAPI}
-      dataSources={dashboard.models.dataSources.models.dataSources}
-      application={dashboard.models.application}
-    >
-      <Container>
-        <b>Filter</b>
-        <form
-          onSubmit={(event) => {
-            event.preventDefault()
-            event.stopPropagation()
-            search(filter)
-          }}
-        >
-          <Inner {...innerProps} />
-        </form>
-      </Container>
-    </IndexProvider>
+            </>
+          )}
+          <ButtonContainer>
+            <button
+              type={'button'}
+              onClick={() => {
+                setAttributes([])
+                setFilter({})
+              }}
+            >
+              Reset
+            </button>
+            <button type={'submit'}>Search</button>
+          </ButtonContainer>
+        </Group>
+      </form>
+    </Container>
   )
 }
 
@@ -410,18 +350,12 @@ export default () => {
   function search(query: any) {
     setQueryError('')
     //TODO: Get DataSourceId from User
-    dmssApi
-      .search({
-        dataSourceId: 'entities',
-        searchDataRequest: query,
-      })
+    documentAPI
+      .search('entities', query)
       .then((result: any) => {
-        // todo: fix response type in dmss library and move to service layer
-        const res = JSON.parse(result)
-
         // @ts-ignore
         let resultList = []
-        Object.keys(res).map((key) => resultList.push(res[key]))
+        Object.keys(result).map((key) => resultList.push(result[key]))
         if (resultList.length === 0) {
           NotificationManager.success('Search complete!\n No results')
         } else {
@@ -441,12 +375,9 @@ export default () => {
   }
 
   return (
-    <DashboardProvider
-      dataSourceApi={dataSourceAPI}
-      application={Application.ENTITIES}
-    >
+    <>
       <FilterContainer search={search} queryError={queryError} />
       <ResultContainer result={result} />
-    </DashboardProvider>
+    </>
   )
 }
