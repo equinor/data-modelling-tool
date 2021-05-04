@@ -69,6 +69,8 @@ export const PluginComponent = (props: DmtUIPlugin) => {
       }).then((config: FormConfig) => {
         // @ts-ignore
         setConfig(config)
+      }).catch((error) => {
+        throw new Error(`error occured when creating config for default-form:  ${error}`)
       })
     }
   }, [documentType, config, document, uiRecipeName])
