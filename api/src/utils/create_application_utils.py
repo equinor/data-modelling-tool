@@ -118,16 +118,25 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
 
 
 API_DOCKERFILE = f"""\
-FROM mariner.azurecr.io/dmt/api:0.8
+FROM mariner.azurecr.io/dmt/api:latest
 COPY ./home {Config.APPLICATION_HOME}
 """
 
 WEB_DOCKERFILE = """\
-FROM mariner.azurecr.io/dmt/web:0.8
-# Overwrite the CMD from the prod image that uses the pre-build js-bundle. yarn start will reflect changes made in the actions.js
+FROM mariner.azurecr.io/dmt/web:latest as base
+COPY ./actions.js /code/app/src/actions.js
+COPY ./config.js /code/app/src/config.js
+COPY ./custom-plugins /code/custom-plugins
+RUN yarn install --frozen-lockfile
+
+FROM base as development
 CMD ["yarn", "start"]
-ENV REACT_APP_EXPORTED_APP=1
-COPY ./actions.js /code/src/actions.js
+
+FROM base as prod
+RUN yarn build
+WORKDIR /code/app
+EXPOSE 3000
+CMD ["serve", "--single", "build", "--listen", "3000"]
 """
 
 DOCKER_COMPOSE = """\
@@ -138,24 +147,27 @@ services:
     build: api
     restart: unless-stopped
     depends_on:
-      - mainapi
+      - dmss
     environment:
       FLASK_DEBUG: 1
       FLASK_ENV: production
       ENVIRONMENT: local
-      DMSS_HOST: mainapi
+      DMSS_HOST: dmss
       DMSS_PORT: 5000
     volumes:
       - ./api/home/:/code/home
 
   web:
-    build: web
+    build:
+      context: ./web
+      target: development
+    stdin_open: true
     restart: unless-stopped
     volumes:
-      - ./web/external-plugins/:/code/src/external-plugins
-      - ./web/actions.js:/code/src/actions.js
-    stdin_open: true
-
+      - ./web/custom-plugins/:/code/custom-plugins
+      - ./web/config.js:/code/app/config.js
+      - ./web/actions.js:/code/app/actions.js
+      
   db:
     image: mongo:3.4
     command: --quiet
@@ -166,8 +178,8 @@ services:
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
 
-  mainapi:
-    image: mariner.azurecr.io/dmss:v0.2.21
+  dmss:
+    image: mariner.azurecr.io/dmss:latest
     restart: unless-stopped
     environment:
       ENVIRONMENT: local
@@ -185,12 +197,12 @@ services:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx:0.8
+    image: mariner.azurecr.io/dmt/nginx:latest
     ports:
       - "9000:80"
 
   db-ui:
-    image: mongo-express:0.49
+    image: mongo-express:latest
     restart: unless-stopped
     ports:
       - "8090:8081"
@@ -293,40 +305,27 @@ export default runnableMethods
     return class_template.render(runnable_models=runnable_models)
 
 
-def generate_external_plugins():
+def generate_plugins():
     class_template = Template(
         """\
-import React from 'react'
-
-/**
- * How to use plugins in UI recipes:
- * - UI recipe must match the name of the plugin
- * - Select external from as plugin
- *
- * Work space for attaching plugin to the dmt tool.
- * External dependencies:
- * - option1: should either be provided by the DMT (in package.json)
- * - option2: create a lib folder and add transpiled javascript files. Similar to dist folders in node_modules.
- *
- * External plugins must have a unique name, not conflicting with the DMT official plugin names.
- */
-
-const TestPlugin = ({ parent, document, children }) => {
-  return 'MyPlugin'
+export default {
+  plugins: [
+    import('@dmt/default-form'),
+    import('@dmt/default-pdf'),
+    import('@dmt/default-preview')
+  ],
 }
+"""
+    )
+    return class_template.render()
 
-const registeredPlugins = {
-  MyPlugin: MyPlugin,
-}
 
-export default function pluginHook(uiRecipe) {
-  return registeredPlugins[uiRecipe.name]
-}
+def generate_plugins_readme():
+    class_template = Template(
+        """\
+# Custom Plugins
 
-function MyPlugin(props) {
-  const { updateEntity, document } = props
-  return (<div>My Custom Plugin</div>)
-}
+Add custom plugins inside this folder.
 """
     )
     return class_template.render()

@@ -1,0 +1,5 @@
+skinparam Legend {
+    BackgroundColor transparent
+    BorderColor transparent
+    FontSize 17
+}
