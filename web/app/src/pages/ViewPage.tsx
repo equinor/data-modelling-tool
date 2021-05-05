@@ -3,8 +3,12 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import DocumentComponent from './editor/layout-components/DocumentComponent'
-import DashboardProvider from '../context/dashboard/DashboardProvider'
-import { Application, DataSourceAPI } from '@dmt/common'
+import DashboardProvider, {
+  IDashboard,
+  useDashboard,
+} from '../context/dashboard/DashboardProvider'
+import { Application, DataSourceAPI, IndexAPI } from '@dmt/common'
+import IndexProvider from '../context/global-index/IndexProvider'
 // @ts-ignore
 
 const Group = styled.div`
@@ -18,13 +22,15 @@ const Group = styled.div`
 
 const dataSourceAPI = new DataSourceAPI()
 
-export default () => {
+const IndexContextWrapper = () => {
+  const dashboard: IDashboard = useDashboard()
   const { data_source, entity_id } = useParams()
-
+  const indexAPI = new IndexAPI()
   return (
-    <DashboardProvider
-      dataSourceApi={dataSourceAPI}
-      application={Application.ENTITIES}
+    <IndexProvider
+      indexApi={indexAPI}
+      dataSources={dashboard.models.dataSources.models.dataSources}
+      application={dashboard.models.application}
     >
       <Group>
         <div>
@@ -36,9 +42,18 @@ export default () => {
           <text style={{ marginLeft: '5px' }}>{entity_id}</text>
         </div>
       </Group>
-      <DocumentComponent
-        dataUrl={`/api/v2/documents/${data_source}/${entity_id}`}
-      />
+      <DocumentComponent dataSourceId={data_source} documentId={entity_id} />
+    </IndexProvider>
+  )
+}
+
+export default () => {
+  return (
+    <DashboardProvider
+      dataSourceApi={dataSourceAPI}
+      application={Application.ENTITIES}
+    >
+      <IndexContextWrapper />
     </DashboardProvider>
   )
 }

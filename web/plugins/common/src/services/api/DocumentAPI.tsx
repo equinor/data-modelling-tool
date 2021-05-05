@@ -46,6 +46,13 @@ export class DocumentAPI implements IDocumentAPI {
     return dmssApi.documentUpdate(data)
   }
 
+  search(dataSourceId: string, query: any): Promise<any> {
+    return dmssApi.search({
+      dataSourceId: dataSourceId,
+      searchDataRequest: query,
+    })
+  }
+
   updateById(
     dataSourceId: string,
     documentId: string,

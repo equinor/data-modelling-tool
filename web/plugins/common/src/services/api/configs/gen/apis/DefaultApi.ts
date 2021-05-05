@@ -893,7 +893,7 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Search
      */
-    async searchRaw(requestParameters: SearchRequest): Promise<runtime.ApiResponse<any>> {
+    async searchRaw(requestParameters: SearchRequest): Promise<runtime.ApiResponse<object>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
             throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling search.');
         }
@@ -916,13 +916,13 @@ export class DefaultApi extends runtime.BaseAPI {
             body: SearchDataRequestToJSON(requestParameters.searchDataRequest),
         });
 
-        return new runtime.TextApiResponse(response) as any;
+        return new runtime.JSONApiResponse<any>(response);
     }
 
     /**
      * Search
      */
-    async search(requestParameters: SearchRequest): Promise<any> {
+    async search(requestParameters: SearchRequest): Promise<object> {
         const response = await this.searchRaw(requestParameters);
         return await response.value();
     }
