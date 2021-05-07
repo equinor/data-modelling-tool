@@ -1,0 +1,19 @@
+{
+  "name": "Volvo",
+  "type": "SSR-DataSource/CarPackage/Car",
+  "description": "A normal car",
+  "wheels": [],
+  "engine": {
+    "name": "engine",
+    "type": "SSR-DataSource/CarPackage/engine/Engine",
+    "description": "",
+    "power": "",
+    "value1": [2, 3, 4],
+    "value2": [],
+    "fuelPump": {
+      "name": "fuelPump",
+      "description": "",
+      "type": "SSR-DataSource/CarPackage/engine/FuelPump"
+    }
+  }
+}

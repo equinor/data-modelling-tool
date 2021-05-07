@@ -11,11 +11,11 @@ import FileDirectoryWidget from './widgets/FileDirectoryWidget'
 import { CollapsibleField } from './components/CollapsibleField'
 import { KeyValue } from './domain/types'
 import {
-  EntityPicker,
   BlueprintsPicker,
   PackagesPicker,
   BlueprintPicker,
   DestinationPicker,
+  EntityPicker,
 } from '@dmt/common'
 
 export const pluginName = 'default-form'
@@ -66,12 +66,14 @@ export const PluginComponent = (props: DmtUIPlugin) => {
         document,
         uiRecipeName,
         explorer,
-      }).then((config: FormConfig) => {
-        // @ts-ignore
-        setConfig(config)
-      }).catch((error) => {
-        throw new Error(`error occured when creating config for default-form:  ${error}`)
       })
+        // @ts-ignore
+        .then((config: FormConfig) => setConfig(config))
+        .catch((error) => {
+          throw new Error(
+            `error occured when creating config for default-form:  ${error}`
+          )
+        })
     }
   }, [documentType, config, document, uiRecipeName])
 
@@ -98,7 +100,6 @@ export const PluginComponent = (props: DmtUIPlugin) => {
           blueprints: BlueprintsPicker,
           packages: PackagesPicker,
           matrix: ReadOnlyWidget,
-          reference: EntityPicker,
           hidden: () => <div />,
         }}
         widgets={{

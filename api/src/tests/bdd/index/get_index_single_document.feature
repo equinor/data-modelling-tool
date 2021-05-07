@@ -68,7 +68,6 @@ Feature: Index
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
-                  "schemaUrl":"/api/v2/json-schema/system/SIMOS/Blueprint?ui_recipe=DEFAULT_CREATE",
                   "nodeUrl":"/api/v4/index/data-source-name/2",
                   "request":{
                     "type":"system/SIMOS/Blueprint",
@@ -115,7 +114,6 @@ Feature: Index
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
-                  "schemaUrl":"/api/v2/json-schema/system/SIMOS/Entity?ui_recipe=DEFAULT_CREATE",
                   "nodeUrl":"/api/v4/index/data-source-name/2",
                   "request":{
                     "type":"system/SIMOS/Entity",
@@ -176,7 +174,6 @@ Feature: Index
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/entities-DS/add-to-parent",
-                  "schemaUrl":"/api/v2/json-schema/system/SIMOS/Entity?ui_recipe=DEFAULT_CREATE",
                   "nodeUrl":"/api/v4/index/entities-DS/1",
                   "request":{
                     "type":"system/SIMOS/Entity",

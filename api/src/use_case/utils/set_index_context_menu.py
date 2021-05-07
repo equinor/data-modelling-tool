@@ -20,6 +20,7 @@ from utils.group_by import group_by
 def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     menu_items = []
     create_new_menu_items = []
+    include_menu_items = []
     is_package = node.type == DMT.PACKAGE.value
     application = app_settings["name"]
 
@@ -51,25 +52,27 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                         data_source_id=data_source_id, name=node.name, type=node.type, node_id=node.node_id
                     )
                 )
-                # If the attribute is not storageContained, offer choice to insert a reference to existing entity
-                if not node.attribute_is_contained():
-                    create_new_menu_items.append(
-                        get_create_reference_menu_item(
-                            data_source_id=data_source_id, type=node.type, node_id=node.node_id
-                        )
-                    )
             else:
                 # Add create entry for optional attributes (not for packages)
                 for empty_child in [child for child in node.children if child.is_empty()]:
-                    create_new_menu_items.append(
-                        get_dynamic_create_menu_item(
-                            data_source_id=data_source_id,
-                            name=empty_child.name,
-                            type=empty_child.type,
-                            node_id=empty_child.node_id,
-                            label=empty_child.name,
+                    # If the attribute is not contained, offer choice to insert a
+                    # reference to existing entity, else, create new inside
+                    if not empty_child.attribute_is_contained():
+                        include_menu_items.append(
+                            get_create_reference_menu_item(
+                                data_source_id=data_source_id, type=empty_child.type, node_id=empty_child.node_id
+                            )
                         )
-                    )
+                    else:
+                        create_new_menu_items.append(
+                            get_dynamic_create_menu_item(
+                                data_source_id=data_source_id,
+                                name=empty_child.name,
+                                type=empty_child.type,
+                                node_id=empty_child.node_id,
+                                label=empty_child.name,
+                            )
+                        )
         # Everything besides listNodes can be renamed. Could be supported in future.
         if not node.is_array():
             parent_uid = node.parent.node_id if node.parent and node.parent.type != "datasource" else node.parent.name
@@ -146,6 +149,8 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
 
         if create_new_menu_items:
             menu_items.append({"label": "New", "menuItems": create_new_menu_items})
+        if include_menu_items:
+            menu_items.append({"label": "Include", "menuItems": include_menu_items})
 
     sort_menu_items(menu_items)
 

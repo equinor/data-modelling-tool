@@ -85,6 +85,7 @@ export interface DocumentUpdateRequest {
     documentId: string;
     body: object;
     attribute?: string;
+    reference?: boolean;
 }
 
 export interface ExplorerAddDocumentRequest {
@@ -424,6 +425,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.attribute !== undefined) {
             queryParameters['attribute'] = requestParameters.attribute;
+        }
+
+        if (requestParameters.reference !== undefined) {
+            queryParameters['reference'] = requestParameters.reference;
         }
 
         const headerParameters: runtime.HTTPHeaders = {};

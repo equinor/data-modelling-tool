@@ -2,8 +2,8 @@
   "type": "system/SIMOS/Application",
   "name": "DMT-Entities",
   "description": "Settings for the Entity application of the Data Modelling Tool",
-  "entities": ["entities/TodoDemo", "entities/ActionsDemo"],
-  "packages": ["SSR-DataSource/TodoDemo"],
+  "entities": ["entities/DemoEntities"],
+  "packages": ["SSR-DataSource/Demos"],
   "models": ["system/SIMOS/Entity"],
   "actions": [
     {
