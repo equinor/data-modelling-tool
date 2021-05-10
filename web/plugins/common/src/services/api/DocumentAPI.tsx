@@ -57,13 +57,15 @@ export class DocumentAPI implements IDocumentAPI {
     dataSourceId: string,
     documentId: string,
     attribute: string,
-    data: any
+    data: any,
+    reference?: boolean
   ): Promise<any> {
     return dmssApi.documentUpdate({
       dataSourceId,
       documentId,
       body: data,
       attribute,
+      reference,
     })
   }
 }

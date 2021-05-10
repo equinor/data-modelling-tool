@@ -2,9 +2,9 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "description": "",
-  "packages": ["TodoDemo"],
+  "packages": ["Demos"],
   "entities": [],
-  "models": ["SSR-DataSource/TodoDemo/TodoList"],
+  "models": ["SSR-DataSource/Demos/Uncontained/WindTurbine"],
   "actions": [
     {
       "name": "Todo",

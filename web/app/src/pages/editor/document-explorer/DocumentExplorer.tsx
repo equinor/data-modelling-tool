@@ -6,6 +6,8 @@ import {
   DeleteAction,
   DownloadAction,
   formDataGivenByRequest,
+  IInsertReferenceProps,
+  InsertReference,
   SaveToExistingDocument,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
@@ -121,6 +123,23 @@ export default () => {
         openModal(DownloadAction, {
           dialog: { title: `Download ${node.nodeData.nodeId}` },
           props: actionInputData,
+        })
+        break
+      case ContextMenuActions.INSERT_REFERENCE:
+        const insertReferenceProps: IInsertReferenceProps = {
+          explorer,
+          attribute: data.request.attribute,
+          // TODO: Fetch blueprint and set correct type for the reference
+          type: 'Placeholder',
+          target: id,
+          // @ts-ignore
+          targetDataSource: node.nodeData.meta.dataSource,
+        }
+        openModal(InsertReference, {
+          dialog: {
+            title: `Select Entity to include as ${node.nodeData.title}'s ${data.request.attribute}`,
+          },
+          props: insertReferenceProps,
         })
         break
       case ContextMenuActions.RUNNABLE:

@@ -1,0 +1,16 @@
+{
+  "name": "Mooring",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/NamedEntity"],
+  "description": "",
+  "attributes": [
+    {
+      "name": "Bigness",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "How big? Very",
+      "attributeType": "integer",
+      "default": "",
+      "contained": true
+    }
+  ]
+}

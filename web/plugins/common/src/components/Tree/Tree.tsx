@@ -127,7 +127,7 @@ export const Tree = (props: TreeProps) => {
   const { state, children, operations } = props
 
   if (!state) {
-    return <></>
+    return null
   }
 
   const {
@@ -141,7 +141,6 @@ export const Tree = (props: TreeProps) => {
     toggle,
     search,
   } = operations
-
   const rootNodes = values(state)
     .filter((node: TreeNodeData) => node.isRoot)
     .filter((node: TreeNodeData) => !node.isHidden)

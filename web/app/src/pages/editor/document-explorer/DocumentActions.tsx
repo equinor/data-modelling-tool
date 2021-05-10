@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import Prompt from '../../../components/Prompt'
 import useRunnable from '../../../hooks/useRunnable'
-import useExplorer from '../../../hooks/useExplorer'
-
+import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
+import { EntityPicker, Reference } from '@dmt/common'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 export enum ContextMenuActions {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
   DELETE = 'DELETE',
   DOWNLOAD = 'DOWNLOAD',
   RUNNABLE = 'RUNNABLE',
+  INSERT_REFERENCE = 'INSERT_REFERENCE',
 }
 
 const fillTemplate = function (templateString: string, templateVars: object) {
@@ -87,6 +90,76 @@ export const DownloadAction = (props: any) => {
   }
 
   return <Prompt onSubmit={handleDownload} {...prompt} />
+}
+
+export interface IInsertReferenceProps {
+  explorer: IUseExplorer
+  attribute: string
+  type: string
+  target: string
+  targetDataSource: string
+}
+
+export const InsertReference = (props: IInsertReferenceProps) => {
+  const { explorer, attribute, type, target, targetDataSource } = props
+  const [refId, setRefID] = useState('')
+  const [refName, setRefName] = useState('')
+  const [refType, setRefType] = useState('')
+
+  const updateDocument = () => {
+    const reference: Reference = {
+      name: refName,
+      _id: refId,
+      type: refType,
+    }
+    explorer.updateById({
+      dataSourceId: targetDataSource,
+      documentId: target,
+      attribute,
+      data: reference,
+      nodeUrl: target,
+      reference: true,
+    })
+  }
+  const modalContent = () => {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ marginTop: '10px' }}>
+          <label style={{ marginRight: '10px' }}>Type: </label>
+          <input disabled={true} value={refType} style={{ width: '280px' }} />
+        </div>
+        <div style={{ margin: '10px 0' }}>
+          <label style={{ marginRight: '10px' }}>Name: </label>
+          <input disabled={true} value={refName} style={{ width: '280px' }} />
+        </div>
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'row',
+            marginBottom: '15px',
+          }}
+        >
+          <label style={{ marginRight: '10px' }}>_id:</label>
+          <EntityPicker
+            onChange={(reference: Reference) => {
+              // TODO: Validate type based on parent
+              setRefID(reference._id)
+              setRefName(reference.name)
+              setRefType(reference.type)
+            }}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <Prompt
+      onSubmit={updateDocument}
+      content={modalContent()}
+      buttonText={'OK'}
+    />
+  )
 }
 
 export const SaveToExistingDocument = (props: any) => {

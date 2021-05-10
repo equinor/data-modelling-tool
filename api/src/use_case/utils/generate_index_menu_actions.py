@@ -26,8 +26,6 @@ def get_rename_menu_action(
         "data": {
             "dataUrl": f"/api/v2/documents/{data_source_id}/{document_split[0]}{attribute_arg}",
             "url": f"{DMSS_API}/explorer/{data_source_id}/rename",
-            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
-            # TODO: This is not right...
             "nodeUrl": get_node_url(data_source_id, parent_uid if parent_uid else dotted_document_id),
             "request": {
                 "description": "${description}",
@@ -61,7 +59,6 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
         "action": "CREATE",
         "data": {
             "url": f"{DMSS_API}/explorer/{data_source_id}/add-to-parent",
-            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": get_node_url(data_source_id, node_id_split[0]),
             "request": {
                 "type": type,
@@ -77,11 +74,10 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
 def get_create_reference_menu_item(data_source_id: str, type: str, node_id: str = None):
     node_id_split = node_id.split(".", 1)
     return {
-        "label": "Link to Existing Entity",
+        "label": f"{type.split('/')[-1]}",
         "action": "INSERT_REFERENCE",
         "data": {
             "url": f"/api/v2/documents/{data_source_id}/{node_id_split[0]}",
-            "schemaUrl": f"/api/v2/json-schema/{type}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": get_node_url(data_source_id, node_id_split[0]),
             "request": {"attribute": node_id_split[1] if len(node_id_split) > 1 else None, "data": "${data}"},
         },
@@ -94,7 +90,6 @@ def get_create_root_package_menu_item(data_source_id: str):
         "action": "CREATE",
         "data": {
             "url": f"{DMSS_API}/explorer/{data_source_id}/add-package",
-            "schemaUrl": f"/api/v2/json-schema/{DMT.PACKAGE.value}?ui_recipe=DEFAULT_CREATE",
             "nodeUrl": get_node_url(data_source_id, data_source_id),
             "request": {"name": "${name}", "description": "${description}", "type": DMT.PACKAGE.value},
         },
@@ -147,10 +142,7 @@ def get_node_fetch(data_source_id: str, tree_node: Union[Node]):
         "uid": tree_node.node_id,
         "title": tree_node.name,
         "component": "blueprint",
-        "data": {
-            "dataUrl": f"/api/v2/documents/{data_source_id}" f"/{split_node_id_attribute[0]}{attribute}",
-            "schemaUrl": f"/api/v2/json-schema/{tree_node.type}",
-        },
+        "data": {"dataUrl": f"/api/v2/documents/{data_source_id}" f"/{split_node_id_attribute[0]}{attribute}"},
     }
 
 
@@ -175,7 +167,6 @@ def get_import_menu_item(data_source_id: str, document_id: str, is_package_conte
         "action": "IMPORT",
         "data": {
             "url": f"/api/v2/explorer/{data_source_id}/import/{document_id}",
-            "schemaUrl": "/api/v2/json-schema/apps/DMT/actions/ImportAction",
             "prompt": {"title": "Export", "content": "Download the package"},
         },
     }

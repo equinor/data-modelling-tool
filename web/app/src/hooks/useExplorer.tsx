@@ -73,6 +73,7 @@ interface UpdateByIdProps {
   attribute: string
   data: any
   nodeUrl: string
+  reference?: boolean
 }
 
 export interface IUseExplorer {
@@ -98,6 +99,7 @@ export interface IUseExplorer {
     attribute,
     data,
     nodeUrl,
+    reference,
   }: UpdateByIdProps): Promise<any>
 
   addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
@@ -261,9 +263,10 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     attribute,
     data,
     nodeUrl,
+    reference,
   }: UpdateByIdProps) => {
     return documentAPI
-      .updateById(dataSourceId, documentId, attribute, data)
+      .updateById(dataSourceId, documentId, attribute, data, reference || false)
       .then((result: any) => {
         closeModal()
         index.models.index.operations

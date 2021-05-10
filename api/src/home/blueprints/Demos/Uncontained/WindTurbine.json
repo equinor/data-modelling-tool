@@ -1,0 +1,15 @@
+{
+  "name": "WindTurbine",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/NamedEntity"],
+  "description": "",
+  "attributes": [
+    {
+      "name": "Mooring",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "SSR-DataSource/Demos/Uncontained/Mooring",
+      "optional": true,
+      "contained": false
+    }
+  ]
+}

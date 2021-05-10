@@ -6,7 +6,6 @@ import { FaSpinner } from 'react-icons/fa'
 
 const Wrapper = styled.div`
   display: flex;
-  flex-direction: row;
 `
 
 const RunIconWrapper = styled.div`
@@ -47,7 +46,7 @@ export const DocumentNode = (props: any) => {
   return (
     <Wrapper>
       {node.iconGroup(() => onToggle())}
-      <div style={{ width: '100%' }} onClick={() => onOpen()}>
+      <Wrapper style={{ width: '100%' }} onClick={() => onOpen()}>
         {node.nodeData.title}
         {meta.hasCustomAction && <RunIcon />}
         {node.nodeData.isLoading && (
@@ -58,7 +57,7 @@ export const DocumentNode = (props: any) => {
         {node.nodeData.meta.error && (
           <small style={{ paddingLeft: '15px' }}>An error occurred...</small>
         )}
-      </div>
+      </Wrapper>
     </Wrapper>
   )
 }
