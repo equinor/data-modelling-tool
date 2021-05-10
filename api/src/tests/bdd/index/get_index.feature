@@ -5,7 +5,7 @@ Feature: Index
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection     |   type     |
       | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents      |  mongo-db |
-      | db   | 27017 | maf      | maf      | false | SSR-DataSource   | local    | SSR-DataSource |  mongo-db |
+      | db   | 27017 | maf      | maf      | false | demo-DS   | local    | demo-DS |  mongo-db |
       | db   | 27017 | maf      | maf      | false | apps             | local    | applications   |  mongo-db |
 
     Given data modelling tool blueprints are imported

@@ -2,39 +2,39 @@
   "type": "system/SIMOS/Application",
   "name": "DMT-Entities",
   "description": "Settings for the Entity application of the Data Modelling Tool",
-  "entities": ["entities/DemoEntities"],
-  "packages": ["SSR-DataSource/Demos"],
+  "entities": [],
+  "packages": ["demo-DS/DMT-demo"],
   "models": ["system/SIMOS/Entity"],
   "actions": [
     {
       "name": "Fetch work items",
       "description": "Get more work",
-      "input": "SSR-DataSource/TodoDemo/TodoList",
-      "output": "SSR-DataSource/TodoDemo/TodoList",
+      "input": "demo-DS/DMT-demo/TodoDemo/TodoList",
+      "output": "demo-DS/DMT-demo/TodoDemo/TodoList",
       "method": "getTodoList",
       "actionType": "resultInEntity"
     },
     {
       "name": "Simulate Crash",
       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
-      "input": "SSR-DataSource/CarPackage/Car",
-      "output": "SSR-DataSource/CarPackage/Car",
+      "input": "demo-DS/demoPackage/CarPackage/Car",
+      "output": "demo-DS/demoPackage/CarPackage/Car",
       "method": "simulateCrash",
       "actionType": "separateResultFile"
     },
     {
       "name": "Cancel simulation",
       "description": "Cancel a car calculation",
-      "input": "SSR-DataSource/CarPackage/Car",
-      "output": "SSR-DataSource/CarPackage/Car",
+      "input": "demo-DS/demoPackage/CarPackage/Car",
+      "output": "demo-DS/demoPackage/CarPackage/Car",
       "method": "cancelSimulation"
     },
     {
       "name": "Engine With Result File",
       "type": "system/SIMOS/Action",
       "description": "Save result in resultFile",
-      "input": "SSR-DataSource/CarPackage/engine/Engine",
-      "output": "SSR-DataSource/CarPackage/engine/Engine",
+      "input": "demo-DS/demoPackage/CarPackage/engine/Engine",
+      "output": "demo-DS/demoPackage/CarPackage/engine/Engine",
       "method": "runEngineResultFile",
       "actionType": "separateResultFile"
     },
@@ -43,8 +43,8 @@
       "type": "system/SIMOS/Action",
       "description": "Save result in entity",
       "actionType": "resultInEntity",
-      "input": "SSR-DataSource/CarPackage/engine/Engine",
-      "output": "SSR-DataSource/CarPackage/engine/Engine",
+      "input": "demo-DS/demoPackage/CarPackage/engine/Engine",
+      "output": "demo-DS/demoPackage/CarPackage/engine/Engine",
       "method": "runEngineResultInEntity"
     }
   ]

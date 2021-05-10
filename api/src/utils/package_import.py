@@ -13,7 +13,7 @@ def _add_documents(path, data_source, documents) -> List[Dict]:
     docs = []
 
     for file in documents:
-        logger.info(f"Working on {file}...")
+        logger.debug(f"Working on {file}...")
         with open(f"{path}/{file}") as json_file:
             data = json.load(json_file)
 

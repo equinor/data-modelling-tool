@@ -2,16 +2,16 @@
   "type": "system/SIMOS/Application",
   "name": "ApplicationSettings",
   "description": "",
-  "packages": ["Demos"],
+  "packages": ["TodoDemo"],
   "entities": [],
-  "models": ["SSR-DataSource/Demos/Uncontained/WindTurbine"],
+  "models": ["demo-DS/DMT-demo/TodoDemo/TodoList"],
   "actions": [
     {
       "name": "Todo",
       "type": "system/SIMOS/Action",
       "description": "Get list of work items",
-      "input": "SSR-DataSource/TodoDemo/TodoList",
-      "output": "SSR-DataSource/TodoDemo/TodoList",
+      "input": "demo-DS/DMT-demo/TodoDemo/TodoList",
+      "output": "demo-DS/DMT-demo/TodoDemo/TodoList",
       "method": "getTodoList"
     }
   ]

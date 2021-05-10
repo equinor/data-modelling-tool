@@ -30,12 +30,12 @@ APPLICATION_SETTING = {
 # //     {
 # //       "name": "Calculate",
 # //       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
-# //       "input": "SSR-DataSource/CarPackage/Car",
-# //       "output": "SSR-DataSource/CarPackage/Result",
+# //       "input": "demo-DS/demoPackage/CarPackage/Car",
+# //       "output": "demo-DS/demoPackage/CarPackage/Result",
 # //       "method": "run"
 # //     },
 # //
-# // This action will be available on any entity of the type "SSR-DataSource/CarPackage/Car"(input).
+# // This action will be available on any entity of the type "demo-DS/demoPackage/CarPackage/Car"(input).
 # // The name given in "method" must be the name of a function in this file, as well as being in the "runnableMethods" object at the end of this file.
 # // The main use case for this custom function is to call SIMOS calculations, and update result objects.
 # // The properties that are passed to the function looks like this;

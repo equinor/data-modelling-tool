@@ -34,7 +34,7 @@
       "name": "completed"
     },
     {
-      "attributeType": "SSR-DataSource/TodoDemo/TodoList",
+      "attributeType": "demo-DS/DMT-demo/TodoDemo/TodoList",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "list"
     }

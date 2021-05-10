@@ -157,9 +157,11 @@ class DictImporter:
                     )
                     node.add_child(child_node)
             return node
-        except AttributeError as error:
+        except (AttributeError, KeyError) as error:
             logger.exception(error)
-            return Node(key=entity["name"], uid="", blueprint_provider=blueprint_provider, attribute=node_attribute)
+            node = Node(key=entity["name"], uid="", blueprint_provider=blueprint_provider, attribute=node_attribute,)
+            node.set_error(error)
+            return node
 
 
 class NodeBase:
