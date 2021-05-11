@@ -18,7 +18,7 @@ Feature: exporting packages
 
 
   Scenario: export package
-    Given i create a document service
-    And i export document with id "1" in data source "data-source-name"
-    Then memory_file in context should not be empty
+    Given I access the resource url "/api/v2/explorer/data-source-name/export/1"
+    When I make a "GET" request
+    Then the response status should be "OK"
 
