@@ -5,47 +5,5 @@
   "entities": [],
   "packages": ["demo-DS/DMT-demo"],
   "models": ["system/SIMOS/Entity"],
-  "actions": [
-    {
-      "name": "Fetch work items",
-      "description": "Get more work",
-      "input": "demo-DS/DMT-demo/TodoDemo/TodoList",
-      "output": "demo-DS/DMT-demo/TodoDemo/TodoList",
-      "method": "getTodoList",
-      "actionType": "resultInEntity"
-    },
-    {
-      "name": "Simulate Crash",
-      "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
-      "input": "demo-DS/demoPackage/CarPackage/Car",
-      "output": "demo-DS/demoPackage/CarPackage/Car",
-      "method": "simulateCrash",
-      "actionType": "separateResultFile"
-    },
-    {
-      "name": "Cancel simulation",
-      "description": "Cancel a car calculation",
-      "input": "demo-DS/demoPackage/CarPackage/Car",
-      "output": "demo-DS/demoPackage/CarPackage/Car",
-      "method": "cancelSimulation"
-    },
-    {
-      "name": "Engine With Result File",
-      "type": "system/SIMOS/Action",
-      "description": "Save result in resultFile",
-      "input": "demo-DS/demoPackage/CarPackage/engine/Engine",
-      "output": "demo-DS/demoPackage/CarPackage/engine/Engine",
-      "method": "runEngineResultFile",
-      "actionType": "separateResultFile"
-    },
-    {
-      "name": "Engine with result In Entity",
-      "type": "system/SIMOS/Action",
-      "description": "Save result in entity",
-      "actionType": "resultInEntity",
-      "input": "demo-DS/demoPackage/CarPackage/engine/Engine",
-      "output": "demo-DS/demoPackage/CarPackage/engine/Engine",
-      "method": "runEngineResultInEntity"
-    }
-  ]
+  "actions": []
 }
