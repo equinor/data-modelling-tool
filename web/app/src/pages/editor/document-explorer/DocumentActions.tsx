@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, {ChangeEvent, useEffect, useState} from 'react'
 import Prompt from '../../../components/Prompt'
 import useRunnable from '../../../hooks/useRunnable'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
@@ -98,6 +98,73 @@ export interface IInsertReferenceProps {
   type: string
   target: string
   targetDataSource: string
+}
+
+// todo - temporary solution for create form - should be updated later
+export interface IDefaultCreate {
+  explorer: IUseExplorer
+  type: string
+  uiRecipeName: string
+  onSubmit: (formdata: any) => void
+  request: string
+  url: string
+  nodeUrl: string
+
+}
+
+export const DefaultCreate = (props: IDefaultCreate ) => {
+  const [formData, updateFormData] = useState<any>({"type": props.type})
+  const [name, setName] = useState("")
+  const [description, setDescription] = useState("")
+
+  const onSubmit = (formData: any) => {
+    if (formData.description === undefined) {
+      formData.description = ''
+    }
+    const output = formDataGivenByRequest(props.request, formData) // remove formData... function
+    props.explorer.create({
+      data: output,
+      dataUrl: props.url,
+      nodeUrl: props.nodeUrl,
+    })
+  }
+
+  const modalContent = () => {
+    const updateName = (event: ChangeEvent<HTMLInputElement>) => {
+      setName(event.target.value)
+      updateFormData({...formData, "name": event.target.value})
+    }
+    const updateDescription = (event: ChangeEvent<HTMLInputElement>) => {
+      setDescription(event.target.value)
+      updateFormData({...formData, "description": event.target.value})
+    }
+
+    return (
+    <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ margin: '10px 0' }}>
+          <label style={{ marginRight: '10px' }}>Name: </label>
+          <input disabled={false} value={name} onChange={updateName} style={{ width: '280px' }} />
+        </div>
+        <div style={{ marginTop: '10px' }}>
+          <label style={{ marginRight: '10px' }}>Type: </label>
+          <input disabled={true} value={props.type} style={{ width: '280px' }} />
+        </div>
+        <div style={{ marginTop: '10px' }}>
+          <label style={{ marginRight: '10px' }}>Description: </label>
+          <input disabled={false} value={description} onChange={updateDescription}  style={{ width: '280px' }} />
+        </div>
+
+      </div>
+    )
+  }
+
+  return (
+    <Prompt
+      onSubmit={() => {onSubmit(formData)}}
+      content={modalContent()}
+      buttonText={'OK'}
+    />
+  )
 }
 
 export const InsertReference = (props: IInsertReferenceProps) => {

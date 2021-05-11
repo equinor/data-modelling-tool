@@ -54,7 +54,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                 )
             else:
                 # Add create entry for optional attributes (not for packages)
-                for empty_child in [child for child in node.children if child.is_empty()]:
+                for empty_child in [child for child in node.children if child.is_empty() and not child.is_array()]:
                     # If the attribute is not contained, offer choice to insert a
                     # reference to existing entity, else, create new inside
                     if not empty_child.attribute_is_contained():

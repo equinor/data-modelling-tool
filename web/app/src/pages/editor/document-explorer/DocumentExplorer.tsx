@@ -8,6 +8,7 @@ import {
   formDataGivenByRequest,
   IInsertReferenceProps,
   InsertReference,
+  DefaultCreate,
   SaveToExistingDocument,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
@@ -72,20 +73,14 @@ export default () => {
           explorer: explorer,
           type: `${data.request.type}`,
           uiRecipeName: 'DEFAULT_CREATE',
-          onSubmit: (formData: any) => {
-            if (formData.description === undefined) {
-              formData.description = ''
-            }
-            const output = formDataGivenByRequest(data.request, formData)
-            explorer.create({
-              data: output,
-              dataUrl: data.url,
-              nodeUrl: data.nodeUrl,
-            })
-          },
+          request: data.request,
+          url: `${data.url}`,
+          nodeUrl: `${data.nodeUrl}`,
         }
-        openModal(ExternalPlugin, {
-          dialog: { title: `Create ${label}` },
+        openModal(DefaultCreate, {
+          dialog: {
+            title: `Create new ${data.request.attribute} for ${node.nodeData.title}`,
+          },
           props: createProps,
         })
         break
