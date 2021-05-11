@@ -1,6 +1,6 @@
-Feature: Document service - ????
+Feature: Using document service
 
-  Background: There are data sources in the system
+    Background: There are data sources in the system
 
     Given there are mongodb data sources
       | host | port  | username | password | tls   | name             | database | collection     |   type     |
@@ -16,7 +16,6 @@ Feature: Document service - ????
       | 2   | 1          | sub_package_1 |             | system/SIMOS/Package   |
       | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
 
-
     Given there exist document with id "4" in data source "data-source-name"
     """
     {
@@ -28,16 +27,6 @@ Feature: Document service - ????
             {
                 "_id": "5",
                 "name": "WindTurbine",
-                "type": "system/SIMOS/Blueprint"
-            },
-            {
-                "_id": "6",
-                "name": "MyWindTurbine",
-                "type": "data-source-name/TurbinePackage/WindTurbine"
-            },
-            {
-                "_id": "7",
-                "name": "Mooring",
                 "type": "system/SIMOS/Blueprint"
             }
         ],
@@ -64,34 +53,14 @@ Feature: Document service - ????
       ]
     }
     """
-    Given there exist document with id "7" in data source "data-source-name"
-    """
-    {
-      "_id": "7",
-      "name":"Mooring",
-      "type":"system/SIMOS/Blueprint",
-      "extends":["system/SIMOS/NamedEntity"],
-      "description":"",
-      "attributes":[
-        {
-          "name":"size",
-          "type":"system/SIMOS/BlueprintAttribute",
-          "attributeType":"string"
-        }
-      ]
-    }
-    """
-    Given there exist document with id "6" in data source "data-source-name"
-    """
-    {
-      "_id": "6",
-      "name":"MyWindTurbine",
-      "type":"data-source-name/TurbinePackage/WindTurbine",
-      "description":"",
-      "Mooring": {}
-    }
-    """
+
 
   Scenario: export package
     Given i create a document service
     And i export document with id "4" in data source "data-source-name"
+    Then memory_file in context should not be empty
+
+  Scenario: get node by uid in document service
+    Given i create a document service
+    And i call the function get_node_with_id using id "5" in data source "data-source-name"
+    Then node returned should contain node_id "5" and name "WindTurbine"
