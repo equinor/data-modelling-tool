@@ -54,7 +54,7 @@ class DocumentService:
         return Node.from_dict(document, document["_id"], blueprint_provider=self.get_blueprint)
 
     def create_zip_export(self, data_source_id: str, document_uid: str) -> io.BytesIO:
-        document = self.uid_document_provider(data_source_id, document_uid)["document"]
+        document = self.uid_document_provider(data_source_id, document_uid)
         memory_file = io.BytesIO()
         with zipfile.ZipFile(memory_file, mode="w") as zip_file:
             root_node: Node = Node.from_dict(document, document.get("_id"), blueprint_provider=self.get_blueprint)
