@@ -22,8 +22,6 @@ export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
       (uiRecipe: any) => uiRecipe.name === uiRecipeName
     ) || {}
 
-  console.log('Using UI recipe:', uiRecipe)
-
   const schemaGenerator = new BlueprintSchema(
     blueprint,
     uiRecipe,
