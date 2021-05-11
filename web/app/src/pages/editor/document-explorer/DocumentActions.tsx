@@ -129,10 +129,12 @@ export const DefaultCreate = (props: IDefaultCreate) => {
     if (formData.description === undefined) {
       formData.description = ''
     }
-    // @ts-ignore
+
     const output = {
       ...formData,
+      // @ts-ignore
       attribute: props.request.attribute,
+      // @ts-ignore
       parentId: props.request.parentId,
     }
     props.explorer.create({
