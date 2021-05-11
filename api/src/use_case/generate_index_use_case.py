@@ -137,7 +137,7 @@ class GenerateIndexUseCase:
             try:
                 root.add_child(
                     document_service.get_node_by_uid(
-                        data_source_id=data_source_id, document_uid=package_data["_id"], depth=0, reset_bp_cache=False
+                        data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
                     )
                 )
             except EntityNotFoundException as error:
@@ -146,7 +146,7 @@ class GenerateIndexUseCase:
                     key=package_data["_id"],
                     uid=package_data["_id"],
                     entity={"name": package_data["name"], "type": ""},
-                    blueprint_provider=document_service.blueprint_provider,
+                    blueprint_provider=document_service.get_blueprint,
                     attribute=BlueprintAttribute("root", "datasource"),
                 )
                 error_node.set_error(f"failed to add root package {package_data['name']} to the root node")
@@ -173,18 +173,16 @@ class GenerateIndexUseCase:
                 key="root",
                 uid=data_source_id,
                 entity={"type": "datasource", "name": data_source_id},
-                blueprint_provider=document_service.blueprint_provider,
+                blueprint_provider=document_service.get_blueprint,
                 attribute=BlueprintAttribute("root", "datasource"),
             )
             parent.add_child(
-                document_service.get_node_by_uid(
-                    data_source_id=data_source_id, document_uid=document_id, depth=0, reset_bp_cache=False
-                )
+                document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=document_id, depth=0)
             )
         else:
             document_uid = parent_uid
             parent = document_service.get_node_by_uid(
-                data_source_id=data_source_id, document_uid=document_uid, depth=1, reset_bp_cache=False
+                data_source_id=data_source_id, document_uid=document_uid, depth=1
             )
 
         if not parent and data_source_id != document_id:

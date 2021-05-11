@@ -1,7 +1,9 @@
 import io
 import zipfile
+from functools import lru_cache
 from typing import Union
 
+from config import Config
 from domain_classes.blueprint import Blueprint
 from domain_classes.dto import DTO
 from domain_classes.tree_node import ListNode, Node
@@ -21,9 +23,16 @@ class DocumentService:
         self.document_provider = document_provider
         self.uid_document_provider = uid_document_provider
 
+    # Since we are instantiating a new DocumentService() on every request,
+    # I don't think we will get too much trouble by caching here.
+    # It's now fairly easy to call document_service.get_blueprint.invalidate_cache() if needed.
+    @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
     def get_blueprint(self, type: str) -> Blueprint:
         # Assumes resolved blueprints
         return Blueprint.from_dict(self.blueprint_provider(type))
+
+    def clear_blueprint_cache(self):
+        self.get_blueprint.cache_clear()
 
     # This now only works with "local" repository. Like Zip or Filesystem
     def save(self, node: Union[Node, ListNode], data_source_id: str, repository, path="") -> None:
@@ -44,12 +53,7 @@ class DocumentService:
             dto.data["__path__"] = path
         repository.update(dto)
 
-    def get_node_by_uid(
-        self, data_source_id: str, document_uid: str, depth: int = 999, reset_bp_cache: bool = True
-    ) -> Node:
-        # By default, reset the Blueprint cache in case a Blueprint has changed in DMSS.
-        if reset_bp_cache:
-            self.blueprint_provider.invalidate_cache()
+    def get_node_by_uid(self, data_source_id: str, document_uid: str, depth: int = 999) -> Node:
         document = self.uid_document_provider(data_source_id, document_uid, depth)
         return Node.from_dict(document, document["_id"], blueprint_provider=self.get_blueprint)
 
