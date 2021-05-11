@@ -297,15 +297,21 @@ export class BlueprintSchema implements IBlueprintSchema {
     }
 
     //@todo pass uiAttribute to only add enum if desired?
-    else if (attr.enumType && typeof(attr.enumType) === "string" && attr.name !== 'type') {
+    else if (
+      attr.enumType &&
+      typeof attr.enumType === 'string' &&
+      attr.name !== 'type'
+    ) {
       const dataSourceId: string = attr.enumType.split('/', 1)[0]
-      const path: string = attr.enumType.split('/').slice(1).join("/")
+      const path: string = attr.enumType.split('/').slice(1).join('/')
 
-      const response = await this.documentAPI.getByPath(
-        dataSourceId, path
-      ).catch(error => {
-        throw new Error(`Could not fetch document by path: ${dataSourceId}/${path}. (${error})`)
-      })
+      const response = await this.documentAPI
+        .getByPath(dataSourceId, path)
+        .catch((error) => {
+          throw new Error(
+            `Could not fetch document by path: ${dataSourceId}/${path}. (${error})`
+          )
+        })
       const document = response
       if (document) {
         property.title = attr.name

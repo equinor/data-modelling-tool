@@ -74,8 +74,8 @@ export default () => {
           type: `${data.request.type}`,
           uiRecipeName: 'DEFAULT_CREATE',
           request: data.request,
-          url: `${data.url}`,
-          nodeUrl: `${data.nodeUrl}`,
+          url: data.url,
+          nodeUrl: data.nodeUrl,
         }
         openModal(DefaultCreate, {
           dialog: {
