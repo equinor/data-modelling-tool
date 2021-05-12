@@ -48,4 +48,4 @@ def step_make_request(context, method):
 @then("response node should not be empty")
 def step_impl(context):
     response = context.response
-    assert response.content_type == "application/zip" and len(response.data) > 0
+    assert response.content_type == "application/zip" and len(response.data) > 300
