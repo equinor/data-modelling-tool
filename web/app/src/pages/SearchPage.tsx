@@ -12,6 +12,8 @@ import useLocalStorage from '../hooks/useLocalStorage'
 
 const documentAPI = new DocumentAPI()
 
+const hardCodedDataSource = 'demo-DS'
+
 const Container = styled.div`
   display: flex;
   flex-direction: column;
@@ -299,7 +301,6 @@ function FilterContainer({ search, queryError }) {
 
 // Return a TabelRow for an entity. Clickable to toggle view of the raw document
 function EntityRow({ entity }: any) {
-  const dataSource = 'entities'
   return (
     <>
       <tr>
@@ -308,7 +309,7 @@ function EntityRow({ entity }: any) {
         <TabelData>{entity.description}</TabelData>
         <TabelData>{entity._id}</TabelData>
         <td style={{ padding: '5px' }}>
-          <Link to={{ pathname: `/view/${dataSource}/${entity._id}` }}>
+          <Link to={{ pathname: `/view/${hardCodedDataSource}/${entity._id}` }}>
             View
             <EyeIcon />
           </Link>
@@ -351,7 +352,7 @@ export default () => {
     setQueryError('')
     //TODO: Get DataSourceId from User
     documentAPI
-      .search('entities', query)
+      .search(`${hardCodedDataSource}`, query)
       .then((result: any) => {
         // @ts-ignore
         let resultList = []
