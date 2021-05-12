@@ -3,6 +3,7 @@
 }
 
 .hljs-attr,
+.hljs-number,
 .hljs-bullet {
   color: #99ffff;
 }
