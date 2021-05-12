@@ -7,7 +7,7 @@
     {
       "name": "Mooring",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "SSR-DataSource/Demos/Uncontained/Mooring",
+      "attributeType": "demo-DS/DMT-demo/UncontainedDemo/Mooring",
       "optional": true,
       "contained": false
     }

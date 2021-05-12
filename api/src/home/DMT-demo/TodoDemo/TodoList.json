@@ -19,7 +19,7 @@
       "name": "type"
     },
     {
-      "attributeType": "SSR-DataSource/TodoDemo/Todo",
+      "attributeType": "demo-DS/DMT-demo/TodoDemo/Todo",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "items",
       "dimensions": "*"
@@ -33,7 +33,7 @@
       "attributes": [
         {
           "name": "items",
-          "type": "SSR-DataSource/TodoDemo/Todo",
+          "type": "demo-DS/DMT-demo/TodoDemo/Todo",
           "contained": false
         }
       ]

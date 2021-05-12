@@ -29,7 +29,7 @@ app = create_app(Config)
 @app.cli.command()
 def remove_application():
     try:
-        logger.info("############## REMOVING DMT FILES ################")
+        logger.info("-------------- REMOVING DMT FILES ----------------")
         logger.info(
             (
                 "Removing DMT application specific files from"
@@ -55,13 +55,21 @@ def remove_application():
                 pass
             else:
                 raise error
-    logger.info("############## DONE ################")
+    logger.info("-------------- DONE ----------------")
 
 
 @app.cli.command()
 def init_application():
-    logger.info("############## IMPORTING DMT FILES ################")
-    for filename in os.listdir(f"{Config.APPLICATION_HOME}/data_sources/"):
+    logger.info("-------------- IMPORTING DMT FILES ----------------")
+    data_sources_to_import = []
+    try:
+        data_sources_to_import = os.listdir(f"{Config.APPLICATION_HOME}/data_sources/")
+    except FileNotFoundError:
+        logger.warning(
+            f"No 'data_source' directory was found under '{Config.APPLICATION_HOME}/'. Nothing to import..."
+        )
+
+    for filename in data_sources_to_import:
         with open(f"{Config.APPLICATION_HOME}/data_sources/{filename}") as file:
             document = json.load(file)
             try:
@@ -76,17 +84,11 @@ def init_application():
             is_root=True,
         )
 
-    logger.info(f"Importing blueprint package(s) {Config.ENTITY_APPLICATION_SETTINGS['packages']}")
+    logger.info(f"Importing package(s) {Config.ENTITY_APPLICATION_SETTINGS['packages']}")
     for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
         data_source, folder = folder.split("/", 1)
         import_package(
-            f"{Config.APPLICATION_HOME}/blueprints/{folder}", data_source=data_source, is_root=True,
+            f"{Config.APPLICATION_HOME}/{folder}", data_source=data_source, is_root=True,
         )
 
-    logger.info(f"Importing entity package(s) {Config.ENTITY_APPLICATION_SETTINGS['entities']}")
-    for folder in Config.ENTITY_APPLICATION_SETTINGS["entities"]:
-        data_source, folder = folder.split("/", 1)
-        import_package(
-            f"{Config.APPLICATION_HOME}/entities/{folder}", data_source=data_source, is_root=True,
-        )
-    logger.info("############## DONE ################")
+    logger.info("-------------- DONE ----------------")
