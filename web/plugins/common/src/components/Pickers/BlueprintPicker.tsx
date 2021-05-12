@@ -2,13 +2,15 @@
 import React, { useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import {
+  Application,
   DataSourceAPI,
+  IIndex,
   Modal,
   Tree,
   TreeNodeRenderProps,
   useDataSources,
+  useIndex,
 } from '../../'
-import { IIndex, useIndex, Application } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
 
 export type BlueprintPickerProps = {
@@ -98,7 +100,7 @@ export const BlueprintPicker = (props: BlueprintPickerProps) => {
       )}
       <div style={{ width: '100%' }}>
         <input
-          style={{ width: '100%', borderRadius: '5px' }}
+          style={{ width: '280px', borderRadius: '5px' }}
           type="string"
           value={formData}
           readOnly={true}

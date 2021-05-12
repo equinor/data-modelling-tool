@@ -1,8 +1,13 @@
-import React, { ChangeEvent, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import Prompt from '../../../components/Prompt'
 import useRunnable from '../../../hooks/useRunnable'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
-import { EntityPicker, Reference } from '@dmt/common'
+import {
+  BlueprintEnum,
+  BlueprintPicker,
+  EntityPicker,
+  Reference,
+} from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 export enum ContextMenuActions {
@@ -112,42 +117,29 @@ export interface IDefaultCreate {
 }
 
 export const DefaultCreate = (props: IDefaultCreate) => {
-  const [formData, updateFormData] = useState<any>({ type: props.type })
-  const [name, setName] = useState('')
-  const [description, setDescription] = useState('')
+  let defaultType: string = 'Click to select type to create'
+  if (props.type !== BlueprintEnum.ENTITY) defaultType = props.type
+  const [type, setType] = useState<string>(defaultType)
+  const [name, setName] = useState<string>('')
+  const [description, setDescription] = useState<string>('')
 
-  const updateName = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value)
-    updateFormData({ ...formData, name: event.target.value })
-  }
-  const updateDescription = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value)
-    updateFormData({ ...formData, description: event.target.value })
-  }
-
-  const onSubmit = (formData: any) => {
-    if (formData.description === undefined) {
-      formData.description = ''
-    }
-
-    const output = {
-      ...formData,
-      // @ts-ignore
-      attribute: props.request.attribute,
-      // @ts-ignore
-      parentId: props.request.parentId,
-    }
+  const onSubmit = () => {
     props.explorer.create({
-      data: output,
+      data: {
+        name: name,
+        type: type,
+        description: description || '',
+        // @ts-ignore
+        attribute: props.request.attribute,
+        // @ts-ignore
+        parentId: props.request.parentId,
+      },
       dataUrl: props.url,
       nodeUrl: props.nodeUrl,
     })
   }
 
-  const modalContent = (
-    updateName: (event: ChangeEvent<HTMLInputElement>) => void,
-    updateDescription: (event: ChangeEvent<HTMLInputElement>) => void
-  ) => {
+  const modalContent = () => {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ margin: '10px 0' }}>
@@ -155,24 +147,31 @@ export const DefaultCreate = (props: IDefaultCreate) => {
           <input
             disabled={false}
             value={name}
-            onChange={updateName}
+            onChange={(event) => setName(event.target.value)}
             style={{ width: '280px' }}
           />
         </div>
-        <div style={{ marginTop: '10px' }}>
+        <div
+          style={{ marginTop: '10px', display: 'flex', flexDirection: 'row' }}
+        >
           <label style={{ marginRight: '10px' }}>Type: </label>
-          <input
-            disabled={true}
-            value={props.type}
-            style={{ width: '280px' }}
-          />
+          {/* If we are to create an "Entity", user should select type*/}
+          {props.type === BlueprintEnum.ENTITY ? (
+            <BlueprintPicker
+              formData={type}
+              onChange={(value: string) => setType(value)}
+              uiSchema={{ 'ui:label': '' }}
+            />
+          ) : (
+            <input disabled={true} value={type} style={{ width: '280px' }} />
+          )}
         </div>
         <div style={{ marginTop: '10px' }}>
           <label style={{ marginRight: '10px' }}>Description: </label>
           <input
             disabled={false}
             value={description}
-            onChange={updateDescription}
+            onChange={(event) => setDescription(event.target.value)}
             style={{ width: '280px' }}
           />
         </div>
@@ -182,10 +181,8 @@ export const DefaultCreate = (props: IDefaultCreate) => {
 
   return (
     <Prompt
-      onSubmit={() => {
-        onSubmit(formData)
-      }}
-      content={modalContent(updateName, updateDescription)}
+      onSubmit={() => onSubmit()}
+      content={modalContent()}
       buttonText={'Create'}
     />
   )
