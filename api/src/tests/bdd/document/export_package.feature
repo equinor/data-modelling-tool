@@ -21,4 +21,5 @@ Feature: exporting packages
     Given I access the resource url "/api/v2/explorer/data-source-name/export/1"
     When I make a "GET" request
     Then the response status should be "OK"
+    And response node should not be empty
 
