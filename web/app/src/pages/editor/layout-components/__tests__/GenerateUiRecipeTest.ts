@@ -25,6 +25,7 @@ describe('GenerateUiRecipeTabs', () => {
     expect(tabs).toHaveLength(getDefaultTabs([]).length + 1)
     expect(tabs).toMatchObject([
       { name: 'Raw', plugin: 'default-preview', attributes: [] },
+      { name: 'Yaml', plugin: 'yaml-view', attributes: [] },
       { name: 'Edit', plugin: 'default-form', attributes: [] },
       { name: 'my tab', plugin: 'EDIT_PLUGIN', attributes: [] },
     ])
@@ -41,7 +42,7 @@ describe('GenerateUiRecipeTabs', () => {
     ]
     const generateUiTabs = new GenerateUiRecipeTabs(input, getDefaultTabs([]))
     const tabs = generateUiTabs.getTabs()
-    expect(tabs).toHaveLength(3)
+    expect(tabs).toHaveLength(4)
   })
 
   it('should not add a default tab if exists', () => {
@@ -55,12 +56,12 @@ describe('GenerateUiRecipeTabs', () => {
       },
     ]
     const defaultTabs = getDefaultTabs(recipes)
-    expect(defaultTabs).toHaveLength(1)
+    expect(defaultTabs).toHaveLength(2)
 
     const generateUiTabs = new GenerateUiRecipeTabs(
       recipes,
       getDefaultTabs(recipes)
     )
-    expect(generateUiTabs.getTabs()).toHaveLength(1)
+    expect(generateUiTabs.getTabs()).toHaveLength(2)
   })
 })
