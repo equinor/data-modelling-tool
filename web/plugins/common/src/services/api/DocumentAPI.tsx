@@ -1,6 +1,7 @@
 import { IDocumentAPI } from './interfaces/DocumentAPI'
 import apiProvider from './utilities/Provider'
 import { dmssApi } from './configs/StorageServiceAPI'
+import { RenameRequest } from './configs/gen'
 
 export class DocumentAPI implements IDocumentAPI {
   create(url: string, data: any): Promise<any> {
@@ -44,6 +45,13 @@ export class DocumentAPI implements IDocumentAPI {
 
   update(url: string, data: any): Promise<any> {
     return dmssApi.documentUpdate(data)
+  }
+
+  explorerRename(
+    dataSourceId: string,
+    renameRequest: RenameRequest
+  ): Promise<any> {
+    return dmssApi.explorerRename({ dataSourceId, renameRequest })
   }
 
   search(dataSourceId: string, query: any): Promise<any> {

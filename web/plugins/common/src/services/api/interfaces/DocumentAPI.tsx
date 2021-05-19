@@ -1,9 +1,16 @@
+import { RenameRequest } from '../configs/gen'
+
 export interface IDocumentAPI {
   create(url: string, data: any): Promise<any>
 
   remove(url: string, data: any): Promise<any>
 
   update(url: string, data: any): Promise<any>
+
+  explorerRename(
+    dataSourceId: string,
+    renameRequest: RenameRequest
+  ): Promise<any>
 
   updateById(
     dataSourceId: string,

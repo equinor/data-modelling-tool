@@ -61,12 +61,6 @@ interface RemoveProps {
   data: any
 }
 
-interface UpdateProps {
-  data: any
-  nodeUrl: string
-  updateUrl: string
-}
-
 interface UpdateByIdProps {
   dataSourceId: string
   documentId: string
@@ -74,6 +68,25 @@ interface UpdateByIdProps {
   data: any
   nodeUrl: string
   reference?: boolean
+}
+
+interface renameProps {
+  dataSourceId: string
+  documentId: string
+  nodeUrl: string
+  renameData: RenameData
+}
+
+export type RenameData = {
+  name: string
+  parentId: string | null
+}
+
+export type RenameRequest = {
+  name: string
+  parentId?: string
+  documentId: string
+  dataSourceId?: string
 }
 
 export interface IUseExplorer {
@@ -91,7 +104,7 @@ export interface IUseExplorer {
 
   remove({ nodeId, parent, url, data }: RemoveProps): void
 
-  update({ data, updateUrl, nodeUrl }: UpdateProps): void
+  rename({ dataSourceId, documentId, nodeUrl, renameData }: renameProps): void
 
   updateById({
     dataSourceId,
@@ -240,21 +253,40 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       })
   }
 
-  const update = async ({ data, updateUrl, nodeUrl }: UpdateProps) => {
+  const rename = async ({
+    dataSourceId,
+    documentId,
+    nodeUrl,
+    renameData,
+  }: renameProps) => {
+    let renameRequest: RenameRequest
+    if (renameData.parentId) {
+      renameRequest = {
+        name: renameData.name,
+        parentId: renameData.parentId,
+        documentId: documentId,
+        dataSourceId: dataSourceId,
+      }
+    } else {
+      renameRequest = {
+        name: renameData.name,
+        documentId: documentId,
+        dataSourceId: dataSourceId,
+      }
+    }
     return documentAPI
-      .update(updateUrl, data)
+      .explorerRename(dataSourceId, renameRequest)
       .then((result: any) => {
         closeModal()
         index.models.index.operations
-          .add(result.uid, nodeUrl)
+          .add(documentId, nodeUrl)
           .then(() =>
-            dashboard.models.layout.operations.refreshByFilter(result.uid)
+            dashboard.models.layout.operations.refreshByFilter(documentId)
           )
-        //todo: maybe add a catch here? not sure if it's possible though...
       })
-      .catch((error: any) =>
-        setErrorMessage(`Could not update selected document. (${error})`)
-      )
+      .catch((error: any) => {
+        setErrorMessage(`Could not rename selected document. (${error})`)
+      })
   }
 
   const updateById = async ({
@@ -289,8 +321,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     open,
     create,
     remove,
-    update,
     updateById,
+    rename,
     addToParent,
     index,
     dashboard,
