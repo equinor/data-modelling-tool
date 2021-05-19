@@ -91,8 +91,6 @@ export const useLayout = (): ILayout => {
   }
 
   const refresh = (id: string) => {
-    // TODO: Can this be done better?
-    if (!id) console.log('An empty ID was given. This will likely break')
     if (isOpen(id)) {
       //@ts-ignore
       const components = layout.myLayout.root.getItemsById(id)

@@ -13,6 +13,7 @@ import {
 } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+
 export enum ContextMenuActions {
   CREATE = 'CREATE',
   UPDATE = 'UPDATE',
@@ -20,6 +21,7 @@ export enum ContextMenuActions {
   DOWNLOAD = 'DOWNLOAD',
   RUNNABLE = 'RUNNABLE',
   INSERT_REFERENCE = 'INSERT_REFERENCE',
+  UNLINK = 'UNLINK',
 }
 
 const fillTemplate = function (templateString: string, templateVars: object) {
@@ -247,16 +249,13 @@ export const InsertReference = (props: IInsertReferenceProps) => {
   const updateDocument = () => {
     const reference: Reference = {
       name: refName,
-      _id: refId,
+      id: refId,
       type: refType,
     }
-    explorer.updateById({
+    explorer.insertReference({
       dataSourceId: targetDataSource,
-      documentId: target,
-      attribute,
-      data: reference,
-      nodeUrl: target,
-      reference: true,
+      documentDottedId: `${target}.${attribute}`,
+      reference,
     })
   }
   const modalContent = () => {
@@ -281,7 +280,7 @@ export const InsertReference = (props: IInsertReferenceProps) => {
           <EntityPicker
             onChange={(reference: Reference) => {
               // TODO: Validate type based on parent
-              setRefID(reference._id)
+              setRefID(reference.id)
               setRefName(reference.name)
               setRefType(reference.type)
             }}

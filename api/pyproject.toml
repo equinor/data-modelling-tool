@@ -37,6 +37,7 @@ flake8 = "^3.7.9"
 bandit = "^1.6.2"
 safety = "^1.8.7"
 pymongo = "^3.10.1"
+dictdiffer = "^0.8.1"
 
 [tool.black]
 line-length = 119

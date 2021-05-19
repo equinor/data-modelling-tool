@@ -468,7 +468,7 @@ class TreenodeTestCase(unittest.TestCase):
             entity=nested_2_reference_data,
             blueprint_provider=blueprint_provider,
             parent=nested_2,
-            attribute=BlueprintAttribute("", "blueprint_2"),
+            attribute=BlueprintAttribute("", "blueprint_2", contained=False),
         )
 
         list_data = {"name": "List", "type": "blueprint_3"}
@@ -495,7 +495,7 @@ class TreenodeTestCase(unittest.TestCase):
         assert nested.node_id == "1.nested"
         assert nested_2.node_id == "1.nested.nested"
         assert nested_2.node_id == "1.nested.nested"
-        assert reference.node_id == "2"
+        assert reference.node_id == "1.nested.nested.reference"
         assert list_node.node_id == "1.list"
         assert item_1.node_id == "1.list.0"
 
@@ -524,9 +524,9 @@ class TreenodeTestCase(unittest.TestCase):
 
         assert child_1.node_id == "1.nested.nested"
 
-        child_2 = root.search("2")
+        child_2 = root.search("1.nested.nested.reference")
 
-        assert child_2.node_id == "2"
+        assert child_2.node_id == "1.nested.nested.reference"
 
     def test_get_by_keys(self):
         document_1 = {
@@ -555,7 +555,7 @@ class TreenodeTestCase(unittest.TestCase):
 
         child_2 = root.get_by_path(["nested", "nested", "reference"])
 
-        assert child_2.node_id == "2"
+        assert child_2.uid == "2"
 
     def test_update(self):
         document_1 = {

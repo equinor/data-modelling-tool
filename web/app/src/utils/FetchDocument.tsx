@@ -26,8 +26,7 @@ export default ({ dataSourceId, documentId, render }: Props) => {
       setLoading(false)
     }
     load()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [dataSourceId, documentId])
+  }, [dataSourceId, documentId, render])
 
   if (loading) {
     return <div>Loading...</div>

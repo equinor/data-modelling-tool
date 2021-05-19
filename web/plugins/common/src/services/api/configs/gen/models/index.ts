@@ -5,6 +5,7 @@ export * from './EntityName';
 export * from './GetDocumentResponse';
 export * from './HTTPValidationError';
 export * from './MoveRequest';
+export * from './Reference';
 export * from './RemoveByPathRequest';
 export * from './RemoveRequest';
 export * from './RenameRequest';

@@ -1,4 +1,4 @@
-import { RenameRequest } from '../configs/gen'
+import { Reference, RenameRequest } from '../configs/gen'
 
 export interface IDocumentAPI {
   create(url: string, data: any): Promise<any>
@@ -30,4 +30,12 @@ export interface IDocumentAPI {
   ): Promise<any>
 
   addToParent(dataSourceId: string, data: any): Promise<any>
+
+  insertReference(
+    dataSourceId: string,
+    documentDottedId: string,
+    reference: Reference
+  ): Promise<any>
+
+  removeReference(dataSourceId: string, documentDottedId: string): Promise<any>
 }

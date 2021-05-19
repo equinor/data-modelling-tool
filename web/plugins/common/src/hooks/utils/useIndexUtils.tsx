@@ -23,7 +23,7 @@ export function createTreeNode({
   nodeType,
   children = [],
   templateRef = '',
-  meta = {},
+  meta = undefined,
   type = '',
   isOpen = false,
 }: DocumentNode): TreeNodeData {

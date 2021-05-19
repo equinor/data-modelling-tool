@@ -8,6 +8,7 @@ models/EntityName.ts
 models/GetDocumentResponse.ts
 models/HTTPValidationError.ts
 models/MoveRequest.ts
+models/Reference.ts
 models/RemoveByPathRequest.ts
 models/RemoveRequest.ts
 models/RenameRequest.ts

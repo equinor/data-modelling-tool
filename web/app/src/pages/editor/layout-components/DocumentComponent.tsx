@@ -38,8 +38,6 @@ const View = (props: any) => {
 
   if (loading) return <div>Loading...</div>
 
-  console.log(`Using plugin: ${uiRecipe.plugin}`)
-
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
   return (
     <ExternalPlugin

@@ -131,9 +131,7 @@ export default (props: ContextMenuProps) => {
       <div>
         <ContextMenuTrigger id={id}>{props.children}</ContextMenuTrigger>
       </div>
-      <ContextMenu data={{ test: 1 }} id={id}>
-        {menuItemsComponents}
-      </ContextMenu>
+      <ContextMenu id={id}>{menuItemsComponents}</ContextMenu>
     </span>
   )
 }

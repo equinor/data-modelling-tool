@@ -60,7 +60,7 @@ def remove_application():
 
 @app.cli.command()
 def init_application():
-    logger.info("-------------- IMPORTING DMT FILES ----------------")
+    logger.info("-------------- IMPORTING Application FILES ----------------")
     data_sources_to_import = []
     try:
         data_sources_to_import = os.listdir(f"{Config.APPLICATION_HOME}/data_sources/")

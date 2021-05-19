@@ -117,7 +117,7 @@ export default () => {
       case ContextMenuActions.INSERT_REFERENCE:
         const insertReferenceProps: IInsertReferenceProps = {
           explorer,
-          attribute: data.request.attribute,
+          attribute: data,
           // TODO: Fetch blueprint and set correct type for the reference
           type: 'Placeholder',
           target: id,
@@ -126,9 +126,15 @@ export default () => {
         }
         openModal(InsertReference, {
           dialog: {
-            title: `Select Entity to include as ${node.nodeData.title}'s ${data.request.attribute}`,
+            title: `Select Entity to include as ${node.nodeData.title}'s ${data}`,
           },
           props: insertReferenceProps,
+        })
+        break
+      case ContextMenuActions.UNLINK:
+        explorer.removeReference({
+          dataSourceId: node.nodeData.meta.dataSource,
+          documentDottedId: data,
         })
         break
       case ContextMenuActions.RUNNABLE:

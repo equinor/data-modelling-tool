@@ -47,6 +47,7 @@ class SIMOS(Enum):
 class DMT(Enum):
     PACKAGE = "system/SIMOS/Package"
     ENTITY = "system/SIMOS/Entity"
+    DATASOURCE = "datasource"
 
 
 class APPLICATION(Enum):
