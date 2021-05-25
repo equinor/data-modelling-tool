@@ -1,7 +1,10 @@
 import React, { useState } from 'react'
 import Prompt from '../../../components/Prompt'
 import useRunnable from '../../../hooks/useRunnable'
-import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
+import useExplorer, {
+  IUseExplorer,
+  RenameData,
+} from '../../../hooks/useExplorer'
 import {
   BlueprintEnum,
   BlueprintPicker,
@@ -105,6 +108,14 @@ export interface IInsertReferenceProps {
   targetDataSource: string
 }
 
+export interface IRenameDocument {
+  explorer: IUseExplorer
+  nodeUrl: string
+  node: any
+  dataSourceId: string
+  documentId: string
+}
+
 // todo - temporary solution for create form - should be updated later
 export interface IDefaultCreate {
   explorer: IUseExplorer
@@ -184,6 +195,45 @@ export const DefaultCreate = (props: IDefaultCreate) => {
       onSubmit={() => onSubmit()}
       content={modalContent()}
       buttonText={'Create'}
+    />
+  )
+}
+
+// todo temprorary solution for form - can be replaced with react-jsonschema-form later
+export const RenameDocument = (props: IRenameDocument) => {
+  const [name, setName] = useState<string>(props.node.nodeData.title)
+  const { explorer, nodeUrl, node, dataSourceId, documentId } = props
+
+  const onSubmit = () => {
+    const parentId: string = node.parent
+    const renameData: RenameData = {
+      name: name,
+      parentId: node.nodeData.meta.isRootPackage ? null : parentId,
+    }
+    explorer.rename({ dataSourceId, documentId, nodeUrl, renameData })
+  }
+
+  const modalContent = () => {
+    return (
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
+        <div style={{ margin: '10px 0' }}>
+          <label style={{ marginRight: '10px' }}>New name: </label>
+          <input
+            disabled={false}
+            value={name}
+            onChange={(event) => setName(event.target.value)}
+            style={{ width: '280px' }}
+          />
+        </div>
+      </div>
+    )
+  }
+
+  return (
+    <Prompt
+      onSubmit={() => onSubmit()}
+      content={modalContent()}
+      buttonText={'Update name'}
     />
   )
 }

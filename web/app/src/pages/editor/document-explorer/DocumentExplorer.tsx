@@ -10,6 +10,7 @@ import {
   InsertReference,
   DefaultCreate,
   SaveToExistingDocument,
+  RenameDocument,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { useModalContext } from '../../../context/modal/ModalContext'
@@ -85,26 +86,19 @@ export default () => {
         })
         break
       case ContextMenuActions.UPDATE:
-        const updateProps = {
+        const dataSourceId: string | undefined = node.nodeData.meta.dataSource
+        const documentId: string = node.nodeData.nodeId
+
+        const renameProps = {
           explorer: explorer,
-          uiRecipeName: 'DEFAULT_CREATE',
-          dataSourceId: node.nodeData.meta.dataSource,
-          documentId: node.nodeData.nodeId,
-          onSubmit: (formData: any) => {
-            if (formData.description === undefined) {
-              formData.description = ''
-            }
-            const output = formDataGivenByRequest(data.request, formData)
-            explorer.update({
-              data: output,
-              updateUrl: data.url,
-              nodeUrl: data.nodeUrl,
-            })
-          },
+          nodeUrl: data.nodeUrl,
+          node: node,
+          dataSourceId: dataSourceId,
+          documentId: documentId,
         }
-        openModal(ExternalPlugin, {
-          dialog: { title: `Update ${node.nodeData.nodeId}` },
-          props: updateProps,
+        openModal(RenameDocument, {
+          dialog: { title: `Rename ${node.nodeData.nodeId}` },
+          props: renameProps,
         })
         break
       case ContextMenuActions.DELETE: {

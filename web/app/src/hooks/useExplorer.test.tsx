@@ -166,7 +166,8 @@ describe('the explorer hook', () => {
         open: expect.any(Function),
         create: expect.any(Function),
         remove: expect.any(Function),
-        update: expect.any(Function),
+        rename: expect.any(Function),
+        updateById: expect.any(Function)
       })
     })
     it('should contain two documents in the tree', () => {
@@ -473,13 +474,13 @@ describe('the explorer hook', () => {
     })
   })
 
-  describe('when update is called', () => {
+  describe('when rename is called', () => {
     describe('and documentApi returns a resolved promise', () => {
       beforeEach(async () => {
         const updatedDocument = {
           uid: '1',
         }
-        mocks.documentApi.update.mockReturnValue(
+        mocks.documentApi.explorerRename.mockReturnValue(
           Promise.resolve(updatedDocument)
         )
 
@@ -499,18 +500,17 @@ describe('the explorer hook', () => {
           Promise.resolve(indexNodes)
         )
         await act(async () => {
-          response.result.current.update({
-            data: {
-              name: 'New name',
-            },
-            updateUrl: '/',
+          response.result.current.rename({
+            dataSourceId: 'localhost',
+            documentId: '1',
             nodeUrl: '/',
+            renameData: { name: 'New name', parentId: null },
           })
         })
       })
 
       it('should the document be updated to the server', async () => {
-        expect(mocks.documentApi.update).toHaveBeenCalledTimes(1)
+        expect(mocks.documentApi.explorerRename).toHaveBeenCalledTimes(1)
       })
       it('should the document be updated in the tree', async () => {
         expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
@@ -540,23 +540,22 @@ describe('the explorer hook', () => {
 
     describe('on a documentApi returns a rejected promise', () => {
       beforeEach(async () => {
-        mocks.documentApi.update.mockReturnValue(
+        mocks.documentApi.explorerRename.mockReturnValue(
           Promise.reject(new Error('error'))
         )
 
         await act(async () => {
-          response.result.current.update({
-            data: {
-              name: 'New name',
-            },
-            updateUrl: '/',
+          response.result.current.rename({
+            dataSourceId: 'localhost',
+            documentId: '1',
             nodeUrl: '/',
+            renameData: { name: 'New name', parentId: null },
           })
         })
       })
       it('should create an errorMessage', () => {
         expect(response.result.current.errorMessage).toBe(
-          'Could not update selected document. (Error: error)'
+          'Could not rename selected document. (Error: error)'
         )
       })
     })
