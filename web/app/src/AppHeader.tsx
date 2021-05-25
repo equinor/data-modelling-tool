@@ -74,26 +74,20 @@ export default () => {
         }}
       >
         <div>
-          {Config.exportedApp ? (
+          <>
             <Link to={'/'}>
               <TabStyled isSelected={location.pathname === '/'}>
-                Entities
+                {Config.appName}
               </TabStyled>
             </Link>
-          ) : (
-            <>
-              <Link to={'/'}>
-                <TabStyled isSelected={location.pathname === '/'}>
-                  Blueprints
+            {!Config.exportedApp && (
+              <Link to={'/app'}>
+                <TabStyled isSelected={location.pathname === '/app'}>
+                  App. Menu
                 </TabStyled>
               </Link>
-              <Link to={'/entities'}>
-                <TabStyled isSelected={location.pathname === '/entities'}>
-                  Entities
-                </TabStyled>
-              </Link>
-            </>
-          )}
+            )}
+          </>
           <Link to={'/search'}>
             <TabStyled isSelected={location.pathname === '/search'}>
               Search

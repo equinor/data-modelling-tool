@@ -1,0 +1,7 @@
+{
+  "_id": "id_for_my_mooring",
+  "name": "myTurbineMooring",
+  "type": "demo-DS/DMT-demo/UncontainedDemo/Mooring",
+  "description": "",
+  "Bigness": 10
+}

@@ -1,0 +1,11 @@
+{
+  "_id": "if_for_my_turbine",
+  "name": "myTurbine",
+  "type": "demo-DS/DMT-demo/UncontainedDemo/WindTurbine",
+  "description": "This is a wind turbine demoing uncontained relationships",
+  "Mooring": {
+    "_id": "id_for_my_mooring",
+    "attributeType": "demo-DS/DMT-demo/UncontainedDemo/Mooring",
+    "name": "myTurbineMooring"
+  }
+}

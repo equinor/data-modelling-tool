@@ -117,11 +117,7 @@ def extend_index_with_node_tree(
 class GenerateIndexUseCase:
     def execute(self, data_source_id: str, application: str = None) -> dict:
         document_service = DocumentService()
-        app_settings = (
-            Config.DMT_APPLICATION_SETTINGS
-            if application == APPLICATION.BLUEPRINTS.value
-            else Config.ENTITY_APPLICATION_SETTINGS
-        )
+        app_settings = Config.DMT_SETTINGS if application == APPLICATION.DMT_ENTITIES.value else Config.APP_SETTINGS
         # make sure we're generating the index with correct blueprints.
         root_packages = dmss_api.package_get(data_source_id)
 
@@ -160,11 +156,7 @@ class GenerateIndexUseCase:
     def single(self, data_source_id: str, document_id: str, parent_id: str, application: str = None) -> Dict:
         document_service = DocumentService()
 
-        app_settings = (
-            Config.DMT_APPLICATION_SETTINGS
-            if application == APPLICATION.BLUEPRINTS.value
-            else Config.ENTITY_APPLICATION_SETTINGS
-        )
+        app_settings = Config.DMT_SETTINGS if application == APPLICATION.DMT_ENTITIES.value else Config.APP_SETTINGS
         parent_uid = parent_id.split(".", 1)[0]
 
         # If root-package post DS-id as parent_id. We must create a parent node.

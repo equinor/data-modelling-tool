@@ -16,7 +16,7 @@ blueprint = Blueprint("system", __name__)
 @blueprint.route("/api/system/settings", methods=["GET"])
 def get_application_settings():
     try:
-        with open(Config.ENTITY_SETTINGS_FILE) as f:
+        with open(Config.APP_SETTINGS_FILE) as f:
             return Response(
                 json.dumps(json.load(f)), mimetype="application/json", status=STATUS_CODES[res.ResponseSuccess.SUCCESS]
             )
@@ -37,10 +37,10 @@ def set_application_settings():
             status=403,
         )
     try:
-        with open(Config.ENTITY_SETTINGS_FILE, "w") as f:
+        with open(Config.APP_SETTINGS_FILE, "w") as f:
             request_data = json.dumps(request.json)
             f.write(request_data)
-            Config.ENTITY_APPLICATION_SETTINGS = request.json
+            Config.APP_SETTINGS = request.json
             return Response("OK", mimetype="application/json", status=STATUS_CODES[res.ResponseSuccess.SUCCESS])
     except Exception:
         return Response(

@@ -127,7 +127,7 @@ const getMocks = () => {
 }
 
 describe('the explorer hook', () => {
-  const application = Application.BLUEPRINTS
+  const application = Application.DEFAULT
 
   let mocks: any
   let response: RenderHookResult<any, IUseExplorer>
@@ -167,7 +167,7 @@ describe('the explorer hook', () => {
         create: expect.any(Function),
         remove: expect.any(Function),
         rename: expect.any(Function),
-        updateById: expect.any(Function)
+        updateById: expect.any(Function),
       })
     })
     it('should contain two documents in the tree', () => {

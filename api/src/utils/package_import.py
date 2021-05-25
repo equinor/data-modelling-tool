@@ -38,5 +38,5 @@ def import_package(path, data_source: str, is_root: bool = False) -> Union[Dict]
 
     package = DTO(package)
     dmss_api.explorer_add_raw(data_source, package.to_dict())
-    logger.info(f"Imported package {package.name}")
+    logger.debug(f"Imported package {package.name}")
     return {"_id": package.uid, "name": package.name, "type": package.type}

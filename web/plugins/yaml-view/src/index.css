@@ -4,6 +4,7 @@
 
 .hljs-attr,
 .hljs-number,
+.hljs-literal,
 .hljs-bullet {
   color: #99ffff;
 }

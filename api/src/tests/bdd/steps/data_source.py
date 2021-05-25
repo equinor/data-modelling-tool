@@ -21,7 +21,6 @@ def step_impl(context):
                     "username": row["username"],
                     "password": row["password"],
                     "tls": False,
-                    "name": row["name"].strip(),
                     "database": row["database"],
                     "collection": row["collection"],
                     "type": row["type"],

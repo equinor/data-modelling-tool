@@ -11,7 +11,7 @@ const wrapper: React.FC = ({ children, application, api }: any) => (
 )
 
 describe('the dashboard provider component', () => {
-  const application = Application.BLUEPRINTS
+  const application = Application.DEFAULT
 
   describe('when provider is initialized', () => {
     it('should correctly return the DashboardContext object', async () => {

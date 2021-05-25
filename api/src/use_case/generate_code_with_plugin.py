@@ -63,7 +63,7 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
         plugin_name: str = request_object.plugin_name
         data_source_id: str = request_object.data_source_id
 
-        if plugin_name not in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
+        if plugin_name not in Config.APP_SETTINGS["code_generators"]:
             raise PluginNotLoadedException(plugin_name)
 
         tree_path = "/content/".join(document_path.split("/"))

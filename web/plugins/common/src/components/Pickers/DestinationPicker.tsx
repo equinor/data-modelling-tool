@@ -50,7 +50,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   const dataSourceAPI = new DataSourceAPI()
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
   const index: IIndex = useIndex({
-    application: Application.BLUEPRINTS,
+    application: Application.DEFAULT,
     dataSources: dataSources.models.dataSources,
   })
 

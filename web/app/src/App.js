@@ -8,13 +8,14 @@ import ViewPage from './pages/ViewPage'
 import { Switch } from 'react-router'
 import { StatusProvider } from './context/status/StatusContext'
 import Header from './AppHeader'
-import BlueprintsPage from './pages/BlueprintsPage'
-import EntitiesPage from './pages/EntitiesPage'
+import DMTEntities from './pages/DMTEntities'
+import DefaultApp from './pages/App'
 import { authContext } from './context/auth/adalConfig'
 import { AuthProvider } from './context/auth/AuthContext'
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
+  appName: process.env.REACT_APP_EXPORTED_APP_NAME || 'Data Modelling',
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -46,21 +47,16 @@ function App() {
           <GlobalStyle />
           <StatusProvider>
             <NotificationContainer />
-
             <Wrapper>
               <Header />
               <Switch>
+                <Route exact path="/app" component={DMTEntities} />
                 <Route exact path="/search" component={SearchPage} />
-                <Route exact path="/blueprints" component={BlueprintsPage} />
-                <Route exact path="/entities" component={EntitiesPage} />
                 <Route
                   path="/view/:data_source/:entity_id"
                   component={ViewPage}
                 />
-                <Route
-                  path="/"
-                  component={Config.exportedApp ? EntitiesPage : BlueprintsPage}
-                />
+                <Route path="/" component={DefaultApp} />
               </Switch>
             </Wrapper>
           </StatusProvider>

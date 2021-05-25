@@ -24,7 +24,7 @@ export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
   const dataSourceAPI = new DataSourceAPI()
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
   const index: IIndex = useIndex({
-    application: Application.BLUEPRINTS,
+    application: Application.DEFAULT,
     dataSources: dataSources.models.dataSources,
   })
 
