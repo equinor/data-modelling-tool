@@ -1,15 +1,11 @@
-Feature: Document - Generate JSON Schema
+Feature: Get all related blueprints
 
   Background: There are data sources in the system
-
-    Given there are mongodb data sources
-      | host | port  | username | password | tls   | name       | database | collection   |  type     |
-      | db   | 27017 | maf      | maf      | false | blueprints | local    | documents    |  mongo-db |
-      | db   | 27017 | maf      | maf      | false | apps       | local    | applications |  mongo-db |
-
+    Given there are basic data sources with repositories
+      |   name  |
+      | blueprints |
     Given data modelling tool blueprints are imported
-
-    Given there exist document with id "1" in data source "blueprints"
+    Given there exist document with id "a55fe052-1c85-438a-8882-31f98529b623" in data source "blueprints"
     """
     {
         "name": "root_package",
@@ -18,12 +14,12 @@ Feature: Document - Generate JSON Schema
         "isRoot": true,
         "content": [
             {
-                "_id": "2",
+                "_id": "a5a2183d-8fc6-45c6-baa4-d60290367d00",
                 "name": "ParentBlueprint",
                 "type": "system/SIMOS/Blueprint"
             },
             {
-                "_id": "3",
+                "_id": "5286dc90-9136-43ab-b00c-6395df54bf62",
                 "name": "ChildBlueprint",
                 "type": "system/SIMOS/Blueprint"
             }
@@ -31,7 +27,7 @@ Feature: Document - Generate JSON Schema
     }
     """
 
-    Given there exist document with id "2" in data source "blueprints"
+    Given there exist document with id "a5a2183d-8fc6-45c6-baa4-d60290367d00" in data source "blueprints"
     """
     {
       "type": "system/SIMOS/Blueprint",
@@ -63,7 +59,7 @@ Feature: Document - Generate JSON Schema
     }
     """
 
-    Given there exist document with id "3" in data source "blueprints"
+    Given there exist document with id "5286dc90-9136-43ab-b00c-6395df54bf62" in data source "blueprints"
     """
     {
       "type": "system/SIMOS/Blueprint",

@@ -61,4 +61,4 @@ class DTO:
         return str(self._uid)
 
     def to_dict(self):
-        return {"uid": self.uid, **self.data}
+        return {"_id": self.uid, **self.data}

@@ -1,35 +1,35 @@
 import json
 
+import io
 from behave import given, then, when
-from dmss_api import ApiException
+from zipfile import ZipFile
 
 from domain_classes.dto import DTO
 from domain_classes.schema import Factory
 from config import Config
 from repository.dmss.TemplateRepositoryFromDMSS import TemplateRepositoryFromDMSS
 from services.dmss import dmss_api
+from use_case.import_package import import_package_tree, package_tree_from_zip
+from utils.create_application_utils import zip_all
 from utils.data_structure.compare import pretty_eq
-from utils.logging import logger
-from utils.package_import import import_package
 
 
 @given("data modelling tool blueprints are imported")
 def step_impl(context):
-    logger.setLevel("ERROR")
-    import_package(
-        f"{Config.APPLICATION_HOME}/applications/DMT", data_source=Config.APPLICATION_DATA_SOURCE, is_root=True
-    )
-    logger.setLevel("INFO")
+    data_source, folder = "apps/DMT".split("/", 1)
+    memory_file = io.BytesIO()
+    with ZipFile(memory_file, mode="w") as zip_file:
+        zip_all(zip_file, f"{Config.APPLICATION_HOME}/data/{data_source}/{folder}", write_folder=False)
+    memory_file.seek(0)
+    root_package = package_tree_from_zip(data_source, folder, memory_file)
+    import_package_tree(root_package, data_source)
 
 
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')
 def step_impl_2(context, uid: str, data_source_id: str):
     document: DTO = DTO(uid=uid, data=json.loads(context.text))
-    try:
-        response = dmss_api.explorer_add_raw(data_source_id, document.to_dict())
-        print(response)
-    except ApiException as error:
-        raise Exception(error)
+    response = dmss_api.explorer_add_raw(data_source_id, document.to_dict())
+    print(response)
 
 
 @when('I create a Python class from the template "{template_name}"')

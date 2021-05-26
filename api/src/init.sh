@@ -1,8 +1,13 @@
 #!/bin/sh
 set -eu
-
 ENVIRON=${ENVIRONMENT:="production"}
 FLA_ENV=${FLASK_ENV:="production"}
+
+if [ "$1" = 'reset-app' ]; then
+  flask remove-application
+  flask init-application
+  exit 0
+fi
 
 # Wait until the storage services is ready before continuing.
 # This is to ensure that the services is initialized before the API tries to connect.
@@ -51,7 +56,8 @@ if [ "$1" = 'api' ]; then
   flask run --host=0.0.0.0
 elif [ "$1" = 'behave' ]; then
   service_is_ready
-  behave
+  shift
+  behave "$@"
 else
   exec "$@"
 fi

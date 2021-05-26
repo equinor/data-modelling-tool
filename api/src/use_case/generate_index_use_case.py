@@ -172,14 +172,19 @@ class GenerateIndexUseCase:
                 document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=document_id, depth=0)
             )
         else:
-            document_uid = parent_uid
-            parent = document_service.get_node_by_uid(
-                data_source_id=data_source_id, document_uid=document_uid, depth=1
-            )
+            parent = document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=parent_uid, depth=1)
 
         if not parent and data_source_id != document_id:
             raise EntityNotFoundException(uid=parent_id)
         node = parent.search(document_id)
-        if not node:
-            raise EntityNotFoundException(uid=document_id)
+        if not node:  # Create an error_node
+            node = Node(
+                parent=parent.children[0],
+                key="99",
+                uid=document_id,
+                entity={"name": document_id, "type": DMT.ENTITY.value, "_id": document_id},
+                blueprint_provider=document_service.get_blueprint,
+                attribute=BlueprintAttribute("error", DMT.ENTITY.value),
+            )
+            node.set_error(f"failed to create node '{document_id}' on '{parent.name}'")
         return extend_index_with_node_tree(node, data_source_id, app_settings, traverse_depth=3)
