@@ -25,7 +25,6 @@ const childIds = (state: any, action: any) => {
   switch (action.type) {
     case ADD_CHILD:
       if (state.includes(action.childId)) {
-        console.warn(`trying to add already existing child  ${action.childId}`)
         return state
       }
       return [...state, action.childId]

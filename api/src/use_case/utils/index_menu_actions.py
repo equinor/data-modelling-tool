@@ -71,16 +71,12 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
     }
 
 
-def get_create_reference_menu_item(data_source_id: str, type: str, node_id: str = None):
+def get_create_reference_menu_item(type: str, node_id: str = None):
     node_id_split = node_id.split(".", 1)
     return {
         "label": f"{type.split('/')[-1]}",
         "action": "INSERT_REFERENCE",
-        "data": {
-            "url": f"/api/v2/documents/{data_source_id}/{node_id_split[0]}",
-            "nodeUrl": get_node_url(data_source_id, node_id_split[0]),
-            "request": {"attribute": node_id_split[1] if len(node_id_split) > 1 else None, "data": "${data}"},
-        },
+        "data": node_id_split[1] if len(node_id_split) > 1 else None,
     }
 
 

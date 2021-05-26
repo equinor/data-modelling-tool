@@ -4,7 +4,7 @@ from domain_classes.blueprint_attribute import BlueprintAttribute
 from enums import APPLICATION, DMT
 from repository.repository_exceptions import EntityNotFoundException
 from services.document_service import DocumentService
-from use_case.utils.generate_index_menu_actions import get_node_fetch, get_node_index
+from use_case.utils.index_menu_actions import get_node_fetch, get_node_index
 from use_case.utils.set_index_context_menu import create_context_menu
 from services.dmss import dmss_api
 from utils.logging import logger
@@ -19,7 +19,7 @@ def get_parent_id(data_source_id: str, node: Union[Node, ListNode]):
         # Adjust parent, since we skipped content node
         if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
             return node.parent.parent.node_id
-        return node.parent_node_id
+        return node.parent.node_id
     else:
         return data_source_id
 
@@ -130,7 +130,7 @@ class GenerateIndexUseCase:
             uid=data_source_id,
             entity={"type": "datasource", "name": data_source_id},
             blueprint_provider=document_service.blueprint_provider,
-            attribute=BlueprintAttribute("root", "datasource"),
+            attribute=BlueprintAttribute("root", "datasource", contained=False),
         )
         for root_package in root_packages:
             package_data = root_package["data"]
@@ -174,7 +174,7 @@ class GenerateIndexUseCase:
                 uid=data_source_id,
                 entity={"type": "datasource", "name": data_source_id},
                 blueprint_provider=document_service.get_blueprint,
-                attribute=BlueprintAttribute("root", "datasource"),
+                attribute=BlueprintAttribute("root", "datasource", contained=True),
             )
             parent.add_child(
                 document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=document_id, depth=0)

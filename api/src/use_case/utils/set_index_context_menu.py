@@ -1,7 +1,7 @@
-from domain_classes.tree_node import Node
 from config import Config
+from domain_classes.tree_node import Node
 from enums import APPLICATION, DMT, SIMOS
-from use_case.utils.generate_index_menu_actions import (
+from use_case.utils.index_menu_actions import (
     get_create_reference_menu_item,
     get_create_root_package_menu_item,
     get_delete_menu_item,
@@ -20,7 +20,7 @@ from utils.group_by import group_by
 def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     menu_items = []
     create_new_menu_items = []
-    include_menu_items = []
+    new_reference_menu_items = []
     is_package = node.type == DMT.PACKAGE.value
     application = app_settings["name"]
 
@@ -57,11 +57,9 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                 for empty_child in [child for child in node.children if child.is_empty() and not child.is_array()]:
                     # If the attribute is not contained, offer choice to insert a
                     # reference to existing entity, else, create new inside
-                    if not empty_child.attribute_is_contained():
-                        include_menu_items.append(
-                            get_create_reference_menu_item(
-                                data_source_id=data_source_id, type=empty_child.type, node_id=empty_child.node_id
-                            )
+                    if not empty_child.storage_contained():
+                        new_reference_menu_items.append(
+                            get_create_reference_menu_item(type=empty_child.type, node_id=empty_child.node_id)
                         )
                     else:
                         create_new_menu_items.append(
@@ -92,14 +90,20 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             is_removable = node.is_array() or node.attribute.is_optional() or node.parent.is_array()
 
         if is_removable:
-            menu_items.append(
-                get_delete_menu_item(
-                    data_source_id,
-                    parent_id=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
-                    document_id=node.node_id,
-                    is_package_content=is_package,
+            # If the document is not in a package, and not contained, remove the reference instead of deleting it
+            if not node.contained() and node.parent.type != DMT.ENTITY.value:
+                menu_items.append(
+                    {"label": "Remove reference", "action": "UNLINK", "data": f"{node.parent.uid}.{node.key}"}
                 )
-            )
+            else:
+                menu_items.append(
+                    get_delete_menu_item(
+                        data_source_id,
+                        parent_id=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
+                        document_id=node.node_id,
+                        is_package_content=is_package,
+                    )
+                )
 
         # Runnable entities gets custom actions
         action_types = group_by(
@@ -149,8 +153,8 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
 
         if create_new_menu_items:
             menu_items.append({"label": "New", "menuItems": create_new_menu_items})
-        if include_menu_items:
-            menu_items.append({"label": "Include", "menuItems": include_menu_items})
+        if new_reference_menu_items:
+            menu_items.append({"label": "New reference", "menuItems": new_reference_menu_items})
 
     sort_menu_items(menu_items)
 

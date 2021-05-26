@@ -125,16 +125,12 @@ Feature: Index
         "meta": {
           "menuItems": [
             {
-              "label": "Include",
+              "label": "New reference",
               "menuItems": [
                 {
                   "label": "Mooring",
                   "action": "INSERT_REFERENCE",
-                  "data": {
-                    "url": "/api/v2/documents/data-source-name/6",
-                    "nodeUrl": "/api/v4/index/data-source-name/6",
-                    "request": { "attribute": "Mooring", "data": "${data}" }
-                  }
+                  "data": "Mooring"
                 }
               ]
             }

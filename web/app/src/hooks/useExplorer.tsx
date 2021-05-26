@@ -5,7 +5,12 @@ import {
 import { useModalContext } from '../context/modal/ModalContext'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintEnum, DocumentAPI, IDocumentAPI } from '@dmt/common'
+import {
+  BlueprintEnum,
+  DocumentAPI,
+  IDocumentAPI,
+  Reference,
+} from '@dmt/common'
 
 import {
   IGlobalIndex,
@@ -54,6 +59,17 @@ interface AddToParentProps {
   nodeUrl: string
 }
 
+interface InsertReferenceProps {
+  dataSourceId: string
+  documentDottedId: string
+  reference: Reference
+}
+
+interface RemoveReferenceProps {
+  dataSourceId: string
+  documentDottedId: string
+}
+
 interface RemoveProps {
   nodeId: string
   parent: string
@@ -91,6 +107,17 @@ export type RenameRequest = {
 
 export interface IUseExplorer {
   get({ dataSourceId, documentId, attribute }: GetProps): void
+
+  insertReference({
+    dataSourceId,
+    documentDottedId,
+    reference,
+  }: InsertReferenceProps): void
+
+  removeReference({
+    dataSourceId,
+    documentDottedId,
+  }: RemoveReferenceProps): void
 
   getBlueprint(typeRef: string): void
 
@@ -214,6 +241,50 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         })
     }
   }
+  const insertReference = async ({
+    dataSourceId,
+    documentDottedId,
+    reference,
+  }: InsertReferenceProps) => {
+    documentAPI
+      .insertReference(dataSourceId, documentDottedId, reference)
+      .then(() => {
+        closeModal()
+        const rootDocumentId = documentDottedId.split('.', 1)[0]
+        index.models.index.operations
+          .add(
+            documentDottedId,
+            `/api/v4/index/${dataSourceId}/${rootDocumentId}`,
+            true
+          )
+          .then(() => {
+            dashboard.models.layout.operations.refresh(rootDocumentId)
+            toggle({ nodeId: rootDocumentId })
+          })
+      })
+      .catch((error: any) => {
+        setErrorMessage(`Failed to insert reference. Received error: ${error}`)
+      })
+  }
+
+  const removeReference = async ({
+    dataSourceId,
+    documentDottedId,
+  }: RemoveReferenceProps) => {
+    documentAPI
+      .removeReference(dataSourceId, documentDottedId)
+      .then(() => {
+        const rootDocumentId = documentDottedId.split('.', 1)[0]
+        index.models.index.operations
+          .remove(documentDottedId, rootDocumentId)
+          .then(() =>
+            dashboard.models.layout.operations.remove(documentDottedId)
+          )
+      })
+      .catch((error: any) => {
+        setErrorMessage(`Failed to remove reference. Received error: ${error}`)
+      })
+  }
 
   const addToParent = async ({
     dataSourceId,
@@ -315,6 +386,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
 
   return {
     get,
+    insertReference,
+    removeReference,
     getBlueprint,
     getByPath,
     toggle,

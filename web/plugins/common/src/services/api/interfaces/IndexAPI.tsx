@@ -1,4 +1,5 @@
 import { NodeType } from '../../../utils/variables'
+import { NodeMetaData } from '../../../components/Tree'
 
 export type IndexNode = {
   id: string
@@ -6,7 +7,7 @@ export type IndexNode = {
   nodeType: NodeType
   children?: string[]
   templateRef?: string
-  meta?: object
+  meta?: NodeMetaData
   type: string
   parentId: string
 }

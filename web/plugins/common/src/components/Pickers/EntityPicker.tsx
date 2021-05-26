@@ -12,15 +12,10 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
+import { Reference } from '../../services/api/configs/gen'
 
 export type EntityPickerProps = {
   onChange: Function
-}
-
-export type Reference = {
-  _id: string
-  name: string
-  type: string
 }
 
 export const EntityPicker = (props: EntityPickerProps) => {
@@ -41,7 +36,7 @@ export const EntityPicker = (props: EntityPickerProps) => {
   }
 
   const onSelect = (value: Reference) => {
-    setSelectedEntity(value._id)
+    setSelectedEntity(value.id)
     setShowModal(false)
     onChange(value)
   }
@@ -69,7 +64,7 @@ export const EntityPicker = (props: EntityPickerProps) => {
             const reference: Reference = {
               name: nodeData.title,
               type: nodeData.meta.type,
-              _id: `${nodeData.nodeId}`,
+              id: nodeData.nodeId,
             }
 
             if (nodeData.meta.type !== BlueprintEnum.PACKAGE) {

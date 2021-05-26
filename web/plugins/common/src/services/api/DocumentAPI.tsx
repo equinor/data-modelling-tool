@@ -1,7 +1,7 @@
 import { IDocumentAPI } from './interfaces/DocumentAPI'
 import apiProvider from './utilities/Provider'
 import { dmssApi } from './configs/StorageServiceAPI'
-import { RenameRequest } from './configs/gen'
+import { Reference, RenameRequest } from './configs/gen'
 
 export class DocumentAPI implements IDocumentAPI {
   create(url: string, data: any): Promise<any> {
@@ -37,6 +37,25 @@ export class DocumentAPI implements IDocumentAPI {
     } else {
       return dmssApi.documentGetById({ dataSourceId, documentId })
     }
+  }
+
+  insertReference(
+    dataSourceId: string,
+    documentDottedId: string,
+    reference: Reference
+  ): Promise<any> {
+    return dmssApi.referenceInsert({
+      dataSourceId,
+      documentDottedId,
+      reference,
+    })
+  }
+
+  removeReference(
+    dataSourceId: string,
+    documentDottedId: string
+  ): Promise<any> {
+    return dmssApi.referenceDelete({ dataSourceId, documentDottedId })
   }
 
   remove(url: string, data: any): Promise<any> {

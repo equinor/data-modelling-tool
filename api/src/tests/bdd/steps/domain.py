@@ -59,7 +59,9 @@ def generate_tree_from_rows(node: Node, rows):
 
 
 def generate_tree(data_source_id: str, table):
-    root = Node(key=data_source_id, attribute=BlueprintAttribute(data_source_id, ""), uid=data_source_id)
+    root = Node(
+        key=data_source_id, attribute=BlueprintAttribute(data_source_id, DMT.DATASOURCE.value), uid=data_source_id
+    )
     root_package = next((row for row in table.rows if row["parent_uid"] == ""), None)
     if not root_package:
         raise Exception("Root package is not found, you need to specify root package")

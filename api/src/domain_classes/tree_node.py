@@ -1,5 +1,5 @@
 from copy import deepcopy
-from typing import Dict, List, Optional, Union
+from typing import Callable, Dict, List, Optional, Union
 from uuid import uuid4
 
 from domain_classes.blueprint import Blueprint
@@ -54,14 +54,14 @@ class DictExporter:
         for child in node.children:
             if child.is_array():
                 # If the content of the list is not contained, i.e. references.
-                if not child.attribute_is_contained():
+                if not child.storage_contained():
                     data[child.key] = [
                         {"_id": child.uid, "type": child.type, "name": child.name} for child in child.children
                     ]
                 else:
                     data[child.key] = [list_child.to_dict() for list_child in child.children]
             else:
-                if child.not_contained():
+                if not child.contained():
                     data[child.key] = {"_id": child.uid, "type": child.type, "name": child.name}
                 else:
                     data[child.key] = child.to_dict()
@@ -96,7 +96,7 @@ class DictImporter:
         # We create a "fake" Attribute based on the Blueprint
         if not node_attribute:
             bp = blueprint_provider(entity["type"])
-            node_attribute = BlueprintAttribute(bp.name, entity["type"], bp.description)
+            node_attribute = BlueprintAttribute(bp.name, entity["type"], bp.description, contained=True)
         try:
             node = Node(
                 key=key, uid=uid, entity=entity, blueprint_provider=blueprint_provider, attribute=node_attribute
@@ -165,54 +165,64 @@ class DictImporter:
 
 
 class NodeBase:
-    def __init__(self, key: str, uid: str = None, parent=None, children=None):
+    def __init__(
+        self,
+        key: str,
+        attribute: BlueprintAttribute,
+        uid: str = None,
+        parent=None,
+        children=None,
+        blueprint_provider: Callable = None,
+        entity: dict = {},
+    ):
         if key is None:
             raise Exception("Node requires a key")
         self.key = key
+        self.attribute = attribute
         self.uid = uid
         if uid is None:
             self.uid = str(uuid4())
+        self.entity = entity
         self.has_error = False
         self.parent: Union[Node, ListNode] = parent
         if parent:
             parent.add_child(self)
-
+        self.blueprint_provider = blueprint_provider
         self.children = []
         if children is not None:
             for child in children:
                 self.add_child(child)
 
-    def has_uid(self):
-        return self.uid != ""
+    @property
+    def blueprint(self) -> Optional[Blueprint]:
+        if self.type != DMT.DATASOURCE.value:
+            return self.blueprint_provider(self.type)
+
+    def storage_contained(self):
+        if not self.parent or self.parent.type == DMT.DATASOURCE.value:
+            return False
+        return self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)
 
     def is_empty(self):
         return not self.entity
 
-    @property
-    def parent_node_id(self):
-        if not self.parent:
-            return None
-
-        return self.parent.node_id
-
-    def is_storage_contained(self):
-        return self.uid == ""
-
-    def not_contained(self):
-        return not self.uid == ""
+    def contained(self):
+        return self.attribute.contained
 
     @property
     def node_id(self):
-        if self.uid != "":
+        if self.type == DMT.DATASOURCE.value:
             return self.uid
+        # Return dotted path if the node is storage contained, or is a reference
+        if self.storage_contained() or not self.contained():
+            return ".".join(self.path() + [self.key])
         else:
-            path = self.path()
-            return ".".join(path + [self.key])
+            return self.uid
 
     def path(self):
         path = []
         parent = self.parent
-        while parent and parent.uid == "":
+        while parent and parent.storage_contained():
             path += [parent.key]
             parent = parent.parent
         # Since we build the path "bottom-up", it need's to be revered.
@@ -359,8 +369,13 @@ class NodeBase:
             if c.node_id == node_id:
                 self.children.pop(i)
 
-    def has_error(self):
-        return self.error is not None
+    @property
+    def type(self):
+        return self.attribute.attribute_type
+
+    def set_error(self, error_message: str):
+        self.has_error = True
+        self.error_message = error_message
 
 
 class Node(NodeBase):
@@ -373,36 +388,19 @@ class Node(NodeBase):
         parent=None,
         blueprint_provider=None,
     ):
-        super().__init__(key=key, uid=uid, parent=parent)
-        self.attribute = attribute
-        self.entity = entity
-        self.blueprint_provider = blueprint_provider
-        self.error_message = None
-
-    def is_root(self):
-        return super().is_root()
+        super().__init__(
+            key=key, uid=uid, parent=parent, attribute=attribute, blueprint_provider=blueprint_provider, entity=entity
+        )
 
     @property
-    def blueprint(self) -> Optional[Blueprint]:
-        if self.type != "datasource":
-            return self.blueprint_provider(self.type)
-
-    def attribute_is_contained(self):
-        return self.parent.blueprint.storage_recipes[0].is_contained(self.key)
+    def name(self):
+        return self.entity.get("name", self.attribute.name)
 
     def to_dict(self):
         return DictExporter.to_dict(self)
 
     def to_ref_dict(self):
         return DictExporter.to_ref_dict(self)
-
-    @property
-    def name(self):
-        return self.entity.get("name", self.attribute.name)
-
-    @property
-    def type(self):
-        return self.attribute.attribute_type
 
     @staticmethod
     def from_dict(entity, uid, blueprint_provider):
@@ -411,12 +409,7 @@ class Node(NodeBase):
     def remove(self):
         self.parent.remove_by_node_id(self.node_id)
 
-    def set_error(self, error_message: str):
-        self.has_error = True
-        self.error_message = error_message
-
-        # Replace the entire data of the node with the input dict. If it matches the blueprint...
-
+    # Replace the entire data of the node with the input dict. If it matches the blueprint...
     def update(self, data: Union[Dict, List]):
         data.pop("_id", None)
         # Modify and add for each key in posted data
@@ -435,7 +428,7 @@ class Node(NodeBase):
                 for index, child in enumerate(self.children):
                     if child.key == key:
                         # This means we are creating a new, non-contained document. Lists are always contained.
-                        if not child.attribute_is_contained() and child.uid == "" and not child.is_array():
+                        if not child.storage_contained() and child.uid == "" and not child.is_array():
                             new_node = DictImporter.from_dict(
                                 entity=new_data,
                                 uid=str(uuid4()),
@@ -469,10 +462,9 @@ class ListNode(NodeBase):
         parent=None,
         blueprint_provider=None,
     ):
-        super().__init__(key=key, uid=uid, parent=parent)
-        self.attribute = attribute
-        self.entity = entity
-        self.blueprint_provider = blueprint_provider
+        super().__init__(
+            key=key, uid=uid, parent=parent, attribute=attribute, blueprint_provider=blueprint_provider, entity=entity
+        )
 
     def attribute_is_contained(self):
         return self.blueprint.storage_recipes[0].is_contained(self.key)

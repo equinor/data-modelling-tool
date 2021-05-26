@@ -33,6 +33,9 @@ import {
     MoveRequest,
     MoveRequestFromJSON,
     MoveRequestToJSON,
+    Reference,
+    ReferenceFromJSON,
+    ReferenceToJSON,
     RemoveByPathRequest,
     RemoveByPathRequestFromJSON,
     RemoveByPathRequestToJSON,
@@ -142,6 +145,17 @@ export interface PackageFindByNameRequest {
 
 export interface PackageGetRequest {
     dataSourceId: string;
+}
+
+export interface ReferenceDeleteRequest {
+    dataSourceId: string;
+    documentDottedId: string;
+}
+
+export interface ReferenceInsertRequest {
+    dataSourceId: string;
+    documentDottedId: string;
+    reference: Reference;
 }
 
 export interface SearchRequest {
@@ -892,6 +906,81 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async packageGet(requestParameters: PackageGetRequest): Promise<any> {
         const response = await this.packageGetRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Delete Reference
+     */
+    async referenceDeleteRaw(requestParameters: ReferenceDeleteRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling referenceDelete.');
+        }
+
+        if (requestParameters.documentDottedId === null || requestParameters.documentDottedId === undefined) {
+            throw new runtime.RequiredError('documentDottedId','Required parameter requestParameters.documentDottedId was null or undefined when calling referenceDelete.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/reference/{data_source_id}/{document_dotted_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(requestParameters.documentDottedId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Delete Reference
+     */
+    async referenceDelete(requestParameters: ReferenceDeleteRequest): Promise<object> {
+        const response = await this.referenceDeleteRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Insert Reference
+     */
+    async referenceInsertRaw(requestParameters: ReferenceInsertRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling referenceInsert.');
+        }
+
+        if (requestParameters.documentDottedId === null || requestParameters.documentDottedId === undefined) {
+            throw new runtime.RequiredError('documentDottedId','Required parameter requestParameters.documentDottedId was null or undefined when calling referenceInsert.');
+        }
+
+        if (requestParameters.reference === null || requestParameters.reference === undefined) {
+            throw new runtime.RequiredError('reference','Required parameter requestParameters.reference was null or undefined when calling referenceInsert.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        const response = await this.request({
+            path: `/api/v1/reference/{data_source_id}/{document_dotted_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(requestParameters.documentDottedId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ReferenceToJSON(requestParameters.reference),
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Insert Reference
+     */
+    async referenceInsert(requestParameters: ReferenceInsertRequest): Promise<object> {
+        const response = await this.referenceInsertRaw(requestParameters);
         return await response.value();
     }
 

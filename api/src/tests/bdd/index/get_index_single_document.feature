@@ -29,7 +29,7 @@ Feature: Index
     """
     {
        "1":{
-          "parentId": null,
+          "parentId": "data-source-name",
           "title":"blueprints",
           "id":"1",
           "nodeType":"system/SIMOS/Package",
@@ -139,7 +139,7 @@ Feature: Index
     """
     {
        "3":{
-          "parentId": null,
+          "parentId": "2",
           "title":"document_1",
           "id":"3",
           "nodeType":"document-node",

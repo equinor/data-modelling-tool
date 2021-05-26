@@ -39,12 +39,12 @@ class DocumentService:
         # Update none-contained attributes
         for child in node.children:
             # A list node is always contained on parent. Need to check the blueprint
-            if child.is_array() and not child.attribute_is_contained():
+            if child.is_array() and not child.storage_contained():
                 # If the node is a package, we build the path string to be used by "export zip"-repository
                 if node.type == DMT.PACKAGE.value:
                     path = f"{path}/{node.name}/" if path else f"{node.name}"
                 [self.save(x, data_source_id, repository, path) for x in child.children]
-            elif child.not_contained():
+            elif not child.contained():
                 self.save(child, data_source_id, repository, path)
         ref_dict = node.to_ref_dict()
         dto = DTO(ref_dict)
