@@ -58,7 +58,7 @@ const getMocks = () => {
     Promise.resolve(indexNodeToBeAdded)
   )
 
-  const application = Application.BLUEPRINTS
+  const application = Application.DEFAULT
 
   return { dataSources, indexApi, application }
 }

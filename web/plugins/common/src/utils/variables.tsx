@@ -1,6 +1,6 @@
 export enum Application {
-  ENTITIES = 'DMT-Entities',
-  BLUEPRINTS = 'DMT-Blueprints',
+  DEFAULT = 'default',
+  DMTEntities = 'DMT-Entities',
 }
 
 export enum BlueprintEnum {

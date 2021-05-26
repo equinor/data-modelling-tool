@@ -1,9 +1,12 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "DMT-Entities",
-  "description": "Settings for the Entity application of the Data Modelling Tool",
-  "entities": [],
-  "packages": ["demo-DS/DMT-demo"],
-  "models": ["system/SIMOS/Entity"],
+  "name": "Data Modelling",
+  "description": "",
+  "packages": ["apps/DMT", "demo-DS/DMT-demo"],
+  "models": [
+    "system/SIMOS/Blueprint",
+    "system/SIMOS/Application",
+    "system/SIMOS/Enum"
+  ],
   "actions": []
 }

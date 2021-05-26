@@ -15,16 +15,20 @@ class Config:
     DYNAMIC_MODELS = "dynamic_models"
     CACHE_MAX_SIZE = 200
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent}/home")
-    DMT_SETTINGS_FILE = f"{APPLICATION_HOME}/dmt_settings.json"
-    ENTITY_SETTINGS_FILE = f"{APPLICATION_HOME}/settings.json"
+    DMT_ENTITIES_HOME = f"{Path(__file__).parent}/demo_app_home"
     VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
     DMSS_HOST = os.getenv("DMSS_HOST", "dmss")
     DMSS_PORT = os.getenv("DMSS_PORT", "5000")
     DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
     DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}"
     APPLICATION_DATA_SOURCE = "apps"
-    with open(DMT_SETTINGS_FILE) as json_file:
-        DMT_APPLICATION_SETTINGS = json.load(json_file)
-        DMT_APPLICATION_SETTINGS["code_generators"] = os.listdir(f"{APPLICATION_HOME}/code_generators")
-    with open(ENTITY_SETTINGS_FILE) as json_file:
-        ENTITY_APPLICATION_SETTINGS = json.load(json_file)
+    with open(f"{APPLICATION_HOME}/settings.json") as json_file:
+        APP_SETTINGS = json.load(json_file)
+        APP_SETTINGS["code_generators"] = os.listdir(f"{APPLICATION_HOME}/code_generators")
+
+    try:
+        with open(f"{DMT_ENTITIES_HOME}/settings.json") as json_file:
+            DMT_SETTINGS = json.load(json_file)
+            DMT_SETTINGS["code_generators"] = os.listdir(f"{APPLICATION_HOME}/code_generators")
+    except FileNotFoundError:
+        pass

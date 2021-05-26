@@ -39,53 +39,7 @@ Feature: Index
     }
     """
 
-  Scenario: Get index for single Package (Blueprint)
-    Given I access the resource url "/api/v4/index/data-source-name/1/2?APPLICATION=DMT-Blueprints"
-    When I make a "GET" request
-    Then the response status should be "OK"
-    And the response should contain
-    """
-    {
-      "2": {
-        "id": "2",
-        "children": [
-          "3"
-        ],
-        "nodeType": "system/SIMOS/Package",
-        "title": "sub_package_1",
-        "type": "system/SIMOS/Package",
-        "meta": {
-          "menuItems": [
-            {
-              "label":"New",
-              "menuItems":[
-                {
-                  "label":"Package",
-                  "action":"CREATE"
-                },
-                {
-                  "label":"Blueprint",
-                  "action":"CREATE",
-                  "data":{
-                  "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
-                  "nodeUrl":"/api/v4/index/data-source-name/2",
-                  "request":{
-                    "type":"system/SIMOS/Blueprint",
-                    "parentId":"2",
-                    "attribute":"content",
-                    "name":"${name}",
-                    "description":"${description}"
-                    }
-                  }
-                }
-            ]
-          }]
-        }
-      }
-    }
-    """
-
-  Scenario: Get index for single Package (Entities)
+  Scenario: Get index for single Package (DMT-Entities)
     Given I access the resource url "/api/v4/index/data-source-name/1/2?APPLICATION=DMT-Entities"
     When I make a "GET" request
     Then the response status should be "OK"
@@ -131,7 +85,53 @@ Feature: Index
     }
     """
 
-  Scenario: Get index for single document (Blueprint)
+  Scenario: Get index for single Package (Data Modelling)
+    Given I access the resource url "/api/v4/index/data-source-name/1/2?APPLICATION=default"
+    When I make a "GET" request
+    Then the response status should be "OK"
+    And the response should contain
+    """
+    {
+      "2": {
+        "id": "2",
+        "children": [
+          "3"
+        ],
+        "nodeType": "system/SIMOS/Package",
+        "title": "sub_package_1",
+        "type": "system/SIMOS/Package",
+        "meta": {
+          "menuItems": [
+            {
+              "label":"New",
+              "menuItems":[
+                {
+                  "label":"Package",
+                  "action":"CREATE"
+                },
+                {
+                  "label":"Blueprint",
+                  "action":"CREATE",
+                  "data":{
+                  "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
+                  "nodeUrl":"/api/v4/index/data-source-name/2",
+                  "request":{
+                    "type":"system/SIMOS/Blueprint",
+                    "parentId":"2",
+                    "attribute":"content",
+                    "name":"${name}",
+                    "description":"${description}"
+                    }
+                  }
+                }
+            ]
+          }]
+        }
+      }
+    }
+    """
+
+  Scenario: Get index for single document (Data Modelling)
     Given I access the resource url "/api/v4/index/data-source-name/2/3"
     When I make a "GET" request
     Then the response status should be "OK"
@@ -149,7 +149,7 @@ Feature: Index
     }
     """
 
-  Scenario: Get index for single document (Entity)
+  Scenario: Get index for single document (Data Modelling)
     Given I access the resource url "/api/v4/index/entities-DS/entities-DS/1"
     When I make a "GET" request
     Then the response status should be "OK"
@@ -170,13 +170,13 @@ Feature: Index
                   "action":"CREATE"
                 },
                 {
-                  "label":"Entity",
+                  "label":"Blueprint",
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/entities-DS/add-to-parent",
                   "nodeUrl":"/api/v4/index/entities-DS/1",
                   "request":{
-                    "type":"system/SIMOS/Entity",
+                    "type":"system/SIMOS/Blueprint",
                     "parentId":"1",
                     "attribute":"content",
                     "name":"${name}",

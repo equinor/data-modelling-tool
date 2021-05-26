@@ -28,23 +28,14 @@ app = create_app(Config)
 
 @app.cli.command()
 def remove_application():
-    try:
-        logger.info("-------------- REMOVING DMT FILES ----------------")
-        logger.info(
-            (
-                "Removing DMT application specific files from"
-                f" the configured DMSS instance; {Config.DMSS_HOST}:{Config.DMSS_PORT}"
-            )
+    logger.info("-------------- REMOVING OLD APPLICATION FILES ----------------")
+    logger.info(
+        (
+            "Removing application specific files from"
+            f" the configured DMSS instance; {Config.DMSS_HOST}:{Config.DMSS_PORT}"
         )
-        dmss_api.explorer_remove_by_path(Config.APPLICATION_DATA_SOURCE, {"directory": "DMT"})
-    except ApiException as error:
-        if error.status == 404:
-            logger.warning("Could not find the DMT application in DMSS...")
-            pass
-        else:
-            raise error
-
-    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"] + Config.ENTITY_APPLICATION_SETTINGS["entities"]:
+    )
+    for folder in Config.APP_SETTINGS["packages"]:
         logger.info(f"Deleting package '{folder}' from DMSS...")
         data_source, folder = folder.split("/", 1)
         try:
@@ -60,7 +51,8 @@ def remove_application():
 
 @app.cli.command()
 def init_application():
-    logger.info("-------------- IMPORTING Application FILES ----------------")
+    logger.info("-------------- IMPORTING PACKAGES ----------------")
+    logger.info("_____ importing data sources _____")
     data_sources_to_import = []
     try:
         data_sources_to_import = os.listdir(f"{Config.APPLICATION_HOME}/data_sources/")
@@ -77,18 +69,14 @@ def init_application():
             except ApiException:
                 pass
 
-    for folder in os.listdir(f"{Config.APPLICATION_HOME}/applications/"):
-        import_package(
-            f"{Config.APPLICATION_HOME}/applications/{folder}",
-            data_source=Config.APPLICATION_DATA_SOURCE,
-            is_root=True,
-        )
+    logger.info("_____ DONE importing data sources _____")
 
-    logger.info(f"Importing package(s) {Config.ENTITY_APPLICATION_SETTINGS['packages']}")
-    for folder in Config.ENTITY_APPLICATION_SETTINGS["packages"]:
+    logger.info(f"_____ importing blueprints and entities ({Config.APP_SETTINGS['packages']})_____")
+    for folder in Config.APP_SETTINGS["packages"]:
         data_source, folder = folder.split("/", 1)
         import_package(
-            f"{Config.APPLICATION_HOME}/{folder}", data_source=data_source, is_root=True,
+            f"{Config.APPLICATION_HOME}/data/{data_source}/{folder}", data_source=data_source, is_root=True,
         )
+    logger.info(f"_____ DONE importing blueprints and entities ({Config.APP_SETTINGS['packages']})_____")
 
     logger.info("-------------- DONE ----------------")

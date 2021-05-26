@@ -83,7 +83,6 @@ class ApplicationService:
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
             zip_file.writestr("api/Dockerfile", API_DOCKERFILE)
-            zip_file.writestr("api/home/dmt_settings.json", json.dumps(Config.ENTITY_APPLICATION_SETTINGS).encode())
             zip_file.writestr("web/config.js", generate_plugins())
             zip_file.writestr("web/custom-plugins/README.md", generate_plugins_readme())
 

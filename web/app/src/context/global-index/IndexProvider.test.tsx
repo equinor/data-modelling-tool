@@ -31,7 +31,7 @@ describe('the index provider component', () => {
     },
   ]
 
-  const application = Application.BLUEPRINTS
+  const application = Application.DEFAULT
 
   describe('when provider is initialized', () => {
     it('should correctly return the IndexContext object', async () => {

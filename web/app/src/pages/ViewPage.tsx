@@ -51,7 +51,7 @@ export default () => {
   return (
     <DashboardProvider
       dataSourceApi={dataSourceAPI}
-      application={Application.ENTITIES}
+      application={Application.DEFAULT}
     >
       <IndexContextWrapper />
     </DashboardProvider>

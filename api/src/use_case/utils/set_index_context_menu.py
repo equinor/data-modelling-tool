@@ -1,6 +1,6 @@
 from config import Config
 from domain_classes.tree_node import Node
-from enums import APPLICATION, DMT, SIMOS
+from enums import DMT, SIMOS
 from use_case.utils.index_menu_actions import (
     get_create_reference_menu_item,
     get_create_root_package_menu_item,
@@ -22,7 +22,6 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     create_new_menu_items = []
     new_reference_menu_items = []
     is_package = node.type == DMT.PACKAGE.value
-    application = app_settings["name"]
 
     # DataSource Node can only add root-packages
     if node.type == "datasource":
@@ -124,11 +123,11 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             menu_items.append(get_download_menu_action(data_source_id, node.node_id))
 
         # Generate code only in DMTApp, and on Packages and Blueprints
-        if node.type in [SIMOS.BLUEPRINT.value, DMT.PACKAGE.value] and application == APPLICATION.BLUEPRINTS.value:
+        if node.type in [SIMOS.BLUEPRINT.value, DMT.PACKAGE.value] and Config.APP_SETTINGS["name"] == "Data Modelling":
             # Context menu: Export code
             code_generators = []
             # Add any code generators added as plugins
-            for generator in Config.DMT_APPLICATION_SETTINGS["code_generators"]:
+            for generator in Config.APP_SETTINGS["code_generators"]:
                 path = node.filesystem_path()
                 path_wo_data_source = path.split("/", 1)[1]
                 code_generators.append(get_export_code_menu_item(data_source_id, generator, path_wo_data_source))

@@ -51,5 +51,5 @@ class DMT(Enum):
 
 
 class APPLICATION(Enum):
-    BLUEPRINTS = "DMT-Blueprints"
-    ENTITIES = "DMT-Entities"
+    DEFAULT = "default"
+    DMT_ENTITIES = "DMT-Entities"

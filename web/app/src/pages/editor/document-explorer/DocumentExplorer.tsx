@@ -5,7 +5,6 @@ import {
   ContextMenuActions,
   DeleteAction,
   DownloadAction,
-  formDataGivenByRequest,
   IInsertReferenceProps,
   InsertReference,
   DefaultCreate,
@@ -133,6 +132,7 @@ export default () => {
         break
       case ContextMenuActions.UNLINK:
         explorer.removeReference({
+          // @ts-ignore
           dataSourceId: node.nodeData.meta.dataSource,
           documentDottedId: data,
         })

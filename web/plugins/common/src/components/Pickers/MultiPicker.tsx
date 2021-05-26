@@ -72,7 +72,7 @@ const MultiSelector = ({
   const dataSourceAPI = new DataSourceAPI()
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
   const index: IIndex = useIndex({
-    application: Application.ENTITIES,
+    application: Application.DMTEntities,
     dataSources: dataSources.models.dataSources,
   })
 
