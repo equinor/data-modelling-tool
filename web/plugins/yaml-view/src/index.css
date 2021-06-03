@@ -2,9 +2,12 @@
   color: #a5ff90;
 }
 
-.hljs-attr,
-.hljs-number,
 .hljs-literal,
+.hljs-number {
+  color: #f53b6e;
+}
+
+.hljs-attr,
 .hljs-bullet {
   color: #99ffff;
 }
