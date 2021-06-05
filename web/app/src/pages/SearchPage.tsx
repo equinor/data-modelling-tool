@@ -12,7 +12,7 @@ import useLocalStorage from '../hooks/useLocalStorage'
 
 const documentAPI = new DocumentAPI()
 
-const hardCodedDataSource = 'demo-DS'
+const hardCodedDataSource = 'EntityApp'
 
 const Container = styled.div`
   display: flex;
@@ -344,7 +344,7 @@ function ResultContainer({ result }: any) {
   )
 }
 
-export default () => {
+export default ({ settings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
 

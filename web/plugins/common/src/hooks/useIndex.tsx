@@ -3,6 +3,8 @@ import { Tree, TreeNodeData } from '../components/Tree'
 import { IIndexAPI, IndexNode, IndexNodes } from '../services'
 import { ITree, useTree } from '../components/Tree'
 // @ts-ignore
+import { NotificationManager } from 'react-notifications'
+// @ts-ignore
 import values from 'lodash/values'
 import { DataSource } from '../services'
 import IndexAPI from '../services/api/IndexAPI'
@@ -27,7 +29,7 @@ export interface IIndex {
 
 export interface IndexProps {
   dataSources: DataSource[]
-  application: string
+  application: any
   indexApi?: IIndexAPI
 }
 
@@ -36,9 +38,18 @@ export const useIndex = (props: IndexProps): IIndex => {
   const [index, setIndex] = useState<Tree>({})
 
   const populateIndex = async (): Promise<void> => {
-    const indexes: IndexNodes[] = await Promise.all(
+    let indexes: IndexNodes[] = []
+    await Promise.all(
       dataSources.map((dataSource: DataSource) =>
-        indexApi.getIndexByDataSource(dataSource.id, application)
+        indexApi
+          .getIndexByDataSource(dataSource.id, application.id)
+          .then((res) => {
+            indexes.push(res)
+          })
+          .catch((error) => {
+            console.error(error)
+            NotificationManager.error(`${error.response.data.message}`)
+          })
       )
     )
     const combinedIndex = indexes
@@ -55,7 +66,7 @@ export const useIndex = (props: IndexProps): IIndex => {
 
   useEffect(() => {
     populateIndex()
-  }, [dataSources])
+  }, [dataSources, application])
 
   const tree: ITree = useTree(index)
 
@@ -69,7 +80,7 @@ export const useIndex = (props: IndexProps): IIndex => {
       const result = await indexApi.getIndexByDocument(
         nodeUrl,
         documentId,
-        application
+        application.id
       )
 
       const treeNodes: TreeNodeData[] = toTreeNodes(result)

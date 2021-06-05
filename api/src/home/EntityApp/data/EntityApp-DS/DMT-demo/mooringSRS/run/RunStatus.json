@@ -1,0 +1,57 @@
+{
+  "name": "RunStatus",
+  "description": "",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "variable name for named accessing",
+      "default": "runStatus",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "progress",
+      "attributeType": "number",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "run progress",
+      "default": "0.0",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "state",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "status",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "progressID",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "Progress ID",
+      "contained": true,
+      "optional": false
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

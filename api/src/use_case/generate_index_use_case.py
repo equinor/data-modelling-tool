@@ -1,23 +1,26 @@
 from typing import Dict, Union
 
+from config import config
 from domain_classes.blueprint_attribute import BlueprintAttribute
-from enums import APPLICATION, DMT
-from repository.repository_exceptions import EntityNotFoundException
+from domain_classes.recipe import RecipePlugin
+from domain_classes.tree_node import ListNode, Node
+from enums import BLUEPRINTS
+from repository.repository_exceptions import ApplicationNotLoadedException, EntityNotFoundException
+from restful import response_object
+from restful.request_object import ValidRequestObject
+from restful.response_object import ResponseSuccess
+from restful.use_case import UseCase
+from services.dmss import dmss_api
 from services.document_service import DocumentService
 from use_case.utils.index_menu_actions import get_node_fetch, get_node_index
 from use_case.utils.set_index_context_menu import create_context_menu
-from services.dmss import dmss_api
 from utils.logging import logger
-
-from domain_classes.recipe import RecipePlugin
-from domain_classes.tree_node import Node, ListNode
-from config import Config
 
 
 def get_parent_id(data_source_id: str, node: Union[Node, ListNode]):
     if node.parent:
         # Adjust parent, since we skipped content node
-        if node.parent.parent and node.parent.parent.type == DMT.PACKAGE.value:
+        if node.parent.parent and node.parent.parent.type == BLUEPRINTS.PACKAGE.value:
             return node.parent.parent.node_id
         return node.parent.node_id
     else:
@@ -46,7 +49,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
     menu_items = create_context_menu(node, data_source_id, app_settings)
 
     children = []
-    if node.type == DMT.PACKAGE.value:
+    if node.type == BLUEPRINTS.PACKAGE.value:
         # Skip content node
         if node.has_children():
             # Content node is always the only node in package
@@ -59,7 +62,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
         "parentId": get_parent_id(data_source_id, node),
         "title": node.name,
         "id": node.node_id,
-        "nodeType": "document-node" if node.type != DMT.PACKAGE.value else DMT.PACKAGE.value,
+        "nodeType": "document-node" if node.type != BLUEPRINTS.PACKAGE.value else BLUEPRINTS.PACKAGE.value,
         "children": children,
         "type": node.type,
         "meta": {
@@ -67,7 +70,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
             "fetchUrl": get_node_fetch(data_source_id, node) if node.is_single() else {},
             "indexUrl": get_node_index(data_source_id, node),
             "error": False,
-            "isRootPackage": node.type == DMT.PACKAGE.value and node.entity.get("isRoot"),
+            "isRootPackage": node.type == BLUEPRINTS.PACKAGE.value and node.entity.get("isRoot"),
             "isList": node.is_array(),
             "dataSource": data_source_id,
             "empty": node.is_empty(),
@@ -99,7 +102,7 @@ def extend_index_with_node_tree(
     for node in root.traverse(depth_limit=traverse_depth):
         try:
             # Skip package's content node
-            if node.parent and node.parent.type == DMT.PACKAGE.value:
+            if node.parent and node.parent.type == BLUEPRINTS.PACKAGE.value:
                 continue
             if not is_visible(node):
                 continue
@@ -114,10 +117,22 @@ def extend_index_with_node_tree(
     return index
 
 
-class GenerateIndexUseCase:
-    def execute(self, data_source_id: str, application: str = None) -> dict:
+# TODO: Combine these two useCases, with and optional "parentId" arg
+class GenerateIndexRequestObject(ValidRequestObject):
+    def __init__(self, data_source_id: str, application: str):
+        self.data_source_id: str = data_source_id
+        self.application: str = application
+
+
+class GenerateIndexUseCase(UseCase):
+    @staticmethod
+    def process_request(request: GenerateIndexRequestObject) -> ResponseSuccess:
+        data_source_id = request.data_source_id
+        application = request.application
         document_service = DocumentService()
-        app_settings = Config.DMT_SETTINGS if application == APPLICATION.DMT_ENTITIES.value else Config.APP_SETTINGS
+        app_settings = config.APP_SETTINGS.get(application)
+        if not app_settings:
+            raise ApplicationNotLoadedException(application)
         # make sure we're generating the index with correct blueprints.
         root_packages = dmss_api.package_get(data_source_id)
 
@@ -151,12 +166,30 @@ class GenerateIndexUseCase:
                 logger.exception(f"{error}, unhandled exception.")
 
         # This traverse depth will only fetch index of root-packages
-        return extend_index_with_node_tree(root, data_source_id, app_settings, traverse_depth=2)
+        result = extend_index_with_node_tree(root, data_source_id, app_settings, traverse_depth=2)
+        return response_object.ResponseSuccess(result)
 
-    def single(self, data_source_id: str, document_id: str, parent_id: str, application: str = None) -> Dict:
+
+class GenerateSingleIndexRequestObject(ValidRequestObject):
+    def __init__(self, data_source_id: str, application: str, document_id: str, parent_id: str):
+        self.data_source_id: str = data_source_id
+        self.application: str = application
+        self.document_id: str = document_id
+        self.parent_id: str = parent_id
+
+
+class GenerateSingleIndexUseCase(UseCase):
+    @staticmethod
+    def process_request(req: GenerateSingleIndexRequestObject) -> ResponseSuccess:
+        data_source_id = req.data_source_id
+        document_id = req.document_id
+        parent_id = req.parent_id
+        application = req.application
         document_service = DocumentService()
 
-        app_settings = Config.DMT_SETTINGS if application == APPLICATION.DMT_ENTITIES.value else Config.APP_SETTINGS
+        app_settings = config.APP_SETTINGS.get(application)
+        if not app_settings:
+            raise ApplicationNotLoadedException(application)
         parent_uid = parent_id.split(".", 1)[0]
 
         # If root-package post DS-id as parent_id. We must create a parent node.
@@ -182,9 +215,10 @@ class GenerateIndexUseCase:
                 parent=parent.children[0],
                 key="99",
                 uid=document_id,
-                entity={"name": document_id, "type": DMT.ENTITY.value, "_id": document_id},
+                entity={"name": document_id, "type": BLUEPRINTS.ENTITY.value, "_id": document_id},
                 blueprint_provider=document_service.get_blueprint,
-                attribute=BlueprintAttribute("error", DMT.ENTITY.value),
+                attribute=BlueprintAttribute("error", BLUEPRINTS.ENTITY.value),
             )
             node.set_error(f"failed to create node '{document_id}' on '{parent.name}'")
-        return extend_index_with_node_tree(node, data_source_id, app_settings, traverse_depth=3)
+        result = extend_index_with_node_tree(node, data_source_id, app_settings, traverse_depth=3)
+        return response_object.ResponseSuccess(result)

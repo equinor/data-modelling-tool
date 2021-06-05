@@ -12,6 +12,9 @@ STATUS_CODES = {
 }
 
 
+BLOB_TYPES = "system/SIMOS/blob_types/PDF"
+
+
 class StorageDataTypes(Enum):
     DEFAULT = "default"
     LARGE = "large"
@@ -44,12 +47,7 @@ class SIMOS(Enum):
     ATTRIBUTE_TYPES = "system/SIMOS/AttributeTypes"
 
 
-class DMT(Enum):
+class BLUEPRINTS(Enum):
     PACKAGE = "system/SIMOS/Package"
     ENTITY = "system/SIMOS/Entity"
     DATASOURCE = "datasource"
-
-
-class APPLICATION(Enum):
-    DEFAULT = "default"
-    DMT_ENTITIES = "DMT-Entities"

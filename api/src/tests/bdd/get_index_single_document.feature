@@ -19,7 +19,7 @@ Feature: Index
       | aff2a29e-cd2f-4e80-8785-740667b5e99a |            | entity | system/SIMOS/Package |
 
   Scenario: Get index for single document (Root Package)
-    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e"
+    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e?APPLICATION=DMT"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -37,7 +37,7 @@ Feature: Index
     """
 
   Scenario: Get index for single Package (DMT-Entities)
-    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=DMT-Entities"
+    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=EntityApp"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -83,7 +83,7 @@ Feature: Index
     """
 
   Scenario: Get index for single Package (Data Modelling)
-    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=default"
+    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=DMT"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -129,7 +129,7 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Data Modelling)
-    Given I access the resource url "/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a/773cef3e-6854-4117-8548-b7edf13d179d"
+    Given I access the resource url "/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a/773cef3e-6854-4117-8548-b7edf13d179d?APPLICATION=DMT"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -147,7 +147,7 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Data Modelling)
-    Given I access the resource url "/api/v4/index/entities-DS/entities-DS/aff2a29e-cd2f-4e80-8785-740667b5e99a"
+    Given I access the resource url "/api/v4/index/entities-DS/entities-DS/aff2a29e-cd2f-4e80-8785-740667b5e99a?APPLICATION=DMT"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain

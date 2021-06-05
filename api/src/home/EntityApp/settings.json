@@ -1,0 +1,9 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "Entity Creation",
+  "description": "Create entities from existing blueprints",
+  "packages": ["EntityApp-DS/DMT-demo"],
+  "extraDataSources": [],
+  "models": ["system/SIMOS/Entity"],
+  "actions": []
+}

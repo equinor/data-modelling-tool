@@ -16,7 +16,10 @@ from utils.data_structure.compare import pretty_eq
 
 @given("data modelling tool blueprints are imported")
 def step_impl(context):
-    data_source, folder = "apps/DMT".split("/", 1)
+    with open("./home/DMT/data_sources/dmt-ds.json") as file:
+        document = json.load(file)
+        dmss_api.data_source_save(document["name"], data_source_request=document)
+    data_source, folder = "DMT-DS/DMT".split("/", 1)
     memory_file = io.BytesIO()
     with ZipFile(memory_file, mode="w") as zip_file:
         zip_all(zip_file, f"{Config.APPLICATION_HOME}/data/{data_source}/{folder}", write_folder=False)

@@ -5,7 +5,6 @@ import { IDataSourceAPI, useDataSources, IDataSources } from '@dmt/common'
 export interface IModels {
   layout: ILayout
   dataSources: IDataSources
-  application: string
 }
 
 export interface IOperations {}
@@ -31,14 +30,12 @@ export const useDashboard = () => {
 
 interface DashboardProviderProps {
   dataSourceApi: IDataSourceAPI
-  application: string
   children?: ReactNode
 }
 
 const DashboardProvider = ({
   dataSourceApi,
   children,
-  application,
 }: DashboardProviderProps) => {
   const layout: ILayout = useLayout()
   const dataSources: IDataSources = useDataSources(dataSourceApi)
@@ -47,7 +44,6 @@ const DashboardProvider = ({
     models: {
       layout,
       dataSources,
-      application,
     },
     operations: {},
   }

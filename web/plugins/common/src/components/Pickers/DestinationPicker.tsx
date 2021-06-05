@@ -1,9 +1,9 @@
 // @ts-ignore
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import styled from 'styled-components'
 import {
-  Application,
+  ApplicationContext,
   DataSourceAPI,
   IIndex,
   Modal,
@@ -49,8 +49,9 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
 
   const dataSourceAPI = new DataSourceAPI()
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
+  const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
-    application: Application.DEFAULT,
+    application: application,
     dataSources: dataSources.models.dataSources,
   })
 

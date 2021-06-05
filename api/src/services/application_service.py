@@ -60,6 +60,7 @@ class ApplicationService:
         return entity
 
     def create_application(self, data_source_id: str, application_id: str) -> io.BytesIO:
+        raise NotImplementedError("Creating and exporting an application is no longer supported")
         application: DTO = DTO(self.document_service.uid_document_provider(data_source_id, application_id))
         if not application:
             raise EntityNotFoundException(uid=application_id)

@@ -1,7 +1,0 @@
-{
-  "name": "ViewPlugin",
-  "type": "apps/DMT/UiViewPlugin",
-  "label": "View",
-  "required": false,
-  "widgets": []
-}

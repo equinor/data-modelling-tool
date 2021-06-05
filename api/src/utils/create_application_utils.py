@@ -7,7 +7,7 @@ from jinja2 import Template
 
 from config import Config
 from domain_classes.dto import DTO
-from enums import DMT
+from enums import BLUEPRINTS
 from services.document_service import DocumentService
 
 from utils.logging import logger
@@ -39,7 +39,7 @@ def zip_package(ob: ZipFile, document: DTO, path: str, document_service: Documen
     write_to = f"{path}/{document.name}.json"
     logger.info(f"Writing: {document['type']} to {write_to}")
 
-    if document["type"] != DMT.PACKAGE.value:
+    if document["type"] != BLUEPRINTS.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
     blueprint = document_service.get_blueprint(document.type)
@@ -96,7 +96,7 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
     write_to = f"{path}/{document.name}.json"
     logger.info(f"Writing: {document['type']} to {write_to}")
 
-    if document["type"] != DMT.PACKAGE.value:
+    if document["type"] != BLUEPRINTS.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
     blueprint = document_service.get_blueprint(document.type)
@@ -225,12 +225,12 @@ def generate_runnable_file(runnable_models):
 //     {
 //       "name": "Calculate",
 //       "description": "Simulate 80kmh concrete crash. Fiat panda 2011.",
-//       "input": "demo-DS/demoPackage/CarPackage/Car",
-//       "output": "demo-DS/demoPackage/CarPackage/Result",
+//       "input": "EntityApp/demoPackage/CarPackage/Car",
+//       "output": "EntityApp/demoPackage/CarPackage/Result",
 //       "method": "run"
 //     },
 //
-// This action will be available on any entity of the type "demo-DS/demoPackage/CarPackage/Car"(input).
+// This action will be available on any entity of the type "EntityApp/demoPackage/CarPackage/Car"(input).
 // The name given in "method" must be the name of a function in this file, as well as being in the "runnableMethods" object at the end of this file.
 // The main use case for this custom function is to call SIMOS calculations, and update result objects.
 // The properties that are passed to the function looks like this;
@@ -268,7 +268,7 @@ def generate_runnable_file(runnable_models):
 //     result: 123456,
 //     executionTime: '1233215.34234ms',
 //     progress: 100,
-//     status: 'done',
+//     application-setting: 'done',
 //     message: 'job complete, no errors',
 //   }
 // }

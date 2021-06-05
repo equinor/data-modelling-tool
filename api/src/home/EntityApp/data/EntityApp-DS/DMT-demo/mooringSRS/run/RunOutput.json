@@ -1,0 +1,48 @@
+{
+  "name": "RunOutput",
+  "description": "",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "name",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "variable name for named accessing",
+      "default": "runOutput",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "description",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "instance description",
+      "default": "",
+      "contained": true,
+      "optional": false
+    },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "status",
+      "attributeType": "EntityApp-DS/DMT-demo/mooringSRS/run/RunStatus",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "status",
+      "contained": true,
+      "optional": true
+    },
+    {
+      "name": "results",
+      "attributeType": "EntityApp-DS/DMT-demo/mooringSRS/run/RunResult",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "results",
+      "contained": true,
+      "optional": true
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": []
+}

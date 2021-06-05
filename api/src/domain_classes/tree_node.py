@@ -5,7 +5,7 @@ from uuid import uuid4
 from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from config import Config
-from enums import DMT
+from enums import BLUEPRINTS
 from repository.repository_exceptions import EntityNotFoundException
 from utils.logging import logger
 
@@ -130,7 +130,7 @@ class DictImporter:
 
                         # If the node is of type DMT/Package, we need to overwrite the attribute_type "Entity",
                         # and get it from the child.
-                        if node.type == DMT.PACKAGE.value:
+                        if node.type == BLUEPRINTS.PACKAGE.value:
                             content_attribute: BlueprintAttribute = deepcopy(child_attribute)
                             content_attribute.attribute_type = child["type"]
                             list_child_attribute = content_attribute
@@ -195,11 +195,11 @@ class NodeBase:
 
     @property
     def blueprint(self) -> Optional[Blueprint]:
-        if self.type != DMT.DATASOURCE.value:
+        if self.type != BLUEPRINTS.DATASOURCE.value:
             return self.blueprint_provider(self.type)
 
     def storage_contained(self):
-        if not self.parent or self.parent.type == DMT.DATASOURCE.value:
+        if not self.parent or self.parent.type == BLUEPRINTS.DATASOURCE.value:
             return False
         return self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)
 
@@ -211,7 +211,7 @@ class NodeBase:
 
     @property
     def node_id(self):
-        if self.type == DMT.DATASOURCE.value:
+        if self.type == BLUEPRINTS.DATASOURCE.value:
             return self.uid
         # Return dotted path if the node is storage contained, or is a reference
         if self.storage_contained() or not self.contained():
@@ -236,7 +236,7 @@ class NodeBase:
         while parent:
             if parent.parent:
                 # Skip Packages "content"
-                if parent.parent.type == DMT.PACKAGE.value:
+                if parent.parent.type == BLUEPRINTS.PACKAGE.value:
                     parent = parent.parent
             path += [parent.name]
             parent = parent.parent

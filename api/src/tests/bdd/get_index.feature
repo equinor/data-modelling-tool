@@ -88,7 +88,7 @@ Feature: Index
     """
 
   Scenario: Get index
-    Given I access the resource url "/api/v4/index/test-DS"
+    Given I access the resource url "/api/v4/index/test-DS?APPLICATION=DMT"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -106,7 +106,7 @@ Feature: Index
     """
 
   Scenario: Index with insert reference
-    Given I access the resource url "/api/v4/index/test-DS/0f99b692-b980-41d2-bfab-50c4bffe5a6e/d047f040-316e-4113-a97c-d9a87909cd0c"
+    Given I access the resource url "/api/v4/index/test-DS/0f99b692-b980-41d2-bfab-50c4bffe5a6e/d047f040-316e-4113-a97c-d9a87909cd0c?APPLICATION=DMT"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain

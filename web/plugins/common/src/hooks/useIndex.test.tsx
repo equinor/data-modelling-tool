@@ -3,7 +3,7 @@ import * as React from 'react'
 import { IIndex, useIndex } from './useIndex'
 import { mock } from 'jest-mock-extended'
 import { IIndexAPI, IndexNodes, DataSource } from '../services'
-import { Application, NodeType } from '../utils/variables'
+import { NodeType } from '../utils/variables'
 const getMocks = () => {
   const dataSources: DataSource[] = [
     {
@@ -58,7 +58,7 @@ const getMocks = () => {
     Promise.resolve(indexNodeToBeAdded)
   )
 
-  const application = Application.DEFAULT
+  const application = { id: 'testApp' }
 
   return { dataSources, indexApi, application }
 }
@@ -92,11 +92,11 @@ describe('the useIndex hook', () => {
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledTimes(2)
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source1',
-        mocks.application
+        mocks.application.id
       )
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source2',
-        mocks.application
+        mocks.application.id
       )
     })
   })

@@ -1,6 +1,12 @@
 import React, { createContext, useContext } from 'react'
 
-import { DataSource, IIndexAPI, IIndex, useIndex } from '@dmt/common'
+import {
+  DataSource,
+  IIndexAPI,
+  IIndex,
+  useIndex,
+  ApplicationContext,
+} from '@dmt/common'
 
 export interface IModels {
   index: IIndex
@@ -26,12 +32,12 @@ export const useGlobalIndex = () => {
 interface IndexProviderProps {
   dataSources: DataSource[]
   indexApi: IIndexAPI
-  application: string
   children?: any
 }
 
 const IndexProvider = (props: IndexProviderProps) => {
-  const { dataSources, application, indexApi, children } = props
+  const { dataSources, indexApi, children } = props
+  const application = useContext(ApplicationContext)
   const index = useIndex({ dataSources, application, indexApi })
 
   const value: IGlobalIndex = {

@@ -1,8 +1,3 @@
-export enum Application {
-  DEFAULT = 'default',
-  DMTEntities = 'DMT-Entities',
-}
-
 export enum BlueprintEnum {
   BLUEPRINT = 'system/SIMOS/Blueprint',
   PACKAGE = 'system/SIMOS/Package',

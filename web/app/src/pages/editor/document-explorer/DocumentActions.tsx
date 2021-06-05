@@ -11,8 +11,6 @@ import {
   EntityPicker,
   Reference,
 } from '@dmt/common'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -241,7 +239,8 @@ export const RenameDocument = (props: IRenameDocument) => {
 }
 
 export const InsertReference = (props: IInsertReferenceProps) => {
-  const { explorer, attribute, type, target, targetDataSource } = props
+  // TODO: Validate valid type from parent
+  const { explorer, attribute, target, targetDataSource } = props
   const [refId, setRefID] = useState('')
   const [refName, setRefName] = useState('')
   const [refType, setRefType] = useState('')

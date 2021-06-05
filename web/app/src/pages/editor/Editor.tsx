@@ -56,7 +56,6 @@ export default () => {
     <IndexProvider
       indexApi={indexAPI}
       dataSources={dashboard.models.dataSources.models.dataSources}
-      application={dashboard.models.application}
     >
       <ModalProvider>
         <Grid fluid>
