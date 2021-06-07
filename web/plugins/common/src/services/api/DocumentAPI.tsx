@@ -14,26 +14,39 @@ export class DocumentAPI implements IDocumentAPI {
   }
 
   addToParent(dataSourceId: string, data: any): Promise<any> {
-    return dmssApi.explorerAddToParent({
-      dataSourceId,
-      addToParentRequest: data,
-    })
-            .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
+    return dmssApi
+      .explorerAddToParent({
+        dataSourceId,
+        addToParentRequest: data,
+      })
+      .catch((error: any) => {
+        return error.json().then((response: any) => {
+          throw new Error(
+            `Error message from DMSS API: ${JSON.stringify(response)}`
+          )
         })
+      })
   }
 
   getByPath(dataSourceId: string, path: string): Promise<any> {
-    return dmssApi.documentGetByPath({ dataSourceId, path })
-            .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
+    return dmssApi
+      .documentGetByPath({ dataSourceId, path })
+      .catch((error: any) => {
+        return error.json().then((response: any) => {
+          throw new Error(
+            `Error message from DMSS API: ${JSON.stringify(response)}`
+          )
         })
+      })
   }
   getBlueprint(typeRef: string): Promise<any> {
-    return dmssApi.blueprintGet({ typeRef: typeRef })
-            .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
-        })
+    return dmssApi.blueprintGet({ typeRef: typeRef }).catch((error: any) => {
+      return error.json().then((response: any) => {
+        throw new Error(
+          `Error message from DMSS API: ${JSON.stringify(response)}`
+        )
+      })
+    })
   }
 
   getById(
@@ -42,14 +55,24 @@ export class DocumentAPI implements IDocumentAPI {
     attribute?: string
   ): Promise<any> {
     if (attribute) {
-      return dmssApi.documentGetById({ dataSourceId, documentId, attribute })
-              .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
+      return dmssApi
+        .documentGetById({ dataSourceId, documentId, attribute })
+        .catch((error: any) => {
+          return error.json().then((response: any) => {
+            throw new Error(
+              `Error message from DMSS API: ${JSON.stringify(response)}`
+            )
+          })
         })
     } else {
-      return dmssApi.documentGetById({ dataSourceId, documentId })
-              .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
+      return dmssApi
+        .documentGetById({ dataSourceId, documentId })
+        .catch((error: any) => {
+          return error.json().then((response: any) => {
+            throw new Error(
+              `Error message from DMSS API: ${JSON.stringify(response)}`
+            )
+          })
         })
     }
   }
@@ -78,30 +101,43 @@ export class DocumentAPI implements IDocumentAPI {
   }
 
   update(url: string, data: any): Promise<any> {
-    return dmssApi.documentUpdate(data)
-            .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
-        })
+    return dmssApi.documentUpdate(data).catch((error: any) => {
+      return error.json().then((response: any) => {
+        throw new Error(
+          `Error message from DMSS API: ${JSON.stringify(response)}`
+        )
+      })
+    })
   }
 
   explorerRename(
     dataSourceId: string,
     renameRequest: RenameRequest
   ): Promise<any> {
-    return dmssApi.explorerRename({ dataSourceId, renameRequest })
-        .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
+    return dmssApi
+      .explorerRename({ dataSourceId, renameRequest })
+      .catch((error: any) => {
+        return error.json().then((response: any) => {
+          throw new Error(
+            `Error message from DMSS API: ${JSON.stringify(response)}`
+          )
         })
+      })
   }
 
   search(dataSourceId: string, query: any): Promise<any> {
-    return dmssApi.search({
-      dataSourceId: dataSourceId,
-      searchDataRequest: query,
-    })
-        .catch((error: any) => {
-      return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
-    })
+    return dmssApi
+      .search({
+        dataSourceId: dataSourceId,
+        searchDataRequest: query,
+      })
+      .catch((error: any) => {
+        return error.json().then((response: any) => {
+          throw new Error(
+            `Error message from DMSS API: ${JSON.stringify(response)}`
+          )
+        })
+      })
   }
 
   updateById(
@@ -111,16 +147,21 @@ export class DocumentAPI implements IDocumentAPI {
     data: any,
     reference?: boolean
   ): Promise<any> {
-    return dmssApi.documentUpdate({
-      dataSourceId,
-      documentId,
-      body: data,
-      attribute,
-      reference,
-    })
-            .catch((error: any) => {
-          return error.json().then((response: any) => {throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)})
+    return dmssApi
+      .documentUpdate({
+        dataSourceId,
+        documentId,
+        body: data,
+        attribute,
+        reference,
+      })
+      .catch((error: any) => {
+        return error.json().then((response: any) => {
+          throw new Error(
+            `Error message from DMSS API: ${JSON.stringify(response)}`
+          )
         })
+      })
   }
 }
 
