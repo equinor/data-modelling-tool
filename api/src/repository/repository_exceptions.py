@@ -34,3 +34,13 @@ class FileNotFoundException(Exception):
             return f"FileNotFoundException, data_source: {self.data_source_id} file: {self.file}"
         else:
             return "FileNotFoundException has been raised"
+
+
+class ImportAliasNotFoundException(Exception):
+    def __init__(self, alias):
+        self.message = f"IMPORT ERROR: No document with the alias '{alias}' was found in the reference table."
+
+
+class ImportReferenceNotFoundException(Exception):
+    def __init__(self, key):
+        self.message = f"IMPORT ERROR: Failed to find the relative reference '{key}' in the reference table."

@@ -30,7 +30,6 @@ def get_document_by_uid(data_source_id: str, document_id: str, depth: int = 999,
     )["document"]
 
 
-# @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
 def get_blueprint(type_ref: str) -> dict:
     """
     Fetches a resolved blueprint from DMSS

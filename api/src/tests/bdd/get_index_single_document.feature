@@ -1,55 +1,52 @@
 Feature: Index
 
   Background: There are data sources in the system
-
-    Given there are mongodb data sources
-      | host | port  | username | password | tls   | name             | database | collection   |  type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents    |  mongo-db |
-      | db   | 27017 | maf      | maf      | false | test-source-name | local    | test         |  mongo-db |
-      | db   | 27017 | maf      | maf      | false | entities-DS      | local    | test         |  mongo-db |
-      | db   | 27017 | maf      | maf      | false | apps             | local    | applications |  mongo-db |
+    Given there are basic data sources with repositories
+      |   name           |
+      | data-source-name |
+      | entities-DS     |
 
     Given data modelling tool blueprints are imported
 
     Given there are documents for the data source "data-source-name" in collection "documents"
-      | uid | parent_uid | name          | description | type                   |
-      | 1   |            | blueprints    |             | system/SIMOS/Package   |
-      | 2   | 1          | sub_package_1 |             | system/SIMOS/Package   |
-      | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
+      | uid                                  | parent_uid                           | name          | type                   |
+      | e1a9243d-84df-4e9b-8438-013f8f2de24e |                                      | blueprints    | system/SIMOS/Package   |
+      | ab11c047-0bb8-4e92-ae45-cc9c6473bf3a | e1a9243d-84df-4e9b-8438-013f8f2de24e | sub_package_1 | system/SIMOS/Package   |
+      | 773cef3e-6854-4117-8548-b7edf13d179d | ab11c047-0bb8-4e92-ae45-cc9c6473bf3a | document_1    | system/SIMOS/Blueprint |
 
     Given there are documents for the data source "entities-DS" in collection "test"
-      | uid | parent_uid | name   | description | type                 |
-      | 1   |            | entity |             | system/SIMOS/Package |
+      | uid                                  | parent_uid | name   | type                 |
+      | aff2a29e-cd2f-4e80-8785-740667b5e99a |            | entity | system/SIMOS/Package |
 
   Scenario: Get index for single document (Root Package)
-    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/1"
+    Given I access the resource url "/api/v4/index/data-source-name/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-       "1":{
+       "e1a9243d-84df-4e9b-8438-013f8f2de24e":{
           "parentId": "data-source-name",
           "title":"blueprints",
-          "id":"1",
+          "id":"e1a9243d-84df-4e9b-8438-013f8f2de24e",
           "nodeType":"system/SIMOS/Package",
-          "children":["2"],
+          "children":["ab11c047-0bb8-4e92-ae45-cc9c6473bf3a"],
           "type":"system/SIMOS/Package"
        }
     }
     """
 
   Scenario: Get index for single Package (DMT-Entities)
-    Given I access the resource url "/api/v4/index/data-source-name/1/2?APPLICATION=DMT-Entities"
+    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=DMT-Entities"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-      "2": {
-        "id": "2",
+      "ab11c047-0bb8-4e92-ae45-cc9c6473bf3a": {
+        "id": "ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
         "children": [
-          "3"
+          "773cef3e-6854-4117-8548-b7edf13d179d"
         ],
         "nodeType": "system/SIMOS/Package",
         "title": "sub_package_1",
@@ -68,10 +65,10 @@ Feature: Index
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
-                  "nodeUrl":"/api/v4/index/data-source-name/2",
+                  "nodeUrl":"/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                   "request":{
                     "type":"system/SIMOS/Entity",
-                    "parentId":"2",
+                    "parentId":"ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                     "attribute":"content",
                     "name":"${name}",
                     "description":"${description}"
@@ -86,16 +83,16 @@ Feature: Index
     """
 
   Scenario: Get index for single Package (Data Modelling)
-    Given I access the resource url "/api/v4/index/data-source-name/1/2?APPLICATION=default"
+    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=default"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-      "2": {
-        "id": "2",
+      "ab11c047-0bb8-4e92-ae45-cc9c6473bf3a": {
+        "id": "ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
         "children": [
-          "3"
+          "773cef3e-6854-4117-8548-b7edf13d179d"
         ],
         "nodeType": "system/SIMOS/Package",
         "title": "sub_package_1",
@@ -114,10 +111,10 @@ Feature: Index
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
-                  "nodeUrl":"/api/v4/index/data-source-name/2",
+                  "nodeUrl":"/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                   "request":{
                     "type":"system/SIMOS/Blueprint",
-                    "parentId":"2",
+                    "parentId":"ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                     "attribute":"content",
                     "name":"${name}",
                     "description":"${description}"
@@ -132,16 +129,16 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Data Modelling)
-    Given I access the resource url "/api/v4/index/data-source-name/2/3"
+    Given I access the resource url "/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a/773cef3e-6854-4117-8548-b7edf13d179d"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-       "3":{
-          "parentId": "2",
+       "773cef3e-6854-4117-8548-b7edf13d179d":{
+          "parentId": "ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
           "title":"document_1",
-          "id":"3",
+          "id":"773cef3e-6854-4117-8548-b7edf13d179d",
           "nodeType":"document-node",
           "children":[],
           "type":"system/SIMOS/Blueprint"
@@ -150,14 +147,14 @@ Feature: Index
     """
 
   Scenario: Get index for single document (Data Modelling)
-    Given I access the resource url "/api/v4/index/entities-DS/entities-DS/1"
+    Given I access the resource url "/api/v4/index/entities-DS/entities-DS/aff2a29e-cd2f-4e80-8785-740667b5e99a"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-      "1": {
-        "id": "1",
+      "aff2a29e-cd2f-4e80-8785-740667b5e99a": {
+        "id": "aff2a29e-cd2f-4e80-8785-740667b5e99a",
         "title": "entity",
         "type": "system/SIMOS/Package",
         "meta": {
@@ -174,10 +171,10 @@ Feature: Index
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/entities-DS/add-to-parent",
-                  "nodeUrl":"/api/v4/index/entities-DS/1",
+                  "nodeUrl":"/api/v4/index/entities-DS/aff2a29e-cd2f-4e80-8785-740667b5e99a",
                   "request":{
                     "type":"system/SIMOS/Blueprint",
-                    "parentId":"1",
+                    "parentId":"aff2a29e-cd2f-4e80-8785-740667b5e99a",
                     "attribute":"content",
                     "name":"${name}",
                     "description":"${description}"

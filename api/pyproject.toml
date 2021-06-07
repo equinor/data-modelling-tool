@@ -7,7 +7,7 @@ license = "TBD"
 
 [tool.poetry.dependencies]
 wasmer = "0.3.0"
-python = "3.8.*"
+python = "3.9.*"
 flask = "^1.0"
 werkzeug = "^0.15.4"
 jsonschema = "^3.0"

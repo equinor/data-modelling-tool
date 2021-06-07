@@ -2,40 +2,36 @@ Feature: Index
 
   Background: There are data sources in the system
 
-    Given there are mongodb data sources
-      | host | port  | username | password | tls   | name             | database | collection     |   type     |
-      | db   | 27017 | maf      | maf      | false | data-source-name | local    | documents      |  mongo-db |
-      | db   | 27017 | maf      | maf      | false | demo-DS   | local    | demo-DS |  mongo-db |
-      | db   | 27017 | maf      | maf      | false | apps             | local    | applications   |  mongo-db |
-
+    Given there are basic data sources with repositories
+      |   name           |
+      | test-DS |
     Given data modelling tool blueprints are imported
+    Given there are documents for the data source "test-DS" in collection "documents"
+      | uid | parent_uid | name           | type                   |
+      | 3eea0e71-647d-43b2-975b-0280ca3588d2   |            | blueprints    | system/SIMOS/Package   |
+      | 1a39b2d1-272c-46d4-9a89-f5e0018a71b4   | 3eea0e71-647d-43b2-975b-0280ca3588d2          | sub_package_1 | system/SIMOS/Package   |
+      | 226ee77b-a1a0-4e80-9d25-fe333732e476   | 1a39b2d1-272c-46d4-9a89-f5e0018a71b4          | document_1    | system/SIMOS/Blueprint |
 
-    Given there are documents for the data source "data-source-name" in collection "documents"
-      | uid | parent_uid | name          | description | type                   |
-      | 1   |            | blueprints    |             | system/SIMOS/Package   |
-      | 2   | 1          | sub_package_1 |             | system/SIMOS/Package   |
-      | 3   | 2          | document_1    |             | system/SIMOS/Blueprint |
-
-    Given there exist document with id "4" in data source "data-source-name"
+    Given there exist document with id "0f99b692-b980-41d2-bfab-50c4bffe5a6e" in data source "test-DS"
     """
     {
-        "_id": "4",
+        "_id": "0f99b692-b980-41d2-bfab-50c4bffe5a6e",
         "name": "TurbinePackage",
         "description": "",
         "type": "system/SIMOS/Package",
         "content": [
             {
-                "_id": "5",
+                "_id": "7def3293-048e-4258-91a2-a7b6dda8a04f",
                 "name": "WindTurbine",
                 "type": "system/SIMOS/Blueprint"
             },
             {
-                "_id": "6",
+                "_id": "d047f040-316e-4113-a97c-d9a87909cd0c",
                 "name": "MyWindTurbine",
-                "type": "data-source-name/TurbinePackage/WindTurbine"
+                "type": "test-DS/TurbinePackage/WindTurbine"
             },
             {
-                "_id": "7",
+                "_id": "837c1c7e-e774-4db9-b9d2-37c231bea54c",
                 "name": "Mooring",
                 "type": "system/SIMOS/Blueprint"
             }
@@ -44,10 +40,10 @@ Feature: Index
     }
     """
     # This is a blueprint which has an optional, not contained complex attribute
-    Given there exist document with id "5" in data source "data-source-name"
+    Given there exist document with id "7def3293-048e-4258-91a2-a7b6dda8a04f" in data source "test-DS"
     """
     {
-      "_id": "5",
+      "_id": "7def3293-048e-4258-91a2-a7b6dda8a04f",
       "name":"WindTurbine",
       "type":"system/SIMOS/Blueprint",
       "extends":["system/SIMOS/NamedEntity"],
@@ -56,17 +52,17 @@ Feature: Index
         {
           "name":"Mooring",
           "type":"system/SIMOS/BlueprintAttribute",
-          "attributeType":"data-source-name/TurbinePackage/Mooring",
+          "attributeType":"test-DS/TurbinePackage/Mooring",
           "optional":true,
           "contained":false
         }
       ]
     }
     """
-    Given there exist document with id "7" in data source "data-source-name"
+    Given there exist document with id "837c1c7e-e774-4db9-b9d2-37c231bea54c" in data source "test-DS"
     """
     {
-      "_id": "7",
+      "_id": "837c1c7e-e774-4db9-b9d2-37c231bea54c",
       "name":"Mooring",
       "type":"system/SIMOS/Blueprint",
       "extends":["system/SIMOS/NamedEntity"],
@@ -80,48 +76,48 @@ Feature: Index
       ]
     }
     """
-    Given there exist document with id "6" in data source "data-source-name"
+    Given there exist document with id "d047f040-316e-4113-a97c-d9a87909cd0c" in data source "test-DS"
     """
     {
-      "_id": "6",
+      "_id": "d047f040-316e-4113-a97c-d9a87909cd0c",
       "name":"MyWindTurbine",
-      "type":"data-source-name/TurbinePackage/WindTurbine",
+      "type":"test-DS/TurbinePackage/WindTurbine",
       "description":"",
       "Mooring": {}
     }
     """
 
   Scenario: Get index
-    Given I access the resource url "/api/v4/index/data-source-name"
+    Given I access the resource url "/api/v4/index/test-DS"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-       "data-source-name":{
-          "id":"data-source-name",
-          "title":"data-source-name",
+       "test-DS":{
+          "id":"test-DS",
+          "title":"test-DS",
           "nodeType":"document-node",
           "children":[
-             "1"
+             "3eea0e71-647d-43b2-975b-0280ca3588d2"
           ]
        }
     }
     """
 
   Scenario: Index with insert reference
-    Given I access the resource url "/api/v4/index/data-source-name/4/6"
+    Given I access the resource url "/api/v4/index/test-DS/0f99b692-b980-41d2-bfab-50c4bffe5a6e/d047f040-316e-4113-a97c-d9a87909cd0c"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
     """
     {
-      "6": {
-        "parentId": "4",
+      "d047f040-316e-4113-a97c-d9a87909cd0c": {
+        "parentId": "0f99b692-b980-41d2-bfab-50c4bffe5a6e",
         "title": "MyWindTurbine",
-        "id": "6",
+        "id": "d047f040-316e-4113-a97c-d9a87909cd0c",
         "children": [],
-        "type": "data-source-name/TurbinePackage/WindTurbine",
+        "type": "test-DS/TurbinePackage/WindTurbine",
         "meta": {
           "menuItems": [
             {

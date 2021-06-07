@@ -1,5 +1,7 @@
+import io
 import json
 import os
+from zipfile import ZipFile
 
 from dmss_api.exceptions import ApiException
 from flask import Flask
@@ -7,8 +9,9 @@ from flask import Flask
 from config import Config
 from controllers import blueprints, entity, explorer, index, system
 from services.dmss import dmss_api
+from use_case.import_package import import_package_tree, package_tree_from_zip
+from utils.create_application_utils import zip_all
 from utils.logging import logger
-from utils.package_import import import_package
 
 
 def create_app(config):
@@ -74,9 +77,21 @@ def init_application():
     logger.info(f"_____ importing blueprints and entities ({Config.APP_SETTINGS['packages']})_____")
     for folder in Config.APP_SETTINGS["packages"]:
         data_source, folder = folder.split("/", 1)
-        import_package(
-            f"{Config.APPLICATION_HOME}/data/{data_source}/{folder}", data_source=data_source, is_root=True,
-        )
+        try:
+            memory_file = io.BytesIO()
+            with ZipFile(memory_file, mode="w") as zip_file:
+                zip_all(zip_file, f"{Config.APPLICATION_HOME}/data/{data_source}/{folder}", write_folder=False)
+            memory_file.seek(0)
+
+            root_package = package_tree_from_zip(data_source, folder, memory_file)
+        except Exception as error:
+            raise Exception(f"Something went wrong trying to load the root package '{data_source}/{folder}' ; {error}")
+        try:
+            import_package_tree(root_package, data_source)
+        except Exception as error:
+            raise Exception(
+                f"Something went wrong trying to upload the package ''{data_source}/{folder}'' to DMSS; {error}"
+            )
     logger.info(f"_____ DONE importing blueprints and entities ({Config.APP_SETTINGS['packages']})_____")
 
     logger.info("-------------- DONE ----------------")
