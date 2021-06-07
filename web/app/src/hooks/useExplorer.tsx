@@ -165,6 +165,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   useEffect(() => {
     if (errorMessage) {
       NotificationManager.error(errorMessage)
+      setErrorMessage("")
     }
   }, [errorMessage])
 
