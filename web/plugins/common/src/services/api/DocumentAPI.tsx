@@ -82,18 +82,34 @@ export class DocumentAPI implements IDocumentAPI {
     documentDottedId: string,
     reference: Reference
   ): Promise<any> {
-    return dmssApi.referenceInsert({
-      dataSourceId,
-      documentDottedId,
-      reference,
-    })
+    return dmssApi
+      .referenceInsert({
+        dataSourceId,
+        documentDottedId,
+        reference,
+      })
+      .catch((error: any) => {
+        return error.json().then((response: any) => {
+          throw new Error(
+            `Error message from DMSS API: ${JSON.stringify(response)}`
+          )
+        })
+      })
   }
 
   removeReference(
     dataSourceId: string,
     documentDottedId: string
   ): Promise<any> {
-    return dmssApi.referenceDelete({ dataSourceId, documentDottedId })
+    return dmssApi
+      .referenceDelete({ dataSourceId, documentDottedId })
+      .catch((error: any) => {
+        return error.json().then((response: any) => {
+          throw new Error(
+            `Error message from DMSS API: ${JSON.stringify(response)}`
+          )
+        })
+      })
   }
 
   remove(url: string, data: any): Promise<any> {
