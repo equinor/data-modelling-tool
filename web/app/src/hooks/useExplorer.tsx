@@ -82,8 +82,7 @@ interface UpdateByIdProps {
   documentId: string
   attribute: string
   data: any
-  nodeUrl: string
-  reference?: boolean
+  nodeUrl?: string
 }
 
 interface renameProps {
@@ -139,7 +138,6 @@ export interface IUseExplorer {
     attribute,
     data,
     nodeUrl,
-    reference,
   }: UpdateByIdProps): Promise<any>
 
   addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
@@ -366,17 +364,18 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     attribute,
     data,
     nodeUrl,
-    reference,
   }: UpdateByIdProps) => {
     return documentAPI
-      .updateById(dataSourceId, documentId, attribute, data, reference || false)
+      .updateById(dataSourceId, documentId, attribute, data)
       .then((result: any) => {
         closeModal()
-        index.models.index.operations
-          .add(documentId, nodeUrl)
-          .then(() =>
-            dashboard.models.layout.operations.refreshByFilter(documentId)
-          )
+        if (nodeUrl) {
+          index.models.index.operations
+            .add(documentId, nodeUrl)
+            .then(() =>
+              dashboard.models.layout.operations.refreshByFilter(documentId)
+            )
+        }
         return result
       })
       .catch((error: any) => {

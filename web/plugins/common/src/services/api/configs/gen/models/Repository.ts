@@ -37,12 +37,6 @@ export interface Repository {
      * @type {string}
      * @memberof Repository
      */
-    name: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Repository
-     */
     host?: string;
     /**
      * 
@@ -105,7 +99,6 @@ export function RepositoryFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     return {
         
         'type': DataSourceTypeFromJSON(json['type']),
-        'name': json['name'],
         'host': !exists(json, 'host') ? undefined : json['host'],
         'port': !exists(json, 'port') ? undefined : json['port'],
         'username': !exists(json, 'username') ? undefined : json['username'],
@@ -128,7 +121,6 @@ export function RepositoryToJSON(value?: Repository | null): any {
     return {
         
         'type': DataSourceTypeToJSON(value.type),
-        'name': value.name,
         'host': value.host,
         'port': value.port,
         'username': value.username,

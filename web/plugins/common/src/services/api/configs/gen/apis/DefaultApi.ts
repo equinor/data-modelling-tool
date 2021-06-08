@@ -88,7 +88,6 @@ export interface DocumentUpdateRequest {
     documentId: string;
     body: object;
     attribute?: string;
-    reference?: boolean;
 }
 
 export interface ExplorerAddDocumentRequest {
@@ -203,7 +202,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Fetch the Blueprint of a type (including extended attributes)
+     * Fetch the Blueprint of a type (including inherited attributes)
      * Get Blueprint
      */
     async blueprintGetRaw(requestParameters: BlueprintGetRequest): Promise<runtime.ApiResponse<object>> {
@@ -226,7 +225,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Fetch the Blueprint of a type (including extended attributes)
+     * Fetch the Blueprint of a type (including inherited attributes)
      * Get Blueprint
      */
     async blueprintGet(requestParameters: BlueprintGetRequest): Promise<object> {
@@ -441,10 +440,6 @@ export class DefaultApi extends runtime.BaseAPI {
             queryParameters['attribute'] = requestParameters.attribute;
         }
 
-        if (requestParameters.reference !== undefined) {
-            queryParameters['reference'] = requestParameters.reference;
-        }
-
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
@@ -469,7 +464,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Posted document must be a valid Entity (\'name\' and \'type\' required)
+     * Posted document must be a valid entity of the available blueprint (blueprint must exist).
      * Add Document
      */
     async explorerAddDocumentRaw(requestParameters: ExplorerAddDocumentRequest): Promise<runtime.ApiResponse<any>> {
@@ -499,7 +494,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Posted document must be a valid Entity (\'name\' and \'type\' required)
+     * Posted document must be a valid entity of the available blueprint (blueprint must exist).
      * Add Document
      */
     async explorerAddDocument(requestParameters: ExplorerAddDocumentRequest): Promise<any> {
@@ -545,7 +540,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Posted document must be a valid Entity (\'name\' and \'type\' required)
+     * NOTE: The \'add-document\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation. Posted document must be a valid Entity (\'name\' and \'type\' required).
      * Add Raw
      */
     async explorerAddRawRaw(requestParameters: ExplorerAddRawRequest): Promise<runtime.ApiResponse<any>> {
@@ -575,7 +570,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Posted document must be a valid Entity (\'name\' and \'type\' required)
+     * NOTE: The \'add-document\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation. Posted document must be a valid Entity (\'name\' and \'type\' required).
      * Add Raw
      */
     async explorerAddRaw(requestParameters: ExplorerAddRawRequest): Promise<any> {
