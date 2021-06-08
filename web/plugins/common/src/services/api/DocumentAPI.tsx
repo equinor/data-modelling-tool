@@ -3,6 +3,12 @@ import apiProvider from './utilities/Provider'
 import { dmssApi } from './configs/StorageServiceAPI'
 import { Reference, RenameRequest } from './configs/gen'
 
+const handleDocumentApiError = (error: any) => {
+  return error.json().then((response: any) => {
+    throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)
+  })
+}
+
 export class DocumentAPI implements IDocumentAPI {
   create(url: string, data: any): Promise<any> {
     /**
@@ -20,11 +26,7 @@ export class DocumentAPI implements IDocumentAPI {
         addToParentRequest: data,
       })
       .catch((error: any) => {
-        return error.json().then((response: any) => {
-          throw new Error(
-            `Error message from DMSS API: ${JSON.stringify(response)}`
-          )
-        })
+        return handleDocumentApiError(error)
       })
   }
 
@@ -32,20 +34,12 @@ export class DocumentAPI implements IDocumentAPI {
     return dmssApi
       .documentGetByPath({ dataSourceId, path })
       .catch((error: any) => {
-        return error.json().then((response: any) => {
-          throw new Error(
-            `Error message from DMSS API: ${JSON.stringify(response)}`
-          )
-        })
+        return handleDocumentApiError(error)
       })
   }
   getBlueprint(typeRef: string): Promise<any> {
     return dmssApi.blueprintGet({ typeRef: typeRef }).catch((error: any) => {
-      return error.json().then((response: any) => {
-        throw new Error(
-          `Error message from DMSS API: ${JSON.stringify(response)}`
-        )
-      })
+      return handleDocumentApiError(error)
     })
   }
 
@@ -58,21 +52,13 @@ export class DocumentAPI implements IDocumentAPI {
       return dmssApi
         .documentGetById({ dataSourceId, documentId, attribute })
         .catch((error: any) => {
-          return error.json().then((response: any) => {
-            throw new Error(
-              `Error message from DMSS API: ${JSON.stringify(response)}`
-            )
-          })
+          return handleDocumentApiError(error)
         })
     } else {
       return dmssApi
         .documentGetById({ dataSourceId, documentId })
         .catch((error: any) => {
-          return error.json().then((response: any) => {
-            throw new Error(
-              `Error message from DMSS API: ${JSON.stringify(response)}`
-            )
-          })
+          return handleDocumentApiError(error)
         })
     }
   }
@@ -89,11 +75,7 @@ export class DocumentAPI implements IDocumentAPI {
         reference,
       })
       .catch((error: any) => {
-        return error.json().then((response: any) => {
-          throw new Error(
-            `Error message from DMSS API: ${JSON.stringify(response)}`
-          )
-        })
+        return handleDocumentApiError(error)
       })
   }
 
@@ -104,11 +86,7 @@ export class DocumentAPI implements IDocumentAPI {
     return dmssApi
       .referenceDelete({ dataSourceId, documentDottedId })
       .catch((error: any) => {
-        return error.json().then((response: any) => {
-          throw new Error(
-            `Error message from DMSS API: ${JSON.stringify(response)}`
-          )
-        })
+        return handleDocumentApiError(error)
       })
   }
 
@@ -118,11 +96,7 @@ export class DocumentAPI implements IDocumentAPI {
 
   update(url: string, data: any): Promise<any> {
     return dmssApi.documentUpdate(data).catch((error: any) => {
-      return error.json().then((response: any) => {
-        throw new Error(
-          `Error message from DMSS API: ${JSON.stringify(response)}`
-        )
-      })
+      return handleDocumentApiError(error)
     })
   }
 
@@ -133,11 +107,7 @@ export class DocumentAPI implements IDocumentAPI {
     return dmssApi
       .explorerRename({ dataSourceId, renameRequest })
       .catch((error: any) => {
-        return error.json().then((response: any) => {
-          throw new Error(
-            `Error message from DMSS API: ${JSON.stringify(response)}`
-          )
-        })
+        return handleDocumentApiError(error)
       })
   }
 
@@ -148,11 +118,7 @@ export class DocumentAPI implements IDocumentAPI {
         searchDataRequest: query,
       })
       .catch((error: any) => {
-        return error.json().then((response: any) => {
-          throw new Error(
-            `Error message from DMSS API: ${JSON.stringify(response)}`
-          )
-        })
+        return handleDocumentApiError(error)
       })
   }
 
@@ -172,11 +138,7 @@ export class DocumentAPI implements IDocumentAPI {
         reference,
       })
       .catch((error: any) => {
-        return error.json().then((response: any) => {
-          throw new Error(
-            `Error message from DMSS API: ${JSON.stringify(response)}`
-          )
-        })
+        return handleDocumentApiError(error)
       })
   }
 }
