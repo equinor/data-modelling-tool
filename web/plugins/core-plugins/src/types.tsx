@@ -1,7 +1,11 @@
 export interface DmtPlugin {
   pluginType: DmtPluginType
   pluginName: string
-  PluginComponent: any
+  content: any
+}
+
+export interface LoadedPlugin {
+  plugins: DmtPlugin[]
 }
 
 export interface DmtUIPlugin {
