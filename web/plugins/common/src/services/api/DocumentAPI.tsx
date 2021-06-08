@@ -3,6 +3,12 @@ import apiProvider from './utilities/Provider'
 import { dmssApi } from './configs/StorageServiceAPI'
 import { Reference, RenameRequest } from './configs/gen'
 
+const handleDocumentApiError = (error: any) => {
+  return error.json().then((response: any) => {
+    throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)
+  })
+}
+
 export class DocumentAPI implements IDocumentAPI {
   create(url: string, data: any): Promise<any> {
     /**
@@ -14,17 +20,27 @@ export class DocumentAPI implements IDocumentAPI {
   }
 
   addToParent(dataSourceId: string, data: any): Promise<any> {
-    return dmssApi.explorerAddToParent({
-      dataSourceId,
-      addToParentRequest: data,
-    })
+    return dmssApi
+      .explorerAddToParent({
+        dataSourceId,
+        addToParentRequest: data,
+      })
+      .catch((error: any) => {
+        return handleDocumentApiError(error)
+      })
   }
 
   getByPath(dataSourceId: string, path: string): Promise<any> {
-    return dmssApi.documentGetByPath({ dataSourceId, path })
+    return dmssApi
+      .documentGetByPath({ dataSourceId, path })
+      .catch((error: any) => {
+        return handleDocumentApiError(error)
+      })
   }
   getBlueprint(typeRef: string): Promise<any> {
-    return dmssApi.blueprintGet({ typeRef: typeRef })
+    return dmssApi.blueprintGet({ typeRef: typeRef }).catch((error: any) => {
+      return handleDocumentApiError(error)
+    })
   }
 
   getById(
@@ -33,9 +49,17 @@ export class DocumentAPI implements IDocumentAPI {
     attribute?: string
   ): Promise<any> {
     if (attribute) {
-      return dmssApi.documentGetById({ dataSourceId, documentId, attribute })
+      return dmssApi
+        .documentGetById({ dataSourceId, documentId, attribute })
+        .catch((error: any) => {
+          return handleDocumentApiError(error)
+        })
     } else {
-      return dmssApi.documentGetById({ dataSourceId, documentId })
+      return dmssApi
+        .documentGetById({ dataSourceId, documentId })
+        .catch((error: any) => {
+          return handleDocumentApiError(error)
+        })
     }
   }
 
@@ -44,18 +68,26 @@ export class DocumentAPI implements IDocumentAPI {
     documentDottedId: string,
     reference: Reference
   ): Promise<any> {
-    return dmssApi.referenceInsert({
-      dataSourceId,
-      documentDottedId,
-      reference,
-    })
+    return dmssApi
+      .referenceInsert({
+        dataSourceId,
+        documentDottedId,
+        reference,
+      })
+      .catch((error: any) => {
+        return handleDocumentApiError(error)
+      })
   }
 
   removeReference(
     dataSourceId: string,
     documentDottedId: string
   ): Promise<any> {
-    return dmssApi.referenceDelete({ dataSourceId, documentDottedId })
+    return dmssApi
+      .referenceDelete({ dataSourceId, documentDottedId })
+      .catch((error: any) => {
+        return handleDocumentApiError(error)
+      })
   }
 
   remove(url: string, data: any): Promise<any> {
@@ -63,21 +95,31 @@ export class DocumentAPI implements IDocumentAPI {
   }
 
   update(url: string, data: any): Promise<any> {
-    return dmssApi.documentUpdate(data)
+    return dmssApi.documentUpdate(data).catch((error: any) => {
+      return handleDocumentApiError(error)
+    })
   }
 
   explorerRename(
     dataSourceId: string,
     renameRequest: RenameRequest
   ): Promise<any> {
-    return dmssApi.explorerRename({ dataSourceId, renameRequest })
+    return dmssApi
+      .explorerRename({ dataSourceId, renameRequest })
+      .catch((error: any) => {
+        return handleDocumentApiError(error)
+      })
   }
 
   search(dataSourceId: string, query: any): Promise<any> {
-    return dmssApi.search({
-      dataSourceId: dataSourceId,
-      searchDataRequest: query,
-    })
+    return dmssApi
+      .search({
+        dataSourceId: dataSourceId,
+        searchDataRequest: query,
+      })
+      .catch((error: any) => {
+        return handleDocumentApiError(error)
+      })
   }
 
   updateById(
@@ -87,13 +129,17 @@ export class DocumentAPI implements IDocumentAPI {
     data: any,
     reference?: boolean
   ): Promise<any> {
-    return dmssApi.documentUpdate({
-      dataSourceId,
-      documentId,
-      body: data,
-      attribute,
-      reference,
-    })
+    return dmssApi
+      .documentUpdate({
+        dataSourceId,
+        documentId,
+        body: data,
+        attribute,
+        reference,
+      })
+      .catch((error: any) => {
+        return handleDocumentApiError(error)
+      })
   }
 }
 

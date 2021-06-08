@@ -10,7 +10,7 @@ const post = (resource: string, model: any) => {
     .post(`${resource}`, model)
     .then(handleResponse)
     .catch((err) => {
-      throw new Error(err)
+      throw new Error(err.response.data.message)
     })
 }
 
