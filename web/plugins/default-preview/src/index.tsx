@@ -4,10 +4,7 @@ import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
 import { useEffect, useState } from 'react'
 import PreviewPlugin from './PreviewPlugin'
 
-export const pluginName = 'default-preview'
-export const pluginType = DmtPluginType.UI
-
-export const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, explorer } = props
 
   const [document, setDocument] = useState(undefined)
@@ -31,3 +28,13 @@ export const PluginComponent = (props: DmtUIPlugin) => {
 
   return <PreviewPlugin document={document} />
 }
+
+export const plugins: any = [
+  {
+    pluginName: 'default-preview',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: PluginComponent,
+    },
+  },
+]

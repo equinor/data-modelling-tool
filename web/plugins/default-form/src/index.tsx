@@ -18,10 +18,7 @@ import {
   EntityPicker,
 } from '@dmt/common'
 
-export const pluginName = 'default-form'
-export const pluginType = DmtPluginType.UI
-
-export const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: DmtUIPlugin) => {
   const {
     type,
     documentId,
@@ -143,3 +140,13 @@ function validate(blueprint: Blueprint) {
     return errors
   }
 }
+
+export const plugins: any = [
+  {
+    pluginName: 'default-form',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: PluginComponent,
+    },
+  },
+]
