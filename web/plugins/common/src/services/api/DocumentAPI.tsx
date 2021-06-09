@@ -135,7 +135,6 @@ export class DocumentAPI implements IDocumentAPI {
         documentId,
         body: data,
         attribute,
-        reference,
       })
       .catch((error: any) => {
         return handleDocumentApiError(error)
