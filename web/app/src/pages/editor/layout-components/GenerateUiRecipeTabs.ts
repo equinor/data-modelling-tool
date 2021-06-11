@@ -57,6 +57,8 @@ export function getDefaultTabs(uiRecipes: UiRecipe[] | undefined): UiRecipe[] {
   const defaultTabs: UiRecipe[] = []
   addDefaultTab(defaultTabs, uiRecipes, 'default-preview', 'Raw')
   addDefaultTab(defaultTabs, uiRecipes, 'yaml-view', 'Yaml')
+  addDefaultTab(defaultTabs, uiRecipes, 'update-blueprint', 'Update blueprint')
+  addDefaultTab(defaultTabs, uiRecipes, 'display-blueprint-data', 'Display blueprint data')
   // @ts-ignore
   addDefaultTab(defaultTabs, uiRecipes, 'default-form', 'Edit')
   return defaultTabs

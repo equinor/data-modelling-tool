@@ -45,7 +45,7 @@ const View = (props: any) => {
       documentId={documentId}
       explorer={explorer}
       uiRecipeName={uiRecipe.name}
-      onSubmit={onSubmit}
+      updateDocument={onSubmit}
     />
   )
 }

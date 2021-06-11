@@ -2,9 +2,18 @@ import * as React from 'react'
 
 import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
 
-export const pluginName = 'ui-plugin-template'
-export const pluginType = DmtPluginType.UI
 
-export const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: DmtUIPlugin) => {
   return <div>Plugin content goes here!</div>
 }
+
+
+export const plugins: any = [
+  {
+    pluginName: 'ui-plugin-template',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: PluginComponent,
+    },
+  },
+]

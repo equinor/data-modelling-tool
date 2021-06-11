@@ -25,7 +25,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
     dataSourceId,
     uiRecipeName,
     explorer,
-    onSubmit,
+    updateDocument,
   } = props
 
   const [document, setDocument] = useState(undefined)
@@ -103,7 +103,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
           fileUploadWidget: FileDirectoryWidget,
         }}
         onSubmit={(schemas: any) => {
-          onSubmit(schemas.formData)
+          updateDocument(schemas.formData)
         }}
       />
     </div>
