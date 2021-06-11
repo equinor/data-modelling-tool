@@ -16,6 +16,8 @@ export interface DmtUIPlugin {
   uiRecipeName: any
   useIndex: any
   onSubmit: any
+  document: any
+  updateDocument: any
 }
 
 export enum DmtPluginType {

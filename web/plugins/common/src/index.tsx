@@ -7,6 +7,7 @@ export * from './components/Pickers'
 export { useDataSources } from './hooks/useDataSources'
 export type { IDataSources } from './hooks/useDataSources'
 export { useIndex } from './hooks/useIndex'
+export { useDocument } from './hooks/useDocument'
 export type { IIndex, IModels, IndexProps, IOperations } from './hooks/useIndex'
 
 export * from './services'
