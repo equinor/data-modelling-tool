@@ -14,10 +14,14 @@ const Wrapper = styled.div`
 `
 
 const View = (props: any) => {
-  const { dataSourceId, documentId, uiRecipe } = props
+  const { dataSourceId, documentId, uiRecipe, document } = props
 
   const explorer: IUseExplorer = useExplorer({})
   const [loading, setLoading] = useState(false)
+
+   const fetchBlueprint = (type: string) => {
+     return explorer.getBlueprint(type);
+  }
 
   const onSubmit = (formData: any) => {
     setLoading(true)
@@ -45,6 +49,10 @@ const View = (props: any) => {
       documentId={documentId}
       explorer={explorer}
       uiRecipeName={uiRecipe.name}
+      updateDocument={onSubmit}
+      document={document}
+      fetchBlueprint={fetchBlueprint}
+      // TODO: Deprecate onSubmit, and only provide updateDocument
       onSubmit={onSubmit}
     />
   )
