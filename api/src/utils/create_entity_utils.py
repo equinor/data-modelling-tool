@@ -6,7 +6,7 @@ from os import urandom
 from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from enums import SIMOS, PRIMITIVES
-
+from domain_classes.dto import DTO
 
 def generate_name(type: str):
     name_of_type = type.split("/")[-1]
@@ -35,11 +35,12 @@ class CreateEntity:
         self.description = description
         self.type = type
         self.blueprint_provider = blueprint_provider
-        self.attribute_types = self.blueprint_provider(SIMOS.ATTRIBUTE_TYPES.value).to_dict()
+        self.attribute_types = self.blueprint_provider(SIMOS.ATTRIBUTE_TYPES.value) #.to_dict()
         self.blueprint_attribute: Blueprint = self.blueprint_provider(SIMOS.BLUEPRINT_ATTRIBUTE.value)
         blueprint: Blueprint = self.blueprint_provider(type)
         entity = {"name": self.name, "description": description, "type": self.type}
-        self._entity = self._get_entity(blueprint=blueprint, entity=entity)
+        blueprint_adjusted = Blueprint(DTO(blueprint))
+        self._entity = self._get_entity(blueprint=blueprint_adjusted, entity=entity)
 
     @staticmethod
     def parse_value(attr: BlueprintAttribute, blueprint_provider):
@@ -96,6 +97,7 @@ class CreateEntity:
     # add all non optional attributes with default value.
     # type is inserted based on the parent attributes type, or the initial type for root entity.
     def _get_entity(self, blueprint: Blueprint, entity):
+
         for attr in blueprint.attributes:
             if attr.attribute_type in PRIMITIVES:
                 if not attr.is_optional() and attr.name not in entity:
