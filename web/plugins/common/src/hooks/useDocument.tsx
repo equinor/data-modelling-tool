@@ -1,7 +1,7 @@
 import {useEffect, useState} from 'react'
 import {DocumentAPI} from "../services/api/DocumentAPI";
 
-export const useDocument = (dataSourceId: string, documentId: string, attribute: string) => {
+export const useDocument = (dataSourceId: string, documentId: string) => {
     const [document, setDocument] = useState(null)
     const [isLoading, setLoading] = useState(true)
     const [hasError, setHasError] = useState(false)
@@ -9,8 +9,11 @@ export const useDocument = (dataSourceId: string, documentId: string, attribute:
 
     useEffect(() => {
         setLoading(true)
+        const target = documentId.split('.')
+        const id = `${target.shift()}`
+        const attribute = target.join('.')
         documentAPI
-            .getById(dataSourceId, documentId, attribute)
+            .getById(dataSourceId, id, attribute)
             .then((document) => {
                 console.log(document)
                 setDocument(document.document)
@@ -20,6 +23,6 @@ export const useDocument = (dataSourceId: string, documentId: string, attribute:
                 setLoading(false)
                 setHasError(true)
             })
-    }, [dataSourceId, documentId, attribute])
+    }, [dataSourceId, documentId])
     return [document, isLoading, setDocument, hasError]
 }
