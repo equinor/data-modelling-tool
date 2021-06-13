@@ -8,6 +8,7 @@ import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { getUIPlugin } from '@dmt/core-plugins'
+import { createEntity } from '../../../utils/createEntity'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -19,8 +20,8 @@ const View = (props: any) => {
   const explorer: IUseExplorer = useExplorer({})
   const [loading, setLoading] = useState(false)
 
-   const fetchBlueprint = (type: string) => {
-     return explorer.getBlueprint(type);
+  const fetchBlueprint = (type: string) => {
+    return explorer.getBlueprint(type)
   }
 
   const onSubmit = (formData: any) => {
@@ -52,6 +53,7 @@ const View = (props: any) => {
       updateDocument={onSubmit}
       document={document}
       fetchBlueprint={fetchBlueprint}
+      createDocument={createEntity}
       // TODO: Deprecate onSubmit, and only provide updateDocument
       onSubmit={onSubmit}
     />
