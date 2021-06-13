@@ -8,6 +8,7 @@ from domain_classes.blueprint_attribute import BlueprintAttribute
 from enums import SIMOS, PRIMITIVES
 from domain_classes.dto import DTO
 
+
 def generate_name(type: str):
     name_of_type = type.split("/")[-1]
     lower_case_type_name = name_of_type.lower()
@@ -35,7 +36,7 @@ class CreateEntity:
         self.description = description
         self.type = type
         self.blueprint_provider = blueprint_provider
-        self.attribute_types = self.blueprint_provider(SIMOS.ATTRIBUTE_TYPES.value) #.to_dict()
+        self.attribute_types = self.blueprint_provider(SIMOS.ATTRIBUTE_TYPES.value)  # .to_dict()
         self.blueprint_attribute: Blueprint = self.blueprint_provider(SIMOS.BLUEPRINT_ATTRIBUTE.value)
         blueprint: Blueprint = self.blueprint_provider(type)
         entity = {"name": self.name, "description": description, "type": self.type}
