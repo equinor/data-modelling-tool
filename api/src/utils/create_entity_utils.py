@@ -40,8 +40,9 @@ class CreateEntity:
         self.blueprint_attribute: Blueprint = self.blueprint_provider(SIMOS.BLUEPRINT_ATTRIBUTE.value)
         blueprint: Blueprint = self.blueprint_provider(type)
         entity = {"name": self.name, "description": description, "type": self.type}
-        blueprint_adjusted = Blueprint(DTO(blueprint))
-        self._entity = self._get_entity(blueprint=blueprint_adjusted, entity=entity)
+        if not isinstance(blueprint, Blueprint):
+            blueprint = Blueprint(DTO(blueprint))
+        self._entity = self._get_entity(blueprint=blueprint, entity=entity)
 
     @staticmethod
     def parse_value(attr: BlueprintAttribute, blueprint_provider):
