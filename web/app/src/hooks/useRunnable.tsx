@@ -1,11 +1,10 @@
-import { useModalContext } from '../context/modal/ModalContext'
 import { dmssApi } from '@dmt/common'
 import Actions from '../actions'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { createEntity } from '../utils/createEntity'
 import { Entity } from '../domain/types'
-import useExplorer, { IUseExplorer } from './useExplorer'
+import { IUseExplorer } from './useExplorer'
 
 export enum ActionTypes {
   separateResultFile = 'separateResultFile',
@@ -53,7 +52,7 @@ export type Method = (props: ActionProps) => any
 const getMethod = (methodToRun: string): Method => {
   // @ts-ignore
   if (!Actions[methodToRun]) {
-    const message = `Runnable Method "${methodToRun}"`
+    const message = `No runnable method "${methodToRun}" defined in "actions.js"`
     NotificationManager.error(message, 'Not Found')
     throw message
   }
@@ -94,10 +93,7 @@ const getInput = async (
   return input
 }
 
-export default function useRunnable() {
-  const { closeModal } = useModalContext()
-  const explorer = useExplorer({})
-
+export default function useRunnable({ explorer }: any) {
   const updateDocument = async (output: Output, parentId: string) => {
     explorer
       .updateById({
@@ -111,15 +107,17 @@ export default function useRunnable() {
       })
       .then((result: any) => {
         output.notify &&
-          NotificationManager.success(`Updated document: ${result.data.name}`)
+          NotificationManager.success(
+            `Updated document: ${result.data.name}`,
+            'Updated'
+          )
       })
       .catch((error: any) => {
-        NotificationManager.error(`Failed to update document: ${error}`)
+        NotificationManager.error(
+          `Failed to update document: ${error}`,
+          'Action Failed'
+        )
       })
-  }
-
-  async function handleUpdate(output: Output, parentId: string) {
-    await updateDocument(output, parentId)
   }
 
   const runAndSaveToExistingDocument = async (
@@ -144,12 +142,10 @@ export default function useRunnable() {
     method({
       input,
       output,
-      updateDocument: handleUpdate,
+      updateDocument: (output: Output) => updateDocument(output, parentId),
       createEntity,
       explorer,
     })
-
-    closeModal()
   }
 
   const runAndSaveToNewDocument = async (
@@ -197,14 +193,11 @@ export default function useRunnable() {
           id: result.uid,
         }
 
-        const handleUpdateWithTreeUpdate = (output: any) => {
-          handleUpdate(output, destinationParentId)
-        }
-
         method({
           input,
           output,
-          updateDocument: handleUpdateWithTreeUpdate,
+          updateDocument: (output: any) =>
+            updateDocument(output, destinationParentId),
           createEntity,
           explorer,
         })
@@ -215,8 +208,6 @@ export default function useRunnable() {
           `Failed to create new result file: ${error?.response?.message}`
         )
       })
-
-    closeModal()
   }
 
   return {

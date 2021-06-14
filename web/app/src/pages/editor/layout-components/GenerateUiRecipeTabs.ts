@@ -55,8 +55,8 @@ function createUiRecipe(name: string, plugin: string): UiRecipe {
 
 export function getDefaultTabs(uiRecipes: UiRecipe[] | undefined): UiRecipe[] {
   const defaultTabs: UiRecipe[] = []
-  addDefaultTab(defaultTabs, uiRecipes, 'default-preview', 'Raw')
   addDefaultTab(defaultTabs, uiRecipes, 'yaml-view', 'Yaml')
+  addDefaultTab(defaultTabs, uiRecipes, 'default-preview', 'Raw')
   // @ts-ignore
   addDefaultTab(defaultTabs, uiRecipes, 'default-form', 'Edit')
   return defaultTabs

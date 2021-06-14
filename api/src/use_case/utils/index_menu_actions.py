@@ -92,19 +92,6 @@ def get_create_root_package_menu_item(data_source_id: str):
     }
 
 
-def get_runnable_menu_action(data_source_id: str, document_id: str, runnable: dict):
-    return {
-        "label": f"{runnable['name']}",
-        "action": "RUNNABLE",
-        "data": {
-            "dataUrl": f"/api/v2/documents/{data_source_id}/{document_id}",
-            "runnable": runnable,
-            "documentId": document_id,
-            "dataSourceId": data_source_id,
-        },
-    }
-
-
 def get_download_menu_action(data_source_id: str, document_id: str):
     return {
         "label": "Create Application",

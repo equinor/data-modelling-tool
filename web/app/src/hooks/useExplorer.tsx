@@ -160,11 +160,13 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const index: IGlobalIndex = useGlobalIndex()
   const { closeModal } = useModalContext()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
+  const [errorCounter, setErrorCounter] = useState<number>(0)
+
   useEffect(() => {
     if (errorMessage) {
-      NotificationManager.error(errorMessage)
+      NotificationManager.error(errorMessage, 'Error', 0)
     }
-  }, [errorMessage])
+  }, [errorMessage, errorCounter])
 
   const validate = (data: any) => {
     if (data.name === undefined || data.name === '') {
@@ -236,6 +238,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         })
         .catch((error: any) => {
           setErrorMessage(`Could not create document. Received error: ${error}`)
+          setErrorCounter(errorCounter + 1)
         })
     }
   }
@@ -262,6 +265,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       })
       .catch((error: any) => {
         setErrorMessage(`Failed to insert reference. Received error: ${error}`)
+        setErrorCounter(errorCounter + 1)
       })
   }
 
@@ -281,6 +285,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       })
       .catch((error: any) => {
         setErrorMessage(`Failed to remove reference. Received error: ${error}`)
+        setErrorCounter(errorCounter + 1)
       })
   }
 
@@ -294,11 +299,13 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         .addToParent(dataSourceId, data)
         .then((result: any) => {
           closeModal()
-          index.models.index.operations.add(result.uid, nodeUrl, true)
-          return result
+          const res = JSON.parse(result)
+          index.models.index.operations.add(res.uid, nodeUrl, true)
+          return res
         })
         .catch((error: any) => {
           setErrorMessage(`Not able to add element to document. (${error})`)
+          setErrorCounter(errorCounter + 1)
         })
     }
   }
@@ -319,6 +326,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       })
       .catch((error: any) => {
         setErrorMessage(`Could not remove document. Received error: ${error}`)
+        setErrorCounter(errorCounter + 1)
       })
   }
 
@@ -355,6 +363,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       })
       .catch((error: any) => {
         setErrorMessage(`Could not rename selected document. (${error})`)
+        setErrorCounter(errorCounter + 1)
       })
   }
 
@@ -380,6 +389,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       })
       .catch((error: any) => {
         setErrorMessage(`Could not update selected document. (${error})`)
+        setErrorCounter(errorCounter + 1)
       })
   }
 
