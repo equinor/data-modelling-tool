@@ -1,12 +1,10 @@
 // @ts-ignore
-// @ts-ignore
-import { Link, useLocation } from 'react-router-dom'
+import { Link, Route, useLocation } from 'react-router-dom'
 import React, { useContext, useState } from 'react'
 import styled from 'styled-components'
 import { AuthContext } from './context/auth/AuthContext'
 import { JsonView, Modal } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
-import { Config } from './App'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -57,9 +55,17 @@ function UserInfo() {
     </UserInfoBox>
   )
 }
+interface AppHeaderProps {
+  applications: Array<any>
+}
 
-export default () => {
+export default ({ applications }: AppHeaderProps) => {
   const location = useLocation()
+  // activeApp (Tab Styling) is based on route, or if route is "/", the first application
+  const activeApp: string =
+    Object.keys(applications).find(
+      (key: string) => key === location.pathname.substring(1)
+    ) || Object.keys(applications)[0]
   return (
     <>
       <HeaderWrapper>
@@ -75,18 +81,15 @@ export default () => {
       >
         <div>
           <>
-            <Link to={'/'}>
-              <TabStyled isSelected={location.pathname === '/'}>
-                {Config.appName}
-              </TabStyled>
-            </Link>
-            {!Config.exportedApp && (
-              <Link to={'/app'}>
-                <TabStyled isSelected={location.pathname === '/app'}>
-                  App. Menu
-                </TabStyled>
-              </Link>
-            )}
+            {Object.values(applications).map((value) => {
+              return (
+                <Link to={`/${value.id}`} key={value.id}>
+                  <TabStyled isSelected={activeApp === value.id}>
+                    {value?.name}
+                  </TabStyled>
+                </Link>
+              )
+            })}
           </>
           <Link to={'/search'}>
             <TabStyled isSelected={location.pathname === '/search'}>

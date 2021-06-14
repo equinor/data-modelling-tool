@@ -1,8 +1,8 @@
+from restful.use_case import UseCase
 from services.application_service import ApplicationService
 from services.document_service import DocumentService
 from restful import request_object as req
 from restful import response_object
-from restful import use_case as uc
 
 
 class CreateApplicationRequestObject(req.ValidRequestObject):
@@ -22,7 +22,7 @@ class CreateApplicationRequestObject(req.ValidRequestObject):
         return cls(application_id=adict.get("applicationId"))
 
 
-class CreateApplicationUseCase(uc.UseCase):
+class CreateApplicationUseCase(UseCase):
     def __init__(self, data_source_id):
         self.data_source_id = data_source_id
 

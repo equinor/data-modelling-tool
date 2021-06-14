@@ -30,7 +30,7 @@ export default (state: DataSourcesState, action: any) => {
         ...state,
         dataSources: action.value,
         currentDatasourceId:
-          action.value && action.value.length && action.value[0]._id,
+          action.value && action.value.length && action.value[0].id,
       }
     case ADD_DATA_SOURCE:
       return {

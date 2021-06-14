@@ -44,3 +44,8 @@ class ImportAliasNotFoundException(Exception):
 class ImportReferenceNotFoundException(Exception):
     def __init__(self, key):
         self.message = f"IMPORT ERROR: Failed to find the relative reference '{key}' in the reference table."
+
+
+class ApplicationNotLoadedException(Exception):
+    def __init__(self, app_name):
+        self.message = f"The application with name '{app_name}' has not been loaded."

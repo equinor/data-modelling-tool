@@ -1,8 +1,0 @@
-{
-  "type": "system/SIMOS/Application",
-  "name": "Demo App",
-  "description": "Settings for the demo application of the Data Modelling Tool",
-  "packages": ["demo-DS/DMT-demo"],
-  "models": ["system/SIMOS/Entity"],
-  "actions": []
-}

@@ -1,14 +1,15 @@
-import apiProvider from './utilities/Provider'
 import { IIndexAPI, IndexNodes } from './interfaces/IndexAPI'
+import { handleResponse } from './utilities/Response'
+import axios from 'axios'
 
 export class IndexAPI implements IIndexAPI {
   async getIndexByDataSource(
     dataSourceId: string,
     application: string
   ): Promise<IndexNodes> {
-    return apiProvider.get(
-      `/api/v4/index/${dataSourceId}?APPLICATION=${application}`
-    )
+    return axios
+      .get(`/api/v4/index/${dataSourceId}?APPLICATION=${application}`)
+      .then(handleResponse)
   }
 
   async getIndexByDocument(
@@ -16,8 +17,9 @@ export class IndexAPI implements IIndexAPI {
     documentId: string,
     application: string
   ): Promise<IndexNodes> {
-    const url = `${nodeUrl}/${documentId}?APPLICATION=${application}`
-    return apiProvider.get(url)
+    return axios
+      .get(`${nodeUrl}/${documentId}?APPLICATION=${application}`)
+      .then(handleResponse)
   }
 }
 

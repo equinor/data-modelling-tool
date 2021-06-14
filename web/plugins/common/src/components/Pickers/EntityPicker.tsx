@@ -1,8 +1,8 @@
 // @ts-ignore
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import {
-  Application,
+  ApplicationContext,
   DataSourceAPI,
   IIndex,
   Modal,
@@ -27,8 +27,9 @@ export const EntityPicker = (props: EntityPickerProps) => {
   const [showModal, setShowModal] = useState<boolean>(false)
   const dataSourceAPI = new DataSourceAPI()
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
+  const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
-    application: Application.DMTEntities,
+    application: application,
     dataSources: dataSources.models.dataSources,
   })
   const handleOpenOrExpand = (props: any) => {

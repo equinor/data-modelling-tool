@@ -7,9 +7,8 @@ import DashboardProvider, {
   IDashboard,
   useDashboard,
 } from '../context/dashboard/DashboardProvider'
-import { Application, DataSourceAPI, IndexAPI } from '@dmt/common'
+import { DataSourceAPI, IndexAPI } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
-// @ts-ignore
 
 const Group = styled.div`
   display: flex;
@@ -30,7 +29,6 @@ const IndexContextWrapper = () => {
     <IndexProvider
       indexApi={indexAPI}
       dataSources={dashboard.models.dataSources.models.dataSources}
-      application={dashboard.models.application}
     >
       <Group>
         <div>
@@ -47,12 +45,9 @@ const IndexContextWrapper = () => {
   )
 }
 
-export default () => {
+export default ({ settings }: any) => {
   return (
-    <DashboardProvider
-      dataSourceApi={dataSourceAPI}
-      application={Application.DEFAULT}
-    >
+    <DashboardProvider dataSourceApi={dataSourceAPI}>
       <IndexContextWrapper />
     </DashboardProvider>
   )

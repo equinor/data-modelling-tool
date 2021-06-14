@@ -1,7 +1,7 @@
 from typing import Callable, List, Union
 from uuid import UUID, uuid4
 
-from enums import DMT
+from enums import BLUEPRINTS
 
 
 class Package:
@@ -64,13 +64,13 @@ class Package:
 
     @property
     def type(self):
-        return DMT.PACKAGE.value
+        return BLUEPRINTS.PACKAGE.value
 
     def _content_to_ref_dict(self):
         result = []
         for child in self.content:
             if isinstance(child, Package):
-                result.append({"_id": str(child.uid), "name": child.name, "type": DMT.PACKAGE.value})
+                result.append({"_id": str(child.uid), "name": child.name, "type": BLUEPRINTS.PACKAGE.value})
             else:  # Assume the child is a dict
                 result.append({"_id": child["_id"], "name": child["name"], "type": child["type"]})
         return result

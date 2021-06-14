@@ -1,10 +1,10 @@
 // @ts-ignore
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { FaTimes } from 'react-icons/fa'
 import { BlueprintEnum } from '../../utils/variables'
 import {
-  Application,
+  ApplicationContext,
   DataSourceAPI,
   IIndex,
   Modal,
@@ -71,8 +71,9 @@ const MultiSelector = ({
 
   const dataSourceAPI = new DataSourceAPI()
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
+  const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
-    application: Application.DMTEntities,
+    application: application,
     dataSources: dataSources.models.dataSources,
   })
 

@@ -9,6 +9,7 @@ from zipfile import ZipFile
 from dmss_api import ApiException
 
 from domain_classes.package import Package
+from enums import BLOB_TYPES
 from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
 from restful import request_object as req
 from restful import response_object as res
@@ -71,7 +72,8 @@ def add_file_to_package(path: Path, package: Package, document: dict) -> Tuple[U
         uid = uuid4()
         # If the document has an "_id", return it as an alias, if not use UUID as alias.
         alias = document.get("_id", str(uid))
-        package.content.append({**document, "_id": alias})
+        if document["type"] not in BLOB_TYPES:
+            package.content.append({**document, "_id": alias})
         return uid, alias
 
     sub_folder = next((p for p in package.content if p["name"] == path.parts[0]), None)
@@ -98,13 +100,14 @@ def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: i
     with ZipFile(zip_package) as zip_file:
         # Construct a nested Package object of the package to import
         for filename in zip_file.namelist():
+            if Path(filename).suffix != ".json":
+                continue
             filename = filename.split("/", 1)[1]  # Remove RootPackage prefix
             try:
-                uid, alias = add_file_to_package(
-                    Path(filename), root_package, json.loads(zip_file.read(f"{package_name}/{filename}"))
-                )
+                json_doc = json.loads(zip_file.read(f"{package_name}/{filename}"))
             except JSONDecodeError:
-                raise JSONDecodeError(f"Failed to read file '{filename}' in package '{package_name}' Aborting...")
+                raise Exception(f"Failed to load the file '{filename}' as a JSON document")
+            uid, alias = add_file_to_package(Path(filename), root_package, json_doc)
 
             # Create a dict with new UUID's and absolute references for every file in the package
             relative_path = f"/{filename.removesuffix('.json')}"

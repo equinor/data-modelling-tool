@@ -3,11 +3,7 @@ set -eu
 ENVIRON=${ENVIRONMENT:="production"}
 FLA_ENV=${FLASK_ENV:="production"}
 
-if [ "$1" = 'reset-app' ]; then
-  flask remove-application
-  flask init-application
-  exit 0
-fi
+
 
 # Wait until the storage services is ready before continuing.
 # This is to ensure that the services is initialized before the API tries to connect.
@@ -43,13 +39,17 @@ if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ]; then
   install_dmss_package
 fi
 
+if [ "$1" = 'reset-app' ]; then
+  python /code/app.py reset-app
+  exit 0
+fi
+
 if [ ! -e first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
   service_is_ready
   echo "Importing data"
-  ./reset-application.sh
+  python /code/app.py reset-app
   touch first-run-false
 fi
-
 
 if [ "$1" = 'api' ]; then
   service_is_ready

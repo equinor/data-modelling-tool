@@ -12,3 +12,4 @@ export type { IIndex, IModels, IndexProps, IOperations } from './hooks/useIndex'
 
 export * from './services'
 export * from './utils/variables'
+export * from './context/ApplicationContext'

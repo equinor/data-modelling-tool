@@ -1,17 +1,16 @@
 import React from 'react'
 import Editor from './editor/Editor'
 import DashboardProvider from '../context/dashboard/DashboardProvider'
-import { Application, DataSourceAPI } from '@dmt/common'
+import { ApplicationContext, DataSourceAPI } from '@dmt/common'
 
 const dataSourceAPI = new DataSourceAPI()
 
-export default () => {
+export default ({ settings }: any) => {
   return (
-    <DashboardProvider
-      dataSourceApi={dataSourceAPI}
-      application={Application.DEFAULT}
-    >
-      <Editor />
-    </DashboardProvider>
+    <ApplicationContext.Provider value={settings}>
+      <DashboardProvider dataSourceApi={dataSourceAPI}>
+        <Editor />
+      </DashboardProvider>
+    </ApplicationContext.Provider>
   )
 }

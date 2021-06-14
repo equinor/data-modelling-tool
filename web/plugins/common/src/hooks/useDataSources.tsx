@@ -1,4 +1,6 @@
 import { useEffect, useReducer } from 'react'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 import DataSourceReducer, {
   DocumentActions,
   initialState,
@@ -18,22 +20,21 @@ export interface IDataSources {
 
 export const useDataSources = (dataSourceApi: IDataSourceAPI): IDataSources => {
   const [state, dispatch] = useReducer(DataSourceReducer, initialState)
-
   if (!dataSourceApi) dataSourceApi = new DataSourceAPI()
 
   const fetchData = async () => {
     try {
       const dataSources = await dataSourceApi.getAll()
       dispatch(DocumentActions.addDataSources(dataSources))
-    } catch {
-      // TODO: Implement error handling
+    } catch (error) {
+      console.error(error)
+      NotificationManager.error(error)
     }
   }
 
   useEffect(() => {
     fetchData()
   }, [])
-
   return {
     operations: {},
     models: {

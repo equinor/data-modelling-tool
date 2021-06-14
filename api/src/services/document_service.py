@@ -7,7 +7,7 @@ from config import Config
 from domain_classes.blueprint import Blueprint
 from domain_classes.dto import DTO
 from domain_classes.tree_node import ListNode, Node
-from enums import DMT
+from enums import BLUEPRINTS
 from repository.zip_file import ZipFileClient
 from services.dmss import get_blueprint, get_document, get_document_by_uid
 
@@ -41,7 +41,7 @@ class DocumentService:
             # A list node is always contained on parent. Need to check the blueprint
             if child.is_array() and not child.storage_contained():
                 # If the node is a package, we build the path string to be used by "export zip"-repository
-                if node.type == DMT.PACKAGE.value:
+                if node.type == BLUEPRINTS.PACKAGE.value:
                     path = f"{path}/{node.name}/" if path else f"{node.name}"
                 [self.save(x, data_source_id, repository, path) for x in child.children]
             elif not child.contained():

@@ -1,17 +1,17 @@
 import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
 import DashboardProvider, { useDashboard } from './DashboardProvider'
-import { Application, DataSources, IDataSourceAPI } from '@dmt/common'
+import { ApplicationContext, DataSources, IDataSourceAPI } from '@dmt/common'
 import { mock } from 'jest-mock-extended'
 
 const wrapper: React.FC = ({ children, application, api }: any) => (
-  <DashboardProvider application={application} dataSourceApi={api}>
-    {children}
-  </DashboardProvider>
+  <ApplicationContext.Provider value={application}>
+    <DashboardProvider dataSourceApi={api}>{children}</DashboardProvider>
+  </ApplicationContext.Provider>
 )
 
 describe('the dashboard provider component', () => {
-  const application = Application.DEFAULT
+  const application = { id: 'testApp' }
 
   describe('when provider is initialized', () => {
     it('should correctly return the DashboardContext object', async () => {
@@ -29,7 +29,6 @@ describe('the dashboard provider component', () => {
           models: {
             layout: expect.any(Object),
             dataSources: expect.any(Object),
-            application: expect.any(String),
           },
           operations: {},
         })

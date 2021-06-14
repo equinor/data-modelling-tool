@@ -2,7 +2,12 @@ import IndexProvider, { useGlobalIndex } from './IndexProvider'
 import React from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 import { mock } from 'jest-mock-extended'
-import { DataSource, IDocumentAPI, Application, IIndexAPI } from '@dmt/common'
+import {
+  DataSource,
+  IDocumentAPI,
+  ApplicationContext,
+  IIndexAPI,
+} from '@dmt/common'
 
 const wrapper: React.FC = ({
   children,
@@ -10,13 +15,11 @@ const wrapper: React.FC = ({
   dataSources,
   application,
 }: any) => (
-  <IndexProvider
-    indexApi={indexApi}
-    dataSources={dataSources}
-    application={application}
-  >
-    {children}
-  </IndexProvider>
+  <ApplicationContext.Provider value={application}>
+    <IndexProvider indexApi={indexApi} dataSources={dataSources}>
+      {children}
+    </IndexProvider>
+  </ApplicationContext.Provider>
 )
 
 describe('the index provider component', () => {
@@ -31,11 +34,12 @@ describe('the index provider component', () => {
     },
   ]
 
-  const application = Application.DEFAULT
+  const application = { id: 'testApp' }
 
   describe('when provider is initialized', () => {
     it('should correctly return the IndexContext object', async () => {
       const api = mock<IIndexAPI>()
+      api.getIndexByDataSource.mockReturnValue(Promise.resolve({}))
       const documentApi: IDocumentAPI = mock<IDocumentAPI>()
 
       const { result, waitForNextUpdate } = renderHook(useGlobalIndex, {

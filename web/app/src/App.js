@@ -1,21 +1,19 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
+
+import { Switch } from 'react-router'
+import Header from './AppHeader'
+import AppTab from './pages/App'
+import { authContext } from './context/auth/adalConfig'
+import { AuthProvider } from './context/auth/AuthContext'
+import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 
-import { Switch } from 'react-router'
-import { StatusProvider } from './context/status/StatusContext'
-import Header from './AppHeader'
-import DMTEntities from './pages/DMTEntities'
-import DefaultApp from './pages/App'
-import { authContext } from './context/auth/adalConfig'
-import { AuthProvider } from './context/auth/AuthContext'
-
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
-  appName: process.env.REACT_APP_EXPORTED_APP_NAME || 'Data Modelling',
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -40,26 +38,54 @@ const theme = {
 }
 
 function App() {
+  const [applications, setApplications] = useState({})
+  useEffect(() => {
+    systemAPI.getSystemSettings().then((res) => {
+      setApplications(res.data)
+    })
+  }, [])
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <AuthProvider idToken={authContext.getCachedUser()}>
           <GlobalStyle />
-          <StatusProvider>
-            <NotificationContainer />
+          <NotificationContainer />
+          {applications && (
             <Wrapper>
-              <Header />
+              <Header applications={applications} />
               <Switch>
-                <Route exact path="/app" component={DMTEntities} />
-                <Route exact path="/search" component={SearchPage} />
+                {Object.values(applications).map((setting) => {
+                  return (
+                    <Route
+                      exact
+                      path={`/${setting.id}`}
+                      render={() => <AppTab settings={setting} />}
+                    />
+                  )
+                })}
+                <Route
+                  exact
+                  path="/search"
+                  render={() => (
+                    <SearchPage settings={Object.values(applications)[0]} />
+                  )}
+                />
                 <Route
                   path="/view/:data_source/:entity_id"
-                  component={ViewPage}
+                  render={() => (
+                    <ViewPage settings={Object.values(applications)[0]} />
+                  )}
                 />
-                <Route path="/" component={DefaultApp} />
+                <Route
+                  exact
+                  path={'/'}
+                  render={() => (
+                    <AppTab settings={Object.values(applications)[0]} />
+                  )}
+                />
               </Switch>
             </Wrapper>
-          </StatusProvider>
+          )}
         </AuthProvider>
       </Router>
     </ThemeProvider>

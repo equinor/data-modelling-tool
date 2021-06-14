@@ -1,4 +1,5 @@
 import unittest
+from unittest import skip
 
 from services.application_service import ApplicationService
 from services.document_service import DocumentService
@@ -20,6 +21,7 @@ APPLICATION_SETTING = {
 
 
 class CreateApplication(unittest.TestCase):
+    @skip
     def test_create(self):
         document_service = DocumentService(uid_document_provider=lambda x, y: APPLICATION_SETTING)
         application_service = ApplicationService(document_service)

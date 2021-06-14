@@ -1,8 +1,8 @@
 // @ts-ignore
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import {
-  Application,
+  ApplicationContext,
   DataSourceAPI,
   IIndex,
   Modal,
@@ -23,8 +23,9 @@ export type BlueprintPickerProps = {
 export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
   const dataSourceAPI = new DataSourceAPI()
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
+  const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
-    application: Application.DEFAULT,
+    application: application,
     dataSources: dataSources.models.dataSources,
   })
 

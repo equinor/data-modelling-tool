@@ -53,9 +53,9 @@ const PluginComponent = (props: DmtUIPlugin) => {
 
   const [config, setConfig] = useState(undefined)
   useEffect(() => {
-    // @ts-ignore
     if (
       (!config && documentType !== undefined) ||
+      // @ts-ignore
       (config && config.type !== documentType)
     ) {
       createFormConfigs({

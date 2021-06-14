@@ -4,11 +4,11 @@ import DashboardProvider, {
   IDashboard,
   DashboardConsumer,
 } from '../context/dashboard/DashboardProvider'
+import { ApplicationContext } from '@dmt/common'
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks'
 import useExplorer, { IUseExplorer } from './useExplorer'
 import { mock } from 'jest-mock-extended'
 import {
-  Application,
   NodeType,
   DataSources,
   IDataSourceAPI,
@@ -25,17 +25,18 @@ const wrapper: React.FC = ({
   dataSourceApi,
   indexApi,
 }: any) => (
-  <DashboardProvider application={application} dataSourceApi={dataSourceApi}>
+  <DashboardProvider dataSourceApi={dataSourceApi}>
     <DashboardConsumer>
       {(dashboard: IDashboard) => {
         return (
-          <IndexProvider
-            dataSources={dashboard.models.dataSources.models.dataSources}
-            application={dashboard.models.application}
-            indexApi={indexApi}
-          >
-            {children}
-          </IndexProvider>
+          <ApplicationContext.Provider value={application}>
+            <IndexProvider
+              dataSources={dashboard.models.dataSources.models.dataSources}
+              indexApi={indexApi}
+            >
+              {children}
+            </IndexProvider>
+          </ApplicationContext.Provider>
         )
       }}
     </DashboardConsumer>
@@ -127,7 +128,7 @@ const getMocks = () => {
 }
 
 describe('the explorer hook', () => {
-  const application = Application.DEFAULT
+  const application = { id: 'testApp' }
 
   let mocks: any
   let response: RenderHookResult<any, IUseExplorer>
@@ -214,7 +215,7 @@ describe('the explorer hook', () => {
           expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
             '/api/v1/index/1',
             '1',
-            application
+            application.id
           )
         })
       })
