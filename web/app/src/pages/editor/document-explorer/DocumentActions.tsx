@@ -299,23 +299,22 @@ export const InsertReference = (props: IInsertReferenceProps) => {
 }
 
 export const SaveToExistingDocument = (props: any) => {
-  const { action } = props
-
-  const { runAndSaveToExistingDocument } = useRunnable()
+  const { node, action, explorer } = props
+  const { runAndSaveToExistingDocument } = useRunnable({ explorer })
 
   const handleRun = () => {
     runAndSaveToExistingDocument(
-      action.action.data.dataSourceId,
-      action.action.data.documentId,
-      action.node.path,
-      action.action.data.runnable.method,
-      action.node.parent
+      node.nodeData.meta.dataSource,
+      node.nodeData.nodeId,
+      node.path,
+      action.method,
+      node.parent
     )
   }
 
   const prompt = {
-    title: action.action.data.runnable.method,
-    content: `Are you sure you want to run the function '${action.action.data.runnable.method}'?`,
+    title: action.name,
+    content: `Are you sure you want to run the function '${action.method}'?`,
     buttonText: 'Run',
   }
 

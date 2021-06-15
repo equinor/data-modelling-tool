@@ -10,7 +10,6 @@ from use_case.utils.index_menu_actions import (
     get_export_menu_item,
     get_import_menu_item,
     get_rename_menu_action,
-    get_runnable_menu_action,
 )
 from use_case.utils.sort_menu_items import sort_menu_items
 from utils.group_by import group_by
@@ -112,9 +111,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             action_items = []
 
             for action in action_types[node.type]:
-                action_items.append(
-                    get_runnable_menu_action(data_source_id=data_source_id, document_id=node.node_id, runnable=action)
-                )
+                action_items.append({"label": action["name"], "action": "RUNNABLE", "data": action})
             menu_items.append({"label": "Actions", "menuItems": action_items})
 
         # Applications can be downloaded

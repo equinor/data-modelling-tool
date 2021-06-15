@@ -20,12 +20,13 @@ import {
   useGlobalIndex,
 } from '../../../context/global-index/IndexProvider'
 import { getUIPlugin } from '@dmt/core-plugins'
-
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 export default () => {
   const index: IGlobalIndex = useGlobalIndex()
   const explorer = useExplorer({})
   const { openModal } = useModalContext()
-  const { runAndSaveToNewDocument } = useRunnable()
+  const { runAndSaveToNewDocument } = useRunnable({ explorer })
 
   const handleToggle = (props: any) => {
     explorer.toggle({
@@ -138,28 +139,36 @@ export default () => {
         })
         break
       case ContextMenuActions.RUNNABLE:
-        switch (data.runnable.actionType) {
+        switch (data.actionType) {
           case ActionTypes.resultInEntity:
-            openModal(SaveToExistingDocument, {
-              dialog: { title: `Runnable` },
-              props: actionInputData,
-            })
+            openModal(
+              ({ action }: any) =>
+                SaveToExistingDocument({
+                  node: action.node,
+                  action: action.action.data,
+                  explorer: explorer,
+                }),
+              {
+                dialog: { title: `Run action` },
+                props: actionInputData,
+              }
+            )
             break
           case ActionTypes.separateResultFile:
             const handleSubmit = async (formData: any) => {
-              const outputType = data.runnable.output
               await runAndSaveToNewDocument(
-                data.dataSourceId,
-                data.documentId,
+                // @ts-ignore
+                node.nodeData.meta.dataSource,
+                node.nodeData.nodeId,
                 node.path,
                 formData,
-                outputType,
-                data.runnable.method
+                data.output,
+                data.method
               )
             }
             const separateResultFileProps = {
               explorer: explorer,
-              type: 'apps/DMT/actions/NewActionResult', //'`${data.request.type}`,
+              type: 'DMT-DS/DMT/actions/NewActionResult',
               uiRecipeName: 'DEFAULT_CREATE',
               onSubmit: handleSubmit,
             }
@@ -168,6 +177,10 @@ export default () => {
               props: separateResultFileProps,
             })
             break
+          default:
+            const message = `No valid 'actionType' is defined for action '${data.runnable.name}'`
+            console.error(message)
+            NotificationManager.error(message, 'Action Failed')
         }
     }
   }

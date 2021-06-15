@@ -35,139 +35,30 @@
 // * The output object must be left intact, and posted on every updateDocument call. Everything besides the output.entity object should be considered "read-only".
 // Here are a few examples;
 
-function sleep(ms) {
-  return new Promise((resolve) => setTimeout(resolve, ms))
-}
-
-function myExternalSystemCall(input) {
-  return {
-    jobId: 'kk873ks',
-    result: 123456,
-    executionTime: '1233215.34234ms',
-    progress: 100,
-    status: 'done',
-    message: 'job complete, no errors',
-  }
-}
-
-async function simulateCrash({ input, output, updateDocument, createEntity }) {
-  let entity = {
-    ...output.entity,
-    // This is an invalid attribute. Will not get written to database.
-    hallo: 'Hey',
-  }
-  updateDocument({ ...output, entity })
-  // Using the passed "createEntity" function, we can get an empty, in-memory entity, of any type.
-  // let newWheel = await createEntity('SSR-DataSource/CarPackage/Wheel')
-
-  // If the browser is interrupted during this sleep, the rest of the function will NOT be executed.
-  await sleep(10000)
-  entity.description = 'a'
-  updateDocument({ ...output, entity })
-  updateDocument({ ...output, entity: myExternalSystemCall(input) })
-
-  await sleep(2000)
-  entity.description = 'b'
-  updateDocument({ ...output, entity })
-
-  await sleep(5000)
-  entity.description = 'c'
-  updateDocument({ ...output, entity })
-
-  await sleep(5000)
-  entity['wheels'] = [
-    {
-      name: 'test5',
-      description: '',
-      type: 'SSR-DataSource/CarPackage/Wheel',
-      diameter: 120,
-      pressure: 0,
-      wheelsRecursive: [],
-    },
-  ]
-  output.notify = true
-  updateDocument({ ...output, entity })
-}
-
-async function runEngineResultFile({ input, output, updateDocument }) {
-  output.entity.power = 'test'
-  updateDocument(output)
-
-  await sleep(2000)
-  output.entity.description = 'Updated description from action1'
-  updateDocument(output)
-  await sleep(2000)
-  output.entity.description = 'Updated description from action2'
-  updateDocument(output)
-
-  await sleep(2000)
-  output.entity.description = 'Updated description from action3'
-  updateDocument(output)
-}
-
-async function runEngineResultInEntity({ input, output, updateDocument }) {
-  let entity = input.entity
-  entity.power = '94bhp'
-  entity.fuelPump = { name: 'My FuelPump', description: 'something' }
-  updateDocument({ ...output, entity, notify: true })
-}
-
-const getTodoList = async ({
+async function simulateCat3StormResultInEntity({
   input,
   output,
   updateDocument,
   createEntity,
   explorer,
-}) => {
-  explorer.toggle({ nodeId: input.id })
-  await sleep(2000)
-  explorer.toggle({ nodeId: input.id })
-  await sleep(2000)
-  explorer.toggle({ nodeId: input.id })
+}) {
+  output.entity.diameter = 222
+  await updateDocument(output)
+  let newEntity = await createEntity(output.entity.type)
+  console.log(newEntity)
+  let blueprint = await explorer.getBlueprint(newEntity.type)
+  console.log(blueprint)
+}
 
-  let entity = {
-    ...output.entity,
-  }
-
-  const type = output.blueprint.split('/')
-  const blueprint = await explorer.getByPath({
-    dataSourceId: type.shift(),
-    path: type.join('/'),
-  })
-  const todoItem = blueprint.document.attributes.find(
-    (attribute) => attribute.name === 'items'
-  )
-
-  const nodeUrl = `/api/v4/index/${output.dataSource}/${output.id}`
-  const content = {
-    attribute: 'items',
-    // @ts-ignore
-    description: 'Some description',
-    name: 'Item3',
-    parentId: output.id,
-    type: todoItem.attributeType,
-  }
-  // Explorer.create is basically the same as using add to parent,
-  // since the URL add-to-parent is set on backend.
-  const item1 = await explorer.addToParent({
-    dataSourceId: output.dataSource,
-    data: content,
-    nodeUrl: nodeUrl,
-  })
-  entity.items.push({
-    _id: item1.uid,
-    type: todoItem.attributeType,
-    name: content.name,
-  })
-  explorer.updateById({
-    dataSourceId: output.dataSource,
-    documentId: item1.uid,
-    attribute: '',
-    data: await createEntity(todoItem.attributeType),
-    nodeUrl,
-  })
-
-  // updateDocument({ ...output, entity, notify: true })
+async function simulateCat3StormResultInNewFile({
+  input,
+  output,
+  updateDocument,
+  createEntity,
+  explorer,
+}) {
+  output.entity.result = 333
+  updateDocument(output)
 }
 
 function cancelSimulation() {
@@ -175,10 +66,8 @@ function cancelSimulation() {
 }
 
 const runnableMethods = {
-  getTodoList,
-  simulateCrash,
-  runEngineResultFile,
-  runEngineResultInEntity,
+  simulateCat3StormResultInEntity,
+  simulateCat3StormResultInNewFile,
   cancelSimulation,
 }
 

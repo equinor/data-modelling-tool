@@ -5,5 +5,29 @@
   "packages": ["EntityApp-DS/DMT-demo"],
   "extraDataSources": [],
   "models": ["system/SIMOS/Entity"],
-  "actions": []
+  "actions": [
+    {
+      "name": "Run storm simulation",
+      "description": "Simulate a category 3 storm",
+      "input": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",
+      "output": "EntityApp-DS/DMT-demo/Actions/ActionResult",
+      "method": "simulateCat3StormResultInEntity",
+      "actionType": "resultInEntity"
+    },
+    {
+      "name": "Cancel Simulation",
+      "description": "Cancel started simulation",
+      "input": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",
+      "method": "cancelSimulation",
+      "actionType": "resultInEntity"
+    },
+    {
+      "name": "Run storm simulation - new result file",
+      "description": "Simulate a category 3 storm",
+      "input": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",
+      "output": "EntityApp-DS/DMT-demo/Actions/ActionResult",
+      "method": "simulateCat3StormResultInNewFile",
+      "actionType": "separateResultFile"
+    }
+  ]
 }
