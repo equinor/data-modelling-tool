@@ -54,13 +54,15 @@ function App() {
               <Header applications={applications} />
               <Switch>
                 {Object.values(applications).map((setting) => {
-                  return (
-                    <Route
-                      exact
-                      path={`/${setting.id}`}
-                      render={() => <AppTab settings={setting} />}
-                    />
-                  )
+                  if (!setting.hidden) {
+                    return (
+                      <Route
+                        exact
+                        path={`/${setting.name}`}
+                        render={() => <AppTab settings={setting} />}
+                      />
+                    )
+                  }
                 })}
                 <Route
                   exact

@@ -1,9 +1,12 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "Data Modelling",
+  "name": "DMT",
+  "label": "Data Modeling",
+  "tabIndex": 3,
+  "hidden": false,
+  "includedDataSources": ["DMT-DS"],
   "description": "",
   "packages": ["DMT-DS/DMT"],
-  "extraDataSources": [],
   "models": [
     "system/SIMOS/Blueprint",
     "system/SIMOS/Application",

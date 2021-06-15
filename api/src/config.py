@@ -34,7 +34,6 @@ class Config:
                 with open(f"{self.APPLICATION_HOME}/{app}/settings.json") as json_file:
                     self.APP_SETTINGS[app] = json.load(json_file)
                     self.APP_SETTINGS[app]["file_loc"] = json_file.name
-                    self.APP_SETTINGS[app]["id"] = app
 
                     # Create a list of data sources the application uses, based on folder names directly under
                     # HOME/data, and the list of "extraDataSources" from the applications settings file

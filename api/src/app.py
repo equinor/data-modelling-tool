@@ -46,6 +46,25 @@ def remove_application():
         )
     )
     for app_name, settings in config.APP_SETTINGS.items():
+        data_sorces_used = settings["includedDataSources"]
+        ds_dir = f"{config.APPLICATION_HOME}/{app_name}/{config.APPS_DATASOURCE_SUBFOLDER}/"
+        all_data_sources = os.listdir(ds_dir)
+        for filename in all_data_sources:
+            with open(f"{ds_dir}{filename}") as file:
+                data_source_name = json.load(file)["name"]
+            if not data_source_name in data_sorces_used:
+                data_source_packages = os.listdir(f"{config.APPLICATION_HOME}/{app_name}/{'data'}/{data_source_name}")
+                try:
+                    for folder in data_source_packages:
+                        dmss_api.explorer_remove_by_path(data_source_name, {"directory": folder})
+                    pass
+                except ApiException as error:
+                    if error.status == 404:
+                        logger.warning(f"Could not find '{folder}' in DMSS...")
+                        pass
+                    else:
+                        raise error
+
         for folder in settings["packages"]:
             logger.info(f"Deleting package '{folder}' from DMSS...")
             data_source, folder = folder.split("/", 1)
@@ -67,13 +86,22 @@ def init_application():
         logger.debug(f"Importing data for app '{app_name}'")
         logger.info("_____ importing data sources _____")
         ds_dir = f"{config.APPLICATION_HOME}/{app_name}/{config.APPS_DATASOURCE_SUBFOLDER}/"
-        data_sources_to_import = []
+        data_sources_to_use: [] = config.APP_SETTINGS.get(app_name).get("includedDataSources")
+        data_source_files_to_import: [] = []
+        data_source_names_to_import: [] = []
         try:
-            data_sources_to_import = os.listdir(ds_dir)
+
+            data_source_files: [] = os.listdir(ds_dir)
+            for filename in data_source_files:
+                with open(f"{ds_dir}{filename}") as file:
+                    data_source_name = json.load(file)["name"]
+                if data_source_name in data_sources_to_use:
+                    data_source_files_to_import.append(filename)
+                    data_source_names_to_import.append(data_source_name)
         except FileNotFoundError:
             logger.warning(f"No 'data_source' directory was found under '{ds_dir}'. Nothing to import...")
 
-        for filename in data_sources_to_import:
+        for filename in data_source_files_to_import:
             with open(f"{ds_dir}{filename}") as file:
                 document = json.load(file)
                 try:
@@ -93,6 +121,11 @@ def init_application():
         logger.info(f"_____ importing blueprints and entities {tuple(settings['packages'])}_____")
         for folder in settings["packages"]:
             data_source, folder = folder.split("/", 1)
+            if not data_source in data_source_names_to_import:
+                logger.info(
+                    f"_____ WARNING! skip importing package {data_source}/{folder}. This data source was not a part of includedDataSources in settings.json"
+                )
+                continue
             try:
                 memory_file = io.BytesIO()
                 with ZipFile(memory_file, mode="w") as zip_file:

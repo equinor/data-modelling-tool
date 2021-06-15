@@ -1,9 +1,12 @@
 {
   "type": "system/SIMOS/Application",
-  "name": "Entity Creation",
+  "name": "EntityApp",
+  "label": "Entity Creation",
+  "tabIndex": 1,
+  "hidden": false,
+  "includedDataSources": ["EntityApp-DS", "EntityApp-DS-2"],
   "description": "Create entities from existing blueprints",
-  "packages": ["EntityApp-DS/DMT-demo"],
-  "extraDataSources": [],
+  "packages": ["EntityApp-DS/DMT-demo", "EntityApp-DS-2/TestPackage"],
   "models": ["system/SIMOS/Entity"],
   "actions": [
     {

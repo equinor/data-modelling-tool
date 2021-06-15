@@ -58,7 +58,7 @@ const getMocks = () => {
     Promise.resolve(indexNodeToBeAdded)
   )
 
-  const application = { id: 'testApp' }
+  const application = { name: 'testApp' }
 
   return { dataSources, indexApi, application }
 }
@@ -92,11 +92,11 @@ describe('the useIndex hook', () => {
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledTimes(2)
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source1',
-        mocks.application.id
+        mocks.application.name
       )
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source2',
-        mocks.application.id
+        mocks.application.name
       )
     })
   })

@@ -42,7 +42,7 @@ export const useIndex = (props: IndexProps): IIndex => {
     await Promise.all(
       dataSources.map((dataSource: DataSource) =>
         indexApi
-          .getIndexByDataSource(dataSource.id, application.id)
+          .getIndexByDataSource(dataSource.id, application.name)
           .then((res) => {
             indexes.push(res)
           })
@@ -80,7 +80,7 @@ export const useIndex = (props: IndexProps): IIndex => {
       const result = await indexApi.getIndexByDocument(
         nodeUrl,
         documentId,
-        application.id
+        application.name
       )
 
       const treeNodes: TreeNodeData[] = toTreeNodes(result)
