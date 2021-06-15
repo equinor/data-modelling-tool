@@ -1,7 +1,6 @@
 import io
 import json
 import os
-import traceback
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -132,7 +131,6 @@ def init_application():
 
                 with open(blob_path, "rb") as file:
                     doc["blob_reference"] = Path(file.name).name
-                    # context.response = context.test_client.post(context.url, data=data, files=files)
                     parent_directory = str(Path(blob_container).parent)
                     target_directory = "/".join(parent_directory.split("/")[3:])
                     data_source = blob_container.split("/")[2]
@@ -143,7 +141,6 @@ def init_application():
                         files=[file],
                     )
     except Exception as e:
-        print(traceback.format_exc())
         print(e)
         pass
     logger.info("_____  DONE importing blobs _____")

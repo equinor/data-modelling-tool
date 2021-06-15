@@ -3,7 +3,6 @@ apis/index.ts
 index.ts
 models/AddToParentRequest.ts
 models/DataSourceRequest.ts
-models/DataSourceType.ts
 models/EntityName.ts
 models/GetDocumentResponse.ts
 models/HTTPValidationError.ts
@@ -13,7 +12,8 @@ models/RemoveByPathRequest.ts
 models/RemoveRequest.ts
 models/RenameRequest.ts
 models/Repository.ts
-models/SearchDataRequest.ts
+models/RepositoryType.ts
+models/StorageDataTypes.ts
 models/ValidationError.ts
 models/index.ts
 runtime.ts

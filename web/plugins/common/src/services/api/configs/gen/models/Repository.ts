@@ -14,10 +14,14 @@
 
 import { exists, mapValues } from '../runtime';
 import {
-    DataSourceType,
-    DataSourceTypeFromJSON,
-    DataSourceTypeFromJSONTyped,
-    DataSourceTypeToJSON,
+    RepositoryType,
+    RepositoryTypeFromJSON,
+    RepositoryTypeFromJSONTyped,
+    RepositoryTypeToJSON,
+    StorageDataTypes,
+    StorageDataTypesFromJSON,
+    StorageDataTypesFromJSONTyped,
+    StorageDataTypesToJSON,
 } from './';
 
 /**
@@ -28,10 +32,16 @@ import {
 export interface Repository {
     /**
      * 
-     * @type {DataSourceType}
+     * @type {RepositoryType}
      * @memberof Repository
      */
-    type: DataSourceType;
+    type: RepositoryType;
+    /**
+     * 
+     * @type {Array<StorageDataTypes>}
+     * @memberof Repository
+     */
+    dataTypes?: Array<StorageDataTypes>;
     /**
      * 
      * @type {string}
@@ -82,6 +92,12 @@ export interface Repository {
     accountKey?: string;
     /**
      * 
+     * @type {string}
+     * @memberof Repository
+     */
+    container?: string;
+    /**
+     * 
      * @type {boolean}
      * @memberof Repository
      */
@@ -98,7 +114,8 @@ export function RepositoryFromJSONTyped(json: any, ignoreDiscriminator: boolean)
     }
     return {
         
-        'type': DataSourceTypeFromJSON(json['type']),
+        'type': RepositoryTypeFromJSON(json['type']),
+        'dataTypes': !exists(json, 'data_types') ? undefined : ((json['data_types'] as Array<any>).map(StorageDataTypesFromJSON)),
         'host': !exists(json, 'host') ? undefined : json['host'],
         'port': !exists(json, 'port') ? undefined : json['port'],
         'username': !exists(json, 'username') ? undefined : json['username'],
@@ -107,6 +124,7 @@ export function RepositoryFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'collection': !exists(json, 'collection') ? undefined : json['collection'],
         'accountName': !exists(json, 'account_name') ? undefined : json['account_name'],
         'accountKey': !exists(json, 'account_key') ? undefined : json['account_key'],
+        'container': !exists(json, 'container') ? undefined : json['container'],
         'tls': !exists(json, 'tls') ? undefined : json['tls'],
     };
 }
@@ -120,7 +138,8 @@ export function RepositoryToJSON(value?: Repository | null): any {
     }
     return {
         
-        'type': DataSourceTypeToJSON(value.type),
+        'type': RepositoryTypeToJSON(value.type),
+        'data_types': value.dataTypes === undefined ? undefined : ((value.dataTypes as Array<any>).map(StorageDataTypesToJSON)),
         'host': value.host,
         'port': value.port,
         'username': value.username,
@@ -129,6 +148,7 @@ export function RepositoryToJSON(value?: Repository | null): any {
         'collection': value.collection,
         'account_name': value.accountName,
         'account_key': value.accountKey,
+        'container': value.container,
         'tls': value.tls,
     };
 }

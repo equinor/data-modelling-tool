@@ -4,17 +4,29 @@ import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
-import { FaChevronDown, FaEye, FaPlus } from 'react-icons/fa'
+import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import { BlueprintPicker, DocumentAPI, JsonView } from '@dmt/common'
+import {
+  DataSourceAPI,
+  BlueprintPicker,
+  DataSources,
+  DocumentAPI,
+  JsonView,
+  ApplicationContext,
+} from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
 
 const documentAPI = new DocumentAPI()
 
-const hardCodedDataSource = 'EntityApp'
+const dataSourceAPI = new DataSourceAPI()
 
-const Container = styled.div`
+const StyledSelect = styled.select`
+  font-size: large;
+  margin: 0 5px 0 10px;
+`
+
+const Wrapper = styled.div`
   display: flex;
   flex-direction: column;
   width: 90%;
@@ -137,7 +149,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
         })
         .catch((error) => {
           NotificationManager.error(`${error.message}`)
-          console.log(error)
+          console.error(error)
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -189,7 +201,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 
 function FilterContainer({ search, queryError }) {
   const [filter, setFilter] = useLocalStorage('searchFilter', {})
-  const [attributes, setAttributes] = useState([])
+  const [attributes, setAttributes] = useState<Array<any>>([])
 
   function onChange(filterChange: any) {
     setFilter({ ...filter, ...filterChange })
@@ -205,14 +217,14 @@ function FilterContainer({ search, queryError }) {
         })
         .catch((error) => {
           NotificationManager.error(`${error.message}`)
-          console.log(error)
+          console.error(error)
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filter?.type])
 
   return (
-    <Container>
+    <Wrapper>
       <b>Filter</b>
       <form
         onSubmit={(event) => {
@@ -295,12 +307,12 @@ function FilterContainer({ search, queryError }) {
           </ButtonContainer>
         </Group>
       </form>
-    </Container>
+    </Wrapper>
   )
 }
 
-// Return a TabelRow for an entity. Clickable to toggle view of the raw document
-function EntityRow({ entity }: any) {
+// Return a TableRow for an entity. Clickable to toggle view of the raw document
+function EntityRow({ entity, dataSource }: any) {
   return (
     <>
       <tr>
@@ -309,7 +321,7 @@ function EntityRow({ entity }: any) {
         <TabelData>{entity.description}</TabelData>
         <TabelData>{entity._id}</TabelData>
         <td style={{ padding: '5px' }}>
-          <Link to={{ pathname: `/view/${hardCodedDataSource}/${entity._id}` }}>
+          <Link to={{ pathname: `/view/${dataSource}/${entity._id}` }}>
             View
             <EyeIcon />
           </Link>
@@ -319,9 +331,9 @@ function EntityRow({ entity }: any) {
   )
 }
 
-function ResultContainer({ result }: any) {
+function ResultContainer({ result, dataSource }: any) {
   return (
-    <Container style={{ marginTop: '10px' }}>
+    <Wrapper style={{ marginTop: '10px' }}>
       <b>Result</b>
       <Group>
         <table>
@@ -335,50 +347,101 @@ function ResultContainer({ result }: any) {
             </tr>
 
             {result.map((entity: any) => (
-              <EntityRow key={entity._id} entity={entity} />
+              <EntityRow
+                key={entity._id}
+                entity={entity}
+                dataSource={dataSource}
+              />
             ))}
           </tbody>
         </table>
       </Group>
-    </Container>
+    </Wrapper>
+  )
+}
+
+function SelectDataSource({
+  selectedDataSource,
+  setSelectedDataSource,
+  dataSources,
+}: any) {
+  return (
+    <Wrapper style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+      <b>Select datasource to search:</b>
+      <StyledSelect
+        value={selectedDataSource}
+        onChange={(event: UIEvent) => setSelectedDataSource(event.target.value)}
+      >
+        {dataSources.map((dataSource) => {
+          return (
+            <option value={dataSource.name} key={dataSource.id}>
+              {dataSource.name}
+            </option>
+          )
+        })}
+      </StyledSelect>
+      <FaDatabase style={{ color: 'gray', width: '20px', height: '20px' }} />
+    </Wrapper>
   )
 }
 
 export default ({ settings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
+  const [dataSources, setDataSources] = useState<DataSources>([])
+  const [selectedDataSource, setSelectedDataSource] = useLocalStorage(
+    'searchDatasource',
+    ''
+  )
+
+  useEffect(() => {
+    dataSourceAPI
+      .getAll()
+      .then((dataSources: DataSources) => {
+        setDataSources(dataSources)
+      })
+      .catch((error) => {
+        console.error(error)
+        NotificationManager.error(error, 'Failed to fetch datasources', 0)
+      })
+  }, [])
 
   function search(query: any) {
-    setQueryError('')
-    //TODO: Get DataSourceId from User
     documentAPI
-      .search(`${hardCodedDataSource}`, query)
+      .search(selectedDataSource, query)
       .then((result: any) => {
-        // @ts-ignore
-        let resultList = []
-        Object.keys(result).map((key) => resultList.push(result[key]))
+        setQueryError('')
+        let resultList = Object.values(result)
         if (resultList.length === 0) {
-          NotificationManager.success('Search complete!\n No results')
+          NotificationManager.warning('No entities found', 'Search')
         } else {
           NotificationManager.success(
-            `Search complete!\n ${resultList.length} results`
+            `Found ${resultList.length} matching ${
+              resultList.length > 1 ? 'entities' : 'entity'
+            }`,
+            'Search'
           )
         }
         // @ts-ignore
         setResult(resultList)
       })
       .catch((err: any) => {
-        const message =
-          err?.response?.data?.detail || err?.response?.data?.message
-        setQueryError(message)
-        console.log(err)
+        setQueryError(err.message)
+        console.error(err)
       })
   }
 
   return (
     <>
-      <FilterContainer search={search} queryError={queryError} />
-      <ResultContainer result={result} />
+      <SelectDataSource
+        selectedDataSource={selectedDataSource}
+        setSelectedDataSource={setSelectedDataSource}
+        dataSources={dataSources}
+      />
+      <ApplicationContext.Provider value={settings}>
+        <FilterContainer search={search} queryError={queryError} />
+      </ApplicationContext.Provider>
+      <ResultContainer result={result} dataSource={selectedDataSource} />
     </>
   )
 }

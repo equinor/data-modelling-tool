@@ -1,6 +1,5 @@
 export * from './AddToParentRequest';
 export * from './DataSourceRequest';
-export * from './DataSourceType';
 export * from './EntityName';
 export * from './GetDocumentResponse';
 export * from './HTTPValidationError';
@@ -10,5 +9,6 @@ export * from './RemoveByPathRequest';
 export * from './RemoveRequest';
 export * from './RenameRequest';
 export * from './Repository';
-export * from './SearchDataRequest';
+export * from './RepositoryType';
+export * from './StorageDataTypes';
 export * from './ValidationError';

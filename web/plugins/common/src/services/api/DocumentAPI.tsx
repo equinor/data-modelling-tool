@@ -5,7 +5,7 @@ import { Reference, RenameRequest } from './configs/gen'
 
 const handleDocumentApiError = (error: any) => {
   return error.json().then((response: any) => {
-    throw new Error(`Error message from DMSS API: ${JSON.stringify(response)}`)
+    throw new Error(JSON.stringify(response))
   })
 }
 
@@ -112,14 +112,10 @@ export class DocumentAPI implements IDocumentAPI {
   }
 
   search(dataSourceId: string, query: any): Promise<any> {
-    return dmssApi
-      .search({
-        dataSourceId: dataSourceId,
-        searchDataRequest: query,
-      })
-      .catch((error: any) => {
-        return handleDocumentApiError(error)
-      })
+    return dmssApi.search({
+      dataSourceId: dataSourceId,
+      body: query,
+    })
   }
 
   updateById(
