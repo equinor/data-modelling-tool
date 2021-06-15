@@ -1,0 +1,11 @@
+{
+  "type": "system/SIMOS/Application",
+  "name": "AnotherApp",
+  "label": "Another app",
+  "tabIndex": 2,
+  "includedDataSources": ["AnotherApp-DS"],
+  "description": "",
+  "packages": ["AnotherApp-DS/TestPackage2"],
+  "models": ["system/SIMOS/Entity"],
+  "actions": []
+}

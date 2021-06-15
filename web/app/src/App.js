@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { NotificationContainer } from 'react-notifications'
+import { NotificationContainer, NotificationManager } from 'react-notifications'
+
 import { Switch } from 'react-router'
 import Header from './AppHeader'
 import AppTab from './pages/AppTab'
@@ -37,24 +38,40 @@ const theme = {
 }
 
 function App() {
-  const [applications, setApplications] = useState(null)
+  const [applications, setApplications] = useState(undefined)
+  const [firstVisibleApplication, setFirstVisibleApplication] = useState(undefined)
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
       setApplications(res.data)
+      setFirstVisibleApplication(getFirstVisibleApplicationSettings(res.data))
+      //THERE IS SOMETHING MISSING HERE. below func should be moved!
     })
   }, [])
+
+  const getFirstVisibleApplicationSettings = (applications) => {
+    const apps = Object.values(applications)
+    for (let i = 0; i<apps.length; i++) {
+      let app = apps[i]
+      if (app?.hidden ) continue
+      else return apps[i]// apps[i]
+    }
+
+    NotificationManager.error("Error: found no applications that are set to 'visible'. Try to update an application's settings.json to 'hidden': false")
+  }
+
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <AuthProvider idToken={authContext.getCachedUser()}>
           <GlobalStyle />
           <NotificationContainer />
-          {applications && (
+          {applications && firstVisibleApplication && (
             <Wrapper>
-              <Header applications={applications} />
+              <Header applications={applications} initialActiveApp={firstVisibleApplication} />
               <Switch>
                 {Object.values(applications).map((setting) => {
-                  if (!setting.hidden) {
+                  if (!setting?.hidden) {
                     return (
                       <Route
                         exact
@@ -68,7 +85,7 @@ function App() {
                   exact
                   path="/search"
                   render={() => (
-                    <SearchPage settings={Object.values(applications)[0]} />
+                    <SearchPage settings={firstVisibleApplication} />
                   )}
                 />
                 <Route
@@ -79,7 +96,7 @@ function App() {
                   exact
                   path={'/'}
                   render={() => (
-                    <AppTab settings={Object.values(applications)[0]} />
+                    <AppTab settings={firstVisibleApplication} />
                   )}
                 />
               </Switch>

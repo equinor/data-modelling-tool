@@ -3,7 +3,7 @@
   "name": "EntityApp",
   "label": "Entity Creation",
   "tabIndex": 1,
-  "hidden": false,
+  "hidden": true,
   "includedDataSources": ["EntityApp-DS", "EntityApp-DS-2"],
   "description": "Create entities from existing blueprints",
   "packages": ["EntityApp-DS/DMT-demo", "EntityApp-DS-2/TestPackage"],

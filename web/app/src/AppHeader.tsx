@@ -58,9 +58,10 @@ function UserInfo() {
 }
 interface AppHeaderProps {
   applications: Array<any>
+  initialActiveApp: any
 }
 
-export default ({ applications }: AppHeaderProps) => {
+export default ({ applications, initialActiveApp }: AppHeaderProps) => {
   const location = useLocation()
 
   function getActiveTab() {
@@ -89,10 +90,10 @@ export default ({ applications }: AppHeaderProps) => {
         <div>
           <>
             {sortApplications().map((app) => {
-              if (!app.hidden) {  //todo ?.hidden here instead????????????????????
+              if (!app?.hidden) {
                 return (
                   <Link to={`/${app.name}`} key={app.name}>
-                    <TabStyled isSelected={activeApp === app.name}>
+                    <TabStyled isSelected={getActiveTab() === app.name}>
                       {app?.label}
                     </TabStyled>
                   </Link>
