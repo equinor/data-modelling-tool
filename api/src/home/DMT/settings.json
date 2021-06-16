@@ -7,7 +7,6 @@
   "visibleDataSources": ["DMT-DS"],
   "description": "",
   "packages": ["DMT-DS/DMT"],
-  "extraDataSources": [],
   "models": [
     "system/SIMOS/Blueprint",
     "system/SIMOS/Application",
