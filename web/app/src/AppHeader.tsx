@@ -65,13 +65,12 @@ export default ({ applications, initialActiveApp }: AppHeaderProps) => {
   const location = useLocation()
 
   function getActiveTab() {
-    // activeApp (Tab Styling) is based on route, or if route is "/", the first application
-    if (location.pathname === '/') return Object.keys(applications)[0]
-    return Object.keys(applications).find(
-      (key: string) => key === location.pathname.substring(1)
-    ) 
-
-//do i need || initialActiveApp.name
+      // activeApp (Tab Styling) is based on route, or if route is "/", the first application (whose visibility is not hidden)
+      if (location.pathname === '/') return initialActiveApp.name
+      return Object.keys(applications).find(
+          (key: string) => key === location.pathname.substring(1)
+      )
+  }
 
   return (
     <>
