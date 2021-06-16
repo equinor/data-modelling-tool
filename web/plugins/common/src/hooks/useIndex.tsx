@@ -30,14 +30,13 @@ export interface IIndex {
 
 export interface IndexProps {
   dataSources: DataSource[]
+  application: any
   indexApi?: IIndexAPI
 }
 
 export const useIndex = (props: IndexProps): IIndex => {
-  const { dataSources, indexApi = new IndexAPI() } = props
+  const { dataSources, application, indexApi = new IndexAPI() } = props
   const [index, setIndex] = useState<Tree>({})
-  const application = useContext(ApplicationContext)
-  console.log('app useindex', application.name)
   const populateIndex = async (): Promise<void> => {
     let indexes: IndexNodes[] = []
     await Promise.all(
@@ -47,7 +46,6 @@ export const useIndex = (props: IndexProps): IIndex => {
             .getIndexByDataSource(dataSource.id, application.name)
             .then((res) => {
               indexes.push(res)
-              console.log('res is', res)
             })
             .catch((error) => {
               console.error(error)

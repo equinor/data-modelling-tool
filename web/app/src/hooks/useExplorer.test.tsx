@@ -128,7 +128,7 @@ const getMocks = () => {
 }
 
 describe('the explorer hook', () => {
-  const application = { name: 'testApp' }
+  const application = { name: 'testApp', allVisibleDataSources: ['localhost'] }
 
   let mocks: any
   let response: RenderHookResult<any, IUseExplorer>

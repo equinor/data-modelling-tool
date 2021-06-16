@@ -58,7 +58,10 @@ const getMocks = () => {
     Promise.resolve(indexNodeToBeAdded)
   )
 
-  const application = { name: 'testApp' }
+  const application = {
+    name: 'testApp',
+    allVisibleDataSources: ['source1', 'source2'],
+  }
 
   return { dataSources, indexApi, application }
 }

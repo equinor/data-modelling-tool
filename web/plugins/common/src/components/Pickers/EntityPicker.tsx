@@ -30,6 +30,7 @@ export const EntityPicker = (props: EntityPickerProps) => {
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,
+    application,
   })
   const handleOpenOrExpand = (props: any) => {
     index.operations.toggle(props.nodeData.nodeId)

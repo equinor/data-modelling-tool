@@ -74,6 +74,7 @@ const MultiSelector = ({
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,
+    application,
   })
 
   const handleOpenOrExpand = (props: any) => {

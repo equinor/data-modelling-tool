@@ -34,7 +34,10 @@ describe('the index provider component', () => {
     },
   ]
 
-  const application = { id: 'testApp' }
+  const application = {
+    name: 'testApp',
+    allVisibleDataSources: ['source1', 'source2'],
+  }
 
   describe('when provider is initialized', () => {
     it('should correctly return the IndexContext object', async () => {

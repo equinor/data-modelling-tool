@@ -26,6 +26,7 @@ export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,
+    application,
   })
 
   const handleOpenOrExpand = (props: any) => {
