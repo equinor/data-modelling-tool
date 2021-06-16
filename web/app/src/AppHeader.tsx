@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { AuthContext } from './context/auth/AuthContext'
 import { JsonView, Modal } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
-import {sortApplications} from "./utils/applicationHelperFunctions";
+import { sortApplications } from './utils/applicationHelperFunctions'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};

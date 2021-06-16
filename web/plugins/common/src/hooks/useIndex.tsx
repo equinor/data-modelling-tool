@@ -1,4 +1,4 @@
-import {useContext, useEffect, useState} from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Tree, TreeNodeData } from '../components/Tree'
 import { IIndexAPI, IndexNode, IndexNodes } from '../services'
 import { ITree, useTree } from '../components/Tree'
@@ -9,7 +9,7 @@ import values from 'lodash/values'
 import { DataSource } from '../services'
 import IndexAPI from '../services/api/IndexAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
-import {ApplicationContext} from "../context/ApplicationContext";
+import { ApplicationContext } from '../context/ApplicationContext'
 
 export interface IModels {
   tree: ITree
@@ -37,25 +37,24 @@ export const useIndex = (props: IndexProps): IIndex => {
   const { dataSources, indexApi = new IndexAPI() } = props
   const [index, setIndex] = useState<Tree>({})
   const application = useContext(ApplicationContext)
-
+  console.log('app useindex', application.name)
   const populateIndex = async (): Promise<void> => {
     let indexes: IndexNodes[] = []
     await Promise.all(
-      dataSources.map((dataSource: DataSource) =>
-      {
+      dataSources.map((dataSource: DataSource) => {
         if (application.allVisibleDataSources.includes(dataSource.name)) {
           return indexApi
             .getIndexByDataSource(dataSource.id, application.name)
             .then((res) => {
               indexes.push(res)
+              console.log('res is', res)
             })
             .catch((error) => {
               console.error(error)
               NotificationManager.error(`${error.response.data.message}`)
             })
-          }
         }
-      )
+      })
     )
     const combinedIndex = indexes
       .map((indexNode: IndexNodes) => toTreeNodes(indexNode))
@@ -85,7 +84,7 @@ export const useIndex = (props: IndexProps): IIndex => {
       const result = await indexApi.getIndexByDocument(
         nodeUrl,
         documentId,
-        application.id
+        application.name
       )
 
       const treeNodes: TreeNodeData[] = toTreeNodes(result)

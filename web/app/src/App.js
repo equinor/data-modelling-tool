@@ -10,7 +10,10 @@ import { AuthProvider } from './context/auth/AuthContext'
 import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
-import {getAllVisibleDataSources, getFirstVisibleApplicationSettings} from "./utils/applicationHelperFunctions";
+import {
+  getAllVisibleDataSources,
+  getFirstVisibleApplicationSettings,
+} from './utils/applicationHelperFunctions'
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
@@ -39,8 +42,10 @@ const theme = {
 
 function App() {
   const [applications, setApplications] = useState(undefined)
-  const [firstVisibleApplication, setFirstVisibleApplication] = useState(undefined)
-  const [allVisibleDataSources, setAllVisibleDataSources] = useState(["EntityApp-DS", "EntityApp-DS-2", "AnotherApp-DS", "DMT-DS"]) //UPDATE
+  const [firstVisibleApplication, setFirstVisibleApplication] = useState(
+    undefined
+  )
+  const [allVisibleDataSources, setAllVisibleDataSources] = useState(undefined)
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
       setApplications(res.data)
@@ -49,8 +54,6 @@ function App() {
     })
   }, [])
 
-
-
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -58,9 +61,11 @@ function App() {
           <GlobalStyle />
           <NotificationContainer />
           {applications && firstVisibleApplication && allVisibleDataSources && (
-
             <Wrapper>
-              <Header applications={applications} initialActiveApp={firstVisibleApplication}  />
+              <Header
+                applications={applications}
+                initialActiveApp={firstVisibleApplication}
+              />
               <Switch>
                 {Object.values(applications).map((setting) => {
                   if (!setting?.hidden) {
@@ -68,7 +73,12 @@ function App() {
                       <Route
                         exact
                         path={`/${setting.name}`}
-                        render={() => <AppTab settings={setting} allVisibleDataSources={allVisibleDataSources} />}
+                        render={() => (
+                          <AppTab
+                            settings={setting}
+                            allVisibleDataSources={allVisibleDataSources}
+                          />
+                        )}
                       />
                     )
                   }
@@ -88,7 +98,10 @@ function App() {
                   exact
                   path={'/'}
                   render={() => (
-                    <AppTab settings={firstVisibleApplication} allVisibleDataSources={allVisibleDataSources} />
+                    <AppTab
+                      settings={firstVisibleApplication}
+                      allVisibleDataSources={allVisibleDataSources}
+                    />
                   )}
                 />
               </Switch>

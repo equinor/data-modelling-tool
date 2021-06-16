@@ -7,7 +7,9 @@ const dataSourceAPI = new DataSourceAPI()
 
 export default ({ settings, allVisibleDataSources }: any) => {
   return (
-    <ApplicationContext.Provider value={{...settings, "allVisibleDataSources": allVisibleDataSources }}>
+    <ApplicationContext.Provider
+      value={{ ...settings, allVisibleDataSources: allVisibleDataSources }}
+    >
       <DashboardProvider dataSourceApi={dataSourceAPI}>
         <Editor />
       </DashboardProvider>
