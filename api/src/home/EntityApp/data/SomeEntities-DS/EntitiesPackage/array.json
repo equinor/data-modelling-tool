@@ -1,0 +1,28 @@
+{
+  "_id": "fe389a6a-8fb0-4900-a105-aab650e4cccc",
+  "name": "ArrayEntity",
+  "description": "",
+  "type": "EntityApp-DS/DMT-demo/ComplexArrays/Matrix3DInt",
+  "matrix_3d": [
+    [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ],
+    [
+      [
+        0,
+        0
+      ],
+      [
+        0,
+        0
+      ]
+    ]
+  ]
+}

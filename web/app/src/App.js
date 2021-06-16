@@ -1,8 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { NotificationContainer, NotificationManager } from 'react-notifications'
-
+import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import Header from './AppHeader'
 import AppTab from './pages/AppTab'
@@ -11,6 +10,7 @@ import { AuthProvider } from './context/auth/AuthContext'
 import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
+import {getAllVisibleDataSources, getFirstVisibleApplicationSettings} from "./utils/applicationHelperFunctions";
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
@@ -40,24 +40,15 @@ const theme = {
 function App() {
   const [applications, setApplications] = useState(undefined)
   const [firstVisibleApplication, setFirstVisibleApplication] = useState(undefined)
+  const [allVisibleDataSources, setAllVisibleDataSources] = useState(["EntityApp-DS", "EntityApp-DS-2", "AnotherApp-DS", "DMT-DS"]) //UPDATE
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
       setApplications(res.data)
       setFirstVisibleApplication(getFirstVisibleApplicationSettings(res.data))
-      //THERE IS SOMETHING MISSING HERE. below func should be moved!
+      setAllVisibleDataSources(getAllVisibleDataSources(res.data))
     })
   }, [])
 
-  const getFirstVisibleApplicationSettings = (applications) => {
-    const apps = Object.values(applications)
-    for (let i = 0; i<apps.length; i++) {
-      let app = apps[i]
-      if (app?.hidden ) continue
-      else return apps[i]// apps[i]
-    }
-
-    NotificationManager.error("Error: found no applications that are set to 'visible'. Try to update an application's settings.json to 'hidden': false")
-  }
 
 
   return (
@@ -66,9 +57,10 @@ function App() {
         <AuthProvider idToken={authContext.getCachedUser()}>
           <GlobalStyle />
           <NotificationContainer />
-          {applications && firstVisibleApplication && (
+          {applications && firstVisibleApplication && allVisibleDataSources && (
+
             <Wrapper>
-              <Header applications={applications} initialActiveApp={firstVisibleApplication} />
+              <Header applications={applications} initialActiveApp={firstVisibleApplication}  />
               <Switch>
                 {Object.values(applications).map((setting) => {
                   if (!setting?.hidden) {
@@ -76,7 +68,7 @@ function App() {
                       <Route
                         exact
                         path={`/${setting.name}`}
-                        render={() => <AppTab settings={setting} />}
+                        render={() => <AppTab settings={setting} allVisibleDataSources={allVisibleDataSources} />}
                       />
                     )
                   }
@@ -96,7 +88,7 @@ function App() {
                   exact
                   path={'/'}
                   render={() => (
-                    <AppTab settings={firstVisibleApplication} />
+                    <AppTab settings={firstVisibleApplication} allVisibleDataSources={allVisibleDataSources} />
                   )}
                 />
               </Switch>

@@ -5,7 +5,7 @@ import styled from 'styled-components'
 import { AuthContext } from './context/auth/AuthContext'
 import { JsonView, Modal } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
-import { sortApplications } from './utils/applicationHelperFunctions'
+import {sortApplications} from "./utils/applicationHelperFunctions";
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -69,10 +69,9 @@ export default ({ applications, initialActiveApp }: AppHeaderProps) => {
     if (location.pathname === '/') return Object.keys(applications)[0]
     return Object.keys(applications).find(
       (key: string) => key === location.pathname.substring(1)
-    )
-  }
+    ) 
 
-  //take ekstra props to appheader?
+//do i need || initialActiveApp.name
 
   return (
     <>
@@ -89,7 +88,7 @@ export default ({ applications, initialActiveApp }: AppHeaderProps) => {
       >
         <div>
           <>
-            {sortApplications().map((app) => {
+            {sortApplications(applications).map((app) => {
               if (!app?.hidden) {
                 return (
                   <Link to={`/${app.name}`} key={app.name}>

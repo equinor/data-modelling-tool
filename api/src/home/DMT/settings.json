@@ -3,10 +3,11 @@
   "name": "DMT",
   "label": "Data Modeling",
   "tabIndex": 0,
-  "hidden": true,
-  "includedDataSources": ["DMT-DS"],
+  "hidden": false,
+  "visibleDataSources": ["DMT-DS"],
   "description": "",
   "packages": ["DMT-DS/DMT"],
+  "extraDataSources": [],
   "models": [
     "system/SIMOS/Blueprint",
     "system/SIMOS/Application",

@@ -38,7 +38,7 @@ interface IndexProviderProps {
 const IndexProvider = (props: IndexProviderProps) => {
   const { dataSources, indexApi, children } = props
   const application = useContext(ApplicationContext)
-  const index = useIndex({ dataSources, application, indexApi })
+  const index = useIndex({ dataSources, indexApi })
 
   const value: IGlobalIndex = {
     models: {

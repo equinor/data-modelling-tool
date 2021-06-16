@@ -1,5 +1,5 @@
 {
-  "name": "AnotherApp-DS",
+  "name": "SomeEntities-DS",
   "repositories": {
     "default": {
       "data_types": ["blob"],
@@ -9,7 +9,7 @@
       "username": "maf",
       "password": "maf",
       "tls": false,
-      "database": "AnotherApp-DS",
+      "database": "SomeEntities-DS",
       "collection": "default"
     },
     "video_storage": {
@@ -20,7 +20,7 @@
       "username": "maf",
       "password": "maf",
       "tls": false,
-      "database": "AnotherApp-DS",
+      "database": "SomeEntities-DS",
       "collection": "video"
     },
     "azure_blob": {

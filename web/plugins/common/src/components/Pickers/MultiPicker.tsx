@@ -73,7 +73,6 @@ const MultiSelector = ({
   const dataSources: IDataSources = useDataSources(dataSourceAPI)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
-    application: application,
     dataSources: dataSources.models.dataSources,
   })
 
