@@ -17,7 +17,7 @@ jinja2 = "^2.11.1"
 urllib3 = "^1.25.9"
 toml = "^0.10.1"
 black = "^19.10b0"
-dmss-api = "^0.3.6"
+dmss-api = "^0.3.8"
 # Poetry does not install extras (needed by jinja2)
 # https://github.com/python-poetry/poetry/issues/1145
 certifi = "^2020.12.5"

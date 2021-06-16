@@ -3,10 +3,8 @@ import styled from 'styled-components'
 
 const context = createContext({
   activeTabId: 0,
-  changeTab: (id: string) => {},
+  changeTab: (id: number) => {},
 })
-
-const TabList = styled.div``
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -43,9 +41,6 @@ const TabPanel = ({ whenActive, children }: any) => {
 
 const TabSwitcher = ({ children }: any) => {
   const [activeTabId, setActiveTab] = useState<number>(0)
-  const changeTab = (newTabId: any) => {
-    setActiveTab(newTabId)
-  }
 
   const tabs = React.Children.map(
     children[0].props.children,
@@ -69,13 +64,13 @@ const TabSwitcher = ({ children }: any) => {
     <context.Provider
       value={{
         activeTabId: activeTabId,
-        changeTab: changeTab,
+        changeTab: (tabID: number) => setActiveTab(tabID),
       }}
     >
-      {tabs}
+      <div>{tabs}</div>
       {panels}
     </context.Provider>
   )
 }
 export default TabSwitcher
-export { Tab, TabPanel, TabList }
+export { Tab, TabPanel }

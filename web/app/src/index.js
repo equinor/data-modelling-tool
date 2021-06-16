@@ -18,10 +18,7 @@ const authEnabled = process.env.REACT_APP_AUTH === '1'
 if (authEnabled) {
   runWithAdal(
     authContext,
-    () => {
-      // eslint-disable-next-line
-      require('./indexApp.js')
-    },
+    () => ReactDOM.render(<App />, document.getElementById('root')),
     DO_NOT_LOGIN
   )
 } else {

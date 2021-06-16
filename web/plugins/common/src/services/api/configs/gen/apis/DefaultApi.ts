@@ -45,9 +45,6 @@ import {
     RenameRequest,
     RenameRequestFromJSON,
     RenameRequestToJSON,
-    SearchDataRequest,
-    SearchDataRequestFromJSON,
-    SearchDataRequestToJSON,
 } from '../models';
 
 export interface BlobGetByIdRequest {
@@ -159,7 +156,7 @@ export interface ReferenceInsertRequest {
 
 export interface SearchRequest {
     dataSourceId: string;
-    searchDataRequest: SearchDataRequest;
+    body: object;
 }
 
 /**
@@ -987,8 +984,8 @@ export class DefaultApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling search.');
         }
 
-        if (requestParameters.searchDataRequest === null || requestParameters.searchDataRequest === undefined) {
-            throw new runtime.RequiredError('searchDataRequest','Required parameter requestParameters.searchDataRequest was null or undefined when calling search.');
+        if (requestParameters.body === null || requestParameters.body === undefined) {
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling search.');
         }
 
         const queryParameters: any = {};
@@ -1002,7 +999,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: SearchDataRequestToJSON(requestParameters.searchDataRequest),
+            body: requestParameters.body as any,
         });
 
         return new runtime.JSONApiResponse<any>(response);

@@ -13,42 +13,35 @@
  */
 
 import { exists, mapValues } from '../runtime';
-import {
-    EntityType,
-    EntityTypeFromJSON,
-    EntityTypeFromJSONTyped,
-    EntityTypeToJSON,
-} from './';
-
 /**
  * 
  * @export
- * @interface SearchDataRequest
+ * @interface EntityType
  */
-export interface SearchDataRequest {
+export interface EntityType {
     /**
      * 
-     * @type {EntityType}
-     * @memberof SearchDataRequest
+     * @type {string}
+     * @memberof EntityType
      */
-    type: EntityType;
+    type: string;
 }
 
-export function SearchDataRequestFromJSON(json: any): SearchDataRequest {
-    return SearchDataRequestFromJSONTyped(json, false);
+export function EntityTypeFromJSON(json: any): EntityType {
+    return EntityTypeFromJSONTyped(json, false);
 }
 
-export function SearchDataRequestFromJSONTyped(json: any, ignoreDiscriminator: boolean): SearchDataRequest {
+export function EntityTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): EntityType {
     if ((json === undefined) || (json === null)) {
         return json;
     }
     return {
         
-        'type': EntityTypeFromJSON(json['type']),
+        'type': json['type'],
     };
 }
 
-export function SearchDataRequestToJSON(value?: SearchDataRequest | null): any {
+export function EntityTypeToJSON(value?: EntityType | null): any {
     if (value === undefined) {
         return undefined;
     }
@@ -57,7 +50,7 @@ export function SearchDataRequestToJSON(value?: SearchDataRequest | null): any {
     }
     return {
         
-        'type': EntityTypeToJSON(value.type),
+        'type': value.type,
     };
 }
 

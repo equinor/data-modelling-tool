@@ -1,14 +1,17 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import DocumentComponent from './editor/layout-components/DocumentComponent'
-import DashboardProvider, {
-  IDashboard,
-  useDashboard,
-} from '../context/dashboard/DashboardProvider'
-import { DataSourceAPI, IndexAPI } from '@dmt/common'
-import IndexProvider from '../context/global-index/IndexProvider'
+import { DocumentAPI } from '@dmt/common'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
+import { getUIPlugin } from '@dmt/core-plugins'
+import {
+  GenerateUiRecipeTabs,
+  getDefaultViewTabs,
+} from './editor/layout-components/GenerateUiRecipeTabs'
+import { UiRecipe } from '../domain/types'
+import Tabs, { Tab, TabPanel } from '../components/Tabs'
 
 const Group = styled.div`
   display: flex;
@@ -19,36 +22,83 @@ const Group = styled.div`
   background-color: white;
 `
 
-const dataSourceAPI = new DataSourceAPI()
+const documentAPI = new DocumentAPI()
 
-const IndexContextWrapper = () => {
-  const dashboard: IDashboard = useDashboard()
-  const { data_source, entity_id } = useParams()
-  const indexAPI = new IndexAPI()
+const View = (props: any) => {
+  const { dataSourceId, documentId, uiRecipe, document } = props
+  const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
   return (
-    <IndexProvider
-      indexApi={indexAPI}
-      dataSources={dashboard.models.dataSources.models.dataSources}
-    >
-      <Group>
-        <div>
-          <b>DataSource:</b>
-          <text style={{ marginLeft: '5px' }}>{data_source}</text>
-        </div>
-        <div>
-          <b>Entity:</b>
-          <text style={{ marginLeft: '5px' }}>{entity_id}</text>
-        </div>
-      </Group>
-      <DocumentComponent dataSourceId={data_source} documentId={entity_id} />
-    </IndexProvider>
+    <ExternalPlugin
+      dataSourceId={dataSourceId}
+      documentId={documentId}
+      uiRecipeName={uiRecipe.name}
+      document={document}
+    />
   )
 }
 
-export default ({ settings }: any) => {
+// This is enlarge a duplicate of the ViewList in DocumentComponent.tsx with
+// only view plugins (does not pass updateDocument(), explorer etc.)
+const ViewList = (props: any) => {
+  const generateUiRecipeTabs = new GenerateUiRecipeTabs(
+    props.blueprintType.uiRecipes,
+    getDefaultViewTabs(props.blueprintType.uiRecipes)
+  )
+  const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
+
   return (
-    <DashboardProvider dataSourceApi={dataSourceAPI}>
-      <IndexContextWrapper />
-    </DashboardProvider>
+    <Tabs>
+      <>
+        {uiRecipeTabs.map((uiRecipe: UiRecipe) => {
+          return (
+            <Tab key={uiRecipe.name + uiRecipe.plugin} id={uiRecipe.plugin}>
+              {uiRecipe.name}
+            </Tab>
+          )
+        })}
+      </>
+
+      {uiRecipeTabs.map((uiRecipe: UiRecipe) => {
+        return (
+          <TabPanel key={uiRecipe.name + uiRecipe.plugin}>
+            <View {...props} uiRecipe={uiRecipe} />
+          </TabPanel>
+        )
+      })}
+    </Tabs>
+  )
+}
+export default () => {
+  const { data_source, entity_id } = useParams()
+  const [document, setDocument] = useState(null)
+  const [blueprint, setBlueprint] = useState(null)
+
+  useEffect(() => {
+    documentAPI
+      .getById(data_source, entity_id)
+      .then((result) => {
+        setBlueprint(result.blueprint)
+        setDocument(result.document)
+      })
+      .catch((error) => {
+        console.error(error)
+        NotificationManager.error(error, 'Failed to fetch', 0)
+      })
+  }, [])
+
+  return (
+    <Group>
+      <div>
+        <b>DataSource:</b>
+        <text style={{ marginLeft: '5px' }}>{data_source}</text>
+      </div>
+      <div>
+        <b>Entity:</b>
+        <text style={{ marginLeft: '5px' }}>{entity_id}</text>
+      </div>
+      {document && blueprint && (
+        <ViewList document={document} blueprintType={blueprint} />
+      )}
+    </Group>
   )
 }

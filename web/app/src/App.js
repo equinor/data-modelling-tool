@@ -2,10 +2,9 @@ import React, { useEffect, useState } from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import { BrowserRouter as Router, Route } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
-
 import { Switch } from 'react-router'
 import Header from './AppHeader'
-import AppTab from './pages/App'
+import AppTab from './pages/AppTab'
 import { authContext } from './context/auth/adalConfig'
 import { AuthProvider } from './context/auth/AuthContext'
 import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
@@ -38,7 +37,7 @@ const theme = {
 }
 
 function App() {
-  const [applications, setApplications] = useState({})
+  const [applications, setApplications] = useState(null)
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
       setApplications(res.data)
@@ -72,9 +71,7 @@ function App() {
                 />
                 <Route
                   path="/view/:data_source/:entity_id"
-                  render={() => (
-                    <ViewPage settings={Object.values(applications)[0]} />
-                  )}
+                  component={ViewPage}
                 />
                 <Route
                   exact

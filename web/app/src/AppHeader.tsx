@@ -61,11 +61,15 @@ interface AppHeaderProps {
 
 export default ({ applications }: AppHeaderProps) => {
   const location = useLocation()
-  // activeApp (Tab Styling) is based on route, or if route is "/", the first application
-  const activeApp: string =
-    Object.keys(applications).find(
+
+  function getActiveTab() {
+    // activeApp (Tab Styling) is based on route, or if route is "/", the first application
+    if (location.pathname === '/') return Object.keys(applications)[0]
+    return Object.keys(applications).find(
       (key: string) => key === location.pathname.substring(1)
-    ) || Object.keys(applications)[0]
+    )
+  }
+
   return (
     <>
       <HeaderWrapper>
@@ -84,7 +88,7 @@ export default ({ applications }: AppHeaderProps) => {
             {Object.values(applications).map((value) => {
               return (
                 <Link to={`/${value.id}`} key={value.id}>
-                  <TabStyled isSelected={activeApp === value.id}>
+                  <TabStyled isSelected={getActiveTab() === value.id}>
                     {value?.name}
                   </TabStyled>
                 </Link>

@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 
 import styled from 'styled-components'
 import FetchDocument from '../../../utils/FetchDocument'
-import Tabs, { Tab, TabList, TabPanel } from '../../../components/Tabs'
+import Tabs, { Tab, TabPanel } from '../../../components/Tabs'
 import { UiRecipe } from '../../../domain/types'
 import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
@@ -74,7 +74,7 @@ const ViewList = (props: ViewListProps) => {
 
   return (
     <Tabs>
-      <TabList>
+      <>
         {uiRecipeTabs.map((uiRecipe: UiRecipe) => {
           return (
             <Tab key={uiRecipe.name + uiRecipe.plugin} id={uiRecipe.plugin}>
@@ -82,7 +82,7 @@ const ViewList = (props: ViewListProps) => {
             </Tab>
           )
         })}
-      </TabList>
+      </>
       {uiRecipeTabs.map((uiRecipe: UiRecipe) => {
         return (
           <TabPanel key={uiRecipe.name + uiRecipe.plugin}>
