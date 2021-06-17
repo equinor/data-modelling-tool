@@ -60,7 +60,7 @@ const getMocks = () => {
 
   const application = {
     name: 'testApp',
-    allVisibleDataSources: ['source1', 'source2'],
+    visibleDataSources: ['source1', 'source2'],
   }
 
   return { dataSources, indexApi, application }

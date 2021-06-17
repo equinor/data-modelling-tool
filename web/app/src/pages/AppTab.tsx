@@ -5,11 +5,9 @@ import { ApplicationContext, DataSourceAPI } from '@dmt/common'
 
 const dataSourceAPI = new DataSourceAPI()
 
-export default ({ settings, allVisibleDataSources }: any) => {
+export default ({ settings }: any) => {
   return (
-    <ApplicationContext.Provider
-      value={{ ...settings, allVisibleDataSources: allVisibleDataSources }}
-    >
+    <ApplicationContext.Provider value={settings}>
       <DashboardProvider dataSourceApi={dataSourceAPI}>
         <Editor />
       </DashboardProvider>

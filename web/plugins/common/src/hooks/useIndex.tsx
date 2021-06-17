@@ -41,7 +41,11 @@ export const useIndex = (props: IndexProps): IIndex => {
     let indexes: IndexNodes[] = []
     await Promise.all(
       dataSources.map((dataSource: DataSource) => {
-        if (application.allVisibleDataSources.includes(dataSource.name)) {
+        if (!application.visibleDataSources) {
+          NotificationManager.error(
+            `${'Selected application does not have any visible data sources.'}`
+          )
+        } else if (application.visibleDataSources.includes(dataSource.name)) {
           return indexApi
             .getIndexByDataSource(dataSource.id, application.name)
             .then((res) => {

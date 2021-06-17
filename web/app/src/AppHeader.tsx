@@ -61,15 +61,17 @@ interface AppHeaderProps {
   initialActiveApp: any
 }
 
-export default ({ applications, initialActiveApp }: AppHeaderProps) => {
+export default ({ applications }: AppHeaderProps) => {
   const location = useLocation()
 
   function getActiveTab() {
-      // activeApp (Tab Styling) is based on route, or if route is "/", the first application (whose visibility is not hidden)
-      if (location.pathname === '/') return initialActiveApp.name
-      return Object.keys(applications).find(
-          (key: string) => key === location.pathname.substring(1)
-      )
+    // activeApp (Tab Styling) is based on route, or if route is "/", the first application
+    if (location.pathname === '/') return applications[0].name
+    else if (location.pathname === '/search') return 'Search'
+    const index = applications.findIndex(
+      (application: any) => application.name === location.pathname.substring(1)
+    )
+    return applications[index].name
   }
 
   return (
@@ -92,7 +94,7 @@ export default ({ applications, initialActiveApp }: AppHeaderProps) => {
                 return (
                   <Link to={`/${app.name}`} key={app.name}>
                     <TabStyled isSelected={getActiveTab() === app.name}>
-                      {app?.label}
+                      {app?.label ? app.label : app.name}
                     </TabStyled>
                   </Link>
                 )

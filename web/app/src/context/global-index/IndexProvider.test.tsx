@@ -36,7 +36,7 @@ describe('the index provider component', () => {
 
   const application = {
     name: 'testApp',
-    allVisibleDataSources: ['source1', 'source2'],
+    visibleDataSources: ['source1', 'source2'],
   }
 
   describe('when provider is initialized', () => {
