@@ -58,7 +58,6 @@ function UserInfo() {
 }
 interface AppHeaderProps {
   applications: Array<any>
-  initialActiveApp: any
 }
 
 export default ({ applications }: AppHeaderProps) => {
@@ -68,10 +67,8 @@ export default ({ applications }: AppHeaderProps) => {
     // activeApp (Tab Styling) is based on route, or if route is "/", the first application
     if (location.pathname === '/') return applications[0].name
     else if (location.pathname === '/search') return 'Search'
-    const index = applications.findIndex(
-      (application: any) => application.name === location.pathname.substring(1)
-    )
-    return applications[index].name
+    else if (location.pathname.includes('/view')) return ""
+    return applications.find(app => app.name === location.pathname.substring(1)).name
   }
 
   return (

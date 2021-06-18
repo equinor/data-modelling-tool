@@ -199,13 +199,17 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   )
 }
 
-function FilterContainer({ search, queryError }) {
+function FilterContainer({ search, queryError, selectedDataSource }) {
   const [filter, setFilter] = useLocalStorage('searchFilter', {})
   const [attributes, setAttributes] = useState<Array<any>>([])
 
   function onChange(filterChange: any) {
     setFilter({ ...filter, ...filterChange })
   }
+
+  useEffect(() => {
+      setFilter({})
+  }, [selectedDataSource])
 
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
@@ -385,7 +389,8 @@ function SelectDataSource({
   )
 }
 
-export default ({ settings }: any) => {
+export default ({ allApplicationSettings }: any) => {
+  const [applicationSettings, setApplicationSettings] = useState(allApplicationSettings[0])
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
@@ -405,6 +410,18 @@ export default ({ settings }: any) => {
         NotificationManager.error(error, 'Failed to fetch datasources', 0)
       })
   }, [])
+
+    useEffect(() => {
+        const newApplication = allApplicationSettings.find((application) => {
+        if (application?.visibleDataSources)
+            return application.visibleDataSources.includes(selectedDataSource)
+            else return false
+        } )
+        if (newApplication) setApplicationSettings(newApplication)
+        else NotificationManager.warning("No applications are connected to this data source.")
+    }, [selectedDataSource])
+
+
 
   function search(query: any) {
     documentAPI
@@ -437,9 +454,11 @@ export default ({ settings }: any) => {
         selectedDataSource={selectedDataSource}
         setSelectedDataSource={setSelectedDataSource}
         dataSources={dataSources}
+        allApplicationSettings={allApplicationSettings}
+        setApplicationSettings={setApplicationSettings}
       />
-      <ApplicationContext.Provider value={settings}>
-        <FilterContainer search={search} queryError={queryError} />
+      <ApplicationContext.Provider value={applicationSettings}>
+        <FilterContainer search={search} queryError={queryError} selectedDataSource={selectedDataSource} />
       </ApplicationContext.Provider>
       <ResultContainer result={result} dataSource={selectedDataSource} />
     </>
