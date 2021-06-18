@@ -1,0 +1,12 @@
+{
+    "name": "ExtraSpecialChild",
+    "type": "system/SIMOS/Blueprint",
+    "extends": ["system/SIMOS/NamedEntity", "EntityApp-DS/DMT-demo/subtypes/BaseChild"],
+    "attributes": [
+        {
+            "name": "AnotherExtraValue",
+            "attributeType": "boolean",
+            "type": "system/SIMOS/BlueprintAttribute"
+        }
+    ]
+}

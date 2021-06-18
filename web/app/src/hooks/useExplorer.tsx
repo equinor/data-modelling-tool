@@ -189,7 +189,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   // TODO: This cache does not really work, as a new instance of useExplorer is created in every form
   const getBlueprint = (typeRef: string) => {
     // Check if blueprint is in cache
-    if (typeRef in blueprintCache) {
+    if (false) { //cache not working in example.
       console.log(`Found ${typeRef} in cache!`)
       return blueprintCache[typeRef]
     } else {

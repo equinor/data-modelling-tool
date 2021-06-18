@@ -1,0 +1,13 @@
+{
+  "_id": "1b6de98c-4b77-4d9a-9a2d-7eff26e3ba6a",
+  "name": "parent",
+  "type": "EntityApp-DS/DMT-demo/subtypes/Parent",
+  "description": "parent have a attribute 'somechild' that should be of type BaseChild, but the SpecialChild (extending BaseChild) is used.",
+  "SomeChild": {
+    "name": "specialChildInParent",
+    "type": "EntityApp-DS/DMT-demo/subtypes/SpecialChild",
+    "description": "special child type",
+    "AValue": 23,
+    "AnExtraValue": "password=123"
+  }
+}

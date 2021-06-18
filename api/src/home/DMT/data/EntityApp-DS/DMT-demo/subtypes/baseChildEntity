@@ -1,0 +1,6 @@
+{
+  "name": "baseChildEntity",
+  "type": "EntityApp-DS/DMT-demo/subtypes/BaseChild",
+  "description": "",
+  "AValue": 0
+}
