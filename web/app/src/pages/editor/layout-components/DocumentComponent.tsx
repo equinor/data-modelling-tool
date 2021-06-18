@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import FetchDocument from '../../../utils/FetchDocument'
 import Tabs, { Tab, TabPanel } from '../../../components/Tabs'
 import { UiRecipe } from '../../../domain/types'
-import { GenerateUiRecipeTabs, getDefaultTabs } from './GenerateUiRecipeTabs'
+import { GenerateUiRecipeTabs} from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { getUIPlugin } from '@dmt/core-plugins'
@@ -66,11 +66,8 @@ type ViewListProps = {
 }
 
 const ViewList = (props: ViewListProps) => {
-  const generateUiRecipeTabs = new GenerateUiRecipeTabs(
-    props.blueprintType.uiRecipes,
-    getDefaultTabs(props.blueprintType.uiRecipes)
-  )
-  const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
+  const generateUiRecipeTabs = new GenerateUiRecipeTabs(props.blueprintType.uiRecipes)
+  const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.uiRecipeTabs
 
   return (
     <Tabs>

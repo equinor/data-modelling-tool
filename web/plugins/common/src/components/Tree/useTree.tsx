@@ -1,7 +1,6 @@
 import { useEffect, useReducer } from 'react'
 import TreeReducer, { Actions, NodeActions } from './TreeReducer'
-// @ts-ignore
-import Tree, { TreeNodeData } from './Tree'
+import { TreeNodeData, Tree } from './Tree'
 
 export interface IModels {
   tree: any

@@ -26,7 +26,7 @@ test_documents = {
     "MyRootPackage/WindTurbine": {
         "name": "WindTurbine",
         "type": "system/SIMOS/Blueprint",
-        "extends": ["system/SIMOS/NamedEntity"],
+        "extends": ["system/SIMOS/DefaultUiRecipes","system/SIMOS/NamedEntity"],
         "description": "",
         "attributes": [
             {
@@ -41,7 +41,7 @@ test_documents = {
     "MyRootPackage/Moorings/Mooring": {
         "name": "Mooring",
         "type": "system/SIMOS/Blueprint",
-        "extends": ["system/SIMOS/NamedEntity"],
+        "extends": ["system/SIMOS/DefaultUiRecipes","system/SIMOS/NamedEntity"],
         "description": "",
         "attributes": [
             {
@@ -55,7 +55,7 @@ test_documents = {
     "MyRootPackage/Moorings/SpecialMooring": {
         "name": "SpecialMooring",
         "type": "system/SIMOS/Blueprint",
-        "extends": ["/Moorings/Mooring"],
+        "extends": ["system/SIMOS/DefaultUiRecipes","/Moorings/Mooring"],
         "description": "",
         "attributes": [
             {

@@ -1,4 +1,4 @@
-import * as React from 'react'
+import React from 'react'
 
 import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
 import PreviewPlugin from './PreviewPlugin'

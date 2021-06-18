@@ -5,6 +5,7 @@ from pathlib import Path
 from zipfile import ZipFile
 
 import click
+import emoji
 from dmss_api.exceptions import ApiException
 from flask import Flask
 
@@ -39,7 +40,7 @@ def cli():
 @cli.command()
 def remove_application():
     logger.info("-------------- REMOVING OLD APPLICATION FILES ----------------")
-    logger.info(
+    logger.debug(
         (
             "Removing application specific files from"
             f" the configured DMSS instance; {config.DMSS_HOST}:{config.DMSS_PORT}"
@@ -53,7 +54,7 @@ def remove_application():
                 dmss_api.explorer_remove_by_path(data_source, {"directory": folder})
             except ApiException as error:
                 if error.status == 404:
-                    logger.warning(f"Could not find '{folder}' in DMSS...")
+                    logger.warning(emoji.emojize(f":warning: Could not find '{folder}' in DMSS..."))
                     pass
                 else:
                     raise error
@@ -65,13 +66,13 @@ def init_application():
     logger.info("-------------- IMPORTING PACKAGES ----------------")
     for app_name, settings in config.APP_SETTINGS.items():
         logger.debug(f"Importing data for app '{app_name}'")
-        logger.info("_____ importing data sources _____")
+        logger.debug("_____ importing data sources _____")
         ds_dir = f"{config.APPLICATION_HOME}/{app_name}/{config.APPS_DATASOURCE_SUBFOLDER}/"
         data_sources_to_import = []
         try:
             data_sources_to_import = os.listdir(ds_dir)
         except FileNotFoundError:
-            logger.warning(f"No 'data_source' directory was found under '{ds_dir}'. Nothing to import...")
+            logger.warning(emoji.emojize(f":warning: No 'data_source' directory was found under '{ds_dir}'. Nothing to import..."))
 
         for filename in data_sources_to_import:
             with open(f"{ds_dir}{filename}") as file:
@@ -82,15 +83,15 @@ def init_application():
                 except (ApiException, KeyError) as error:
                     if error.status == 400:
                         logger.warning(
-                            f"Could not import data source '{filename}'. "
-                            "A data source with that name already exists"
+                            emoji.emojize(f":warning: Could not import data source '{filename}'. "
+                            "A data source with that name already exists")
                         )
                     else:
                         raise ImportError(f"Failed to import data source '{filename}': {error}")
 
-        logger.info("_____ DONE importing data sources _____")
+        logger.debug("_____ DONE importing data sources _____")
 
-        logger.info(f"_____ importing blueprints and entities {tuple(settings['packages'])}_____")
+        logger.debug(f"_____ importing blueprints and entities {tuple(settings['packages'])}_____")
         for folder in settings["packages"]:
             data_source, folder = folder.split("/", 1)
             try:
@@ -114,9 +115,9 @@ def init_application():
                 raise Exception(
                     f"Something went wrong trying to upload the package ''{data_source}/{folder}'' to DMSS; {error}"
                 )
-        logger.info(f"_____ DONE importing blueprints and entities {tuple(settings['packages'])}_____")
+        logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings['packages'])}_____")
 
-    logger.info("_____ importing blobs _____")
+    logger.debug("_____ importing blobs _____")
     # TODO:  This is a temporary fix for import of blob data.
     #  Should update "import_package_tree()" to work with blob data
     try:
@@ -141,11 +142,11 @@ def init_application():
                         files=[file],
                     )
     except Exception as e:
-        print(e)
+        logger.debug(e)
         pass
-    logger.info("_____  DONE importing blobs _____")
+    logger.debug("_____  DONE importing blobs _____")
 
-    logger.info("-------------- DONE ----------------")
+    logger.info(emoji.emojize("-------------- DONE ---------------- :check_mark_button:"))
 
 
 @cli.command()
