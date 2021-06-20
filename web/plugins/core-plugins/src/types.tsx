@@ -13,7 +13,7 @@ export interface DmtUIPlugin {
   dataSourceId: string
   documentId: string
   explorer: any
-  uiRecipeName: any
+  uiRecipe: any
   useIndex: any
   onSubmit: any
   document: any

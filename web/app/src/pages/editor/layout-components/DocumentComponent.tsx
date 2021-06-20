@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import FetchDocument from '../../../utils/FetchDocument'
 import Tabs, { Tab, TabPanel } from '../../../components/Tabs'
 import { UiRecipe } from '../../../domain/types'
-import { GenerateUiRecipeTabs} from './GenerateUiRecipeTabs'
+import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { getUIPlugin } from '@dmt/core-plugins'
@@ -49,7 +49,7 @@ const View = (props: any) => {
       dataSourceId={dataSourceId}
       documentId={documentId}
       explorer={explorer}
-      uiRecipeName={uiRecipe.name}
+      uiRecipe={uiRecipe}
       updateDocument={onSubmit}
       document={document}
       fetchBlueprint={fetchBlueprint}
@@ -66,7 +66,9 @@ type ViewListProps = {
 }
 
 const ViewList = (props: ViewListProps) => {
-  const generateUiRecipeTabs = new GenerateUiRecipeTabs(props.blueprintType.uiRecipes)
+  const generateUiRecipeTabs = new GenerateUiRecipeTabs(
+    props.blueprintType.uiRecipes
+  )
   const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.uiRecipeTabs
 
   return (

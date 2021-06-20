@@ -26,7 +26,7 @@ test_documents = {
     "MyRootPackage/WindTurbine": {
         "name": "WindTurbine",
         "type": "system/SIMOS/Blueprint",
-        "extends": ["system/SIMOS/DefaultUiRecipes","system/SIMOS/NamedEntity"],
+        "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
         "description": "",
         "attributes": [
             {
@@ -41,7 +41,7 @@ test_documents = {
     "MyRootPackage/Moorings/Mooring": {
         "name": "Mooring",
         "type": "system/SIMOS/Blueprint",
-        "extends": ["system/SIMOS/DefaultUiRecipes","system/SIMOS/NamedEntity"],
+        "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
         "description": "",
         "attributes": [
             {
@@ -55,7 +55,7 @@ test_documents = {
     "MyRootPackage/Moorings/SpecialMooring": {
         "name": "SpecialMooring",
         "type": "system/SIMOS/Blueprint",
-        "extends": ["system/SIMOS/DefaultUiRecipes","/Moorings/Mooring"],
+        "extends": ["system/SIMOS/DefaultUiRecipes", "/Moorings/Mooring"],
         "description": "",
         "attributes": [
             {
@@ -120,4 +120,7 @@ class ImportPackageTest(unittest.TestCase):
         windTurbine = root_package.search("WindTurbine")
         assert isinstance(UUID(windTurbine["_id"]), UUID)
         assert windTurbine["attributes"][0]["attributeType"] == "test_data_source/MyRootPackage/Moorings/Mooring"
-        assert windTurbine["extends"] == ["system/SIMOS/NamedEntity"]
+        assert windTurbine["extends"] == ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"]
+
+        specialMooring = folder_Moorings.search("SpecialMooring")
+        assert len(specialMooring["extends"]) == 2

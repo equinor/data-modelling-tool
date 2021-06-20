@@ -72,7 +72,9 @@ def init_application():
         try:
             data_sources_to_import = os.listdir(ds_dir)
         except FileNotFoundError:
-            logger.warning(emoji.emojize(f":warning: No 'data_source' directory was found under '{ds_dir}'. Nothing to import..."))
+            logger.warning(
+                emoji.emojize(f":warning: No 'data_source' directory was found under '{ds_dir}'. Nothing to import...")
+            )
 
         for filename in data_sources_to_import:
             with open(f"{ds_dir}{filename}") as file:
@@ -83,8 +85,10 @@ def init_application():
                 except (ApiException, KeyError) as error:
                     if error.status == 400:
                         logger.warning(
-                            emoji.emojize(f":warning: Could not import data source '{filename}'. "
-                            "A data source with that name already exists")
+                            emoji.emojize(
+                                f":warning: Could not import data source '{filename}'. "
+                                "A data source with that name already exists"
+                            )
                         )
                     else:
                         raise ImportError(f"Failed to import data source '{filename}': {error}")

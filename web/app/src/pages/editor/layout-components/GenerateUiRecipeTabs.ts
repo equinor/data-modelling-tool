@@ -1,19 +1,11 @@
 import { UiRecipe } from '../../../domain/types'
 
-/**
- * Requirements:
- * 1. default tabs are listed first, in order.
- * 2. custom tabs are listed in order.
- * 3. default tabs can be replaced, without changing the order.
- */
 export class GenerateUiRecipeTabs {
   public uiRecipeTabs: UiRecipe[] = []
 
-  constructor(
-    uiRecipes: UiRecipe[] | undefined,
-  ) {
-
-    if (uiRecipes) {
+  constructor(uiRecipes: UiRecipe[] | undefined) {
+    // Adds a tab for every uiRecipe that should be shown
+    if (uiRecipes?.length) {
       uiRecipes.forEach((uiRecipe: UiRecipe) => {
         const existingIndex = this.uiRecipeTabs.findIndex(
           (tab: UiRecipe) =>
@@ -27,8 +19,17 @@ export class GenerateUiRecipeTabs {
           }
         }
       })
-    }else{
-
+      //  If no uiRecipe set in blueprint of the entity. Just show a plain JSON view.
+    } else {
+      this.uiRecipeTabs.push({
+        name: 'JSON',
+        plugin: 'default-preview',
+        attributes: [],
+        type: 'system/SIMOS/UiRecipe',
+        options: [
+          'info=No uiRecipe configured for entity. Using fallback view',
+        ],
+      })
     }
   }
 
@@ -38,9 +39,5 @@ export class GenerateUiRecipeTabs {
 
   private replaceUiRecipe(atIndex: number, uiRecipe: UiRecipe) {
     this.uiRecipeTabs.splice(atIndex, 1, uiRecipe)
-  }
-
-  getTabs() {
-    return this.uiRecipeTabs
   }
 }
