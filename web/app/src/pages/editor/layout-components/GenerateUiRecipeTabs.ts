@@ -19,16 +19,20 @@ export class GenerateUiRecipeTabs {
           }
         }
       })
-      //  If no uiRecipe set in blueprint of the entity. Just show a plain JSON view.
+      //  If no uiRecipe set in blueprint of the entity. Just show a plain JSON view and the default edit plugin.
     } else {
       this.uiRecipeTabs.push({
-        name: 'JSON',
+        name: 'View',
         plugin: 'default-preview',
         attributes: [],
         type: 'system/SIMOS/UiRecipe',
-        options: [
-          'info=No uiRecipe configured for entity. Using fallback view',
-        ],
+        options: [],
+      })
+      this.uiRecipeTabs.push({
+        name: 'Edit',
+        plugin: 'default-form',
+        attributes: [],
+        type: 'system/SIMOS/UiRecipe',
       })
     }
   }

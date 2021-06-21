@@ -16,7 +16,7 @@ export default (props: PreviewProps) => {
     const infoOption: string = uiRecipe.options.find((v: string) =>
       v.includes('info=')
     )
-    infoText = infoOption.split('=')[1]
+    if (infoOption) infoText = infoOption.split('=')[1]
   }
 
   return (
@@ -24,11 +24,12 @@ export default (props: PreviewProps) => {
       <div
         style={{
           display: 'flex',
+
           justifyContent: 'space-between',
-          color: '#f75959',
+          color: '#9e4949',
         }}
       >
-        {infoText && <p>{infoText}</p>}
+        {infoText && <small>{infoText}</small>}
         <CopyToClipboard text={JSON.stringify(document)}>
           <Button style={{ marginBottom: '5px' }}>Copy</Button>
         </CopyToClipboard>
