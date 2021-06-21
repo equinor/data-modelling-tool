@@ -39,15 +39,18 @@ export const useIndex = (props: IndexProps): IIndex => {
   const [index, setIndex] = useState<Tree>({})
   const populateIndex = async (): Promise<void> => {
     let indexes: IndexNodes[] = []
+    if (!application.visibleDataSources) {
+      NotificationManager.warning(
+        `${'Application has no visible data sources in settings.json. All datasources displayed by default.'}`
+      )
+    }
     await Promise.all(
       dataSources.map((dataSource: DataSource) => {
-        if (!application.visibleDataSources) {
-          NotificationManager.error(
-            `${'Selected application does not have any visible data sources.'}`
-          )
-        } else if (
-          application.visibleDataSources.includes(dataSource.name) ||
-          application?.displayAllDataSources
+        if (
+          (application?.visibleDataSources &&
+            application?.visibleDataSources.includes(dataSource.name)) ||
+          application?.displayAllDataSources ||
+          application.visibleDataSources === undefined
         ) {
           return indexApi
             .getIndexByDataSource(dataSource.id, application.name)
