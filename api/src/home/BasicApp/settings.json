@@ -2,6 +2,7 @@
   "type": "system/SIMOS/Application",
   "name": "BasicApp",
   "description": "Example of an application with minimum amount of settings.",
-  "packages": []
+  "packages": [],
+  "models": ["system/SIMOS/Entity"],
+  "actions": []
 }
-
