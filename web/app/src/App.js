@@ -55,7 +55,7 @@ function App() {
               <Header applications={applications} />
               <Switch>
                 {Object.values(applications).map((setting) => {
-                  if ("hidden" in setting ? !setting.hidden : true) {
+                  if ('hidden' in setting ? !setting.hidden : true) {
                     return (
                       <Route
                         exact
@@ -68,7 +68,9 @@ function App() {
                 <Route
                   exact
                   path="/search"
-                  render={() => <SearchPage allApplicationSettings={applications} />}
+                  render={() => (
+                    <SearchPage allApplicationSettings={applications} />
+                  )}
                 />
                 <Route
                   path="/view/:data_source/:entity_id"

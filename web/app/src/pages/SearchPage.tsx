@@ -208,7 +208,7 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
   }
 
   useEffect(() => {
-      setFilter({})
+    setFilter({})
   }, [selectedDataSource])
 
   // When the filters "type" value changes. Fetch the blueprint
@@ -410,7 +410,6 @@ export default ({ allApplicationSettings }: any) => {
       })
   }, [])
 
-
   function search(query: any) {
     documentAPI
       .search(selectedDataSource, query)
@@ -443,8 +442,14 @@ export default ({ allApplicationSettings }: any) => {
         setSelectedDataSource={setSelectedDataSource}
         dataSources={dataSources}
       />
-      <ApplicationContext.Provider value={{...allApplicationSettings[0], "displayAllDataSources": true}}>
-        <FilterContainer search={search} queryError={queryError} selectedDataSource={selectedDataSource} />
+      <ApplicationContext.Provider
+        value={{ ...allApplicationSettings[0], displayAllDataSources: true }}
+      >
+        <FilterContainer
+          search={search}
+          queryError={queryError}
+          selectedDataSource={selectedDataSource}
+        />
       </ApplicationContext.Provider>
       <ResultContainer result={result} dataSource={selectedDataSource} />
     </>
