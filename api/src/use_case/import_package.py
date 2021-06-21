@@ -143,7 +143,6 @@ def import_package_tree(root_package: Package, data_source_id: str) -> None:
     with IncrementalBar(
         f"Importing {root_package.name}",
         max=len(documents_to_upload),
-        fill="*",
         suffix="%(percent).0f%% - [%(eta)ds/%(elapsed)ds]",
     ) as bar:
         for document in documents_to_upload:
