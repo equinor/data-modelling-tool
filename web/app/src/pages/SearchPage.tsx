@@ -390,7 +390,6 @@ function SelectDataSource({
 }
 
 export default ({ allApplicationSettings }: any) => {
-  const [applicationSettings, setApplicationSettings] = useState(allApplicationSettings[0])
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
@@ -410,17 +409,6 @@ export default ({ allApplicationSettings }: any) => {
         NotificationManager.error(error, 'Failed to fetch datasources', 0)
       })
   }, [])
-
-    useEffect(() => {
-        const newApplication = allApplicationSettings.find((application) => {
-        if (application?.visibleDataSources)
-            return application.visibleDataSources.includes(selectedDataSource)
-            else return false
-        } )
-        if (newApplication) setApplicationSettings(newApplication)
-        else NotificationManager.warning("No applications are connected to this data source.")
-    }, [selectedDataSource])
-
 
 
   function search(query: any) {
@@ -454,10 +442,8 @@ export default ({ allApplicationSettings }: any) => {
         selectedDataSource={selectedDataSource}
         setSelectedDataSource={setSelectedDataSource}
         dataSources={dataSources}
-        allApplicationSettings={allApplicationSettings}
-        setApplicationSettings={setApplicationSettings}
       />
-      <ApplicationContext.Provider value={applicationSettings}>
+      <ApplicationContext.Provider value={{...allApplicationSettings[0], "displayAllDataSources": true}}>
         <FilterContainer search={search} queryError={queryError} selectedDataSource={selectedDataSource} />
       </ApplicationContext.Provider>
       <ResultContainer result={result} dataSource={selectedDataSource} />

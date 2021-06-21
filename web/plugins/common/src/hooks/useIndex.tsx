@@ -45,7 +45,7 @@ export const useIndex = (props: IndexProps): IIndex => {
           NotificationManager.error(
             `${'Selected application does not have any visible data sources.'}`
           )
-        } else if (application.visibleDataSources.includes(dataSource.name)) {
+        } else if (application.visibleDataSources.includes(dataSource.name) || application?.displayAllDataSources) {
           return indexApi
             .getIndexByDataSource(dataSource.id, application.name)
             .then((res) => {
