@@ -10,7 +10,7 @@ import { AuthProvider } from './context/auth/AuthContext'
 import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
-
+import { sortApplications } from './utils/applicationHelperFunctions'
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
 }
@@ -37,12 +37,13 @@ const theme = {
 }
 
 function App() {
-  const [applications, setApplications] = useState(null)
+  const [applications, setApplications] = useState(undefined)
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
-      setApplications(res.data)
+      setApplications(sortApplications(res.data))
     })
   }, [])
+
   return (
     <ThemeProvider theme={theme}>
       <Router>
@@ -54,19 +55,21 @@ function App() {
               <Header applications={applications} />
               <Switch>
                 {Object.values(applications).map((setting) => {
-                  return (
-                    <Route
-                      exact
-                      path={`/${setting.id}`}
-                      render={() => <AppTab settings={setting} />}
-                    />
-                  )
+                  if ('hidden' in setting ? !setting.hidden : true) {
+                    return (
+                      <Route
+                        exact
+                        path={`/${setting.name}`}
+                        render={() => <AppTab settings={setting} />}
+                      />
+                    )
+                  }
                 })}
                 <Route
                   exact
                   path="/search"
                   render={() => (
-                    <SearchPage settings={Object.values(applications)[0]} />
+                    <SearchPage allApplicationSettings={applications} />
                   )}
                 />
                 <Route
@@ -76,9 +79,7 @@ function App() {
                 <Route
                   exact
                   path={'/'}
-                  render={() => (
-                    <AppTab settings={Object.values(applications)[0]} />
-                  )}
+                  render={() => <AppTab settings={applications[0]} />}
                 />
               </Switch>
             </Wrapper>

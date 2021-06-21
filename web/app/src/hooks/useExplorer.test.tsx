@@ -128,7 +128,7 @@ const getMocks = () => {
 }
 
 describe('the explorer hook', () => {
-  const application = { id: 'testApp' }
+  const application = { name: 'testApp', visibleDataSources: ['localhost'] }
 
   let mocks: any
   let response: RenderHookResult<any, IUseExplorer>
@@ -215,7 +215,7 @@ describe('the explorer hook', () => {
           expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
             '/api/v1/index/1',
             '1',
-            application.id
+            application.name
           )
         })
       })

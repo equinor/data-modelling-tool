@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { AuthContext } from './context/auth/AuthContext'
 import { JsonView, Modal } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
+import { sortApplications } from './utils/applicationHelperFunctions'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -64,10 +65,12 @@ export default ({ applications }: AppHeaderProps) => {
 
   function getActiveTab() {
     // activeApp (Tab Styling) is based on route, or if route is "/", the first application
-    if (location.pathname === '/') return Object.keys(applications)[0]
-    return Object.keys(applications).find(
-      (key: string) => key === location.pathname.substring(1)
-    )
+    if (location.pathname === '/') return applications[0].name
+    else if (location.pathname === '/search') return 'Search'
+    else if (location.pathname.includes('/view')) return ''
+    return applications.find(
+      (app) => app.name === location.pathname.substring(1)
+    ).name
   }
 
   return (
@@ -85,14 +88,16 @@ export default ({ applications }: AppHeaderProps) => {
       >
         <div>
           <>
-            {Object.values(applications).map((value) => {
-              return (
-                <Link to={`/${value.id}`} key={value.id}>
-                  <TabStyled isSelected={getActiveTab() === value.id}>
-                    {value?.name}
-                  </TabStyled>
-                </Link>
-              )
+            {sortApplications(applications).map((app) => {
+              if (!app?.hidden) {
+                return (
+                  <Link to={`/${app.name}`} key={app.name}>
+                    <TabStyled isSelected={getActiveTab() === app.name}>
+                      {app?.label ? app.label : app.name}
+                    </TabStyled>
+                  </Link>
+                )
+              }
             })}
           </>
           <Link to={'/search'}>

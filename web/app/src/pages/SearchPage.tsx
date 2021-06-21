@@ -199,13 +199,17 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   )
 }
 
-function FilterContainer({ search, queryError }) {
+function FilterContainer({ search, queryError, selectedDataSource }) {
   const [filter, setFilter] = useLocalStorage('searchFilter', {})
   const [attributes, setAttributes] = useState<Array<any>>([])
 
   function onChange(filterChange: any) {
     setFilter({ ...filter, ...filterChange })
   }
+
+  useEffect(() => {
+    setFilter({})
+  }, [selectedDataSource])
 
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
@@ -385,7 +389,7 @@ function SelectDataSource({
   )
 }
 
-export default ({ settings }: any) => {
+export default ({ allApplicationSettings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
@@ -438,8 +442,14 @@ export default ({ settings }: any) => {
         setSelectedDataSource={setSelectedDataSource}
         dataSources={dataSources}
       />
-      <ApplicationContext.Provider value={settings}>
-        <FilterContainer search={search} queryError={queryError} />
+      <ApplicationContext.Provider
+        value={{ ...allApplicationSettings[0], displayAllDataSources: true }}
+      >
+        <FilterContainer
+          search={search}
+          queryError={queryError}
+          selectedDataSource={selectedDataSource}
+        />
       </ApplicationContext.Provider>
       <ResultContainer result={result} dataSource={selectedDataSource} />
     </>

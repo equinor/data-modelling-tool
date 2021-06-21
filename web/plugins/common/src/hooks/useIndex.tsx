@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { Tree, TreeNodeData } from '../components/Tree'
 import { IIndexAPI, IndexNode, IndexNodes } from '../services'
 import { ITree, useTree } from '../components/Tree'
@@ -9,6 +9,7 @@ import values from 'lodash/values'
 import { DataSource } from '../services'
 import IndexAPI from '../services/api/IndexAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
+import { ApplicationContext } from '../context/ApplicationContext'
 
 export interface IModels {
   tree: ITree
@@ -36,21 +37,29 @@ export interface IndexProps {
 export const useIndex = (props: IndexProps): IIndex => {
   const { dataSources, application, indexApi = new IndexAPI() } = props
   const [index, setIndex] = useState<Tree>({})
-
   const populateIndex = async (): Promise<void> => {
     let indexes: IndexNodes[] = []
     await Promise.all(
-      dataSources.map((dataSource: DataSource) =>
-        indexApi
-          .getIndexByDataSource(dataSource.id, application.id)
-          .then((res) => {
-            indexes.push(res)
-          })
-          .catch((error) => {
-            console.error(error)
-            NotificationManager.error(`${error.response.data.message}`)
-          })
-      )
+      dataSources.map((dataSource: DataSource) => {
+        if (!application.visibleDataSources) {
+          NotificationManager.error(
+            `${'Selected application does not have any visible data sources.'}`
+          )
+        } else if (
+          application.visibleDataSources.includes(dataSource.name) ||
+          application?.displayAllDataSources
+        ) {
+          return indexApi
+            .getIndexByDataSource(dataSource.id, application.name)
+            .then((res) => {
+              indexes.push(res)
+            })
+            .catch((error) => {
+              console.error(error)
+              NotificationManager.error(`${error.response.data.message}`)
+            })
+        }
+      })
     )
     const combinedIndex = indexes
       .map((indexNode: IndexNodes) => toTreeNodes(indexNode))
@@ -80,7 +89,7 @@ export const useIndex = (props: IndexProps): IIndex => {
       const result = await indexApi.getIndexByDocument(
         nodeUrl,
         documentId,
-        application.id
+        application.name
       )
 
       const treeNodes: TreeNodeData[] = toTreeNodes(result)
