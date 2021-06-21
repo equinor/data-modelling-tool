@@ -1,6 +1,6 @@
 {
   "name": "myTurbineWithAction",
-  "type": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",
+  "type": "/Actions/WindTurbineWithAction",
   "description": "",
   "diameter": 0
 }

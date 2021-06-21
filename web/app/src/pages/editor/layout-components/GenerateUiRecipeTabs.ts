@@ -1,21 +1,11 @@
 import { UiRecipe } from '../../../domain/types'
 
-/**
- * Requirements:
- * 1. default tabs are listed first, in order.
- * 2. custom tabs are listed in order.
- * 3. default tabs can be replaced, without changing the order.
- */
 export class GenerateUiRecipeTabs {
-  private uiRecipeTabs: UiRecipe[] = []
+  public uiRecipeTabs: UiRecipe[] = []
 
-  constructor(
-    uiRecipes: UiRecipe[] | undefined,
-    defaultTabs: UiRecipe[] | undefined
-  ) {
-    this.uiRecipeTabs = defaultTabs ? defaultTabs : getDefaultTabs([])
-
-    if (uiRecipes) {
+  constructor(uiRecipes: UiRecipe[] | undefined) {
+    // Adds a tab for every uiRecipe that should be shown
+    if (uiRecipes?.length) {
       uiRecipes.forEach((uiRecipe: UiRecipe) => {
         const existingIndex = this.uiRecipeTabs.findIndex(
           (tab: UiRecipe) =>
@@ -25,9 +15,24 @@ export class GenerateUiRecipeTabs {
           if (existingIndex > -1) {
             this.replaceUiRecipe(existingIndex, uiRecipe)
           } else {
-            this.addUiRecipe(uiRecipe)
+            this.uiRecipeTabs.push(uiRecipe)
           }
         }
+      })
+      //  If no uiRecipe set in blueprint of the entity. Just show a plain JSON view and the default edit plugin.
+    } else {
+      this.uiRecipeTabs.push({
+        name: 'View',
+        plugin: 'default-preview',
+        attributes: [],
+        type: 'system/SIMOS/UiRecipe',
+        options: [],
+      })
+      this.uiRecipeTabs.push({
+        name: 'Edit',
+        plugin: 'default-form',
+        attributes: [],
+        type: 'system/SIMOS/UiRecipe',
       })
     }
   }
@@ -38,52 +43,5 @@ export class GenerateUiRecipeTabs {
 
   private replaceUiRecipe(atIndex: number, uiRecipe: UiRecipe) {
     this.uiRecipeTabs.splice(atIndex, 1, uiRecipe)
-  }
-
-  private addUiRecipe(uiRecipe: UiRecipe) {
-    this.uiRecipeTabs.push(uiRecipe)
-  }
-
-  getTabs() {
-    return this.uiRecipeTabs
-  }
-}
-
-function createUiRecipe(name: string, plugin: string): UiRecipe {
-  return { name, plugin, attributes: [], type: 'system/SIMOS/UiRecipe' }
-}
-
-export function getDefaultTabs(uiRecipes: UiRecipe[] | undefined): UiRecipe[] {
-  const defaultTabs: UiRecipe[] = []
-  addDefaultTab(defaultTabs, uiRecipes, 'yaml-view', 'Yaml')
-  addDefaultTab(defaultTabs, uiRecipes, 'default-preview', 'Raw')
-  // @ts-ignore
-  addDefaultTab(defaultTabs, uiRecipes, 'default-form', 'Edit')
-  return defaultTabs
-}
-
-export function getDefaultViewTabs(
-  uiRecipes: UiRecipe[] | undefined
-): UiRecipe[] {
-  const defaultTabs: UiRecipe[] = []
-  addDefaultTab(defaultTabs, uiRecipes, 'yaml-view', 'Yaml')
-  addDefaultTab(defaultTabs, uiRecipes, 'default-preview', 'Raw')
-  return defaultTabs
-}
-
-function addDefaultTab(
-  defaultTabs: UiRecipe[],
-  recipes: UiRecipe[] | undefined,
-  plugin: string,
-  name: string
-): void {
-  const recipe: UiRecipe | undefined =
-    recipes && recipes.find((recipe) => recipe.name === name)
-  if (recipe) {
-    if (!recipe.hideTab) {
-      defaultTabs.push(createUiRecipe(name, plugin))
-    }
-  } else {
-    defaultTabs.push(createUiRecipe(name, plugin))
   }
 }

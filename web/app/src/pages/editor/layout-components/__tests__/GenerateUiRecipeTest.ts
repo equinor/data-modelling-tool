@@ -1,33 +1,24 @@
-import { GenerateUiRecipeTabs, getDefaultTabs } from '../GenerateUiRecipeTabs'
+import { GenerateUiRecipeTabs } from '../GenerateUiRecipeTabs'
 
 describe('GenerateUiRecipeTabs', () => {
-  it('should add defaults', () => {
-    const tabsLength = getDefaultTabs([]).length
-    const generateUiTabs = new GenerateUiRecipeTabs([], getDefaultTabs([]))
-    const tabs = generateUiTabs.getTabs()
-    expect(tabs).toHaveLength(tabsLength)
-    expect(tabs).toMatchObject(getDefaultTabs([]))
-  })
-
-  it('should add a tab from a ui plugin', () => {
-    const generateUiTabs = new GenerateUiRecipeTabs(
-      [
-        {
-          name: 'my tab',
-          type: 'system/SIMOS/UiRecipe',
-          plugin: 'EDIT_PLUGIN',
-          attributes: [],
-        },
-      ],
-      getDefaultTabs([])
-    )
-    const tabs = generateUiTabs.getTabs()
-    expect(tabs).toHaveLength(getDefaultTabs([]).length + 1)
+  it('add UI plugin tabs', () => {
+    const generateUiTabs = new GenerateUiRecipeTabs([
+      {
+        name: 'my tab',
+        type: 'system/SIMOS/UiRecipe',
+        plugin: 'EDIT_PLUGIN',
+        attributes: [],
+      },
+      {
+        name: 'YAML',
+        type: 'system/SIMOS/UiRecipe',
+        plugin: 'yaml-view',
+      },
+    ])
+    const tabs = generateUiTabs.uiRecipeTabs
     expect(tabs).toMatchObject([
-      { name: 'Yaml', plugin: 'yaml-view', attributes: [] },
-      { name: 'Raw', plugin: 'default-preview', attributes: [] },
-      { name: 'Edit', plugin: 'default-form', attributes: [] },
       { name: 'my tab', plugin: 'EDIT_PLUGIN', attributes: [] },
+      { name: 'YAML', plugin: 'yaml-view' },
     ])
   })
 
@@ -40,28 +31,8 @@ describe('GenerateUiRecipeTabs', () => {
         attributes: [],
       },
     ]
-    const generateUiTabs = new GenerateUiRecipeTabs(input, getDefaultTabs([]))
-    const tabs = generateUiTabs.getTabs()
-    expect(tabs).toHaveLength(4)
-  })
-
-  it('should not add a default tab if exists', () => {
-    const recipes = [
-      {
-        name: 'Raw',
-        type: 'system/SIMOS/UiRecipe',
-        plugin: 'default-preview',
-        hideTab: true,
-        attributes: [],
-      },
-    ]
-    const defaultTabs = getDefaultTabs(recipes)
-    expect(defaultTabs).toHaveLength(2)
-
-    const generateUiTabs = new GenerateUiRecipeTabs(
-      recipes,
-      getDefaultTabs(recipes)
-    )
-    expect(generateUiTabs.getTabs()).toHaveLength(2)
+    const generateUiTabs = new GenerateUiRecipeTabs(input)
+    const tabs = generateUiTabs.uiRecipeTabs
+    expect(tabs).toHaveLength(1)
   })
 })

@@ -1,7 +1,7 @@
 {
   "name": "ActionResult",
   "type": "system/SIMOS/Blueprint",
-  "extends": ["system/SIMOS/NamedEntity"],
+  "extends": ["system/SIMOS/DefaultUiRecipes","system/SIMOS/NamedEntity"],
   "description": "Model for the result of a WindTurbine simulation result",
   "attributes": [
     {

@@ -19,14 +19,7 @@ import {
 } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const {
-    type,
-    documentId,
-    dataSourceId,
-    uiRecipeName,
-    explorer,
-    onSubmit,
-  } = props
+  const { type, documentId, dataSourceId, uiRecipe, explorer, onSubmit } = props
 
   const [document, setDocument] = useState(undefined)
   const [documentType, setDocumentType] = useState(type)
@@ -61,7 +54,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
       createFormConfigs({
         type: documentType,
         document,
-        uiRecipeName,
+        name: uiRecipe.name,
         explorer,
       })
         // @ts-ignore
@@ -72,7 +65,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
           )
         })
     }
-  }, [documentType, config, document, uiRecipeName])
+  }, [documentType, config, document, uiRecipe])
 
   if (!config) return <div>Getting config...</div>
 

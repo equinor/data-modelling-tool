@@ -2,11 +2,12 @@ import io
 import json
 from json import JSONDecodeError
 from pathlib import Path
-from typing import Any, Tuple
+from typing import Any, List, Tuple
 from uuid import UUID, uuid4
 from zipfile import ZipFile
 
 from dmss_api import ApiException
+from progress.bar import IncrementalBar
 
 from domain_classes.package import Package
 from enums import BLOB_TYPES
@@ -50,8 +51,9 @@ def replace_relative_references(key: str, value, reference_table: dict = None) -
                         extends_list.append(reference_table[value[i]]["absolute"])
                     except KeyError:
                         raise ImportReferenceNotFoundException(value[i])
-                extends_list.append(blueprint)
-                return extends_list
+                else:
+                    extends_list.append(blueprint)
+            return extends_list
         if value[0] == "/":
             try:
                 return reference_table[value]["absolute"]
@@ -134,9 +136,19 @@ def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: i
 
 
 def import_package_tree(root_package: Package, data_source_id: str) -> None:
-    dmss_api.explorer_add_raw(data_source_id, root_package.to_dict())
-    root_package.traverse_documents(lambda document: dmss_api.explorer_add_raw(data_source_id, document))
-    root_package.traverse_package(lambda package: dmss_api.explorer_add_raw(data_source_id, package.to_dict()))
+    documents_to_upload: List[dict] = [root_package.to_dict()]
+    root_package.traverse_documents(lambda document: documents_to_upload.append(document))
+    root_package.traverse_package(lambda package: documents_to_upload.append(package.to_dict()))
+
+    with IncrementalBar(
+        f"Importing {root_package.name}",
+        max=len(documents_to_upload),
+        fill="*",
+        suffix="%(percent).0f%% - [%(eta)ds/%(elapsed)ds]",
+    ) as bar:
+        for document in documents_to_upload:
+            dmss_api.explorer_add_raw(data_source_id, document)
+            bar.next()
 
 
 class ImportPackageRequestObject(req.ValidRequestObject):

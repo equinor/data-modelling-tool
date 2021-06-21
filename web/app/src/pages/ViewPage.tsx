@@ -6,10 +6,7 @@ import { DocumentAPI } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { getUIPlugin } from '@dmt/core-plugins'
-import {
-  GenerateUiRecipeTabs,
-  getDefaultViewTabs,
-} from './editor/layout-components/GenerateUiRecipeTabs'
+import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecipeTabs'
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 
@@ -31,7 +28,7 @@ const View = (props: any) => {
     <ExternalPlugin
       dataSourceId={dataSourceId}
       documentId={documentId}
-      uiRecipeName={uiRecipe.name}
+      uiRecipe={uiRecipe}
       document={document}
     />
   )
@@ -41,10 +38,9 @@ const View = (props: any) => {
 // only view plugins (does not pass updateDocument(), explorer etc.)
 const ViewList = (props: any) => {
   const generateUiRecipeTabs = new GenerateUiRecipeTabs(
-    props.blueprintType.uiRecipes,
-    getDefaultViewTabs(props.blueprintType.uiRecipes)
+    props.blueprintType.uiRecipes
   )
-  const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.getTabs()
+  const uiRecipeTabs: UiRecipe[] = generateUiRecipeTabs.uiRecipeTabs
 
   return (
     <Tabs>
