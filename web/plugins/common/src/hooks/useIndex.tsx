@@ -41,7 +41,7 @@ export const useIndex = (props: IndexProps): IIndex => {
     let indexes: IndexNodes[] = []
     if (!application.visibleDataSources || application.visibleDataSources.length === 0) {
       NotificationManager.warning(
-        `${'Application has no visible data sources in settings.json.'}`
+        `${'Application has no visible data sources defined in settings.json.'}`
       )
     }
     await Promise.all(
