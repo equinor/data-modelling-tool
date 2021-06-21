@@ -39,9 +39,9 @@ export const useIndex = (props: IndexProps): IIndex => {
   const [index, setIndex] = useState<Tree>({})
   const populateIndex = async (): Promise<void> => {
     let indexes: IndexNodes[] = []
-    if (!application.visibleDataSources || application.visibleDataSources === [] ) {
+    if (!application.visibleDataSources || application.visibleDataSources.length === 0) {
       NotificationManager.warning(
-        `${'Application has no visible data sources in settings.json. All datasources displayed by default.'}`
+        `${'Application has no visible data sources in settings.json.'}`
       )
     }
     await Promise.all(
