@@ -123,6 +123,33 @@ const getRootNodes = (rootNode: TreeNodeData, state: Tree) => [
   ...treeNodes(rootNode.nodeId, state, []),
 ]
 
+const sortRootNodes = (
+  rootNodes: { currentItem: TreeNodeData; level: number; track: never[] }[][]
+) => {
+  if (rootNodes.length > 0) {
+    rootNodes.sort((listA, listB) => {
+      let dataSourceIndexA: number = listA.findIndex((element) => {
+        return element['level'] === 0
+      })
+      let dataSourceIndexB: number = listB.findIndex((element) => {
+        return element['level'] === 0
+      })
+      if (
+        listA[dataSourceIndexA]['currentItem']['title'] <
+        listB[dataSourceIndexB]['currentItem']['title']
+      )
+        return -1
+      else if (
+        listA[dataSourceIndexA]['currentItem']['title'] >
+        listB[dataSourceIndexB]['currentItem']['title']
+      )
+        return 1
+      else return 0
+    })
+  }
+  return rootNodes
+}
+
 export const Tree = (props: TreeProps) => {
   const { state, children, operations } = props
 
@@ -151,7 +178,7 @@ export const Tree = (props: TreeProps) => {
   return (
     <>
       <SearchTree onChange={search} />
-      {rootNodes.map((rootNode, index) => {
+      {sortRootNodes(rootNodes).map((rootNode, index) => {
         return (
           <div key={'root_' + index} style={{ background: 'white' }}>
             {rootNode.map((item: any, index: number) => {
