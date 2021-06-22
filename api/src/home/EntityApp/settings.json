@@ -18,6 +18,14 @@
       "actionType": "resultInEntity"
     },
     {
+      "name": "Run 234",
+      "description": "Simulate a category 3 storm",
+      "input": "EntityApp-DS/DMT-demo/ControlIndex/HasComplexAttribute",
+      "output": "EntityApp-DS/DMT-demo/ControlIndex/HasComplexAttribute",
+      "method": "simulateCat3StormResultInEntity",
+      "actionType": "resultInEntity"
+    },
+    {
       "name": "Cancel Simulation",
       "description": "Cancel started simulation",
       "input": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",

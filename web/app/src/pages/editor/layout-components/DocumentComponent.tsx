@@ -44,12 +44,14 @@ const View = (props: any) => {
   if (loading) return <div>Loading...</div>
 
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
+  // rjsf-form is the only plugin that needs this uiRecipe name
   return (
     <ExternalPlugin
       dataSourceId={dataSourceId}
       documentId={documentId}
       explorer={explorer}
       uiRecipe={uiRecipe}
+      uiRecipeName={uiRecipe.name}
       updateDocument={onSubmit}
       document={document}
       fetchBlueprint={fetchBlueprint}

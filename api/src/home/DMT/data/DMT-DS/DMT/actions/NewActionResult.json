@@ -26,6 +26,7 @@
     {
       "type": "system/SIMOS/UiRecipe",
       "name": "DEFAULT_CREATE",
+      "plugin": "DEFAULT_CREATE",
       "description": "",
       "attributes": [
         {

@@ -19,7 +19,14 @@ import {
 } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { type, documentId, dataSourceId, uiRecipe, explorer, onSubmit } = props
+  const {
+    type,
+    documentId,
+    dataSourceId,
+    uiRecipeName,
+    explorer,
+    onSubmit,
+  } = props
 
   const [document, setDocument] = useState(undefined)
   const [documentType, setDocumentType] = useState(type)
@@ -54,7 +61,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
       createFormConfigs({
         type: documentType,
         document,
-        name: uiRecipe.name,
+        uiRecipeName,
         explorer,
       })
         // @ts-ignore
@@ -65,7 +72,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
           )
         })
     }
-  }, [documentType, config, document, uiRecipe])
+  }, [documentType, config, document, uiRecipeName])
 
   if (!config) return <div>Getting config...</div>
 
@@ -105,7 +112,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 
 /**
  * Fundamental client side validation.
- * Ensure only valid entities are posted.
+ * Ensure only valid entities are posted. s
  *
  * @todo set defaults in formData passed to form.
  * @param blueprint

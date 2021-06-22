@@ -2,7 +2,7 @@ from typing import Dict, Union
 
 from config import config
 from domain_classes.blueprint_attribute import BlueprintAttribute
-from domain_classes.recipe import RecipePlugin
+from domain_classes.recipe import Recipe, RecipePlugin
 from domain_classes.tree_node import ListNode, Node
 from enums import BLUEPRINTS
 from repository.repository_exceptions import ApplicationNotLoadedException, EntityNotFoundException
@@ -90,7 +90,7 @@ def is_visible(node):
     if node.parent.blueprint is None:
         return True
 
-    ui_recipe = node.parent.blueprint.get_ui_recipe_by_plugin(name="INDEX")
+    ui_recipe: Recipe = node.parent.blueprint.get_ui_recipe_by_plugin(name="INDEX")
     return ui_recipe.is_contained(node.attribute, RecipePlugin.INDEX)
 
 
@@ -202,7 +202,7 @@ class GenerateSingleIndexUseCase(UseCase):
                 attribute=BlueprintAttribute("root", "datasource", contained=True),
             )
             parent.add_child(
-                document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=document_id, depth=0)
+                document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=document_id, depth=1)
             )
         else:
             parent = document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=parent_uid, depth=1)

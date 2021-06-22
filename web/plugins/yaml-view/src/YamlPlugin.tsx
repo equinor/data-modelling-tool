@@ -25,7 +25,7 @@ export default (props: PreviewProps) => {
           <button style={{ marginBottom: '5px' }}>Copy</button>
         </CopyToClipboard>
       </div>
-      <pre style={{ backgroundColor: '#193549' }}>
+      <pre style={{ backgroundColor: '#193549', color: 'coral' }}>
         <code dangerouslySetInnerHTML={{ __html: highlighted.value }} />
       </pre>
     </div>
