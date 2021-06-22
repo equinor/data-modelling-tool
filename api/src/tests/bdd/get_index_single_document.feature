@@ -37,7 +37,7 @@ Feature: Index
     """
 
   Scenario: Get index for single Package (DMT-Entities)
-    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=EntityApp"
+    Given I access the resource url "/api/v4/index/data-source-name/e1a9243d-84df-4e9b-8438-013f8f2de24e/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a?APPLICATION=DMT"
     When I make a "GET" request
     Then the response status should be "OK"
     And the response should contain
@@ -61,13 +61,13 @@ Feature: Index
                   "action":"CREATE"
                 },
                 {
-                  "label":"Entity",
+                  "label":"Blueprint",
                   "action":"CREATE",
                   "data":{
                   "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
                   "nodeUrl":"/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                   "request":{
-                    "type":"system/SIMOS/Entity",
+                    "type":"system/SIMOS/Blueprint",
                     "parentId":"ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                     "attribute":"content",
                     "name":"${name}",

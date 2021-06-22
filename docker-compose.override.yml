@@ -18,6 +18,7 @@ services:
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
+      LOGGING_LEVEL: DEBUG
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
     depends_on:
       - web
