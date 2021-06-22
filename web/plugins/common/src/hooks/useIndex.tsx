@@ -36,15 +36,26 @@ export interface IndexProps {
 
 export const useIndex = (props: IndexProps): IIndex => {
   const { dataSources, application, indexApi = new IndexAPI() } = props
+  const [dataSourceWarning, setDataSourceWarning] = useState<string>('')
   const [index, setIndex] = useState<Tree>({})
+
+  useEffect(() => {
+    if (dataSourceWarning) {
+      const timer = setTimeout(() => {
+        setDataSourceWarning('')
+      }, 15000)
+      NotificationManager.warning(`${dataSourceWarning}`)
+    }
+  }, [dataSourceWarning])
+
   const populateIndex = async (): Promise<void> => {
     let indexes: IndexNodes[] = []
     if (
       !application.visibleDataSources ||
       application.visibleDataSources.length === 0
     ) {
-      NotificationManager.warning(
-        `${'Application has no visible data sources defined in settings.json.'}`
+      setDataSourceWarning(
+        `Application ${application.name} has no visible data sources defined in settings.json.`
       )
     }
     await Promise.all(
