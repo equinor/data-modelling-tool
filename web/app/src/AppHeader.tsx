@@ -68,9 +68,10 @@ export default ({ applications }: AppHeaderProps) => {
     if (location.pathname === '/') return applications[0].name
     else if (location.pathname === '/search') return 'Search'
     else if (location.pathname.includes('/view')) return ''
-    return applications.find(
-      (app) => app.name === location.pathname.substring(1)
-    ).name
+    return (
+      applications.find((app) => app?.name === location.pathname.substring(1))
+        ?.name || applications[0].name
+    )
   }
 
   return (

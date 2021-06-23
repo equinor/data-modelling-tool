@@ -24,14 +24,11 @@ export class GenerateUiRecipeTabs {
       this.uiRecipeTabs.push({
         name: 'View',
         plugin: 'default-preview',
-        attributes: [],
         type: 'system/SIMOS/UiRecipe',
-        options: [],
       })
       this.uiRecipeTabs.push({
         name: 'Edit',
         plugin: 'default-form',
-        attributes: [],
         type: 'system/SIMOS/UiRecipe',
       })
     }

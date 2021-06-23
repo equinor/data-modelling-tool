@@ -61,6 +61,7 @@ function App() {
                         exact
                         path={`/${setting.name}`}
                         render={() => <AppTab settings={setting} />}
+                        key={setting.name}
                       />
                     )
                   }
@@ -73,11 +74,11 @@ function App() {
                   )}
                 />
                 <Route
+                  exact
                   path="/view/:data_source/:entity_id"
                   component={ViewPage}
                 />
                 <Route
-                  exact
                   path={'/'}
                   render={() => <AppTab settings={applications[0]} />}
                 />

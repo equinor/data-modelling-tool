@@ -9,6 +9,7 @@ import { getUIPlugin } from '@dmt/core-plugins'
 import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecipeTabs'
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
+import { createEntity } from '../utils/createEntity'
 
 const Group = styled.div`
   display: flex;
@@ -22,14 +23,17 @@ const Group = styled.div`
 const documentAPI = new DocumentAPI()
 
 const View = (props: any) => {
-  const { dataSourceId, documentId, uiRecipe, document } = props
+  const { dataSourceId, uiRecipe, document } = props
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
   return (
     <ExternalPlugin
       dataSourceId={dataSourceId}
-      documentId={documentId}
+      documentId={document._id}
       uiRecipe={uiRecipe}
+      uiRecipeName={uiRecipe.name}
       document={document}
+      fetchBlueprint={(type: string) => documentAPI.getBlueprint(type)}
+      createDocument={createEntity}
     />
   )
 }
@@ -57,7 +61,11 @@ const ViewList = (props: any) => {
       {uiRecipeTabs.map((uiRecipe: UiRecipe) => {
         return (
           <TabPanel key={uiRecipe.name + uiRecipe.plugin}>
-            <View {...props} uiRecipe={uiRecipe} />
+            <View
+              {...props}
+              uiRecipe={uiRecipe}
+              dataSourceId={props.dataSource}
+            />
           </TabPanel>
         )
       })}
@@ -68,6 +76,7 @@ export default () => {
   const { data_source, entity_id } = useParams()
   const [document, setDocument] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     documentAPI
@@ -78,22 +87,31 @@ export default () => {
       })
       .catch((error) => {
         console.error(error)
-        NotificationManager.error(error, 'Failed to fetch', 0)
+        const errorMessage = JSON.parse(error.message).message
+        setError(errorMessage)
+        NotificationManager.error(errorMessage, 'Failed to fetch', 10)
       })
   }, [])
+
+  if (!(document || blueprint))
+    return <Group style={{ color: 'red' }}>{error}</Group>
 
   return (
     <Group>
       <div>
         <b>DataSource:</b>
-        <text style={{ marginLeft: '5px' }}>{data_source}</text>
+        <p style={{ marginLeft: '5px' }}>{data_source}</p>
       </div>
       <div>
         <b>Entity:</b>
-        <text style={{ marginLeft: '5px' }}>{entity_id}</text>
+        <p style={{ marginLeft: '5px' }}>{entity_id}</p>
       </div>
       {document && blueprint && (
-        <ViewList document={document} blueprintType={blueprint} />
+        <ViewList
+          document={document}
+          blueprintType={blueprint}
+          dataSource={data_source}
+        />
       )}
     </Group>
   )
