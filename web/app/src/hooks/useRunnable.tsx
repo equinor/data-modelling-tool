@@ -114,7 +114,7 @@ export default function useRunnable({ explorer }: any) {
         output.notify &&
           NotificationManager.success(
             `Updated document: ${JSON.parse(result).data.name}`,
-            'Action finished successfully'
+            'Updated'
           )
       })
       .catch((error: any) => {
