@@ -95,6 +95,11 @@ const getInput = async (
 
 export default function useRunnable({ explorer }: any) {
   const updateDocument = async (output: Output, parentId: string) => {
+    output.notify &&
+    NotificationManager.warning(
+            `Action started....`,
+            'Action'
+          )
     explorer
       .updateById({
         dataSourceId: output.dataSource,
@@ -108,7 +113,7 @@ export default function useRunnable({ explorer }: any) {
       .then((result: any) => {
         output.notify &&
           NotificationManager.success(
-            `Updated document: ${result.data.name}`,
+            `Updated document: ${JSON.parse(result).data.name}`,
             'Updated'
           )
       })
@@ -135,6 +140,7 @@ export default function useRunnable({ explorer }: any) {
       dataSource: dataSourceId,
       id: input.id,
       attribute: input.attribute,
+      notify: true,
       // @ts-ignore
       parentId: parentId,
     }
@@ -188,6 +194,7 @@ export default function useRunnable({ explorer }: any) {
             type: outputType,
             name: data.name,
           },
+          notify: true,
           dataSource: destinationDataSourceId,
           // @ts-ignore
           id: result.uid,
