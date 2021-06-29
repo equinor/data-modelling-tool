@@ -11,6 +11,7 @@ from flask import Flask
 
 from config import config
 from controllers import blueprints, entity, explorer, index, system
+from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
 from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
@@ -98,21 +99,18 @@ def init_application():
         logger.debug(f"_____ importing blueprints and entities {tuple(settings['packages'])}_____")
         for folder in settings["packages"]:
             data_source, folder = folder.split("/", 1)
-            try:
-                memory_file = io.BytesIO()
-                with ZipFile(memory_file, mode="w") as zip_file:
-                    zip_all(
-                        zip_file,
-                        f"{config.APPLICATION_HOME}/{app_name}/data/{data_source}/{folder}",
-                        write_folder=False,
-                    )
-                memory_file.seek(0)
-
-                root_package = package_tree_from_zip(data_source, folder, memory_file)
-            except Exception as error:
-                raise Exception(
-                    f"Something went wrong trying to load the root package '{data_source}/{folder}' ; {error}"
+            memory_file = io.BytesIO()
+            with ZipFile(memory_file, mode="w") as zip_file:
+                zip_all(
+                    zip_file, f"{config.APPLICATION_HOME}/{app_name}/data/{data_source}/{folder}", write_folder=False,
                 )
+            memory_file.seek(0)
+
+            try:
+                root_package = package_tree_from_zip(data_source, folder, memory_file)
+            except (ImportReferenceNotFoundException, ImportAliasNotFoundException) as error:
+                logger.error(error.message)
+                exit(1)
             try:
                 import_package_tree(root_package, data_source)
             except Exception as error:
