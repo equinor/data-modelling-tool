@@ -58,7 +58,7 @@ def replace_relative_references(key: str, value, reference_table: dict = None) -
             try:
                 return reference_table[value]["absolute"]
             except KeyError:
-                raise ImportReferenceNotFoundException(value)
+                raise ImportReferenceNotFoundException(value) from None
 
     # If the value is a complex type, dig down recursively
     if isinstance(value, dict):
@@ -111,8 +111,13 @@ def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: i
                 raise Exception(f"Failed to load the file '{filename}' as a JSON document")
             uid, alias = add_file_to_package(Path(filename), root_package, json_doc)
 
+            # Use the "name" attribute as the last element in the
+            # reference path, so filename and "name" dont need to match
+            if "/" in filename:
+                relative_path = f"/{'/'.join(filename.split('/')[:-1])}/{json_doc['name']}"
+            else:
+                relative_path = f"/{json_doc['name']}"
             # Create a dict with new UUID's and absolute references for every file in the package
-            relative_path = f"/{filename.removesuffix('.json')}"
             reference_table.update(
                 {
                     relative_path: {

@@ -79,7 +79,7 @@ test_documents = {
         "description": "",
         "Bigness": 10,
     },
-    "MyRootPackage/A/SubFolder/myTurbine2": {
+    "MyRootPackage/A/SubFolder/FileNameDoesNotMatch": {
         "name": "myTurbine2",
         "type": "/WindTurbine",
         "description": "This is a wind turbine demoing uncontained relationships",
