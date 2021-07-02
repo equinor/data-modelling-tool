@@ -66,9 +66,10 @@ def remove_application():
 def init_application():
     logger.info("-------------- IMPORTING PACKAGES ----------------")
     for app_name, settings in config.APP_SETTINGS.items():
+        app_directory_name = Path(settings["file_loc"]).parent.name
         logger.debug(f"Importing data for app '{app_name}'")
         logger.debug("_____ importing data sources _____")
-        ds_dir = f"{config.APPLICATION_HOME}/{app_name}/{config.APPS_DATASOURCE_SUBFOLDER}/"
+        ds_dir = f"{config.APPLICATION_HOME}/{app_directory_name}/{config.APPS_DATASOURCE_SUBFOLDER}/"
         data_sources_to_import = []
         try:
             data_sources_to_import = os.listdir(ds_dir)
@@ -102,7 +103,9 @@ def init_application():
             memory_file = io.BytesIO()
             with ZipFile(memory_file, mode="w") as zip_file:
                 zip_all(
-                    zip_file, f"{config.APPLICATION_HOME}/{app_name}/data/{data_source}/{folder}", write_folder=False,
+                    zip_file,
+                    f"{config.APPLICATION_HOME}/{app_directory_name}/data/{data_source}/{folder}",
+                    write_folder=False,
                 )
             memory_file.seek(0)
 

@@ -40,7 +40,11 @@ function App() {
   const [applications, setApplications] = useState(undefined)
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
-      setApplications(sortApplications(res.data))
+      setApplications(
+        sortApplications(res.data).filter(
+          (application) => application.hidden !== true
+        )
+      )
     })
   }, [])
 
