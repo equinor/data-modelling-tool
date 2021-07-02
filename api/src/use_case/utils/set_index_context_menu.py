@@ -104,7 +104,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
 
         # Runnable entities gets custom actions
         action_types = group_by(
-            items=app_settings["actions"], grouping_function=lambda runnable: runnable.get("input", "")
+            items=app_settings.get("actions", []), grouping_function=lambda runnable: runnable.get("input", "")
         )
 
         if node.type in action_types:

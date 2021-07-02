@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import useExplorer, { IUseExplorer } from '../hooks/useExplorer'
-
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 type Props = {
   dataSourceId: string
   documentId: string
@@ -20,9 +21,15 @@ export default ({ dataSourceId, documentId, render }: Props) => {
         documentId: target.shift().toString(),
         attribute: target.join('.'),
       }
-      const result = await explorer.get(getProps)
-      // @ts-ignore
-      setDocument(result)
+      try {
+        const result = await explorer.get(getProps)
+        // @ts-ignore
+        setDocument(result)
+      } catch (e) {
+        console.error(e)
+        NotificationManager.error(e.message, 'Error', 0)
+      }
+
       setLoading(false)
     }
     load()

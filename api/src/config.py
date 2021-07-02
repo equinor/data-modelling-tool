@@ -32,24 +32,28 @@ class Config:
         for app in self.APP_NAMES:
             try:
                 with open(f"{self.APPLICATION_HOME}/{app}/settings.json") as json_file:
-                    self.APP_SETTINGS[app] = json.load(json_file)
-                    self.APP_SETTINGS[app]["file_loc"] = json_file.name
+                    app_settings: dict = json.load(json_file)
+                    app_name = app_settings["name"]
+                    self.APP_SETTINGS[app_name] = app_settings
+                    self.APP_SETTINGS[app_name]["file_loc"] = json_file.name
 
                     # Create a list of data sources the application uses, based on folder names directly under
                     # HOME/data, and the list of "extraDataSources" from the applications settings file
-                    self.APP_SETTINGS[app]["data_sources"] = os.listdir(
+                    self.APP_SETTINGS[app_name]["data_sources"] = os.listdir(
                         f"{self.APPLICATION_HOME}/{app}/data/"
-                    ) + self.APP_SETTINGS[app].get("extraDataSources", [])
+                    ) + self.APP_SETTINGS[app_name].get("extraDataSources", [])
 
                     code_gen_folder = Path(f"{self.APPLICATION_HOME}/{app}/code_generators")
                     if code_gen_folder.is_dir():
-                        self.APP_SETTINGS[app]["code_generators"] = os.listdir(str(code_gen_folder))
+                        self.APP_SETTINGS[app_name]["code_generators"] = os.listdir(str(code_gen_folder))
             except FileNotFoundError:
                 raise FileNotFoundError(
                     f"No settings file found for the app '{app}'."
                     f"Each application requires a 'settings.json' file located at "
                     f"'{self.APPLICATION_HOME}/{{name-of-app}}/'"
                 )
+            except KeyError as e:
+                raise KeyError(f"The settings file for the '{app}' application is invalid: {e}")
             print(f"Successfully loaded app '{app}'")
 
 

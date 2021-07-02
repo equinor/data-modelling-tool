@@ -5,7 +5,7 @@ import { Reference, RenameRequest } from './configs/gen'
 
 const handleDocumentApiError = (error: any) => {
   return error.json().then((response: any) => {
-    throw new Error(JSON.stringify(response))
+    throw new Error(JSON.stringify(response.message))
   })
 }
 
