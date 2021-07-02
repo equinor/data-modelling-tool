@@ -5,6 +5,7 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import jsyaml from 'js-yaml'
+import Tooltip from './Tooltip'
 
 hljs.registerLanguage('yaml', yaml)
 
@@ -20,9 +21,12 @@ export default (props: PreviewProps) => {
 
   return (
     <div>
-      <div style={{ textAlign: 'end' }}>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
         <CopyToClipboard text={asYAML}>
-          <button style={{ marginBottom: '5px' }}>Copy</button>
+          <Tooltip text={'Copy as YAML'} tooltipText={'Copied!'} />
+        </CopyToClipboard>
+        <CopyToClipboard text={JSON.stringify(document)}>
+          <Tooltip text={'Copy as JSON'} tooltipText={'Copied!'} />
         </CopyToClipboard>
       </div>
       <pre style={{ backgroundColor: '#193549', color: 'coral' }}>

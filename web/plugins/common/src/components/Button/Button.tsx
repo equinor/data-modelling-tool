@@ -3,7 +3,7 @@ import styled, { css } from 'styled-components'
 export const Button = styled.button`
   display: inline-block;
   padding: 4px 10px;
-  margin-bottom: 0;
+  margin: 3px 5px;
   font-size: 14px;
   font-weight: normal;
   line-height: 1.42857143;
