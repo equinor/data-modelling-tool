@@ -30,6 +30,12 @@ def create_app(config):
     return app
 
 
+try:
+    with open("./version.txt") as version_file:
+        print(f"VERSION: {version_file.read()}")
+except FileNotFoundError:
+    pass
+
 app = create_app(config)
 
 

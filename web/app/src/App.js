@@ -42,7 +42,7 @@ function App() {
     systemAPI.getSystemSettings().then((res) => {
       setApplications(
         sortApplications(res.data).filter(
-          (application) => application.hidden !== true
+          (application) => application?.hidden !== true
         )
       )
     })
@@ -58,18 +58,14 @@ function App() {
             <Wrapper>
               <Header applications={applications} />
               <Switch>
-                {Object.values(applications).map((setting) => {
-                  if ('hidden' in setting ? !setting.hidden : true) {
-                    return (
-                      <Route
-                        exact
-                        path={`/${setting.name}`}
-                        render={() => <AppTab settings={setting} />}
-                        key={setting.name}
-                      />
-                    )
-                  }
-                })}
+                {Object.values(applications).map((setting) => (
+                  <Route
+                    exact
+                    path={`/${setting.name}`}
+                    render={() => <AppTab settings={setting} />}
+                    key={setting.name}
+                  />
+                ))}
                 <Route
                   exact
                   path="/search"

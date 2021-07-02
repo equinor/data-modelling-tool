@@ -95,11 +95,7 @@ const getInput = async (
 
 export default function useRunnable({ explorer }: any) {
   const updateDocument = async (output: Output, parentId: string) => {
-    output.notify &&
-    NotificationManager.warning(
-            `Action started....`,
-            'Action'
-          )
+    output.notify && NotificationManager.warning(`Action started....`, 'Action')
     explorer
       .updateById({
         dataSourceId: output.dataSource,

@@ -10,12 +10,14 @@ import { NotificationManager } from 'react-notifications'
 import { cloneDeep } from 'lodash'
 
 const ButtonWrapper = styled.div`
-  padding-top: 5px;
+  display: flex;
   cursor: pointer;
   width: 30px;
   height: 30px;
   font-size: 15px;
   text-align: center;
+  align-items: center;
+  justify-content: center;
 
   &:hover {
     border: #666666 solid 1px;
