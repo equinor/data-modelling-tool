@@ -174,7 +174,23 @@ export const DefaultCreate = (props: IDefaultCreate) => {
               uiSchema={{ 'ui:label': '' }}
             />
           ) : (
-            <input disabled={true} value={type} style={{ width: '280px' }} />
+
+            <div>
+                {/*todo - make sure that user can only select blueprints that
+                extends the current "type". perhaps need to create an
+                "ExtendsFromBlueprintPicker".
+                */}
+              <input disabled={true} value={type} style={{ width: '280px' }} />
+              <div style={{ marginTop: '10px' }}>
+                <label style={{ marginRight: '10px' }}>Override type? </label>
+
+                <BlueprintPicker
+                  formData={type}
+                  onChange={(value: string) => setType(value)}
+                  uiSchema={{ 'ui:label': '' }}
+                />
+              </div>
+            </div>
           )}
         </div>
         <div style={{ marginTop: '10px' }}>

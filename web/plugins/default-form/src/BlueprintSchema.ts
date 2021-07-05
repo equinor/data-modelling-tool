@@ -68,11 +68,12 @@ export class BlueprintSchema implements IBlueprintSchema {
     blueprintProvider: Function,
     exitRecursion: boolean
   ) {
-    const blueprintAttributes: BlueprintAttribute[] = attributes
-      .map(
-        (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
-      )
-      .filter(blueprint.filterAttributesByUiRecipe(this.uiRecipe.name))
+    let blueprintAttributes: BlueprintAttribute[] = attributes.map(
+      (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
+    )
+    if (this.uiRecipe.name) {
+      blueprintAttributes = blueprintAttributes.filter(blueprint.filterAttributesByUiRecipe(this.uiRecipe.name))
+    }
 
     const skip: string[] = this.getNotContained(blueprint)
 
@@ -91,7 +92,7 @@ export class BlueprintSchema implements IBlueprintSchema {
               attribute.getBlueprintAttributeType(),
               blueprintProvider
             )
-          } else {
+          }  else if (this.willProcessComplexAttribute(attribute.getName(), document)) { //if (Object.keys(document[attribute.getName()]).length !== 0) {  //only display complex attributes if they are not empty - DOES NOT WORK SINCE IT HIDES STUFF FOR BLUEPRINTS.
             await this.processNested(
               newPath,
               document,
@@ -325,6 +326,19 @@ export class BlueprintSchema implements IBlueprintSchema {
           }
         })
       }
+    }
+  }
+
+  private willProcessComplexAttribute(attributeName: string, document: Entity) {
+    if (!document) {
+      return true
+    }
+    else if (Array.isArray(document[attributeName])) {
+      return true
+    } else if (Object.keys(document[attributeName]).length === 0) {
+      return false
+    } else {
+      return true
     }
   }
 }
