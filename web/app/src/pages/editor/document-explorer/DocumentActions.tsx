@@ -174,9 +174,8 @@ export const DefaultCreate = (props: IDefaultCreate) => {
               uiSchema={{ 'ui:label': '' }}
             />
           ) : (
-
             <div>
-                {/*todo - make sure that user can only select blueprints that
+              {/*todo - make sure that user can only select blueprints that
                 extends the current "type". perhaps need to create an
                 "ExtendsFromBlueprintPicker".
                 */}

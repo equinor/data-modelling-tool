@@ -76,10 +76,12 @@ export class BlueprintUiSchema implements IBlueprintSchema {
     blueprintProvider: Function
   ) {
     let listOfAttr = attributes.map(
-      attrType => new BlueprintAttribute(attrType)
+      (attrType) => new BlueprintAttribute(attrType)
     )
     if (this.uiRecipe.name) {
-      listOfAttr = listOfAttr.filter(blueprint.filterAttributesByUiRecipe(this.uiRecipe.name))
+      listOfAttr = listOfAttr.filter(
+        blueprint.filterAttributesByUiRecipe(this.uiRecipe.name)
+      )
     }
     return await Promise.all(
       listOfAttr.map(async (attr: BlueprintAttribute) => {
