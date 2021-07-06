@@ -90,7 +90,7 @@ export class DocumentAPI implements IDocumentAPI {
       })
   }
 
-  remove(url: string, data: any): Promise<any> {
+  remove(url: string, data: { parentId: string, documentId: string}): Promise<any> {
     return apiProvider.post(url, data)
   }
 
