@@ -1,5 +1,10 @@
-import React from 'react'
-import { NodeType, Tree, TreeNodeRenderProps } from '@dmt/common'
+import React, { useContext } from 'react'
+import {
+  ApplicationContext,
+  NodeType,
+  Tree,
+  TreeNodeRenderProps,
+} from '@dmt/common'
 import { DocumentNode } from './DocumentNode'
 import {
   ContextMenuActions,
@@ -27,7 +32,7 @@ export default () => {
   const explorer = useExplorer({})
   const { openModal } = useModalContext()
   const { runAndSaveToNewDocument } = useRunnable({ explorer })
-
+  const application = useContext(ApplicationContext)
   const handleToggle = (props: any) => {
     explorer.toggle({
       nodeId: props.nodeData.nodeId,
@@ -190,6 +195,7 @@ export default () => {
       <Tree
         state={index.models.index.models.tree.models.tree}
         operations={index.models.index.models.tree.operations}
+        dataSources={application?.visibleDataSources}
       >
         {(node: TreeNodeRenderProps) => {
           return (

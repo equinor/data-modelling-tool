@@ -4,7 +4,7 @@
   "label": "Data Modeling",
   "tabIndex": 0,
   "hidden": false,
-  "visibleDataSources": ["EntityApp-DS", "SomeEntities"],
+  "visibleDataSources": ["EntityApp-DS"],
   "description": "",
   "packages": ["DMT-DS/DMT","EntityApp-DS/DMT-demo", "SomeEntities-DS/EntitiesPackage"],
   "models": [
