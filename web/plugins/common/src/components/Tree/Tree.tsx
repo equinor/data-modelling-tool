@@ -51,7 +51,10 @@ type TreeProps = {
   operations?: any
   state?: any
   children: Function
+  dataSources?: string[]
 }
+
+type RootNode = { currentItem: TreeNodeData; level: number; track: never[] }[]
 
 /**
  *
@@ -124,34 +127,61 @@ const getRootNodes = (rootNode: TreeNodeData, state: Tree) => [
 ]
 
 const sortRootNodes = (
-  rootNodes: { currentItem: TreeNodeData; level: number; track: never[] }[][]
+  rootNodes: RootNode[],
+  dataSources: string[] | undefined
 ) => {
-  if (rootNodes.length > 0) {
-    rootNodes.sort((listA, listB) => {
-      let dataSourceIndexA: number = listA.findIndex((element) => {
+  /*
+    Sort root nodes (data sources) in the order defined in the application's settings.json.
+    If this order cannot be used, sort alphabetically
+   */
+
+  if (dataSources && dataSources.length) {
+    //sort in order defined in dataSources list
+
+    rootNodes.sort((rootNodeA, rootNodeB) => {
+      let dataSourceIndexA: number = rootNodeA.findIndex((element) => {
         return element['level'] === 0
       })
-      let dataSourceIndexB: number = listB.findIndex((element) => {
+      let dataSourceIndexB: number = rootNodeB.findIndex((element) => {
+        return element['level'] === 0
+      })
+      return (
+        dataSources.indexOf(
+          rootNodeA[dataSourceIndexA]['currentItem']['title']
+        ) -
+        dataSources.indexOf(rootNodeB[dataSourceIndexB]['currentItem']['title'])
+      )
+    })
+    return rootNodes
+  } else {
+    //sort alphabetically
+
+    if (!rootNodes.length) return rootNodes
+    rootNodes.sort((rootNodeA, rootNodeB) => {
+      let dataSourceIndexA: number = rootNodeA.findIndex((element) => {
+        return element['level'] === 0
+      })
+      let dataSourceIndexB: number = rootNodeB.findIndex((element) => {
         return element['level'] === 0
       })
       if (
-        listA[dataSourceIndexA]['currentItem']['title'] <
-        listB[dataSourceIndexB]['currentItem']['title']
+        rootNodeA[dataSourceIndexA]['currentItem']['title'] <
+        rootNodeB[dataSourceIndexB]['currentItem']['title']
       )
         return -1
       else if (
-        listA[dataSourceIndexA]['currentItem']['title'] >
-        listB[dataSourceIndexB]['currentItem']['title']
+        rootNodeA[dataSourceIndexA]['currentItem']['title'] >
+        rootNodeB[dataSourceIndexB]['currentItem']['title']
       )
         return 1
       else return 0
     })
+    return rootNodes
   }
-  return rootNodes
 }
 
 export const Tree = (props: TreeProps) => {
-  const { state, children, operations } = props
+  const { state, children, operations, dataSources } = props
 
   if (!state) {
     return null
@@ -178,7 +208,7 @@ export const Tree = (props: TreeProps) => {
   return (
     <>
       <SearchTree onChange={search} />
-      {sortRootNodes(rootNodes).map((rootNode, index) => {
+      {sortRootNodes(rootNodes, dataSources).map((rootNode, index) => {
         return (
           <div key={'root_' + index} style={{ background: 'white' }}>
             {rootNode.map((item: any, index: number) => {
