@@ -5,9 +5,24 @@
   "description": "",
   "SomeChild": {
     "name": "specialChild",
-    "type": "EntityApp-DS/DMT-demo/subtypes/SpecialChild",
+    "type": "/subtypes/SpecialChild",
     "description": "",
     "AValue": 33,
-    "AnExtraValue": "fullName"
+    "AnExtraValue": "fullName",
+    "Hobbies": [{
+      "name": "Football",
+      "type": "/subtypes/Hobby",
+      "description": "sport",
+      "YearsOfExperience": 3,
+      "DifficultyLevel": "medium"
+    },
+      {
+        "name": "Swimming",
+        "type": "/subtypes/Hobby",
+        "description": "activity",
+        "YearsOfExperience": 1,
+        "DifficultyLevel": "M"
+      }
+      ]
   }
 }

@@ -168,13 +168,15 @@ export class BlueprintSchema implements IBlueprintSchema {
         })
 
         if (!exitRecursion) {
+          exitRecursion = attr.isPrimitive() ? true : false
+
           await this.processAttributes(
             newPath,
             nestedBlueprint,
             nestedDocument[attr.getName()],
             nestedBlueprintType.attributes,
             blueprintProvider,
-            true
+            exitRecursion
           )
         }
       }

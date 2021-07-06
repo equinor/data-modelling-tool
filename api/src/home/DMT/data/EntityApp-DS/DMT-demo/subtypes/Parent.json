@@ -5,7 +5,7 @@
   "attributes": [
       {
           "name": "SomeChild",
-          "attributeType": "EntityApp-DS/DMT-demo/subtypes/BaseChild",
+          "attributeType": "/subtypes/BaseChild",
           "type": "system/SIMOS/BlueprintAttribute",
           "optional": true
       }
