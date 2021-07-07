@@ -74,7 +74,6 @@ interface RemoveProps {
   nodeId: string
   parent: string
   url: string
-  data: any
 }
 
 interface UpdateByIdProps {
@@ -128,7 +127,7 @@ export interface IUseExplorer {
 
   create({ data, dataUrl, nodeUrl }: CreateProps): void
 
-  remove({ nodeId, parent, url, data }: RemoveProps): void
+  remove({ nodeId, parent, url }: RemoveProps): void
 
   rename({ dataSourceId, documentId, nodeUrl, renameData }: renameProps): void
 
@@ -310,9 +309,9 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     }
   }
 
-  const remove = async ({ nodeId, parent, url, data }: RemoveProps) => {
+  const remove = async ({ nodeId, parent, url }: RemoveProps) => {
     return documentAPI
-      .remove(url, data)
+      .remove(url, { parentId: parent, documentId: nodeId })
       .then(() => {
         index.models.index.operations
           .remove(nodeId, parent)

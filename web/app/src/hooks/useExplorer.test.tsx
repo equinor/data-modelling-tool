@@ -436,8 +436,7 @@ describe('the explorer hook', () => {
           response.result.current.remove({
             nodeId: '2',
             parent: '',
-            url: '/',
-            data: {},
+            url: '/'
           })
         })
       })
@@ -462,8 +461,7 @@ describe('the explorer hook', () => {
           response.result.current.remove({
             nodeId: '9999',
             parent: '',
-            url: '????',
-            data: { valueA: 'A' },
+            url: '????'
           })
         })
       })
