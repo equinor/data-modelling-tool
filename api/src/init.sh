@@ -29,8 +29,8 @@ install_dmss_package() {
     echo "WARNING: Tried to install local version of the DMSS-API, but it could not be found. Continuing with version from Pypi..."
   else
     echo "Installing DMSS-API from local..."
-    pip uninstall dmss-api -y
-    pip install -e /dmss_api/
+    pip uninstall dmss-api -y -q
+    pip install -e /dmss_api/ -q
   fi
 }
 

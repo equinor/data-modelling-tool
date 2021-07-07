@@ -54,11 +54,14 @@ def remove_application():
         )
     )
     for app_name, settings in config.APP_SETTINGS.items():
-        for folder in settings["packages"]:
-            logger.info(f"Deleting package '{folder}' from DMSS...")
-            data_source, folder = folder.split("/", 1)
+        for package in settings.get("packages", []):
+            data_source_alias, folder = package.split("/", 1)
+            actual_data_source = next(
+                (v for k, v in settings["data_source_aliases"].items() if k == data_source_alias), data_source_alias
+            )
+            logger.info(f"Deleting package '{actual_data_source}/{folder}' from DMSS...")
             try:
-                dmss_api.explorer_remove_by_path(data_source, {"directory": folder})
+                dmss_api.explorer_remove_by_path(actual_data_source, {"directory": folder})
             except ApiException as error:
                 if error.status == 404:
                     logger.warning(emoji.emojize(f":warning: Could not find '{folder}' in DMSS..."))
@@ -103,30 +106,30 @@ def init_application():
 
         logger.debug("_____ DONE importing data sources _____")
 
-        logger.debug(f"_____ importing blueprints and entities {tuple(settings['packages'])}_____")
-        for folder in settings["packages"]:
-            data_source, folder = folder.split("/", 1)
+        logger.debug(f"_____ importing blueprints and entities {tuple(settings.get('packages',[]))}_____")
+        for package in settings.get("packages", []):
+            data_source_alias, folder = package.split("/", 1)
+            actual_data_source = settings["data_source_aliases"].get(data_source_alias, data_source_alias)
             memory_file = io.BytesIO()
             with ZipFile(memory_file, mode="w") as zip_file:
                 zip_all(
                     zip_file,
-                    f"{config.APPLICATION_HOME}/{app_directory_name}/data/{data_source}/{folder}",
+                    f"{config.APPLICATION_HOME}/{app_directory_name}/data/{data_source_alias}/{folder}",
                     write_folder=False,
                 )
             memory_file.seek(0)
 
             try:
-                root_package = package_tree_from_zip(data_source, folder, memory_file)
+                root_package = package_tree_from_zip(actual_data_source, folder, memory_file)
             except (ImportReferenceNotFoundException, ImportAliasNotFoundException) as error:
                 logger.error(error.message)
                 exit(1)
             try:
-                import_package_tree(root_package, data_source)
+                # Import the package into the data source defined in _aliases_, or using the data_source folder name
+                import_package_tree(root_package, actual_data_source)
             except Exception as error:
-                raise Exception(
-                    f"Something went wrong trying to upload the package ''{data_source}/{folder}'' to DMSS; {error}"
-                )
-        logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings['packages'])}_____")
+                raise Exception(f"Something went wrong trying to upload the package ''{package}'' to DMSS; {error}")
+        logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings.get('packages',[]))}_____")
 
     logger.debug("_____ importing blobs _____")
     # TODO:  This is a temporary fix for import of blob data.
@@ -145,9 +148,13 @@ def init_application():
                     doc["blob_reference"] = Path(file.name).name
                     parent_directory = str(Path(blob_container).parent)
                     target_directory = "/".join(parent_directory.split("/")[3:])
-                    data_source = blob_container.split("/")[2]
+                    data_source_alias = blob_container.split("/")[2]
+                    actual_data_source = next(
+                        (v for k, v in settings["data_source_aliases"].items() if k == data_source_alias),
+                        data_source_alias,
+                    )
                     dmss_api.explorer_add_to_path(
-                        data_source,
+                        actual_data_source,
                         document=json.dumps(doc),
                         directory="/content/".join(target_directory.split("/")) + "/content",
                         files=[file],

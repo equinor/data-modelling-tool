@@ -1,7 +1,28 @@
 import json
 import os
+import re
 from pathlib import Path
 from typing import Dict
+
+
+def parse_env_file(file_path: str) -> Dict[str, str]:
+    regex = r"^[=A-Za-z0-9_-]*$"
+    pattern = re.compile(regex)
+    result: dict = {}
+    try:
+        with open(file_path) as alias_file:
+
+            for line in alias_file.read().splitlines():
+                if line.strip(" ")[0] == "#":  # Skip commented lines
+                    continue
+                if not re.search(pattern, line):
+                    raise ValueError(f"The file '{file_path}' is invalid. Invalid line '{line}'")
+                key, value = line.split("=", 1)
+                result[key] = value
+
+    except FileNotFoundError:
+        print("WARNING: No data source alias file found...")
+    return result
 
 
 class Config:
@@ -22,7 +43,7 @@ class Config:
     DMSS_PORT = os.getenv("DMSS_PORT", "5000")
     DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
     DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}"
-    IMPORT_BLOBS = ["DMT/data/EntityApp-DS/DMT-demo/PDF-Demo/MyPdf.json"]
+    IMPORT_BLOBS = ["DMT/data/demoDSAlias/DMT-demo/PDF/MyPdf.json"]
 
     APP_NAMES = next(os.walk(APPLICATION_HOME))[1]  # Every folder under HOME represents a separate app
     APP_SETTINGS: Dict[str, dict] = {}  # Dict holding settings for all loaded applications
@@ -42,6 +63,10 @@ class Config:
                     self.APP_SETTINGS[app_name]["data_sources"] = os.listdir(
                         f"{self.APPLICATION_HOME}/{app}/data/"
                     ) + self.APP_SETTINGS[app_name].get("extraDataSources", [])
+
+                    self.APP_SETTINGS[app_name]["data_source_aliases"] = parse_env_file(
+                        f"{self.APPLICATION_HOME}/{app}/data/_aliases_"
+                    )
 
                     code_gen_folder = Path(f"{self.APPLICATION_HOME}/{app}/code_generators")
                     if code_gen_folder.is_dir():
