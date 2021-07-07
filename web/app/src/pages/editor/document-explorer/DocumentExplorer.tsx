@@ -173,7 +173,7 @@ export default () => {
             }
             const separateResultFileProps = {
               explorer: explorer,
-              type: 'DMT-DS/DMT/actions/NewActionResult',
+              type: 'DMT/DMT/actions/NewActionResult',
               uiRecipeName: 'DEFAULT_CREATE',
               onSubmit: handleSubmit,
             }

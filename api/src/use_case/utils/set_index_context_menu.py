@@ -35,7 +35,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                 )
             )
             # Context menu: New from app_settings
-            for model in app_settings["models"]:
+            for model in app_settings.get("models", []):
                 create_new_menu_items.append(
                     get_dynamic_create_menu_item(
                         data_source_id=data_source_id, name=model.split("/")[-1], type=model, node_id=node_id

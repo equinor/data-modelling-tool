@@ -4,9 +4,9 @@
   "label": "Data Modeling",
   "tabIndex": 0,
   "hidden": false,
-  "visibleDataSources": ["EntityApp-DS"],
+  "visibleDataSources": ["DemoDS"],
   "description": "",
-  "packages": ["DMT-DS/DMT","EntityApp-DS/DMT-demo", "SomeEntities-DS/EntitiesPackage"],
+  "packages": ["DMT-internals/DMT","demoDSAlias/DMT-demo"],
   "models": [
     "system/SIMOS/Blueprint",
     "system/SIMOS/Entity",
@@ -16,23 +16,23 @@
     {
       "name": "Run storm simulation",
       "description": "Simulate a category 3 storm",
-      "input": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",
-      "output": "EntityApp-DS/DMT-demo/Actions/ActionResult",
+      "input": "DemoDS/DMT-demo/Actions/WindTurbineWithAction",
+      "output": "DemoDS/DMT-demo/Actions/ActionResult",
       "method": "simulateCat3StormResultInEntity",
       "actionType": "resultInEntity"
     },
     {
       "name": "Cancel Simulation",
       "description": "Cancel started simulation",
-      "input": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",
+      "input": "DemoDS/DMT-demo/Actions/WindTurbineWithAction",
       "method": "cancelSimulation",
       "actionType": "resultInEntity"
     },
     {
       "name": "Run storm simulation - new result file",
       "description": "Simulate a category 3 storm",
-      "input": "EntityApp-DS/DMT-demo/Actions/WindTurbineWithAction",
-      "output": "EntityApp-DS/DMT-demo/Actions/ActionResult",
+      "input": "DemoDS/DMT-demo/Actions/WindTurbineWithAction",
+      "output": "DemoDS/DMT-demo/Actions/ActionResult",
       "method": "simulateCat3StormResultInNewFile",
       "actionType": "separateResultFile"
     }

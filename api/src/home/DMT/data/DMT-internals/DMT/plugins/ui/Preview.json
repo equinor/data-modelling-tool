@@ -1,0 +1,7 @@
+{
+  "name": "PreviewPlugin",
+  "type": "/UiViewPlugin",
+  "label": "Edit",
+  "required": true,
+  "widgets": []
+}
