@@ -1,17 +1,14 @@
 from typing import Dict, List
 
 from domain_classes.blueprint_attribute import BlueprintAttribute
-from enums import PRIMITIVES, StorageDataTypes
-
-DEFAULT_PRIMITIVE_CONTAINED = True
-DEFAULT_COMPLEX_CONTAINED = True
+from enums import StorageDataTypes
 
 
 class StorageAttribute:
     def __init__(
         self,
         name: str,
-        contained: bool = DEFAULT_PRIMITIVE_CONTAINED,
+        contained: bool = True,
         storageTypeAffinity: str = StorageDataTypes.DEFAULT.value,
         label: str = "",
         description: str = "",
@@ -52,13 +49,9 @@ class StorageRecipe:
         self.storage_affinity = StorageDataTypes(storageAffinity)
         self.storage_attributes = {attribute["name"]: StorageAttribute(**attribute) for attribute in attributes}
 
-    def is_contained(self, attribute_name, attribute_type=None):
+    def is_contained(self, attribute_name):
         if attribute_name in self.storage_attributes:
             return self.storage_attributes[attribute_name].is_contained
-        if attribute_type in PRIMITIVES:
-            return DEFAULT_PRIMITIVE_CONTAINED
-        else:
-            return DEFAULT_COMPLEX_CONTAINED
 
     def to_dict(self) -> Dict:
         return {

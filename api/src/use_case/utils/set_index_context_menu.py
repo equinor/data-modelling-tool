@@ -88,7 +88,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
 
         if is_removable:
             # If the document is not in a package, and not contained, remove the reference instead of deleting it
-            if not node.contained() and node.parent.type != BLUEPRINTS.ENTITY.value:
+            if not node.contained and node.parent.type != BLUEPRINTS.ENTITY.value:
                 menu_items.append(
                     {"label": "Remove reference", "action": "UNLINK", "data": f"{node.parent.uid}.{node.key}"}
                 )

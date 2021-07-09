@@ -1,7 +1,7 @@
 import io
 import zipfile
 from functools import lru_cache
-from typing import Union
+from typing import Dict, Union
 
 from config import Config
 from domain_classes.blueprint import Blueprint
@@ -34,24 +34,36 @@ class DocumentService:
     def clear_blueprint_cache(self):
         self.get_blueprint.cache_clear()
 
-    # This now only works with "local" repository. Like Zip or Filesystem
-    def save(self, node: Union[Node, ListNode], data_source_id: str, repository, path="") -> None:
-        # Update none-contained attributes
+    def save(self, node: Union[Node, ListNode], data_source_id: str, repository=None, path="") -> Dict:
+        """
+        Recursively saves a Node.
+        Digs down to the leaf child, and based on storageContained,
+        either saves the entity and returns the Reference, OR returns the entire entity.
+        """
+        if not node.entity:
+            return {}
+
+        # If the node is a package, we build the path string to be used by filesystem like repositories
+        if node.type == BLUEPRINTS.PACKAGE.value:
+            path = f"{path}/{node.name}/" if path else f"{node.name}"
+
         for child in node.children:
-            # A list node is always contained on parent. Need to check the blueprint
-            if child.is_array() and not child.storage_contained():
-                # If the node is a package, we build the path string to be used by "export zip"-repository
-                if node.type == BLUEPRINTS.PACKAGE.value:
-                    path = f"{path}/{node.name}/" if path else f"{node.name}"
+            if child.is_array():
                 [self.save(x, data_source_id, repository, path) for x in child.children]
-            elif not child.contained():
+            else:
                 self.save(child, data_source_id, repository, path)
+
         ref_dict = node.to_ref_dict()
-        dto = DTO(ref_dict)
-        # Expand this when adding new repositories requiring PATH
-        if isinstance(repository, ZipFileClient):
-            dto.data["__path__"] = path
-        repository.update(dto)
+
+        # If the node is not contained, and has data, save it!
+        if not node.storage_contained() and ref_dict:
+            dto = DTO(ref_dict)
+            # Expand this when adding new repositories requiring PATH
+            if isinstance(repository, ZipFileClient):
+                dto.data["__path__"] = path
+            repository.update(dto)
+            return {"_id": node.uid, "type": node.entity["type"], "name": node.name}
+        return ref_dict
 
     def get_node_by_uid(self, data_source_id: str, document_uid: str, depth: int = 999) -> Node:
         document = self.uid_document_provider(data_source_id, document_uid, depth)

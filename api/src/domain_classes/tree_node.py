@@ -61,7 +61,7 @@ class DictExporter:
                 else:
                     data[child.key] = [list_child.to_dict() for list_child in child.children]
             else:
-                if not child.contained():
+                if not child.contained:
                     data[child.key] = {"_id": child.uid, "type": child.type, "name": child.name}
                 else:
                     data[child.key] = child.to_dict()
@@ -159,7 +159,7 @@ class DictImporter:
             return node
         except (AttributeError, KeyError) as error:
             logger.exception(error)
-            node = Node(key=entity["name"], uid="", blueprint_provider=blueprint_provider, attribute=node_attribute,)
+            node = Node(key=entity["name"], uid="", blueprint_provider=blueprint_provider, attribute=node_attribute)
             node.set_error(error)
             return node
 
@@ -198,23 +198,17 @@ class NodeBase:
         if self.type != BLUEPRINTS.DATASOURCE.value:
             return self.blueprint_provider(self.type)
 
-    def storage_contained(self):
-        if not self.parent or self.parent.type == BLUEPRINTS.DATASOURCE.value:
-            return False
-        return self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)
-
     def is_empty(self):
         return not self.entity
-
-    def contained(self):
-        return self.attribute.contained
 
     @property
     def node_id(self):
         if self.type == BLUEPRINTS.DATASOURCE.value:
             return self.uid
         # Return dotted path if the node is storage contained, or is a reference
-        if self.storage_contained() or not self.contained():
+        if self.storage_contained() or not self.contained:
+            if not self.parent:
+                return self.uid
             return ".".join(self.path() + [self.key])
         else:
             return self.uid
@@ -409,6 +403,17 @@ class Node(NodeBase):
     def remove(self):
         self.parent.remove_by_node_id(self.node_id)
 
+    @property
+    def contained(self):
+        return self.attribute.contained
+
+    def storage_contained(self):
+        if not self.parent or self.parent.type == BLUEPRINTS.DATASOURCE.value:
+            return False  # A node with no parent, or is a data source, can never be contained
+        if (in_recipe := self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)) is not None:
+            return in_recipe  # If the attribute is defined in a storageRecipe, use that value.
+        return self.attribute.contained  # Default to the attributeContained value (default True)
+
     # Replace the entire data of the node with the input dict. If it matches the blueprint...
     def update(self, data: Union[Dict, List]):
         data.pop("_id", None)
@@ -466,8 +471,14 @@ class ListNode(NodeBase):
             key=key, uid=uid, parent=parent, attribute=attribute, blueprint_provider=blueprint_provider, entity=entity
         )
 
-    def attribute_is_contained(self):
-        return self.blueprint.storage_recipes[0].is_contained(self.key)
+    @staticmethod
+    def storage_contained():
+        return True
+
+    @staticmethod
+    @property
+    def contained():
+        return True  # A ListNode is always contained in parent
 
     def to_dict(self):
         return [child.to_dict() for child in self.children]

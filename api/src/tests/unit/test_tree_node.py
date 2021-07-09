@@ -4,7 +4,6 @@ from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from domain_classes.dto import DTO
 from domain_classes.tree_node import DictExporter, DictImporter, ListNode, Node
-from services.document_service import DocumentService
 from tests.unit.util_tests import flatten_dict
 from utils.data_structure.compare import pretty_eq
 
@@ -22,6 +21,7 @@ blueprint_1 = {
             "attributeType": "blueprint_2",
             "type": "system/SIMOS/BlueprintAttribute",
             "name": "references",
+            "contained": False,
             "dimensions": "*",
         },
     ],
@@ -30,10 +30,7 @@ blueprint_1 = {
             "type": "system/SIMOS/StorageRecipe",
             "name": "DefaultStorageRecipe",
             "description": "",
-            "attributes": [
-                {"name": "reference", "type": "system/SIMOS/Entity", "contained": False},
-                {"name": "references", "type": "system/SIMOS/Entity", "contained": False},
-            ],
+            "attributes": [{"name": "reference", "type": "system/SIMOS/Entity", "contained": False}],
         }
     ],
     "uiRecipes": [],
@@ -434,12 +431,13 @@ class TreenodeTestCase(unittest.TestCase):
     def test_node_id(self):
         root_data = {"_id": 1, "name": "root", "description": "", "type": "blueprint_1"}
         root = Node(
-            key="root",
+            key="",
             uid="1",
             entity=root_data,
             blueprint_provider=blueprint_provider,
             attribute=BlueprintAttribute("", "blueprint_1"),
         )
+        assert root.node_id == "1"
 
         nested_data = {"name": "Nested", "description": "", "type": "blueprint_2"}
         nested = Node(
@@ -450,6 +448,7 @@ class TreenodeTestCase(unittest.TestCase):
             parent=root,
             attribute=BlueprintAttribute("", "blueprint_2"),
         )
+        assert nested.node_id == "1.nested"
 
         nested_2_data = {"name": "Nested", "description": "", "type": "blueprint_3"}
         nested_2 = Node(
@@ -460,6 +459,8 @@ class TreenodeTestCase(unittest.TestCase):
             parent=nested,
             attribute=BlueprintAttribute("", "blueprint_3"),
         )
+        assert nested_2.node_id == "1.nested.nested"
+        assert nested_2.node_id == "1.nested.nested"
 
         nested_2_reference_data = {"_id": "2", "name": "Reference", "description": "", "type": "blueprint_2"}
         reference = Node(
@@ -470,6 +471,7 @@ class TreenodeTestCase(unittest.TestCase):
             parent=nested_2,
             attribute=BlueprintAttribute("", "blueprint_2", contained=False),
         )
+        assert reference.node_id == "1.nested.nested.reference"
 
         list_data = {"name": "List", "type": "blueprint_3"}
         list_node = ListNode(
@@ -478,10 +480,10 @@ class TreenodeTestCase(unittest.TestCase):
             entity=list_data,
             blueprint_provider=blueprint_provider,
             parent=root,
-            attribute=BlueprintAttribute("", "blueprint_3"),
+            attribute=BlueprintAttribute("", "blueprint_1"),
         )
-
         item_1_data = {"name": "Item 1", "description": "", "type": "blueprint_2"}
+
         item_1 = Node(
             key="0",
             uid="",
@@ -490,14 +492,27 @@ class TreenodeTestCase(unittest.TestCase):
             parent=list_node,
             attribute=BlueprintAttribute("", "blueprint_2"),
         )
-
-        assert root.node_id == "1"
-        assert nested.node_id == "1.nested"
-        assert nested_2.node_id == "1.nested.nested"
-        assert nested_2.node_id == "1.nested.nested"
-        assert reference.node_id == "1.nested.nested.reference"
         assert list_node.node_id == "1.list"
         assert item_1.node_id == "1.list.0"
+
+        references = ListNode(
+            key="references",
+            uid="",
+            entity={"name": "List", "type": "blueprint_2"},
+            blueprint_provider=blueprint_provider,
+            parent=root,
+            # ListNodes blueprint must be the same as the parent node
+            attribute=BlueprintAttribute("", "blueprint_1", contained=False),
+        )
+        item_1_in_references = Node(
+            key="0",
+            uid="",
+            entity=item_1_data,
+            blueprint_provider=blueprint_provider,
+            parent=references,
+            attribute=BlueprintAttribute("", "blueprint_2", contained=False),
+        )
+        assert item_1_in_references.node_id == "1.references.0"
 
     def test_search(self):
         document_1 = {
