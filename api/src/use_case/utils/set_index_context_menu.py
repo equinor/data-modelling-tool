@@ -44,11 +44,16 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
         else:
             if node.is_array():
                 # List nodes can always append entities of it's own type
-                create_new_menu_items.append(
-                    get_dynamic_create_menu_item(
-                        data_source_id=data_source_id, name=node.name, type=node.type, node_id=node.node_id
+                if not node.storage_contained():
+                    new_reference_menu_items.append(
+                        {"label": f"{node.type.split('/')[-1]}", "action": "INSERT_REFERENCE"}
                     )
-                )
+                else:
+                    create_new_menu_items.append(
+                        get_dynamic_create_menu_item(
+                            data_source_id=data_source_id, name=node.name, type=node.type, node_id=node.node_id
+                        )
+                    )
             else:
                 # Add create entry for optional attributes (not for packages)
                 for empty_child in [child for child in node.children if child.is_empty() and not child.is_array()]:
@@ -89,9 +94,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
         if is_removable:
             # If the document is not in a package, and not contained, remove the reference instead of deleting it
             if not node.contained and node.parent.type != BLUEPRINTS.ENTITY.value:
-                menu_items.append(
-                    {"label": "Remove reference", "action": "UNLINK", "data": f"{node.parent.uid}.{node.key}"}
-                )
+                menu_items.append({"label": "Remove reference", "action": "UNLINK"})
             else:
                 menu_items.append(
                     get_delete_menu_item(

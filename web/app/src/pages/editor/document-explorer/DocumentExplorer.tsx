@@ -140,7 +140,7 @@ export default () => {
         explorer.removeReference({
           // @ts-ignore
           dataSourceId: node.nodeData.meta.dataSource,
-          documentDottedId: data,
+          documentDottedId: node.nodeData.nodeId,
         })
         break
       case ContextMenuActions.RUNNABLE:

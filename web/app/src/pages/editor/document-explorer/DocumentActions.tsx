@@ -101,7 +101,7 @@ export const DownloadAction = (props: any) => {
 
 export interface IInsertReferenceProps {
   explorer: IUseExplorer
-  attribute: string
+  attribute?: string
   type: string
   target: string
   targetDataSource: string
@@ -213,7 +213,7 @@ export const DefaultCreate = (props: IDefaultCreate) => {
   )
 }
 
-// todo temprorary solution for form - can be replaced with react-jsonschema-form later
+// todo temporary solution for form - can be replaced with react-jsonschema-form later
 export const RenameDocument = (props: IRenameDocument) => {
   const [name, setName] = useState<string>(props.node.nodeData.title)
   const { explorer, nodeUrl, node, dataSourceId, documentId } = props
@@ -267,7 +267,7 @@ export const InsertReference = (props: IInsertReferenceProps) => {
     }
     explorer.insertReference({
       dataSourceId: targetDataSource,
-      documentDottedId: `${target}.${attribute}`,
+      documentDottedId: (attribute && `${target}.${attribute}`) || target,
       reference,
     })
   }

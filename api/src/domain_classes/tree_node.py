@@ -216,7 +216,7 @@ class NodeBase:
     def path(self):
         path = []
         parent = self.parent
-        while parent and parent.storage_contained():
+        while parent and (parent.storage_contained() or parent.is_array()):
             path += [parent.key]
             parent = parent.parent
         # Since we build the path "bottom-up", it need's to be revered.
@@ -371,6 +371,17 @@ class NodeBase:
         self.has_error = True
         self.error_message = error_message
 
+    @property
+    def contained(self):
+        return self.attribute.contained
+
+    def storage_contained(self):
+        if not self.parent or self.parent.type == BLUEPRINTS.DATASOURCE.value:
+            return False  # A node with no parent, or is a data source, can never be contained
+        if (in_recipe := self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)) is not None:
+            return in_recipe  # If the attribute is defined in a storageRecipe, use that value.
+        return self.attribute.contained  # Default to the attributeContained value (default True)
+
 
 class Node(NodeBase):
     def __init__(
@@ -402,17 +413,6 @@ class Node(NodeBase):
 
     def remove(self):
         self.parent.remove_by_node_id(self.node_id)
-
-    @property
-    def contained(self):
-        return self.attribute.contained
-
-    def storage_contained(self):
-        if not self.parent or self.parent.type == BLUEPRINTS.DATASOURCE.value:
-            return False  # A node with no parent, or is a data source, can never be contained
-        if (in_recipe := self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)) is not None:
-            return in_recipe  # If the attribute is defined in a storageRecipe, use that value.
-        return self.attribute.contained  # Default to the attributeContained value (default True)
 
     # Replace the entire data of the node with the input dict. If it matches the blueprint...
     def update(self, data: Union[Dict, List]):
@@ -470,15 +470,6 @@ class ListNode(NodeBase):
         super().__init__(
             key=key, uid=uid, parent=parent, attribute=attribute, blueprint_provider=blueprint_provider, entity=entity
         )
-
-    @staticmethod
-    def storage_contained():
-        return True
-
-    @staticmethod
-    @property
-    def contained():
-        return True  # A ListNode is always contained in parent
 
     def to_dict(self):
         return [child.to_dict() for child in self.children]
