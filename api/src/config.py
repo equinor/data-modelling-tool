@@ -2,27 +2,53 @@ import json
 import os
 import re
 from pathlib import Path
-from typing import Dict
+from typing import Dict, List, Union
 
 
-def parse_env_file(file_path: str) -> Dict[str, str]:
+def parse_alias_file(file_path: str) -> Dict[str, str]:
     regex = r"^[=A-Za-z0-9_-]*$"
     pattern = re.compile(regex)
     result: dict = {}
     try:
         with open(file_path) as alias_file:
-
             for line in alias_file.read().splitlines():
-                if line.strip(" ")[0] == "#":  # Skip commented lines
+                if line.lstrip()[0] == "#":  # Skip commented lines
                     continue
                 if not re.search(pattern, line):
-                    raise ValueError(f"The file '{file_path}' is invalid. Invalid line '{line}'")
+                    raise ValueError(f"The alias file '{file_path}' is invalid. Invalid line '{line}'")
                 key, value = line.split("=", 1)
                 result[key] = value
 
     except FileNotFoundError:
         print("WARNING: No data source alias file found...")
     return result
+
+
+def replace_aliases_in_settings(settings: dict) -> dict:
+    def replace_alias_in_reference(reference: Union[str, None]) -> Union[str, None]:
+        if not reference:
+            return
+        if reference[0] == "/":  # Don't replace relative references
+            return reference
+        reference_data_source = reference.split("/", 1)[0]
+        return reference.replace(reference_data_source, aliases.get(reference_data_source, reference_data_source), 1)
+
+    aliases = settings["data_source_aliases"]
+
+    new_models: List[str] = []
+    for model in settings.get("models", []):
+        new_models.append(replace_alias_in_reference(model))
+
+    new_actions: List[dict] = []
+    for action in settings.get("actions", []):
+        action["input"] = replace_alias_in_reference(action.get("input"))
+        action["output"] = replace_alias_in_reference(action.get("output"))
+        new_actions.append(action)
+
+    settings["models"] = new_models
+    settings["actions"] = new_actions
+
+    return settings
 
 
 class Config:
@@ -54,23 +80,16 @@ class Config:
             try:
                 with open(f"{self.APPLICATION_HOME}/{app}/settings.json") as json_file:
                     app_settings: dict = json.load(json_file)
-                    app_name = app_settings["name"]
-                    self.APP_SETTINGS[app_name] = app_settings
-                    self.APP_SETTINGS[app_name]["file_loc"] = json_file.name
-
-                    # Create a list of data sources the application uses, based on folder names directly under
-                    # HOME/data, and the list of "extraDataSources" from the applications settings file
-                    self.APP_SETTINGS[app_name]["data_sources"] = os.listdir(
-                        f"{self.APPLICATION_HOME}/{app}/data/"
-                    ) + self.APP_SETTINGS[app_name].get("extraDataSources", [])
-
-                    self.APP_SETTINGS[app_name]["data_source_aliases"] = parse_env_file(
+                    app_settings["file_loc"] = json_file.name
+                    app_settings["data_source_aliases"] = parse_alias_file(
                         f"{self.APPLICATION_HOME}/{app}/data/_aliases_"
                     )
 
                     code_gen_folder = Path(f"{self.APPLICATION_HOME}/{app}/code_generators")
                     if code_gen_folder.is_dir():
-                        self.APP_SETTINGS[app_name]["code_generators"] = os.listdir(str(code_gen_folder))
+                        app_settings["code_generators"] = os.listdir(str(code_gen_folder))
+
+                    self.APP_SETTINGS[app_settings["name"]] = replace_aliases_in_settings(app_settings)
             except FileNotFoundError:
                 raise FileNotFoundError(
                     f"No settings file found for the app '{app}'."

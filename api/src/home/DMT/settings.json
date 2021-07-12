@@ -16,23 +16,22 @@
     {
       "name": "Run storm simulation",
       "description": "Simulate a category 3 storm",
-      "input": "DemoDS/DMT-demo/Actions/WindTurbineWithAction",
-      "output": "DemoDS/DMT-demo/Actions/ActionResult",
+      "input": "demoDSAlias/DMT-demo/Actions/WindTurbineWithAction",
       "method": "simulateCat3StormResultInEntity",
       "actionType": "resultInEntity"
     },
     {
       "name": "Cancel Simulation",
       "description": "Cancel started simulation",
-      "input": "DemoDS/DMT-demo/Actions/WindTurbineWithAction",
+      "input": "demoDSAlias/DMT-demo/Actions/WindTurbineWithAction",
       "method": "cancelSimulation",
       "actionType": "resultInEntity"
     },
     {
       "name": "Run storm simulation - new result file",
       "description": "Simulate a category 3 storm",
-      "input": "DemoDS/DMT-demo/Actions/WindTurbineWithAction",
-      "output": "DemoDS/DMT-demo/Actions/ActionResult",
+      "input": "demoDSAlias/DMT-demo/Actions/WindTurbineWithAction",
+      "output": "demoDSAlias/DMT-demo/Actions/ActionResult",
       "method": "simulateCat3StormResultInNewFile",
       "actionType": "separateResultFile"
     }
