@@ -136,7 +136,7 @@ def get_export_menu_item(data_source_id: str, document_id: str, is_package_conte
         "label": "Export",
         "action": "DOWNLOAD",
         "data": {
-            "url": f"/api/v2/explorer/{data_source_id}/export/{document_id}",
+            "url": f"{DMSS_API}/export/{data_source_id}/{document_id}",
             "prompt": {"title": "Export", "content": "Download the package"},
         },
     }

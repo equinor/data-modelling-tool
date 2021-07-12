@@ -43,9 +43,3 @@ def step_make_request(context, method):
     context.response_status = context.response.status_code
     if context.response.content_type == "application/json":
         context_response_json(context)
-
-
-@then("response node should not be empty")
-def step_impl(context):
-    response = context.response
-    assert response.content_type == "application/zip" and len(response.data) > 300
