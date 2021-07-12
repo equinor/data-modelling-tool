@@ -10,6 +10,7 @@ import {
   BlueprintPicker,
   EntityPicker,
   Reference,
+  OverrideTypeButton,
 } from '@dmt/common'
 
 export enum ContextMenuActions {
@@ -132,6 +133,8 @@ export const DefaultCreate = (props: IDefaultCreate) => {
   const [type, setType] = useState<string>(defaultType)
   const [name, setName] = useState<string>('')
   const [description, setDescription] = useState<string>('')
+  // @ts-ignore
+  const canOverrideType = !Object.values(BlueprintEnum).includes(props.type)
 
   const onSubmit = () => {
     props.explorer.create({
@@ -151,54 +154,59 @@ export const DefaultCreate = (props: IDefaultCreate) => {
 
   const modalContent = () => {
     return (
-      <div style={{ display: 'flex', flexDirection: 'column' }}>
-        <div style={{ margin: '10px 0' }}>
-          <label style={{ marginRight: '10px' }}>Name: </label>
+      <div style={{ display: 'table', borderSpacing: '10px' }}>
+        <div style={{ display: 'table-row' }}>
+          <label style={{ display: 'table-cell' }}>Name: </label>
           <input
             disabled={false}
             value={name}
             onChange={(event) => setName(event.target.value)}
-            style={{ width: '280px' }}
+            style={{ width: '280px', display: 'table-cell' }}
           />
         </div>
-        <div
-          style={{ marginTop: '10px', display: 'flex', flexDirection: 'row' }}
-        >
-          <label style={{ marginRight: '10px' }}>Type: </label>
+        <div style={{ display: 'table-row', flexDirection: 'row' }}>
+          <label style={{ display: 'table-cell' }}>Type: </label>
           {/* If we are to create an "Entity", user should select type*/}
-          {props.type === BlueprintEnum.ENTITY ? (
-            <BlueprintPicker
-              formData={type}
-              onChange={(value: string) => setType(value)}
-              uiSchema={{ 'ui:label': '' }}
-            />
-          ) : (
-            <div>
-              {/*todo - make sure that user can only select blueprints that
-                extends the current "type". perhaps need to create an
-                "ExtendsFromBlueprintPicker".
-                */}
-              <input disabled={true} value={type} style={{ width: '280px' }} />
-              <div style={{ marginTop: '10px' }}>
-                <label style={{ marginRight: '10px' }}>Override type? </label>
-
-                <BlueprintPicker
-                  formData={type}
-                  onChange={(value: string) => setType(value)}
-                  uiSchema={{ 'ui:label': '' }}
+          <div style={{ display: 'flex', borderSpacing: '0px' }}>
+            {props.type === BlueprintEnum.ENTITY ? (
+              <BlueprintPicker
+                formData={type}
+                onChange={(value: string) => setType(value)}
+                uiSchema={{ 'ui:label': '' }}
+              />
+            ) : (
+              <div style={{ display: 'flex' }}>
+                <input
+                  disabled={true}
+                  value={type}
+                  style={{ width: '280px' }}
                 />
+                {canOverrideType ? (
+                  <div style={{ paddingLeft: '10px' }}>
+                    <OverrideTypeButton
+                      formData={type}
+                      onChange={(value: string) => setType(value)}
+                    />
+                  </div>
+                ) : (
+                  <div></div>
+                )}
               </div>
-            </div>
-          )}
+            )}
+          </div>
         </div>
-        <div style={{ marginTop: '10px' }}>
-          <label style={{ marginRight: '10px' }}>Description: </label>
-          <input
-            disabled={false}
-            value={description}
-            onChange={(event) => setDescription(event.target.value)}
-            style={{ width: '280px' }}
-          />
+        <div style={{ display: 'table-row' }}>
+          <label style={{ marginRight: '10px', display: 'table-cell' }}>
+            Description:{' '}
+          </label>
+          <div style={{ display: 'table-cell' }}>
+            <input
+              disabled={false}
+              value={description}
+              onChange={(event) => setDescription(event.target.value)}
+              style={{ width: '280px' }}
+            />
+          </div>
         </div>
       </div>
     )
