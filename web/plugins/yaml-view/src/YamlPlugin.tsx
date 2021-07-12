@@ -1,11 +1,12 @@
-import React from 'react'
+import React, { useState } from 'react'
 import hljs from 'highlight.js/lib/core'
 import yaml from 'highlight.js/lib/languages/yaml'
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 import jsyaml from 'js-yaml'
-import Tooltip from './Tooltip'
+import styled, { keyframes } from 'styled-components'
+import { Button } from '@dmt/common'
 
 hljs.registerLanguage('yaml', yaml)
 
@@ -13,21 +14,62 @@ type PreviewProps = {
   document: any
 }
 
+const tempVisible = keyframes`
+  0%, 100% {
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+`
+const TooltipText = styled.div`
+  font-size: 0.7rem;
+  width: 60px;
+  height: 20px;
+  background-color: #c1cae0;
+  color: #000000;
+  text-align: center;
+  padding: 2px 0;
+  margin-bottom: 6px;
+  border-radius: 3px;
+  border: black solid 1px;
+  z-index: 1;
+  animation: ${tempVisible} 2s;
+`
+
 export default (props: PreviewProps) => {
   const { document } = props
-
+  const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const asYAML: string = jsyaml.dump(document)
   const highlighted = hljs.highlight('yaml', asYAML)
 
   return (
     <div>
-      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <CopyToClipboard text={asYAML}>
-          <Tooltip text={'Copy as YAML'} tooltipText={'Copied!'} />
-        </CopyToClipboard>
-        <CopyToClipboard text={JSON.stringify(document)}>
-          <Tooltip text={'Copy as JSON'} tooltipText={'Copied!'} />
-        </CopyToClipboard>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'flex-end',
+          flexDirection: 'column',
+        }}
+      >
+        <div>
+          {showTooltip ? (
+            <TooltipText onAnimationEnd={() => setShowTooltip(false)}>
+              Copied!
+            </TooltipText>
+          ) : (
+            // This a spacer for the tooltip when it's hidden
+            <div style={{ height: '26px' }} />
+          )}
+        </div>
+        <div>
+          <CopyToClipboard text={asYAML}>
+            <Button onClick={() => setShowTooltip(true)}>Copy as YAML</Button>
+          </CopyToClipboard>
+          <CopyToClipboard text={JSON.stringify(document)}>
+            <Button onClick={() => setShowTooltip(true)}>Copy as JSON</Button>
+          </CopyToClipboard>
+        </div>
       </div>
       <pre style={{ backgroundColor: '#193549', color: 'coral' }}>
         <code dangerouslySetInnerHTML={{ __html: highlighted.value }} />
