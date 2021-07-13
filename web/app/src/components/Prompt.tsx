@@ -6,7 +6,7 @@ const Prompt = (props: any) => {
     <div>
       <h4>{title}</h4>
       {content}
-      <div style={{ textAlign: 'center' }}>
+      <div style={{ textAlign: 'center', paddingTop: '10px' }}>
         <button onClick={() => onSubmit()}>{buttonText}</button>
       </div>
     </div>
