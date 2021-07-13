@@ -10,7 +10,7 @@ from dmss_api.exceptions import ApiException
 from flask import Flask
 
 from config import config
-from controllers import blueprints, entity, explorer, index, system
+from controllers import blueprints, entity, index, system
 from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
 from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
@@ -21,7 +21,6 @@ from utils.logging import logger
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
-    app.register_blueprint(explorer.blueprint)
     app.register_blueprint(index.blueprint)
     app.register_blueprint(system.blueprint)
     app.register_blueprint(blueprints.blueprint)
