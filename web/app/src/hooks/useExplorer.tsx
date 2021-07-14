@@ -173,7 +173,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       setErrorMessage(errorMessage)
       return false
     }
-    if (data.type === BlueprintEnum.ENTITY || data.type === undefined) {
+    if (data.type === BlueprintEnum.ENTITY || data.type === undefined || data.type === "Click to select type to create") {
       const errorMessage: string = 'Type is required'
       setErrorMessage(errorMessage)
       return false
