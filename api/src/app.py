@@ -153,10 +153,7 @@ def init_application():
                         data_source_alias,
                     )
                     dmss_api.explorer_add_to_path(
-                        actual_data_source,
-                        document=json.dumps(doc),
-                        directory="/content/".join(target_directory.split("/")) + "/content",
-                        files=[file],
+                        actual_data_source, document=json.dumps(doc), directory=target_directory, files=[file],
                     )
     except Exception as e:
         logger.debug(e)
