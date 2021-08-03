@@ -63,8 +63,7 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
               <FaFolderOpen style={{ color: '#8531A3' }} />
             ) : (
               <FaFolderOpen />
-            )}
-            {package_.package_name}
+            )} {package_.package_name}
           </div>
         )
       })}
