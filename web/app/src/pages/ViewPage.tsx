@@ -24,6 +24,13 @@ const Group = styled.div`
 
 const documentAPI = new DocumentAPI()
 
+export type PackageObject = {
+  package_id: string
+  package_name: string
+  is_root: string
+  child_id: string
+}
+
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
@@ -83,7 +90,7 @@ export default () => {
     'searchDatasource',
     ''
   )
-  const [packages, setPackages] = useState({})
+  const [packages, setPackages] = useState<PackageObject[]>([])
 
   useEffect(() => {
     documentAPI
@@ -94,7 +101,7 @@ export default () => {
         if (typeof selectedDataSource === 'string') {
           documentAPI
             .findPackages(selectedDataSource, result.document['_id'])
-            .then((result) => {
+            .then((result: PackageObject[]) => {
               setPackages(result)
             })
         }

@@ -76,7 +76,7 @@ function App() {
                 <Route
                   exact
                   path="/view/:data_source/:entity_id"
-                  render={() => <ViewPage />}
+                  component={ViewPage}
                 />
                 <Route
                   path={'/'}
