@@ -11,7 +11,6 @@ import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { sortApplications } from './utils/applicationHelperFunctions'
-import ViewPageWrapper from "./pages/ViewPageWrapper";
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
 }
@@ -77,7 +76,7 @@ function App() {
                 <Route
                   exact
                   path="/view/:data_source/:entity_id"
-                  render={() => <ViewPageWrapper settings={applications[0]} />}
+                  render={() => <ViewPage />}
                 />
                 <Route
                   path={'/'}

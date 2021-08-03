@@ -10,9 +10,8 @@ import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecip
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 import { createEntity } from '../utils/createEntity'
-import DocumentExplorer from "./editor/document-explorer/DocumentExplorer";
-import {SimpleTreeView} from "../components/SimpleTreeView";
-//import {IDashboard, useDashboard} from "../context/dashboard/DashboardProvider";
+import useLocalStorage from '../hooks/useLocalStorage'
+import { SimplifiedTree } from '../components/SimplifiedTree'
 
 const Group = styled.div`
   display: flex;
@@ -80,7 +79,11 @@ export default () => {
   const [document, setDocument] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [error, setError] = useState(null)
-  //const dashboard: IDashboard = useDashboard()
+  const [selectedDataSource, setSelectedDataSource] = useLocalStorage(
+    'searchDatasource',
+    ''
+  )
+  const [packages, setPackages] = useState({})
 
   useEffect(() => {
     documentAPI
@@ -88,6 +91,13 @@ export default () => {
       .then((result) => {
         setBlueprint(result.blueprint)
         setDocument(result.document)
+        if (typeof selectedDataSource === 'string') {
+          documentAPI
+            .findPackages(selectedDataSource, result.document['_id'])
+            .then((result) => {
+              setPackages(result)
+            })
+        }
       })
       .catch((error) => {
         console.error(error)
@@ -100,12 +110,20 @@ export default () => {
   if (!(document || blueprint))
     return <Group style={{ color: 'red' }}>{error}</Group>
 
-
-  if (!document) return <div></div>
+  if (
+    document === null ||
+    Object.keys(packages).length === 0 ||
+    typeof selectedDataSource !== 'string'
+  )
+    return <div></div>
   return (
     <Group>
       <div>
-        <SimpleTreeView document={document} />
+        <SimplifiedTree
+          document={document}
+          datasourceId={selectedDataSource}
+          packages={packages}
+        />
       </div>
       <div>
         <b>DataSource:</b>

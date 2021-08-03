@@ -123,13 +123,12 @@ export class DocumentAPI implements IDocumentAPI {
     })
   }
 
-  findPackage(dataSourceId: string, document_id: string) {
-    // find the package that contains a document with id=document_id
-    return dmssApi
-        .findParentPackage({dataSourceId: dataSourceId, documentId: document_id})
-        //.catch((error: any) => {return handleDocumentApiError(error)})
+  findPackages(dataSourceId: string, document_id: string) {
+    return dmssApi.findPackages({
+      dataSourceId: dataSourceId,
+      documentId: document_id,
+    })
   }
-
 
   updateById(
     dataSourceId: string,

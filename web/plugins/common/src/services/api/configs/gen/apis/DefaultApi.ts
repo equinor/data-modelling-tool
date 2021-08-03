@@ -138,7 +138,7 @@ export interface ExplorerRenameRequest {
     renameRequest: RenameRequest;
 }
 
-export interface FindParentPackageRequest {
+export interface FindPackagesRequest {
     dataSourceId: string;
     documentId: string;
 }
@@ -874,15 +874,15 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Find Parent Packages
+     * Find Packages
      */
-    async findParentPackageRaw(requestParameters: FindParentPackageRequest): Promise<runtime.ApiResponse<object>> {
+    async findPackagesRaw(requestParameters: FindPackagesRequest): Promise<runtime.ApiResponse<object>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling findParentPackage.');
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling findPackages.');
         }
 
         if (requestParameters.documentId === null || requestParameters.documentId === undefined) {
-            throw new runtime.RequiredError('documentId','Required parameter requestParameters.documentId was null or undefined when calling findParentPackage.');
+            throw new runtime.RequiredError('documentId','Required parameter requestParameters.documentId was null or undefined when calling findPackages.');
         }
 
         const queryParameters: any = {};
@@ -890,7 +890,7 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         const response = await this.request({
-            path: `/api/v1/findParentPackages/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
+            path: `/api/v1/findPackages/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
             method: 'GET',
             headers: headerParameters,
             query: queryParameters,
@@ -900,10 +900,10 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Find Parent Packages
+     * Find Packages
      */
-    async findParentPackage(requestParameters: FindParentPackageRequest): Promise<object> {
-        const response = await this.findParentPackageRaw(requestParameters);
+    async findPackages(requestParameters: FindPackagesRequest): Promise<object> {
+        const response = await this.findPackagesRaw(requestParameters);
         return await response.value();
     }
 
