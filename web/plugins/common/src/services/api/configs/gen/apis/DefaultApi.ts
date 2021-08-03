@@ -47,6 +47,10 @@ import {
     RenameRequestToJSON,
 } from '../models';
 
+export interface ExportRequest {
+    absoluteDocumentRef: string;
+}
+
 export interface BlobGetByIdRequest {
     dataSourceId: string;
     blobId: string;
@@ -134,6 +138,11 @@ export interface ExplorerRenameRequest {
     renameRequest: RenameRequest;
 }
 
+export interface FindParentPackageRequest {
+    dataSourceId: string;
+    documentId: string;
+}
+
 export interface PackageFindByNameRequest {
     dataSourceId: string;
     name: string;
@@ -163,6 +172,37 @@ export interface SearchRequest {
  * 
  */
 export class DefaultApi extends runtime.BaseAPI {
+
+    /**
+     * Download a zip-folder of the requested root package
+     * Export
+     */
+    async _exportRaw(requestParameters: ExportRequest): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.absoluteDocumentRef === null || requestParameters.absoluteDocumentRef === undefined) {
+            throw new runtime.RequiredError('absoluteDocumentRef','Required parameter requestParameters.absoluteDocumentRef was null or undefined when calling _export.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/export/{absolute_document_ref}`.replace(`{${"absolute_document_ref"}}`, encodeURIComponent(String(requestParameters.absoluteDocumentRef))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Download a zip-folder of the requested root package
+     * Export
+     */
+    async _export(requestParameters: ExportRequest): Promise<void> {
+        await this._exportRaw(requestParameters);
+    }
 
     /**
      * Get By Id
@@ -830,6 +870,40 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async explorerRename(requestParameters: ExplorerRenameRequest): Promise<any> {
         const response = await this.explorerRenameRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Find Parent Packages
+     */
+    async findParentPackageRaw(requestParameters: FindParentPackageRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling findParentPackage.');
+        }
+
+        if (requestParameters.documentId === null || requestParameters.documentId === undefined) {
+            throw new runtime.RequiredError('documentId','Required parameter requestParameters.documentId was null or undefined when calling findParentPackage.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/findParentPackages/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Find Parent Packages
+     */
+    async findParentPackage(requestParameters: FindParentPackageRequest): Promise<object> {
+        const response = await this.findParentPackageRaw(requestParameters);
         return await response.value();
     }
 

@@ -411,6 +411,7 @@ export default ({ allApplicationSettings }: any) => {
   }, [])
 
   function search(query: any) {
+    if (!selectedDataSource) NotificationManager.warning("No datasource selected")
     documentAPI
       .search(selectedDataSource, query)
       .then((result: any) => {

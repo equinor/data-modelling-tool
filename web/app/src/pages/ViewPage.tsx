@@ -10,6 +10,9 @@ import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecip
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 import { createEntity } from '../utils/createEntity'
+import DocumentExplorer from "./editor/document-explorer/DocumentExplorer";
+import {SimpleTreeView} from "../components/SimpleTreeView";
+//import {IDashboard, useDashboard} from "../context/dashboard/DashboardProvider";
 
 const Group = styled.div`
   display: flex;
@@ -77,6 +80,7 @@ export default () => {
   const [document, setDocument] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [error, setError] = useState(null)
+  //const dashboard: IDashboard = useDashboard()
 
   useEffect(() => {
     documentAPI
@@ -96,8 +100,13 @@ export default () => {
   if (!(document || blueprint))
     return <Group style={{ color: 'red' }}>{error}</Group>
 
+
+  if (!document) return <div></div>
   return (
     <Group>
+      <div>
+        <SimpleTreeView document={document} />
+      </div>
       <div>
         <b>DataSource:</b>
         <p style={{ marginLeft: '5px' }}>{data_source}</p>
