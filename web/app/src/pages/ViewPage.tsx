@@ -102,19 +102,13 @@ export default () => {
   if (!(document || blueprint))
     return <Group style={{ color: 'red' }}>{error}</Group>
 
-  if (
-    document === null ||
-    typeof selectedDataSource !== 'string'
-  )
+  if (document === null || typeof selectedDataSource !== 'string')
     return <div></div>
   return (
     <Group>
       <div>
-          <b>Entity</b>
-        <SimplifiedTree
-          document={document}
-          datasourceId={selectedDataSource}
-        />
+        <b>Entity</b>
+        <SimplifiedTree document={document} datasourceId={selectedDataSource} />
       </div>
       <div>
         <b>DataSource:</b>
