@@ -24,13 +24,6 @@ const Group = styled.div`
 
 const documentAPI = new DocumentAPI()
 
-export type PackageObject = {
-  package_id: string
-  package_name: string
-  is_root: string
-  child_id: string
-}
-
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
@@ -90,7 +83,6 @@ export default () => {
     'searchDatasource',
     ''
   )
-  const [packages, setPackages] = useState<PackageObject[]>([])
 
   useEffect(() => {
     documentAPI
@@ -98,13 +90,6 @@ export default () => {
       .then((result) => {
         setBlueprint(result.blueprint)
         setDocument(result.document)
-        if (typeof selectedDataSource === 'string') {
-          documentAPI
-            .findPackages(selectedDataSource, result.document['_id'])
-            .then((result: PackageObject[]) => {
-              setPackages(result)
-            })
-        }
       })
       .catch((error) => {
         console.error(error)
@@ -119,17 +104,16 @@ export default () => {
 
   if (
     document === null ||
-    Object.keys(packages).length === 0 ||
     typeof selectedDataSource !== 'string'
   )
     return <div></div>
   return (
     <Group>
       <div>
+          <b>Entity</b>
         <SimplifiedTree
           document={document}
           datasourceId={selectedDataSource}
-          packages={packages}
         />
       </div>
       <div>
