@@ -123,13 +123,6 @@ export class DocumentAPI implements IDocumentAPI {
     })
   }
 
-  findPackages(dataSourceId: string, document_id: string): Promise<any> {
-    return dmssApi.findPackages({
-      dataSourceId: dataSourceId,
-      documentId: document_id,
-    })
-  }
-
   updateById(
     dataSourceId: string,
     documentId: string,
