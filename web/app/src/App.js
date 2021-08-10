@@ -11,6 +11,11 @@ import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { sortApplications } from './utils/applicationHelperFunctions'
+import Welcome from "./components/keycloacktest/Welcome";
+import Secured from "./components/keycloacktest/Secured";
+import Keycloak from 'keycloak-js'
+import {Button} from "@dmt/common";
+
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
 }
@@ -37,6 +42,8 @@ const theme = {
 }
 
 function App() {
+  const [keycloak, setKeycloak] = useState(null) //todo set to type for  keycloack class
+  const [authenticated, setAuthenticated] = useState(false)
   const [applications, setApplications] = useState(undefined)
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
@@ -46,17 +53,32 @@ function App() {
         )
       )
     })
-  }, [])
 
+      if (!authenticated) {
+       const keycloak = new Keycloak({
+          realm: "MyDemo",
+          url: "http://localhost:8080/auth",
+          clientId: "dmt-client"
+            })
+          setKeycloak(keycloak)
+        keycloak.init({onLoad: 'login-required'}).then((authenticated) => {
+            console.log(authenticated)
+            setAuthenticated(authenticated)
+        })
+      }
+  }, [])
+    //i think there is an inf loop bug here....
+  if (!authenticated) return <div></div>
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <AuthProvider idToken={authContext.getCachedUser()}>
+        <AuthProvider idToken={authContext.getCachedUser()} keycloakObject={keycloak}>
           <GlobalStyle />
           <NotificationContainer />
           {applications && (
             <Wrapper>
               <Header applications={applications} />
+                <Button onClick={() => keycloak.logout()}>Log out</Button>
               <Switch>
                 {Object.values(applications).map((setting) => (
                   <Route
