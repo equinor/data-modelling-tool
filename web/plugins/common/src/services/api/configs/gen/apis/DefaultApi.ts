@@ -47,6 +47,10 @@ import {
     RenameRequestToJSON,
 } from '../models';
 
+export interface ExportRequest {
+    absoluteDocumentRef: string;
+}
+
 export interface BlobGetByIdRequest {
     dataSourceId: string;
     blobId: string;
@@ -163,6 +167,37 @@ export interface SearchRequest {
  * 
  */
 export class DefaultApi extends runtime.BaseAPI {
+
+    /**
+     * Download a zip-folder of the requested root package
+     * Export
+     */
+    async _exportRaw(requestParameters: ExportRequest): Promise<runtime.ApiResponse<void>> {
+        if (requestParameters.absoluteDocumentRef === null || requestParameters.absoluteDocumentRef === undefined) {
+            throw new runtime.RequiredError('absoluteDocumentRef','Required parameter requestParameters.absoluteDocumentRef was null or undefined when calling _export.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/export/{absolute_document_ref}`.replace(`{${"absolute_document_ref"}}`, encodeURIComponent(String(requestParameters.absoluteDocumentRef))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.VoidApiResponse(response);
+    }
+
+    /**
+     * Download a zip-folder of the requested root package
+     * Export
+     */
+    async _export(requestParameters: ExportRequest): Promise<void> {
+        await this._exportRaw(requestParameters);
+    }
 
     /**
      * Get By Id

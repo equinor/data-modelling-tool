@@ -10,6 +10,7 @@ import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecip
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 import { createEntity } from '../utils/createEntity'
+import { SimplifiedTree } from '../components/SimplifiedTree'
 
 const Group = styled.div`
   display: flex;
@@ -93,11 +94,14 @@ export default () => {
       })
   }, [])
 
-  if (!(document || blueprint))
+  if (!document || !blueprint)
     return <Group style={{ color: 'red' }}>{error}</Group>
 
   return (
     <Group>
+      <div>
+        <SimplifiedTree document={document} datasourceId={data_source} />
+      </div>
       <div>
         <b>DataSource:</b>
         <p style={{ marginLeft: '5px' }}>{data_source}</p>
