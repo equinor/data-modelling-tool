@@ -3,7 +3,7 @@ import { FaRegFileAlt } from 'react-icons/fa'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import {Pre} from '@dmt/common'
+import { Pre } from '@dmt/common'
 type SimplifiedTreeProps = {
   datasourceId: string
   document: any
@@ -35,17 +35,24 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
 
   if (complexTypes.length === 0) return <div></div>
   return (
-    <Pre style={{width: '50%'}}>
-       <FaRegFileAlt /> {document['name']}
-        <div>
-          {complexTypes.map((type) => (
-            <Link target="_parent" to={`/view/${datasourceId}/${type['_id']}`}>
-              <div style={{ paddingLeft: 20, paddingTop: 10, color: '#333', fontSize: "13px" }}>
-                <FaRegFileAlt /> {type['name']}
-              </div>
-            </Link>
-          ))}
-        </div>
+    <Pre style={{ width: '50%' }}>
+      <FaRegFileAlt /> {document['name']}
+      <div>
+        {complexTypes.map((type) => (
+          <Link target="_parent" to={`/view/${datasourceId}/${type['_id']}`}>
+            <div
+              style={{
+                paddingLeft: 20,
+                paddingTop: 10,
+                color: '#333',
+                fontSize: '13px',
+              }}
+            >
+              <FaRegFileAlt /> {type['name']}
+            </div>
+          </Link>
+        ))}
+      </div>
     </Pre>
   )
 }
