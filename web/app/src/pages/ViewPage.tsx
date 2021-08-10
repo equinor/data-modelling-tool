@@ -10,7 +10,6 @@ import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecip
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 import { createEntity } from '../utils/createEntity'
-import useLocalStorage from '../hooks/useLocalStorage'
 import { SimplifiedTree } from '../components/SimplifiedTree'
 
 const Group = styled.div`
@@ -79,10 +78,6 @@ export default () => {
   const [document, setDocument] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [error, setError] = useState(null)
-  const [selectedDataSource, setSelectedDataSource] = useLocalStorage(
-    'searchDatasource',
-    ''
-  )
 
   useEffect(() => {
     documentAPI
@@ -99,16 +94,13 @@ export default () => {
       })
   }, [])
 
-  if (!(document || blueprint))
+  if (!document || !blueprint)
     return <Group style={{ color: 'red' }}>{error}</Group>
 
-  if (document === null || typeof selectedDataSource !== 'string')
-    return <div></div>
   return (
     <Group>
       <div>
-        <b>Entity</b>
-        <SimplifiedTree document={document} datasourceId={selectedDataSource} />
+        <SimplifiedTree document={document} datasourceId={data_source} />
       </div>
       <div>
         <b>DataSource:</b>
