@@ -11,10 +11,10 @@ import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { sortApplications } from './utils/applicationHelperFunctions'
-import Welcome from "./components/keycloacktest/Welcome";
-import Secured from "./components/keycloacktest/Secured";
-import Keycloak from 'keycloak-js'
+
 import {Button} from "@dmt/common";
+import axios from "axios";
+import useLocalStorage from "./hooks/useLocalStorage";
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
@@ -42,9 +42,55 @@ const theme = {
 }
 
 function App() {
-  const [keycloak, setKeycloak] = useState(null) //todo set to type for  keycloack class
   const [authenticated, setAuthenticated] = useState(false)
   const [applications, setApplications] = useState(undefined)
+  const [token, setToken] = useLocalStorage("token", "")
+
+    const login = () => {
+    const authorizationEndpoint = process.env.REACT_APP_AUTH_ENDPOINT
+    const scope = "openid";
+    const clientId = process.env.REACT_APP_AUTH_CLIENT_ID
+    const responseType = "code";
+    const redirectUri = window.location.href;
+
+    fetch(
+      `${authorizationEndpoint}?` +
+        `scope=${scope}&` +
+        `response_type=${responseType}&` +
+        `client_id=${clientId}&` +
+        `redirect_uri=${redirectUri}`,
+      {
+        redirect: "manual",
+      }
+    ).then((res) => {
+        window.location.replace(res.url)
+        }
+        );
+  }
+
+  const storeAccessToken = () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const code = urlParams.get('code')
+      const clientId = process.env.REACT_APP_AUTH_CLIENT_ID
+      const tokenEndpoint = process.env.REACT_APP_TOKEN_ENDPOINT
+
+      const params = new URLSearchParams();
+      params.append("grant_type", "authorization_code");
+      params.append("client_id", clientId);
+      params.append("code", code);
+      params.append("redirect_uri", "http://localhost/");
+
+      axios
+        .post(tokenEndpoint, params)
+        .then((response) => {
+            setToken(response.data["access_token"])
+            setAuthenticated(true)
+        })
+        .catch((err) => {
+          console.error(err);
+        });
+  }
+
   useEffect(() => {
     systemAPI.getSystemSettings().then((res) => {
       setApplications(
@@ -54,31 +100,21 @@ function App() {
       )
     })
 
-      if (!authenticated) {
-       const keycloak = new Keycloak({
-          realm: "MyDemo",
-          url: "http://localhost:8080/auth",
-          clientId: "dmt-client"
-            })
-          setKeycloak(keycloak)
-        keycloak.init({onLoad: 'login-required'}).then((authenticated) => {
-            console.log(authenticated)
-            setAuthenticated(authenticated)
-        })
-      }
+
+
   }, [])
-    //i think there is an inf loop bug here....
-  if (!authenticated) return <div></div>
+
+  if (!authenticated) return <div><Button onClick={() => login()}>Log in</Button>
+                <Button onClick={() => storeAccessToken()}>get access token</Button></div>
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <AuthProvider idToken={authContext.getCachedUser()} keycloakObject={keycloak}>
+        <AuthProvider idToken={authContext.getCachedUser()}>
           <GlobalStyle />
           <NotificationContainer />
           {applications && (
             <Wrapper>
               <Header applications={applications} />
-                <Button onClick={() => keycloak.logout()}>Log out</Button>
               <Switch>
                 {Object.values(applications).map((setting) => (
                   <Route
