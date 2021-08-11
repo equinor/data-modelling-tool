@@ -1,8 +1,0 @@
-{
-  "realm": "MyDemo",
-  "auth-server-url": "http://localhost:8080/auth/",
-  "ssl-required": "external",
-  "resource": "dmt-client",
-  "public-client": true,
-  "confidential-port": 0
-}
