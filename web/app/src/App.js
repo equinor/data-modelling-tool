@@ -12,9 +12,9 @@ import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { sortApplications } from './utils/applicationHelperFunctions'
 
-import {Button} from "@dmt/common";
-import axios from "axios";
-import useLocalStorage from "./hooks/useLocalStorage";
+import { Button } from '@dmt/common'
+import axios from 'axios'
+import useLocalStorage from './hooks/useLocalStorage'
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
@@ -42,16 +42,19 @@ const theme = {
 }
 
 function App() {
-  const [authenticated, setAuthenticated] = useState(false)
+  const [authenticated, setAuthenticated] = useLocalStorage(
+    'authenticated',
+    false
+  )
   const [applications, setApplications] = useState(undefined)
-  const [token, setToken] = useLocalStorage("token", "")
+  const [token, setToken] = useLocalStorage('') //uselocal storage
 
-    const login = () => {
+  const login = () => {
     const authorizationEndpoint = process.env.REACT_APP_AUTH_ENDPOINT
-    const scope = "openid";
+    const scope = 'openid'
     const clientId = process.env.REACT_APP_AUTH_CLIENT_ID
-    const responseType = "code";
-    const redirectUri = window.location.href;
+    const responseType = 'code'
+    const redirectUri = window.location.href
 
     fetch(
       `${authorizationEndpoint}?` +
@@ -60,35 +63,34 @@ function App() {
         `client_id=${clientId}&` +
         `redirect_uri=${redirectUri}`,
       {
-        redirect: "manual",
+        redirect: 'manual',
       }
     ).then((res) => {
-        window.location.replace(res.url)
-        }
-        );
+      window.location.replace(res.url)
+      setAuthenticated(true)
+    })
   }
 
   const storeAccessToken = () => {
-      const urlParams = new URLSearchParams(window.location.search);
-      const code = urlParams.get('code')
-      const clientId = process.env.REACT_APP_AUTH_CLIENT_ID
-      const tokenEndpoint = process.env.REACT_APP_TOKEN_ENDPOINT
+    const urlParams = new URLSearchParams(window.location.search)
+    const code = urlParams.get('code')
+    const clientId = process.env.REACT_APP_AUTH_CLIENT_ID
+    const tokenEndpoint = process.env.REACT_APP_TOKEN_ENDPOINT
 
-      const params = new URLSearchParams();
-      params.append("grant_type", "authorization_code");
-      params.append("client_id", clientId);
-      params.append("code", code);
-      params.append("redirect_uri", "http://localhost/");
+    const params = new URLSearchParams()
+    params.append('grant_type', 'authorization_code')
+    params.append('client_id', clientId)
+    params.append('code', code)
+    params.append('redirect_uri', 'http://localhost/')
 
-      axios
-        .post(tokenEndpoint, params)
-        .then((response) => {
-            setToken(response.data["access_token"])
-            setAuthenticated(true)
-        })
-        .catch((err) => {
-          console.error(err);
-        });
+    axios
+      .post(tokenEndpoint, params)
+      .then((response) => {
+        setToken(response.data['access_token'])
+      })
+      .catch((err) => {
+        console.error(err)
+      })
   }
 
   useEffect(() => {
@@ -99,17 +101,22 @@ function App() {
         )
       )
     })
-
-
-
   }, [])
 
-  if (!authenticated) return <div><Button onClick={() => login()}>Log in</Button>
-                <Button onClick={() => storeAccessToken()}>get access token</Button></div>
+  useEffect(() => {
+    if (authenticated) {
+      storeAccessToken()
+    }
+  }, [authenticated])
+
+  if (!authenticated) login()
   return (
     <ThemeProvider theme={theme}>
       <Router>
         <AuthProvider idToken={authContext.getCachedUser()}>
+          {
+            //todo use the whoami dmss endpoint to store data in authprovider
+          }
           <GlobalStyle />
           <NotificationContainer />
           {applications && (

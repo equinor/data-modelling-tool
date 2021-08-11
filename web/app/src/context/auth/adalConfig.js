@@ -5,7 +5,7 @@ export const adalConfig = {
   clientId: process.env.REACT_APP_AUTH_CLIENT_ID,
   endpoints: {
     auth_endpoint: process.env.REACT_APP_AUTH_ENDPOINT,
-    token_endpoint: process.env.REACT_APP_TOKEN_ENDPOINT
+    token_endpoint: process.env.REACT_APP_TOKEN_ENDPOINT,
   },
   cacheLocation: 'localStorage',
 }
