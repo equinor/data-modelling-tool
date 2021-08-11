@@ -1,8 +1,10 @@
 FROM node:12-alpine as base
 
 ENV REACT_APP_AUTH=0
-ENV REACT_APP_AUTH_CLIENT_ID=97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
+ENV REACT_APP_AUTH_CLIENT_ID=dmt-client
 ENV REACT_APP_AUTH_TENANT=3aa4a235-b6e2-48d5-9195-7fcf05b459b0
+ENV REACT_APP_TOKEN_ENDPOINT=http://localhost:8080/auth/realms/MyDemo/protocol/openid-connect/token
+ENV REACT_APP_AUTH_ENDPOINT=http://localhost:8080/auth/realms/MyDemo/protocol/openid-connect/auth
 
 WORKDIR /code/
 COPY jest.config.base.js package.json yarn.lock jest.config.js tsconfig.json ./
