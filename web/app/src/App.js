@@ -12,7 +12,6 @@ import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { sortApplications } from './utils/applicationHelperFunctions'
 
-import { Button } from '@dmt/common'
 import axios from 'axios'
 import useLocalStorage from './hooks/useLocalStorage'
 
@@ -47,7 +46,7 @@ function App() {
     false
   )
   const [applications, setApplications] = useState(undefined)
-  const [token, setToken] = useLocalStorage('') //uselocal storage
+  const [token, setToken] = useLocalStorage('')
 
   const login = () => {
     const authorizationEndpoint = process.env.REACT_APP_AUTH_ENDPOINT
@@ -65,8 +64,8 @@ function App() {
       {
         redirect: 'manual',
       }
-    ).then((res) => {
-      window.location.replace(res.url)
+    ).then((response) => {
+      window.location.replace(response.url)
       setAuthenticated(true)
     })
   }
