@@ -80,7 +80,7 @@ function App() {
     params.append('grant_type', 'authorization_code')
     params.append('client_id', clientId)
     params.append('code', code)
-    params.append('redirect_uri', 'http://localhost/')
+    params.append('redirect_uri', window.location.href)
 
     axios
       .post(tokenEndpoint, params)
