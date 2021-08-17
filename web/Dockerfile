@@ -1,5 +1,6 @@
 FROM node:12-alpine as base
 
+# turn off authentication by default
 ENV REACT_APP_AUTH=0
 ENV REACT_APP_AUTH_CLIENT_ID=dmt-client
 ENV REACT_APP_AUTH_TENANT=3aa4a235-b6e2-48d5-9195-7fcf05b459b0
