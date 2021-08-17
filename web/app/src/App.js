@@ -15,8 +15,8 @@ import {
   getTokenFromRefreshToken,
   getTokens,
   isTokenValid,
-  login
-} from "./utils/authentication";
+  login,
+} from './utils/authentication'
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
@@ -43,37 +43,35 @@ const theme = {
   },
 }
 
-function App({authEnabled}) {
+function App({ authEnabled }) {
   const [applications, setApplications] = useState(undefined)
   const [token, setToken] = useLocalStorage('token', null)
   const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
   const [loggedIn, setLoggedIn] = useLocalStorage('loggedIn', false)
 
-
   const storeTokens = () => {
-      if (!loggedIn) {
-        setLoggedIn(true)
-        login()
-      }
-      if (loggedIn && !isTokenValid(token)) {
-        if (isTokenValid(refreshToken)) {
-            getTokenFromRefreshToken(refreshToken).then((response) => {
-            setRefreshToken(response["refresh_token"])
-            setToken(response["access_token"])
-            })
-        }
-        else {
-          const urlParams = new URLSearchParams(window.location.search)
-          const code = urlParams.get('code')
-          if (!code) login()
-          if (code) {
-            getTokens().then((response) => {
-            setRefreshToken(response["refresh_token"])
-            setToken(response["access_token"])
-            })
-          }
+    if (!loggedIn) {
+      setLoggedIn(true)
+      login()
+    }
+    if (loggedIn && !isTokenValid(token)) {
+      if (isTokenValid(refreshToken)) {
+        getTokenFromRefreshToken(refreshToken).then((response) => {
+          setRefreshToken(response['refresh_token'])
+          setToken(response['access_token'])
+        })
+      } else {
+        const urlParams = new URLSearchParams(window.location.search)
+        const code = urlParams.get('code')
+        if (!code) login()
+        if (code) {
+          getTokens().then((response) => {
+            setRefreshToken(response['refresh_token'])
+            setToken(response['access_token'])
+          })
         }
       }
+    }
   }
 
   useEffect(() => {
@@ -88,45 +86,44 @@ function App({authEnabled}) {
     if (authEnabled) {
       storeTokens()
     }
-
   }, [])
 
   return (
     <ThemeProvider theme={theme}>
       <Router>
-          <GlobalStyle />
-          <NotificationContainer />
-          {applications && (
-            <Wrapper>
-              <Header applications={applications} />
-              <Switch>
-                {Object.values(applications).map((setting) => (
-                  <Route
-                    exact
-                    path={`/${setting.name}`}
-                    render={() => <AppTab settings={setting} />}
-                    key={setting.name}
-                  />
-                ))}
+        <GlobalStyle />
+        <NotificationContainer />
+        {applications && (
+          <Wrapper>
+            <Header applications={applications} />
+            <Switch>
+              {Object.values(applications).map((setting) => (
                 <Route
                   exact
-                  path="/search"
-                  render={() => (
-                    <SearchPage allApplicationSettings={applications} />
-                  )}
+                  path={`/${setting.name}`}
+                  render={() => <AppTab settings={setting} />}
+                  key={setting.name}
                 />
-                <Route
-                  exact
-                  path="/view/:data_source/:entity_id"
-                  component={ViewPage}
-                />
-                <Route
-                  path={'/'}
-                  render={() => <AppTab settings={applications[0]} />}
-                />
-              </Switch>
-            </Wrapper>
-          )}
+              ))}
+              <Route
+                exact
+                path="/search"
+                render={() => (
+                  <SearchPage allApplicationSettings={applications} />
+                )}
+              />
+              <Route
+                exact
+                path="/view/:data_source/:entity_id"
+                component={ViewPage}
+              />
+              <Route
+                path={'/'}
+                render={() => <AppTab settings={applications[0]} />}
+              />
+            </Switch>
+          </Wrapper>
+        )}
       </Router>
     </ThemeProvider>
   )

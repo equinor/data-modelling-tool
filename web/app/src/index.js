@@ -15,4 +15,3 @@ ReactDOM.render(
   <App authEnabled={authEnabled} />,
   document.getElementById('root')
 )
-

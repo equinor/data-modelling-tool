@@ -71,7 +71,9 @@ export const isTokenValid = (token: any) => {
     const { exp } = jwt_decode(token)
 
     //we will fetch new access token if expiration time is close
-    const expirationTimeWithBuffer = new Date(exp * 1000 - bufferTimeInSeconds * 1000)
+    const expirationTimeWithBuffer = new Date(
+      exp * 1000 - bufferTimeInSeconds * 1000
+    )
     const dateNow = new Date()
 
     if (dateNow <= expirationTimeWithBuffer) {

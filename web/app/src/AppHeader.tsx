@@ -7,7 +7,7 @@ import ConfigureApplication from './components/ConfigureApplication'
 import { sortApplications } from './utils/applicationHelperFunctions'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
-import {decodeToken, isTokenValid} from './utils/authentication'
+import { decodeToken, isTokenValid } from './utils/authentication'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -44,12 +44,12 @@ function UserInfo() {
   let tokenData: any
   let name: string
   if (isTokenValid(token)) {
-      const decodedToken: any = decodeToken(token)
-      name = decodedToken["name"]
-      tokenData = decodedToken
+    const decodedToken: any = decodeToken(token)
+    name = decodedToken['name']
+    tokenData = decodedToken
   } else {
-      name = "Not authenticated"
-      tokenData = {data: "None"}
+    name = 'Not authenticated'
+    tokenData = { data: 'None' }
   }
   const [expanded, setExpanded] = useState(false)
   return (
