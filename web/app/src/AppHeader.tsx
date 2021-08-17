@@ -2,12 +2,12 @@
 import { Link, Route, useLocation } from 'react-router-dom'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AuthContext } from './context/auth/AuthContext'
 import { JsonView, Modal } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
 import { sortApplications } from './utils/applicationHelperFunctions'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
+import {decodeToken, isTokenValid} from './utils/authentication'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -40,17 +40,27 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
-  const idToken: any = useContext(AuthContext)
+  let token: any = localStorage.getItem('token')
+  let tokenData: any
+  let name: string
+  if (isTokenValid(token)) {
+      const decodedToken: any = decodeToken(token)
+      name = decodedToken["name"]
+      tokenData = decodedToken
+  } else {
+      name = "Not authenticated"
+      tokenData = {data: "None"}
+  }
   const [expanded, setExpanded] = useState(false)
   return (
     <UserInfoBox onClick={() => setExpanded(!expanded)}>
-      <div>{idToken.profile.name}</div>
+      <div>{name}</div>
       <Modal
         toggle={() => setExpanded(!expanded)}
         open={expanded}
         title={'Logged in user info'}
       >
-        <JsonView data={idToken.profile} />
+        <JsonView data={tokenData} />
         <button type={'button'} onClick={() => setExpanded(false)}>
           Close
         </button>

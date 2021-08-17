@@ -5,15 +5,18 @@ import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import Header from './AppHeader'
 import AppTab from './pages/AppTab'
-import { authContext } from './context/auth/adalConfig'
-import { AuthProvider } from './context/auth/AuthContext'
 import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { sortApplications } from './utils/applicationHelperFunctions'
 
-import axios from 'axios'
 import useLocalStorage from './hooks/useLocalStorage'
+import {
+  getTokenFromRefreshToken,
+  getTokens,
+  isTokenValid,
+  login
+} from "./utils/authentication";
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
@@ -40,56 +43,37 @@ const theme = {
   },
 }
 
-function App() {
-  const [authenticated, setAuthenticated] = useLocalStorage(
-    'authenticated',
-    false
-  )
+function App({authEnabled}) {
   const [applications, setApplications] = useState(undefined)
-  const [token, setToken] = useLocalStorage('')
+  const [token, setToken] = useLocalStorage('token', null)
+  const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
+  const [loggedIn, setLoggedIn] = useLocalStorage('loggedIn', false)
 
-  const login = () => {
-    const authorizationEndpoint = process.env.REACT_APP_AUTH_ENDPOINT
-    const scope = 'openid'
-    const clientId = process.env.REACT_APP_AUTH_CLIENT_ID
-    const responseType = 'code'
-    const redirectUri = window.location.href
 
-    fetch(
-      `${authorizationEndpoint}?` +
-        `scope=${scope}&` +
-        `response_type=${responseType}&` +
-        `client_id=${clientId}&` +
-        `redirect_uri=${redirectUri}`,
-      {
-        redirect: 'manual',
+  const storeTokens = () => {
+      if (!loggedIn) {
+        setLoggedIn(true)
+        login()
       }
-    ).then((response) => {
-      window.location.replace(response.url)
-      setAuthenticated(true)
-    })
-  }
-
-  const storeAccessToken = () => {
-    const urlParams = new URLSearchParams(window.location.search)
-    const code = urlParams.get('code')
-    const clientId = process.env.REACT_APP_AUTH_CLIENT_ID
-    const tokenEndpoint = process.env.REACT_APP_TOKEN_ENDPOINT
-
-    const params = new URLSearchParams()
-    params.append('grant_type', 'authorization_code')
-    params.append('client_id', clientId)
-    params.append('code', code)
-    params.append('redirect_uri', window.location.href)
-
-    axios
-      .post(tokenEndpoint, params)
-      .then((response) => {
-        setToken(response.data['access_token'])
-      })
-      .catch((err) => {
-        console.error(err)
-      })
+      if (loggedIn && !isTokenValid(token)) {
+        if (isTokenValid(refreshToken)) {
+            getTokenFromRefreshToken(refreshToken).then((response) => {
+            setRefreshToken(response["refresh_token"])
+            setToken(response["access_token"])
+            })
+        }
+        else {
+          const urlParams = new URLSearchParams(window.location.search)
+          const code = urlParams.get('code')
+          if (!code) login()
+          if (code) {
+            getTokens().then((response) => {
+            setRefreshToken(response["refresh_token"])
+            setToken(response["access_token"])
+            })
+          }
+        }
+      }
   }
 
   useEffect(() => {
@@ -100,22 +84,16 @@ function App() {
         )
       )
     })
+
+    if (authEnabled) {
+      storeTokens()
+    }
+
   }, [])
 
-  useEffect(() => {
-    if (authenticated) {
-      storeAccessToken()
-    }
-  }, [authenticated])
-
-  if (!authenticated) login()
   return (
     <ThemeProvider theme={theme}>
       <Router>
-        <AuthProvider idToken={authContext.getCachedUser()}>
-          {
-            //todo use the whoami dmss endpoint to store data in authprovider
-          }
           <GlobalStyle />
           <NotificationContainer />
           {applications && (
@@ -149,7 +127,6 @@ function App() {
               </Switch>
             </Wrapper>
           )}
-        </AuthProvider>
       </Router>
     </ThemeProvider>
   )

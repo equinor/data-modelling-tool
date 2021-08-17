@@ -11,6 +11,7 @@
     "cra-template": "^1.1.2",
     "golden-layout": "1.5.9",
     "jquery": "3.5.0",
+    "jwt-decode": "^3.1.2",
     "lodash": "^4.17.19",
     "object-path": "0.11.4",
     "react": "^16.13.1",
@@ -52,9 +53,6 @@
     ]
   },
   "devDependencies": {
-    "babel-plugin-wildcard": "^6.0.0",
-    "customize-cra": "^1.0.0",
-    "react-app-rewired": "^2.1.6",
     "@testing-library/react": "^11.2.6",
     "@testing-library/react-hooks": "^5.1.1",
     "@types/jest": "^24.0.15",
@@ -64,12 +62,15 @@
     "@types/react": "^16.8.23",
     "@types/react-dom": "^16.8.4",
     "@types/styled-components": "^4.1.18",
+    "babel-plugin-wildcard": "^6.0.0",
+    "customize-cra": "^1.0.0",
     "eslint-config-prettier": "^6.0.0",
     "eslint-plugin-prettier": "^3.1.0",
     "husky": "^3.0.0",
     "jest-mock-extended": "^1.0.13",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
+    "react-app-rewired": "^2.1.6",
     "react-test-renderer": "^16.8.6",
     "require-context.macro": "^1.0.4",
     "ts-jest": "^26.5.5"
