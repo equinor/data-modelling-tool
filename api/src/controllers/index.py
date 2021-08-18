@@ -12,6 +12,8 @@ from use_case.generate_index_use_case import (
 
 blueprint = Blueprint("index", __name__)
 
+# Auth is handled by DMSS
+
 
 @blueprint.route("/api/v4/index/<string:data_source_id>", methods=["GET"])
 def get(data_source_id: str):

@@ -8,6 +8,8 @@ from utils.logging import logger
 
 blueprint = Blueprint("entities", __name__)
 
+# Auth is handled by DMSS
+
 
 @blueprint.route("/api/entity", methods=["POST"])
 def instantiate():

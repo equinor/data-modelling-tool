@@ -10,7 +10,7 @@ from restful import response_object
 from restful.request_object import ValidRequestObject
 from restful.response_object import ResponseSuccess
 from restful.use_case import UseCase
-from services.dmss import dmss_api
+from services.dmss import get_root_packages
 from services.document_service import DocumentService
 from use_case.utils.index_menu_actions import get_node_fetch, get_node_index
 from use_case.utils.set_index_context_menu import create_context_menu
@@ -133,8 +133,7 @@ class GenerateIndexUseCase(UseCase):
         app_settings = config.APP_SETTINGS.get(application)
         if not app_settings:
             raise ApplicationNotLoadedException(application)
-        # make sure we're generating the index with correct blueprints.
-        root_packages = dmss_api.package_get(data_source_id)
+        root_packages = get_root_packages(data_source_id)
 
         root = Node(
             key="root",

@@ -8,6 +8,8 @@ from utils.logging import logger
 
 blueprint = Blueprint("blueprints", __name__)
 
+# Auth is handled by DMSS
+
 
 @blueprint.route("/api/blueprints/<path:target>", methods=["GET"])
 def get(target: str):

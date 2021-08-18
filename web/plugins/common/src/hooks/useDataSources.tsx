@@ -28,7 +28,7 @@ export const useDataSources = (dataSourceApi: IDataSourceAPI): IDataSources => {
       dispatch(DocumentActions.addDataSources(dataSources))
     } catch (error) {
       console.error(error)
-      NotificationManager.error(error)
+      NotificationManager.error(error.statusText, 'List DataSources')
     }
   }
 
