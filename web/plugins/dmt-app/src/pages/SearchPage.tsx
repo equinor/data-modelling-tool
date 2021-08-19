@@ -21,6 +21,8 @@ const documentAPI = new DocumentAPI()
 
 const dataSourceAPI = new DataSourceAPI()
 
+const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
+
 const StyledSelect = styled.select`
   font-size: large;
   margin: 0 5px 0 10px;
@@ -126,16 +128,23 @@ function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
 }
 
 // Creates a text <input> for the sortByAttribute
-function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
+function SortByAttribute({
+  sortByAttribute,
+  searchSettings,
+  setSearchSettings,
+}: any) {
   return (
     <FilterGroup>
       <AttributeName>Sort by:</AttributeName>
       <input
         key="sortByAttribute"
-        value={sortByAttribute.dottedAttributePath}
+        value={sortByAttribute}
         type={'text'}
         onChange={(event: any) => {
-          setSortByAttribute({ dottedAttributePath: event.target.value })
+          setSearchSettings({
+            ...searchSettings,
+            sortByAttribute: event.target.value,
+          })
         }}
       />
       <TypeHint>string</TypeHint>
@@ -221,23 +230,26 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   )
 }
 
-function FilterContainer({ search, queryError, selectedDataSource }) {
-  const [filter, setFilter] = useLocalStorage('searchFilter', {})
+function FilterContainer({
+  search,
+  queryError,
+  searchSettings,
+  setSearchSettings,
+}) {
   const [attributes, setAttributes] = useState<Array<any>>([])
-  const [
-    sortByAttribute,
-    setSortByAttribute,
-  ] = useLocalStorage('sortByAttribute', { dottedAttributePath: 'name' })
 
   function onChange(filterChange: any) {
-    setFilter({ ...filter, ...filterChange })
+    setSearchSettings({
+      ...searchSettings,
+      filter: { ...searchSettings.filter, ...filterChange },
+    })
   }
 
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
-    if (filter?.type) {
+    if (searchSettings.filter?.type) {
       documentAPI
-        .getBlueprint(filter.type)
+        .getBlueprint(searchSettings.filter.type)
         .then((result) => {
           setAttributes(result.attributes)
         })
@@ -247,7 +259,7 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filter?.type])
+  }, [searchSettings.filter?.type])
 
   return (
     <Wrapper>
@@ -256,15 +268,21 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
         onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          search(filter, sortByAttribute.dottedAttributePath)
+          search(searchSettings.filter, searchSettings.sortByAttribute)
         }}
       >
         <Group>
           <FilterGroup>
             <label style={{ marginRight: '10px' }}>Type: </label>
             <BlueprintPicker
-              formData={filter?.type || ''}
-              onChange={(event: any) => setFilter({ type: event })}
+              formData={searchSettings.filter?.type || ''}
+              onChange={(event: any) =>
+                setSearchSettings({
+                  ...searchSettings,
+                  filter: { type: event },
+                  sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
+                })
+              }
               uiSchema={{ 'ui:label': '' }}
             />
           </FilterGroup>
@@ -298,7 +316,7 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
                 {attributes.map((attribute: any) => (
                   <DynamicAttributeFilter
                     // @ts-ignore
-                    value={filter[attribute.name]}
+                    value={searchSettings.filter[attribute.name]}
                     attr={attribute}
                     // @ts-ignore
                     key={attribute.name}
@@ -309,7 +327,7 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
             </div>
           )}
           Query:
-          <JsonView data={filter} />
+          <JsonView data={searchSettings.filter} />
           {queryError && (
             <>
               <text>Error:</text>
@@ -320,16 +338,20 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
             </>
           )}
           <SortByAttribute
-            sortByAttribute={sortByAttribute}
-            setSortByAttribute={setSortByAttribute}
+            sortByAttribute={searchSettings.sortByAttribute}
+            searchSettings={searchSettings}
+            setSearchSettings={setSearchSettings}
           />
           <ButtonContainer>
             <button
               type={'button'}
               onClick={() => {
                 setAttributes([])
-                setFilter({})
-                setSortByAttribute({ dottedAttributePath: 'name' })
+                setSearchSettings({
+                  sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
+                  filter: {},
+                  datasource: searchSettings.datasource,
+                })
               }}
             >
               Reset
@@ -392,16 +414,21 @@ function ResultContainer({ result, dataSource }: any) {
 }
 
 function SelectDataSource({
-  selectedDataSource,
-  setSelectedDataSource,
+  searchSettings,
+  setSearchSettings,
   dataSources,
 }: any) {
   return (
     <Wrapper style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
       <b>Select datasource to search:</b>
       <StyledSelect
-        value={selectedDataSource}
-        onChange={(event: UIEvent) => setSelectedDataSource(event.target.value)}
+        value={searchSettings.datasource}
+        onChange={(event: UIEvent) =>
+          setSearchSettings({
+            ...searchSettings,
+            datasource: event.target.value,
+          })
+        }
       >
         {dataSources.map((dataSource) => {
           return (
@@ -417,13 +444,17 @@ function SelectDataSource({
 }
 
 export default ({ settings }: any) => {
+  const [searchSettings, setSearchSettings] = useLocalStorage(
+    'searchSettings',
+    {
+      datasource: '',
+      sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
+      filter: {},
+    }
+  )
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
-  const [selectedDataSource, setSelectedDataSource] = useLocalStorage(
-    'searchDatasource',
-    ''
-  )
 
   useEffect(() => {
     dataSourceAPI
@@ -438,10 +469,10 @@ export default ({ settings }: any) => {
   }, [])
 
   function search(query: any, sortByAttribute: string) {
-    if (!selectedDataSource)
+    if (!searchSettings.datasource)
       NotificationManager.warning('No datasource selected')
     documentAPI
-      .search(selectedDataSource, query, sortByAttribute)
+      .search(searchSettings.datasource, query, sortByAttribute)
       .then((result: any) => {
         setQueryError('')
         let resultList = Object.values(result)
@@ -467,8 +498,8 @@ export default ({ settings }: any) => {
   return (
     <>
       <SelectDataSource
-        selectedDataSource={selectedDataSource}
-        setSelectedDataSource={setSelectedDataSource}
+        searchSettings={searchSettings}
+        setSearchSettings={setSearchSettings}
         dataSources={dataSources}
       />
       <ApplicationContext.Provider
@@ -477,10 +508,11 @@ export default ({ settings }: any) => {
         <FilterContainer
           search={search}
           queryError={queryError}
-          selectedDataSource={selectedDataSource}
+          searchSettings={searchSettings}
+          setSearchSettings={setSearchSettings}
         />
       </ApplicationContext.Provider>
-      <ResultContainer result={result} dataSource={selectedDataSource} />
+      <ResultContainer result={result} dataSource={searchSettings.datasource} />
     </>
   )
 }
