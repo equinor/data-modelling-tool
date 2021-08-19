@@ -83,9 +83,9 @@ function App({ authEnabled }) {
       )
     })
 
-    if (authEnabled) {
-      storeTokens()
-    }
+    // if (authEnabled) {
+    storeTokens()
+    // }
   }, [])
 
   return (
