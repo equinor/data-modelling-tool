@@ -1,6 +1,6 @@
 {
   "name": "@dmt/core-plugins",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "main": "src/index.tsx",
   "dependencies": {
     "typescript": "^3.8.3"

@@ -1,7 +1,7 @@
 {
   "type": "system/SIMOS/Application",
   "name": "DMT",
-  "label": "Data Modeling",
+  "label": "Data Modeling Tool",
   "tabIndex": 0,
   "hidden": false,
   "visibleDataSources": ["DemoDS"],
