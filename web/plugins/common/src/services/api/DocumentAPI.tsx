@@ -116,10 +116,15 @@ export class DocumentAPI implements IDocumentAPI {
       })
   }
 
-  search(dataSourceId: string, query: any): Promise<any> {
+  search(
+    dataSourceId: string,
+    query: any,
+    sortByAttribute?: string
+  ): Promise<any> {
     return dmssApi.search({
       dataSourceId: dataSourceId,
       body: query,
+      sortByAttribute: sortByAttribute,
     })
   }
 
