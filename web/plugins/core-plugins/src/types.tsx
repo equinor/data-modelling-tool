@@ -22,4 +22,5 @@ export interface DmtUIPlugin {
 
 export enum DmtPluginType {
   UI,
+  PAGE
 }

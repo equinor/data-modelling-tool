@@ -4,7 +4,7 @@
   "main": "src/index.tsx",
   "dependencies": {
     "@dmt/common": "1.0.0",
-    "@dmt/core-plugins": "1.0.0",
+    "@dmt/core-plugins": "1.0.1",
     "object-path": "0.11.4",
     "react-jsonschema-form": "^1.8.0",
     "react-collapsed": "2.2.2",
