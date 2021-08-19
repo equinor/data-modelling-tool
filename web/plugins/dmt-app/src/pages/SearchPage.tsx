@@ -416,7 +416,7 @@ function SelectDataSource({
   )
 }
 
-export default ({ allApplicationSettings }: any) => {
+export default ({ settings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
@@ -472,7 +472,7 @@ export default ({ allApplicationSettings }: any) => {
         dataSources={dataSources}
       />
       <ApplicationContext.Provider
-        value={{ ...allApplicationSettings[0], displayAllDataSources: true }}
+        value={{ ...settings, displayAllDataSources: true }}
       >
         <FilterContainer
           search={search}

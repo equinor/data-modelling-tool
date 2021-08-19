@@ -1,18 +1,32 @@
-import React, { useEffect, useState } from 'react'
-import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
-import { BrowserRouter as Router, Route } from 'react-router-dom'
-import { NotificationContainer } from 'react-notifications'
-import { Switch } from 'react-router'
-import Header from './AppHeader'
-import AppTab from './pages/AppTab'
-import { authContext } from './context/auth/adalConfig'
-import { AuthProvider } from './context/auth/AuthContext'
-import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
-import SearchPage from './pages/SearchPage'
-import ViewPage from './pages/ViewPage'
-import { sortApplications } from './utils/applicationHelperFunctions'
+import {getUIPlugin, loadPlugins} from '@dmt/core-plugins'
+import React, {useEffect, useState} from 'react'
+import {createGlobalStyle, ThemeProvider} from 'styled-components'
+import {BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom'
+import {NotificationContainer} from 'react-notifications'
+import {Switch} from 'react-router'
+import {authContext} from './auth/adalConfig'
+import {AuthProvider} from './auth/AuthContext'
+import {systemAPI} from '@dmt/common/src/services/api/SystemAPI'
+import config from "./config";
+import {sortApplications} from '@dmt/common'
+import {
+    CardWrapper,
+    CardHeader,
+    CardHeading,
+    CardBody,
+    CardIcon,
+    CardFieldset,
+    CardInput,
+    CardOptionsItem,
+    CardOptions,
+    CardOptionsNote,
+    CardButton,
+    CardLink
+} from "./components/Card";
+import styled from "styled-components";
+
 export const Config = {
-  exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
+    exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -25,70 +39,104 @@ const GlobalStyle = createGlobalStyle`
   }
 
 `
-const Wrapper = styled.div`
-  padding: 20px;
-`
 
 const theme = {
-  flexboxgrid: {
-    gutterWidth: 0, // rem
-    outerMargin: 0, // rem
-  },
+    flexboxgrid: {
+        gutterWidth: 0, // rem
+        outerMargin: 0, // rem
+    },
+}
+
+const HorizontalList = styled.div`
+    display: flex;
+    justify-content: center;
+    
+    & > div {
+          margin: 20px;
+          padding: 20px;
+    }
+`
+
+const AppSelector = (props) => {
+    const {applications} = props
+    const links = Object.values(applications).map((setting) => (
+        <div>
+            <CardWrapper>
+                <CardHeader>
+                    <CardHeading>{`${setting.label}`}</CardHeading>
+                </CardHeader>
+
+                <CardBody>
+                    <CardFieldset>
+                        {`${setting.description}`}
+                    </CardFieldset>
+                    <CardFieldset>
+                        <CardLink><Link to={`/${setting.name}`}>Open</Link></CardLink>
+                    </CardFieldset>
+                </CardBody>
+            </CardWrapper>
+        </div>
+    ));
+    return (
+        <div>
+            <HorizontalList>
+                {links}
+            </HorizontalList>
+        </div>
+    )
 }
 
 function App() {
-  const [applications, setApplications] = useState(undefined)
-  useEffect(() => {
-    systemAPI.getSystemSettings().then((res) => {
-      setApplications(
-        sortApplications(res.data).filter(
-          (application) => application?.hidden !== true
-        )
-      )
-    })
-  }, [])
+    const [applications, setApplications] = useState(undefined)
+    const [isLoading, setIsLoading] = useState(true)
 
-  return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <AuthProvider idToken={authContext.getCachedUser()}>
-          <GlobalStyle />
-          <NotificationContainer />
-          {applications && (
-            <Wrapper>
-              <Header applications={applications} />
-              <Switch>
-                {Object.values(applications).map((setting) => (
-                  <Route
-                    exact
-                    path={`/${setting.name}`}
-                    render={() => <AppTab settings={setting} />}
-                    key={setting.name}
-                  />
-                ))}
-                <Route
-                  exact
-                  path="/search"
-                  render={() => (
-                    <SearchPage allApplicationSettings={applications} />
-                  )}
-                />
-                <Route
-                  exact
-                  path="/view/:data_source/:entity_id"
-                  component={ViewPage}
-                />
-                <Route
-                  path={'/'}
-                  render={() => <AppTab settings={applications[0]} />}
-                />
-              </Switch>
-            </Wrapper>
-          )}
-        </AuthProvider>
-      </Router>
-    </ThemeProvider>
-  )
+    useEffect(() => {
+        loadPlugins(config).then(() => setIsLoading(false))
+
+        systemAPI.getSystemSettings().then((res) => {
+            setApplications(
+                sortApplications(res.data).filter(
+                    (application) => application?.hidden !== true
+                )
+            )
+        })
+    }, [])
+
+    if (isLoading || applications === undefined) return <div>Loading application...</div>
+
+    return (
+        <ThemeProvider theme={theme}>
+            <Router>
+                <AuthProvider idToken={authContext.getCachedUser()}>
+                    <GlobalStyle/>
+                    <NotificationContainer/>
+                    <Route
+                        exact
+                        path="/"
+                        render={() => (applications.length === 1 ?
+                            <Redirect to={applications[0].name}/> :
+                            <AppSelector applications={applications}/>)}
+                    />
+                    <Switch>
+                        {Object.values(applications).map((settings) => (
+                            <Route
+                                path={`/${settings.name}`}
+                                render={() => {
+                                    const ExternalPlugin = getUIPlugin(settings.name)
+                                    return (
+                                        <ExternalPlugin
+                                            settings={settings}
+                                            applications={applications}/>
+                                    )
+                                }}
+                                key={settings.name}
+                            />
+                        ))}
+                    </Switch>
+                </AuthProvider>
+            </Router>
+        </ThemeProvider>
+    )
 }
 
 export default App

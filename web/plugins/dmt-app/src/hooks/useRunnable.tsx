@@ -1,5 +1,5 @@
 import { dmssApi } from '@dmt/common'
-import Actions from '../actions'
+import Actions from '../../../../app/src/actions'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { createEntity } from '../utils/createEntity'
