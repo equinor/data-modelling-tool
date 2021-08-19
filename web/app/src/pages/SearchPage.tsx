@@ -125,6 +125,28 @@ function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
   }
 }
 
+// Creates a text <input> for the sortByAttribute
+function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
+  return (
+    <FilterGroup>
+      <AttributeName>Sort by:</AttributeName>
+      <input
+        key="sortByAttribute"
+        value={sortByAttribute.dottedAttributePath}
+        type={'text'}
+        onChange={(event: any) => {
+          setSortByAttribute({ dottedAttributePath: event.target.value })
+        }}
+      />
+      <TypeHint>string</TypeHint>
+      <QueryInstructions>
+        <i>attribute[.subAttribute][..]</i> E.g. "Mooring.name",
+        "Vectors.3.height", or "name"
+      </QueryInstructions>
+    </FilterGroup>
+  )
+}
+
 // Creates a text <input> with labels based on a BlueprintAttribute
 function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
@@ -202,14 +224,14 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 function FilterContainer({ search, queryError, selectedDataSource }) {
   const [filter, setFilter] = useLocalStorage('searchFilter', {})
   const [attributes, setAttributes] = useState<Array<any>>([])
+  const [
+    sortByAttribute,
+    setSortByAttribute,
+  ] = useLocalStorage('sortByAttribute', { dottedAttributePath: 'name' })
 
   function onChange(filterChange: any) {
     setFilter({ ...filter, ...filterChange })
   }
-
-  useEffect(() => {
-    setFilter({})
-  }, [selectedDataSource])
 
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
@@ -234,7 +256,7 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
         onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          search(filter)
+          search(filter, sortByAttribute.dottedAttributePath)
         }}
       >
         <Group>
@@ -297,12 +319,17 @@ function FilterContainer({ search, queryError, selectedDataSource }) {
               />
             </>
           )}
+          <SortByAttribute
+            sortByAttribute={sortByAttribute}
+            setSortByAttribute={setSortByAttribute}
+          />
           <ButtonContainer>
             <button
               type={'button'}
               onClick={() => {
                 setAttributes([])
                 setFilter({})
+                setSortByAttribute({ dottedAttributePath: 'name' })
               }}
             >
               Reset
@@ -410,11 +437,11 @@ export default ({ allApplicationSettings }: any) => {
       })
   }, [])
 
-  function search(query: any) {
+  function search(query: any, sortByAttribute: string) {
     if (!selectedDataSource)
       NotificationManager.warning('No datasource selected')
     documentAPI
-      .search(selectedDataSource, query)
+      .search(selectedDataSource, query, sortByAttribute)
       .then((result: any) => {
         setQueryError('')
         let resultList = Object.values(result)
