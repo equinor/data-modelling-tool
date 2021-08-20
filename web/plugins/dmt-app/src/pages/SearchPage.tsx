@@ -128,11 +128,7 @@ function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
 }
 
 // Creates a text <input> for the sortByAttribute
-function SortByAttribute({
-  sortByAttribute,
-  searchSettings,
-  setSearchSettings,
-}: any) {
+function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
   return (
     <FilterGroup>
       <AttributeName>Sort by:</AttributeName>
@@ -141,14 +137,12 @@ function SortByAttribute({
         value={sortByAttribute}
         type={'text'}
         onChange={(event: any) => {
-          setSearchSettings({
-            ...searchSettings,
-            sortByAttribute: event.target.value,
-          })
+          setSortByAttribute(event.target.value)
         }}
       />
       <QueryInstructions>
-        Dotted attribute path, starting at the root. E.g  "name", "childEntity.date", or "childListEntity.3.height"
+        Dotted attribute path, starting at the root. E.g "name",
+        "childEntity.date", or "childListEntity.3.height"
       </QueryInstructions>
     </FilterGroup>
   )
@@ -231,23 +225,23 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 function FilterContainer({
   search,
   queryError,
-  searchSettings,
-  setSearchSettings,
+  searchFilter,
+  setSearchFilter,
+  sortByAttribute,
+  setSortByAttribute,
+  resetSearchSettings,
 }) {
   const [attributes, setAttributes] = useState<Array<any>>([])
 
   function onChange(filterChange: any) {
-    setSearchSettings({
-      ...searchSettings,
-      filter: { ...searchSettings.filter, ...filterChange },
-    })
+    setSearchFilter({ ...searchFilter, ...filterChange })
   }
 
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
-    if (searchSettings.filter?.type) {
+    if (searchFilter?.type) {
       documentAPI
-        .getBlueprint(searchSettings.filter.type)
+        .getBlueprint(searchFilter.type)
         .then((result) => {
           setAttributes(result.attributes)
         })
@@ -257,7 +251,7 @@ function FilterContainer({
         })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [searchSettings.filter?.type])
+  }, [searchFilter?.type])
 
   return (
     <Wrapper>
@@ -266,21 +260,15 @@ function FilterContainer({
         onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
-          search(searchSettings.filter, searchSettings.sortByAttribute)
+          search(searchFilter)
         }}
       >
         <Group>
           <FilterGroup>
             <label style={{ marginRight: '10px' }}>Type: </label>
             <BlueprintPicker
-              formData={searchSettings.filter?.type || ''}
-              onChange={(event: any) =>
-                setSearchSettings({
-                  ...searchSettings,
-                  filter: { type: event },
-                  sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
-                })
-              }
+              formData={searchFilter?.type || ''}
+              onChange={(event: any) => setSearchFilter({ type: event })}
               uiSchema={{ 'ui:label': '' }}
             />
           </FilterGroup>
@@ -314,7 +302,7 @@ function FilterContainer({
                 {attributes.map((attribute: any) => (
                   <DynamicAttributeFilter
                     // @ts-ignore
-                    value={searchSettings.filter[attribute.name]}
+                    value={searchFilter[attribute.name]}
                     attr={attribute}
                     // @ts-ignore
                     key={attribute.name}
@@ -325,7 +313,7 @@ function FilterContainer({
             </div>
           )}
           Query:
-          <JsonView data={searchSettings.filter} />
+          <JsonView data={searchFilter} />
           {queryError && (
             <>
               <text>Error:</text>
@@ -336,20 +324,15 @@ function FilterContainer({
             </>
           )}
           <SortByAttribute
-            sortByAttribute={searchSettings.sortByAttribute}
-            searchSettings={searchSettings}
-            setSearchSettings={setSearchSettings}
+            sortByAttribute={sortByAttribute}
+            setSortByAttribute={setSortByAttribute}
           />
           <ButtonContainer>
             <button
               type={'button'}
               onClick={() => {
                 setAttributes([])
-                setSearchSettings({
-                  sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
-                  filter: {},
-                  datasource: searchSettings.datasource,
-                })
+                resetSearchSettings()
               }}
             >
               Reset
@@ -412,21 +395,16 @@ function ResultContainer({ result, dataSource }: any) {
 }
 
 function SelectDataSource({
-  searchSettings,
-  setSearchSettings,
+  selectedDataSource,
+  setDataSource,
   dataSources,
 }: any) {
   return (
     <Wrapper style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
       <b>Select datasource to search:</b>
       <StyledSelect
-        value={searchSettings.datasource}
-        onChange={(event: UIEvent) =>
-          setSearchSettings({
-            ...searchSettings,
-            datasource: event.target.value,
-          })
-        }
+        value={selectedDataSource}
+        onChange={(event: UIEvent) => setDataSource(event.target.value)}
       >
         {dataSources.map((dataSource) => {
           return (
@@ -445,7 +423,7 @@ export default ({ settings }: any) => {
   const [searchSettings, setSearchSettings] = useLocalStorage(
     'searchSettings',
     {
-      datasource: '',
+      dataSource: '',
       sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
       filter: {},
     }
@@ -466,11 +444,11 @@ export default ({ settings }: any) => {
       })
   }, [])
 
-  function search(query: any, sortByAttribute: string) {
-    if (!searchSettings.datasource)
+  function search(query: any) {
+    if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
     documentAPI
-      .search(searchSettings.datasource, query, sortByAttribute)
+      .search(searchSettings.dataSource, query, searchSettings.sortByAttribute)
       .then((result: any) => {
         setQueryError('')
         let resultList = Object.values(result)
@@ -497,7 +475,9 @@ export default ({ settings }: any) => {
     <>
       <SelectDataSource
         selectedDataSource={searchSettings.dataSource}
-        setDataSource={(dataSource)=> setSearchSettings(...search.Settings, dataSource: dataSource)}
+        setDataSource={(dataSource) =>
+          setSearchSettings({ ...searchSettings, dataSource: dataSource })
+        }
         dataSources={dataSources}
       />
       <ApplicationContext.Provider
@@ -506,11 +486,27 @@ export default ({ settings }: any) => {
         <FilterContainer
           search={search}
           queryError={queryError}
-          searchSettings={searchSettings}
-          setSearchSettings={setSearchSettings}
+          searchFilter={searchSettings.filter}
+          setSearchFilter={(filter) =>
+            setSearchSettings({ ...searchSettings, filter: filter })
+          }
+          sortByAttribute={searchSettings.sortByAttribute}
+          setSortByAttribute={(sortByAttribute) =>
+            setSearchSettings({
+              ...searchSettings,
+              sortByAttribute: sortByAttribute,
+            })
+          }
+          resetSearchSettings={() =>
+            setSearchSettings({
+              sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
+              filter: {},
+              dataSource: searchSettings.dataSource,
+            })
+          }
         />
       </ApplicationContext.Provider>
-      <ResultContainer result={result} dataSource={searchSettings.datasource} />
+      <ResultContainer result={result} dataSource={searchSettings.dataSource} />
     </>
   )
 }
