@@ -147,7 +147,6 @@ function SortByAttribute({
           })
         }}
       />
-      <TypeHint>string</TypeHint>
       <QueryInstructions>
         <i>attribute[.subAttribute][..]</i> E.g. "Mooring.name",
         "Vectors.3.height", or "name"
