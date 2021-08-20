@@ -496,8 +496,8 @@ export default ({ settings }: any) => {
   return (
     <>
       <SelectDataSource
-        searchSettings={searchSettings}
-        setSearchSettings={setSearchSettings}
+        selectedDataSource={searchSettings.dataSource}
+        setDataSource={(dataSource)=> setSearchSettings(...search.Settings, dataSource: dataSource)}
         dataSources={dataSources}
       />
       <ApplicationContext.Provider
