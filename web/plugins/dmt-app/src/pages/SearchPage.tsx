@@ -148,8 +148,7 @@ function SortByAttribute({
         }}
       />
       <QueryInstructions>
-        <i>attribute[.subAttribute][..]</i> E.g. "Mooring.name",
-        "Vectors.3.height", or "name"
+        Dotted attribute path, starting at the root. E.g  "name", "childEntity.date", or "childListEntity.3.height"
       </QueryInstructions>
     </FilterGroup>
   )
