@@ -1,4 +1,5 @@
-from dmss_api.exceptions import ServiceException
+import json
+from dmss_api.exceptions import ServiceException, UnauthorizedException
 
 from repository.repository_exceptions import (
     ApplicationNotLoadedException,
@@ -25,6 +26,9 @@ class UseCase(object):
             )
         except ApplicationNotLoadedException as e:
             return res.ResponseFailure.build_resource_error(f"Failed to fetch index: {e.message}")
+        except UnauthorizedException as e:
+            message = json.loads(e.body)["detail"]
+            return res.ResponseFailure.build_access_error(message)
         except Exception as exc:
             traceback.print_exc()
             return res.ResponseFailure.build_system_error("{}: {}".format(exc.__class__.__name__, "{}".format(exc)))

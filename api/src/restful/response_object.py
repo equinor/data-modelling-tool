@@ -15,6 +15,8 @@ class ResponseFailure(object):
     RESOURCE_ERROR = "RESOURCE_ERROR"
     PARAMETERS_ERROR = "PARAMETERS_ERROR"
     SYSTEM_ERROR = "SYSTEM_ERROR"
+    UNAUTHORIZED = "UNAUTHORIZED"
+    FORBIDDEN = "FORBIDDEN"
 
     def __init__(self, type_, message):
         self.type = type_
@@ -35,6 +37,10 @@ class ResponseFailure(object):
     @classmethod
     def build_resource_error(cls, message=None):
         return cls(cls.RESOURCE_ERROR, message)
+
+    @classmethod
+    def build_access_error(cls, message=None):
+        return cls(cls.FORBIDDEN, message)
 
     @classmethod
     def build_system_error(cls, message=None):

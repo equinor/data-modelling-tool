@@ -1,15 +1,17 @@
 import json
 
-from config import config
 from flask import Blueprint, request, Response, send_file
 
+from config import config
 from enums import STATUS_CODES
 from restful import response_object as res
 from use_case.create_application_use_case import CreateApplicationRequestObject, CreateApplicationUseCase
-
 from utils.logging import logger
 
 blueprint = Blueprint("system", __name__)
+
+
+# This is a public endpoint with no authentication. So don't put secrets in settings.json
 
 
 @blueprint.route("/api/system/settings", methods=["GET"])
@@ -27,6 +29,9 @@ def get_application_settings():
     return Response(json.dumps(config.APP_SETTINGS), mimetype="application/json", status=200,)
 
 
+# Endpoint is only available on ENVIRONMENT=local
+
+
 @blueprint.route("/api/system/settings", methods=["POST"])
 def set_application_settings():
     app_name = request.args.get("APPLICATION")
@@ -42,6 +47,9 @@ def set_application_settings():
         return Response("Error: Failed to save the settings file.", status=500)
 
 
+# Auth is handled by DMSS
+
+
 @blueprint.route("/api/v2/system/<string:data_source_id>/create-application/<string:application_id>", methods=["GET"])
 def create_application(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
@@ -55,6 +63,9 @@ def create_application(data_source_id: str, application_id: str):
         )
     else:
         return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+
+
+# Auth is handled by DMSS
 
 
 @blueprint.route(
