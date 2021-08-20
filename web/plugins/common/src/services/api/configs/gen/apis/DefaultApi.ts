@@ -15,6 +15,9 @@
 
 import * as runtime from '../runtime';
 import {
+    ACL,
+    ACLFromJSON,
+    ACLToJSON,
     AddToParentRequest,
     AddToParentRequestFromJSON,
     AddToParentRequestToJSON,
@@ -138,6 +141,11 @@ export interface ExplorerRenameRequest {
     renameRequest: RenameRequest;
 }
 
+export interface GetAclRequest {
+    dataSourceId: string;
+    documentId: string;
+}
+
 export interface PackageFindByNameRequest {
     dataSourceId: string;
     name: string;
@@ -161,6 +169,13 @@ export interface ReferenceInsertRequest {
 export interface SearchRequest {
     dataSourceId: string;
     body: object;
+    sortByAttribute?: string;
+}
+
+export interface SetAclRequest {
+    dataSourceId: string;
+    documentId: string;
+    aCL: ACL;
 }
 
 /**
@@ -180,6 +195,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/export/{absolute_document_ref}`.replace(`{${"absolute_document_ref"}}`, encodeURIComponent(String(requestParameters.absoluteDocumentRef))),
@@ -215,6 +239,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/blobs/{data_source_id}/{blob_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"blob_id"}}`, encodeURIComponent(String(requestParameters.blobId))),
             method: 'GET',
@@ -245,6 +278,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/blueprint/{type_ref}`.replace(`{${"type_ref"}}`, encodeURIComponent(String(requestParameters.typeRef))),
@@ -277,6 +319,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/data-sources/{data_source_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
             method: 'GET',
@@ -302,6 +353,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/data-sources`,
@@ -339,6 +399,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/data-sources/{data_source_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -388,6 +457,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/documents/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
             method: 'GET',
@@ -430,6 +508,15 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/documents-by-path/{data_source_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -476,6 +563,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/documents/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
             method: 'PUT',
@@ -513,6 +609,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/add-document`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -552,6 +657,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/add-package`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
             method: 'POST',
@@ -589,6 +703,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/add-raw`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -628,6 +751,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/add-to-parent`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -669,6 +801,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const consumes: runtime.Consume[] = [
             { contentType: 'multipart/form-data' },
@@ -738,6 +879,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/move`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
             method: 'POST',
@@ -774,6 +924,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/remove`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -812,6 +971,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/remove-by-path`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
             method: 'POST',
@@ -849,6 +1017,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/explorer/{data_source_id}/rename`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
             method: 'PUT',
@@ -869,6 +1046,75 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * Get Acl
+     */
+    async getAclRaw(requestParameters: GetAclRequest): Promise<runtime.ApiResponse<ACL>> {
+        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling getAcl.');
+        }
+
+        if (requestParameters.documentId === null || requestParameters.documentId === undefined) {
+            throw new runtime.RequiredError('documentId','Required parameter requestParameters.documentId was null or undefined when calling getAcl.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const response = await this.request({
+            path: `/api/v1/acl/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ACLFromJSON(jsonValue));
+    }
+
+    /**
+     * Get Acl
+     */
+    async getAcl(requestParameters: GetAclRequest): Promise<ACL> {
+        const response = await this.getAclRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Healthcheck
+     */
+    async healthcheckRaw(): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        const response = await this.request({
+            path: `/api/v1/healthcheck`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Healthcheck
+     */
+    async healthcheck(): Promise<any> {
+        const response = await this.healthcheckRaw();
+        return await response.value();
+    }
+
+    /**
      * Get a root package by it\'s exact name
      * Find By Name
      */
@@ -884,6 +1130,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/packages/{data_source_id}/findByName/{name}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"name"}}`, encodeURIComponent(String(requestParameters.name))),
@@ -916,6 +1171,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/packages/{data_source_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -951,6 +1215,15 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/reference/{data_source_id}/{document_dotted_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(requestParameters.documentDottedId))),
@@ -992,6 +1265,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
         const response = await this.request({
             path: `/api/v1/reference/{data_source_id}/{document_dotted_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(requestParameters.documentDottedId))),
             method: 'PUT',
@@ -1025,9 +1307,22 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const queryParameters: any = {};
 
+        if (requestParameters.sortByAttribute !== undefined) {
+            queryParameters['sort_by_attribute'] = requestParameters.sortByAttribute;
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
 
         const response = await this.request({
             path: `/api/v1/search/{data_source_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
@@ -1045,6 +1340,91 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async search(requestParameters: SearchRequest): Promise<object> {
         const response = await this.searchRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Set Acl
+     */
+    async setAclRaw(requestParameters: SetAclRequest): Promise<runtime.ApiResponse<object>> {
+        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling setAcl.');
+        }
+
+        if (requestParameters.documentId === null || requestParameters.documentId === undefined) {
+            throw new runtime.RequiredError('documentId','Required parameter requestParameters.documentId was null or undefined when calling setAcl.');
+        }
+
+        if (requestParameters.aCL === null || requestParameters.aCL === undefined) {
+            throw new runtime.RequiredError('aCL','Required parameter requestParameters.aCL was null or undefined when calling setAcl.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const response = await this.request({
+            path: `/api/v1/acl/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ACLToJSON(requestParameters.aCL),
+        });
+
+        return new runtime.JSONApiResponse<any>(response);
+    }
+
+    /**
+     * Set Acl
+     */
+    async setAcl(requestParameters: SetAclRequest): Promise<object> {
+        const response = await this.setAclRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Get Information On Authenticated User
+     */
+    async whoamiRaw(): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const response = await this.request({
+            path: `/api/v1/whoami`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Get Information On Authenticated User
+     */
+    async whoami(): Promise<any> {
+        const response = await this.whoamiRaw();
         return await response.value();
     }
 
