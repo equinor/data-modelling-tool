@@ -6,9 +6,8 @@ export const AuthProvider = ({ authEnabled, children }) => {
   const token = localStorage.getItem('token') || null
   const refreshToken = localStorage.getItem('refreshToken') || null
   const loggedIn = localStorage.getItem('loggedIn') || false
-  const [userData, setUserData] = useState({name: "Not authenticated"})
 
-  const getuserdata = (token) => {
+  const getUserData = (token) => {
     if (!token) return {name: "Not authenticated"}
     const decodedToken = decodeToken(token)
 
@@ -18,6 +17,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
       accessToken: token
     }
   }
+  const [userData, setUserData] = useState(getUserData(token))
 
   useEffect(() => {
     if (authEnabled) {
@@ -30,7 +30,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
         .then((response) => {
           window.localStorage.setItem('refreshToken', response['refresh_token'])
           window.localStorage.setItem('token', response['access_token'])
-          setUserData(getuserdata(response['access_token']))
+          setUserData(getUserData(response['access_token']))
         })
         .catch((error) => {
           const urlParams = new URLSearchParams(window.location.search)
@@ -40,7 +40,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
             getTokens().then((response) => {
               window.localStorage.setItem('refreshToken', response['refresh_token'])
               window.localStorage.setItem('token', response['access_token'])
-              setUserData(getuserdata(response['access_token']))
+              setUserData(getUserData(response['access_token']))
             })
           }
         })
