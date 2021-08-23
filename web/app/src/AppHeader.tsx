@@ -7,7 +7,7 @@ import ConfigureApplication from './components/ConfigureApplication'
 import { sortApplications } from './utils/applicationHelperFunctions'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
-import { decodeToken, tokenExpired } from './utils/authentication'
+import { AuthContext } from './context/auth/AuthContext'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -40,27 +40,17 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
-  let token: any = localStorage.getItem('token')
-  let tokenData: any
-  let name: string
-  if (!tokenExpired(token)) {
-    const decodedToken: any = decodeToken(token)
-    name = decodedToken['name']
-    tokenData = decodedToken
-  } else {
-    name = 'Not authenticated'
-    tokenData = { data: 'None' }
-  }
+  const userData = useContext(AuthContext)
   const [expanded, setExpanded] = useState(false)
   return (
     <UserInfoBox onClick={() => setExpanded(!expanded)}>
-      <div>{name}</div>
+      <div>{userData.name}</div>
       <Modal
         toggle={() => setExpanded(!expanded)}
         open={expanded}
         title={'Logged in user info'}
       >
-        <JsonView data={tokenData} />
+        <JsonView data={userData} />
         <button type={'button'} onClick={() => setExpanded(false)}>
           Close
         </button>

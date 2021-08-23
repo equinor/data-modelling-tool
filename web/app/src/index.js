@@ -10,6 +10,8 @@ loadPlugins(config)
 const authEnabled = process.env.REACT_APP_AUTH === '1'
 
 ReactDOM.render(
-  <App authEnabled={authEnabled} />,
+  <AuthProvider authEnabled={authEnabled}>
+    <App />,
+  </AuthProvider>,
   document.getElementById('root')
 )

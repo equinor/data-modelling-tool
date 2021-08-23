@@ -1,4 +1,8 @@
 import axios from 'axios'
+import {
+  generateCodeChallenge,
+  generateRandomString,
+} from './getPCKECodeChallenge'
 // Only supports OAuth2 Authorization Code flow with PKCE
 
 const authSettings = {
@@ -7,44 +11,6 @@ const authSettings = {
   tokenEndpoint: process.env.REACT_APP_TOKEN_ENDPOINT || '',
   scope: process.env.REACT_APP_AUTH_SCOPE || '',
   redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || '',
-}
-
-function getRandomInteger(range: number): number {
-  const max_range = 256 // Highest possible number in Uint8
-
-  // Create byte array and fill with 1 random number
-  let byteArray = new Uint8Array(1)
-  window.crypto.getRandomValues(byteArray) // This is the new, and safer API than Math.Random()
-
-  // If the generated number is out of range, try again
-  if (byteArray[0] >= Math.floor(max_range / range) * range)
-    return getRandomInteger(range)
-  return byteArray[0] % range
-}
-
-function generateRandomString(length: number) {
-  let text = ''
-  const possible =
-    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789'
-  for (let i = 0; i < length; i++) {
-    text += possible.charAt(getRandomInteger(possible.length - 1))
-  }
-  return text
-}
-
-async function generateCodeChallenge(codeVerifier: string) {
-  const encoder = new TextEncoder()
-  const bytes: Uint8Array = encoder.encode(codeVerifier) // Encode the verifier to a byteArray
-  const hash: ArrayBuffer = await crypto.subtle.digest('SHA-256', bytes) // sha256 hash it
-  // @ts-ignore
-  const hashString: string = String.fromCharCode(...new Uint8Array(hash))
-  // @ts-ignore
-  const base64 = btoa(hashString) // Base64 encode the verifier hash
-  const base64url = base64 // Base64Url encode the base64 encoded string, making it safe as a query param
-    .replace(/=/g, '')
-    .replace(/\+/g, '-')
-    .replace(/\//g, '_')
-  return base64url
 }
 
 export async function login() {
