@@ -7,7 +7,7 @@ import ConfigureApplication from './components/ConfigureApplication'
 import { sortApplications } from './utils/applicationHelperFunctions'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
-import {decodeToken, tokenExpired} from './utils/authentication'
+import { decodeToken, tokenExpired } from './utils/authentication'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};

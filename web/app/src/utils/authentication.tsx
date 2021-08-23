@@ -2,13 +2,11 @@ import axios from 'axios'
 // Only supports OAuth2 Authorization Code flow with PKCE
 
 const authSettings = {
-  clientId: process.env.REACT_APP_AUTH_CLIENT_ID || "",
-  authorizationEndpoint:
-    process.env.REACT_APP_AUTH_ENDPOINT || "",
-  tokenEndpoint:
-    process.env.REACT_APP_TOKEN_ENDPOINT || "",
-  scope: process.env.REACT_APP_AUTH_SCOPE || "",
-  redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || "",
+  clientId: process.env.REACT_APP_AUTH_CLIENT_ID || '',
+  authorizationEndpoint: process.env.REACT_APP_AUTH_ENDPOINT || '',
+  tokenEndpoint: process.env.REACT_APP_TOKEN_ENDPOINT || '',
+  scope: process.env.REACT_APP_AUTH_SCOPE || '',
+  redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || '',
 }
 
 function getRandomInteger(range: number): number {
@@ -105,13 +103,18 @@ export const getTokenFromRefreshToken = (refreshToken: any) => {
 }
 
 export const decodeToken = (token: any) => {
-  var base64Url = token.split('.')[1];
-  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-  var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
-      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
-  }).join(''));
+  var base64Url = token.split('.')[1]
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
+  var jsonPayload = decodeURIComponent(
+    atob(base64)
+      .split('')
+      .map(function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
+      })
+      .join('')
+  )
 
-  return JSON.parse(jsonPayload);
+  return JSON.parse(jsonPayload)
 }
 
 export const tokenExpired = (token: any) => {
