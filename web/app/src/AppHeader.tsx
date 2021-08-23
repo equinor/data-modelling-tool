@@ -7,7 +7,7 @@ import ConfigureApplication from './components/ConfigureApplication'
 import { sortApplications } from './utils/applicationHelperFunctions'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
-import { decodeToken, isTokenValid } from './utils/authentication'
+import {decodeToken, tokenExpired} from './utils/authentication'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -43,7 +43,7 @@ function UserInfo() {
   let token: any = localStorage.getItem('token')
   let tokenData: any
   let name: string
-  if (isTokenValid(token)) {
+  if (!tokenExpired(token)) {
     const decodedToken: any = decodeToken(token)
     name = decodedToken['name']
     tokenData = decodedToken

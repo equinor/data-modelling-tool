@@ -1,15 +1,14 @@
 import axios from 'axios'
-import jwt_decode from 'jwt-decode'
 // Only supports OAuth2 Authorization Code flow with PKCE
 
 const authSettings = {
-  clientId: '97a6b5bd-63fb-42c6-bb75-7e5de2394ba0',
+  clientId: process.env.REACT_APP_AUTH_CLIENT_ID || "",
   authorizationEndpoint:
-    'https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/authorize',
+    process.env.REACT_APP_AUTH_ENDPOINT || "",
   tokenEndpoint:
-    'https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/token',
-  scope: 'https://graph.microsoft.com/User.Read',
-  redirectUri: 'http://localhost',
+    process.env.REACT_APP_TOKEN_ENDPOINT || "",
+  scope: process.env.REACT_APP_AUTH_SCOPE || "",
+  redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || "",
 }
 
 function getRandomInteger(range: number): number {
@@ -89,11 +88,12 @@ export const getTokens = (): Promise<any> => {
     .post(authSettings.tokenEndpoint, formData)
     .then((response) => response.data)
     .catch((e) => {
-      console.log(e)
+      console.error(e)
     })
 }
 
 export const getTokenFromRefreshToken = (refreshToken: any) => {
+  if (!refreshToken) return Promise.reject()
   const params = new URLSearchParams()
   params.append('client_id', authSettings.clientId)
   params.append('grant_type', 'refresh_token')
@@ -105,18 +105,22 @@ export const getTokenFromRefreshToken = (refreshToken: any) => {
 }
 
 export const decodeToken = (token: any) => {
-  return jwt_decode(token)
+  var base64Url = token.split('.')[1];
+  var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+  var jsonPayload = decodeURIComponent(atob(base64).split('').map(function(c) {
+      return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+  }).join(''));
+
+  return JSON.parse(jsonPayload);
 }
 
-export const isTokenValid = (token: any) => {
-  // Rename to tokenExpired()
-  if (!token) return false
-
+export const tokenExpired = (token: any) => {
+  if (!token) return true
   const bufferTimeInSeconds = 30 * 60
 
   try {
     //@ts-ignore
-    const { exp } = jwt_decode(token) // Do we need this jwt_decode? Should be enough with a base64 decode
+    const { exp } = decodeToken(token)
 
     //we will fetch new access token if expiration time is close
     const expirationTimeWithBuffer = new Date(
@@ -125,10 +129,10 @@ export const isTokenValid = (token: any) => {
     const dateNow = new Date()
 
     if (dateNow <= expirationTimeWithBuffer) {
-      return true
+      return false
     }
   } catch (err) {
-    return false
+    return true
   }
-  return false
+  return true
 }
