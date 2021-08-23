@@ -4,8 +4,7 @@ import 'react-notifications/lib/notifications.css'
 
 import App from './App'
 import ReactDOM from 'react-dom'
-
-loadPlugins(config)
+import { AuthProvider } from './context/auth/AuthContext'
 
 const authEnabled = process.env.REACT_APP_AUTH === '1'
 

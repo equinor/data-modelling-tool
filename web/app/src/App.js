@@ -4,8 +4,6 @@ import {createGlobalStyle, ThemeProvider} from 'styled-components'
 import {BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom'
 import {NotificationContainer} from 'react-notifications'
 import {Switch} from 'react-router'
-import {authContext} from './auth/adalConfig'
-import {AuthProvider} from './auth/AuthContext'
 import {systemAPI} from '@dmt/common/src/services/api/SystemAPI'
 import config from "./config";
 import {sortApplications} from '@dmt/common'
@@ -107,7 +105,6 @@ function App() {
     return (
         <ThemeProvider theme={theme}>
             <Router>
-                <AuthProvider idToken={authContext.getCachedUser()}>
                     <GlobalStyle/>
                     <NotificationContainer/>
                     <Route
@@ -133,7 +130,6 @@ function App() {
                             />
                         ))}
                     </Switch>
-                </AuthProvider>
             </Router>
         </ThemeProvider>
     )

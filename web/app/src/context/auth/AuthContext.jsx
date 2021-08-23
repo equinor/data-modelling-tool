@@ -1,12 +1,10 @@
 import React, {useEffect, useState} from 'react'
-import useLocalStorage from "../../hooks/useLocalStorage";
 import {decodeToken, getTokenFromRefreshToken, getTokens, login, tokenExpired} from "./authentication";
-
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({ authEnabled, children }) => {
-  const [token, setToken] = useLocalStorage('token', null)
-  const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
+  const token = localStorage.getItem('token') || null
+  const refreshToken = localStorage.getItem('refreshToken') || null
   const [loggedIn, setLoggedIn] = useState('loggedIn', false)
   const [userData, setUserData] = useState({name: "Not authenticated"})
 
@@ -30,8 +28,8 @@ export const AuthProvider = ({ authEnabled, children }) => {
     if (loggedIn && tokenExpired(token)) {
       getTokenFromRefreshToken(refreshToken)
         .then((response) => {
-          setRefreshToken(response['refresh_token'])
-          setToken(response['access_token'])
+          window.localStorage.setItem('refreshToken', response['refresh_token'])
+          window.localStorage.setItem('token', response['access_token'])
           setUserData(getuserdata(response['access_token']))
         })
         .catch((error) => {
@@ -40,8 +38,8 @@ export const AuthProvider = ({ authEnabled, children }) => {
           if (!code) login()
           if (code) {
             getTokens().then((response) => {
-              setRefreshToken(response['refresh_token'])
-              setToken(response['access_token'])
+              window.localStorage.setItem('refreshToken', response['refresh_token'])
+              window.localStorage.setItem('token', response['access_token'])
               setUserData(getuserdata(response['access_token']))
             })
           }

@@ -2,7 +2,7 @@
 import {Link, Route, useLocation} from 'react-router-dom'
 import React, {useContext, useEffect, useState} from 'react'
 import styled from 'styled-components'
-import {AuthContext} from '../../../app/src/auth/AuthContext'
+import {AuthContext} from '../../../app/src/context/auth/AuthContext'
 import {JsonView, Modal, sortApplications} from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
@@ -40,17 +40,17 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
-    const idToken: any = useContext(AuthContext)
+    const userData = useContext(AuthContext)
     const [expanded, setExpanded] = useState(false)
     return (
         <UserInfoBox onClick={() => setExpanded(!expanded)}>
-            <div>{idToken.profile.name}</div>
+            <div>{userData.name}</div>
             <Modal
                 toggle={() => setExpanded(!expanded)}
                 open={expanded}
                 title={'Logged in user info'}
             >
-                <JsonView data={idToken.profile}/>
+                <JsonView data={userData}/>
                 <button type={'button'} onClick={() => setExpanded(false)}>
                     Close
                 </button>
