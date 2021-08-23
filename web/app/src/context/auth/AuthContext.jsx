@@ -5,7 +5,7 @@ export const AuthContext = React.createContext()
 export const AuthProvider = ({ authEnabled, children }) => {
   const token = localStorage.getItem('token') || null
   const refreshToken = localStorage.getItem('refreshToken') || null
-  const [loggedIn, setLoggedIn] = useState('loggedIn', false)
+  const loggedIn = localStorage.getItem('loggedIn') || false
   const [userData, setUserData] = useState({name: "Not authenticated"})
 
   const getuserdata = (token) => {
@@ -22,7 +22,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
   useEffect(() => {
     if (authEnabled) {
     if (!loggedIn) {
-      setLoggedIn(true)
+      localStorage.setItem('loggedIn', true)
       login()
     }
     if (loggedIn && tokenExpired(token)) {
