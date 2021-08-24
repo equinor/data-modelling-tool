@@ -63,15 +63,9 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
-      #- name: install Prettier
-      #  run: npm install prettier
-
-      #- name: Prettier formatting
-      #  run: prettier --check "./web/**/*.{ts,tsx,js,css,html,json}" --config web/.prettierrc.js --ignore-path web/.prettierignore
-
       - name: Install Precommit
         run: pip install pre-commit
-      - name: Run prettier with precommit
+      - name: Run prettier formatting
         run: pre-commit run prettier --all-files
 
       - name: "Build Web Image"
