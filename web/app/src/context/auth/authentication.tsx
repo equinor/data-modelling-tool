@@ -11,6 +11,11 @@ const authSettings = {
   tokenEndpoint: process.env.REACT_APP_TOKEN_ENDPOINT || '',
   scope: process.env.REACT_APP_AUTH_SCOPE || '',
   redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || '',
+  logoutEndpoint: process.env.REACT_APP_LOGOUT_ENDPOINT || '',
+}
+
+export function logout() {
+  window.location.href = `${authSettings.logoutEndpoint}?post_logout_redirect_uri=${authSettings.redirectUri}`
 }
 
 export async function login() {
@@ -56,19 +61,23 @@ export const getTokens = (): Promise<any> => {
     })
 }
 
-export const getTokenFromRefreshToken = (refreshToken: any) => {
+export const getTokenFromRefreshToken = (refreshToken: string) => {
   if (!refreshToken) return Promise.reject()
-  const params = new URLSearchParams()
-  params.append('client_id', authSettings.clientId)
-  params.append('grant_type', 'refresh_token')
-  params.append('refresh_token', refreshToken)
+  const params = new URLSearchParams({
+    client_id: authSettings.clientId,
+    grant_type: 'refresh_token',
+    refresh_token: refreshToken,
+  })
 
-  const promise = axios.post(authSettings.tokenEndpoint, params)
-  const dataPromise = promise.then((response) => response.data)
-  return dataPromise
+  return axios
+    .post(authSettings.tokenEndpoint, params)
+    .then((response) => response.data)
+    .catch((error) => {
+      console.error('Could not fetch token.')
+    })
 }
 
-export const decodeToken = (token: any) => {
+export const decodeToken = (token: string) => {
   var base64Url = token.split('.')[1]
   var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/')
   var jsonPayload = decodeURIComponent(
@@ -83,25 +92,19 @@ export const decodeToken = (token: any) => {
   return JSON.parse(jsonPayload)
 }
 
-export const tokenExpired = (token: any) => {
+export const tokenExpired = (token: string) => {
   if (!token) return true
   const bufferTimeInSeconds = 30 * 60
+  const { exp } = decodeToken(token)
 
-  try {
-    //@ts-ignore
-    const { exp } = decodeToken(token)
-
-    //we will fetch new access token if expiration time is close
-    const expirationTimeWithBuffer = new Date(
-      exp * 1000 - bufferTimeInSeconds * 1000
-    )
-    const dateNow = new Date()
-
-    if (dateNow <= expirationTimeWithBuffer) {
-      return false
-    }
-  } catch (err) {
-    return true
+  //we will fetch new access token if expiration time is close
+  const expirationTimeWithBuffer = new Date(
+    exp * 1000 - bufferTimeInSeconds * 1000
+  )
+  const dateNow = new Date()
+  if (dateNow <= expirationTimeWithBuffer) {
+    return false
   }
+
   return true
 }

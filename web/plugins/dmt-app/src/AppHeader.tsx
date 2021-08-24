@@ -1,13 +1,13 @@
 // @ts-ignore
-import {Link, Route, useLocation} from 'react-router-dom'
-import React, {useContext, useEffect, useState} from 'react'
+import { Link, Route, useLocation } from 'react-router-dom'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import {AuthContext} from '../../../app/src/context/auth/AuthContext'
-import {JsonView, Modal, sortApplications} from '@dmt/common'
+import { AuthContext } from '../../../app/src/context/auth/AuthContext'
+import { Button, JsonView, Modal, sortApplications } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
-import {FaQuestion} from 'react-icons/fa'
-import Header from "./components/Header";
+import { FaQuestion } from 'react-icons/fa'
+import Header from './components/Header'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -40,30 +40,33 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
-    const userData = useContext(AuthContext)
-    const [expanded, setExpanded] = useState(false)
-    return (
-        <UserInfoBox onClick={() => setExpanded(!expanded)}>
-            <div>{userData.name}</div>
-            <Modal
-                toggle={() => setExpanded(!expanded)}
-                open={expanded}
-                title={'Logged in user info'}
-            >
-                <JsonView data={userData}/>
-                <button type={'button'} onClick={() => setExpanded(false)}>
-                    Close
-                </button>
-            </Modal>
-        </UserInfoBox>
-    )
+  const { userData, logOut } = useContext(AuthContext)
+  const [expanded, setExpanded] = useState(false)
+  return (
+    <div style={{ display: 'flex', alignItems: 'center', columnGap: '5px' }}>
+      <UserInfoBox onClick={() => setExpanded(!expanded)}>
+        <div>{userData.name}</div>
+        <Modal
+          toggle={() => setExpanded(!expanded)}
+          open={expanded}
+          title={'Logged in user info'}
+        >
+          <JsonView data={userData} />
+          <button type={'button'} onClick={() => setExpanded(false)}>
+            Close
+          </button>
+        </Modal>
+      </UserInfoBox>
+      {userData.loggedIn && <Button onClick={() => logOut()}>Log out</Button>}
+    </div>
+  )
 }
 
 const About = () => {
-    const [version, setVersion] = useState<string>('Version not loaded')
-    const [expanded, setExpanded] = useState(false)
+  const [version, setVersion] = useState<string>('Version not loaded')
+  const [expanded, setExpanded] = useState(false)
 
-    const QuestionWrapper = styled.div`
+  const QuestionWrapper = styled.div`
     border: black solid 2px;
     font-size: small;
     display: flex;
@@ -79,88 +82,88 @@ const About = () => {
     }
   `
 
-    useEffect(() => {
-        axios
-            .get('version.txt')
-            .then((response) => setVersion(response.data))
-            .catch((error) => console.error(error))
-    }, [])
+  useEffect(() => {
+    axios
+      .get('version.txt')
+      .then((response) => setVersion(response.data))
+      .catch((error) => console.error(error))
+  }, [])
 
-    return (
-        <div>
-            <QuestionWrapper onClick={() => setExpanded(!expanded)}>
-                <FaQuestion/>
-            </QuestionWrapper>
-            <Modal
-                toggle={() => setExpanded(!expanded)}
-                open={expanded}
-                title={'About Data Modelling Tool'}
-            >
-                <b>Last commit: {version}</b>
-            </Modal>
-        </div>
-    )
+  return (
+    <div>
+      <QuestionWrapper onClick={() => setExpanded(!expanded)}>
+        <FaQuestion />
+      </QuestionWrapper>
+      <Modal
+        toggle={() => setExpanded(!expanded)}
+        open={expanded}
+        title={'About Data Modelling Tool'}
+      >
+        <b>Last commit: {version}</b>
+      </Modal>
+    </div>
+  )
 }
 
 interface AppHeaderProps {
-    applications: Array<any>
+  applications: Array<any>
 }
 
-export default ({applications}: AppHeaderProps) => {
-    const location = useLocation()
+export default ({ applications }: AppHeaderProps) => {
+  const location = useLocation()
 
-    function getActiveTab() {
-        // activeApp (Tab Styling) is based on route, or if route is "/", the first application
-        if (location.pathname === '/') return applications[0].name
-        else if (location.pathname === '/search') return 'Search'
-        return applications.find(
-            (app) => app?.name === location.pathname.substring(1)
-        )?.name
-    }
+  function getActiveTab() {
+    // activeApp (Tab Styling) is based on route, or if route is "/", the first application
+    if (location.pathname === '/') return applications[0].name
+    else if (location.pathname === '/search') return 'Search'
+    return applications.find(
+      (app) => app?.name === location.pathname.substring(1)
+    )?.name
+  }
 
-    return (
-        <>
-            <HeaderWrapper>
-                <Link to="/">
-                    <h4>Data Modelling Tool</h4>
-                </Link>
-                <div
-                    style={{
-                        display: 'flex',
-                        justifyContent: 'space-between',
-                        width: '200px',
-                        alignItems: 'center',
-                    }}
-                >
-                    <UserInfo/>
-                    <About/>
-                    <ConfigureApplication/>
-                </div>
-            </HeaderWrapper>
-            <div
-                style={{
-                    display: 'flex',
-                    flexDirection: 'row',
-                    justifyContent: 'space-between',
-                }}
-            >
-                <div>
-                    <>
-                        {sortApplications(applications).map((app) => (
-                            <Link to={`/${app.name}`} key={app.name}>
-                                <TabStyled isSelected={getActiveTab() === app.name}>
-                                    {app?.label ? app.label : app.name}
-                                </TabStyled>
-                            </Link>
-                        ))}
-                    </>
-                    <Link to={'/DMT/search'}>
-                        <TabStyled isSelected={location.pathname === '/search'}>
-                            Search
-                        </TabStyled>
-                    </Link>
-                </div>
-            </div>
-        </>
-    )
+  return (
+    <>
+      <HeaderWrapper>
+        <Link to="/">
+          <h4>Data Modelling Tool</h4>
+        </Link>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            columnGap: '15px',
+          }}
+        >
+          <UserInfo />
+          <About />
+          <ConfigureApplication />
+        </div>
+      </HeaderWrapper>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between',
+        }}
+      >
+        <div>
+          <>
+            {sortApplications(applications).map((app) => (
+              <Link to={`/${app.name}`} key={app.name}>
+                <TabStyled isSelected={getActiveTab() === app.name}>
+                  {app?.label ? app.label : app.name}
+                </TabStyled>
+              </Link>
+            ))}
+          </>
+          <Link to={'/DMT/search'}>
+            <TabStyled isSelected={location.pathname === '/search'}>
+              Search
+            </TabStyled>
+          </Link>
+        </div>
+      </div>
+    </>
+  )
 }
