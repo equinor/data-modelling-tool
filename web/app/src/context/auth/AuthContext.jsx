@@ -30,24 +30,23 @@ export const AuthProvider = ({ authEnabled, children }) => {
 
   useEffect(() => {
     if (authEnabled) {
-    if (!loggedIn && !loginInProgress) {
-      setLoginInProgress(true)
-      login()
-    }
-    if (!loggedIn && loginInProgress  && tokenExpired(token)) {
-      getTokenFromRefreshToken(refreshToken)
-        .then((response) => {
-          setRefreshToken(response.refresh_token)
-          setToken(response.access_token)
-          setLoggedIn(true)
-          setLoginInProgress(false)
-          setUserData(getUserData(response.access_token, true))
-        })
-        .catch((error) => {
-          const urlParams = new URLSearchParams(window.location.search)
-          const code = urlParams.get('code')
-          if (!code) login()
-          if (code) {
+      if (!loggedIn && !loginInProgress) {
+        setLoginInProgress(true)
+        login()
+      }
+      else if (!loggedIn && loginInProgress  && tokenExpired(token)) {
+        getTokenFromRefreshToken(refreshToken)
+          .then((response) => {
+            setRefreshToken(response.refresh_token)
+            setToken(response.access_token)
+            setLoggedIn(true)
+            setLoginInProgress(false)
+            setUserData(getUserData(response.access_token, true))
+          })
+          .catch((error) => {
+            const urlParams = new URLSearchParams(window.location.search)
+            const code = urlParams.get('code')
+            if (!code) login()
             getTokens().then((response) => {
               setRefreshToken(response.refresh_token)
               setToken(response.access_token)
@@ -55,9 +54,9 @@ export const AuthProvider = ({ authEnabled, children }) => {
               setLoginInProgress(false)
               setUserData(getUserData(response.access_token, true))
             })
-          }
-        })
-    }
+
+          })
+      }
     }
 
 
