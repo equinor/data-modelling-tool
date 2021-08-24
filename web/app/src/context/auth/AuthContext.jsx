@@ -1,0 +1,68 @@
+import React, {useEffect, useState} from 'react'
+import {decodeToken, getTokenFromRefreshToken, getTokens, login, logout, tokenExpired} from "./authentication";
+//@ts-ignore
+import useLocalStorage from "./../../../../plugins/dmt-app/src/hooks/useLocalStorage";
+export const AuthContext = React.createContext()
+
+export const AuthProvider = ({ authEnabled, children }) => {
+  const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)
+  const [token, setToken] = useLocalStorage('token', null)
+  const [loggedIn, setLoggedIn] = useLocalStorage('loggedIn', false)
+  const [loginInProgress, setLoginInProgress] = useLocalStorage('loginInProgress', false)
+
+  const getUserData = (token, loggedIn) => {
+    if (!token) return {name: "Not authenticated", loggedIn: false}
+    const decodedToken = decodeToken(token)
+    // information included in decodedToken can vary based on which authentication server is used.
+    return {
+      name: decodedToken["name"],
+      accessToken: token,
+      loggedIn: loggedIn
+    }
+  }
+  const [userData, setUserData] = useState(getUserData(token, loggedIn))
+  const logOut = () => {
+    setRefreshToken(null)
+    setToken(null)
+    setLoggedIn(false)
+    logout()
+  }
+
+  useEffect(() => {
+    if (authEnabled) {
+      if (!loggedIn && !loginInProgress) {
+        setLoginInProgress(true)
+        login()
+      }
+      else if (!loggedIn && loginInProgress  && tokenExpired(token)) {
+        getTokenFromRefreshToken(refreshToken)
+          .then((response) => {
+            setRefreshToken(response.refresh_token)
+            setToken(response.access_token)
+            setLoggedIn(true)
+            setLoginInProgress(false)
+            setUserData(getUserData(response.access_token, true))
+          })
+          .catch((error) => {
+            const urlParams = new URLSearchParams(window.location.search)
+            const code = urlParams.get('code')
+            if (!code) login()
+            getTokens().then((response) => {
+              setRefreshToken(response.refresh_token)
+              setToken(response.access_token)
+              setLoggedIn(true)
+              setLoginInProgress(false)
+              setUserData(getUserData(response.access_token, true))
+            })
+
+          })
+      }
+    }
+
+
+  },[])
+
+  return (
+    <AuthContext.Provider value={{ userData , logOut}}>{children}</AuthContext.Provider>
+  )
+}
