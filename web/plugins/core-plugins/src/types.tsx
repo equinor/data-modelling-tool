@@ -25,7 +25,7 @@ export enum DmtPluginType {
   PAGE,
 }
 
-export type DmtSettings = {
+export interface DmtSettings {
   name: string
   label: string
   tabIndex: number
