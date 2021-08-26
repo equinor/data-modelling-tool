@@ -11,7 +11,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
   const [loginInProgress, setLoginInProgress] = useLocalStorage('loginInProgress', false)
 
   const getUserData = (token, loggedIn) => {
-    if (!token) return {name: "Not authenticated", loggedIn: false}
+    if (!token) return {name: "Not authenticated", loggedIn: false, token: undefined}
     const decodedToken = decodeToken(token)
     // information included in decodedToken can vary based on which authentication server is used.
     return {

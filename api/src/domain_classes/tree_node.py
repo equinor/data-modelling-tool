@@ -2,6 +2,8 @@ from copy import deepcopy
 from typing import Callable, Dict, List, Optional, Union
 from uuid import uuid4
 
+from functools import lru_cache
+
 from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from config import Config
@@ -213,6 +215,14 @@ class NodeBase:
         else:
             return self.uid
 
+    @property
+    def tree_id(self):
+        if self.type == BLUEPRINTS.DATASOURCE.value:
+            return self.uid
+
+        return ".".join(self.path() + [self.key])
+
+    @lru_cache
     def path(self):
         path = []
         parent = self.parent

@@ -3,7 +3,7 @@ import { dmssApi } from './configs/StorageServiceAPI'
 
 export class DataSourceAPI implements IDataSourceAPI {
   getAll(): Promise<DataSources> {
-    return dmssApi.dataSourceGetAll().then((value) => {
+    return dmssApi.dataSourceGetAll({token: undefined}).then((value) => {
       return JSON.parse(value)
     })
   }
