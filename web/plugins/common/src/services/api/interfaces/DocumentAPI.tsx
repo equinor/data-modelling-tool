@@ -3,7 +3,7 @@ import { Reference, RenameRequest } from '../configs/gen'
 export interface IDocumentAPI {
   create(url: string, data: any): Promise<any>
 
-  remove(url: string, data: any): Promise<any>
+  remove(url: string): Promise<any>
 
   update(url: string, data: any): Promise<any>
 

@@ -37,17 +37,11 @@ def get_rename_menu_action(
     }
 
 
-def get_delete_menu_item(
-    data_source_id: str, document_id: str, is_package_content: bool = False
-):
-    if is_package_content:
-        document_id = document_id.split(".")[0]
+def get_delete_menu_item():
     return {
         "label": "Remove",
         "action": "DELETE",
-        "data": {
-            "url": f"{DMSS_API}/explorer/"
-        },
+        "data": {"url": f"{DMSS_API}/explorer/"},
     }
 
 

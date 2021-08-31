@@ -1,30 +1,35 @@
-import {getUIPlugin, loadPlugins} from '@dmt/core-plugins'
-import React, {useEffect, useState} from 'react'
-import {createGlobalStyle, ThemeProvider} from 'styled-components'
-import {BrowserRouter as Router, Link, Route, Redirect} from 'react-router-dom'
-import {NotificationContainer} from 'react-notifications'
-import {Switch} from 'react-router'
-import {systemAPI} from '@dmt/common/src/services/api/SystemAPI'
-import config from "./config";
-import {sortApplications} from '@dmt/common'
+import { getUIPlugin, loadPlugins } from '@dmt/core-plugins'
+import React, { useEffect, useState } from 'react'
+import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import {
-    CardWrapper,
-    CardHeader,
-    CardHeading,
-    CardBody,
-    CardIcon,
-    CardFieldset,
-    CardInput,
-    CardOptionsItem,
-    CardOptions,
-    CardOptionsNote,
-    CardButton,
-    CardLink
-} from "./components/Card";
-import styled from "styled-components";
+  BrowserRouter as Router,
+  Link,
+  Route,
+  Redirect,
+} from 'react-router-dom'
+import { NotificationContainer } from 'react-notifications'
+import { Switch } from 'react-router'
+import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
+import config from './config'
+import { sortApplications } from '@dmt/common'
+import {
+  CardWrapper,
+  CardHeader,
+  CardHeading,
+  CardBody,
+  CardIcon,
+  CardFieldset,
+  CardInput,
+  CardOptionsItem,
+  CardOptions,
+  CardOptionsNote,
+  CardButton,
+  CardLink,
+} from './components/Card'
+import styled from 'styled-components'
 
 export const Config = {
-    exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
+  exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
 }
 
 const GlobalStyle = createGlobalStyle`
@@ -39,100 +44,104 @@ const GlobalStyle = createGlobalStyle`
 `
 
 const theme = {
-    flexboxgrid: {
-        gutterWidth: 0, // rem
-        outerMargin: 0, // rem
-    },
+  flexboxgrid: {
+    gutterWidth: 0, // rem
+    outerMargin: 0, // rem
+  },
 }
 
 const HorizontalList = styled.div`
-    display: flex;
-    justify-content: center;
-    
-    & > div {
-          margin: 20px;
-          padding: 20px;
-    }
+  display: flex;
+  justify-content: center;
+
+  & > div {
+    margin: 20px;
+    padding: 20px;
+  }
 `
 
 const AppSelector = (props) => {
-    const {applications} = props
-    const links = Object.values(applications).map((setting) => (
-        <div>
-            <CardWrapper>
-                <CardHeader>
-                    <CardHeading>{`${setting.label}`}</CardHeading>
-                </CardHeader>
+  const { applications } = props
+  const links = Object.values(applications).map((setting) => (
+    <div>
+      <CardWrapper>
+        <CardHeader>
+          <CardHeading>{`${setting.label}`}</CardHeading>
+        </CardHeader>
 
-                <CardBody>
-                    <CardFieldset>
-                        {`${setting.description}`}
-                    </CardFieldset>
-                    <CardFieldset>
-                        <CardLink><Link to={`/${setting.name}`}>Open</Link></CardLink>
-                    </CardFieldset>
-                </CardBody>
-            </CardWrapper>
-        </div>
-    ));
-    return (
-        <div>
-            <HorizontalList>
-                {links}
-            </HorizontalList>
-        </div>
-    )
+        <CardBody>
+          <CardFieldset>{`${setting.description}`}</CardFieldset>
+          <CardFieldset>
+            <CardLink>
+              <Link to={`/${setting.name}`}>Open</Link>
+            </CardLink>
+          </CardFieldset>
+        </CardBody>
+      </CardWrapper>
+    </div>
+  ))
+  return (
+    <div>
+      <HorizontalList>{links}</HorizontalList>
+    </div>
+  )
 }
 
 function App() {
-    const [applications, setApplications] = useState(undefined)
-    const [isLoading, setIsLoading] = useState(true)
+  const [applications, setApplications] = useState(undefined)
+  const [isLoading, setIsLoading] = useState(true)
 
-    useEffect(() => {
-        loadPlugins(config).then(() => setIsLoading(false))
+  useEffect(() => {
+    loadPlugins(config).then(() => setIsLoading(false))
 
-        systemAPI.getSystemSettings().then((res) => {
-            setApplications(
-                sortApplications(res.data).filter(
-                    (application) => application?.hidden !== true
-                )
+    systemAPI.getSystemSettings().then((res) => {
+      setApplications(
+        sortApplications(res.data).filter(
+          (application) => application?.hidden !== true
+        )
+      )
+    })
+  }, [])
+
+  if (isLoading || applications === undefined)
+    return <div>Loading application...</div>
+
+  return (
+    <ThemeProvider theme={theme}>
+      <Router>
+        <GlobalStyle />
+        <NotificationContainer />
+        <Route
+          exact
+          path="/"
+          render={() =>
+            applications.length === 1 ? (
+              <Redirect to={applications[0].name} />
+            ) : (
+              <AppSelector applications={applications} />
             )
-        })
-    }, [])
-
-    if (isLoading || applications === undefined) return <div>Loading application...</div>
-
-    return (
-        <ThemeProvider theme={theme}>
-            <Router>
-                    <GlobalStyle/>
-                    <NotificationContainer/>
-                    <Route
-                        exact
-                        path="/"
-                        render={() => (applications.length === 1 ?
-                            <Redirect to={applications[0].name}/> :
-                            <AppSelector applications={applications}/>)}
-                    />
-                    <Switch>
-                        {Object.values(applications).map((settings) => (
-                            <Route
-                                path={`/${settings.name}`}
-                                render={() => {
-                                    const ExternalPlugin = getUIPlugin(settings.name)
-                                    return (
-                                        <ExternalPlugin
-                                            settings={settings}
-                                            applications={applications}/>
-                                    )
-                                }}
-                                key={settings.name}
-                            />
-                        ))}
-                    </Switch>
-            </Router>
-        </ThemeProvider>
-    )
+          }
+        />
+        <Switch>
+          {Object.values(applications).map((settings) => (
+            <Route
+              path={`/${settings.name}`}
+              render={() => {
+                const ExternalPlugin = getUIPlugin(settings.name)
+                return (
+                  <ExternalPlugin
+                    settings={settings}
+                    applications={applications}
+                  />
+                )
+              }}
+              key={settings.name}
+            />
+          ))}
+        </Switch>
+      </Router>
+    </ThemeProvider>
+  )
 }
 
 export default App

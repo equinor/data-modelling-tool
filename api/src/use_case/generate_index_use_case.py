@@ -62,7 +62,6 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
         "parentId": get_parent_id(data_source_id, node),
         "title": node.name,
         "id": node.node_id,
-
         "nodeType": "document-node" if node.type != BLUEPRINTS.PACKAGE.value else BLUEPRINTS.PACKAGE.value,
         "children": children,
         "type": node.type,
@@ -147,9 +146,9 @@ class GenerateIndexUseCase(UseCase):
         for root_package in root_packages:
             package_data = root_package["data"]
             try:
-                root_package_node =document_service.get_node_by_uid(
-                        data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
-                    )
+                root_package_node = document_service.get_node_by_uid(
+                    data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
+                )
                 root_package_node.key = root_package_node.uid
                 root.add_child(root_package_node)
             except EntityNotFoundException as error:

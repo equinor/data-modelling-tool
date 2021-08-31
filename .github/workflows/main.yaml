@@ -70,7 +70,7 @@ jobs:
           docker build --cache-from $WEB_IMAGE --target development --tag web-development ./web
 
       - name: "Web Tests"
-        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test
+        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test --
 
   build-and-publish-web-master:
     needs: test-web

@@ -92,9 +92,7 @@ export class DocumentAPI implements IDocumentAPI {
       })
   }
 
-  remove(
-    url: string,
-  ): Promise<any> {
+  remove(url: string): Promise<any> {
     return apiProvider.remove(url)
   }
 
