@@ -13,17 +13,6 @@ import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
 import config from './config'
 import { sortApplications } from '@dmt/common'
 import {
-  BrowserRouter as Router,
-  Link,
-  Route,
-  Redirect,
-} from 'react-router-dom'
-import { NotificationContainer } from 'react-notifications'
-import { Switch } from 'react-router'
-import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
-import config from './config'
-import { sortApplications } from '@dmt/common'
-import {
   CardWrapper,
   CardHeader,
   CardHeading,
