@@ -1,6 +1,11 @@
 import { Configuration, DefaultApi } from './gen'
-import axios from 'axios'
+import {getlocalStorageAccessToken} from "../../../../../../app/src/context/auth/authentication"
+const getBearerToken = () => {
+    return "Bearer " + getlocalStorageAccessToken()
+}
 
-const DMSSConfiguration = new Configuration({ basePath: '/dmss' })
 
-export const dmssApi = new DefaultApi(DMSSConfiguration)
+//@ts-ignore
+const DMSSConfiguration = new Configuration({basePath: "/dmss", accessToken: getBearerToken})
+export let dmssApi = new DefaultApi(DMSSConfiguration)
+
