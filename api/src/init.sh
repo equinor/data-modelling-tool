@@ -11,7 +11,7 @@ service_is_ready() {
   ATTEMPT_COUNTER=1
   MAX_ATTEMPTS=100
   echo "Testing availability of DMSS: $DMSS_HOST:$DMSS_PORT"
-  until $(curl --silent --output /dev/null --fail "http://$DMSS_HOST:$DMSS_PORT/api/v1/data-sources"); do
+  until $(curl --silent --output /dev/null --fail "http://$DMSS_HOST:$DMSS_PORT/api/v1/healthcheck"); do
     if [ ${ATTEMPT_COUNTER} -eq ${MAX_ATTEMPTS} ];then
       echo "ERROR: Max attempts reached. Data Modelling Storage API($DMSS_HOST:$DMSS_PORT) did not respond. Exiting..."
       exit 1

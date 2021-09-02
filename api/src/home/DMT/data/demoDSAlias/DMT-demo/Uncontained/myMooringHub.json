@@ -1,6 +1,6 @@
 {
   "name": "myMooringHub",
-  "type": "DemoDS/DMT-demo/Uncontained/MooringHub",
+  "type": "/Uncontained/MooringHub",
   "moorings": [
     {
       "_id": "myMooring",
@@ -10,7 +10,7 @@
     {
       "_id": "nr2",
       "name": "number2",
-      "type": "DemoDS/DMT-demo/Uncontained/Mooring"
+      "type": "/Uncontained/Mooring"
     }
   ]
 }

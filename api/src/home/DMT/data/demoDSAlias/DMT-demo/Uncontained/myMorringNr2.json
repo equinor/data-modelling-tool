@@ -1,7 +1,7 @@
 {
       "_id": "nr2",
       "name": "number1",
-      "type": "DemoDS/DMT-demo/Uncontained/Mooring",
+      "type": "/Uncontained/Mooring",
       "description": "",
       "Bigness": 0
     }
