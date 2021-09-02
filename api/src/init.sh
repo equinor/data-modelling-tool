@@ -44,13 +44,6 @@ if [ "$1" = 'reset-app' ]; then
   exit 0
 fi
 
-if [ ! -e first-run-false ] && [ "$ENVIRONMENT" = 'local' ]; then
-  service_is_ready
-  echo "Importing data"
-  python /code/app.py reset-app
-  touch first-run-false
-fi
-
 if [ "$1" = 'api' ]; then
   service_is_ready
   flask run --host=0.0.0.0

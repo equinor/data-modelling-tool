@@ -18,6 +18,7 @@ RUN yarn install # --frozen-lockfile --production=false
 
 FROM base as development
 CMD ["yarn", "start"]
+USER 1000
 
 FROM base as prod
 RUN npm install -g serve
@@ -25,3 +26,4 @@ RUN yarn build
 WORKDIR /code/app
 EXPOSE 3000
 CMD ["serve", "--single", "build", "--listen", "3000"]
+USER 1000
