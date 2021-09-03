@@ -40,7 +40,10 @@ if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ]; then
 fi
 
 if [ "$1" = 'reset-app' ]; then
-  python /code/app.py reset-app
+  service_is_ready
+  shift
+  # This is quite bad. Only allows for CLI arguments before 'reset-app' subcommand.
+  python /code/app.py "$@" reset-app
   exit 0
 fi
 

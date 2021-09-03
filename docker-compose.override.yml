@@ -33,6 +33,8 @@ services:
   web:
     build:
       target: development
+      args:
+        AUTH_ENABLED: 1
     image: web-dev
     stdin_open: true
     volumes:

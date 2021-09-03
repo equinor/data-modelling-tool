@@ -69,14 +69,24 @@ The DMT will be available at http://localhost
 docker-compose down
 ----
 
-==== Reset database
+==== Import data and reset database
 
-To re-import blueprints and entities (from /api/home directory).
+Import local documents to the configured DMSS_HOST (from /api/home directory).
+Token is optional, but required if DMSS is configured with authentication.
+Token can be acquired from the DMT Web application .
 
 [source, bash]
 ----
-docker-compose run --rm api ./reset-application.sh
+docker-compose run --rm api reset-app --token=Eyxx.xxxx.xxxx
 ----
+
+If the data is corrupted or in a bad state some way, a hard reset of the DMSS is often a solution.
+This command will remove every _mongo database using the same database host as the core_, and upload DMSS's core documents.
+[source, bash]
+----
+docker-compose run --rm dmss reset-app
+----
+
 
 ==== Running Tests
 
