@@ -39,7 +39,9 @@ app = create_app(config)
 
 
 @click.group()
-def cli():
+@click.option("--token", default="no-token", type=str)
+def cli(token: str):
+    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
     pass
 
 
@@ -105,7 +107,7 @@ def init_application():
 
         logger.debug("_____ DONE importing data sources _____")
 
-        logger.debug(f"_____ importing blueprints and entities {tuple(settings.get('packages',[]))}_____")
+        logger.debug(f"_____ importing blueprints and entities {tuple(settings.get('packages', []))}_____")
         for package in settings.get("packages", []):
             data_source_alias, folder = package.split("/", 1)
             actual_data_source = settings["data_source_aliases"].get(data_source_alias, data_source_alias)
@@ -128,7 +130,7 @@ def init_application():
                 import_package_tree(root_package, actual_data_source)
             except Exception as error:
                 raise Exception(f"Something went wrong trying to upload the package ''{package}'' to DMSS; {error}")
-        logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings.get('packages',[]))}_____")
+        logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings.get('packages', []))}_____")
 
     logger.debug("_____ importing blobs _____")
     # TODO:  This is a temporary fix for import of blob data.
