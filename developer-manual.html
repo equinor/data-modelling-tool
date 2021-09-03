@@ -784,13 +784,24 @@ docker-compose up</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_reset_database">Reset database</h4>
+<h4 id="_import_data_and_reset_database">Import data and reset database</h4>
 <div class="paragraph">
-<p>To re-import blueprints and entities (from /api/home directory).</p>
+<p>Import local documents to the configured DMSS_HOST (from /api/home directory).
+Token is optional, but required if DMSS is configured with authentication.
+Token can be acquired from the DMT Web application .</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="bash">docker-compose run <span class="nt">--rm</span> api ./reset-application.sh</code></pre>
+<pre class="rouge highlight"><code data-lang="bash">docker-compose run <span class="nt">--rm</span> api reset-app <span class="nt">--token</span><span class="o">=</span>Eyxx.xxxx.xxxx</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>If the data is corrupted or in a bad state some way, a hard reset of the DMSS is often a solution.
+This command will remove every <em>mongo database using the same database host as the core</em>, and upload DMSS&#8217;s core documents.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">docker-compose run <span class="nt">--rm</span> dmss reset-app</code></pre>
 </div>
 </div>
 </div>
@@ -1076,7 +1087,7 @@ then I should see one todo.</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2021-09-02 12:33:28 UTC
+Last updated 2021-09-03 12:10:14 UTC
 </div>
 </div>
 </body>
