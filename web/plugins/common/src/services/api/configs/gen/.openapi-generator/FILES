@@ -1,3 +1,4 @@
+.openapi-generator-ignore
 apis/DefaultApi.ts
 apis/index.ts
 index.ts
@@ -11,7 +12,6 @@ models/HTTPValidationError.ts
 models/MoveRequest.ts
 models/Reference.ts
 models/RemoveByPathRequest.ts
-models/RemoveRequest.ts
 models/RenameRequest.ts
 models/Repository.ts
 models/RepositoryType.ts

@@ -3,7 +3,6 @@ from enums import BLUEPRINTS, SIMOS
 from use_case.utils.index_menu_actions import (
     get_create_reference_menu_item,
     get_create_root_package_menu_item,
-    get_delete_menu_item,
     get_download_menu_action,
     get_dynamic_create_menu_item,
     get_export_code_menu_item,
@@ -13,6 +12,8 @@ from use_case.utils.index_menu_actions import (
 )
 from use_case.utils.sort_menu_items import sort_menu_items
 from utils.group_by import group_by
+
+DMSS_API = "/dmss/api/v1"
 
 
 def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
@@ -96,14 +97,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             if not node.contained and node.parent.type != BLUEPRINTS.ENTITY.value:
                 menu_items.append({"label": "Remove reference", "action": "UNLINK"})
             else:
-                menu_items.append(
-                    get_delete_menu_item(
-                        data_source_id,
-                        parent_id=node.parent.node_id if node.parent and node.parent.type != "datasource" else None,
-                        document_id=node.node_id,
-                        is_package_content=is_package,
-                    )
-                )
+                menu_items.append({"label": "Remove", "action": "DELETE", "data": {"url": f"{DMSS_API}/explorer/"}})
 
         # Runnable entities gets custom actions
         action_types = group_by(

@@ -70,7 +70,7 @@ export const DeleteAction = (props: any) => {
     remove({
       nodeId: action.node.nodeData.nodeId,
       parent: action.node.parent,
-      url: action.action.data.url,
+      url: `${action.action.data.url}${action.node.nodeData.meta.dataSource}/${action.node.nodeData.meta.treePath}`,
     })
   }
 

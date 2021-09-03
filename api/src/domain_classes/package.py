@@ -70,7 +70,9 @@ class Package:
         result = []
         for child in self.content:
             if isinstance(child, Package):
-                result.append({"_id": str(child.uid), "name": child.name, "type": BLUEPRINTS.PACKAGE.value})
+                result.append(
+                    {"_id": str(child.uid), "name": child.name, "type": BLUEPRINTS.PACKAGE.value, "contained": True}
+                )
             else:  # Assume the child is a dict
-                result.append({"_id": child["_id"], "name": child["name"], "type": child["type"]})
+                result.append({"_id": child["_id"], "name": child["name"], "type": child["type"], "contained": True})
         return result

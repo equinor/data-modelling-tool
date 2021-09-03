@@ -57,7 +57,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
             children = [child.node_id for child in content_node.children if is_visible(child)]
     else:
         children = [child.node_id for child in node.children if is_visible(child)]
-
+    is_root_package = node.type == BLUEPRINTS.PACKAGE.value and node.entity.get("isRoot")
     return {
         "parentId": get_parent_id(data_source_id, node),
         "title": node.name,
@@ -67,10 +67,11 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
         "type": node.type,
         "meta": {
             "menuItems": menu_items,
+            "treePath": node.tree_id if not is_root_package else node.node_id,
             "fetchUrl": get_node_fetch(data_source_id, node) if node.is_single() else {},
             "indexUrl": get_node_index(data_source_id, node),
             "error": False,
-            "isRootPackage": node.type == BLUEPRINTS.PACKAGE.value and node.entity.get("isRoot"),
+            "isRootPackage": is_root_package,
             "isList": node.is_array(),
             "dataSource": data_source_id,
             "empty": node.is_empty(),
@@ -145,11 +146,11 @@ class GenerateIndexUseCase(UseCase):
         for root_package in root_packages:
             package_data = root_package["data"]
             try:
-                root.add_child(
-                    document_service.get_node_by_uid(
-                        data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
-                    )
+                root_package_node = document_service.get_node_by_uid(
+                    data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
                 )
+                root_package_node.key = root_package_node.uid
+                root.add_child(root_package_node)
             except EntityNotFoundException as error:
                 logger.exception(error)
                 error_node: Node = Node(

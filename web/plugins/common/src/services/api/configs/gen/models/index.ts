@@ -8,7 +8,6 @@ export * from './HTTPValidationError';
 export * from './MoveRequest';
 export * from './Reference';
 export * from './RemoveByPathRequest';
-export * from './RemoveRequest';
 export * from './RenameRequest';
 export * from './Repository';
 export * from './RepositoryType';

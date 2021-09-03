@@ -1,5 +1,5 @@
-import React from "react";
-import styled, { css } from "styled-components";
+import React from 'react'
+import styled, { css } from 'styled-components'
 
 export const CardWrapper = styled.div`
   overflow: hidden;
@@ -9,23 +9,23 @@ export const CardWrapper = styled.div`
   font-family: Quicksand, arial, sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.05), 0 0px 40px rgba(0, 0, 0, 0.08);
   border-radius: 5px;
-`;
+`
 
 export const CardHeader = styled.header`
   padding-top: 32px;
   padding-bottom: 32px;
-`;
+`
 
 export const CardHeading = styled.h1`
   font-size: 24px;
   font-weight: bold;
   text-align: center;
-`;
+`
 
 export const CardBody = styled.div`
   padding-right: 32px;
   padding-left: 32px;
-`;
+`
 
 export const CardFieldset = styled.fieldset`
   position: relative;
@@ -44,7 +44,7 @@ export const CardFieldset = styled.fieldset`
   &:last-of-type {
     text-align: center;
   }
-`;
+`
 
 export const CardInput = styled.input`
   padding: 7px 0;
@@ -61,18 +61,18 @@ export const CardInput = styled.input`
     border-bottom-color: #e5195f;
     outline: 0;
   }
-`;
+`
 
 export const CardIcon = styled.span`
   color: #666;
   cursor: pointer;
-  opacity: .25;
-  transition: opacity .25s ease-in;
+  opacity: 0.25;
+  transition: opacity 0.25s ease-in;
 
   &:hover {
-    opacity: .95;
+    opacity: 0.95;
   }
-`;
+`
 
 export const CardOptionsNote = styled.small`
   padding-top: 8px;
@@ -81,7 +81,7 @@ export const CardOptionsNote = styled.small`
   font-size: 12px;
   text-align: center;
   text-transform: uppercase;
-`;
+`
 
 export const CardOptions = styled.ul`
   padding: 0;
@@ -93,13 +93,13 @@ export const CardOptions = styled.ul`
   justify-content: center;
   width: 100%;
   list-style-type: none;
-`;
+`
 
 export const CardOptionsItem = styled.li`
   &:nth-of-type(n + 2) {
     margin-left: 16px;
   }
-`;
+`
 
 export const CardButton = styled.button`
   display: block;
@@ -120,7 +120,7 @@ export const CardButton = styled.button`
     box-shadow: 0 15px 15px rgba(0, 0, 0, 0.16);
     transform: translate(0, -5px);
   }
-`;
+`
 
 export const CardLink = styled.a`
   display: inline-block;
@@ -134,4 +134,4 @@ export const CardLink = styled.a`
   &:hover {
     color: #777;
   }
-`;
+`
