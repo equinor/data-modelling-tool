@@ -63,6 +63,11 @@ jobs:
     steps:
       - uses: actions/checkout@master
 
+      - name: Install Precommit
+        run: pip install pre-commit
+      - name: Run prettier formatting
+        run: pre-commit run prettier --all-files
+
       - name: "Build Web Image"
         run: |
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
