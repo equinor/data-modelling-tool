@@ -19,12 +19,14 @@ export type IndexNodes = {
 export interface IIndexAPI {
   getIndexByDataSource(
     dataSourceId: string,
-    application: string
+    application: string,
+    token: string
   ): Promise<IndexNodes>
 
   getIndexByDocument(
     nodeUrl: string,
     documentId: string,
-    application: string
+    application: string,
+    token: string
   ): Promise<IndexNodes>
 }

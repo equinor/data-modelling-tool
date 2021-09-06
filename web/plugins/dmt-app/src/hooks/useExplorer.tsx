@@ -18,6 +18,7 @@ import {
 } from '../context/global-index/IndexProvider'
 import { useEffect, useState } from 'react'
 import { LayoutComponents } from '../context/dashboard/useLayout'
+import useLocalStorage from "./useLocalStorage";
 
 interface FetchUrl {
   uid: string
@@ -160,6 +161,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const { closeModal } = useModalContext()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [errorCounter, setErrorCounter] = useState<number>(0)
+  const [token, setToken] = useLocalStorage("token", null)
 
   useEffect(() => {
     if (errorMessage) {
@@ -234,7 +236,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
       documentAPI
-        .create(dataUrl, data)
+        .create(dataUrl, data, token)
         .then((result: any) => {
           closeModal()
           index.models.index.operations.add(result.uid, nodeUrl, true)

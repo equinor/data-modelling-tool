@@ -10,6 +10,7 @@ import { DataSource } from '../services'
 import IndexAPI from '../services/api/IndexAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
 import { ApplicationContext } from '../context/ApplicationContext'
+import useLocalStorage from "../../../dmt-app/src/hooks/useLocalStorage";
 
 export interface IModels {
   tree: ITree
@@ -38,6 +39,7 @@ export const useIndex = (props: IndexProps): IIndex => {
   const { dataSources, application, indexApi = new IndexAPI() } = props
   const [dataSourceWarning, setDataSourceWarning] = useState<string>('')
   const [index, setIndex] = useState<Tree>({})
+  const [token, setToken] = useLocalStorage("token", null)
 
   useEffect(() => {
     if (dataSourceWarning) {
@@ -67,7 +69,7 @@ export const useIndex = (props: IndexProps): IIndex => {
           application.visibleDataSources === undefined
         ) {
           return indexApi
-            .getIndexByDataSource(dataSource.id, application.name)
+            .getIndexByDataSource(dataSource.id, application.name, token)
             .then((res) => {
               indexes.push(res)
             })
@@ -106,7 +108,8 @@ export const useIndex = (props: IndexProps): IIndex => {
       const result = await indexApi.getIndexByDocument(
         nodeUrl,
         documentId,
-        application.name
+        application.name,
+        token
       )
 
       const treeNodes: TreeNodeData[] = toTreeNodes(result)

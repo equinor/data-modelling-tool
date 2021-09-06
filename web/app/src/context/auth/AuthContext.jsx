@@ -71,7 +71,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
 
 
   if (!getlocalStorageAccessToken()){
-    return <div>Waiting for log in to complete...</div>
+    return <div>Login in progress, please wait...</div>
   }
   return (
     <AuthContext.Provider value={{ userData , logOut}}>{children}</AuthContext.Provider>

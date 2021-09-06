@@ -41,7 +41,7 @@ export async function login() {
 }
 
 export const getlocalStorageAccessToken = (): string | null => {
-   if (window.localStorage.getItem("token") === "null") return null
+   if (window.localStorage.getItem("token") === "null" || window.localStorage.getItem("token") === null) return null
    else return String(window.localStorage.getItem("token")).slice(1,-1) //need to remove first and last value of the string, these values are quotation marks
   }
 
