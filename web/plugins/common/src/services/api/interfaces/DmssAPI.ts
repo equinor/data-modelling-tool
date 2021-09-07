@@ -11,7 +11,7 @@ export interface DataSources extends Array<DataSource> {}
 export interface IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any>
 
-  removeDocument(url: string, data: any, token: string): Promise<any>
+  removeDocument(url: string, token: string): Promise<any>
 
   updateDocument(url: string, data: any): Promise<any>
 

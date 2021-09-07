@@ -1,4 +1,5 @@
 import { Configuration, DefaultApi } from './gen'
+//@ts-ignore
 import { getlocalStorageAccessToken } from '../../../../../../app/src/context/auth/authentication'
 const getBearerToken = () => {
   return 'Bearer ' + getlocalStorageAccessToken()

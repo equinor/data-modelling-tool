@@ -1,19 +1,19 @@
 import { useEffect, useState } from 'react'
-import { DocumentAPI } from '../services/api/DocumentAPI'
+import { DmssAPI } from '../services/api/DmssAPI'
 
 export const useDocument = (dataSourceId: string, documentId: string) => {
   const [document, setDocument] = useState(null)
   const [isLoading, setLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
-  const documentAPI = new DocumentAPI()
+  const dmssAPI = new DmssAPI()
 
   useEffect(() => {
     setLoading(true)
     const target = documentId.split('.')
     const id = `${target.shift()}`
     const attribute = target.join('.')
-    documentAPI
-      .getById(dataSourceId, id, attribute)
+    dmssAPI
+      .getDocumentById(dataSourceId, id, attribute)
       .then((document) => {
         console.log(document)
         setDocument(document.document)

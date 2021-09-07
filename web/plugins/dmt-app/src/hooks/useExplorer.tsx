@@ -7,8 +7,8 @@ import { useModalContext } from '../context/modal/ModalContext'
 import { NotificationManager } from 'react-notifications'
 import {
   BlueprintEnum,
-  DocumentAPI,
-  IDocumentAPI,
+  DmssAPI,
+  IDmssAPI,
   Reference,
 } from '@dmt/common'
 
@@ -150,11 +150,11 @@ export interface IUseExplorer {
 }
 
 interface ExplorerProps {
-  documentAPI?: IDocumentAPI
+  dmssAPI?: IDmssAPI
 }
 
 export default function useExplorer(props: ExplorerProps): IUseExplorer {
-  const { documentAPI = new DocumentAPI() } = props
+  const { dmssAPI = new DmssAPI() } = props
   const [blueprintCache, setBlueprintCache] = useState<any>({})
   const dashboard: IDashboard = useDashboard()
   const index: IGlobalIndex = useGlobalIndex()
@@ -188,7 +188,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const get = ({ dataSourceId, documentId, attribute }: GetProps) => {
-    return documentAPI.getById(dataSourceId, documentId, attribute)
+    return dmssAPI.getDocumentById(dataSourceId, documentId, attribute)
   }
 
   // TODO: This cache does not really work, as a new instance of useExplorer is created in every form
@@ -198,7 +198,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       console.log(`Found ${typeRef} in cache!`)
       return blueprintCache[typeRef]
     } else {
-      const blueprint = documentAPI.getBlueprint(typeRef)
+      const blueprint = dmssAPI.getBlueprint(typeRef)
       //  Update cache
       setBlueprintCache({ ...blueprintCache, [typeRef]: blueprint })
       return blueprint
@@ -206,7 +206,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const getByPath = ({ dataSourceId, path }: GetByPathProps) => {
-    return documentAPI.getByPath(dataSourceId, path)
+    return dmssAPI.getDocumentByPath(dataSourceId, path)
   }
 
   const toggle = ({ nodeId }: ToggleProps) => {
@@ -235,8 +235,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
 
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
-      documentAPI
-        .create(dataUrl, data, token)
+      dmssAPI
+        .createDocument(dataUrl, data, token)
         .then((result: any) => {
           closeModal()
           index.models.index.operations.add(result.uid, nodeUrl, true)
@@ -252,8 +252,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     documentDottedId,
     reference,
   }: InsertReferenceProps) => {
-    documentAPI
-      .insertReference(dataSourceId, documentDottedId, reference)
+    dmssAPI
+      .insertDocumentReference(dataSourceId, documentDottedId, reference)
       .then(() => {
         closeModal()
         const rootDocumentId = documentDottedId.split('.', 1)[0]
@@ -278,8 +278,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     dataSourceId,
     documentDottedId,
   }: RemoveReferenceProps) => {
-    documentAPI
-      .removeReference(dataSourceId, documentDottedId)
+    dmssAPI
+      .removeDocumentReference(dataSourceId, documentDottedId)
       .then(() => {
         const rootDocumentId = documentDottedId.split('.', 1)[0]
         index.models.index.operations
@@ -300,8 +300,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     nodeUrl,
   }: AddToParentProps) => {
     if (validate(data)) {
-      return documentAPI
-        .addToParent(dataSourceId, data)
+      return dmssAPI
+        .addDocumentToParent(dataSourceId, data)
         .then((result: any) => {
           closeModal()
           const res = JSON.parse(result)
@@ -316,8 +316,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const remove = async ({ nodeId, parent, url }: RemoveProps) => {
-    return documentAPI
-      .remove(url, token)
+    return dmssAPI
+      .removeDocument(url, token)
       .then(() => {
         index.models.index.operations
           .remove(nodeId, parent)
@@ -356,8 +356,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         dataSourceId: dataSourceId,
       }
     }
-    return documentAPI
-      .explorerRename(dataSourceId, renameRequest)
+    return dmssAPI
+      .explorerDocumentRename(dataSourceId, renameRequest)
       .then((result: any) => {
         closeModal()
         index.models.index.operations
@@ -379,8 +379,8 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     data,
     nodeUrl,
   }: UpdateByIdProps) => {
-    return documentAPI
-      .updateById(dataSourceId, documentId, attribute, data)
+    return dmssAPI
+      .updateDocumentById(dataSourceId, documentId, attribute, data)
       .then((result: any) => {
         closeModal()
         if (nodeUrl) {

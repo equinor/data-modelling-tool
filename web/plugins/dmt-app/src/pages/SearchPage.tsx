@@ -11,13 +11,10 @@ import {
   DmssAPI,
   BlueprintPicker,
   DataSources,
-  DocumentAPI,
   JsonView,
   ApplicationContext,
 } from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
-
-const documentAPI = new DocumentAPI()
 
 const dmssAPI = new DmssAPI()
 
@@ -165,7 +162,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
-      documentAPI
+      dmssAPI
         .getBlueprint(attribute.getAttributeType())
         .then((result) => {
           setNestedAttributes(result.attributes)
@@ -240,7 +237,7 @@ function FilterContainer({
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
     if (searchFilter?.type) {
-      documentAPI
+      dmssAPI
         .getBlueprint(searchFilter.type)
         .then((result) => {
           setAttributes(result.attributes)
@@ -447,8 +444,8 @@ export default ({ settings }: any) => {
   function search(query: any) {
     if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
-    documentAPI
-      .search(searchSettings.dataSource, query, searchSettings.sortByAttribute)
+    dmssAPI
+      .searchDocuments(searchSettings.dataSource, query, searchSettings.sortByAttribute)
       .then((result: any) => {
         setQueryError('')
         let resultList = Object.values(result)

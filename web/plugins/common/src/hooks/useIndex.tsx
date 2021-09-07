@@ -9,7 +9,7 @@ import values from 'lodash/values'
 import { DataSource } from '../services'
 import IndexAPI from '../services/api/IndexAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
-import { ApplicationContext } from '../context/ApplicationContext'
+//@ts-ignore
 import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 export interface IModels {

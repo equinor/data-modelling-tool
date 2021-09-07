@@ -1,4 +1,3 @@
-import { IDocumentAPI } from './interfaces/DocumentAPI'
 import apiProvider from './utilities/Provider'
 import { dmssApi } from './configs/StorageServiceAPI'
 import { Reference, RenameRequest } from './configs/gen'
@@ -90,12 +89,8 @@ export class DmssAPI implements IDmssAPI {
       })
   }
 
-  removeDocument(
-    url: string,
-    data: { parentId: string; documentId: string },
-    token: string
-  ): Promise<any> {
-    return apiProvider.post(url, data, token)
+  removeDocument(url: string, token: string): Promise<any> {
+    return apiProvider.remove(url, token)
   }
 
   updateDocument(url: string, data: any): Promise<any> {

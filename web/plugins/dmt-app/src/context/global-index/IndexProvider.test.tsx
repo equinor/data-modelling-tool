@@ -4,7 +4,7 @@ import { renderHook } from '@testing-library/react-hooks'
 import { mock } from 'jest-mock-extended'
 import {
   DataSource,
-  IDocumentAPI,
+  IDmssAPI,
   ApplicationContext,
   IIndexAPI,
 } from '@dmt/common'
@@ -46,13 +46,13 @@ describe('the index provider component', () => {
     it('should correctly return the IndexContext object', async () => {
       const api = mock<IIndexAPI>()
       api.getIndexByDataSource.mockReturnValue(Promise.resolve({}))
-      const documentApi: IDocumentAPI = mock<IDocumentAPI>()
+      const dmssAPI: IDmssAPI = mock<IDmssAPI>()
 
       const { result, waitForNextUpdate } = renderHook(useGlobalIndex, {
         wrapper,
         initialProps: {
           indexApi: api,
-          documentApi,
+          dmssAPI,
           application,
           dataSources,
         },

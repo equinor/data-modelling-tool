@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { DocumentAPI } from '@dmt/common'
+import { DmssAPI } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { getUIPlugin } from '@dmt/core-plugins'
@@ -21,7 +21,7 @@ const Group = styled.div`
   background-color: white;
 `
 
-const documentAPI = new DocumentAPI()
+const dmssAPI = new DmssAPI()
 
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
@@ -33,7 +33,7 @@ const View = (props: any) => {
       uiRecipe={uiRecipe}
       uiRecipeName={uiRecipe.name}
       document={document}
-      fetchBlueprint={(type: string) => documentAPI.getBlueprint(type)}
+      fetchBlueprint={(type: string) => dmssAPI.getBlueprint(type)}
       createDocument={createEntity}
     />
   )
@@ -80,8 +80,8 @@ export default () => {
   const [error, setError] = useState(null)
 
   useEffect(() => {
-    documentAPI
-      .getById(data_source, entity_id)
+    dmssAPI
+      .getDocumentById(data_source, entity_id)
       .then((result) => {
         setBlueprint(result.blueprint)
         setDocument(result.document)

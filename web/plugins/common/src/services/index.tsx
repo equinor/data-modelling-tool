@@ -1,5 +1,5 @@
-export * from './api/DocumentAPI'
-export * from './api/interfaces/DocumentAPI'
+export * from './api/DmssAPI'
+export * from './api/interfaces/DmssAPI'
 export * from './api/DmssAPI'
 export * from './api/SystemAPI'
 export * from './api/interfaces/DmssAPI'
