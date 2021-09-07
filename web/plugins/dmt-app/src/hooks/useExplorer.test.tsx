@@ -18,6 +18,7 @@ import {
 } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'
+import {AuthProvider} from "../../../../app/src/context/auth/AuthContext";
 
 const wrapper: React.FC = ({
   children,
@@ -25,6 +26,7 @@ const wrapper: React.FC = ({
   dataSourceApi,
   indexApi,
 }: any) => (
+    <AuthProvider authEnabled={false} >
   <DashboardProvider dataSourceApi={dataSourceApi}>
     <DashboardConsumer>
       {(dashboard: IDashboard) => {
@@ -41,6 +43,7 @@ const wrapper: React.FC = ({
       }}
     </DashboardConsumer>
   </DashboardProvider>
+      </AuthProvider>
 )
 
 const getMocks = () => {
