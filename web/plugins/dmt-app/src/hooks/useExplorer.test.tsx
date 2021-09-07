@@ -218,7 +218,8 @@ describe('the explorer hook', () => {
           expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
             '/api/v1/index/1',
             '1',
-            application.name
+            application.name,
+              null
           )
         })
       })
@@ -329,7 +330,8 @@ describe('the explorer hook', () => {
         expect(mocks.documentApi.create).toHaveBeenCalledTimes(1)
         expect(mocks.documentApi.create).toHaveBeenCalledWith(
           documentToCreate.dataUrl,
-          documentToCreate.data
+          documentToCreate.data,
+            null
         )
       })
       it('should the document be added to the tree', async () => {
