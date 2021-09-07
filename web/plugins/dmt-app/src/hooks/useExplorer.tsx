@@ -351,7 +351,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         dataSourceId: dataSourceId,
       }
     }
-    NotificationManager.warning("Rename feature is not maintained...")
+    NotificationManager.warning('Rename feature is not maintained...')
     // return dmssAPI
     //   .explorerDocumentRename(dataSourceId, renameRequest)
     //   .then((result: any) => {
