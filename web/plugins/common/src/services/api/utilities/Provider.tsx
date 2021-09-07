@@ -8,7 +8,9 @@ const get = (resource: string) => {
 
 const post = (resource: string, model: any, token: string) => {
   return axios
-    .post(`${resource}`, model, {headers: {Authorization: `Bearer ${token}` }})
+    .post(`${resource}`, model, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then(handleResponse)
     .catch((err) => {
       throw new Error(err.response.data.message)
@@ -17,7 +19,9 @@ const post = (resource: string, model: any, token: string) => {
 
 const put = (resource: string, model: any, token: string) => {
   return axios
-    .put(`${resource}`, model, {headers: {Authorization: `Bearer ${token}` }})
+    .put(`${resource}`, model, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then(handleResponse)
     .catch((err) => {
       throw new Error(err)
@@ -26,13 +30,18 @@ const put = (resource: string, model: any, token: string) => {
 
 const patch = (resource: string, model: any, token: string) => {
   return axios
-    .patch(`${resource}`, model, {headers: {Authorization: `Bearer ${token}` }})
+    .patch(`${resource}`, model, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
     .then(handleResponse)
     .catch(handleError)
 }
 
 const remove = (resource: string, token: string) => {
-  return axios.delete(`${resource}`, {headers: {Authorization: `Bearer ${token}` }}).then(handleResponse).catch(handleError)
+  return axios
+    .delete(`${resource}`, { headers: { Authorization: `Bearer ${token}` } })
+    .then(handleResponse)
+    .catch(handleError)
 }
 
 export const apiProvider = {

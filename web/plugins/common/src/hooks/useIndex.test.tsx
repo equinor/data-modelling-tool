@@ -4,15 +4,10 @@ import { IIndex, useIndex } from './useIndex'
 import { mock } from 'jest-mock-extended'
 import { IIndexAPI, IndexNodes, DataSource } from '../services'
 import { NodeType } from '../utils/variables'
-import {AuthProvider} from "../../../../app/src/context/auth/AuthContext";
+import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
 
-
-const wrapper: React.FC = ({
-  children
-}: any) => (
-    <AuthProvider authEnabled={false}>
-        {children}
-    </AuthProvider>
+const wrapper: React.FC = ({ children }: any) => (
+  <AuthProvider authEnabled={false}>{children}</AuthProvider>
 )
 
 const getMocks = () => {
@@ -84,7 +79,7 @@ describe('the useIndex hook', () => {
   beforeEach(async () => {
     mocks = getMocks()
     await act(async () => {
-      response = renderHook(() => useIndex(mocks), {wrapper})
+      response = renderHook(() => useIndex(mocks), { wrapper })
     })
   })
 
@@ -107,12 +102,12 @@ describe('the useIndex hook', () => {
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source1',
         mocks.application.name,
-          null
+        null
       )
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source2',
         mocks.application.name,
-          null
+        null
       )
     })
   })

@@ -8,7 +8,7 @@ import {
   ApplicationContext,
   IIndexAPI,
 } from '@dmt/common'
-import {AuthProvider} from "../../../../../app/src/context/auth/AuthContext";
+import { AuthProvider } from '../../../../../app/src/context/auth/AuthContext'
 
 const wrapper: React.FC = ({
   children,
@@ -16,13 +16,13 @@ const wrapper: React.FC = ({
   dataSources,
   application,
 }: any) => (
-    <AuthProvider authEnabled={false}>
-      <ApplicationContext.Provider value={application}>
-        <IndexProvider indexApi={indexApi} dataSources={dataSources}>
-          {children}
-        </IndexProvider>
-      </ApplicationContext.Provider>
-    </AuthProvider>
+  <AuthProvider authEnabled={false}>
+    <ApplicationContext.Provider value={application}>
+      <IndexProvider indexApi={indexApi} dataSources={dataSources}>
+        {children}
+      </IndexProvider>
+    </ApplicationContext.Provider>
+  </AuthProvider>
 )
 
 describe('the index provider component', () => {
