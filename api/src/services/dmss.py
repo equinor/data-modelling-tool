@@ -15,7 +15,8 @@ def get_access_token() -> Union[str, None]:
         if head_split[0].lower() == "bearer" and len(head_split) == 2:
             return head_split[1]
         raise ValueError("Authorization header malformed. Should be; 'Bearer myAccessTokenString'")
-    else: return ""
+    else:
+        return ""
 
 
 def get_document(fully_qualified_path: str) -> dict:
