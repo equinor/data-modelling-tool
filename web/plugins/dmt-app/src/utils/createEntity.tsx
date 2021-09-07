@@ -7,10 +7,7 @@ import { NotificationManager } from 'react-notifications'
  */
 export function createEntity(type: string) {
   return axios
-    .post(
-      '/api/entity',
-      { name: '', type: type }
-    )
+    .post('/api/entity', { name: '', type: type })
     .then((respose) => {
       return respose.data
     })
