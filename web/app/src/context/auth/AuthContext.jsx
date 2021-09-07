@@ -74,6 +74,6 @@ export const AuthProvider = ({ authEnabled, children }) => {
     return <div>Login in progress, please wait...</div>
   }
   return (
-    <AuthContext.Provider value={{ userData , logOut}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ userData , logOut, token}}>{children}</AuthContext.Provider>
   )
 }
