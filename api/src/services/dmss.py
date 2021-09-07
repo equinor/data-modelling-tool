@@ -15,6 +15,7 @@ def get_access_token() -> Union[str, None]:
         if head_split[0].lower() == "bearer" and len(head_split) == 2:
             return head_split[1]
         raise ValueError("Authorization header malformed. Should be; 'Bearer myAccessTokenString'")
+    else: return ""
 
 
 def get_document(fully_qualified_path: str) -> dict:
@@ -26,8 +27,7 @@ def get_document(fully_qualified_path: str) -> dict:
     # TODO: Update dmss endpoint to handle a singe ID string
     # TODO: Update dmss endpoint to only return the raw document, not the blueprint(?)
     data_source, path = fully_qualified_path.split("/", 1)
-    if Config.AUTH_ENABLED:
-        dmss_api.api_client.configuration.access_token = get_access_token()
+    dmss_api.api_client.configuration.access_token = get_access_token()
     return dmss_api.document_get_by_path(data_source, path=path)["document"]
 
 
@@ -37,8 +37,7 @@ def get_document_by_uid(data_source_id: str, document_id: str, depth: int = 999,
     Used by DocumentService.
     Inject a mock 'get_document_by_uid' in unit unit.
     """
-    if Config.AUTH_ENABLED:
-        dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
+    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
     return dmss_api.document_get_by_id(
         data_source_id, document_id, depth=depth, ui_recipe=ui_recipe, attribute=attribute
     )["document"]
@@ -48,8 +47,7 @@ def get_blueprint(type_ref: str) -> dict:
     """
     Fetches a resolved blueprint from DMSS
     """
-    if Config.AUTH_ENABLED:
-        dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
+    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
     return dmss_api.blueprint_get(type_ref)
 
 
@@ -57,6 +55,5 @@ def get_root_packages(data_source_id: str) -> dict:
     """
     Fetches a resolved blueprint from DMSS
     """
-    if Config.AUTH_ENABLED:
-        dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
+    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
     return dmss_api.package_get(data_source_id)

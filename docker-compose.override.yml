@@ -20,7 +20,6 @@ services:
       ENVIRONMENT: local
       LOGGING_LEVEL: DEBUG
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
-      AUTH_ENABLED: 0
     depends_on:
       - web
     ports:
