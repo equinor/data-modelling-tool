@@ -12,7 +12,6 @@ const handleApiError = (error: any) => {
   })
 }
 
-// todo use this class instead of documentApi.tsx and DataSourceApi.tsx. also, create another wrapper for dmt api.... (indexapi.sx and systemapi.tsx)
 export class DmssAPI implements IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any> {
     return apiProvider.post(url, data, token)
