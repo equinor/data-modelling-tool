@@ -351,21 +351,21 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
         dataSourceId: dataSourceId,
       }
     }
-    NotificationManager.warning('Rename feature is not maintained...')
-    // return dmssAPI
-    //   .explorerDocumentRename(dataSourceId, renameRequest)
-    //   .then((result: any) => {
-    //     closeModal()
-    //     index.models.index.operations
-    //       .add(documentId, nodeUrl)
-    //       .then(() =>
-    //         dashboard.models.layout.operations.refreshByFilter(documentId)
-    //       )
-    //   })
-    //   .catch((error: any) => {
-    //     setErrorMessage(`Could not rename selected document. (${error})`)
-    //     setErrorCounter(errorCounter + 1)
-    //   })
+    NotificationManager.warning('Rename feature is not maintained and can have bugs...')
+    return dmssAPI
+      .explorerDocumentRename(dataSourceId, renameRequest)
+      .then((result: any) => {
+        closeModal()
+        index.models.index.operations
+          .add(documentId, nodeUrl)
+          .then(() =>
+            dashboard.models.layout.operations.refreshByFilter(documentId)
+          )
+      })
+      .catch((error: any) => {
+        setErrorMessage(`Could not rename selected document. (${error})`)
+        setErrorCounter(errorCounter + 1)
+      })
   }
 
   const updateById = async ({
