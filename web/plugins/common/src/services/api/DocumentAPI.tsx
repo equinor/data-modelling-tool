@@ -12,13 +12,13 @@ const handleDocumentApiError = (error: any) => {
 }
 
 export class DocumentAPI implements IDocumentAPI {
-  create(url: string, data: any): Promise<any> {
+  create(url: string, data: any, token: string): Promise<any> {
     /**
      *  TODO: Move create logic away from API and here like:
      *  root package: /add-package
      *  normal documents: /add-to-parent
      */
-    return apiProvider.post(url, data)
+    return apiProvider.post(url, data, token)
   }
 
   addToParent(dataSourceId: string, data: any): Promise<any> {
@@ -92,8 +92,8 @@ export class DocumentAPI implements IDocumentAPI {
       })
   }
 
-  remove(url: string): Promise<any> {
-    return apiProvider.remove(url)
+  remove(url: string, token: string): Promise<any> {
+    return apiProvider.remove(url, token)
   }
 
   update(url: string, data: any): Promise<any> {

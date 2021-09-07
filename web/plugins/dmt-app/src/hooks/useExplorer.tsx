@@ -16,8 +16,9 @@ import {
   IGlobalIndex,
   useGlobalIndex,
 } from '../context/global-index/IndexProvider'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { LayoutComponents } from '../context/dashboard/useLayout'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 interface FetchUrl {
   uid: string
@@ -160,6 +161,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const { closeModal } = useModalContext()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [errorCounter, setErrorCounter] = useState<number>(0)
+  const { token } = useContext(AuthContext)
 
   useEffect(() => {
     if (errorMessage) {
@@ -234,7 +236,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
       documentAPI
-        .create(dataUrl, data)
+        .create(dataUrl, data, token)
         .then((result: any) => {
           closeModal()
           index.models.index.operations.add(result.uid, nodeUrl, true)
@@ -315,7 +317,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
 
   const remove = async ({ nodeId, parent, url }: RemoveProps) => {
     return documentAPI
-      .remove(url)
+      .remove(url, token)
       .then(() => {
         index.models.index.operations
           .remove(nodeId, parent)

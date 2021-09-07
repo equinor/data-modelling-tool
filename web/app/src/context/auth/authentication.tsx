@@ -9,7 +9,7 @@ const authSettings = {
   clientId: process.env.REACT_APP_AUTH_CLIENT_ID || '',
   authorizationEndpoint: process.env.REACT_APP_AUTH_ENDPOINT || '',
   tokenEndpoint: process.env.REACT_APP_TOKEN_ENDPOINT || '',
-  scope: process.env.REACT_APP_AUTH_SCOPE || '',
+  scope: process.env.REACT_APP_AUTH_SCOPE + ' openid' || '', // added openid scope...
   redirectUri: process.env.REACT_APP_AUTH_REDIRECT_URI || '',
   logoutEndpoint: process.env.REACT_APP_LOGOUT_ENDPOINT || '',
 }
@@ -38,6 +38,15 @@ export async function login() {
       `${authSettings.authorizationEndpoint}?${params.toString()}`
     )
   })
+}
+
+export const getlocalStorageAccessToken = (): string | null => {
+  if (
+    window.localStorage.getItem('token') === 'null' ||
+    window.localStorage.getItem('token') === null
+  )
+    return null
+  else return String(window.localStorage.getItem('token')).slice(1, -1) //need to remove first and last value of the string, these values are quotation marks
 }
 
 export const getTokens = (): Promise<any> => {

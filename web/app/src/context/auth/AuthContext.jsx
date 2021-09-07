@@ -1,5 +1,13 @@
 import React, {useEffect, useState} from 'react'
-import {decodeToken, getTokenFromRefreshToken, getTokens, login, logout, tokenExpired} from "./authentication";
+import {
+  decodeToken,
+  getlocalStorageAccessToken,
+  getTokenFromRefreshToken,
+  getTokens,
+  login,
+  logout,
+  tokenExpired
+} from "./authentication";
 //@ts-ignore
 import useLocalStorage from "./../../../../plugins/dmt-app/src/hooks/useLocalStorage";
 export const AuthContext = React.createContext()
@@ -59,10 +67,13 @@ export const AuthProvider = ({ authEnabled, children }) => {
       }
     }
 
-
   },[])
 
+
+  if (!getlocalStorageAccessToken() && authEnabled){
+    return <div>Login in progress, please wait...</div>
+  }
   return (
-    <AuthContext.Provider value={{ userData , logOut}}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ userData , logOut, token}}>{children}</AuthContext.Provider>
   )
 }

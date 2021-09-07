@@ -18,6 +18,7 @@ import {
 } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'
+import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
 
 const wrapper: React.FC = ({
   children,
@@ -25,22 +26,24 @@ const wrapper: React.FC = ({
   dataSourceApi,
   indexApi,
 }: any) => (
-  <DashboardProvider dataSourceApi={dataSourceApi}>
-    <DashboardConsumer>
-      {(dashboard: IDashboard) => {
-        return (
-          <ApplicationContext.Provider value={application}>
-            <IndexProvider
-              dataSources={dashboard.models.dataSources.models.dataSources}
-              indexApi={indexApi}
-            >
-              {children}
-            </IndexProvider>
-          </ApplicationContext.Provider>
-        )
-      }}
-    </DashboardConsumer>
-  </DashboardProvider>
+  <AuthProvider authEnabled={false}>
+    <DashboardProvider dataSourceApi={dataSourceApi}>
+      <DashboardConsumer>
+        {(dashboard: IDashboard) => {
+          return (
+            <ApplicationContext.Provider value={application}>
+              <IndexProvider
+                dataSources={dashboard.models.dataSources.models.dataSources}
+                indexApi={indexApi}
+              >
+                {children}
+              </IndexProvider>
+            </ApplicationContext.Provider>
+          )
+        }}
+      </DashboardConsumer>
+    </DashboardProvider>
+  </AuthProvider>
 )
 
 const getMocks = () => {
@@ -215,7 +218,8 @@ describe('the explorer hook', () => {
           expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
             '/api/v1/index/1',
             '1',
-            application.name
+            application.name,
+            null
           )
         })
       })
@@ -326,7 +330,8 @@ describe('the explorer hook', () => {
         expect(mocks.documentApi.create).toHaveBeenCalledTimes(1)
         expect(mocks.documentApi.create).toHaveBeenCalledWith(
           documentToCreate.dataUrl,
-          documentToCreate.data
+          documentToCreate.data,
+          null
         )
       })
       it('should the document be added to the tree', async () => {

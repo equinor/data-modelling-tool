@@ -5,20 +5,26 @@ import axios from 'axios'
 export class IndexAPI implements IIndexAPI {
   async getIndexByDataSource(
     dataSourceId: string,
-    application: string
+    application: string,
+    token: string
   ): Promise<IndexNodes> {
     return axios
-      .get(`/api/v4/index/${dataSourceId}?APPLICATION=${application}`)
+      .get(`/api/v4/index/${dataSourceId}?APPLICATION=${application}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(handleResponse)
   }
 
   async getIndexByDocument(
     nodeUrl: string,
     documentId: string,
-    application: string
+    application: string,
+    token: string
   ): Promise<IndexNodes> {
     return axios
-      .get(`${nodeUrl}/${documentId}?APPLICATION=${application}`)
+      .get(`${nodeUrl}/${documentId}?APPLICATION=${application}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(handleResponse)
   }
 }
