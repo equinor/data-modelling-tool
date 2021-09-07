@@ -1,6 +1,5 @@
 import axios from 'axios'
 import { handleResponse, handleError } from './Response'
-//import {getlocalStorageAccessToken} from "../../../../../../app/src/context/auth/authentication";
 
 const get = (resource: string) => {
   return axios.get(`${resource}`).then(handleResponse).catch(handleError)
