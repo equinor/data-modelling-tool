@@ -4,6 +4,17 @@ import { IIndex, useIndex } from './useIndex'
 import { mock } from 'jest-mock-extended'
 import { IIndexAPI, IndexNodes, DataSource } from '../services'
 import { NodeType } from '../utils/variables'
+import {AuthProvider} from "../../../../app/src/context/auth/AuthContext";
+
+
+const wrapper: React.FC = ({
+  children
+}: any) => (
+    <AuthProvider authEnabled={false}>
+        {children}
+    </AuthProvider>
+)
+
 const getMocks = () => {
   const dataSources: DataSource[] = [
     {
@@ -73,7 +84,7 @@ describe('the useIndex hook', () => {
   beforeEach(async () => {
     mocks = getMocks()
     await act(async () => {
-      response = renderHook(() => useIndex(mocks))
+      response = renderHook(() => useIndex(mocks), {wrapper})
     })
   })
 
@@ -95,11 +106,13 @@ describe('the useIndex hook', () => {
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledTimes(2)
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source1',
-        mocks.application.name
+        mocks.application.name,
+          null
       )
       expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
         'source2',
-        mocks.application.name
+        mocks.application.name,
+          null
       )
     })
   })
