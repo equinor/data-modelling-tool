@@ -4,7 +4,7 @@ import { BlueprintEnum } from '../../utils/variables'
 import styled from 'styled-components'
 import {
   ApplicationContext,
-  DataSourceAPI,
+  DmssAPI,
   IIndex,
   Modal,
   Tree,
@@ -47,8 +47,8 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   const [destination, setDestination] = useState<string>(formData)
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  const dataSourceAPI = new DataSourceAPI()
-  const dataSources: IDataSources = useDataSources(dataSourceAPI)
+  const dmssAPI = new DmssAPI()
+  const dataSources: IDataSources = useDataSources(dmssAPI)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,

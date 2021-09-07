@@ -11,7 +11,7 @@ import { mock } from 'jest-mock-extended'
 import {
   NodeType,
   DataSources,
-  IDataSourceAPI,
+  IDmssAPI,
   IIndexAPI,
   IndexNodes,
   IDocumentAPI,
@@ -23,11 +23,11 @@ import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
 const wrapper: React.FC = ({
   children,
   application,
-  dataSourceApi,
+  dmssAPI,
   indexApi,
 }: any) => (
   <AuthProvider authEnabled={false}>
-    <DashboardProvider dataSourceApi={dataSourceApi}>
+    <DashboardProvider dmssAPI={dmssAPI}>
       <DashboardConsumer>
         {(dashboard: IDashboard) => {
           return (
@@ -47,14 +47,16 @@ const wrapper: React.FC = ({
 )
 
 const getMocks = () => {
-  const dataSourceApi = mock<IDataSourceAPI>()
+  const dmssAPI = mock<IDmssAPI>()
   const dataSources: DataSources = [
     {
       id: 'localhost',
       name: 'localhost',
     },
   ]
-  dataSourceApi.getAll.mockImplementation(() => Promise.resolve(dataSources))
+  dmssAPI.getAllDataSources.mockImplementation(() =>
+    Promise.resolve(dataSources)
+  )
 
   const indexApi = mock<IIndexAPI>()
   const indexNodes: IndexNodes = {
@@ -127,7 +129,7 @@ const getMocks = () => {
     },
   }
 
-  return { dataSourceApi, indexApi, layoutMock, documentApi }
+  return { dmssAPI, indexApi, layoutMock, documentApi }
 }
 
 describe('the explorer hook', () => {

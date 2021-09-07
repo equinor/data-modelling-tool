@@ -8,7 +8,7 @@ import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
 import {
-  DataSourceAPI,
+  DmssAPI,
   BlueprintPicker,
   DataSources,
   DocumentAPI,
@@ -19,7 +19,7 @@ import useLocalStorage from '../hooks/useLocalStorage'
 
 const documentAPI = new DocumentAPI()
 
-const dataSourceAPI = new DataSourceAPI()
+const dmssAPI = new DmssAPI()
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
 
@@ -433,8 +433,8 @@ export default ({ settings }: any) => {
   const [dataSources, setDataSources] = useState<DataSources>([])
 
   useEffect(() => {
-    dataSourceAPI
-      .getAll()
+    dmssAPI
+      .getAllDataSources()
       .then((dataSources: DataSources) => {
         setDataSources(dataSources)
       })

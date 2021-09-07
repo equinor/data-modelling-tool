@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext } from 'react'
 import { ILayout, useLayout } from './useLayout'
-import { IDataSourceAPI, useDataSources, IDataSources } from '@dmt/common'
+import { IDmssAPI, useDataSources, IDataSources } from '@dmt/common'
 
 export interface IModels {
   layout: ILayout
@@ -29,16 +29,13 @@ export const useDashboard = () => {
 }
 
 interface DashboardProviderProps {
-  dataSourceApi: IDataSourceAPI
+  dmssAPI: IDmssAPI
   children?: ReactNode
 }
 
-const DashboardProvider = ({
-  dataSourceApi,
-  children,
-}: DashboardProviderProps) => {
+const DashboardProvider = ({ dmssAPI, children }: DashboardProviderProps) => {
   const layout: ILayout = useLayout()
-  const dataSources: IDataSources = useDataSources(dataSourceApi)
+  const dataSources: IDataSources = useDataSources(dmssAPI)
 
   const value: IDashboard = {
     models: {
