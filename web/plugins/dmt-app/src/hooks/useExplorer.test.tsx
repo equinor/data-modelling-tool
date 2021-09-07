@@ -83,7 +83,6 @@ const getMocks = () => {
   indexApi.getIndexByDataSource.mockReturnValue(Promise.resolve(indexNodes))
   indexApi.getIndexByDocument.mockReturnValue(Promise.resolve(indexNodes))
 
-
   class Item {
     id: string
     children: Item[]
@@ -437,7 +436,9 @@ describe('the explorer hook', () => {
     describe('and dmssAPI returns a resolved promise', () => {
       beforeEach(async () => {
         await act(async () => {
-          mocks.dmssAPI.removeDocument.mockImplementation(() => Promise.resolve())
+          mocks.dmssAPI.removeDocument.mockImplementation(() =>
+            Promise.resolve()
+          )
           response.result.current.remove({
             nodeId: '2',
             parent: '',

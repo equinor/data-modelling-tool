@@ -445,7 +445,11 @@ export default ({ settings }: any) => {
     if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
     dmssAPI
-      .searchDocuments(searchSettings.dataSource, query, searchSettings.sortByAttribute)
+      .searchDocuments(
+        searchSettings.dataSource,
+        query,
+        searchSettings.sortByAttribute
+      )
       .then((result: any) => {
         setQueryError('')
         let resultList = Object.values(result)
