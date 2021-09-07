@@ -70,7 +70,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
   },[])
 
 
-  if (!getlocalStorageAccessToken()){
+  if (!getlocalStorageAccessToken() && authEnabled){
     return <div>Login in progress, please wait...</div>
   }
   return (
