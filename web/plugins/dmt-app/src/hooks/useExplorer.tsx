@@ -16,9 +16,9 @@ import {
   IGlobalIndex,
   useGlobalIndex,
 } from '../context/global-index/IndexProvider'
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { LayoutComponents } from '../context/dashboard/useLayout'
-import useLocalStorage from "./useLocalStorage";
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 interface FetchUrl {
   uid: string
@@ -161,7 +161,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   const { closeModal } = useModalContext()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [errorCounter, setErrorCounter] = useState<number>(0)
-  const [token, setToken] = useLocalStorage("token", null)
+  const { token } = useContext(AuthContext)
 
   useEffect(() => {
     if (errorMessage) {
