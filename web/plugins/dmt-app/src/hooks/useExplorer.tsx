@@ -317,7 +317,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
 
   const remove = async ({ nodeId, parent, url }: RemoveProps) => {
     return documentAPI
-      .remove(url)
+      .remove(url, token)
       .then(() => {
         index.models.index.operations
           .remove(nodeId, parent)

@@ -92,8 +92,8 @@ export class DocumentAPI implements IDocumentAPI {
       })
   }
 
-  remove(url: string): Promise<any> {
-    return apiProvider.remove(url)
+  remove(url: string, token: string): Promise<any> {
+    return apiProvider.remove(url, token)
   }
 
   update(url: string, data: any): Promise<any> {
