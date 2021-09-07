@@ -5,12 +5,7 @@ import {
 import { useModalContext } from '../context/modal/ModalContext'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import {
-  BlueprintEnum,
-  DmssAPI,
-  IDmssAPI,
-  Reference,
-} from '@dmt/common'
+import { BlueprintEnum, DmssAPI, IDmssAPI, Reference } from '@dmt/common'
 
 import {
   IGlobalIndex,
