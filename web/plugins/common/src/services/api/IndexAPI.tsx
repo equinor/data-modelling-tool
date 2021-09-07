@@ -9,7 +9,9 @@ export class IndexAPI implements IIndexAPI {
     token: string
   ): Promise<IndexNodes> {
     return axios
-      .get(`/api/v4/index/${dataSourceId}?APPLICATION=${application}`, {headers: {Authorization: `Bearer ${token}` }})
+      .get(`/api/v4/index/${dataSourceId}?APPLICATION=${application}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(handleResponse)
   }
 
@@ -20,7 +22,9 @@ export class IndexAPI implements IIndexAPI {
     token: string
   ): Promise<IndexNodes> {
     return axios
-      .get(`${nodeUrl}/${documentId}?APPLICATION=${application}`, {headers: {Authorization: `Bearer ${token}` }})
+      .get(`${nodeUrl}/${documentId}?APPLICATION=${application}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      })
       .then(handleResponse)
   }
 }
