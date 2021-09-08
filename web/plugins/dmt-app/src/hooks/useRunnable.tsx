@@ -1,10 +1,10 @@
-import { dmssApi } from '@dmt/common'
 import Actions from '../../../../app/src/actions'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { createEntity } from '../utils/createEntity'
 import { Entity } from '../domain/types'
 import { IUseExplorer } from './useExplorer'
+import { DmssAPI } from '@dmt/common'
 
 export enum ActionTypes {
   separateResultFile = 'separateResultFile',
@@ -47,6 +47,8 @@ export type ActionProps = {
   explorer?: IUseExplorer
 }
 
+const dmssAPI = new DmssAPI()
+
 export type Method = (props: ActionProps) => any
 
 const getMethod = (methodToRun: string): Method => {
@@ -64,20 +66,27 @@ const getMethod = (methodToRun: string): Method => {
 const getInput = async (
   dataSourceId: string,
   documentId: string,
-  path: string
+  path: string,
+  token: string
 ) => {
   const [id, attribute] = documentId.split('.', 2)
-  const requestParameters = {
-    dataSourceId,
-    documentId: id,
-  }
+  const result: any = null
   if (attribute) {
     // Use attribute if the document is contained in another document
-    // @ts-ignore
-    requestParameters['attribute'] = attribute
+    const result = await dmssAPI.getDocumentById(
+      dataSourceId,
+      documentId,
+      token,
+      attribute
+    ) //dmssAPI.documentGetById(requestParameters)
+  } else {
+    const result = await dmssAPI.getDocumentById(
+      dataSourceId,
+      documentId,
+      token
+    ) //dmssAPI.documentGetById(requestParameters)
   }
 
-  const result = await dmssApi.documentGetById(requestParameters)
   const document = result.document
 
   const input: Input = {
@@ -126,10 +135,11 @@ export default function useRunnable({ explorer }: any) {
     documentId: string,
     path: string,
     methodToRun: string,
-    parentId: string
+    parentId: string,
+    token: string
   ) => {
     const method: Method = getMethod(methodToRun)
-    const input: Input = await getInput(dataSourceId, documentId, path)
+    const input: Input = await getInput(dataSourceId, documentId, path, token)
     const output: Output = {
       blueprint: input.blueprint,
       entity: input.entity,
@@ -156,10 +166,11 @@ export default function useRunnable({ explorer }: any) {
     path: string,
     data: any,
     outputType: string,
-    methodToRun: string
+    methodToRun: string,
+    token: string
   ) => {
     const method: Method = getMethod(methodToRun)
-    const input: Input = await getInput(dataSourceId, documentId, path)
+    const input: Input = await getInput(dataSourceId, documentId, path, token)
 
     const [
       destinationDataSourceId,

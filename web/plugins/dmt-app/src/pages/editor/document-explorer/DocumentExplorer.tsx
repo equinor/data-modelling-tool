@@ -27,11 +27,13 @@ import {
 import { getUIPlugin } from '@dmt/core-plugins'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 export default () => {
   const index: IGlobalIndex = useGlobalIndex()
   const explorer = useExplorer({})
   const { openModal } = useModalContext()
   const { runAndSaveToNewDocument } = useRunnable({ explorer })
+  const { token } = useContext(AuthContext)
   const application = useContext(ApplicationContext)
   const handleToggle = (props: any) => {
     explorer.toggle({
@@ -168,7 +170,8 @@ export default () => {
                 node.path,
                 formData,
                 data.output,
-                data.method
+                data.method,
+                token
               )
             }
             const separateResultFileProps = {

@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import Prompt from '../../../components/Prompt'
 import useRunnable from '../../../hooks/useRunnable'
 import useExplorer, {
@@ -12,6 +12,7 @@ import {
   Reference,
   OverrideTypeButton,
 } from '@dmt/common'
+import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',
@@ -323,14 +324,15 @@ export const InsertReference = (props: IInsertReferenceProps) => {
 export const SaveToExistingDocument = (props: any) => {
   const { node, action, explorer } = props
   const { runAndSaveToExistingDocument } = useRunnable({ explorer })
-
+  const { token } = useContext(AuthContext)
   const handleRun = () => {
     runAndSaveToExistingDocument(
       node.nodeData.meta.dataSource,
       node.nodeData.nodeId,
       node.path,
       action.method,
-      node.parent
+      node.parent,
+      token
     )
   }
 
