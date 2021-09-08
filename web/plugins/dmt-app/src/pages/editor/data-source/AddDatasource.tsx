@@ -1,13 +1,15 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { FaPlus } from 'react-icons/fa'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
-import { dmssApi, Button } from '@dmt/common'
+import { DmssAPI, Button } from '@dmt/common'
 import { useModalContext } from '../../../context/modal/ModalContext'
 import { getUIPlugin } from '@dmt/core-plugins'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
+import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 
+const dmssAPI = new DmssAPI()
 const constructType = (selectedDatasourceType: string) => {
   let template = ''
 
@@ -25,16 +27,14 @@ const AddDataSourceComponent = () => {
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
     'mongo-db'
   )
+  const { token } = useContext(AuthContext)
 
   const ExternalPlugin = getUIPlugin('default-form')
 
   const handleOnSubmit = (data: any) => {
     data.type = selectedDatasourceType
-    dmssApi
-      .dataSourceSave({
-        dataSourceId: data.name,
-        dataSourceRequest: data,
-      })
+    dmssAPI
+      .saveDataSource(data.name, data, token)
       .then(() => {
         NotificationManager.success(`Created datasource ${data.name}`)
         // @todo fix when endpoint is ready.

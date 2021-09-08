@@ -184,6 +184,15 @@ export class DmssAPI implements IDmssAPI {
       })
   }
 
+  saveDataSource(dataSourceId: string, data: any, token: string): Promise<any> {
+    this.token = token
+    return this.generatedDmssApi
+      .dataSourceSave({ dataSourceId, dataSourceRequest: data })
+      .catch((error: any) => {
+        return handleApiError(error)
+      })
+  }
+
   getAllDataSources(token: string): Promise<DataSources> {
     this.token = token
     return this.generatedDmssApi

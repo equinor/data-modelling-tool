@@ -64,6 +64,8 @@ export interface IDmssAPI {
     token: string
   ): Promise<any>
 
+  saveDataSource(dataSourceId: string, data: any, token: string): Promise<any>
+
   removeDocumentReference(
     dataSourceId: string,
     documentDottedId: string,
