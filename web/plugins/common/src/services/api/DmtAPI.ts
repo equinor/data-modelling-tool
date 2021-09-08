@@ -37,6 +37,26 @@ export class DmtAPI implements IDmtAPI {
   async postSystemSettings(application: string, data: any) {
     return axios.post(`/api/system/settings?APPLICATION=${application}`, data)
   }
+
+  async createEntity(type: string, token: string) {
+    return axios
+      .post(
+        '/api/entity',
+        { name: '', type: type },
+        {
+          headers: { Authorization: `Bearer ${token}` },
+        }
+      )
+      .then((respose) => {
+        return respose.data
+      })
+    // .catch((error) => {
+    //   //NotificationManager.error(`failed to create entity from: ${type}`)
+    //   console.error(error)
+    // })
+  }
+
+  //todo - display error if not authenticated / requests fails...
 }
 
 export default DmtAPI

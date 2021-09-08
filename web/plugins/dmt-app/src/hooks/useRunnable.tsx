@@ -1,10 +1,9 @@
 import Actions from '../../../../app/src/actions'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { createEntity } from '../utils/createEntity'
 import { Entity } from '../domain/types'
 import { IUseExplorer } from './useExplorer'
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI, DmtAPI } from '@dmt/common'
 
 export enum ActionTypes {
   separateResultFile = 'separateResultFile',
@@ -48,6 +47,7 @@ export type ActionProps = {
 }
 
 const dmssAPI = new DmssAPI()
+const dmtAPI = new DmtAPI()
 
 export type Method = (props: ActionProps) => any
 
@@ -70,21 +70,17 @@ const getInput = async (
   token: string
 ) => {
   const [id, attribute] = documentId.split('.', 2)
-  const result: any = null
+  let result: any = null
   if (attribute) {
     // Use attribute if the document is contained in another document
-    const result = await dmssAPI.getDocumentById(
+    result = await dmssAPI.getDocumentById(
       dataSourceId,
       documentId,
       token,
       attribute
-    ) //dmssAPI.documentGetById(requestParameters)
+    )
   } else {
-    const result = await dmssAPI.getDocumentById(
-      dataSourceId,
-      documentId,
-      token
-    ) //dmssAPI.documentGetById(requestParameters)
+    result = await dmssAPI.getDocumentById(dataSourceId, documentId, token)
   }
 
   const document = result.document
@@ -150,7 +146,7 @@ export default function useRunnable({ explorer }: any) {
       // @ts-ignore
       parentId: parentId,
     }
-
+    const createEntity = (type: string) => dmtAPI.createEntity(type, token)
     method({
       input,
       output,
@@ -206,7 +202,7 @@ export default function useRunnable({ explorer }: any) {
           // @ts-ignore
           id: result.uid,
         }
-
+        const createEntity = dmtAPI.createEntity
         method({
           input,
           output,
