@@ -13,7 +13,7 @@ const handleApiError = (error: any) => {
 
 export class DmssAPI implements IDmssAPI {
   token = ''
-  generatedDmssApi
+  generatedDmssApi: DefaultApi
   getBearerToken = () => {
     return 'Bearer ' + this.token
   }
@@ -184,7 +184,7 @@ export class DmssAPI implements IDmssAPI {
     this.token = token
     return this.generatedDmssApi
       .dataSourceGetAll()
-      .then((value) => {
+      .then((value: any) => {
         return JSON.parse(value)
       })
       .catch((error: any) => {

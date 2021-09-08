@@ -3,11 +3,14 @@ import { act, renderHook } from '@testing-library/react-hooks'
 import DashboardProvider, { useDashboard } from './DashboardProvider'
 import { ApplicationContext, DataSources, IDmssAPI } from '@dmt/common'
 import { mock } from 'jest-mock-extended'
+import { AuthProvider } from '../../../../../app/src/context/auth/AuthContext'
 
 const wrapper: React.FC = ({ children, application, api }: any) => (
-  <ApplicationContext.Provider value={application}>
-    <DashboardProvider dmssAPI={api}>{children}</DashboardProvider>
-  </ApplicationContext.Provider>
+  <AuthProvider authEnabled={false}>
+    <ApplicationContext.Provider value={application}>
+      <DashboardProvider dmssAPI={api}>{children}</DashboardProvider>
+    </ApplicationContext.Provider>
+  </AuthProvider>
 )
 
 describe('the dashboard provider component', () => {
