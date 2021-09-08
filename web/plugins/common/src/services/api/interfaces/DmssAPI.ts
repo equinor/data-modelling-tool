@@ -13,48 +13,62 @@ export interface IDmssAPI {
 
   removeDocument(url: string, token: string): Promise<any>
 
-  updateDocument(url: string, data: any): Promise<any>
+  updateDocument(url: string, data: any, token: string): Promise<any>
 
   explorerDocumentRename(
     dataSourceId: string,
-    renameRequest: RenameRequest
+    renameRequest: RenameRequest,
+    token: string
   ): Promise<any>
 
   updateDocumentById(
     dataSourceId: string,
     documentId: string,
     attribute: string,
-    data: any
+    data: any,
+    token: string
   ): Promise<any>
 
   searchDocuments(
     dataSourceId: string,
     query: any,
+    token: string,
     sortByAttribute?: string
   ): Promise<any>
 
-  getDocumentByPath(dataSourceId: string, path: string): Promise<any>
+  getDocumentByPath(
+    dataSourceId: string,
+    path: string,
+    token: string
+  ): Promise<any>
 
-  getBlueprint(typeRef: string): Promise<any>
+  getBlueprint(typeRef: string, token: string): Promise<any>
 
   getDocumentById(
     dataSourceId: string,
     documentId: string,
+    token: string,
     attribute?: string
   ): Promise<any>
 
-  addDocumentToParent(dataSourceId: string, data: any): Promise<any>
+  addDocumentToParent(
+    dataSourceId: string,
+    data: any,
+    token: string
+  ): Promise<any>
 
   insertDocumentReference(
     dataSourceId: string,
     documentDottedId: string,
-    reference: Reference
+    reference: Reference,
+    token: string
   ): Promise<any>
 
   removeDocumentReference(
     dataSourceId: string,
-    documentDottedId: string
+    documentDottedId: string,
+    token: string
   ): Promise<any>
 
-  getAllDataSources(): Promise<DataSources>
+  getAllDataSources(token: string): Promise<DataSources>
 }

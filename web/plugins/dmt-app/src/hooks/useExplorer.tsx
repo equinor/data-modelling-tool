@@ -183,7 +183,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const get = ({ dataSourceId, documentId, attribute }: GetProps) => {
-    return dmssAPI.getDocumentById(dataSourceId, documentId, attribute)
+    return dmssAPI.getDocumentById(dataSourceId, documentId, token, attribute)
   }
 
   // TODO: This cache does not really work, as a new instance of useExplorer is created in every form
@@ -193,7 +193,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       console.log(`Found ${typeRef} in cache!`)
       return blueprintCache[typeRef]
     } else {
-      const blueprint = dmssAPI.getBlueprint(typeRef)
+      const blueprint = dmssAPI.getBlueprint(typeRef, token)
       //  Update cache
       setBlueprintCache({ ...blueprintCache, [typeRef]: blueprint })
       return blueprint
@@ -201,7 +201,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const getByPath = ({ dataSourceId, path }: GetByPathProps) => {
-    return dmssAPI.getDocumentByPath(dataSourceId, path)
+    return dmssAPI.getDocumentByPath(dataSourceId, path, token)
   }
 
   const toggle = ({ nodeId }: ToggleProps) => {
@@ -248,7 +248,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     reference,
   }: InsertReferenceProps) => {
     dmssAPI
-      .insertDocumentReference(dataSourceId, documentDottedId, reference)
+      .insertDocumentReference(dataSourceId, documentDottedId, reference, token)
       .then(() => {
         closeModal()
         const rootDocumentId = documentDottedId.split('.', 1)[0]
@@ -274,7 +274,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     documentDottedId,
   }: RemoveReferenceProps) => {
     dmssAPI
-      .removeDocumentReference(dataSourceId, documentDottedId)
+      .removeDocumentReference(dataSourceId, documentDottedId, token)
       .then(() => {
         const rootDocumentId = documentDottedId.split('.', 1)[0]
         index.models.index.operations
@@ -296,7 +296,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }: AddToParentProps) => {
     if (validate(data)) {
       return dmssAPI
-        .addDocumentToParent(dataSourceId, data)
+        .addDocumentToParent(dataSourceId, data, token)
         .then((result: any) => {
           closeModal()
           const res = JSON.parse(result)
@@ -355,7 +355,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       'Rename feature is not maintained and can have bugs...'
     )
     return dmssAPI
-      .explorerDocumentRename(dataSourceId, renameRequest)
+      .explorerDocumentRename(dataSourceId, renameRequest, token)
       .then((result: any) => {
         closeModal()
         index.models.index.operations
@@ -378,7 +378,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     nodeUrl,
   }: UpdateByIdProps) => {
     return dmssAPI
-      .updateDocumentById(dataSourceId, documentId, attribute, data)
+      .updateDocumentById(dataSourceId, documentId, attribute, data, token)
       .then((result: any) => {
         closeModal()
         if (nodeUrl) {

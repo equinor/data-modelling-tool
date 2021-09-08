@@ -1,11 +1,13 @@
-import { useEffect, useState } from 'react'
+import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 export const useDocument = (dataSourceId: string, documentId: string) => {
   const [document, setDocument] = useState(null)
   const [isLoading, setLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   const dmssAPI = new DmssAPI()
+  const { token } = useContext(AuthContext)
 
   useEffect(() => {
     setLoading(true)
@@ -13,7 +15,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
     const id = `${target.shift()}`
     const attribute = target.join('.')
     dmssAPI
-      .getDocumentById(dataSourceId, id, attribute)
+      .getDocumentById(dataSourceId, id, attribute, token)
       .then((document) => {
         console.log(document)
         setDocument(document.document)

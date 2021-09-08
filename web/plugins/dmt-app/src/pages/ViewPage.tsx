@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
@@ -11,6 +11,7 @@ import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 import { createEntity } from '../utils/createEntity'
 import { SimplifiedTree } from '../components/SimplifiedTree'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 const Group = styled.div`
   display: flex;
@@ -26,6 +27,7 @@ const dmssAPI = new DmssAPI()
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
+  const { token } = useContext(AuthContext)
   return (
     <ExternalPlugin
       dataSourceId={dataSourceId}
@@ -33,7 +35,7 @@ const View = (props: any) => {
       uiRecipe={uiRecipe}
       uiRecipeName={uiRecipe.name}
       document={document}
-      fetchBlueprint={(type: string) => dmssAPI.getBlueprint(type)}
+      fetchBlueprint={(type: string) => dmssAPI.getBlueprint(type, token)}
       createDocument={createEntity}
     />
   )
@@ -78,10 +80,11 @@ export default () => {
   const [document, setDocument] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [error, setError] = useState(null)
+  const { token } = useContext(AuthContext)
 
   useEffect(() => {
     dmssAPI
-      .getDocumentById(data_source, entity_id)
+      .getDocumentById(data_source, entity_id, token)
       .then((result) => {
         setBlueprint(result.blueprint)
         setDocument(result.document)

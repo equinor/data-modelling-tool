@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -15,6 +15,7 @@ import {
   ApplicationContext,
 } from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 const dmssAPI = new DmssAPI()
 
@@ -150,6 +151,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
   const [expanded, setExpanded] = useState<boolean>(value)
   const [nestedAttributes, setNestedAttributes] = useState([])
+  const { token } = useContext(AuthContext)
 
   // Pass nested object to callback from parent
   function nestedOnChange(filterChange: any) {
@@ -163,7 +165,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
-        .getBlueprint(attribute.getAttributeType())
+        .getBlueprint(attribute.getAttributeType(), token)
         .then((result) => {
           setNestedAttributes(result.attributes)
         })
@@ -229,7 +231,7 @@ function FilterContainer({
   resetSearchSettings,
 }) {
   const [attributes, setAttributes] = useState<Array<any>>([])
-
+  const { token } = useContext(AuthContext)
   function onChange(filterChange: any) {
     setSearchFilter({ ...searchFilter, ...filterChange })
   }
@@ -238,7 +240,7 @@ function FilterContainer({
   useEffect(() => {
     if (searchFilter?.type) {
       dmssAPI
-        .getBlueprint(searchFilter.type)
+        .getBlueprint(searchFilter.type, token)
         .then((result) => {
           setAttributes(result.attributes)
         })
@@ -428,10 +430,10 @@ export default ({ settings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
-
+  const { token } = useContext(AuthContext)
   useEffect(() => {
     dmssAPI
-      .getAllDataSources()
+      .getAllDataSources(token)
       .then((dataSources: DataSources) => {
         setDataSources(dataSources)
       })
@@ -448,6 +450,7 @@ export default ({ settings }: any) => {
       .searchDocuments(
         searchSettings.dataSource,
         query,
+        token,
         searchSettings.sortByAttribute
       )
       .then((result: any) => {
