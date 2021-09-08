@@ -4,10 +4,10 @@ import { getlocalStorageAccessToken } from '../../../../../../app/src/context/au
 const getBearerToken = () => {
   return 'Bearer ' + getlocalStorageAccessToken()
 }
-
-//@ts-ignore
-const DMSSConfiguration = new Configuration({
-  basePath: '/dmss',
-  accessToken: getBearerToken,
-})
-export let dmssApi = new DefaultApi(DMSSConfiguration)
+//
+// //@ts-ignore
+// const DMSSConfiguration = new Configuration({
+//   basePath: '/dmss',
+//   accessToken: getBearerToken,
+// })
+// export let dmssApi = new DefaultApi(DMSSConfiguration)

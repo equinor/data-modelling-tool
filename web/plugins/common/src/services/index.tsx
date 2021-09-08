@@ -6,5 +6,3 @@ export * from './api/DmtAPI'
 export * from './api/configs/gen/models/index'
 export * from './api/interfaces/DmtAPI'
 
-// This should be removed
-export { dmssApi } from './api/configs/GeneratedDmssAPI'
