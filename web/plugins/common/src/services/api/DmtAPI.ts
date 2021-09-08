@@ -50,13 +50,10 @@ export class DmtAPI implements IDmtAPI {
       .then((respose) => {
         return respose.data
       })
-    // .catch((error) => {
-    //   //NotificationManager.error(`failed to create entity from: ${type}`)
-    //   console.error(error)
-    // })
+      .catch((error) => {
+        console.error(error)
+      })
   }
-
-  //todo - display error if not authenticated / requests fails...
 }
 
 export default DmtAPI

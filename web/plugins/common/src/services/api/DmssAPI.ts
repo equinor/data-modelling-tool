@@ -152,11 +152,15 @@ export class DmssAPI implements IDmssAPI {
     sortByAttribute?: string
   ): Promise<any> {
     this.token = token
-    return this.generatedDmssApi.search({
-      dataSourceId: dataSourceId,
-      body: query,
-      sortByAttribute: sortByAttribute,
-    })
+    return this.generatedDmssApi
+      .search({
+        dataSourceId: dataSourceId,
+        body: query,
+        sortByAttribute: sortByAttribute,
+      })
+      .catch((error: any) => {
+        return handleApiError(error)
+      })
   }
 
   updateDocumentById(
