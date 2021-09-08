@@ -1,8 +1,8 @@
-import { IIndexAPI, IndexNodes } from './interfaces/IndexAPI'
+import { IDmtAPI, IndexNodes } from './interfaces/DmtAPI'
 import { handleResponse } from './utilities/Response'
 import axios from 'axios'
 
-export class IndexAPI implements IIndexAPI {
+export class DmtAPI implements IDmtAPI {
   async getIndexByDataSource(
     dataSourceId: string,
     application: string,
@@ -27,6 +27,16 @@ export class IndexAPI implements IIndexAPI {
       })
       .then(handleResponse)
   }
+
+  async getSystemSettings(application?: string) {
+    if (application)
+      return axios.get(`api/system/settings?APPLICATION=${application}`)
+    return axios.get(`/api/system/settings`)
+  }
+
+  async postSystemSettings(application: string, data: any) {
+    return axios.post(`/api/system/settings?APPLICATION=${application}`, data)
+  }
 }
 
-export default IndexAPI
+export default DmtAPI

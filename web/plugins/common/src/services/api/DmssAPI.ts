@@ -1,5 +1,5 @@
 import apiProvider from './utilities/Provider'
-import { dmssApi } from './configs/StorageServiceAPI'
+import { dmssApi } from './configs/GeneratedDmssAPI'
 import { Reference, RenameRequest } from './configs/gen'
 
 import { IDmssAPI, DataSources } from './interfaces/DmssAPI'

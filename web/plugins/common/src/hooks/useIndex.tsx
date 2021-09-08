@@ -1,13 +1,13 @@
 import { useContext, useEffect, useState } from 'react'
 import { Tree, TreeNodeData } from '../components/Tree'
-import { IIndexAPI, IndexNode, IndexNodes } from '../services'
+import { IDmtAPI, IndexNode, IndexNodes } from '../services'
 import { ITree, useTree } from '../components/Tree'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 // @ts-ignore
 import values from 'lodash/values'
 import { DataSource } from '../services'
-import IndexAPI from '../services/api/IndexAPI'
+import DmtApi from '../services/api/DmtAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
 //@ts-ignore
 import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
@@ -32,11 +32,11 @@ export interface IIndex {
 export interface IndexProps {
   dataSources: DataSource[]
   application: any
-  indexApi?: IIndexAPI
+  dmtAPI?: IDmtAPI
 }
 
 export const useIndex = (props: IndexProps): IIndex => {
-  const { dataSources, application, indexApi = new IndexAPI() } = props
+  const { dataSources, application, dmtAPI = new DmtApi() } = props
   const [dataSourceWarning, setDataSourceWarning] = useState<string>('')
   const [index, setIndex] = useState<Tree>({})
   const { token } = useContext(AuthContext)
@@ -68,7 +68,7 @@ export const useIndex = (props: IndexProps): IIndex => {
           application?.displayAllDataSources ||
           application.visibleDataSources === undefined
         ) {
-          return indexApi
+          return dmtAPI
             .getIndexByDataSource(dataSource.id, application.name, token)
             .then((res) => {
               indexes.push(res)
@@ -105,7 +105,7 @@ export const useIndex = (props: IndexProps): IIndex => {
   ) => {
     try {
       tree.operations.setIsLoading(documentId, true)
-      const result = await indexApi.getIndexByDocument(
+      const result = await dmtAPI.getIndexByDocument(
         nodeUrl,
         documentId,
         application.name,

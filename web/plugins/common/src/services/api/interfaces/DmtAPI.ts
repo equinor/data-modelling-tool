@@ -16,7 +16,7 @@ export type IndexNodes = {
   [key: string]: IndexNode
 }
 
-export interface IIndexAPI {
+export interface IDmtAPI {
   getIndexByDataSource(
     dataSourceId: string,
     application: string,
@@ -29,4 +29,8 @@ export interface IIndexAPI {
     application: string,
     token: string
   ): Promise<IndexNodes>
+
+  getSystemSettings(application?: string): Promise<any>
+
+  postSystemSettings(application: string, data: any): Promise<any>
 }

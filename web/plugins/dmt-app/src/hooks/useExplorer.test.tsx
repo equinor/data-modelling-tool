@@ -12,19 +12,14 @@ import {
   NodeType,
   DataSources,
   IDmssAPI,
-  IIndexAPI,
+  IDmtAPI,
   IndexNodes,
 } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'
 import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
 
-const wrapper: React.FC = ({
-  children,
-  application,
-  dmssAPI,
-  indexApi,
-}: any) => (
+const wrapper: React.FC = ({ children, application, dmssAPI, dmtAPI }: any) => (
   <AuthProvider authEnabled={false}>
     <DashboardProvider dmssAPI={dmssAPI}>
       <DashboardConsumer>
@@ -33,7 +28,7 @@ const wrapper: React.FC = ({
             <ApplicationContext.Provider value={application}>
               <IndexProvider
                 dataSources={dashboard.models.dataSources.models.dataSources}
-                indexApi={indexApi}
+                dmtAPI={dmtAPI}
               >
                 {children}
               </IndexProvider>
@@ -57,7 +52,7 @@ const getMocks = () => {
     Promise.resolve(dataSources)
   )
 
-  const indexApi = mock<IIndexAPI>()
+  const dmtAPI = mock<IDmtAPI>()
   const indexNodes: IndexNodes = {
     '1': {
       id: '1',
@@ -80,8 +75,8 @@ const getMocks = () => {
       meta: {},
     },
   }
-  indexApi.getIndexByDataSource.mockReturnValue(Promise.resolve(indexNodes))
-  indexApi.getIndexByDocument.mockReturnValue(Promise.resolve(indexNodes))
+  dmtAPI.getIndexByDataSource.mockReturnValue(Promise.resolve(indexNodes))
+  dmtAPI.getIndexByDocument.mockReturnValue(Promise.resolve(indexNodes))
 
   class Item {
     id: string
@@ -126,7 +121,7 @@ const getMocks = () => {
     },
   }
 
-  return { dmssAPI, indexApi, layoutMock }
+  return { dmssAPI, dmtAPI, layoutMock }
 }
 
 describe('the explorer hook', () => {
@@ -213,8 +208,8 @@ describe('the explorer hook', () => {
           ).toEqual(true)
         })
         it('should add (fetch children)', async () => {
-          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
-          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
+          expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledTimes(1)
+          expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledWith(
             '/api/v1/index/1',
             '1',
             application.name,
@@ -247,7 +242,7 @@ describe('the explorer hook', () => {
           ).toEqual(true)
         })
         it('should not add (fetch children)', async () => {
-          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(0)
+          expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledTimes(0)
         })
       })
     })
@@ -318,7 +313,7 @@ describe('the explorer hook', () => {
             meta: {},
           },
         }
-        mocks.indexApi.getIndexByDocument.mockReturnValue(
+        mocks.dmtAPI.getIndexByDocument.mockReturnValue(
           Promise.resolve(indexNodes)
         )
         await act(async () => {
@@ -402,7 +397,7 @@ describe('the explorer hook', () => {
             meta: {},
           },
         }
-        mocks.indexApi.getIndexByDocument.mockReturnValue(
+        mocks.dmtAPI.getIndexByDocument.mockReturnValue(
           Promise.resolve(indexNodes)
         )
       })
@@ -501,7 +496,7 @@ describe('the explorer hook', () => {
           },
         }
 
-        mocks.indexApi.getIndexByDocument.mockReturnValue(
+        mocks.dmtAPI.getIndexByDocument.mockReturnValue(
           Promise.resolve(indexNodes)
         )
         await act(async () => {
@@ -518,7 +513,7 @@ describe('the explorer hook', () => {
         expect(mocks.dmssAPI.explorerDocumentRename).toHaveBeenCalledTimes(1)
       })
       it('should the document be updated in the tree', async () => {
-        expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
+        expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledTimes(1)
         expect(
           response.result.current.index.models.index.models.tree.operations.getNode(
             '1'
