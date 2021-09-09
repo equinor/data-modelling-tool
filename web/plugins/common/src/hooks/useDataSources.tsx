@@ -1,11 +1,12 @@
-import { useEffect, useReducer } from 'react'
+import { useContext, useEffect, useReducer } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import DataSourceReducer, {
   DocumentActions,
   initialState,
 } from './DataSourcesReducer'
-import { DataSourceAPI, DataSource, IDataSourceAPI } from '../services'
+import { DmssAPI, DataSource, IDmssAPI } from '../services'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 export interface IModels {
   dataSources: DataSource[]
@@ -18,13 +19,14 @@ export interface IDataSources {
   operations: IOperations
 }
 
-export const useDataSources = (dataSourceApi: IDataSourceAPI): IDataSources => {
+export const useDataSources = (dmssAPI: IDmssAPI): IDataSources => {
   const [state, dispatch] = useReducer(DataSourceReducer, initialState)
-  if (!dataSourceApi) dataSourceApi = new DataSourceAPI()
+  if (!dmssAPI) dmssAPI = new DmssAPI()
+  const { token } = useContext(AuthContext)
 
   const fetchData = async () => {
     try {
-      const dataSources = await dataSourceApi.getAll()
+      const dataSources = await dmssAPI.getAllDataSources(token)
       dispatch(DocumentActions.addDataSources(dataSources))
     } catch (error) {
       console.error(error)

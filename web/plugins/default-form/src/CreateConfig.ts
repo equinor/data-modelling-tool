@@ -9,8 +9,7 @@ export type FormConfig = {
 }
 
 export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
-  const { type, document, uiRecipeName, explorer } = pluginProps
-
+  const { type, document, uiRecipeName, explorer, token } = pluginProps
   const rootBlueprint = undefined
 
   const blueprint = await explorer.getBlueprint(type)
@@ -26,6 +25,7 @@ export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
     blueprint,
     uiRecipe,
     (typeRef: string) => explorer.getBlueprint(typeRef),
+    token,
     rootBlueprint
   )
   await schemaGenerator.execute(document, (typeRef: string) =>

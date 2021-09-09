@@ -2,7 +2,7 @@ import React, { createContext, useContext } from 'react'
 
 import {
   DataSource,
-  IIndexAPI,
+  IDmtAPI,
   IIndex,
   useIndex,
   ApplicationContext,
@@ -31,14 +31,14 @@ export const useGlobalIndex = () => {
 
 interface IndexProviderProps {
   dataSources: DataSource[]
-  indexApi: IIndexAPI
+  dmtAPI: IDmtAPI
   children?: any
 }
 
 const IndexProvider = (props: IndexProviderProps) => {
-  const { dataSources, indexApi, children } = props
+  const { dataSources, dmtAPI, children } = props
   const application = useContext(ApplicationContext)
-  const index = useIndex({ dataSources, application, indexApi })
+  const index = useIndex({ dataSources, application, dmtAPI })
 
   const value: IGlobalIndex = {
     models: {

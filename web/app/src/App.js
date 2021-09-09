@@ -9,7 +9,7 @@ import {
 } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
-import { systemAPI } from '@dmt/common/src/services/api/SystemAPI'
+import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
 import config from './config'
 import { sortApplications } from '@dmt/common'
 import {
@@ -90,11 +90,12 @@ const AppSelector = (props) => {
 function App() {
   const [applications, setApplications] = useState(undefined)
   const [isLoading, setIsLoading] = useState(true)
+  const dmtAPI = new DmtAPI()
 
   useEffect(() => {
     loadPlugins(config).then(() => setIsLoading(false))
 
-    systemAPI.getSystemSettings().then((res) => {
+    dmtAPI.getSystemSettings().then((res) => {
       setApplications(
         sortApplications(res.data).filter(
           (application) => application?.hidden !== true

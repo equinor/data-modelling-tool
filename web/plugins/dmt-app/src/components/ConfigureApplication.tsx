@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaChevronDown, FaChevronUp, FaCog, FaPlus } from 'react-icons/fa'
 import styled from 'styled-components'
-import { Modal, systemAPI } from '@dmt/common'
+import { Modal, DmtAPI } from '@dmt/common'
 import { BlueprintsPicker, PackagesPicker, BlueprintPicker } from '@dmt/common'
 
 //@ts-ignore
@@ -172,10 +172,11 @@ export default () => {
   // Keep a copy of the original so we can 'reset'
   const [settings, setSettings] = useState({})
   const [newSettings, setNewSettings] = useState({})
+  const dmtAPI = new DmtAPI()
 
   useEffect(() => {
     if (modalOpen) {
-      systemAPI
+      dmtAPI
         .getSystemSettings()
         .then((result) => {
           setSettings(result.data)
@@ -217,7 +218,7 @@ export default () => {
   }
 
   function saveSettings() {
-    systemAPI
+    dmtAPI
       .postSystemSettings(newSettings)
       .then(async () => {
         NotificationManager.success('Reloading...', 'Settings updated.')

@@ -1,13 +1,16 @@
 import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
 import DashboardProvider, { useDashboard } from './DashboardProvider'
-import { ApplicationContext, DataSources, IDataSourceAPI } from '@dmt/common'
+import { ApplicationContext, DataSources, IDmssAPI } from '@dmt/common'
 import { mock } from 'jest-mock-extended'
+import { AuthProvider } from '../../../../../app/src/context/auth/AuthContext'
 
 const wrapper: React.FC = ({ children, application, api }: any) => (
-  <ApplicationContext.Provider value={application}>
-    <DashboardProvider dataSourceApi={api}>{children}</DashboardProvider>
-  </ApplicationContext.Provider>
+  <AuthProvider authEnabled={false}>
+    <ApplicationContext.Provider value={application}>
+      <DashboardProvider dmssAPI={api}>{children}</DashboardProvider>
+    </ApplicationContext.Provider>
+  </AuthProvider>
 )
 
 describe('the dashboard provider component', () => {
@@ -16,7 +19,7 @@ describe('the dashboard provider component', () => {
   describe('when provider is initialized', () => {
     it('should correctly return the DashboardContext object', async () => {
       await act(async () => {
-        const api = mock<IDataSourceAPI>()
+        const api = mock<IDmssAPI>()
         const { result, waitForNextUpdate } = renderHook(useDashboard, {
           wrapper,
           initialProps: {
@@ -36,14 +39,16 @@ describe('the dashboard provider component', () => {
     })
 
     it('should have fetched the index for all data sources', async () => {
-      const api = mock<IDataSourceAPI>()
+      const api = mock<IDmssAPI>()
       const dataSources: DataSources = [
         {
           id: 'localhost',
           name: 'localhost',
         },
       ]
-      api.getAll.mockImplementation(() => Promise.resolve(dataSources))
+      api.getAllDataSources.mockImplementation(() =>
+        Promise.resolve(dataSources)
+      )
 
       const { result, waitForNextUpdate } = renderHook(useDashboard, {
         wrapper,
@@ -54,7 +59,7 @@ describe('the dashboard provider component', () => {
       })
       await waitForNextUpdate()
 
-      expect(api.getAll).toHaveBeenCalledTimes(1)
+      expect(api.getAllDataSources).toHaveBeenCalledTimes(1)
       expect(result.current.models.dataSources.models.dataSources).toEqual(
         dataSources
       )

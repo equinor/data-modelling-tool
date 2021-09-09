@@ -1,5 +1,5 @@
 // @ts-nocheck
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -8,18 +8,16 @@ import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
 import {
-  DataSourceAPI,
+  DmssAPI,
   BlueprintPicker,
   DataSources,
-  DocumentAPI,
   JsonView,
   ApplicationContext,
 } from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
-const documentAPI = new DocumentAPI()
-
-const dataSourceAPI = new DataSourceAPI()
+const dmssAPI = new DmssAPI()
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
 
@@ -153,6 +151,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
   const [expanded, setExpanded] = useState<boolean>(value)
   const [nestedAttributes, setNestedAttributes] = useState([])
+  const { token } = useContext(AuthContext)
 
   // Pass nested object to callback from parent
   function nestedOnChange(filterChange: any) {
@@ -165,8 +164,8 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
 
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
-      documentAPI
-        .getBlueprint(attribute.getAttributeType())
+      dmssAPI
+        .getBlueprint(attribute.getAttributeType(), token)
         .then((result) => {
           setNestedAttributes(result.attributes)
         })
@@ -232,7 +231,7 @@ function FilterContainer({
   resetSearchSettings,
 }) {
   const [attributes, setAttributes] = useState<Array<any>>([])
-
+  const { token } = useContext(AuthContext)
   function onChange(filterChange: any) {
     setSearchFilter({ ...searchFilter, ...filterChange })
   }
@@ -240,8 +239,8 @@ function FilterContainer({
   // When the filters "type" value changes. Fetch the blueprint
   useEffect(() => {
     if (searchFilter?.type) {
-      documentAPI
-        .getBlueprint(searchFilter.type)
+      dmssAPI
+        .getBlueprint(searchFilter.type, token)
         .then((result) => {
           setAttributes(result.attributes)
         })
@@ -431,10 +430,10 @@ export default ({ settings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
-
+  const { token } = useContext(AuthContext)
   useEffect(() => {
-    dataSourceAPI
-      .getAll()
+    dmssAPI
+      .getAllDataSources(token)
       .then((dataSources: DataSources) => {
         setDataSources(dataSources)
       })
@@ -447,8 +446,13 @@ export default ({ settings }: any) => {
   function search(query: any) {
     if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
-    documentAPI
-      .search(searchSettings.dataSource, query, searchSettings.sortByAttribute)
+    dmssAPI
+      .searchDocuments(
+        searchSettings.dataSource,
+        query,
+        token,
+        searchSettings.sortByAttribute
+      )
       .then((result: any) => {
         setQueryError('')
         let resultList = Object.values(result)

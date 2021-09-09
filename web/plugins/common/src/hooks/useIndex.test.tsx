@@ -2,7 +2,7 @@ import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks'
 import * as React from 'react'
 import { IIndex, useIndex } from './useIndex'
 import { mock } from 'jest-mock-extended'
-import { IIndexAPI, IndexNodes, DataSource } from '../services'
+import { IDmtAPI, IndexNodes, DataSource } from '../services'
 import { NodeType } from '../utils/variables'
 import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
 
@@ -22,7 +22,7 @@ const getMocks = () => {
     },
   ]
 
-  const indexApi = mock<IIndexAPI>()
+  const dmtAPI = mock<IDmtAPI>()
   const indexNodes: IndexNodes = {
     '1': {
       id: '1',
@@ -45,7 +45,7 @@ const getMocks = () => {
       meta: {},
     },
   }
-  indexApi.getIndexByDataSource.mockReturnValue(Promise.resolve(indexNodes))
+  dmtAPI.getIndexByDataSource.mockReturnValue(Promise.resolve(indexNodes))
 
   const indexNodeToBeAdded: IndexNodes = {
     '3': {
@@ -60,16 +60,14 @@ const getMocks = () => {
       },
     },
   }
-  indexApi.getIndexByDocument.mockReturnValue(
-    Promise.resolve(indexNodeToBeAdded)
-  )
+  dmtAPI.getIndexByDocument.mockReturnValue(Promise.resolve(indexNodeToBeAdded))
 
   const application = {
     name: 'testApp',
     visibleDataSources: ['source1', 'source2'],
   }
 
-  return { dataSources, indexApi, application }
+  return { dataSources, dmtAPI, application }
 }
 
 describe('the useIndex hook', () => {
@@ -98,13 +96,13 @@ describe('the useIndex hook', () => {
     })
 
     it('should have fetched the index for all data sources', async () => {
-      expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledTimes(2)
-      expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
+      expect(mocks.dmtAPI.getIndexByDataSource).toHaveBeenCalledTimes(2)
+      expect(mocks.dmtAPI.getIndexByDataSource).toHaveBeenCalledWith(
         'source1',
         mocks.application.name,
         null
       )
-      expect(mocks.indexApi.getIndexByDataSource).toHaveBeenCalledWith(
+      expect(mocks.dmtAPI.getIndexByDataSource).toHaveBeenCalledWith(
         'source2',
         mocks.application.name,
         null

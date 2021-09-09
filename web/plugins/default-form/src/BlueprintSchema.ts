@@ -9,7 +9,7 @@ import {
 // @ts-ignore
 import objectPath from 'object-path'
 import { BlueprintAttribute } from './domain/BlueprintAttribute'
-import { DocumentAPI } from '@dmt/common'
+import { DmssAPI } from '@dmt/common'
 
 interface IBlueprintSchema {
   getSchema: () => object
@@ -32,11 +32,14 @@ export class BlueprintSchema implements IBlueprintSchema {
   private blueprintType: BlueprintType
   private blueprint: Blueprint
   private blueprintProvider: Function
-  private documentAPI = new DocumentAPI()
+  private dmssAPI = new DmssAPI()
+  private token: string
+
   constructor(
     blueprintType: BlueprintType,
     uiRecipe: UiRecipe,
     blueprintProvider: Function,
+    token: string,
     rootBlueprint?: BlueprintType | undefined
   ) {
     this.uiRecipe = uiRecipe
@@ -44,6 +47,7 @@ export class BlueprintSchema implements IBlueprintSchema {
     this.blueprintType = blueprintType
     this.blueprint = new Blueprint(blueprintType)
     this.blueprintProvider = blueprintProvider
+    this.token = token
     objectPath.set(this.schema, 'required', this.getRequired(this.blueprint))
   }
 
@@ -312,9 +316,8 @@ export class BlueprintSchema implements IBlueprintSchema {
     ) {
       const dataSourceId: string = attr.enumType.split('/', 1)[0]
       const path: string = attr.enumType.split('/').slice(1).join('/')
-
-      const response = await this.documentAPI
-        .getByPath(dataSourceId, path)
+      const response = await this.dmssAPI
+        .getDocumentByPath(dataSourceId, path, this.token)
         .catch((error) => {
           throw new Error(
             `Could not fetch document by path: ${dataSourceId}/${path}. (${error})`

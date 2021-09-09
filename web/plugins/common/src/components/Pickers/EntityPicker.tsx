@@ -3,7 +3,7 @@ import React, { useContext, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import {
   ApplicationContext,
-  DataSourceAPI,
+  DmssAPI,
   IIndex,
   Modal,
   Tree,
@@ -25,8 +25,8 @@ export const EntityPicker = (props: EntityPickerProps) => {
     'Click to select entity'
   )
   const [showModal, setShowModal] = useState<boolean>(false)
-  const dataSourceAPI = new DataSourceAPI()
-  const dataSources: IDataSources = useDataSources(dataSourceAPI)
+  const dmssAPI = new DmssAPI()
+  const dataSources: IDataSources = useDataSources(dmssAPI)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,

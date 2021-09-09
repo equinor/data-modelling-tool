@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useContext } from 'react'
 import { Blueprint } from './domain/Blueprint'
 import { createFormConfigs, FormConfig } from './CreateConfig'
 import Form from 'react-jsonschema-form'
@@ -17,6 +17,7 @@ import {
   DestinationPicker,
   EntityPicker,
 } from '@dmt/common'
+import { AuthContext } from '../../../app/src/context/auth/AuthContext'
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const {
@@ -30,6 +31,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 
   const [document, setDocument] = useState(undefined)
   const [documentType, setDocumentType] = useState(type)
+  const { token } = useContext(AuthContext)
 
   useEffect(() => {
     setDocumentType(type)
@@ -63,6 +65,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
         document,
         uiRecipeName,
         explorer,
+        token,
       })
         // @ts-ignore
         .then((config: FormConfig) => setConfig(config))

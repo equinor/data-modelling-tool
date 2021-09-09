@@ -2,23 +2,18 @@ import IndexProvider, { useGlobalIndex } from './IndexProvider'
 import React from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 import { mock } from 'jest-mock-extended'
-import {
-  DataSource,
-  IDocumentAPI,
-  ApplicationContext,
-  IIndexAPI,
-} from '@dmt/common'
+import { DataSource, IDmssAPI, ApplicationContext, IDmtAPI } from '@dmt/common'
 import { AuthProvider } from '../../../../../app/src/context/auth/AuthContext'
 
 const wrapper: React.FC = ({
   children,
-  indexApi,
+  dmtAPI,
   dataSources,
   application,
 }: any) => (
   <AuthProvider authEnabled={false}>
     <ApplicationContext.Provider value={application}>
-      <IndexProvider indexApi={indexApi} dataSources={dataSources}>
+      <IndexProvider dmtAPI={dmtAPI} dataSources={dataSources}>
         {children}
       </IndexProvider>
     </ApplicationContext.Provider>
@@ -44,15 +39,15 @@ describe('the index provider component', () => {
 
   describe('when provider is initialized', () => {
     it('should correctly return the IndexContext object', async () => {
-      const api = mock<IIndexAPI>()
+      const api = mock<IDmtAPI>()
       api.getIndexByDataSource.mockReturnValue(Promise.resolve({}))
-      const documentApi: IDocumentAPI = mock<IDocumentAPI>()
+      const dmssAPI: IDmssAPI = mock<IDmssAPI>()
 
       const { result, waitForNextUpdate } = renderHook(useGlobalIndex, {
         wrapper,
         initialProps: {
-          indexApi: api,
-          documentApi,
+          dmtAPI: api,
+          dmssAPI,
           application,
           dataSources,
         },

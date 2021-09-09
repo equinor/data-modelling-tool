@@ -11,30 +11,24 @@ import { mock } from 'jest-mock-extended'
 import {
   NodeType,
   DataSources,
-  IDataSourceAPI,
-  IIndexAPI,
+  IDmssAPI,
+  IDmtAPI,
   IndexNodes,
-  IDocumentAPI,
 } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'
 import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
 
-const wrapper: React.FC = ({
-  children,
-  application,
-  dataSourceApi,
-  indexApi,
-}: any) => (
+const wrapper: React.FC = ({ children, application, dmssAPI, dmtAPI }: any) => (
   <AuthProvider authEnabled={false}>
-    <DashboardProvider dataSourceApi={dataSourceApi}>
+    <DashboardProvider dmssAPI={dmssAPI}>
       <DashboardConsumer>
         {(dashboard: IDashboard) => {
           return (
             <ApplicationContext.Provider value={application}>
               <IndexProvider
                 dataSources={dashboard.models.dataSources.models.dataSources}
-                indexApi={indexApi}
+                dmtAPI={dmtAPI}
               >
                 {children}
               </IndexProvider>
@@ -47,16 +41,18 @@ const wrapper: React.FC = ({
 )
 
 const getMocks = () => {
-  const dataSourceApi = mock<IDataSourceAPI>()
+  const dmssAPI = mock<IDmssAPI>()
   const dataSources: DataSources = [
     {
       id: 'localhost',
       name: 'localhost',
     },
   ]
-  dataSourceApi.getAll.mockImplementation(() => Promise.resolve(dataSources))
+  dmssAPI.getAllDataSources.mockImplementation(() =>
+    Promise.resolve(dataSources)
+  )
 
-  const indexApi = mock<IIndexAPI>()
+  const dmtAPI = mock<IDmtAPI>()
   const indexNodes: IndexNodes = {
     '1': {
       id: '1',
@@ -79,10 +75,8 @@ const getMocks = () => {
       meta: {},
     },
   }
-  indexApi.getIndexByDataSource.mockReturnValue(Promise.resolve(indexNodes))
-  indexApi.getIndexByDocument.mockReturnValue(Promise.resolve(indexNodes))
-
-  const documentApi = mock<IDocumentAPI>()
+  dmtAPI.getIndexByDataSource.mockReturnValue(Promise.resolve(indexNodes))
+  dmtAPI.getIndexByDocument.mockReturnValue(Promise.resolve(indexNodes))
 
   class Item {
     id: string
@@ -127,7 +121,7 @@ const getMocks = () => {
     },
   }
 
-  return { dataSourceApi, indexApi, layoutMock, documentApi }
+  return { dmssAPI, dmtAPI, layoutMock }
 }
 
 describe('the explorer hook', () => {
@@ -142,7 +136,7 @@ describe('the explorer hook', () => {
       response = renderHook(
         () =>
           useExplorer({
-            documentAPI: mocks.documentApi,
+            dmssAPI: mocks.dmssAPI,
           }),
         {
           wrapper,
@@ -214,8 +208,8 @@ describe('the explorer hook', () => {
           ).toEqual(true)
         })
         it('should add (fetch children)', async () => {
-          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
-          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledWith(
+          expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledTimes(1)
+          expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledWith(
             '/api/v1/index/1',
             '1',
             application.name,
@@ -248,7 +242,7 @@ describe('the explorer hook', () => {
           ).toEqual(true)
         })
         it('should not add (fetch children)', async () => {
-          expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(0)
+          expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledTimes(0)
         })
       })
     })
@@ -304,7 +298,7 @@ describe('the explorer hook', () => {
         const createdDocument = {
           uid: '1000',
         }
-        mocks.documentApi.create.mockReturnValue(
+        mocks.dmssAPI.createDocument.mockReturnValue(
           Promise.resolve(createdDocument)
         )
 
@@ -319,7 +313,7 @@ describe('the explorer hook', () => {
             meta: {},
           },
         }
-        mocks.indexApi.getIndexByDocument.mockReturnValue(
+        mocks.dmtAPI.getIndexByDocument.mockReturnValue(
           Promise.resolve(indexNodes)
         )
         await act(async () => {
@@ -327,8 +321,8 @@ describe('the explorer hook', () => {
         })
       })
       it('should the document be saved to the server', async () => {
-        expect(mocks.documentApi.create).toHaveBeenCalledTimes(1)
-        expect(mocks.documentApi.create).toHaveBeenCalledWith(
+        expect(mocks.dmssAPI.createDocument).toHaveBeenCalledTimes(1)
+        expect(mocks.dmssAPI.createDocument).toHaveBeenCalledWith(
           documentToCreate.dataUrl,
           documentToCreate.data,
           null
@@ -388,7 +382,7 @@ describe('the explorer hook', () => {
         const createdDocument = {
           uid: '1000',
         }
-        mocks.documentApi.create.mockReturnValue(
+        mocks.dmssAPI.createDocument.mockReturnValue(
           Promise.resolve(createdDocument)
         )
 
@@ -403,7 +397,7 @@ describe('the explorer hook', () => {
             meta: {},
           },
         }
-        mocks.indexApi.getIndexByDocument.mockReturnValue(
+        mocks.dmtAPI.getIndexByDocument.mockReturnValue(
           Promise.resolve(indexNodes)
         )
       })
@@ -434,10 +428,12 @@ describe('the explorer hook', () => {
   })
 
   describe('when remove is called', () => {
-    describe('and documentApi returns a resolved promise', () => {
+    describe('and dmssAPI returns a resolved promise', () => {
       beforeEach(async () => {
         await act(async () => {
-          mocks.documentApi.remove.mockImplementation(() => Promise.resolve())
+          mocks.dmssAPI.removeDocument.mockImplementation(() =>
+            Promise.resolve()
+          )
           response.result.current.remove({
             nodeId: '2',
             parent: '',
@@ -446,7 +442,7 @@ describe('the explorer hook', () => {
         })
       })
       it('should the document be removed from the server ', async () => {
-        expect(mocks.documentApi.remove).toHaveBeenCalledTimes(1)
+        expect(mocks.dmssAPI.removeDocument).toHaveBeenCalledTimes(1)
       })
       it('should the document be removed from the tree', async () => {
         expect(
@@ -460,7 +456,7 @@ describe('the explorer hook', () => {
     describe('and document api returns a rejected promise', () => {
       beforeEach(async () => {
         await act(async () => {
-          mocks.documentApi.remove.mockImplementation(() =>
+          mocks.dmssAPI.removeDocument.mockImplementation(() =>
             Promise.reject(new Error('error'))
           )
           response.result.current.remove({
@@ -479,12 +475,12 @@ describe('the explorer hook', () => {
   })
 
   describe('when rename is called', () => {
-    describe('and documentApi returns a resolved promise', () => {
+    describe('and dmssAPI returns a resolved promise', () => {
       beforeEach(async () => {
         const updatedDocument = {
           uid: '1',
         }
-        mocks.documentApi.explorerRename.mockReturnValue(
+        mocks.dmssAPI.explorerDocumentRename.mockReturnValue(
           Promise.resolve(updatedDocument)
         )
 
@@ -500,7 +496,7 @@ describe('the explorer hook', () => {
           },
         }
 
-        mocks.indexApi.getIndexByDocument.mockReturnValue(
+        mocks.dmtAPI.getIndexByDocument.mockReturnValue(
           Promise.resolve(indexNodes)
         )
         await act(async () => {
@@ -514,10 +510,10 @@ describe('the explorer hook', () => {
       })
 
       it('should the document be updated to the server', async () => {
-        expect(mocks.documentApi.explorerRename).toHaveBeenCalledTimes(1)
+        expect(mocks.dmssAPI.explorerDocumentRename).toHaveBeenCalledTimes(1)
       })
       it('should the document be updated in the tree', async () => {
-        expect(mocks.indexApi.getIndexByDocument).toHaveBeenCalledTimes(1)
+        expect(mocks.dmtAPI.getIndexByDocument).toHaveBeenCalledTimes(1)
         expect(
           response.result.current.index.models.index.models.tree.operations.getNode(
             '1'
@@ -542,9 +538,9 @@ describe('the explorer hook', () => {
       })
     })
 
-    describe('on a documentApi returns a rejected promise', () => {
+    describe('on a dmssAPI returns a rejected promise', () => {
       beforeEach(async () => {
-        mocks.documentApi.explorerRename.mockReturnValue(
+        mocks.dmssAPI.explorerDocumentRename.mockReturnValue(
           Promise.reject(new Error('error'))
         )
 

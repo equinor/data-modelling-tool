@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { DocumentAPI } from '@dmt/common'
+import { DmtAPI, DmssAPI } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { getUIPlugin } from '@dmt/core-plugins'
 import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecipeTabs'
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
-import { createEntity } from '../utils/createEntity'
 import { SimplifiedTree } from '../components/SimplifiedTree'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 const Group = styled.div`
   display: flex;
@@ -21,11 +21,13 @@ const Group = styled.div`
   background-color: white;
 `
 
-const documentAPI = new DocumentAPI()
+const dmssAPI = new DmssAPI()
+const dmtAPI = new DmtAPI()
 
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
+  const { token } = useContext(AuthContext)
   return (
     <ExternalPlugin
       dataSourceId={dataSourceId}
@@ -33,8 +35,8 @@ const View = (props: any) => {
       uiRecipe={uiRecipe}
       uiRecipeName={uiRecipe.name}
       document={document}
-      fetchBlueprint={(type: string) => documentAPI.getBlueprint(type)}
-      createDocument={createEntity}
+      fetchBlueprint={(type: string) => dmssAPI.getBlueprint(type, token)}
+      createDocument={dmtAPI.createEntity}
     />
   )
 }
@@ -78,10 +80,11 @@ export default () => {
   const [document, setDocument] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [error, setError] = useState(null)
+  const { token } = useContext(AuthContext)
 
   useEffect(() => {
-    documentAPI
-      .getById(data_source, entity_id)
+    dmssAPI
+      .getDocumentById(data_source, entity_id, token)
       .then((result) => {
         setBlueprint(result.blueprint)
         setDocument(result.document)

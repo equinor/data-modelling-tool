@@ -43,6 +43,7 @@ describe('BlueprintSchema', () => {
           blueprintType,
           uiRecipeTest,
           () => {},
+          '',
           undefined
         )
         await schemaGenerator.execute(document, () => {})
@@ -162,7 +163,8 @@ describe('BlueprintSchema', () => {
         const schemaGenerator = new BlueprintSchema(
           blueprintType,
           uiRecipeTest,
-          () => {}
+          () => {},
+          ''
         )
         await schemaGenerator.execute(document, () => {})
         schema = schemaGenerator.getSchema()

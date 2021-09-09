@@ -5,7 +5,7 @@ import { FaTimes } from 'react-icons/fa'
 import { BlueprintEnum } from '../../utils/variables'
 import {
   ApplicationContext,
-  DataSourceAPI,
+  DmssAPI,
   IIndex,
   Modal,
   Tree,
@@ -69,8 +69,8 @@ const MultiSelector = ({
   const [selectedPackages, setSelectedPackages] = useState<string[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  const dataSourceAPI = new DataSourceAPI()
-  const dataSources: IDataSources = useDataSources(dataSourceAPI)
+  const dmssAPI = new DmssAPI()
+  const dataSources: IDataSources = useDataSources(dmssAPI)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,

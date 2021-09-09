@@ -14,7 +14,7 @@ import { GoldenLayoutComponent } from '../../components/golden-layout/GoldenLayo
 import GoldenLayoutPanel from '../../components/golden-layout/GoldenLayoutPanel'
 import AddDatasource from './data-source/AddDatasource'
 import styled from 'styled-components'
-import { IndexAPI } from '@dmt/common'
+import { DmtAPI } from '@dmt/common'
 
 export const Wrapper = styled.div`
   width: 100%;
@@ -47,14 +47,14 @@ const LAYOUT_CONFIG = {
   ],
 }
 
-const indexAPI = new IndexAPI()
+const dmtAPI = new DmtAPI()
 
 export default () => {
   const dashboard: IDashboard = useDashboard()
 
   return (
     <IndexProvider
-      indexApi={indexAPI}
+      dmtAPI={dmtAPI}
       dataSources={dashboard.models.dataSources.models.dataSources}
     >
       <ModalProvider>

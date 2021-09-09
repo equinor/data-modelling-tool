@@ -8,11 +8,12 @@ import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { getUIPlugin } from '@dmt/core-plugins'
-import { createEntity } from '../../../utils/createEntity'
+import { DmtAPI } from '@dmt/common'
 
 const Wrapper = styled.div`
   padding: 20px;
 `
+const dmtAPI = new DmtAPI()
 
 const View = (props: any) => {
   const { dataSourceId, documentId, uiRecipe, document } = props
@@ -55,7 +56,7 @@ const View = (props: any) => {
       updateDocument={onSubmit}
       document={document}
       fetchBlueprint={fetchBlueprint}
-      createDocument={createEntity}
+      createDocument={dmtAPI.createEntity}
       // TODO: Deprecate onSubmit, and only provide updateDocument
       onSubmit={onSubmit}
     />
