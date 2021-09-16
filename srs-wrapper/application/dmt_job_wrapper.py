@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     DMSS_HOST: str = Field("localhost", env="DMSS_HOST")
     DMSS_PORT: str = Field("8000", env="DMSS_PORT")
     DMSS_SCHEMA: str = "http" if ENVIRONMENT != "production" else "https"
-    SRS_HOME: str = "./sima"
+    SRS_HOME: str = "/var/opt/sima"
     SRS_STASK: str = Field("", env="SRS_STASK")
 
 
@@ -62,8 +62,7 @@ def run(stask_id: str):
     os.makedirs(settings.SRS_HOME, exist_ok=True)
 
     with open(f"{settings.SRS_HOME}/workflow.stask", "wb") as stask_file:
-        # response = dmss_api.blob_get_by_id(data_source_id, blob_id)
-        response = dmss_api.blob_get_by_id("DemoDS", "511e9fb0-c24e-4768-b4c4-1cb8f5f252f5")
+        response = dmss_api.blob_get_by_id(data_source_id, blob_id)
         print(f"Writing to '{settings.SRS_HOME}/workflow.stask'")
         stask_file.write(response.read())
 

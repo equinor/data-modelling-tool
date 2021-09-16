@@ -148,22 +148,16 @@ def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: i
     return root_package
 
 
-# This is a hack to get a IOBase object with a name attribute, without creating a file on disk.
-# There might be better ways....
-class BytesIOWithName(io.BytesIO):
-    def __init__(self, name: str, initial_bytes: bytes):
-        super().__init__(initial_bytes)
-        self.name = name
-
-
 def upload_blobs_in_document(document: dict, data_source_id: str) -> dict:
     """
     Uploads any 'system/SIMOS/Blob' types in the document, and replacing the data with created uuid's
     """
     if document["type"] == SIMOS.BLOB.value:
-        blob_id = str(uuid4())
+        blob_id = document.get("_blob_id", str(uuid4()))
         blob_name = Path(document["name"]).stem
-        dmss_api.blob_upload(data_source_id, blob_id, BytesIOWithName(blob_name, document["_blob_data_"]))
+        file_like = io.BytesIO(document["_blob_data_"])
+        file_like.name = blob_name
+        dmss_api.blob_upload(data_source_id, blob_id, file_like)
         return {"name": blob_name, "type": SIMOS.BLOB.value, "_blob_id": blob_id, "size": len(document["_blob_data_"])}
     for key, value in document.items():
         if isinstance(value, dict) and value.get("type") == SIMOS.BLOB.value:
