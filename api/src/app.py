@@ -131,37 +131,6 @@ def init_application():
             except Exception as error:
                 raise Exception(f"Something went wrong trying to upload the package ''{package}'' to DMSS; {error}")
         logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings.get('packages', []))}_____")
-
-    logger.debug("_____ importing blobs _____")
-    # TODO:  This is a temporary fix for import of blob data.
-    #  Should update "import_package_tree()" to work with blob data
-    try:
-        for blob_container in config.IMPORT_BLOBS:
-            with open(f"{config.APPLICATION_HOME}/{blob_container}", "r") as file:
-                doc = json.load(file)
-            blob_ref = doc.get("blob_reference")
-            if blob_ref:
-                root_package = "/".join(blob_container.split("/")[:4])
-                blob_relative_path = blob_ref.split(":")[1]
-                blob_path = f"{config.APPLICATION_HOME}/{root_package}{blob_relative_path}"
-
-                with open(blob_path, "rb") as file:
-                    doc["blob_reference"] = Path(file.name).name
-                    parent_directory = str(Path(blob_container).parent)
-                    target_directory = "/".join(parent_directory.split("/")[3:])
-                    data_source_alias = blob_container.split("/")[2]
-                    actual_data_source = next(
-                        (v for k, v in settings["data_source_aliases"].items() if k == data_source_alias),
-                        data_source_alias,
-                    )
-                    dmss_api.explorer_add_to_path(
-                        actual_data_source, document=json.dumps(doc), directory=target_directory, files=[file],
-                    )
-    except Exception as e:
-        logger.debug(e)
-        pass
-    logger.debug("_____  DONE importing blobs _____")
-
     logger.info(emoji.emojize("-------------- DONE ---------------- :check_mark_button:"))
 
 

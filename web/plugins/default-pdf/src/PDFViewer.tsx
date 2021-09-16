@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-import { dmssApi } from '@dmt/common'
+import { DmssAPI } from '@dmt/common'
 
 export const ErrorGroup = styled.div`
   display: flex;
@@ -26,18 +26,17 @@ const TagWrapper = styled.div`
 `
 
 export const ViewerPDFPlugin = (props: any) => {
-  const document = props.document
-  const [dataSourceId, blobId] = document.blob_reference.split('/')
-
+  const { document, dataSourceId } = props
   const [blobUrl, setBlobUrl] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
+  const dmssAPI = new DmssAPI()
 
   useEffect(() => {
     setError(null)
-    dmssApi
-      .blobGetById({ dataSourceId, blobId })
-      .then((result: any) => {
+    dmssAPI
+      .blobGetById({ dataSourceId, blobId: document.blob._blob_id })
+      .then((result: Blob) => {
         // @ts-ignore
         const blob = new Blob([result], { type: 'application/pdf' })
         // @ts-ignore
@@ -81,7 +80,7 @@ export const ViewerPDFPlugin = (props: any) => {
                 <label>Tags:</label>
                 {document.tags &&
                   document.tags.map((tag: any) => {
-                    return <TagWrapper>{tag}</TagWrapper>
+                    return <TagWrapper key={tag}>{tag}</TagWrapper>
                   })}
               </div>
             </MetaDataWrapper>

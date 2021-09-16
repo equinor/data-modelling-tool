@@ -1,5 +1,5 @@
 import apiProvider from './utilities/Provider'
-import { Reference, RenameRequest } from './configs/gen'
+import { BlobGetByIdRequest, Reference, RenameRequest } from './configs/gen'
 import { IDmssAPI, DataSources } from './interfaces/DmssAPI'
 import { Configuration, DefaultApi } from './configs/gen'
 
@@ -24,6 +24,10 @@ export class DmssAPI implements IDmssAPI {
       accessToken: this.getBearerToken,
     })
     this.generatedDmssApi = new DefaultApi(DMSSConfiguration)
+  }
+
+  blobGetById(requestParameters: BlobGetByIdRequest): Promise<Blob> {
+    return this.generatedDmssApi.blobGetById(requestParameters)
   }
 
   createDocument(url: string, data: any, token: string): Promise<any> {
