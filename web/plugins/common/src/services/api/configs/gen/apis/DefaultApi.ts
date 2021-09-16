@@ -56,6 +56,12 @@ export interface BlobGetByIdRequest {
     blobId: string;
 }
 
+export interface BlobUploadRequest {
+    dataSourceId: string;
+    blobId: string;
+    file: Blob;
+}
+
 export interface BlueprintGetRequest {
     typeRef: string;
 }
@@ -87,8 +93,9 @@ export interface DocumentGetByPathRequest {
 export interface DocumentUpdateRequest {
     dataSourceId: string;
     documentId: string;
-    body: object;
+    data: string;
     attribute?: string;
+    files?: Array<Blob>;
 }
 
 export interface ExplorerAddDocumentRequest {
@@ -260,6 +267,74 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async blobGetById(requestParameters: BlobGetByIdRequest): Promise<Blob> {
         const response = await this.blobGetByIdRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Upload
+     */
+    async blobUploadRaw(requestParameters: BlobUploadRequest): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling blobUpload.');
+        }
+
+        if (requestParameters.blobId === null || requestParameters.blobId === undefined) {
+            throw new runtime.RequiredError('blobId','Required parameter requestParameters.blobId was null or undefined when calling blobUpload.');
+        }
+
+        if (requestParameters.file === null || requestParameters.file === undefined) {
+            throw new runtime.RequiredError('file','Required parameter requestParameters.file was null or undefined when calling blobUpload.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters.file !== undefined) {
+            formParams.append('file', requestParameters.file as any);
+        }
+
+        const response = await this.request({
+            path: `/api/v1/blobs/{data_source_id}/{blob_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"blob_id"}}`, encodeURIComponent(String(requestParameters.blobId))),
+            method: 'PUT',
+            headers: headerParameters,
+            query: queryParameters,
+            body: formParams,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Upload
+     */
+    async blobUpload(requestParameters: BlobUploadRequest): Promise<any> {
+        const response = await this.blobUploadRaw(requestParameters);
         return await response.value();
     }
 
@@ -546,19 +621,13 @@ export class DefaultApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('documentId','Required parameter requestParameters.documentId was null or undefined when calling documentUpdate.');
         }
 
-        if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling documentUpdate.');
+        if (requestParameters.data === null || requestParameters.data === undefined) {
+            throw new runtime.RequiredError('data','Required parameter requestParameters.data was null or undefined when calling documentUpdate.');
         }
 
         const queryParameters: any = {};
 
-        if (requestParameters.attribute !== undefined) {
-            queryParameters['attribute'] = requestParameters.attribute;
-        }
-
         const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -569,12 +638,42 @@ export class DefaultApi extends runtime.BaseAPI {
             }
         }
 
+        const consumes: runtime.Consume[] = [
+            { contentType: 'multipart/form-data' },
+        ];
+        // @ts-ignore: canConsumeForm may be unused
+        const canConsumeForm = runtime.canConsumeForm(consumes);
+
+        let formParams: { append(param: string, value: any): any };
+        let useForm = false;
+        // use FormData to transmit files using content-type "multipart/form-data"
+        useForm = canConsumeForm;
+        if (useForm) {
+            formParams = new FormData();
+        } else {
+            formParams = new URLSearchParams();
+        }
+
+        if (requestParameters.data !== undefined) {
+            formParams.append('data', requestParameters.data as any);
+        }
+
+        if (requestParameters.attribute !== undefined) {
+            formParams.append('attribute', requestParameters.attribute as any);
+        }
+
+        if (requestParameters.files) {
+            requestParameters.files.forEach((element) => {
+                formParams.append('files', element as any);
+            })
+        }
+
         const response = await this.request({
             path: `/api/v1/documents/{data_source_id}/{document_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"document_id"}}`, encodeURIComponent(String(requestParameters.documentId))),
             method: 'PUT',
             headers: headerParameters,
             query: queryParameters,
-            body: requestParameters.body as any,
+            body: formParams,
         });
 
         return new runtime.TextApiResponse(response) as any;

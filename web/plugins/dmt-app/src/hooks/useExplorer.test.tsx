@@ -8,16 +8,12 @@ import { ApplicationContext } from '@dmt/common'
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks'
 import useExplorer, { IUseExplorer } from './useExplorer'
 import { mock } from 'jest-mock-extended'
-import {
-  NodeType,
-  DataSources,
-  IDmssAPI,
-  IDmtAPI,
-  IndexNodes,
-} from '@dmt/common'
+import { NodeType, IDmtAPI, IndexNodes } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'
 import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
+import { IDmssAPI } from '@dmt/common/services/api/interfaces/DmssAPI'
+import { DataSources } from '@dmt/common/services/api/interfaces/DataSource'
 
 const wrapper: React.FC = ({ children, application, dmssAPI, dmtAPI }: any) => (
   <AuthProvider authEnabled={false}>

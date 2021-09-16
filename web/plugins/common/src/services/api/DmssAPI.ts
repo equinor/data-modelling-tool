@@ -1,7 +1,13 @@
 import apiProvider from './utilities/Provider'
-import { BlobGetByIdRequest, Reference, RenameRequest } from './configs/gen'
-import { IDmssAPI, DataSources } from './interfaces/DmssAPI'
+import {
+  BlobGetByIdRequest,
+  DocumentUpdateRequest,
+  Reference,
+  RenameRequest,
+} from './configs/gen'
 import { Configuration, DefaultApi } from './configs/gen'
+import { DataSources } from './interfaces/DataSource'
+import { IDmssAPI } from './interfaces/DmssAPI'
 
 const handleApiError = (error: any) => {
   return error.json().then((response: any) => {
@@ -167,22 +173,9 @@ export class DmssAPI implements IDmssAPI {
       })
   }
 
-  updateDocumentById(
-    dataSourceId: string,
-    documentId: string,
-    attribute: string,
-    data: any,
-    token: string,
-    reference?: boolean
-  ): Promise<any> {
-    this.token = token
+  updateDocumentById(requestParameters: DocumentUpdateRequest): Promise<any> {
     return this.generatedDmssApi
-      .documentUpdate({
-        dataSourceId,
-        documentId,
-        body: data,
-        attribute,
-      })
+      .documentUpdate(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })

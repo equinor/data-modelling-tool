@@ -2,9 +2,10 @@ import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks'
 import * as React from 'react'
 import { IIndex, useIndex } from './useIndex'
 import { mock } from 'jest-mock-extended'
-import { IDmtAPI, IndexNodes, DataSource } from '../services'
+import { IDmtAPI, IndexNodes } from '../services'
 import { NodeType } from '../utils/variables'
 import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
+import { DataSource } from '../services/api/interfaces/DataSource'
 
 const wrapper: React.FC = ({ children }: any) => (
   <AuthProvider authEnabled={false}>{children}</AuthProvider>

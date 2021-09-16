@@ -1,6 +1,5 @@
 import io
 import json
-import os
 import unittest
 from pathlib import Path
 from uuid import UUID
@@ -116,8 +115,7 @@ class ImportPackageTest(unittest.TestCase):
                 if Path(path).suffix == ".json":
                     zip_file.writestr(path, json.dumps(document).encode())
                 elif Path(path).suffix == ".pdf":
-                    print(os.getcwd())
-                    zip_file.write(f"api/src/tests/test_data/{Path(path).name}", path)
+                    zip_file.write(f"{Path(__file__).parent}/../test_data/{Path(path).name}", path)
 
         memory_file.seek(0)
 

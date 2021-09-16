@@ -5,7 +5,7 @@ import {
 import { useModalContext } from '../context/modal/ModalContext'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintEnum, DmssAPI, IDmssAPI, Reference } from '@dmt/common'
+import { BlueprintEnum, DmssAPI, Reference } from '@dmt/common'
 
 import {
   IGlobalIndex,
@@ -14,6 +14,7 @@ import {
 import { useContext, useEffect, useState } from 'react'
 import { LayoutComponents } from '../context/dashboard/useLayout'
 import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
+import { IDmssAPI } from '@dmt/common/services/api/interfaces/DmssAPI'
 
 interface FetchUrl {
   uid: string
@@ -377,8 +378,14 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     data,
     nodeUrl,
   }: UpdateByIdProps) => {
+    const dataAsString = JSON.stringify(data)
     return dmssAPI
-      .updateDocumentById(dataSourceId, documentId, attribute, data, token)
+      .updateDocumentById({
+        dataSourceId,
+        documentId,
+        attribute,
+        data: dataAsString,
+      })
       .then((result: any) => {
         closeModal()
         if (nodeUrl) {

@@ -5,8 +5,10 @@ import DataSourceReducer, {
   DocumentActions,
   initialState,
 } from './DataSourcesReducer'
-import { DmssAPI, DataSource, IDmssAPI } from '../services'
+import { DmssAPI } from '../services'
 import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
+import { DataSource } from '../services/api/interfaces/DataSource'
+import { IDmssAPI } from '../services/api/interfaces/DmssAPI'
 
 export interface IModels {
   dataSources: DataSource[]
