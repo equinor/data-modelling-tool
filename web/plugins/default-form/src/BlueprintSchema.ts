@@ -9,7 +9,7 @@ import {
 // @ts-ignore
 import objectPath from 'object-path'
 import { BlueprintAttribute } from './domain/BlueprintAttribute'
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI, IDmssAPI } from '@dmt/common'
 
 interface IBlueprintSchema {
   getSchema: () => object
@@ -32,8 +32,7 @@ export class BlueprintSchema implements IBlueprintSchema {
   private blueprintType: BlueprintType
   private blueprint: Blueprint
   private blueprintProvider: Function
-  private dmssAPI = new DmssAPI()
-  private token: string
+  private dmssAPI: IDmssAPI
 
   constructor(
     blueprintType: BlueprintType,
@@ -47,7 +46,7 @@ export class BlueprintSchema implements IBlueprintSchema {
     this.blueprintType = blueprintType
     this.blueprint = new Blueprint(blueprintType)
     this.blueprintProvider = blueprintProvider
-    this.token = token
+    this.dmssAPI = new DmssAPI(token)
     objectPath.set(this.schema, 'required', this.getRequired(this.blueprint))
   }
 
@@ -317,8 +316,8 @@ export class BlueprintSchema implements IBlueprintSchema {
       const dataSourceId: string = attr.enumType.split('/', 1)[0]
       const path: string = attr.enumType.split('/').slice(1).join('/')
       const response = await this.dmssAPI
-        .getDocumentByPath(dataSourceId, path, this.token)
-        .catch((error) => {
+        .documentGetByPath({ dataSourceId, path })
+        .catch(({ error }: any) => {
           throw new Error(
             `Could not fetch document by path: ${dataSourceId}/${path}. (${error})`
           )
@@ -328,9 +327,11 @@ export class BlueprintSchema implements IBlueprintSchema {
         property.title = attr.name
         property.type = 'string'
         property.default = ''
+        // @ts-ignore
         property.anyOf = document.values.map((value: any, index: number) => {
           return {
             type: 'string',
+            // @ts-ignore
             title: document.labels[index],
             enum: [value],
           }

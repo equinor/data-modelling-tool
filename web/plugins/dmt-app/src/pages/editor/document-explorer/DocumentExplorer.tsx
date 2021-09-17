@@ -1,6 +1,7 @@
 import React, { useContext } from 'react'
 import {
   ApplicationContext,
+  DmssAPI,
   NodeType,
   Tree,
   TreeNodeRenderProps,
@@ -30,10 +31,11 @@ import { NotificationManager } from 'react-notifications'
 import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 export default () => {
   const index: IGlobalIndex = useGlobalIndex()
-  const explorer = useExplorer({})
   const { openModal } = useModalContext()
-  const { runAndSaveToNewDocument } = useRunnable({ explorer })
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
+  const explorer = useExplorer(dmssAPI)
+  const { runAndSaveToNewDocument } = useRunnable({ explorer })
   const application = useContext(ApplicationContext)
   const handleToggle = (props: any) => {
     explorer.toggle({

@@ -1,6 +1,6 @@
 import React, { createContext, ReactNode, useContext } from 'react'
 import { ILayout, useLayout } from './useLayout'
-import { IDmssAPI, useDataSources, IDataSources } from '@dmt/common'
+import { DmssAPI, useDataSources, IDataSources } from '@dmt/common'
 
 export interface IModels {
   layout: ILayout
@@ -29,7 +29,7 @@ export const useDashboard = () => {
 }
 
 interface DashboardProviderProps {
-  dmssAPI: IDmssAPI
+  dmssAPI: DmssAPI
   children?: ReactNode
 }
 

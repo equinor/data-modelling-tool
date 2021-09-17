@@ -46,7 +46,6 @@ export type ActionProps = {
   explorer?: IUseExplorer
 }
 
-const dmssAPI = new DmssAPI()
 const dmtAPI = new DmtAPI()
 
 export type Method = (props: ActionProps) => any
@@ -71,16 +70,16 @@ const getInput = async (
 ) => {
   const [id, attribute] = documentId.split('.', 2)
   let result: any = null
+  const dmssAPI = new DmssAPI(token)
   if (attribute) {
     // Use attribute if the document is contained in another document
-    result = await dmssAPI.getDocumentById(
+    result = await dmssAPI.getDocumentById({
       dataSourceId,
       documentId,
-      token,
-      attribute
-    )
+      attribute,
+    })
   } else {
-    result = await dmssAPI.getDocumentById(dataSourceId, documentId, token)
+    result = await dmssAPI.getDocumentById({ dataSourceId, documentId })
   }
 
   const document = result.document

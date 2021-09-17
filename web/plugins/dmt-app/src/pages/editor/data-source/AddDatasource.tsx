@@ -9,7 +9,6 @@ import { getUIPlugin } from '@dmt/core-plugins'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 
-const dmssAPI = new DmssAPI()
 const constructType = (selectedDatasourceType: string) => {
   let template = ''
 
@@ -22,19 +21,19 @@ const constructType = (selectedDatasourceType: string) => {
 }
 
 const AddDataSourceComponent = () => {
-  const explorer: IUseExplorer = useExplorer({})
-
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
+  const explorer: IUseExplorer = useExplorer(dmssAPI)
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
     'mongo-db'
   )
-  const { token } = useContext(AuthContext)
 
   const ExternalPlugin = getUIPlugin('default-form')
 
   const handleOnSubmit = (data: any) => {
     data.type = selectedDatasourceType
     dmssAPI
-      .saveDataSource(data.name, data, token)
+      .saveDataSource({ dataSourceId: data.name, dataSourceRequest: data })
       .then(() => {
         NotificationManager.success(`Created datasource ${data.name}`)
         // @todo fix when endpoint is ready.

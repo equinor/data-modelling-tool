@@ -14,6 +14,7 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
+import { AuthContext } from '../../../../../app/src/context/auth/AuthContext'
 
 const NodeWrapper = styled.div`
   display: flex;
@@ -68,8 +69,8 @@ const MultiSelector = ({
 }: MultiSelectorProps) => {
   const [selectedPackages, setSelectedPackages] = useState<string[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  const dmssAPI = new DmssAPI()
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssAPI)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
@@ -205,12 +206,7 @@ const TreeNodeSelector = (props: any) => {
   )
 }
 
-export const PackagesPicker = ({
-  onChange,
-  formData,
-  uiSchema,
-  explorer,
-}: any) => {
+export const PackagesPicker = ({ onChange, formData, uiSchema }: any) => {
   function PackageFilter(nodeData: any) {
     return nodeData.meta?.isRootPackage
   }
@@ -223,12 +219,7 @@ export const PackagesPicker = ({
   })
 }
 
-export const BlueprintsPicker = ({
-  onChange,
-  formData,
-  uiSchema,
-  explorer,
-}: any) => {
+export const BlueprintsPicker = ({ onChange, formData, uiSchema }: any) => {
   function BlueprintsFilter(nodeData: any) {
     return nodeData?.meta?.type === BlueprintEnum.BLUEPRINT
   }

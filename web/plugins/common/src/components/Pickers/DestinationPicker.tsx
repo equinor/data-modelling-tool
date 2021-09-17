@@ -13,6 +13,7 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
+import { AuthContext } from '../../../../../app/src/context/auth/AuthContext'
 
 const SelectDestinationButton = styled.button`
   padding: 0 2.5px;
@@ -46,9 +47,9 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   } = props
   const [destination, setDestination] = useState<string>(formData)
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  const dmssAPI = new DmssAPI()
-  const dataSources: IDataSources = useDataSources(dmssAPI)
+  const { token } = useContext(AuthContext)
+  const dmssApi = new DmssAPI(token)
+  const dataSources: IDataSources = useDataSources(dmssApi)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,

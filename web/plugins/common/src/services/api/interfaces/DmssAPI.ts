@@ -24,11 +24,11 @@ export interface IDmssAPI {
 
   updateDocumentById(requestParameters: DocumentUpdateRequest): Promise<any>
 
-  searchDocuments(requestParameters: SearchRequest): Promise<object>
-
-  getDocumentByPath(
+  documentGetByPath(
     requestParameters: DocumentGetByPathRequest
   ): Promise<object>
+
+  searchDocuments(requestParameters: SearchRequest): Promise<object>
 
   getBlueprint(requestParameters: BlueprintGetRequest): Promise<object>
 
