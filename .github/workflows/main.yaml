@@ -56,7 +56,9 @@ jobs:
         run: docker run --rm api-development pytest tests
 
       - name: "API BDD Tests"
-        run: docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm dmss reset-app
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave
 
   test-web:
     runs-on: ubuntu-latest
