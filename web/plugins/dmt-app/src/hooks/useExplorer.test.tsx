@@ -9,8 +9,15 @@ import useExplorer, { IUseExplorer } from './useExplorer'
 import { mock } from 'jest-mock-extended'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'
-import { IDmssAPI, AuthProvider, DataSources,NodeType, IDmtAPI, IndexNodes, ApplicationContext  } from '@dmt/common'
-
+import {
+  IDmssAPI,
+  AuthProvider,
+  DataSources,
+  NodeType,
+  IDmtAPI,
+  IndexNodes,
+  ApplicationContext,
+} from '@dmt/common'
 
 const wrapper: React.FC = ({ children, application, dmssAPI, dmtAPI }: any) => (
   <AuthProvider authEnabled={false}>

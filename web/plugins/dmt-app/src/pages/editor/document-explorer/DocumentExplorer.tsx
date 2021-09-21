@@ -5,7 +5,7 @@ import {
   NodeType,
   Tree,
   TreeNodeRenderProps,
-  AuthContext
+  AuthContext,
 } from '@dmt/common'
 import { DocumentNode } from './DocumentNode'
 import {

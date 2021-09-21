@@ -13,7 +13,7 @@ import {
   DataSources,
   JsonView,
   ApplicationContext,
-  AuthContext
+  AuthContext,
 } from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
 

@@ -2,7 +2,13 @@ import IndexProvider, { useGlobalIndex } from './IndexProvider'
 import React from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 import { mock } from 'jest-mock-extended'
-import { DataSource, IDmssAPI, ApplicationContext, IDmtAPI, AuthProvider } from '@dmt/common'
+import {
+  DataSource,
+  IDmssAPI,
+  ApplicationContext,
+  IDmtAPI,
+  AuthProvider,
+} from '@dmt/common'
 
 const wrapper: React.FC = ({
   children,

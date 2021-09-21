@@ -12,7 +12,7 @@ import {
   Reference,
   OverrideTypeButton,
   DmssAPI,
-  AuthContext
+  AuthContext,
 } from '@dmt/common'
 
 export enum ContextMenuActions {

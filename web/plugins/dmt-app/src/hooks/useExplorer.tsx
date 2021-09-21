@@ -10,7 +10,7 @@ import {
   DmssAPI,
   DocumentGetByIdRequest,
   Reference,
-  AuthContext
+  AuthContext,
 } from '@dmt/common'
 
 import {
