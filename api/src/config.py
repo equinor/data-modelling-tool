@@ -61,6 +61,11 @@ class Config:
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
     DYNAMIC_MODELS = "dynamic_models"
+    # Azure stuff
+    AZURE_SUBSCRIPTION = os.getenv("AZURE_SUBSCRIPTION")
+    AZURE_RESOURCE_GROUP = os.getenv("AZURE_RESOURCE_GROUP")
+    AZURE_AUTH_LOCATION = os.getenv("AZURE_AUTH_LOCATION")
+    AZURE_CREDENTIAL_FILE = os.getenv("AZURE_CREDENTIAL_FILE")
     CACHE_MAX_SIZE = 200
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent}/home")
     DMT_ENTITIES_HOME = f"{Path(__file__).parent}/demo_app_home"
@@ -73,6 +78,12 @@ class Config:
     APP_NAMES = next(os.walk(APPLICATION_HOME))[1]  # Every folder under HOME represents a separate app
     APP_SETTINGS: Dict[str, dict] = {}  # Dict holding settings for all loaded applications
     APPS_DATASOURCE_SUBFOLDER = "data_sources"
+
+    # Write the content of the Azure Cred env var into a file that can be read
+    if AZURE_CREDENTIAL_FILE:
+        os.makedirs(Path(AZURE_AUTH_LOCATION).parent, exist_ok=True)
+        with open(AZURE_AUTH_LOCATION, "w") as file_handler:
+            file_handler.write(AZURE_CREDENTIAL_FILE)
 
     def load_app_settings(self):
         for app in self.APP_NAMES:

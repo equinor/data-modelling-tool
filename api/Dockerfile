@@ -17,7 +17,6 @@ FROM base as development
 RUN poetry install
 COPY src .
 COPY .flake8 .bandit ./
-#USER 1000
 
 FROM base as prod
 RUN poetry install --no-dev

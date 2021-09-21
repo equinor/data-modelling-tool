@@ -1,0 +1,13 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "ShellJob",
+  "description": "Description of a shell-job. That is a job that will run in the shell. Only for testing.",
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
+  "attributes": [
+    {
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "script"
+    }
+  ]
+}
