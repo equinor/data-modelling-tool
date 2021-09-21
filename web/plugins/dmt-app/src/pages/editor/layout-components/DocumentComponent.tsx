@@ -8,8 +8,7 @@ import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { getUIPlugin } from '@dmt/core-plugins'
-import { DmssAPI, DmtAPI } from '@dmt/common'
-import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
+import { DmssAPI, DmtAPI, AuthContext } from '@dmt/common'
 
 const Wrapper = styled.div`
   padding: 20px;

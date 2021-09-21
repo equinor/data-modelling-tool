@@ -12,8 +12,8 @@ import {
   Reference,
   OverrideTypeButton,
   DmssAPI,
+  AuthContext
 } from '@dmt/common'
-import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 
 export enum ContextMenuActions {
   CREATE = 'CREATE',

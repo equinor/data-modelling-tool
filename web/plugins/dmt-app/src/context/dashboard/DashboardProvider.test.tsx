@@ -1,9 +1,8 @@
 import React from 'react'
 import { act, renderHook } from '@testing-library/react-hooks'
 import DashboardProvider, { useDashboard } from './DashboardProvider'
-import { ApplicationContext, DataSources, IDmssAPI } from '@dmt/common'
+import { ApplicationContext, DataSources, IDmssAPI, AuthProvider } from '@dmt/common'
 import { mock } from 'jest-mock-extended'
-import { AuthProvider } from '../../../../../app/src/context/auth/AuthContext'
 
 const wrapper: React.FC = ({ children, application, api }: any) => (
   <AuthProvider authEnabled={false}>

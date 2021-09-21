@@ -10,7 +10,7 @@ import { DataSource } from '../services'
 import DmtApi from '../services/api/DmtAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
 //@ts-ignore
-import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
+import { AuthContext } from '@dmt/common'
 
 export interface IModels {
   tree: ITree

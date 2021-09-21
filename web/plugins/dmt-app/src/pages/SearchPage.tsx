@@ -13,9 +13,9 @@ import {
   DataSources,
   JsonView,
   ApplicationContext,
+  AuthContext
 } from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
-import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 const dmssAPI = new DmssAPI()
 
