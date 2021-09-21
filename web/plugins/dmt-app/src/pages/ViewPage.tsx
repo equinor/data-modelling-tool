@@ -21,13 +21,13 @@ const Group = styled.div`
   background-color: white;
 `
 
-const dmssAPI = new DmssAPI()
 const dmtAPI = new DmtAPI()
 
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
   return (
     <ExternalPlugin
       dataSourceId={dataSourceId}
@@ -35,7 +35,7 @@ const View = (props: any) => {
       uiRecipe={uiRecipe}
       uiRecipeName={uiRecipe.name}
       document={document}
-      fetchBlueprint={(type: string) => dmssAPI.getBlueprint(type, token)}
+      fetchBlueprint={(typeRef: string) => dmssAPI.getBlueprint({ typeRef })}
       createDocument={dmtAPI.createEntity}
     />
   )
@@ -81,10 +81,11 @@ export default () => {
   const [blueprint, setBlueprint] = useState(null)
   const [error, setError] = useState(null)
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
     dmssAPI
-      .getDocumentById(data_source, entity_id, token)
+      .getDocumentById({ dataSourceId: data_source, documentId: entity_id })
       .then((result) => {
         setBlueprint(result.blueprint)
         setDocument(result.document)

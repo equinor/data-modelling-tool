@@ -8,16 +8,12 @@ import { ApplicationContext } from '@dmt/common'
 import { act, renderHook, RenderHookResult } from '@testing-library/react-hooks'
 import useExplorer, { IUseExplorer } from './useExplorer'
 import { mock } from 'jest-mock-extended'
-import {
-  NodeType,
-  DataSources,
-  IDmssAPI,
-  IDmtAPI,
-  IndexNodes,
-} from '@dmt/common'
+import { NodeType, IDmtAPI, IndexNodes } from '@dmt/common'
 import IndexProvider from '../context/global-index/IndexProvider'
 import { LayoutComponents } from '../context/dashboard/useLayout'
 import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
+import { IDmssAPI } from '@dmt/common'
+import { DataSources } from '@dmt/common'
 
 const wrapper: React.FC = ({ children, application, dmssAPI, dmtAPI }: any) => (
   <AuthProvider authEnabled={false}>
@@ -133,16 +129,10 @@ describe('the explorer hook', () => {
   beforeEach(async () => {
     mocks = getMocks()
     await act(async () => {
-      response = renderHook(
-        () =>
-          useExplorer({
-            dmssAPI: mocks.dmssAPI,
-          }),
-        {
-          wrapper,
-          initialProps: { ...mocks, application },
-        }
-      )
+      response = renderHook(() => useExplorer(mocks.dmssAPI), {
+        wrapper,
+        initialProps: { ...mocks, application },
+      })
       // We need to wait for the tree and other things to be ready.
       await response.waitFor(() => {
         expect(

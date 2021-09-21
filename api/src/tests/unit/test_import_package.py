@@ -1,6 +1,7 @@
 import io
 import json
 import unittest
+from pathlib import Path
 from uuid import UUID
 from zipfile import ZipFile
 
@@ -11,6 +12,8 @@ ROOT
  |
  |- WindTurbine.json
  |- myTurbine.json
+ |- myPDF.json
+ |- myPDF.pdf
  |- Moorings
     |- Mooring.json
     |- SpecialMooring.json
@@ -23,7 +26,7 @@ ROOT
 """
 
 test_documents = {
-    "MyRootPackage/WindTurbine": {
+    "MyRootPackage/WindTurbine.json": {
         "name": "WindTurbine",
         "type": "system/SIMOS/Blueprint",
         "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
@@ -38,7 +41,7 @@ test_documents = {
             }
         ],
     },
-    "MyRootPackage/Moorings/Mooring": {
+    "MyRootPackage/Moorings/Mooring.json": {
         "name": "Mooring",
         "type": "system/SIMOS/Blueprint",
         "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
@@ -52,7 +55,7 @@ test_documents = {
             }
         ],
     },
-    "MyRootPackage/Moorings/SpecialMooring": {
+    "MyRootPackage/Moorings/SpecialMooring.json": {
         "name": "SpecialMooring",
         "type": "system/SIMOS/Blueprint",
         "extends": ["system/SIMOS/DefaultUiRecipes", "/Moorings/Mooring"],
@@ -66,26 +69,36 @@ test_documents = {
             }
         ],
     },
-    "MyRootPackage/myTurbine": {
+    "MyRootPackage/myTurbine.json": {
         "name": "myTurbine",
         "type": "/WindTurbine",
         "description": "This is a wind turbine demoing uncontained relationships",
         "Mooring": {"_id": "apekatt", "type": "/Moorings/Mooring", "name": "myTurbineMooring"},
     },
-    "MyRootPackage/Moorings/myTurbineMooring": {
+    "MyRootPackage/test_pdf.pdf": None,
+    "MyRootPackage/myPDF.json": {
+        "name": "MyPdf",
+        "type": "system/SIMOS/blob_types/PDF",
+        "description": "Test",
+        "blob": {"name": "/test_pdf.pdf", "type": "system/SIMOS/Blob"},
+        "author": "Stig Oskar",
+        "size": 4003782,
+        "tags": ["Marine", "Renewable"],
+    },
+    "MyRootPackage/Moorings/myTurbineMooring.json": {
         "_id": "apekatt",
         "name": "myTurbineMooring",
         "type": "/Moorings/Mooring",
         "description": "",
         "Bigness": 10,
     },
-    "MyRootPackage/A/SubFolder/FileNameDoesNotMatch": {
+    "MyRootPackage/A/SubFolder/FileNameDoesNotMatch.json": {
         "name": "myTurbine2",
         "type": "/WindTurbine",
         "description": "This is a wind turbine demoing uncontained relationships",
         "Mooring": {"_id": "apekatt", "type": "/Moorings/Mooring", "name": "myTurbineMooring"},
     },
-    "MyRootPackage/B/myTurbine3": {
+    "MyRootPackage/B/myTurbine3.json": {
         "name": "myTurbine3",
         "type": "/WindTurbine",
         "description": "This is a wind turbine demoing uncontained relationships",
@@ -99,7 +112,10 @@ class ImportPackageTest(unittest.TestCase):
         memory_file = io.BytesIO()
         with ZipFile(memory_file, mode="w") as zip_file:
             for path, document in test_documents.items():
-                zip_file.writestr(f"{path}.json", json.dumps(document).encode())
+                if Path(path).suffix == ".json":
+                    zip_file.writestr(path, json.dumps(document).encode())
+                elif Path(path).suffix == ".pdf":
+                    zip_file.write(f"{Path(__file__).parent}/../test_data/{Path(path).name}", path)
 
         memory_file.seek(0)
 
@@ -124,3 +140,7 @@ class ImportPackageTest(unittest.TestCase):
 
         specialMooring = folder_Moorings.search("SpecialMooring")
         assert len(specialMooring["extends"]) == 2
+
+        myPDF = root_package.search("MyPdf")
+        assert isinstance(myPDF["blob"]["_blob_data_"], bytes)
+        assert len(myPDF["blob"]["_blob_data_"]) == 531540

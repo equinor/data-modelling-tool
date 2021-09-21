@@ -1,0 +1,9 @@
+{
+  "name": "myStask",
+  "type": "/SIMARuntimeService/STask",
+  "blob": {
+    "name": "/SIMARuntimeService/workflow.stask",
+    "type": "system/SIMOS/Blob",
+    "_blob_id": "4ec0d646-907c-4eba-9e65-24106236d61b"
+  }
+}

@@ -1,12 +1,17 @@
-import { Reference, RenameRequest } from '../configs/gen'
-
-export type DataSource = {
-  id: string
-  name: string
-  type?: string
-  host?: string
-}
-export interface DataSources extends Array<DataSource> {}
+import {
+  BlueprintGetRequest,
+  DataSourceSaveRequest,
+  DocumentGetByIdRequest,
+  DocumentGetByPathRequest,
+  DocumentUpdateRequest,
+  ExplorerAddToParentRequest,
+  ExplorerRenameRequest,
+  GetDocumentResponse,
+  ReferenceDeleteRequest,
+  ReferenceInsertRequest,
+  SearchRequest,
+} from '../configs/gen'
+import { DataSources } from './DataSource'
 
 export interface IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any>
@@ -15,62 +20,35 @@ export interface IDmssAPI {
 
   updateDocument(url: string, data: any, token: string): Promise<any>
 
-  explorerDocumentRename(
-    dataSourceId: string,
-    renameRequest: RenameRequest,
-    token: string
-  ): Promise<any>
+  explorerDocumentRename(requestParameters: ExplorerRenameRequest): Promise<any>
 
-  updateDocumentById(
-    dataSourceId: string,
-    documentId: string,
-    attribute: string,
-    data: any,
-    token: string
-  ): Promise<any>
+  updateDocumentById(requestParameters: DocumentUpdateRequest): Promise<any>
 
-  searchDocuments(
-    dataSourceId: string,
-    query: any,
-    token: string,
-    sortByAttribute?: string
-  ): Promise<any>
+  documentGetByPath(
+    requestParameters: DocumentGetByPathRequest
+  ): Promise<object>
 
-  getDocumentByPath(
-    dataSourceId: string,
-    path: string,
-    token: string
-  ): Promise<any>
+  searchDocuments(requestParameters: SearchRequest): Promise<object>
 
-  getBlueprint(typeRef: string, token: string): Promise<any>
+  getBlueprint(requestParameters: BlueprintGetRequest): Promise<object>
 
   getDocumentById(
-    dataSourceId: string,
-    documentId: string,
-    token: string,
-    attribute?: string
-  ): Promise<any>
+    requestParameters: DocumentGetByIdRequest
+  ): Promise<GetDocumentResponse>
 
   addDocumentToParent(
-    dataSourceId: string,
-    data: any,
-    token: string
+    requestParameters: ExplorerAddToParentRequest
   ): Promise<any>
 
   insertDocumentReference(
-    dataSourceId: string,
-    documentDottedId: string,
-    reference: Reference,
-    token: string
-  ): Promise<any>
+    requestParameters: ReferenceInsertRequest
+  ): Promise<object>
 
-  saveDataSource(dataSourceId: string, data: any, token: string): Promise<any>
+  saveDataSource(requestParameters: DataSourceSaveRequest): Promise<any>
 
   removeDocumentReference(
-    dataSourceId: string,
-    documentDottedId: string,
-    token: string
-  ): Promise<any>
+    requestParameters: ReferenceDeleteRequest
+  ): Promise<object>
 
-  getAllDataSources(token: string): Promise<DataSources>
+  getAllDataSources(): Promise<DataSources>
 }

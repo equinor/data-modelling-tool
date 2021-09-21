@@ -1,9 +1,24 @@
 import apiProvider from './utilities/Provider'
-import { Reference, RenameRequest } from './configs/gen'
-import { IDmssAPI, DataSources } from './interfaces/DmssAPI'
-import { Configuration, DefaultApi } from './configs/gen'
+import {
+  BlobGetByIdRequest,
+  BlueprintGetRequest,
+  Configuration,
+  DataSourceSaveRequest,
+  DefaultApi,
+  DocumentGetByIdRequest,
+  DocumentGetByPathRequest,
+  DocumentUpdateRequest,
+  ExplorerAddToParentRequest,
+  ExplorerRenameRequest,
+  ReferenceDeleteRequest,
+  ReferenceInsertRequest,
+  SearchRequest,
+} from './configs/gen'
+import { DataSources } from './interfaces/DataSource'
+import { IDmssAPI } from './interfaces/DmssAPI'
 
 const handleApiError = (error: any) => {
+  // @ts-ignore
   return error.json().then((response: any) => {
     throw new Error(
       response.message || response.detail || JSON.stringify(response)
@@ -12,189 +27,129 @@ const handleApiError = (error: any) => {
 }
 
 export class DmssAPI implements IDmssAPI {
-  token = ''
   generatedDmssApi: DefaultApi
-  getBearerToken = () => {
-    return 'Bearer ' + this.token
-  }
 
-  constructor() {
+  constructor(token: string) {
     const DMSSConfiguration = new Configuration({
       basePath: '/dmss',
-      accessToken: this.getBearerToken,
+      accessToken: token,
     })
     this.generatedDmssApi = new DefaultApi(DMSSConfiguration)
+  }
+
+  blobGetById(requestParameters: BlobGetByIdRequest): Promise<Blob> {
+    return this.generatedDmssApi.blobGetById(requestParameters)
   }
 
   createDocument(url: string, data: any, token: string): Promise<any> {
     return apiProvider.post(url, data, token)
   }
 
-  addDocumentToParent(
-    dataSourceId: string,
-    data: any,
-    token: string
-  ): Promise<any> {
-    this.token = token
+  addDocumentToParent({
+    dataSourceId,
+    addToParentRequest,
+  }: ExplorerAddToParentRequest): Promise<any> {
     return this.generatedDmssApi
       .explorerAddToParent({
         dataSourceId,
-        addToParentRequest: data,
+        addToParentRequest,
       })
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
-  getDocumentByPath(
-    dataSourceId: string,
-    path: string,
-    token: string
-  ): Promise<any> {
-    this.token = token
+  documentGetByPath(
+    requestParameters: DocumentGetByPathRequest
+  ): Promise<object> {
     return this.generatedDmssApi
-      .documentGetByPath({ dataSourceId, path })
-      .catch((error: any) => {
-        return handleApiError(error)
-      })
-  }
-  getBlueprint(typeRef: string, token: string): Promise<any> {
-    this.token = token
-    return this.generatedDmssApi
-      .blueprintGet({ typeRef: typeRef })
+      .documentGetByPath(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
-  getDocumentById(
-    dataSourceId: string,
-    documentId: string,
-    token: string,
-    attribute?: string
-  ): Promise<any> {
-    this.token = token
-    if (attribute) {
-      return this.generatedDmssApi
-        .documentGetById({ dataSourceId, documentId, attribute })
-        .catch((error: any) => {
-          return handleApiError(error)
-        })
-    } else {
-      return this.generatedDmssApi
-        .documentGetById({ dataSourceId, documentId })
-        .catch((error: any) => {
-          return handleApiError(error)
-        })
-    }
+  getBlueprint({ typeRef }: BlueprintGetRequest): Promise<object> {
+    return this.generatedDmssApi
+      .blueprintGet({ typeRef })
+      .catch((error: any) => {
+        return handleApiError(error)
+      })
+  }
+
+  getDocumentById(requestParameters: DocumentGetByIdRequest): Promise<any> {
+    return this.generatedDmssApi
+      .documentGetById(requestParameters)
+      .catch((error: any) => {
+        return handleApiError(error)
+      })
   }
 
   insertDocumentReference(
-    dataSourceId: string,
-    documentDottedId: string,
-    reference: Reference,
-    token: string
-  ): Promise<any> {
-    this.token = token
+    requestParameters: ReferenceInsertRequest
+  ): Promise<object> {
     return this.generatedDmssApi
-      .referenceInsert({
-        dataSourceId,
-        documentDottedId,
-        reference,
-      })
+      .referenceInsert(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
   removeDocumentReference(
-    dataSourceId: string,
-    documentDottedId: string,
-    token: string
-  ): Promise<any> {
-    this.token = token
+    requestParameters: ReferenceDeleteRequest
+  ): Promise<object> {
     return this.generatedDmssApi
-      .referenceDelete({ dataSourceId, documentDottedId })
+      .referenceDelete(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
   removeDocument(url: string, token: string): Promise<any> {
-    this.token = token
     return apiProvider.remove(url, token)
   }
 
-  updateDocument(url: string, data: any, token: string): Promise<any> {
-    this.token = token
+  updateDocument(url: string, data: any): Promise<any> {
     return this.generatedDmssApi.documentUpdate(data).catch((error: any) => {
       return handleApiError(error)
     })
   }
 
   explorerDocumentRename(
-    dataSourceId: string,
-    renameRequest: RenameRequest,
-    token: string
+    requestParameters: ExplorerRenameRequest
   ): Promise<any> {
-    this.token = token
     return this.generatedDmssApi
-      .explorerRename({ dataSourceId, renameRequest })
+      .explorerRename(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
-  searchDocuments(
-    dataSourceId: string,
-    query: any,
-    token: string,
-    sortByAttribute?: string
-  ): Promise<any> {
-    this.token = token
+  searchDocuments(requestParameters: SearchRequest): Promise<object> {
     return this.generatedDmssApi
-      .search({
-        dataSourceId: dataSourceId,
-        body: query,
-        sortByAttribute: sortByAttribute,
-      })
+      .search(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
-  updateDocumentById(
-    dataSourceId: string,
-    documentId: string,
-    attribute: string,
-    data: any,
-    token: string,
-    reference?: boolean
-  ): Promise<any> {
-    this.token = token
+  updateDocumentById(requestParameters: DocumentUpdateRequest): Promise<any> {
     return this.generatedDmssApi
-      .documentUpdate({
-        dataSourceId,
-        documentId,
-        body: data,
-        attribute,
-      })
+      .documentUpdate(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
-  saveDataSource(dataSourceId: string, data: any, token: string): Promise<any> {
-    this.token = token
+  saveDataSource(requestParameters: DataSourceSaveRequest): Promise<any> {
     return this.generatedDmssApi
-      .dataSourceSave({ dataSourceId, dataSourceRequest: data })
+      .dataSourceSave(requestParameters)
       .catch((error: any) => {
         return handleApiError(error)
       })
   }
 
-  getAllDataSources(token: string): Promise<DataSources> {
-    this.token = token
+  getAllDataSources(): Promise<DataSources> {
     return this.generatedDmssApi
       .dataSourceGetAll()
       .then((value: any) => {

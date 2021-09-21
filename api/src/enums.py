@@ -43,6 +43,7 @@ class PrimitiveDataTypes(Enum):
 
 class SIMOS(Enum):
     BLUEPRINT = "system/SIMOS/Blueprint"
+    BLOB = "system/SIMOS/Blob"
     BLUEPRINT_ATTRIBUTE = "system/SIMOS/BlueprintAttribute"
     APPLICATION = "system/SIMOS/Application"
     ATTRIBUTE_TYPES = "system/SIMOS/AttributeTypes"

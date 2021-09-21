@@ -26,7 +26,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 
   if (!document) return <div>Loading...</div>
 
-  return <ViewerPDFPlugin document={document} />
+  return <ViewerPDFPlugin document={document} dataSourceId={dataSourceId} />
 }
 
 export const plugins: any = [

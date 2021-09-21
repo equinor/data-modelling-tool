@@ -1,7 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import useExplorer, { IUseExplorer } from '../hooks/useExplorer'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { DmssAPI } from '@dmt/common'
+import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 type Props = {
   dataSourceId: string
   documentId: string
@@ -9,7 +11,9 @@ type Props = {
 }
 
 export default ({ dataSourceId, documentId, render }: Props) => {
-  const explorer: IUseExplorer = useExplorer({})
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
+  const explorer: IUseExplorer = useExplorer(dmssAPI)
   const [document, setDocument] = useState()
   const [loading, setLoading] = useState(true)
   useEffect(() => {

@@ -189,7 +189,7 @@ python-versions = "*"
 
 [[package]]
 name = "dmss-api"
-version = "0.3.8"
+version = "0.3.8.2"
 description = "Data Modelling Storage Service"
 category = "main"
 optional = false
@@ -933,8 +933,8 @@ distlib = [
     {file = "distlib-0.3.2.zip", hash = "sha256:106fef6dc37dd8c0e2c0a60d3fca3e77460a48907f335fa28420463a6f799736"},
 ]
 dmss-api = [
-    {file = "dmss-api-0.3.8.tar.gz", hash = "sha256:f89427c8d0b67b7b34f4f58d1810ae2180891236b6ed0deeb38f0c1cb046107e"},
-    {file = "dmss_api-0.3.8-py3-none-any.whl", hash = "sha256:995fb8f828399dee793f00ce4ed03e990b5795d78bc1f12d0d86fa55222afe18"},
+    {file = "dmss-api-0.3.8.2.tar.gz", hash = "sha256:c235d7e57760bfcbcf8064bea1a8cfab5edd76c32014f4cb28f013b24b46d1bb"},
+    {file = "dmss_api-0.3.8.2-py3-none-any.whl", hash = "sha256:0e8cce97b3fac4b0df1d9089f4d990c98eb11a8c10e7a5bb78bf66bcf98d1696"},
 ]
 dparse = [
     {file = "dparse-0.5.1-py3-none-any.whl", hash = "sha256:e953a25e44ebb60a5c6efc2add4420c177f1d8404509da88da9729202f306994"},

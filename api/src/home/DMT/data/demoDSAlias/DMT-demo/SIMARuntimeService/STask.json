@@ -1,0 +1,14 @@
+{
+  "name": "STask",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/DefaultUiRecipes","system/SIMOS/NamedEntity"],
+  "description": "Just a simple wrapper for a SIMA STask Blob",
+  "attributes": [
+    {
+      "name": "blob",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "The stask"
+    }
+  ]
+}

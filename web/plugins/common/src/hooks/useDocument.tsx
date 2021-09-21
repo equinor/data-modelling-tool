@@ -6,8 +6,8 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
   const [document, setDocument] = useState(null)
   const [isLoading, setLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
-  const dmssAPI = new DmssAPI()
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
     setLoading(true)
@@ -15,7 +15,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
     const id = `${target.shift()}`
     const attribute = target.join('.')
     dmssAPI
-      .getDocumentById(dataSourceId, id, attribute, token)
+      .getDocumentById({ dataSourceId, documentId: id, attribute })
       .then((document) => {
         console.log(document)
         setDocument(document.document)

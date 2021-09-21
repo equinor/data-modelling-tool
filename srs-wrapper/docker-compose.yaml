@@ -1,0 +1,27 @@
+version: "3.8"
+
+services:
+  dmt-srs:
+    build:
+      context: application
+    image: mariner.azurecr.io/dmt-job/srs:latest
+    environment:
+#      SIMA_LICENSE: |
+#        $(cat ./sima.lic)
+      DMSS_HOST: dmss
+      DMSS_PORT: "5000"
+    networks:
+      - data-modelling-storage-service_default
+    volumes:
+      - ./application/dmt_job_wrapper.py:/code/dmt_job_wrapper.py
+    ports:
+#      - "8082:8082"
+      - "8083:8083"
+      - "8084:8084"
+      - "8085:8085"
+    # This stask is part of the DemoDS in DMT with a static UUID
+    command: ["run", "--stask-id", "DemoDS/4ec0d646-907c-4eba-9e65-24106236d61b"]
+
+networks:
+  data-modelling-storage-service_default:
+    external: true

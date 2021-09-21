@@ -10,7 +10,7 @@ from dmss_api import ApiException
 from progress.bar import IncrementalBar
 
 from domain_classes.package import Package
-from enums import BLOB_TYPES
+from enums import SIMOS
 from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
 from restful import request_object as req
 from restful import response_object as res
@@ -21,10 +21,11 @@ from services.document_service import DocumentService
 keys_to_check = ("type", "attributeType", "_id", "extends")  # These keys can contain a reference
 
 
-def replace_relative_references(key: str, value, reference_table: dict = None) -> Any:
+def replace_relative_references(key: str, value, reference_table: dict = None, zip_file: ZipFile = None) -> Any:
     """
     Takes a key-value pair, and returns the passed value, with relative
     references updated with absolute ones found in the 'reference_table'.
+    For Blob-entities. Insert the binary data from the file into the entity.
     It digs down on complex types.
     @param reference_table: A dict like so; {"fileName": {"id": newUUID, "absolute": ds/root-package/file}
     @param key: Name of the attribute being checked in the document
@@ -61,6 +62,13 @@ def replace_relative_references(key: str, value, reference_table: dict = None) -
                 raise ImportReferenceNotFoundException(value) from None
 
     # If the value is a complex type, dig down recursively
+    if isinstance(value, dict) and value.get("type") == SIMOS.BLOB.value:  # Add blob data to the blob-entity
+        if value["name"][0] == "/":  # It's a relative reference to the blob file. Get root_package_name...
+            root_package_name = f"{zip_file.filelist[0].filename.split('/', 1)[0]}"
+            # '_blob_data' is a temporary key for keeping the binary data
+            return {"_blob_data_": zip_file.read(f"{root_package_name}{value['name']}"), **value}
+        else:
+            return {"_blob_data_": zip_file.read(value["name"]), **value}
     if isinstance(value, dict):
         return {k: replace_relative_references(k, v, reference_table) for k, v in value.items()}
     if isinstance(value, list):
@@ -74,8 +82,7 @@ def add_file_to_package(path: Path, package: Package, document: dict) -> Tuple[U
         uid = uuid4()
         # If the document has an "_id", return it as an alias, if not use UUID as alias.
         alias = document.get("_id", str(uid))
-        if document["type"] not in BLOB_TYPES:
-            package.content.append({**document, "_id": alias})
+        package.content.append({**document, "_id": alias})
         return uid, alias
 
     sub_folder = next((p for p in package.content if p["name"] == path.parts[0]), None)
@@ -132,12 +139,30 @@ def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: i
         # Now that we have the entire package as a Package tree, traverse it, and replace relative references
         root_package.traverse_documents(
             lambda document: {
-                k: replace_relative_references(k, v, reference_table=reference_table) for k, v in document.items()
+                k: replace_relative_references(k, v, reference_table=reference_table, zip_file=zip_file)
+                for k, v in document.items()
             },
             update=True,
         )
 
     return root_package
+
+
+def upload_blobs_in_document(document: dict, data_source_id: str) -> dict:
+    """
+    Uploads any 'system/SIMOS/Blob' types in the document, and replacing the data with created uuid's
+    """
+    if document["type"] == SIMOS.BLOB.value:
+        blob_id = document.get("_blob_id", str(uuid4()))
+        blob_name = Path(document["name"]).stem
+        file_like = io.BytesIO(document["_blob_data_"])
+        file_like.name = blob_name
+        dmss_api.blob_upload(data_source_id, blob_id, file_like)
+        return {"name": blob_name, "type": SIMOS.BLOB.value, "_blob_id": blob_id, "size": len(document["_blob_data_"])}
+    for key, value in document.items():
+        if isinstance(value, dict) and value.get("type") == SIMOS.BLOB.value:
+            document[key] = upload_blobs_in_document(value, data_source_id)
+    return document
 
 
 def import_package_tree(root_package: Package, data_source_id: str) -> None:
@@ -151,6 +176,7 @@ def import_package_tree(root_package: Package, data_source_id: str) -> None:
         suffix="%(percent).0f%% - [%(eta)ds/%(elapsed)ds]",
     ) as bar:
         for document in documents_to_upload:
+            document = upload_blobs_in_document(document, data_source_id)
             dmss_api.explorer_add_raw(data_source_id, document)
             bar.next()
 

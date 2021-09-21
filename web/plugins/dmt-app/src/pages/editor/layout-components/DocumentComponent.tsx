@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 
 import styled from 'styled-components'
 import FetchDocument from '../../../utils/FetchDocument'
@@ -8,7 +8,8 @@ import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { getUIPlugin } from '@dmt/core-plugins'
-import { DmtAPI } from '@dmt/common'
+import { DmssAPI, DmtAPI } from '@dmt/common'
+import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -17,8 +18,9 @@ const dmtAPI = new DmtAPI()
 
 const View = (props: any) => {
   const { dataSourceId, documentId, uiRecipe, document } = props
-
-  const explorer: IUseExplorer = useExplorer({})
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
+  const explorer: IUseExplorer = useExplorer(dmssAPI)
   const [loading, setLoading] = useState(false)
 
   const fetchBlueprint = (type: string) => {

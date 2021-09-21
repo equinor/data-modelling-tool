@@ -12,6 +12,7 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
+import { AuthContext } from '../../../../../app/src/context/auth/AuthContext'
 
 export type BlueprintPickerProps = {
   onChange: Function
@@ -21,8 +22,9 @@ export type BlueprintPickerProps = {
 }
 
 export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
-  const dmssAPI = new DmssAPI()
-  const dataSources: IDataSources = useDataSources(dmssAPI)
+  const { token } = useContext(AuthContext)
+  const dmssApi = new DmssAPI(token)
+  const dataSources: IDataSources = useDataSources(dmssApi)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({
     dataSources: dataSources.models.dataSources,

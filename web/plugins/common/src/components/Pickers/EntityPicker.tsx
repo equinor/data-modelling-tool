@@ -13,6 +13,7 @@ import {
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
 import { Reference } from '../../services/api/configs/gen'
+import { AuthContext } from '../../../../../app/src/context/auth/AuthContext'
 
 export type EntityPickerProps = {
   onChange: Function
@@ -25,7 +26,8 @@ export const EntityPicker = (props: EntityPickerProps) => {
     'Click to select entity'
   )
   const [showModal, setShowModal] = useState<boolean>(false)
-  const dmssAPI = new DmssAPI()
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssAPI)
   const application = useContext(ApplicationContext)
   const index: IIndex = useIndex({

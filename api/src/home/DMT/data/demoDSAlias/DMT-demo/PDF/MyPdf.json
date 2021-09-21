@@ -2,7 +2,10 @@
   "name": "MyPdf",
   "type": "system/SIMOS/blob_types/PDF",
   "description": "Test",
-  "blob_reference": "blob:/PDF/test_pdf.pdf",
+  "blob": {
+    "name": "/PDF/test_pdf.pdf",
+    "type": "system/SIMOS/Blob"
+  },
   "author": "Stig Oskar",
   "size": 4003782,
   "tags": [

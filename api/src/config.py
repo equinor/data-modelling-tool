@@ -69,7 +69,6 @@ class Config:
     DMSS_PORT = os.getenv("DMSS_PORT", "5000")
     DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
     DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}"
-    IMPORT_BLOBS = ["DMT/data/demoDSAlias/DMT-demo/PDF/MyPdf.json"]
 
     APP_NAMES = next(os.walk(APPLICATION_HOME))[1]  # Every folder under HOME represents a separate app
     APP_SETTINGS: Dict[str, dict] = {}  # Dict holding settings for all loaded applications

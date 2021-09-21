@@ -11,6 +11,7 @@ import {
   EntityPicker,
   Reference,
   OverrideTypeButton,
+  DmssAPI,
 } from '@dmt/common'
 import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 
@@ -65,7 +66,9 @@ export const formDataGivenByRequest = (requestData: any, formData: any) => {
 
 export const DeleteAction = (props: any) => {
   const { action } = props
-  const { remove } = useExplorer({})
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
+  const { remove } = useExplorer(dmssAPI)
 
   const handleRemove = () => {
     remove({

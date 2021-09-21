@@ -5,7 +5,12 @@ import {
 import { useModalContext } from '../context/modal/ModalContext'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintEnum, DmssAPI, IDmssAPI, Reference } from '@dmt/common'
+import {
+  BlueprintEnum,
+  DmssAPI,
+  DocumentGetByIdRequest,
+  Reference,
+} from '@dmt/common'
 
 import {
   IGlobalIndex,
@@ -20,12 +25,6 @@ interface FetchUrl {
   data: object
   title: string
   component: LayoutComponents
-}
-
-interface GetProps {
-  dataSourceId: string
-  documentId: string
-  attribute?: string
 }
 
 interface GetByPathProps {
@@ -100,7 +99,11 @@ export type RenameRequest = {
 }
 
 export interface IUseExplorer {
-  get({ dataSourceId, documentId, attribute }: GetProps): void
+  index: IGlobalIndex
+  dashboard: IDashboard
+  errorMessage: String | null
+
+  get(props: DocumentGetByIdRequest): void
 
   insertReference({
     dataSourceId,
@@ -136,20 +139,9 @@ export interface IUseExplorer {
   }: UpdateByIdProps): Promise<any>
 
   addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
-
-  index: IGlobalIndex
-
-  dashboard: IDashboard
-
-  errorMessage: String | null
 }
 
-interface ExplorerProps {
-  dmssAPI?: IDmssAPI
-}
-
-export default function useExplorer(props: ExplorerProps): IUseExplorer {
-  const { dmssAPI = new DmssAPI() } = props
+export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
   const [blueprintCache, setBlueprintCache] = useState<any>({})
   const dashboard: IDashboard = useDashboard()
   const index: IGlobalIndex = useGlobalIndex()
@@ -182,18 +174,17 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     return true
   }
 
-  const get = ({ dataSourceId, documentId, attribute }: GetProps) => {
-    return dmssAPI.getDocumentById(dataSourceId, documentId, token, attribute)
+  const get = (props: DocumentGetByIdRequest) => {
+    return dmssAPI.getDocumentById(props)
   }
 
   // TODO: This cache does not really work, as a new instance of useExplorer is created in every form
   const getBlueprint = (typeRef: string) => {
     // Check if blueprint is in cache
     if (typeRef in blueprintCache) {
-      console.log(`Found ${typeRef} in cache!`)
       return blueprintCache[typeRef]
     } else {
-      const blueprint = dmssAPI.getBlueprint(typeRef, token)
+      const blueprint = dmssAPI.getBlueprint({ typeRef })
       //  Update cache
       setBlueprintCache({ ...blueprintCache, [typeRef]: blueprint })
       return blueprint
@@ -201,7 +192,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }
 
   const getByPath = ({ dataSourceId, path }: GetByPathProps) => {
-    return dmssAPI.getDocumentByPath(dataSourceId, path, token)
+    return dmssAPI.documentGetByPath({ dataSourceId, path })
   }
 
   const toggle = ({ nodeId }: ToggleProps) => {
@@ -248,7 +239,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     reference,
   }: InsertReferenceProps) => {
     dmssAPI
-      .insertDocumentReference(dataSourceId, documentDottedId, reference, token)
+      .insertDocumentReference({ dataSourceId, documentDottedId, reference })
       .then(() => {
         closeModal()
         const rootDocumentId = documentDottedId.split('.', 1)[0]
@@ -274,7 +265,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     documentDottedId,
   }: RemoveReferenceProps) => {
     dmssAPI
-      .removeDocumentReference(dataSourceId, documentDottedId, token)
+      .removeDocumentReference({ dataSourceId, documentDottedId })
       .then(() => {
         const rootDocumentId = documentDottedId.split('.', 1)[0]
         index.models.index.operations
@@ -296,7 +287,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
   }: AddToParentProps) => {
     if (validate(data)) {
       return dmssAPI
-        .addDocumentToParent(dataSourceId, data, token)
+        .addDocumentToParent({ dataSourceId, addToParentRequest: data })
         .then((result: any) => {
           closeModal()
           const res = JSON.parse(result)
@@ -355,7 +346,7 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
       'Rename feature is not maintained and can have bugs...'
     )
     return dmssAPI
-      .explorerDocumentRename(dataSourceId, renameRequest, token)
+      .explorerDocumentRename({ dataSourceId, renameRequest })
       .then((result: any) => {
         closeModal()
         index.models.index.operations
@@ -377,8 +368,14 @@ export default function useExplorer(props: ExplorerProps): IUseExplorer {
     data,
     nodeUrl,
   }: UpdateByIdProps) => {
+    const dataAsString = JSON.stringify(data)
     return dmssAPI
-      .updateDocumentById(dataSourceId, documentId, attribute, data, token)
+      .updateDocumentById({
+        dataSourceId,
+        documentId,
+        attribute,
+        data: dataAsString,
+      })
       .then((result: any) => {
         closeModal()
         if (nodeUrl) {
