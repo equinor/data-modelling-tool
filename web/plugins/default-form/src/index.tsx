@@ -15,9 +15,8 @@ import {
   PackagesPicker,
   BlueprintPicker,
   DestinationPicker,
-  EntityPicker,
+  AuthContext,
 } from '@dmt/common'
-import { AuthContext } from '../../../app/src/context/auth/AuthContext'
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const {

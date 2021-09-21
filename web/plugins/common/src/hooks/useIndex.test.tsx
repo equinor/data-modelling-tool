@@ -4,7 +4,7 @@ import { IIndex, useIndex } from './useIndex'
 import { mock } from 'jest-mock-extended'
 import { IDmtAPI, IndexNodes } from '../services'
 import { NodeType } from '../utils/variables'
-import { AuthProvider } from '../../../../app/src/context/auth/AuthContext'
+import { AuthProvider } from '@dmt/common'
 import { DataSource } from '../services/api/interfaces/DataSource'
 
 const wrapper: React.FC = ({ children }: any) => (

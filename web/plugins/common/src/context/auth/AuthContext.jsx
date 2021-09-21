@@ -9,7 +9,7 @@ import {
   tokenExpired
 } from "./authentication";
 //@ts-ignore
-import useLocalStorage from "./../../../../plugins/dmt-app/src/hooks/useLocalStorage";
+import useLocalStorage from "@dmt/dmt-app/src/hooks/useLocalStorage";
 export const AuthContext = React.createContext()
 
 export const AuthProvider = ({ authEnabled, children }) => {

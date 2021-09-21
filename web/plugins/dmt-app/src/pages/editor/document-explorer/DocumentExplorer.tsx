@@ -5,6 +5,7 @@ import {
   NodeType,
   Tree,
   TreeNodeRenderProps,
+  AuthContext,
 } from '@dmt/common'
 import { DocumentNode } from './DocumentNode'
 import {
@@ -28,7 +29,7 @@ import {
 import { getUIPlugin } from '@dmt/core-plugins'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
+
 export default () => {
   const index: IGlobalIndex = useGlobalIndex()
   const { openModal } = useModalContext()

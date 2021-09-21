@@ -2,8 +2,13 @@
 import { Link, Route, useLocation } from 'react-router-dom'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AuthContext } from '../../../app/src/context/auth/AuthContext'
-import { Button, JsonView, Modal, sortApplications } from '@dmt/common'
+import {
+  Button,
+  JsonView,
+  Modal,
+  sortApplications,
+  AuthContext,
+} from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'

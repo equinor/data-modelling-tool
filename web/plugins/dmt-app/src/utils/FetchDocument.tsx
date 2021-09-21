@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import useExplorer, { IUseExplorer } from '../hooks/useExplorer'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { DmssAPI } from '@dmt/common'
-import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
+import { DmssAPI, AuthContext } from '@dmt/common'
+
 type Props = {
   dataSourceId: string
   documentId: string

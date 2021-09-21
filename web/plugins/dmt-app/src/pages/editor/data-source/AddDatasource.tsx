@@ -3,11 +3,10 @@ import { FaPlus } from 'react-icons/fa'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
-import { DmssAPI, Button } from '@dmt/common'
+import { DmssAPI, Button, AuthContext } from '@dmt/common'
 import { useModalContext } from '../../../context/modal/ModalContext'
 import { getUIPlugin } from '@dmt/core-plugins'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
-import { AuthContext } from '../../../../../../app/src/context/auth/AuthContext'
 
 const constructType = (selectedDatasourceType: string) => {
   let template = ''

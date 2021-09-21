@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { DmtAPI, DmssAPI } from '@dmt/common'
+import { DmtAPI, DmssAPI, AuthContext } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { getUIPlugin } from '@dmt/core-plugins'
@@ -10,7 +10,6 @@ import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecip
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 import { SimplifiedTree } from '../components/SimplifiedTree'
-import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 const Group = styled.div`
   display: flex;

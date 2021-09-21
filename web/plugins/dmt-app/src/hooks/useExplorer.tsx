@@ -10,6 +10,7 @@ import {
   DmssAPI,
   DocumentGetByIdRequest,
   Reference,
+  AuthContext,
 } from '@dmt/common'
 
 import {
@@ -18,7 +19,6 @@ import {
 } from '../context/global-index/IndexProvider'
 import { useContext, useEffect, useState } from 'react'
 import { LayoutComponents } from '../context/dashboard/useLayout'
-import { AuthContext } from '../../../../app/src/context/auth/AuthContext'
 
 interface FetchUrl {
   uid: string

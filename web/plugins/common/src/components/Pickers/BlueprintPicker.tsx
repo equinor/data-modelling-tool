@@ -12,7 +12,7 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
-import { AuthContext } from '../../../../../app/src/context/auth/AuthContext'
+import { AuthContext } from '@dmt/common'
 
 export type BlueprintPickerProps = {
   onChange: Function
