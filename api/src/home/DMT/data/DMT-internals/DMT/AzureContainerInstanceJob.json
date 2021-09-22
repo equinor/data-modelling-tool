@@ -15,18 +15,18 @@
       "name": "command",
       "optional": true
     }, {
-      "attributeType": "system/SIMOS/Blob",
+      "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "cr-username",
       "optional": true
     },
     {
-      "attributeType": "system/SIMOS/Blob",
+      "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "cr-password",
       "optional": true
     }, {
-      "attributeType": "system/SIMOS/Blob",
+      "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "computePower",
       "default": "low",

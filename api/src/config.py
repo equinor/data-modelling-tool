@@ -61,11 +61,6 @@ class Config:
     FLASK_DEBUG = os.getenv("FLASK_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
     DYNAMIC_MODELS = "dynamic_models"
-    # Azure stuff
-    AZURE_SUBSCRIPTION = os.getenv("AZURE_SUBSCRIPTION")
-    AZURE_RESOURCE_GROUP = os.getenv("AZURE_RESOURCE_GROUP")
-    AZURE_AUTH_LOCATION = os.getenv("AZURE_AUTH_LOCATION")
-    AZURE_CREDENTIAL_FILE = os.getenv("AZURE_CREDENTIAL_FILE")
     CACHE_MAX_SIZE = 200
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent}/home")
     DMT_ENTITIES_HOME = f"{Path(__file__).parent}/demo_app_home"
@@ -75,15 +70,16 @@ class Config:
     DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
     DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}"
 
+    # Azure stuff
+    AZURE_SUBSCRIPTION = os.getenv("AZURE_SUBSCRIPTION", "1d249b90-3592-49bd-b14e-446340a5cf6b")
+    AZURE_RESOURCE_GROUP = os.getenv("AZURE_RESOURCE_GROUP")
+    AZURE_SP_SECRET = os.getenv("AZURE_SP_SECRET")
+    AZURE_JOB_CLIENT_ID = os.getenv("AZURE_JOB_CLIENT_ID", "97a6b5bd-63fb-42c6-bb75-7e5de2394ba0")
+    AZURE_JOB_TENANT_ID = os.getenv("AZURE_JOB_TENANT_ID", "3aa4a235-b6e2-48d5-9195-7fcf05b459b0")
+
     APP_NAMES = next(os.walk(APPLICATION_HOME))[1]  # Every folder under HOME represents a separate app
     APP_SETTINGS: Dict[str, dict] = {}  # Dict holding settings for all loaded applications
     APPS_DATASOURCE_SUBFOLDER = "data_sources"
-
-    # Write the content of the Azure Cred env var into a file that can be read
-    if AZURE_CREDENTIAL_FILE:
-        os.makedirs(Path(AZURE_AUTH_LOCATION).parent, exist_ok=True)
-        with open(AZURE_AUTH_LOCATION, "w") as file_handler:
-            file_handler.write(AZURE_CREDENTIAL_FILE)
 
     def load_app_settings(self):
         for app in self.APP_NAMES:

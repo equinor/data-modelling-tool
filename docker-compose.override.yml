@@ -20,14 +20,9 @@ services:
       ENVIRONMENT: local
       LOGGING_LEVEL: DEBUG
       MONGO_AZURE_URI: ${MONGO_AZURE_URI}
-      AZURE_SUBSCRIPTION: "some"
-      AZURE_RESOURCE_GROUP: "someother"
-      AZURE_AUTH_LOCATION: "/var/opt/cred.azureauth"
-      AZURE_CREDENTIAL_FILE: |
-        {
-          "asd": "123",
-          "asd": "123"
-        }
+      AZURE_SUBSCRIPTION: "1d249b90-3592-49bd-b14e-446340a5cf6b"
+      AZURE_RESOURCE_GROUP: "MSARGDev"
+      AZURE_SP_SECRET: ${AZURE_SP_SECRET}
     depends_on:
       - web
     ports:

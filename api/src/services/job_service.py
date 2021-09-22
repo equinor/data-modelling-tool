@@ -38,18 +38,19 @@ class JobService:
         return start_output
 
     def status_job(self, job_id: str) -> Tuple[JobStatus, str]:
+        if job_id not in job_store:
+            raise JobNotFoundException(f"No job with id '{job_id}' is registered")
         job_handler = self._get_job_handler(job_id)
         status, log = job_handler.progress()
-        try:
-            job_store[job_id].status = status
-            job_store[job_id].log += log
-        except KeyError:
-            raise JobNotFoundException(f"No job with id '{job_id}' is registered")
+        job_store[job_id].status = status
+        job_store[job_id].log = log
         return status, job_store[job_id].log
 
     def remove_job(self, job_id: str) -> str:
+        if job_id not in job_store:
+            raise JobNotFoundException(f"No job with id '{job_id}' is registered")
         job_handler = self._get_job_handler(job_id)
-        remove_message = job_handler.remove()
+        job_status, remove_message = job_handler.remove()
         try:
             del job_store[job_id]
         except KeyError:

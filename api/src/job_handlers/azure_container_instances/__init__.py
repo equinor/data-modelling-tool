@@ -1,8 +1,8 @@
-import sys
-import time
+import logging
+from collections import namedtuple
+from time import sleep
 from typing import Tuple
 
-from azure.common.client_factory import get_client_from_auth_file
 from azure.mgmt.containerinstance import ContainerInstanceManagementClient
 from azure.mgmt.containerinstance.models import (
     Container,
@@ -13,10 +13,22 @@ from azure.mgmt.containerinstance.models import (
     ResourceRequests,
     ResourceRequirements,
 )
+from msrestazure.azure_active_directory import ServicePrincipalCredentials
 
 from config import config
 from job_handlers.job_handler_interface import JobStatus, ServiceJobHandlerInterface
 from utils.logging import logger
+
+AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
+logging.getLogger("azure").setLevel(logging.WARNING)
+
+
+class MockTokenClass:  # TODO: Replace with one from the azure libraries.
+    def __init__(self, token):
+        self.token: AccessToken = AccessToken(token["access_token"], token["expires_on"])
+
+    def get_token(self, *args, **kwargs):
+        return self.token
 
 
 class HandleAzureContainerInstanceJobs(ServiceJobHandlerInterface):
@@ -32,25 +44,35 @@ class HandleAzureContainerInstanceJobs(ServiceJobHandlerInterface):
 
     def __init__(self, data_source: str, job_entity: dict):
         super().__init__(data_source, job_entity)
-        self.aci_client = get_client_from_auth_file(ContainerInstanceManagementClient)
+        logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
+        azure_credentials = ServicePrincipalCredentials(
+            config.AZURE_JOB_CLIENT_ID, config.AZURE_SP_SECRET, tenant=config.AZURE_JOB_TENANT_ID
+        )
+        logger.setLevel(config.LOGGER_LEVEL)
+        self.azure_valid_container_name = self.job_entity["name"].lower()
+
+        token_thing = MockTokenClass(azure_credentials.token)
+        self.aci_client = ContainerInstanceManagementClient(token_thing, subscription_id=config.AZURE_SUBSCRIPTION)
 
     def start(self) -> str:
         logger.info(f"JobId; '{self.job_entity['_id']}': Starting Azure Container job.")
 
         logger.info(
-            f"Creating Azure container '{self.job_entity['name']}':",
-            f"\tImage: '{self.job_entity.get('Image')}'",
-            f"\tCommand: '{self.job_entity.get('command')}'",
-            f"\tUsername: '{self.job_entity.get('cr-username')}'",
-            "\tComputePower: 'TODO'",
-            "\tEnvironmentVariables: 'TODO'",
+            (
+                f"Creating Azure container '{self.azure_valid_container_name}':",
+                f"Image: '{self.job_entity.get('Image', 'None')}'",
+                f"Command: '{self.job_entity.get('command', 'None')}'",
+                f"Username: '{self.job_entity.get('cr-username', 'None')}'",
+                "ComputePower: 'TODO'",
+                "EnvironmentVariables: 'TODO'",
+            )
         )
 
         # Configure the container
         env_vars = [EnvironmentVariable(name="NumWords", value="5")]
         compute_resources = ResourceRequests(memory_in_gb=1, cpu=1.0)
         container = Container(
-            name=self.job_entity["name"],
+            name=self.azure_valid_container_name,
             image=self.job_entity["image"],
             resources=ResourceRequirements(requests=compute_resources),
             command=self.job_entity.get("command"),
@@ -59,51 +81,47 @@ class HandleAzureContainerInstanceJobs(ServiceJobHandlerInterface):
 
         # Configure the container group
         group = ContainerGroup(
-            location="norway-east",
+            location="Norway East",
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,
         )
 
         # Create the container group
-        result = self.aci_client.container_groups.create_or_update(
-            config.AZURE_RESOURCE_GROUP, self.job_entity["name"], group
+        result = self.aci_client.container_groups.begin_create_or_update(
+            config.AZURE_RESOURCE_GROUP, self.azure_valid_container_name, group
         )
 
-        # Wait for the container create operation to complete. The operation is
-        # "done" when the container group provisioning state is one of:
-        # Succeeded, Canceled, Failed
-        while result.done() is False:
-            sys.stdout.write(".")
-            time.sleep(1)
+        return result.status()
 
-        # Get the provisioning state of the container group.
-        container_group = self.aci_client.container_groups.get(config.AZURE_RESOURCE_GROUP, self.job_entity["name"])
-        if str(container_group.provisioning_state).lower() == "succeeded":
-            print(f"\nCreation of container group '{self.job_entity['name']}' succeeded.")
-        else:
-            print(
-                f"\nCreation of container group '{self.job_entity['name']}' failed. Provisioning state",
-                f"is: {container_group.provisioning_state}",
-            )
-
-        # Get the logs for the container
-        logs = self.aci_client.container.list_logs(
-            config.AZURE_RESOURCE_GROUP, self.job_entity["name"], self.job_entity["name"]
+    def remove(self) -> Tuple[JobStatus, str]:
+        operation = self.aci_client.container_groups.begin_delete(
+            config.AZURE_RESOURCE_GROUP, self.azure_valid_container_name
         )
-
-        return logs
-
-    def remove(self) -> str:
-        # """Terminate and cleanup all job related resources"""
-        # try:
-        #     os.remove("./script.sh")
-        # except FileNotFoundError:
-        #     pass
-        # return "removed script job ok"
-        raise NotImplementedError
+        status = operation.status()
+        for i in range(4):
+            status = operation.status()
+            if status == "Succeeded":
+                break
+            sleep(2)
+        job_status = JobStatus.UNKNOWN
+        if status == "Succeeded":
+            job_status = JobStatus.COMPLETED
+        return job_status, status
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
-        # return JobStatus.UNKNOWN, "Shell jobs does not support progress polling"
-        raise NotImplementedError
+        logs = self.aci_client.containers.list_logs(
+            config.AZURE_RESOURCE_GROUP, self.azure_valid_container_name, self.azure_valid_container_name
+        )
+
+        container_group = self.aci_client.container_groups.get(
+            config.AZURE_RESOURCE_GROUP, self.azure_valid_container_name
+        )
+        status = container_group.containers[0].instance_view.current_state.state
+        job_status = JobStatus.UNKNOWN
+        if status == "Terminated":
+            job_status = JobStatus.COMPLETED
+        if status == "Waiting":
+            job_status = JobStatus.STARTING
+        return job_status, logs.content
