@@ -228,7 +228,7 @@ class Attribute:
 
 
 class __Blueprint__(type):
-    """ Used only for type annotation """
+    """Used only for type annotation"""
 
     __completed__: bool
     __schema__: dict
@@ -312,7 +312,7 @@ def compress(data: str, format: bool = True, indent: int = 2) -> str:
 
 
 def format_long_line(data: str, indent: int) -> str:
-    """ Helper method for formatting long string, while black is missing this feature """
+    """Helper method for formatting long string, while black is missing this feature"""
     line_length = get_project_line_length() - (4 * indent + 3)
     lines = []
     index, n = 0, len(data)
@@ -382,7 +382,10 @@ class Factory:
     _internal_types: Dict[str, type] = {}
 
     def __init__(
-        self, blueprints: Dict[str, dict], _create_instance: bool = False, dump_site: Optional[str] = None,
+        self,
+        blueprints: Dict[str, dict],
+        _create_instance: bool = False,
+        dump_site: Optional[str] = None,
     ):
         self._types = TypeCache(self._internal_types)
         self._blueprints = blueprints
@@ -1133,7 +1136,7 @@ from domain_classes.dto import DTO
 
     @classmethod
     def from_dict(cls, schema: Dict):
-        """ TODO: Function similarly to create, but without "self.blueprints" """
+        """TODO: Function similarly to create, but without "self.blueprints" """
         pass
 
     def create(

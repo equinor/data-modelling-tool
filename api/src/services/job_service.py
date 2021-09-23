@@ -3,6 +3,7 @@ from datetime import datetime
 from typing import Tuple, Union
 
 import redis
+from redis import AuthenticationError
 
 from config import config
 from job_handlers.azure_container_instances import HandleAzureContainerInstanceJobs
@@ -28,8 +29,14 @@ class JobService:
         return self.job_store.set(job.job_id, json.dumps(job.to_dict()))
 
     def _get_job(self, job_id: str) -> Union[Job, None]:
-        if raw_job := self.job_store.get(job_id):
-            return Job.from_dict(json.loads(raw_job.decode()))
+        try:
+            if raw_job := self.job_store.get(job_id):
+                return Job.from_dict(json.loads(raw_job.decode()))
+        except AuthenticationError:
+            raise ValueError(
+                "Tried to fetch a job from Redis but no password"
+                + " was supplied. Make sure SCHEDULER_REDIS_PASSWORD is set."
+            )
         return None
 
     @staticmethod

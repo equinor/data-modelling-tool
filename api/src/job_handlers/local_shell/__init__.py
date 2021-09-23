@@ -27,7 +27,12 @@ class HandleLocalShellJobs(JobHandlerInterface):
             file_hand.write(response.read())
 
         logger.info(f"JobId; '{self.job_entity['_id']}': Starting shell job.")
-        shell_job_process = subprocess.run(args="bash ./script.sh", shell=True, check=True, capture_output=True,)
+        shell_job_process = subprocess.run(
+            args="bash ./script.sh",
+            shell=True,
+            check=True,
+            capture_output=True,
+        )
         logger.info(f"JobId; '{self.job_entity['_id']}': Shell job completed")
         return shell_job_process.stdout.decode()
 
