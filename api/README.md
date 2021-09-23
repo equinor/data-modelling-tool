@@ -8,6 +8,31 @@ And a AzureContainerInstancesJob. This requires configuration for an Azure subsc
 and a ServicePrincipal(App registration with app secret) which has the required access level on the resource group.
 The job scheduler also needs a redis instance where jobs are kept track of.
 
+You can also supply your own JobHandlers by volume mounting the python modules into ${HOME}/${myApp}/job_handlers/${my_job_handler_module}.
+These modules MUST be a folder with a `_init_.py`-file with a `JobHandler`-class, and a global variable `_SUPPORTED_JOB_TYPE`
+
+Example;
+
+```python
+_SUPPORTED_JOB_TYPE = "SomeDataSource/SomePackage/AJobBlueprint"
+
+class JobHandler(JobHandlerInterface):
+    def __init__(self, data_source: str, job_entity: dict):
+        super().__init__(data_source, job_entity)
+
+    def start(self) -> str:
+        raise NotImplementedError
+
+    def remove(self) -> str:
+        raise NotImplementedError
+
+    def progress(self) -> Tuple[JobStatus, str]:
+        raise NotImplementedError
+
+```
+
+##
+
 ## Python packages
 
 This project uses [Poetry](https://poetry.eustace.io/docs/) for its Python package management.

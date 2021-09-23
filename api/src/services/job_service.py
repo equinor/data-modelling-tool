@@ -1,14 +1,14 @@
+import importlib
 import json
 from datetime import datetime
+from pathlib import Path
 from typing import Tuple, Union
 
 import redis
+from home.DMT.job_handlers.job_handler_interface import Job, JobHandlerInterface, JobStatus
 from redis import AuthenticationError
 
 from config import config
-from job_handlers.azure_container_instances import HandleAzureContainerInstanceJobs
-from job_handlers.job_handler_interface import Job, JobHandlerInterface, JobStatus
-from job_handlers.local_shell import HandleLocalShellJobs
 from repository.repository_exceptions import JobNotFoundException
 from services.dmss import get_document_by_uid
 
@@ -48,12 +48,28 @@ class JobService:
         job_entity = self._get_job_entity(job_id)
         data_source_id, job_entity_id = job_id.split("/", 1)
 
-        if job_entity["type"] == "DMT-Internal/DMT/AzureContainerInstanceJob":
-            return HandleAzureContainerInstanceJobs(data_source_id, job_entity)
-        if job_entity["type"] == "DMT-Internal/DMT/ShellJob":
-            return HandleLocalShellJobs(data_source_id, job_entity)
-        else:
-            raise NotImplementedError(f"No handler for a job of type '{job_entity['type']}' is configured")
+        job_handler_directories = [
+            str(f) for f in Path(f"{config.APPLICATION_HOME}/DMT/job_handlers").iterdir() if f.is_dir()
+        ]
+
+        module_paths = [
+            f"home{f.removeprefix(config.APPLICATION_HOME).replace('/', '.')}" for f in job_handler_directories
+        ]
+
+        try:
+            modules = [importlib.import_module(module) for module in module_paths]
+            for job_handler_module in modules:
+                if job_entity["type"] == job_handler_module._SUPPORTED_JOB_TYPE:
+                    return job_handler_module.JobHandler(data_source_id, job_entity)
+        except Exception as error:
+            raise Exception(
+                f"Failed to import a job handler module: '{error}'"
+                + "Make sure the module has a '_init_.py' file, a 'JobHandler' class implementing "
+                + "the JobHandlerInterface, and a global variable named '_SUPPORTED_JOB_TYPE' "
+                + "with the string value of the job type."
+            )
+
+        raise NotImplementedError(f"No handler for a job of type '{job_entity['type']}' is configured")
 
     def start_job(self, job_id: str):
         if self._get_job(job_id):

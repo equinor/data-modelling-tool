@@ -2,13 +2,16 @@ import os
 import subprocess  # nosec
 from typing import Tuple
 
+from home.DMT.job_handlers.job_handler_interface import JobHandlerInterface, JobStatus
+
 from config import config
-from job_handlers.job_handler_interface import JobHandlerInterface, JobStatus
 from services.dmss import dmss_api
 from utils.logging import logger
 
+_SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/ShellJob"
 
-class HandleLocalShellJobs(JobHandlerInterface):
+
+class JobHandler(JobHandlerInterface):
     """
     WARNING: Only for local and testing purposes. Pulling and executing a user provided shell script is a bad idea.
     Run a job of the 'DMT-Internal/DMT/ShellJob'-type in the local shell.

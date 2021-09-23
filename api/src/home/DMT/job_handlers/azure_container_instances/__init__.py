@@ -17,12 +17,14 @@ from msrestazure.azure_active_directory import ServicePrincipalCredentials
 from azure.core.exceptions import ResourceNotFoundError
 
 from config import config
-from job_handlers.job_handler_interface import JobStatus, ServiceJobHandlerInterface
+from home.DMT.job_handlers.job_handler_interface import JobStatus, ServiceJobHandlerInterface
 from repository.repository_exceptions import JobNotFoundException
 from utils.logging import logger
 
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
 logging.getLogger("azure").setLevel(logging.WARNING)
+
+_SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJob"
 
 
 class AzureTokenClass:  # TODO: Replace with one from the azure libraries.
@@ -33,7 +35,7 @@ class AzureTokenClass:  # TODO: Replace with one from the azure libraries.
         return self.token
 
 
-class HandleAzureContainerInstanceJobs(ServiceJobHandlerInterface):
+class JobHandler(ServiceJobHandlerInterface):
     """
     Job handler plugin for Azure Container Instances.
     Support both executable jobs and job services
