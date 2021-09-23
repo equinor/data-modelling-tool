@@ -22,7 +22,7 @@ class JobService:
             port=config.SCHEDULER_REDIS_PORT,
             db=0,
             password=config.SCHEDULER_REDIS_PASSWORD,
-            ssl=True,
+            ssl=config.SCHEDULER_REDIS_SSL,
         )
 
     def _set_job(self, job: Job):

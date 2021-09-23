@@ -22,9 +22,9 @@ services:
       AZURE_JOB_SUBSCRIPTION: "1d249b90-3592-49bd-b14e-446340a5cf6b"
       AZURE_JOB_RESOURCE_GROUP: "MSARGDev"
       AZURE_SP_SECRET: ${AZURE_SP_SECRET}
-      SCHEDULER_REDIS_PASSWORD: ${SCHEDULER_REDIS_PASSWORD}
     depends_on:
       - web
+      - job-store
     ports:
       - "5000:5000"
     networks:
@@ -47,6 +47,11 @@ services:
       - NODE_ENV=development
     ports:
       - "3000:3000"
+    networks:
+      - data-modelling-storage-service_default
+
+  job-store:
+    image: redis:6.2.5-alpine
     networks:
       - data-modelling-storage-service_default
 
