@@ -71,11 +71,18 @@ class Config:
     DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}"
 
     # Azure stuff
-    AZURE_SUBSCRIPTION = os.getenv("AZURE_SUBSCRIPTION", "1d249b90-3592-49bd-b14e-446340a5cf6b")
-    AZURE_RESOURCE_GROUP = os.getenv("AZURE_RESOURCE_GROUP")
-    AZURE_SP_SECRET = os.getenv("AZURE_SP_SECRET")
-    AZURE_JOB_CLIENT_ID = os.getenv("AZURE_JOB_CLIENT_ID", "97a6b5bd-63fb-42c6-bb75-7e5de2394ba0")
-    AZURE_JOB_TENANT_ID = os.getenv("AZURE_JOB_TENANT_ID", "3aa4a235-b6e2-48d5-9195-7fcf05b459b0")
+    # Where to run jobs in Azure
+    AZURE_JOB_SUBSCRIPTION = os.getenv("AZURE_JOB_SUBSCRIPTION")
+    AZURE_JOB_RESOURCE_GROUP = os.getenv("AZURE_JOB_RESOURCE_GROUP")
+    # Which ServicePrincipal to authenticate with
+    AZURE_JOB_SP_SECRET = os.getenv("AZURE_SP_SECRET")
+    AZURE_JOB_SP_CLIENT_ID = os.getenv("AZURE_JOB_CLIENT_ID", "97a6b5bd-63fb-42c6-bb75-7e5de2394ba0")
+    AZURE_JOB_SP_TENANT_ID = os.getenv("AZURE_JOB_TENANT_ID", "3aa4a235-b6e2-48d5-9195-7fcf05b459b0")
+
+    # Redis stuff
+    SCHEDULER_REDIS_PASSWORD = os.getenv("SCHEDULER_REDIS_PASSWORD")
+    SCHEDULER_REDIS_HOST = os.getenv("SCHEDULER_REDIS_HOST", "dmt-scheduler.redis.cache.windows.net")
+    SCHEDULER_REDIS_PORT = int(os.getenv("SCHEDULER_REDIS_PORT", 6380))
 
     APP_NAMES = next(os.walk(APPLICATION_HOME))[1]  # Every folder under HOME represents a separate app
     APP_SETTINGS: Dict[str, dict] = {}  # Dict holding settings for all loaded applications

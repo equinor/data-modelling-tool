@@ -18,7 +18,7 @@ class Job:
         job_id: str,
         started: datetime,
         status: JobStatus,
-        stopped: datetime = None,
+        stopped: datetime = datetime(1, 1, 1),
         result_id: str = None,
         log: str = None,
     ):
@@ -28,6 +28,27 @@ class Job:
         self.stopped: datetime = stopped
         self.result_id: str = result_id
         self.log: str = log
+
+    def to_dict(self):
+        return {
+            "job_id": self.job_id,
+            "started": self.started.isoformat(),
+            "status": self.status.value,
+            "stopped": self.stopped.isoformat(),
+            "result_id": self.result_id,
+            "log": self.log,
+        }
+
+    @classmethod
+    def from_dict(cls, a_dict: dict):
+        return Job(
+            job_id=a_dict["job_id"],
+            started=datetime.fromisoformat(a_dict["started"]),
+            status=JobStatus(a_dict["status"]),
+            stopped=datetime.fromisoformat(a_dict["stopped"]),
+            result_id=a_dict.get("result_id"),
+            log=a_dict.get("log"),
+        )
 
 
 class JobHandlerInterface(ABC):
@@ -61,26 +82,3 @@ class ServiceJobHandlerInterface(JobHandlerInterface):
 class ComputeResources(Enum):
     LOW = "low"
     HIGH = "high"
-
-
-#
-# class ExecutableContainerInterface(JobHandlerInterface):
-#     @abstractmethod
-#     def start(
-#         self,
-#         job_id: str,
-#         image: str,
-#         container_registry: str,
-#         username: str,
-#         password: str,
-#         resource: ComputeResources = ComputeResources.LOW,
-#     ) -> bool:
-#         """Run or deploy a job or job service"""
-#
-#     @abstractmethod
-#     def remove(self, job_id: str) -> bool:
-#         """Terminate and cleanup all job related resources"""
-#
-#     @abstractmethod
-#     def progress(self, job_id: str) -> Dict:
-#         """Poll progress from the job instance"""
