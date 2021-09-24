@@ -13,12 +13,20 @@
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "command",
-      "optional": true
+      "optional": true,
+      "dimenstions": "*"
     }, {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "cr-username",
       "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "azure-location",
+      "optional": true,
+      "default": "Norway East"
     },
     {
       "attributeType": "string",

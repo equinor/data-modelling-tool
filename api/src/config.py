@@ -83,7 +83,7 @@ class Config:
     SCHEDULER_REDIS_PASSWORD = os.getenv("SCHEDULER_REDIS_PASSWORD")
     SCHEDULER_REDIS_HOST = os.getenv("SCHEDULER_REDIS_HOST", "job-store")
     SCHEDULER_REDIS_PORT = int(os.getenv("SCHEDULER_REDIS_PORT", 6379))
-    SCHEDULER_REDIS_SSL = False
+    SCHEDULER_REDIS_SSL = bool(os.getenv("SCHEDULER_REDIS_SSL", False))
 
     APP_NAMES = next(os.walk(APPLICATION_HOME))[1]  # Every folder under HOME represents a separate app
     APP_SETTINGS: Dict[str, dict] = {}  # Dict holding settings for all loaded applications
