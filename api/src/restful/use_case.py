@@ -5,6 +5,7 @@ from repository.repository_exceptions import (
     ApplicationNotLoadedException,
     FileNotFoundException,
     EntityNotFoundException,
+    JobNotFoundException,
 )
 from restful import response_object as res
 import traceback
@@ -18,7 +19,7 @@ class UseCase(object):
             return self.process_request(request_object)
         except ServiceException as dmss_exception:
             return res.ResponseFailure.build_resource_error(dmss_exception)
-        except EntityNotFoundException as not_found:
+        except (EntityNotFoundException, JobNotFoundException) as not_found:
             return res.ResponseFailure.build_resource_error(not_found.message)
         except FileNotFoundException as not_found:
             return res.ResponseFailure.build_resource_error(

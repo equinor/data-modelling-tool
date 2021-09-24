@@ -110,7 +110,7 @@ def create_graph(dependencies: Dict[str, Set[str]]) -> Dict[str, Node]:
 
 
 def topological_sort(dependencies: Dict[str, Set[str]]) -> List[str]:
-    """ An implementation of [Khan's algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm) """
+    """An implementation of [Khan's algorithm](https://en.wikipedia.org/wiki/Topological_sorting#Kahn's_algorithm)"""
     nodes = create_graph(dependencies)
     roots = Nodes([node for node in nodes.values() if not node.parents])
     ordering = []
@@ -195,7 +195,7 @@ class GeneratePythonCode:
         with zipfile.ZipFile(memory_file, mode="w") as zip_file:
 
             def _dump(file_name: str, data: Union[str, bytes], encoding: str = "UTF-8") -> None:
-                """ Borrowed from git.equinor.com/APS/GUI """
+                """Borrowed from git.equinor.com/APS/GUI"""
                 file_name = file_name.replace("-", "_")  # Ensure package names are 'import friendly'
                 with zip_file.open(file_name, "w") as f:
                     if isinstance(data, str):

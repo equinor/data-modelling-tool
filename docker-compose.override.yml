@@ -13,15 +13,18 @@ services:
     image: api-dev
     volumes:
       - ./api/src/:/code
-      - ../data-modelling-storage-service/gen/dmss_api:/dmss_api
+#      - ../data-modelling-storage-service/gen/dmss_api:/dmss_api
       - ../data-modelling-storage-service:/data-modelling-storage-service
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
       LOGGING_LEVEL: DEBUG
-      MONGO_AZURE_URI: ${MONGO_AZURE_URI}
+      AZURE_JOB_SUBSCRIPTION: "1d249b90-3592-49bd-b14e-446340a5cf6b"
+      AZURE_JOB_RESOURCE_GROUP: "MSARGDev"
+      AZURE_SP_SECRET: ${AZURE_SP_SECRET}
     depends_on:
       - web
+      - job-store
     ports:
       - "5000:5000"
     networks:
@@ -44,6 +47,11 @@ services:
       - NODE_ENV=development
     ports:
       - "3000:3000"
+    networks:
+      - data-modelling-storage-service_default
+
+  job-store:
+    image: redis:6.2.5-alpine
     networks:
       - data-modelling-storage-service_default
 

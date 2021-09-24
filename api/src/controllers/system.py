@@ -25,8 +25,15 @@ def get_application_settings():
                 status=STATUS_CODES[res.ResponseSuccess.SUCCESS],
             )
         else:
-            return Response(f"Error: No application named '{app_name}' is loaded", status=404,)
-    return Response(json.dumps(config.APP_SETTINGS), mimetype="application/json", status=200,)
+            return Response(
+                f"Error: No application named '{app_name}' is loaded",
+                status=404,
+            )
+    return Response(
+        json.dumps(config.APP_SETTINGS),
+        mimetype="application/json",
+        status=200,
+    )
 
 
 # Endpoint is only available on ENVIRONMENT=local

@@ -44,7 +44,12 @@ class CreateEntityTestCase(unittest.TestCase):
 
         type = "test_data/complex/CarTest"
 
-        entity = CreateEntity(get_blueprint, type=type, description="crappy car", name="Mercedes",).entity
+        entity = CreateEntity(
+            get_blueprint,
+            type=type,
+            description="crappy car",
+            name="Mercedes",
+        ).entity
 
         self.assertEqual(expected_entity, entity)
 

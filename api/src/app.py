@@ -10,7 +10,7 @@ from dmss_api.exceptions import ApiException
 from flask import Flask
 
 from config import config
-from controllers import blueprints, entity, index, system
+from controllers import blueprints, entity, index, system, jobs
 from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
 from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
@@ -25,6 +25,7 @@ def create_app(config):
     app.register_blueprint(system.blueprint)
     app.register_blueprint(blueprints.blueprint)
     app.register_blueprint(entity.blueprint)
+    app.register_blueprint(jobs.blueprint)
     app.secret_key = os.urandom(64)
     return app
 

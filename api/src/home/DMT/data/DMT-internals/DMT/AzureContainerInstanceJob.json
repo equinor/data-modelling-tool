@@ -1,0 +1,52 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "AzureContainerInstanceJob",
+  "description": "Description of a executable job running as an Azure Container Instance",
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
+  "attributes": [
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "image"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "command",
+      "optional": true,
+      "dimenstions": "*"
+    }, {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "cr-username",
+      "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "azure-location",
+      "optional": true,
+      "default": "Norway East"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "cr-password",
+      "optional": true
+    }, {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "computePower",
+      "default": "low",
+      "optional": true,
+      "description": "should be an enum. 'high' or 'low'. Or just pass cpu and mem directly"
+    }, {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "environmentVariables",
+      "dimensions": "*",
+      "optional": true,
+      "description": "a list of strings on format 'myVar=myValue'"
+    }
+  ]
+}

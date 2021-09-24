@@ -15,6 +15,11 @@ class EntityNotFoundException(RepositoryException):
         super().__init__(message=f"The entity, with id {uid} is not found")
 
 
+class JobNotFoundException(Exception):
+    def __init__(self, message):
+        self.message = message
+
+
 class PluginNotLoadedException(RepositoryException):
     def __init__(self, plugin):
         super().__init__(
