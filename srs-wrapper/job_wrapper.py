@@ -1,4 +1,5 @@
 #! /usr/bin/env python3
+import json
 import os
 import pprint
 import time
@@ -16,6 +17,7 @@ class Settings(BaseSettings):
     DMSS_TOKEN: str = Field("some_token", env="DMSS_TOKEN")
     DMSS_HOST: str = Field("http://localhost:5000", env="DMSS_HOST")
     SRS_HOME: str = "/var/opt/sima"
+    RESULT_FILE: str = "/var/opt/sima/workspace/result.json"
 
 
 settings = Settings()
@@ -45,11 +47,11 @@ def after_commands(*args, **kwargs):
 
 
 @cli.command()
-@click.option("--stask", "-t", help="DataSource and UUID to the stask entity in DMSS (DS/UUID)", type=str,
+@click.option("--stask", help="DataSource and UUID to the stask entity in DMSS (DS/UUID)", type=str,
               required=True)
-@click.option("--workflow", "-w", help="Name of the workflow defined in the stask to run", type=str, required=True)
-@click.option("--input", "-i", help="DataSource and UUID to the input entity in DMSS (DS/UUID)", type=str)
-@click.option("--token", "-t", help="A valid DMSS Access Token", type=str)
+@click.option("--workflow", help="Name of the workflow defined in the stask to run", type=str, required=True)
+@click.option("--input", help="DataSource and UUID to the input entity in DMSS (DS/UUID)", type=str)
+@click.option("--token", help="A valid DMSS Access Token", type=str)
 def run(stask: str, workflow: str = None, input: str = None, token: str = None):
     """Prepares the local environment with the given stask and workflow configuration"""
     print(f"Recived parameters: stask='{stask}', workflow='{workflow}', input='{input}'")
@@ -88,14 +90,25 @@ def run(stask: str, workflow: str = None, input: str = None, token: str = None):
 
 
 @cli.command()
-@click.option("--token", "-t", help="A valid DMSS Access Token", type=str)
-def upload(token: str = None):
+@click.option("--target", help="Target directory to store result file", type=str, required=True)
+@click.option("--source", help="Path to SIMA generated result file", type=str, default=settings.RESULT_FILE)
+@click.option("--token", help="A valid DMSS Access Token", type=str)
+def upload(target: str, source: str = settings.RESULT_FILE, token: str = None):
     """Uploads the simulation results to $DMSS_HOST"""
-    print("Uploading result entity from SIMA run  --  /var/opt/sima/workspace/result.json")
+    print(f"Uploading result entity from SIMA run  --  local:{source} --> dmss: {target}")
     dmss_api.api_client.configuration.access_token = token
-    # TODO: Complete upload functionality
-    # dmss_api.explorer_add_document()
-    print("Result file uploaded successfully -- id: someNewId")
+    data_source, directory = target.split("/", 1)
+    print(data_source, directory)
+    with open(source, "r") as file:
+        result_document = {
+            "type": "DemoDS/DMT-demo/SIMARuntimeService/TextResult",
+            "name": "Srs-WritebackTest",
+            "result": file.read()
+        }
+        response = dmss_api.explorer_add_to_path(document=json.dumps(result_document), directory=directory,
+                                                 data_source_id=data_source)
+        print("Result file uploaded successfully -- id: ")
+        print(response)
 
 
 if __name__ == "__main__":

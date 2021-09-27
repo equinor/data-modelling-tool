@@ -16,7 +16,7 @@ The python based wrapper script has two commands;
 ### Run
 
 ```text
-Usage: dmt_job_wrapper.py run [OPTIONS]
+Usage: job_wrapper.py run [OPTIONS]
 
 Prepares the local environment with the given stask and workflow
 configuration
@@ -34,7 +34,7 @@ Options:
 ### Upload
 
 ```text
-Usage: dmt_job_wrapper.py upload [OPTIONS]
+Usage: job_wrapper.py upload [OPTIONS]
 
 Uploads the simulation results to $DMSS_HOST
 

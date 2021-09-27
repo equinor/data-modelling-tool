@@ -10,22 +10,52 @@ else
   echo "$SIMA_LICENSE" > /root/sima.lic
 fi
 
-if [ "$1" = 'run' ]; then
-  shift
-  # Run the DMT wrapper. Preparing the SRS environment
-  /code/dmt_job_wrapper.py run "$@"
-  # SIMA Headless
-  /opt/sima/sima \
-    -commands file=/var/opt/sima/workspace/commands.txt \
-    -application no.marintek.sima.application.headless.application \
-    -consoleLog \
-    -data /var/opt/sima/workspace \
-    -vmargs \
-    -Djdk.lang.Process.launchMechanism=vfork
-  # Upload results
-    /code/dmt_job_wrapper.py upload
-else
-  exec "$@"
-fi
+# default values
+TOKEN=None
+STASK=None
+WORKFLOW=None
+INPUT=None
+TARGET=None
 
-sleep 3600
+for i in "$@"; do
+  case $i in
+    --token=*)
+      TOKEN="${i#*=}"
+      shift # past argument=value
+      ;;
+    --stask=*)
+      STASK="${i#*=}"
+      shift # past argument=value
+      ;;
+    --workflow=*)
+      WORKFLOW="${i#*=}"
+      shift # past argument=value
+      ;;
+    --input=*)
+      INPUT="${i#*=}"
+      shift
+      ;;
+    --target=*)
+      TARGET="${i#*=}"
+      shift
+      ;;
+    *)
+      echo "WARNING: Invalid argument '$i'"
+      ;;
+  esac
+done
+
+
+# Run the DMT wrapper. Preparing the SRS environment
+/code/job_wrapper.py run --token=$TOKEN --stask=$STASK --workflow=$WORKFLOW --input=$INPUT
+# SIMA Headless
+/opt/sima/sima \
+  -commands file=/var/opt/sima/workspace/commands.txt \
+  -application no.marintek.sima.application.headless.application \
+  -consoleLog \
+  -data /var/opt/sima/workspace \
+  -vmargs \
+  -Djdk.lang.Process.launchMechanism=vfork
+# Upload results
+  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET
+
