@@ -32,7 +32,7 @@ export class DmssAPI implements IDmssAPI {
   constructor(token: string) {
     const DMSSConfiguration = new Configuration({
       basePath: '/dmss',
-      accessToken: token,
+      accessToken: 'Bearer ' + token,
     })
     this.generatedDmssApi = new DefaultApi(DMSSConfiguration)
   }
