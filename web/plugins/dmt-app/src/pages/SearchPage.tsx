@@ -17,8 +17,6 @@ import {
 } from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
 
-const dmssAPI = new DmssAPI()
-
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
 
 const StyledSelect = styled.select`
@@ -152,6 +150,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const [expanded, setExpanded] = useState<boolean>(value)
   const [nestedAttributes, setNestedAttributes] = useState([])
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
 
   // Pass nested object to callback from parent
   function nestedOnChange(filterChange: any) {
@@ -165,7 +164,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
-        .getBlueprint(attribute.getAttributeType(), token)
+        .getBlueprint({ typeRef: attribute.getAttributeType() })
         .then((result) => {
           setNestedAttributes(result.attributes)
         })
@@ -232,6 +231,7 @@ function FilterContainer({
 }) {
   const [attributes, setAttributes] = useState<Array<any>>([])
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
   function onChange(filterChange: any) {
     setSearchFilter({ ...searchFilter, ...filterChange })
   }
@@ -240,7 +240,7 @@ function FilterContainer({
   useEffect(() => {
     if (searchFilter?.type) {
       dmssAPI
-        .getBlueprint(searchFilter.type, token)
+        .getBlueprint({ typeRef: searchFilter.type })
         .then((result) => {
           setAttributes(result.attributes)
         })
@@ -431,9 +431,10 @@ export default ({ settings }: any) => {
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
   useEffect(() => {
     dmssAPI
-      .getAllDataSources(token)
+      .getAllDataSources()
       .then((dataSources: DataSources) => {
         setDataSources(dataSources)
       })
@@ -447,12 +448,11 @@ export default ({ settings }: any) => {
     if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
     dmssAPI
-      .searchDocuments(
-        searchSettings.dataSource,
-        query,
-        token,
-        searchSettings.sortByAttribute
-      )
+      .searchDocuments({
+        dataSourceId: searchSettings.dataSource,
+        body: query,
+        sortByAttribute: searchSettings.sortByAttribute,
+      })
       .then((result: any) => {
         setQueryError('')
         let resultList = Object.values(result)
