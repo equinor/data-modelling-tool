@@ -39,10 +39,8 @@ def cli():
 def after_commands(*args, **kwargs):
     run_time = time.time() - start_time
     milliseconds = int(round(run_time * 1000))
-    print(f"DMT SRS Wrapper Successfully prepared the SRS Environment")
-    print(f"Total time: {milliseconds}ms")
-    print("-------------------------------------------------------")
-    print("|                      Done!                           |")
+    print("------------------------------------------------------")
+    print(f"|                 Done! (in {milliseconds}ms)                    |")
     print("------------------------------------------------------")
 
 
@@ -87,7 +85,7 @@ def run(stask: str, workflow: str = None, input: str = None, token: str = None):
         print("--- /var/opt/sima/workspace/commands.txt")
         print(commands_file.read())
         print("---")
-
+    print(f"DMT SRS Wrapper Successfully prepared the SRS Environment")
 
 @cli.command()
 @click.option("--target", help="Target directory to store result file", type=str, required=True)
@@ -95,11 +93,11 @@ def run(stask: str, workflow: str = None, input: str = None, token: str = None):
 @click.option("--token", help="A valid DMSS Access Token", type=str)
 def upload(target: str, source: str = settings.RESULT_FILE, token: str = None):
     """Uploads the simulation results to $DMSS_HOST"""
-    print(f"Uploading result entity from SIMA run  --  local:{source} --> dmss: {target}")
+    print(f"Uploading result entity from SIMA run  --  local:{source} --> DMSS:{target}")
     dmss_api.api_client.configuration.access_token = token
     data_source, directory = target.split("/", 1)
-    print(data_source, directory)
     with open(source, "r") as file:
+        # TODO: Just load the dmt valid result entity directly
         result_document = {
             "type": "DemoDS/DMT-demo/SIMARuntimeService/TextResult",
             "name": "Srs-WritebackTest",
@@ -107,8 +105,7 @@ def upload(target: str, source: str = settings.RESULT_FILE, token: str = None):
         }
         response = dmss_api.explorer_add_to_path(document=json.dumps(result_document), directory=directory,
                                                  data_source_id=data_source)
-        print("Result file uploaded successfully -- id: ")
-        print(response)
+        print(f"Result file uploaded successfully -- id: {response['uid']}")
 
 
 if __name__ == "__main__":
