@@ -1,0 +1,19 @@
+FROM mariner.azurecr.io/sima/sima-rs:latest
+LABEL Description="Docker image for Data Modelling Tool SIMA Headless Job Wrapper"
+RUN pip install --upgrade pip && \
+    pip install poetry && \
+    poetry config virtualenvs.create false
+WORKDIR /code
+# Install python dependencies
+COPY pyproject.toml pyproject.toml
+COPY poetry.lock poetry.lock
+RUN poetry install
+
+# Init script and wrapper script
+COPY init.sh init.sh
+COPY dmt_job_wrapper.py dmt_job_wrapper.py
+WORKDIR /var/opt/sima/workspace
+RUN chown -R 1000:1000 /root
+USER 1000
+ENTRYPOINT ["/code/init.sh"]
+CMD ["run"]
