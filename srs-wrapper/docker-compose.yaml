@@ -19,7 +19,7 @@ services:
         "--workflow=workflow",
         "--input=waveDir=180",
         "--token=123",
-        "--target=DemoDS/DMT-demo/SIMARuntimeService/results"
+        "--target=DemoDS/DMT-demo/SIMARuntimeService/results/"
     ]
 
 networks:

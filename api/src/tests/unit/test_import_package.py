@@ -23,6 +23,9 @@ ROOT
          |- myTurbine2.json
 |- B
     |- myTurbine3.json
+|- C # Empty folder
+|- D
+    |- E # Empty folder
 """
 
 test_documents = {
@@ -104,6 +107,8 @@ test_documents = {
         "description": "This is a wind turbine demoing uncontained relationships",
         "Mooring": {"_id": "apekatt", "type": "/Moorings/Mooring", "name": "myTurbineMooring"},
     },
+    "MyRootPackage/C/": None,
+    "MyRootPackage/D/E/": None,
 }
 
 
@@ -116,6 +121,8 @@ class ImportPackageTest(unittest.TestCase):
                     zip_file.writestr(path, json.dumps(document).encode())
                 elif Path(path).suffix == ".pdf":
                     zip_file.write(f"{Path(__file__).parent}/../test_data/{Path(path).name}", path)
+                elif path[-1] == "/":
+                    zip_file.write(Path(__file__).parent, path)
 
         memory_file.seek(0)
 
@@ -144,3 +151,4 @@ class ImportPackageTest(unittest.TestCase):
         myPDF = root_package.search("MyPdf")
         assert isinstance(myPDF["blob"]["_blob_data_"], bytes)
         assert len(myPDF["blob"]["_blob_data_"]) == 531540
+        assert root_package.search("D").search("E")  # Two empty packages

@@ -94,6 +94,20 @@ def add_file_to_package(path: Path, package: Package, document: dict) -> Tuple[U
     return add_file_to_package(Path(new_path), sub_folder, document)
 
 
+def add_package_to_package(path: Path, package: Package) -> None:
+    if len(path.parts) == 1:
+        package.content.append(Package(name=path.parts[0]))
+        return
+
+    sub_folder = next((p for p in package.content if p["name"] == path.parts[0]), None)
+    if not sub_folder:  # If the sub folder has not already been created on parent, create it
+        sub_folder = Package(name=path.parts[0])
+        package.content.append(sub_folder)
+
+    new_path = str(path).split("/", 1)[1]  # Remove first element in path before stepping down
+    return add_package_to_package(Path(new_path), sub_folder)
+
+
 def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: io.BytesIO) -> Package:
     """
     Converts a Zip-folder into a Data Modelling Tool Package structure. Inserting UUID4's between any references,
@@ -108,10 +122,15 @@ def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: i
 
     with ZipFile(zip_package) as zip_file:
         # Construct a nested Package object of the package to import
-        for filename in zip_file.namelist():
+        for file_info in zip_file.filelist:
+            filename = file_info.filename.split("/", 1)[1]  # Remove RootPackage prefix
+            if file_info.is_dir():
+                if filename == "":  # Skip rootPackage
+                    continue
+                add_package_to_package(Path(filename), root_package)
+                continue
             if Path(filename).suffix != ".json":
                 continue
-            filename = filename.split("/", 1)[1]  # Remove RootPackage prefix
             try:
                 json_doc = json.loads(zip_file.read(f"{package_name}/{filename}"))
             except JSONDecodeError:

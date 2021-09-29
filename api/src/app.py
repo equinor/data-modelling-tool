@@ -117,7 +117,7 @@ def init_application():
                 zip_all(
                     zip_file,
                     f"{config.APPLICATION_HOME}/{app_directory_name}/data/{data_source_alias}/{folder}",
-                    write_folder=False,
+                    write_folder=True,
                 )
             memory_file.seek(0)
 
