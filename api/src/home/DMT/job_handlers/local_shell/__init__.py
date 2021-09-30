@@ -2,10 +2,9 @@ import os
 import subprocess  # nosec
 from typing import Tuple
 
-from home.DMT.job_handlers.job_handler_interface import JobHandlerInterface, JobStatus
-
 from config import config
 from services.dmss import dmss_api
+from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
 _SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/ShellJob"

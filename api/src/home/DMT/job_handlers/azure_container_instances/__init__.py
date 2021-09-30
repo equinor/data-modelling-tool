@@ -15,11 +15,11 @@ from azure.mgmt.containerinstance.models import (
     ResourceRequests,
     ResourceRequirements,
 )
-from home.DMT.job_handlers.job_handler_interface import JobStatus, ServiceJobHandlerInterface
 from msrestazure.azure_active_directory import ServicePrincipalCredentials
 
 from config import config
 from repository.repository_exceptions import JobNotFoundException
+from services.job_handler_interface import JobStatus, ServiceJobHandlerInterface
 from utils.logging import logger
 
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
