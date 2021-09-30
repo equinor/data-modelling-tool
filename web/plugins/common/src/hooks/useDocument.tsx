@@ -3,28 +3,42 @@ import { DmssAPI } from '../services/api/DmssAPI'
 import { AuthContext } from '@dmt/common'
 
 export const useDocument = (dataSourceId: string, documentId: string) => {
-  const [document, setDocument] = useState(null)
-  const [isLoading, setLoading] = useState(true)
-  const [hasError, setHasError] = useState(false)
+  const [document, setDocument] = useState<Object | null>(null)
+  const [isLoading, setLoading] = useState<boolean>(true)
+  const [error, setError] = useState<Error | null>()
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
+  const target = documentId.split('.')
+  const id = `${target.shift()}`
+  const attribute = target.join('.')
 
   useEffect(() => {
     setLoading(true)
-    const target = documentId.split('.')
-    const id = `${target.shift()}`
-    const attribute = target.join('.')
     dmssAPI
       .getDocumentById({ dataSourceId, documentId: id, attribute })
       .then((document) => {
-        console.log(document)
         setDocument(document.document)
-        setLoading(false)
+        setError(null)
       })
-      .catch(() => {
-        setLoading(false)
-        setHasError(true)
-      })
+      .catch((error: Error) => setError(error))
+    setLoading(false)
   }, [dataSourceId, documentId])
-  return [document, isLoading, setDocument, hasError]
+
+  function updateDocument(newDocument: Object) {
+    setLoading(true)
+    dmssAPI
+      .updateDocumentById({
+        dataSourceId,
+        documentId,
+        attribute,
+        data: JSON.stringify(newDocument),
+      })
+      .then(() => {
+        setDocument(newDocument)
+        setError(null)
+      })
+      .catch((error: Error) => setError(error))
+    setLoading(false)
+  }
+  return [document, isLoading, updateDocument, error]
 }
