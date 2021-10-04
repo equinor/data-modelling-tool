@@ -52,7 +52,7 @@ def remove_application():
     logger.debug(
         (
             "Removing application specific files from"
-            f" the configured DMSS instance; {config.DMSS_HOST}:{config.DMSS_PORT}"
+            f" the configured DMSS instance; {config.DMSS_API}"
         )
     )
     for app_name, settings in config.APP_SETTINGS.items():
