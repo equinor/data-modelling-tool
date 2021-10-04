@@ -65,10 +65,7 @@ class Config:
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent}/home")
     DMT_ENTITIES_HOME = f"{Path(__file__).parent}/demo_app_home"
     VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
-    DMSS_HOST = os.getenv("DMSS_HOST", "dmss")
-    DMSS_PORT = os.getenv("DMSS_PORT", "5000")
-    DMSS_SCHEMA = "http" if ENVIRONMENT != "production" else "https"
-    DMSS_API = f"{DMSS_SCHEMA}://{DMSS_HOST}:{DMSS_PORT}"
+    DMSS_API = os.getenv("DMSS_API", "http://dmss:5000")
 
     # Azure stuff
     # Where to run jobs in Azure
