@@ -49,12 +49,7 @@ def cli(token: str):
 @cli.command()
 def remove_application():
     logger.info("-------------- REMOVING OLD APPLICATION FILES ----------------")
-    logger.debug(
-        (
-            "Removing application specific files from"
-            f" the configured DMSS instance; {config.DMSS_API}"
-        )
-    )
+    logger.debug(("Removing application specific files from" f" the configured DMSS instance; {config.DMSS_API}"))
     for app_name, settings in config.APP_SETTINGS.items():
         for package in settings.get("packages", []):
             data_source_alias, folder = package.split("/", 1)
