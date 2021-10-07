@@ -7,7 +7,7 @@ Feature: Index
       | test-DS |
     Given data modelling tool blueprints are imported
     Given there are documents for the data source "test-DS" in collection "documents"
-      | uid                                    | parent_uid                           | name          | type                   |
+      | _id                                    | parent_uid                           | name          | type                   |
       | 3eea0e71-647d-43b2-975b-0280ca3588d2   |                                      | blueprints    | system/SIMOS/Package   |
       | 1a39b2d1-272c-46d4-9a89-f5e0018a71b4   | 3eea0e71-647d-43b2-975b-0280ca3588d2 | sub_package_1 | system/SIMOS/Package   |
       | 226ee77b-a1a0-4e80-9d25-fe333732e476   | 1a39b2d1-272c-46d4-9a89-f5e0018a71b4 | document_1    | system/SIMOS/Blueprint |

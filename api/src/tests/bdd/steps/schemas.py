@@ -30,7 +30,7 @@ def step_impl(context):
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')
 def step_impl_2(context, uid: str, data_source_id: str):
     document: DTO = DTO(uid=uid, data=json.loads(context.text))
-    response = dmss_api.explorer_add_raw(data_source_id, document.to_dict())
+    response = dmss_api.explorer_add_simple(data_source_id, document.to_dict())
     print(response)
 
 

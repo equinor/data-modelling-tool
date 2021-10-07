@@ -8,7 +8,7 @@ import {
   DocumentGetByIdRequest,
   DocumentGetByPathRequest,
   DocumentUpdateRequest,
-  ExplorerAddToParentRequest,
+  ExplorerAddRequest,
   ExplorerRenameRequest,
   ReferenceDeleteRequest,
   ReferenceInsertRequest,
@@ -47,12 +47,14 @@ export class DmssAPI implements IDmssAPI {
 
   addDocumentToParent({
     dataSourceId,
-    addToParentRequest,
-  }: ExplorerAddToParentRequest): Promise<any> {
+    dottedId,
+    body,
+  }: ExplorerAddRequest): Promise<any> {
     return this.generatedDmssApi
-      .explorerAddToParent({
+      .explorerAdd({
         dataSourceId,
-        addToParentRequest,
+        dottedId,
+        body,
       })
       .catch((error: any) => {
         return handleApiError(error)

@@ -4,7 +4,7 @@ import {
   DocumentGetByIdRequest,
   DocumentGetByPathRequest,
   DocumentUpdateRequest,
-  ExplorerAddToParentRequest,
+  ExplorerAddRequest,
   ExplorerRenameRequest,
   GetDocumentResponse,
   ReferenceDeleteRequest,
@@ -36,9 +36,7 @@ export interface IDmssAPI {
     requestParameters: DocumentGetByIdRequest
   ): Promise<GetDocumentResponse>
 
-  addDocumentToParent(
-    requestParameters: ExplorerAddToParentRequest
-  ): Promise<any>
+  addDocumentToParent(requestParameters: ExplorerAddRequest): Promise<any>
 
   insertDocumentReference(
     requestParameters: ReferenceInsertRequest

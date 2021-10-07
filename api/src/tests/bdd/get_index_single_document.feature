@@ -9,13 +9,13 @@ Feature: Index
     Given data modelling tool blueprints are imported
 
     Given there are documents for the data source "data-source-name" in collection "documents"
-      | uid                                  | parent_uid                           | name          | type                   |
+      | _id                                  | parent_uid                           | name          | type                   |
       | e1a9243d-84df-4e9b-8438-013f8f2de24e |                                      | blueprints    | system/SIMOS/Package   |
       | ab11c047-0bb8-4e92-ae45-cc9c6473bf3a | e1a9243d-84df-4e9b-8438-013f8f2de24e | sub_package_1 | system/SIMOS/Package   |
       | 773cef3e-6854-4117-8548-b7edf13d179d | ab11c047-0bb8-4e92-ae45-cc9c6473bf3a | document_1    | system/SIMOS/Blueprint |
 
     Given there are documents for the data source "entities-DS" in collection "test"
-      | uid                                  | parent_uid | name   | type                 |
+      | _id                                  | parent_uid | name   | type                 |
       | aff2a29e-cd2f-4e80-8785-740667b5e99a |            | entity | system/SIMOS/Package |
 
   Scenario: Get index for single document (Root Package)
@@ -64,12 +64,10 @@ Feature: Index
                   "label":"Blueprint",
                   "action":"CREATE",
                   "data":{
-                  "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
+                  "url":"/dmss/api/v1/explorer/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a.content",
                   "nodeUrl":"/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                   "request":{
                     "type":"system/SIMOS/Blueprint",
-                    "parentId":"ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
-                    "attribute":"content",
                     "name":"${name}",
                     "description":"${description}"
                     }
@@ -110,12 +108,10 @@ Feature: Index
                   "label":"Blueprint",
                   "action":"CREATE",
                   "data":{
-                  "url":"/dmss/api/v1/explorer/data-source-name/add-to-parent",
+                  "url":"/dmss/api/v1/explorer/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a.content",
                   "nodeUrl":"/api/v4/index/data-source-name/ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
                   "request":{
                     "type":"system/SIMOS/Blueprint",
-                    "parentId":"ab11c047-0bb8-4e92-ae45-cc9c6473bf3a",
-                    "attribute":"content",
                     "name":"${name}",
                     "description":"${description}"
                     }
@@ -170,12 +166,10 @@ Feature: Index
                   "label":"Blueprint",
                   "action":"CREATE",
                   "data":{
-                  "url":"/dmss/api/v1/explorer/entities-DS/add-to-parent",
+                  "url":"/dmss/api/v1/explorer/entities-DS/aff2a29e-cd2f-4e80-8785-740667b5e99a.content",
                   "nodeUrl":"/api/v4/index/entities-DS/aff2a29e-cd2f-4e80-8785-740667b5e99a",
                   "request":{
                     "type":"system/SIMOS/Blueprint",
-                    "parentId":"aff2a29e-cd2f-4e80-8785-740667b5e99a",
-                    "attribute":"content",
                     "name":"${name}",
                     "description":"${description}"
                     }
