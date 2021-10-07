@@ -46,7 +46,7 @@ def generate_tree_from_rows(node: Node, rows):
             ).entity
             child_node = Node(
                 key="",
-                uid=child_data["uid"],
+                uid=child_data["_id"],
                 entity=entity,
                 blueprint_provider=document_service.get_blueprint,
                 attribute=BlueprintAttribute(child_data["name"], child_data["type"]),
@@ -56,7 +56,7 @@ def generate_tree_from_rows(node: Node, rows):
             content_node.add_child(child_node)
 
             if child_node.type == BLUEPRINTS.PACKAGE.value:
-                filtered = list(filter(lambda i: i["uid"] != node.uid, rows))
+                filtered = list(filter(lambda i: i["_id"] != node.uid, rows))
                 generate_tree_from_rows(child_node, filtered)
 
     return node
@@ -75,7 +75,7 @@ def generate_tree(data_source_id: str, table):
     root_package_data["isRoot"] = True
     root_package_node = Node(
         key="root",
-        uid=root_package["uid"],
+        uid=root_package["_id"],
         entity=root_package_data,
         blueprint_provider=document_service.get_blueprint,
         parent=root,
@@ -91,4 +91,8 @@ def step_impl_documents(context, data_source_id: str, collection: str):
     context.documents = {}
     tree = generate_tree(data_source_id, context.table)
     tree.show_tree()
-    dmss_api.explorer_add_document(data_source_id, tree.to_dict())
+    root_package_response = dmss_api.explorer_add_package(data_source_id, tree.entity)  # First, create the rootPackage
+    if tree.children:
+        dmss_api.explorer_add(
+            data_source_id, f"{root_package_response['uid']}.content", tree.children[0].children[0].to_dict()
+        )

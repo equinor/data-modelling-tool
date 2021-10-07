@@ -18,9 +18,6 @@ import {
     ACL,
     ACLFromJSON,
     ACLToJSON,
-    AddToParentRequest,
-    AddToParentRequestFromJSON,
-    AddToParentRequestToJSON,
     DataSourceRequest,
     DataSourceRequestFromJSON,
     DataSourceRequestToJSON,
@@ -98,8 +95,9 @@ export interface DocumentUpdateRequest {
     files?: Array<Blob>;
 }
 
-export interface ExplorerAddDocumentRequest {
+export interface ExplorerAddRequest {
     dataSourceId: string;
+    dottedId: string;
     body: object;
 }
 
@@ -108,14 +106,9 @@ export interface ExplorerAddPackageRequest {
     entityName: EntityName;
 }
 
-export interface ExplorerAddRawRequest {
+export interface ExplorerAddSimpleRequest {
     dataSourceId: string;
     body: object;
-}
-
-export interface ExplorerAddToParentRequest {
-    dataSourceId: string;
-    addToParentRequest: AddToParentRequest;
 }
 
 export interface ExplorerAddToPathRequest {
@@ -688,16 +681,20 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Posted document must be a valid entity of the available blueprint (blueprint must exist).
-     * Add Document
+     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document-id.attribute.attribute\'
+     * Add By Parent Id
      */
-    async explorerAddDocumentRaw(requestParameters: ExplorerAddDocumentRequest): Promise<runtime.ApiResponse<any>> {
+    async explorerAddRaw(requestParameters: ExplorerAddRequest): Promise<runtime.ApiResponse<any>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAddDocument.');
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAdd.');
+        }
+
+        if (requestParameters.dottedId === null || requestParameters.dottedId === undefined) {
+            throw new runtime.RequiredError('dottedId','Required parameter requestParameters.dottedId was null or undefined when calling explorerAdd.');
         }
 
         if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling explorerAddDocument.');
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling explorerAdd.');
         }
 
         const queryParameters: any = {};
@@ -716,7 +713,7 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/v1/explorer/{data_source_id}/add-document`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
+            path: `/api/v1/explorer/{data_source_id}/{dotted_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"dotted_id"}}`, encodeURIComponent(String(requestParameters.dottedId))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -727,15 +724,16 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Posted document must be a valid entity of the available blueprint (blueprint must exist).
-     * Add Document
+     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document-id.attribute.attribute\'
+     * Add By Parent Id
      */
-    async explorerAddDocument(requestParameters: ExplorerAddDocumentRequest): Promise<any> {
-        const response = await this.explorerAddDocumentRaw(requestParameters);
+    async explorerAdd(requestParameters: ExplorerAddRequest): Promise<any> {
+        const response = await this.explorerAddRaw(requestParameters);
         return await response.value();
     }
 
     /**
+     * Add a RootPackage to the data source
      * Add Package
      */
     async explorerAddPackageRaw(requestParameters: ExplorerAddPackageRequest): Promise<runtime.ApiResponse<any>> {
@@ -774,6 +772,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * Add a RootPackage to the data source
      * Add Package
      */
     async explorerAddPackage(requestParameters: ExplorerAddPackageRequest): Promise<any> {
@@ -782,16 +781,16 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * NOTE: The \'add-document\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation. Posted document must be a valid Entity (\'name\' and \'type\' required).
+     * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
      * Add Raw
      */
-    async explorerAddRawRaw(requestParameters: ExplorerAddRawRequest): Promise<runtime.ApiResponse<any>> {
+    async explorerAddSimpleRaw(requestParameters: ExplorerAddSimpleRequest): Promise<runtime.ApiResponse<any>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAddRaw.');
+            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAddSimple.');
         }
 
         if (requestParameters.body === null || requestParameters.body === undefined) {
-            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling explorerAddRaw.');
+            throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling explorerAddSimple.');
         }
 
         const queryParameters: any = {};
@@ -821,59 +820,11 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * NOTE: The \'add-document\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation. Posted document must be a valid Entity (\'name\' and \'type\' required).
+     * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
      * Add Raw
      */
-    async explorerAddRaw(requestParameters: ExplorerAddRawRequest): Promise<any> {
-        const response = await this.explorerAddRawRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
-     * Add a new document into an existing one. Must match it\'s parents attribute type
-     * Add To Parent
-     */
-    async explorerAddToParentRaw(requestParameters: ExplorerAddToParentRequest): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAddToParent.');
-        }
-
-        if (requestParameters.addToParentRequest === null || requestParameters.addToParentRequest === undefined) {
-            throw new runtime.RequiredError('addToParentRequest','Required parameter requestParameters.addToParentRequest was null or undefined when calling explorerAddToParent.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            if (typeof this.configuration.accessToken === 'function') {
-                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
-            } else {
-                headerParameters["Authorization"] = this.configuration.accessToken;
-            }
-        }
-
-        const response = await this.request({
-            path: `/api/v1/explorer/{data_source_id}/add-to-parent`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: AddToParentRequestToJSON(requestParameters.addToParentRequest),
-        });
-
-        return new runtime.TextApiResponse(response) as any;
-    }
-
-    /**
-     * Add a new document into an existing one. Must match it\'s parents attribute type
-     * Add To Parent
-     */
-    async explorerAddToParent(requestParameters: ExplorerAddToParentRequest): Promise<any> {
-        const response = await this.explorerAddToParentRaw(requestParameters);
+    async explorerAddSimple(requestParameters: ExplorerAddSimpleRequest): Promise<any> {
+        const response = await this.explorerAddSimpleRaw(requestParameters);
         return await response.value();
     }
 

@@ -2,8 +2,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Union
 
-from domain_classes.tree_node import Node
 from config import Config
+from domain_classes.tree_node import Node
 from enums import BLUEPRINTS
 
 DMSS_API = "/dmss/api/v1"
@@ -51,12 +51,11 @@ def get_dynamic_create_menu_item(data_source_id: str, name: str, type: str, node
         "label": label if label else name,
         "action": "CREATE",
         "data": {
-            "url": f"{DMSS_API}/explorer/{data_source_id}/add-to-parent",
+            "url": f"{DMSS_API}/explorer/{data_source_id}/{node_id_split[0]}"
+            + f"{'.' + node_id_split[1] if len(node_id_split) > 1 else ''}",
             "nodeUrl": get_node_url(data_source_id, node_id_split[0]),
             "request": {
                 "type": type,
-                "parentId": node_id_split[0],
-                "attribute": node_id_split[1] if len(node_id_split) > 1 else None,
                 "name": "${name}",
                 "description": "${description}",
             },

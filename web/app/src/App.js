@@ -17,13 +17,7 @@ import {
   CardHeader,
   CardHeading,
   CardBody,
-  CardIcon,
   CardFieldset,
-  CardInput,
-  CardOptionsItem,
-  CardOptions,
-  CardOptionsNote,
-  CardButton,
   CardLink,
 } from './components/Card'
 import styled from 'styled-components'

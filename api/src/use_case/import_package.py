@@ -196,7 +196,7 @@ def import_package_tree(root_package: Package, data_source_id: str) -> None:
     ) as bar:
         for document in documents_to_upload:
             document = upload_blobs_in_document(document, data_source_id)
-            dmss_api.explorer_add_raw(data_source_id, document)
+            dmss_api.explorer_add_simple(data_source_id, document)
             bar.next()
 
 

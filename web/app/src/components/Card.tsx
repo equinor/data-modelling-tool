@@ -1,5 +1,5 @@
 import React from 'react'
-import styled, { css } from 'styled-components'
+import styled from 'styled-components'
 
 export const CardWrapper = styled.div`
   overflow: hidden;
@@ -7,7 +7,7 @@ export const CardWrapper = styled.div`
   margin: 48px auto 0;
   width: 300px;
   font-family: Quicksand, arial, sans-serif;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05), 0 0px 40px rgba(0, 0, 0, 0.08);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05), 0 0 40px rgba(0, 0, 0, 0.08);
   border-radius: 5px;
 `
 
@@ -60,44 +60,6 @@ export const CardInput = styled.input`
   &:focus {
     border-bottom-color: #e5195f;
     outline: 0;
-  }
-`
-
-export const CardIcon = styled.span`
-  color: #666;
-  cursor: pointer;
-  opacity: 0.25;
-  transition: opacity 0.25s ease-in;
-
-  &:hover {
-    opacity: 0.95;
-  }
-`
-
-export const CardOptionsNote = styled.small`
-  padding-top: 8px;
-  display: block;
-  width: 100%;
-  font-size: 12px;
-  text-align: center;
-  text-transform: uppercase;
-`
-
-export const CardOptions = styled.ul`
-  padding: 0;
-  margin: 16px 0 8px;
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-  width: 100%;
-  list-style-type: none;
-`
-
-export const CardOptionsItem = styled.li`
-  &:nth-of-type(n + 2) {
-    margin-left: 16px;
   }
 `
 

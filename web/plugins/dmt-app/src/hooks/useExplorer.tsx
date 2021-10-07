@@ -287,7 +287,7 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
   }: AddToParentProps) => {
     if (validate(data)) {
       return dmssAPI
-        .addDocumentToParent({ dataSourceId, addToParentRequest: data })
+        .addDocumentToParent({ dataSourceId, dottedId: nodeUrl, body: data })
         .then((result: any) => {
           closeModal()
           const res = JSON.parse(result)
