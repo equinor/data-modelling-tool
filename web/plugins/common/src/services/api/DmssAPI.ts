@@ -19,6 +19,9 @@ import { IDmssAPI } from './interfaces/DmssAPI'
 
 const handleApiError = (error: any) => {
   // @ts-ignore
+  if (error.json !== 'function') {
+    return error
+  }
   return error.json().then((response: any) => {
     throw new Error(
       response.message || response.detail || JSON.stringify(response)
