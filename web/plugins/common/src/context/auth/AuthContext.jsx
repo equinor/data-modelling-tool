@@ -42,6 +42,22 @@ export const AuthProvider = ({ authEnabled, children }) => {
         setLoginInProgress(true)
         login()
       }
+      else if (loggedIn && tokenExpired(token)) {
+        //fetch token from stored refreshToken if token has expired
+         setToken(null)
+         getTokenFromRefreshToken(refreshToken)
+          .then((response) => {
+            setRefreshToken(response.refresh_token)
+            setToken(response.access_token)
+            setUserData(getUserData(response.access_token, true))
+          })
+           .catch((error =>  {
+             // If refresh token has expired or is invalid, ask user to login.
+            setLoginInProgress(true)
+            setLoggedIn(false)
+            login()
+      }))
+      }
       else if (!loggedIn && loginInProgress  && tokenExpired(token)) {
         getTokenFromRefreshToken(refreshToken)
           .then((response) => {
