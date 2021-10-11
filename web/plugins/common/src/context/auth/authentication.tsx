@@ -82,7 +82,7 @@ export const getTokenFromRefreshToken = (refreshToken: string) => {
     .post(authSettings.tokenEndpoint, params)
     .then((response) => response.data)
     .catch((error) => {
-      console.error('Could not fetch token.')
+      console.error('Could not fetch token from refresh token.')
     })
 }
 
