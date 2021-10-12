@@ -1,9 +1,7 @@
-#!/bin/sh
+#!/bin/bash
 set -eu
 ENVIRON=${ENVIRONMENT:="production"}
 FLA_ENV=${FLASK_ENV:="production"}
-
-
 
 # Wait until the storage services is ready before continuing.
 # This is to ensure that the services is initialized before the API tries to connect.
@@ -39,11 +37,30 @@ if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ]; then
   install_dmss_package
 fi
 
+TOKEN=""
+# Pop the token argument from $@ so it can be injected before any subcommands
+for arg do
+  shift
+  if [[ "$arg" == "--token"* ]]; then
+    TOKEN="$arg"
+    continue
+  fi
+  set -- "$@" "$arg"
+done
+
 if [ "$1" = 'reset-app' ]; then
   service_is_ready
   shift
   # This is quite bad. Only allows for CLI arguments before 'reset-app' subcommand.
-  python /code/app.py "$@" reset-app
+  python /code/app.py "$TOKEN" reset-app "$@"
+  exit 0
+fi
+
+if [ "$1" = 'reset-package' ]; then
+  service_is_ready
+  shift
+  # This is quite bad. Only allows for CLI arguments before 'reset-app' subcommand.
+  python /code/app.py "$TOKEN" reset-package "$@"
   exit 0
 fi
 

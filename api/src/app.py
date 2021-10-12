@@ -10,7 +10,7 @@ from dmss_api.exceptions import ApiException
 from flask import Flask
 
 from config import config
-from controllers import blueprints, entity, index, system, jobs
+from controllers import blueprints, entity, index, jobs, system
 from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
 from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
@@ -65,6 +65,39 @@ def remove_application():
                     pass
                 else:
                     raise error
+    logger.info("-------------- DONE ----------------")
+
+
+@cli.command()
+@click.argument("src")
+@click.argument("dst")
+def reset_package(src, dst):
+    logger.info(f"-------------- RESETTING PACKAGE {dst} ----------------")
+    if not Path(src).is_dir():
+        raise ValueError(f"'{src}' is not a directory. Current working directory is '{os.getcwd()}'")
+    data_source, folder = dst.split("/", 1)
+    try:
+        dmss_api.explorer_remove_by_path(data_source, {"directory": folder})
+    except ApiException as error:
+        if error.status == 404:
+            logger.warning(emoji.emojize(f":warning: Could not find '{folder}' in DMSS..."))
+            pass
+        else:
+            raise error
+
+    memory_file = io.BytesIO()
+    with ZipFile(memory_file, mode="w") as zip_file:
+        zip_all(
+            zip_file,
+            src,
+            real_name=folder,  # Use target package name as name in zip archive
+            write_folder=True,
+        )
+    memory_file.seek(0)
+
+    root_package = package_tree_from_zip(data_source, folder, memory_file)
+    import_package_tree(root_package, data_source)
+
     logger.info("-------------- DONE ----------------")
 
 

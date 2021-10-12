@@ -1,5 +1,23 @@
 # Data Modelling Tool API
 
+## Importing data
+
+Data from $DMT_HOME can be imported to DMSS by running CLI commands in the DMT API.
+
+- Create data sources, delete existing packages, and upload all packages for every app
+    ```bash
+    docker-compose run --rm api reset-app
+    ```
+- Delete existing package, and upload new
+  ```bash
+  # 'reset-package' takes two arguments. $1=package on disk, $2=data source and package to upload as
+  docker-compose run --rm api reset-package home/DMT/data/demoDSAlias/DMT-demo DemoDS/DMT-demo2
+  
+  # Example for remote DMSS with authentication
+  docker-compose run --rm -e DMSS_API=https://dmss.equinor.com api --token="Ey.xxx.asd" reset-package home/DMT/data/demoDSAlias/DMT-demo DemoDS/DMT-demo2
+  ```
+
+
 ## Job Scheduler
 
 The job scheduler relies on JobHandler() to delegate the jobs.
