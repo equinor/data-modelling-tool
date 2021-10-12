@@ -1,4 +1,4 @@
-import { getUIPlugin, loadPlugins } from '@dmt/core-plugins'
+import { loadPlugins } from '@dmt/core-plugins'
 import React, { useEffect, useState } from 'react'
 import { createGlobalStyle, ThemeProvider } from 'styled-components'
 import {
@@ -21,6 +21,7 @@ import {
   CardLink,
 } from './components/Card'
 import styled from 'styled-components'
+import { getPagePlugin } from '@dmt/core-plugins/src/loadPlugins'
 
 export const Config = {
   exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
@@ -122,7 +123,7 @@ function App() {
             <Route
               path={`/${settings.name}`}
               render={() => {
-                const ExternalPlugin = getUIPlugin(settings.name)
+                const ExternalPlugin = getPagePlugin(settings.name)
                 return (
                   <ExternalPlugin
                     settings={settings}
