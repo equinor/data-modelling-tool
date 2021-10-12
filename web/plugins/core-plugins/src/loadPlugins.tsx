@@ -13,6 +13,19 @@ export const getUIPlugin = (uiRecipeName: string) => {
   return () => <div>Did not find the plugin: {pluginName} </div>
 }
 
+export const getPagePlugin = (uiRecipeName: string) => {
+  const pluginName = uiRecipeName.trim()
+  if (pluginName in uiPlugins) {
+    if (uiPlugins[pluginName].pluginType === DmtPluginType.PAGE) {
+      return uiPlugins[pluginName]
+    }
+  }
+  console.warn(
+    `No pagePlugin loaded for application '${pluginName}'. Defaulting to the DMT view`
+  )
+  return uiPlugins['DMT']
+}
+
 export const loadPlugins = (input: LoadPluginProps) => {
   const { plugins } = input
   return Promise.all(
