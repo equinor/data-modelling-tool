@@ -1,0 +1,15 @@
+{
+  "name": "myNestedPDF",
+  "type": "system/SIMOS/Something",
+  "description": "Test",
+  "something": {
+    "name": "bla",
+    "blob": {
+      "name": "/PDF/test_pdf.pdf",
+      "type": "system/SIMOS/Blob"
+    }
+  },
+  "author": "Stig Oskar",
+  "size": 4003782,
+  "tags": ["Marine", "Renewable"]
+}

@@ -70,9 +70,9 @@ def replace_relative_references(key: str, value, reference_table: dict = None, z
         else:
             return {"_blob_data_": zip_file.read(value["name"]), **value}
     if isinstance(value, dict):
-        return {k: replace_relative_references(k, v, reference_table) for k, v in value.items()}
+        return {k: replace_relative_references(k, v, reference_table, zip_file) for k, v in value.items()}
     if isinstance(value, list):
-        return [replace_relative_references(key, v, reference_table) for v in value]
+        return [replace_relative_references(key, v, reference_table, zip_file) for v in value]
 
     return value  # This means it's a primitive type, return it as is
 
@@ -171,15 +171,24 @@ def upload_blobs_in_document(document: dict, data_source_id: str) -> dict:
     """
     Uploads any 'system/SIMOS/Blob' types in the document, and replacing the data with created uuid's
     """
-    if document["type"] == SIMOS.BLOB.value:
-        blob_id = document.get("_blob_id", str(uuid4()))
-        blob_name = Path(document["name"]).stem
-        file_like = io.BytesIO(document["_blob_data_"])
-        file_like.name = blob_name
-        dmss_api.blob_upload(data_source_id, blob_id, file_like)
-        return {"name": blob_name, "type": SIMOS.BLOB.value, "_blob_id": blob_id, "size": len(document["_blob_data_"])}
+    try:
+        if document["type"] == SIMOS.BLOB.value:
+            blob_id = document.get("_blob_id", str(uuid4()))
+            blob_name = Path(document["name"]).stem
+            file_like = io.BytesIO(document["_blob_data_"])
+            file_like.name = blob_name
+            dmss_api.blob_upload(data_source_id, blob_id, file_like)
+            return {
+                "name": blob_name,
+                "type": SIMOS.BLOB.value,
+                "_blob_id": blob_id,
+                "size": len(document["_blob_data_"]),
+            }
+    except KeyError as error:
+        reduced_document = {k: v for k, v in document.items() if isinstance(v, str)}
+        raise KeyError(f"The document; '{reduced_document}' is missing a required attribute: {error}")
     for key, value in document.items():
-        if isinstance(value, dict) and value.get("type") == SIMOS.BLOB.value:
+        if isinstance(value, dict) and value:
             document[key] = upload_blobs_in_document(value, data_source_id)
     return document
 

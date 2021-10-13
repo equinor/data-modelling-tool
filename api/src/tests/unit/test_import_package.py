@@ -13,6 +13,7 @@ ROOT
  |- WindTurbine.json
  |- myTurbine.json
  |- myPDF.json
+ |- myNestedPDF.json
  |- myPDF.pdf
  |- Moorings
     |- Mooring.json
@@ -84,6 +85,19 @@ test_documents = {
         "type": "system/SIMOS/blob_types/PDF",
         "description": "Test",
         "blob": {"name": "/test_pdf.pdf", "type": "system/SIMOS/Blob"},
+        "author": "Stig Oskar",
+        "size": 4003782,
+        "tags": ["Marine", "Renewable"],
+    },
+    "MyRootPackage/myNestedPDF.json": {
+        "name": "myNestedPDF",
+        "type": "system/SIMOS/Something",
+        "description": "Test",
+        "something": {
+            "name": "bla",
+            "type": "somethign/some/Thing",
+            "blob": {"name": "/test_pdf.pdf", "type": "system/SIMOS/Blob"},
+        },
         "author": "Stig Oskar",
         "size": 4003782,
         "tags": ["Marine", "Renewable"],

@@ -4,8 +4,6 @@
   "type": "DMT-Internal/DMT/AzureContainerInstanceJob",
   "description": "Test",
   "image": "alpine",
-  "cr-password": "dummy",
-  "cr-username": "mariner",
   "command": ["echo", "Hello world!"],
   "environmentVariables": [
     "var1=a",

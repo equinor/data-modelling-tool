@@ -1,6 +1,7 @@
 import io
 import json
 import os
+import traceback
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -10,8 +11,7 @@ from dmss_api.exceptions import ApiException
 from flask import Flask
 
 from config import config
-from controllers import blueprints, entity, index, jobs, system
-from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
+from controllers import blueprints, entity, index, system, jobs
 from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
@@ -151,14 +151,11 @@ def init_application():
 
             try:
                 root_package = package_tree_from_zip(actual_data_source, folder, memory_file)
-            except (ImportReferenceNotFoundException, ImportAliasNotFoundException) as error:
-                logger.error(error.message)
-                exit(1)
-            try:
                 # Import the package into the data source defined in _aliases_, or using the data_source folder name
                 import_package_tree(root_package, actual_data_source)
             except Exception as error:
-                raise Exception(f"Something went wrong trying to upload the package ''{package}'' to DMSS; {error}")
+                traceback.print_exc()
+                raise Exception(f"Something went wrong trying to upload the package '{package}' to DMSS; {error}")
         logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings.get('packages', []))}_____")
     logger.info(emoji.emojize("-------------- DONE ---------------- :check_mark_button:"))
 
