@@ -16,6 +16,8 @@ from services.dmss import get_document_by_uid
 # TODO: Authorization. The only level of authorization at this point is to allow all that
 #  can view the job entity to also run and delete the job.
 from services.job_handler_interface import Job, JobHandlerInterface, JobStatus
+from utils.string_helpers import split_absolute_ref
+from services.job_handlers import azure_container_instances
 
 
 class JobService:
@@ -44,18 +46,21 @@ class JobService:
 
     @staticmethod
     def _get_job_entity(job_id: str):
-        data_source_id, job_entity_id = job_id.split("/", 1)
-        return get_document_by_uid(data_source_id, job_entity_id)
+        data_source_id, job_entity_id, attribute = split_absolute_ref(job_id)
+        return get_document_by_uid(data_source_id, job_entity_id, attribute=attribute)
 
     def _get_job_handler(self, job_id: str) -> JobHandlerInterface:
         job_entity = self._get_job_entity(job_id)
         data_source_id, job_entity_id = job_id.split("/", 1)
 
         job_handler_directories = []
-        for app in config.APP_NAMES:
-            for f in Path(f"{config.APPLICATION_HOME}/{app}/job_handlers").iterdir():
-                if f.is_dir() and f.name[0] != "_":  # Python modules can not start with "_"
-                    job_handler_directories.append(str(f))
+        try:
+            for app in config.APP_NAMES:
+                for f in Path(f"{config.APPLICATION_HOME}/{app}/job_handlers").iterdir():
+                    if f.is_dir() and f.name[0] != "_":  # Python modules can not start with "_"
+                        job_handler_directories.append(str(f))
+        except FileNotFoundError:
+            pass
 
         module_paths = [
             f"home{f.removeprefix(config.APPLICATION_HOME).replace('/', '.')}" for f in job_handler_directories
@@ -63,6 +68,8 @@ class JobService:
 
         try:
             modules = [importlib.import_module(module) for module in module_paths]
+            # Add standard modules after plugins
+            modules.append(azure_container_instances)
             for job_handler_module in modules:
                 if job_entity["type"] == job_handler_module._SUPPORTED_JOB_TYPE:
                     return job_handler_module.JobHandler(data_source_id, job_entity)

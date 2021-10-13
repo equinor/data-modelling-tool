@@ -51,16 +51,22 @@ done
 if [ "$1" = 'reset-app' ]; then
   service_is_ready
   shift
-  # This is quite bad. Only allows for CLI arguments before 'reset-app' subcommand.
-  python /code/app.py "$TOKEN" reset-app "$@"
+  if [[ -z $TOKEN ]]; then
+    python /code/app.py reset-app "$@"
+  else
+    python /code/app.py "$TOKEN" reset-app "$@"
+  fi
   exit 0
 fi
 
 if [ "$1" = 'reset-package' ]; then
   service_is_ready
   shift
-  # This is quite bad. Only allows for CLI arguments before 'reset-app' subcommand.
-  python /code/app.py "$TOKEN" reset-package "$@"
+  if [[ -z $TOKEN ]]; then
+    python /code/app.py reset-package "$@"
+  else
+    python /code/app.py "$TOKEN" reset-package "$@"
+  fi
   exit 0
 fi
 
