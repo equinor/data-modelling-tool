@@ -28,6 +28,8 @@ class JobService:
             db=0,
             password=config.SCHEDULER_REDIS_PASSWORD,
             ssl=config.SCHEDULER_REDIS_SSL,
+            socket_timeout=5,
+            socket_connect_timeout=5,
         )
 
     def _set_job(self, job: Job):
