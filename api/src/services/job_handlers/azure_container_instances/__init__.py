@@ -61,11 +61,14 @@ class JobHandler(ServiceJobHandlerInterface):
         self.aci_client = ContainerInstanceManagementClient(token_thing, subscription_id=config.AZURE_JOB_SUBSCRIPTION)
 
     def start(self) -> str:
-        logger.info(f"JobId; '{self.job_entity['_id']}': Starting Azure Container job.")
+        logger.info(
+            f"JobName: '{self.job_entity.get('_id', self.job_entity.get('name'))}'."
+            + " Starting Azure Container job..."
+        )
 
         # Parse env vars
         env_vars: List[EnvironmentVariable] = []
-        for env_string in self.job_entity.get("environmentVariables"):
+        for env_string in self.job_entity.get("environmentVariables", []):
             key, value = env_string.split("=", 1)
             env_vars.append(EnvironmentVariable(name=key, value=value))
 
