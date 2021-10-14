@@ -52,9 +52,10 @@ class Job:
 
 
 class JobHandlerInterface(ABC):
-    def __init__(self, data_source: str, job_entity: dict):
+    def __init__(self, data_source: str, job_entity: dict, token: str):
         self.data_source = data_source
         self.job_entity = job_entity
+        self.token = token
 
     @abstractmethod
     def start(self) -> str:
