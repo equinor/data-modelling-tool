@@ -16,9 +16,7 @@ export const getUIPlugin = (uiRecipeName: string) => {
 export const getPagePlugin = (uiRecipeName: string) => {
   const pluginName = uiRecipeName.trim()
   if (pluginName in uiPlugins) {
-    if (uiPlugins[pluginName].pluginType === DmtPluginType.PAGE) {
-      return uiPlugins[pluginName]
-    }
+    return uiPlugins[pluginName]
   }
   console.warn(
     `No pagePlugin loaded for application '${pluginName}'. Defaulting to the DMT view`
