@@ -10,7 +10,7 @@ from redis import AuthenticationError
 
 from config import config
 from repository.repository_exceptions import JobNotFoundException
-from services.dmss import get_document_by_uid
+from services.dmss import get_access_token, get_document_by_uid
 
 
 # TODO: Authorization. The only level of authorization at this point is to allow all that
@@ -74,7 +74,7 @@ class JobService:
             modules.append(azure_container_instances)
             for job_handler_module in modules:
                 if job_entity["type"] == job_handler_module._SUPPORTED_JOB_TYPE:
-                    return job_handler_module.JobHandler(data_source_id, job_entity)
+                    return job_handler_module.JobHandler(data_source_id, job_entity, get_access_token())
         except ImportError as error:
             traceback.print_exc()
             raise ImportError(

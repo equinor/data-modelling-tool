@@ -48,8 +48,8 @@ class JobHandler(ServiceJobHandlerInterface):
     def setup_service(self, service_id: str) -> str:
         raise NotImplementedError
 
-    def __init__(self, data_source: str, job_entity: dict):
-        super().__init__(data_source, job_entity)
+    def __init__(self, data_source: str, job_entity: dict, token: str):
+        super().__init__(data_source, job_entity, token)
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
         azure_credentials = ServicePrincipalCredentials(
             config.AZURE_JOB_SP_CLIENT_ID, config.AZURE_JOB_SP_SECRET, tenant=config.AZURE_JOB_SP_TENANT_ID
@@ -86,7 +86,7 @@ class JobHandler(ServiceJobHandlerInterface):
             name=self.azure_valid_container_name,
             image=self.job_entity["image"],
             resources=ResourceRequirements(requests=compute_resources),
-            command=self.job_entity.get("command"),
+            command=self.job_entity.get("command") + [f"--token={self.token}"],
             environment_variables=env_vars,
         )
         image_registry_credential = None
