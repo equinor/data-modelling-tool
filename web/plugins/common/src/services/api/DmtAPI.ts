@@ -1,5 +1,4 @@
 import { IDmtAPI, IndexNodes } from './interfaces/DmtAPI'
-import { handleResponse } from './utilities/Response'
 import axios from 'axios'
 
 export class DmtAPI implements IDmtAPI {
@@ -12,7 +11,7 @@ export class DmtAPI implements IDmtAPI {
       .get(`/api/v4/index/${dataSourceId}?APPLICATION=${application}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(handleResponse)
+      .then((res) => res.data)
   }
 
   async getIndexByDocument(
@@ -25,7 +24,7 @@ export class DmtAPI implements IDmtAPI {
       .get(`${nodeUrl}/${documentId}?APPLICATION=${application}`, {
         headers: { Authorization: `Bearer ${token}` },
       })
-      .then(handleResponse)
+      .then((res: any) => res.data)
   }
 
   async getSystemSettings(application?: string) {

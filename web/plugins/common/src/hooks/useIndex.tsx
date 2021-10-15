@@ -93,6 +93,7 @@ export const useIndex = (props: IndexProps): IIndex => {
   }
 
   useEffect(() => {
+    if (!dataSources.length) return
     populateIndex()
   }, [dataSources, application])
 

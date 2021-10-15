@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react'
-
 import styled from 'styled-components'
 import FetchDocument from '../../../utils/FetchDocument'
 import Tabs, { Tab, TabPanel } from '../../../components/Tabs'
@@ -40,7 +39,7 @@ const View = (props: any) => {
         data: formData,
         nodeUrl: node.meta.indexUrl,
       })
-      .then(() => setLoading(false))
+      .finally(() => setLoading(false))
   }
 
   if (loading) return <div>Loading...</div>

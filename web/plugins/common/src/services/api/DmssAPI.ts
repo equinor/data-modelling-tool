@@ -1,4 +1,3 @@
-import apiProvider from './utilities/Provider'
 import {
   BlobGetByIdRequest,
   BlueprintGetRequest,
@@ -16,11 +15,12 @@ import {
 } from './configs/gen'
 import { DataSources } from './interfaces/DataSource'
 import { IDmssAPI } from './interfaces/DmssAPI'
+import axios from 'axios'
 
 const handleApiError = (error: any) => {
   // @ts-ignore
-  if (error.json !== 'function') {
-    return error
+  if (typeof error.json !== 'function') {
+    throw new Error(error)
   }
   return error.json().then((response: any) => {
     throw new Error(
@@ -45,7 +45,9 @@ export class DmssAPI implements IDmssAPI {
   }
 
   createDocument(url: string, data: any, token: string): Promise<any> {
-    return apiProvider.post(url, data, token)
+    return axios.post(url, data, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 
   addDocumentToParent({
@@ -111,7 +113,9 @@ export class DmssAPI implements IDmssAPI {
   }
 
   removeDocument(url: string, token: string): Promise<any> {
-    return apiProvider.remove(url, token)
+    return axios.delete(url, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
   }
 
   updateDocument(url: string, data: any): Promise<any> {
