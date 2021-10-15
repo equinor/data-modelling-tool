@@ -152,7 +152,7 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
 
   useEffect(() => {
     if (errorMessage) {
-      NotificationManager.error(errorMessage, 'Error', 0)
+      NotificationManager.error(errorMessage, 'Error', 10000)
     }
   }, [errorMessage, errorCounter])
 
@@ -228,11 +228,16 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
           index.models.index.operations.add(result.uid, nodeUrl, true)
         })
         .catch((error: any) => {
-          setErrorMessage(`Could not create document. Received error: ${error}`)
+          setErrorMessage(
+            `Could not create document. Received error: ${JSON.stringify(
+              error.response.data
+            )}`
+          )
           setErrorCounter(errorCounter + 1)
         })
     }
   }
+
   const insertReference = async ({
     dataSourceId,
     documentDottedId,

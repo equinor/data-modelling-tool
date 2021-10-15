@@ -24,6 +24,8 @@ export const AuthProvider = ({ authEnabled, children }) => {
     // information included in decodedToken can vary based on which authentication server is used.
     return {
       name: decodedToken["name"],
+      sub: decodedToken["sub"],
+      roles: decodedToken["roles"],
       accessToken: token,
       loggedIn: loggedIn
     }
