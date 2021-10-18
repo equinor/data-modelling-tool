@@ -51,7 +51,7 @@ interface CreateProps {
 interface AddToParentProps {
   dataSourceId: string
   data: any
-  nodeUrl: string
+  dottedId: string
 }
 
 interface InsertReferenceProps {
@@ -138,7 +138,7 @@ export interface IUseExplorer {
     nodeUrl,
   }: UpdateByIdProps): Promise<any>
 
-  addToParent({ dataSourceId, data, nodeUrl }: AddToParentProps): Promise<any>
+  addToParent({ dataSourceId, data, dottedId }: AddToParentProps): Promise<any>
 }
 
 export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
@@ -288,15 +288,19 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
   const addToParent = async ({
     dataSourceId,
     data,
-    nodeUrl,
+    dottedId,
   }: AddToParentProps) => {
     if (validate(data)) {
       return dmssAPI
-        .addDocumentToParent({ dataSourceId, dottedId: nodeUrl, body: data })
+        .addDocumentToParent({ dataSourceId, dottedId, body: data })
         .then((result: any) => {
           closeModal()
           const res = JSON.parse(result)
-          index.models.index.operations.add(res.uid, nodeUrl, true)
+          index.models.index.operations.add(
+            res.uid,
+            `/api/v4/index/${dataSourceId}/${dottedId}`,
+            true
+          )
           return res
         })
         .catch((error: any) => {
