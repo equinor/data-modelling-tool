@@ -180,7 +180,7 @@ export class DmssAPI implements IDmssAPI {
         })
   }
 
-  setDocumentAcl(requestParameters: SetAclRequest): Promise<any> {
+  setDocumentAcl(requestParameters: SetAclRequest): Promise<string> {
     return this.generatedDmssApi
         .setAcl(requestParameters)
         .catch((error) => {

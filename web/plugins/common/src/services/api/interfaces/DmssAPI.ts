@@ -5,13 +5,14 @@ import {
   DocumentGetByPathRequest,
   DocumentUpdateRequest,
   ExplorerAddRequest,
-  ExplorerRenameRequest,
+  ExplorerRenameRequest, GetAclRequest,
   GetDocumentResponse,
   ReferenceDeleteRequest,
   ReferenceInsertRequest,
-  SearchRequest,
+  SearchRequest, SetAclRequest,
 } from '../configs/gen'
 import { DataSources } from './DataSource'
+import {ACL} from "../types";
 
 export interface IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any>
@@ -49,4 +50,9 @@ export interface IDmssAPI {
   ): Promise<object>
 
   getAllDataSources(): Promise<DataSources>
+
+  getDocumentAcl(requestParameters: GetAclRequest): Promise<ACL>
+
+  setDocumentAcl(requestParameters: SetAclRequest): Promise<string>
+
 }
