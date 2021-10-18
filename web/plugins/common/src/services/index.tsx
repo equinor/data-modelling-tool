@@ -1,7 +1,5 @@
 export * from './api/DmssAPI'
 export * from './api/DmtAPI'
-// export * from './api/types'
-// check this - how to import enum and type in for?
 export * from './api/configs/gen/models/index'
 export * from './api/configs/gen/models/index'
 export * from './api/configs/gen/apis/DefaultApi'

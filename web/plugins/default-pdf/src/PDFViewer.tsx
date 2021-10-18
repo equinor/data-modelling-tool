@@ -1,7 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-import { DmssAPI } from '@dmt/common'
+import {AuthContext, DmssAPI} from '@dmt/common'
 
 export const ErrorGroup = styled.div`
   display: flex;
@@ -30,7 +30,8 @@ export const ViewerPDFPlugin = (props: any) => {
   const [blobUrl, setBlobUrl] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  const dmssAPI = new DmssAPI()
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
     setError(null)

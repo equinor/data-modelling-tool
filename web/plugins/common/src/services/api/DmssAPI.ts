@@ -16,7 +16,7 @@ import {
 import { DataSources } from './interfaces/DataSource'
 import { IDmssAPI } from './interfaces/DmssAPI'
 import axios from 'axios'
-import {ACL} from "./types";
+import {TACL} from '@dmt/common'
 
 const handleApiError = (error: any) => {
   // @ts-ignore
@@ -172,7 +172,7 @@ export class DmssAPI implements IDmssAPI {
 
 
 
-  getDocumentAcl(requestParameters: GetAclRequest): Promise<ACL> {
+  getDocumentAcl(requestParameters: GetAclRequest): Promise<TACL> {
     return this.generatedDmssApi
         .getAcl(requestParameters)
         .catch((error) => {

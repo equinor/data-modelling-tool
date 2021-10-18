@@ -9,6 +9,7 @@ from use_case.utils.index_menu_actions import (
     get_export_menu_item,
     get_import_menu_item,
     get_rename_menu_action,
+    get_change_acl_menu_item
 )
 from use_case.utils.sort_menu_items import sort_menu_items
 from utils.group_by import group_by
@@ -26,6 +27,9 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     if node.type == "datasource":
         menu_items.append(get_create_root_package_menu_item(data_source_id))
     else:
+
+        if ((node.type not in [SIMOS.UI_RECIPE.value, SIMOS.STORAGE_RECIPE.value]) and not node.is_array() and not node.storage_contained() and node.contained):
+            menu_items.append(get_change_acl_menu_item())
         # If the node is a DMT Package it get's some special context menu entries
         if is_package:
             node_id = f"{node.node_id}.content"

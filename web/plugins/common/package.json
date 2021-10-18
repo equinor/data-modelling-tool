@@ -4,6 +4,8 @@
   "main": "src/index.tsx",
   "dependencies": {
     "lodash": "^4.17.19",
-    "styled-components": "^5.2.3"
+    "styled-components": "^5.2.3",
+    "@equinor/eds-core-react": "^0.12.1",
+    "@equinor/eds-icons": "^0.6.2"
   }
 }

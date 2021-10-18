@@ -71,6 +71,12 @@ def get_create_reference_menu_item(type: str, node_id: str = None):
         "data": node_id_split[1] if len(node_id_split) > 1 else None,
     }
 
+def get_change_acl_menu_item():
+    return {
+        "label": "Access control",
+        "action": "CHANGE_ACL",
+        "data": {}
+    }
 
 def get_create_root_package_menu_item(data_source_id: str):
     return {
