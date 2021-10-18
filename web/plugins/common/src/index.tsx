@@ -3,7 +3,7 @@ export * from './components/Modal'
 export * from './components/JsonView'
 export * from './components/Button'
 export * from './components/Pickers'
-//
+
 export { useDataSources } from './hooks/useDataSources'
 export type { IDataSources } from './hooks/useDataSources'
 export { useIndex } from './hooks/useIndex'
@@ -11,7 +11,7 @@ export { useDocument } from './hooks/useDocument'
 export type { IIndex, IModels, IndexProps, IOperations } from './hooks/useIndex'
 
 export * from './services'
-export * from './components/AccessControl'
+export * from './components/AccessControlList'
 export * from './utils/variables'
 export * from './context/ApplicationContext'
 export * from './context/auth/AuthContext'

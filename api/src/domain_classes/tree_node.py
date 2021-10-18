@@ -387,8 +387,10 @@ class NodeBase:
 
     def storage_contained(self):
         if not self.parent or self.parent.type == BLUEPRINTS.DATASOURCE.value:
-            return False
-        return self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)
+            return False  # A node with no parent, or is a data source, can never be contained
+        if (in_recipe := self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)) is not None:
+            return in_recipe  # If the attribute is defined in a storageRecipe, use that value.
+        return self.attribute.contained  # Default to the attributeContained value (default True)
 
 
 class Node(NodeBase):

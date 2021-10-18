@@ -14,7 +14,7 @@ import {
   SetAclRequest,
 } from '../configs/gen'
 import { DataSources } from './DataSource'
-import { TACL } from '../../../components/AccessControl/AccessControlList'
+import { TACL } from '../../../components/AccessControlList'
 
 export interface IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any>
