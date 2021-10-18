@@ -173,11 +173,8 @@ export default function useRunnable({ explorer }: any) {
     ] = data.destination.split('/', 2)
 
     const content = {
-      attribute: 'content',
-      // @ts-ignore
       description: data.description,
       name: data.name,
-      parentId: destinationParentId,
       type: outputType,
     }
 
@@ -185,7 +182,7 @@ export default function useRunnable({ explorer }: any) {
       .addToParent({
         dataSourceId: destinationDataSourceId,
         data: content,
-        nodeUrl: `/api/v4/index/${destinationDataSourceId}/${destinationParentId}`,
+        dottedId: `${destinationParentId}.content`,
       })
       .then((result: any) => {
         const output: Output = {
