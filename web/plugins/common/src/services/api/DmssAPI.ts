@@ -8,15 +8,17 @@ import {
   DocumentGetByPathRequest,
   DocumentUpdateRequest,
   ExplorerAddRequest,
-  ExplorerRenameRequest, GetAclRequest,
+  ExplorerRenameRequest,
+  GetAclRequest,
   ReferenceDeleteRequest,
   ReferenceInsertRequest,
-  SearchRequest, SetAclRequest,
+  SearchRequest,
+  SetAclRequest,
 } from './configs/gen'
 import { DataSources } from './interfaces/DataSource'
 import { IDmssAPI } from './interfaces/DmssAPI'
 import axios from 'axios'
-import {TACL} from '@dmt/common'
+import { TACL } from '@dmt/common'
 
 const handleApiError = (error: any) => {
   // @ts-ignore
@@ -170,25 +172,17 @@ export class DmssAPI implements IDmssAPI {
       })
   }
 
-
-
   getDocumentAcl(requestParameters: GetAclRequest): Promise<TACL> {
-    return this.generatedDmssApi
-        .getAcl(requestParameters)
-        .catch((error) => {
-          return handleApiError(error)
-        })
+    return this.generatedDmssApi.getAcl(requestParameters).catch((error) => {
+      return handleApiError(error)
+    })
   }
 
   setDocumentAcl(requestParameters: SetAclRequest): Promise<string> {
-    return this.generatedDmssApi
-        .setAcl(requestParameters)
-        .catch((error) => {
-          return handleApiError(error)
-        })
+    return this.generatedDmssApi.setAcl(requestParameters).catch((error) => {
+      return handleApiError(error)
+    })
   }
-
-
 }
 
 export default DmssAPI

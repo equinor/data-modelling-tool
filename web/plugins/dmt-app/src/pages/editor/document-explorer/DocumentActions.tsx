@@ -14,7 +14,7 @@ import {
   DmssAPI,
   AuthContext,
   AccessControlList,
-    T
+  T,
 } from '@dmt/common'
 // import AccessControlList from "../../../../../common/src/components/AccessControl/AccessControlList";
 
@@ -26,7 +26,7 @@ export enum ContextMenuActions {
   RUNNABLE = 'RUNNABLE',
   INSERT_REFERENCE = 'INSERT_REFERENCE',
   UNLINK = 'UNLINK',
-  CHANGE_ACL = "CHANGE_ACL"
+  CHANGE_ACL = 'CHANGE_ACL',
 }
 
 const fillTemplate = function (templateString: string, templateVars: object) {
@@ -141,10 +141,11 @@ export interface IDisplayACL {
 }
 
 export const DisplayACL = (props: IDisplayACL) => {
-  const {dataSourceId, documentId} = props
+  const { dataSourceId, documentId } = props
 
   return (
-    <AccessControlList dataSourceId={dataSourceId} documentId={documentId} />)
+    <AccessControlList dataSourceId={dataSourceId} documentId={documentId} />
+  )
 }
 
 export const DefaultCreate = (props: IDefaultCreate) => {

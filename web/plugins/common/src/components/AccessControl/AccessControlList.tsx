@@ -1,16 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Input, Tabs, Icon } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import {
-  edit_text,
-  save
-} from '@equinor/eds-icons'
+import { edit_text, save } from '@equinor/eds-icons'
 import { StringMap, TAcl } from '../../Types'
 import { AuthContext, DmssAPI } from '@dmt/common'
 import { NotificationManager } from 'react-notifications'
 
-
-Icon.add({edit_text, save})
+Icon.add({ edit_text, save })
 
 export enum ACLEnum {
   READ = 'READ',
@@ -19,11 +15,11 @@ export enum ACLEnum {
 }
 
 export type TACL = {
-    owner: string,
-    roles?: { [key: string]: ACLEnum; }
-    users?: { [key: string]: ACLEnum; }
-    others: ACLEnum
-  }
+  owner: string
+  roles?: { [key: string]: ACLEnum }
+  users?: { [key: string]: ACLEnum }
+  others: ACLEnum
+}
 
 const ACLWrapper = styled.div`
   border: teal 2px solid;
@@ -151,15 +147,15 @@ const ACLUserRolesPanel = ({
   aclKey,
 }: URPanelProps): JSX.Element => {
   const [newRole, setNewRole] = useState<string>(null)
-  let placeholderText: string = ""
+  let placeholderText: string = ''
   const getPlaceholderText = () => {
-      if (aclKey === 'users') {
-          return "Add new user"
-      } else if (aclKey === 'roles') {
-          return "Add new role"
-      } else {
-          new Error(`aclKey ${aclKey} is invalid`)
-      }
+    if (aclKey === 'users') {
+      return 'Add new user'
+    } else if (aclKey === 'roles') {
+      return 'Add new role'
+    } else {
+      new Error(`aclKey ${aclKey} is invalid`)
+    }
   }
   return (
     <>

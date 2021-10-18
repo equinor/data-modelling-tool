@@ -1,7 +1,7 @@
-import React, {useContext, useEffect, useState} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-import {AuthContext, DmssAPI} from '@dmt/common'
+import { AuthContext, DmssAPI } from '@dmt/common'
 
 export const ErrorGroup = styled.div`
   display: flex;

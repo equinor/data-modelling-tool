@@ -5,14 +5,16 @@ import {
   DocumentGetByPathRequest,
   DocumentUpdateRequest,
   ExplorerAddRequest,
-  ExplorerRenameRequest, GetAclRequest,
+  ExplorerRenameRequest,
+  GetAclRequest,
   GetDocumentResponse,
   ReferenceDeleteRequest,
   ReferenceInsertRequest,
-  SearchRequest, SetAclRequest,
+  SearchRequest,
+  SetAclRequest,
 } from '../configs/gen'
 import { DataSources } from './DataSource'
-import {TACL} from "../../../components/AccessControl/AccessControlList";
+import { TACL } from '../../../components/AccessControl/AccessControlList'
 
 export interface IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any>
@@ -54,5 +56,4 @@ export interface IDmssAPI {
   getDocumentAcl(requestParameters: GetAclRequest): Promise<TACL>
 
   setDocumentAcl(requestParameters: SetAclRequest): Promise<string>
-
 }

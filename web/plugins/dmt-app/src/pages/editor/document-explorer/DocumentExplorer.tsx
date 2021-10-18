@@ -16,7 +16,8 @@ import {
   InsertReference,
   DefaultCreate,
   SaveToExistingDocument,
-  RenameDocument, DisplayACL,
+  RenameDocument,
+  DisplayACL,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { useModalContext } from '../../../context/modal/ModalContext'
@@ -80,12 +81,15 @@ export default () => {
 
     switch (action) {
       case ContextMenuActions.CHANGE_ACL: {
-        const aclProps = {dataSourceId: node.nodeData.meta.dataSource, documentId: node.nodeData.nodeId}
+        const aclProps = {
+          dataSourceId: node.nodeData.meta.dataSource,
+          documentId: node.nodeData.nodeId,
+        }
         openModal(DisplayACL, {
           dialog: {
-            title: "Change access control"
+            title: 'Change access control',
           },
-          props: aclProps
+          props: aclProps,
         })
         break
       }
@@ -98,9 +102,10 @@ export default () => {
           url: data.url,
           nodeUrl: data.nodeUrl,
         }
+        console.log(createProps)
         openModal(DefaultCreate, {
           dialog: {
-            title: `Create new ${data.request.attribute} for ${node.nodeData.title}`, //todo: data.request.attribute does not exist anymore...
+            title: `Create new ${data.request.type} for ${node.nodeData.title}`,
           },
           props: createProps,
         })
