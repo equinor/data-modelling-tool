@@ -14,7 +14,7 @@ import {
   SetAclRequest,
 } from '../configs/gen'
 import { DataSources } from './DataSource'
-import { TACL } from '../../../components/AccessControlList'
+import { TAcl } from '../../../components/AccessControlList'
 
 export interface IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any>
@@ -53,7 +53,7 @@ export interface IDmssAPI {
 
   getAllDataSources(): Promise<DataSources>
 
-  getDocumentAcl(requestParameters: GetAclRequest): Promise<TACL>
+  getDocumentAcl(requestParameters: GetAclRequest): Promise<TAcl>
 
   setDocumentAcl(requestParameters: SetAclRequest): Promise<string>
 }

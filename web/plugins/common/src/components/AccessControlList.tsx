@@ -2,8 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button, Input, Tabs, Icon } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-import { StringMap, TAcl } from '../../Types'
 import { AuthContext, DmssAPI } from '@dmt/common'
+//@ts-ignore
 import { NotificationManager } from 'react-notifications'
 
 Icon.add({ edit_text, save })
@@ -14,10 +14,10 @@ export enum ACLEnum {
   NONE = 'NONE',
 }
 
-export type TACL = {
+export type TAcl = {
   owner: string
-  roles?: { [key: string]: ACLEnum }
-  users?: { [key: string]: ACLEnum }
+  roles: { [key: string]: ACLEnum }
+  users: { [key: string]: ACLEnum }
   others: ACLEnum
 }
 
@@ -42,31 +42,41 @@ const ListRow = styled.div`
   align-items: center;
   padding: 5px;
   justify-content: space-around;
-  background-color: ${(props) => {
+  background-color: ${(props: any) => {
     if (props.even) return '#F7F7F7'
     return 'inherit'
   }};
 `
 
-const CenteredRow = styled.div`
+type CenteredRowType = {
+  width?: any
+  even?: any
+  justifyContent?: any
+}
+
+const CenteredRow = styled.div<CenteredRowType>`
   display: flex;
   flex-flow: row;
   align-items: center;
   padding-bottom: 10px;
-  justify-content: ${(props) => props.justifyContent || 'space-between'};
-  width: ${(props) => props.width || 'inherit'};
-  background-color: ${(props) => {
+  justify-content: ${(props: CenteredRowType) =>
+    props.justifyContent || 'space-between'};
+  width: ${(props: CenteredRowType) => props.width || 'inherit'};
+  background-color: ${(props: CenteredRowType) => {
     if (props.even) return '#F7F7F7'
     return 'inherit'
   }};
 `
+type GridContainerType = {
+  even?: any
+}
 
-const GridContainer = styled.div`
+const GridContainer = styled.div<GridContainerType>`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-items: center;
   align-items: center;
-  background-color: ${(props) => {
+  background-color: ${(props: GridContainerType) => {
     if (props.even) return '#F7F7F7'
     return 'inherit'
   }};
@@ -88,9 +98,9 @@ const ACLSelect = ({ value, handleChange }: any): JSX.Element => {
     <div style={{ width: '150px', padding: '10px' }}>
       <StyledSelect
         value={value}
-        onChange={(event: Event) => handleChange(event.target.value)}
+        onChange={(event) => handleChange(event.target.value)}
       >
-        {Object.values(ACLEnum).map((accessLevel: string) => (
+        {Object.values(ACLEnum).map((accessLevel) => (
           <StyledOption value={accessLevel} key={accessLevel}>
             {accessLevel}
           </StyledOption>
@@ -136,7 +146,7 @@ const ACLOwnerPanel = ({
 }
 
 interface URPanelProps {
-  entities: StringMap
+  entities: { [key: string]: ACLEnum }
   handleChange: Function
   aclKey: string
 }
@@ -146,8 +156,7 @@ const ACLUserRolesPanel = ({
   handleChange,
   aclKey,
 }: URPanelProps): JSX.Element => {
-  const [newRole, setNewRole] = useState<string>(null)
-  let placeholderText: string = ''
+  const [newRole, setNewRole] = useState<string>('')
   const getPlaceholderText = () => {
     if (aclKey === 'users') {
       return 'Add new user'
@@ -163,11 +172,13 @@ const ACLUserRolesPanel = ({
         <Input
           style={{ width: '170px' }}
           placeholder={getPlaceholderText()}
-          onChange={(e): Event => setNewRole(e.target.value)}
+          onChange={(e) => setNewRole(e.target.value)}
         />
         <Button
           onClick={() =>
-            handleChange({ [aclKey]: { ...entities, [newRole]: ACLEnum.NONE } })
+            handleChange({
+              [aclKey]: { ...entities, [newRole]: ACLEnum.NONE },
+            })
           }
           disabled={!newRole}
         >
@@ -181,7 +192,7 @@ const ACLUserRolesPanel = ({
       </ListRow>
       <TableWrapper>
         {Object.entries(entities).map(([entity, access], index): any => {
-          const roleHandleChange = (value: string) => {
+          const roleHandleChange = (value: ACLEnum) => {
             entities[entity] = value
             handleChange({ [aclKey]: entities })
           }
@@ -217,23 +228,23 @@ export const AccessControlList = (props: {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
-  const [documentACL, setDocumentACL] = useState<TAcl | null>({
+  const [documentACL, setDocumentACL] = useState<TAcl>({
     owner: 'stoo',
     roles: {
-      someRole: 'WRITE',
-      anotherRole: 'READ',
-      aThairdt: 'NONE',
-      someaRole: 'WRITE',
-      anothderRfsdfsdfsdfolsdfsdfsdfsdfsde: 'READ',
-      aT: 'NONE',
-      som4eRole: 'WRITE',
-      ane: 'READ',
-      aThirgddt: 'NONE',
+      someRole: ACLEnum.WRITE,
+      anotherRole: ACLEnum.READ,
+      aThairdt: ACLEnum.NONE,
+      someaRole: ACLEnum.WRITE,
+      anothderRfsdfsdfsdfolsdfsdfsdfsdfsde: ACLEnum.READ,
+      aT: ACLEnum.NONE,
+      som4eRole: ACLEnum.WRITE,
+      ane: ACLEnum.READ,
+      aThirgddt: ACLEnum.NONE,
     },
     users: {
-      aGuy: 'NONE',
-      aDude: 'WRITE',
-      aFellow: 'READ',
+      aGuy: ACLEnum.NONE,
+      aDude: ACLEnum.WRITE,
+      aFellow: ACLEnum.READ,
     },
     others: ACLEnum.READ,
   })
@@ -256,6 +267,7 @@ export const AccessControlList = (props: {
       .setDocumentAcl({
         dataSourceId: dataSourceId,
         documentId: documentId,
+        //@ts-ignore - ACL class from geneated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
         aCL: acl,
       })
       .then((response: string) => {
