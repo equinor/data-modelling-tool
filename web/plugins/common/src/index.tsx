@@ -11,6 +11,7 @@ export { useDocument } from './hooks/useDocument'
 export type { IIndex, IModels, IndexProps, IOperations } from './hooks/useIndex'
 
 export * from './services'
+export * from './components/AccessControlList'
 export * from './utils/variables'
 export * from './context/ApplicationContext'
 export * from './context/auth/AuthContext'

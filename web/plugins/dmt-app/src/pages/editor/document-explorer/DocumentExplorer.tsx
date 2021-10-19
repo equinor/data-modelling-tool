@@ -17,6 +17,7 @@ import {
   DefaultCreate,
   SaveToExistingDocument,
   RenameDocument,
+  DisplayACL,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { useModalContext } from '../../../context/modal/ModalContext'
@@ -79,6 +80,19 @@ export default () => {
     const ExternalPlugin = getUIPlugin('default-form')
 
     switch (action) {
+      case ContextMenuActions.CHANGE_ACL: {
+        const aclProps = {
+          dataSourceId: node.nodeData.meta.dataSource,
+          documentId: node.nodeData.nodeId,
+        }
+        openModal(DisplayACL, {
+          dialog: {
+            title: 'Change access control',
+          },
+          props: aclProps,
+        })
+        break
+      }
       case ContextMenuActions.CREATE:
         const createProps = {
           explorer: explorer,
@@ -88,9 +102,10 @@ export default () => {
           url: data.url,
           nodeUrl: data.nodeUrl,
         }
+        console.log(createProps)
         openModal(DefaultCreate, {
           dialog: {
-            title: `Create new ${data.request.attribute} for ${node.nodeData.title}`,
+            title: `Create new ${data.request.type} for ${node.nodeData.title}`,
           },
           props: createProps,
         })

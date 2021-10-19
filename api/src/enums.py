@@ -47,6 +47,8 @@ class SIMOS(Enum):
     BLUEPRINT_ATTRIBUTE = "system/SIMOS/BlueprintAttribute"
     APPLICATION = "system/SIMOS/Application"
     ATTRIBUTE_TYPES = "system/SIMOS/AttributeTypes"
+    UI_RECIPE = "system/SIMOS/UiRecipe"
+    STORAGE_RECIPE = "system/SIMOS/StorageRecipe"
 
 
 class BLUEPRINTS(Enum):

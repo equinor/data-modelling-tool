@@ -6,12 +6,15 @@ import {
   DocumentUpdateRequest,
   ExplorerAddRequest,
   ExplorerRenameRequest,
+  GetAclRequest,
   GetDocumentResponse,
   ReferenceDeleteRequest,
   ReferenceInsertRequest,
   SearchRequest,
+  SetAclRequest,
 } from '../configs/gen'
 import { DataSources } from './DataSource'
+import { TAcl } from '../../../components/AccessControlList'
 
 export interface IDmssAPI {
   createDocument(url: string, data: any, token: string): Promise<any>
@@ -49,4 +52,8 @@ export interface IDmssAPI {
   ): Promise<object>
 
   getAllDataSources(): Promise<DataSources>
+
+  getDocumentAcl(requestParameters: GetAclRequest): Promise<TAcl>
+
+  setDocumentAcl(requestParameters: SetAclRequest): Promise<string>
 }

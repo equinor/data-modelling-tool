@@ -13,6 +13,7 @@ import {
   OverrideTypeButton,
   DmssAPI,
   AuthContext,
+  AccessControlList,
 } from '@dmt/common'
 
 export enum ContextMenuActions {
@@ -23,6 +24,7 @@ export enum ContextMenuActions {
   RUNNABLE = 'RUNNABLE',
   INSERT_REFERENCE = 'INSERT_REFERENCE',
   UNLINK = 'UNLINK',
+  CHANGE_ACL = 'CHANGE_ACL',
 }
 
 const fillTemplate = function (templateString: string, templateVars: object) {
@@ -129,6 +131,19 @@ export interface IDefaultCreate {
   request: {}
   url: string
   nodeUrl: string
+}
+
+export interface IDisplayACL {
+  dataSourceId: string
+  documentId: string
+}
+
+export const DisplayACL = (props: IDisplayACL) => {
+  const { dataSourceId, documentId } = props
+
+  return (
+    <AccessControlList dataSourceId={dataSourceId} documentId={documentId} />
+  )
 }
 
 export const DefaultCreate = (props: IDefaultCreate) => {
