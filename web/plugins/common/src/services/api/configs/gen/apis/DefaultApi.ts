@@ -18,12 +18,12 @@ import {
     ACL,
     ACLFromJSON,
     ACLToJSON,
+    AddRootPackageRequest,
+    AddRootPackageRequestFromJSON,
+    AddRootPackageRequestToJSON,
     DataSourceRequest,
     DataSourceRequestFromJSON,
     DataSourceRequestToJSON,
-    EntityName,
-    EntityNameFromJSON,
-    EntityNameToJSON,
     GetDocumentResponse,
     GetDocumentResponseFromJSON,
     GetDocumentResponseToJSON,
@@ -103,7 +103,7 @@ export interface ExplorerAddRequest {
 
 export interface ExplorerAddPackageRequest {
     dataSourceId: string;
-    entityName: EntityName;
+    addRootPackageRequest: AddRootPackageRequest;
 }
 
 export interface ExplorerAddSimpleRequest {
@@ -173,6 +173,7 @@ export interface SetAclRequest {
     dataSourceId: string;
     documentId: string;
     aCL: ACL;
+    recursively?: boolean;
 }
 
 /**
@@ -741,8 +742,8 @@ export class DefaultApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAddPackage.');
         }
 
-        if (requestParameters.entityName === null || requestParameters.entityName === undefined) {
-            throw new runtime.RequiredError('entityName','Required parameter requestParameters.entityName was null or undefined when calling explorerAddPackage.');
+        if (requestParameters.addRootPackageRequest === null || requestParameters.addRootPackageRequest === undefined) {
+            throw new runtime.RequiredError('addRootPackageRequest','Required parameter requestParameters.addRootPackageRequest was null or undefined when calling explorerAddPackage.');
         }
 
         const queryParameters: any = {};
@@ -765,7 +766,7 @@ export class DefaultApi extends runtime.BaseAPI {
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
-            body: EntityNameToJSON(requestParameters.entityName),
+            body: AddRootPackageRequestToJSON(requestParameters.addRootPackageRequest),
         });
 
         return new runtime.TextApiResponse(response) as any;
@@ -1404,6 +1405,10 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.recursively !== undefined) {
+            queryParameters['recursively'] = requestParameters.recursively;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
