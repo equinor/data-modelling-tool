@@ -1,11 +1,10 @@
-.openapi-generator-ignore
 apis/DefaultApi.ts
 apis/index.ts
 index.ts
 models/ACL.ts
 models/AccessLevel.ts
+models/AddRootPackageRequest.ts
 models/DataSourceRequest.ts
-models/EntityName.ts
 models/GetDocumentResponse.ts
 models/HTTPValidationError.ts
 models/MoveRequest.ts

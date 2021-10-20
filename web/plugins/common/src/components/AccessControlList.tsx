@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, Input, Tabs, Icon } from '@equinor/eds-core-react'
+import { Button, Input, Tabs, Icon, Checkbox } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
 import { AuthContext, DmssAPI } from '@dmt/common'
@@ -225,6 +225,7 @@ export const AccessControlList = (props: {
   const documentId = props.documentId
   const dataSourceId = props.dataSourceId
   const [activeTab, setActiveTab] = useState<number>(0)
+  const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -269,6 +270,7 @@ export const AccessControlList = (props: {
         documentId: documentId,
         //@ts-ignore - ACL class from geneated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
         aCL: acl,
+        recursively: storeACLRecursively,
       })
       .then((response: string) => {
         NotificationManager.success('ACL saved!')
@@ -317,11 +319,17 @@ export const AccessControlList = (props: {
           </Tabs.Panel>
         </Tabs.Panels>
       </Tabs>
+
       <CenteredRow>
         <Button onClick={() => saveACL(documentACL)}>
           Save
           <Icon name="save" title="save" size={24} />
         </Button>
+        <Checkbox
+          checked={storeACLRecursively}
+          label="Change access recursively"
+          onClick={() => setStoreACLRecursively(!storeACLRecursively)}
+        ></Checkbox>
       </CenteredRow>
     </ACLWrapper>
   )
