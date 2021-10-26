@@ -26,6 +26,7 @@ export const AuthProvider = ({ authEnabled, children }) => {
       name: decodedToken["name"],
       sub: decodedToken["sub"],
       roles: decodedToken["roles"],
+      username: decodedToken["preferred_username"].split("@")[0],
       accessToken: token,
       loggedIn: loggedIn
     }
