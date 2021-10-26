@@ -5,7 +5,7 @@ import { AuthContext } from '@dmt/common'
 export const useDocument = (dataSourceId: string, documentId: string) => {
   const [document, setDocument] = useState<Object | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<Error | null>()
+  const [error, setError] = useState<Error | null>(null)
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const target = documentId.split('.')
@@ -21,7 +21,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
         setError(null)
       })
       .catch((error: Error) => setError(error))
-    setLoading(false)
+      .finally(() => setLoading(false))
   }, [dataSourceId, documentId])
 
   function updateDocument(newDocument: Object) {
@@ -38,7 +38,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
         setError(null)
       })
       .catch((error: Error) => setError(error))
-    setLoading(false)
+      .finally(() => setLoading(false))
   }
   return [document, isLoading, updateDocument, error]
 }
