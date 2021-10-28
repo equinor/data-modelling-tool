@@ -99,7 +99,7 @@ class JobHandler(ServiceJobHandlerInterface):
 
         # Configure the container group
         group = ContainerGroup(
-            location=self.job_entity.get("azure-location", "Norway East"),
+            location=self.job_entity.get("azure-location", "norwayeast"),
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,
