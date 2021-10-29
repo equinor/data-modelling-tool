@@ -10,6 +10,7 @@ from azure.mgmt.containerinstance.models import (
     ContainerGroup,
     ContainerGroupRestartPolicy,
     EnvironmentVariable,
+    ImageRegistryCredential,
     OperatingSystemTypes,
     ResourceRequests,
     ResourceRequirements,
@@ -41,12 +42,6 @@ class JobHandler(ServiceJobHandlerInterface):
     Support both executable jobs and job services
     """
 
-    def teardown_service(self, service_id: str) -> str:
-        raise NotImplementedError
-
-    def setup_service(self, service_id: str) -> str:
-        raise NotImplementedError
-
     def __init__(self, data_source: str, job_entity: dict, token: str):
         super().__init__(data_source, job_entity, token)
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
@@ -58,6 +53,12 @@ class JobHandler(ServiceJobHandlerInterface):
 
         token_thing = AzureTokenClass(azure_credentials.token)
         self.aci_client = ContainerInstanceManagementClient(token_thing, subscription_id=config.AZURE_JOB_SUBSCRIPTION)
+
+    def teardown_service(self, service_id: str) -> str:
+        raise NotImplementedError
+
+    def setup_service(self, service_id: str) -> str:
+        raise NotImplementedError
 
     def start(self) -> str:
         logger.info(
@@ -88,13 +89,15 @@ class JobHandler(ServiceJobHandlerInterface):
             command=self.job_entity.get("command") + [f"--token={self.token}"],
             environment_variables=env_vars,
         )
-        # image_registry_credential = None
-        # if self.job_entity.get("cr-password"):  # If 'cr-password' is supplied, create and send registry credentials
-        #     image_registry_credential = ImageRegistryCredential(
-        #         server=self.job_entity["image"].split("/")[0],
-        #         username=self.job_entity["cr-username"],
-        #         password=self.job_entity["cr-password"],
-        #     )
+        image_registry_credential = None
+        if self.job_entity.get("cr-password"):  # If 'cr-password' is supplied, create and send registry credentials
+            image_registry_credential = [
+                ImageRegistryCredential(
+                    server=self.job_entity["image"].split("/")[0],
+                    username=self.job_entity["cr-username"],
+                    password=self.job_entity["cr-password"],
+                )
+            ]
 
         # Configure the container group
         group = ContainerGroup(
@@ -102,8 +105,7 @@ class JobHandler(ServiceJobHandlerInterface):
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,
-            # TODO: Azure API return 500 when this is posted for some reason...
-            # image_registry_credentials=[image_registry_credential],
+            image_registry_credentials=image_registry_credential,
         )
 
         # Create the container group
