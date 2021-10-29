@@ -10,7 +10,6 @@ from azure.mgmt.containerinstance.models import (
     ContainerGroup,
     ContainerGroupRestartPolicy,
     EnvironmentVariable,
-    ImageRegistryCredential,
     OperatingSystemTypes,
     ResourceRequests,
     ResourceRequirements,
@@ -81,7 +80,7 @@ class JobHandler(ServiceJobHandlerInterface):
         )
 
         # Configure the container
-        compute_resources = ResourceRequests(memory_in_gb=1, cpu=1.0)
+        compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
         container = Container(
             name=self.azure_valid_container_name,
             image=self.job_entity["image"],
@@ -89,13 +88,13 @@ class JobHandler(ServiceJobHandlerInterface):
             command=self.job_entity.get("command") + [f"--token={self.token}"],
             environment_variables=env_vars,
         )
-        image_registry_credential = None
-        if self.job_entity.get("cr-password"):  # If 'cr-password' is supplied, create and send registry credentials
-            image_registry_credential = ImageRegistryCredential(
-                server=self.job_entity["image"].split("/")[0],
-                username=self.job_entity["cr-username"],
-                password=self.job_entity["cr-password"],
-            )
+        # image_registry_credential = None
+        # if self.job_entity.get("cr-password"):  # If 'cr-password' is supplied, create and send registry credentials
+        #     image_registry_credential = ImageRegistryCredential(
+        #         server=self.job_entity["image"].split("/")[0],
+        #         username=self.job_entity["cr-username"],
+        #         password=self.job_entity["cr-password"],
+        #     )
 
         # Configure the container group
         group = ContainerGroup(
@@ -103,7 +102,8 @@ class JobHandler(ServiceJobHandlerInterface):
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,
-            image_registry_credentials=[image_registry_credential],
+            # TODO: Azure API return 500 when this is posted for some reason...
+            # image_registry_credentials=[image_registry_credential],
         )
 
         # Create the container group
