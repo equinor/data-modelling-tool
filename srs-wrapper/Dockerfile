@@ -14,5 +14,3 @@ COPY init.sh init.sh
 COPY job_wrapper.py job_wrapper.py
 
 WORKDIR /var/opt/sima/workspace
-ENTRYPOINT ["/code/init.sh"]
-CMD ["run"]

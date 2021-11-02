@@ -3,10 +3,10 @@ version: "3.8"
 services:
   dmt-srs:
     build: .
-    image: mariner.azurecr.io/dmt-job/srs:latest
+    image: publicMSA.azurecr.io/dmt-job/srs:latest
     environment:
-      SIMA_LICENSE: |
-        $(cat ./sima.lic)
+#      SIMA_LICENSE: |
+#        $(cat ./sima.lic)
 
       DMSS_HOST: http://dmss:5000
     networks:
@@ -15,6 +15,7 @@ services:
       - ./job_wrapper.py:/code/job_wrapper.py
     # This stask is part of the DemoDS in DMT with a static UUID
     command: [
+        "/code/init.sh",
         "--stask=DemoDS/8ec0d646-907c-4eba-9e65-24106236d61c",
         "--workflow=workflow",
         "--input=waveDir=180",
