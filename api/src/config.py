@@ -76,6 +76,11 @@ class Config:
     AZURE_JOB_SP_CLIENT_ID = os.getenv("AZURE_JOB_CLIENT_ID", "97a6b5bd-63fb-42c6-bb75-7e5de2394ba0")
     AZURE_JOB_SP_TENANT_ID = os.getenv("AZURE_JOB_TENANT_ID", "3aa4a235-b6e2-48d5-9195-7fcf05b459b0")
 
+    # Allows for some per-deployment environment variables to be passed to jobs
+    SCHEDULER_ENVS_TO_EXPORT = (
+        os.getenv("SCHEDULER_ENVS_TO_EXPORT").split(",") if os.getenv("SCHEDULER_ENVS_TO_EXPORT") else []
+    )
+
     # Redis stuff
     SCHEDULER_REDIS_PASSWORD = os.getenv("SCHEDULER_REDIS_PASSWORD")
     SCHEDULER_REDIS_HOST = os.getenv("SCHEDULER_REDIS_HOST", "job-store")

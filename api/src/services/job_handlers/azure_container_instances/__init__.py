@@ -3,6 +3,7 @@ from collections import namedtuple
 from time import sleep
 from typing import List, Tuple
 
+import os
 from azure.core.exceptions import ResourceNotFoundError
 from azure.mgmt.containerinstance import ContainerInstanceManagementClient
 from azure.mgmt.containerinstance.models import (
@@ -66,8 +67,12 @@ class JobHandler(ServiceJobHandlerInterface):
             + " Starting Azure Container job..."
         )
 
-        # Parse env vars
-        env_vars: List[EnvironmentVariable] = []
+        # Add env-vars from deployment first
+        env_vars: List[EnvironmentVariable] = [
+            EnvironmentVariable(name=e, value=os.getenv(e)) for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)
+        ]
+
+        # Parse env-vars from job entity
         for env_string in self.job_entity.get("environmentVariables", []):
             key, value = env_string.split("=", 1)
             env_vars.append(EnvironmentVariable(name=key, value=value))
