@@ -13,7 +13,7 @@ pp = pprint.PrettyPrinter(indent=2, compact=True, width=119)
 
 
 class Settings(BaseSettings):
-    DMSS_API: str = Field("http://localhost:5000", env="DMSS_API")
+    PUBLIC_DMSS_API: str = Field("http://localhost:5000", env="PUBLIC_DMSS_API")
     SRS_HOME: str = "/var/opt/sima"
     RESULT_FILE: str = "/var/opt/sima/workspace/result.json"
 
@@ -21,7 +21,7 @@ class Settings(BaseSettings):
 settings = Settings()
 
 dmss_api = DefaultApi()
-dmss_api.api_client.configuration.host = settings.DMSS_API
+dmss_api.api_client.configuration.host = settings.PUBLIC_DMSS_API
 
 start_time = time.time()
 

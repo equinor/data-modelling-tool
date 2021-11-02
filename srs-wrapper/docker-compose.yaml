@@ -7,8 +7,7 @@ services:
     environment:
 #      SIMA_LICENSE: |
 #        $(cat ./sima.lic)
-
-      DMSS_HOST: http://dmss:5000
+      PUBLIC_DMSS_API: http://dmss:5000
     networks:
       - data-modelling-storage-service_default
     volumes:
