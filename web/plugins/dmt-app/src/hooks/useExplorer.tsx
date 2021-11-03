@@ -225,7 +225,7 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
         .createDocument(dataUrl, data, token)
         .then((result: any) => {
           closeModal()
-          index.models.index.operations.add(result.uid, nodeUrl, true)
+          index.models.index.operations.add(result.data.uid, nodeUrl, true)
         })
         .catch((error: any) => {
           setErrorMessage(
