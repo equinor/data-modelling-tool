@@ -1,7 +1,7 @@
 {
   "name": "MooringHub",
   "type": "system/SIMOS/Blueprint",
-  "extends": ["system/SIMOS/DefaultUiRecipes"],
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
   "description": "",
   "attributes": [
     {

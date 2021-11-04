@@ -157,16 +157,19 @@ export const DefaultCreate = (props: IDefaultCreate) => {
   const canOverrideType = !Object.values(BlueprintEnum).includes(props.type)
 
   const onSubmit = () => {
-    props.explorer.create({
-      data: {
-        name: name,
+    let dataDict: any = {
         type: type,
         description: description || '',
         // @ts-ignore
         attribute: props.request.attribute,
         // @ts-ignore
         parentId: props.request.parentId,
-      },
+      }
+    if (name !== "") {
+      dataDict["name"] = name
+    }
+    props.explorer.create({
+      data: dataDict,
       dataUrl: props.url,
       nodeUrl: props.nodeUrl,
     })
