@@ -77,10 +77,10 @@ class Package:
             else:  # Assume the child is a dict
                 if "name" in child:
                     result.append(
-                        {"_id": child["_id"], "name": child["name"], "type": child["type"], "contained": True})
+                        {"_id": child["_id"], "name": child["name"], "type": child["type"], "contained": True}
+                    )
 
                 else:
-                    result.append(
-                        {"_id": child["_id"], "type": child["type"], "contained": True})
+                    result.append({"_id": child["_id"], "type": child["type"], "contained": True})
 
         return result

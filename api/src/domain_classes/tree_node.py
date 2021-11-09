@@ -220,12 +220,17 @@ class NodeBase:
         if self.type == BLUEPRINTS.DATASOURCE.value:
             return self.uid
 
-        return ".".join(self.path() + [self.key])
+        if self.path() == None:
+            return None
+        else:
+            return ".".join(self.path() + [self.key])
 
     @lru_cache
     def path(self):
         path = []
         parent = self.parent
+        if parent == None:
+            return None
         while parent and (parent.storage_contained() or parent.is_array()):
             path += [parent.key]
             parent = parent.parent
@@ -313,13 +318,21 @@ class NodeBase:
         else:
             return 1 + self.parent.depth()
 
-    def search(self, node_id: str):
-        if self.node_id == node_id:
+    def search(self, id: str):
+        """
+        :param id: can be a dotted id or a node id
+        """
+        if self.node_id == id:
             return self
 
         for node in self.traverse():
-            if node.node_id == node_id:
+            if node.node_id == id:
                 return node
+            elif node.tree_id != None:
+                if node.tree_id == id:
+                    if "name" not in node.entity:
+                        node.set_name(node.node_id[0:8])
+                    return node
 
         return None
 
@@ -410,6 +423,9 @@ class Node(NodeBase):
     @property
     def name(self):
         return self.entity.get("name", self.attribute.name)
+
+    def set_name(self, new_name: str):
+        self.attribute.name = new_name
 
     def to_dict(self):
         return DictExporter.to_dict(self)

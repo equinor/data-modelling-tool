@@ -158,15 +158,15 @@ export const DefaultCreate = (props: IDefaultCreate) => {
 
   const onSubmit = () => {
     let dataDict: any = {
-        type: type,
-        description: description || '',
-        // @ts-ignore
-        attribute: props.request.attribute,
-        // @ts-ignore
-        parentId: props.request.parentId,
-      }
-    if (name !== "") {
-      dataDict["name"] = name
+      type: type,
+      description: description || '',
+      // @ts-ignore
+      attribute: props.request.attribute,
+      // @ts-ignore
+      parentId: props.request.parentId,
+    }
+    if (name !== '') {
+      dataDict['name'] = name
     }
     props.explorer.create({
       data: dataDict,

@@ -147,7 +147,7 @@ const addToPath = (
 
 export default ({ applications }: AppHeaderProps) => {
   const location = useLocation()
-      const { token } = useContext(AuthContext)
+  const { token } = useContext(AuthContext)
   function getActiveTab() {
     // activeApp (Tab Styling) is based on route, or if route is "/", the first application
     if (location.pathname === '/') return applications[0].name
@@ -158,10 +158,9 @@ export default ({ applications }: AppHeaderProps) => {
   }
 
   const fdata: any = {
-    "type": "system/SIMOS/Entity",
-    "description": "entity with no name"
-}
-
+    type: 'system/SIMOS/Entity',
+    description: 'entity with no name',
+  }
 
   return (
     <>
@@ -169,7 +168,13 @@ export default ({ applications }: AppHeaderProps) => {
         <Link to="/">
           <h4>Data Modelling Tool</h4>
         </Link>
-          <Button onClick={() => {addToPath(fdata, token)}}>test</Button>
+        <Button
+          onClick={() => {
+            addToPath(fdata, token)
+          }}
+        >
+          test
+        </Button>
         <div
           style={{
             display: 'flex',

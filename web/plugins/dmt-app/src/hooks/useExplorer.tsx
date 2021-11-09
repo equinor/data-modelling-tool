@@ -222,7 +222,6 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
 
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
-      console.log("DATA FOR CREATE", data)
       dmssAPI
         .createDocument(dataUrl, data, token)
         .then((result: any) => {
