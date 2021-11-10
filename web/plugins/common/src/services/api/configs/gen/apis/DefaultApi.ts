@@ -91,6 +91,7 @@ export interface DocumentUpdateRequest {
     dataSourceId: string;
     documentId: string;
     data: string;
+    updateUncontained?: boolean;
     attribute?: string;
     files?: Array<Blob>;
 }
@@ -620,6 +621,10 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.updateUncontained !== undefined) {
+            queryParameters['update_uncontained'] = requestParameters.updateUncontained;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
