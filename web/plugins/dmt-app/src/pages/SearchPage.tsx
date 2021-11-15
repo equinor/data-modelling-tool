@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { AuthContext } from 'react-oauth2-code-pkce'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
 // @ts-ignore
@@ -13,7 +14,6 @@ import {
   DataSources,
   JsonView,
   ApplicationContext,
-  AuthContext,
 } from '@dmt/common'
 import useLocalStorage from '../hooks/useLocalStorage'
 

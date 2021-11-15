@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
-import { AuthContext } from '@dmt/common'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 export const useDocument = (dataSourceId: string, documentId: string) => {
   const [document, setDocument] = useState<Object | null>(null)

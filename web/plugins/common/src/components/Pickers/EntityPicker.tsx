@@ -13,7 +13,7 @@ import {
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
 import { Reference } from '../../services/api/configs/gen'
-import { AuthContext } from '@dmt/common'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 export type EntityPickerProps = {
   onChange: Function

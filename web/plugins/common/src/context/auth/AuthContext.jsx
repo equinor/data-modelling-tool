@@ -10,7 +10,7 @@ import {
 } from "./authentication";
 //@ts-ignore
 import useLocalStorage from "@dmt/dmt-app/src/hooks/useLocalStorage";
-export const AuthContext = React.createContext()
+export const AuthContext = React.createContext({})
 
 export const AuthProvider = ({ authEnabled, children }) => {
   const [refreshToken, setRefreshToken] = useLocalStorage('refreshToken', null)

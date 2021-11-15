@@ -1,11 +1,11 @@
 import React, { useContext } from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
 import {
   ApplicationContext,
   DmssAPI,
   NodeType,
   Tree,
   TreeNodeRenderProps,
-  AuthContext,
 } from '@dmt/common'
 import { DocumentNode } from './DocumentNode'
 import {

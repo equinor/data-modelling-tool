@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
 import { useEffect, useState, useContext } from 'react'
@@ -15,7 +16,6 @@ import {
   PackagesPicker,
   BlueprintPicker,
   DestinationPicker,
-  AuthContext,
 } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {

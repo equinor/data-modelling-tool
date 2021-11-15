@@ -1,4 +1,5 @@
 import React, { useContext, useState } from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
 import styled from 'styled-components'
 import FetchDocument from '../../../utils/FetchDocument'
 import Tabs, { Tab, TabPanel } from '../../../components/Tabs'
@@ -7,7 +8,7 @@ import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
 import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 import { getUIPlugin } from '@dmt/core-plugins'
-import { DmssAPI, DmtAPI, AuthContext } from '@dmt/common'
+import { DmssAPI, DmtAPI } from '@dmt/common'
 
 const Wrapper = styled.div`
   padding: 20px;

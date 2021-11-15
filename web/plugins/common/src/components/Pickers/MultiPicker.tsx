@@ -14,7 +14,7 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
-import { AuthContext } from '@dmt/common'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 const NodeWrapper = styled.div`
   display: flex;

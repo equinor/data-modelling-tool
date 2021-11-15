@@ -2,13 +2,8 @@
 import { Link, Route, useLocation } from 'react-router-dom'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import {
-  Button,
-  JsonView,
-  Modal,
-  sortApplications,
-  AuthContext,
-} from '@dmt/common'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { Button, JsonView, Modal, sortApplications } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
@@ -45,24 +40,24 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
-  const { userData, logOut } = useContext(AuthContext)
+  const { tokenData, logOut } = useContext(AuthContext)
   const [expanded, setExpanded] = useState(false)
   return (
     <div style={{ display: 'flex', alignItems: 'center', columnGap: '5px' }}>
       <UserInfoBox onClick={() => setExpanded(!expanded)}>
-        <div>{userData.name}</div>
+        <div>{tokenData.name}</div>
         <Modal
           toggle={() => setExpanded(!expanded)}
           open={expanded}
           title={'Logged in user info'}
         >
-          <JsonView data={userData} />
+          <JsonView data={tokenData} />
           <button type={'button'} onClick={() => setExpanded(false)}>
             Close
           </button>
         </Modal>
       </UserInfoBox>
-      {userData.loggedIn && <Button onClick={() => logOut()}>Log out</Button>}
+      {tokenData.loggedIn && <Button onClick={() => logOut()}>Log out</Button>}
     </div>
   )
 }

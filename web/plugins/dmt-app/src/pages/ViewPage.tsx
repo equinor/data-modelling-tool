@@ -1,8 +1,9 @@
 import React, { useContext, useEffect, useState } from 'react'
+import { AuthContext } from 'react-oauth2-code-pkce'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { DmtAPI, DmssAPI, AuthContext } from '@dmt/common'
+import { DmtAPI, DmssAPI } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { getUIPlugin } from '@dmt/core-plugins'

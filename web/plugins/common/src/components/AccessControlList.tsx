@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button, Input, Tabs, Icon, Checkbox } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-import { AuthContext, DmssAPI } from '@dmt/common'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { DmssAPI } from '@dmt/common'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 
