@@ -13,7 +13,7 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
-import { AuthContext } from 'react-oauth2-code-pkce'
+import { AuthContext } from '@dmt/common'
 
 const SelectDestinationButton = styled.button`
   padding: 0 2.5px;

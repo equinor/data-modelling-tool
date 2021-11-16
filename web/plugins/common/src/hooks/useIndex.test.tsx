@@ -4,12 +4,9 @@ import { IIndex, useIndex } from './useIndex'
 import { mock } from 'jest-mock-extended'
 import { IDmtAPI, IndexNodes } from '../services'
 import { NodeType } from '../utils/variables'
-import { AuthProvider } from '@dmt/common'
 import { DataSource } from '../services/api/interfaces/DataSource'
 
-const wrapper: React.FC = ({ children }: any) => (
-  <AuthProvider authEnabled={false}>{children}</AuthProvider>
-)
+const wrapper: React.FC = ({ children }: any) => <>{children}</>
 
 const getMocks = () => {
   const dataSources: DataSource[] = [

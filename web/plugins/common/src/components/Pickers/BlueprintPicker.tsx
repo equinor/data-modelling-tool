@@ -12,7 +12,7 @@ import {
   useIndex,
 } from '../../'
 import { IDataSources } from '../../hooks/useDataSources'
-import { AuthContext } from 'react-oauth2-code-pkce'
+import { AuthContext } from '@dmt/common'
 
 export type BlueprintPickerProps = {
   onChange: Function

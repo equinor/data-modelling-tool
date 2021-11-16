@@ -9,7 +9,8 @@ import values from 'lodash/values'
 import { DataSource } from '../services'
 import DmtApi from '../services/api/DmtAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
-import { AuthContext } from 'react-oauth2-code-pkce'
+// @ts-ignore
+import { AuthContext } from '@dmt/common'
 
 export interface IModels {
   tree: ITree

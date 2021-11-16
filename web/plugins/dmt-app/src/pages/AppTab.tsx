@@ -1,8 +1,7 @@
 import React, { useContext } from 'react'
 import Editor from './editor/Editor'
 import DashboardProvider from '../context/dashboard/DashboardProvider'
-import { ApplicationContext, DmssAPI } from '@dmt/common'
-import { AuthContext } from 'react-oauth2-code-pkce'
+import { ApplicationContext, DmssAPI, AuthContext } from '@dmt/common'
 
 export default ({ settings }: any) => {
   const { token } = useContext(AuthContext)

@@ -10,6 +10,7 @@ import {
   DmssAPI,
   DocumentGetByIdRequest,
   Reference,
+  AuthContext,
 } from '@dmt/common'
 
 import {
@@ -17,7 +18,6 @@ import {
   useGlobalIndex,
 } from '../context/global-index/IndexProvider'
 import { useContext, useEffect, useState } from 'react'
-import { AuthContext } from 'react-oauth2-code-pkce'
 import { LayoutComponents } from '../context/dashboard/useLayout'
 
 interface FetchUrl {

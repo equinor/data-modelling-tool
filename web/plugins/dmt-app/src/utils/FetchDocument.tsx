@@ -2,8 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import useExplorer, { IUseExplorer } from '../hooks/useExplorer'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { AuthContext } from 'react-oauth2-code-pkce'
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI, AuthContext } from '@dmt/common'
 
 type Props = {
   dataSourceId: string

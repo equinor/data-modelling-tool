@@ -1,5 +1,4 @@
 import React, { useContext, useState } from 'react'
-import { AuthContext } from 'react-oauth2-code-pkce'
 import Prompt from '../../../components/Prompt'
 import useRunnable from '../../../hooks/useRunnable'
 import useExplorer, {
@@ -13,6 +12,7 @@ import {
   Reference,
   OverrideTypeButton,
   DmssAPI,
+  AuthContext,
   AccessControlList,
 } from '@dmt/common'
 

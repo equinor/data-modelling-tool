@@ -4,7 +4,7 @@ import 'react-notifications/lib/notifications.css'
 
 import App from './App'
 import ReactDOM from 'react-dom'
-import { AuthProvider } from 'react-oauth2-code-pkce'
+import { AuthProvider } from '@dmt/common'
 
 const authEnabled = process.env.REACT_APP_AUTH === '1'
 const authConfig = {
