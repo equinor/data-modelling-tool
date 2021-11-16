@@ -16,7 +16,6 @@ const authConfig = {
   logoutEndpoint: process.env.REACT_APP_LOGOUT_ENDPOINT || '',
 }
 
-// TODO: Discuss how to handle authEnabled=False
 ReactDOM.render(
   <>
     {authEnabled ? (
