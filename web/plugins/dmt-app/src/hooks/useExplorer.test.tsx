@@ -207,7 +207,7 @@ describe('the explorer hook', () => {
             '/api/v1/index/1',
             '1',
             application.name,
-            null
+            undefined
           )
         })
       })
@@ -319,7 +319,7 @@ describe('the explorer hook', () => {
         expect(mocks.dmssAPI.createDocument).toHaveBeenCalledWith(
           documentToCreate.dataUrl,
           documentToCreate.data,
-          null
+          undefined
         )
       })
       it('should the document be added to the tree', async () => {

@@ -98,12 +98,12 @@ describe('the useIndex hook', () => {
       expect(mocks.dmtAPI.getIndexByDataSource).toHaveBeenCalledWith(
         'source1',
         mocks.application.name,
-        null
+        undefined
       )
       expect(mocks.dmtAPI.getIndexByDataSource).toHaveBeenCalledWith(
         'source2',
         mocks.application.name,
-        null
+        undefined
       )
     })
   })
