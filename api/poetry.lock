@@ -1,18 +1,4 @@
 [[package]]
-name = "adal"
-version = "1.2.7"
-description = "Note: This library is already replaced by MSAL Python, available here: https://pypi.org/project/msal/ .ADAL Python remains available here as a legacy. The ADAL for Python library makes it easy for python application to authenticate to Azure Active Directory (AAD) in order to access AAD protected web resources."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-cryptography = ">=1.1.0"
-PyJWT = ">=1.0.0,<3"
-python-dateutil = ">=2.1.0,<3"
-requests = ">=2.0.0,<3"
-
-[[package]]
 name = "atomicwrites"
 version = "1.4.0"
 description = "Atomic file writes."
@@ -55,6 +41,21 @@ requests = ">=2.18.4"
 six = ">=1.11.0"
 
 [[package]]
+name = "azure-identity"
+version = "1.7.0"
+description = "Microsoft Azure Identity Library for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+azure-core = ">=1.11.0,<2.0.0"
+cryptography = ">=2.5"
+msal = ">=1.12.0,<2.0.0"
+msal-extensions = ">=0.3.0,<0.4.0"
+six = ">=1.12.0"
+
+[[package]]
 name = "azure-mgmt-containerinstance"
 version = "8.0.0"
 description = "Microsoft Azure Container Instance Client Library for Python"
@@ -77,6 +78,19 @@ python-versions = "*"
 
 [package.dependencies]
 azure-core = ">=1.15.0,<2.0.0"
+
+[[package]]
+name = "azure-mgmt-resource"
+version = "20.0.0"
+description = "Microsoft Azure Resource Management Client Library for Python"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+azure-common = ">=1.1,<2.0"
+azure-mgmt-core = ">=1.2.0,<2.0.0"
+msrest = ">=0.6.21"
 
 [[package]]
 name = "backports.entry-points-selectable"
@@ -486,6 +500,34 @@ optional = false
 python-versions = ">=3.5"
 
 [[package]]
+name = "msal"
+version = "1.16.0"
+description = "The Microsoft Authentication Library (MSAL) for Python library enables your app to access the Microsoft Cloud by supporting authentication of users with Microsoft Azure Active Directory accounts (AAD) and Microsoft Accounts (MSA) using industry standard OAuth2 and OpenID Connect."
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+cryptography = ">=0.6,<38"
+PyJWT = {version = ">=1.0.0,<3", extras = ["crypto"]}
+requests = ">=2.0.0,<3"
+
+[[package]]
+name = "msal-extensions"
+version = "0.3.0"
+description = ""
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+msal = ">=0.4.1,<2.0.0"
+portalocker = [
+    {version = ">=1.0,<2.0", markers = "platform_system != \"Windows\""},
+    {version = ">=1.6,<2.0", markers = "platform_system == \"Windows\""},
+]
+
+[[package]]
 name = "msrest"
 version = "0.6.21"
 description = "AutoRest swagger generator Python client runtime."
@@ -501,19 +543,6 @@ requests-oauthlib = ">=0.5.0"
 
 [package.extras]
 async = ["aiohttp (>=3.0)", "aiodns"]
-
-[[package]]
-name = "msrestazure"
-version = "0.6.4"
-description = "AutoRest swagger generator Python client runtime. Azure-specific module."
-category = "main"
-optional = false
-python-versions = "*"
-
-[package.dependencies]
-adal = ">=0.6.0,<2.0.0"
-msrest = ">=0.6.0,<2.0.0"
-six = "*"
 
 [[package]]
 name = "mypy-extensions"
@@ -627,6 +656,21 @@ python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
 dev = ["pre-commit", "tox"]
 
 [[package]]
+name = "portalocker"
+version = "1.7.1"
+description = "Wraps the portalocker recipe for easy usage"
+category = "main"
+optional = false
+python-versions = "*"
+
+[package.dependencies]
+pywin32 = {version = "!=226", markers = "platform_system == \"Windows\""}
+
+[package.extras]
+docs = ["sphinx (>=1.7.1)"]
+tests = ["pytest (>=4.6.9)", "pytest-cov (>=2.8.1)", "sphinx (>=1.8.5)", "pytest-flake8 (>=1.0.5)"]
+
+[[package]]
 name = "pre-commit"
 version = "2.15.0"
 description = "A framework for managing and maintaining multi-language pre-commit hooks."
@@ -706,6 +750,9 @@ category = "main"
 optional = false
 python-versions = ">=3.6"
 
+[package.dependencies]
+cryptography = {version = ">=3.3.1", optional = true, markers = "extra == \"crypto\""}
+
 [package.extras]
 crypto = ["cryptography (>=3.3.1)"]
 dev = ["sphinx", "sphinx-rtd-theme", "zope.interface", "cryptography (>=3.3.1)", "pytest (>=6.0.0,<7.0.0)", "coverage[toml] (==5.0.4)", "mypy", "pre-commit"]
@@ -770,6 +817,14 @@ python-versions = "!=3.0.*,!=3.1.*,!=3.2.*,>=2.7"
 
 [package.dependencies]
 six = ">=1.5"
+
+[[package]]
+name = "pywin32"
+version = "302"
+description = "Python for Window Extensions"
+category = "main"
+optional = false
+python-versions = "*"
 
 [[package]]
 name = "pyyaml"
@@ -1008,13 +1063,9 @@ watchdog = ["watchdog"]
 [metadata]
 lock-version = "1.1"
 python-versions = "3.9.*"
-content-hash = "cc0f1b303d0c77aab8ddea057d4cc2efc64c61dd0730d69086a292ad0b4a2713"
+content-hash = "fac97a90336a25e940a883a587144e643f64766efc86f9cee68f1303f8063394"
 
 [metadata.files]
-adal = [
-    {file = "adal-1.2.7-py2.py3-none-any.whl", hash = "sha256:2a7451ed7441ddbc57703042204a3e30ef747478eea022c70f789fc7f084bc3d"},
-    {file = "adal-1.2.7.tar.gz", hash = "sha256:d74f45b81317454d96e982fd1c50e6fb5c99ac2223728aea8764433a39f566f1"},
-]
 atomicwrites = [
     {file = "atomicwrites-1.4.0-py2.py3-none-any.whl", hash = "sha256:6d1784dea7c0c8d4a5172b6c620f40b6e4cbfdf96d783691f2e1302a7b88e197"},
     {file = "atomicwrites-1.4.0.tar.gz", hash = "sha256:ae70396ad1a434f9c7046fd2dd196fc04b12f9e91ffb859164193be8b6168a7a"},
@@ -1031,6 +1082,10 @@ azure-core = [
     {file = "azure-core-1.19.1.zip", hash = "sha256:b6ad37a124d194bcece581f3b988d3a234f44a39c5bd62e2e47e03153586915b"},
     {file = "azure_core-1.19.1-py2.py3-none-any.whl", hash = "sha256:38a23431098824840b4ed9bc3758ab14221e8e0236243fefe1392b6c2fc68aeb"},
 ]
+azure-identity = [
+    {file = "azure-identity-1.7.0.zip", hash = "sha256:3faaecb645e3b2300648a4a452458ec0e31e13d9dc928e710992e43ef4694205"},
+    {file = "azure_identity-1.7.0-py2.py3-none-any.whl", hash = "sha256:12a9cff44aecfef295254fe2ad591b49262c2dfbe51f476423cacae6bfa258d2"},
+]
 azure-mgmt-containerinstance = [
     {file = "azure-mgmt-containerinstance-8.0.0.zip", hash = "sha256:7aeb380af71fc35a71d6752fa25eb5b95fdb2a0027fa32e6f50bce87e2622916"},
     {file = "azure_mgmt_containerinstance-8.0.0-py2.py3-none-any.whl", hash = "sha256:527f68bb8ac24022ec989c0e4114b97b86f5c45f11abeddb254d19228fdfc745"},
@@ -1038,6 +1093,10 @@ azure-mgmt-containerinstance = [
 azure-mgmt-core = [
     {file = "azure-mgmt-core-1.3.0.zip", hash = "sha256:3ffb7352b39e5495dccc2d2b47254f4d82747aff4735e8bf3267c335b0c9bb40"},
     {file = "azure_mgmt_core-1.3.0-py2.py3-none-any.whl", hash = "sha256:7b7fa952aeb9d3eaa13eff905880f3d3b62200f7be7a8ba5a50c8b2e7295322a"},
+]
+azure-mgmt-resource = [
+    {file = "azure-mgmt-resource-20.0.0.zip", hash = "sha256:622dca4484be64f9f5ce335d327dffabf3e71e14e8a3f4a1051dc85a5c3ebbca"},
+    {file = "azure_mgmt_resource-20.0.0-py2.py3-none-any.whl", hash = "sha256:0ebad05a946e27c17d5a86ea5a68b2d9a0142257656ae8211dee9fc191c849b7"},
 ]
 "backports.entry-points-selectable" = [
     {file = "backports.entry_points_selectable-1.1.0-py2.py3-none-any.whl", hash = "sha256:a6d9a871cde5e15b4c4a53e3d43ba890cc6861ec1332c9c2428c92f977192acc"},
@@ -1321,13 +1380,17 @@ more-itertools = [
     {file = "more-itertools-8.10.0.tar.gz", hash = "sha256:1debcabeb1df793814859d64a81ad7cb10504c24349368ccf214c664c474f41f"},
     {file = "more_itertools-8.10.0-py3-none-any.whl", hash = "sha256:56ddac45541718ba332db05f464bebfb0768110111affd27f66e0051f276fa43"},
 ]
+msal = [
+    {file = "msal-1.16.0-py2.py3-none-any.whl", hash = "sha256:a421a43413335099228f1d9ad93f7491d7c7c40044108290e4923fe58f41a332"},
+    {file = "msal-1.16.0.tar.gz", hash = "sha256:240fb04dba46a27fd6a3178db8334412d0d02e0be85166f9e05bb45d03399084"},
+]
+msal-extensions = [
+    {file = "msal-extensions-0.3.0.tar.gz", hash = "sha256:5523dfa15da88297e90d2e73486c8ef875a17f61ea7b7e2953a300432c2e7861"},
+    {file = "msal_extensions-0.3.0-py2.py3-none-any.whl", hash = "sha256:a530c2d620061822f2ced8e29da301bc928b146970df635c852907423e8ddddc"},
+]
 msrest = [
     {file = "msrest-0.6.21-py2.py3-none-any.whl", hash = "sha256:c840511c845330e96886011a236440fafc2c9aff7b2df9c0a92041ee2dee3782"},
     {file = "msrest-0.6.21.tar.gz", hash = "sha256:72661bc7bedc2dc2040e8f170b6e9ef226ee6d3892e01affd4d26b06474d68d8"},
-]
-msrestazure = [
-    {file = "msrestazure-0.6.4-py2.py3-none-any.whl", hash = "sha256:3de50f56147ef529b31e099a982496690468ecef33f0544cb0fa0cfe1e1de5b9"},
-    {file = "msrestazure-0.6.4.tar.gz", hash = "sha256:a06f0dabc9a6f5efe3b6add4bd8fb623aeadacf816b7a35b0f89107e0544d189"},
 ]
 mypy-extensions = [
     {file = "mypy_extensions-0.4.3-py2.py3-none-any.whl", hash = "sha256:090fedd75945a69ae91ce1303b5824f428daf5a028d2f6ab8a299250a846f15d"},
@@ -1370,6 +1433,10 @@ platformdirs = [
 pluggy = [
     {file = "pluggy-0.13.1-py2.py3-none-any.whl", hash = "sha256:966c145cd83c96502c3c3868f50408687b38434af77734af1e9ca461a4081d2d"},
     {file = "pluggy-0.13.1.tar.gz", hash = "sha256:15b2acde666561e1298d71b523007ed7364de07029219b604cf808bfa1c765b0"},
+]
+portalocker = [
+    {file = "portalocker-1.7.1-py2.py3-none-any.whl", hash = "sha256:34cb36c618d88bcd9079beb36dcdc1848a3e3d92ac4eac59055bdeafc39f9d4a"},
+    {file = "portalocker-1.7.1.tar.gz", hash = "sha256:6d6f5de5a3e68c4dd65a98ec1babb26d28ccc5e770e07b672d65d5a35e4b2d8a"},
 ]
 pre-commit = [
     {file = "pre_commit-2.15.0-py2.py3-none-any.whl", hash = "sha256:a4ed01000afcb484d9eb8d504272e642c4c4099bbad3a6b27e519bd6a3e928a6"},
@@ -1535,6 +1602,18 @@ pytest = [
 python-dateutil = [
     {file = "python-dateutil-2.8.2.tar.gz", hash = "sha256:0123cacc1627ae19ddf3c27a5de5bd67ee4586fbdd6440d9748f8abb483d3e86"},
     {file = "python_dateutil-2.8.2-py2.py3-none-any.whl", hash = "sha256:961d03dc3453ebbc59dbdea9e4e11c5651520a876d0f4db161e8674aae935da9"},
+]
+pywin32 = [
+    {file = "pywin32-302-cp310-cp310-win32.whl", hash = "sha256:251b7a9367355ccd1a4cd69cd8dd24bd57b29ad83edb2957cfa30f7ed9941efa"},
+    {file = "pywin32-302-cp310-cp310-win_amd64.whl", hash = "sha256:79cf7e6ddaaf1cd47a9e50cc74b5d770801a9db6594464137b1b86aa91edafcc"},
+    {file = "pywin32-302-cp36-cp36m-win32.whl", hash = "sha256:fe21c2fb332d03dac29de070f191bdbf14095167f8f2165fdc57db59b1ecc006"},
+    {file = "pywin32-302-cp36-cp36m-win_amd64.whl", hash = "sha256:d3761ab4e8c5c2dbc156e2c9ccf38dd51f936dc77e58deb940ffbc4b82a30528"},
+    {file = "pywin32-302-cp37-cp37m-win32.whl", hash = "sha256:48dd4e348f1ee9538dd4440bf201ea8c110ea6d9f3a5010d79452e9fa80480d9"},
+    {file = "pywin32-302-cp37-cp37m-win_amd64.whl", hash = "sha256:496df89f10c054c9285cc99f9d509e243f4e14ec8dfc6d78c9f0bf147a893ab1"},
+    {file = "pywin32-302-cp38-cp38-win32.whl", hash = "sha256:e372e477d938a49266136bff78279ed14445e00718b6c75543334351bf535259"},
+    {file = "pywin32-302-cp38-cp38-win_amd64.whl", hash = "sha256:543552e66936378bd2d673c5a0a3d9903dba0b0a87235ef0c584f058ceef5872"},
+    {file = "pywin32-302-cp39-cp39-win32.whl", hash = "sha256:2393c1a40dc4497fd6161b76801b8acd727c5610167762b7c3e9fd058ef4a6ab"},
+    {file = "pywin32-302-cp39-cp39-win_amd64.whl", hash = "sha256:af5aea18167a31efcacc9f98a2ca932c6b6a6d91ebe31f007509e293dea12580"},
 ]
 pyyaml = [
     {file = "PyYAML-6.0-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:d4db7c7aef085872ef65a8fd7d6d09a14ae91f691dec3e87ee5ee0539d516f53"},

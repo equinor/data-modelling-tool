@@ -73,8 +73,8 @@ class Config:
     AZURE_JOB_RESOURCE_GROUP = os.getenv("AZURE_JOB_RESOURCE_GROUP")
     # Which ServicePrincipal to authenticate with
     AZURE_JOB_SP_SECRET = os.getenv("AZURE_SP_SECRET")
-    AZURE_JOB_SP_CLIENT_ID = os.getenv("AZURE_JOB_CLIENT_ID", "97a6b5bd-63fb-42c6-bb75-7e5de2394ba0")
-    AZURE_JOB_SP_TENANT_ID = os.getenv("AZURE_JOB_TENANT_ID", "3aa4a235-b6e2-48d5-9195-7fcf05b459b0")
+    AZURE_JOB_SP_CLIENT_ID = os.getenv("AZURE_JOB_CLIENT_ID")
+    AZURE_JOB_SP_TENANT_ID = os.getenv("AZURE_JOB_TENANT_ID")
 
     # Allows for some per-deployment environment variables to be passed to jobs
     SCHEDULER_ENVS_TO_EXPORT = (
