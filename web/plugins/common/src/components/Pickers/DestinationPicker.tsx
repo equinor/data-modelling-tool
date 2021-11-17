@@ -47,6 +47,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   } = props
   const [destination, setDestination] = useState<string>(formData)
   const [showModal, setShowModal] = useState<boolean>(false)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssApi = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssApi)

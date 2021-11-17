@@ -30,6 +30,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 
   const [document, setDocument] = useState(undefined)
   const [documentType, setDocumentType] = useState(type)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
 
   useEffect(() => {

@@ -34,6 +34,7 @@ import { NotificationManager } from 'react-notifications'
 export default () => {
   const index: IGlobalIndex = useGlobalIndex()
   const { openModal } = useModalContext()
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer = useExplorer(dmssAPI)

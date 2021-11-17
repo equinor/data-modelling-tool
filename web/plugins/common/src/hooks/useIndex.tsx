@@ -39,6 +39,7 @@ export const useIndex = (props: IndexProps): IIndex => {
   const { dataSources, application, dmtAPI = new DmtApi() } = props
   const [dataSourceWarning, setDataSourceWarning] = useState<string>('')
   const [index, setIndex] = useState<Tree>({})
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
 
   useEffect(() => {

@@ -45,6 +45,7 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
+  // @ts-ignore-line
   const { tokenData, logOut } = useContext(AuthContext)
   const [expanded, setExpanded] = useState(false)
   return (

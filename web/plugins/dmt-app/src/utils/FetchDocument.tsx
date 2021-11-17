@@ -11,6 +11,7 @@ type Props = {
 }
 
 export default ({ dataSourceId, documentId, render }: Props) => {
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer: IUseExplorer = useExplorer(dmssAPI)

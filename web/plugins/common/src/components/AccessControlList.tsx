@@ -226,6 +226,7 @@ export const AccessControlList = (props: {
   const dataSourceId = props.dataSourceId
   const [activeTab, setActiveTab] = useState<number>(0)
   const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

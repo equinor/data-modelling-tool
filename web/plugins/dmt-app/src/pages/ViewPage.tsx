@@ -25,6 +25,7 @@ const dmtAPI = new DmtAPI()
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
   const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   return (
@@ -79,6 +80,7 @@ export default () => {
   const [document, setDocument] = useState(null)
   const [blueprint, setBlueprint] = useState(null)
   const [error, setError] = useState(null)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
