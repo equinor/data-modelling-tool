@@ -6,6 +6,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
   const [document, setDocument] = useState<Object | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const target = documentId.split('.')

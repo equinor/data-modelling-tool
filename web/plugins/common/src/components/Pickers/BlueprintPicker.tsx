@@ -22,6 +22,7 @@ export type BlueprintPickerProps = {
 }
 
 export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssApi = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssApi)

@@ -4,7 +4,6 @@
   "dependencies": {
     "@dmt/common": "1.0.0",
     "@dmt/core-plugins": "1.0.1",
-    "@dmt/default-pdf": "1.0.0",
     "@dmt/default-form": "1.0.0",
     "@dmt/default-pdf": "1.0.0",
     "@loadable/component": "^5.14.1",
@@ -20,6 +19,7 @@
     "react-dom": "^16.13.1",
     "react-icons": "3.7.0",
     "react-notifications": "^1.4.3",
+    "react-oauth2-code-pkce": "^1.1.0",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
     "react-styled-flexboxgrid": "3.1.0",

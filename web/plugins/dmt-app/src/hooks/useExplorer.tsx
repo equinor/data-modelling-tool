@@ -148,6 +148,7 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
   const { closeModal } = useModalContext()
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
   const [errorCounter, setErrorCounter] = useState<number>(0)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
 
   useEffect(() => {

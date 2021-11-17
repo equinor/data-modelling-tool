@@ -9636,6 +9636,11 @@ react-notifications@^1.4.3:
     prop-types "^15.5.10"
     react-transition-group "^4.4.1"
 
+react-oauth2-code-pkce@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/react-oauth2-code-pkce/-/react-oauth2-code-pkce-1.1.0.tgz#4b7f76b25efa38dc882ca36338ac27363e880cb8"
+  integrity sha512-Powc008uNhqqiRB4AGRKgrcLdxvo3pzMHrh9yE0Nq6HjyScTTpcZxIDXnVR8e24gBhoysYqCEj7WiwUjSEQVKw==
+
 react-popper@2.2.4:
   version "2.2.4"
   resolved "https://registry.yarnpkg.com/react-popper/-/react-popper-2.2.4.tgz#d2ad3d2474ac9f1abf93df3099d408e5aa6a2e22"

@@ -10,11 +10,11 @@ import {
 import { mock } from 'jest-mock-extended'
 
 const wrapper: React.FC = ({ children, application, api }: any) => (
-  <AuthProvider authEnabled={false}>
+  <>
     <ApplicationContext.Provider value={application}>
       <DashboardProvider dmssAPI={api}>{children}</DashboardProvider>
     </ApplicationContext.Provider>
-  </AuthProvider>
+  </>
 )
 
 describe('the dashboard provider component', () => {

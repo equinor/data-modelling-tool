@@ -9,7 +9,7 @@ import values from 'lodash/values'
 import { DataSource } from '../services'
 import DmtApi from '../services/api/DmtAPI'
 import { toObject, toTreeNodes } from './utils/useIndexUtils'
-//@ts-ignore
+// @ts-ignore
 import { AuthContext } from '@dmt/common'
 
 export interface IModels {
@@ -39,6 +39,7 @@ export const useIndex = (props: IndexProps): IIndex => {
   const { dataSources, application, dmtAPI = new DmtApi() } = props
   const [dataSourceWarning, setDataSourceWarning] = useState<string>('')
   const [index, setIndex] = useState<Tree>({})
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
 
   useEffect(() => {

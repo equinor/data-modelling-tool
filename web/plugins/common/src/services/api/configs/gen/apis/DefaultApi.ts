@@ -100,7 +100,6 @@ export interface ExplorerAddRequest {
     dataSourceId: string;
     dottedId: string;
     body: object;
-    updateUncontained?: boolean;
 }
 
 export interface ExplorerAddPackageRequest {
@@ -705,10 +704,6 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
-
-        if (requestParameters.updateUncontained !== undefined) {
-            queryParameters['update_uncontained'] = requestParameters.updateUncontained;
-        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 

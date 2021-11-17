@@ -16,6 +16,7 @@ const dmtAPI = new DmtAPI()
 
 const View = (props: any) => {
   const { dataSourceId, documentId, uiRecipe, document } = props
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer: IUseExplorer = useExplorer(dmssAPI)

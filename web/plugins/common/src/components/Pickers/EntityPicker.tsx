@@ -26,6 +26,7 @@ export const EntityPicker = (props: EntityPickerProps) => {
     'Click to select entity'
   )
   const [showModal, setShowModal] = useState<boolean>(false)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssAPI)

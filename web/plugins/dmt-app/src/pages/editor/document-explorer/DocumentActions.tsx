@@ -68,6 +68,7 @@ export const formDataGivenByRequest = (requestData: any, formData: any) => {
 
 export const DeleteAction = (props: any) => {
   const { action } = props
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const { remove } = useExplorer(dmssAPI)
@@ -342,6 +343,7 @@ export const InsertReference = (props: IInsertReferenceProps) => {
 export const SaveToExistingDocument = (props: any) => {
   const { node, action, explorer } = props
   const { runAndSaveToExistingDocument } = useRunnable({ explorer })
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const handleRun = () => {
     runAndSaveToExistingDocument(
