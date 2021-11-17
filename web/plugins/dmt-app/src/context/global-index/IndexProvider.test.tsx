@@ -16,13 +16,13 @@ const wrapper: React.FC = ({
   dataSources,
   application,
 }: any) => (
-  <AuthProvider authEnabled={false}>
+  <>
     <ApplicationContext.Provider value={application}>
       <IndexProvider dmtAPI={dmtAPI} dataSources={dataSources}>
         {children}
       </IndexProvider>
     </ApplicationContext.Provider>
-  </AuthProvider>
+  </>
 )
 
 describe('the index provider component', () => {

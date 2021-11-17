@@ -20,7 +20,7 @@ import {
 } from '@dmt/common'
 
 const wrapper: React.FC = ({ children, application, dmssAPI, dmtAPI }: any) => (
-  <AuthProvider authEnabled={false}>
+  <>
     <DashboardProvider dmssAPI={dmssAPI}>
       <DashboardConsumer>
         {(dashboard: IDashboard) => {
@@ -37,7 +37,7 @@ const wrapper: React.FC = ({ children, application, dmssAPI, dmtAPI }: any) => (
         }}
       </DashboardConsumer>
     </DashboardProvider>
-  </AuthProvider>
+  </>
 )
 
 const getMocks = () => {
