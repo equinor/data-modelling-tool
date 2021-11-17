@@ -17,7 +17,7 @@ from services.dmss import get_access_token, get_document_by_uid
 #  can view the job entity to also run and delete the job.
 from services.job_handler_interface import Job, JobHandlerInterface, JobStatus
 from utils.string_helpers import split_absolute_ref
-from services.job_handlers import azure_container_instances
+from services.job_handlers import azure_container_instances, omnia_classic_azure_container_instances
 
 
 class JobService:
@@ -72,6 +72,7 @@ class JobService:
             modules = [importlib.import_module(module) for module in module_paths]
             # Add standard modules after plugins
             modules.append(azure_container_instances)
+            modules.append(omnia_classic_azure_container_instances)
             for job_handler_module in modules:
                 if job_entity["type"] == job_handler_module._SUPPORTED_JOB_TYPE:
                     return job_handler_module.JobHandler(data_source_id, job_entity, get_access_token())

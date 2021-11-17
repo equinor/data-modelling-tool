@@ -1,10 +1,12 @@
 {
   "name": "myAzureCIExecJob",
   "_id": "7ae5ece4-b0cb-4c67-ae20-bbb53b7833b9",
-  "type": "DMT-Internal/DMT/AzureContainerInstanceJob",
+  "type": "DMT-Internal/DMT/AzureContainerInstanceJobClassic",
   "description": "Test",
   "image": "alpine",
   "command": ["echo", "Hello world!"],
+  "subnetId": "/subscriptions/93b83577-619d-4fb9-bfdf-f7a07d24cfbe/resourceGroups/S059-NOE-network/providers/Microsoft.Network/virtualNetworks/S059-NOE-vnet/subnets/S059-NOE-container-instances",
+  "logAnalyticsWorkspaceResourceId": "/subscriptions/93b83577-619d-4fb9-bfdf-f7a07d24cfbe/resourcegroups/s059-log/providers/microsoft.operationalinsights/workspaces/s059-log",
   "environmentVariables": [
     "var1=a",
     "var2=b",

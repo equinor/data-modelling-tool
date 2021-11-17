@@ -14,10 +14,11 @@ dmss-api = "^0.3.9"
 progress = "^1.5"
 emoji = "^1.2.0"
 azure-mgmt-containerinstance = "^8.0.0"
-msrestazure = "^0.6.4"
 redis = "^3.5.3"
 stringcase = "^1.2.0"
 Jinja2 = "^3.0.1"
+azure-mgmt-resource = "^20.0.0"
+azure-identity = "^1.7.0"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"

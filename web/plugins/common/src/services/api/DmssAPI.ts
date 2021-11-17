@@ -122,9 +122,7 @@ export class DmssAPI implements IDmssAPI {
   }
 
   updateDocument(url: string, data: any): Promise<any> {
-    return this.generatedDmssApi.documentUpdate(data).catch((error: any) => {
-      return handleApiError(error)
-    })
+    return this.generatedDmssApi.documentUpdate(data)
   }
 
   explorerDocumentRename(

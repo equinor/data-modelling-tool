@@ -19,8 +19,10 @@ services:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
       LOGGING_LEVEL: DEBUG
-      AZURE_JOB_SUBSCRIPTION: "1d249b90-3592-49bd-b14e-446340a5cf6b"
-      AZURE_JOB_RESOURCE_GROUP: "MSARGDev"
+      AZURE_JOB_SUBSCRIPTION: "93b83577-619d-4fb9-bfdf-f7a07d24cfbe"
+      AZURE_JOB_CLIENT_ID: "ee7dbf49-e358-4c9c-a7e4-fb6d56c02205"
+      AZURE_JOB_TENANT_ID: "3aa4a235-b6e2-48d5-9195-7fcf05b459b0"
+      AZURE_JOB_RESOURCE_GROUP: "S059-Forecast-of-response"
       AZURE_SP_SECRET: ${AZURE_SP_SECRET}
     depends_on:
       - web

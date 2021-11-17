@@ -1,6 +1,8 @@
+import json
 import logging
 import os
 from collections import namedtuple
+from pathlib import Path
 from time import sleep
 from typing import List, Tuple
 
@@ -8,25 +10,27 @@ from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import ClientSecretCredential
 from azure.mgmt.containerinstance import ContainerInstanceManagementClient
 from azure.mgmt.containerinstance.models import (
-    Container,
-    ContainerGroup,
-    ContainerGroupRestartPolicy,
     EnvironmentVariable,
-    ImageRegistryCredential,
-    OperatingSystemTypes,
-    ResourceRequests,
-    ResourceRequirements,
 )
 
 from config import config
 from repository.repository_exceptions import JobNotFoundException
 from services.job_handler_interface import JobStatus, ServiceJobHandlerInterface
+from services.job_handlers.omnia_classic_azure_container_instances.ARM_deployer import Deployer
 from utils.logging import logger
 
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
-logging.getLogger("azure").setLevel(logging.WARNING)
+logging.getLogger("azure.mgmt").setLevel(logging.WARNING)
+logging.getLogger("azure.identity").setLevel(logging.WARNING)
 
-_SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJob"
+_SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJobClassic"
+
+
+def inject_environment_variables(template: dict, variables: List[EnvironmentVariable]) -> dict:
+    template["resources"][1]["properties"]["containers"][0]["properties"]["environmentVariables"] = [
+        {"name": e.name, "value": e.value} for e in variables
+    ]
+    return template
 
 
 class JobHandler(ServiceJobHandlerInterface):
@@ -43,6 +47,7 @@ class JobHandler(ServiceJobHandlerInterface):
             client_secret=config.AZURE_JOB_SP_SECRET,
             tenant_id=config.AZURE_JOB_SP_TENANT_ID,
         )
+        self.arm_deployer = Deployer(config.AZURE_JOB_SUBSCRIPTION, config.AZURE_JOB_RESOURCE_GROUP, azure_credentials)
         self.azure_valid_container_name = self.job_entity["name"].lower()
         self.aci_client = ContainerInstanceManagementClient(
             azure_credentials, subscription_id=config.AZURE_JOB_SUBSCRIPTION
@@ -79,40 +84,26 @@ class JobHandler(ServiceJobHandlerInterface):
             + f"EnvironmentVariables: {[e.name for e in env_vars]}",
         )
 
-        # Configure the container
-        compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
-        container = Container(
-            name=self.azure_valid_container_name,
-            image=self.job_entity["image"],
-            resources=ResourceRequirements(requests=compute_resources),
-            command=self.job_entity.get("command") + [f"--token={self.token}"],
-            environment_variables=env_vars,
-        )
-        image_registry_credential = None
-        if self.job_entity.get("cr-password"):  # If 'cr-password' is supplied, create and send registry credentials
-            image_registry_credential = [
-                ImageRegistryCredential(
-                    server=self.job_entity["image"].split("/")[0],
-                    username=self.job_entity["cr-username"],
-                    password=self.job_entity["cr-password"],
-                )
-            ]
+        parameters = {
+            "name": self.azure_valid_container_name,
+            "image": self.job_entity["image"],
+            "command": self.job_entity.get("command") + [f"--token={self.token}"],
+            "cpuCores": 1,
+            "memoryInGb": 2,
+            "restartPolicy": "Never",
+            "location": "norwayeast",
+            "subnetId": self.job_entity.get("subnetId"),
+            "logAnalyticsWorkspaceResourceId": self.job_entity.get("logAnalyticsWorkspaceResourceId"),
+        }
+        with open(f"{Path(__file__).parent}/OmniaClassicContainerInstance.json", "r") as template_file:
+            template = json.load(template_file)
 
-        # Configure the container group
-        group = ContainerGroup(
-            location=self.job_entity.get("azure-location", "norwayeast"),
-            containers=[container],
-            os_type=OperatingSystemTypes.linux,
-            restart_policy=ContainerGroupRestartPolicy.never,
-            image_registry_credentials=image_registry_credential,
-        )
+        template = inject_environment_variables(template, env_vars)
 
-        # Create the container group
-        result = self.aci_client.container_groups.begin_create_or_update(
-            config.AZURE_JOB_RESOURCE_GROUP, self.azure_valid_container_name, group
-        )
-
-        return result.status()
+        logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
+        result = self.arm_deployer.deploy(template, parameters)
+        logger.setLevel(config.LOGGER_LEVEL)  # I could not find the correctly named logger for this...
+        return result or "Ok"
 
     def remove(self) -> Tuple[JobStatus, str]:
         logger.setLevel(logging.WARNING)

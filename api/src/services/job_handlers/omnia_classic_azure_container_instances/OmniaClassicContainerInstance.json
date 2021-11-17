@@ -1,0 +1,137 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "type": "string",
+      "defaultValue": "dmtjobcontainergroup",
+      "metadata": {
+        "description": "Name for the container group"
+      }
+    },
+    "image": {
+      "type": "string",
+      "defaultValue": "mcr.microsoft.com/azuredocs/aci-helloworld",
+      "metadata": {
+        "description": "Container image to deploy. Should be of the form repoName/imagename:tag for images stored in public Docker Hub, or a fully qualified URI for other registries. Images from private registries require additional registry credentials."
+      }
+    },
+    "command": {
+      "type": "array",
+      "defaultValue": [
+        "echo",
+        "$(env)"
+      ]
+    },
+    "cpuCores": {
+      "type": "int",
+      "defaultValue": 1,
+      "metadata": {
+        "description": "The number of CPU cores to allocate to the container."
+      }
+    },
+    "memoryInGb": {
+      "type": "int",
+      "defaultValue": 2,
+      "metadata": {
+        "description": "The amount of memory to allocate to the container in gigabytes."
+      }
+    },
+    "restartPolicy": {
+      "type": "string",
+      "defaultValue": "Never",
+      "allowedValues": [
+        "Always",
+        "Never",
+        "OnFailure"
+      ],
+      "metadata": {
+        "description": "The behavior of Azure runtime if container has stopped."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "norwayeast",
+      "metadata": {
+        "description": "Location for all resources."
+      }
+    },
+    "subnetId": {
+      "type": "string",
+      "metadata": {
+        "description": "Omnia Classic Subnet resource id"
+      }
+    },
+    "logAnalyticsWorkspaceResourceId": {
+      "type": "string",
+      "metadata": {
+        "description": "Omnia Classic log analytics resource id"
+      }
+    }
+  },
+  "resources": [
+    {
+      "name": "myNetworkProfile",
+      "type": "Microsoft.Network/networkProfiles",
+      "apiVersion": "2019-11-01",
+      "location": "[parameters('location')]",
+      "properties": {
+        "containerNetworkInterfaceConfigurations": [
+          {
+            "name": "justSomeName",
+            "properties": {
+              "ipConfigurations": [
+                {
+                  "name": "justSomeName",
+                  "properties": {
+                    "subnet": {
+                      "id": "[parameters('subnetId')]"
+                    }
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      "type": "Microsoft.ContainerInstance/containerGroups",
+      "apiVersion": "2019-12-01",
+      "name": "[parameters('name')]",
+      "location": "[parameters('location')]",
+      "properties": {
+        "containers": [
+          {
+            "name": "[parameters('name')]",
+            "properties": {
+              "image": "[parameters('image')]",
+              "command": "[parameters('command')]",
+              "environmentVariables": [],
+              "resources": {
+                "requests": {
+                  "memoryInGB": "[parameters('memoryInGb')]",
+                  "cpu": "[parameters('cpuCores')]"
+                }
+              }
+            }
+          }
+        ],
+        "diagnostics": {
+          "logAnalytics": {
+            "workspaceId": "[reference(parameters('logAnalyticsWorkspaceResourceId'), '2020-10-01').customerId]",
+            "workspaceKey": "[listKeys(parameters('logAnalyticsWorkspaceResourceId'), '2020-10-01').primarySharedKey]",
+            "logType": "ContainerInstance"
+          }
+        },
+        "restartPolicy": "[parameters('restartPolicy')]",
+        "osType": "Linux",
+        "sku": "Standard",
+        "networkProfile": {
+          "Id": "[resourceId('Microsoft.Network/networkProfiles', 'myNetworkProfile')]"
+        }
+      },
+      "dependsOn": ["[resourceId('Microsoft.Network/networkProfiles', 'myNetworkProfile')]"]
+    }
+  ]
+}
