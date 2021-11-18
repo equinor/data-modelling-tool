@@ -226,14 +226,20 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
         .createDocument(dataUrl, data, token)
         .then((result: any) => {
           closeModal()
-          index.models.index.operations.add(result.data.uid, nodeUrl, true)
+          index.models.index.operations.add(result.uid, nodeUrl, true)
         })
         .catch((error: any) => {
-          setErrorMessage(
-            `Could not create document. Received error: ${JSON.stringify(
-              error.response.data
-            )}`
-          )
+          if (error.response && error.response.data) {
+            setErrorMessage(
+              `Could not create document. Received error: ${JSON.stringify(
+                error.response.data
+              )}`
+            )
+          } else {
+            setErrorMessage(
+              `Could not create document. An unexpected error occurred: ${error}`
+            )
+          }
           setErrorCounter(errorCounter + 1)
         })
     }
