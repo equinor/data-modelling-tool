@@ -19,7 +19,7 @@
     "react-dom": "^16.13.1",
     "react-icons": "3.7.0",
     "react-notifications": "^1.4.3",
-    "react-oauth2-code-pkce": "^1.1.0",
+    "react-oauth2-code-pkce": "^1.1.1",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^3.4.1",
     "react-styled-flexboxgrid": "3.1.0",
