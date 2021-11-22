@@ -51,7 +51,7 @@ function UserInfo() {
   return (
     <div style={{ display: 'flex', alignItems: 'center', columnGap: '5px' }}>
       <UserInfoBox onClick={() => setExpanded(!expanded)}>
-        <div>{tokenData.name}</div>
+        <div>{tokenData?.name || 'Not logged in'}</div>
         <Modal
           toggle={() => setExpanded(!expanded)}
           open={expanded}
@@ -63,7 +63,7 @@ function UserInfo() {
           </button>
         </Modal>
       </UserInfoBox>
-      {tokenData.loggedIn && <Button onClick={() => logOut()}>Log out</Button>}
+      {tokenData?.loggedIn && <Button onClick={() => logOut()}>Log out</Button>}
     </div>
   )
 }
