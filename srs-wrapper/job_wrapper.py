@@ -117,7 +117,7 @@ def run(
 
         # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
         with open(f"{settings.STORAGE_DIR}/simulationConfig.json", "wb") as simulation_config_file:
-            print(f"\nWriting compute service config blob to '{settings.STORAGE_DIR}/simulationConfig.json'")
+            print(f"\nWriting input to '{settings.STORAGE_DIR}/simulationConfig.json'")
             simulation_config_file.write(input_entity)
 
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
