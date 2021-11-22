@@ -15,7 +15,9 @@ pp = pprint.PrettyPrinter(indent=2, compact=True, width=119)
 class Settings(BaseSettings):
     PUBLIC_DMSS_API: str = Field("http://localhost:5000", env="PUBLIC_DMSS_API")
     SRS_HOME: str = "/var/opt/sima"
-    RESULT_FILE: str = f"{SRS_HOME}/workspace/result.json"
+    WORKSPACE_DIR: str = f"{SRS_HOME}/workspace"
+    STORAGE_DIR: str = f"{WORKSPACE_DIR}/storage"
+    RESULT_FILE: str = f"{STORAGE_DIR}/results_file.json"
 
 
 settings = Settings()
@@ -101,20 +103,38 @@ def run(
             print(f"\nWriting compute service config blob to '{settings.SRS_HOME}/compute.yml'")
             compute_file.write(compute_cfg_blob.read())
 
+    # Ensure that the "storage" directory is present
+    os.makedirs(settings.STORAGE_DIR, exist_ok=True)
+    if input:
+        # Create the input (SIMA-internal simulationConfig.json) file
+        print(f"Fetching input '{input}'...\n")
+        try:
+            input_data_source_id, input_entity_id = stask.split("/", 1)
+        except ValueError:
+            raise ValueError("Invalid input id. Should be in format 'DataSourceId/UUID'")
+
+        input_entity = dmss_api.document_get_by_id(input_data_source_id, input_entity_id, depth=1)["document"]
+
+        # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
+        with open(f"{settings.STORAGE_DIR}/simulationConfig.json", "wb") as simulation_config_file:
+            print(f"\nWriting compute service config blob to '{settings.STORAGE_DIR}/simulationConfig.json'")
+            simulation_config_file.write(input_entity)
+
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
-    os.makedirs(f"{settings.SRS_HOME}/workspace", exist_ok=True)
-    with open(f"{settings.SRS_HOME}/workspace/commands.txt", "w") as commands_file:
+    os.makedirs(settings.WORKSPACE_DIR, exist_ok=True)
+    with open(f"{settings.WORKSPACE_DIR}/commands.txt", "w") as commands_file:
         run_cmd = 'remote-run' if remote_run else 'run'
         commands_file.write(
             f"import file={settings.SRS_HOME}/workflow.stask\n" +
             f"{run_cmd} task={task_name} workflow={workflow}\n"
         )
-    with open(f"{settings.SRS_HOME}/workspace/commands.txt", "r") as commands_file:
+    with open(f"{settings.WORKSPACE_DIR}/commands.txt", "r") as commands_file:
         print("Wrote stask command file:\n")
-        print(f"--- {settings.SRS_HOME}/workspace/commands.txt")
+        print(f"--- {settings.WORKSPACE_DIR}/commands.txt")
         print(commands_file.read())
         print("---")
     print(f"DMT SRS Wrapper Successfully prepared the SRS Environment")
+
 
 @cli.command()
 @click.option("--target", help="Target directory to store result file", type=str, required=True)
