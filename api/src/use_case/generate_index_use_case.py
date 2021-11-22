@@ -144,23 +144,22 @@ class GenerateIndexUseCase(UseCase):
             attribute=BlueprintAttribute("root", "datasource", contained=False),
         )
         for root_package in root_packages:
-            package_data = root_package["data"]
             try:
                 root_package_node = document_service.get_node_by_uid(
-                    data_source_id=data_source_id, document_uid=package_data["_id"], depth=0
+                    data_source_id=data_source_id, document_uid=root_package["_id"], depth=0
                 )
                 root_package_node.key = root_package_node.uid
                 root.add_child(root_package_node)
             except EntityNotFoundException as error:
                 logger.exception(error)
                 error_node: Node = Node(
-                    key=package_data["_id"],
-                    uid=package_data["_id"],
-                    entity={"name": package_data["name"], "type": ""},
+                    key=root_package["_id"],
+                    uid=root_package["_id"],
+                    entity={"name": root_package["name"], "type": ""},
                     blueprint_provider=document_service.get_blueprint,
                     attribute=BlueprintAttribute("root", "datasource"),
                 )
-                error_node.set_error(f"failed to add root package {package_data['name']} to the root node")
+                error_node.set_error(f"failed to add root package {root_package['name']} to the root node")
                 root.add_child(error_node)
             except Exception as error:
                 logger.exception(f"{error}, unhandled exception.")

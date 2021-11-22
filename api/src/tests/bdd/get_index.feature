@@ -99,7 +99,8 @@ Feature: Index
           "title":"test-DS",
           "nodeType":"document-node",
           "children":[
-             "3eea0e71-647d-43b2-975b-0280ca3588d2"
+            "0f99b692-b980-41d2-bfab-50c4bffe5a6e",
+            "3eea0e71-647d-43b2-975b-0280ca3588d2"
           ]
        }
     }

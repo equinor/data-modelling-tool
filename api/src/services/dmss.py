@@ -65,4 +65,4 @@ def get_root_packages(data_source_id: str) -> dict:
     Fetches a resolved blueprint from DMSS
     """
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
-    return dmss_api.package_get(data_source_id)
+    return [v for v in dmss_api.search(data_source_id, {"type": "system/SIMOS/Package", "isRoot": "true"}).values()]
