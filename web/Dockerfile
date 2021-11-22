@@ -17,7 +17,7 @@ WORKDIR /code/
 COPY jest.config.base.js package.json yarn.lock jest.config.js tsconfig.json ./
 COPY ./app ./app
 COPY ./plugins ./plugins
-RUN yarn install # --frozen-lockfile --production=false
+RUN yarn install --ignore-scripts  --frozen-lockfile
 
 FROM base as development
 CMD ["yarn", "start"]
