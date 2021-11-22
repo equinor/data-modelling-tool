@@ -12,11 +12,13 @@ services:
       - data-modelling-storage-service_default
     volumes:
       - ./job_wrapper.py:/code/job_wrapper.py
-    # This stask is part of the DemoDS in DMT with a static UUID
+    # The stask and compute-service-cfg are part of the DemoDS in DMT with static UUIDs
     command: [
         "/code/init.sh",
         "--stask=DemoDS/8ec0d646-907c-4eba-9e65-24106236d61c",
         "--workflow=workflow",
+        "--remote-run",
+        "--compute-service-cfg=ForecastDS/15a4d888-3ab4-5bd2-9bd9-9614dcb066d5",
         "--input=waveDir=180",
         "--token=123",
         "--target=DemoDS/DMT-demo/SIMARuntimeService/results/"
