@@ -348,14 +348,6 @@ describe('the explorer hook', () => {
     })
 
     describe('creating a document', () => {
-      let documentWithoutName = {
-        data: {
-          name: '',
-          type: NodeType.BLUEPRINT,
-        },
-        dataUrl: 'url/data',
-        nodeUrl: 'url/node',
-      }
       let documentWithoutType = {
         data: {
           name: 'Example name',
@@ -394,12 +386,6 @@ describe('the explorer hook', () => {
         mocks.dmtAPI.getIndexByDocument.mockReturnValue(
           Promise.resolve(indexNodes)
         )
-      })
-      it('with wrong name should create an errorMessage', async () => {
-        await act(async () => {
-          response.result.current.create(documentWithoutName)
-        })
-        expect(response.result.current.errorMessage).toBe('Name is required')
       })
       it('with undefined type should create an errorMessage', async () => {
         await act(async () => {

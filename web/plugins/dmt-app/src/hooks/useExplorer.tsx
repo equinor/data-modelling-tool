@@ -158,11 +158,6 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
   }, [errorMessage, errorCounter])
 
   const validate = (data: any) => {
-    // if (data.name === undefined || data.name === '') {
-    //   const errorMessage: string = 'Name is required'
-    //   setErrorMessage(errorMessage)
-    //   return false
-    // }
     if (
       data.type === BlueprintEnum.ENTITY ||
       data.type === undefined ||

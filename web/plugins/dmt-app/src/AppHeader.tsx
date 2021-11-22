@@ -4,7 +4,6 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
   Button,
-  DmssAPI,
   JsonView,
   Modal,
   sortApplications,
@@ -116,38 +115,8 @@ interface AppHeaderProps {
   applications: Array<any>
 }
 
-const DEFAULT_DATASOURCE_ID = 'DemoDS'
-const DEFAULT_DIRECTORY = 'DMT-demo'
-const addToPath = (
-  body: any,
-  token: string,
-  files: Blob[] = [],
-  dataSourceId: string = DEFAULT_DATASOURCE_ID,
-  directory: string = DEFAULT_DIRECTORY
-): Promise<string> => {
-  const dmssAPI = new DmssAPI(token)
-
-  return new Promise((resolve, reject) => {
-    dmssAPI.generatedDmssApi
-      .explorerAddToPath({
-        dataSourceId: dataSourceId,
-        document: JSON.stringify(body),
-        directory: directory,
-        files: files,
-      })
-      .then((response: string) => {
-        const data = JSON.parse(response)
-        resolve(data.uid)
-      })
-      .catch((err: any) => {
-        reject(err)
-      })
-  })
-}
-
 export default ({ applications }: AppHeaderProps) => {
   const location = useLocation()
-  const { token } = useContext(AuthContext)
   function getActiveTab() {
     // activeApp (Tab Styling) is based on route, or if route is "/", the first application
     if (location.pathname === '/') return applications[0].name
@@ -157,24 +126,12 @@ export default ({ applications }: AppHeaderProps) => {
     )?.name
   }
 
-  const fdata: any = {
-    type: 'system/SIMOS/Entity',
-    description: 'entity with no name',
-  }
-
   return (
     <>
       <HeaderWrapper>
         <Link to="/">
           <h4>Data Modelling Tool</h4>
         </Link>
-        <Button
-          onClick={() => {
-            addToPath(fdata, token)
-          }}
-        >
-          test
-        </Button>
         <div
           style={{
             display: 'flex',

@@ -69,7 +69,6 @@ class Package:
     def _content_to_ref_dict(self):
         result = []
         for child in self.content:
-            logger.warning(f"**** child {child}\n")
             if isinstance(child, Package):
                 result.append(
                     {"_id": str(child.uid), "name": child.name, "type": BLUEPRINTS.PACKAGE.value, "contained": True}

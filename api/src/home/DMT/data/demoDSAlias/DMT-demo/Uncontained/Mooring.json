@@ -9,7 +9,7 @@
       "type": "system/SIMOS/BlueprintAttribute",
       "description": "How big? Very",
       "attributeType": "integer",
-      "default": "",
+      "default": 0,
       "contained": true
     }
   ]
