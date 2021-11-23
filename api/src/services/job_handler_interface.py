@@ -5,6 +5,7 @@ from typing import Tuple
 
 
 class JobStatus(Enum):
+    REGISTERED = "registered"
     STARTING = "starting"
     RUNNING = "running"
     FAILED = "failed"

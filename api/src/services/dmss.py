@@ -32,13 +32,16 @@ def get_document(fully_qualified_path: str) -> dict:
     return dmss_api.document_get_by_path(data_source, path=path)["document"]
 
 
-def get_document_by_uid(data_source_id: str, document_id: str, depth: int = 999, ui_recipe="", attribute="") -> dict:
+def get_document_by_uid(
+    data_source_id: str, document_id: str, depth: int = 999, ui_recipe="", attribute="", token: str = None
+) -> dict:
     """
     The uid based DMSS document getter.
     Used by DocumentService.
     Inject a mock 'get_document_by_uid' in unit unit.
     """
-    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
+
+    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + (token or get_access_token())
     return dmss_api.document_get_by_id(
         data_source_id, document_id, depth=depth, ui_recipe=ui_recipe, attribute=attribute
     )["document"]

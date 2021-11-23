@@ -19,6 +19,7 @@ stringcase = "^1.2.0"
 Jinja2 = "^3.0.1"
 azure-mgmt-resource = "^20.0.0"
 azure-identity = "^1.7.0"
+APScheduler = "^3.8.1"
 
 [tool.poetry.dev-dependencies]
 pydevd = "^1.6"
