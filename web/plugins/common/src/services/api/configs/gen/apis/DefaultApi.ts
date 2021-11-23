@@ -100,6 +100,7 @@ export interface ExplorerAddRequest {
     dataSourceId: string;
     dottedId: string;
     body: object;
+    updateUncontained?: boolean;
 }
 
 export interface ExplorerAddPackageRequest {
@@ -142,15 +143,6 @@ export interface ExplorerRenameRequest {
 export interface GetAclRequest {
     dataSourceId: string;
     documentId: string;
-}
-
-export interface PackageFindByNameRequest {
-    dataSourceId: string;
-    name: string;
-}
-
-export interface PackageGetRequest {
-    dataSourceId: string;
 }
 
 export interface ReferenceDeleteRequest {
@@ -687,7 +679,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document-id.attribute.attribute\'
+     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document_id.attribute.attribute\'
      * Add By Parent Id
      */
     async explorerAddRaw(requestParameters: ExplorerAddRequest): Promise<runtime.ApiResponse<any>> {
@@ -704,6 +696,10 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.updateUncontained !== undefined) {
+            queryParameters['update_uncontained'] = requestParameters.updateUncontained;
+        }
 
         const headerParameters: runtime.HTTPHeaders = {};
 
@@ -730,7 +726,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document-id.attribute.attribute\'
+     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document_id.attribute.attribute\'
      * Add By Parent Id
      */
     async explorerAdd(requestParameters: ExplorerAddRequest): Promise<any> {
@@ -1165,92 +1161,6 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get a root package by it\'s exact name
-     * Find By Name
-     */
-    async packageFindByNameRaw(requestParameters: PackageFindByNameRequest): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling packageFindByName.');
-        }
-
-        if (requestParameters.name === null || requestParameters.name === undefined) {
-            throw new runtime.RequiredError('name','Required parameter requestParameters.name was null or undefined when calling packageFindByName.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            if (typeof this.configuration.accessToken === 'function') {
-                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
-            } else {
-                headerParameters["Authorization"] = this.configuration.accessToken;
-            }
-        }
-
-        const response = await this.request({
-            path: `/api/v1/packages/{data_source_id}/findByName/{name}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"name"}}`, encodeURIComponent(String(requestParameters.name))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.TextApiResponse(response) as any;
-    }
-
-    /**
-     * Get a root package by it\'s exact name
-     * Find By Name
-     */
-    async packageFindByName(requestParameters: PackageFindByNameRequest): Promise<any> {
-        const response = await this.packageFindByNameRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
-     * List all root packages in the requested data source
-     * Get
-     */
-    async packageGetRaw(requestParameters: PackageGetRequest): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling packageGet.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            if (typeof this.configuration.accessToken === 'function') {
-                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
-            } else {
-                headerParameters["Authorization"] = this.configuration.accessToken;
-            }
-        }
-
-        const response = await this.request({
-            path: `/api/v1/packages/{data_source_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
-            method: 'GET',
-            headers: headerParameters,
-            query: queryParameters,
-        });
-
-        return new runtime.TextApiResponse(response) as any;
-    }
-
-    /**
-     * List all root packages in the requested data source
-     * Get
-     */
-    async packageGet(requestParameters: PackageGetRequest): Promise<any> {
-        const response = await this.packageGetRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
      * Delete Reference
      */
     async referenceDeleteRaw(requestParameters: ReferenceDeleteRequest): Promise<runtime.ApiResponse<object>> {
@@ -1444,6 +1354,41 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async setAcl(requestParameters: SetAclRequest): Promise<object> {
         const response = await this.setAclRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Get Personal Access Token
+     */
+    async tokenGetRaw(): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const response = await this.request({
+            path: `/api/v1/token`,
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Get Personal Access Token
+     */
+    async tokenGet(): Promise<any> {
+        const response = await this.tokenGetRaw();
         return await response.value();
     }
 

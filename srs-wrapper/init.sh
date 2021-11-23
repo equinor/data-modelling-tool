@@ -14,6 +14,8 @@ fi
 TOKEN=None
 STASK=None
 WORKFLOW=None
+COMPUTE_SERVICE_CFG=None
+REMOTE_RUN=
 INPUT=None
 TARGET=None
 
@@ -29,6 +31,14 @@ for i in "$@"; do
       ;;
     --workflow=*)
       WORKFLOW="${i#*=}"
+      shift # past argument=value
+      ;;
+    --compute-service-cfg=*)
+      COMPUTE_SERVICE_CFG="${i#*=}"
+      shift # past argument=value
+      ;;
+    --remote-run)
+      REMOTE_RUN="--remote-run"
       shift # past argument=value
       ;;
     --input=*)
@@ -47,7 +57,7 @@ done
 
 
 # Run the DMT wrapper. Preparing the SRS environment
-/code/job_wrapper.py run --token=$TOKEN --stask=$STASK --workflow=$WORKFLOW --input=$INPUT
+/code/job_wrapper.py run --token=$TOKEN --stask=$STASK --workflow=$WORKFLOW --compute-service-cfg=$COMPUTE_SERVICE_CFG $REMOTE_RUN --input=$INPUT
 # SIMA Headless
 /opt/sima/sima \
   -commands file=/var/opt/sima/workspace/commands.txt \
