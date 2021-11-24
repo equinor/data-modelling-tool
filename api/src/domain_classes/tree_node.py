@@ -328,11 +328,8 @@ class NodeBase:
         for node in self.traverse():
             if node.node_id == id:
                 return node
-            elif node.tree_id != None:
-                if node.tree_id == id:
-                    if "name" not in node.entity:
-                        node.set_name(node.node_id[0:8])
-                    return node
+            elif node.tree_id != None and node.tree_id == id:
+                return node
 
         return None
 
@@ -422,10 +419,10 @@ class Node(NodeBase):
 
     @property
     def name(self):
-        return self.entity.get("name", self.attribute.name)
-
-    def set_name(self, new_name: str):
-        self.attribute.name = new_name
+        if self.entity == {} or "name" in self.entity:
+            return self.entity.get("name", self.attribute.name)
+        else:
+            return self.node_id[0:8]
 
     def to_dict(self):
         return DictExporter.to_dict(self)

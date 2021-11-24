@@ -160,13 +160,17 @@ export const DefaultCreate = (props: IDefaultCreate) => {
     let dataDict: any = {
       type: type,
       description: description || '',
-      // @ts-ignore
-      attribute: props.request.attribute,
-      // @ts-ignore
-      parentId: props.request.parentId,
     }
     if (name !== '') {
       dataDict['name'] = name
+    }
+    if (props.type === BlueprintEnum.PACKAGE) {
+      if (props.request.hasOwnProperty('isRoot')) {
+        //@ts-ignore
+        dataDict['isRoot'] = props.request['isRoot']
+      } else {
+        dataDict['isRoot'] = false
+      }
     }
     props.explorer.create({
       data: dataDict,

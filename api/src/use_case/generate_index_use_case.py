@@ -60,7 +60,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
     is_root_package = node.type == BLUEPRINTS.PACKAGE.value and node.entity.get("isRoot")
     return {
         "parentId": get_parent_id(data_source_id, node),
-        "title": node.name if "name" in node.entity else node.node_id[0:8],
+        "title": node.name,
         "id": node.node_id,
         "nodeType": "document-node" if node.type != BLUEPRINTS.PACKAGE.value else BLUEPRINTS.PACKAGE.value,
         "children": children,
@@ -209,8 +209,7 @@ class GenerateSingleIndexUseCase(UseCase):
         if not parent and data_source_id != document_id:
             raise EntityNotFoundException(uid=parent_id)
         node = parent.search(document_id)
-        if not "name" in node.entity:
-            node.set_name(node.node_id[0:8])
+
         if not node:  # Create an error_node
             node = Node(
                 parent=parent.children[0],

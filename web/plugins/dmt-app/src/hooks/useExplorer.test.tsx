@@ -290,7 +290,9 @@ describe('the explorer hook', () => {
       }
       beforeEach(async () => {
         const createdDocument = {
-          uid: '1000',
+          data: {
+            uid: '1000',
+          },
         }
         mocks.dmssAPI.createDocument.mockReturnValue(
           Promise.resolve(createdDocument)

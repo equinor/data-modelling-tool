@@ -81,5 +81,4 @@ class Package:
 
                 else:
                     result.append({"_id": child["_id"], "type": child["type"], "contained": True})
-
         return result
