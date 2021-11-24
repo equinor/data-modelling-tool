@@ -18,6 +18,7 @@ from services.dmss import get_document_by_uid, get_personal_access_token
 from services.job_handler_interface import Job, JobHandlerInterface, JobStatus
 from services.job_scheduler import scheduler
 from utils.get_extends_from import get_extends_from
+from utils.logging import logger
 from utils.string_helpers import split_absolute_ref
 from services.job_handlers import azure_container_instances, omnia_classic_azure_container_instances
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -29,20 +30,28 @@ def is_cron_job(blueprint_ref: str) -> bool:
     return SIMOS.CRON_JOB.value in all_extends
 
 
-def schedule_cron_job(scheduler: BackgroundScheduler, function: Callable, job_entity: dict) -> str:
-    if not job_entity.get("cron"):
+def schedule_cron_job(scheduler: BackgroundScheduler, function: Callable, job: Job) -> str:
+    if not job.entity.get("cron"):
         raise ValueError("CronJob entity is missing required attribute 'cron'")
     try:
-        minute, hour, day, month, day_of_week = job_entity["cron"].split(" ")
+        minute, hour, day, month, day_of_week = job.entity["cron"].split(" ")
         scheduled_job = scheduler.add_job(
-            function, "cron", minute=minute, hour=hour, day=day, month=month, day_of_week=day_of_week
+            function,
+            "cron",
+            minute=minute,
+            hour=hour,
+            day=day,
+            month=month,
+            day_of_week=day_of_week,
+            id=job.job_id,
+            replace_existing=True,
         )
         return (
             "Cron job successfully registered. Next scheduled run "
             + f"at {scheduled_job.next_run_time} {scheduled_job.next_run_time.tzinfo}"
         )
     except ValueError as e:
-        raise ValueError(f"Failed to schedule cron job '{job_entity['_id']}'. {e}'")
+        raise ValueError(f"Failed to schedule cron job '{job.job_id}'. {e}'")
 
 
 class JobService:
@@ -56,6 +65,13 @@ class JobService:
             socket_timeout=5,
             socket_connect_timeout=5,
         )
+
+    def load_cron_jobs(self):
+        for key in self.job_store.scan_iter():
+            job = self._get_job(key.decode())
+            if job.cron_job:
+                schedule_cron_job(scheduler, lambda: self._run_job(job.job_id), job)
+                logger.info(f"Loaded and registered job '{job.job_id}' from {config.SCHEDULER_REDIS_HOST}")
 
     def _set_job(self, job: Job):
         return self.job_store.set(job.job_id, json.dumps(job.to_dict()))
@@ -76,9 +92,8 @@ class JobService:
         data_source_id, job_entity_id, attribute = split_absolute_ref(job_id)
         return get_document_by_uid(data_source_id, job_entity_id, attribute=attribute, token=token)
 
-    def _get_job_handler(self, job_id: str, token: str = None) -> JobHandlerInterface:
-        job_entity = self._get_job_entity(job_id, token)
-        data_source_id, job_entity_id = job_id.split("/", 1)
+    def _get_job_handler(self, job: Job) -> JobHandlerInterface:
+        data_source_id = job.job_id.split("/", 1)[0]
 
         job_handler_directories = []
         try:
@@ -101,11 +116,11 @@ class JobService:
             for job_handler_module in modules:
                 supported_job_type = job_handler_module._SUPPORTED_JOB_TYPE
                 if isinstance(supported_job_type, tuple) or isinstance(supported_job_type, list):
-                    if job_entity["type"] in supported_job_type:
-                        return job_handler_module.JobHandler(data_source_id, job_entity, token)
+                    if job.entity["type"] in supported_job_type:
+                        return job_handler_module.JobHandler(data_source_id, job.entity, job.token)
                 else:
-                    if job_entity["type"] == supported_job_type:
-                        return job_handler_module.JobHandler(data_source_id, job_entity, token)
+                    if job.entity["type"] == supported_job_type:
+                        return job_handler_module.JobHandler(data_source_id, job.entity, job.token)
         except ImportError as error:
             traceback.print_exc()
             raise ImportError(
@@ -115,53 +130,65 @@ class JobService:
                 + "with the string, tuple, or list value of the job type(s)."
             )
 
-        raise NotImplementedError(f"No handler for a job of type '{job_entity['type']}' is configured")
+        raise NotImplementedError(f"No handler for a job of type '{job.entity['type']}' is configured")
 
-    def _run_job(self, job_id: str, token: str = None) -> str:
-        job_handler = self._get_job_handler(job_id, token)
-        start_output = job_handler.start()
+    def _run_job(self, job_id: str) -> str:
         job = self._get_job(job_id)
+        job_handler = self._get_job_handler(job)
+        start_output = job_handler.start()
         job.status = JobStatus.STARTING
         job.log = start_output
         self._set_job(job)
 
         return start_output
 
-    def start_job(self, job_id: str) -> str:
+    def register_job(self, job_id: str) -> str:
         if self._get_job(job_id):
             raise Exception("This job is already registered. Create a new job, or delete the old one.")
-
-        job = Job(job_id=job_id, started=datetime.now(), status=JobStatus.REGISTERED)
 
         # A token must be created when there still is a request object.
         token = get_personal_access_token()
         job_entity = self._get_job_entity(job_id, token)
 
         if is_cron_job(job_entity["type"]):
-            result = schedule_cron_job(scheduler, lambda: self._run_job(job_id, token), job_entity)
+            job = Job(
+                job_id=job_id,
+                started=datetime.now(),
+                status=JobStatus.REGISTERED,
+                entity=job_entity,
+                cron_job=True,
+                token=token,
+            )
+            result = schedule_cron_job(scheduler, lambda: self._run_job(job_id), job)
         else:
-            scheduler.add_job(lambda: self._run_job(job_id, token))
+            job = Job(
+                job_id=job_id, started=datetime.now(), status=JobStatus.REGISTERED, entity=job_entity, token=token
+            )
+            scheduler.add_job(lambda: self._run_job(job_id))
             result = "Job successfully started"
 
         self._set_job(job)
         return result
 
-    def status_job(self, job_id: str) -> Tuple[JobStatus, str]:
+    def status_job(self, job_id: str) -> Tuple[JobStatus, str, str]:
         job = self._get_job(job_id)
         if not job:
             raise JobNotFoundException(f"No job with id '{job_id}' is registered")
-        job_handler = self._get_job_handler(job_id)
+        job_handler = self._get_job_handler(job)
         status, log = job_handler.progress()
         job.status = status
         job.log = log
         self._set_job(job)
-        return status, job.log
+        if job.cron_job:
+            cron_job = scheduler.get_job(job_id)
+            return status, job.log, f"Next scheduled run @ {cron_job.next_run_time} {cron_job.next_run_time.tzinfo}"
+        return status, job.log, f"Started: {job.started.isoformat()}"
 
     def remove_job(self, job_id: str) -> str:
         job = self._get_job(job_id)
         if not job:
             raise JobNotFoundException(f"No job with id '{job_id}' is registered")
-        job_handler = self._get_job_handler(job_id)
+        job_handler = self._get_job_handler(job)
         job_status, remove_message = job_handler.remove()
         self.job_store.delete(job_id)
         return remove_message
