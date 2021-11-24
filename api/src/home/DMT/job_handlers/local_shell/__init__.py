@@ -7,7 +7,7 @@ from services.dmss import dmss_api
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
-_SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/ShellJob"
+_SUPPORTED_JOB_TYPE = ("DMT-Internal/DMT/ShellJob", "DMT-Internal/DMT/CronShellJob")
 
 
 class JobHandler(JobHandlerInterface):
@@ -16,8 +16,8 @@ class JobHandler(JobHandlerInterface):
     Run a job of the 'DMT-Internal/DMT/ShellJob'-type in the local shell.
     """
 
-    def __init__(self, data_source: str, job_entity: dict):
-        super().__init__(data_source, job_entity)
+    def __init__(self, data_source: str, job_entity: dict, token: str):
+        super().__init__(data_source, job_entity, token)
 
     def start(self) -> str:
         if config.ENVIRONMENT != "local":
@@ -36,7 +36,9 @@ class JobHandler(JobHandlerInterface):
             capture_output=True,
         )
         logger.info(f"JobId; '{self.job_entity['_id']}': Shell job completed")
-        return shell_job_process.stdout.decode()
+        output = shell_job_process.stdout.decode()
+        logger.info(f"ShellJob completed successfully. \n {output}")
+        return output
 
     def remove(self) -> str:
         """Terminate and cleanup all job related resources"""
@@ -44,7 +46,7 @@ class JobHandler(JobHandlerInterface):
             os.remove("./script.sh")
         except FileNotFoundError:
             pass
-        return "removed script job ok"
+        return JobStatus.UNKNOWN, "Local shell job removed"
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""

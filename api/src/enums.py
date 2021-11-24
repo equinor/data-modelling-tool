@@ -49,6 +49,7 @@ class SIMOS(Enum):
     ATTRIBUTE_TYPES = "system/SIMOS/AttributeTypes"
     UI_RECIPE = "system/SIMOS/UiRecipe"
     STORAGE_RECIPE = "system/SIMOS/StorageRecipe"
+    CRON_JOB = "DMT-Internal/DMT/CronJob"
 
 
 class BLUEPRINTS(Enum):

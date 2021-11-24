@@ -2,15 +2,14 @@ import importlib
 import json
 from datetime import datetime
 from pathlib import Path
-from typing import Tuple, Union
+from typing import Callable, Tuple, Union
 
 import redis
 import traceback
 from redis import AuthenticationError
-import apscheduler
-
 
 from config import config
+from enums import SIMOS
 from repository.repository_exceptions import JobNotFoundException
 from services.dmss import get_document_by_uid, get_personal_access_token
 
@@ -18,8 +17,32 @@ from services.dmss import get_document_by_uid, get_personal_access_token
 #  can view the job entity to also run and delete the job.
 from services.job_handler_interface import Job, JobHandlerInterface, JobStatus
 from services.job_scheduler import scheduler
+from utils.get_extends_from import get_extends_from
 from utils.string_helpers import split_absolute_ref
 from services.job_handlers import azure_container_instances, omnia_classic_azure_container_instances
+from apscheduler.schedulers.background import BackgroundScheduler
+
+
+def is_cron_job(blueprint_ref: str) -> bool:
+    """Checks if the type SIMOS.CRONJOB is in the list of types the blueprint extends from"""
+    all_extends = get_extends_from(blueprint_ref)
+    return SIMOS.CRON_JOB.value in all_extends
+
+
+def schedule_cron_job(scheduler: BackgroundScheduler, function: Callable, job_entity: dict) -> str:
+    if not job_entity.get("cron"):
+        raise ValueError("CronJob entity is missing required attribute 'cron'")
+    try:
+        minute, hour, day, month, day_of_week = job_entity["cron"].split(" ")
+        scheduled_job = scheduler.add_job(
+            function, "cron", minute=minute, hour=hour, day=day, month=month, day_of_week=day_of_week
+        )
+        return (
+            "Cron job successfully registered. Next scheduled run "
+            + f"at {scheduled_job.next_run_time} {scheduled_job.next_run_time.tzinfo}"
+        )
+    except ValueError as e:
+        raise ValueError(f"Failed to schedule cron job '{job_entity['_id']}'. {e}'")
 
 
 class JobService:
@@ -76,15 +99,20 @@ class JobService:
             modules.append(azure_container_instances)
             modules.append(omnia_classic_azure_container_instances)
             for job_handler_module in modules:
-                if job_entity["type"] == job_handler_module._SUPPORTED_JOB_TYPE:
-                    return job_handler_module.JobHandler(data_source_id, job_entity, token)
+                supported_job_type = job_handler_module._SUPPORTED_JOB_TYPE
+                if isinstance(supported_job_type, tuple) or isinstance(supported_job_type, list):
+                    if job_entity["type"] in supported_job_type:
+                        return job_handler_module.JobHandler(data_source_id, job_entity, token)
+                else:
+                    if job_entity["type"] == supported_job_type:
+                        return job_handler_module.JobHandler(data_source_id, job_entity, token)
         except ImportError as error:
             traceback.print_exc()
             raise ImportError(
                 f"Failed to import a job handler module: '{error}'"
                 + "Make sure the module has a '_init_.py' file, a 'JobHandler' class implementing "
                 + "the JobHandlerInterface, and a global variable named '_SUPPORTED_JOB_TYPE' "
-                + "with the string value of the job type."
+                + "with the string, tuple, or list value of the job type(s)."
             )
 
         raise NotImplementedError(f"No handler for a job of type '{job_entity['type']}' is configured")
@@ -104,12 +132,19 @@ class JobService:
             raise Exception("This job is already registered. Create a new job, or delete the old one.")
 
         job = Job(job_id=job_id, started=datetime.now(), status=JobStatus.REGISTERED)
-        self._set_job(job)
+
         # A token must be created when there still is a request object.
         token = get_personal_access_token()
-        scheduled_job: apscheduler.job.Job = scheduler.add_job(lambda: self._run_job(job_id, token))
+        job_entity = self._get_job_entity(job_id, token)
 
-        return "OK"
+        if is_cron_job(job_entity["type"]):
+            result = schedule_cron_job(scheduler, lambda: self._run_job(job_id, token), job_entity)
+        else:
+            scheduler.add_job(lambda: self._run_job(job_id, token))
+            result = "Job successfully started"
+
+        self._set_job(job)
+        return result
 
     def status_job(self, job_id: str) -> Tuple[JobStatus, str]:
         job = self._get_job(job_id)
