@@ -1,6 +1,8 @@
 # Created by https://www.gitignore.io/api/macos
 # Edit at https://www.gitignore.io/?templates=macos
 
+redis_data
+api/src/script.sh
 h5/
 /api/src/home/first-run-false
 

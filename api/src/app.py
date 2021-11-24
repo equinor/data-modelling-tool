@@ -9,6 +9,7 @@ import click
 import emoji
 from dmss_api.exceptions import ApiException
 from flask import Flask
+from services.job_service import JobService
 
 from config import config
 from controllers import blueprints, entity, index, system, jobs
@@ -37,6 +38,13 @@ except FileNotFoundError:
     pass
 
 app = create_app(config)
+
+
+# Using this decorator is needed so we don't get more than
+# one instance of the job scheduler running the same jobs multiple times.
+@app.before_first_request
+def load_cron_jobs():
+    JobService().load_cron_jobs()
 
 
 @click.group()

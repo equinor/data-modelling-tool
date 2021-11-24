@@ -19,25 +19,31 @@ class Job:
         job_id: str,
         started: datetime,
         status: JobStatus,
+        entity: dict,
         stopped: datetime = datetime(1, 1, 1),
-        result_id: str = None,
         log: str = None,
+        cron_job: bool = False,
+        token: str = None,
     ):
         self.job_id: str = job_id
         self.started: datetime = started
         self.status: JobStatus = status
+        self.entity: dict = entity
         self.stopped: datetime = stopped
-        self.result_id: str = result_id
         self.log: str = log
+        self.cron_job: bool = cron_job
+        self.token: str = token
 
     def to_dict(self):
         return {
             "job_id": self.job_id,
             "started": self.started.isoformat(),
             "status": self.status.value,
+            "entity": self.entity,
             "stopped": self.stopped.isoformat(),
-            "result_id": self.result_id,
             "log": self.log,
+            "cron_job": self.cron_job,
+            "token": self.token,
         }
 
     @classmethod
@@ -46,9 +52,11 @@ class Job:
             job_id=a_dict["job_id"],
             started=datetime.fromisoformat(a_dict["started"]),
             status=JobStatus(a_dict["status"]),
+            entity=a_dict["entity"],
             stopped=datetime.fromisoformat(a_dict["stopped"]),
-            result_id=a_dict.get("result_id"),
             log=a_dict.get("log"),
+            cron_job=a_dict.get("cron_job"),
+            token=a_dict.get("token"),
         )
 
 

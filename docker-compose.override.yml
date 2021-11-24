@@ -18,7 +18,7 @@ services:
     environment:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
-      LOGGING_LEVEL: DEBUG
+      LOGGING_LEVEL: INFO
       AZURE_JOB_SUBSCRIPTION: "93b83577-619d-4fb9-bfdf-f7a07d24cfbe"
       AZURE_JOB_CLIENT_ID: "ee7dbf49-e358-4c9c-a7e4-fb6d56c02205"
       AZURE_JOB_TENANT_ID: "3aa4a235-b6e2-48d5-9195-7fcf05b459b0"
@@ -54,6 +54,9 @@ services:
 
   job-store:
     image: redis:6.2.5-alpine
+    command: "redis-server --save 30 1 --loglevel notice"
+    volumes:
+      - ./redis_data:/data
     networks:
       - data-modelling-storage-service_default
 

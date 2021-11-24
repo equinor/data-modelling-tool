@@ -6,5 +6,5 @@ from services.job_service import JobService
 class StatusJobUseCase(uc.UseCase):
     def process_request(self, request_object):
         job_service = JobService()
-        status, log = job_service.status_job(request_object["job_id"])
-        return res.ResponseSuccess({"status": status.value, "log": log})
+        status, log, message = job_service.status_job(request_object["job_id"])
+        return res.ResponseSuccess({"status": status.value, "log": log, "message": message})
