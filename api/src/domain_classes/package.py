@@ -1,6 +1,6 @@
 from typing import Callable, List, Union
 from uuid import UUID, uuid4
-
+from utils.logging import logger
 from enums import BLUEPRINTS
 
 
@@ -74,5 +74,11 @@ class Package:
                     {"_id": str(child.uid), "name": child.name, "type": BLUEPRINTS.PACKAGE.value, "contained": True}
                 )
             else:  # Assume the child is a dict
-                result.append({"_id": child["_id"], "name": child["name"], "type": child["type"], "contained": True})
+                if "name" in child:
+                    result.append(
+                        {"_id": child["_id"], "name": child["name"], "type": child["type"], "contained": True}
+                    )
+
+                else:
+                    result.append({"_id": child["_id"], "type": child["type"], "contained": True})
         return result

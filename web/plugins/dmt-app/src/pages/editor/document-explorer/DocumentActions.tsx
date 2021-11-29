@@ -157,16 +157,23 @@ export const DefaultCreate = (props: IDefaultCreate) => {
   const canOverrideType = !Object.values(BlueprintEnum).includes(props.type)
 
   const onSubmit = () => {
+    let dataDict: any = {
+      type: type,
+      description: description || '',
+    }
+    if (name !== '') {
+      dataDict['name'] = name
+    }
+    if (props.type === BlueprintEnum.PACKAGE) {
+      if (props.request.hasOwnProperty('isRoot')) {
+        //@ts-ignore
+        dataDict['isRoot'] = props.request['isRoot']
+      } else {
+        dataDict['isRoot'] = false
+      }
+    }
     props.explorer.create({
-      data: {
-        name: name,
-        type: type,
-        description: description || '',
-        // @ts-ignore
-        attribute: props.request.attribute,
-        // @ts-ignore
-        parentId: props.request.parentId,
-      },
+      data: dataDict,
       dataUrl: props.url,
       nodeUrl: props.nodeUrl,
     })

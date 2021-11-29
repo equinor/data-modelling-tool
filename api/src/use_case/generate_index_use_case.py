@@ -209,6 +209,7 @@ class GenerateSingleIndexUseCase(UseCase):
         if not parent and data_source_id != document_id:
             raise EntityNotFoundException(uid=parent_id)
         node = parent.search(document_id)
+
         if not node:  # Create an error_node
             node = Node(
                 parent=parent.children[0],

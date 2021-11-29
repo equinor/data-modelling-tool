@@ -117,7 +117,6 @@ interface AppHeaderProps {
 
 export default ({ applications }: AppHeaderProps) => {
   const location = useLocation()
-
   function getActiveTab() {
     // activeApp (Tab Styling) is based on route, or if route is "/", the first application
     if (location.pathname === '/') return applications[0].name

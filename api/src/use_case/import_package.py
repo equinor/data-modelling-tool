@@ -139,10 +139,13 @@ def package_tree_from_zip(data_source_id: str, package_name: str, zip_package: i
 
             # Use the "name" attribute as the last element in the
             # reference path, so filename and "name" dont need to match
-            if "/" in filename:
-                relative_path = f"/{'/'.join(filename.split('/')[:-1])}/{json_doc['name']}"
+            if "name" in json_doc:
+                if "/" in filename:
+                    relative_path = f"/{'/'.join(filename.split('/')[:-1])}/{json_doc['name']}"
+                else:
+                    relative_path = f"/{json_doc['name']}"
             else:
-                relative_path = f"/{json_doc['name']}"
+                relative_path = f"/{filename}"
             # Create a dict with new UUID's and absolute references for every file in the package
             reference_table.update(
                 {

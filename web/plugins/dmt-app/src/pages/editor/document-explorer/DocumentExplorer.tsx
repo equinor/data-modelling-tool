@@ -103,7 +103,6 @@ export default () => {
           url: data.url,
           nodeUrl: data.nodeUrl,
         }
-        console.log(createProps)
         openModal(DefaultCreate, {
           dialog: {
             title: `Create new ${data.request.type} for ${node.nodeData.title}`,
