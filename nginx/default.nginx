@@ -3,6 +3,9 @@ server {
     server_name localhost;
     client_max_body_size 2G;
 
+    #security headers
+    include /etc/nginx/security.conf;
+
     access_log /dev/stdout combined;
     error_log /dev/stdout;
 
