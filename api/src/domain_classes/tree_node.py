@@ -220,7 +220,7 @@ class NodeBase:
         if self.type == BLUEPRINTS.DATASOURCE.value:
             return self.uid
 
-        if self.path() == None:
+        if self.path() is None:
             return None
         else:
             return ".".join(self.path() + [self.key])
@@ -229,7 +229,7 @@ class NodeBase:
     def path(self):
         path = []
         parent = self.parent
-        if parent == None:
+        if parent is None:
             return None
         while parent and (parent.storage_contained() or parent.is_array()):
             path += [parent.key]
@@ -328,7 +328,7 @@ class NodeBase:
         for node in self.traverse():
             if node.node_id == id:
                 return node
-            elif node.tree_id != None and node.tree_id == id:
+            elif node.tree_id is not None and node.tree_id == id:
                 return node
 
         return None

@@ -1,5 +1,6 @@
 from typing import Union
 
+import requests
 from dmss_api.apis import DefaultApi
 from flask import request
 
@@ -41,10 +42,15 @@ def get_document_by_uid(
     Inject a mock 'get_document_by_uid' in unit unit.
     """
 
-    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + (token or get_access_token())
-    return dmss_api.document_get_by_id(
-        data_source_id, document_id, depth=depth, ui_recipe=ui_recipe, attribute=attribute
-    )["document"]
+    # The generated API package was transforming data types. ie. parsing datetime from strings...
+
+    headers = {"Authorization": f"Bearer {token or get_access_token()}"}
+    params = {"depth": depth, "ui_recipe": ui_recipe, "attribute": attribute}
+    req = requests.get(
+        f"{Config.DMSS_API}/api/v1/documents/{data_source_id}/{document_id}", params=params, headers=headers
+    )
+
+    return req.json()["document"]
 
 
 def get_blueprint(type_ref: str) -> dict:

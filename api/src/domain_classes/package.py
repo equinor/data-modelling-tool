@@ -1,6 +1,5 @@
 from typing import Callable, List, Union
 from uuid import UUID, uuid4
-from utils.logging import logger
 from enums import BLUEPRINTS
 
 
