@@ -44,7 +44,8 @@ app = create_app(config)
 # one instance of the job scheduler running the same jobs multiple times.
 @app.before_first_request
 def load_cron_jobs():
-    JobService().load_cron_jobs()
+    if config.JOB_SERVICE_ENABLED == 1:
+        JobService().load_cron_jobs()
 
 
 @click.group()

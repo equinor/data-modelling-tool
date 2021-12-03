@@ -69,6 +69,7 @@ class Config:
 
     # Azure stuff
     # Where to run jobs in Azure
+    JOB_SERVICE_ENABLED = bool(int(os.getenv("JOB_SERVICE_ENABLED", 0)))
     AZURE_JOB_SUBSCRIPTION = os.getenv("AZURE_JOB_SUBSCRIPTION")
     AZURE_JOB_RESOURCE_GROUP = os.getenv("AZURE_JOB_RESOURCE_GROUP")
     # Which ServicePrincipal to authenticate with
