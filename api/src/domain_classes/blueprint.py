@@ -32,7 +32,7 @@ def get_ui_recipe(recipes: List[Dict]):
             attributes=[
                 RecipeAttribute(
                     name=attr["name"],
-                    is_contained=attr.get("contained", True),
+                    contained=attr.get("contained", True),
                     field=attr.get("field"),
                     collapsible=attr.get("collapsible", None),
                     ui_recipe=attr.get("uiRecipe", None),

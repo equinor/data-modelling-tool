@@ -15,21 +15,21 @@ class RecipeAttribute:
     def __init__(
         self,
         name: str,
-        is_contained: bool,
+        contained: bool,
         field: str = None,
         collapsible: bool = None,
         ui_recipe: str = None,
         mapping: str = None,
     ):
         self.name = name
-        self.is_contained = is_contained
+        self.contained = contained
         self.field = field
         self.collapsible = collapsible
         self.ui_recipe = ui_recipe
         self.mapping = mapping
 
     def to_dict(self) -> Dict:
-        result = {"name": self.name, "contained": self.is_contained}
+        result = {"name": self.name, "contained": self.contained}
         if self.field:
             result["field"] = self.field
         if self.collapsible:
@@ -72,7 +72,7 @@ class Recipe:
 
         ui_attribute = self.get_attribute_by_name(attribute.name)
         if ui_attribute:
-            return ui_attribute.is_contained
+            return ui_attribute.contained
 
         if attribute.attribute_type in PRIMITIVES:
             return primitive_contained
@@ -94,5 +94,5 @@ class Recipe:
 
 class DefaultRecipe(Recipe):
     def __init__(self, attributes: List[BlueprintAttribute]):
-        recipe_attributes = [RecipeAttribute(name=attr.name, is_contained=True) for attr in attributes]
+        recipe_attributes = [RecipeAttribute(name=attr.name, contained=True) for attr in attributes]
         super().__init__("Default", attributes=recipe_attributes)
