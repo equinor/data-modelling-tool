@@ -46,9 +46,9 @@ const PluginComponent = (props: DmtUIPlugin) => {
           documentId: target.shift(),
           attribute: target.join('.'),
         })
-        .then((result: any) => {
-          setDocument(result.document)
-          setDocumentType(result.document.type)
+        .then((document: any) => {
+          setDocument(document)
+          setDocumentType(document.type)
         })
     }
   }, [dataSourceId, documentId])

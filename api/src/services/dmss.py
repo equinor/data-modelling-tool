@@ -50,7 +50,7 @@ def get_document_by_uid(
         f"{Config.DMSS_API}/api/v1/documents/{data_source_id}/{document_id}", params=params, headers=headers
     )
 
-    return req.json()["document"]
+    return req.json()
 
 
 def get_blueprint(type_ref: str) -> dict:

@@ -43,13 +43,13 @@ export const ViewerPDFPlugin = (props: any) => {
         const blob = new Blob([result], { type: 'application/pdf' })
         // @ts-ignore
         setBlobUrl(window.URL.createObjectURL(blob))
-        setLoading(false)
       })
       .catch((error: any) => {
         console.error(error)
         setError(error?.message)
       })
-  }, [props.document.blob_reference])
+      .finally(() => setLoading(false))
+  }, [props.blob_reference])
 
   if (error)
     return (
@@ -64,43 +64,39 @@ export const ViewerPDFPlugin = (props: any) => {
       </ErrorGroup>
     )
 
+  if (loading) return <>Loading...</>
+
   return (
     <>
-      {loading ? (
-        <>Loading...</>
-      ) : (
-        <>
-          <div style={{ display: 'flex', fontSize: '16px' }}>
-            <MetaDataWrapper>
-              <label>Title:</label> {document.name}
-            </MetaDataWrapper>
-            <MetaDataWrapper>
-              <label>Description:</label> {document.description}
-            </MetaDataWrapper>
-            <MetaDataWrapper>
-              <div style={{ display: 'flex', flexDirection: 'row' }}>
-                <label>Tags:</label>
-                {document.tags &&
-                  document.tags.map((tag: any) => {
-                    return <TagWrapper key={tag}>{tag}</TagWrapper>
-                  })}
-              </div>
-            </MetaDataWrapper>
-            <MetaDataWrapper>
-              <label>Size:</label> {document.size && formatBytes(document.size)}
-            </MetaDataWrapper>
+      <div style={{ display: 'flex', fontSize: '16px' }}>
+        <MetaDataWrapper>
+          <label>Title:</label> {document.name}
+        </MetaDataWrapper>
+        <MetaDataWrapper>
+          <label>Description:</label> {document.description}
+        </MetaDataWrapper>
+        <MetaDataWrapper>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
+            <label>Tags:</label>
+            {document.tags &&
+              document.tags.map((tag: any) => {
+                return <TagWrapper key={tag}>{tag}</TagWrapper>
+              })}
           </div>
-          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
-            <a href={blobUrl} target={'_blank'}>
-              Open in new tab
-            </a>
-          </div>
-          <iframe
-            src={blobUrl}
-            style={{ width: '100%', height: `${window.screen.height * 0.8}px` }}
-          />
-        </>
-      )}
+        </MetaDataWrapper>
+        <MetaDataWrapper>
+          <label>Size:</label> {document.size && formatBytes(document.size)}
+        </MetaDataWrapper>
+      </div>
+      <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+        <a href={blobUrl} target={'_blank'}>
+          Open in new tab
+        </a>
+      </div>
+      <iframe
+        src={blobUrl}
+        style={{ width: '100%', height: `${window.screen.height * 0.8}px` }}
+      />
     </>
   )
 }

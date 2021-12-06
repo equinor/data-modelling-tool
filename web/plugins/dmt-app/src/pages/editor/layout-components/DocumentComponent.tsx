@@ -107,26 +107,13 @@ const DocumentComponent = (props: any) => {
           dataSourceId={dataSourceId}
           documentId={documentId}
           render={(data: any) => {
-            const document = data?.document
             return (
               <>
-                {document ? (
-                  <ViewList
-                    {...props}
-                    document={data.document}
-                    blueprintType={data.blueprint}
-                  />
-                ) : (
-                  <ErrorGroup>
-                    <b>404</b>
-                    <b>
-                      No document found{' '}
-                      <code>
-                        {dataSourceId}/{documentId}
-                      </code>
-                    </b>
-                  </ErrorGroup>
-                )}
+                <ViewList
+                  {...props}
+                  document={data.document}
+                  blueprintType={data.blueprint}
+                />
               </>
             )
           }}
