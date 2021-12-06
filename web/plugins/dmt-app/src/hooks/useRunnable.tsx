@@ -82,13 +82,11 @@ const getInput = async (
     result = await dmssAPI.getDocumentById({ dataSourceId, documentId })
   }
 
-  const document = result.document
-
   const input: Input = {
     // @ts-ignore
-    blueprint: document.type,
+    blueprint: result.type,
     // @ts-ignore
-    entity: attribute ? document[attribute] : document,
+    entity: attribute ? result[attribute] : result,
     path: path,
     id: id,
     attribute: attribute,

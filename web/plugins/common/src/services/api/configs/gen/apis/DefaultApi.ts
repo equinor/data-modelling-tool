@@ -24,9 +24,6 @@ import {
     DataSourceRequest,
     DataSourceRequestFromJSON,
     DataSourceRequestToJSON,
-    GetDocumentResponse,
-    GetDocumentResponseFromJSON,
-    GetDocumentResponseToJSON,
     HTTPValidationError,
     HTTPValidationErrorFromJSON,
     HTTPValidationErrorToJSON,
@@ -491,7 +488,7 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Get By Id
      */
-    async documentGetByIdRaw(requestParameters: DocumentGetByIdRequest): Promise<runtime.ApiResponse<GetDocumentResponse>> {
+    async documentGetByIdRaw(requestParameters: DocumentGetByIdRequest): Promise<runtime.ApiResponse<object>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
             throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling documentGetById.');
         }
@@ -532,13 +529,13 @@ export class DefaultApi extends runtime.BaseAPI {
             query: queryParameters,
         });
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => GetDocumentResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse<any>(response);
     }
 
     /**
      * Get By Id
      */
-    async documentGetById(requestParameters: DocumentGetByIdRequest): Promise<GetDocumentResponse> {
+    async documentGetById(requestParameters: DocumentGetByIdRequest): Promise<object> {
         const response = await this.documentGetByIdRaw(requestParameters);
         return await response.value();
     }

@@ -7,7 +7,6 @@ import {
   ExplorerAddRequest,
   ExplorerRenameRequest,
   GetAclRequest,
-  GetDocumentResponse,
   ReferenceDeleteRequest,
   ReferenceInsertRequest,
   SearchRequest,
@@ -35,9 +34,7 @@ export interface IDmssAPI {
 
   getBlueprint(requestParameters: BlueprintGetRequest): Promise<object>
 
-  getDocumentById(
-    requestParameters: DocumentGetByIdRequest
-  ): Promise<GetDocumentResponse>
+  getDocumentById(requestParameters: DocumentGetByIdRequest): Promise<any>
 
   addDocumentToParent(requestParameters: ExplorerAddRequest): Promise<any>
 

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { DmtAPI, DmssAPI, AuthContext } from '@dmt/common'
+import { DmtAPI, DmssAPI, AuthContext, useDocument } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { getUIPlugin } from '@dmt/core-plugins'
@@ -10,6 +10,7 @@ import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecip
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
 import { SimplifiedTree } from '../components/SimplifiedTree'
+import { ErrorGroup } from '../components/Wrappers'
 
 const Group = styled.div`
   display: flex;
@@ -77,30 +78,39 @@ const ViewList = (props: any) => {
 }
 export default () => {
   const { data_source, entity_id } = useParams()
-  const [document, setDocument] = useState(null)
-  const [blueprint, setBlueprint] = useState(null)
-  const [error, setError] = useState(null)
+  const [document, documentLoading, setDocument, error] = useDocument(
+    data_source,
+    entity_id
+  )
+  const [blueprint, setBlueprint] = useState<Object | null>(null)
+  const [blueprintError, setBlueprintError] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
+    if (!document?.type) return
     dmssAPI
-      .getDocumentById({ dataSourceId: data_source, documentId: entity_id })
-      .then((result) => {
-        setBlueprint(result.blueprint)
-        setDocument(result.document)
-      })
-      .catch((error) => {
-        console.error(error)
-        const errorMessage = JSON.parse(error.message).message
-        setError(errorMessage)
-        NotificationManager.error(errorMessage, 'Failed to fetch', 10)
-      })
-  }, [])
+      .getBlueprint(document.type)
+      .then((v: any) => setBlueprint(v))
+      .catch((error: Error) => setBlueprintError(error))
+      .finally(() => setLoading(false))
+  }, [documentLoading])
 
-  if (!document || !blueprint)
-    return <Group style={{ color: 'red' }}>{error}</Group>
+  if (error || blueprintError)
+    return (
+      <ErrorGroup>
+        <b>Error</b>
+        <b>
+          Failed to fetch document and blueprint
+          <code>
+            {data_source}/{entity_id}
+          </code>
+        </b>
+      </ErrorGroup>
+    )
 
   return (
     <Group>

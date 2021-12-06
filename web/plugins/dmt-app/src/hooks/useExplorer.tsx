@@ -116,7 +116,7 @@ export interface IUseExplorer {
     documentDottedId,
   }: RemoveReferenceProps): void
 
-  getBlueprint(typeRef: string): void
+  getBlueprint(typeRef: string): Promise<any>
 
   getByPath({ dataSourceId, path }: GetByPathProps): void
 

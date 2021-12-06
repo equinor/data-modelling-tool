@@ -2,7 +2,8 @@ import React, { useContext, useEffect, useState } from 'react'
 import useExplorer, { IUseExplorer } from '../hooks/useExplorer'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { DmssAPI, AuthContext } from '@dmt/common'
+import { DmssAPI, AuthContext, useDocument } from '@dmt/common'
+import { ErrorGroup } from '../components/Wrappers'
 
 type Props = {
   dataSourceId: string
@@ -15,34 +16,38 @@ export default ({ dataSourceId, documentId, render }: Props) => {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer: IUseExplorer = useExplorer(dmssAPI)
-  const [document, setDocument] = useState()
-  const [loading, setLoading] = useState(true)
+  const [document, documentLoading, setDocument, error] = useDocument(
+    dataSourceId,
+    documentId
+  )
+  const [blueprint, setBlueprint] = useState<Object | null>(null)
+  const [blueprintError, setBlueprintError] = useState<any>(null)
+  const [loading, setLoading] = useState<boolean>(true)
+
   useEffect(() => {
-    const load = async () => {
-      const target = documentId.split('.')
-      const getProps = {
-        dataSourceId,
-        // @ts-ignore
-        documentId: target.shift().toString(),
-        attribute: target.join('.'),
-      }
-      try {
-        const result = await explorer.get(getProps)
-        // @ts-ignore
-        setDocument(result)
-      } catch (e) {
-        console.error(e)
-        NotificationManager.error(e.message, 'Error', 0)
-      }
+    if (!document?.type) return
+    // @ts-ignore
+    explorer
+      .getBlueprint(document.type)
+      .then((v: any) => setBlueprint(v))
+      .catch((error: Error) => setBlueprintError(error))
+      .finally(() => setLoading(false))
+  }, [documentLoading])
 
-      setLoading(false)
-    }
-    load()
-  }, [dataSourceId, documentId, render])
+  if (error || blueprintError)
+    return (
+      <ErrorGroup>
+        <b>Error</b>
+        <b>
+          Failed to fetch document and blueprint
+          <code>
+            {dataSourceId}/{documentId}
+          </code>
+        </b>
+      </ErrorGroup>
+    )
 
-  if (loading) {
-    return <div>Loading...</div>
-  }
+  if (loading) return <div>Loading...</div>
 
-  return render(document)
+  return render({ document: document, blueprint: blueprint })
 }

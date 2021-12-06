@@ -3,7 +3,7 @@ import { DmssAPI } from '../services/api/DmssAPI'
 import { AuthContext } from '@dmt/common'
 
 export const useDocument = (dataSourceId: string, documentId: string) => {
-  const [document, setDocument] = useState<Object | null>(null)
+  const [document, setDocument] = useState<any>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
   // @ts-ignore-line
@@ -18,7 +18,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
     dmssAPI
       .getDocumentById({ dataSourceId, documentId: id, attribute })
       .then((document) => {
-        setDocument(document.document)
+        setDocument(document)
         setError(null)
       })
       .catch((error: Error) => setError(error))

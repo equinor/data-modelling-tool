@@ -2,7 +2,6 @@ export * from './ACL';
 export * from './AccessLevel';
 export * from './AddRootPackageRequest';
 export * from './DataSourceRequest';
-export * from './GetDocumentResponse';
 export * from './HTTPValidationError';
 export * from './MoveRequest';
 export * from './Reference';
