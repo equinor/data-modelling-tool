@@ -20,11 +20,17 @@ services:
       ENVIRONMENT: local
       LOGGING_LEVEL: INFO
       JOB_SERVICE_ENABLED: 1
-      AZURE_JOB_SUBSCRIPTION: "93b83577-619d-4fb9-bfdf-f7a07d24cfbe"
-      AZURE_JOB_CLIENT_ID: "ee7dbf49-e358-4c9c-a7e4-fb6d56c02205"
-      AZURE_JOB_TENANT_ID: "3aa4a235-b6e2-48d5-9195-7fcf05b459b0"
-      AZURE_JOB_RESOURCE_GROUP: "S059-Forecast-of-response"
+      SCHEDULER_ENVS_TO_EXPORT: "PUBLIC_DMSS_API,SIMA_LICENSE"
+      SCHEDULER_REDIS_HOST: job-store
+      SCHEDULER_REDIS_PORT: 6379
+      SCHEDULER_REDIS_SSL: "false"
+      AZURE_JOB_SUBSCRIPTION: 93b83577-619d-4fb9-bfdf-f7a07d24cfbe
+      AZURE_JOB_RESOURCE_GROUP: S059-Forecast-of-response
       AZURE_SP_SECRET: ${AZURE_SP_SECRET}
+      AZURE_JOB_TENANT_ID: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
+      AZURE_JOB_CLIENT_ID: ee7dbf49-e358-4c9c-a7e4-fb6d56c02205
+      #SIMA_LICENSE: |
+
     depends_on:
       - web
       - job-store

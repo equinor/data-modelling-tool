@@ -1,12 +1,12 @@
 version: "3.8"
 
 services:
-  dmt-srs:
+  dmt-sre:
     build: .
     image: publicMSA.azurecr.io/dmt-job/srs:latest
     environment:
-#      SIMA_LICENSE: |
-#        $(cat ./sima.lic)
+      SIMA_LICENSE: |
+
       PUBLIC_DMSS_API: http://dmss:5000
     networks:
       - data-modelling-storage-service_default
@@ -16,7 +16,7 @@ services:
     command: [
         "/code/init.sh",
         "--stask=DemoDS/8ec0d646-907c-4eba-9e65-24106236d61c",
-        "--workflow=workflow",
+        "--task=workflow",
         "--remote-run",
         "--compute-service-cfg=ForecastDS/15a4d888-3ab4-5bd2-9bd9-9614dcb066d5",
         "--input=ForecastDS/8ec0d646-907c-4eba-9e65-24106236d61c",

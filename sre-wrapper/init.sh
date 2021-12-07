@@ -1,5 +1,6 @@
 #! /usr/bin/env bash
-set -eu
+# Exit on errors
+set -e
 
 if [[ -z "${SIMA_LICENSE}" ]]; then
   echo "********************************************************************************"
@@ -11,13 +12,7 @@ else
 fi
 
 # default values
-TOKEN=None
-STASK=None
-WORKFLOW=None
-COMPUTE_SERVICE_CFG=None
-REMOTE_RUN=
-INPUT=None
-TARGET=None
+export SRE_HOME=/var/opt/sima
 
 for i in "$@"; do
   case $i in
@@ -29,8 +24,8 @@ for i in "$@"; do
       STASK="${i#*=}"
       shift # past argument=value
       ;;
-    --workflow=*)
-      WORKFLOW="${i#*=}"
+    --task=*)
+      TASK="${i#*=}"
       shift # past argument=value
       ;;
     --compute-service-cfg=*)
@@ -56,10 +51,11 @@ for i in "$@"; do
 done
 
 
-# Run the DMT wrapper. Preparing the SRS environment
-/code/job_wrapper.py run --token=$TOKEN --stask=$STASK --workflow=$WORKFLOW --compute-service-cfg=$COMPUTE_SERVICE_CFG $REMOTE_RUN --input=$INPUT
+# Run the DMT wrapper. Preparing the SRE environment
+/code/job_wrapper.py run --token=$TOKEN --stask=$STASK --task=$TASK --compute-service-cfg=$COMPUTE_SERVICE_CFG $REMOTE_RUN --input=$INPUT
 # SIMA Headless
-/opt/sima/sima \
+/opt/sima/sre \
+  -data=$SRE_HOME \
   -commands file=/var/opt/sima/workspace/commands.txt \
   -application no.marintek.sima.application.headless.application \
   -consoleLog \
