@@ -1,6 +1,6 @@
-# Data Modelling Tool SIMA Runtime Service Job Wrapper
+# Data Modelling Tool SIMA Runtime Engine Job Wrapper
 
-Thats long for _DMTSRSJW_
+That's long for _DMTSREJW_
 
 This component builds a Docker container that is based on a container for Sintef's SIMA (https://www.sintef.no/en/software/sima/) product.  
 This container creates a wrapper that prepares the container before the SIMA run, and uploads the result when the run is complete.
@@ -45,6 +45,6 @@ Options:
 ## Example
 
 ```bash
-docker build -t srs-wrapper .
-docker run -e SIMA_LICENSE=a_very_long_string -e DMSS_HOST=http://localhost:5000 srs-wrapper run --stask=DemoDS/8ec0d646-907c-4eba-9e65-24106236d61c --workflow=wave_180
+docker build -t sre-wrapper .
+docker run -e SIMA_LICENSE=a_very_long_string -e DMSS_HOST=http://localhost:5000 sre-wrapper run --stask=DemoDS/8ec0d646-907c-4eba-9e65-24106236d61c --workflow=wave_180
 ```

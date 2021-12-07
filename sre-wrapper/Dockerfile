@@ -1,4 +1,4 @@
-FROM mariner.azurecr.io/sima/sima-rs:latest
+FROM dmtregistry.azurecr.io/sima-runtime:latest
 LABEL Description="Docker image for Data Modelling Tool SIMA Headless Job Wrapper"
 
 RUN pip install --upgrade pip && \

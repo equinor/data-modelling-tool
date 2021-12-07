@@ -5,33 +5,42 @@ import pprint
 import time
 
 import click
+import requests
 from dmss_api.apis import DefaultApi
 from pydantic.env_settings import BaseSettings
 from pydantic.fields import Field
 
-pp = pprint.PrettyPrinter(indent=2, compact=True, width=119)
-
 
 class Settings(BaseSettings):
     PUBLIC_DMSS_API: str = Field("http://localhost:5000", env="PUBLIC_DMSS_API")
-    SRS_HOME: str = "/var/opt/sima"
+    SRS_HOME: str = os.getenv("SRE_HOME", "/var/opt/sima")
     WORKSPACE_DIR: str = f"{SRS_HOME}/workspace"
     STORAGE_DIR: str = f"{WORKSPACE_DIR}/storage"
     RESULT_FILE: str = f"{STORAGE_DIR}/results_file.json"
 
 
+start_time = time.time()
+pp = pprint.PrettyPrinter(indent=2, compact=True, width=119)
 settings = Settings()
 
 dmss_api = DefaultApi()
 dmss_api.api_client.configuration.host = settings.PUBLIC_DMSS_API
 
-start_time = time.time()
+
+def get_by_id(data_source_id: str, document_id: str, token: str = "", depth: int = 1, attribute: str = ""):
+    headers = {"Authorization": f"Bearer {token}"}
+    params = {"depth": depth, "attribute": attribute}
+    req = requests.get(
+        f"{settings.PUBLIC_DMSS_API}/api/v1/documents/{data_source_id}/{document_id}", params=params, headers=headers
+    )
+
+    return req.json()["document"]
 
 
 @click.group()
 def cli():
     print("-------------------------------------------------------")
-    print("| Data Modelling Tool SIMA Runtime Service Job Wrapper |")
+    print("| Data Modelling Tool SIMA Runtime Engine Job Wrapper |")
     print("------------------------------------------------------")
 
 
@@ -47,7 +56,7 @@ def after_commands(*args, **kwargs):
 @cli.command()
 @click.option("--stask", help="DataSource and UUID to the stask entity in DMSS (DS/UUID)", type=str,
               required=True)
-@click.option("--workflow", help="Name of the workflow defined in the stask to run", type=str, required=True)
+@click.option("--task", help="Name of the task defined in the stask to run", type=str, required=True)
 @click.option("--compute-service-cfg",
               help="DataSource and UUID to the SIMA compute service config entity in DMSS (DS/UUID)", type=str)
 @click.option("--remote-run", help="Run SIMA with remote-run", is_flag=True, type=bool, default=False)
@@ -55,19 +64,19 @@ def after_commands(*args, **kwargs):
 @click.option("--token", help="A valid DMSS Access Token", type=str)
 def run(
         stask: str,
-        workflow: str = None,
+        task: str,
         compute_service_cfg: str = None,
         remote_run: bool = False,
         input: str = None,
         token: str = None
 ):
     """Prepares the local environment with the given stask and workflow configuration"""
-    print(f"Received parameters: stask='{stask}', workflow='{workflow}',"
+    print(f"Received parameters: stask='{stask}', workflow='{task}',"
           f"compute-service-config='{compute_service_cfg}', remote-run='{remote_run}', input='{input}'")
     if remote_run and not compute_service_cfg:
         # remote-run requires a compute service config
         raise ValueError(f"Missing required parameter 'compute-service-cfg':"
-              f"Running with 'remote-run' requires a 'compute-service-cfg'. Please provide the SIMA compute service.")
+                         f"Running with 'remote-run' requires a 'compute-service-cfg'. Please provide the SIMA compute service.")
 
     print(f"Fetching Stask '{stask}'...\n")
     try:
@@ -76,10 +85,10 @@ def run(
         raise ValueError("Invalid stask id. Should be in format 'DataSourceId/UUID'")
 
     dmss_api.api_client.configuration.access_token = token
-    stask_entity = dmss_api.document_get_by_id(stask_data_source_id, stask_entity_id)["document"]
+    stask_entity = get_by_id(stask_data_source_id, stask_entity_id, token=token)
     print("Stask entity:")
     pp.pprint(stask_entity)
-    task_name = stask_entity["workflowTask"]
+    workflow = stask_entity["workflow"]
     blob_id = stask_entity["blob"]["_blob_id"]
 
     # Create the Stask file
@@ -113,27 +122,27 @@ def run(
         except ValueError:
             raise ValueError("Invalid input id. Should be in format 'DataSourceId/UUID'")
 
-        input_entity = dmss_api.document_get_by_id(input_data_source_id, input_entity_id, depth=1)["document"]
+        input_entity = get_by_id(input_data_source_id, input_entity_id, depth=1, token=token)
 
         # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
-        with open(f"{settings.STORAGE_DIR}/simulationConfig.json", "wb") as simulation_config_file:
+        with open(f"{settings.STORAGE_DIR}/simulationConfig.json", "w") as simulation_config_file:
             print(f"\nWriting input to '{settings.STORAGE_DIR}/simulationConfig.json'")
-            simulation_config_file.write(input_entity)
+            simulation_config_file.write(json.dumps(input_entity))
 
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
     os.makedirs(settings.WORKSPACE_DIR, exist_ok=True)
     with open(f"{settings.WORKSPACE_DIR}/commands.txt", "w") as commands_file:
-        run_cmd = 'remote-run' if remote_run else 'run'
+        run_cmd = 'remote-run distributed=false recursive=true' if remote_run else 'run'
         commands_file.write(
             f"import file={settings.SRS_HOME}/workflow.stask\n" +
-            f"{run_cmd} task={task_name} workflow={workflow}\n"
+            f"{run_cmd} task={task} workflow={workflow}\n"
         )
     with open(f"{settings.WORKSPACE_DIR}/commands.txt", "r") as commands_file:
         print("Wrote stask command file:\n")
         print(f"--- {settings.WORKSPACE_DIR}/commands.txt")
         print(commands_file.read())
         print("---")
-    print(f"DMT SRS Wrapper Successfully prepared the SRS Environment")
+    print(f"DMT SRE Wrapper Successfully prepared the SRE Environment")
 
 
 @cli.command()
