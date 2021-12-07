@@ -132,10 +132,15 @@ def run(
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
     os.makedirs(settings.WORKSPACE_DIR, exist_ok=True)
     with open(f"{settings.WORKSPACE_DIR}/commands.txt", "w") as commands_file:
-        run_cmd = 'remote-run distributed=false recursive=true' if remote_run else 'run'
+        run_cmd = 'remote-run' if remote_run else 'run'
+        run_cmd_kwargs = f"task={task} workflow={workflow} "  # generic to both run_cmd "run" and "remote-run"
+        if remote_run:  # specific arguments for remote-run
+            run_cmd_kwargs += f"distributed=false recursive=true config={settings.SRE_HOME}/compute.yml "
+            run_cmd_kwargs += f"computeService=scs wait=true download=true"
         commands_file.write(
             f"import file={settings.SRS_HOME}/workflow.stask\n" +
-            f"{run_cmd} task={task} workflow={workflow}\n"
+            f"save\n" +
+            f"{run_cmd} {run_cmd_kwargs} \n"
         )
     with open(f"{settings.WORKSPACE_DIR}/commands.txt", "r") as commands_file:
         print("Wrote stask command file:\n")
