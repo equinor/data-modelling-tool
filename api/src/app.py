@@ -111,6 +111,7 @@ def reset_package(src, dst):
 
 
 @cli.command()
+@click.argument("path")
 def import_data_source(path: Path):
     filename = path.name
     logger.info(f"-------------- IMPORTING DATA SOURCE {filename} ----------------")
