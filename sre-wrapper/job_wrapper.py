@@ -9,6 +9,7 @@ import requests
 from dmss_api.apis import DefaultApi
 from pydantic.env_settings import BaseSettings
 from pydantic.fields import Field
+from typing import Tuple
 
 
 class Settings(BaseSettings):
@@ -33,8 +34,17 @@ def get_by_id(data_source_id: str, document_id: str, token: str = "", depth: int
     req = requests.get(
         f"{settings.PUBLIC_DMSS_API}/api/v1/documents/{data_source_id}/{document_id}", params=params, headers=headers
     )
+    req.raise_for_status()
 
-    return req.json()["document"]
+    return req.json()
+
+
+def split_absolute_ref(abs_ref: str) -> Tuple[str, str]:
+    try:
+        data_source_id, entity_id = abs_ref.split("/", 1)
+        return data_source_id, entity_id
+    except ValueError:
+        raise ValueError("Invalid reference. Should be in format 'DataSourceId/UUID'")
 
 
 @click.group()
@@ -57,6 +67,7 @@ def after_commands(*args, **kwargs):
 @click.option("--stask", help="DataSource and UUID to the stask entity in DMSS (DS/UUID)", type=str,
               required=True)
 @click.option("--task", help="Name of the task defined in the stask to run", type=str, required=True)
+@click.option("--workflow", help="Name of the workflow defined in the task to run", type=str, required=True)
 @click.option("--compute-service-cfg",
               help="DataSource and UUID to the SIMA compute service config entity in DMSS (DS/UUID)", type=str)
 @click.option("--remote-run", help="Run SIMA with remote-run", is_flag=True, type=bool, default=False)
@@ -65,37 +76,30 @@ def after_commands(*args, **kwargs):
 def run(
         stask: str,
         task: str,
+        workflow: str,
         compute_service_cfg: str = None,
         remote_run: bool = False,
         input: str = None,
         token: str = None
 ):
     """Prepares the local environment with the given stask and workflow configuration"""
-    print(f"Received parameters: stask='{stask}', workflow='{task}',"
-          f"compute-service-config='{compute_service_cfg}', remote-run='{remote_run}', input='{input}'")
+    print(f"Received parameters: \n\tstask='{stask}'\n\tworkflow='{task}'"
+          f"\n\tcompute-service-config='{compute_service_cfg}'\n\tremote-run='{remote_run}'\n\tinput='{input}'\n")
     if remote_run and not compute_service_cfg:
         # remote-run requires a compute service config
         raise ValueError(f"Missing required parameter 'compute-service-cfg':"
                          f"Running with 'remote-run' requires a 'compute-service-cfg'. Please provide the SIMA compute service.")
 
-    print(f"Fetching Stask '{stask}'...\n")
-    try:
-        stask_data_source_id, stask_entity_id = stask.split("/", 1)
-    except ValueError:
-        raise ValueError("Invalid stask id. Should be in format 'DataSourceId/UUID'")
-
     dmss_api.api_client.configuration.access_token = token
-    stask_entity = get_by_id(stask_data_source_id, stask_entity_id, token=token)
-    print("Stask entity:")
-    pp.pprint(stask_entity)
-    workflow = stask_entity["workflow"]
-    blob_id = stask_entity["blob"]["_blob_id"]
+
+    stask_data_source_id, stask_blob_id = split_absolute_ref(stask)
 
     # Create the Stask file
     os.makedirs(settings.SRS_HOME, exist_ok=True)
     with open(f"{settings.SRS_HOME}/workflow.stask", "wb") as stask_file:
-        response = dmss_api.blob_get_by_id(stask_data_source_id, blob_id)
-        print(f"\nWriting stask blob to '{settings.SRS_HOME}/workflow.stask'")
+        print(f"Fetching Stask '{stask}'...")
+        response = dmss_api.blob_get_by_id(stask_data_source_id, stask_blob_id)
+        print(f"Writing stask blob to '{settings.SRS_HOME}/workflow.stask'...")
         stask_file.write(response.read())
 
     if compute_service_cfg:
@@ -116,17 +120,15 @@ def run(
     os.makedirs(settings.STORAGE_DIR, exist_ok=True)
     if input:
         # Create the input (SIMA-internal simulationConfig.json) file
-        print(f"Fetching input '{input}'...\n")
-        try:
-            input_data_source_id, input_entity_id = stask.split("/", 1)
-        except ValueError:
-            raise ValueError("Invalid input id. Should be in format 'DataSourceId/UUID'")
-
+        print(f"Fetching input '{input}'...")
+        input_data_source_id, input_entity_id = split_absolute_ref(input)
         input_entity = get_by_id(input_data_source_id, input_entity_id, depth=1, token=token)
+
+        pp.pprint(input_entity)
 
         # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
         with open(f"{settings.STORAGE_DIR}/simulationConfig.json", "w") as simulation_config_file:
-            print(f"\nWriting input to '{settings.STORAGE_DIR}/simulationConfig.json'")
+            print(f"Writing input to '{settings.STORAGE_DIR}/simulationConfig.json'...")
             simulation_config_file.write(json.dumps(input_entity))
 
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
@@ -143,7 +145,7 @@ def run(
             f"{run_cmd} {run_cmd_kwargs} \n"
         )
     with open(f"{settings.WORKSPACE_DIR}/commands.txt", "r") as commands_file:
-        print("Wrote stask command file:\n")
+        print("Wrote stask command file:")
         print(f"--- {settings.WORKSPACE_DIR}/commands.txt")
         print(commands_file.read())
         print("---")
@@ -160,14 +162,7 @@ def upload(target: str, source: str = settings.RESULT_FILE, token: str = None):
     dmss_api.api_client.configuration.access_token = token
     data_source, directory = target.split("/", 1)
     with open(source, "r") as file:
-        # TODO: Just load the dmt valid result entity directly
-        result_document = {
-            "type": "DemoDS/DMT-demo/SIMARuntimeService/TextResult",
-            "name": "Srs-WritebackTest",
-            "result": file.read()
-        }
-        response = dmss_api.explorer_add_to_path(document=json.dumps(result_document), directory=directory,
-                                                 data_source_id=data_source)
+        response = dmss_api.explorer_add_to_path(document=file.read(), directory=directory, data_source_id=data_source)
         print(f"Result file uploaded successfully -- id: {response['uid']}")
 
 

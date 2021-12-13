@@ -7,6 +7,7 @@ if [[ -z "${SIMA_LICENSE}" ]]; then
   echo "* WARNING! The SIMA_LICENSE environment variable must be set, and its contents *"
   echo "* must be the actual licenses to use for SIMA, SIMO and RIFLEX etc.            *"
   echo "********************************************************************************"
+  exit 1
 else
   echo "$SIMA_LICENSE" > /root/sima.lic
 fi
@@ -26,6 +27,10 @@ for i in "$@"; do
       ;;
     --task=*)
       TASK="${i#*=}"
+      shift # past argument=value
+      ;;
+    --workflow=*)
+      WORKFLOW="${i#*=}"
       shift # past argument=value
       ;;
     --compute-service-cfg=*)
@@ -52,7 +57,7 @@ done
 
 
 # Run the DMT wrapper. Preparing the SRE environment
-/code/job_wrapper.py run --token=$TOKEN --stask=$STASK --task=$TASK --compute-service-cfg=$COMPUTE_SERVICE_CFG $REMOTE_RUN --input=$INPUT
+/code/job_wrapper.py run --token=$TOKEN --stask=$STASK --task=$TASK --workflow=$WORKFLOW --compute-service-cfg=$COMPUTE_SERVICE_CFG $REMOTE_RUN --input=$INPUT
 # SIMA Headless
 /opt/sima/sre \
   -data=$SRE_HOME \
