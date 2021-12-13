@@ -70,6 +70,17 @@ if [ "$1" = 'reset-package' ]; then
   exit 0
 fi
 
+if [ "$1" = 'import-data-source' ]; then
+  service_is_ready
+  shift
+  if [[ -z $TOKEN ]]; then
+    python /code/app.py import-data-source "$@"
+  else
+    python /code/app.py "$TOKEN" import-data-source "$@"
+  fi
+  exit 0
+fi
+
 if [ "$1" = 'api' ]; then
   service_is_ready
   flask run --host=0.0.0.0
