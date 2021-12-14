@@ -14,8 +14,8 @@ from typing import Tuple
 
 class Settings(BaseSettings):
     PUBLIC_DMSS_API: str = Field("http://localhost:5000", env="PUBLIC_DMSS_API")
-    SRS_HOME: str = os.getenv("SRE_HOME", "/var/opt/sima")
-    WORKSPACE_DIR: str = f"{SRS_HOME}/workspace"
+    SRE_HOME: str = os.getenv("SRE_HOME", "/var/opt/sima")
+    WORKSPACE_DIR: str = f"{SRE_HOME}/workspace"
     STORAGE_DIR: str = f"{WORKSPACE_DIR}/storage"
     RESULT_FILE: str = f"{STORAGE_DIR}/results_file.json"
 
@@ -95,11 +95,11 @@ def run(
     stask_data_source_id, stask_blob_id = split_absolute_ref(stask)
 
     # Create the Stask file
-    os.makedirs(settings.SRS_HOME, exist_ok=True)
-    with open(f"{settings.SRS_HOME}/workflow.stask", "wb") as stask_file:
+    os.makedirs(settings.SRE_HOME, exist_ok=True)
+    with open(f"{settings.SRE_HOME}/workflow.stask", "wb") as stask_file:
         print(f"Fetching Stask '{stask}'...")
         response = dmss_api.blob_get_by_id(stask_data_source_id, stask_blob_id)
-        print(f"Writing stask blob to '{settings.SRS_HOME}/workflow.stask'...")
+        print(f"Writing stask blob to '{settings.SRE_HOME}/workflow.stask'...")
         stask_file.write(response.read())
 
     if compute_service_cfg:
@@ -111,9 +111,9 @@ def run(
             raise ValueError("Invalid compute-service-cfg id. Should be in format 'DataSourceId/UUID'")
 
         # Create the compute.yml file
-        with open(f"{settings.SRS_HOME}/compute.yml", "wb") as compute_file:
+        with open(f"{settings.SRE_HOME}/compute.yml", "wb") as compute_file:
             compute_cfg_blob = dmss_api.blob_get_by_id(compute_cfg_data_source_id, compute_cfg_entity_id)
-            print(f"\nWriting compute service config blob to '{settings.SRS_HOME}/compute.yml'")
+            print(f"\nWriting compute service config blob to '{settings.SRE_HOME}/compute.yml'")
             compute_file.write(compute_cfg_blob.read())
 
     # Ensure that the "storage" directory is present
@@ -140,7 +140,7 @@ def run(
             run_cmd_kwargs += f"distributed=false recursive=true config={settings.SRE_HOME}/compute.yml "
             run_cmd_kwargs += f"computeService=scs wait=true download=true"
         commands_file.write(
-            f"import file={settings.SRS_HOME}/workflow.stask\n" +
+            f"import file={settings.SRE_HOME}/workflow.stask\n" +
             f"save\n" +
             f"{run_cmd} {run_cmd_kwargs} \n"
         )
