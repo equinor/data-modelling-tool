@@ -9,6 +9,7 @@ import {
 } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
+import { Progress } from '@equinor/eds-core-react'
 import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
 import config from './config'
 import { sortApplications } from '@dmt/common'
@@ -100,7 +101,16 @@ function App() {
   }, [])
 
   if (isLoading || applications === undefined)
-    return <div>Loading application...</div>
+    return (
+      <Progress.Circular
+        style={{
+          display: 'block',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: '150px',
+        }}
+      />
+    )
 
   return (
     <ThemeProvider theme={theme}>
