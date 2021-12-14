@@ -111,6 +111,29 @@ def reset_package(src, dst):
 
 
 @cli.command()
+@click.argument("path")
+def import_data_source(path: str):
+    filename = Path(path).name
+    logger.info(f"-------------- IMPORTING DATA SOURCE {filename} ----------------")
+    with open(path) as file:
+        document = json.load(file)
+        try:
+            dmss_api.data_source_save(document["name"], data_source_request=document)
+            logger.info(f"Added data source '{document['name']}'")
+        except (ApiException, KeyError) as error:
+            if error.status == 400:
+                logger.warning(
+                    emoji.emojize(
+                        f":warning: Could not import data source '{filename}'. "
+                        "A data source with that name already exists"
+                    )
+                )
+            else:
+                raise ImportError(f"Failed to import data source '{filename}': {error}")
+    logger.debug("_____ DONE importing data source _____")
+
+
+@cli.command()
 def init_application():
     logger.info("-------------- IMPORTING PACKAGES ----------------")
     for app_name, settings in config.APP_SETTINGS.items():
@@ -127,21 +150,7 @@ def init_application():
             )
 
         for filename in data_sources_to_import:
-            with open(f"{ds_dir}{filename}") as file:
-                document = json.load(file)
-                try:
-                    dmss_api.data_source_save(document["name"], data_source_request=document)
-                    logger.info(f"Added data source '{document['name']}'")
-                except (ApiException, KeyError) as error:
-                    if error.status == 400:
-                        logger.warning(
-                            emoji.emojize(
-                                f":warning: Could not import data source '{filename}'. "
-                                "A data source with that name already exists"
-                            )
-                        )
-                    else:
-                        raise ImportError(f"Failed to import data source '{filename}': {error}")
+            import_data_source(f"{ds_dir}{filename}")
 
         logger.debug("_____ DONE importing data sources _____")
 
