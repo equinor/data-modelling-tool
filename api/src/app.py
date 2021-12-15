@@ -134,7 +134,8 @@ def import_data_source(path: str):
 
 
 @cli.command()
-def init_application():
+@click.pass_context
+def init_application(context):
     logger.info("-------------- IMPORTING PACKAGES ----------------")
     for app_name, settings in config.APP_SETTINGS.items():
         app_directory_name = Path(settings["file_loc"]).parent.name
@@ -150,7 +151,7 @@ def init_application():
             )
 
         for filename in data_sources_to_import:
-            import_data_source(f"{ds_dir}{filename}")
+            context.invoke(import_data_source, path=f"{ds_dir}{filename}")
 
         logger.debug("_____ DONE importing data sources _____")
 
