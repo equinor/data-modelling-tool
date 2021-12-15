@@ -7,7 +7,7 @@ services:
     environment:
       SIMA_LICENSE: |
 
-      PUBLIC_DMSS_API: http://dmss:5000
+      PUBLIC_DMSS_API: https://dmss-forecast-of-response-test.radix.equinor.com
     networks:
       - data-modelling-storage-service_default
     volumes:
