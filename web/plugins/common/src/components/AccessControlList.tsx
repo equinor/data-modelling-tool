@@ -69,13 +69,6 @@ type GridContainerType = {
   even?: any
 }
 
-const ClickableIcon = styled.div`
-  &:hover {
-    color: gray;
-    cursor: pointer;
-  }
-`
-
 const GridContainer = styled.div<GridContainerType>`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -226,9 +219,8 @@ const ACLUserRolesPanel = ({
 export const AccessControlList = (props: {
   documentId: string
   dataSourceId: string
-  handleClose: Function
 }): JSX.Element => {
-  const { documentId, dataSourceId, handleClose } = props
+  const { documentId, dataSourceId } = props
 
   const [activeTab, setActiveTab] = useState<number>(0)
   const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
@@ -295,16 +287,6 @@ export const AccessControlList = (props: {
 
   return (
     <ACLWrapper>
-      <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-        <h4>{`Access Control`}</h4>
-        <ClickableIcon
-          style={{ paddingTop: '8px' }}
-          onClick={() => handleClose()}
-        >
-          <Icon name="close" size={24} title="Close" />
-        </ClickableIcon>
-      </div>
-
       <Tabs
         activeTab={activeTab}
         onChange={(index: number) => setActiveTab(index)}
