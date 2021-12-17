@@ -15,9 +15,11 @@ from pydantic.fields import Field
 class Settings(BaseSettings):
     PUBLIC_DMSS_API: str = Field("http://localhost:5000", env="PUBLIC_DMSS_API")
     SRE_HOME: str = os.getenv("SRE_HOME", "/var/opt/sima")
-    WORKSPACE_DIR: str = f"{SRE_HOME}/workspace"
-    STORAGE_DIR: str = f"{WORKSPACE_DIR}/storage"
-    RESULT_FILE: str = f"{STORAGE_DIR}/results_file.json"
+    STORAGE_DIR: str = f"{SRE_HOME}/storage"
+    OUTPUT_DIR: str = f"{SRE_HOME}/storage/outputs"
+    INPUT_DIR: str = f"{SRE_HOME}/storage/inputs"
+    RESULT_FILE: str = f"{OUTPUT_DIR}/results_file.json"
+    INPUT_FILE: str = f"{INPUT_DIR}/simulationConfig.json"
 
 
 start_time = time.time()
@@ -39,7 +41,7 @@ def get_by_id(document_reference: str, token: str = "", depth: int = 1, attribut
     return req.json()
 
 
-def blob_get_by_id(document_reference: str, target_path: str, token: str = ""):
+def download_blob_by_id(document_reference: str, target_path: str, token: str = ""):
     headers = {"Authorization": f"Bearer {token}"}
     req = requests.get(
         f"{settings.PUBLIC_DMSS_API}/api/v1/blobs/{document_reference}", headers=headers
@@ -94,17 +96,17 @@ def run(
                          f"Running with 'remote-run' requires a 'compute-service-cfg'. Please provide the SIMA compute service.")
 
     print(f"Fetching Stask '{stask}'...")
-    blob_get_by_id(stask, f"{settings.SRE_HOME}/workflow.stask", token)
+    download_blob_by_id(stask, f"{settings.SRE_HOME}/workflow.stask", token)
     print(f"Wrote stask blob to '{settings.SRE_HOME}/workflow.stask'")
 
     if compute_service_cfg:
         # Create the SIMA compute service config file
         print(f"Fetching SIMA compute service config '{compute_service_cfg}'...\n")
-        blob_get_by_id(compute_service_cfg, f"{settings.SRE_HOME}/compute.yml", token)
+        download_blob_by_id(compute_service_cfg, f"{settings.SRE_HOME}/compute.yml", token)
         print(f"\nWrote compute service config blob to '{settings.SRE_HOME}/compute.yml'")
 
     # Ensure that the "storage" directory is present
-    os.makedirs(settings.STORAGE_DIR, exist_ok=True)
+    os.makedirs(settings.INPUT_DIR, exist_ok=True)
     if input:
         # Create the input (SIMA-internal simulationConfig.json) file
         print(f"Fetching input '{input}'...")
@@ -113,13 +115,12 @@ def run(
         pp.pprint(input_entity)
 
         # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
-        with open(f"{settings.STORAGE_DIR}/simulationConfig.json", "w") as simulation_config_file:
-            print(f"Writing input to '{settings.STORAGE_DIR}/simulationConfig.json'...")
+        with open(f"{settings.INPUT_FILE}", "w") as simulation_config_file:
+            print(f"Writing input to '{settings.INPUT_FILE}'...")
             simulation_config_file.write(json.dumps(input_entity))
 
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
-    os.makedirs(settings.WORKSPACE_DIR, exist_ok=True)
-    with open(f"{settings.WORKSPACE_DIR}/commands.txt", "w") as commands_file:
+    with open(f"{settings.SRE_HOME}/commands.txt", "w") as commands_file:
         run_cmd = 'remote-run' if remote_run else 'run'
         run_cmd_kwargs = f"task={task} workflow={workflow} "  # generic to both run_cmd "run" and "remote-run"
         if remote_run:  # specific arguments for remote-run
@@ -127,12 +128,12 @@ def run(
             run_cmd_kwargs += f"computeService=scs wait=true download=true"
         commands_file.write(
             f"import file={settings.SRE_HOME}/workflow.stask\n" +
-            f"save\n" +
+            f"save\n"
             f"{run_cmd} {run_cmd_kwargs} \n"
         )
-    with open(f"{settings.WORKSPACE_DIR}/commands.txt", "r") as commands_file:
+    with open(f"{settings.SRE_HOME}/commands.txt", "r") as commands_file:
         print("Wrote stask command file:")
-        print(f"--- {settings.WORKSPACE_DIR}/commands.txt")
+        print(f"--- {settings.SRE_HOME}/commands.txt ---")
         print(commands_file.read())
         print("---")
     print(f"DMT SRE Wrapper Successfully prepared the SRE Environment")
