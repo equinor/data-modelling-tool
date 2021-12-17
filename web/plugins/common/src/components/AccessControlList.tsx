@@ -1,5 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, Input, Tabs, Icon, Checkbox } from '@equinor/eds-core-react'
+import {
+  Button,
+  Input,
+  Tabs,
+  Icon,
+  Checkbox,
+  Progress,
+} from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
 import { AuthContext, DmssAPI } from '@dmt/common'
@@ -224,6 +231,7 @@ export const AccessControlList = (props: {
 
   const [activeTab, setActiveTab] = useState<number>(0)
   const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
+  const [loading, setLoading] = useState<boolean>(false)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
@@ -263,6 +271,7 @@ export const AccessControlList = (props: {
   }, [documentId])
 
   function saveACL(acl: TAcl) {
+    setLoading(true)
     dmssAPI
       .setDocumentAcl({
         dataSourceId: dataSourceId,
@@ -277,13 +286,14 @@ export const AccessControlList = (props: {
       .catch((error: any) => {
         NotificationManager.error(`Could not save ACL ${error}`)
       })
+      .finally(() => setLoading(false))
   }
 
   function handleChange(value: Object) {
     setDocumentACL({ ...documentACL, ...value })
   }
 
-  if (!documentACL) return <>Loading...</>
+  if (!documentACL) return <>Loading document...</>
 
   return (
     <ACLWrapper>
@@ -320,8 +330,8 @@ export const AccessControlList = (props: {
 
       <CenteredRow>
         <Button onClick={() => saveACL(documentACL)}>
-          Save
-          <Icon name="save" title="save" size={24} />
+          {(loading && <Progress.Dots color="neutral" />) || 'Save'}
+          {!loading && <Icon name="save" title="save" size={24} />}
         </Button>
         <Checkbox
           checked={storeACLRecursively}
