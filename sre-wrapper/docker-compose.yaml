@@ -7,11 +7,12 @@ services:
     environment:
       SIMA_LICENSE: |
 
-      PUBLIC_DMSS_API: http://dmss:5000
+      PUBLIC_DMSS_API: http://localhost:5000
     networks:
       - data-modelling-storage-service_default
     volumes:
       - ./job_wrapper.py:/code/job_wrapper.py
+      - ./tmp:/var/opt/sima
     # The stask and compute-service-cfg are part of the DemoDS in DMT with static UUIDs
     command: [
         "/code/init.sh",

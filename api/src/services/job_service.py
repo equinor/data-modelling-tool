@@ -20,7 +20,7 @@ from services.job_scheduler import scheduler
 from utils.get_extends_from import get_extends_from
 from utils.logging import logger
 from utils.string_helpers import split_absolute_ref
-from services.job_handlers import azure_container_instances, omnia_classic_azure_container_instances
+from services.job_handlers import azure_container_instances, local_containers, omnia_classic_azure_container_instances
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
@@ -112,6 +112,7 @@ class JobService:
             modules = [importlib.import_module(module) for module in module_paths]
             # Add standard modules after plugins
             modules.append(azure_container_instances)
+            modules.append(local_containers)
             modules.append(omnia_classic_azure_container_instances)
             for job_handler_module in modules:
                 supported_job_type = job_handler_module._SUPPORTED_JOB_TYPE
@@ -159,11 +160,13 @@ class JobService:
                 cron_job=True,
                 token=token,
             )
+            self._get_job_handler(job)  # Test for available handler before registering
             result = schedule_cron_job(scheduler, lambda: self._run_job(job_id), job)
         else:
             job = Job(
                 job_id=job_id, started=datetime.now(), status=JobStatus.REGISTERED, entity=job_entity, token=token
             )
+            self._get_job_handler(job)
             scheduler.add_job(lambda: self._run_job(job_id))
             result = "Job successfully started"
 

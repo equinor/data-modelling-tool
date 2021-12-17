@@ -61,12 +61,8 @@ done
 # SIMA Headless
 /opt/sima/sre \
   -data=$SRE_HOME \
-  -commands file=/var/opt/sima/workspace/commands.txt \
-  -application no.marintek.sima.application.headless.application \
-  -consoleLog \
-  -data /var/opt/sima/workspace \
-  -vmargs \
-  -Djdk.lang.Process.launchMechanism=vfork
+  -commands file=$SRE_HOME/commands.txt \
+  -consoleLog
 # Upload results
   /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET
 
