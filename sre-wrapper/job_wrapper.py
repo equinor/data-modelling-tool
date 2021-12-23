@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     STORAGE_DIR: str = f"{SRE_HOME}/storage"
     OUTPUT_DIR: str = f"{SRE_HOME}/storage/outputs"
     INPUT_DIR: str = f"{SRE_HOME}/storage/inputs"
-    RESULT_FILE: str = f"{OUTPUT_DIR}/results_file.json"
+    RESULT_FILE: str = f"{SRE_HOME}/workspace/storage/outputs/results_file.json"
     INPUT_FILE: str = f"{INPUT_DIR}/simulationConfig.json"
 
 
@@ -113,7 +113,8 @@ def run(
         input_entity = get_by_id(input, depth=1, token=token)
 
         pp.pprint(input_entity)
-
+        #print("/var/opt/sima/workspace/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/workspace/storage/inputs")) THIS DOES NOT EXIST
+        # print("/var/opt/sima/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/storage/inputs")) #EXIST
         # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
         with open(f"{settings.INPUT_FILE}", "w") as simulation_config_file:
             print(f"Writing input to '{settings.INPUT_FILE}'...")
@@ -146,8 +147,15 @@ def run(
 def upload(target: str, source: str = settings.RESULT_FILE, token: str = None):
     """Uploads the simulation results to $DMSS_HOST"""
     print(f"Uploading result entity from SIMA run  --  local:{source} --> DMSS:{target}")
-    dmss_api.api_client.configuration.access_token = token
+    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
     data_source, directory = target.split("/", 1)
+    NUM_RETRYS = 5
+    for i in range(NUM_RETRYS):
+        if os.path.isfile(source):
+            break
+        print(f"Could not find the file {source}... Retry in 15 seconds.")
+        time.sleep(10)
+
     with open(source, "r") as file:
         response = dmss_api.explorer_add_to_path(document=file.read(), directory=directory, data_source_id=data_source)
         print(f"Result file uploaded successfully -- id: {response['uid']}")
