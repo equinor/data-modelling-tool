@@ -134,7 +134,7 @@ jobs:
           docker push $API_IMAGE:$COMMIT_REF
 
   build-and-publish-srs-master:
-    if: github.ref == 'refs/heads/master'
+#    if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
