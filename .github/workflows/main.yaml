@@ -7,6 +7,10 @@ env:
   API_IMAGE: mariner.azurecr.io/dmt/api
   WEB_IMAGE: mariner.azurecr.io/dmt/web
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
+  SRS_REGISTRY: publicMSA.azurecr.io
+  SRS_IMAGE_REPO: $SRS_REGISTRY/dmt-job
+  SRS_IMAGE: $SRS_IMAGE_REPO/srs
+  SRS_ACR_USER: publicMSA
   DMT_API_CONTAINER_NAME: /data-modelling-tool_api_1
 
 jobs:
@@ -127,6 +131,29 @@ jobs:
           docker push $API_IMAGE:latest
           docker push $API_IMAGE:$COMMIT_REF
 
+  build-and-publish-srs-master:
+    if: github.ref == 'refs/heads/master'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Set ENV variables"
+        run: |
+          echo "COMMIT_REF=$(git rev-parse --short $GITHUB_SHA)" >> $GITHUB_ENV
+
+      - name: "Build and Publish SRS"
+        run: |
+          echo "Tagging with $COMMIT_REF"
+          docker login -u $SRS_ACR_USER -p ${{ secrets.SRS_ACR_SECRET }} $SRS_REGISTRY
+          docker pull $SRS_IMAGE
+          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./sre-wrapper/version.txt
+          docker build --cache-from $SRS_IMAGE --tag $SRS_IMAGE ./sre-wrapper
+          docker tag $SRS_IMAGE $SRS_IMAGE:latest
+          docker tag $SRS_IMAGE $SRS_IMAGE:$COMMIT_REF
+          docker push $SRS_IMAGE
+          docker push $SRS_IMAGE:latest
+          docker push $SRS_IMAGE:$COMMIT_REF
+
   release-api:
     needs: test-api
     if: contains(github.ref, 'tags')
@@ -173,9 +200,31 @@ jobs:
           docker push $WEB_IMAGE:$RELEASE_TAG
           docker push $WEB_IMAGE:release
 
+  release-srs:
+    if: contains(github.ref, 'tags')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Set ENV variables"
+        run: |
+          echo $(echo $GITHUB_REF | cut -d / -f 3)
+          echo "RELEASE_TAG=$(echo $GITHUB_REF | cut -d / -f 3)" >> $GITHUB_ENV
+
+      - name: "Build and Publish SRS Release"
+        run: |
+          echo "Tagging with $RELEASE_TAG"
+          docker login -u $SRS_ACR_USER -p ${{ secrets.SRS_ACR_SECRET }} $SRS_REGISTRY
+          docker pull $SRS_IMAGE
+          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./sre-wrapper/version.txt
+          docker build --cache-from $SRS_IMAGE --tag $SRS_IMAGE:$RELEASE_TAG ./sre-wrapper
+          docker tag $SRS_IMAGE:$RELEASE_TAG $SRS_IMAGE:release
+          docker push $SRS_IMAGE:$RELEASE_TAG
+          docker push $SRS_IMAGE:release
+
 
   store-images-as-artifacts:
-    needs: [build-and-publish-api-master, build-and-publish-web-master]
+    needs: [build-and-publish-api-master, build-and-publish-web-master, build-and-publish-srs-master]
     if: github.ref == 'refs/heads/master'
     runs-on: ubuntu-latest
     steps:
@@ -187,9 +236,14 @@ jobs:
           docker pull $API_IMAGE
           docker pull $NGINX_IMAGE
 
+      - name: pull latest SRS image
+        run: |
+          docker login -u $SRS_ACR_USER -p ${{ secrets.SRS_ACR_SECRET }} $SRS_REGISTRY
+          docker pull $SRS_IMAGE
+
       - name: save docker images
         run: |
-          docker save $API_IMAGE $WEB_IMAGE $NGINX_IMAGE > DMT_IMAGES.tar
+          docker save $API_IMAGE $WEB_IMAGE $NGINX_IMAGE $SRS_IMAGE > DMT_IMAGES.tar
           ls -sh DMT_IMAGES.tar
 
       - name: upload images as artifacts
