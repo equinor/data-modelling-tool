@@ -107,17 +107,22 @@ def run(
 
     # Ensure that the "storage" directory is present
     os.makedirs(settings.INPUT_DIR, exist_ok=True)
+    os.makedirs("/var/opt/sima/workspace/storage/inputs", exist_ok=True)
     if input:
         # Create the input (SIMA-internal simulationConfig.json) file
         print(f"Fetching input '{input}'...")
         input_entity = get_by_id(input, depth=1, token=token)
-
+        #todo clean up use of /sima/ and /sima/workspace/
         pp.pprint(input_entity)
-        #print("/var/opt/sima/workspace/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/workspace/storage/inputs")) THIS DOES NOT EXIST
-        # print("/var/opt/sima/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/storage/inputs")) #EXIST
+        print("/var/opt/sima/workspace/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/workspace/storage/inputs")) #THIS DOES NOT EXIST
+        print("/var/opt/sima/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/storage/inputs")) #EXIST
         # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
         with open(f"{settings.INPUT_FILE}", "w") as simulation_config_file:
             print(f"Writing input to '{settings.INPUT_FILE}'...")
+            simulation_config_file.write(json.dumps(input_entity))
+
+        print("try to add the input file to the workspace folder to see if it will be copied to the on prem run service")
+        with open("/var/opt/sima/workspace/storage/inputs/simulationConfig.json", "w") as simulation_config_file:
             simulation_config_file.write(json.dumps(input_entity))
 
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
@@ -142,23 +147,30 @@ def run(
 
 @cli.command()
 @click.option("--target", help="Target directory to store result file", type=str, required=True)
+@click.option("--operation-results-dotted-id", help="dottded id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
 @click.option("--source", help="Path to SIMA generated result file", type=str, default=settings.RESULT_FILE)
 @click.option("--token", help="A valid DMSS Access Token", type=str)
-def upload(target: str, source: str = settings.RESULT_FILE, token: str = None):
+def upload(target: str, operation_results_dotted_id: str, source: str = settings.RESULT_FILE, token: str = None):
     """Uploads the simulation results to $DMSS_HOST"""
     print(f"Uploading result entity from SIMA run  --  local:{source} --> DMSS:{target}")
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
     data_source, directory = target.split("/", 1)
     NUM_RETRYS = 5
+    RETRY_DELAY = 10 #seconds
     for i in range(NUM_RETRYS):
         if os.path.isfile(source):
             break
-        print(f"Could not find the file {source}... Retry in 15 seconds.")
-        time.sleep(10)
+        print(f"Could not find the file {source}... Retry in {RETRY_DELAY} seconds.")
+        time.sleep(RETRY_DELAY)
 
     with open(source, "r") as file:
         response = dmss_api.explorer_add_to_path(document=file.read(), directory=directory, data_source_id=data_source)
         print(f"Result file uploaded successfully -- id: {response['uid']}")
+
+    #Add the result as a new reference to the operation entity's results list.
+    reference_object = {"name": response['name'], "id": response['uid'], "type": response['type']}
+    response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=operation_results_dotted_id, reference=reference_object)
+    print(f"result added to the operation entity's results list: {operation_results_dotted_id}")
 
 
 if __name__ == "__main__":

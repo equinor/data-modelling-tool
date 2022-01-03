@@ -49,6 +49,10 @@ for i in "$@"; do
       TARGET="${i#*=}"
       shift
       ;;
+    --operation-results-dotted-id=*)
+      OPERATION_RESULTS_DOTTED_ID="${i#*=}"
+      shift
+      ;;
     *)
       echo "WARNING: Invalid argument '$i'"
       ;;
@@ -64,5 +68,5 @@ done
   -commands file=$SRE_HOME/commands.txt \
   -consoleLog
 # Upload results
-  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET
+  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET --operation-results-dotted-id=$OPERATION_RESULTS_DOTTED_ID
 
