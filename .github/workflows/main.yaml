@@ -10,8 +10,7 @@ env:
   WEB_IMAGE: mariner.azurecr.io/dmt/web
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
   SRS_REGISTRY: publicmsa.azurecr.io
-  SRS_IMAGE_REPO: $SRS_REGISTRY/dmt-job
-  SRS_IMAGE: $SRS_IMAGE_REPO/srs
+  SRS_IMAGE: publicmsa.azurecr.io/dmt-job/srs
   SRS_ACR_USER: publicMSA
   DMT_API_CONTAINER_NAME: /data-modelling-tool_api_1
 
