@@ -9,7 +9,7 @@ env:
   API_IMAGE: mariner.azurecr.io/dmt/api
   WEB_IMAGE: mariner.azurecr.io/dmt/web
   NGINX_IMAGE: mariner.azurecr.io/dmt/nginx
-  SRS_REGISTRY: publicMSA.azurecr.io
+  SRS_REGISTRY: publicmsa.azurecr.io
   SRS_IMAGE_REPO: $SRS_REGISTRY/dmt-job
   SRS_IMAGE: $SRS_IMAGE_REPO/srs
   SRS_ACR_USER: publicMSA
