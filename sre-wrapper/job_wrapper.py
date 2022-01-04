@@ -3,6 +3,7 @@ import json
 import os
 import pprint
 import time
+import datetime
 from pathlib import Path
 from uuid import uuid4
 import click
@@ -141,25 +142,21 @@ def run(
 @cli.command()
 @click.option("--target", help="Target directory to store result file", type=str, required=True)
 @click.option("--result-link-target", help="dotted id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
+@click.option("--task", help="Name of the task defined in the stask to run", type=str, required=True)
+@click.option("--workflow", help="Name of the workflow defined in the task to run", type=str, required=True)
 @click.option("--source", help="Path to SIMA generated result file", type=str, default=settings.RESULT_FILE)
 @click.option("--token", help="A valid DMSS Access Token", type=str)
-def upload(target: str, result_link_target: str, source: str = settings.RESULT_FILE, token: str = None):
+
+def upload(target: str, result_link_target: str, task: str, workflow: str, source: str = settings.RESULT_FILE, token: str = None):
     """Uploads the simulation results to $DMSS_HOST"""
     print(f"Uploading result entity from SIMA run  --  local:{source} --> DMSS:{target}")
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
     data_source, directory = target.split("/", 1)
-    NUM_RETRYS = 5
-    RETRY_DELAY = 10 #seconds
-    for i in range(NUM_RETRYS):
-        if os.path.isfile(source):
-            break
-        print(f"Could not find the file {source}... Retry in {RETRY_DELAY} seconds.")
-        time.sleep(RETRY_DELAY)
 
     with open(source, "r") as file:
         result_file = file.read()
     result_file_as_dict = json.loads(result_file)
-    new_file_name = f"{result_file_as_dict['name']}-{uuid4()}"
+    new_file_name = f"{task}-{workflow}-{str(datetime.datetime.today().replace(microsecond=0)).replace(' ', '_').replace(':','-')}"
     result_file_as_dict["name"] = new_file_name
     result_file_with_new_name = json.dumps(result_file_as_dict)
     response = dmss_api.explorer_add_to_path(document=result_file_with_new_name, directory=directory, data_source_id=data_source)
@@ -170,7 +167,6 @@ def upload(target: str, result_link_target: str, source: str = settings.RESULT_F
     reference_object = {"name": new_file_name, "id": response['uid'], "type": RESULT_FILE_TYPE}
     response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=result_link_target, reference=reference_object)
     print(f"Result added to the operation entity's results list: {result_link_target}")
-
 
 if __name__ == "__main__":
     cli()

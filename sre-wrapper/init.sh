@@ -1,7 +1,8 @@
 #! /usr/bin/env bash
 # Exit on errors
 set -e
-
+time=$(date +'%d/%m/%Y %r')
+echo "** Start time: ${time} **"
 if [[ -z "${SIMA_LICENSE}" ]]; then
   echo "********************************************************************************"
   echo "* WARNING! The SIMA_LICENSE environment variable must be set, and its contents *"
@@ -68,5 +69,7 @@ done
   -commands file=$SRE_HOME/commands.txt \
   -consoleLog
 # Upload results
-  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET --result-link-target=$RESULT_LINK_TARGET
+  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET --result-link-target=$RESULT_LINK_TARGET --task=$TASK --workflow=$WORKFLOW
+time=$(date +'%d/%m/%Y %r')
+echo "** End time: ${time} **"
 
