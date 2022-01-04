@@ -18,7 +18,7 @@ class Settings(BaseSettings):
     STORAGE_DIR: str = f"{SRE_HOME}/storage"
     OUTPUT_DIR: str = f"{SRE_HOME}/storage/outputs"
     INPUT_DIR: str = f"{SRE_HOME}/storage/inputs"
-    RESULT_FILE: str = f"{SRE_HOME}/workspace/storage/outputs/results_file.json"
+    RESULT_FILE: str = f"{OUTPUT_DIR}/results_file.json"
     INPUT_FILE: str = f"{INPUT_DIR}/simulationConfig.json"
 
 
@@ -107,22 +107,15 @@ def run(
 
     # Ensure that the "storage" directory is present
     os.makedirs(settings.INPUT_DIR, exist_ok=True)
-    os.makedirs("/var/opt/sima/workspace/storage/inputs", exist_ok=True)
     if input:
         # Create the input (SIMA-internal simulationConfig.json) file
         print(f"Fetching input '{input}'...")
         input_entity = get_by_id(input, depth=1, token=token)
-        #todo clean up use of /sima/ and /sima/workspace/
         pp.pprint(input_entity)
-        print("/var/opt/sima/workspace/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/workspace/storage/inputs")) #THIS DOES NOT EXIST
-        print("/var/opt/sima/storage/inputs PATH EXIST: ", os.path.exists("/var/opt/sima/storage/inputs")) #EXIST
+
         # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
         with open(f"{settings.INPUT_FILE}", "w") as simulation_config_file:
             print(f"Writing input to '{settings.INPUT_FILE}'...")
-            simulation_config_file.write(json.dumps(input_entity))
-
-        print("try to add the input file to the workspace folder to see if it will be copied to the on prem run service")
-        with open("/var/opt/sima/workspace/storage/inputs/simulationConfig.json", "w") as simulation_config_file:
             simulation_config_file.write(json.dumps(input_entity))
 
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
@@ -168,14 +161,10 @@ def upload(target: str, result_link_target: str, source: str = settings.RESULT_F
     result_file_as_dict = json.loads(result_file)
     new_file_name = f"{result_file_as_dict['name']}-{uuid4()}"
     result_file_as_dict["name"] = new_file_name
-    print(f"new unique result name is: {result_file_as_dict['name']}")
     result_file_with_new_name = json.dumps(result_file_as_dict)
     response = dmss_api.explorer_add_to_path(document=result_file_with_new_name, directory=directory, data_source_id=data_source)
     print(f"Result file uploaded successfully -- id: {response['uid']}")
-    try:
-        print(f"response from add to path is: {json.dumps(response)}")
-    except:
-        print("error when printing response")
+
     #Add the result as a new reference to the operation entity's results list.
     RESULT_FILE_TYPE = "ForecastDS/FoR-BP/Blueprints/ResultFile"
     reference_object = {"name": new_file_name, "id": response['uid'], "type": RESULT_FILE_TYPE}
