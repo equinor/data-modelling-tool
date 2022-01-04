@@ -4,7 +4,7 @@ import os
 import pprint
 import time
 from pathlib import Path
-
+from uuid import uuid4
 import click
 import requests
 from dmss_api.apis import DefaultApi
@@ -164,11 +164,21 @@ def upload(target: str, result_link_target: str, source: str = settings.RESULT_F
         time.sleep(RETRY_DELAY)
 
     with open(source, "r") as file:
-        response = dmss_api.explorer_add_to_path(document=file.read(), directory=directory, data_source_id=data_source)
-        print(f"Result file uploaded successfully -- id: {response['uid']}")
-
+        result_file = file.read()
+    result_file_as_dict = json.loads(result_file)
+    new_file_name = f"{result_file_as_dict['name']}-{uuid4()}"
+    result_file_as_dict["name"] = new_file_name
+    print(f"new unique result name is: {result_file_as_dict['name']}")
+    result_file_with_new_name = json.dumps(result_file_as_dict)
+    response = dmss_api.explorer_add_to_path(document=result_file_with_new_name, directory=directory, data_source_id=data_source)
+    print(f"Result file uploaded successfully -- id: {response['uid']}")
+    try:
+        print(f"response from add to path is: {json.dumps(response)}")
+    except:
+        print("error when printing response")
     #Add the result as a new reference to the operation entity's results list.
-    reference_object = {"name": response['name'], "id": response['uid'], "type": response['type']}
+    RESULT_FILE_TYPE = "ForecastDS/FoR-BP/Blueprints/ResultFile"
+    reference_object = {"name": new_file_name, "id": response['uid'], "type": RESULT_FILE_TYPE}
     response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=result_link_target, reference=reference_object)
     print(f"Result added to the operation entity's results list: {result_link_target}")
 
