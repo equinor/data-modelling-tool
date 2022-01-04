@@ -49,8 +49,8 @@ for i in "$@"; do
       TARGET="${i#*=}"
       shift
       ;;
-    --operation-results-dotted-id=*)
-      OPERATION_RESULTS_DOTTED_ID="${i#*=}"
+    --result-link-target=*)
+      RESULT_LINK_TARGET="${i#*=}"
       shift
       ;;
     *)
@@ -68,5 +68,5 @@ done
   -commands file=$SRE_HOME/commands.txt \
   -consoleLog
 # Upload results
-  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET --operation-results-dotted-id=$OPERATION_RESULTS_DOTTED_ID
+  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET --result-link-target=$RESULT_LINK_TARGET
 

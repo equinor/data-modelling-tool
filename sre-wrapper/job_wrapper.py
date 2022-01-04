@@ -147,10 +147,10 @@ def run(
 
 @cli.command()
 @click.option("--target", help="Target directory to store result file", type=str, required=True)
-@click.option("--operation-results-dotted-id", help="dottded id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
+@click.option("--result-link-target", help="dotted id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
 @click.option("--source", help="Path to SIMA generated result file", type=str, default=settings.RESULT_FILE)
 @click.option("--token", help="A valid DMSS Access Token", type=str)
-def upload(target: str, operation_results_dotted_id: str, source: str = settings.RESULT_FILE, token: str = None):
+def upload(target: str, result_link_target: str, source: str = settings.RESULT_FILE, token: str = None):
     """Uploads the simulation results to $DMSS_HOST"""
     print(f"Uploading result entity from SIMA run  --  local:{source} --> DMSS:{target}")
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
@@ -169,8 +169,8 @@ def upload(target: str, operation_results_dotted_id: str, source: str = settings
 
     #Add the result as a new reference to the operation entity's results list.
     reference_object = {"name": response['name'], "id": response['uid'], "type": response['type']}
-    response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=operation_results_dotted_id, reference=reference_object)
-    print(f"result added to the operation entity's results list: {operation_results_dotted_id}")
+    response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=result_link_target, reference=reference_object)
+    print(f"Result added to the operation entity's results list: {result_link_target}")
 
 
 if __name__ == "__main__":
