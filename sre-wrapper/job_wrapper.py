@@ -156,7 +156,8 @@ def upload(target: str, result_link_target: str, task: str, workflow: str, sourc
     with open(source, "r") as file:
         result_file = file.read()
     result_file_as_dict = json.loads(result_file)
-    new_file_name = f"{task}-{workflow}-{str(datetime.datetime.today().replace(microsecond=0)).replace(' ', '_').replace(':','-')}"
+    new_file_name = f"{task}-{workflow}-{datetime.datetime.today().replace(microsecond=0).strftime('%d-%m-%Y_%T').replace(':','-')}"
+
     result_file_as_dict["name"] = new_file_name
     result_file_with_new_name = json.dumps(result_file_as_dict)
     response = dmss_api.explorer_add_to_path(document=result_file_with_new_name, directory=directory, data_source_id=data_source)
