@@ -142,7 +142,7 @@ class JobHandler(ServiceJobHandlerInterface):
         except ResourceNotFoundError:
             raise JobNotFoundException(
                 (
-                    f"The container '{self.azure_valid_container_name}' does not exist.",
+                    f"The container '{self.azure_valid_container_name}' does not exist. ",
                     "Either it has not been created, or it's not ready to accept requests.",
                 )
             )
