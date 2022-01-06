@@ -104,7 +104,7 @@ class JobHandler(ServiceJobHandlerInterface):
         template = inject_environment_variables(template, env_vars)
 
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
-        result = self.arm_deployer.deploy(template, parameters)
+        result = self.arm_deployer.deploy(template, self.azure_valid_container_name, parameters)
         logger.setLevel(config.LOGGER_LEVEL)  # I could not find the correctly named logger for this...
         return result or "Ok"
 

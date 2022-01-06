@@ -11,7 +11,7 @@ class Deployer:
 
         self.client = ResourceManagementClient(self.credentials, self.subscription_id)
 
-    def deploy(self, template: dict, parameters: dict = None):
+    def deploy(self, template: dict, deployment_name: str, parameters: dict = None):
         deployment_properties = {
             "mode": DeploymentMode.incremental,
             "template": template,
@@ -19,6 +19,6 @@ class Deployer:
         }
 
         deployment_async_operation = self.client.deployments.begin_create_or_update(
-            self.resource_group, "DMT-Job", Deployment(properties=deployment_properties)
+            self.resource_group, deployment_name, Deployment(properties=deployment_properties)
         )
         return deployment_async_operation.wait()
