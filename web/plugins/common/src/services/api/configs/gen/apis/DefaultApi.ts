@@ -114,6 +114,7 @@ export interface ExplorerAddToPathRequest {
     dataSourceId: string;
     document: string;
     directory: string;
+    updateUncontained: boolean;
     files?: Array<Blob>;
 }
 
@@ -844,6 +845,10 @@ export class DefaultApi extends runtime.BaseAPI {
             throw new runtime.RequiredError('directory','Required parameter requestParameters.directory was null or undefined when calling explorerAddToPath.');
         }
 
+        if (requestParameters.updateUncontained === null || requestParameters.updateUncontained === undefined) {
+            throw new runtime.RequiredError('updateUncontained','Required parameter requestParameters.updateUncontained was null or undefined when calling explorerAddToPath.');
+        }
+
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -879,6 +884,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         if (requestParameters.directory !== undefined) {
             formParams.append('directory', requestParameters.directory as any);
+        }
+
+        if (requestParameters.updateUncontained !== undefined) {
+            formParams.append('update_uncontained', requestParameters.updateUncontained as any);
         }
 
         if (requestParameters.files) {
