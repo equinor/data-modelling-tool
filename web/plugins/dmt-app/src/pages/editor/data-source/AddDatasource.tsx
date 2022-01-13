@@ -3,9 +3,8 @@ import { FaPlus } from 'react-icons/fa'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
-import { DmssAPI, Button, AuthContext } from '@dmt/common'
+import { DmssAPI, Button, AuthContext, UiPluginContext } from '@dmt/common'
 import { useModalContext } from '../../../context/modal/ModalContext'
-import { getUIPlugin } from '@dmt/core-plugins'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 
 const constructType = (selectedDatasourceType: string) => {
@@ -24,11 +23,12 @@ const AddDataSourceComponent = () => {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer: IUseExplorer = useExplorer(dmssAPI)
+  const { getUiPlugin } = useContext(UiPluginContext)
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
     'mongo-db'
   )
 
-  const ExternalPlugin = getUIPlugin('default-form')
+  const ExternalPlugin = getUiPlugin('default-form')
 
   const handleOnSubmit = (data: any) => {
     data.type = selectedDatasourceType

@@ -2,10 +2,15 @@ import React, { useContext, useEffect, useState } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { DmtAPI, DmssAPI, AuthContext, useDocument } from '@dmt/common'
+import {
+  DmtAPI,
+  DmssAPI,
+  AuthContext,
+  useDocument,
+  UiPluginContext,
+} from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { getUIPlugin } from '@dmt/core-plugins'
 import { GenerateUiRecipeTabs } from './editor/layout-components/GenerateUiRecipeTabs'
 import { UiRecipe } from '../domain/types'
 import Tabs, { Tab, TabPanel } from '../components/Tabs'
@@ -25,12 +30,13 @@ const dmtAPI = new DmtAPI()
 
 const View = (props: any) => {
   const { dataSourceId, uiRecipe, document } = props
-  const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
+  const { getUiPlugin } = useContext(UiPluginContext)
+  const UiPlugin = getUiPlugin(uiRecipe.plugin)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   return (
-    <ExternalPlugin
+    <UiPlugin
       dataSourceId={dataSourceId}
       documentId={document._id}
       uiRecipe={uiRecipe}

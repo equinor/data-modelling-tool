@@ -3,7 +3,6 @@
   "version": "1.0.0",
   "main": "src/index.tsx",
   "dependencies": {
-    "@dmt/core-plugins": "1.0.1",
     "highlight.js": "^10.7.2",
     "js-yaml": "^4.1.0",
     "styled-components": "^5.3.0"

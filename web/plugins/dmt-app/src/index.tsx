@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { DmtPluginType } from '@dmt/core-plugins'
+import { DmtPluginType } from '@dmt/common'
 import Header from './AppHeader'
 import AppTab from './pages/AppTab'
 import SearchPage from './pages/SearchPage'
