@@ -91,8 +91,8 @@ def step_impl_documents(context, data_source_id: str, collection: str):
     context.documents = {}
     tree = generate_tree(data_source_id, context.table)
     tree.show_tree()
-    root_package_response = dmss_api.explorer_add_package(data_source_id, tree.entity)  # First, create the rootPackage
+    root_package_response = dmss_api.explorer_add(data_source_id, tree.entity)  # First, create the rootPackage
     if tree.children:
         dmss_api.explorer_add(
-            data_source_id, f"{root_package_response['uid']}.content", tree.children[0].children[0].to_dict()
+            f"{data_source_id}/{root_package_response['uid']}.content", tree.children[0].children[0].to_dict()
         )
