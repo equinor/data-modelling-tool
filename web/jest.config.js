@@ -1,7 +1,11 @@
-const base = require('./jest.config.base')
+const baseConfig = require('./jest.config.base')
 
 module.exports = {
-  ...base,
+  ...baseConfig,
   roots: ['<rootDir>'],
-  projects: ['<rootDir>/app', '<rootDir>/plugins/*'],
+  projects: [
+    // specifying the jest configuration of each package will force Jest to NOT run test from Root too,
+    // but instead just run tests in packages and use root as the folder to dump the coverage report
+    '<rootDir>/packages/*/jest.config.js',
+  ],
 }

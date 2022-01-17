@@ -1,0 +1,13 @@
+{
+  "name": "PlotState",
+  "type": "system/SIMOS/Blueprint",
+  "description": "Plots for simulation configurations",
+  "attributes": [
+    {
+      "name": "graphs",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/Graph",
+      "dimensions": "*"
+    }
+  ]
+}

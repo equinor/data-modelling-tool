@@ -1,0 +1,84 @@
+ {
+  "_id": "example-cfg",
+  "name": "ExampleConfig",
+  "type": "ForecastDS/FoR-BP/Blueprints/Config",
+  "simaVersion": "1.2.3-rc",
+  "description": "some description",
+  "phases": [
+    {
+      "name": "phase1",
+      "type": "ForecastDS/FoR-BP/Blueprints/Phase",
+      "start": "2021-06-25 13:45:37.352574",
+      "end": "2021-06-27 13:45:37.352574",
+      "defaultVariables": [
+                                {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "WaveHeight",
+              "value": "0.12",
+              "valueType":  "string",
+              "unit": "meters"
+            },
+            {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "WaveDirection",
+              "value": "30",
+              "valueType":  "string",
+              "unit": "degrees"
+            },
+            {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "Thrusters",
+              "value": "2",
+              "valueType":  "string",
+              "unit": "unit"
+            },
+            {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "VariableName",
+              "value": "VaiableValue",
+              "valueType":  "string",
+              "unit": "VariableUnit"
+            }
+      ],
+      "status": "Ongoing",
+      "workflowTask": "someTask",
+      "workflow": "myWorkflow",
+      "simulationConfigs": [{
+        "name": "test1config",
+        "type": "ForecastDS/FoR-BP/Blueprints/SimulationConfig",
+        "published": false,
+        "variables": [
+                                          {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "WaveHeight",
+              "value": "0.6",
+              "valueType":  "string",
+              "unit": "meters"
+            },
+            {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "WaveDirection",
+              "value": "90",
+              "valueType":  "string",
+              "unit": "degrees"
+            },
+            {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "Thrusters",
+              "value": "5",
+              "valueType":  "string",
+              "unit": "unit"
+            },
+            {
+              "type": "ForecastDS/FoR-BP/Blueprints/Variable",
+              "name": "VariableName",
+              "value": "VaiableValue",
+              "valueType":  "string",
+              "unit": "VariableUnit"
+            }
+          ]
+      }
+        ]
+    }
+  ]
+ }

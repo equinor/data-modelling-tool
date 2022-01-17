@@ -17,8 +17,7 @@ ENV REACT_APP_AUTH_REDIRECT_URI=$REDIRECT_URI
 
 WORKDIR /code/
 COPY jest.config.base.js package.json yarn.lock jest.config.js tsconfig.json ./
-COPY ./app ./app
-COPY ./plugins ./plugins
+COPY ./packages ./packages
 RUN yarn install --ignore-scripts  --frozen-lockfile
 
 FROM base as development
@@ -28,7 +27,7 @@ USER 1000
 FROM base as prod
 RUN npm install -g serve
 RUN yarn build
-WORKDIR /code/app
+WORKDIR /code/home
 EXPOSE 3000
 CMD ["serve", "--single", "build", "--listen", "3000"]
 USER 1000

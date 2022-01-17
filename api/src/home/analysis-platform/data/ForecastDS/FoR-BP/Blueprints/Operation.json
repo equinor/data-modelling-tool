@@ -1,0 +1,96 @@
+{
+  "name": "Operation",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
+  "description": "",
+  "attributes": [
+    {
+      "name": "label",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "stask",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "SIMAComputeConnectInfo",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "phases",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/Phase",
+      "contained": true,
+      "dimensions": "*"
+    },
+    {
+      "name": "creator",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "location",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/Location",
+      "contained": false
+    },
+    {
+      "name": "start",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "end",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "status",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    }, {
+      "name": "comments",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/Comments",
+      "optional": true,
+      "contained": true
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Operation",
+      "plugin": "for-operation",
+      "type": "system/SIMOS/UiRecipe"
+    },
+    {
+      "name": "OperationEdit",
+      "plugin": "for-operation-edit",
+      "type": "system/SIMOS/UiRecipe"
+    }
+  ],
+  "storageRecipes": [
+    {
+      "type": "system/SIMOS/StorageRecipe",
+      "name": "DEFAULT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "comments",
+          "type": "/Blueprints/Comments",
+          "contained": false
+        },
+        {
+          "name": "location",
+          "type": "/Blueprints/Comments",
+          "contained": false
+        }
+      ]
+    }
+  ]
+}

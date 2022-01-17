@@ -1,0 +1,23 @@
+{
+  "name": "myRemoteAzureCIEJob",
+  "_id": "797dd9b8-176f-4601-880c-121dd3f78a1b",
+  "type": "DMT-Internal/DMT/AzureContainerInstanceJobClassic",
+  "description": "My SIMA compute remote-run job",
+  "image": "publicMSA.azurecr.io/dmt-job/srs:latest",
+  "command": [
+      "/code/init.sh",
+      "--stask=ForecastDS/31f487b3-353b-455b-a11a-848f6534712d.stask",
+      "--workflow=workflow",
+      "--remote-run",
+      "--compute-service-cfg=ForecastDS/a1fb7672-a559-4c5f-913c-281e142e7f0c",
+      "--input=ForecastDS/31f487b3-353b-455b-a11a-848f6534712d",
+      "--target=ForecastDS/FoR-Data/SIMACompute/results/"
+  ],
+  "subnetId": "/subscriptions/93b83577-619d-4fb9-bfdf-f7a07d24cfbe/resourceGroups/S059-NOE-network/providers/Microsoft.Network/virtualNetworks/S059-NOE-vnet/subnets/S059-NOE-container-instances",
+  "logAnalyticsWorkspaceResourceId": "/subscriptions/93b83577-619d-4fb9-bfdf-f7a07d24cfbe/resourcegroups/s059-log/providers/microsoft.operationalinsights/workspaces/s059-log",
+  "environmentVariables": [
+    "var1=world",
+    "var2=earth",
+    "var3=_01863nv8||8374(/)&)(#!?=__Ba12|2"
+  ]
+}
