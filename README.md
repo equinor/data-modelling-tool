@@ -1,6 +1,6 @@
 # Data Modelling Tool
 
-![CI](https://github.com/equinor/data-modelling-tool/workflows/CI/badge.svg)
+![CI](https://github.com/equinor/data-modelling-tool/workflows/.github/workflows/main.yaml/badge.svg)
 
 The data modelling tool is a tool for modelling complex domain models.
 

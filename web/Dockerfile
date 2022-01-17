@@ -1,4 +1,4 @@
-FROM node:12-alpine as base
+FROM node:14-alpine as base
 
 ARG AUTH_ENABLED=0
 ARG REDIRECT_URI=http://localhost/
