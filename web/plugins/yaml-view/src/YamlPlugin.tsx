@@ -41,7 +41,7 @@ export default (props: PreviewProps) => {
   const { document } = props
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const asYAML: string = jsyaml.dump(document)
-  const highlighted = hljs.highlight('yaml', asYAML)
+  const highlighted = hljs.highlight(asYAML, { language: 'yaml' })
 
   return (
     <div>

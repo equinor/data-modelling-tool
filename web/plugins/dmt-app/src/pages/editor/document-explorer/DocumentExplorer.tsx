@@ -6,6 +6,7 @@ import {
   Tree,
   TreeNodeRenderProps,
   AuthContext,
+  UiPluginContext,
 } from '@dmt/common'
 import { DocumentNode } from './DocumentNode'
 import {
@@ -27,7 +28,6 @@ import {
   IGlobalIndex,
   useGlobalIndex,
 } from '../../../context/global-index/IndexProvider'
-import { getUIPlugin } from '@dmt/core-plugins'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 
@@ -40,6 +40,7 @@ export default () => {
   const explorer = useExplorer(dmssAPI)
   const { runAndSaveToNewDocument } = useRunnable({ explorer })
   const application = useContext(ApplicationContext)
+  const { getUiPlugin } = useContext(UiPluginContext)
   const handleToggle = (props: any) => {
     explorer.toggle({
       nodeId: props.nodeData.nodeId,
@@ -78,7 +79,7 @@ export default () => {
       },
     }
 
-    const ExternalPlugin = getUIPlugin('default-form')
+    const UiPlugin = getUiPlugin('default-form')
 
     switch (action) {
       case ContextMenuActions.CHANGE_ACL: {
@@ -198,7 +199,7 @@ export default () => {
               uiRecipeName: 'DEFAULT_CREATE',
               onSubmit: handleSubmit,
             }
-            openModal(ExternalPlugin, {
+            openModal(UiPlugin, {
               dialog: { title: `Run command ${node.nodeData.nodeId}` },
               props: separateResultFileProps,
             })

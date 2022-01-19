@@ -148,7 +148,7 @@ custom-application
 |_ web/ - Frontend
    |_ custom-plugins/ - Contains custom plugins
      |_ a-custom-plugin/ - A custom plugin
-   |_ config.js - Define what plugins should be loaded
+   |_ plugins.js - Define what plugins should be loaded
    |_ actions.js - Define custom actions here
    |_ Dockerfile - Contains all the commands for running frontend
 |_ docker-compose.yml - Run configuration
@@ -296,24 +296,22 @@ web/
     |_ package.json
     |_ src/
       |_ index.tsx
-|_ config.js
+|_ plugins.js
 end legend
 ----
 
-Add the plugin (package name), e.g a plugin called custom-plugin, into the config.js file like this.
+Add the plugin (package name), e.g a plugin called custom-plugin, into the plugins.js file like this.
 
 [source, javascript]
 ----
-export default {
-  plugins: [
-    // These are default included, but can be removed if wanted
+export default [
+    // These are included by default
     import('@dmt/default-form'),
     import('@dmt/default-pdf'),
     import('@dmt/default-preview'),
     // The extra plugin to be loaded
     import('custom-plugin')
-  ],
-}
+  ]
 ----
 
 Then, build the docker container again, so that the plugin will be installed.
@@ -331,7 +329,7 @@ A package.json is required.
   "version": "1.0.0",
   "main": "src/index.tsx",
   "dependencies": {
-    "@dmt/core-plugins": "x.x.x"
+    "@dmt/common": "x.x.x"
   }
 }
 ----
@@ -343,7 +341,7 @@ This is the template for a UI plugin.
 [source, jsx]
 ----
 import * as React from 'react'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
+import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 
 export const pluginName = 'custom-plugin'
 export const pluginType = DmtPluginType.UI

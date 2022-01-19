@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
+import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import { useEffect, useState, useContext } from 'react'
 import { Blueprint } from './domain/Blueprint'
 import { createFormConfigs, FormConfig } from './CreateConfig'

@@ -1,8 +1,5 @@
 {
   "name": "@dmt/ui-plugin-template",
   "version": "1.0.0",
-  "main": "src/index.tsx",
-  "dependencies": {
-    "@dmt/core-plugins": "1.0.1"
-  }
+  "main": "src/index.tsx"
 }

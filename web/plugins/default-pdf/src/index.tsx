@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ViewerPDFPlugin } from './PDFViewer'
 
-import { DmtPluginType, DmtUIPlugin } from '@dmt/core-plugins'
+import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import { useDocument } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {

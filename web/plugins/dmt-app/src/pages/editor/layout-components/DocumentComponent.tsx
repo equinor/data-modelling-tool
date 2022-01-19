@@ -4,10 +4,8 @@ import FetchDocument from '../../../utils/FetchDocument'
 import Tabs, { Tab, TabPanel } from '../../../components/Tabs'
 import { UiRecipe } from '../../../domain/types'
 import { GenerateUiRecipeTabs } from './GenerateUiRecipeTabs'
-import { ErrorGroup } from '../../../components/Wrappers'
 import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
-import { getUIPlugin } from '@dmt/core-plugins'
-import { DmssAPI, DmtAPI, AuthContext } from '@dmt/common'
+import { DmssAPI, DmtAPI, AuthContext, UiPluginContext } from '@dmt/common'
 
 const Wrapper = styled.div`
   padding: 20px;
@@ -21,6 +19,7 @@ const View = (props: any) => {
   const dmssAPI = new DmssAPI(token)
   const explorer: IUseExplorer = useExplorer(dmssAPI)
   const [loading, setLoading] = useState(false)
+  const { getUiPlugin } = useContext(UiPluginContext)
 
   const fetchBlueprint = (type: string) => {
     return explorer.getBlueprint(type)
@@ -45,10 +44,10 @@ const View = (props: any) => {
 
   if (loading) return <div>Loading...</div>
 
-  const ExternalPlugin = getUIPlugin(uiRecipe.plugin)
-  // rjsf-form is the only plugin that needs this uiRecipe name
+  const UiPlugin = getUiPlugin(uiRecipe.plugin)
+  // rjsf-form is the only plugin that needs the uiRecipe name
   return (
-    <ExternalPlugin
+    <UiPlugin
       dataSourceId={dataSourceId}
       documentId={documentId}
       explorer={explorer}

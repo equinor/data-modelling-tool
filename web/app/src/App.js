@@ -1,32 +1,24 @@
-import { loadPlugins } from '@dmt/core-plugins'
-import React, { useEffect, useState } from 'react'
-import { createGlobalStyle, ThemeProvider } from 'styled-components'
+import React, { useContext, useEffect, useState } from 'react'
+import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import {
   BrowserRouter as Router,
   Link,
-  Route,
   Redirect,
+  Route,
 } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
 import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
-import config from './config'
-import { sortApplications } from '@dmt/common'
+import { sortApplications, UiPluginContext } from '@dmt/common'
 import {
-  CardWrapper,
-  CardHeader,
-  CardHeading,
   CardBody,
   CardFieldset,
+  CardHeader,
+  CardHeading,
   CardLink,
+  CardWrapper,
 } from './components/Card'
-import styled from 'styled-components'
-import { getPagePlugin } from '@dmt/core-plugins/src/loadPlugins'
-
-export const Config = {
-  exportedApp: parseInt(process.env.REACT_APP_EXPORTED_APP) === 1,
-}
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -36,7 +28,6 @@ const GlobalStyle = createGlobalStyle`
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
-
 `
 
 const theme = {
@@ -59,7 +50,7 @@ const HorizontalList = styled.div`
 const AppSelector = (props) => {
   const { applications } = props
   const links = Object.values(applications).map((setting) => (
-    <div>
+    <div key={setting.name}>
       <CardWrapper>
         <CardHeader>
           <CardHeading>{`${setting.label}`}</CardHeading>
@@ -85,22 +76,27 @@ const AppSelector = (props) => {
 
 function App() {
   const [applications, setApplications] = useState(undefined)
-  const [isLoading, setIsLoading] = useState(true)
+  const [loadingAppSettings, setLoadingAppSettings] = useState(false)
   const dmtAPI = new DmtAPI()
 
-  useEffect(() => {
-    loadPlugins(config).then(() => setIsLoading(false))
+  const { loading, getPagePlugin } = useContext(UiPluginContext)
 
-    dmtAPI.getSystemSettings().then((res) => {
-      setApplications(
-        sortApplications(res.data).filter(
-          (application) => application?.hidden !== true
+  useEffect(() => {
+    setLoadingAppSettings(true)
+    dmtAPI
+      .getSystemSettings()
+      .then((res) =>
+        setApplications(
+          sortApplications(res.data).filter(
+            (application) => application?.hidden !== true
+          )
         )
       )
-    })
+      .catch((error) => console.error(error))
+      .finally(() => setLoadingAppSettings(false))
   }, [])
 
-  if (isLoading || applications === undefined)
+  if (loading || loadingAppSettings)
     return (
       <Progress.Circular
         style={{
@@ -133,12 +129,9 @@ function App() {
             <Route
               path={`/${settings.name}`}
               render={() => {
-                const ExternalPlugin = getPagePlugin(settings.name)
+                const UiPlugin = getPagePlugin(settings.name)
                 return (
-                  <ExternalPlugin
-                    settings={settings}
-                    applications={applications}
-                  />
+                  <UiPlugin settings={settings} applications={applications} />
                 )
               }}
               key={settings.name}

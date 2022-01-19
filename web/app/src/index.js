@@ -4,7 +4,8 @@ import 'react-notifications/lib/notifications.css'
 
 import App from './App'
 import ReactDOM from 'react-dom'
-import { AuthProvider } from '@dmt/common'
+import { AuthProvider, UiPluginProvider } from '@dmt/common'
+import plugins from './plugins'
 
 const authEnabled = process.env.REACT_APP_AUTH === '1'
 const authConfig = {
@@ -18,13 +19,15 @@ const authConfig = {
 
 ReactDOM.render(
   <>
-    {authEnabled ? (
-      <AuthProvider authConfig={authConfig}>
-        <App />,
-      </AuthProvider>
-    ) : (
-      <App />
-    )}
+    <UiPluginProvider pluginsToLoad={plugins}>
+      {authEnabled ? (
+        <AuthProvider authConfig={authConfig}>
+          <App />
+        </AuthProvider>
+      ) : (
+        <App />
+      )}
+    </UiPluginProvider>
   </>,
   document.getElementById('root')
 )
