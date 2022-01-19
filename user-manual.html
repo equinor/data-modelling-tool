@@ -931,7 +931,7 @@ pre.rouge {
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-c2dc47d89fb9fac341c3cc9014e568bd.svg" alt="Diagram" width="601" height="285">
+<img src="diag-7de7c14487862150b0ce89e12135ef9f.svg" alt="Diagram" width="601" height="285">
 </div>
 </div>
 </div>
@@ -1122,24 +1122,22 @@ Any entity of this type will have a "Run --&gt; &lt;action_name&gt;" in it's con
 </div>
 <div class="imageblock">
 <div class="content">
-<img src="diag-82a7b3971ba9d3c36e4cf44ad9e74eeb.svg" alt="Diagram" width="208" height="186">
+<img src="diag-d69cc6c922cb67545853efc23d3a44a7.svg" alt="Diagram" width="208" height="186">
 </div>
 </div>
 <div class="paragraph">
-<p>Add the plugin (package name), e.g a plugin called custom-plugin, into the config.js file like this.</p>
+<p>Add the plugin (package name), e.g a plugin called custom-plugin, into the plugins.js file like this.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="rouge highlight"><code data-lang="javascript"><span class="k">export</span> <span class="k">default</span> <span class="p">{</span>
-  <span class="na">plugins</span><span class="p">:</span> <span class="p">[</span>
-    <span class="c1">// These are default included, but can be removed if wanted</span>
+<pre class="rouge highlight"><code data-lang="javascript"><span class="k">export</span> <span class="k">default</span> <span class="p">[</span>
+    <span class="c1">// These are included by default</span>
     <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">@dmt/default-form</span><span class="dl">'</span><span class="p">),</span>
     <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">@dmt/default-pdf</span><span class="dl">'</span><span class="p">),</span>
     <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">@dmt/default-preview</span><span class="dl">'</span><span class="p">),</span>
     <span class="c1">// The extra plugin to be loaded</span>
     <span class="k">import</span><span class="p">(</span><span class="dl">'</span><span class="s1">custom-plugin</span><span class="dl">'</span><span class="p">)</span>
-  <span class="p">],</span>
-<span class="p">}</span></code></pre>
+  <span class="p">]</span></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1161,7 +1159,7 @@ Any entity of this type will have a "Run --&gt; &lt;action_name&gt;" in it's con
   </span><span class="nl">"version"</span><span class="p">:</span><span class="w"> </span><span class="s2">"1.0.0"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"main"</span><span class="p">:</span><span class="w"> </span><span class="s2">"src/index.tsx"</span><span class="p">,</span><span class="w">
   </span><span class="nl">"dependencies"</span><span class="p">:</span><span class="w"> </span><span class="p">{</span><span class="w">
-    </span><span class="nl">"@dmt/core-plugins"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x.x.x"</span><span class="w">
+    </span><span class="nl">"@dmt/common"</span><span class="p">:</span><span class="w"> </span><span class="s2">"x.x.x"</span><span class="w">
   </span><span class="p">}</span><span class="w">
 </span><span class="p">}</span></code></pre>
 </div>
@@ -1174,7 +1172,7 @@ Any entity of this type will have a "Run --&gt; &lt;action_name&gt;" in it's con
 <div class="listingblock">
 <div class="content">
 <pre class="rouge highlight"><code data-lang="jsx"><span class="k">import</span> <span class="o">*</span> <span class="k">as</span> <span class="nx">React</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">react</span><span class="dl">'</span>
-<span class="k">import</span> <span class="p">{</span> <span class="nx">DmtPluginType</span><span class="p">,</span> <span class="nx">DmtUIPlugin</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@dmt/core-plugins</span><span class="dl">'</span>
+<span class="k">import</span> <span class="p">{</span> <span class="nx">DmtPluginType</span><span class="p">,</span> <span class="nx">DmtUIPlugin</span> <span class="p">}</span> <span class="k">from</span> <span class="dl">'</span><span class="s1">@dmt/common</span><span class="dl">'</span>
 
 <span class="k">export</span> <span class="kd">const</span> <span class="nx">pluginName</span> <span class="o">=</span> <span class="dl">'</span><span class="s1">custom-plugin</span><span class="dl">'</span>
 <span class="k">export</span> <span class="kd">const</span> <span class="nx">pluginType</span> <span class="o">=</span> <span class="nx">DmtPluginType</span><span class="p">.</span><span class="nx">UI</span>
@@ -1365,7 +1363,7 @@ Example;</p>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-01-17 13:35:10 UTC
+Last updated 2022-01-19 14:52:25 UTC
 </div>
 </div>
 </body>
