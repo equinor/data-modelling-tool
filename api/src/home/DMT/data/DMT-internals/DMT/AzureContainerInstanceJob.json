@@ -2,20 +2,9 @@
   "type": "system/SIMOS/Blueprint",
   "name": "AzureContainerInstanceJob",
   "description": "Description of a executable job running as an Azure Container Instance",
-  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity", "DMT-Internal/DMT/Jobs/Container"],
   "attributes": [
     {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "image"
-    },
-    {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "command",
-      "optional": true,
-      "dimensions": "*"
-    }, {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "cr-username",
@@ -40,13 +29,6 @@
       "default": "low",
       "optional": true,
       "description": "should be an enum. 'high' or 'low'. Or just pass cpu and mem directly"
-    }, {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "environmentVariables",
-      "dimensions": "*",
-      "optional": true,
-      "description": "a list of strings on format 'myVar=myValue'"
     }
   ]
 }

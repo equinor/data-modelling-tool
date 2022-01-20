@@ -1,0 +1,28 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "InsertReference",
+  "description": "Form to create a new reference",
+  "attributes": [
+    {
+      "attributeType": "/Reference",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "reference",
+      "description": "Select an entity"
+    }
+  ],
+  "storageRecipes": [],
+  "uiRecipes": [
+    {
+      "type": "system/SIMOS/UiRecipe",
+      "name": "EDIT",
+      "description": "",
+      "attributes": [
+        {
+          "name": "reference",
+          "type": "system/SIMOS/UiAttribute",
+          "field": "reference"
+        }
+      ]
+    }
+  ]
+}

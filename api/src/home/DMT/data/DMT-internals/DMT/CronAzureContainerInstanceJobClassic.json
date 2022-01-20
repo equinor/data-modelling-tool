@@ -1,0 +1,6 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "CronAzureContainerInstanceJobClassic",
+  "description": "A reoccurring job running as an Azure Container Instance in Omnia Classic.",
+  "extends": ["/AzureContainerInstanceJobClassic", "/CronJob"]
+}

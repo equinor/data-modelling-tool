@@ -293,7 +293,7 @@ function SingleSimulationConfig(props: {
     getPlots: (): TPlot[] => {
       const plots: TPlot[] = []
       Object.entries(plotWindows).forEach(([key, plotWindow]: any) => {
-        plotWindow.graphs.forEach((graph: TGraph) => {
+        plotWindow.graphs?.forEach((graph: TGraph) => {
           graph.type = Blueprints.GRAPH
         })
         plotWindow.type = Blueprints.PLOTSTATE
@@ -302,7 +302,7 @@ function SingleSimulationConfig(props: {
       return plots
     },
     addGraph: (plotKey: string, graph: TGraph): void => {
-      const graphs: TGraph[] = plotWindows[plotKey].graphs
+      const graphs: TGraph[] = plotWindows[plotKey].graphs || []
       graphs.push(graph)
       setPlotWindows({ ...plotWindows, [plotKey]: { graphs: graphs } })
     },
