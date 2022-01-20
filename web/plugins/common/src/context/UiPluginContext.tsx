@@ -46,7 +46,7 @@ export interface DmtSettings {
   data_source_aliases: any
 }
 
-export const UiPluginContext = createContext({})
+export const UiPluginContext = createContext({} as any)
 
 export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
   const [loading, setLoading] = useState<boolean>(true)

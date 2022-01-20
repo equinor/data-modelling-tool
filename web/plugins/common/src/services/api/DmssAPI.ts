@@ -53,15 +53,10 @@ export class DmssAPI implements IDmssAPI {
     })
   }
 
-  addDocumentToParent({
-    dataSourceId,
-    dottedId,
-    body,
-  }: ExplorerAddRequest): Promise<any> {
+  addDocumentToParent({ absoluteRef, body }: ExplorerAddRequest): Promise<any> {
     return this.generatedDmssApi
       .explorerAdd({
-        dataSourceId,
-        dottedId,
+        absoluteRef,
         body,
       })
       .catch((error: any) => {

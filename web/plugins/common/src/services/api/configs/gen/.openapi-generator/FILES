@@ -3,7 +3,6 @@ apis/index.ts
 index.ts
 models/ACL.ts
 models/AccessLevel.ts
-models/AddRootPackageRequest.ts
 models/DataSourceRequest.ts
 models/HTTPValidationError.ts
 models/MoveRequest.ts

@@ -18,9 +18,6 @@ import {
     ACL,
     ACLFromJSON,
     ACLToJSON,
-    AddRootPackageRequest,
-    AddRootPackageRequestFromJSON,
-    AddRootPackageRequestToJSON,
     DataSourceRequest,
     DataSourceRequestFromJSON,
     DataSourceRequestToJSON,
@@ -94,15 +91,9 @@ export interface DocumentUpdateRequest {
 }
 
 export interface ExplorerAddRequest {
-    dataSourceId: string;
-    dottedId: string;
+    absoluteRef: string;
     body: object;
     updateUncontained?: boolean;
-}
-
-export interface ExplorerAddPackageRequest {
-    dataSourceId: string;
-    addRootPackageRequest: AddRootPackageRequest;
 }
 
 export interface ExplorerAddSimpleRequest {
@@ -676,16 +667,12 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document_id.attribute.attribute\'
+     * Add a new document to absolute ref (root of data source, or another document). If added to another document, a valid attribute type check is done. Select parent with format \'data_source/document_id.attribute.index.attribute\'
      * Add By Parent Id
      */
     async explorerAddRaw(requestParameters: ExplorerAddRequest): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAdd.');
-        }
-
-        if (requestParameters.dottedId === null || requestParameters.dottedId === undefined) {
-            throw new runtime.RequiredError('dottedId','Required parameter requestParameters.dottedId was null or undefined when calling explorerAdd.');
+        if (requestParameters.absoluteRef === null || requestParameters.absoluteRef === undefined) {
+            throw new runtime.RequiredError('absoluteRef','Required parameter requestParameters.absoluteRef was null or undefined when calling explorerAdd.');
         }
 
         if (requestParameters.body === null || requestParameters.body === undefined) {
@@ -712,7 +699,7 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/v1/explorer/{data_source_id}/{dotted_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))).replace(`{${"dotted_id"}}`, encodeURIComponent(String(requestParameters.dottedId))),
+            path: `/api/v1/explorer/{absolute_ref}`.replace(`{${"absolute_ref"}}`, encodeURIComponent(String(requestParameters.absoluteRef))),
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -723,59 +710,11 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Add a new document into an existing one. Must match it\'s parents attribute type. Select parent with format \'document_id.attribute.attribute\'
+     * Add a new document to absolute ref (root of data source, or another document). If added to another document, a valid attribute type check is done. Select parent with format \'data_source/document_id.attribute.index.attribute\'
      * Add By Parent Id
      */
     async explorerAdd(requestParameters: ExplorerAddRequest): Promise<any> {
         const response = await this.explorerAddRaw(requestParameters);
-        return await response.value();
-    }
-
-    /**
-     * Add a RootPackage to the data source
-     * Add Package
-     */
-    async explorerAddPackageRaw(requestParameters: ExplorerAddPackageRequest): Promise<runtime.ApiResponse<any>> {
-        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling explorerAddPackage.');
-        }
-
-        if (requestParameters.addRootPackageRequest === null || requestParameters.addRootPackageRequest === undefined) {
-            throw new runtime.RequiredError('addRootPackageRequest','Required parameter requestParameters.addRootPackageRequest was null or undefined when calling explorerAddPackage.');
-        }
-
-        const queryParameters: any = {};
-
-        const headerParameters: runtime.HTTPHeaders = {};
-
-        headerParameters['Content-Type'] = 'application/json';
-
-        if (this.configuration && this.configuration.accessToken) {
-            // oauth required
-            if (typeof this.configuration.accessToken === 'function') {
-                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
-            } else {
-                headerParameters["Authorization"] = this.configuration.accessToken;
-            }
-        }
-
-        const response = await this.request({
-            path: `/api/v1/explorer/{data_source_id}/add-package`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
-            method: 'POST',
-            headers: headerParameters,
-            query: queryParameters,
-            body: AddRootPackageRequestToJSON(requestParameters.addRootPackageRequest),
-        });
-
-        return new runtime.TextApiResponse(response) as any;
-    }
-
-    /**
-     * Add a RootPackage to the data source
-     * Add Package
-     */
-    async explorerAddPackage(requestParameters: ExplorerAddPackageRequest): Promise<any> {
-        const response = await this.explorerAddPackageRaw(requestParameters);
         return await response.value();
     }
 
