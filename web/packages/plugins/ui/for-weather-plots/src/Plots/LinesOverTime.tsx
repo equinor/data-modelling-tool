@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
+import React from 'react'
 
-import { plotColors } from '../Design/Colors'
 import { PlotType, TGraphInfo } from '../Result'
 import {
   VictoryArea,
@@ -13,6 +12,7 @@ import {
   VictoryTooltip,
   VictoryVoronoiContainer,
 } from 'victory'
+import { plotColors } from './plotColors'
 
 export type TLineChartDataPoint = {
   // @ts-ignore

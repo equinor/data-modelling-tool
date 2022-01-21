@@ -1,5 +1,4 @@
 import React from 'react'
-import { plotColors } from '../Design/Colors'
 import { PlotType, TGraphInfo } from '../Result'
 import {
   VictoryAxis,
@@ -11,6 +10,7 @@ import {
 } from 'victory'
 import { Icon } from '@equinor/eds-core-react'
 import { TLineChartDataPoint } from './LinesOverTime'
+import { plotColors } from './plotColors'
 
 type RotatedArrowProps = {
   datum: any

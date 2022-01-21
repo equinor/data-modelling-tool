@@ -65,17 +65,13 @@ export default (): JSX.Element => {
           {phases.length ? (
             phases.map((phase: TPhase, index: number) => (
               <Tabs.Panel key={phase.name}>
-                {hasExpertRole(tokenData) ? (
-                  <PhaseView
-                    setLoading={setLoadingNewSimulation}
-                    phase={phase}
-                    dottedId={`${operation._id}.phases.${index}`}
-                    stask={operation.stask}
-                    configBlob={operation.SIMAComputeConnectInfo}
-                  />
-                ) : (
-                  <OperatorPhaseView phase={phase} />
-                )}
+                <PhaseView
+                  setLoading={setLoadingNewSimulation}
+                  phase={phase}
+                  dottedId={`${operation._id}.phases.${index}`}
+                  stask={operation.stask}
+                  configBlob={operation.SIMAComputeConnectInfo}
+                />
               </Tabs.Panel>
             ))
           ) : (
