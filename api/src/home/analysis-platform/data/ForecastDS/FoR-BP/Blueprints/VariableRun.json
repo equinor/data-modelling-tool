@@ -1,0 +1,25 @@
+{
+  "name": "VariableRun",
+  "type": "system/SIMOS/Blueprint",
+  "description": "Results from a simulation corresponding to a set of key:value variables (\"no variations\")",
+  "extends": ["system/SIMOS/NamedEntity"],
+  "attributes": [
+    {
+      "name": "responses",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/Response",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false,
+      "description": "a list of responses, where each response can have a number of timeseries which relate to its statistics e.g. mean response, max response etc..."
+    }, {
+      "name": "variables",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/Variable",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    }
+  ]
+}
+

@@ -3,6 +3,7 @@ module.exports = {
   roots: ['<rootDir>/src'],
   testEnvironment: 'node',
   collectCoverage: true,
+  // testMatch: ['<rootDir>/**/*.test.{ts,tsx}'],
   collectCoverageFrom: ['<rootDir>/**/*.{ts,tsx,js}'],
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': 'ts-jest',

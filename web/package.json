@@ -3,8 +3,8 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "start": "yarn workspace @dmt/web run start",
-    "build": "yarn workspace @dmt/web run build",
+    "start": "yarn workspace @dmt/home run start",
+    "build": "yarn workspace @dmt/home run build",
     "test": "jest test",
     "test:watch": "jest --watch --coverage --no-cache",
     "test:watchAll": "yarn build && jest --watchAll --coverage --notify"
@@ -15,8 +15,8 @@
     "dist"
   ],
   "workspaces": [
-    "app",
-    "plugins/*",
+    "packages/home",
+    "packages/plugins/**",
     "custom-plugins/*"
   ],
   "nohoist": [

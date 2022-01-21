@@ -1,0 +1,55 @@
+{
+  "name": "Phase",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
+  "description": "A phase belonging to an Operation",
+  "attributes": [
+    {
+      "name": "simulationConfigs",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/SimulationConfig",
+      "optional": true,
+      "contained": true,
+      "dimensions": "*"
+    },
+    {
+      "name": "start",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "workflowTask",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false
+    },
+    {
+      "name": "workflow",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false
+    },
+    {
+      "name": "end",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "status",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "default": "Upcoming",
+      "optional": true
+    },
+    {
+      "name": "defaultVariables",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Blueprints/Variable",
+      "optional": true,
+      "contained": true,
+      "dimensions": "*"
+    }
+  ]
+}

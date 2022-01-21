@@ -1,9 +1,15 @@
 {
   "type": "system/SIMOS/Blueprint",
   "name": "Container",
-  "description": "",
+  "description": "A container job",
   "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
   "attributes": [
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "label",
+      "optional": true
+    },
     {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
