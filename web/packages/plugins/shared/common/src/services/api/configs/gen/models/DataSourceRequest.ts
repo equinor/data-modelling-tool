@@ -18,7 +18,7 @@ import {
     RepositoryFromJSON,
     RepositoryFromJSONTyped,
     RepositoryToJSON,
-} from './index';
+} from './';
 
 /**
  * 

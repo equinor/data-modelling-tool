@@ -22,7 +22,7 @@ import {
     StorageDataTypesFromJSON,
     StorageDataTypesFromJSONTyped,
     StorageDataTypesToJSON,
-} from './index';
+} from './';
 
 /**
  * 

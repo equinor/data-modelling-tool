@@ -155,13 +155,13 @@ function NewSimulationConfig(props: {
     // Create the simulation entity
     dmssAPI.generatedDmssApi
       .explorerAdd({
-        dataSourceId: DEFAULT_DATASOURCE_ID,
-        dottedId: `${dottedId}`,
+        absoluteRef: `${DEFAULT_DATASOURCE_ID}/${dottedId}`,
         body: newSimConf,
         updateUncontained: false,
       })
       .then(() => setSimulationConfigs([...simulationConfigs, newSimConf]))
       .catch((e: Error) => {
+        console.error(e)
         e.json().then((result: any) => {
           setVisibleCreateSimScrim(true)
           setCreateSimError(result.message)
@@ -359,8 +359,7 @@ function SingleSimulationConfig(props: {
     )
     dmssAPI.generatedDmssApi
       .explorerAdd({
-        dataSourceId: DEFAULT_DATASOURCE_ID,
-        dottedId: `${dottedId}.cronJob`,
+        absoluteRef: `${DEFAULT_DATASOURCE_ID}/${dottedId}.cronJob`,
         updateUncontained: false,
         body: cronJob,
       })
@@ -411,8 +410,7 @@ function SingleSimulationConfig(props: {
     )
     dmssAPI.generatedDmssApi
       .explorerAdd({
-        dataSourceId: DEFAULT_DATASOURCE_ID,
-        dottedId: `${dottedId}.jobs`,
+        absoluteRef: `${DEFAULT_DATASOURCE_ID}/${dottedId}.jobs`,
         updateUncontained: false,
         body: newJob,
       })

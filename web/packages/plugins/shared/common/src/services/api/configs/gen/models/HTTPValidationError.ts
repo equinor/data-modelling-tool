@@ -18,7 +18,7 @@ import {
     ValidationErrorFromJSON,
     ValidationErrorFromJSONTyped,
     ValidationErrorToJSON,
-} from './index';
+} from './';
 
 /**
  * 

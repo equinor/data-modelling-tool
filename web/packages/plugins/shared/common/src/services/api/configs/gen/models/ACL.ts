@@ -18,7 +18,7 @@ import {
     AccessLevelFromJSON,
     AccessLevelFromJSONTyped,
     AccessLevelToJSON,
-} from './index';
+} from './';
 
 /**
  * acl:
