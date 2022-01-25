@@ -1,0 +1,60 @@
+on:
+  # Enables manually triggers
+  workflow_dispatch:
+  push:
+    branches:
+      - "radix-deployment"
+#    tags:
+#      - "v**"
+
+env:
+  API_IMAGE: mariner.azurecr.io/dmt/api:latest
+  WEB_IMAGE: mariner.azurecr.io/dmt/web:latest
+
+jobs:
+  build-and-publish:
+    name: Build and deploy
+    runs-on: ubuntu-20.04
+
+    steps:
+      - uses: actions/checkout@radix-deployment
+      - name: "Docker Login"
+        run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+      - name: "Pull latest"
+        run: docker pull ${API_IMAGE} && docker pull ${WEB_IMAGE}
+      - name: "Build API"
+        run: docker build --cache-from ${API_IMAGE} --tag ${API_IMAGE} api
+      - name: "Build Web"
+        run: |
+          docker build \
+          --build-arg REDIRECT_URI=https://proxy-data-modelling-tool-test.radix.equinor.com/ \
+          --build-arg AUTH_ENABLED=1 \
+          --build-arg AUTH_SCOPE=api://97a6b5bd-63fb-42c6-bb75-7e5de2394ba0/dmss \
+          --build-arg CLIENT_ID=97a6b5bd-63fb-42c6-bb75-7e5de2394ba0 \
+          --build-arg TENANT_ID=3aa4a235-b6e2-48d5-9195-7fcf05b459b0 \
+          --cache-from ${WEB_IMAGE} \
+          --tag ${WEB_IMAGE} \
+          web
+      - name: "Push Docker images"
+        run: docker push ${API_IMAGE} && docker push ${WEB_IMAGE}
+
+  deploy-radix-deployment-to-radix-test-env:
+    needs: [build-and-publish]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@radix-deployment
+      - name: Deploy on Radix
+        uses: equinor/radix-github-actions@radix-deployment
+        env:
+          APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.APP_SERVICE_ACCOUNT_TOKEN }}
+        with:
+          args: >
+            create job
+            deploy
+            --application data-modelling-tool
+            --environment test
+            --user stoo@equinor.com
+            --context production
+            --from-config
+            --token-environment
+            --follow
