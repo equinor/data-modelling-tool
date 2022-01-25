@@ -6,10 +6,10 @@ spec:
   environments:
     - name: prod
       build:
-        from: stable
+        from: master
     - name: dev
       build:
-        from: master
+        from: radix-deployment
   components:
     - name: web
       image: mariner.azurecr.io/dmt/web:{imageTagName}
@@ -22,35 +22,73 @@ spec:
       ports:
         - name: http
           port: 3000
+
     - name: api
       image: mariner.azurecr.io/dmt/api:{imageTagName}
       alwaysPullImageOnDeploy: true
+      secrets:
+        - AZURE_SP_SECRET
+        - SCHEDULER_REDIS_PASSWORD
+        - SIMA_LICENSE
+      variables:
+        JOB_SERVICE_ENABLED: 1
+        SCHEDULER_REDIS_PORT: 6380
+        SCHEDULER_REDIS_SSL: "true"
+        DMSS_API: http://dmss:5000
+        ENVIRONMENT: production
+        SCHEDULER_ENVS_TO_EXPORT: "PUBLIC_DMSS_API,SIMA_LICENSE"
+        AZURE_JOB_SUBSCRIPTION: ""
+        AZURE_JOB_RESOURCE_GROUP: ""
+        AZURE_JOB_TENANT_ID: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
+        AZURE_JOB_CLIENT_ID: 97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
       environmentConfig:
         - environment: prod
           imageTagName: release
           variables:
-            DMSS_HOST: api-dmss-dev.playground.radix.equinor.com
-            DMSS_PORT: 443
-            ENVIRONMENT: production
+            SCHEDULER_REDIS_HOST: dmt-scheduler-prod.redis.cache.windows.net
+            PUBLIC_DMSS_API: https://dmss-data-modelling-tool-prod.radix.equinor.com/
         - environment: dev
           imageTagName: latest
           variables:
-            DMSS_HOST: api-dmss-dev.playground.radix.equinor.com
-            DMSS_PORT: 443
-            ENVIRONMENT: production
+            SCHEDULER_REDIS_HOST: dmt-scheduler.redis.cache.windows.net
+            PUBLIC_DMSS_API: https://dmss-data-modelling-tool-dev.radix.equinor.com/
       ports:
         - name: flask
           port: 5000
       publicPort: flask
+
+    - name: dmss
+      image: mariner.azurecr.io/dmss:latest
+      alwaysPullImageOnDeploy: true
+      secrets:
+#        - MONGO_AZURE_URI
+        - SECRET_KEY
+      variables:
+        LOGGING_LEVEL: "debug"
+        AUTH_ENABLED: "True"
+        ENVIRONMENT: production
+        OAUTH_WELL_KNOWN: https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/v2.0/.well-known/openid-configuration
+        OAUTH_TOKEN_ENDPOINT: https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/token
+        OAUTH_AUTH_ENDPOINT: https://login.microsoftonline.com/3aa4a235-b6e2-48d5-9195-7fcf05b459b0/oauth2/v2.0/authorize
+        OAUTH_CLIENT_ID: 97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
+        OAUTH_AUDIENCE: ee7dbf49-e358-4c9c-a7e4-fb6d56c02205
+      ports:
+        - name: rest
+          port: 5000
+      publicPort: rest
+
+
     - name: proxy
-      src: ./nginx/radix
+      image: mariner.azurecr.io/dmt/nginx:latest
       ports:
         - name: nginx
-          port: 80
+          port: 8080
       publicPort: nginx
+
   dnsAppAlias:
     environment: prod
     component: proxy
+
   privateImageHubs:
     mariner.azurecr.io:
       username: mariner

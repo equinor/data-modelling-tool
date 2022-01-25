@@ -222,33 +222,3 @@ jobs:
           docker tag $SRS_IMAGE:$RELEASE_TAG $SRS_IMAGE:release
           docker push $SRS_IMAGE:$RELEASE_TAG
           docker push $SRS_IMAGE:release
-
-
-  store-images-as-artifacts:
-    needs: [build-and-publish-api-master, build-and-publish-web-master, build-and-publish-srs-master]
-    if: github.ref == 'refs/heads/master'
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - name: pull latest DMT images
-        run: |
-          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
-          docker pull $WEB_IMAGE
-          docker pull $API_IMAGE
-          docker pull $NGINX_IMAGE
-
-      - name: pull latest SRS image
-        run: |
-          docker login -u $SRS_ACR_USER -p ${{ secrets.SRS_ACR_SECRET }} $SRS_REGISTRY
-          docker pull $SRS_IMAGE
-
-      - name: save docker images
-        run: |
-          docker save $API_IMAGE $WEB_IMAGE $NGINX_IMAGE $SRS_IMAGE > DMT_IMAGES.tar
-          ls -sh DMT_IMAGES.tar
-
-      - name: upload images as artifacts
-        uses: actions/upload-artifact@v2
-        with:
-          name: dmt-artifact
-          path: DMT_IMAGES.tar
