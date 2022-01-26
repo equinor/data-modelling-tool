@@ -1,9 +1,9 @@
 import { TSimulationConfig } from './Types'
 import React, { useContext, useEffect, useState } from 'react'
-import { useBlueprint, UiPluginContext } from '@dmt/common'
-import { Button } from '@equinor/eds-core-react'
+import { UiPluginContext, useBlueprint } from '@dmt/common'
 import styled from 'styled-components'
 import { lightGray } from './components/Design/Colors'
+import { DotProgress } from '@equinor/eds-core-react'
 
 const PluginSelectorWrapper = styled.div`
   border-bottom: 1px ${lightGray} solid;
@@ -40,7 +40,7 @@ function UIPluginWrapper(props: {
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
   const [selectablePluginsComponent, setSelectablePluginsComponent] = useState<
-    [string, Function][]
+    [pluginName: string, pluginComponent: Function][]
   >([])
 
   useEffect(() => {
@@ -57,7 +57,7 @@ function UIPluginWrapper(props: {
     }
   }, [blueprint, loadingBlueprint])
 
-  if (loadingBlueprint || loading) return <div>Loading...</div>
+  if (loadingBlueprint || loading) return <DotProgress color="primary" />
 
   if (error)
     return (
@@ -92,4 +92,5 @@ function UIPluginWrapper(props: {
     </>
   )
 }
+
 export { UIPluginWrapper }
