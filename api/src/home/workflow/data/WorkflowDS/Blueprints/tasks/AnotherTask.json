@@ -1,0 +1,22 @@
+{
+  "name": "AnotherTask",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity",
+    "WorkflowDS/Blueprints/Task"
+  ],
+  "description": "",
+  "attributes": [
+    {
+      "name": "jobType",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false
+    }
+  ],
+  "uiRecipes": [
+  ],
+  "storageRecipes": [
+  ]
+}

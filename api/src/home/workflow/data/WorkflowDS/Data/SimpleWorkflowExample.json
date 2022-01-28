@@ -1,0 +1,25 @@
+{
+  "_id": "26a4d888-3ab4-4ad2-9bd9-9614dcb066d4",
+  "name": "SimpleWorkflowExample",
+  "label": "Simple Workflow",
+  "type": "WorkflowDS/Blueprints/Workflow",
+  "description": "",
+  "tasks": [
+    {
+      "type":"WorkflowDS/Blueprints/tasks/SIMATask",
+      "name": "Task1",
+      "description": "",
+      "inputType": "",
+      "outputType": "",
+      "method": "simulateCat3StormResultInEntity"
+    },
+    {
+      "type":"WorkflowDS/Blueprints/tasks/SIMATask",
+      "name": "Task2",
+      "description": "",
+      "inputType": "",
+      "outputType": "",
+      "method": "simulateCat3StormResultInEntity"
+    }
+  ]
+}

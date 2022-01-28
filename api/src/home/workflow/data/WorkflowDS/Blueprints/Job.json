@@ -1,0 +1,16 @@
+{
+  "name": "Job",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "description": "",
+  "attributes": [
+    {
+      "name": "label",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    }
+  ]
+}

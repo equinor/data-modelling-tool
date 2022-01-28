@@ -1,0 +1,17 @@
+{
+  "name": "workflow",
+  "label": "Workflow",
+  "tabIndex": 0,
+  "hidden": false,
+  "visibleDataSources": [
+    "WorkflowDS"
+  ],
+  "type": "system/SIMOS/Application",
+  "description": "Workflow support",
+  "packages": [
+    "WorkflowDS/Blueprints",
+    "WorkflowDS/Data"
+  ],
+  "models": [],
+  "actions": []
+}
