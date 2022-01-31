@@ -5,6 +5,8 @@ import Library from './components/Library'
 import OperationView from './Pages/OperationView'
 import OperationOverview from './Pages/OperationOverview'
 import OperationCreate from './Pages/OperationCreate'
+import AnalysisOverview from './Pages/AnalysisOverview'
+import AnalysisView from './Pages/AnalysisView'
 
 const Routes: Array<TRoute> = [
   { path: '', heading: 'Dashboard', content: Dashboard },
@@ -27,6 +29,16 @@ const Routes: Array<TRoute> = [
     path: '/operations',
     heading: 'Operations',
     content: OperationOverview,
+  },
+  {
+    path: '/analysis',
+    heading: 'Analysis',
+    content: AnalysisOverview,
+  },
+    {
+    path: '/analysis/:data_source/:entity_id',
+    heading: 'Analysis details',
+    content: AnalysisView,
   },
 ]
 

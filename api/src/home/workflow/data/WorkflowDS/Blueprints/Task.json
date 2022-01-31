@@ -17,8 +17,8 @@
       "name": "outputTarget",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
-      "optional": false,
-      "description": "Reference to a location where the result should be stored"
+      "description": "Reference to a location where the result should be stored",
+      "optional": true
     },
     {
       "attributeType": "string",
@@ -30,19 +30,19 @@
     },
     {
       "attributeType": "string",
+      "type": "system/SIMOS/Entity",
+      "name": "defaultInput",
+      "label": "Default input",
+      "description": "Default input data",
+      "optional": true
+    },
+    {
+      "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "outputType",
       "label": "Output type",
       "description": "Reference to a Blueprint",
       "optional": true
-    },
-    {
-      "name": "jobs",
-      "attributeType": "/Job",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "optional": true,
-      "dimensions": "*",
-      "description": "A task can be used to run multiple jobs"
     }
   ]
 }

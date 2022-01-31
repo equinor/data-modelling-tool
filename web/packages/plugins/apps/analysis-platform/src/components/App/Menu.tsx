@@ -20,6 +20,7 @@ export default (props: { appRootPath: string }): JSX.Element => {
     `/${appRootPath}`,
     `/${appRootPath}/library`,
     `/${appRootPath}/operations`,
+    `/${appRootPath}/analysis`,
   ]
   return (
     <Sider
@@ -59,6 +60,13 @@ export default (props: { appRootPath: string }): JSX.Element => {
             to={{ pathname: menuUrl[2], state: { menuCollapsed: collapsed } }}
           >
             Operation overview
+          </Link>
+        </Menu.Item>
+        <Menu.Item key={menuUrl[3]} icon={<Icon name="list" size={iconSize} />}>
+          <Link
+            to={{ pathname: menuUrl[3], state: { menuCollapsed: collapsed } }}
+          >
+            Analysis overview
           </Link>
         </Menu.Item>
       </Menu>

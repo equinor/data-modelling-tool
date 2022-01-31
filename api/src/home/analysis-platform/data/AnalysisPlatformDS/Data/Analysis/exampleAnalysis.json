@@ -1,0 +1,45 @@
+{
+  "_id": "36a4d888-3ab4-4ad2-9bd9-9614dcb066d4",
+  "name": "exampleAnalysis",
+  "label": "Example Analysis",
+  "type": "AnalysisPlatformDS/Blueprints/Analysis",
+  "creator": "rlan",
+  "description": "This is an example analysis",
+  "created": "2022-01-01T12:06:39+0000",
+  "updated": "2022-01-31T12:06:39+0000",
+  "workflow": {
+    "name": "workflowExample",
+    "label": "Workflow Example",
+    "type": "WorkflowDS/Blueprints/Workflow",
+    "description": "This is an example workflow",
+    "tasks": [
+      {
+        "type": "WorkflowDS/Blueprints/tasks/Shell",
+        "name": "helloWorld",
+        "description": "",
+        "inputType": "system/SIMOS/NamedEntity",
+        "outputType": "system/SIMOS/NamedEntity",
+        "defaultInput": {
+          "type": "system/SIMOS/NamedEntity",
+          "name": "Rikke",
+          "description": "Hello from"
+        }
+      }
+    ]
+  },
+  "runs": [
+    {
+      "type": "WorkflowDS/Blueprints/WorkflowRun",
+      "duration": "5 min",
+      "jobs": [
+        {
+          "type": "WorkflowDS/Blueprints/jobs/Shell",
+          "script": "echo \"Hello World\""
+        }
+      ],
+      "result": {
+
+      }
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "name": "WorkflowRun",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes"
+  ],
+  "description": "",
+  "attributes": [
+    {
+      "name": "duration",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "jobs",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Job",
+      "contained": true,
+      "dimensions": "*"
+    },
+    {
+      "name": "result",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "system/SIMOS/Entity",
+      "contained": false
+    }
+  ]
+}

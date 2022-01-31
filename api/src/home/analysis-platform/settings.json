@@ -3,10 +3,18 @@
   "label": "Forecast of Response",
   "tabIndex": 0,
   "hidden": false,
-  "visibleDataSources": ["ForecastDS"],
+  "visibleDataSources": [
+    "ForecastDS",
+    "AnalysisPlatformDS"
+  ],
   "type": "system/SIMOS/Application",
   "description": "Forecast of Response app",
-  "packages": ["ForecastDS/FoR-BP", "ForecastDS/FoR-Data", "ForecastDS/Blueprints"],
+  "packages": [
+    "ForecastDS/FoR-BP",
+    "ForecastDS/FoR-Data",
+    "AnalysisPlatformDS/Blueprints",
+    "AnalysisPlatformDS/Data"
+  ],
   "models": [
     "ForecastDS/FoR-BP/Blueprints/Operation",
     "ForecastDS/FoR-BP/Blueprints/Location",

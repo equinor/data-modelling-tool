@@ -1,5 +1,6 @@
-export const DEFAULT_DATASOURCE_ID = 'ForecastDS'
+export const DEFAULT_DATASOURCE_ID = 'AnalysisPlatformDS'
 export const BLUEPRINTS = 'FoR-BP'
+
 export const ENTITIES = 'FoR-Data'
 export const LocationPackage = `${ENTITIES}/Locations`
 export const ConfigsPackage = `${ENTITIES}/Configs`

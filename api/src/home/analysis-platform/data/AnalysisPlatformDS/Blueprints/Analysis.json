@@ -10,13 +10,13 @@
     {
       "name": "label",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
     },
     {
       "name": "workflow",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "WorkflowDS/Blueprints/Workflow",
-      "contained": false
+      "attributeType": "WorkflowDS/Blueprints/Workflow"
     },
     {
       "name": "creator",
@@ -24,7 +24,19 @@
       "attributeType": "string"
     },
     {
-      "name": "status",
+      "name": "description",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "created",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "updated",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
       "optional": true

@@ -33,13 +33,9 @@
     },
     {
       "name": "SIMAComputeConnectInfo",
-      "attributeType": "system/SIMOS/Blob",
+      "attributeType": "/tasks/SIMAComputeService",
       "type": "system/SIMOS/BlueprintAttribute",
       "optional": true
     }
-  ],
-  "uiRecipes": [
-  ],
-  "storageRecipes": [
   ]
 }

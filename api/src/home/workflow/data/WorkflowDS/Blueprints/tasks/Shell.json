@@ -1,22 +1,17 @@
 {
-  "name": "AnotherTask",
+  "name": "Shell",
   "type": "system/SIMOS/Blueprint",
   "extends": [
     "system/SIMOS/DefaultUiRecipes",
     "system/SIMOS/NamedEntity",
     "WorkflowDS/Blueprints/Task"
   ],
-  "description": "",
+  "description": "This is for running shell scripts",
   "attributes": [
     {
-      "name": "jobType",
+      "name": "script",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string",
-      "optional": false
+      "attributeType": "string"
     }
-  ],
-  "uiRecipes": [
-  ],
-  "storageRecipes": [
   ]
 }
