@@ -6,12 +6,18 @@ import {
   Icon,
   Checkbox,
   Progress,
+  CircularProgress,
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
 import { AuthContext, DmssAPI } from '@dmt/common'
-//@ts-ignore
+import useLocalStorage from '../../../../apps/dmt-app/src/hooks/useLocalStorage' //todo is this correct usage?
 import { NotificationManager } from 'react-notifications'
+import {
+  getUsernameMappingFromId,
+  getUsernameMappingFromUsername,
+  UsernameIdMapping,
+} from '../utils/UsernameConversion'
 
 Icon.add({ edit_text, save })
 
@@ -26,6 +32,15 @@ export type TAcl = {
   roles: { [key: string]: ACLEnum }
   users: { [key: string]: ACLEnum }
   others: ACLEnum
+}
+
+export type TokenResponse = {
+  token_type: string
+  scope: string
+  expires_in: number
+  ext_expires_in: number
+  access_token: string
+  refresh_token: string
 }
 
 const ACLWrapper = styled.div`
@@ -173,6 +188,9 @@ const ACLUserRolesPanel = ({
   }
   return (
     <>
+      {aclKey === 'users' && (
+        <p style={{ fontStyle: 'italic' }}>Use equinor short name</p>
+      )}
       <CenteredRow>
         <Input
           style={{ width: '170px' }}
@@ -232,36 +250,103 @@ export const AccessControlList = (props: {
   const [activeTab, setActiveTab] = useState<number>(0)
   const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
-  // @ts-ignore-line
+  const [loadingACLDocument, setLoadingACLDocument] = useState<boolean>(false)
   const { token } = useContext(AuthContext)
+  const [refreshToken, setRefreshToken] = useLocalStorage(
+    'ROCP_refreshToken',
+    ''
+  )
   const dmssAPI = new DmssAPI(token)
 
   const [documentACL, setDocumentACL] = useState<TAcl>({
-    owner: 'stoo',
-    roles: {
-      someRole: ACLEnum.WRITE,
-      anotherRole: ACLEnum.READ,
-      aThairdt: ACLEnum.NONE,
-      someaRole: ACLEnum.WRITE,
-      anothderRfsdfsdfsdfolsdfsdfsdfsdfsde: ACLEnum.READ,
-      aT: ACLEnum.NONE,
-      som4eRole: ACLEnum.WRITE,
-      ane: ACLEnum.READ,
-      aThirgddt: ACLEnum.NONE,
-    },
-    users: {
-      aGuy: ACLEnum.NONE,
-      aDude: ACLEnum.WRITE,
-      aFellow: ACLEnum.READ,
-    },
+    owner: '',
+    roles: {},
+    users: {},
     others: ACLEnum.READ,
   })
 
+  const convertACLFromUsernameIdToUsername = async (
+    acl: TAcl
+  ): Promise<TAcl> => {
+    //todo check that this acl has user data as username id and not username
+    const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
+    const promises: Promise<UsernameIdMapping>[] = []
+    Object.keys(aclCopy.users).map((usernameId: string) => {
+      promises.push(getUsernameMappingFromId(usernameId, refreshToken))
+    })
+    const newUsers: { [key: string]: ACLEnum } = {}
+    return Promise.all(promises)
+      .then((usernameIdMappings: UsernameIdMapping[]) => {
+        usernameIdMappings.map((usernameIdMapping: UsernameIdMapping) => {
+          newUsers[usernameIdMapping.username] =
+            aclCopy.users[usernameIdMapping.usernameId]
+        })
+        aclCopy.users = newUsers
+      })
+      .then(() => {
+        return getUsernameMappingFromId(aclCopy.owner, refreshToken).then(
+          (usernameIdMapping: UsernameIdMapping) => {
+            if (usernameIdMapping.username) {
+              aclCopy.owner = usernameIdMapping.username
+            } else {
+              aclCopy.owner = usernameIdMapping.usernameId
+            }
+
+            return aclCopy
+          }
+        )
+      })
+  }
+
+  const convertACLFromUsernameToUsernameId = (acl: TAcl): Promise<TAcl> => {
+    const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
+    //     //todo check that this acl has user data as username and not username id
+    const promises: Promise<UsernameIdMapping>[] = []
+    Object.keys(aclCopy.users).map((username: string) => {
+      promises.push(getUsernameMappingFromUsername(username, refreshToken))
+    })
+    const newUsers: { [key: string]: ACLEnum } = {}
+    return Promise.all(promises)
+      .then((usernameIdMappings: UsernameIdMapping[]) => {
+        usernameIdMappings.map(
+          (usernameIdMapping: UsernameIdMapping, index) => {
+            newUsers[usernameIdMapping.usernameId] =
+              aclCopy.users[usernameIdMapping.username]
+          }
+        )
+        aclCopy.users = newUsers
+      })
+      .then(() => {
+        return getUsernameMappingFromUsername(aclCopy.owner, refreshToken).then(
+          (usernameIdMapping: UsernameIdMapping) => {
+            if (usernameIdMapping.usernameId) {
+              aclCopy.owner = usernameIdMapping.usernameId
+            } else {
+              aclCopy.owner = usernameIdMapping.username
+            }
+            return aclCopy
+          }
+        )
+      })
+  }
+
   useEffect(() => {
+    setLoadingACLDocument(true)
     dmssAPI
       .getDocumentAcl({ dataSourceId: dataSourceId, documentId: documentId })
-      .then((response) => {
-        setDocumentACL(response)
+      .then((response: TAcl) => {
+        convertACLFromUsernameIdToUsername(response)
+          .then((newACL: TAcl) => {
+            setDocumentACL(newACL)
+          })
+          .catch((error) => {
+            NotificationManager.error(
+              `Could not convert username ID to username (${error})`
+            )
+          })
+          .finally(() => {
+            setLoadingACLDocument(false)
+          })
       })
       .catch((error: any) => {
         NotificationManager.error(
@@ -270,17 +355,20 @@ export const AccessControlList = (props: {
       })
   }, [documentId])
 
-  function saveACL(acl: TAcl) {
+  async function saveACL(acl: TAcl) {
     setLoading(true)
-    dmssAPI
-      .setDocumentAcl({
-        dataSourceId: dataSourceId,
-        documentId: documentId,
-        //@ts-ignore - ACL class from geneated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
-        aCL: acl,
-        recursively: storeACLRecursively,
+
+    convertACLFromUsernameToUsernameId(acl)
+      .then((newACL) => {
+        dmssAPI.setDocumentAcl({
+          dataSourceId: dataSourceId,
+          documentId: documentId,
+          //@ts-ignore - ACL class from geneated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
+          aCL: newACL,
+          recursively: storeACLRecursively,
+        })
       })
-      .then((response: string) => {
+      .then(() => {
         NotificationManager.success('ACL saved!')
       })
       .catch((error: any) => {
@@ -293,7 +381,17 @@ export const AccessControlList = (props: {
     setDocumentACL({ ...documentACL, ...value })
   }
 
-  if (!documentACL) return <>Loading document...</>
+  if (loadingACLDocument)
+    return (
+      <Progress.Circular
+        style={{
+          display: 'block',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: '10px',
+        }}
+      />
+    )
 
   return (
     <ACLWrapper>
