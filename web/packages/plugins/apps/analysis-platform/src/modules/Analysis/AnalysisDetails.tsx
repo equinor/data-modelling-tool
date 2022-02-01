@@ -1,20 +1,20 @@
 import React, {useContext, useState} from 'react'
-import {TOperation} from '../Types'
+import {TOperation} from '../../Types'
 import {hasExpertRole} from '../../utils/auth'
 import {Button, Card, Label, Progress, Table, Typography} from '@equinor/eds-core-react'
-import {StatusDot} from '../Other'
+import {StatusDot} from '../../components/Other'
 import styled from 'styled-components'
-import {LocationOnMap} from '../Map'
+import {LocationOnMap} from '../../components/Map'
 import {TComment, TPhase} from '../../Types'
 import {AccessControlList, AuthContext, DmssAPI} from '@dmt/common'
 import {DEFAULT_DATASOURCE_ID, ENTITIES, RESULT_FOLDER_NAME} from '../../const'
-import {CustomScrim} from '../CustomScrim'
+import {CustomScrim} from '../../components/CustomScrim'
 import {statusFromDates} from '../../utils/statusFromDates'
-import Icons from '../Design/Icons'
-import {primaryGray} from "../Design/Colors";
-import {createContainerJob} from "../../utils/createContainerJob";
+import Icons from '../../components/Design/Icons'
+import {primaryGray} from "../../components/Design/Colors";
+import {createContainerJob} from "../Jobs/createContainerJob";
 import {NotificationManager} from 'react-notifications'
-import JobApi from "../../utils/JobApi";
+import JobApi from "../Jobs/JobApi";
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -41,7 +41,6 @@ export default (props: {
     analysis: TOperation
     setActiveTab: Function
 }): JSX.Element => {
-    console.log("ASDF");
     const {analysis, setActiveTab} = props
     const [viewACL, setViewACL] = useState<boolean>(false)
     const [loading, setLoading] = useState<boolean>(false)
@@ -49,11 +48,7 @@ export default (props: {
     const dmssAPI = new DmssAPI(token);
     const jobAPI = new JobApi(token)
 
-    console.log(analysis);
-
     const task = analysis.workflow.tasks[0];
-
-    console.log(task);
 
     const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 

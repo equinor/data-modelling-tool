@@ -7,10 +7,9 @@
     "WorkflowDS"
   ],
   "type": "system/SIMOS/Application",
-  "description": "Workflow support",
+  "description": "Add workflow support to applications",
   "packages": [
-    "WorkflowDS/Blueprints",
-    "WorkflowDS/Data"
+    "WorkflowDS/Blueprints"
   ],
   "models": [],
   "actions": []

@@ -17,10 +17,7 @@ export default (props: { appRootPath: string }): JSX.Element => {
   )
   const iconSize: 24 | 16 | 32 | 40 | 48 | undefined = 24
   const menuUrl: string[] = [
-    `/${appRootPath}`,
-    `/${appRootPath}/library`,
-    `/${appRootPath}/operations`,
-    `/${appRootPath}/analysis`,
+    `/${appRootPath}`
   ]
   return (
     <Sider
@@ -40,33 +37,7 @@ export default (props: { appRootPath: string }): JSX.Element => {
           <Link
             to={{ pathname: menuUrl[0], state: { menuCollapsed: collapsed } }}
           >
-            Dashboard
-          </Link>
-        </Menu.Item>
-        <Menu.Item
-          key={menuUrl[1]}
-          icon={<Icon name="library" size={iconSize} />}
-          disabled={true}
-        >
-          <Link
-            to={{ pathname: menuUrl[1], state: { menuCollapsed: collapsed } }}
-          >
-            Stask Library
-          </Link>
-        </Menu.Item>
-        {/*</SubMenu>*/}
-        <Menu.Item key={menuUrl[2]} icon={<Icon name="list" size={iconSize} />}>
-          <Link
-            to={{ pathname: menuUrl[2], state: { menuCollapsed: collapsed } }}
-          >
-            Operation overview
-          </Link>
-        </Menu.Item>
-        <Menu.Item key={menuUrl[3]} icon={<Icon name="list" size={iconSize} />}>
-          <Link
-            to={{ pathname: menuUrl[3], state: { menuCollapsed: collapsed } }}
-          >
-            Analysis overview
+            Analysis
           </Link>
         </Menu.Item>
       </Menu>

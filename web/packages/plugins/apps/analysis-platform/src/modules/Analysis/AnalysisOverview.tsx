@@ -1,10 +1,10 @@
 import {DmtSettings} from "@dmt/common";
-import useSearch from "../hooks/useSearch";
-import {Blueprints} from "../Enums";
+import useSearch from "../../hooks/useSearch";
+import {Blueprints} from "../../Enums";
 import {Progress} from "@equinor/eds-core-react";
 import React from "react";
-import DynamicTable from "../components/DynamicTable";
-import {DEFAULT_DATASOURCE_ID} from "../const";
+import DynamicTable from "../../components/DynamicTable";
+import {DEFAULT_DATASOURCE_ID} from "../../const";
 
 const columns: Array<string> = [
     'Analysis name',

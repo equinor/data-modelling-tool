@@ -4,10 +4,10 @@ import { Layout } from 'antd'
 
 import Routes from './Routes'
 import { TApp, TLayout } from './Types'
-import Header from './components/App/Header'
+import Header from './components/Layout/Header'
 import { backgroundColorDefault } from './components/Design/Colors'
-import Content from './components/App/Content'
-import Menu from './components/App/Menu'
+import Content from './components/Layout/Content'
+import Menu from './components/Layout/Menu'
 
 const MainLayout = (props: TLayout) => {
   const { heading, content, settings } = props

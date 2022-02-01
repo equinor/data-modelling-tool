@@ -1,5 +1,5 @@
 import { Dialog, Icon, Scrim } from '@equinor/eds-core-react'
-import { ClickableIcon } from './App/Header'
+import { ClickableIcon } from './Layout/Header'
 import React, { ReactChildren } from 'react'
 
 export const CustomScrim = (props: {

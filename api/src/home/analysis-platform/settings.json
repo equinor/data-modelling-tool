@@ -1,24 +1,17 @@
 {
-  "name": "for",
-  "label": "Forecast of Response",
+  "name": "ap",
+  "label": "Analysis platform",
   "tabIndex": 0,
   "hidden": false,
   "visibleDataSources": [
-    "ForecastDS",
     "AnalysisPlatformDS"
   ],
   "type": "system/SIMOS/Application",
-  "description": "Forecast of Response app",
+  "description": "Contains different types of analysis for marine operations and structures.",
   "packages": [
-    "ForecastDS/FoR-BP",
-    "ForecastDS/FoR-Data",
     "AnalysisPlatformDS/Blueprints",
     "AnalysisPlatformDS/Data"
   ],
-  "models": [
-    "ForecastDS/FoR-BP/Blueprints/Operation",
-    "ForecastDS/FoR-BP/Blueprints/Location",
-    "ForecastDS/FoR-BP/Blueprints/Config"
-  ],
+  "models": [],
   "actions": []
 }
