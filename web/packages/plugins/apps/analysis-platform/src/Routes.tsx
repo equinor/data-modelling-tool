@@ -1,4 +1,3 @@
-// Temporary basic routes while developing UI
 import { TRoute } from './Types'
 import AnalysisOverview from './modules/Analysis/AnalysisOverview'
 import AnalysisView from './modules/Analysis/AnalysisView'
