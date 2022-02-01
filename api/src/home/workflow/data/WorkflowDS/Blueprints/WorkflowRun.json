@@ -7,7 +7,12 @@
   "description": "",
   "attributes": [
     {
-      "name": "duration",
+      "name": "started",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "ended",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string"
     },

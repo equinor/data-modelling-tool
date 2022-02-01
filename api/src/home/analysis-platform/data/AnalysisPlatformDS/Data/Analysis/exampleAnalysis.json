@@ -25,21 +25,24 @@
           "description": "Hello from"
         }
       }
-    ]
-  },
-  "runs": [
-    {
-      "type": "WorkflowDS/Blueprints/WorkflowRun",
-      "duration": "5 min",
-      "jobs": [
-        {
-          "type": "WorkflowDS/Blueprints/jobs/Shell",
-          "script": "echo \"Hello World\""
+    ],
+    "runs": [
+      {
+        "type": "WorkflowDS/Blueprints/WorkflowRun",
+        "started": "2022-01-01T12:06:39+0000",
+        "ended": "2022-01-31T12:06:39+0000",
+        "jobs": [
+          {
+            "type": "WorkflowDS/Blueprints/jobs/Shell",
+            "script": "echo \"Hello World\""
+          }
+        ],
+        "result": {
+          "type": "system/SIMOS/Entity",
+          "_id": "if81daa9-9787-462e-b92b-104f71b80713",
+          "name": "exampleResult"
         }
-      ],
-      "result": {
-
       }
-    }
-  ]
+    ]
+  }
 }

@@ -32,6 +32,7 @@ export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
     explorer.getBlueprint(typeRef)
   )
   const schema = schemaGenerator.getSchema()
+  console.log(schema);
 
   const uiSchemaGenerator = new BlueprintUiSchema(
     blueprint,

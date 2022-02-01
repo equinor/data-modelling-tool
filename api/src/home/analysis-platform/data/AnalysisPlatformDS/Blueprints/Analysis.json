@@ -16,7 +16,8 @@
     {
       "name": "workflow",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "WorkflowDS/Blueprints/Workflow"
+      "attributeType": "WorkflowDS/Blueprints/Workflow",
+      "contained": true
     },
     {
       "name": "creator",

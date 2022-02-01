@@ -1,17 +1,20 @@
 import React, {useContext, useState} from 'react'
 import {TOperation} from '../Types'
 import {hasExpertRole} from '../../utils/auth'
-import {Button, Card, Label, Table, Typography} from '@equinor/eds-core-react'
+import {Button, Card, Label, Progress, Table, Typography} from '@equinor/eds-core-react'
 import {StatusDot} from '../Other'
 import styled from 'styled-components'
 import {LocationOnMap} from '../Map'
 import {TComment, TPhase} from '../../Types'
-import {AccessControlList, AuthContext} from '@dmt/common'
-import {DEFAULT_DATASOURCE_ID} from '../../const'
+import {AccessControlList, AuthContext, DmssAPI} from '@dmt/common'
+import {DEFAULT_DATASOURCE_ID, ENTITIES, RESULT_FOLDER_NAME} from '../../const'
 import {CustomScrim} from '../CustomScrim'
 import {statusFromDates} from '../../utils/statusFromDates'
 import Icons from '../Design/Icons'
 import {primaryGray} from "../Design/Colors";
+import {createContainerJob} from "../../utils/createContainerJob";
+import {NotificationManager} from 'react-notifications'
+import JobApi from "../../utils/JobApi";
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -33,13 +36,83 @@ const SimHeaderWrapper = styled.div`
   align-items: center;
 `
 
+
 export default (props: {
     analysis: TOperation
     setActiveTab: Function
 }): JSX.Element => {
+    console.log("ASDF");
     const {analysis, setActiveTab} = props
     const [viewACL, setViewACL] = useState<boolean>(false)
-    const {tokenData} = useContext(AuthContext)
+    const [loading, setLoading] = useState<boolean>(false)
+    const {token, tokenData} = useContext(AuthContext)
+    const dmssAPI = new DmssAPI(token);
+    const jobAPI = new JobApi(token)
+
+    console.log(analysis);
+
+    const task = analysis.workflow.tasks[0];
+
+    console.log(task);
+
+    const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
+
+    const saveAndStartJob = () => {
+        setLoading(true)
+        const newWorkflowRun: any = {
+            "type": "WorkflowDS/Blueprints/WorkflowRun",
+            "started": "2022-01-01T12:06:39+0000",
+            "ended": "2022-01-31T12:06:39+0000",
+            "jobs": [
+                {
+                    "type": "WorkflowDS/Blueprints/jobs/Shell",
+                    "script": "echo \"Hello World\""
+                }
+            ],
+            "result": {
+
+            }
+        }
+        dmssAPI.generatedDmssApi
+            .explorerAdd({
+                absoluteRef: `${analysisAbsoluteReference}.workflow.runs`,
+                updateUncontained: false,
+                body: newWorkflowRun,
+            })
+            .then((res: any) => {
+                // Add the new job to the state
+                // TODO: setJobs([newJob, ...jobs])
+                // Start a job from the created job entity (last one in list)
+                jobAPI
+                    .startJob(`${analysisAbsoluteReference}.workflow.runs.0.jobs.0`)
+                    .then((result: any) => {
+                        NotificationManager.success(
+                            JSON.stringify(result.data),
+                            'Simulation job started'
+                        )
+                    })
+                    .catch((error: Error) => {
+                        console.error(error)
+                        NotificationManager.error(
+                            error?.response?.data?.message,
+                            'Failed to start job'
+                        )
+                    })
+                    .finally(() => setLoading(false))
+            })
+            .catch((error: Error) => {
+                console.error(error)
+                NotificationManager.error(
+                    error?.response?.data?.message,
+                    'Failed to start job'
+                )
+                setLoading(false)
+            })
+    }
+
+    if (loading) {
+        return <Progress.Linear/>
+    }
 
     return (
         <Card style={{maxWidth: '1200px'}}>
@@ -78,11 +151,13 @@ export default (props: {
                 )}
             </Card.Actions>
             <SimHeaderWrapper>
-                <StyledHeaderButton
-                    onClick={() => setVisibleReoccurringJob(!visibleReoccurringJob)}
-                >
+                <StyledHeaderButton>
                     Configure schedule
                     <Icons name="time" title="time"/>
+                </StyledHeaderButton>
+                <StyledHeaderButton onClick={() => saveAndStartJob()}>
+                    Run simulation
+                    <Icons name="play" title="play"/>
                 </StyledHeaderButton>
             </SimHeaderWrapper>
 

@@ -2,7 +2,8 @@
   "name": "Workflow",
   "type": "system/SIMOS/Blueprint",
   "extends": [
-    "system/SIMOS/DefaultUiRecipes"
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
   ],
   "description": "A workflow is made up of one or more tasks that can run sequentially or in parallel",
   "attributes": [
@@ -28,7 +29,7 @@
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "/WorkflowRun",
       "dimensions": "*",
-      "description": "A task can be used to run multiple jobs"
+      "description": "The results"
     }
   ]
 }
