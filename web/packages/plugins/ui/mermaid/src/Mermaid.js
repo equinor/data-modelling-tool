@@ -1,10 +1,10 @@
-import React from "react";
-import mermaid from "mermaid";
+import React from 'react'
+import mermaid from 'mermaid'
 
 mermaid.initialize({
   startOnLoad: true,
-  theme: "default",
-  securityLevel: "loose",
+  theme: 'default',
+  securityLevel: 'loose',
   themeCSS: `
     g.classGroup rect {
       fill: #282a36;
@@ -50,14 +50,14 @@ mermaid.initialize({
       stroke: #f8f8f2;
       stroke-width: 1;
     }`,
-  fontFamily: "Fira Code"
-});
+  fontFamily: 'Fira Code',
+})
 
 export default class Mermaid extends React.Component {
   componentDidMount() {
-    mermaid.contentLoaded();
+    mermaid.contentLoaded()
   }
   render() {
-    return <div className="mermaid">{this.props.chart}</div>;
+    return <div className="mermaid">{this.props.chart}</div>
   }
 }

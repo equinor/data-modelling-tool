@@ -71,7 +71,7 @@ export class BlueprintSchema implements IBlueprintSchema {
     blueprintProvider: Function,
     exitRecursion: boolean
   ) {
-    console.log(attributes);
+    console.log(attributes)
     let blueprintAttributes: BlueprintAttribute[] = attributes.map(
       (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
     )
@@ -91,7 +91,7 @@ export class BlueprintSchema implements IBlueprintSchema {
         )
 
         if (!skip.includes(attribute.getName())) {
-          console.log(attribute);
+          console.log(attribute)
           if (attribute.isPrimitive()) {
             await this.appendPrimitive(
               newPath,
@@ -343,7 +343,7 @@ export class BlueprintSchema implements IBlueprintSchema {
   }
 
   private willProcessComplexAttribute(attributeName: string, document: Entity) {
-    console.log(attributeName);
+    console.log(attributeName)
     if (!document) {
       return true
     } else if (Array.isArray(document[attributeName])) {

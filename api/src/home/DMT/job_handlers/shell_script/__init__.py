@@ -3,11 +3,10 @@ import subprocess  # nosec
 from typing import Tuple
 
 from config import config
-from services.dmss import dmss_api
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
-_SUPPORTED_JOB_TYPE = ("WorkflowDS/Blueprints/jobs/Shell")
+_SUPPORTED_JOB_TYPE = "WorkflowDS/Blueprints/jobs/Shell"
 
 
 class JobHandler(JobHandlerInterface):
@@ -28,7 +27,7 @@ class JobHandler(JobHandlerInterface):
             logger.info(f"Writing shell job to '{os.getcwd()}/script.sh'")
             file_hand.write(script)
 
-        #logger.info(f"JobId; '{self.job_entity['_id']}': Starting shell job.")
+        # logger.info(f"JobId; '{self.job_entity['_id']}': Starting shell job.")
         shell_job_process = subprocess.run(
             args="bash ./script.sh",
             shell=True,

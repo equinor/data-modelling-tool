@@ -16,9 +16,7 @@ export default (props: { appRootPath: string }): JSX.Element => {
       : location.state.menuCollapsed
   )
   const iconSize: 24 | 16 | 32 | 40 | 48 | undefined = 24
-  const menuUrl: string[] = [
-    `/${appRootPath}`
-  ]
+  const menuUrl: string[] = [`/${appRootPath}`]
   return (
     <Sider
       style={{ borderRight: '#E6E6E6 1px solid', minHeight: '100vh' }}
