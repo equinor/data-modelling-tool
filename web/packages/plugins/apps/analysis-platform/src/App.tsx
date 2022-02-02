@@ -15,7 +15,7 @@ const MainLayout = (props: TLayout) => {
     <>
       <Header appName={settings.label} homeUrl={settings.name} />
       <Layout style={{ background: backgroundColorDefault }}>
-        <Menu appRootPath={settings.name} />
+        <Menu appRootPath={settings.urlPath} />
         <Content settings={settings} heading={heading} content={content} />
       </Layout>
     </>
@@ -30,7 +30,7 @@ export default (props: TApp): JSX.Element => {
       {Routes.map((route) => (
         <Route
           exact
-          path={`/${settings.name}${route.path}`}
+          path={`/${settings.urlPath}${route.path}`}
           render={() => (
             <MainLayout
               heading={route.heading}

@@ -47,7 +47,7 @@ export default (props: { appName: string; homeUrl: string }): JSX.Element => {
         <StyledLink
           style={{ display: 'flex' }}
           to={{
-            pathname: `/${homeUrl}`,
+            pathname: `/`,
           }}
         >
           <Icon name="waves" size={32} />

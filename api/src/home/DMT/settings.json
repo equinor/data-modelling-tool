@@ -2,6 +2,8 @@
   "type": "system/SIMOS/Application",
   "name": "DMT",
   "label": "Data Modeling Tool",
+  "pluginName": "DMT",
+  "urlPath": "DMT",
   "tabIndex": 0,
   "hidden": false,
   "visibleDataSources": ["DemoDS", "ForecastDS", "WorkflowDS", "AnalysisPlatformDS"],

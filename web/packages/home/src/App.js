@@ -55,12 +55,11 @@ const AppSelector = (props) => {
         <CardHeader>
           <CardHeading>{`${setting.label}`}</CardHeading>
         </CardHeader>
-
         <CardBody>
           <CardFieldset>{`${setting.description}`}</CardFieldset>
           <CardFieldset>
             <CardLink>
-              <Link to={`/${setting.name}`}>Open</Link>
+              <Link to={`/${setting.urlPath}`}>Open</Link>
             </CardLink>
           </CardFieldset>
         </CardBody>
@@ -80,6 +79,7 @@ function App() {
   const dmtAPI = new DmtAPI()
 
   const { loading, getPagePlugin } = useContext(UiPluginContext)
+
 
   useEffect(() => {
     setLoadingAppSettings(true)
@@ -118,7 +118,7 @@ function App() {
           path="/"
           render={() =>
             applications.length === 1 ? (
-              <Redirect to={applications[0].name} />
+              <Redirect to={applications[0].urlPath} />
             ) : (
               <AppSelector applications={applications} />
             )
@@ -127,9 +127,9 @@ function App() {
         <Switch>
           {Object.values(applications).map((settings) => (
             <Route
-              path={`/${settings.name}`}
+              path={`/${settings.urlPath}`}
               render={() => {
-                const UiPlugin = getPagePlugin(settings.name)
+                const UiPlugin = getPagePlugin(settings.pluginName)
                 return (
                   <UiPlugin settings={settings} applications={applications} />
                 )

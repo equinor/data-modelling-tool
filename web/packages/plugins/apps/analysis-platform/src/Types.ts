@@ -7,6 +7,7 @@ export type TRoute = {
   path: string
   heading: string
   content: JSX.Element
+
 }
 
 export type TApp = {

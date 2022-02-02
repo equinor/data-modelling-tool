@@ -1,6 +1,8 @@
 {
   "name": "workflow",
   "label": "Workflow",
+  "pluginName": "DMT",
+  "urlPath": "workflow",
   "tabIndex": 0,
   "hidden": false,
   "visibleDataSources": [
