@@ -5,4 +5,6 @@ export default [
   import('@dmt/yaml-view'),
   import('@dmt/dmt-app'),
   import('@dmt/analysis-platform'),
+  import('for-weather-plots'),
+  import('@dmt/mermaid'),
 ]

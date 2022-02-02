@@ -100,7 +100,7 @@ jobs:
           echo "Tagging with $COMMIT_REF"
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $WEB_IMAGE
-          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/app/public/version.txt
+          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/packages/home/public/version.txt
           docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE ./web
           docker tag $WEB_IMAGE $WEB_IMAGE:latest
           docker tag $WEB_IMAGE $WEB_IMAGE:$COMMIT_REF
@@ -195,7 +195,7 @@ jobs:
           echo "Tagging with $RELEASE_TAG"
           docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $WEB_IMAGE
-          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/app/public/version.txt
+          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/packages/home/public/version.txt
           docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE:$RELEASE_TAG ./web
           docker tag $WEB_IMAGE:$RELEASE_TAG $WEB_IMAGE:release
           docker push $WEB_IMAGE:$RELEASE_TAG

@@ -44,6 +44,7 @@ export interface DmtSettings {
   actions: any
   file_loc: string
   data_source_aliases: any
+  urlPath: string
 }
 
 export const UiPluginContext = createContext({})

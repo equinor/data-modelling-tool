@@ -1,0 +1,50 @@
+{
+  "name": "Analysis",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "description": "",
+  "attributes": [
+    {
+      "name": "label",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "workflow",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "WorkflowDS/Blueprints/Workflow",
+      "contained": true
+    },
+    {
+      "name": "creator",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "description",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "created",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "updated",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    }
+  ],
+  "uiRecipes": [
+  ],
+  "storageRecipes": [
+  ]
+}

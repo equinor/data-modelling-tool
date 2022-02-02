@@ -1,0 +1,35 @@
+{
+  "name": "Workflow",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "description": "A workflow is made up of one or more tasks that can run sequentially or in parallel",
+  "attributes": [
+    {
+      "name": "label",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "schedule",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "tasks",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Task",
+      "dimensions": "*"
+    },
+    {
+      "name": "runs",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/WorkflowRun",
+      "dimensions": "*",
+      "description": "The results"
+    }
+  ]
+}

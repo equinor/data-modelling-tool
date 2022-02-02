@@ -147,3 +147,4 @@ api/first-run-false
 /web/app/public/version.txt
 /sre-wrapper/sima.lic
 /sre-wrapper/tmp/
+/web/packages/home/public/version.txt

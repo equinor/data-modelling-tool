@@ -448,6 +448,7 @@ export default ({ settings }: any) => {
   }, [])
 
   function search(query: any) {
+    query['extends'] = ['WorkflowDS/Blueprints/Task']
     if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
     dmssAPI

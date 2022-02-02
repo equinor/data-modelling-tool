@@ -74,11 +74,11 @@ export class BlueprintSchema implements IBlueprintSchema {
     let blueprintAttributes: BlueprintAttribute[] = attributes.map(
       (attrType: BlueprintAttributeType) => new BlueprintAttribute(attrType)
     )
-    if (this.uiRecipe.name) {
-      blueprintAttributes = blueprintAttributes.filter(
-        blueprint.filterAttributesByUiRecipe(this.uiRecipe.name)
-      )
-    }
+    // if (this.uiRecipe.name) {
+    //   blueprintAttributes = blueprintAttributes.filter(
+    //     blueprint.filterAttributesByUiRecipe(this.uiRecipe.name)
+    //   )
+    // }
 
     const skip: string[] = this.getNotContained(blueprint)
 

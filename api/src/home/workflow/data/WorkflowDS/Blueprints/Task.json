@@ -1,0 +1,48 @@
+{
+  "name": "Task",
+  "abstract": true,
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "description": "Task represent a single job in a workflow",
+  "attributes": [
+    {
+      "name": "label",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "outputTarget",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "description": "Reference to a location where the result should be stored",
+      "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "inputType",
+      "label": "Input type",
+      "description": "Reference to a Blueprint",
+      "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/Entity",
+      "name": "defaultInput",
+      "label": "Default input",
+      "description": "Default input data",
+      "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "outputType",
+      "label": "Output type",
+      "description": "Reference to a Blueprint",
+      "optional": true
+    }
+  ]
+}

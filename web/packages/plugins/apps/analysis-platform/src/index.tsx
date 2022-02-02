@@ -5,7 +5,7 @@ import App from './App'
 
 export const plugins: any = [
   {
-    pluginName: 'for',
+    pluginName: 'analysisPlatformApp',
     pluginType: DmtPluginType.PAGE,
     content: {
       component: App,

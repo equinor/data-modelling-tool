@@ -1,0 +1,41 @@
+{
+  "name": "SIMATask",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity",
+    "WorkflowDS/Blueprints/Task"
+  ],
+  "description": "",
+  "attributes": [
+    {
+      "name": "jobType",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false
+    },
+    {
+      "name": "workflowTask",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false
+    },
+    {
+      "name": "workflow",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false
+    },
+    {
+      "name": "stask",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute"
+    },
+    {
+      "name": "SIMAComputeConnectInfo",
+      "attributeType": "/tasks/SIMAComputeService",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "optional": true
+    }
+  ]
+}

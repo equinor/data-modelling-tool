@@ -1,0 +1,18 @@
+{
+  "name": "workflow",
+  "label": "Workflow",
+  "pluginName": "DMT",
+  "urlPath": "workflow",
+  "tabIndex": 0,
+  "hidden": false,
+  "visibleDataSources": [
+    "WorkflowDS"
+  ],
+  "type": "system/SIMOS/Application",
+  "description": "Add workflow support to applications",
+  "packages": [
+    "WorkflowDS/Blueprints"
+  ],
+  "models": [],
+  "actions": []
+}
