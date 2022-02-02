@@ -80,7 +80,6 @@ function App() {
 
   const { loading, getPagePlugin } = useContext(UiPluginContext)
 
-
   useEffect(() => {
     setLoadingAppSettings(true)
     dmtAPI
