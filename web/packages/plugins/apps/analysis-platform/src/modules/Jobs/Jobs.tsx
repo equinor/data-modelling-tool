@@ -1,9 +1,9 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, {useContext, useEffect, useState} from 'react'
 import styled from 'styled-components'
-import { AuthContext } from '@dmt/common'
+import {AuthContext} from '@dmt/common'
 import JobApi from './JobApi'
-import { SimulationStatus } from '../../Enums'
-import { Button, Label } from '@equinor/eds-core-react'
+import {SimulationStatus} from '../../Enums'
+import {Button, Label} from '@equinor/eds-core-react'
 import Icons from '../../components/Design/Icons'
 
 const StyledPre = styled.pre`

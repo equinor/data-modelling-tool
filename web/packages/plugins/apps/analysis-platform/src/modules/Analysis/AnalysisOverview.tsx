@@ -1,10 +1,9 @@
-import {DmtSettings} from '@dmt/common'
+import {AuthContext, DmtSettings} from '@dmt/common'
 import React, {useContext} from 'react'
 import AnalysisTable from "./components/AnalysisTable";
 import {Link, useLocation} from 'react-router-dom'
 import {hasExpertRole} from "../../utils/auth";
 import {Button, Divider} from '@equinor/eds-core-react'
-import {AuthContext} from '@dmt/common'
 
 type NewAnalysisButtonProps = {
     urlPath: string
@@ -14,7 +13,7 @@ const NewAnalysisButton = (props: NewAnalysisButtonProps) => {
     const {urlPath} = props
     const location = useLocation()
     const to = {
-        pathname: `/${urlPath}/analysis/new`,
+        pathname: `/${urlPath}/new-analysis`,
         state: location.state,
     }
     return (<Link to={to}>

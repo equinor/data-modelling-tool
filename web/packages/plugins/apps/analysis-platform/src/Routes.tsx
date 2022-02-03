@@ -10,7 +10,7 @@ const Routes: Array<TRoute> = [
     content: AnalysisOverview,
   },
     {
-    path: '/analysis/new',
+    path: '/new-analysis',
     heading: 'Create new Analysis',
     content: AnalysisNew,
   },

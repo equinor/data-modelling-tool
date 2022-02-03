@@ -26,13 +26,14 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
   }, [dataSourceId, documentId])
 
   function updateDocument(newDocument: Object) {
+      console.log(newDocument);
     setLoading(true)
     dmssAPI
       .updateDocumentById({
         dataSourceId,
         documentId,
         attribute,
-        data: JSON.stringify(newDocument),
+        data: JSON.stringify(newDocument)
       })
       .then(() => {
         setDocument(newDocument)
