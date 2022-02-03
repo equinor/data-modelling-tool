@@ -31,7 +31,9 @@ const onRowClicked = (event: any) => {
 
 
 const AnalysisTable = () => {
-    const [analysis, isLoading, hasError] = useSearch(Blueprints.ANALYSIS)
+    const [analysis, isLoading, hasError] = useSearch({
+        type: Blueprints.ANALYSIS
+    })
 
     if (isLoading) {
         return <Progress.Linear/>

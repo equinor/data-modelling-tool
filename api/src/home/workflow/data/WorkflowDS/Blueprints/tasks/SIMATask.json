@@ -6,7 +6,7 @@
     "system/SIMOS/NamedEntity",
     "WorkflowDS/Blueprints/Task"
   ],
-  "description": "",
+  "description": "This is for running SIMA tasks",
   "attributes": [
     {
       "name": "jobType",
