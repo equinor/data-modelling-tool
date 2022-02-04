@@ -33,7 +33,7 @@ const PageComponent = (props: any) => {
       <Route
         exact
         path="/DMT/view/:data_source/:entity_id"
-        component={ViewPage}
+        component={() => <ViewPage settings={settings} />}
       />
       <Route
         exact

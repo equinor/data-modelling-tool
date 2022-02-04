@@ -24,6 +24,25 @@
           "name": "Rikke",
           "description": "Hello from"
         }
+      },
+      {
+        "type": "WorkflowDS/Blueprints/tasks/SIMATask",
+        "name": "exampleSimaTask",
+        "jobType": "WorkflowDS/Blueprints/jobs/Shell",
+        "stask": {
+          "name": "/STasks/dummy.stask",
+          "type": "system/SIMOS/Blob",
+          "_blob_id": "04cf2783-6118-4bfd-a427-9485b00fa9da"
+        },
+        "workflow": "aTask",
+        "workflowTask": "aWorkflowTask",
+        "inputType": "system/SIMOS/NamedEntity",
+        "outputType": "system/SIMOS/NamedEntity",
+        "defaultInput": {
+          "type": "system/SIMOS/NamedEntity",
+          "name": "Something",
+          "description": "Hello from"
+        }
       }
     ],
     "runs": [

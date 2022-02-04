@@ -8,6 +8,7 @@ import {
   AuthContext,
   useDocument,
   UiPluginContext,
+  ApplicationContext,
 } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -29,7 +30,7 @@ const Group = styled.div`
 const dmtAPI = new DmtAPI()
 
 const View = (props: any) => {
-  const { dataSourceId, uiRecipe, document } = props
+  const { dataSourceId, uiRecipe, document, documentId, updateDocument } = props
   const { getUiPlugin } = useContext(UiPluginContext)
   const UiPlugin = getUiPlugin(uiRecipe.plugin)
   // @ts-ignore-line
@@ -41,6 +42,7 @@ const View = (props: any) => {
       documentId={document._id}
       uiRecipe={uiRecipe}
       uiRecipeName={uiRecipe.name}
+      updateDocument={updateDocument}
       document={document}
       fetchBlueprint={(typeRef: string) => dmssAPI.getBlueprint({ typeRef })}
       createDocument={dmtAPI.createEntity}
@@ -48,8 +50,6 @@ const View = (props: any) => {
   )
 }
 
-// This is enlarge a duplicate of the ViewList in DocumentComponent.tsx with
-// only view plugins (does not pass updateDocument(), explorer etc.)
 const ViewList = (props: any) => {
   const generateUiRecipeTabs = new GenerateUiRecipeTabs(
     props.blueprintType.uiRecipes
@@ -82,7 +82,7 @@ const ViewList = (props: any) => {
     </Tabs>
   )
 }
-export default () => {
+export default ({ settings }: any) => {
   const { data_source, entity_id } = useParams()
   const [document, documentLoading, setDocument, error] = useDocument(
     data_source,
@@ -99,7 +99,7 @@ export default () => {
   useEffect(() => {
     if (!document?.type) return
     dmssAPI
-      .getBlueprint(document.type)
+      .getBlueprint({ typeRef: document.type })
       .then((v: any) => setBlueprint(v))
       .catch((error: Error) => setBlueprintError(error))
       .finally(() => setLoading(false))
@@ -119,25 +119,33 @@ export default () => {
     )
 
   return (
-    <Group>
-      <div>
-        <SimplifiedTree document={document} datasourceId={data_source} />
-      </div>
-      <div>
-        <b>DataSource:</b>
-        <p style={{ marginLeft: '5px' }}>{data_source}</p>
-      </div>
-      <div>
-        <b>Entity:</b>
-        <p style={{ marginLeft: '5px' }}>{entity_id}</p>
-      </div>
-      {document && blueprint && (
-        <ViewList
-          document={document}
-          blueprintType={blueprint}
-          dataSource={data_source}
-        />
-      )}
-    </Group>
+    <>
+      <ApplicationContext.Provider
+        value={{ ...settings, displayAllDataSources: true }}
+      >
+        <Group>
+          <div>
+            <SimplifiedTree document={document} datasourceId={data_source} />
+          </div>
+          <div>
+            <b>DataSource:</b>
+            <p style={{ marginLeft: '5px' }}>{data_source}</p>
+          </div>
+          <div>
+            <b>Entity:</b>
+            <p style={{ marginLeft: '5px' }}>{entity_id}</p>
+          </div>
+          {document && blueprint && (
+            <ViewList
+              document={document}
+              blueprintType={blueprint}
+              updateDocument={setDocument}
+              dataSource={data_source}
+              documentId={entity_id}
+            />
+          )}
+        </Group>
+      </ApplicationContext.Provider>
+    </>
   )
 }

@@ -2,7 +2,6 @@
   "name": "SIMATask",
   "type": "system/SIMOS/Blueprint",
   "extends": [
-    "system/SIMOS/DefaultUiRecipes",
     "system/SIMOS/NamedEntity",
     "WorkflowDS/Blueprints/Task"
   ],
@@ -36,6 +35,13 @@
       "attributeType": "/tasks/SIMAComputeService",
       "type": "system/SIMOS/BlueprintAttribute",
       "optional": true
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-sima-task"
     }
   ]
 }

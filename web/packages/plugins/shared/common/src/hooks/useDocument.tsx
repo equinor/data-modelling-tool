@@ -1,5 +1,7 @@
 import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 import { AuthContext } from '@dmt/common'
 
 export const useDocument = (dataSourceId: string, documentId: string) => {
@@ -9,14 +11,11 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  const target = documentId.split('.')
-  const id = `${target.shift()}`
-  const attribute = target.join('.')
 
   useEffect(() => {
     setLoading(true)
     dmssAPI
-      .getDocumentById({ dataSourceId, documentId: id, attribute })
+      .getDocumentById({ dataSourceId, documentId })
       .then((document) => {
         setDocument(document)
         setError(null)
@@ -31,7 +30,6 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
       .updateDocumentById({
         dataSourceId,
         documentId,
-        attribute,
         data: JSON.stringify(newDocument),
       })
       .then(() => {

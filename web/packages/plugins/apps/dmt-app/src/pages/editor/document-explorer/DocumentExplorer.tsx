@@ -209,6 +209,12 @@ export default () => {
             console.error(message)
             NotificationManager.error(message, 'Action Failed')
         }
+      case ContextMenuActions.VIEW:
+        // Open the view url in a new tab
+        window.open(data, '_blank').focus();
+        break
+
+
     }
   }
 

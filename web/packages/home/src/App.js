@@ -2,9 +2,9 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
 import {
   BrowserRouter as Router,
-  Link,
   Redirect,
   Route,
+  useHistory,
 } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
@@ -16,7 +16,6 @@ import {
   CardFieldset,
   CardHeader,
   CardHeading,
-  CardLink,
   CardWrapper,
 } from './components/Card'
 import { AuthContext } from 'react-oauth2-code-pkce'
@@ -40,6 +39,7 @@ const theme = {
 
 const HorizontalList = styled.div`
   display: flex;
+  flex-flow: wrap;
   justify-content: center;
 
   & > div {
@@ -50,19 +50,15 @@ const HorizontalList = styled.div`
 
 const AppSelector = (props) => {
   const { applications } = props
+  const history = useHistory()
   const links = Object.values(applications).map((setting) => (
     <div key={setting.name}>
-      <CardWrapper>
+      <CardWrapper onClick={() => history.push(`/${setting.urlPath}`)}>
         <CardHeader>
           <CardHeading>{`${setting.label}`}</CardHeading>
         </CardHeader>
         <CardBody>
           <CardFieldset>{`${setting.description}`}</CardFieldset>
-          <CardFieldset>
-            <CardLink>
-              <Link to={`/${setting.urlPath}`}>Open</Link>
-            </CardLink>
-          </CardFieldset>
         </CardBody>
       </CardWrapper>
     </div>

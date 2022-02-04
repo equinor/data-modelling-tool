@@ -8,9 +8,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "name",
       "description": "Name of DataSource",
       "attributeType": "string",
@@ -21,9 +18,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "account_name",
       "description": "Account name",
       "attributeType": "string",
@@ -34,9 +28,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "account_key",
       "description": "Account key",
       "attributeType": "string",
@@ -47,9 +38,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "collection",
       "description": "name of collection in database. Does not need to exist",
       "attributeType": "string",

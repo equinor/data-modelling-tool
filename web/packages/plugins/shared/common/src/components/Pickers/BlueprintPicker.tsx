@@ -13,11 +13,12 @@ import {
 } from '../../index'
 import { IDataSources } from '../../hooks/useDataSources'
 import { AuthContext } from '@dmt/common'
+import { Input } from '@equinor/eds-core-react'
 
 export type BlueprintPickerProps = {
   onChange: Function
   formData: any
-  uiSchema: any
+  uiSchema?: any
   blueprintFilter?: BlueprintEnum
 }
 
@@ -97,17 +98,12 @@ export const BlueprintPicker = (props: BlueprintPickerProps) => {
 
   return (
     <>
-      {uiSchema?.['ui:label'] == null ? (
-        <label>Type</label>
-      ) : (
-        <b>{uiSchema['ui:label']}</b>
-      )}
       <div style={{ width: '100%' }}>
-        <input
-          style={{ width: '280px', borderRadius: '5px' }}
+        <Input
+          style={{ width: '280px', margin: '0 8px', cursor: 'pointer' }}
           type="string"
           value={formData}
-          readOnly={true}
+          placeholder="Select"
           onClick={() => setShowModal(true)}
         />
         <Modal
