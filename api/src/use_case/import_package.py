@@ -18,7 +18,7 @@ from restful import use_case as uc
 from services.dmss import dmss_api
 from services.document_service import DocumentService
 
-keys_to_check = ("type", "attributeType", "_id", "extends")  # These keys can contain a reference
+keys_to_check = ("type", "attributeType", "_id", "extends")  # These keys may contain a reference
 
 
 def replace_relative_references(key: str, value, reference_table: dict = None, zip_file: ZipFile = None) -> Any:
@@ -193,6 +193,9 @@ def upload_blobs_in_document(document: dict, data_source_id: str) -> dict:
     for key, value in document.items():
         if isinstance(value, dict) and value:
             document[key] = upload_blobs_in_document(value, data_source_id)
+        if isinstance(value, list) and value:
+            if len(value) > 0 and isinstance(value[0], dict):
+                document[key] = [upload_blobs_in_document(item, data_source_id) for item in document[key]]
     return document
 
 

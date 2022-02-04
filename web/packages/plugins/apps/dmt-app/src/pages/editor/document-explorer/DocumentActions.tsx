@@ -25,6 +25,7 @@ export enum ContextMenuActions {
   INSERT_REFERENCE = 'INSERT_REFERENCE',
   UNLINK = 'UNLINK',
   CHANGE_ACL = 'CHANGE_ACL',
+  VIEW = 'VIEW',
 }
 
 const fillTemplate = function (templateString: string, templateVars: object) {

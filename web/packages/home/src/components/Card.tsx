@@ -3,6 +3,7 @@ import styled from 'styled-components'
 export const CardWrapper = styled.div`
   overflow: hidden;
   padding: 0 0 32px;
+  cursor: pointer;
   margin: 48px auto 0;
   width: 300px;
   font-family: Quicksand, arial, sans-serif;
@@ -80,19 +81,5 @@ export const CardButton = styled.button`
   &:hover {
     box-shadow: 0 15px 15px rgba(0, 0, 0, 0.16);
     transform: translate(0, -5px);
-  }
-`
-
-export const CardLink = styled.a`
-  display: inline-block;
-  font-size: 12px;
-  text-decoration: none;
-  color: #aaa;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
-  transition: color 0.25s ease-in;
-
-  &:hover {
-    color: #777;
   }
 `

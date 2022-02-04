@@ -204,7 +204,7 @@ class GenerateSingleIndexUseCase(UseCase):
                 document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=document_id, depth=1)
             )
         else:
-            parent = document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=parent_uid, depth=1)
+            parent = document_service.get_node_by_uid(data_source_id=data_source_id, document_uid=parent_uid, depth=2)
 
         if not parent and data_source_id != document_id:
             raise EntityNotFoundException(uid=parent_id)

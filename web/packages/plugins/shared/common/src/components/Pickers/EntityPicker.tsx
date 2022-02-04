@@ -14,6 +14,7 @@ import {
 import { IDataSources } from '../../hooks/useDataSources'
 import { Reference } from '../../services/api/configs/gen'
 import { AuthContext } from '@dmt/common'
+import { Input } from '@equinor/eds-core-react'
 
 export type EntityPickerProps = {
   onChange: Function
@@ -22,9 +23,7 @@ export type EntityPickerProps = {
 export const EntityPicker = (props: EntityPickerProps) => {
   // TODO: Valid types should be passed to this, and filtered for in the view
   const { onChange } = props
-  const [selectedEntity, setSelectedEntity] = useState<string>(
-    'Click to select entity'
-  )
+  const [selectedEntity, setSelectedEntity] = useState<string>()
   const [showModal, setShowModal] = useState<boolean>(false)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
@@ -47,12 +46,12 @@ export const EntityPicker = (props: EntityPickerProps) => {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <input
+      <Input
         type="string"
         value={selectedEntity}
-        readOnly={true}
+        placeholder="Select"
         onClick={() => setShowModal(true)}
-        style={{ width: '280px' }}
+        style={{ width: '280px', margin: '0 8px', cursor: 'pointer' }}
       />
       <Modal
         toggle={() => setShowModal(!showModal)}

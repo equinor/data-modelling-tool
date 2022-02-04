@@ -14,11 +14,12 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
   const [complexTypes, setComplexTypes] = useState<any[]>([])
 
   useEffect(() => {
+    if (!document) return
     let path = document.type.split('/')
     path.shift()
     let complexTypes = getComplexTypesInDocument(document)
     setComplexTypes(complexTypes)
-  }, [])
+  }, [document])
 
   const getComplexTypesInDocument = (document: any) => {
     let complexTypes: BlueprintAttribute[] = []
@@ -33,7 +34,7 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
     return complexTypes
   }
 
-  if (complexTypes.length === 0) return <div></div>
+  if (complexTypes.length === 0) return <div />
   return (
     <Pre style={{ width: '50%' }}>
       <FaRegFileAlt /> {document['name']}

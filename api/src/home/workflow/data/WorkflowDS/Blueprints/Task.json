@@ -3,7 +3,6 @@
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
   "extends": [
-    "system/SIMOS/DefaultUiRecipes",
     "system/SIMOS/NamedEntity"
   ],
   "description": "Task represent a single job in a workflow",

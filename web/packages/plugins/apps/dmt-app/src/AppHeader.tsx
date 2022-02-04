@@ -3,16 +3,15 @@ import { Link, Route, useLocation } from 'react-router-dom'
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import {
+  AuthContext,
   Button,
   JsonView,
   Modal,
   sortApplications,
-  AuthContext,
 } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
-import Header from './components/Header'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -58,12 +57,14 @@ function UserInfo() {
           title={'Logged in user info'}
         >
           <JsonView data={tokenData} />
-          <button type={'button'} onClick={() => setExpanded(false)}>
-            Close
-          </button>
+          <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <Button onClick={() => logOut()}>Log out</Button>
+            <Button type={'button'} onClick={() => setExpanded(false)}>
+              Close
+            </Button>
+          </div>
         </Modal>
       </UserInfoBox>
-      {tokenData?.loggedIn && <Button onClick={() => logOut()}>Log out</Button>}
     </div>
   )
 }

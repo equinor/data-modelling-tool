@@ -8,9 +8,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "name",
       "description": "Name of DataSource",
       "attributeType": "string",
@@ -21,9 +18,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "host",
       "description": "Hostname of server",
       "attributeType": "string",
@@ -35,9 +29,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "port",
       "attributeType": "integer"
     },
@@ -46,9 +37,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "username",
       "description": "credentials: username",
       "attributeType": "string",
@@ -59,9 +47,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "password",
       "description": "credentials: password",
       "attributeType": "string",
@@ -73,9 +58,6 @@
       "dimensions": "",
       "optional": true,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "tls",
       "description": "tls connection to host?",
       "attributeType": "boolean"
@@ -85,9 +67,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "database",
       "description": "Name of database on server. Does not need to exist.",
       "attributeType": "string",
@@ -98,9 +77,6 @@
       "dimensions": "",
       "optional": false,
       "contained": true,
-      "enumType": {
-        "selected": ""
-      },
       "name": "collection",
       "description": "name of mongo collection in database. Does not need to exist",
       "attributeType": "string",
