@@ -24,7 +24,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
       .finally(() => setLoading(false))
   }, [dataSourceId, documentId])
 
-  function updateDocument(newDocument: Object) {
+  function updateDocument(newDocument: Object, notify: boolean) {
     setLoading(true)
     dmssAPI
       .updateDocumentById({
@@ -35,8 +35,17 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
       .then(() => {
         setDocument(newDocument)
         setError(null)
+        if (notify) NotificationManager.success('Document updated')
       })
-      .catch((error: Error) => setError(error))
+      .catch((error: Error) => {
+        console.error(error)
+        if (notify)
+          NotificationManager.error(
+            JSON.stringify(error.message),
+            'Failed to update document'
+          )
+        setError(error)
+      })
       .finally(() => setLoading(false))
   }
   return [document, isLoading, updateDocument, error]

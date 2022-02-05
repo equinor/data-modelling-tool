@@ -66,7 +66,9 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
                     )
             else:
                 # Add view URL link to non datasource/package/list nodes
-                menu_items.append({"label": "View URL", "action": "VIEW", "data": f"dmt/view/{data_source_id}/{node.node_id}"})
+                menu_items.append(
+                    {"label": "View URL", "action": "VIEW", "data": f"dmt/view/{data_source_id}/{node.node_id}"}
+                )
 
                 # Add create entry for optional attributes (not for packages)
                 for empty_child in [child for child in node.children if child.is_empty() and not child.is_array()]:

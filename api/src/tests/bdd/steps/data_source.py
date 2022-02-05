@@ -3,9 +3,7 @@ from pymongo import MongoClient
 
 from services.dmss import dmss_api
 
-data_source_collection_client = MongoClient("db", username="maf", password="maf")["data-source-database"][
-    "data_sources"
-]
+data_source_collection_client = MongoClient("db", username="maf", password="maf")["dmss-internal"]["data_sources"]
 mongo_client = MongoClient("db", username="maf", password="maf")
 
 

@@ -89,12 +89,7 @@ export const BlueprintPicker = (props: BlueprintPickerProps) => {
     blueprintFilter = BlueprintEnum.BLUEPRINT,
   } = props
   const [showModal, setShowModal] = useState<boolean>(false)
-
-  const selectorProps = {
-    setShowModal,
-    onChange,
-    blueprintFilter,
-  }
+  const selectorProps = { setShowModal, onChange, blueprintFilter }
 
   return (
     <>

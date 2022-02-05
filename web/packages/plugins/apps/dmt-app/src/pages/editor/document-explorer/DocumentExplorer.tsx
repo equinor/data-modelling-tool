@@ -1,24 +1,24 @@
 import React, { useContext } from 'react'
 import {
   ApplicationContext,
+  AuthContext,
   DmssAPI,
   NodeType,
   Tree,
   TreeNodeRenderProps,
-  AuthContext,
   UiPluginContext,
 } from '@dmt/common'
 import { DocumentNode } from './DocumentNode'
 import {
   ContextMenuActions,
+  DefaultCreate,
   DeleteAction,
+  DisplayACL,
   DownloadAction,
   IInsertReferenceProps,
   InsertReference,
-  DefaultCreate,
-  SaveToExistingDocument,
   RenameDocument,
-  DisplayACL,
+  SaveToExistingDocument,
 } from './DocumentActions'
 import ContextMenu from '../../../components/context-menu/ContextMenu'
 import { useModalContext } from '../../../context/modal/ModalContext'
@@ -204,6 +204,7 @@ export default () => {
               props: separateResultFileProps,
             })
             break
+
           default:
             const message = `No valid 'actionType' is defined for action '${data.runnable.name}'`
             console.error(message)
@@ -211,10 +212,8 @@ export default () => {
         }
       case ContextMenuActions.VIEW:
         // Open the view url in a new tab
-        window.open(data, '_blank').focus();
+        window.open(data, '_blank').focus()
         break
-
-
     }
   }
 

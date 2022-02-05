@@ -156,7 +156,7 @@ export default ({ applications }: AppHeaderProps) => {
         <div>
           <>
             {sortApplications(applications).map((app) => (
-              <Link to={`/${app.name}`} key={app.name}>
+              <Link to={`/${app.urlPath}`} key={app.name}>
                 <TabStyled isSelected={getActiveTab() === app.name}>
                   {app?.label ? app.label : app.name}
                 </TabStyled>

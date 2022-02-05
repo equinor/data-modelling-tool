@@ -6,14 +6,14 @@ import useExplorer, {
   RenameData,
 } from '../../../hooks/useExplorer'
 import {
+  AccessControlList,
+  AuthContext,
   BlueprintEnum,
   BlueprintPicker,
-  EntityPicker,
-  Reference,
-  OverrideTypeButton,
   DmssAPI,
-  AuthContext,
-  AccessControlList,
+  EntityPicker,
+  OverrideTypeButton,
+  TReference,
 } from '@dmt/common'
 
 export enum ContextMenuActions {
@@ -291,32 +291,30 @@ export const RenameDocument = (props: IRenameDocument) => {
 export const InsertReference = (props: IInsertReferenceProps) => {
   // TODO: Validate valid type from parent
   const { explorer, attribute, target, targetDataSource } = props
-  const [refId, setRefID] = useState('')
-  const [refName, setRefName] = useState('')
-  const [refType, setRefType] = useState('')
+  const [reference, setReference] = useState<TReference>({
+    name: '',
+    _id: '',
+    type: '',
+  })
 
-  const updateDocument = () => {
-    const reference: Reference = {
-      name: refName,
-      id: refId,
-      type: refType,
-    }
-    explorer.insertReference({
-      dataSourceId: targetDataSource,
-      documentDottedId: (attribute && `${target}.${attribute}`) || target,
-      reference,
-    })
-  }
   const modalContent = () => {
     return (
       <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div style={{ marginTop: '10px' }}>
           <label style={{ marginRight: '10px' }}>Type: </label>
-          <input disabled={true} value={refType} style={{ width: '280px' }} />
+          <input
+            disabled={true}
+            value={reference.type}
+            style={{ width: '280px' }}
+          />
         </div>
         <div style={{ margin: '10px 0' }}>
           <label style={{ marginRight: '10px' }}>Name: </label>
-          <input disabled={true} value={refName} style={{ width: '280px' }} />
+          <input
+            disabled={true}
+            value={reference.name}
+            style={{ width: '280px' }}
+          />
         </div>
         <div
           style={{
@@ -327,12 +325,7 @@ export const InsertReference = (props: IInsertReferenceProps) => {
         >
           <label style={{ marginRight: '10px' }}>_id:</label>
           <EntityPicker
-            onChange={(reference: Reference) => {
-              // TODO: Validate type based on parent
-              setRefID(reference.id)
-              setRefName(reference.name)
-              setRefType(reference.type)
-            }}
+            onChange={(reference: TReference) => setReference(reference)}
           />
         </div>
       </div>
@@ -341,7 +334,17 @@ export const InsertReference = (props: IInsertReferenceProps) => {
 
   return (
     <Prompt
-      onSubmit={updateDocument}
+      onSubmit={() =>
+        explorer.insertReference({
+          dataSourceId: targetDataSource,
+          documentDottedId: (attribute && `${target}.${attribute}`) || target,
+          reference: {
+            name: reference.name,
+            id: reference._id,
+            type: reference.type,
+          },
+        })
+      }
       content={modalContent()}
       buttonText={'OK'}
     />

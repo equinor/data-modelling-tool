@@ -3,7 +3,7 @@ import * as React from 'react'
 import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import { FoRResultWrapper } from './ForecastOfResponse'
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: any) => {
   const { document, simulationConfig, dottedId } = props
   return (
     <FoRResultWrapper

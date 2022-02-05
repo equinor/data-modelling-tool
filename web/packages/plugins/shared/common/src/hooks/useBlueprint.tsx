@@ -3,7 +3,7 @@ import { DmssAPI } from '../services/api/DmssAPI'
 import { AuthContext } from '@dmt/common'
 
 export const useBlueprint = (typeRef: string) => {
-  const [blueprint, setBlueprint] = useState<Object | null>(null)
+  const [blueprint, setBlueprint] = useState<any | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
   // @ts-ignore-line

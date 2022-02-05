@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { AuthContext } from '@dmt/common'
 import JobApi from '../JobApi'
-import { SimulationStatus } from '../../../Enums'
+import { Status } from '../../../Enums'
 import { Button, Label } from '@equinor/eds-core-react'
 import Icons from '../../../components/Design/Icons'
 
@@ -13,11 +13,11 @@ const StyledPre = styled.pre`
 
 function colorFromStatus(status: string): string {
   switch (status) {
-    case SimulationStatus.COMPLETED:
+    case Status.COMPLETED:
       return 'green'
-    case SimulationStatus.FAILED:
+    case Status.FAILED:
       return 'red'
-    case SimulationStatus.RUNNING:
+    case Status.RUNNING:
       return 'orange'
     default:
       return 'darkgrey'
@@ -40,6 +40,7 @@ const SimStatusWrapper = styled.div`
 
 export const JobLog = (props: { jobId: string }) => {
   const { jobId } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const [loading, setLoading] = useState<boolean>(false)
@@ -55,9 +56,9 @@ export const JobLog = (props: { jobId: string }) => {
         setJobLogs(result.data.log)
         setJobStatus(result.data.status)
       })
-      .catch((e: Error) => {
+      .catch((e: any) => {
         setJobLogs(e.response.data.message)
-        setJobStatus(SimulationStatus.FAILED)
+        setJobStatus(Status.FAILED)
         console.error(e)
       })
       .finally(() => setLoading(false))
