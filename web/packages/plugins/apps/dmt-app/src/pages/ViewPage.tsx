@@ -39,7 +39,7 @@ const View = (props: any) => {
   return (
     <UiPlugin
       dataSourceId={dataSourceId}
-      documentId={document._id}
+      documentId={documentId}
       uiRecipe={uiRecipe}
       uiRecipeName={uiRecipe.name}
       updateDocument={updateDocument}

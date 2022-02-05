@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { TGraph, TPlot, TSimulationConfig } from '../../Types'
 import { Button, Progress } from '@equinor/eds-core-react'
+// @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import styled from 'styled-components'
 import { AuthContext, DmssAPI } from '@dmt/common'
@@ -8,6 +8,7 @@ import { DEFAULT_DATASOURCE_ID } from './const'
 import Result from './Result'
 import { poorMansUUID } from './uuid'
 import Icons from './Icons'
+import { TPlot, TGraph } from './types'
 
 const StyledHeaderButton = styled(Button)`
   margin: 0 20px;
@@ -18,8 +19,8 @@ enum Blueprints {
   GRAPH = 'ForecastDS/FoR-BP/Blueprints/Graph',
 }
 
-function FoRResultWrapper(props: {
-  simulationConfig: TSimulationConfig
+export function FoRResultWrapper(props: {
+  simulationConfig: any
   dottedId: string
   result: any
 }) {
@@ -28,6 +29,7 @@ function FoRResultWrapper(props: {
     [poorMansUUID()]: { graphs: [] },
   })
   const [loading, setLoading] = useState<boolean>(false)
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -153,5 +155,3 @@ function FoRResultWrapper(props: {
     </div>
   )
 }
-
-export { FoRResultWrapper }

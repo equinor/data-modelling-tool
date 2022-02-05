@@ -1,4 +1,11 @@
-import { BlueprintPicker, DmtUIPlugin, EntityPicker } from '@dmt/common'
+import {
+  BlueprintPicker,
+  DmtUIPlugin,
+  EntityPicker,
+  EntityPickerDropdown,
+  TReference,
+  useDocument,
+} from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useState } from 'react'
 import { Button, Label, TextField, Typography } from '@equinor/eds-core-react'
@@ -15,6 +22,7 @@ const GroupWrapper = styled.div`
   display: flex;
   justify-content: space-between;
   flex-direction: row;
+  flex-wrap: wrap;
 `
 
 const HeaderWrapper = styled.div`
@@ -22,8 +30,13 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditSimaTask = (props: DmtUIPlugin) => {
-  const { document, updateDocument, documentId } = props
-  const [formData, setFormData] = useState<any>(document)
+  const { document, documentId, dataSourceId } = props
+  // using the passed updateDocument from props causes way too much rerendering. This should probably be fixed...
+  const [_document, documentLoading, updateDocument, error] = useDocument(
+    dataSourceId,
+    documentId
+  )
+  const [formData, setFormData] = useState<any>({ ...document })
 
   return (
     <>
@@ -40,14 +53,27 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
                 formData={formData.inputType}
               />
             </ColumnWrapper>
-            <ColumnWrapper>
-              <Label label={'Default input entity'} />
-              <EntityPicker
-                onChange={(selectedEntity: string) =>
-                  setFormData({ ...formData, defaultInput: selectedEntity })
-                }
-              />
-            </ColumnWrapper>
+            <div style={{ display: 'flex' }}>
+              <ColumnWrapper>
+                <Label label={'Default input entity'} />
+                <EntityPicker
+                  formData={formData.defaultInput}
+                  onChange={(selectedEntity: TReference) =>
+                    setFormData({
+                      ...formData,
+                      defaultInput: {
+                        _id: selectedEntity._id,
+                        name: selectedEntity.name,
+                        type: selectedEntity.type,
+                      },
+                    })
+                  }
+                />
+              </ColumnWrapper>
+              <Button style={{ margin: '15px 10px 0 10px' }} disabled>
+                Create
+              </Button>
+            </div>
           </GroupWrapper>
         </HeaderWrapper>
 
@@ -70,12 +96,21 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
           <Typography variant="h3">SIMA Task</Typography>
           <GroupWrapper>
             <ColumnWrapper>
-              <Label label={'Select Stask from library'} />
-              <BlueprintPicker
-                onChange={(selectedBlueprint: string) =>
-                  setFormData({ ...formData, inputType: selectedBlueprint })
+              <Label label={'Select Stask'} />
+              <EntityPickerDropdown
+                onChange={(selectedStask: any) =>
+                  setFormData({
+                    ...formData,
+                    stask: {
+                      _id: selectedStask._id,
+                      name: selectedStask.name,
+                      type: selectedStask.type,
+                    },
+                  })
                 }
-                formData={formData.inputType}
+                typeFilter="AnalysisPlatformDS/Blueprints/STask"
+                dataSourceId="AnalysisPlatformDS"
+                formData={formData.stask}
               />
             </ColumnWrapper>
             <TextField
@@ -110,15 +145,23 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, jobType: selectedBlueprint })
                 }
-                formData={formData.inputType}
+                formData={formData.jobType}
               />
             </ColumnWrapper>
           </GroupWrapper>
         </HeaderWrapper>
       </Wrapper>
 
-      <div style={{ justifyContent: 'center', display: 'flex' }}>
-        <Button as="button" onClick={() => updateDocument(formData)}>
+      <div style={{ justifyContent: 'space-around', display: 'flex' }}>
+        <Button
+          as="button"
+          variant="outlined"
+          color="danger"
+          onClick={() => setFormData({ ...document })}
+        >
+          Reset
+        </Button>
+        <Button as="button" onClick={() => updateDocument(formData, true)}>
           Ok
         </Button>
       </div>

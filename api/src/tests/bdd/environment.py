@@ -16,7 +16,7 @@ client = MongoClient("db", username=Config.MONGO_USERNAME, password=Config.MONGO
 def wipe_db():
     databases = client.list_database_names()
     # Don't delete the mongo admin or local database. Also, don't delete the CORE datasource
-    databases = [n for n in databases if n not in ("admin", "local", "data-source-database", "DMSS-core")]
+    databases = [n for n in databases if n not in ("admin", "local", "dmss-internal", "DMSS-core")]
     for db_name in databases:
         client.drop_database(db_name)
     # Delete all "extra" data sources

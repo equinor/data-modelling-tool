@@ -1,10 +1,10 @@
 import styled from 'styled-components'
 import { Button, Card, Typography } from '@equinor/eds-core-react'
-import useSearch from '../../../hooks/useSearch'
 import { Blueprints } from '../../../Enums'
 import { Heading } from '../../../components/Design/Fonts'
 import React from 'react'
 import { TTask } from '../Types'
+import { useSearch } from '@dmt/common'
 
 type TaskTypeProps = {
   task: TTask

@@ -39,8 +39,12 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
     <Pre style={{ width: '50%' }}>
       <FaRegFileAlt /> {document['name']}
       <div>
-        {complexTypes.map((type) => (
-          <Link target="_parent" to={`/view/${datasourceId}/${type['_id']}`}>
+        {complexTypes.map((type, index) => (
+          <Link
+            key={index}
+            target="_parent"
+            to={`/view/${datasourceId}/${type['_id']}`}
+          >
             <div
               style={{
                 paddingLeft: 20,

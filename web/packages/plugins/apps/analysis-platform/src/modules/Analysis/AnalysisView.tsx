@@ -3,10 +3,10 @@ import { useParams } from 'react-router-dom'
 import { AuthContext, DmtAPI, useDocument } from '@dmt/common'
 import AnalysisDetails from './components/AnalysisDetails'
 import AnalysisChooser from './components/AnalysisChooser'
-import AnalysisInfoCard from './components/AnalysisInfoCard'
 import { Divider, Progress } from '@equinor/eds-core-react'
 import { TAnalysis } from './Types'
 import { Blueprints } from '../../Enums'
+import AnalysisInfoCard from './components/AnalysisInfo'
 
 const hasDefinedTask = (analysis: TAnalysis) =>
   'workflow' in analysis && 'tasks' in analysis.workflow

@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, ChangeEvent } from 'react'
 import LinesOverTime, { TLineChartDataPoint } from './Plots/LinesOverTime'
 import { Button, Chip, Progress, Tooltip } from '@equinor/eds-core-react'
 import { NotificationManager } from 'react-notifications'
@@ -10,6 +10,7 @@ import { DEFAULT_DATASOURCE_ID } from './const'
 import { plotColors } from './Plots/plotColors'
 import { poorMansUUID } from './uuid'
 import Icons from './Icons'
+import { TGraph } from './types'
 
 const ResultWrapper = styled.div`
   display: flex;
@@ -53,14 +54,6 @@ const GraphSelectorWrapper = styled.div`
   display: flex;
   padding-top: 20px;
 `
-
-export type TGraph = {
-  run: number
-  response: number
-  statistic: number
-  uuid?: string
-  type?: string
-}
 
 function GraphSelect(props: {
   variableRuns: any[]
@@ -215,14 +208,22 @@ function GraphSelect(props: {
 
   return (
     <GraphSelectorWrapper>
-      <StyledSelect onChange={(e: Event) => setChosenRun(e.target.value)}>
+      <StyledSelect
+        onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+          setChosenRun(e.target.value)
+        }
+      >
         {variableRuns.map((run: any, index) => (
           <option key={index} value={index}>
             {run.name}
           </option>
         ))}
       </StyledSelect>
-      <StyledSelect onChange={(e: Event) => setChosenResponse(e.target.value)}>
+      <StyledSelect
+        onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+          setChosenResponse(e.target.value)
+        }
+      >
         {variableRuns[chosenRun].responses.map(
           (response: any, index: number) => (
             <option key={index} value={index}>
@@ -231,7 +232,11 @@ function GraphSelect(props: {
           )
         )}
       </StyledSelect>
-      <StyledSelect onChange={(e: Event) => setChosenStatistic(e.target.value)}>
+      <StyledSelect
+        onSelect={(e: ChangeEvent<HTMLSelectElement>) =>
+          setChosenStatistic(e.target.value)
+        }
+      >
         {variableRuns[chosenRun].responses[chosenResponse].statistics.map(
           (statistic: any, index: number) => (
             <option key={index} value={index}>

@@ -1,4 +1,3 @@
-// @ts-ignore
 import React, { useContext, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import {
@@ -7,23 +6,22 @@ import {
   IIndex,
   Modal,
   Tree,
+  TreeNodeData,
   TreeNodeRenderProps,
+  TReference,
   useDataSources,
   useIndex,
 } from '../../index'
 import { IDataSources } from '../../hooks/useDataSources'
-import { Reference } from '../../services/api/configs/gen'
 import { AuthContext } from '@dmt/common'
 import { Input } from '@equinor/eds-core-react'
 
-export type EntityPickerProps = {
-  onChange: Function
-}
-
-export const EntityPicker = (props: EntityPickerProps) => {
+export const EntityPicker = (props: {
+  onChange: (ref: TReference) => void
+  formData?: TReference
+}) => {
   // TODO: Valid types should be passed to this, and filtered for in the view
-  const { onChange } = props
-  const [selectedEntity, setSelectedEntity] = useState<string>()
+  const { onChange, formData } = props
   const [showModal, setShowModal] = useState<boolean>(false)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
@@ -38,17 +36,20 @@ export const EntityPicker = (props: EntityPickerProps) => {
     index.operations.toggle(props.nodeData.nodeId)
   }
 
-  const onSelect = (value: Reference) => {
-    setSelectedEntity(value.id)
+  const onSelect = (nodeData: TreeNodeData) => {
     setShowModal(false)
-    onChange(value)
+    onChange({
+      name: nodeData.title,
+      type: nodeData.meta.type,
+      _id: nodeData.nodeId,
+    })
   }
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <Input
         type="string"
-        value={selectedEntity}
+        value={formData?.name || formData?._id || ''}
         placeholder="Select"
         onClick={() => setShowModal(true)}
         style={{ width: '280px', margin: '0 8px', cursor: 'pointer' }}
@@ -64,15 +65,10 @@ export const EntityPicker = (props: EntityPickerProps) => {
         >
           {(renderProps: TreeNodeRenderProps) => {
             const { nodeData } = renderProps
-            const reference: Reference = {
-              name: nodeData.title,
-              type: nodeData.meta.type,
-              id: nodeData.nodeId,
-            }
 
             if (nodeData.meta.type !== BlueprintEnum.PACKAGE) {
               const onClick = () => {
-                onSelect(reference)
+                onSelect(nodeData)
               }
               return (
                 <div

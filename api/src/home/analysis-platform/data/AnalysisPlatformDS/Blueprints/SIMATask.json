@@ -27,17 +27,23 @@
     },
     {
       "name": "stask",
-      "attributeType": "system/SIMOS/Blob",
-      "type": "system/SIMOS/BlueprintAttribute"
+      "attributeType": "/STask",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "contained": false
     },
     {
       "name": "SIMAComputeConnectInfo",
-      "attributeType": "/tasks/SIMAComputeService",
+      "attributeType": "/SIMAComputeService",
       "type": "system/SIMOS/BlueprintAttribute",
       "optional": true
     }
   ],
   "uiRecipes": [
+    {
+      "name": "View",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "yaml-view"
+    },
     {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",

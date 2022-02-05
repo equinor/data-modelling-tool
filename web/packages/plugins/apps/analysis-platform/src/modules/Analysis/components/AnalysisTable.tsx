@@ -1,4 +1,3 @@
-import useSearch from '../../../hooks/useSearch'
 import { Blueprints } from '../../../Enums'
 import { Progress } from '@equinor/eds-core-react'
 import React from 'react'
@@ -6,6 +5,7 @@ import DynamicTable from '../../../components/DynamicTable'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import { TAnalysis } from '../Types'
 import { formatDate } from '../../../utils/dateFormater'
+import { useSearch } from '@dmt/common'
 
 const columns: Array<string> = [
   'Analysis name',
@@ -30,9 +30,12 @@ const onRowClicked = (event: any) => {
 }
 
 const AnalysisTable = () => {
-  const [analysis, isLoading, hasError] = useSearch({
-    type: Blueprints.ANALYSIS,
-  })
+  const [analysis, isLoading, hasError] = useSearch(
+    {
+      type: Blueprints.ANALYSIS,
+    },
+    DEFAULT_DATASOURCE_ID
+  )
 
   if (isLoading) {
     return <Progress.Linear />
