@@ -7,6 +7,9 @@ export enum Status {
 }
 
 export enum Blueprints {
+  BLUEPRINT = 'system/SIMOS/Blueprint',
   ANALYSIS = 'AnalysisPlatformDS/Blueprints/Analysis',
   BLOB = 'system/SIMOS/Blob',
+  TASK = 'WorkflowDS/Blueprints/Task',
+  WORKFLOW = 'WorkflowDS/Blueprints/Workflow',
 }

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { AuthContext } from '@dmt/common'
-import JobApi from './JobApi'
-import { SimulationStatus } from '../../Enums'
+import JobApi from '../JobApi'
+import { SimulationStatus } from '../../../Enums'
 import { Button, Label } from '@equinor/eds-core-react'
-import Icons from '../../components/Design/Icons'
+import Icons from '../../../components/Design/Icons'
 
 const StyledPre = styled.pre`
   display: flex;

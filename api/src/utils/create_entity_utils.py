@@ -99,13 +99,14 @@ class CreateEntity:
     # add all non optional attributes with default value.
     # type is inserted based on the parent attributes type, or the initial type for root entity.
     def _get_entity(self, blueprint: Blueprint, entity):
-
         for attr in blueprint.attributes:
             if attr.attribute_type in PRIMITIVES:
                 if not attr.is_optional() and attr.name not in entity:
                     entity[attr.name] = CreateEntity.parse_value(attr=attr, blueprint_provider=self.blueprint_provider)
             else:
                 blueprint = self.blueprint_provider(attr.attribute_type)
+                if not isinstance(blueprint, Blueprint):
+                    blueprint = Blueprint(DTO(blueprint))
                 if attr.is_array():
                     entity[attr.name] = attr.dimensions.create_default_array(self.blueprint_provider, CreateEntity)
                 else:
