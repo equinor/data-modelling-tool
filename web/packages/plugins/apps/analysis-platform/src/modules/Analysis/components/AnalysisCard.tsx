@@ -37,7 +37,7 @@ const OnRight = styled.div`
   margin-right: 50px;
 `
 
-type AnalysisInfoCardProps = {
+type AnalysisCardProps = {
   analysis: TAnalysis
 }
 
@@ -114,7 +114,7 @@ const RunAnalysisButton = (props: any) => {
   )
 }
 
-const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
+const AnalysisCard = (props: AnalysisCardProps) => {
   const { analysis } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
   const { tokenData } = useContext(AuthContext)
@@ -158,10 +158,6 @@ const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
           </div>
         </div>
         <Card.Actions>
-          <Button>
-            Edit
-            <Icons name="edit_text" title="edit_text" />
-          </Button>
           {hasExpertRole(tokenData) && (
             <Button
               onClick={() => {
@@ -198,4 +194,4 @@ const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
   )
 }
 
-export default AnalysisInfoCard
+export default AnalysisCard

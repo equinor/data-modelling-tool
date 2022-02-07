@@ -8,6 +8,7 @@ type Errors = {
 }
 
 type CreateFormProps = {
+  data: any
   onSubmit: Function
 }
 
@@ -22,12 +23,15 @@ const hasErrors = (error: Errors) =>
   error['name'] !== '' || error['description'] !== ''
 
 const CreateAnalysisForm = (props: CreateFormProps) => {
-  const { onSubmit } = props
+  const { onSubmit, data } = props
   const [error, setError] = useState<Errors>({
     name: '',
     description: '',
   })
-  const [analysis, setAnalysis] = useState<TAnalysis>({})
+  const [analysis, setAnalysis] = useState<TAnalysis>({
+    name: data?.name || '',
+    description: data?.description || '',
+  })
 
   const formHandler = (event: any) => {
     event.preventDefault()
@@ -71,6 +75,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
               : 'Provide the name of the analysis to be created'
           }
           variant={error.name ? 'error' : 'default'}
+          value={analysis.name}
         />
         <TextField
           id="description"
@@ -83,6 +88,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
               : 'Short description about the analysis'
           }
           variant={error.description ? 'error' : 'default'}
+          value={analysis.description}
         />
       </Wrapper>
       <Button

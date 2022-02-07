@@ -28,7 +28,7 @@ const AnalysisTaskCard = (props: AnalysisTaskCardProps) => {
   return (
     <>
       <OnRight>
-        <Button onClick={() => setIsEditing(!isEditing)}>
+        <Button onClick={() => setIsEditing(!isEditing)} variant="outlined">
           Edit
           <Icons name="edit_text" title="edit_text" />
         </Button>
