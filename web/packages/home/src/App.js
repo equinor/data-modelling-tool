@@ -19,6 +19,7 @@ import {
   CardLink,
   CardWrapper,
 } from './components/Card'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -76,9 +77,10 @@ const AppSelector = (props) => {
 function App() {
   const [applications, setApplications] = useState(undefined)
   const [loadingAppSettings, setLoadingAppSettings] = useState(false)
-  const dmtAPI = new DmtAPI()
-
   const { loading, getPagePlugin } = useContext(UiPluginContext)
+  const { token } = useContext(AuthContext)
+  const authEnabled = process.env.REACT_APP_AUTH === '1'
+  const dmtAPI = new DmtAPI()
 
   useEffect(() => {
     setLoadingAppSettings(true)
@@ -94,6 +96,11 @@ function App() {
       .catch((error) => console.error(error))
       .finally(() => setLoadingAppSettings(false))
   }, [])
+
+  if (authEnabled && !token) {
+    // Avoid rendering loading icons if the user is about to be redirected to a login endpoint
+    return null
+  }
 
   if (loading || loadingAppSettings)
     return (
