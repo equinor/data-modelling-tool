@@ -1,13 +1,15 @@
-import {Button, Card, Label, Typography} from "@equinor/eds-core-react";
+import {Button, Card, Label, Progress, Typography} from "@equinor/eds-core-react";
 import {hasExpertRole} from "../../../utils/auth";
 import Icons from "../../../components/Design/Icons";
 import React, {useContext, useState} from "react";
 import {TAnalysis} from "../Types";
 import {CustomScrim} from "../../../components/CustomScrim";
-import {AccessControlList, AuthContext} from "@dmt/common";
+import {AccessControlList, AuthContext, DmssAPI} from "@dmt/common";
 import {DEFAULT_DATASOURCE_ID} from "../../../const";
 import styled from "styled-components";
 import {edit_text} from "@equinor/eds-icons";
+import JobApi from "../../Jobs/JobApi";
+import {NotificationManager} from 'react-notifications'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -27,10 +29,88 @@ type AnalysisInfoCardProps = {
     analysis: TAnalysis
 }
 
+const RunAnalysisButton = (props: any) => {
+    const {analysis} = props
+
+    const [loading, setLoading] = useState<boolean>(false)
+    const {token, tokenData} = useContext(AuthContext)
+    const dmssAPI = new DmssAPI(token)
+    const jobAPI = new JobApi(token)
+
+    const task = analysis.workflow.tasks[0]
+
+    const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
+
+    const saveAndStartJob = () => {
+        setLoading(true)
+        const newWorkflowRun: any = {
+            type: 'WorkflowDS/Blueprints/WorkflowRun',
+            started: '2022-01-01T12:06:39+0000',
+            ended: '2022-01-31T12:06:39+0000',
+            jobs: [
+                {
+                    type: 'WorkflowDS/Blueprints/jobs/Shell',
+                    script: 'echo "Hello World"',
+                },
+            ],
+            result: {},
+        }
+        dmssAPI.generatedDmssApi
+            .explorerAdd({
+                absoluteRef: `${analysisAbsoluteReference}.workflow.runs`,
+                updateUncontained: false,
+                body: newWorkflowRun,
+            })
+            .then((res: any) => {
+                // Add the new job to the state
+                // TODO: setJobs([newJob, ...jobs])
+                // Start a job from the created job entity (last one in list)
+                jobAPI
+                    .startJob(`${analysisAbsoluteReference}.workflow.runs.0.jobs.0`)
+                    .then((result: any) => {
+                        NotificationManager.success(
+                            JSON.stringify(result.data),
+                            'Simulation job started'
+                        )
+                    })
+                    .catch((error: Error) => {
+                        console.error(error)
+                        NotificationManager.error(
+                            error?.response?.data?.message,
+                            'Failed to start job'
+                        )
+                    })
+                    .finally(() => setLoading(false))
+            })
+            .catch((error: Error) => {
+                console.error(error)
+                NotificationManager.error(
+                    error?.response?.data?.message,
+                    'Failed to start job'
+                )
+                setLoading(false)
+            })
+    }
+
+    if (loading) {
+        return <Progress.Linear/>
+    }
+
+    return (
+        <Button onClick={() => saveAndStartJob()}>
+            Run analysis
+            <Icons name="play" title="play"/>
+        </Button>
+    )
+}
+
+
 const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
     const {analysis} = props
     const [viewACL, setViewACL] = useState<boolean>(false)
     const {tokenData} = useContext(AuthContext)
+
+    const hasDefinedTask = 'workflow' in analysis && 'tasks' in analysis.workflow;
 
     return (
         <CardWrapper>
@@ -82,6 +162,15 @@ const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
                             Access control
                             <Icons name="assignment_user" title="assignment_user"/>
                         </Button>
+                    )}
+                    {hasDefinedTask && (
+                        <>
+                            <RunAnalysisButton analysis={analysis}/>
+                            <Button>
+                                Configure schedule
+                                <Icons name="time" title="time"/>
+                            </Button>
+                        </>
                     )}
                 </Card.Actions>
             </Card>

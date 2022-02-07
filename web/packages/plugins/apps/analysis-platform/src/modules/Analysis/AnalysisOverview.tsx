@@ -13,7 +13,7 @@ const NewAnalysisButton = (props: NewAnalysisButtonProps) => {
     const {urlPath} = props
     const location = useLocation()
     const to = {
-        pathname: `/${urlPath}/new-analysis`,
+        pathname: `/${urlPath}/analysis/new`,
         state: location.state,
     }
     return (<Link to={to}>

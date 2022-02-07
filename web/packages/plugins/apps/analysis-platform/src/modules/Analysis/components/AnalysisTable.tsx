@@ -26,7 +26,7 @@ type TAnalysisRow = {
 
 const onRowClicked = (event: any) => {
     const documentId = event.target.parentElement.accessKey
-    document.location = `${document.location.pathname}/${DEFAULT_DATASOURCE_ID}/${documentId}`
+    document.location = `${document.location.pathname}/analysis/${DEFAULT_DATASOURCE_ID}/${documentId}`
 }
 
 
@@ -53,9 +53,7 @@ const AnalysisTable = () => {
     })
 
     return (
-        <>
-            <DynamicTable columns={columns} rows={rows} onRowClicked={onRowClicked}/>
-        </>
+        <DynamicTable columns={columns} rows={rows} onRowClicked={onRowClicked}/>
     )
 }
 
