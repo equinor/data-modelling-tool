@@ -2,8 +2,6 @@ import { useEffect, useState, useContext } from 'react'
 import { DmssAPI, AuthContext } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from '../const'
 
-
-
 const useSearch = (
   body: any,
   dataSourceId: string = DEFAULT_DATASOURCE_ID

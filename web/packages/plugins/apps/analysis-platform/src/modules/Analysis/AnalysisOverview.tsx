@@ -1,43 +1,46 @@
-import {AuthContext, DmtSettings} from '@dmt/common'
-import React, {useContext} from 'react'
-import AnalysisTable from "./components/AnalysisTable";
-import {Link, useLocation} from 'react-router-dom'
-import {hasExpertRole} from "../../utils/auth";
-import {Button, Divider} from '@equinor/eds-core-react'
+import { AuthContext, DmtSettings } from '@dmt/common'
+import React, { useContext } from 'react'
+import AnalysisTable from './components/AnalysisTable'
+import { Link, useLocation } from 'react-router-dom'
+import { hasExpertRole } from '../../utils/auth'
+import { Button, Divider } from '@equinor/eds-core-react'
 
 type NewAnalysisButtonProps = {
-    urlPath: string
+  urlPath: string
 }
 
 const NewAnalysisButton = (props: NewAnalysisButtonProps) => {
-    const {urlPath} = props
-    const location = useLocation()
-    const to = {
-        pathname: `/${urlPath}/analysis/new`,
-        state: location.state,
-    }
-    return (<Link to={to}>
-            <Button>Create new analysis</Button>
-        </Link>
-    )
+  const { urlPath } = props
+  const location = useLocation()
+  const to = {
+    pathname: `/${urlPath}/analysis/new`,
+    state: location.state,
+  }
+  return (
+    <Link to={to}>
+      <Button>Create new analysis</Button>
+    </Link>
+  )
 }
 
 type AnalysisOverviewProps = {
-    settings: DmtSettings
+  settings: DmtSettings
 }
 
 const AnalysisOverview = (props: AnalysisOverviewProps) => {
-    const {settings} = props
-    // @ts-ignore
-    const {tokenData} = useContext(AuthContext)
+  const { settings } = props
+  // @ts-ignore
+  const { tokenData } = useContext(AuthContext)
 
-    return (
-        <>
-            {hasExpertRole(tokenData) && <NewAnalysisButton urlPath={settings.urlPath}/>}
-            <Divider variant="medium"/>
-            <AnalysisTable/>
-        </>
-    )
+  return (
+    <>
+      {hasExpertRole(tokenData) && (
+        <NewAnalysisButton urlPath={settings.urlPath} />
+      )}
+      <Divider variant="medium" />
+      <AnalysisTable />
+    </>
+  )
 }
 
 export default AnalysisOverview

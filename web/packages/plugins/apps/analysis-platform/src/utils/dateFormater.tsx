@@ -1,6 +1,3 @@
 export const formatDate = (date: string) => {
-    return new Date(date).toLocaleDateString(
-        navigator.language
-    )
+  return new Date(date).toLocaleDateString(navigator.language)
 }
-

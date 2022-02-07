@@ -1,48 +1,48 @@
-import {TAnalysis} from "../Types";
-import {Button, Progress, Table, Typography} from "@equinor/eds-core-react";
-import {TPhase} from "../../../Types";
-import React, {useContext, useState} from "react";
+import { TAnalysis, TTask } from '../Types'
+import React, { useContext, useState } from 'react'
+import AnalysisTaskTable from './AnalysisTaskTable'
+import EditTaskForm from './EditTaskForm'
+import Icons from '../../../components/Design/Icons'
+import { Button } from '@equinor/eds-core-react'
+import styled from 'styled-components'
 
 type AnalysisTaskCardProps = {
-    analysis: TAnalysis
+  analysis: TAnalysis
 }
 
+const OnRight = styled.div`
+  display: flex;
+  flex-direction: row-reverse;
+  margin-right: 50px;
+`
+
 const AnalysisTaskCard = (props: AnalysisTaskCardProps) => {
-    const {analysis} = props
+  const { analysis } = props
+  const [isEditing, setIsEditing] = useState<boolean>(false)
 
+  const handleSubmitTask = (task: TTask) => {
+    // TODO: Update task data inside analysis.
+    setIsEditing(false)
+  }
 
-    return (
-        <>
-            <Table density="comfortable" style={{width: '100%'}}>
-                <Table.Caption>
-                    <Typography variant="h3">Tasks</Typography>
-                </Table.Caption>
-                <Table.Head>
-                    <Table.Row>
-                        <Table.Cell>Task</Table.Cell>
-                        <Table.Cell>Type</Table.Cell>
-                        <Table.Cell>Input Type</Table.Cell>
-                        <Table.Cell>Output Type</Table.Cell>
-                        <Table.Cell>Output Target</Table.Cell>
-                        <Table.Cell>Edit</Table.Cell>
-                    </Table.Row>
-                </Table.Head>
-                <Table.Body>
-                    {analysis.workflow.tasks.length &&
-                    analysis.workflow.tasks.map((task: TPhase, index: number) => (
-                        <Table.Row key={index}>
-                            <Table.Cell>{task.name}</Table.Cell>
-                            <Table.Cell>{task.type}</Table.Cell>
-                            <Table.Cell>{task.inputType}</Table.Cell>
-                            <Table.Cell>{task.outputType}</Table.Cell>
-                            <Table.Cell>{task.outputTarget}</Table.Cell>
-                            <Table.Cell>LINK</Table.Cell>
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-            </Table>
-        </>
-    )
+  return (
+    <>
+      <OnRight>
+        <Button onClick={() => setIsEditing(!isEditing)}>
+          Edit
+          <Icons name="edit_text" title="edit_text" />
+        </Button>
+      </OnRight>
+      {isEditing ? (
+        <EditTaskForm
+          onSubmit={handleSubmitTask}
+          task={analysis.workflow.tasks[0]}
+        />
+      ) : (
+        <AnalysisTaskTable analysis={analysis} />
+      )}
+    </>
+  )
 }
 
 export default AnalysisTaskCard

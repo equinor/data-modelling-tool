@@ -1,6 +1,6 @@
-import React, {useState} from 'react'
-import {Button} from '@equinor/eds-core-react'
-import {Heading} from '../../components/Design/Fonts'
+import React, { useState } from 'react'
+import { Button } from '@equinor/eds-core-react'
+import { Heading } from '../../../components/Design/Fonts'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`

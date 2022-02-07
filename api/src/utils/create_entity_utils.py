@@ -96,7 +96,6 @@ class CreateEntity:
             print(f"invalid default value: {attr.default} for attribute: {attr}")
             return ""
 
-
     # add all non optional attributes with default value.
     # type is inserted based on the parent attributes type, or the initial type for root entity.
     def _get_entity(self, blueprint: Blueprint, entity):

@@ -1,11 +1,11 @@
-import {TCronJob, TJob} from '../../Types'
-import {Blueprints} from '../../Enums'
-import {poorMansUUID} from '../../utils/uuid'
+import { TCronJob, TJob } from '../../../Types'
+import { Blueprints } from '../../../Enums'
+import { poorMansUUID } from '../../../utils/uuid'
 import {
-    AzureContainerInstancesOmniaLogAnalyticsWorkspaceResourceId,
-    AzureContainerInstancesOmniaSubnetId,
-    DEFAULT_DATASOURCE_ID,
-} from '../../const'
+  AzureContainerInstancesOmniaLogAnalyticsWorkspaceResourceId,
+  AzureContainerInstancesOmniaSubnetId,
+  DEFAULT_DATASOURCE_ID,
+} from '../../../const'
 
 export function createContainerJob(
   staskBlobId: string,

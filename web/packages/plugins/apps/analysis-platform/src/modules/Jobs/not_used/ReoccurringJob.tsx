@@ -1,9 +1,9 @@
-import React, {useEffect, useState} from 'react'
-import {Button, Label} from '@equinor/eds-core-react'
-import {StyledSelect} from '../../components/Input'
-import DateRangePicker from '../../components/DateRangePicker'
+import React, { useEffect, useState } from 'react'
+import { Button, Label } from '@equinor/eds-core-react'
+import { StyledSelect } from '../../../components/Input'
+import DateRangePicker from '../../../components/DateRangePicker'
 import styled from 'styled-components'
-import {TCronJob} from '../../Types'
+import { TCronJob } from '../../../Types'
 
 enum Interval {
   HOURLY = 'Hourly',

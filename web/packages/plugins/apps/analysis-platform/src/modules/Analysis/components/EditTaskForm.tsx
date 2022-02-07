@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React, { useState } from 'react'
-import { TAnalysis } from '../Types'
+import { TAnalysis, TTask } from '../Types'
 import { Button, TextField } from '@equinor/eds-core-react'
 
 type Errors = {
@@ -8,6 +8,7 @@ type Errors = {
 }
 
 type CreateFormProps = {
+  task: TTask
   onSubmit: Function
 }
 
@@ -21,13 +22,16 @@ const Wrapper = styled.div`
 const hasErrors = (error: Errors) =>
   error['name'] !== '' || error['description'] !== ''
 
-const CreateAnalysisForm = (props: CreateFormProps) => {
-  const { onSubmit } = props
+const EditTaskForm = (props: CreateFormProps) => {
+  const { onSubmit, task } = props
   const [error, setError] = useState<Errors>({
     name: '',
     description: '',
   })
-  const [analysis, setAnalysis] = useState<TAnalysis>({})
+  const [analysis, setAnalysis] = useState<TTask>({
+    name: task.name || '',
+    description: task.description || '',
+  })
 
   const formHandler = (event: any) => {
     event.preventDefault()
@@ -71,6 +75,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
               : 'Provide the name of the analysis to be created'
           }
           variant={error.name ? 'error' : 'default'}
+          value={task.name}
         />
         <TextField
           id="description"
@@ -83,6 +88,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
               : 'Short description about the analysis'
           }
           variant={error.description ? 'error' : 'default'}
+          value={task.description}
         />
       </Wrapper>
       <Button
@@ -96,4 +102,4 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
   )
 }
 
-export default CreateAnalysisForm
+export default EditTaskForm
