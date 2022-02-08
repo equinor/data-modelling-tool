@@ -6,6 +6,7 @@ import {
   IIndex,
   useIndex,
   ApplicationContext,
+  Spinner,
 } from '@dmt/common'
 
 export interface IModels {
@@ -47,6 +48,9 @@ const IndexProvider = (props: IndexProviderProps) => {
     operations: {},
   }
 
+  if (index.loading) {
+    return <Spinner size="1.2em" />
+  }
   return <IndexContext.Provider value={value}>{children}</IndexContext.Provider>
 }
 
