@@ -1,20 +1,16 @@
-import React, { useState } from 'react'
+import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import Icon from '../Design/Icons'
 import './Menu.css'
+import { useLocalStorage } from '@dmt/common'
 
 const { Sider } = Layout
-const { SubMenu } = Menu
 
 export default (props: { appRootPath: string }): JSX.Element => {
   const { appRootPath } = props
   const location = useLocation()
-  const [collapsed, setCollapsed] = useState(
-    location.state?.menuCollapsed === undefined
-      ? false
-      : location.state.menuCollapsed
-  )
+  const [collapsed, setCollapsed] = useLocalStorage('menuCollapsed', false)
   const iconSize: 24 | 16 | 32 | 40 | 48 | undefined = 24
   const menuUrl: string[] = [`/${appRootPath}`]
   return (
@@ -32,11 +28,7 @@ export default (props: { appRootPath: string }): JSX.Element => {
         mode="inline"
       >
         <Menu.Item key={menuUrl[0]} icon={<Icon name="home" size={iconSize} />}>
-          <Link
-            to={{ pathname: menuUrl[0], state: { menuCollapsed: collapsed } }}
-          >
-            Analysis
-          </Link>
+          <Link to={{ pathname: menuUrl[0] }}>Analysis</Link>
         </Menu.Item>
       </Menu>
     </Sider>

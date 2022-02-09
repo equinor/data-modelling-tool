@@ -1,27 +1,24 @@
 import * as React from 'react'
-import { DmtPluginType } from '@dmt/common'
+import { AuthContext, DmssAPI, DmtPluginType } from '@dmt/common'
 import Header from './AppHeader'
-import AppTab from './pages/AppTab'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { Route } from 'react-router-dom'
 import styled from 'styled-components'
+import { useContext } from 'react'
+import DashboardProvider from './context/dashboard/DashboardProvider'
+import Editor from './pages/editor/Editor'
 
 const Wrapper = styled.div`
   padding: 20px;
 `
 
-const App = (props: any) => {
-  const { settings } = props
-  return (
-    <div>
-      <AppTab settings={settings} />
-    </div>
-  )
-}
-
 const PageComponent = (props: any) => {
   const { applications, settings } = props
+
+  // @ts-ignore-line
+  const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
 
   return (
     <Wrapper>
@@ -38,7 +35,11 @@ const PageComponent = (props: any) => {
       <Route
         exact
         path={`/${settings.name}`}
-        render={() => <App settings={settings} applications={applications} />}
+        render={() => (
+          <DashboardProvider dmssAPI={dmssAPI}>
+            <Editor />
+          </DashboardProvider>
+        )}
       />
     </Wrapper>
   )

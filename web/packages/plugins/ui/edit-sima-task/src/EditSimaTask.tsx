@@ -11,6 +11,8 @@ import { ChangeEvent, useState } from 'react'
 import { Button, Label, TextField, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
+const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
+
 const Wrapper = styled.div`
   margin: 10px;
 `
@@ -39,7 +41,7 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
   const [formData, setFormData] = useState<any>({ ...document })
 
   return (
-    <>
+    <div style={{ maxWidth: '900px', marginBottom: '10px' }}>
       <Wrapper>
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
@@ -108,8 +110,8 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
                     },
                   })
                 }
-                typeFilter="AnalysisPlatformDS/Blueprints/STask"
-                dataSourceId="AnalysisPlatformDS"
+                typeFilter={STaskBlueprint}
+                dataSourceId={dataSourceId}
                 formData={formData.stask}
               />
             </ColumnWrapper>
@@ -165,6 +167,6 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
           Ok
         </Button>
       </div>
-    </>
+    </div>
   )
 }

@@ -10,7 +10,11 @@ import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
 import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
-import { sortApplications, UiPluginContext } from '@dmt/common'
+import {
+  sortApplications,
+  UiPluginContext,
+  ApplicationContext,
+} from '@dmt/common'
 import {
   CardBody,
   CardFieldset,
@@ -133,7 +137,9 @@ function App() {
               render={() => {
                 const UiPlugin = getPagePlugin(settings.pluginName)
                 return (
-                  <UiPlugin settings={settings} applications={applications} />
+                  <ApplicationContext.Provider value={settings}>
+                    <UiPlugin settings={settings} applications={applications} />
+                  </ApplicationContext.Provider>
                 )
               }}
               key={settings.name}

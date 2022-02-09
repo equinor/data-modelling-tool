@@ -14,8 +14,8 @@ import {
   JsonView,
   ApplicationContext,
   AuthContext,
+  useLocalStorage,
 } from '@dmt/common'
-import useLocalStorage from '../hooks/useLocalStorage'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
 

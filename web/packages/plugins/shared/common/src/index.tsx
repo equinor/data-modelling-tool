@@ -10,6 +10,7 @@ export { useIndex } from './hooks/useIndex'
 export { useDocument } from './hooks/useDocument'
 export { useSearch } from './hooks/useSearch'
 export { useBlueprint } from './hooks/useBlueprint'
+export { useLocalStorage } from './hooks/useLocalStorage'
 export type { IIndex, IModels, IndexProps, IOperations } from './hooks/useIndex'
 
 export * from './services'
