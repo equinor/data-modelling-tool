@@ -5,6 +5,7 @@ import {
   DmssAPI,
   IIndex,
   Modal,
+  Spinner,
   Tree,
   TreeNodeData,
   TreeNodeRenderProps,
@@ -43,6 +44,10 @@ export const EntityPicker = (props: {
       type: nodeData.meta.type,
       _id: nodeData.nodeId,
     })
+  }
+
+  if (index.loading) {
+    return <Spinner size="1.2em" />
   }
 
   return (

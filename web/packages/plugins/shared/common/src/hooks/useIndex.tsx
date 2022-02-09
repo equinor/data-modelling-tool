@@ -27,6 +27,7 @@ export interface IOperations {
 export interface IIndex {
   models: IModels
   operations: IOperations
+  loading: boolean
 }
 
 export interface IndexProps {
@@ -39,6 +40,7 @@ export const useIndex = (props: IndexProps): IIndex => {
   const { dataSources, application, dmtAPI = new DmtApi() } = props
   const [dataSourceWarning, setDataSourceWarning] = useState<string>('')
   const [index, setIndex] = useState<Tree>({})
+  const [loading, setLoading] = useState<boolean>(true)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
 
@@ -78,6 +80,7 @@ export const useIndex = (props: IndexProps): IIndex => {
               console.error(error)
               NotificationManager.error(`${error.response.data.message}`)
             })
+            .finally(() => setLoading(false))
         }
       })
     )
@@ -151,6 +154,7 @@ export const useIndex = (props: IndexProps): IIndex => {
   }
 
   return {
+    loading: loading,
     models: {
       tree,
     },

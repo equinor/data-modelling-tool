@@ -7,6 +7,7 @@ import {
   DmssAPI,
   IIndex,
   Modal,
+  Spinner,
   Tree,
   TreeNodeRenderProps,
   useDataSources,
@@ -70,6 +71,10 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
     } else {
       onChange(dataSource + '/' + nodeId)
     }
+  }
+
+  if (index.loading) {
+    return <Spinner size="1.2em" />
   }
 
   return (

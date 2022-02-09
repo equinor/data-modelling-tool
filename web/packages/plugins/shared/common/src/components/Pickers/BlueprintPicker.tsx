@@ -14,13 +14,27 @@ import {
 import { IDataSources } from '../../hooks/useDataSources'
 import { AuthContext } from '@dmt/common'
 import { Input } from '@equinor/eds-core-react'
-
+import { FaSpinner } from 'react-icons/fa'
+import styled from 'styled-components'
 export type BlueprintPickerProps = {
   onChange: Function
   formData: any
   uiSchema?: any
   blueprintFilter?: BlueprintEnum
 }
+
+export const Spinner = styled(FaSpinner)`
+  animation: spin infinite 1s linear;
+
+  @keyframes spin {
+    from {
+      transform: rotate(0deg);
+    }
+    to {
+      transform: rotate(360deg);
+    }
+  }
+`
 
 export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
   // @ts-ignore-line
@@ -40,6 +54,10 @@ export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
   const onSelect = (value: string) => {
     setShowModal(false)
     onChange(value)
+  }
+
+  if (index.loading) {
+    return <Spinner size="1.2em" />
   }
   return (
     <Tree
