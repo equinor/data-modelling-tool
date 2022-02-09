@@ -62,7 +62,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
   }
 
   return (
-    <form onSubmit={formHandler}>
+    <form onSubmit={formHandler} style={{ maxWidth: '400px' }}>
       <Wrapper>
         <TextField
           id="name"
@@ -91,13 +91,15 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
           value={analysis.description}
         />
       </Wrapper>
-      <Button
-        type="submit"
-        style={{ marginTop: '14px' }}
-        onSubmit={formHandler}
-      >
-        Create
-      </Button>
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
+        <Button
+          type="submit"
+          style={{ marginTop: '14px' }}
+          onSubmit={formHandler}
+        >
+          Ok
+        </Button>
+      </div>
     </form>
   )
 }

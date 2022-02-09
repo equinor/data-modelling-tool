@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { AuthContext, DmtAPI, useDocument } from '@dmt/common'
-import AnalysisDetails from './components/AnalysisDetails'
+import { AuthContext, DmtAPI, UIPluginSelector, useDocument } from '@dmt/common'
 import AnalysisChooser from './components/AnalysisChooser'
-import { Divider, Progress } from '@equinor/eds-core-react'
+import { Progress } from '@equinor/eds-core-react'
 import { TAnalysis } from './Types'
 import { Blueprints } from '../../Enums'
 import AnalysisInfoCard from './components/AnalysisInfo'
+import AnalysisJobTable from './components/AnalysisJobTable'
 
 const hasDefinedTask = (analysis: TAnalysis) =>
   'workflow' in analysis && 'tasks' in analysis.workflow
@@ -43,9 +43,14 @@ export default (): JSX.Element => {
   return (
     <>
       <AnalysisInfoCard analysis={analysis} />
-      <Divider variant="medium" />
       {hasDefinedTask(analysis) ? (
-        <AnalysisDetails analysis={analysis} />
+        <>
+          <UIPluginSelector
+            entity={analysis.workflow.tasks[0]}
+            absoluteDottedId={`${data_source}/${analysis._id}.workflow.tasks.0`}
+          />
+          <AnalysisJobTable analysis={analysis} />
+        </>
       ) : (
         <AnalysisChooser onSelectType={handleTypeSelected} />
       )}

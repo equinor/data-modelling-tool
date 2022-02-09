@@ -53,14 +53,11 @@ export default (props: PreviewProps) => {
           flexDirection: 'column',
         }}
       >
-        <div>
-          {showTooltip ? (
+        <div style={{ position: 'absolute', right: '120px' }}>
+          {showTooltip && (
             <TooltipText onAnimationEnd={() => setShowTooltip(false)}>
               Copied!
             </TooltipText>
-          ) : (
-            // This a spacer for the tooltip when it's hidden
-            <div style={{ height: '26px' }} />
           )}
         </div>
         <div>

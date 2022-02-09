@@ -5,14 +5,41 @@ import { DotProgress } from '@equinor/eds-core-react'
 
 const lightGray = '#d3d3d3'
 
-const PluginSelectorWrapper = styled.div`
-  border-bottom: 1px ${lightGray} solid;
-  border-top: 1px ${lightGray} solid;
+const PluginTabsWrapper = styled.div`
   display: flex;
   align-items: center;
-  margin: 5px 0;
   justify-content: space-evenly;
 `
+
+const Wrapper = styled.div`
+  border-bottom: 1px ${lightGray} solid;
+  border-top: 1px ${lightGray} solid;
+  align-items: center;
+  justify-content: space-evenly;
+`
+
+const PathWrapper = styled.div`
+  display: flex;
+  opacity: 60%;
+  justify-content: center;
+`
+
+export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
+  const { absoluteDottedId } = props
+  const parts = absoluteDottedId.split('.')
+  return (
+    <PathWrapper>
+      {parts.map((part: string) => {
+        return (
+          <div style={{ display: 'flex' }}>
+            <div style={{ margin: '0 15px' }}>/</div> {part}
+          </div>
+        )
+      })}
+    </PathWrapper>
+  )
+}
+
 interface ISPButton {
   active: boolean
 }
@@ -20,7 +47,7 @@ interface ISPButton {
 const SelectPluginButton = styled.div<ISPButton>`
   padding: 5px 10px;
   text-align: center;
-  width: -webkit-fill-available;
+  width: 100%;
   border-bottom: ${(props: any) =>
     (props.active == true && '2px #017078FF solid') ||
     `2px ${lightGray} solid`};
@@ -31,11 +58,11 @@ const SelectPluginButton = styled.div<ISPButton>`
 `
 
 export function UIPluginSelector(props: {
-  dottedId: string
+  absoluteDottedId: string
   entity: any
 }): JSX.Element {
-  const { dottedId, entity } = props
-  const [dataSourceId, documentId] = dottedId.split('.', 1)
+  const { absoluteDottedId, entity } = props
+  const [dataSourceId, documentId] = absoluteDottedId.split('/', 2)
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
@@ -70,8 +97,9 @@ export function UIPluginSelector(props: {
   const UiPlugin = selectablePluginsComponent[selectedPlugin][1]
 
   return (
-    <>
-      <PluginSelectorWrapper>
+    <Wrapper>
+      <DocumentPath absoluteDottedId={`${dataSourceId}/${documentId}`} />
+      <PluginTabsWrapper>
         {selectablePluginsComponent.map(
           (component: [string, Function], index: number) => (
             <SelectPluginButton
@@ -83,14 +111,12 @@ export function UIPluginSelector(props: {
             </SelectPluginButton>
           )
         )}
-      </PluginSelectorWrapper>
+      </PluginTabsWrapper>
       <UiPlugin
         dataSourceId={dataSourceId}
         documentId={documentId}
         document={entity}
-        result={entity}
-        dottedId={dottedId}
       />
-    </>
+    </Wrapper>
   )
 }

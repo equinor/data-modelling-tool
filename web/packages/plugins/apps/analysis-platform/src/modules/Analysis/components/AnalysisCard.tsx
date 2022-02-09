@@ -13,7 +13,6 @@ import { CustomScrim } from '../../../components/CustomScrim'
 import { AccessControlList, AuthContext, DmssAPI } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
-import { edit_text } from '@equinor/eds-icons'
 import JobApi from '../../Jobs/JobApi'
 import { NotificationManager } from 'react-notifications'
 
@@ -45,7 +44,7 @@ const RunAnalysisButton = (props: any) => {
   const { analysis } = props
 
   const [loading, setLoading] = useState<boolean>(false)
-  const { token, tokenData } = useContext(AuthContext)
+  const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const jobAPI = new JobApi(token)
 
@@ -76,7 +75,7 @@ const RunAnalysisButton = (props: any) => {
         // TODO: setJobs([newJob, ...jobs])
         // Start a job from the created job entity (last one in list)
         jobAPI
-          .startJob(`${analysisAbsoluteReference}.workflow.runs.0.jobs.0`)
+          .startJob(`${DEFAULT_DATASOURCE_ID}/${JSON.parse(res).uid}.jobs.0`)
           .then((result: any) => {
             NotificationManager.success(
               JSON.stringify(result.data),
@@ -107,7 +106,7 @@ const RunAnalysisButton = (props: any) => {
   }
 
   return (
-    <Button onClick={() => saveAndStartJob()}>
+    <Button onClick={() => saveAndStartJob()} style={{ width: 'max-content' }}>
       Run analysis
       <Icons name="play" title="play" />
     </Button>
@@ -117,6 +116,7 @@ const RunAnalysisButton = (props: any) => {
 const AnalysisCard = (props: AnalysisCardProps) => {
   const { analysis } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
 
   const hasDefinedTask = 'workflow' in analysis && 'tasks' in analysis.workflow
@@ -160,9 +160,8 @@ const AnalysisCard = (props: AnalysisCardProps) => {
         <Card.Actions>
           {hasExpertRole(tokenData) && (
             <Button
-              onClick={() => {
-                setViewACL(!viewACL)
-              }}
+              onClick={() => setViewACL(!viewACL)}
+              style={{ width: 'max-content' }}
             >
               Access control
               <Icons name="assignment_user" title="assignment_user" />
@@ -171,7 +170,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           {hasDefinedTask && (
             <>
               <RunAnalysisButton analysis={analysis} />
-              <Button>
+              <Button style={{ width: 'max-content' }}>
                 Configure schedule
                 <Icons name="time" title="time" />
               </Button>
