@@ -1,7 +1,6 @@
 import React, { ChangeEvent } from 'react'
 import { useSearch } from '../../index'
 import { Select } from '@dmt/common'
-import { Button } from '@equinor/eds-core-react'
 
 export const EntityPickerDropdown = (props: {
   onChange: Function
@@ -28,9 +27,6 @@ export const EntityPickerDropdown = (props: {
           </option>
         ))}
       </Select>
-      <Button style={{ margin: '0 10px' }} disabled>
-        Upload
-      </Button>
     </div>
   )
 }
