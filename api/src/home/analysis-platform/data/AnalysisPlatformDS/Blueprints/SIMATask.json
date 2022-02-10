@@ -42,7 +42,7 @@
     {
       "name": "View",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "yaml-view"
+      "plugin": "view-sima-task"
     },
     {
       "name": "Edit",
