@@ -7,5 +7,5 @@ export default [
   import('@dmt/analysis-platform'),
   import('for-weather-plots'),
   import('@dmt/mermaid'),
-  import('@dmt/edit-sima-task'),
+  import('@dmt/sima-task'),
 ]

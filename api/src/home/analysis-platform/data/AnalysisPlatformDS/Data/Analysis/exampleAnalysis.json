@@ -16,6 +16,7 @@
       {
         "type": "AnalysisPlatformDS/Blueprints/SIMATask",
         "name": "exampleSimaTask",
+        "description": "This is an example simatask that does some stuff with an stask file.",
         "jobType": "WorkflowDS/Blueprints/jobs/Shell",
         "stask": {
           "_id": "47a4d888-3ab4-4ad2-9bd9-9614dcb066d4",
