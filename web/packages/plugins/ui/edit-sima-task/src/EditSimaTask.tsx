@@ -4,6 +4,7 @@ import {
   EntityPicker,
   EntityPickerDropdown,
   TReference,
+  UploadFileButton,
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
@@ -17,8 +18,12 @@ const Wrapper = styled.div`
   margin: 10px;
 `
 
-const ColumnWrapper = styled.div`
+const Column = styled.div`
   display: block;
+`
+
+const Row = styled.div`
+  display: flex;
 `
 const GroupWrapper = styled.div`
   display: flex;
@@ -40,13 +45,24 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
   )
   const [formData, setFormData] = useState<any>({ ...document })
 
+  function getNewSTaskBody(filename: string): any {
+    return {
+      type: 'AnalysisPlatformDS/Blueprints/STask',
+      name: filename.replace('.', '_'),
+      blob: {
+        name: filename,
+        type: 'system/SIMOS/Blob',
+      },
+    }
+  }
+
   return (
     <div style={{ maxWidth: '900px', marginBottom: '10px' }}>
       <Wrapper>
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
-            <ColumnWrapper>
+            <Column>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -54,9 +70,9 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
                 }
                 formData={formData.inputType}
               />
-            </ColumnWrapper>
+            </Column>
             <div style={{ display: 'flex' }}>
-              <ColumnWrapper>
+              <Column>
                 <Label label={'Default input entity'} />
                 <EntityPicker
                   formData={formData.defaultInput}
@@ -71,7 +87,7 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
                     })
                   }
                 />
-              </ColumnWrapper>
+              </Column>
               <Button style={{ margin: '15px 10px 0 10px' }} disabled>
                 Create
               </Button>
@@ -82,7 +98,7 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">Output</Typography>
           <GroupWrapper>
-            <ColumnWrapper>
+            <Column>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -90,31 +106,44 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
                 }
                 formData={formData.outputType}
               />
-            </ColumnWrapper>
+            </Column>
           </GroupWrapper>
         </HeaderWrapper>
 
         <HeaderWrapper>
           <Typography variant="h3">SIMA Task</Typography>
           <GroupWrapper>
-            <ColumnWrapper>
+            <Column>
               <Label label={'Select Stask'} />
-              <EntityPickerDropdown
-                onChange={(selectedStask: any) =>
-                  setFormData({
-                    ...formData,
-                    stask: {
-                      _id: selectedStask._id,
-                      name: selectedStask.name,
-                      type: selectedStask.type,
-                    },
-                  })
-                }
-                typeFilter={STaskBlueprint}
-                dataSourceId={dataSourceId}
-                formData={formData.stask}
-              />
-            </ColumnWrapper>
+              <Row>
+                <EntityPickerDropdown
+                  onChange={(selectedStask: any) =>
+                    setFormData({
+                      ...formData,
+                      stask: {
+                        _id: selectedStask._id,
+                        name: selectedStask.name,
+                        type: selectedStask.type,
+                      },
+                    })
+                  }
+                  typeFilter={STaskBlueprint}
+                  dataSourceId={dataSourceId}
+                  formData={formData.stask}
+                />
+                <UploadFileButton
+                  fileSuffix={['stask']}
+                  dataSourceId={dataSourceId}
+                  getBody={(filename: string) => getNewSTaskBody(filename)}
+                  onUpload={(createdRef: TReference) =>
+                    setFormData({
+                      ...formData,
+                      stask: createdRef,
+                    })
+                  }
+                />
+              </Row>
+            </Column>
             <TextField
               id="workflow"
               label={'Workflow'}
@@ -141,7 +170,7 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">Job type</Typography>
           <GroupWrapper>
-            <ColumnWrapper>
+            <Column>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -149,7 +178,7 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
                 }
                 formData={formData.jobType}
               />
-            </ColumnWrapper>
+            </Column>
           </GroupWrapper>
         </HeaderWrapper>
       </Wrapper>

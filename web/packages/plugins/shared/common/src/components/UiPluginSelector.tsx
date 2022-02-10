@@ -31,7 +31,7 @@ export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
     <PathWrapper>
       {parts.map((part: string) => {
         return (
-          <div style={{ display: 'flex' }}>
+          <div style={{ display: 'flex' }} key={part}>
             <div style={{ margin: '0 15px' }}>/</div> {part}
           </div>
         )
