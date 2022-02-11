@@ -19,7 +19,7 @@
     {
       "name": "jobs",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "/Job",
+      "attributeType": "/jobs/Job",
       "contained": true,
       "dimensions": "*"
     },

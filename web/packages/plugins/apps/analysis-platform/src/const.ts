@@ -1,5 +1,15 @@
 export const DEFAULT_DATASOURCE_ID = 'AnalysisPlatformDS'
+export const WORKFLOW_DATASOURCE = 'WorkflowDS'
+export const COMMON_JOBS = `${WORKFLOW_DATASOURCE}/Blueprints/jobs`
+export const COMMON_TASKS = `${WORKFLOW_DATASOURCE}/Blueprints/tasks`
 export const BLUEPRINTS = 'Blueprints'
 export const ENTITIES = 'Data'
 export const RESULT_FOLDER_NAME = 'Results'
 export const ANALYSIS_PATH = `${ENTITIES}/Analysis`
+export const SIMA_TASK = 'AnalysisPlatformDS/Blueprints/SIMATask'
+export const REVERSE_TASK = `${COMMON_TASKS}/ReverseDescription`
+export const SHELL_TASK = `${COMMON_TASKS}/Shell`
+export const SHELL_JOB = `${COMMON_JOBS}/Shell`
+export const AZ_CONTAINER_JOB = `${COMMON_JOBS}/AzureContainer`
+export const AZ_CONTAINER_JOB_CRON = `${COMMON_JOBS}/AzureContainerCron`
+export const REVERSE_JOB = `${COMMON_JOBS}/ReverseDescription`

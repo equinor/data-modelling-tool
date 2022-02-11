@@ -1,0 +1,24 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "ReverseDescription",
+  "description": "A job that takes an input of any type, and outputs a copy with the description reversed",
+  "attributes": [
+    {
+      "name": "outputTarget",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "description": "Reference to a location where the result should be stored"
+    },
+    {
+      "name": "resultLinkTarget",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "description": "Absolute dottedId to where a reference to the result should be created"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/Entity",
+      "name": "input"
+    }
+  ]
+}

@@ -1,0 +1,32 @@
+{
+  "name": "ReverseDescription",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/NamedEntity",
+    "system/SIMOS/DefaultUiRecipes",
+    "WorkflowDS/Blueprints/Task"
+  ],
+  "description": "Task for creating a test job",
+  "attributes": [
+     {
+      "name": "resultLinkTarget",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "description": "Absolute dottedId to where a reference to the result should be created"
+    },
+    {
+      "name": "jobType",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false,
+      "default": "WorkflowDS/Blueprints/jobs/ReverseDescription"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-reverse-task"
+    }
+  ]
+}

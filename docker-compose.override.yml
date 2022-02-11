@@ -34,7 +34,7 @@ services:
 
     depends_on:
       - web
-#      - job-store
+      - job-store
     ports:
       - "5000:5000"
     networks:

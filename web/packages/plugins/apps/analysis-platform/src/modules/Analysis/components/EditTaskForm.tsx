@@ -1,6 +1,6 @@
 import styled from 'styled-components'
 import React, { useState } from 'react'
-import { TAnalysis, TTask } from '../Types'
+import { TTask } from '../Types'
 import { Button, TextField } from '@equinor/eds-core-react'
 
 type Errors = {

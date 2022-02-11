@@ -66,7 +66,7 @@ def get_personal_access_token() -> str:
     Fetches a long lived Access Token
     """
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
-    return dmss_api.token_get()
+    return dmss_api.token_create()
 
 
 def get_root_packages(data_source_id: str) -> dict:
