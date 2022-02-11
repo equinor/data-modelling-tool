@@ -320,8 +320,7 @@ describe('the explorer hook', () => {
         expect(mocks.dmssAPI.createDocument).toHaveBeenCalledTimes(1)
         expect(mocks.dmssAPI.createDocument).toHaveBeenCalledWith(
           documentToCreate.dataUrl,
-          documentToCreate.data,
-          undefined
+          documentToCreate.data
         )
       })
       it('should the document be added to the tree', async () => {

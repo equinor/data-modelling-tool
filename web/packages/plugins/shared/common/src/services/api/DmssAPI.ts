@@ -34,12 +34,15 @@ const handleApiError = (error: any) => {
 
 export class DmssAPI implements IDmssAPI {
   generatedDmssApi: DefaultApi
+  config: any
+  basePath: string = '/dmss'
 
   constructor(token: string) {
     const DMSSConfiguration = new Configuration({
-      basePath: '/dmss',
+      basePath: this.basePath,
       accessToken: 'Bearer ' + token,
     })
+    this.config = { headers: { Authorization: `Bearer ${token}` } }
     this.generatedDmssApi = new DefaultApi(DMSSConfiguration)
   }
 
@@ -47,10 +50,8 @@ export class DmssAPI implements IDmssAPI {
     return this.generatedDmssApi.blobGetById(requestParameters)
   }
 
-  createDocument(url: string, data: any, token: string): Promise<any> {
-    return axios.post(url, data, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+  createDocument(url: string, data: any): Promise<any> {
+    return axios.post(url, data, this.config)
   }
 
   addDocumentToParent({ absoluteRef, body }: ExplorerAddRequest): Promise<any> {

@@ -218,7 +218,7 @@ export default function useExplorer(dmssAPI: DmssAPI): IUseExplorer {
   const create = async ({ data, dataUrl, nodeUrl }: CreateProps) => {
     if (validate(data)) {
       dmssAPI
-        .createDocument(dataUrl, data, token)
+        .createDocument(dataUrl, data)
         .then((result: any) => {
           closeModal()
           index.models.index.operations.add(result.data.uid, nodeUrl, true)

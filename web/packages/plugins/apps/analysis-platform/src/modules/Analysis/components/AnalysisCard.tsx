@@ -14,7 +14,9 @@ import { AccessControlList, AuthContext, DmssAPI } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
 import JobApi from '../../Jobs/JobApi'
+// @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { createJobEntity } from '../../Jobs/createJobEntity'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -28,12 +30,6 @@ const CardWrapper = styled.div`
   grid-template-columns: repeat(2, 320px);
   grid-gap: 32px 32px;
   border-radius: 5px;
-`
-
-const OnRight = styled.div`
-  display: flex;
-  flex-direction: row-reverse;
-  margin-right: 50px;
 `
 
 type AnalysisCardProps = {
@@ -52,15 +48,15 @@ const RunAnalysisButton = (props: any) => {
 
   const saveAndStartJob = () => {
     setLoading(true)
+    const runsSoFar = analysis.workflow.runs.length
     const newWorkflowRun: any = {
       type: 'WorkflowDS/Blueprints/WorkflowRun',
-      started: '2022-01-01T12:06:39+0000',
-      ended: '2022-01-31T12:06:39+0000',
+      started: new Date().toISOString(),
       jobs: [
-        {
-          type: 'WorkflowDS/Blueprints/jobs/Shell',
-          script: 'echo "Hello World"',
-        },
+        createJobEntity(
+          analysis.workflow.tasks[0],
+          `${analysisAbsoluteReference}.workflow.runs.${runsSoFar}.result`
+        ),
       ],
       result: {},
     }

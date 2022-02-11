@@ -19,64 +19,28 @@ import {
 } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const {
-    type,
-    documentId,
-    dataSourceId,
-    uiRecipeName,
-    explorer,
-    onSubmit,
-  } = props
-
-  const [document, setDocument] = useState(undefined)
-  const [documentType, setDocumentType] = useState(type)
+  const { document, uiRecipeName, explorer, onSubmit } = props
+  const [config, setConfig] = useState(undefined)
+  const [error, setError] = useState<string | null>(null)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
 
   useEffect(() => {
-    setDocumentType(type)
-  }, [type])
-
-  useEffect(() => {
-    if (dataSourceId && documentId) {
-      const target = documentId.split('.')
-      explorer
-        .get({
-          dataSourceId,
-          documentId: target.shift(),
-          attribute: target.join('.'),
-        })
-        .then((document: any) => {
-          setDocument(document)
-          setDocumentType(document.type)
-        })
-    }
-  }, [dataSourceId, documentId])
-
-  const [config, setConfig] = useState(undefined)
-  useEffect(() => {
-    if (
-      (!config && documentType !== undefined) ||
+    createFormConfigs({
+      document,
+      uiRecipeName,
+      explorer,
+      token,
+    })
       // @ts-ignore
-      (config && config.type !== documentType)
-    ) {
-      createFormConfigs({
-        type: documentType,
-        document,
-        uiRecipeName,
-        explorer,
-        token,
+      .then((config: FormConfig) => setConfig(config))
+      .catch((error) => {
+        setError(error.message)
+        throw `error occured when creating config for default-form:  ${error}`
       })
-        // @ts-ignore
-        .then((config: FormConfig) => setConfig(config))
-        .catch((error) => {
-          throw new Error(
-            `error occured when creating config for default-form:  ${error}`
-          )
-        })
-    }
-  }, [documentType, config, document, uiRecipeName])
+  }, [])
 
+  if (error) return <div style={{ color: 'red' }}>Error: {error}</div>
   if (!config) return <div>Getting config...</div>
 
   // @ts-ignore

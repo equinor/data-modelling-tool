@@ -1,8 +1,8 @@
 {
   "type": "system/SIMOS/Blueprint",
-  "name": "AzureContainerInstanceJob",
+  "name": "AzureContainer",
   "description": "Description of a executable job running as an Azure Container Instance",
-  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity", "DMT-Internal/DMT/Jobs/Container"],
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity", "/jobs/Container"],
   "attributes": [
     {
       "attributeType": "string",

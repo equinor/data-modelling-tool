@@ -8,9 +8,10 @@ export type FormConfig = {
   type: string
 }
 
-export async function createFormConfigs(pluginProps: any): Promise<FormConfig> {
-  const { type, document, uiRecipeName, explorer, token } = pluginProps
+export async function createFormConfigs(props: any): Promise<FormConfig> {
+  const { document, uiRecipeName, explorer, token } = props
   const rootBlueprint = undefined
+  const type = document.type
 
   const blueprint = await explorer.getBlueprint(type)
 
