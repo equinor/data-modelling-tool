@@ -6,12 +6,14 @@ import {
   Icon,
   Checkbox,
   Progress,
-  CircularProgress,
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-import { AuthContext, DmssAPI } from '@dmt/common'
-import useLocalStorage from '../../../../apps/dmt-app/src/hooks/useLocalStorage' //todo is this correct usage?
+
+import { AuthContext } from 'react-oauth2-code-pkce'
+import DmssAPI from '../services/api/DmssAPI'
+import { useLocalStorage } from '../hooks/useLocalStorage'
+
 import { NotificationManager } from 'react-notifications'
 import {
   getUsernameMappingFromId,
