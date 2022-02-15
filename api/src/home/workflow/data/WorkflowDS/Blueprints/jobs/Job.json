@@ -5,12 +5,39 @@
   "extends": [
     "system/SIMOS/DefaultUiRecipes"
   ],
-  "description": "",
   "attributes": [
     {
       "name": "label",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string"
+    },
+    {
+      "name": "triggeredBy",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "started",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "ended",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "outputTarget",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "result",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "system/SIMOS/Entity",
+      "contained": false,
+      "optional": true
     }
   ]
 }

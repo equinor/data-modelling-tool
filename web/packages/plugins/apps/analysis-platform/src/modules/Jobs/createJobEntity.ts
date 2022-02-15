@@ -10,14 +10,14 @@ import {
 } from '../../const'
 import { poorMansUUID } from '../../utils/uuid'
 
-export function createJobEntity(task: any, referencedBy: string): any {
+export function createJobEntity(task: any, user: string): any {
   switch (task.type) {
     case REVERSE_TASK:
       return {
         name: `${task.name}-${poorMansUUID()}`,
+        triggeredBy: user,
         type: task.jobType,
         outputTarget: 'AnalysisPlatformDS/Data/Results', // TODO: get from task
-        resultLinkTarget: referencedBy,
         input: task.defaultInput,
       }
     case SIMA_TASK:
@@ -41,7 +41,7 @@ export function createJobEntity(task: any, referencedBy: string): any {
           `--workflow=${task.workflow}`,
           `--input=${DEFAULT_DATASOURCE_ID}/${task.inputId}`,
           `--target=${task.targetFolder}`,
-          `--result-link-target=${referencedBy}`,
+          `--result-link-target=''`,
           ...runRemote,
         ],
       }
