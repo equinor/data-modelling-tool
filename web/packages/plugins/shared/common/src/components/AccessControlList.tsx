@@ -252,6 +252,7 @@ export const AccessControlList = (props: {
   const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingACLDocument, setLoadingACLDocument] = useState<boolean>(false)
+  //@ts-ignore
   const { token } = useContext(AuthContext)
   const [refreshToken, setRefreshToken] = useLocalStorage(
     'ROCP_refreshToken',
@@ -269,7 +270,6 @@ export const AccessControlList = (props: {
   const convertACLFromUsernameIdToUsername = async (
     acl: TAcl
   ): Promise<TAcl> => {
-    //todo check that this acl has user data as username id and not username
     const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
     const promises: Promise<UsernameIdMapping>[] = []
     Object.keys(aclCopy.users).map((usernameId: string) => {
@@ -303,7 +303,6 @@ export const AccessControlList = (props: {
 
   const convertACLFromUsernameToUsernameId = (acl: TAcl): Promise<TAcl> => {
     const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
-    //     //todo check that this acl has user data as username and not username id
     const promises: Promise<UsernameIdMapping>[] = []
     Object.keys(aclCopy.users).map((username: string) => {
       //@ts-ignore
