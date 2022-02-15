@@ -9,11 +9,10 @@ import {
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-
 import { AuthContext } from 'react-oauth2-code-pkce'
 import DmssAPI from '../services/api/DmssAPI'
 import { useLocalStorage } from '../hooks/useLocalStorage'
-
+//@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import {
   getUsernameMappingFromId,
@@ -274,6 +273,7 @@ export const AccessControlList = (props: {
     const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
     const promises: Promise<UsernameIdMapping>[] = []
     Object.keys(aclCopy.users).map((usernameId: string) => {
+      //@ts-ignore
       promises.push(getUsernameMappingFromId(usernameId, refreshToken))
     })
     const newUsers: { [key: string]: ACLEnum } = {}
@@ -286,6 +286,7 @@ export const AccessControlList = (props: {
         aclCopy.users = newUsers
       })
       .then(() => {
+        //@ts-ignore
         return getUsernameMappingFromId(aclCopy.owner, refreshToken).then(
           (usernameIdMapping: UsernameIdMapping) => {
             if (usernameIdMapping.username) {
@@ -305,6 +306,7 @@ export const AccessControlList = (props: {
     //     //todo check that this acl has user data as username and not username id
     const promises: Promise<UsernameIdMapping>[] = []
     Object.keys(aclCopy.users).map((username: string) => {
+      //@ts-ignore
       promises.push(getUsernameMappingFromUsername(username, refreshToken))
     })
     const newUsers: { [key: string]: ACLEnum } = {}
@@ -319,6 +321,7 @@ export const AccessControlList = (props: {
         aclCopy.users = newUsers
       })
       .then(() => {
+        //@ts-ignore
         return getUsernameMappingFromUsername(aclCopy.owner, refreshToken).then(
           (usernameIdMapping: UsernameIdMapping) => {
             if (usernameIdMapping.usernameId) {
