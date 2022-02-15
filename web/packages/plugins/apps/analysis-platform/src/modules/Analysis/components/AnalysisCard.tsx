@@ -40,7 +40,7 @@ const RunAnalysisButton = (props: any) => {
   const { analysis } = props
 
   const [loading, setLoading] = useState<boolean>(false)
-  const { token } = useContext(AuthContext)
+  const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const jobAPI = new JobApi(token)
 
@@ -48,30 +48,20 @@ const RunAnalysisButton = (props: any) => {
 
   const saveAndStartJob = () => {
     setLoading(true)
-    const runsSoFar = analysis.workflow.runs.length
-    const newWorkflowRun: any = {
-      type: 'WorkflowDS/Blueprints/WorkflowRun',
-      started: new Date().toISOString(),
-      jobs: [
-        createJobEntity(
-          analysis.workflow.tasks[0],
-          `${analysisAbsoluteReference}.workflow.runs.${runsSoFar}.result`
-        ),
-      ],
-      result: {},
-    }
+    const runsSoFar = analysis.jobs.length
+    const job: any = createJobEntity(analysis.task, tokenData?.name)
     dmssAPI.generatedDmssApi
       .explorerAdd({
-        absoluteRef: `${analysisAbsoluteReference}.workflow.runs`,
+        absoluteRef: `${analysisAbsoluteReference}.jobs`,
         updateUncontained: false,
-        body: newWorkflowRun,
+        body: job,
       })
       .then((res: any) => {
         // Add the new job to the state
         // TODO: setJobs([newJob, ...jobs])
         // Start a job from the created job entity (last one in list)
         jobAPI
-          .startJob(`${DEFAULT_DATASOURCE_ID}/${JSON.parse(res).uid}.jobs.0`)
+          .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
           .then((result: any) => {
             NotificationManager.success(
               JSON.stringify(result.data),
@@ -114,8 +104,6 @@ const AnalysisCard = (props: AnalysisCardProps) => {
   const [viewACL, setViewACL] = useState<boolean>(false)
   // @ts-ignore
   const { tokenData } = useContext(AuthContext)
-
-  const hasDefinedTask = 'workflow' in analysis && 'tasks' in analysis.workflow
 
   return (
     <CardWrapper>
@@ -163,7 +151,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
               <Icons name="assignment_user" title="assignment_user" />
             </Button>
           )}
-          {hasDefinedTask && (
+          {'task' in analysis && Object.keys(analysis.task).length > 0 && (
             <>
               <RunAnalysisButton analysis={analysis} />
               <Button style={{ width: 'max-content' }}>

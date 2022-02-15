@@ -5,12 +5,18 @@
   "extends": [
     "system/SIMOS/NamedEntity"
   ],
-  "description": "Task represent a single job in a workflow",
+  "description": "Task holds parameters that is used to create different job instances",
   "attributes": [
     {
       "name": "label",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string"
+    },
+    {
+      "name": "schedule",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
     },
     {
       "name": "outputTarget",
@@ -33,6 +39,14 @@
       "name": "defaultInput",
       "label": "Default input",
       "description": "Default input data",
+      "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/Entity",
+      "name": "input",
+      "label": "Input",
+      "description": "Input data",
       "optional": true
     },
     {

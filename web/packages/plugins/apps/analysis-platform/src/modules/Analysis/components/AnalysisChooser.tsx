@@ -5,6 +5,7 @@ import { Heading } from '../../../components/Design/Fonts'
 import React from 'react'
 import { TTask } from '../Types'
 import { useSearch } from '@dmt/common'
+import { DEFAULT_DATASOURCE_ID, WORKFLOW_DATASOURCE } from '../../../const'
 
 type TaskTypeProps = {
   task: TTask
@@ -58,7 +59,7 @@ const AnalysisChooser = (props: AnalysisChooserProps): JSX.Element => {
       type: Blueprints.BLUEPRINT,
       extends: Blueprints.TASK,
     },
-    'WorkflowDS'
+    WORKFLOW_DATASOURCE
   )
 
   if (isLoading) return <></>

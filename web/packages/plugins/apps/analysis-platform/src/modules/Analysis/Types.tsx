@@ -7,7 +7,7 @@ export type TAnalysis = {
   label?: string
   creator: string
   schedule: string
-  workflow?: any
+  task: any
 }
 
 export type TTask = {

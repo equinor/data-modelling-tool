@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
-from typing import Tuple
+from typing import Callable, Tuple
 
 
 class JobStatus(Enum):
@@ -34,6 +34,12 @@ class Job:
         self.cron_job: bool = cron_job
         self.token: str = token
 
+    def update_entity_attributes(self):
+        # These attributes are common amongst all Job entities
+        self.entity["started"] = self.started.isoformat()
+        self.entity["stopped"] = self.stopped.isoformat()
+        self.entity["status"] = self.status.value
+
     def to_dict(self):
         return {
             "job_id": self.job_id,
@@ -61,10 +67,11 @@ class Job:
 
 
 class JobHandlerInterface(ABC):
-    def __init__(self, data_source: str, job_entity: dict, token: str):
+    def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: Callable[[dict], None]):
         self.data_source = data_source
         self.job_entity = job_entity
         self.token = token
+        self.insert_reference = insert_reference
 
     @abstractmethod
     def start(self) -> str:

@@ -14,10 +14,15 @@
       "optional": true
     },
     {
-      "name": "workflow",
+      "name": "task",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "WorkflowDS/Blueprints/Workflow",
+      "attributeType": "WorkflowDS/Blueprints/Task",
       "contained": true
+    },
+    {"name": "jobs",
+    "type": "system/SIMOS/BlueprintAttribute",
+    "attributeType": "WorkflowDS/Blueprints/jobs/Job",
+      "dimensions": "*"
     },
     {
       "name": "creator",
@@ -42,9 +47,5 @@
       "attributeType": "string",
       "optional": true
     }
-  ],
-  "uiRecipes": [
-  ],
-  "storageRecipes": [
   ]
 }

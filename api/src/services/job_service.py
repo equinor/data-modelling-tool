@@ -6,12 +6,14 @@ from typing import Callable, Tuple, Union
 
 import redis
 import traceback
+
+import requests
 from redis import AuthenticationError
 
 from config import config
 from enums import SIMOS
 from repository.repository_exceptions import JobNotFoundException
-from services.dmss import get_document_by_uid, get_personal_access_token
+from services.dmss import get_document_by_uid, get_personal_access_token, update_document_by_uid
 
 # TODO: Authorization. The only level of authorization at this point is to allow all that
 #  can view the job entity to also run and delete the job.
@@ -92,6 +94,18 @@ class JobService:
         data_source_id, job_entity_id, attribute = split_absolute_ref(job_id)
         return get_document_by_uid(data_source_id, job_entity_id, attribute=attribute, token=token)
 
+    @staticmethod
+    def _insert_reference(document_id: str, reference: dict, token: str = None):
+        headers = {"API-Key": token}
+        req = requests.put(f"{config.DMSS_API}/api/v1/reference/{document_id}", json=reference, headers=headers)
+        req.raise_for_status()
+
+        return req.json()
+
+    @staticmethod
+    def _update_job_entity(job_id: str, job_entity: dict, token: str):
+        return update_document_by_uid(job_id, {"data": job_entity}, token=token)
+
     def _get_job_handler(self, job: Job) -> JobHandlerInterface:
         data_source_id = job.job_id.split("/", 1)[0]
 
@@ -118,10 +132,20 @@ class JobService:
                 supported_job_type = job_handler_module._SUPPORTED_JOB_TYPE
                 if isinstance(supported_job_type, tuple) or isinstance(supported_job_type, list):
                     if job.entity["type"] in supported_job_type:
-                        return job_handler_module.JobHandler(data_source_id, job.entity, job.token)
+                        return job_handler_module.JobHandler(
+                            data_source_id,
+                            job.entity,
+                            job.token,
+                            lambda ref: self._insert_reference(f"{job.job_id}.result", ref, job.token),
+                        )
                 else:
                     if job.entity["type"] == supported_job_type:
-                        return job_handler_module.JobHandler(data_source_id, job.entity, job.token)
+                        return job_handler_module.JobHandler(
+                            data_source_id,
+                            job.entity,
+                            job.token,
+                            lambda ref: self._insert_reference(f"{job.job_id}.result", ref, job.token),
+                        )
         except ImportError as error:
             traceback.print_exc()
             raise ImportError(
@@ -134,13 +158,15 @@ class JobService:
         raise NotImplementedError(f"No handler for a job of type '{job.entity['type']}' is configured")
 
     def _run_job(self, job_id: str) -> str:
-        job = self._get_job(job_id)
+        job: Job = self._get_job(job_id)
         job_handler = self._get_job_handler(job)
-        start_output = job_handler.start()
         job.status = JobStatus.STARTING
-        job.log = start_output
+        job.started = datetime.now()
+        job.update_entity_attributes()
         self._set_job(job)
-
+        self._update_job_entity(job.job_id, job.entity, job.token)  # Update in DMSS with status etc.
+        start_output = job_handler.start()
+        job.log = start_output
         return start_output
 
     def register_job(self, job_id: str) -> str:
