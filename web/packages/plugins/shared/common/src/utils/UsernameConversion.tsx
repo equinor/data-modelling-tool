@@ -4,22 +4,14 @@ import axios from 'axios'
 import { NotificationManager } from 'react-notifications'
 
 const GRAPH_API = 'https://graph.microsoft.com/v1.0'
-export type UsernameIdMapping = { usernameId: string; username: string }
+export type UserIdMapping = { userId: string; username: string }
 
 export function postWithFormData(tokenEndpoint: string, formData: FormData) {
-  return fetch(tokenEndpoint, {
-    method: 'POST',
-    body: formData,
-  })
-    .then((response) =>
-      response.json().then((body: any): any => {
-        if (!response.ok) {
-          console.error(body.error_description)
-          throw body.error_description
-        }
-        return body
-      })
-    )
+  return axios
+    .post(tokenEndpoint, formData)
+    .then((response) => {
+      return response.data
+    })
     .catch((error: any) => {
       console.error(error)
       throw error?.message || error
@@ -43,57 +35,53 @@ export const getTokenWithUserReadAccess = (
   )
 }
 
-export const getUsernameMappingFromId = (
-  usernameId: string,
-  refreshToken: string
-): Promise<UsernameIdMapping> => {
+export const getUsernameMappingFromUserId = (
+  userId: string,
+  token: string
+): Promise<UserIdMapping> => {
   // Find username from username id.
   // Only works with azure AD.
+  // the supplied token needs the access level: User.ReadBasic.All
 
-  return getTokenWithUserReadAccess(refreshToken)
-    .then((token: string) => {
-      const request_url = `${GRAPH_API}/users/${usernameId}?$select=mail`
-      return axios
-        .get(request_url, {
-          headers: { Authorization: `Bearer ${token}` },
-        })
-        .then((result) => {
-          return {
-            username: result.data.mail.split('@')[0],
-            usernameId: usernameId,
-          }
-        })
+  const request_url = `${GRAPH_API}/users/${userId}?$select=mail`
+  return axios
+    .get(request_url, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((result) => {
+      return {
+        username: result.data.mail.split('@')[0],
+        userId: userId,
+      }
     })
     .catch((error) => {
-      NotificationManager.error(
-        `Failed to get username from username ID. Returning username ID instead.`
-      )
-      return { username: '', usernameId: usernameId }
+      NotificationManager.error(`Failed to get username from username ID.`)
+      return { username: '', userId: userId }
     })
 }
 
 export const getUsernameMappingFromUsername = (
   username: string,
-  refreshToken: string
-): Promise<UsernameIdMapping> => {
+  token: string
+): Promise<UserIdMapping> => {
   // Find username id from username.
-  //Only works with azure AD.
-  return getTokenWithUserReadAccess(refreshToken).then((token: string) => {
-    const request_url = `${GRAPH_API}/users/?$filter=mail eq '${username}@equinor.com'`
-    return axios
-      .get(request_url, {
-        headers: { Authorization: `Bearer ${token}` },
-      })
-      .then((result) => {
-        if (result.data.value && result.data.value.length === 0) {
-          throw new Error(`Found no users with username ${username}.`)
-        }
-        if (result.data.value.length > 1) {
-          throw new Error(
-            `Found several users with username ${username}. Username must be unique.`
-          )
-        }
-        return { usernameId: result.data.value[0].id, username: username }
-      })
-  })
+  // Only works with azure AD.
+  // the supplied token needs the access level: User.ReadBasic.All
+
+  const request_url = `${GRAPH_API}/users/?$filter=mail eq '${username}@equinor.com'`
+  return axios
+    .get(request_url, {
+      headers: { Authorization: `Bearer ${token}` },
+    })
+    .then((result) => {
+      if (result.data.value && result.data.value.length === 0) {
+        throw new Error(`Found no users with username ${username}.`)
+      }
+      if (result.data.value.length > 1) {
+        throw new Error(
+          `Found several users with username ${username}. Username must be unique.`
+        )
+      }
+      return { userId: result.data.value[0].id, username: username }
+    })
 }

@@ -15,9 +15,10 @@ import { useLocalStorage } from '../hooks/useLocalStorage'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import {
-  getUsernameMappingFromId,
+  getTokenWithUserReadAccess,
+  getUsernameMappingFromUserId,
   getUsernameMappingFromUsername,
-  UsernameIdMapping,
+  UserIdMapping,
 } from '../utils/UsernameConversion'
 
 Icon.add({ edit_text, save })
@@ -190,7 +191,7 @@ const ACLUserRolesPanel = ({
   return (
     <>
       {aclKey === 'users' && (
-        <p style={{ fontStyle: 'italic' }}>Use equinor short name</p>
+        <p style={{ fontStyle: 'italic' }}>Use short name</p>
       )}
       <CenteredRow>
         <Input
@@ -252,6 +253,7 @@ export const AccessControlList = (props: {
   const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingACLDocument, setLoadingACLDocument] = useState<boolean>(false)
+  const [tokenWithReadAccess, setTokenWithReadAccess] = useState<string>('')
   //@ts-ignore
   const { token } = useContext(AuthContext)
   const [refreshToken, setRefreshToken] = useLocalStorage(
@@ -267,102 +269,112 @@ export const AccessControlList = (props: {
     others: ACLEnum.READ,
   })
 
-  const convertACLFromUsernameIdToUsername = async (
-    acl: TAcl
-  ): Promise<TAcl> => {
+  const convertACLFromUserIdToUsername = async (acl: TAcl): Promise<TAcl> => {
     const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
-    const promises: Promise<UsernameIdMapping>[] = []
-    Object.keys(aclCopy.users).map((usernameId: string) => {
-      //@ts-ignore
-      promises.push(getUsernameMappingFromId(usernameId, refreshToken))
-    })
+
     const newUsers: { [key: string]: ACLEnum } = {}
-    return Promise.all(promises)
-      .then((usernameIdMappings: UsernameIdMapping[]) => {
-        usernameIdMappings.map((usernameIdMapping: UsernameIdMapping) => {
-          newUsers[usernameIdMapping.username] =
-            aclCopy.users[usernameIdMapping.usernameId]
+    return Promise.all(
+      Object.keys(aclCopy.users).map((usernameId: string) => {
+        return getUsernameMappingFromUserId(usernameId, tokenWithReadAccess)
+      })
+    )
+      .then((userIdMappings: UserIdMapping[]) => {
+        userIdMappings.map((userIdMapping: UserIdMapping) => {
+          newUsers[userIdMapping.username] = aclCopy.users[userIdMapping.userId]
+        })
+        aclCopy.users = newUsers
+      })
+      .then(() => {
+        return getUsernameMappingFromUserId(
+          aclCopy.owner,
+          tokenWithReadAccess
+        ).then((userIdMapping: UserIdMapping) => {
+          if (userIdMapping.username) {
+            aclCopy.owner = userIdMapping.username
+          } else {
+            aclCopy.owner = userIdMapping.userId
+          }
+
+          return aclCopy
+        })
+      })
+  }
+
+  const convertACLFromUsernameToUserId = (acl: TAcl): Promise<TAcl> => {
+    const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
+
+    const newUsers: { [key: string]: ACLEnum } = {}
+    return Promise.all(
+      Object.keys(aclCopy.users).map((username: string) => {
+        return getUsernameMappingFromUsername(username, tokenWithReadAccess)
+      })
+    )
+      .then((userIdMappings: UserIdMapping[]) => {
+        userIdMappings.map((userIdMapping: UserIdMapping, index) => {
+          newUsers[userIdMapping.userId] = aclCopy.users[userIdMapping.username]
         })
         aclCopy.users = newUsers
       })
       .then(() => {
         //@ts-ignore
-        return getUsernameMappingFromId(aclCopy.owner, refreshToken).then(
-          (usernameIdMapping: UsernameIdMapping) => {
-            if (usernameIdMapping.username) {
-              aclCopy.owner = usernameIdMapping.username
-            } else {
-              aclCopy.owner = usernameIdMapping.usernameId
-            }
-
-            return aclCopy
+        return getUsernameMappingFromUsername(
+          aclCopy.owner,
+          tokenWithReadAccess
+        ).then((userIdMapping: UserIdMapping) => {
+          if (userIdMapping.userId) {
+            aclCopy.owner = userIdMapping.userId
+          } else {
+            aclCopy.owner = userIdMapping.username
           }
-        )
-      })
-  }
-
-  const convertACLFromUsernameToUsernameId = (acl: TAcl): Promise<TAcl> => {
-    const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
-    const promises: Promise<UsernameIdMapping>[] = []
-    Object.keys(aclCopy.users).map((username: string) => {
-      //@ts-ignore
-      promises.push(getUsernameMappingFromUsername(username, refreshToken))
-    })
-    const newUsers: { [key: string]: ACLEnum } = {}
-    return Promise.all(promises)
-      .then((usernameIdMappings: UsernameIdMapping[]) => {
-        usernameIdMappings.map(
-          (usernameIdMapping: UsernameIdMapping, index) => {
-            newUsers[usernameIdMapping.usernameId] =
-              aclCopy.users[usernameIdMapping.username]
-          }
-        )
-        aclCopy.users = newUsers
-      })
-      .then(() => {
-        //@ts-ignore
-        return getUsernameMappingFromUsername(aclCopy.owner, refreshToken).then(
-          (usernameIdMapping: UsernameIdMapping) => {
-            if (usernameIdMapping.usernameId) {
-              aclCopy.owner = usernameIdMapping.usernameId
-            } else {
-              aclCopy.owner = usernameIdMapping.username
-            }
-            return aclCopy
-          }
-        )
+          return aclCopy
+        })
       })
   }
 
   useEffect(() => {
-    setLoadingACLDocument(true)
-    dmssAPI
-      .getDocumentAcl({ dataSourceId: dataSourceId, documentId: documentId })
-      .then((response: TAcl) => {
-        convertACLFromUsernameIdToUsername(response)
-          .then((newACL: TAcl) => {
-            setDocumentACL(newACL)
-          })
-          .catch((error) => {
-            NotificationManager.error(
-              `Could not convert username ID to username (${error})`
-            )
-          })
-          .finally(() => {
-            setLoadingACLDocument(false)
-          })
+    if (tokenWithReadAccess !== '') {
+      setLoadingACLDocument(true)
+      dmssAPI
+        .getDocumentAcl({
+          dataSourceId: dataSourceId,
+          documentId: documentId,
+        })
+        .then((response: TAcl) => {
+          convertACLFromUserIdToUsername(response)
+            .then((newACL: TAcl) => {
+              setDocumentACL(newACL)
+            })
+            .catch((error) => {
+              NotificationManager.error(
+                `Could not convert username ID to username (${error})`
+              )
+            })
+            .finally(() => {
+              setLoadingACLDocument(false)
+            })
+        })
+        .catch((error: any) => {
+          NotificationManager.error(
+            `Could not fetch ACL for this document (${error})`
+          )
+        })
+    }
+  }, [tokenWithReadAccess])
+
+  useEffect(() => {
+    if (typeof refreshToken === 'string') {
+      getTokenWithUserReadAccess(refreshToken).then((token: string) => {
+        setTokenWithReadAccess(token)
       })
-      .catch((error: any) => {
-        NotificationManager.error(
-          `Could not fetch ACL for this document (${error})`
-        )
-      })
+    } else {
+      throw new Error('Refresh token not found')
+    }
   }, [documentId])
 
   async function saveACL(acl: TAcl) {
     setLoading(true)
 
-    convertACLFromUsernameToUsernameId(acl)
+    convertACLFromUsernameToUserId(acl)
       .then((newACL) => {
         dmssAPI.setDocumentAcl({
           dataSourceId: dataSourceId,
