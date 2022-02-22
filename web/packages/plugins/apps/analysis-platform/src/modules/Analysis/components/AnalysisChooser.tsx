@@ -5,7 +5,7 @@ import { Heading } from '../../../components/Design/Fonts'
 import React from 'react'
 import { TTask } from '../Types'
 import { useSearch } from '@dmt/common'
-import { DEFAULT_DATASOURCE_ID, WORKFLOW_DATASOURCE } from '../../../const'
+import { WORKFLOW_DATASOURCE } from '../../../const'
 
 type TaskTypeProps = {
   task: TTask

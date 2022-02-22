@@ -1,6 +1,6 @@
 import { Dialog, Icon, Scrim } from '@equinor/eds-core-react'
 import { ClickableIcon } from './Layout/Header'
-import React, { ReactChildren } from 'react'
+import React from 'react'
 
 export const CustomScrim = (props: {
   closeScrim: Function
@@ -10,7 +10,7 @@ export const CustomScrim = (props: {
 }) => {
   const { closeScrim, children, header, width } = props
   return (
-    <Scrim isDismissable onClose={closeScrim}>
+    <Scrim isDismissable onClose={closeScrim} style={{ zIndex: '3' }}>
       <Dialog style={{ width: width ? width : '100%' }}>
         <div
           style={{
@@ -30,7 +30,16 @@ export const CustomScrim = (props: {
             <Icon name="close" size={24} title="Close" />
           </ClickableIcon>
         </div>
-        <div style={{ padding: '20px 30px 30px 30px' }}>{children}</div>
+        <div
+          style={{
+            padding: '20px 30px 30px 30px',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+          }}
+        >
+          {children}
+        </div>
       </Dialog>
     </Scrim>
   )

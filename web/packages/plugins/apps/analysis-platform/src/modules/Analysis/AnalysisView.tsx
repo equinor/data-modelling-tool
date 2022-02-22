@@ -16,6 +16,11 @@ export default (): JSX.Element => {
   // @ts-ignore
   const { token } = useContext(AuthContext)
 
+  function addJob(newJob: any) {
+    // TODO:
+    console.log('New job added to state')
+  }
+
   const handleTypeSelected = (type: string) => {
     const dmtAPI = new DmtAPI()
     dmtAPI
@@ -33,7 +38,7 @@ export default (): JSX.Element => {
   if (isLoading) return <Progress.Linear />
   return (
     <>
-      <AnalysisInfoCard analysis={analysis} />
+      <AnalysisInfoCard analysis={analysis} addJob={addJob} />
       {'task' in analysis && Object.keys(analysis.task).length ? (
         <>
           <UIPluginSelector

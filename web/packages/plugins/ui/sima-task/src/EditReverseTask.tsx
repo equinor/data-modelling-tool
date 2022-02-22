@@ -2,17 +2,13 @@ import {
   BlueprintPicker,
   DmtUIPlugin,
   EntityPicker,
-  EntityPickerDropdown,
   TReference,
-  UploadFileButton,
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useState } from 'react'
-import { Button, Label, TextField, Typography } from '@equinor/eds-core-react'
+import { useState } from 'react'
+import { Button, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-
-const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 const Wrapper = styled.div`
   margin: 10px;
@@ -22,9 +18,6 @@ const Column = styled.div`
   display: block;
 `
 
-const Row = styled.div`
-  display: flex;
-`
 const GroupWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -37,7 +30,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditReverseTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId } = props
+  const { document, documentId, dataSourceId, onSubmit } = props
   // using the passed updateDocument from props causes way too much rerendering. This should probably be fixed...
   const [_document, documentLoading, updateDocument, error] = useDocument(
     dataSourceId,
@@ -102,7 +95,16 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
             >
               Reset
             </Button>
-            <Button as="button" onClick={() => updateDocument(formData, true)}>
+            <Button
+              as="button"
+              onClick={() => {
+                if (onSubmit) {
+                  onSubmit(formData)
+                } else {
+                  updateDocument(formData, true)
+                }
+              }}
+            >
               Ok
             </Button>
           </div>

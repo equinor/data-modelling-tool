@@ -37,7 +37,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditSimaTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId } = props
+  const { document, documentId, dataSourceId, onSubmit } = props
   // using the passed updateDocument from props causes way too much rerendering. This should probably be fixed...
   const [_document, documentLoading, updateDocument, error] = useDocument(
     dataSourceId,
@@ -194,7 +194,16 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
             >
               Reset
             </Button>
-            <Button as="button" onClick={() => updateDocument(formData, true)}>
+            <Button
+              as="button"
+              onClick={() => {
+                if (onSubmit) {
+                  onSubmit(formData)
+                } else {
+                  updateDocument(formData, true)
+                }
+              }}
+            >
               Ok
             </Button>
           </div>

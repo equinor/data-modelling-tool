@@ -1,5 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
-import { UiPluginContext, useBlueprint } from '@dmt/common'
+import React, {
+  useContext,
+  useEffect,
+  useState,
+  FunctionComponent,
+} from 'react'
+import { DmtUIPlugin, UiPluginContext, useBlueprint } from '@dmt/common'
 import styled from 'styled-components'
 import { DotProgress } from '@equinor/eds-core-react'
 
@@ -22,6 +27,14 @@ const PathWrapper = styled.div`
   display: flex;
   opacity: 60%;
   justify-content: center;
+  font-size: 14px;
+  height: 20px;
+  overflow: hidden;
+`
+
+const PathPart = styled.div`
+  margin-top: 0;
+  margin-right: 15px;
 `
 
 export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
@@ -31,8 +44,9 @@ export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
     <PathWrapper>
       {parts.map((part: string) => {
         return (
-          <div style={{ display: 'flex' }} key={part}>
-            <div style={{ margin: '0 15px' }}>/</div> {part}
+          <div style={{ display: 'flex', flexWrap: 'nowrap' }} key={part}>
+            <PathPart>/</PathPart>
+            <PathPart>{part}</PathPart>
           </div>
         )
       })}
@@ -60,8 +74,9 @@ const SelectPluginButton = styled.div<ISPButton>`
 export function UIPluginSelector(props: {
   absoluteDottedId: string
   entity: any
+  onSubmit?: Function
 }): JSX.Element {
-  const { absoluteDottedId, entity } = props
+  const { absoluteDottedId, entity, onSubmit } = props
   const [dataSourceId, documentId] = absoluteDottedId.split('/', 2)
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
@@ -94,7 +109,9 @@ export function UIPluginSelector(props: {
       </div>
     )
 
-  const UiPlugin = selectablePluginsComponent[selectedPlugin][1]
+  const UiPlugin: FunctionComponent<DmtUIPlugin> = selectablePluginsComponent[
+    selectedPlugin
+  ][1] as FunctionComponent
 
   return (
     <Wrapper>
@@ -116,6 +133,7 @@ export function UIPluginSelector(props: {
         dataSourceId={dataSourceId}
         documentId={documentId}
         document={entity}
+        onSubmit={onSubmit}
       />
     </Wrapper>
   )

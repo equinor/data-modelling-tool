@@ -10,7 +10,12 @@ import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
 import { TAnalysis } from '../Types'
 import { CustomScrim } from '../../../components/CustomScrim'
-import { AccessControlList, AuthContext, DmssAPI } from '@dmt/common'
+import {
+  AccessControlList,
+  AuthContext,
+  DmssAPI,
+  UIPluginSelector,
+} from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
 import JobApi from '../../Jobs/JobApi'
@@ -34,10 +39,12 @@ const CardWrapper = styled.div`
 
 type AnalysisCardProps = {
   analysis: TAnalysis
+  addJob: Function
 }
 
 const RunAnalysisButton = (props: any) => {
-  const { analysis } = props
+  const { analysis, addJob } = props
+  const [showScrim, setShowScrim] = useState<boolean>(false)
 
   const [loading, setLoading] = useState<boolean>(false)
   const { token, tokenData } = useContext(AuthContext)
@@ -46,10 +53,10 @@ const RunAnalysisButton = (props: any) => {
 
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 
-  const saveAndStartJob = () => {
+  const saveAndStartJob = (task: any) => {
     setLoading(true)
     const runsSoFar = analysis.jobs.length
-    const job: any = createJobEntity(analysis.task, tokenData?.name)
+    const job: any = createJobEntity(task, tokenData?.name)
     dmssAPI.generatedDmssApi
       .explorerAdd({
         absoluteRef: `${analysisAbsoluteReference}.jobs`,
@@ -63,6 +70,7 @@ const RunAnalysisButton = (props: any) => {
         jobAPI
           .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
           .then((result: any) => {
+            addJob(job)
             NotificationManager.success(
               JSON.stringify(result.data),
               'Simulation job started'
@@ -92,15 +100,36 @@ const RunAnalysisButton = (props: any) => {
   }
 
   return (
-    <Button onClick={() => saveAndStartJob()} style={{ width: 'max-content' }}>
-      Run analysis
-      <Icons name="play" title="play" />
-    </Button>
+    <div>
+      <Button
+        onClick={() => setShowScrim(true)}
+        style={{ width: 'max-content' }}
+      >
+        Run analysis
+        <Icons name="play" title="play" />
+      </Button>
+      {showScrim && (
+        <CustomScrim
+          closeScrim={() => setShowScrim(false)}
+          header={'Job parameters'}
+        >
+          <UIPluginSelector
+            absoluteDottedId={`${analysisAbsoluteReference}.task`}
+            entity={analysis.task}
+            onSubmit={(task: any) => {
+              saveAndStartJob(task)
+              setShowScrim(false)
+              NotificationManager.success('Job parameters updated', 'Updated')
+            }}
+          />
+        </CustomScrim>
+      )}
+    </div>
   )
 }
 
 const AnalysisCard = (props: AnalysisCardProps) => {
-  const { analysis } = props
+  const { analysis, addJob } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
   // @ts-ignore
   const { tokenData } = useContext(AuthContext)
@@ -153,7 +182,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           )}
           {'task' in analysis && Object.keys(analysis.task).length > 0 && (
             <>
-              <RunAnalysisButton analysis={analysis} />
+              <RunAnalysisButton analysis={analysis} addJob={addJob} />
               <Button style={{ width: 'max-content' }}>
                 Configure schedule
                 <Icons name="time" title="time" />
