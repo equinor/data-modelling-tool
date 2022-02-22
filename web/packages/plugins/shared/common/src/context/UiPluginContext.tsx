@@ -15,15 +15,15 @@ export interface LoadedPlugin {
 }
 
 export interface DmtUIPlugin {
-  type: string
+  type?: string
   dataSourceId: string
   documentId: string
-  explorer: any
-  uiRecipeName: any
-  useIndex: any
-  onSubmit: any
-  document: any
-  updateDocument: any
+  explorer?: any
+  uiRecipeName?: any
+  useIndex?: Function
+  onSubmit?: Function
+  document?: any
+  updateDocument?: any
 }
 
 export enum DmtPluginType {

@@ -13,10 +13,11 @@ const OnRight = styled.div`
 
 type AnalysisInfoCardProps = {
   analysis: TAnalysis
+  addJob: Function
 }
 
 const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
-  const { analysis } = props
+  const { analysis, addJob } = props
   const [isEditing, setIsEditing] = useState<boolean>(false)
 
   const handleSubmitTask = (task: TTask) => {
@@ -35,7 +36,7 @@ const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
         </OnRight>
       ) : (
         <OnRight>
-          <AnalysisCard analysis={analysis} />
+          <AnalysisCard analysis={analysis} addJob={addJob} />
           <Button onClick={() => setIsEditing(true)} variant="ghost_icon">
             <Icons name="edit_text" title="edit_text" />
           </Button>
