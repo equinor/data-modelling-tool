@@ -1,0 +1,49 @@
+on:
+  workflow_dispatch:
+  push:
+    tags:
+      - v*
+
+jobs:
+  tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - uses: ./.github/workflows/reusables/tests.yaml
+
+  publish-prod-tag:
+    needs: tests
+    uses: ./.github/workflows/publish.yaml
+    with:
+      image-tag: production
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      SRS_SECRET: ${{ secrets.SRS_ACR_SECRET }}
+
+  set-tag-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      tag-ref: ${{ steps.tag-ref.outputs.tag-ref }}
+    steps:
+      - uses: actions/checkout@master
+      - id: create-ref
+        run: |
+          TAG_REF=$(echo $GITHUB_REF | cut -d / -f 3)
+          echo "::set-output name=tag-ref::TAG_REF"
+
+  publish-tag-ref:
+    needs: [set-tag-ref, tests]
+    uses: ./.github/workflows/publish.yaml
+    with:
+      image-tag: ${{ needs.set-tag-ref.outputs.tag-ref }}
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      SRS_SECRET: ${{ secrets.SRS_ACR_SECRET }}
+
+  deploy:
+    needs: publish-prod-tag
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      radix-environment: 'prod'
+    secrets:
+      APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.APP_SERVICE_ACCOUNT_TOKEN }}

@@ -1,0 +1,71 @@
+on:
+  workflow_dispatch:
+  workflow_call:
+    secrets:
+      ACR_SECRET:
+        required: false
+      DMSS_DEPLOY_KEY:
+        required: false
+
+env:
+  IMAGE_REGISTRY: mariner.azurecr.io
+  API_IMAGE: mariner.azurecr.io/dmt/api
+  WEB_IMAGE: mariner.azurecr.io/dmt/web
+
+jobs:
+  test-api:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Docker Login"
+        run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+
+      - name: "Pull latest"
+        run: docker pull $API_IMAGE
+
+      - name: "Clone DMSS for blueprints"
+        run: |
+          eval $(ssh-agent)
+          export GIT_SSH_COMMAND='ssh -o StrictHostKeyChecking=no' &&
+          ssh-add - <<< "${{ secrets.DMSS_DEPLOY_KEY }}" &&
+          git clone git@github.com:equinor/data-modelling-storage-service api/src/dmss
+
+      - name: "Build API test image"
+        run: docker build --cache-from $API_IMAGE --target development --tag api-development ./api
+
+      - name: "Black Linting"
+        run: docker run --rm api-development black --check --diff --exclude dmss .
+
+      - name: "Bandit Static Code Security Analyzis"
+        run: docker run --rm api-development bandit --recursive . --exclude ./tests,./dmss
+
+      - name: "Safety - Dependencies CVE Check"
+        run: docker run --rm api-development safety check
+
+      - name: "API UnitTests"
+        run: docker run --rm api-development pytest tests
+
+      - name: "API BDD Tests"
+        run: |
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml run --rm dmss reset-app
+          docker-compose -f docker-compose.yml -f docker-compose.ci.yml run api behave
+
+  test-web:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: Install Precommit
+        run: pip install pre-commit
+      - name: Run prettier formatting
+        run: pre-commit run prettier --all-files
+
+      - name: "Build Web Image"
+        run: |
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $WEB_IMAGE
+          docker build --cache-from $WEB_IMAGE --target development --tag web-development ./web
+
+      - name: "Web Tests"
+        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test --

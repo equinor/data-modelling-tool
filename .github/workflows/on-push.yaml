@@ -1,0 +1,14 @@
+on:
+  workflow_dispatch:
+  push:
+    branches-ignore:
+      - master
+    tags-ignore:
+      - v*
+
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yaml
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      DMSS_DEPLOY_KEY: ${{ secrets.DMSS_DEPLOY_KEY }}
