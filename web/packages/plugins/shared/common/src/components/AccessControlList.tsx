@@ -9,9 +9,17 @@ import {
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-import { AuthContext, DmssAPI } from '@dmt/common'
+import { AuthContext } from '@dmt/common'
+import DmssAPI from '../services/api/DmssAPI'
+import { useLocalStorage } from '../hooks/useLocalStorage'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import {
+  getTokenWithUserReadAccess,
+  getUsernameMappingFromUserId,
+  getUsernameMappingFromUsername,
+  UserIdMapping,
+} from '../utils/UsernameConversion'
 
 Icon.add({ edit_text, save })
 
@@ -26,6 +34,15 @@ export type TAcl = {
   roles: { [key: string]: ACLEnum }
   users: { [key: string]: ACLEnum }
   others: ACLEnum
+}
+
+export type TokenResponse = {
+  token_type: string
+  scope: string
+  expires_in: number
+  ext_expires_in: number
+  access_token: string
+  refresh_token: string
 }
 
 const ACLWrapper = styled.div`
@@ -173,6 +190,9 @@ const ACLUserRolesPanel = ({
   }
   return (
     <>
+      {aclKey === 'users' && (
+        <p style={{ fontStyle: 'italic' }}>Use short name</p>
+      )}
       <CenteredRow>
         <Input
           style={{ width: '170px' }}
@@ -232,55 +252,139 @@ export const AccessControlList = (props: {
   const [activeTab, setActiveTab] = useState<number>(0)
   const [storeACLRecursively, setStoreACLRecursively] = useState<boolean>(true)
   const [loading, setLoading] = useState<boolean>(false)
-  // @ts-ignore-line
+  const [loadingACLDocument, setLoadingACLDocument] = useState<boolean>(false)
+  const [tokenWithReadAccess, setTokenWithReadAccess] = useState<string>('')
+  //@ts-ignore
   const { token } = useContext(AuthContext)
+  const [refreshToken, setRefreshToken] = useLocalStorage(
+    'ROCP_refreshToken',
+    ''
+  )
   const dmssAPI = new DmssAPI(token)
 
   const [documentACL, setDocumentACL] = useState<TAcl>({
-    owner: 'stoo',
-    roles: {
-      someRole: ACLEnum.WRITE,
-      anotherRole: ACLEnum.READ,
-      aThairdt: ACLEnum.NONE,
-      someaRole: ACLEnum.WRITE,
-      anothderRfsdfsdfsdfolsdfsdfsdfsdfsde: ACLEnum.READ,
-      aT: ACLEnum.NONE,
-      som4eRole: ACLEnum.WRITE,
-      ane: ACLEnum.READ,
-      aThirgddt: ACLEnum.NONE,
-    },
-    users: {
-      aGuy: ACLEnum.NONE,
-      aDude: ACLEnum.WRITE,
-      aFellow: ACLEnum.READ,
-    },
+    owner: '',
+    roles: {},
+    users: {},
     others: ACLEnum.READ,
   })
 
+  const convertACLFromUserIdToUsername = async (acl: TAcl): Promise<TAcl> => {
+    const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
+
+    const newUsers: { [key: string]: ACLEnum } = {}
+    return Promise.all(
+      Object.keys(aclCopy.users).map((usernameId: string) => {
+        return getUsernameMappingFromUserId(usernameId, tokenWithReadAccess)
+      })
+    )
+      .then((userIdMappings: UserIdMapping[]) => {
+        userIdMappings.map((userIdMapping: UserIdMapping) => {
+          newUsers[userIdMapping.username] = aclCopy.users[userIdMapping.userId]
+        })
+        aclCopy.users = newUsers
+      })
+      .then(() => {
+        return getUsernameMappingFromUserId(
+          aclCopy.owner,
+          tokenWithReadAccess
+        ).then((userIdMapping: UserIdMapping) => {
+          if (userIdMapping.username) {
+            aclCopy.owner = userIdMapping.username
+          } else {
+            aclCopy.owner = userIdMapping.userId
+          }
+
+          return aclCopy
+        })
+      })
+  }
+
+  const convertACLFromUsernameToUserId = (acl: TAcl): Promise<TAcl> => {
+    const aclCopy: TAcl = JSON.parse(JSON.stringify(acl)) //deep copy the acl object
+
+    const newUsers: { [key: string]: ACLEnum } = {}
+    return Promise.all(
+      Object.keys(aclCopy.users).map((username: string) => {
+        return getUsernameMappingFromUsername(username, tokenWithReadAccess)
+      })
+    )
+      .then((userIdMappings: UserIdMapping[]) => {
+        userIdMappings.map((userIdMapping: UserIdMapping, index) => {
+          newUsers[userIdMapping.userId] = aclCopy.users[userIdMapping.username]
+        })
+        aclCopy.users = newUsers
+      })
+      .then(() => {
+        //@ts-ignore
+        return getUsernameMappingFromUsername(
+          aclCopy.owner,
+          tokenWithReadAccess
+        ).then((userIdMapping: UserIdMapping) => {
+          if (userIdMapping.userId) {
+            aclCopy.owner = userIdMapping.userId
+          } else {
+            aclCopy.owner = userIdMapping.username
+          }
+          return aclCopy
+        })
+      })
+  }
+
   useEffect(() => {
-    dmssAPI
-      .getDocumentAcl({ dataSourceId: dataSourceId, documentId: documentId })
-      .then((response) => {
-        setDocumentACL(response)
+    if (tokenWithReadAccess !== '') {
+      setLoadingACLDocument(true)
+      dmssAPI
+        .getDocumentAcl({
+          dataSourceId: dataSourceId,
+          documentId: documentId,
+        })
+        .then((response: TAcl) => {
+          convertACLFromUserIdToUsername(response)
+            .then((newACL: TAcl) => {
+              setDocumentACL(newACL)
+            })
+            .catch((error) => {
+              NotificationManager.error(
+                `Could not convert username ID to username (${error})`
+              )
+            })
+            .finally(() => {
+              setLoadingACLDocument(false)
+            })
+        })
+        .catch((error: any) => {
+          NotificationManager.error(
+            `Could not fetch ACL for this document (${error})`
+          )
+        })
+    }
+  }, [tokenWithReadAccess])
+
+  useEffect(() => {
+    if (typeof refreshToken === 'string') {
+      getTokenWithUserReadAccess(refreshToken).then((token: string) => {
+        setTokenWithReadAccess(token)
       })
-      .catch((error: any) => {
-        NotificationManager.error(
-          `Could not fetch ACL for this document (${error})`
-        )
-      })
+    } else {
+      throw new Error('Refresh token not found')
+    }
   }, [documentId])
 
-  function saveACL(acl: TAcl) {
+  async function saveACL(acl: TAcl) {
     setLoading(true)
-    dmssAPI
-      .setDocumentAcl({
-        dataSourceId: dataSourceId,
-        documentId: documentId,
-        //@ts-ignore - ACL class from geneated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
-        aCL: acl,
-        recursively: storeACLRecursively,
+
+    convertACLFromUsernameToUserId(acl)
+      .then((newACL) => {
+        dmssAPI.setDocumentAcl({
+          dataSourceId: dataSourceId,
+          documentId: documentId,
+          //@ts-ignore - ACL class from geneated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
+          aCL: newACL,
+          recursively: storeACLRecursively,
+        })
       })
-      .then((response: string) => {
+      .then(() => {
         NotificationManager.success('ACL saved!')
       })
       .catch((error: any) => {
@@ -293,7 +397,17 @@ export const AccessControlList = (props: {
     setDocumentACL({ ...documentACL, ...value })
   }
 
-  if (!documentACL) return <>Loading document...</>
+  if (loadingACLDocument)
+    return (
+      <Progress.Circular
+        style={{
+          display: 'block',
+          marginLeft: 'auto',
+          marginRight: 'auto',
+          marginTop: '10px',
+        }}
+      />
+    )
 
   return (
     <ACLWrapper>
