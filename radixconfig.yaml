@@ -9,14 +9,14 @@ spec:
         from: master
     - name: dev
       build:
-        from: radix-deployment
+        from: master
   components:
     - name: web
       image: mariner.azurecr.io/dmt/web:{imageTagName}
       alwaysPullImageOnDeploy: true
       environmentConfig:
         - environment: prod
-          imageTagName: release
+          imageTagName: production
         - environment: dev
           imageTagName: latest
       ports:
@@ -43,7 +43,7 @@ spec:
         AZURE_JOB_CLIENT_ID: 97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
       environmentConfig:
         - environment: prod
-          imageTagName: release
+          imageTagName: production
           variables:
             SCHEDULER_REDIS_HOST: dmt-scheduler-prod.redis.cache.windows.net
             PUBLIC_DMSS_API: https://dmss-data-modelling-tool-prod.radix.equinor.com/

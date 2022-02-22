@@ -1,0 +1,49 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yaml
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      DMSS_DEPLOY_KEY: ${{ secrets.DMSS_DEPLOY_KEY }}
+
+  publish-latest:
+    needs: tests
+    uses: ./.github/workflows/publish.yaml
+    with:
+      image-tag: latest
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      SRS_SECRET: ${{ secrets.SRS_ACR_SECRET }}
+
+  set-commit-ref:
+    runs-on: ubuntu-latest
+    outputs:
+      commit-ref: ${{ steps.create-ref.outputs.commit-ref }}
+    steps:
+      - uses: actions/checkout@master
+      - id: create-ref
+        run: |
+          COMMIT_REF=$(git rev-parse --short $GITHUB_SHA)
+          echo "::set-output name=commit-ref::$COMMIT_REF"
+
+  publish-commit-ref:
+    needs: [set-commit-ref, tests]
+    uses: ./.github/workflows/publish.yaml
+    with:
+      image-tag: ${{ needs.set-commit-ref.outputs.commit-ref }}
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      SRS_SECRET: ${{ secrets.SRS_ACR_SECRET }}
+
+  deploy:
+    needs: publish-latest
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      radix-environment: 'dev'
+    secrets:
+      APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.APP_SERVICE_ACCOUNT_TOKEN }}

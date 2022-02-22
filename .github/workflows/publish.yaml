@@ -1,0 +1,68 @@
+on:
+  workflow_dispatch:
+  workflow_call:  # Workflow is meant to be called from another workflow, with the image tag as input
+    inputs:
+      image-tag:
+        description: 'Which tag to set for the produced docker images'
+        default: 'latest'
+        required: true
+        type: string
+    secrets:
+      ACR_SECRET:
+        required: false
+      SRS_ACR_SECRET:
+        required: false
+
+env:
+  IMAGE_REGISTRY: mariner.azurecr.io
+  API_IMAGE: mariner.azurecr.io/dmt/api
+  WEB_IMAGE: mariner.azurecr.io/dmt/web
+  SRS_REGISTRY: publicmsa.azurecr.io
+  SRS_IMAGE: publicmsa.azurecr.io/dmt-job/srs
+  SRS_ACR_USER: publicMSA
+
+jobs:
+  build-and-publish-web-master:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Build and Publish Web"
+        run: |
+          echo "Tagging with ${{ inputs.image-tag }}"
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $WEB_IMAGE
+          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/packages/home/public/version.txt
+          docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE ./web
+          docker tag $WEB_IMAGE $WEB_IMAGE:${{ inputs.image-tag }}
+          docker push $WEB_IMAGE:${{ inputs.image-tag }}
+
+  build-and-publish-api-master:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Build and Publish API"
+        run: |
+          echo "Tagging with ${{ inputs.image-tag }}"
+          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $API_IMAGE
+          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./api/src/version.txt
+          docker build --cache-from $API_IMAGE --tag $API_IMAGE ./api
+          docker tag $API_IMAGE $API_IMAGE:${{ inputs.image-tag }}
+          docker push $API_IMAGE:${{ inputs.image-tag }}
+
+  build-and-publish-srs-master:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+
+      - name: "Build and Publish SRS"
+        run: |
+          echo "Tagging with ${{ inputs.image-tag }}"
+          docker login -u $SRS_ACR_USER -p ${{ secrets.SRS_ACR_SECRET }} $SRS_REGISTRY
+          docker pull $SRS_IMAGE
+          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./sre-wrapper/version.txt
+          docker build --cache-from $SRS_IMAGE --tag $SRS_IMAGE ./sre-wrapper
+          docker tag $SRS_IMAGE $SRS_IMAGE:${{ inputs.image-tag }}
+          docker push $SRS_IMAGE:${{ inputs.image-tag }}
