@@ -8,7 +8,7 @@ import {
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { Button, Label, TextField, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
@@ -43,7 +43,12 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
     dataSourceId,
     documentId
   )
-  const [formData, setFormData] = useState<any>({ ...document })
+  const [formData, setFormData] = useState<any>({})
+
+  useEffect(() => {
+    if (!_document) return
+    setFormData({ ..._document })
+  }, [_document])
 
   function getNewSTaskBody(filename: string): any {
     return {
