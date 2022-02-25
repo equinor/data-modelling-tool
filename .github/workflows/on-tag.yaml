@@ -18,7 +18,7 @@ jobs:
       image-tag: production
     secrets:
       ACR_SECRET: ${{ secrets.ACR_SECRET }}
-      SRS_SECRET: ${{ secrets.SRS_ACR_SECRET }}
+      SRS_ACR_SECRET: ${{ secrets.SRS_ACR_SECRET }}
 
   set-tag-ref:
     runs-on: ubuntu-latest
@@ -38,7 +38,7 @@ jobs:
       image-tag: ${{ needs.set-tag-ref.outputs.tag-ref }}
     secrets:
       ACR_SECRET: ${{ secrets.ACR_SECRET }}
-      SRS_SECRET: ${{ secrets.SRS_ACR_SECRET }}
+      SRS_ACR_SECRET: ${{ secrets.SRS_ACR_SECRET }}
 
   deploy:
     needs: publish-prod-tag
