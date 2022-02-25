@@ -1,0 +1,5 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "JobHandler",
+  "description": "Base jobHandler type. Other jobHandlers should extend from this one"
+}

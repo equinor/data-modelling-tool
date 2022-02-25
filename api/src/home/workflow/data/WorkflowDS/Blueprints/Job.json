@@ -17,6 +17,14 @@
       "attributeType": "string"
     },
     {
+      "attributeType": "system/SIMOS/Entity",
+      "type": "system/SIMOS/Entity",
+      "name": "input",
+      "label": "Input",
+      "description": "Input data",
+      "optional": true
+    },
+    {
       "name": "started",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string"
@@ -37,6 +45,14 @@
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "object",
       "contained": false,
+      "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "runner",
+      "label": "Runner",
+      "description": "JobRunner that will handle this job",
       "optional": true
     }
   ]

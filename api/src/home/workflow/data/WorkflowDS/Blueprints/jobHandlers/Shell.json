@@ -4,7 +4,7 @@
   "extends": [
     "system/SIMOS/DefaultUiRecipes",
     "system/SIMOS/NamedEntity",
-    "WorkflowDS/Blueprints/jobs/Job"
+    "/jobHandlers/JobHandler"
   ],
   "description": "Description of a shell-job. That is a job that will run in the shell. Only for testing.",
   "attributes": [

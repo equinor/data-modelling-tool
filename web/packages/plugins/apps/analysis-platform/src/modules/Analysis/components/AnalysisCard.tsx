@@ -16,12 +16,12 @@ import {
   DmssAPI,
   UIPluginSelector,
 } from '@dmt/common'
-import { DEFAULT_DATASOURCE_ID } from '../../../const'
+import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
 import JobApi from '../../Jobs/JobApi'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { createJobEntity } from '../../Jobs/createJobEntity'
+import { poorMansUUID } from '../../../utils/uuid'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -44,6 +44,8 @@ type AnalysisCardProps = {
 
 const RunAnalysisButton = (props: any) => {
   const { analysis, addJob } = props
+  // TODO: setJobs should be a passed prop
+  const [jobs, setJobs] = useState<any[]>([...analysis.jobs])
   const [showScrim, setShowScrim] = useState<boolean>(false)
 
   const [loading, setLoading] = useState<boolean>(false)
@@ -53,19 +55,26 @@ const RunAnalysisButton = (props: any) => {
 
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 
-  const saveAndStartJob = (task: any) => {
+  const saveAndStartJob = () => {
     setLoading(true)
-    const runsSoFar = analysis.jobs.length
-    const job: any = createJobEntity(task, tokenData?.name)
+    const runsSoFar = jobs.length
+    const job: any = {
+      name: `${analysis.task.name}-${poorMansUUID()}`,
+      triggeredBy: tokenData?.name,
+      type: JOB,
+      outputTarget: analysis.task.outputTarget,
+      input: analysis.task.input,
+      runner: analysis.task.runner,
+    }
     dmssAPI.generatedDmssApi
       .explorerAdd({
         absoluteRef: `${analysisAbsoluteReference}.jobs`,
         updateUncontained: false,
         body: job,
       })
-      .then((res: any) => {
+      .then(() => {
         // Add the new job to the state
-        // TODO: setJobs([newJob, ...jobs])
+        setJobs([...jobs, job])
         // Start a job from the created job entity (last one in list)
         jobAPI
           .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
@@ -121,6 +130,7 @@ const RunAnalysisButton = (props: any) => {
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}
+            category={'edit'}
           />
         </CustomScrim>
       )}

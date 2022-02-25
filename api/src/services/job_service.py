@@ -129,33 +129,23 @@ class JobService:
             modules.append(local_containers)
             modules.append(omnia_classic_azure_container_instances)
             for job_handler_module in modules:
-                supported_job_type = job_handler_module._SUPPORTED_JOB_TYPE
-                if isinstance(supported_job_type, tuple) or isinstance(supported_job_type, list):
-                    if job.entity["type"] in supported_job_type:
-                        return job_handler_module.JobHandler(
-                            data_source_id,
-                            job.entity,
-                            job.token,
-                            lambda ref: self._insert_reference(f"{job.job_id}.result", ref, job.token),
-                        )
-                else:
-                    if job.entity["type"] == supported_job_type:
-                        return job_handler_module.JobHandler(
-                            data_source_id,
-                            job.entity,
-                            job.token,
-                            lambda ref: self._insert_reference(f"{job.job_id}.result", ref, job.token),
-                        )
+                if job.entity["runner"]["type"] == job_handler_module._SUPPORTED_TYPE:
+                    return job_handler_module.JobHandler(
+                        data_source_id,
+                        job.entity,
+                        job.token,
+                        lambda ref: self._insert_reference(f"{job.job_id}.result", ref, job.token),
+                    )
         except ImportError as error:
             traceback.print_exc()
             raise ImportError(
                 f"Failed to import a job handler module: '{error}'"
                 + "Make sure the module has a '_init_.py' file, a 'JobHandler' class implementing "
-                + "the JobHandlerInterface, and a global variable named '_SUPPORTED_JOB_TYPE' "
+                + "the JobHandlerInterface, and a global variable named '_SUPPORTED_TYPE' "
                 + "with the string, tuple, or list value of the job type(s)."
             )
 
-        raise NotImplementedError(f"No handler for a job of type '{job.entity['type']}' is configured")
+        raise NotImplementedError(f"No handler for a job of type '{job.entity['runner']['type']}' is configured")
 
     def _run_job(self, job_id: str) -> str:
         job: Job = self._get_job(job_id)
@@ -177,7 +167,8 @@ class JobService:
         token = get_personal_access_token()
         job_entity = self._get_job_entity(job_id, token)
 
-        if is_cron_job(job_entity["type"]):
+        if False:  # TODO: Reimplement cron-job support
+            # if is_cron_job(job_entity["type"]):
             job = Job(
                 job_id=job_id,
                 started=datetime.now(),

@@ -1,6 +1,0 @@
-{
-  "type": "system/SIMOS/Blueprint",
-  "name": "CronShellJob",
-  "description": "Description of a cron triggered shell-job. That is a job that will run in the shell. Only for testing.",
-  "extends": ["/jobs/CronJob", "/jobs/Shell"]
-}

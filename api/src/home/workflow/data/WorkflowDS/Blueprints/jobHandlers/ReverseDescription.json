@@ -1,0 +1,6 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "name": "ReverseDescription",
+  "extends": ["/jobHandlers/JobHandler", "system/SIMOS/DefaultUiRecipes"],
+  "description": "A job that takes an input of any type, and outputs a copy with the description reversed"
+}

@@ -19,9 +19,10 @@
       "attributeType": "WorkflowDS/Blueprints/Task",
       "contained": true
     },
-    {"name": "jobs",
-    "type": "system/SIMOS/BlueprintAttribute",
-    "attributeType": "WorkflowDS/Blueprints/jobs/Job",
+    {
+      "name": "jobs",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "WorkflowDS/Blueprints/Job",
       "dimensions": "*"
     },
     {
