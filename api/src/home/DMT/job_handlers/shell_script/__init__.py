@@ -6,7 +6,7 @@ from config import config
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
-_SUPPORTED_JOB_TYPE = "WorkflowDS/Blueprints/jobs/Shell"
+_SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobs/Shell"
 
 
 class JobHandler(JobHandlerInterface):

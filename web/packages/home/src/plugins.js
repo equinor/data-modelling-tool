@@ -8,4 +8,5 @@ export default [
   import('for-weather-plots'),
   import('@dmt/mermaid'),
   import('@dmt/sima-task'),
+  import('@dmt/job-handlers'),
 ]

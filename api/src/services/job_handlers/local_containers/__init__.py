@@ -8,7 +8,7 @@ from config import config
 from services.job_handler_interface import JobStatus, ServiceJobHandlerInterface
 from utils.logging import logger
 
-_SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/Jobs/Container"
+_SUPPORTED_TYPE = "DMT-Internal/DMT/Jobs/Container"
 
 
 class JobHandler(ServiceJobHandlerInterface):

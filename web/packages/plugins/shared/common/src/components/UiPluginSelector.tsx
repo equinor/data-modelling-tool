@@ -17,8 +17,6 @@ const PluginTabsWrapper = styled.div`
 `
 
 const Wrapper = styled.div`
-  border-bottom: 1px ${lightGray} solid;
-  border-top: 1px ${lightGray} solid;
   align-items: center;
   justify-content: space-evenly;
 `
@@ -75,24 +73,32 @@ export function UIPluginSelector(props: {
   absoluteDottedId: string
   entity: any
   onSubmit?: Function
+  category?: string
+  breadcrumb?: boolean
 }): JSX.Element {
-  const { absoluteDottedId, entity, onSubmit } = props
+  const { absoluteDottedId, entity, category, breadcrumb, onSubmit } = props
   const [dataSourceId, documentId] = absoluteDottedId.split('/', 2)
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
-  const [selectablePluginsComponent, setSelectablePluginsComponent] = useState<
+  const [selectablePluginComponents, setSelectablePluginComponents] = useState<
     [string, Function][]
   >([])
 
   useEffect(() => {
     if (!blueprint) return
-    if (!blueprint.uiRecipes?.length) {
-      setSelectablePluginsComponent(['yaml', getUiPlugin('yaml')])
+    let recipesToUse = blueprint.uiRecipes
+    if (category) {
+      recipesToUse = recipesToUse.filter(
+        (recipe: any) => recipe?.category == category
+      )
+    }
+    if (!recipesToUse?.length && !category) {
+      setSelectablePluginComponents(['yaml', getUiPlugin('yaml')])
     } else {
-      setSelectablePluginsComponent(
-        blueprint.uiRecipes.map((uiRecipe: any) => [
+      setSelectablePluginComponents(
+        recipesToUse.map((uiRecipe: any) => [
           uiRecipe?.name || uiRecipe?.plugin || 'no name',
           getUiPlugin(uiRecipe?.plugin),
         ])
@@ -108,27 +114,33 @@ export function UIPluginSelector(props: {
         Failed to fetch Blueprint {entity.type}
       </div>
     )
-
-  const UiPlugin: FunctionComponent<DmtUIPlugin> = selectablePluginsComponent[
+  if (!selectablePluginComponents.length) {
+    return <Wrapper>No compatible uiRecipes for entity</Wrapper>
+  }
+  const UiPlugin: FunctionComponent<DmtUIPlugin> = selectablePluginComponents[
     selectedPlugin
   ][1] as FunctionComponent
 
   return (
     <Wrapper>
-      <DocumentPath absoluteDottedId={`${dataSourceId}/${documentId}`} />
-      <PluginTabsWrapper>
-        {selectablePluginsComponent.map(
-          (component: [string, Function], index: number) => (
-            <SelectPluginButton
-              key={index}
-              onClick={() => setSelectedPlugin(index)}
-              active={index === selectedPlugin}
-            >
-              {component[0]}
-            </SelectPluginButton>
-          )
-        )}
-      </PluginTabsWrapper>
+      {breadcrumb && (
+        <DocumentPath absoluteDottedId={`${dataSourceId}/${documentId}`} />
+      )}
+      {selectablePluginComponents.length > 1 && (
+        <PluginTabsWrapper>
+          {selectablePluginComponents.map(
+            (component: [string, Function], index: number) => (
+              <SelectPluginButton
+                key={index}
+                onClick={() => setSelectedPlugin(index)}
+                active={index === selectedPlugin}
+              >
+                {component[0]}
+              </SelectPluginButton>
+            )
+          )}
+        </PluginTabsWrapper>
+      )}
       <UiPlugin
         dataSourceId={dataSourceId}
         documentId={documentId}

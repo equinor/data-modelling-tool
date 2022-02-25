@@ -26,7 +26,7 @@ from utils.logging import logger
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
 logging.getLogger("azure").setLevel(logging.WARNING)
 
-_SUPPORTED_JOB_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJob"
+_SUPPORTED_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJob"
 
 
 class JobHandler(ServiceJobHandlerInterface):

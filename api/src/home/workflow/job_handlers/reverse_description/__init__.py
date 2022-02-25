@@ -7,7 +7,7 @@ from config import config
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
-_SUPPORTED_JOB_TYPE = "WorkflowDS/Blueprints/jobs/ReverseDescription"
+_SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/ReverseDescription"
 
 
 class JobHandler(JobHandlerInterface):
@@ -40,7 +40,9 @@ class JobHandler(JobHandlerInterface):
     def start(self) -> str:
         logger.info("Starting ReverseDescription job.")
         output_data_source, output_directory = self.job_entity["outputTarget"].split("/", 1)
-        input = self._get_by_id(f"{output_data_source}/{self.job_entity['input']['_id']}")
+        input = self.job_entity["input"]
+        if self.job_entity["input"].get("_id", None):  # If input has _id, fetch the document
+            input = self._get_by_id(f"{output_data_source}/{self.job_entity['input']['_id']}")
         result = input
         result["description"] = input.get("description", "")
         result["description"].reversed()

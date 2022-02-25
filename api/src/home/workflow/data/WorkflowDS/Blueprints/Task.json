@@ -22,7 +22,7 @@
       "name": "outputTarget",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
-      "description": "Reference to a location where the result should be stored",
+      "description": "Reference to a location where the result should be stored (path format)",
       "optional": true
     },
     {
@@ -31,14 +31,6 @@
       "name": "inputType",
       "label": "Input type",
       "description": "Reference to a Blueprint",
-      "optional": true
-    },
-    {
-      "attributeType": "string",
-      "type": "object",
-      "name": "defaultInput",
-      "label": "Default input",
-      "description": "Default input data",
       "optional": true
     },
     {
@@ -55,6 +47,14 @@
       "name": "outputType",
       "label": "Output type",
       "description": "Reference to a Blueprint",
+      "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "runner",
+      "label": "Runner",
+      "description": "Job runner that will handle jobs from this task",
       "optional": true
     }
   ]

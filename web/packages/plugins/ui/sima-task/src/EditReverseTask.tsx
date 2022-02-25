@@ -1,8 +1,9 @@
 import {
-  BlueprintPicker,
   DmtUIPlugin,
   EntityPicker,
+  JobHandlerPicker,
   TReference,
+  UIPluginSelector,
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
@@ -51,11 +52,11 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
                 <Column>
                   <Label label={'Input entity'} />
                   <EntityPicker
-                    formData={formData.defaultInput}
+                    formData={formData.input}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({
                         ...formData,
-                        defaultInput: {
+                        input: {
                           _id: selectedEntity._id,
                           name: selectedEntity.name,
                           type: selectedEntity.type,
@@ -72,16 +73,33 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
           </HeaderWrapper>
 
           <HeaderWrapper>
-            <Typography variant="h3">Job type</Typography>
+            <Typography variant="h3">Job runner</Typography>
             <GroupWrapper>
-              <Column>
+              <Column style={{ width: '-webkit-fill-available' }}>
                 <Label label={'Blueprint'} />
-                <BlueprintPicker
+                <JobHandlerPicker
                   onChange={(selectedBlueprint: string) =>
-                    setFormData({ ...formData, jobType: selectedBlueprint })
+                    setFormData({
+                      ...formData,
+                      runner: { ...formData?.runner, type: selectedBlueprint },
+                    })
                   }
-                  formData={formData.jobType}
+                  formData={formData?.runner?.type}
                 />
+                <div
+                  style={{
+                    margin: '10px 20px',
+                    borderLeft: '2px solid grey',
+                    paddingLeft: '10px',
+                  }}
+                >
+                  <UIPluginSelector
+                    absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
+                    entity={{ ...formData?.runner }}
+                    breadcrumb={false}
+                    category={'edit'}
+                  />
+                </div>
               </Column>
             </GroupWrapper>
           </HeaderWrapper>

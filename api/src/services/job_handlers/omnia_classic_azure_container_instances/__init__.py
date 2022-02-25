@@ -23,10 +23,7 @@ AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
 logging.getLogger("azure.mgmt").setLevel(logging.WARNING)
 logging.getLogger("azure.identity").setLevel(logging.WARNING)
 
-_SUPPORTED_JOB_TYPE = (
-    "DMT-Internal/DMT/AzureContainerInstanceJobClassic",
-    "DMT-Internal/DMT/CronAzureContainerInstanceJobClassic",
-)
+_SUPPORTED_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJobClassic"
 
 
 def inject_environment_variables(template: dict, variables: List[EnvironmentVariable]) -> dict:

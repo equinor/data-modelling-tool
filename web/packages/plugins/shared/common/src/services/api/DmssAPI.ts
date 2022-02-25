@@ -112,9 +112,11 @@ export class DmssAPI implements IDmssAPI {
   }
 
   removeDocument(url: string, token: string): Promise<any> {
-    return axios.delete(url, {
-      headers: { Authorization: `Bearer ${token}` },
-    })
+    return axios.delete(url, this.config)
+  }
+
+  resolveBlueprintId(id: string): Promise<any> {
+    return axios.get(`${this.basePath}/api/v1/resolve-path/${id}`, this.config)
   }
 
   updateDocument(url: string, data: any): Promise<any> {

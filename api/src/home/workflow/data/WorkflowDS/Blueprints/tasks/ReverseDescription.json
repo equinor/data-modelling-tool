@@ -26,7 +26,8 @@
     {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "edit-reverse-task"
+      "plugin": "edit-reverse-task",
+      "category": "edit"
     }
   ]
 }
