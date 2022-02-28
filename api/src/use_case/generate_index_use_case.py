@@ -4,7 +4,7 @@ from config import config
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from domain_classes.recipe import Recipe, RecipePlugin
 from domain_classes.tree_node import ListNode, Node
-from enums import BLUEPRINTS
+from enums import SIMOS
 from repository.repository_exceptions import ApplicationNotLoadedException, EntityNotFoundException
 from restful import response_object
 from restful.request_object import ValidRequestObject
@@ -20,7 +20,7 @@ from utils.logging import logger
 def get_parent_id(data_source_id: str, node: Union[Node, ListNode]):
     if node.parent:
         # Adjust parent, since we skipped content node
-        if node.parent.parent and node.parent.parent.type == BLUEPRINTS.PACKAGE.value:
+        if node.parent.parent and node.parent.parent.type == SIMOS.PACKAGE.value:
             return node.parent.parent.node_id
         return node.parent.node_id
     else:
@@ -49,7 +49,7 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
     menu_items = create_context_menu(node, data_source_id, app_settings)
 
     children = []
-    if node.type == BLUEPRINTS.PACKAGE.value:
+    if node.type == SIMOS.PACKAGE.value:
         # Skip content node
         if node.has_children():
             # Content node is always the only node in package
@@ -57,12 +57,12 @@ def get_node(node: Union[Node], data_source_id: str, app_settings: dict) -> Dict
             children = [child.node_id for child in content_node.children if is_visible(child)]
     else:
         children = [child.node_id for child in node.children if is_visible(child)]
-    is_root_package = node.type == BLUEPRINTS.PACKAGE.value and node.entity.get("isRoot")
+    is_root_package = node.type == SIMOS.PACKAGE.value and node.entity.get("isRoot")
     return {
         "parentId": get_parent_id(data_source_id, node),
         "title": node.name,
         "id": node.node_id,
-        "nodeType": "document-node" if node.type != BLUEPRINTS.PACKAGE.value else BLUEPRINTS.PACKAGE.value,
+        "nodeType": "document-node" if node.type != SIMOS.PACKAGE.value else SIMOS.PACKAGE.value,
         "children": children,
         "type": node.type,
         "meta": {
@@ -103,7 +103,7 @@ def extend_index_with_node_tree(
     for node in root.traverse(depth_limit=traverse_depth):
         try:
             # Skip package's content node
-            if node.parent and node.parent.type == BLUEPRINTS.PACKAGE.value:
+            if node.parent and node.parent.type == SIMOS.PACKAGE.value:
                 continue
             if not is_visible(node):
                 continue
@@ -215,9 +215,9 @@ class GenerateSingleIndexUseCase(UseCase):
                 parent=parent.children[0],
                 key="99",
                 uid=document_id,
-                entity={"name": document_id, "type": BLUEPRINTS.ENTITY.value, "_id": document_id},
+                entity={"name": document_id, "type": SIMOS.ENTITY.value, "_id": document_id},
                 blueprint_provider=document_service.get_blueprint,
-                attribute=BlueprintAttribute("error", BLUEPRINTS.ENTITY.value),
+                attribute=BlueprintAttribute("error", SIMOS.ENTITY.value),
             )
             node.set_error(f"failed to create node '{document_id}' on '{parent.name}'")
         result = extend_index_with_node_tree(node, data_source_id, app_settings, traverse_depth=3)

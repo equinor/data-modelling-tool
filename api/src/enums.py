@@ -24,21 +24,24 @@ class StorageDataTypes(Enum):
     BLOB = "blob"
 
 
-class PrimitiveDataTypes(Enum):
+class BuiltinDataTypes(Enum):
     STR = "string"
     NUM = "number"
     INT = "integer"
     BOOL = "boolean"
+    OBJECT = "object"  # Any complex type (i.e. any blueprint type)
 
     def to_py_type(self):
-        if self is PrimitiveDataTypes.BOOL:
+        if self is BuiltinDataTypes.BOOL:
             return bool
-        elif self is PrimitiveDataTypes.INT:
+        elif self is BuiltinDataTypes.INT:
             return int
-        elif self is PrimitiveDataTypes.NUM:
+        elif self is BuiltinDataTypes.NUM:
             return float
-        elif self is PrimitiveDataTypes.STR:
+        elif self is BuiltinDataTypes.STR:
             return str
+        elif self is BuiltinDataTypes.OBJECT:
+            return dict
 
 
 class SIMOS(Enum):
@@ -49,10 +52,6 @@ class SIMOS(Enum):
     ATTRIBUTE_TYPES = "system/SIMOS/AttributeTypes"
     UI_RECIPE = "system/SIMOS/UiRecipe"
     STORAGE_RECIPE = "system/SIMOS/StorageRecipe"
-    CRON_JOB = "DMT-Internal/DMT/CronJob"
-
-
-class BLUEPRINTS(Enum):
     PACKAGE = "system/SIMOS/Package"
     ENTITY = "system/SIMOS/Entity"
     DATASOURCE = "datasource"

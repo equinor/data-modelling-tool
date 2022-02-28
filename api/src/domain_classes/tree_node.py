@@ -7,7 +7,7 @@ from functools import lru_cache
 from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from config import Config
-from enums import BLUEPRINTS
+from enums import BuiltinDataTypes, SIMOS
 from repository.repository_exceptions import EntityNotFoundException
 from utils.logging import logger
 
@@ -132,7 +132,7 @@ class DictImporter:
 
                         # If the node is of type DMT/Package, we need to overwrite the attribute_type "Entity",
                         # and get it from the child.
-                        if node.type == BLUEPRINTS.PACKAGE.value:
+                        if node.type == SIMOS.PACKAGE.value:
                             content_attribute: BlueprintAttribute = deepcopy(child_attribute)
                             content_attribute.attribute_type = child["type"]
                             list_child_attribute = content_attribute
@@ -197,7 +197,9 @@ class NodeBase:
 
     @property
     def blueprint(self) -> Optional[Blueprint]:
-        if self.type != BLUEPRINTS.DATASOURCE.value:
+        if self.type == BuiltinDataTypes.OBJECT.value:
+            return self.blueprint_provider(SIMOS.ENTITY.value)
+        if self.type != SIMOS.DATASOURCE.value:
             return self.blueprint_provider(self.type)
 
     def is_empty(self):
@@ -205,7 +207,7 @@ class NodeBase:
 
     @property
     def node_id(self):
-        if self.type == BLUEPRINTS.DATASOURCE.value:
+        if self.type == SIMOS.DATASOURCE.value:
             return self.uid
         # Return dotted path if the node is storage contained, or is a reference
         if self.storage_contained() or not self.contained:
@@ -217,7 +219,7 @@ class NodeBase:
 
     @property
     def tree_id(self):
-        if self.type == BLUEPRINTS.DATASOURCE.value:
+        if self.type == SIMOS.DATASOURCE.value:
             return self.uid
 
         if self.path() is None:
@@ -245,7 +247,7 @@ class NodeBase:
         while parent:
             if parent.parent:
                 # Skip Packages "content"
-                if parent.parent.type == BLUEPRINTS.PACKAGE.value:
+                if parent.parent.type == SIMOS.PACKAGE.value:
                     parent = parent.parent
             path += [parent.name]
             parent = parent.parent
@@ -396,7 +398,7 @@ class NodeBase:
         return self.attribute.contained
 
     def storage_contained(self):
-        if not self.parent or self.parent.type == BLUEPRINTS.DATASOURCE.value:
+        if not self.parent or self.parent.type == SIMOS.DATASOURCE.value:
             return False  # A node with no parent, or is a data source, can never be contained
         if (in_recipe := self.parent.blueprint.storage_recipes[0].is_contained(self.attribute.name)) is not None:
             return in_recipe  # If the attribute is defined in a storageRecipe, use that value.

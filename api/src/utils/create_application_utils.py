@@ -7,7 +7,7 @@ from jinja2 import Template
 
 from config import Config
 from domain_classes.dto import DTO
-from enums import BLUEPRINTS
+from enums import SIMOS
 from services.document_service import DocumentService
 
 from utils.logging import logger
@@ -39,7 +39,7 @@ def zip_package(ob: ZipFile, document: DTO, path: str, document_service: Documen
     write_to = f"{path}/{document.name}.json"
     logger.info(f"Writing: {document['type']} to {write_to}")
 
-    if document["type"] != BLUEPRINTS.PACKAGE.value:
+    if document["type"] != SIMOS.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
     blueprint = document_service.get_blueprint(document.type)
@@ -96,7 +96,7 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
     write_to = f"{path}/{document.name}.json"
     logger.info(f"Writing: {document['type']} to {write_to}")
 
-    if document["type"] != BLUEPRINTS.PACKAGE.value:
+    if document["type"] != SIMOS.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
     blueprint = document_service.get_blueprint(document.type)

@@ -5,7 +5,7 @@ from os import urandom
 
 from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
-from enums import SIMOS, PRIMITIVES
+from enums import BuiltinDataTypes, SIMOS, PRIMITIVES
 from domain_classes.dto import DTO
 
 
@@ -32,6 +32,8 @@ class InvalidDefaultValue(CreateEntityException):
 
 class CreateEntity:
     def __init__(self, blueprint_provider, type: str, description: str, name: str = None):
+        if type == BuiltinDataTypes.OBJECT.value:
+            type = SIMOS.ENTITY.value
         self.name = name if name else generate_name(type)
         self.description = description
         self.type = type
@@ -104,7 +106,11 @@ class CreateEntity:
                 if not attr.is_optional() and attr.name not in entity:
                     entity[attr.name] = CreateEntity.parse_value(attr=attr, blueprint_provider=self.blueprint_provider)
             else:
-                blueprint = self.blueprint_provider(attr.attribute_type)
+                blueprint = (
+                    self.blueprint_provider(SIMOS.ENTITY.value)
+                    if attr.attribute_type == BuiltinDataTypes.OBJECT.value
+                    else self.blueprint_provider(attr.attribute_type)
+                )
                 if not isinstance(blueprint, Blueprint):
                     blueprint = Blueprint(DTO(blueprint))
                 if attr.is_array():

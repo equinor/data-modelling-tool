@@ -4,7 +4,6 @@ from domain_classes.blueprint import Blueprint
 from domain_classes.dimension import Dimension
 from domain_classes.dto import DTO
 from repository.file import LocalFileRepository
-from services.document_service import DocumentService
 from utils.create_entity_utils import CreateEntity
 
 package_blueprint = {
@@ -22,7 +21,7 @@ package_blueprint = {
         {"attributeType": "string", "type": "system/SIMOS/BlueprintAttribute", "name": "type"},
         {"attributeType": "boolean", "type": "system/SIMOS/BlueprintAttribute", "name": "isRoot"},
         {
-            "attributeType": "system/SIMOS/Entity",
+            "attributeType": "object",
             "type": "system/SIMOS/BlueprintAttribute",
             "name": "content",
             "dimensions": "*",
@@ -34,7 +33,7 @@ package_blueprint = {
             "type": "system/SIMOS/StorageRecipe",
             "name": "DefaultStorageRecipe",
             "description": "",
-            "attributes": [{"name": "content", "type": "system/SIMOS/Entity", "contained": False}],
+            "attributes": [{"name": "content", "type": "object", "contained": False}],
         }
     ],
 }

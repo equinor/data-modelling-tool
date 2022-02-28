@@ -1,5 +1,5 @@
 from domain_classes.tree_node import Node
-from enums import BLUEPRINTS, SIMOS
+from enums import SIMOS
 from use_case.utils.index_menu_actions import (
     get_create_reference_menu_item,
     get_create_root_package_menu_item,
@@ -21,7 +21,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
     menu_items = []
     create_new_menu_items = []
     new_reference_menu_items = []
-    is_package = node.type == BLUEPRINTS.PACKAGE.value
+    is_package = node.type == SIMOS.PACKAGE.value
 
     # DataSource Node can only add root-packages
     if node.type == "datasource":
@@ -41,7 +41,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             # Context menu: New Package
             create_new_menu_items.append(
                 get_dynamic_create_menu_item(
-                    data_source_id=data_source_id, name="Package", type=BLUEPRINTS.PACKAGE.value, node_id=node_id
+                    data_source_id=data_source_id, name="Package", type=SIMOS.PACKAGE.value, node_id=node_id
                 )
             )
             # Context menu: New from app_settings
@@ -108,7 +108,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
 
         if is_removable:
             # If the document is not in a package, and not contained, remove the reference instead of deleting it
-            if not node.contained and node.parent.type != BLUEPRINTS.ENTITY.value:
+            if not node.contained and node.parent.type != SIMOS.ENTITY.value:
                 menu_items.append({"label": "Remove reference", "action": "UNLINK"})
             else:
                 menu_items.append({"label": "Remove", "action": "DELETE", "data": {"url": f"{DMSS_API}/explorer/"}})
@@ -130,7 +130,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             menu_items.append(get_download_menu_action(data_source_id, node.node_id))
 
         # Generate code
-        if node.type in [SIMOS.BLUEPRINT.value, BLUEPRINTS.PACKAGE.value]:
+        if node.type in [SIMOS.BLUEPRINT.value, SIMOS.PACKAGE.value]:
             # Context menu: Export code
             code_generators = []
             # Add any code generators added as plugins
@@ -141,7 +141,7 @@ def create_context_menu(node: Node, data_source_id: str, app_settings: dict):
             if code_generators:
                 menu_items.append({"label": "Generate Code", "menuItems": code_generators})
 
-        is_root_package = node.is_single() and node.type == BLUEPRINTS.PACKAGE.value
+        is_root_package = node.is_single() and node.type == SIMOS.PACKAGE.value
 
         # If it's a root package we need some more
         if is_root_package:

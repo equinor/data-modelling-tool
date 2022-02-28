@@ -15,9 +15,9 @@ jobs:
   deploy-on-radix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@radix-deployment
+      - uses: actions/checkout@master
       - name: Deploy on Radix
-        uses: equinor/radix-github-actions@radix-deployment
+        uses: equinor/radix-github-actions@master
         env:
           APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.APP_SERVICE_ACCOUNT_TOKEN }}
         with:

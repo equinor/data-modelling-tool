@@ -4,7 +4,7 @@ from typing import Union
 
 from config import Config
 from domain_classes.tree_node import Node
-from enums import BLUEPRINTS
+from enums import BuiltinDataTypes, SIMOS
 
 DMSS_API = "/dmss/api/v1"
 
@@ -86,7 +86,7 @@ def get_create_root_package_menu_item(data_source_id: str):
             "request": {
                 "name": "${name}",
                 "description": "${description}",
-                "type": BLUEPRINTS.PACKAGE.value,
+                "type": SIMOS.PACKAGE.value,
                 "isRoot": True,
             },
         },
@@ -107,7 +107,7 @@ def get_node_index(data_source_id: str, tree_node: Union[Node]):
     if tree_node.is_empty():
         return
     if len(tree_node.children) > 0:
-        if tree_node.parent.type == BLUEPRINTS.ENTITY.value:
+        if tree_node.parent.type == BuiltinDataTypes.OBJECT.value:
             return get_node_url(data_source_id, tree_node.parent.parent.node_id)
         return get_node_url(data_source_id, tree_node.parent.node_id)
 
@@ -117,7 +117,7 @@ def get_node_fetch(data_source_id: str, tree_node: Union[Node]):
         return
     if tree_node.is_empty():
         return
-    if tree_node.type == BLUEPRINTS.PACKAGE.value:
+    if tree_node.type == SIMOS.PACKAGE.value:
         return
 
     split_node_id_attribute = tree_node.node_id.split(".", 1)
