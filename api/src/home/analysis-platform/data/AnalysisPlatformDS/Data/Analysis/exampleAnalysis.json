@@ -11,7 +11,6 @@
     "type": "AnalysisPlatformDS/Blueprints/SIMATask",
     "name": "exampleSimaTask",
     "description": "This is an example simatask that does some stuff with an stask file.",
-    "jobType": "WorkflowDS/Blueprints/jobs/Shell",
     "stask": {
       "_id": "47a4d888-3ab4-4ad2-9bd9-9614dcb066d4",
       "type": "AnalysisPlatformDS/Blueprints/STask"
@@ -28,10 +27,15 @@
   },
   "jobs": [
     {
+      "label": "Some label",
+      "triggeredBy": "stoo",
       "started": "2022-01-01T12:06:39+0000",
       "ended": "2022-01-31T12:06:39+0000",
-      "type": "WorkflowDS/Blueprints/jobs/Shell",
-      "script": "echo \"Hello World\"",
+      "type": "WorkflowDS/Blueprints/Job",
+      "input": {"type": "system/SIMOS/Entity", "name": "hallo fra input"},
+      "runner":  {
+      "type": "WorkflowDS/Blueprints/jobHandlers/ReverseDescription"
+    },
       "result": {
         "type": "system/SIMOS/Entity",
         "_id": "if81daa9-9787-462e-b92b-104f71b80713",
