@@ -10,7 +10,7 @@ from restful import request_object as req
 import zipfile
 import io
 
-from enums import BLUEPRINTS
+from enums import SIMOS
 
 
 def get(obj, attr: str):
@@ -41,7 +41,7 @@ class GeneratePythonCodeRequestObject(req.ValidRequestObject):
 
 
 def is_package(blueprint: DTO):
-    return blueprint.type == BLUEPRINTS.PACKAGE.value
+    return blueprint.type == SIMOS.PACKAGE.value
 
 
 def is_simple(attribute) -> bool:

@@ -196,7 +196,7 @@ export const DefaultCreate = (props: IDefaultCreate) => {
           <label style={{ display: 'table-cell' }}>Type: </label>
           {/* If we are to create an "Entity", user should select type*/}
           <div style={{ display: 'flex', borderSpacing: '0px' }}>
-            {props.type === BlueprintEnum.ENTITY ? (
+            {props.type === 'object' ? (
               <BlueprintPicker
                 formData={type}
                 onChange={(value: string) => setType(value)}

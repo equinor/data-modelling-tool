@@ -7,7 +7,7 @@ import sys
 
 from domain_classes.tree_node import Node
 from config import Config
-from enums import BLUEPRINTS, SIMOS
+from enums import SIMOS
 from repository.repository_exceptions import PluginNotLoadedException
 from services.application_service import ApplicationService
 from services.document_service import DocumentService
@@ -72,7 +72,7 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
 
         # If it's a package, find all blueprints in the package. Else, just add the one.
         blueprints = {}
-        if document.type == BLUEPRINTS.PACKAGE.value:
+        if document.type == SIMOS.PACKAGE.value:
             blueprints.update(blueprints_in_package(document, data_source_id))
         else:
             blueprints[f"{data_source_id}/{document_path}"] = document.to_dict()

@@ -1,6 +1,6 @@
 from typing import Callable, List, Union
 from uuid import UUID, uuid4
-from enums import BLUEPRINTS
+from enums import SIMOS
 
 
 class Package:
@@ -63,14 +63,14 @@ class Package:
 
     @property
     def type(self):
-        return BLUEPRINTS.PACKAGE.value
+        return SIMOS.PACKAGE.value
 
     def _content_to_ref_dict(self):
         result = []
         for child in self.content:
             if isinstance(child, Package):
                 result.append(
-                    {"_id": str(child.uid), "name": child.name, "type": BLUEPRINTS.PACKAGE.value, "contained": True}
+                    {"_id": str(child.uid), "name": child.name, "type": SIMOS.PACKAGE.value, "contained": True}
                 )
             else:  # Assume the child is a dict
                 if "name" in child:

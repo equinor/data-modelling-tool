@@ -7,7 +7,7 @@
     {
       "name": "input",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "system/SIMOS/Entity",
+      "attributeType": "object",
       "contained": false
     }
   ]
