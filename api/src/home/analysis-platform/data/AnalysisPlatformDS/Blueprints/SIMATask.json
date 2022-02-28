@@ -42,12 +42,14 @@
     {
       "name": "View",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "view-sima-task"
+      "plugin": "view-sima-task",
+      "category": "view"
     },
     {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "edit-sima-task"
+      "plugin": "edit-sima-task",
+      "category": "edit"
     }
   ]
 }

@@ -17,8 +17,8 @@
       "attributeType": "string"
     },
     {
-      "attributeType": "system/SIMOS/Entity",
-      "type": "system/SIMOS/Entity",
+      "attributeType": "object",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "input",
       "label": "Input",
       "description": "Input data",
@@ -54,6 +54,14 @@
       "label": "Runner",
       "description": "JobRunner that will handle this job",
       "optional": true
+    }
+  ],
+    "uiRecipes": [
+    {
+      "name": "View",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "yaml",
+      "category": "view"
     }
   ]
 }
