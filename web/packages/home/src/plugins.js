@@ -9,4 +9,5 @@ export default [
   import('@dmt/mermaid'),
   import('@dmt/sima-task'),
   import('@dmt/job-handlers'),
+  import('@dmt/job'),
 ]

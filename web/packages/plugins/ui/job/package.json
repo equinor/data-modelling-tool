@@ -1,0 +1,8 @@
+{
+  "name": "@dmt/job",
+  "version": "1.0.0",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "styled-components": "^5.3.0"
+  }
+}

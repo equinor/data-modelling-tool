@@ -44,8 +44,7 @@ class JobHandler(JobHandlerInterface):
         if self.job_entity["input"].get("_id", None):  # If input has _id, fetch the document
             input = self._get_by_id(f"{output_data_source}/{self.job_entity['input']['_id']}")
         result = input
-        result["description"] = input.get("description", "")
-        result["description"].reversed()
+        result["description"] = input.get("description", "")[::-1]
         result["name"] = (
             f"reverse-description-job-result-{datetime.now()}".replace(".", "_").replace(":", "_").replace(" ", "_")
         )
