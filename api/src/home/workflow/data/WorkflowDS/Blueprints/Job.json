@@ -2,9 +2,6 @@
   "name": "Job",
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
-  "extends": [
-    "system/SIMOS/DefaultUiRecipes"
-  ],
   "attributes": [
     {
       "name": "label",
@@ -56,11 +53,17 @@
       "optional": true
     }
   ],
-    "uiRecipes": [
+  "uiRecipes": [
     {
-      "name": "View",
+      "name": "Job",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "yaml",
+      "plugin": "job",
+      "category": "view"
+    },
+    {
+      "name": "Yaml",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "yaml-view",
       "category": "view"
     }
   ]

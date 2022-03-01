@@ -15,10 +15,10 @@ import {
   AuthContext,
   DmssAPI,
   UIPluginSelector,
+  JobApi,
 } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
-import JobApi from '../../Jobs/JobApi'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { poorMansUUID } from '../../../utils/uuid'

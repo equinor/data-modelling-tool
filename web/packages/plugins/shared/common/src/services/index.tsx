@@ -1,5 +1,6 @@
 export * from './api/DmssAPI'
 export * from './api/DmtAPI'
+export * from './JobApi'
 export * from './api/configs/gen/models'
 export * from './api/configs/gen/models'
 export * from './api/configs/gen/apis/DefaultApi'

@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-export default class {
+export class JobApi {
   urlRoot = location.origin
   jobUrl = `${this.urlRoot}/api/job`
   requestConfig = {}
