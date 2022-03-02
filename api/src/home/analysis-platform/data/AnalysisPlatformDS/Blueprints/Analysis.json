@@ -20,6 +20,12 @@
       "contained": true
     },
     {
+      "name": "schedule",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
       "name": "jobs",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "WorkflowDS/Blueprints/Job",

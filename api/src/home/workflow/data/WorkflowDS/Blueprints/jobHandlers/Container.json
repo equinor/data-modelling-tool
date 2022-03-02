@@ -17,20 +17,6 @@
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "image"
-    },
-    {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "command",
-      "optional": true,
-      "dimensions": "*"
-    }, {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "environmentVariables",
-      "dimensions": "*",
-      "optional": true,
-      "description": "a list of strings on format 'myVar=myValue'"
     }
   ]
 }

@@ -7,7 +7,7 @@ const Pre = styled.pre`
   font-size: 0.9em;
 `
 
-export const ViewSimaTask = (props: DmtUIPlugin): JSX.Element => {
+export const ViewTask = (props: DmtUIPlugin): JSX.Element => {
   const { document: task } = props
 
   return (
@@ -25,9 +25,9 @@ export const ViewSimaTask = (props: DmtUIPlugin): JSX.Element => {
         <Pre>
           {JSON.stringify(
             {
-              type: task.defaultInput.type,
-              name: task.defaultInput.name,
-              description: task.defaultInput.description,
+              type: task?.input?.type,
+              name: task?.input?.name,
+              description: task?.input?.description,
               ['...']: '...',
             },
             null,

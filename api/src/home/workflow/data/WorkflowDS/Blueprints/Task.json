@@ -13,12 +13,6 @@
       "attributeType": "string"
     },
     {
-      "name": "schedule",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string",
-      "optional": true
-    },
-    {
       "name": "outputTarget",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
@@ -50,12 +44,32 @@
       "optional": true
     },
     {
-      "attributeType": "string",
+      "attributeType": "/jobHandlers/JobHandler",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "runner",
       "label": "Runner",
       "description": "Job runner that will handle jobs from this task",
       "optional": true
+    }
+  ],
+    "uiRecipes": [
+    {
+      "name": "View",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "view-task",
+      "category": "view"
+    },
+      {
+      "name": "Yaml",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "yaml-view",
+      "category": "view"
+    },
+    {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-task",
+      "category": "edit"
     }
   ]
 }

@@ -2,17 +2,15 @@ import {
   BlueprintPicker,
   DmtUIPlugin,
   EntityPicker,
-  EntityPickerDropdown,
+  JobHandlerPicker,
   TReference,
-  UploadFileButton,
+  UIPluginSelector,
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useEffect, useState } from 'react'
-import { Button, Label, TextField, Typography } from '@equinor/eds-core-react'
+import { useEffect, useState } from 'react'
+import { Button, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-
-const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 const Wrapper = styled.div`
   margin: 10px;
@@ -22,9 +20,6 @@ const Column = styled.div`
   display: block;
 `
 
-const Row = styled.div`
-  display: flex;
-`
 const GroupWrapper = styled.div`
   display: flex;
   justify-content: space-between;
@@ -36,7 +31,7 @@ const HeaderWrapper = styled.div`
   margin-bottom: 50px;
 `
 
-export const EditSimaTask = (props: DmtUIPlugin) => {
+export const EditTask = (props: DmtUIPlugin) => {
   const { document, documentId, dataSourceId, onSubmit } = props
   // using the passed updateDocument from props causes way too much rerendering. This should probably be fixed...
   const [_document, documentLoading, updateDocument, error] = useDocument(
@@ -44,22 +39,12 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
     documentId
   )
   const [formData, setFormData] = useState<any>({})
+  const defaultRunnerType = 'WorkflowDS/Blueprints/jobHandlers/AzureContainer'
 
   useEffect(() => {
     if (!_document) return
     setFormData({ ..._document })
   }, [_document])
-
-  function getNewSTaskBody(filename: string): any {
-    return {
-      type: 'AnalysisPlatformDS/Blueprints/STask',
-      name: filename.replace('.', '_'),
-      blob: {
-        name: filename,
-        type: 'system/SIMOS/Blob',
-      },
-    }
-  }
 
   return (
     <div
@@ -81,13 +66,13 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
               </Column>
               <div style={{ display: 'flex' }}>
                 <Column>
-                  <Label label={'Default input entity'} />
+                  <Label label={'Input entity'} />
                   <EntityPicker
-                    formData={formData.defaultInput}
+                    formData={formData.input}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({
                         ...formData,
-                        defaultInput: {
+                        input: {
                           _id: selectedEntity._id,
                           name: selectedEntity.name,
                           type: selectedEntity.type,
@@ -119,73 +104,36 @@ export const EditSimaTask = (props: DmtUIPlugin) => {
           </HeaderWrapper>
 
           <HeaderWrapper>
-            <Typography variant="h3">SIMA Task</Typography>
+            <Typography variant="h3">Job runner</Typography>
             <GroupWrapper>
-              <Column>
-                <Label label={'Select Stask'} />
-                <Row>
-                  <EntityPickerDropdown
-                    onChange={(selectedStask: any) =>
-                      setFormData({
-                        ...formData,
-                        stask: {
-                          _id: selectedStask._id,
-                          name: selectedStask.name,
-                          type: selectedStask.type,
-                        },
-                      })
-                    }
-                    typeFilter={STaskBlueprint}
-                    dataSourceId={dataSourceId}
-                    formData={formData.stask}
-                  />
-                  <UploadFileButton
-                    fileSuffix={['stask']}
-                    dataSourceId={dataSourceId}
-                    getBody={(filename: string) => getNewSTaskBody(filename)}
-                    onUpload={(createdRef: TReference) =>
-                      setFormData({
-                        ...formData,
-                        stask: createdRef,
-                      })
-                    }
-                  />
-                </Row>
-              </Column>
-              <TextField
-                id="workflow"
-                label={'Workflow'}
-                value={formData.workflow}
-                placeholder="Name of workflow to run"
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setFormData({ ...formData, workflow: event.target.value })
-                }
-                style={{ maxWidth: '280px' }}
-              />
-              <TextField
-                id="workflowTask"
-                label={'Workflow task'}
-                value={formData.workflowTask}
-                placeholder="Name of workflowTask to run"
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setFormData({ ...formData, workflowTask: event.target.value })
-                }
-                style={{ maxWidth: '280px' }}
-              />
-            </GroupWrapper>
-          </HeaderWrapper>
-
-          <HeaderWrapper>
-            <Typography variant="h3">Job type</Typography>
-            <GroupWrapper>
-              <Column>
+              <Column style={{ width: '-webkit-fill-available' }}>
                 <Label label={'Blueprint'} />
-                <BlueprintPicker
+                <JobHandlerPicker
                   onChange={(selectedBlueprint: string) =>
-                    setFormData({ ...formData, jobType: selectedBlueprint })
+                    setFormData({
+                      ...formData,
+                      runner: { ...formData?.runner, type: selectedBlueprint },
+                    })
                   }
-                  formData={formData.jobType}
+                  formData={formData?.runner?.type || defaultRunnerType}
                 />
+                <div
+                  style={{
+                    margin: '10px 20px',
+                    borderLeft: '2px solid grey',
+                    paddingLeft: '10px',
+                  }}
+                >
+                  <UIPluginSelector
+                    absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
+                    entity={formData?.runner || { type: defaultRunnerType }}
+                    breadcrumb={false}
+                    category={'edit'}
+                    onSubmit={(data: any) =>
+                      setFormData({ ...formData, runner: data })
+                    }
+                  />
+                </div>
               </Column>
             </GroupWrapper>
           </HeaderWrapper>

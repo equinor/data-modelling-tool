@@ -1,16 +1,16 @@
 import * as React from 'react'
 
 import { DmtPluginType } from '@dmt/common'
-import { EditSimaTask } from './EditSimaTask'
+import { EditSimaInput } from './EditSimaInput'
 import { EditReverseTask } from './EditReverseTask'
-import { ViewSimaTask } from './ViewSimaTask'
+import { ViewSimaInput } from './ViewSimaInput'
 
 export const plugins: any = [
   {
     pluginName: 'edit-sima-task',
     pluginType: DmtPluginType.UI,
     content: {
-      component: EditSimaTask,
+      component: EditSimaInput,
     },
   },
   {
@@ -24,7 +24,7 @@ export const plugins: any = [
     pluginName: 'view-sima-task',
     pluginType: DmtPluginType.UI,
     content: {
-      component: ViewSimaTask,
+      component: ViewSimaInput,
     },
   },
 ]

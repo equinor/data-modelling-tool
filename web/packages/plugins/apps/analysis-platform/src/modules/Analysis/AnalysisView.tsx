@@ -21,35 +21,17 @@ export default (): JSX.Element => {
     console.log('New job added to state')
   }
 
-  const handleTypeSelected = (type: string) => {
-    const dmtAPI = new DmtAPI()
-    dmtAPI
-      .createEntity(`WorkflowDS/Blueprints/tasks/${type}`, token)
-      .then((instance: any) => {
-        // Update analysis with selected task type
-        const updatedAnalysis = {
-          ...analysis,
-          task: instance,
-        }
-        updateDocument(updatedAnalysis)
-      })
-  }
-
   if (isLoading) return <Progress.Linear />
   return (
     <>
       <AnalysisInfoCard analysis={analysis} addJob={addJob} />
-      {'task' in analysis && Object.keys(analysis.task).length ? (
-        <>
-          <UIPluginSelector
-            entity={analysis.task}
-            absoluteDottedId={`${data_source}/${analysis._id}.task`}
-          />
-          <AnalysisJobTable analysis={analysis} />
-        </>
-      ) : (
-        <AnalysisChooser onSelectType={handleTypeSelected} />
-      )}
+      <>
+        <UIPluginSelector
+          entity={analysis.task}
+          absoluteDottedId={`${data_source}/${analysis._id}.task`}
+        />
+        <AnalysisJobTable analysis={analysis} />
+      </>
     </>
   )
 }
