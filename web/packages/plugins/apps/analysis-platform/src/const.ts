@@ -5,4 +5,4 @@ export const JOB_HANDLER = `${WORKFLOW_DATASOURCE}/Blueprints/jobHandlers/JobHan
 export const BLUEPRINTS = 'Blueprints'
 export const ENTITIES = 'Data'
 export const ANALYSIS_PATH = `${ENTITIES}/Analysis`
-export const SIMA_TASK = 'AnalysisPlatformDS/Blueprints/SIMATask'
+export const TASK = 'WorkflowDS/Blueprints/Task'

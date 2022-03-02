@@ -1,18 +1,11 @@
 {
-  "name": "SIMATask",
+  "name": "SIMAApplicationInput",
   "type": "system/SIMOS/Blueprint",
   "extends": [
-    "system/SIMOS/NamedEntity",
-    "WorkflowDS/Blueprints/Task"
+    "system/SIMOS/NamedEntity"
   ],
   "description": "This is for running SIMA tasks",
   "attributes": [
-    {
-      "name": "jobType",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string",
-      "optional": false
-    },
     {
       "name": "workflowTask",
       "type": "system/SIMOS/BlueprintAttribute",

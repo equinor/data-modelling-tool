@@ -1,12 +1,11 @@
 import React, { useContext, useState } from 'react'
 import { getUsername } from '../../utils/auth'
 import { AuthContext } from '@dmt/common'
-import { Button, Progress, TextField } from '@equinor/eds-core-react'
+import { Progress } from '@equinor/eds-core-react'
 import { TAnalysis } from './Types'
 import { createAnalysis } from './CRUD'
 import { Blueprints } from '../../Enums'
-import styled from 'styled-components'
-import { DEFAULT_DATASOURCE_ID } from '../../const'
+import { DEFAULT_DATASOURCE_ID, TASK } from '../../const'
 import CreateAnalysisForm from './components/CreateAnalysisForm'
 
 const AnalysisNew = (): JSX.Element => {
@@ -23,6 +22,9 @@ const AnalysisNew = (): JSX.Element => {
       creator: user,
       created: new Date().toISOString(),
       updated: new Date().toISOString(),
+      task: {
+        type: TASK,
+      },
     }
     createAnalysis(data, token, []).then((documentId: any) => {
       // TODO: Should we use props.history.push instead?
