@@ -345,7 +345,10 @@ export class BlueprintSchema implements IBlueprintSchema {
       return true
     } else if (Array.isArray(document[attributeName])) {
       return true
-    } else if (Object.keys(document[attributeName]).length === 0) {
+    } else if (
+      attributeName in document &&
+      Object.keys(document[attributeName]).length === 0
+    ) {
       return false
     } else {
       return true

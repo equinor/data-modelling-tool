@@ -73,30 +73,38 @@ export const loader = async (
   const node = new Node(document)
   await Promise.all(
     nonPrimitiveAttributes(document).map(async (attribute: AttributeType) => {
-      const child: BlueprintType = await explorer.getBlueprint(
-        attribute['attributeType']
-      )
-      let childNode: Node = await loader(token, explorer, child)
-      childNode.attribute = attribute
-      childNode.entity = child
-      // If the attribute is abstract, we need to search for concrete definitions.
-      if (child['abstract']) {
-        const concreteDefinitions: BlueprintType[] = await search(token, {
-          type: child['type'],
-          extends: attribute['attributeType'],
-        })
-        await Promise.all(
-          concreteDefinitions.map(async (concreteDefinition: BlueprintType) => {
-            let concertNode = await loader(token, explorer, concreteDefinition)
-            concertNode.concrete = true
-            concertNode.attribute = attribute
-            // Connect the concrete definition to the abstract definition,
-            // so that we can draw the complete graph
-            childNode.addChild(concertNode)
-          })
+      if (attribute['attributeType'] !== 'object') {
+        const child: BlueprintType = await explorer.getBlueprint(
+          attribute['attributeType']
         )
+        let childNode: Node = await loader(token, explorer, child)
+        childNode.attribute = attribute
+        childNode.entity = child
+        // If the attribute is abstract, we need to search for concrete definitions.
+        if (child['abstract']) {
+          const concreteDefinitions: BlueprintType[] = await search(token, {
+            type: child['type'],
+            extends: attribute['attributeType'],
+          })
+          await Promise.all(
+            concreteDefinitions.map(
+              async (concreteDefinition: BlueprintType) => {
+                let concertNode = await loader(
+                  token,
+                  explorer,
+                  concreteDefinition
+                )
+                concertNode.concrete = true
+                concertNode.attribute = attribute
+                // Connect the concrete definition to the abstract definition,
+                // so that we can draw the complete graph
+                childNode.addChild(concertNode)
+              }
+            )
+          )
+        }
+        node.addChild(childNode)
       }
-      node.addChild(childNode)
     })
   )
 

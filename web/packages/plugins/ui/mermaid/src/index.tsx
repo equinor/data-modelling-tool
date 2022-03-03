@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
-import { AuthContext, DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { AuthContext, DmssAPI, DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import Mermaid from './Mermaid'
 import { dfs, loader, Node } from './loader'
 import { AttributeType } from './types'
@@ -58,11 +58,20 @@ const createChart = (tree: Node): string => {
   return chart
 }
 
+function useExplorer(dmssAPI: DmssAPI) {
+  const getBlueprint = (typeRef: string) => dmssAPI.getBlueprint({ typeRef })
+  return {
+    getBlueprint,
+  }
+}
+
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { document, explorer } = props
+  const { document } = props
 
   // @ts-ignore
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
+  const explorer = useExplorer(dmssAPI)
 
   const [chart, setChart] = useState<string | undefined>(undefined)
 
