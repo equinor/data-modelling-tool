@@ -50,7 +50,6 @@ const View = (props: any) => {
     <UiPlugin
       dataSourceId={dataSourceId}
       documentId={documentId}
-      explorer={explorer}
       uiRecipe={uiRecipe}
       uiRecipeName={uiRecipe.name}
       updateDocument={onSubmit}

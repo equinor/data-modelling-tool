@@ -16,14 +16,24 @@ import {
   BlueprintPicker,
   DestinationPicker,
   AuthContext,
+  DmssAPI,
 } from '@dmt/common'
 
+function useExplorer(dmssAPI: DmssAPI) {
+  const getBlueprint = (typeRef: string) => dmssAPI.getBlueprint({ typeRef })
+  return {
+    getBlueprint,
+  }
+}
+
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { document, uiRecipeName, explorer, onSubmit } = props
+  const { document, uiRecipeName, onSubmit } = props
   const [config, setConfig] = useState(undefined)
   const [error, setError] = useState<string | null>(null)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
+  const explorer = useExplorer(dmssAPI)
 
   useEffect(() => {
     createFormConfigs({
@@ -36,6 +46,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
       .then((config: FormConfig) => setConfig(config))
       .catch((error) => {
         setError(error.message)
+        console.log(error.stack)
         throw `error occured when creating config for default-form:  ${error}`
       })
   }, [])
