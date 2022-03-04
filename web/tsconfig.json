@@ -18,6 +18,8 @@
     "moduleResolution": "node",
     "target": "es5",
 
-    "composite": false
+    "composite": false,
+
+    "useUnknownInCatchVariables": false
   }
 }

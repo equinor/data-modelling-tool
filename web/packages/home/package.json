@@ -47,6 +47,7 @@
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+    "@testing-library/react-hooks": "^7.0.2",
     "@types/jest": "^27.4.0",
     "@types/lodash": "^4.14.135",
     "@types/node": "^16.11.25",
@@ -66,6 +67,6 @@
     "react-app-rewired": "^2.1.6",
     "react-test-renderer": "^16.8.6",
     "require-context.macro": "^1.0.4",
-    "ts-jest": "^26.5.5"
+    "ts-jest": "^27.1.3"
   }
 }

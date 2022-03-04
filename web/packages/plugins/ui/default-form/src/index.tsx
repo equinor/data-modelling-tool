@@ -81,7 +81,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
           fileUploadWidget: FileDirectoryWidget,
         }}
         onSubmit={(schemas: any) => {
-          onSubmit(schemas.formData)
+          if (onSubmit) onSubmit(schemas.formData)
         }}
       />
     </div>
