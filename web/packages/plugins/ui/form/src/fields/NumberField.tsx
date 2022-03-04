@@ -1,0 +1,77 @@
+import TextWidget from '../widgets/TextWidget'
+import React from 'react'
+// @ts-ignore
+import { Controller, useFormContext } from 'react-hook-form'
+
+// Taken from: https://github.com/rjsf-team/react-jsonschema-form/blob/cff979dae5348e9b100447641bcb53374168367f/packages/core/src/utils.js#L436
+export const asNumber = (value: string): number | string => {
+  if (value === '') {
+    return value
+  }
+  if (/\.$/.test(value)) {
+    // "3." can't really be considered a number even if it parses in js. The
+    // user is most likely entering a float.
+    return value
+  }
+  if (/\.0$/.test(value)) {
+    // we need to return this as a string here, to allow for input like 3.07
+    return value
+  }
+  const n = Number(value)
+  const valid = typeof n === 'number' && !Number.isNaN(n)
+
+  if (/\.\d*0$/.test(value)) {
+    // It's a number, that's cool - but we need it as a string so it doesn't screw
+    // with the user when entering dollar amounts or other values (such as those with
+    // specific precision or number of significant digits)
+    return value
+  }
+
+  return valid ? n : value
+}
+
+export const NumberField = (props: any) => {
+  const { control } = useFormContext()
+  const { namePath, label, name, defaultValue } = props
+
+  // TODO: const Widget = getWidget(schema, widget, widgets);
+
+  return (
+    <Controller
+      name={namePath}
+      control={control}
+      rules={{
+        // TODO: required: 'Required',
+        pattern: { value: /^[0-9]+$/g, message: 'Only digits allowed' },
+      }}
+      defaultValue={defaultValue || ''}
+      // @ts-ignore
+      onChange={(value: any) => {
+        return console.log(value)
+      }}
+      render={({
+        // @ts-ignore
+        field: { ref, onChange, ...props },
+        // @ts-ignore
+        fieldState: { invalid, error },
+      }) => {
+        // Convert to number
+        const handleChange = (value: string) => {
+          onChange(asNumber(value))
+        }
+        return (
+          <TextWidget
+            {...props}
+            onChange={handleChange}
+            type="number"
+            id={namePath}
+            label={label === undefined || label === '' ? name : label}
+            inputRef={ref}
+            helperText={error?.message}
+            variant={invalid ? 'error' : 'default'}
+          />
+        )
+      }}
+    />
+  )
+}

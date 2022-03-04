@@ -1,0 +1,9 @@
+{
+  "name": "@dmt/form",
+  "version": "0.1.0",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "react-hook-form": "^7.27.1"
+  },
+  "devDependencies": {}
+}

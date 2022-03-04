@@ -11,5 +11,6 @@ export default [
   import('@dmt/task'),
   import('@dmt/job-handlers'),
   import('@dmt/job'),
+  import('@dmt/form'),
   import('@dmt/tabs'),
 ]

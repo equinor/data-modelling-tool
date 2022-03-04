@@ -1,0 +1,19 @@
+@startmindmap
+
+* Form
+** ObjectField
+*** AttributeField
+**** StringField
+*****_ TextWidget
+**** NumberField
+*****_ TextWidget
+**** IntegerField
+*****_ TextWidget
+**** BooleanField
+*****_ CheckboxWidget
+**** ArrayField
+****_ ...
+**** ObjectField
+****_ ...
+
+@endmindmap
