@@ -128,7 +128,6 @@ const RunAnalysisButton = (props: any) => {
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
             entity={analysis.task}
             onSubmit={(task: any) => {
-              //todo use task in saveAndStartJob()
               saveAndStartJob()
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
