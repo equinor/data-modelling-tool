@@ -6,6 +6,7 @@ import {
   Typography,
 } from '@equinor/eds-core-react'
 import { hasExpertRole } from '../../../utils/auth'
+import { AxiosError } from 'axios'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
 import { TAnalysis } from '../Types'
@@ -85,7 +86,7 @@ const RunAnalysisButton = (props: any) => {
               'Simulation job started'
             )
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError) => {
             console.error(error)
             NotificationManager.error(
               error?.response?.data?.message,
@@ -94,7 +95,7 @@ const RunAnalysisButton = (props: any) => {
           })
           .finally(() => setLoading(false))
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         console.error(error)
         NotificationManager.error(
           error?.response?.data?.message,
@@ -126,7 +127,8 @@ const RunAnalysisButton = (props: any) => {
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
             entity={analysis.task}
             onSubmit={(task: any) => {
-              saveAndStartJob(task)
+              //todo use task in saveAndStartJob()
+              saveAndStartJob()
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}
