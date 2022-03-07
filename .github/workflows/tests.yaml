@@ -8,9 +8,9 @@ on:
         required: false
 
 env:
-  IMAGE_REGISTRY: mariner.azurecr.io
-  API_IMAGE: mariner.azurecr.io/dmt/api
-  WEB_IMAGE: mariner.azurecr.io/dmt/web
+  IMAGE_REGISTRY: datamodelingtool.azurecr.io
+  API_IMAGE: datamodelingtool.azurecr.io/dmt/api
+  WEB_IMAGE: datamodelingtool.azurecr.io/dmt/web
 
 jobs:
   test-api:

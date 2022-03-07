@@ -5,7 +5,7 @@ services:
     restart: unless-stopped
     build:
       context: ./nginx
-    image: mariner.azurecr.io/dmt/nginx
+    image: datamodelingtool.azurecr.io/dmt/nginx
     ports:
       - "80:8080"
     links:
@@ -15,7 +15,7 @@ services:
   api:
     build:
       context: ./api
-    image: mariner.azurecr.io/dmt/api
+    image: datamodelingtool.azurecr.io/dmt/api
     restart: unless-stopped
     environment:
       ENVIRONMENT: azure
@@ -27,5 +27,5 @@ services:
 
   web:
     build: ./web
-    image: mariner.azurecr.io/dmt/web
+    image: datamodelingtool.azurecr.io/dmt/web
     restart: unless-stopped

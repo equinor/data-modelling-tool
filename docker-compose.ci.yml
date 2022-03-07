@@ -37,7 +37,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
 
   dmss:
-    image: mariner.azurecr.io/dmss
+    image: datamodelingtool.azurecr.io/dmss
     restart: unless-stopped
     environment:
       ENVIRONMENT: local
