@@ -14,11 +14,14 @@ const PluginTabsWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-evenly;
+  padding-bottom: 15px;
 `
 
 const Wrapper = styled.div`
   align-items: center;
   justify-content: space-evenly;
+  padding-top: 10px;
+  padding-bottom: 10px;
 `
 
 const PathWrapper = styled.div`
