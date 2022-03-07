@@ -13,7 +13,7 @@ export const useSearch = (body: any, dataSourceId: string): any => {
     setIsLoading(true)
     dmssAPI
       .searchDocuments({
-        dataSourceId: dataSourceId,
+        dataSources: [dataSourceId],
         body: body,
       })
       .then((result: any) => {
