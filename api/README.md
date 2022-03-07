@@ -60,6 +60,13 @@ This project uses [Poetry](https://poetry.eustace.io/docs/) for its Python packa
 * To create a virtual environment run `poetry install`
 * To add packages run `poetry add myPackage` (Remember to rebuild the Docker image)
 
+### Using the DMSS python package
+The python API uses the DMSS python package available on [PyPi](https://pypi.org/project/dmss-api/).
+If you want to use a local version of this package, you can: 
+
+1) Build the local python package from the cloned DMSS repo, by running the generate-python-package.sh script.
+2) Update the DMT docker-compose.override.yml file by adding / uncomment the volume mount: ../data-modelling-storage-service/gen/dmss_api:/dmss_api
+
 ## Running / debugging
 
 TODO: How to add debug?
