@@ -3,6 +3,7 @@ import {
   Card,
   Label,
   Progress,
+  Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
 import { hasExpertRole } from '../../../utils/auth'
@@ -195,10 +196,12 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           {'task' in analysis && Object.keys(analysis.task).length > 0 && (
             <>
               <RunAnalysisButton analysis={analysis} addJob={addJob} />
-              <Button style={{ width: 'max-content' }}>
-                Configure schedule
-                <Icons name="time" title="time" />
-              </Button>
+              <Tooltip title={'Not implemented'}>
+                <Button style={{ width: 'max-content' }} disabled>
+                  Configure schedule
+                  <Icons name="time" title="time" />
+                </Button>
+              </Tooltip>
             </>
           )}
         </Card.Actions>
