@@ -10,16 +10,14 @@ on:
     secrets:
       ACR_SECRET:
         required: false
-      SRS_ACR_SECRET:
-        required: false
+
 
 env:
-  IMAGE_REGISTRY: mariner.azurecr.io
-  API_IMAGE: mariner.azurecr.io/dmt/api
-  WEB_IMAGE: mariner.azurecr.io/dmt/web
-  SRS_REGISTRY: publicmsa.azurecr.io
-  SRS_IMAGE: publicmsa.azurecr.io/dmt-job/srs
-  SRS_ACR_USER: publicMSA
+  IMAGE_REGISTRY: datamodelingtool.azurecr.io
+  REGISTRY_USER: datamodelingtool
+  API_IMAGE: datamodelingtool.azurecr.io/dmt/api
+  WEB_IMAGE: datamodelingtool.azurecr.io/dmt/web
+  SRS_IMAGE: datamodelingtool.azurecr.io/dmt-job/srs
 
 jobs:
   build-and-publish-web-master:
@@ -30,7 +28,7 @@ jobs:
       - name: "Build and Publish Web"
         run: |
           echo "Tagging with ${{ inputs.image-tag }}"
-          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $WEB_IMAGE
           echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/packages/home/public/version.txt
           docker build --cache-from $WEB_IMAGE --tag $WEB_IMAGE ./web
@@ -45,7 +43,7 @@ jobs:
       - name: "Build and Publish API"
         run: |
           echo "Tagging with ${{ inputs.image-tag }}"
-          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $API_IMAGE
           echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./api/src/version.txt
           docker build --cache-from $API_IMAGE --tag $API_IMAGE ./api
@@ -60,7 +58,7 @@ jobs:
       - name: "Build and Publish SRS"
         run: |
           echo "Tagging with ${{ inputs.image-tag }}"
-          docker login -u $SRS_ACR_USER -p ${{ secrets.SRS_ACR_SECRET }} $SRS_REGISTRY
+          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $SRS_IMAGE
           echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./sre-wrapper/version.txt
           docker build --cache-from $SRS_IMAGE --tag $SRS_IMAGE ./sre-wrapper

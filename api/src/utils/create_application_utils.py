@@ -119,12 +119,12 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
 
 
 API_DOCKERFILE = f"""\
-FROM mariner.azurecr.io/dmt/api:latest
+FROM datamodelingtool.azurecr.io/dmt/api:latest
 COPY ./home {Config.APPLICATION_HOME}
 """
 
 WEB_DOCKERFILE = """\
-FROM mariner.azurecr.io/dmt/web:latest as base
+FROM datamodelingtool.azurecr.io/dmt/web:latest as base
 COPY ./actions.js /code/app/src/actions.js
 COPY ./config.js /code/app/src/config.js
 COPY ./custom-plugins /code/custom-plugins
@@ -168,7 +168,7 @@ services:
       - ./web/custom-plugins/:/code/custom-plugins
       - ./web/config.js:/code/app/config.js
       - ./web/actions.js:/code/app/actions.js
-      
+
   db:
     image: mongo:3.4
     command: --quiet
@@ -180,7 +180,7 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: maf
 
   dmss:
-    image: mariner.azurecr.io/dmss:latest
+    image: datamodelingtool.azurecr.io/dmss:latest
     restart: unless-stopped
     environment:
       ENVIRONMENT: local
@@ -198,7 +198,7 @@ services:
     depends_on:
       - api
       - web
-    image: mariner.azurecr.io/dmt/nginx:latest
+    image: datamodelingtool.azurecr.io/dmt/nginx:latest
     ports:
       - "9000:80"
 

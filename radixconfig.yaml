@@ -12,7 +12,7 @@ spec:
         from: master
   components:
     - name: web
-      image: mariner.azurecr.io/dmt/web:{imageTagName}
+      image: datamodelingtool.azurecr.io/dmt/web:{imageTagName}
       alwaysPullImageOnDeploy: true
       environmentConfig:
         - environment: prod
@@ -24,7 +24,7 @@ spec:
           port: 3000
 
     - name: api
-      image: mariner.azurecr.io/dmt/api:{imageTagName}
+      image: datamodelingtool.azurecr.io/dmt/api:{imageTagName}
       alwaysPullImageOnDeploy: true
       secrets:
         - AZURE_SP_SECRET
@@ -45,12 +45,12 @@ spec:
         - environment: prod
           imageTagName: production
           variables:
-            SCHEDULER_REDIS_HOST: dmt-scheduler-prod.redis.cache.windows.net
+            SCHEDULER_REDIS_HOST: dtm-jobStore-prod.redis.cache.windows.net
             PUBLIC_DMSS_API: https://dmss-data-modelling-tool-prod.radix.equinor.com/
         - environment: dev
           imageTagName: latest
           variables:
-            SCHEDULER_REDIS_HOST: dmt-scheduler.redis.cache.windows.net
+            SCHEDULER_REDIS_HOST: dtm-jobStore-test.redis.cache.windows.net
             PUBLIC_DMSS_API: https://dmss-data-modelling-tool-dev.radix.equinor.com/
       ports:
         - name: flask
@@ -58,10 +58,10 @@ spec:
       publicPort: flask
 
     - name: dmss
-      image: mariner.azurecr.io/dmss:latest
+      image: datamodelingtool.azurecr.io/dmss:latest
       alwaysPullImageOnDeploy: true
       secrets:
-#        - MONGO_AZURE_URI
+        - MONGO_AZURE_URI
         - SECRET_KEY
       variables:
         LOGGING_LEVEL: "debug"
@@ -79,7 +79,7 @@ spec:
 
 
     - name: proxy
-      image: mariner.azurecr.io/dmt/nginx:latest
+      image: datamodelingtool.azurecr.io/dmt/nginx:latest
       ports:
         - name: nginx
           port: 8080
@@ -88,8 +88,3 @@ spec:
   dnsAppAlias:
     environment: prod
     component: proxy
-
-  privateImageHubs:
-    mariner.azurecr.io:
-      username: mariner
-      email: stoo@equinor.com
