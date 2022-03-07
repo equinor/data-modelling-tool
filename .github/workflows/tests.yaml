@@ -19,7 +19,7 @@ jobs:
       - uses: actions/checkout@master
 
       - name: "Docker Login"
-        run: docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+        run: docker login -u datamodelingtool -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
 
       - name: "Pull latest"
         run: docker pull $API_IMAGE
@@ -63,7 +63,7 @@ jobs:
 
       - name: "Build Web Image"
         run: |
-          docker login -u mariner -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker login -u datamodelingtool -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $WEB_IMAGE
           docker build --cache-from $WEB_IMAGE --target development --tag web-development ./web
 
