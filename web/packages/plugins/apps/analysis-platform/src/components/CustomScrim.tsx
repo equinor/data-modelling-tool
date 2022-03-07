@@ -10,8 +10,12 @@ export const CustomScrim = (props: {
 }) => {
   const { closeScrim, children, header, width } = props
   return (
-    <Scrim isDismissable onClose={closeScrim} style={{ zIndex: '3' }}>
-      <Dialog style={{ width: width ? width : '100%' }}>
+    <Scrim isDismissable onClose={closeScrim} style={{ zIndex: 3 }}>
+      <Dialog
+        style={{
+          width: width ? width : '100%',
+        }}
+      >
         <div
           style={{
             display: 'flex',
@@ -36,6 +40,8 @@ export const CustomScrim = (props: {
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center',
+            maxHeight: '75vh',
+            overflow: 'auto',
           }}
         >
           {children}
