@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { MouseEventHandler } from 'react'
 import { Table } from '@equinor/eds-core-react'
 
 type Column = { name: string; accessor: string }
@@ -15,14 +15,14 @@ const prepareColumns = (columns: Array<string>): Array<Column> => {
 const DynamicTable = (props: {
   columns: Array<string>
   rows: Array<any>
-  onRowClicked?: Function
+  onRowClicked: MouseEventHandler
 }): JSX.Element => {
   const { columns, rows, onRowClicked } = props
   const cols = prepareColumns(columns)
 
   return (
     <>
-      <Table style={{ width: '100%' }} onClick={onRowClicked}>
+      <Table style={{ width: '100%' }}>
         <Table.Head sticky>
           <Table.Row>
             {cols.map((col) => (
@@ -30,7 +30,7 @@ const DynamicTable = (props: {
             ))}
           </Table.Row>
         </Table.Head>
-        <Table.Body style={{ cursor: 'pointer' }}>
+        <Table.Body onClick={onRowClicked} style={{ cursor: 'pointer' }}>
           {rows?.map((row) => (
             <Table.Row key={row._id} accessKey={row._id}>
               {Object.keys(row)

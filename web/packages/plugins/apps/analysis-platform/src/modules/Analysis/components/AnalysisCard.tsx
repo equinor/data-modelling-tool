@@ -3,9 +3,11 @@ import {
   Card,
   Label,
   Progress,
+  Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
 import { hasExpertRole } from '../../../utils/auth'
+import { AxiosError } from 'axios'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
 import { TAnalysis } from '../Types'
@@ -85,7 +87,7 @@ const RunAnalysisButton = (props: any) => {
               'Simulation job started'
             )
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError) => {
             console.error(error)
             NotificationManager.error(
               error?.response?.data?.message,
@@ -94,7 +96,7 @@ const RunAnalysisButton = (props: any) => {
           })
           .finally(() => setLoading(false))
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         console.error(error)
         NotificationManager.error(
           error?.response?.data?.message,
@@ -126,7 +128,7 @@ const RunAnalysisButton = (props: any) => {
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
             entity={analysis.task}
             onSubmit={(task: any) => {
-              saveAndStartJob(task)
+              saveAndStartJob()
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}
@@ -193,10 +195,12 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           {'task' in analysis && Object.keys(analysis.task).length > 0 && (
             <>
               <RunAnalysisButton analysis={analysis} addJob={addJob} />
-              <Button style={{ width: 'max-content' }}>
-                Configure schedule
-                <Icons name="time" title="time" />
-              </Button>
+              <Tooltip title={'Not implemented'}>
+                <Button style={{ width: 'max-content' }} disabled>
+                  Configure schedule
+                  <Icons name="time" title="time" />
+                </Button>
+              </Tooltip>
             </>
           )}
         </Card.Actions>
