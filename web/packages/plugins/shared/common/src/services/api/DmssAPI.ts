@@ -23,6 +23,7 @@ import { TAcl } from '@dmt/common'
 const handleApiError = (error: any) => {
   // @ts-ignore
   if (typeof error.json !== 'function') {
+    //return error
     throw new Error(error)
   }
   return error.json().then((response: any) => {
@@ -175,9 +176,18 @@ export class DmssAPI implements IDmssAPI {
   }
 
   setDocumentAcl(requestParameters: SetAclRequest): Promise<string> {
-    return this.generatedDmssApi.setAcl(requestParameters).catch((error) => {
-      return handleApiError(error)
-    })
+    return axios
+      .put(
+        `${this.basePath}/api/v1/acl/${requestParameters.dataSourceId}/${requestParameters.documentId}`,
+        requestParameters.aCL,
+        this.config
+      )
+      .then((response) => {
+        return response
+      })
+      .catch((error) => {
+        return handleApiError(error)
+      })
   }
 }
 
