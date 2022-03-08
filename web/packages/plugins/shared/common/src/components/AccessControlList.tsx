@@ -379,7 +379,7 @@ export const AccessControlList = (props: {
         dmssAPI.setDocumentAcl({
           dataSourceId: dataSourceId,
           documentId: documentId,
-          //@ts-ignore - ACL class from geneated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
+          //@ts-ignore - ACL class from generated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
           aCL: newACL,
           recursively: storeACLRecursively,
         })
