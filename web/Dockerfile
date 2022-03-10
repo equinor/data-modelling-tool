@@ -27,7 +27,7 @@ USER 1000
 FROM base as prod
 RUN npm install -g serve
 RUN yarn build
-WORKDIR /code/home
+WORKDIR /code/packages/home
 EXPOSE 3000
 CMD ["serve", "--single", "build", "--listen", "3000"]
 USER 1000
