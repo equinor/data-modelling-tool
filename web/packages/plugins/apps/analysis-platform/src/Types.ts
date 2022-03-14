@@ -39,3 +39,35 @@ export type TJob = {
   subnetId?: string
   logAnalyticsWorkspaceResourceId?: string
 }
+
+export type TTask = {
+  type: string
+  description: string
+  label: string
+  inputType: string
+  input: any
+  outputType: string
+  runner: { type: string }
+}
+
+export type TTtestJob = {
+  type: string
+  triggeredBy: string
+  outputTarget: string
+  input: any
+  runner: { type: string }
+  label?: string
+  resultLinkTarget: string
+  // image: string
+  // command: string
+  // environmentVariables?: string[]
+}
+
+export type TLocalContainerJob = {
+  type: string
+  name: string
+  label?: string
+  image: string
+  command: string
+  environmentVariables?: string[]
+}
