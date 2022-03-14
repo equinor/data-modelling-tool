@@ -4,6 +4,13 @@
   "description": "Description of a executable job running as an Azure Container Instance",
   "extends": ["system/SIMOS/DefaultUiRecipes", "/jobHandlers/Container", "/jobHandlers/JobHandler"],
   "attributes": [
+     {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "label": "Type",
+      "optional": false
+    },
     {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
@@ -37,10 +44,13 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-azure-container",
       "configType": "",
-      "category": "edit",
-      "config": {
-
-      }
+      "category": "edit"
+    },
+    {
+      "name": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container"
     }
   ]
 }

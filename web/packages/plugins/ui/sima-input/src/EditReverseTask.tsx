@@ -97,7 +97,7 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
                     absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
                     entity={{ ...formData?.runner }}
                     breadcrumb={false}
-                    category={'edit'}
+                    categories={['edit']}
                   />
                 </div>
               </Column>

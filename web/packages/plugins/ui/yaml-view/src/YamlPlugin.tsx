@@ -11,10 +11,6 @@ import { Button } from '@dmt/common'
 
 hljs.registerLanguage('yaml', yaml)
 
-type PreviewProps = {
-  document: any
-}
-
 const tempVisible = keyframes`
   0%, 100% {
     opacity: 0;
@@ -38,7 +34,7 @@ const TooltipText = styled.div`
   animation: ${tempVisible} 2s;
 `
 
-export default (props: PreviewProps) => {
+export default (props: { document: any }) => {
   const { document } = props
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const asYAML: string = jsyaml.dump(document)

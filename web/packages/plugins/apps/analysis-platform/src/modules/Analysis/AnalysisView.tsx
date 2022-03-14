@@ -1,7 +1,6 @@
 import React, { useContext } from 'react'
 import { useParams } from 'react-router-dom'
-import { AuthContext, DmtAPI, UIPluginSelector, useDocument } from '@dmt/common'
-import AnalysisChooser from './components/AnalysisChooser'
+import { AuthContext, UIPluginSelector, useDocument } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import AnalysisInfoCard from './components/AnalysisInfo'
 import AnalysisJobTable from './components/AnalysisJobTable'
@@ -29,6 +28,7 @@ export default (): JSX.Element => {
         <UIPluginSelector
           entity={analysis.task}
           absoluteDottedId={`${data_source}/${analysis._id}.task`}
+          categories={['container', 'view']}
         />
         <AnalysisJobTable analysis={analysis} />
       </>

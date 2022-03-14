@@ -16,13 +16,15 @@ export interface LoadedPlugin {
 
 export interface DmtUIPlugin {
   type?: string
+  categories?: string[]
   dataSourceId: string
   documentId: string
-  uiRecipeName?: any
-  useIndex?: Function
   onSubmit?: Function
+  onChange?: Function
+  onOpen?: Function
   document?: any
   updateDocument?: any
+  config?: any
 }
 
 export enum DmtPluginType {

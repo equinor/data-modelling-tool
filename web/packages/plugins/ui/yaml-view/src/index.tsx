@@ -6,11 +6,11 @@ import PreviewPlugin from './YamlPlugin'
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
-  const [document, documentLoading, updateDocument, error] = useDocument(
+  const [document, loading, updateDocument, error] = useDocument(
     dataSourceId,
     documentId
   )
-  if (documentLoading) return <div>Loading...</div>
+  if (loading) return <div>Loading...</div>
   return <PreviewPlugin document={document} />
 }
 

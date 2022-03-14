@@ -132,7 +132,7 @@ const RunAnalysisButton = (props: any) => {
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}
-            category={'edit'}
+            categories={['container']}
           />
         </CustomScrim>
       )}
