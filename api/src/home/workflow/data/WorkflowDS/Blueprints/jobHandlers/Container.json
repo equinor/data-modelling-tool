@@ -4,6 +4,7 @@
   "description": "A container job",
   "extends": [
     "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity",
     "/jobHandlers/JobHandler"
   ],
   "attributes": [
@@ -17,6 +18,20 @@
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "image"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "command"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "EditContainer",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-local-container-job",
+      "configType": "",
+      "category": "edit"
     }
   ]
 }

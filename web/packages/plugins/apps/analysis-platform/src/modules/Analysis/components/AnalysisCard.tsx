@@ -19,11 +19,17 @@ import {
   UIPluginSelector,
   JobApi,
 } from '@dmt/common'
-import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
+import {
+  ANALYSIS_RESULTS_PATH,
+  DEFAULT_DATASOURCE_ID,
+  JOB,
+  LOCAL_CONTAINER_JOB_HANDLER,
+} from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { poorMansUUID } from '../../../utils/uuid'
+import { TJob, TTtestJob, TTask, TLocalContainerJob } from '../../../Types'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -57,31 +63,56 @@ const RunAnalysisButton = (props: any) => {
 
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 
-  const saveAndStartJob = () => {
+  const saveAndStartJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
-    const job: any = {
-      name: `${analysis.task.name}-${poorMansUUID()}`,
+    // const job: any = {
+    //   name: `${analysis.task.name}-${poorMansUUID()}`,
+    //   triggeredBy: tokenData?.name,
+    //   type: JOB,
+    //   outputTarget: analysis.task.outputTarget,
+    //   input: analysis.task.input,
+    //   runner: analysis.task.runner,
+    // }
+    const localContainerJobTest: TTtestJob = {
+      label: 'Example local container job',
+      // image: 'alpine',
+      // command: 'ls',
       triggeredBy: tokenData?.name,
       type: JOB,
-      outputTarget: analysis.task.outputTarget,
-      input: analysis.task.input,
-      runner: analysis.task.runner,
+      outputTarget: ANALYSIS_RESULTS_PATH, //folder where results entities should be placed
+      input: task.input,
+      runner: task.runner,
+      // todo use this jos in job api..
     }
+
+    localContainerJobTest.runner = {
+      ...localContainerJobTest.runner,
+      resultLinkTarget: `${analysis._id}.jobs.${runsSoFar}.result`, // dotted id to the analysis entity's results attribute.
+    }
+
+    // const localContainerJob: TLocalContainerJob = {
+    //   name: 'localcontainerjobtest',
+    //   label: 'example',
+    //   image: 'alpine',
+    //   command: 'ls',
+    //   type: LOCAL_CONTAINER_JOB_HANDLER,
+    // }
+    //todo bug - have to refresh page before can run new analysis since the analysis prop to component is not updated
     dmssAPI.generatedDmssApi
       .explorerAdd({
         absoluteRef: `${analysisAbsoluteReference}.jobs`,
         updateUncontained: false,
-        body: job,
+        body: localContainerJobTest,
       })
       .then(() => {
         // Add the new job to the state
-        setJobs([...jobs, job])
+        setJobs([...jobs, localContainerJobTest])
         // Start a job from the created job entity (last one in list)
         jobAPI
           .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
           .then((result: any) => {
-            addJob(job)
+            addJob(localContainerJobTest)
             NotificationManager.success(
               JSON.stringify(result.data),
               'Simulation job started'
@@ -127,8 +158,8 @@ const RunAnalysisButton = (props: any) => {
           <UIPluginSelector
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
             entity={analysis.task}
-            onSubmit={(task: any) => {
-              saveAndStartJob()
+            onSubmit={(task: TTask) => {
+              saveAndStartJob(task)
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}
