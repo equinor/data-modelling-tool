@@ -3,12 +3,14 @@ module.exports = {
   roots: ['<rootDir>/src'],
   testEnvironment: 'node',
   collectCoverage: true,
-  // testMatch: ['<rootDir>/**/*.test.{ts,tsx}'],
-  collectCoverageFrom: ['<rootDir>/**/*.{ts,tsx,js}'],
+  collectCoverageFrom: ['<rootDir>/**/*.{js,ts,tsx}'],
   transform: {
-    '^.+\\.(js|jsx|ts|tsx)$': 'ts-jest',
+    '^.+\\.(ts|tsx)$': 'ts-jest',
   },
-  // testRegex: '(/tests/.*|(\\.|/)(test|spec))\\.(jsx?|tsx?)$',
+  testMatch: [
+    '<rootDir>/src/**/__tests__/**/*.{js,jsx,ts,tsx}',
+    '<rootDir>/src/**/?(*.)(spec|test).{js,jsx,ts,tsx}',
+  ],
   moduleFileExtensions: ['ts', 'tsx', 'js', 'jsx', 'node'],
   coverageDirectory: '<rootDir>/coverage/',
   verbose: true,
