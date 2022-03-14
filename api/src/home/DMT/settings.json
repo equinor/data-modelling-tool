@@ -6,7 +6,7 @@
   "urlPath": "DMT",
   "tabIndex": 0,
   "hidden": false,
-  "visibleDataSources": ["DemoDS", "ForecastDS", "WorkflowDS", "AnalysisPlatformDS", "system"],
+  "visibleDataSources": ["DemoDS",  "WorkflowDS", "AnalysisPlatformDS", "system"],
   "description": "Generic Blueprint and Entity browser. Provides edit, search, and views.",
   "packages": ["DMT-internals/DMT","demoDSAlias/DMT-demo"],
   "models": [

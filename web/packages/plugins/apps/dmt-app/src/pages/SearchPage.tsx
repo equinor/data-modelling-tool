@@ -9,7 +9,7 @@ import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
 import { Link } from 'react-router-dom'
 import {
   DmssAPI,
-  BlueprintPicker,
+  SimpleBlueprintPicker,
   DataSources,
   JsonView,
   ApplicationContext,
@@ -267,7 +267,7 @@ function FilterContainer({
         <Group>
           <FilterGroup>
             <label style={{ marginRight: '10px' }}>Type: </label>
-            <BlueprintPicker
+            <SimpleBlueprintPicker
               formData={searchFilter?.type || ''}
               onChange={(event: any) => setSearchFilter({ type: event })}
               uiSchema={{ 'ui:label': '' }}

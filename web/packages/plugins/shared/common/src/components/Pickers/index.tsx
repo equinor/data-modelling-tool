@@ -1,3 +1,4 @@
+export * from './SimpleBlueprintPicker'
 export * from './BlueprintPicker'
 export * from './DestinationPicker'
 export * from './EntityPicker'
