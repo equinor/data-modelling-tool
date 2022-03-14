@@ -16,7 +16,8 @@ import { AuthContext } from '@dmt/common'
 import { Input } from '@equinor/eds-core-react'
 import { FaSpinner } from 'react-icons/fa'
 import styled from 'styled-components'
-export type BlueprintPickerProps = {
+
+type BlueprintPickerProps = {
   onChange: Function
   formData: any
   uiSchema?: any
