@@ -12,16 +12,13 @@ const lightGray = '#d3d3d3'
 
 const PluginTabsWrapper = styled.div`
   display: flex;
-  align-items: center;
   justify-content: space-evenly;
   padding-bottom: 15px;
 `
 
 const Wrapper = styled.div`
-  align-items: center;
+  align-self: start;
   justify-content: space-evenly;
-  padding-top: 10px;
-  padding-bottom: 10px;
 `
 
 const PathWrapper = styled.div`
@@ -76,34 +73,46 @@ export function UIPluginSelector(props: {
   absoluteDottedId: string
   entity: any
   onSubmit?: Function
-  category?: string
+  onChange?: Function
+  categories?: string[]
   breadcrumb?: boolean
+  onOpen?: Function
 }): JSX.Element {
-  const { absoluteDottedId, entity, category, breadcrumb, onSubmit } = props
+  const {
+    absoluteDottedId,
+    entity,
+    categories,
+    breadcrumb,
+    onSubmit,
+    onChange,
+    onOpen,
+  } = props
   const [dataSourceId, documentId] = absoluteDottedId.split('/', 2)
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
-  const [selectablePluginComponents, setSelectablePluginComponents] = useState<
-    [string, Function][]
+  const [selectableRecipe, setSelectableRecipe] = useState<
+    // name, component, config
+    [string, Function, any][]
   >([])
 
   useEffect(() => {
     if (!blueprint) return
     let recipesToUse = blueprint.uiRecipes
-    if (category) {
-      recipesToUse = recipesToUse.filter(
-        (recipe: any) => recipe?.category == category
+    if (categories?.length) {
+      recipesToUse = recipesToUse.filter((recipe: any) =>
+        categories.includes(recipe?.category)
       )
     }
-    if (!recipesToUse?.length && !category) {
-      setSelectablePluginComponents(['yaml', getUiPlugin('yaml')])
+    if (!recipesToUse?.length && !categories) {
+      setSelectableRecipe(['yaml', getUiPlugin('yaml'), undefined])
     } else {
-      setSelectablePluginComponents(
+      setSelectableRecipe(
         recipesToUse.map((uiRecipe: any) => [
-          uiRecipe?.name || uiRecipe?.plugin || 'no name',
+          uiRecipe?.label || uiRecipe?.name || uiRecipe?.plugin || 'no name',
           getUiPlugin(uiRecipe?.plugin),
+          uiRecipe?.config,
         ])
       )
     }
@@ -117,22 +126,23 @@ export function UIPluginSelector(props: {
         Failed to fetch Blueprint {entity.type}
       </div>
     )
-  if (!selectablePluginComponents.length) {
+  if (!selectableRecipe.length) {
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
   }
-  const UiPlugin: FunctionComponent<DmtUIPlugin> = selectablePluginComponents[
+  const UiPlugin: FunctionComponent<DmtUIPlugin> = selectableRecipe[
     selectedPlugin
   ][1] as FunctionComponent
+  const config: any = selectableRecipe[selectedPlugin][2]
 
   return (
     <Wrapper>
       {breadcrumb && (
         <DocumentPath absoluteDottedId={`${dataSourceId}/${documentId}`} />
       )}
-      {selectablePluginComponents.length > 1 && (
+      {selectableRecipe.length > 1 && (
         <PluginTabsWrapper>
-          {selectablePluginComponents.map(
-            (component: [string, Function], index: number) => (
+          {selectableRecipe.map(
+            (component: [string, Function, any], index: number) => (
               <SelectPluginButton
                 key={index}
                 onClick={() => setSelectedPlugin(index)}
@@ -149,6 +159,10 @@ export function UIPluginSelector(props: {
         documentId={documentId}
         document={entity}
         onSubmit={onSubmit}
+        onChange={onChange}
+        onOpen={onOpen}
+        categories={categories}
+        config={config}
       />
     </Wrapper>
   )

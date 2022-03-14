@@ -35,6 +35,22 @@ const HeaderWrapper: any = styled.div`
   align-items: flex-end;
 `
 
+const QuestionWrapper = styled.div`
+  border: black solid 2px;
+  font-size: small;
+  display: flex;
+  justify-content: center;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+  align-items: center;
+
+  &:hover {
+    background-color: #bbbcbd;
+    cursor: pointer;
+  }
+`
+
 const UserInfoBox = styled.div`
   &:hover {
     color: gray;
@@ -73,22 +89,6 @@ const About = () => {
   const [version, setVersion] = useState<string>('Version not loaded')
   const [expanded, setExpanded] = useState(false)
 
-  const QuestionWrapper = styled.div`
-    border: black solid 2px;
-    font-size: small;
-    display: flex;
-    justify-content: center;
-    border-radius: 50%;
-    height: 20px;
-    width: 20px;
-    align-items: center;
-
-    &:hover {
-      background-color: #bbbcbd;
-      cursor: pointer;
-    }
-  `
-
   useEffect(() => {
     axios
       .get('version.txt')
@@ -118,6 +118,7 @@ interface AppHeaderProps {
 
 export default ({ applications }: AppHeaderProps) => {
   const location = useLocation()
+
   function getActiveTab() {
     // activeApp (Tab Styling) is based on route, or if route is "/", the first application
     if (location.pathname === '/') return applications[0].name

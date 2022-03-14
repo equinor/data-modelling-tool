@@ -32,19 +32,31 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onSubmit } = props
-  // using the passed updateDocument from props causes way too much rerendering. This should probably be fixed...
-  const [_document, documentLoading, updateDocument, error] = useDocument(
+  const {
+    document,
+    documentId,
+    dataSourceId,
+    onSubmit,
+    onOpen,
+    onChange,
+    categories,
+  } = props
+  const [_document, _loading, updateDocument, error] = useDocument(
     dataSourceId,
     documentId
   )
-  const [formData, setFormData] = useState<any>({})
+  const [formData, setFormData] = useState<any>({ ...document })
   const defaultRunnerType = 'WorkflowDS/Blueprints/jobHandlers/AzureContainer'
 
   useEffect(() => {
     if (!_document) return
-    setFormData({ ..._document })
+    // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
+    if (!onChange) setFormData({ ..._document })
   }, [_document])
+
+  useEffect(() => {
+    if (onChange) onChange(formData)
+  }, [formData])
 
   return (
     <div
@@ -124,42 +136,62 @@ export const EditTask = (props: DmtUIPlugin) => {
                     paddingLeft: '10px',
                   }}
                 >
-                  <UIPluginSelector
-                    absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                    entity={formData?.runner || { type: defaultRunnerType }}
-                    breadcrumb={false}
-                    category={'edit'}
-                    onSubmit={(data: any) =>
-                      setFormData({ ...formData, runner: data })
-                    }
-                  />
+                  {onOpen ? (
+                    <Button
+                      onClick={() =>
+                        onOpen({
+                          attribute: 'runner',
+                          entity: formData?.runner || {
+                            type: defaultRunnerType,
+                          },
+                          absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
+                          onSubmit: (data: any) =>
+                            setFormData({ ...formData, runner: data }),
+                        })
+                      }
+                    >
+                      Open
+                    </Button>
+                  ) : (
+                    <UIPluginSelector
+                      absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
+                      entity={formData?.runner || { type: defaultRunnerType }}
+                      breadcrumb={false}
+                      categories={categories}
+                      onSubmit={(data: any) =>
+                        setFormData({ ...formData, runner: data })
+                      }
+                    />
+                  )}
                 </div>
               </Column>
             </GroupWrapper>
           </HeaderWrapper>
 
-          <div style={{ justifyContent: 'space-around', display: 'flex' }}>
-            <Button
-              as="button"
-              variant="outlined"
-              color="danger"
-              onClick={() => setFormData({ ...document })}
-            >
-              Reset
-            </Button>
-            <Button
-              as="button"
-              onClick={() => {
-                if (onSubmit) {
-                  onSubmit(formData)
-                } else {
-                  updateDocument(formData, true)
-                }
-              }}
-            >
-              Ok
-            </Button>
-          </div>
+          {onChange === undefined && (
+            <div style={{ justifyContent: 'space-around', display: 'flex' }}>
+              <Button
+                as="button"
+                variant="outlined"
+                color="danger"
+                onClick={() => setFormData({ ...document })}
+              >
+                Reset
+              </Button>
+              <Button
+                as="button"
+                onClick={() => {
+                  if (onSubmit) {
+                    onSubmit(formData)
+                  } else {
+                    updateDocument(formData, true)
+                  }
+                }}
+              >
+                Ok
+              </Button>
+            </div>
+          )}
         </Wrapper>
       </div>
     </div>

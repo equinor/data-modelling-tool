@@ -41,7 +41,7 @@ export const View = ({ settings }: any) => {
         <UIPluginSelector
           absoluteDottedId={`${data_source}/${entity_id}`}
           entity={document}
-          category={'view'}
+          categories={['view']}
           breadcrumb={true}
         />
       )}

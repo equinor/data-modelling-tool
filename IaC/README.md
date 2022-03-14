@@ -18,7 +18,7 @@ Set active subscription for operations
 `az account set --subscription "S398-DataModellingTool"`
 
 Create a resource group for the environment  
-`az group create --name dmt-test --location norwayeast`
+`az group create --name dmt-test --location norwayeast -o table`
 
 Deploy the template  
 `az deployment group create --resource-group dmt-test --template-file ./IaC/main.bicep`
