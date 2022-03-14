@@ -85,9 +85,16 @@ def get_personal_access_token() -> str:
     return dmss_api.token_create()
 
 
-def get_root_packages(data_source_id: str) -> dict:
+def get_root_packages(data_source_id: str, token: str = None) -> dict:
     """
     Fetches a resolved blueprint from DMSS
     """
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
-    return [v for v in dmss_api.search(data_source_id, {"type": "system/SIMOS/Package", "isRoot": "true"}).values()]
+    headers = {"Authorization": f"Bearer {token or get_access_token()}", "API-Key": token or get_access_token()}
+    req = requests.post(
+        f"{Config.DMSS_API}/api/v1/search/?data_sources={data_source_id}",
+        json={"type": "system/SIMOS/Package", "isRoot": "true"},
+        headers=headers,
+    )
+    req.raise_for_status()
+    return [v for v in req.json().values()]

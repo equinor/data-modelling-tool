@@ -58,7 +58,7 @@ const search = async (token: string, query: any) => {
   const dmssAPI = new DmssAPI(token)
 
   let result = await dmssAPI.searchDocuments({
-    dataSourceId: 'WorkflowDS',
+    dataSources: ['WorkflowDS'],
     body: query,
     sortByAttribute: 'name',
   })

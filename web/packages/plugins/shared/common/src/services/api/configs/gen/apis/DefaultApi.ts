@@ -18,6 +18,9 @@ import {
     ACL,
     ACLFromJSON,
     ACLToJSON,
+    AccessLevel,
+    AccessLevelFromJSON,
+    AccessLevelToJSON,
     DataSourceRequest,
     DataSourceRequestFromJSON,
     DataSourceRequestToJSON,
@@ -55,6 +58,10 @@ export interface BlobUploadRequest {
 
 export interface BlueprintGetRequest {
     typeRef: string;
+}
+
+export interface BlueprintResolveRequest {
+    absoluteId: string;
 }
 
 export interface DataSourceGetRequest {
@@ -105,6 +112,7 @@ export interface ExplorerAddToPathRequest {
     dataSourceId: string;
     document: string;
     directory: string;
+    updateUncontained?: boolean;
     files?: Array<Blob>;
 }
 
@@ -145,8 +153,8 @@ export interface ReferenceInsertRequest {
 }
 
 export interface SearchRequest {
-    dataSourceId: string;
     body: object;
+    dataSources?: Array<string>;
     sortByAttribute?: string;
 }
 
@@ -155,6 +163,15 @@ export interface SetAclRequest {
     documentId: string;
     aCL: ACL;
     recursively?: boolean;
+}
+
+export interface TokenCreateRequest {
+    scope?: AccessLevel;
+    timeToLive?: number;
+}
+
+export interface TokenDeleteRequest {
+    tokenId: string;
 }
 
 /**
@@ -174,6 +191,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -217,6 +238,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -264,6 +289,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -326,6 +355,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -355,6 +388,51 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * Resolve the data_source/uuid form of a blueprint to it\'s type path
+     * Resolve Blueprint Id
+     */
+    async blueprintResolveRaw(requestParameters: BlueprintResolveRequest): Promise<runtime.ApiResponse<string>> {
+        if (requestParameters.absoluteId === null || requestParameters.absoluteId === undefined) {
+            throw new runtime.RequiredError('absoluteId','Required parameter requestParameters.absoluteId was null or undefined when calling blueprintResolve.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const response = await this.request({
+            path: `/api/v1/resolve-path/{absolute_id}`.replace(`{${"absolute_id"}}`, encodeURIComponent(String(requestParameters.absoluteId))),
+            method: 'GET',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Resolve the data_source/uuid form of a blueprint to it\'s type path
+     * Resolve Blueprint Id
+     */
+    async blueprintResolve(requestParameters: BlueprintResolveRequest): Promise<string> {
+        const response = await this.blueprintResolveRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
      * Get
      */
     async dataSourceGetRaw(requestParameters: DataSourceGetRequest): Promise<runtime.ApiResponse<any>> {
@@ -365,6 +443,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -400,6 +482,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -446,6 +532,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -504,6 +594,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -556,6 +650,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -607,6 +705,10 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -689,6 +791,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -736,6 +842,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -785,7 +895,15 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const queryParameters: any = {};
 
+        if (requestParameters.updateUncontained !== undefined) {
+            queryParameters['update_uncontained'] = requestParameters.updateUncontained;
+        }
+
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -864,6 +982,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -907,6 +1029,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -952,6 +1078,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -999,6 +1129,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -1042,6 +1176,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -1112,6 +1250,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         const headerParameters: runtime.HTTPHeaders = {};
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -1161,6 +1303,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -1190,18 +1336,19 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * Takes a list of data source id\'s as a query parameter, and search all data sources for the posted dictionary. If data source list is empty, search all databases.
      * Search
      */
     async searchRaw(requestParameters: SearchRequest): Promise<runtime.ApiResponse<object>> {
-        if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
-            throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling search.');
-        }
-
         if (requestParameters.body === null || requestParameters.body === undefined) {
             throw new runtime.RequiredError('body','Required parameter requestParameters.body was null or undefined when calling search.');
         }
 
         const queryParameters: any = {};
+
+        if (requestParameters.dataSources) {
+            queryParameters['data_sources'] = requestParameters.dataSources;
+        }
 
         if (requestParameters.sortByAttribute !== undefined) {
             queryParameters['sort_by_attribute'] = requestParameters.sortByAttribute;
@@ -1210,6 +1357,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const headerParameters: runtime.HTTPHeaders = {};
 
         headerParameters['Content-Type'] = 'application/json';
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
@@ -1221,7 +1372,7 @@ export class DefaultApi extends runtime.BaseAPI {
         }
 
         const response = await this.request({
-            path: `/api/v1/search/{data_source_id}`.replace(`{${"data_source_id"}}`, encodeURIComponent(String(requestParameters.dataSourceId))),
+            path: `/api/v1/search/`,
             method: 'POST',
             headers: headerParameters,
             query: queryParameters,
@@ -1232,6 +1383,7 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
+     * Takes a list of data source id\'s as a query parameter, and search all data sources for the posted dictionary. If data source list is empty, search all databases.
      * Search
      */
     async search(requestParameters: SearchRequest): Promise<object> {
@@ -1242,7 +1394,7 @@ export class DefaultApi extends runtime.BaseAPI {
     /**
      * Set Acl
      */
-    async setAclRaw(requestParameters: SetAclRequest): Promise<runtime.ApiResponse<object>> {
+    async setAclRaw(requestParameters: SetAclRequest): Promise<runtime.ApiResponse<string>> {
         if (requestParameters.dataSourceId === null || requestParameters.dataSourceId === undefined) {
             throw new runtime.RequiredError('dataSourceId','Required parameter requestParameters.dataSourceId was null or undefined when calling setAcl.');
         }
@@ -1265,6 +1417,10 @@ export class DefaultApi extends runtime.BaseAPI {
 
         headerParameters['Content-Type'] = 'application/json';
 
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
+
         if (this.configuration && this.configuration.accessToken) {
             // oauth required
             if (typeof this.configuration.accessToken === 'function') {
@@ -1282,21 +1438,103 @@ export class DefaultApi extends runtime.BaseAPI {
             body: ACLToJSON(requestParameters.aCL),
         });
 
-        return new runtime.JSONApiResponse<any>(response);
+        return new runtime.TextApiResponse(response) as any;
     }
 
     /**
      * Set Acl
      */
-    async setAcl(requestParameters: SetAclRequest): Promise<object> {
+    async setAcl(requestParameters: SetAclRequest): Promise<string> {
         const response = await this.setAclRaw(requestParameters);
         return await response.value();
     }
 
     /**
-     * Get Personal Access Token
+     * New Personal Access Token
      */
-    async tokenGetRaw(): Promise<runtime.ApiResponse<any>> {
+    async tokenCreateRaw(requestParameters: TokenCreateRequest): Promise<runtime.ApiResponse<any>> {
+        const queryParameters: any = {};
+
+        if (requestParameters.scope !== undefined) {
+            queryParameters['scope'] = requestParameters.scope;
+        }
+
+        if (requestParameters.timeToLive !== undefined) {
+            queryParameters['time_to_live'] = requestParameters.timeToLive;
+        }
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const response = await this.request({
+            path: `/api/v1/token`,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * New Personal Access Token
+     */
+    async tokenCreate(requestParameters: TokenCreateRequest): Promise<any> {
+        const response = await this.tokenCreateRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * Revoke Personal Access Token
+     */
+    async tokenDeleteRaw(requestParameters: TokenDeleteRequest): Promise<runtime.ApiResponse<any>> {
+        if (requestParameters.tokenId === null || requestParameters.tokenId === undefined) {
+            throw new runtime.RequiredError('tokenId','Required parameter requestParameters.tokenId was null or undefined when calling tokenDelete.');
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.accessToken) {
+            // oauth required
+            if (typeof this.configuration.accessToken === 'function') {
+                headerParameters["Authorization"] = this.configuration.accessToken("OAuth2AuthorizationCodeBearer", []);
+            } else {
+                headerParameters["Authorization"] = this.configuration.accessToken;
+            }
+        }
+
+        const response = await this.request({
+            path: `/api/v1/token/{token_id}`.replace(`{${"token_id"}}`, encodeURIComponent(String(requestParameters.tokenId))),
+            method: 'DELETE',
+            headers: headerParameters,
+            query: queryParameters,
+        });
+
+        return new runtime.TextApiResponse(response) as any;
+    }
+
+    /**
+     * Revoke Personal Access Token
+     */
+    async tokenDelete(requestParameters: TokenDeleteRequest): Promise<any> {
+        const response = await this.tokenDeleteRaw(requestParameters);
+        return await response.value();
+    }
+
+    /**
+     * List All Pats
+     */
+    async tokenListAllRaw(): Promise<runtime.ApiResponse<any>> {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
@@ -1321,10 +1559,10 @@ export class DefaultApi extends runtime.BaseAPI {
     }
 
     /**
-     * Get Personal Access Token
+     * List All Pats
      */
-    async tokenGet(): Promise<any> {
-        const response = await this.tokenGetRaw();
+    async tokenListAll(): Promise<any> {
+        const response = await this.tokenListAllRaw();
         return await response.value();
     }
 
@@ -1335,6 +1573,10 @@ export class DefaultApi extends runtime.BaseAPI {
         const queryParameters: any = {};
 
         const headerParameters: runtime.HTTPHeaders = {};
+
+        if (this.configuration && this.configuration.apiKey) {
+            headerParameters["Access-Key"] = this.configuration.apiKey("Access-Key"); // APIKeyHeader authentication
+        }
 
         if (this.configuration && this.configuration.accessToken) {
             // oauth required

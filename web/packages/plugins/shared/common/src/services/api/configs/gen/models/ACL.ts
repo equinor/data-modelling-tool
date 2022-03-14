@@ -22,11 +22,11 @@ import {
 
 /**
  * acl:
- *   owner: 'username'
+ *   owner: 'user_id'
  *   roles:
  *     'role': WRITE
  *   users:
- *     'username': WRITE
+ *     'user_id': WRITE
  *   others: READ
  * @export
  * @interface ACL

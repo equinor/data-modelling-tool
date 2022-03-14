@@ -453,7 +453,7 @@ export default ({ settings }: any) => {
       NotificationManager.warning('No datasource selected')
     dmssAPI
       .searchDocuments({
-        dataSourceId: searchSettings.dataSource,
+        dataSources: [searchSettings.dataSource],
         body: query,
         sortByAttribute: searchSettings.sortByAttribute,
       })
