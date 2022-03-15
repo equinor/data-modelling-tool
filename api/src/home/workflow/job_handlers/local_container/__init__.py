@@ -69,27 +69,26 @@ class JobHandler(JobHandlerInterface):
                 network="data-modelling-storage-service_default", #??
                 detach=True,
             )
+            # todo there is something buggy here...
 
-            #generate a result dict and uplo
 
-
-            result_id = str(uuid4())
-            example_result: dict = {
-                "uid": result_id,
-                "type": "system/SIMOS/NamedEntity",
-                "name": f"resultFromLocalContainer_{result_id}",
-                "description": "Example result from running a local container job"
-            }
-            dmss_api.api_client.default_headers["Authorization"] = "Bearer " + self.token
-            data_source, directory = self.job_entity["outputTarget"].split("/", 1)
-            logger.info(f"*** ds is {data_source} and directory is {directory}")
-            response = dmss_api.explorer_add_to_path(document=json.dumps(example_result), directory=directory, data_source_id=data_source)
-            print(f"Result with is {response['uid']} was uploaded to {directory} ")
-
-            RESULT_FILE_TYPE = f"{data_source}/FoR-BP/Blueprints/ResultFile"
-            reference_object = {"name": f"resultFromLocalContainer_{result_id}", "id": response['uid'], "type": "system/SIMOS/NamedEntity"}
-            response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=runnerEntity["resultLinkTarget"], reference=reference_object)
-            logger.info(f"reference to result was added to the analysis ({runnerEntity['resultLinkTarget']})")
+            # result_id = str(uuid4())
+            # example_result: dict = {
+            #     "uid": result_id,
+            #     "type": "system/SIMOS/NamedEntity",
+            #     "name": f"resultFromLocalContainer_{result_id}",
+            #     "description": "Example result from running a local container job"
+            # }
+            # dmss_api.api_client.default_headers["Authorization"] = "Bearer " + self.token
+            # data_source, directory = self.job_entity["outputTarget"].split("/", 1)
+            # logger.info(f"*** ds is {data_source} and directory is {directory}")
+            # response = dmss_api.explorer_add_to_path(document=json.dumps(example_result), directory=directory, data_source_id=data_source)
+            # print(f"Result with is {response['uid']} was uploaded to {directory} ")
+            #
+            # RESULT_FILE_TYPE = f"{data_source}/FoR-BP/Blueprints/ResultFile"
+            # reference_object = {"name": f"resultFromLocalContainer_{result_id}", "id": response['uid'], "type": "system/SIMOS/NamedEntity"}
+            # response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=runnerEntity["resultLinkTarget"], reference=reference_object)
+            # logger.info(f"reference to result was added to the analysis ({runnerEntity['resultLinkTarget']})")
 
         except KeyError as error:
             raise Exception(f"Job entity used as input to local container jobs does not include required attribute {error}")

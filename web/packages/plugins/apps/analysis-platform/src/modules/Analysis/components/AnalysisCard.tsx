@@ -81,21 +81,16 @@ const RunAnalysisButton = (props: any) => {
       outputTarget: ANALYSIS_RESULTS_PATH, //folder where results entities should be placed
       input: task.input,
       runner: task.runner,
-      // todo use this jos in job api..
     }
 
     localContainerJobTest.runner = {
       ...localContainerJobTest.runner,
-      resultLinkTarget: `${analysis._id}.jobs.${runsSoFar}.result`, // dotted id to the analysis entity's results attribute.
+      command: [
+        `--target=${ANALYSIS_RESULTS_PATH}`,
+        `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`,
+      ], //resultlinktarget is dotted id to the analysis entity's results attribute.
     }
 
-    // const localContainerJob: TLocalContainerJob = {
-    //   name: 'localcontainerjobtest',
-    //   label: 'example',
-    //   image: 'alpine',
-    //   command: 'ls',
-    //   type: LOCAL_CONTAINER_JOB_HANDLER,
-    // }
     //todo bug - have to refresh page before can run new analysis since the analysis prop to component is not updated
     dmssAPI.generatedDmssApi
       .explorerAdd({

@@ -41,7 +41,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               label={'Container image'}
               // value={formData.crUsername}
               placeholder="Image to run"
-              items={['alpine']}
+              items={['krikjers/wrapper']}
               handleSelectedItemChange={selected =>
                 setFormData({ ...formData, image: selected.inputValue })
               }
@@ -50,19 +50,19 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               // }
             />
           </HeaderWrapper>
-          <HeaderWrapper style={{ width: '70%' }}>
-            <Typography variant="h5">Command</Typography>
-            <SingleSelect
-              id="command"
-              label={'Command to run'}
-              // value={formData.crUsername}
-              placeholder="Command for the container (parameters)"
-              items={['ls', 'echo 123']}
-              handleSelectedItemChange={selected =>
-                setFormData({ ...formData, command: selected.inputValue })
-              }
-            />
-          </HeaderWrapper>
+          {/*<HeaderWrapper style={{ width: '70%' }}>*/}
+          {/*  <Typography variant="h5">Command</Typography>*/}
+          {/*  <SingleSelect*/}
+          {/*    id="command"*/}
+          {/*    label={'Command to run'}*/}
+          {/*    // value={formData.crUsername}*/}
+          {/*    placeholder="Command for the container (parameters)"*/}
+          {/*    items={['...', 'echo 123']}*/}
+          {/*    handleSelectedItemChange={selected =>*/}
+          {/*      setFormData({ ...formData, command: selected.inputValue })*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*</HeaderWrapper>*/}
 
           <div style={{ justifyContent: 'space-around', display: 'flex' }}>
             <Button
