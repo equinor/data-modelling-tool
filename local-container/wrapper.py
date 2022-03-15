@@ -22,11 +22,11 @@ def cli():
 @click.option("--target", help="Target directory to store result file", type=str, required=True)
 @click.option("--result-link-target", help="dotted id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
 @click.option("--token", help="A valid DMSS Access Token", type=str)
-def upload(target: str, result_link_target: str,  token: str = None):
-    # """Uploads the simulation results to $DMSS_HOST"""
-
-
+@click.option("--json-string-input", help="Json string to add to result entity", type=str)
+def get_and_upload_result(target: str, result_link_target: str,  json_string_input: str, token: str = None):
+    #todo use json stirng input
     result_id = str(uuid4())
+    result_name = f"resultFromLocalContainer_{result_id}",
     example_result: dict = {
         "uid": result_id,
         "type": "system/SIMOS/NamedEntity",
@@ -42,8 +42,6 @@ def upload(target: str, result_link_target: str,  token: str = None):
     reference_object = {"name": f"resultFromLocalContainer_{result_id}", "id": response['uid'], "type": "system/SIMOS/NamedEntity"}
     response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=result_link_target, reference=reference_object)
     print(f"reference to result was added to the analysis ({result_link_target})")
-
-
 
 
 

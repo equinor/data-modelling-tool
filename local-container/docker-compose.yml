@@ -7,9 +7,18 @@ services:
       PUBLIC_DMSS_API: http://localhost:5000
     networks:
       - data-modelling-storage-service_default
+    external_links:
+      - dmss
+      - db
     volumes:
       - ./wrapper.py:/code/wrapper.py
+      - ./init.sh:/code/init.sh
 #    command: [
+#       "/code/init.sh",
+#        "--target=AnalysisPlatformDS/Data/Analysis/results",
+#        "--result-link-target=4483c9b0-d505-46c9-a157-94c79f4d7a6c.jobs.0.result",
+#        "--token=DMSS_J-aqSkr_wSo-KeeutezJLIUzHCtsQT5D2bgHF4XYw00="
+#      ]
 #        "/code/init.sh",
 #        "--stask=DemoDS/4ec0d646-907c-4eba-9e65-24106236d61b",
 #        "--task=WorkflowTask",

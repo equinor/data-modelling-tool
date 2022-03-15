@@ -45,24 +45,21 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               handleSelectedItemChange={selected =>
                 setFormData({ ...formData, image: selected.inputValue })
               }
-              // onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              //   setFormData({ ...formData, image: event.target.value })
-              // }
             />
           </HeaderWrapper>
-          {/*<HeaderWrapper style={{ width: '70%' }}>*/}
-          {/*  <Typography variant="h5">Command</Typography>*/}
-          {/*  <SingleSelect*/}
-          {/*    id="command"*/}
-          {/*    label={'Command to run'}*/}
-          {/*    // value={formData.crUsername}*/}
-          {/*    placeholder="Command for the container (parameters)"*/}
-          {/*    items={['...', 'echo 123']}*/}
-          {/*    handleSelectedItemChange={selected =>*/}
-          {/*      setFormData({ ...formData, command: selected.inputValue })*/}
-          {/*    }*/}
-          {/*  />*/}
-          {/*</HeaderWrapper>*/}
+          <HeaderWrapper style={{ width: '70%' }}>
+            <Typography variant="h5">Command</Typography>
+            <SingleSelect
+              id="command"
+              label={'Command to run'}
+              // value={formData.crUsername}
+              placeholder="Command for the container (parameters)"
+              items={['...', 'echo 123']}
+              handleSelectedItemChange={selected =>
+                setFormData({ ...formData, command: selected.inputValue })
+              }
+            />
+          </HeaderWrapper>
 
           <div style={{ justifyContent: 'space-around', display: 'flex' }}>
             <Button

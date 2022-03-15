@@ -60,10 +60,10 @@ class JobHandler(JobHandlerInterface):
                 + f"Command: {runnerEntity.get('command', 'None')}"
             )
 
-
+            logger.info(f"***** input to image is: A {runnerEntity['image']} B {runnerEntity['command'] + [f'--token={self.token}']} ")
             self.client.containers.run(
                 image=runnerEntity["image"],
-                command=[runnerEntity["command"]] + [f"--token={self.token}"],
+                command=runnerEntity["command"] + [f"--token={self.token}"],
                 name="someName_"+str(uuid4()),
                 # environment=env_vars,
                 network="data-modelling-storage-service_default", #??

@@ -64,14 +64,7 @@ const RunAnalysisButton = (props: any) => {
   const saveAndStartJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
-    // const job: any = {
-    //   name: `${analysis.task.name}-${poorMansUUID()}`,
-    //   triggeredBy: tokenData?.name,
-    //   type: JOB,
-    //   outputTarget: analysis.task.outputTarget,
-    //   input: analysis.task.input,
-    //   runner: analysis.task.runner,
-    // }
+
     const localContainerJobTest: TTtestJob = {
       label: 'Example local container job',
       // image: 'alpine',
