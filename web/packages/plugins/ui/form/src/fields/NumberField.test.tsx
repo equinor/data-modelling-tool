@@ -121,5 +121,54 @@ describe('NumberField', () => {
         }
       })
     })
+
+    it('should handle optional', async () => {
+      mockGetBlueprint([
+        {
+          name: 'SingleField',
+          type: 'system/SIMOS/Blueprint',
+          attributes: [
+            {
+              name: 'foo',
+              type: 'system/SIMOS/BlueprintAttribute',
+              attributeType: 'number',
+              optional: true,
+            },
+          ],
+        },
+      ])
+      const onSubmit = jest.fn()
+      render(<Form type="SingleField" onSubmit={onSubmit} />)
+      await waitFor(() => {
+        fireEvent.submit(screen.getByRole('button'))
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({})
+        expect(screen.getByText('foo (optional)')).toBeDefined()
+      })
+    })
+
+    it('should not call onSubmit if non-optional field are missing value', async () => {
+      mockGetBlueprint([
+        {
+          name: 'SingleField',
+          type: 'system/SIMOS/Blueprint',
+          attributes: [
+            {
+              name: 'foo',
+              type: 'system/SIMOS/BlueprintAttribute',
+              attributeType: 'number',
+              optional: false,
+            },
+          ],
+        },
+      ])
+      const onSubmit = jest.fn()
+      render(<Form type="SingleField" onSubmit={onSubmit} />)
+      fireEvent.submit(screen.getByRole('button'))
+      await waitFor(() => {
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledTimes(0)
+      })
+    })
   })
 })

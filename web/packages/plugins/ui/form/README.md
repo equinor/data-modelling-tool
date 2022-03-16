@@ -27,4 +27,3 @@ The form is made up from fields and widgets:
 ![your-UML-diagram-name](docs/components.png)
 
 The attribute field selects correct fields for each attribute.
-

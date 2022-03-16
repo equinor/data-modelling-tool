@@ -54,5 +54,13 @@
       "attributeType": "string",
       "optional": true
     }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Form",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "form",
+      "category": "edit"
+    }
   ]
 }

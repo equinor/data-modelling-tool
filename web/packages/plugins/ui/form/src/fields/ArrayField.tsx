@@ -11,7 +11,7 @@ const Wrapper = styled.div`
 `
 
 export default function Fields(props: any) {
-  const { namePath, label, name, type } = props
+  const { namePath, displayLabel, type } = props
 
   const { control } = useFormContext()
 
@@ -22,16 +22,13 @@ export default function Fields(props: any) {
 
   return (
     <Wrapper>
-      <Typography>
-        {label === undefined || label === '' ? name : label}
-      </Typography>
+      <Typography>{displayLabel}</Typography>
       <div>
         {fields.map((item: any, index: number) => {
           return (
             <div key={item.id}>
               <AttributeField
                 namePath={`${namePath}.${index}`}
-                formData={item}
                 attribute={{
                   attributeType: type,
                   dimensions: '',

@@ -12,7 +12,6 @@ const TextWidget = (props: any) => {
   const _onChange = ({
     target: { value },
   }: React.ChangeEvent<HTMLInputElement>) => onChange(value === '' ? '' : value)
-
   return <TextField {...props} onChange={_onChange} label={label} />
 }
 

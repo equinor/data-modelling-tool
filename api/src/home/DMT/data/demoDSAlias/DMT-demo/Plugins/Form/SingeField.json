@@ -1,0 +1,19 @@
+{
+  "name": "SingleField",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "foo",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Form",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "form",
+      "category": "edit"
+    }
+  ]
+}

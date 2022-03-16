@@ -5,6 +5,10 @@ import { mockGetBlueprint } from '../test-utils'
 import userEvent from '@testing-library/user-event'
 
 describe('StringField', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   describe('TextWidget', () => {
     it('should render a single string field', async () => {
       mockGetBlueprint([
@@ -218,7 +222,7 @@ describe('StringField', () => {
       })
     })
 
-    it('should default submit value to empty string', async () => {
+    it('should default submit value to empty object', async () => {
       mockGetBlueprint([
         {
           name: 'SingleField',
@@ -240,9 +244,59 @@ describe('StringField', () => {
       await waitFor(() => {
         fireEvent.submit(screen.getByRole('button'))
         expect(onSubmit).toHaveBeenCalled()
-        expect(onSubmit).toHaveBeenCalledWith({
-          foo: '',
-        })
+        expect(onSubmit).toHaveBeenCalledWith({})
+      })
+    })
+
+    it('should handle optional', async () => {
+      mockGetBlueprint([
+        {
+          name: 'SingleField',
+          type: 'system/SIMOS/Blueprint',
+          attributes: [
+            {
+              name: 'foo',
+              type: 'system/SIMOS/BlueprintAttribute',
+              attributeType: 'string',
+              optional: true,
+            },
+          ],
+        },
+      ])
+      const onSubmit = jest.fn()
+      const formData = {}
+      const { container } = render(
+        <Form type="SingleField" formData={formData} onSubmit={onSubmit} />
+      )
+      await waitFor(() => {
+        fireEvent.submit(screen.getByRole('button'))
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({})
+        expect(screen.getByText('foo (optional)')).toBeDefined()
+      })
+    })
+
+    it('should not call onSubmit if non-optional field are missing value', async () => {
+      mockGetBlueprint([
+        {
+          name: 'SingleField',
+          type: 'system/SIMOS/Blueprint',
+          attributes: [
+            {
+              name: 'foo',
+              type: 'system/SIMOS/BlueprintAttribute',
+              attributeType: 'string',
+              optional: false,
+            },
+          ],
+        },
+      ])
+      const onSubmit = jest.fn()
+      render(<Form type="SingleField" onSubmit={onSubmit} />)
+      fireEvent.submit(screen.getByRole('button'))
+      await waitFor(() => {
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledTimes(0)
       })
     })
 

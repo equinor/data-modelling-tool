@@ -2,6 +2,7 @@ import TextWidget from '../widgets/TextWidget'
 import React from 'react'
 // @ts-ignore
 import { Controller, useFormContext } from 'react-hook-form'
+import { NumberFieldProps } from '../types'
 
 // Taken from: https://github.com/rjsf-team/react-jsonschema-form/blob/cff979dae5348e9b100447641bcb53374168367f/packages/core/src/utils.js#L436
 export const asNumber = (value: string): number | string => {
@@ -30,9 +31,9 @@ export const asNumber = (value: string): number | string => {
   return valid ? n : value
 }
 
-export const NumberField = (props: any) => {
+export const NumberField = (props: NumberFieldProps) => {
   const { control } = useFormContext()
-  const { namePath, label, name, defaultValue } = props
+  const { namePath, displayLabel, defaultValue, optional } = props
 
   // TODO: const Widget = getWidget(schema, widget, widgets);
 
@@ -41,14 +42,10 @@ export const NumberField = (props: any) => {
       name={namePath}
       control={control}
       rules={{
-        // TODO: required: 'Required',
+        required: !optional,
         pattern: { value: /^[0-9]+$/g, message: 'Only digits allowed' },
       }}
-      defaultValue={defaultValue || ''}
-      // @ts-ignore
-      onChange={(value: any) => {
-        return console.log(value)
-      }}
+      defaultValue={defaultValue || undefined}
       render={({
         // @ts-ignore
         field: { ref, onChange, ...props },
@@ -65,7 +62,7 @@ export const NumberField = (props: any) => {
             onChange={handleChange}
             type="number"
             id={namePath}
-            label={label === undefined || label === '' ? name : label}
+            label={displayLabel}
             inputRef={ref}
             helperText={error?.message}
             variant={invalid ? 'error' : 'default'}

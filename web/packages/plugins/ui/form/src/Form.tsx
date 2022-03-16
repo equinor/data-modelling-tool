@@ -19,7 +19,8 @@ export const Form = (props: FormProps) => {
   const namePath: string = ''
 
   const handleSubmit = methods.handleSubmit(
-    (data: UnpackNestedValue<TFieldValues>) => {
+    (data: UnpackNestedValue<TFieldValues>, errors: any) => {
+      // if (errors) console.debug(errors);
       if (onSubmit) onSubmit(data)
     }
   )
@@ -27,9 +28,7 @@ export const Form = (props: FormProps) => {
   return (
     <FormProvider {...methods}>
       <form onSubmit={handleSubmit}>
-        {type && (
-          <ObjectField namePath={namePath} formData={formData} type={type} />
-        )}
+        {type && <ObjectField namePath={namePath} type={type} />}
         <Button type="submit">Submit</Button>
       </form>
     </FormProvider>
