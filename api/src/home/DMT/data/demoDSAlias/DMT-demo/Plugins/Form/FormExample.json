@@ -1,0 +1,10 @@
+{
+  "_id": "FormExample",
+  "type": "/Plugins/Form/FormBlueprint",
+  "aString": "a simple string",
+  "aNumber": 1337,
+  "listOfStrings": [
+    "foo",
+    "bar"
+  ]
+}

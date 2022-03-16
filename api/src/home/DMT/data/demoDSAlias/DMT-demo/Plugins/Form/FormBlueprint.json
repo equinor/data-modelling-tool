@@ -1,0 +1,33 @@
+{
+  "name": "FormBlueprint",
+  "type": "system/SIMOS/Blueprint",
+  "attributes": [
+    {
+      "name": "aNumber",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "number",
+      "label":  "A number"
+    },
+    {
+      "name": "aString",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "label":  "A string"
+    },
+    {
+      "name": "listOfStrings",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "dimensions": "*",
+      "label":  "A list of strings"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Form",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "form",
+      "category": "edit"
+    }
+  ]
+}
