@@ -42,14 +42,12 @@ const CardWrapper = styled.div`
 type AnalysisCardProps = {
   analysis: TAnalysis
   addJob: Function
+  jobs: any
 }
 
 const RunAnalysisButton = (props: any) => {
-  const { analysis, addJob } = props
-  // TODO: setJobs should be a passed prop
-  const [jobs, setJobs] = useState<any[]>([...analysis.jobs])
+  const { analysis, addJob, jobs } = props
   const [showScrim, setShowScrim] = useState<boolean>(false)
-
   const [loading, setLoading] = useState<boolean>(false)
   const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
@@ -64,6 +62,7 @@ const RunAnalysisButton = (props: any) => {
       name: `${analysis.task.name}-${poorMansUUID()}`,
       triggeredBy: tokenData?.name,
       type: JOB,
+      started: new Date(),
       outputTarget: analysis.task.outputTarget,
       input: analysis.task.input,
       runner: analysis.task.runner,
@@ -76,7 +75,6 @@ const RunAnalysisButton = (props: any) => {
       })
       .then(() => {
         // Add the new job to the state
-        setJobs([...jobs, job])
         // Start a job from the created job entity (last one in list)
         jobAPI
           .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
@@ -141,7 +139,7 @@ const RunAnalysisButton = (props: any) => {
 }
 
 const AnalysisCard = (props: AnalysisCardProps) => {
-  const { analysis, addJob } = props
+  const { analysis, addJob, jobs } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
   // @ts-ignore
   const { tokenData } = useContext(AuthContext)
@@ -194,7 +192,11 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           )}
           {'task' in analysis && Object.keys(analysis.task).length > 0 && (
             <>
-              <RunAnalysisButton analysis={analysis} addJob={addJob} />
+              <RunAnalysisButton
+                analysis={analysis}
+                addJob={addJob}
+                jobs={jobs}
+              />
               <Tooltip title={'Not implemented'}>
                 <Button style={{ width: 'max-content' }} disabled>
                   Configure schedule

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { AuthContext, UIPluginSelector, useDocument } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
@@ -12,25 +12,29 @@ export default (): JSX.Element => {
     data_source,
     entity_id
   )
-  // @ts-ignore
-  const { token } = useContext(AuthContext)
+  const [jobs, setJobs] = useState<any[]>([])
+
+  useEffect(() => {
+    if (!analysis) return
+    setJobs(analysis.jobs)
+  }, [analysis])
 
   function addJob(newJob: any) {
-    // TODO:
+    setJobs([...jobs, newJob])
     console.log('New job added to state')
   }
 
   if (isLoading) return <Progress.Linear />
   return (
     <>
-      <AnalysisInfoCard analysis={analysis} addJob={addJob} />
+      <AnalysisInfoCard analysis={analysis} addJob={addJob} jobs={jobs} />
       <>
         <UIPluginSelector
           entity={analysis.task}
           absoluteDottedId={`${data_source}/${analysis._id}.task`}
           categories={['container', 'view']}
         />
-        <AnalysisJobTable analysis={analysis} />
+        <AnalysisJobTable jobs={jobs} analysisId={analysis._id} />
       </>
     </>
   )

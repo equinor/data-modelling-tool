@@ -5,6 +5,7 @@ import { TAnalysis, TTask } from '../Types'
 import styled from 'styled-components'
 import CreateAnalysisForm from './CreateAnalysisForm'
 import AnalysisCard from './AnalysisCard'
+import analysisJobTable from './AnalysisJobTable'
 
 const OnRight = styled.div`
   display: flex;
@@ -14,10 +15,11 @@ const OnRight = styled.div`
 type AnalysisInfoCardProps = {
   analysis: TAnalysis
   addJob: Function
+  jobs: any
 }
 
 const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
-  const { analysis, addJob } = props
+  const { analysis, addJob, jobs } = props
   const [isEditing, setIsEditing] = useState<boolean>(false)
 
   const handleSubmitTask = (task: TTask) => {
@@ -36,7 +38,7 @@ const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
         </OnRight>
       ) : (
         <OnRight>
-          <AnalysisCard analysis={analysis} addJob={addJob} />
+          <AnalysisCard analysis={analysis} addJob={addJob} jobs={jobs} />
           <Button onClick={() => setIsEditing(true)} variant="ghost_icon">
             <Icons name="edit_text" title="edit_text" />
           </Button>
