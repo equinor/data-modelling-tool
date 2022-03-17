@@ -6,7 +6,7 @@ import { BooleanFieldProps } from '../types'
 
 export const BooleanField = (props: BooleanFieldProps) => {
   const { control } = useFormContext()
-  const { namePath, label, name, defaultValue } = props
+  const { namePath, displayLabel, defaultValue } = props
 
   // We need to convert default values coming from the API since they are always strings
   const usedDefaultValue = defaultValue !== undefined && defaultValue == 'True'
@@ -17,11 +17,6 @@ export const BooleanField = (props: BooleanFieldProps) => {
     <Controller
       name={namePath}
       control={control}
-      rules={
-        {
-          // TODO: required: 'Required'
-        }
-      }
       defaultValue={usedDefaultValue}
       render={({
         // @ts-ignore
@@ -33,7 +28,7 @@ export const BooleanField = (props: BooleanFieldProps) => {
           {...props}
           id={namePath}
           value={value}
-          label={label === undefined || label === '' ? name : label}
+          label={displayLabel}
           inputRef={ref}
           helperText={error?.message}
           variant={invalid ? 'error' : 'default'}

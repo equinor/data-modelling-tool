@@ -4,9 +4,10 @@ import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import { Form } from './Form'
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { document, uiRecipeName, onSubmit } = props
+  const { document, config, onSubmit } = props
 
-  // TODO: Use uiRecipeName to customize the form
+  // TODO: Use config to customize the form
+  // @ts-ignore
   return <Form type={document.type} formData={document} onSubmit={onSubmit} />
 }
 

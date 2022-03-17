@@ -1,0 +1,37 @@
+{
+  "name": "Nested",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "attributes": [
+    {
+      "name": "foo",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "number",
+      "label":  "Foo"
+    },
+    {
+      "name": "bar",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "label":  "Bar"
+    },
+    {
+      "name": "baz",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "label":  "Baz",
+      "optional": true
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Form",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "form",
+      "category": "edit"
+    }
+  ]
+}

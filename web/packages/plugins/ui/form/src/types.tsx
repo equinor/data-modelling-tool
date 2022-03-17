@@ -7,25 +7,31 @@ export type FormProps = {
 export type ObjectFieldProps = {
   namePath: string
   type: string
-  formData?: any
+  displayLabel?: string
+  optional?: boolean
 }
 
 export type AttributeFieldProps = {
   namePath: string
   attribute: any
-  formData?: any
 }
 
 export type StringFieldProps = {
   namePath: string
-  label: string
-  name: string
+  displayLabel: string
   defaultValue: string
+  optional: boolean
+}
+
+export type NumberFieldProps = {
+  namePath: string
+  displayLabel: string
+  defaultValue: string
+  optional: boolean
 }
 
 export type BooleanFieldProps = {
   namePath: string
-  label: string
-  name: string
+  displayLabel: string
   defaultValue: string
 }

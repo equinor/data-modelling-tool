@@ -5,6 +5,10 @@ import { mockGetBlueprint } from '../test-utils'
 import userEvent from '@testing-library/user-event'
 
 describe('BooleanField', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
+
   describe('TextWidget', () => {
     it('should render a single boolean field', async () => {
       mockGetBlueprint([

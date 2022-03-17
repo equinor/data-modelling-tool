@@ -22,18 +22,29 @@ const getFieldType = (attribute: any) => {
   }
 }
 
+const getDisplayLabel = (attribute: any): string => {
+  const { name, label, optional } = attribute
+
+  const displayLabel = label === undefined || label === '' ? name : label
+
+  return optional ? `${displayLabel} (optional)` : displayLabel
+}
+
 export const AttributeField = (props: AttributeFieldProps) => {
-  const { namePath, attribute, formData } = props
+  const { namePath, attribute } = props
 
   const fieldType = getFieldType(attribute)
+
+  const displayLabel = getDisplayLabel(attribute)
 
   switch (fieldType) {
     case 'object':
       return (
         <ObjectField
           namePath={namePath}
-          formData={formData}
+          displayLabel={displayLabel}
           type={attribute.attributeType}
+          optional={attribute.optional}
         />
       )
 
@@ -41,27 +52,24 @@ export const AttributeField = (props: AttributeFieldProps) => {
       return (
         <ArrayField
           namePath={namePath}
-          formData={formData}
-          name={attribute.name}
+          displayLabel={displayLabel}
           type={attribute.attributeType}
-          label={attribute.label}
         />
       )
     case 'string':
       return (
         <StringField
           namePath={namePath}
-          label={attribute.label}
-          name={attribute.name}
+          displayLabel={displayLabel}
           defaultValue={attribute.default}
+          optional={attribute.optional}
         />
       )
     case 'boolean':
       return (
         <BooleanField
           namePath={namePath}
-          label={attribute.label}
-          name={attribute.name}
+          displayLabel={displayLabel}
           defaultValue={attribute.default}
         />
       )
@@ -70,9 +78,9 @@ export const AttributeField = (props: AttributeFieldProps) => {
       return (
         <NumberField
           namePath={namePath}
-          label={attribute.label}
-          name={attribute.name}
+          displayLabel={displayLabel}
           defaultValue={attribute.default}
+          optional={attribute.optional}
         />
       )
     default:

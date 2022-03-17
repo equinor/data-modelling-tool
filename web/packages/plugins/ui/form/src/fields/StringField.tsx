@@ -2,10 +2,11 @@ import TextWidget from '../widgets/TextWidget'
 import React from 'react'
 // @ts-ignore
 import { Controller, useFormContext } from 'react-hook-form'
+import { StringFieldProps } from '../types'
 
-export const StringField = (props: any) => {
+export const StringField = (props: StringFieldProps) => {
   const { control } = useFormContext()
-  const { namePath, label, name, defaultValue } = props
+  const { namePath, displayLabel, defaultValue, optional } = props
 
   // TODO: const Widget = getWidget(schema, widget, widgets);
 
@@ -13,11 +14,9 @@ export const StringField = (props: any) => {
     <Controller
       name={namePath}
       control={control}
-      rules={
-        {
-          // TODO: required: 'Required',
-        }
-      }
+      rules={{
+        required: !optional,
+      }}
       defaultValue={defaultValue || ''}
       render={({
         // @ts-ignore
@@ -28,7 +27,7 @@ export const StringField = (props: any) => {
         <TextWidget
           {...props}
           id={namePath}
-          label={label === undefined || label === '' ? name : label}
+          label={displayLabel}
           inputRef={ref}
           helperText={error?.message}
           variant={invalid ? 'error' : 'default'}

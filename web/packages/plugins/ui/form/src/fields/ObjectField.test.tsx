@@ -98,6 +98,46 @@ describe('ObjectField', () => {
     })
   })
 
+  it('should handle optional', async () => {
+    mockGetBlueprint([
+      {
+        type: 'system/SIMOS/Blueprint',
+        name: 'Parent',
+        attributes: [
+          {
+            name: 'nested',
+            type: 'system/SIMOS/BlueprintAttribute',
+            attributeType: 'Nested',
+            optional: true,
+          },
+        ],
+      },
+      {
+        type: 'system/SIMOS/Blueprint',
+        name: 'Nested',
+        attributes: [
+          {
+            name: 'foo',
+            type: 'system/SIMOS/BlueprintAttribute',
+            attributeType: 'string',
+          },
+        ],
+      },
+    ])
+    const onSubmit = jest.fn()
+    render(<Form type="Parent" onSubmit={onSubmit} />)
+    await waitFor(() => {
+      // It's ok to submit
+      fireEvent.submit(screen.getByText('Submit'))
+      expect(onSubmit).toHaveBeenCalled()
+      expect(onSubmit).toHaveBeenCalledWith({})
+      // Show optional in label
+      expect(screen.getByText('nested (optional)')).toBeDefined()
+      // Add button
+      expect(screen.getByTestId('add-nested')).toBeDefined()
+    })
+  })
+
   describe.skip('fields ordering', () => {})
 
   describe.skip('Title', () => {})
