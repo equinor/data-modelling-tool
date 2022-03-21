@@ -1,6 +1,6 @@
 import { DmtSettings } from '@dmt/common'
 import { ReactNode } from 'react'
-import { TBlob } from '../../../shared/common'
+import { TBlob, TReference } from '../../../shared/common'
 
 export type TRoute = {
   path: string
@@ -57,12 +57,13 @@ export type TTask = {
   description: string
   label: string
   inputType: string
-  applicationInput: TSIMAApplicationInput
+  applicationInput: TReference
   outputType: string
   runner: TContainerJobHandler
 }
 
 export type TSIMAApplicationInput = {
+  _id?: string
   name: string
   description?: string
   type: string

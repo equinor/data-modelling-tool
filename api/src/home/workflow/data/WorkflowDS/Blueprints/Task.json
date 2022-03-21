@@ -31,8 +31,9 @@
       "attributeType": "string",
       "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
       "name": "applicationInput",
-      "label": "Input",
+      "label": "Application input",
       "description": "Input data for container",
+      "contained": false,
       "optional": true
     },
     {

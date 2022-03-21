@@ -29,7 +29,13 @@ import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { poorMansUUID } from '../../../utils/uuid'
-import { TJob, TTtestJob, TTask, TLocalContainerJob } from '../../../Types'
+import {
+  TJob,
+  TTtestJob,
+  TTask,
+  TLocalContainerJob,
+  TSIMAApplicationInput,
+} from '../../../Types'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -61,61 +67,75 @@ const RunAnalysisButton = (props: any) => {
 
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 
+  const applicationInputHasCorrectType = (job: TJob) => {
+    if (!job.applicationInput.input.includes(job.applicationInput.inputType)) {
+      return false
+    }
+    return true
+  }
+
   const saveAndStartJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
 
-    const localContainerJobTest: TJob = {
-      label: 'Example local container job',
-      type: JOB,
-      triggeredBy: tokenData?.name,
-      applicationInput: task.applicationInput,
-      runner: task.runner,
-      started: '',
-      ended: '',
-      //outputTarget
-      //result
-    }
-
-    if (
-      !localContainerJobTest.applicationInput.input.includes(
-        localContainerJobTest.applicationInput.inputType
-      )
-    ) {
-      NotificationManager.error(
-        `type ${localContainerJobTest.applicationInput.inputType} not found in the application input entity!`
-      )
-      setLoading(false)
-      return
-    }
-
-    localContainerJobTest.runner = {
-      ...localContainerJobTest.runner,
-      command: [
-        `--target=${ANALYSIS_RESULTS_PATH}`,
-        `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`,
-      ],
-    }
-
-    //todo bug - have to refresh page before can run new analysis since the analysis prop to component is not updated
-    dmssAPI.generatedDmssApi
-      .explorerAdd({
-        absoluteRef: `${analysisAbsoluteReference}.jobs`,
-        updateUncontained: false,
-        body: localContainerJobTest,
+    dmssAPI
+      .getDocumentById({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        documentId: task.applicationInput._id,
+        depth: 0,
       })
-      .then(() => {
-        // Add the new job to the state
-        setJobs([...jobs, localContainerJobTest])
-        // Start a job from the created job entity (last one in list)
-        jobAPI
-          .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
-          .then((result: any) => {
-            addJob(localContainerJobTest)
-            NotificationManager.success(
-              JSON.stringify(result.data),
-              'Simulation job started'
-            )
+      .then((applicationInputEntity: TSIMAApplicationInput) => {
+        const localContainerJob: TJob = {
+          label: 'Example local container job',
+          type: JOB,
+          triggeredBy: tokenData?.name,
+          applicationInput: applicationInputEntity,
+          runner: task.runner,
+          started: '',
+          ended: '',
+        }
+
+        if (!applicationInputHasCorrectType(localContainerJob)) {
+          throw new Error(
+            `type ${localContainerJob.applicationInput.inputType} not found in the application input entity!`
+          )
+        }
+
+        localContainerJob.runner = {
+          ...localContainerJob.runner,
+          command: [
+            `--target=${ANALYSIS_RESULTS_PATH}`,
+            `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`,
+          ],
+        }
+
+        //todo bug - have to refresh page before can run new analysis since the analysis prop to component is not updated
+        dmssAPI.generatedDmssApi
+          .explorerAdd({
+            absoluteRef: `${analysisAbsoluteReference}.jobs`,
+            updateUncontained: false,
+            body: localContainerJob,
+          })
+          .then(() => {
+            // Add the new job to the state
+            setJobs([...jobs, localContainerJob])
+            // Start a job from the created job entity (last one in list)
+            jobAPI
+              .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
+              .then((result: any) => {
+                addJob(localContainerJob)
+                NotificationManager.success(
+                  JSON.stringify(result.data),
+                  'Simulation job started'
+                )
+              })
+              .catch((error: AxiosError) => {
+                console.error(error)
+                NotificationManager.error(
+                  error?.response?.data?.message,
+                  'Failed to start job'
+                )
+              })
           })
           .catch((error: AxiosError) => {
             console.error(error)
@@ -124,14 +144,11 @@ const RunAnalysisButton = (props: any) => {
               'Failed to start job'
             )
           })
-          .finally(() => setLoading(false))
       })
-      .catch((error: AxiosError) => {
-        console.error(error)
-        NotificationManager.error(
-          error?.response?.data?.message,
-          'Failed to start job'
-        )
+      .catch((error: any) => {
+        NotificationManager.error(`Error occured when starting job (${error})`)
+      })
+      .finally(() => {
         setLoading(false)
       })
   }
