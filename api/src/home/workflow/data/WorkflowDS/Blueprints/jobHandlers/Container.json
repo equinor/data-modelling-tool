@@ -4,7 +4,6 @@
   "description": "A container job",
   "extends": [
     "system/SIMOS/DefaultUiRecipes",
-    "system/SIMOS/NamedEntity",
     "/jobHandlers/JobHandler"
   ],
   "attributes": [

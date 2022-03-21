@@ -35,6 +35,8 @@ import {
   TTask,
   TLocalContainerJob,
   TSIMAApplicationInput,
+  TJobHandler,
+  TContainerJobHandler,
 } from '../../../Types'
 
 const FlexWrapper = styled.div`
@@ -91,7 +93,7 @@ const RunAnalysisButton = (props: any) => {
           triggeredBy: tokenData?.name,
           applicationInput: applicationInputEntity,
           runner: task.runner,
-          started: '',
+          started: new Date().toLocaleDateString(navigator.language),
           ended: '',
         }
 
@@ -100,7 +102,7 @@ const RunAnalysisButton = (props: any) => {
             `type ${localContainerJob.applicationInput.inputType} not found in the application input entity!`
           )
         }
-
+        //@ts-ignore
         localContainerJob.runner = {
           ...localContainerJob.runner,
           command: [
@@ -136,13 +138,6 @@ const RunAnalysisButton = (props: any) => {
                   'Failed to start job'
                 )
               })
-          })
-          .catch((error: AxiosError) => {
-            console.error(error)
-            NotificationManager.error(
-              error?.response?.data?.message,
-              'Failed to start job'
-            )
           })
       })
       .catch((error: any) => {

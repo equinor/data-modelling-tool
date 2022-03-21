@@ -36,20 +36,24 @@ export type TJob = {
   type: string
   triggeredBy: string
   applicationInput: TSIMAApplicationInput
-  runner: TContainerJobHandler
+  runner?: TJobHandler | TContainerJobHandler
   started: string
   result?: any
-  ended: string
+  ended?: string
   outputTarget?: string
 }
 
+//Represents Container blueprint from WorkflowDS/Blueprints/jobHandlers/Container.json
 export type TContainerJobHandler = {
-  name: string
-  type: string
-  description?: string
   label?: string
   image: string
   command: string[]
+  environmentVariables?: string[]
+}
+
+//Represents JobHandler blueprint from WorkflowDS/Blueprints/jobHandlers/JobHandler.json
+export type TJobHandler = {
+  environmentVariables?: string[]
 }
 
 export type TTask = {
@@ -59,7 +63,7 @@ export type TTask = {
   inputType: string
   applicationInput: TReference
   outputType: string
-  runner: TContainerJobHandler
+  runner: TJobHandler | TContainerJobHandler
 }
 
 export type TSIMAApplicationInput = {

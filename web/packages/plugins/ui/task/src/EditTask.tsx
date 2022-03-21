@@ -65,7 +65,6 @@ export const EditTask = (props: DmtUIPlugin) => {
       <div style={{ maxWidth: '900px', width: '100%', marginBottom: '10px' }}>
         <Wrapper>
           <HeaderWrapper>
-            <p>dont think this is used</p>
             <Typography variant="h3">Input</Typography>
             <GroupWrapper>
               <Column>
@@ -94,7 +93,10 @@ export const EditTask = (props: DmtUIPlugin) => {
                     }
                   />
                 </Column>
-                <Button style={{ margin: '15px 10px 0 10px' }} disabled>
+                <Button
+                  style={{ margin: '15px 10px 0 10px' }}
+                  onClick={() => console.log(formData)}
+                >
                   Create
                 </Button>
               </div>
@@ -102,7 +104,6 @@ export const EditTask = (props: DmtUIPlugin) => {
           </HeaderWrapper>
 
           <HeaderWrapper>
-            <p>dont think this is used</p>
             <Typography variant="h3">Output</Typography>
             <GroupWrapper>
               <Column>

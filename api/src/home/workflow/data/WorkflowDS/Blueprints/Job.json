@@ -33,7 +33,8 @@
     {
       "name": "ended",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
     },
     {
       "name": "outputTarget",
