@@ -38,7 +38,6 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
     documentId
   )
   const [formData, setFormData] = useState<any>({ ...document })
-
   return (
     <div
       style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
@@ -52,7 +51,7 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
                 <Column>
                   <Label label={'Input entity'} />
                   <EntityPicker
-                    formData={formData.input}
+                    formData={formData.applicationInput}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({
                         ...formData,

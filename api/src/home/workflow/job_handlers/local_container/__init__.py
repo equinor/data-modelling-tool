@@ -59,42 +59,26 @@ class JobHandler(JobHandlerInterface):
                 + f"Image: '{runnerEntity['image']}'\n\t"
                 + f"Command: {runnerEntity.get('command', 'None')}"
             )
+            json_separators = (',', ':') #the json string cannot contain any whitespace when using as command for container
+            app_input = json.dumps(self.job_entity['applicationInput'], separators=json_separators)
 
-            logger.info(f"***** input to image is: A {runnerEntity['image']} B {runnerEntity['command'] + [f'--token={self.token}']} ")
+            if " " in app_input:
+                raise Exception("Cannot have any spaces in the applicationInput for local container job")
+
             self.client.containers.run(
                 image=runnerEntity["image"],
-                command=runnerEntity["command"] + [f"--token={self.token}"],
+                command=runnerEntity["command"] + [f"--token={self.token}", f"--application-input={app_input}"],
                 name="someName_"+str(uuid4()),
                 # environment=env_vars,
                 network="data-modelling-storage-service_default", #??
                 detach=True,
             )
-            # todo there is something buggy here...
-
-
-            # result_id = str(uuid4())
-            # example_result: dict = {
-            #     "uid": result_id,
-            #     "type": "system/SIMOS/NamedEntity",
-            #     "name": f"resultFromLocalContainer_{result_id}",
-            #     "description": "Example result from running a local container job"
-            # }
-            # dmss_api.api_client.default_headers["Authorization"] = "Bearer " + self.token
-            # data_source, directory = self.job_entity["outputTarget"].split("/", 1)
-            # logger.info(f"*** ds is {data_source} and directory is {directory}")
-            # response = dmss_api.explorer_add_to_path(document=json.dumps(example_result), directory=directory, data_source_id=data_source)
-            # print(f"Result with is {response['uid']} was uploaded to {directory} ")
-            #
-            # RESULT_FILE_TYPE = f"{data_source}/FoR-BP/Blueprints/ResultFile"
-            # reference_object = {"name": f"resultFromLocalContainer_{result_id}", "id": response['uid'], "type": "system/SIMOS/NamedEntity"}
-            # response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=runnerEntity["resultLinkTarget"], reference=reference_object)
-            # logger.info(f"reference to result was added to the analysis ({runnerEntity['resultLinkTarget']})")
 
         except KeyError as error:
             raise Exception(f"Job entity used as input to local container jobs does not include required attribute {error}")
 
 
-        logger.info("Local container job completed")
+        logger.info("*** Local container job completed ***")
         return "Ok"
 
 

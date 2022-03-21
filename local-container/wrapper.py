@@ -22,24 +22,28 @@ def cli():
 @click.option("--target", help="Target directory to store result file", type=str, required=True)
 @click.option("--result-link-target", help="dotted id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
 @click.option("--token", help="A valid DMSS Access Token", type=str)
-@click.option("--json-string-input", help="Json string to add to result entity", type=str)
-def get_and_upload_result(target: str, result_link_target: str,  json_string_input: str, token: str = None):
-    #todo use json stirng input
-    result_id = str(uuid4())
-    result_name = f"resultFromLocalContainer_{result_id}",
-    example_result: dict = {
-        "uid": result_id,
-        "type": "system/SIMOS/NamedEntity",
-        "name": f"resultFromLocalContainer_{result_id}",
-        "description": "Example result from running a local container job"
-    }
+@click.option("--application-input", help="Json string with application input entity of type SIMAApplicationInput", type=str, required=True)
+def get_and_upload_result(target: str, result_link_target: str,  application_input, token: str = None):
+    """
+    Example function that will find the input entity inside the json string application-input, and upload it to the
+    correct target and add a reference to this result to the result_link_target
+    """
+    new_id = str(uuid4())
+    try:
+        application_input = json.loads(application_input)
+        entity_to_upload: dict = json.loads(application_input["input"])
+        entity_to_upload["name"] = str(f"resultFromLocalContainer_{new_id}")
+        entity_as_string: str = json.dumps(entity_to_upload)
+    except Exception as e:
+        print("An error occurred!", e)
+        return
+
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
     data_source, directory = target.split("/", 1)
-    print(f"*** ds is {data_source} and directory is {directory}")
-    response = dmss_api.explorer_add_to_path(document=json.dumps(example_result), directory=directory, data_source_id=data_source)
-    print(f"Result with is {response['uid']} was uploaded to {directory} ")
+    response = dmss_api.explorer_add_to_path(document=entity_as_string, directory=directory, data_source_id=data_source)
+    print(f"Result with id {response['uid']} was uploaded to {directory} ")
 
-    reference_object = {"name": f"resultFromLocalContainer_{result_id}", "id": response['uid'], "type": "system/SIMOS/NamedEntity"}
+    reference_object = {"name": f"resultFromLocalContainer_{new_id}", "id": response['uid'], "type": entity_to_upload["type"]}
     response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=result_link_target, reference=reference_object)
     print(f"reference to result was added to the analysis ({result_link_target})")
 

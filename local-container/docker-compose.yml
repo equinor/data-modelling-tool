@@ -3,8 +3,9 @@ version: "3.8"
 services:
   wrapper:
     build: .
-    environment:
-      PUBLIC_DMSS_API: http://localhost:5000
+    image: krikjers/wrapper
+#    environment:
+#      PUBLIC_DMSS_API: http://localhost:5000
     networks:
       - data-modelling-storage-service_default
     external_links:
@@ -13,22 +14,11 @@ services:
     volumes:
       - ./wrapper.py:/code/wrapper.py
       - ./init.sh:/code/init.sh
-#    command: [
-#       "/code/init.sh",
-#        "--target=AnalysisPlatformDS/Data/Analysis/results",
-#        "--result-link-target=4483c9b0-d505-46c9-a157-94c79f4d7a6c.jobs.0.result",
-#        "--token=DMSS_J-aqSkr_wSo-KeeutezJLIUzHCtsQT5D2bgHF4XYw00="
-#      ]
-#        "/code/init.sh",
-#        "--stask=DemoDS/4ec0d646-907c-4eba-9e65-24106236d61b",
-#        "--task=WorkflowTask",
-#        "--workflow=workflow",
-##        "--remote-run",
-##        "--compute-service-cfg=ForecastDS/15a4d888-3ab4-5bd2-9bd9-9614dcb066d5",
-#        "--input=ForecastDS/8ec0d646-907c-4eba-9e65-24106236d61c",
-#        "--token=123",
-#        "--target=DemoDS/DMT-demo/SIMARuntimeService/results/"
-#    ]
+    command: >-
+        --target=AnalysisPlatformDS/Data/Analysis/results --result-link-target=4fe42156-5c4b-414e-9dad-124c6f9f2ae9.jobs.0.result --token=XXXXXX --application-input='{"type":"AnalysisPlatformDS/Blueprints/SIMAApplicationInput","name":"example_app_input","description":"example_application_input_for_local_container_NB!_attributes_cannot_have_any_space","inputType":"system/SIMOS/NamedEntity","outputType":"AnalysisPlatformDS/Blueprints/Analysis","input":"{\"type\":\"system/SIMOS/NamedEntity\",\"name\":\"exampleInputEntity\",\"description\":\"example\"}","workflow":"someWorkflow","workflowTask":"someWorkflowTask","SIMAComputeConfig":{},"stask":{}}'
+
+
+
 
 networks:
   data-modelling-storage-service_default:

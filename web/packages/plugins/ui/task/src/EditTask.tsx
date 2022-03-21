@@ -80,11 +80,11 @@ export const EditTask = (props: DmtUIPlugin) => {
                 <Column>
                   <Label label={'Input entity'} />
                   <EntityPicker
-                    formData={formData.input}
+                    formData={formData.applicationInput}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({
                         ...formData,
-                        input: {
+                        applicationInput: {
                           _id: selectedEntity._id,
                           name: selectedEntity.name,
                           type: selectedEntity.type,

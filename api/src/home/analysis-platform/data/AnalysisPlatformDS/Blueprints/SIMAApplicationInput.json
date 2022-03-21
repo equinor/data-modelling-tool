@@ -5,6 +5,50 @@
     "system/SIMOS/DefaultUiRecipes",
     "system/SIMOS/NamedEntity"
   ],
-
-  "description": ""
+  "description": "Input to container",
+    "attributes": [
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "inputType",
+      "description": "input type",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "outputType",
+      "description": "output type",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "input",
+      "description": "Input entity to container as json string (must be of same type as defined by inputType)",
+      "attributeType": "string"
+    },
+    {
+      "name": "SIMAComputeConfig",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "",
+      "optional": true
+    },
+    {
+      "name": "stask",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": ""
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflow",
+      "description": "",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflowTask",
+      "description": "",
+      "attributeType": "string"
+    }
+    ]
 }

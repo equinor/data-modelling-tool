@@ -50,6 +50,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
           <HeaderWrapper style={{ width: '70%' }}>
             <Typography variant="h5">Command</Typography>
             <SingleSelect
+              disabled
               id="command"
               label={'Command to run'}
               // value={formData.crUsername}

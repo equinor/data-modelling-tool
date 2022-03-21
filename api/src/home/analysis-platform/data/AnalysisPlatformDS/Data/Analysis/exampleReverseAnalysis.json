@@ -1,5 +1,5 @@
 {
-  "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6d",
+  "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6g",
   "type": "AnalysisPlatformDS/Blueprints/Analysis",
   "name": "exampleReverseAnalysis",
   "description": "",
@@ -11,15 +11,21 @@
     "name": "task-sKBDJzBE",
     "description": "",
     "label": "",
-    "inputType": "AnalysisPlatformDS/Blueprints/STask",
-    "input": {
-      "description": "This is a description",
-      "name": "dummy2",
-      "type": "AnalysisPlatformDS/Blueprints/STask"
+    "inputType": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+    "applicationInput": {
+      "name": "example_app_input",
+      "outputTarget": "",
+      "description": "example_application_input_for_local_container_NB!_attributes_cannot_have_any_space",
+      "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+      "inputType": "system/SIMOS/NamedEntity",
+      "outputType": "AnalysisPlatformDS/Blueprints/Analysis",
+      "input":  "{\"type\":\"system/SIMOS/NamedEntity\",\"name\":\"exampleInputEntity\",\"description\":\"example\"}",
+      "workflow": "someWorkflow",
+      "workflowTask": "someWorkflowTask"
     },
     "outputType": "AnalysisPlatformDS/Blueprints/Analysis",
     "runner": {
-      "type": "WorkflowDS/Blueprints/jobHandlers/AzureContainer"
+      "type": "WorkflowDS/Blueprints/jobHandlers/Container"
     }
   },
   "jobs": [{

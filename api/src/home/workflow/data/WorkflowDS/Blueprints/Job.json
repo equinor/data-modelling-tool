@@ -3,6 +3,11 @@
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
   "attributes": [
+      {
+      "name": "type",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
     {
       "name": "label",
       "type": "system/SIMOS/BlueprintAttribute",
@@ -14,12 +19,11 @@
       "attributeType": "string"
     },
     {
-      "attributeType": "object",
+      "attributeType": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "input",
+      "name": "applicationInput",
       "label": "Input",
-      "description": "Input data",
-      "optional": true
+      "description": "Input data"
     },
     {
       "name": "started",

@@ -4,7 +4,7 @@ LABEL Description="Docker image for testing analysis jobs"
 RUN #useradd --system --uid 1000 nonrootuser
 RUN apt-get update
 RUN apt-get install -y python3 python3-pip
-
+RUN apt-get install -y iputils-ping
 
 RUN pip3 install --upgrade pip && \
     pip3 install poetry && \

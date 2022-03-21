@@ -65,15 +65,28 @@ const RunAnalysisButton = (props: any) => {
     setLoading(true)
     const runsSoFar = jobs.length
 
-    const localContainerJobTest: TTtestJob = {
+    const localContainerJobTest: TJob = {
       label: 'Example local container job',
-      // image: 'alpine',
-      // command: 'ls',
-      triggeredBy: tokenData?.name,
       type: JOB,
-      outputTarget: ANALYSIS_RESULTS_PATH, //folder where results entities should be placed
-      input: task.input,
+      triggeredBy: tokenData?.name,
+      applicationInput: task.applicationInput,
       runner: task.runner,
+      started: '',
+      ended: '',
+      //outputTarget
+      //result
+    }
+
+    if (
+      !localContainerJobTest.applicationInput.input.includes(
+        localContainerJobTest.applicationInput.inputType
+      )
+    ) {
+      NotificationManager.error(
+        `type ${localContainerJobTest.applicationInput.inputType} not found in the application input entity!`
+      )
+      setLoading(false)
+      return
     }
 
     localContainerJobTest.runner = {
@@ -81,7 +94,7 @@ const RunAnalysisButton = (props: any) => {
       command: [
         `--target=${ANALYSIS_RESULTS_PATH}`,
         `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`,
-      ], //resultlinktarget is dotted id to the analysis entity's results attribute.
+      ],
     }
 
     //todo bug - have to refresh page before can run new analysis since the analysis prop to component is not updated
