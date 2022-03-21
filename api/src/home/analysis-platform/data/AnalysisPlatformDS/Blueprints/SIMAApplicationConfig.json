@@ -1,0 +1,30 @@
+{
+  "name": "SIMAApplicationConfig",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "description": "Config for The application input",
+    "attributes": [
+    {
+      "name": "stask",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "",
+      "optional": true
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflow",
+      "description": "",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflowTask",
+      "description": "",
+      "attributeType": "string"
+    }
+    ]
+}

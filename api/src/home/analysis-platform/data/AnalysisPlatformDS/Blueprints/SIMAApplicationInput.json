@@ -33,22 +33,11 @@
       "optional": true
     },
     {
-      "name": "stask",
-      "attributeType": "system/SIMOS/Blob",
+      "name": "applicationConfig",
+      "attributeType": "AnalysisPlatformDS/Blueprints/SIMAApplicationConfig",
       "type": "system/SIMOS/BlueprintAttribute",
-      "description": ""
-    },
-    {
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "workflow",
-      "description": "",
-      "attributeType": "string"
-    },
-    {
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "workflowTask",
-      "description": "",
-      "attributeType": "string"
+      "description": "Extra configs",
+      "optional": true
     }
     ]
 }

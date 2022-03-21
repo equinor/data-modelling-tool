@@ -94,7 +94,6 @@ const RunAnalysisButton = (props: any) => {
           applicationInput: applicationInputEntity,
           runner: task.runner,
           started: new Date().toLocaleDateString(navigator.language),
-          ended: '',
         }
 
         if (!applicationInputHasCorrectType(localContainerJob)) {

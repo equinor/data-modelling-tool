@@ -1,11 +1,15 @@
 {     "_id": "9229e1f3-e94d-4cde-9fb6-a08031b0b04a",
       "name": "example_app_input",
-      "outputTarget": "",
       "description": "example_application_input_for_local_container_NB!_attributes_cannot_have_any_space",
       "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
       "inputType": "system/SIMOS/NamedEntity",
       "outputType": "AnalysisPlatformDS/Blueprints/Analysis",
       "input":  "{\"type\":\"system/SIMOS/NamedEntity\",\"name\":\"exampleInputEntity\",\"description\":\"example\"}",
-      "workflow": "someWorkflow",
-      "workflowTask": "someWorkflowTask"
+      "applicationConfig": {
+            "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationConfig",
+            "description": "",
+            "name": "example_app_config",
+            "workflow": "someWorkflow",
+            "workflowTask": "someWorkflowTask"
+      }
 }
