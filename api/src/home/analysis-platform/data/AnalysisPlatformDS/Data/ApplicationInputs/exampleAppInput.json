@@ -3,7 +3,7 @@
       "description": "example_application_input_for_local_container_NB!_attributes_cannot_have_any_space",
       "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
       "inputType": "system/SIMOS/NamedEntity",
-      "outputType": "AnalysisPlatformDS/Blueprints/Analysis",
+      "outputType": "system/SIMOS/NamedEntity",
       "input":  "{\"type\":\"system/SIMOS/NamedEntity\",\"name\":\"exampleInputEntity\",\"description\":\"example\"}",
       "applicationConfig": {
             "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationConfig",

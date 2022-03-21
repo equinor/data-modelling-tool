@@ -30,7 +30,6 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
           maxWidth: '900px',
           width: '100%',
           marginBottom: '10px',
-          width: '-webkit-fill-available',
         }}
       >
         <Wrapper>
@@ -47,32 +46,10 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               }
             />
           </HeaderWrapper>
-          <HeaderWrapper style={{ width: '70%' }}>
-            <Typography variant="h5">Command</Typography>
-            <SingleSelect
-              disabled
-              id="command"
-              label={'Command to run'}
-              // value={formData.crUsername}
-              placeholder="Command for the container (parameters)"
-              items={['...', 'echo 123']}
-              handleSelectedItemChange={selected =>
-                setFormData({ ...formData, command: selected.inputValue })
-              }
-            />
-          </HeaderWrapper>
 
-          <div style={{ justifyContent: 'space-around', display: 'flex' }}>
-            <Button
-              as="button"
-              variant="outlined"
-              color="danger"
-              onClick={() => setFormData({ ...document })}
-            >
-              Reset
-            </Button>
+          <div>
             <Button as="button" onClick={() => onSubmit(formData)}>
-              Ok
+              Save
             </Button>
           </div>
         </Wrapper>

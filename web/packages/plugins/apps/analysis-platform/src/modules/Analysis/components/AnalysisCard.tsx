@@ -76,7 +76,7 @@ const RunAnalysisButton = (props: any) => {
     return true
   }
 
-  const saveAndStartJob = (task: TTask) => {
+  const saveAndStartLocalContainerJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
 
@@ -105,12 +105,11 @@ const RunAnalysisButton = (props: any) => {
         localContainerJob.runner = {
           ...localContainerJob.runner,
           command: [
-            `--target=${ANALYSIS_RESULTS_PATH}`,
-            `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`,
+            `--target=${ANALYSIS_RESULTS_PATH}`, //where results should be uploaded
+            `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`, //where in the analysis entity the reference to the result should be put
           ],
         }
 
-        //todo bug - have to refresh page before can run new analysis since the analysis prop to component is not updated
         dmssAPI.generatedDmssApi
           .explorerAdd({
             absoluteRef: `${analysisAbsoluteReference}.jobs`,
@@ -169,7 +168,7 @@ const RunAnalysisButton = (props: any) => {
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
             entity={analysis.task}
             onSubmit={(task: TTask) => {
-              saveAndStartJob(task)
+              saveAndStartLocalContainerJob(task)
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}

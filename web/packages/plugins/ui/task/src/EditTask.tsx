@@ -62,7 +62,7 @@ export const EditTask = (props: DmtUIPlugin) => {
     <div
       style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
     >
-      <div style={{ maxWidth: '900px', width: '100%', marginBottom: '10px' }}>
+      <div style={{ marginBottom: '10px' }}>
         <Wrapper>
           <HeaderWrapper>
             <Typography variant="h3">Input</Typography>
@@ -93,12 +93,6 @@ export const EditTask = (props: DmtUIPlugin) => {
                     }
                   />
                 </Column>
-                <Button
-                  style={{ margin: '15px 10px 0 10px' }}
-                  onClick={() => console.log(formData)}
-                >
-                  Create
-                </Button>
               </div>
             </GroupWrapper>
           </HeaderWrapper>

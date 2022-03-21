@@ -64,9 +64,6 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
                     }
                   />
                 </Column>
-                <Button style={{ margin: '15px 10px 0 10px' }} disabled>
-                  Create
-                </Button>
               </div>
             </GroupWrapper>
           </HeaderWrapper>
