@@ -40,7 +40,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               label={'Container image'}
               // value={formData.crUsername}
               placeholder="Image to run"
-              items={['krikjers/wrapper']}
+              items={['wrapper']}
               handleSelectedItemChange={(selected) =>
                 setFormData({ ...formData, image: selected.inputValue })
               }

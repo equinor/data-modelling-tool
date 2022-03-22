@@ -106,6 +106,7 @@ const RunAnalysisButton = (props: any) => {
         localContainerJob.runner = {
           ...localContainerJob.runner,
           command: [
+            '/code/init.sh',
             `--target=${ANALYSIS_RESULTS_PATH}`, //where results should be uploaded
             `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`, //where in the analysis entity the reference to the result should be put
           ],

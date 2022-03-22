@@ -1,13 +1,8 @@
-FROM ubuntu
-LABEL Description="Docker image for testing analysis jobs"
+FROM dmtregistry.azurecr.io/sima-runtime:latest
+LABEL Description="Docker image for Data Modelling Tool SIMA Headless Job Wrapper"
 
-RUN #useradd --system --uid 1000 nonrootuser
-RUN apt-get update
-RUN apt-get install -y python3 python3-pip
-RUN apt-get install -y iputils-ping
-
-RUN pip3 install --upgrade pip && \
-    pip3 install poetry && \
+RUN pip install --upgrade pip && \
+    pip install poetry && \
     poetry config virtualenvs.create false
 WORKDIR /code
 # Install python dependencies
@@ -16,11 +11,7 @@ COPY poetry.lock poetry.lock
 RUN poetry install
 # Init script and wrapper script
 COPY init.sh init.sh
-RUN chmod 777 init.sh
-
 COPY wrapper.py wrapper.py
-RUN chmod 777 wrapper.py
-#USER nonrootuser
-ENTRYPOINT [ "bash", "init.sh" ]
 
+WORKDIR /var/opt/sima
 

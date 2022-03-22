@@ -1,5 +1,20 @@
+#! /usr/bin/env bash
+# Exit on errors
+set -e
 time=$(date +'%d/%m/%Y %r')
 echo "** Start time: ${time} **"
+if [[ -z "${SIMA_LICENSE}" ]]; then
+  echo "********************************************************************************"
+  echo "* WARNING! The SIMA_LICENSE environment variable not found                      *"
+  echo "********************************************************************************"
+#  exit 1
+else
+  echo "$SIMA_LICENSE" > /root/sima.lic
+fi
+
+# default values
+export SRE_HOME=/var/opt/sima
+
 for i in "$@"; do
   case $i in
     --token=*)
