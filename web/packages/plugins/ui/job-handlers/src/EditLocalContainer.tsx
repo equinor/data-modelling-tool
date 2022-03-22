@@ -46,6 +46,19 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               }
             />
           </HeaderWrapper>
+          {/*<HeaderWrapper style={{ width: '70%' }}>*/}
+          {/*  <Typography variant="h5">Command list</Typography>*/}
+          {/*  <SingleSelect*/}
+          {/*    id="command_list"*/}
+          {/*    label={'Command list to container'}*/}
+          {/*    // value={formData.crUsername}*/}
+          {/*    placeholder="Command"*/}
+          {/*    items={['something']}*/}
+          {/*    handleSelectedItemChange={selected =>*/}
+          {/*      setFormData({ ...formData, command: selected.inputValue })*/}
+          {/*    }*/}
+          {/*  />*/}
+          {/*</HeaderWrapper>*/}
 
           <div>
             <Button as="button" onClick={() => onSubmit(formData)}>

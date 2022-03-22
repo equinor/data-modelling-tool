@@ -34,8 +34,8 @@ def get_and_upload_result(target: str, result_link_target: str,  application_inp
         entity_to_upload: dict = json.loads(application_input["input"])
         entity_to_upload["name"] = str(f"resultFromLocalContainer_{new_id}")
         entity_as_string: str = json.dumps(entity_to_upload)
-    except Exception as e:
-        print("An error occurred!", e)
+    except Exception as error:
+        print("An error occurred when extracting the entity to upload!", error)
         return
 
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token

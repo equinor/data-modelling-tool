@@ -23,21 +23,11 @@ import {
   ANALYSIS_RESULTS_PATH,
   DEFAULT_DATASOURCE_ID,
   JOB,
-  LOCAL_CONTAINER_JOB_HANDLER,
 } from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { poorMansUUID } from '../../../utils/uuid'
-import {
-  TJob,
-  TTtestJob,
-  TTask,
-  TLocalContainerJob,
-  TSIMAApplicationInput,
-  TJobHandler,
-  TContainerJobHandler,
-} from '../../../Types'
+import { TJob, TTask, TSIMAApplicationInput } from '../../../Types'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -76,7 +66,7 @@ const RunAnalysisButton = (props: any) => {
     return true
   }
 
-  const saveAndStartLocalContainerJob = (task: TTask) => {
+  const saveAndStartJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
 
@@ -102,6 +92,10 @@ const RunAnalysisButton = (props: any) => {
             `type ${localContainerJob.applicationInput.inputType} not found in the application input entity!`
           )
         }
+
+        //todo this command shoud not be set here, it should be set in the form in EditLocalContainer.tsx, however, we dont
+        //have access to the variables  analysis and runsSoFar there...
+        //right now, this saveAndStartJob only works with the local container job...
         //@ts-ignore
         localContainerJob.runner = {
           ...localContainerJob.runner,
@@ -168,7 +162,7 @@ const RunAnalysisButton = (props: any) => {
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
             entity={analysis.task}
             onSubmit={(task: TTask) => {
-              saveAndStartLocalContainerJob(task)
+              saveAndStartJob(task)
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}

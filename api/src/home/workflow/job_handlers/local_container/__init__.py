@@ -11,14 +11,9 @@ import os
 
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/Container"
 
-# class JobEntity(BaseModel):
-#     name: str
-#     image: str
-#     command: Optional[str]
-
 
 class Settings:
-    PUBLIC_DMSS_API: str = os.getenv("PUBLIC_DMSS_API", "http://dmss:5000")  # tood port 8000?
+    PUBLIC_DMSS_API: str = os.getenv("PUBLIC_DMSS_API", "http://dmss:5000")
 
 
 dmss_api = DefaultApi()
@@ -32,6 +27,7 @@ class JobHandler(JobHandlerInterface):
     a different blueprint
     """
 
+    # todo consider implementing a pydantic class to check that job_entity is in correct format
     def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: callable):
         super().__init__(data_source, job_entity, token, insert_reference)
         self.headers = {"Access-Key": token}
@@ -73,8 +69,8 @@ class JobHandler(JobHandlerInterface):
                 image=runnerEntity["image"],
                 command=runnerEntity["command"] + [f"--token={self.token}", f"--application-input={app_input}"],
                 name=self.job_entity["name"],
-                # environment=env_vars,
-                network="data-modelling-storage-service_default",  # ??
+                # environment=...,
+                network="data-modelling-storage-service_default",
                 detach=True,
             )
 
