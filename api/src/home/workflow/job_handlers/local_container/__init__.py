@@ -8,6 +8,7 @@ from dmss_api.apis import DefaultApi
 import json
 
 import os
+
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/Container"
 
 # class JobEntity(BaseModel):
@@ -16,14 +17,14 @@ _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/Container"
 #     command: Optional[str]
 
 
-class Settings():
-    PUBLIC_DMSS_API: str = os.getenv("PUBLIC_DMSS_API", "http://dmss:5000") #tood port 8000?
-
+class Settings:
+    PUBLIC_DMSS_API: str = os.getenv("PUBLIC_DMSS_API", "http://dmss:5000")  # tood port 8000?
 
 
 dmss_api = DefaultApi()
 settings = Settings()
 dmss_api.api_client.configuration.host = settings.PUBLIC_DMSS_API
+
 
 class JobHandler(JobHandlerInterface):
     """
@@ -59,8 +60,11 @@ class JobHandler(JobHandlerInterface):
                 + f"Image: '{runnerEntity['image']}'\n\t"
                 + f"Command: {runnerEntity.get('command', 'None')}"
             )
-            json_separators = (',', ':') #the json string cannot contain any whitespace when using as command for container
-            app_input = json.dumps(self.job_entity['applicationInput'], separators=json_separators)
+            json_separators = (
+                ",",
+                ":",
+            )  # the json string cannot contain any whitespace when using as command for container
+            app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
 
             if " " in app_input:
                 raise Exception("Cannot have any spaces in the applicationInput for local container job")
@@ -68,19 +72,19 @@ class JobHandler(JobHandlerInterface):
             self.client.containers.run(
                 image=runnerEntity["image"],
                 command=runnerEntity["command"] + [f"--token={self.token}", f"--application-input={app_input}"],
-                name="someName_"+str(uuid4()),
+                name=self.job_entity["name"],
                 # environment=env_vars,
-                network="data-modelling-storage-service_default", #??
+                network="data-modelling-storage-service_default",  # ??
                 detach=True,
             )
 
         except KeyError as error:
-            raise Exception(f"Job entity used as input to local container jobs does not include required attribute {error}")
-
+            raise Exception(
+                f"Job entity used as input to local container jobs does not include required attribute {error}"
+            )
 
         logger.info("*** Local container job completed ***")
         return "Ok"
-
 
     def remove(self) -> str:
         container = self.client.containers.get(self.job_entity["name"])

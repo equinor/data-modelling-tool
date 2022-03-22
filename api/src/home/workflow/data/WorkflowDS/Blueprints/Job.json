@@ -9,6 +9,11 @@
       "attributeType": "string"
     },
     {
+      "name": "name",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
       "name": "label",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string"

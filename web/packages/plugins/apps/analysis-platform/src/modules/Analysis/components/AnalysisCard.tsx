@@ -89,11 +89,12 @@ const RunAnalysisButton = (props: any) => {
       .then((applicationInputEntity: TSIMAApplicationInput) => {
         const localContainerJob: TJob = {
           label: 'Example local container job',
+          name: `${analysis._id}.jobs.${runsSoFar}`,
           type: JOB,
           triggeredBy: tokenData?.name,
           applicationInput: applicationInputEntity,
           runner: task.runner,
-          started: new Date().toLocaleDateString(navigator.language),
+          started: new Date().toISOString(),
         }
 
         if (!applicationInputHasCorrectType(localContainerJob)) {
@@ -117,8 +118,6 @@ const RunAnalysisButton = (props: any) => {
             body: localContainerJob,
           })
           .then(() => {
-            // Add the new job to the state
-            setJobs([...jobs, localContainerJob])
             // Start a job from the created job entity (last one in list)
             jobAPI
               .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)

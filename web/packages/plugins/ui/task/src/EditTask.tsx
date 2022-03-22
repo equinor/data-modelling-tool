@@ -6,6 +6,7 @@ import {
   TReference,
   UIPluginSelector,
   useDocument,
+  BlueprintEnum,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -74,6 +75,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     setFormData({ ...formData, inputType: selectedBlueprint })
                   }
                   formData={formData.inputType}
+                  blueprintFilter={BlueprintEnum.BLUEPRINT}
                 />
               </Column>
               <div style={{ display: 'flex' }}>
@@ -107,6 +109,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     setFormData({ ...formData, outputType: selectedBlueprint })
                   }
                   formData={formData.outputType}
+                  blueprintFilter={BlueprintEnum.BLUEPRINT}
                 />
               </Column>
             </GroupWrapper>

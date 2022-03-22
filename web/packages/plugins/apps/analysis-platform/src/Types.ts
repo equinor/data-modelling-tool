@@ -33,6 +33,7 @@ export type TLayout = {
 
 export type TJob = {
   label: string
+  name: string
   type: string
   triggeredBy: string
   applicationInput: TSIMAApplicationInput
