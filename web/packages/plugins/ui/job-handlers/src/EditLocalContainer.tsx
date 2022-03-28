@@ -11,19 +11,20 @@ import styled from 'styled-components'
 
 const Wrapper = styled.div`
   margin: 10px;
+  width: 30vw;
 `
 
 const HeaderWrapper = styled.div`
   margin-bottom: 20px;
+  width: 70%;
 `
 
 export const EditLocalContainer = (props: DmtUIPlugin) => {
   const { document, documentId, dataSourceId, onSubmit } = props
   const [formData, setFormData] = useState<any>({ ...document })
-  const [
-    resultReferenceLocation,
-    setResultReferenceLocation,
-  ] = useState<string>('')
+  const [resultReferenceLocation, setResultReferenceLocation] = useState<
+    string
+  >('')
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false)
   const analysisId: string = documentId.split('.')[0] || 'NONE'
   const [analysisDocument, _loading, updateDocument, error] = useDocument(
@@ -55,13 +56,11 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
     >
       <div
         style={{
-          maxWidth: '900px',
-          width: '100%',
           marginBottom: '10px',
         }}
       >
         <Wrapper>
-          <HeaderWrapper style={{ width: '70%' }}>
+          <HeaderWrapper>
             <Typography variant="h5">Container image</Typography>
             <SingleSelect
               id="image"
@@ -69,13 +68,13 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               // value={formData.crUsername}
               placeholder="Image to run"
               items={['wrapper']}
-              handleSelectedItemChange={(selected) => {
+              handleSelectedItemChange={selected => {
                 setUnsavedChanges(true)
                 setFormData({ ...formData, image: selected.inputValue })
               }}
             />
           </HeaderWrapper>
-          <HeaderWrapper style={{ width: '70%' }}>
+          <HeaderWrapper>
             <Typography variant="h5">Command list</Typography>
             <SingleSelect
               id="command_list"
@@ -85,7 +84,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               items={[
                 `/code/init.sh;--result-reference-location=${resultReferenceLocation}`,
               ]}
-              handleSelectedItemChange={(selected) => {
+              handleSelectedItemChange={selected => {
                 setUnsavedChanges(true)
                 setFormData({
                   ...formData,

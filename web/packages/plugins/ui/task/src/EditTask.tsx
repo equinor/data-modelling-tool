@@ -15,6 +15,7 @@ import styled from 'styled-components'
 
 const Wrapper = styled.div`
   margin: 10px;
+  width: 30vw;
 `
 
 const Column = styled.div`
@@ -118,7 +119,7 @@ export const EditTask = (props: DmtUIPlugin) => {
           <HeaderWrapper>
             <Typography variant="h3">Job runner</Typography>
             <GroupWrapper>
-              <Column style={{ width: '-webkit-fill-available' }}>
+              <Column>
                 <Label label={'Blueprint'} />
                 <JobHandlerPicker
                   onChange={(selectedBlueprint: string) =>
