@@ -10,6 +10,7 @@
             "description": "",
             "name": "example_app_config",
             "workflow": "someWorkflow",
-            "workflowTask": "someWorkflowTask"
+            "workflowTask": "someWorkflowTask",
+            "resultPath": "AnalysisPlatformDS/Data/Analysis/results"
       }
 }

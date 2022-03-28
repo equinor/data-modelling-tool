@@ -1,9 +1,8 @@
 import docker
 from docker.errors import DockerException
-from typing import Tuple, Optional
+from typing import Tuple
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
-from uuid import uuid4
 from dmss_api.apis import DefaultApi
 import json
 

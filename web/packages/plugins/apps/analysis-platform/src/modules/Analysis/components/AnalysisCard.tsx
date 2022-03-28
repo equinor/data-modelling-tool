@@ -93,19 +93,6 @@ const RunAnalysisButton = (props: any) => {
           )
         }
 
-        //todo this command shoud not be set here, it should be set in the form in EditLocalContainer.tsx, however, we dont
-        //have access to the variables  analysis and runsSoFar there...
-        //right now, this saveAndStartJob only works with the local container job...
-        //@ts-ignore
-        localContainerJob.runner = {
-          ...localContainerJob.runner,
-          command: [
-            '/code/init.sh',
-            `--target=${ANALYSIS_RESULTS_PATH}`, //where results should be uploaded
-            `--result-link-target=${analysis._id}.jobs.${runsSoFar}.result`, //where in the analysis entity the reference to the result should be put
-          ],
-        }
-
         dmssAPI.generatedDmssApi
           .explorerAdd({
             absoluteRef: `${analysisAbsoluteReference}.jobs`,

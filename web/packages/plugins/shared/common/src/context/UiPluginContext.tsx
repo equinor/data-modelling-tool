@@ -19,7 +19,7 @@ export interface DmtUIPlugin {
   categories?: string[]
   dataSourceId: string
   documentId: string
-  onSubmit?: Function
+  onSubmit: Function
   onChange?: Function
   onOpen?: Function
   document?: any

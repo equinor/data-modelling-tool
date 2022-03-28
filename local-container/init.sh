@@ -25,13 +25,9 @@ for i in "$@"; do
       APPLICATION_INPUT="${i#*=}"
       shift # past argument=value
       ;;
-    --target=*)
-      TARGET="${i#*=}"
-      shift
-      ;;
-    --result-link-target=*)
-      RESULT_LINK_TARGET="${i#*=}"
-      shift
+    --result-reference-location=*)
+      RESULT_REFERENCE_LOCATION="${i#*=}"
+      shift # past argument=value
       ;;
     *)
       echo "WARNING: Invalid argument '$i'"
@@ -39,6 +35,7 @@ for i in "$@"; do
   esac
 done
 
-python3 /code/wrapper.py get-and-upload-result --token=$TOKEN --target=$TARGET --result-link-target=$RESULT_LINK_TARGET --application-input=$APPLICATION_INPUT
+
+python3 /code/wrapper.py get-and-upload-result --token=$TOKEN --result-reference-location=$RESULT_REFERENCE_LOCATION --application-input=$APPLICATION_INPUT
 time=$(date +'%d/%m/%Y %r')
 echo "** End time: ${time} **"

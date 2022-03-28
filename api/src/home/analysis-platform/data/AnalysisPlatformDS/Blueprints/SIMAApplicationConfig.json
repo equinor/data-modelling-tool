@@ -25,6 +25,13 @@
       "name": "workflowTask",
       "description": "",
       "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "resultPath",
+      "description": "Where results from a job should be uploaded. Must be a valid folder location in DMSS. If this value is not provided, no results will be uploaded to DMSS.",
+      "attributeType": "string",
+      "optional": true
     }
     ]
 }

@@ -13,7 +13,7 @@ services:
     image: api-dev
     volumes:
       - ./api/src/:/code
-      - /var/run/docker.sock:/var/run/docker.sock  # Needed for docker-in-docker jobs
+#      - /var/run/docker.sock:/var/run/docker.sock  # Needed for docker-in-docker jobs
 #      - ../data-modelling-storage-service/gen/dmss_api:/dmss_api
 #      - ../data-modelling-storage-service:/data-modelling-storage-service
     environment:
