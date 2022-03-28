@@ -14,7 +14,7 @@ from pydantic.fields import Field
 
 
 class Settings(BaseSettings):
-    PUBLIC_DMSS_API: str = Field("http://localhost:5000", env="PUBLIC_DMSS_API")
+    PUBLIC_DMSS_API: str = Field("http://dmss:5000", env="PUBLIC_DMSS_API")
     SRE_HOME: str = os.getenv("SRE_HOME", "/var/opt/sima")
     STORAGE_DIR: str = f"{SRE_HOME}/storage"
     OUTPUT_DIR: str = f"{SRE_HOME}/storage/outputs"
@@ -140,34 +140,36 @@ def run(
 
 
 @cli.command()
-@click.option("--target", help="Target directory to store result file", type=str, required=True)
-@click.option("--result-link-target", help="dotted id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
-@click.option("--task", help="Name of the task defined in the stask to run", type=str, required=True)
-@click.option("--workflow", help="Name of the workflow defined in the task to run", type=str, required=True)
-@click.option("--source", help="Path to SIMA generated result file", type=str, default=settings.RESULT_FILE)
+@click.option("--result-reference-location", help="dotted id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
 @click.option("--token", help="A valid DMSS Access Token", type=str)
+@click.option("--application-input", help="Json string with application input entity of type SIMAApplicationInput", type=str, required=True)
+def get_and_upload_result(result_reference_location: str, application_input: dict, token: str = None):
+    """
+    Example function that will find the input entity inside the json string application-input, and upload it to the
+    correct folder in dmss, and add a reference to this result to the analysis entity
+    """
+    application_input = application_input.replace("%20", " ")
+    new_id = str(uuid4())
+    try:
+        application_input = json.loads(application_input)
+        entity_to_upload: dict = json.loads(application_input["input"])
+        entity_to_upload["name"] = str(f"resultFromLocalContainer_{new_id}")
+        entity_as_string: str = json.dumps(entity_to_upload)
+    except Exception as error:
+        print("An error occurred when extracting the entity to upload! Exiting.", error)
+        return
+    target = application_input["applicationConfig"]["resultPath"]
+    if (target):
+        dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
+        data_source, directory = target.split("/", 1)
+        response = dmss_api.explorer_add_to_path(document=entity_as_string, directory=directory, data_source_id=data_source)
+        print(f"Result with id {response['uid']} was uploaded to {directory} ")
 
-def upload(target: str, result_link_target: str, task: str, workflow: str, source: str = settings.RESULT_FILE, token: str = None):
-    """Uploads the simulation results to $DMSS_HOST"""
-    print(f"Uploading result entity from SIMA run  --  local:{source} --> DMSS:{target}")
-    dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
-    data_source, directory = target.split("/", 1)
-
-    with open(source, "r") as file:
-        result_file = file.read()
-    result_file_as_dict = json.loads(result_file)
-    new_file_name = f"{task}-{workflow}-{datetime.datetime.today().replace(microsecond=0).strftime('%d-%m-%Y_%T').replace(':','-')}"
-
-    result_file_as_dict["name"] = new_file_name
-    result_file_with_new_name = json.dumps(result_file_as_dict)
-    response = dmss_api.explorer_add_to_path(document=result_file_with_new_name, directory=directory, data_source_id=data_source)
-    print(f"Result file uploaded successfully -- id: {response['uid']}")
-
-    #Add the result as a new reference to the operation entity's results list.
-    RESULT_FILE_TYPE = "ForecastDS/FoR-BP/Blueprints/ResultFile"
-    reference_object = {"name": new_file_name, "id": response['uid'], "type": RESULT_FILE_TYPE}
-    response = dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=result_link_target, reference=reference_object)
-    print(f"Result added to the operation entity's results list: {result_link_target}")
+        reference_object = {"name": f"resultFromLocalContainer_{new_id}", "id": response['uid'], "type": entity_to_upload["type"]}
+        dmss_api.reference_insert(data_source_id=data_source, document_dotted_id=result_reference_location, reference=reference_object)
+        print(f"reference to result was added to the analysis ({result_reference_location})")
+    else:
+        print(f"No result path found in applicationInput... Exiting.")
 
 if __name__ == "__main__":
     cli()

@@ -68,7 +68,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               label={'Container image'}
               // value={formData.crUsername}
               placeholder="Image to run"
-              items={['wrapper']}
+              items={['publicMSA.azurecr.io/dmt-job/srs:latest']}
               handleSelectedItemChange={(selected) => {
                 setUnsavedChanges(true)
                 setFormData({ ...formData, image: selected.inputValue })

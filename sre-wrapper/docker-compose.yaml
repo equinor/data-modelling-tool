@@ -5,26 +5,18 @@ services:
     build: .
     image: publicMSA.azurecr.io/dmt-job/srs:latest
     environment:
-      SIMA_LICENSE: |
-
-      PUBLIC_DMSS_API: http://localhost:5000
+      SIMA_LICENSE: "NONE"
+      PUBLIC_DMSS_API: http://dmss:5000
     networks:
       - data-modelling-storage-service_default
     volumes:
       - ./job_wrapper.py:/code/job_wrapper.py
+      - ./init.sh:/code/init.sh
       - ./tmp:/var/opt/sima
     # The stask and compute-service-cfg are part of the DemoDS in DMT with static UUIDs
-    command: [
-        "/code/init.sh",
-        "--stask=DemoDS/4ec0d646-907c-4eba-9e65-24106236d61b",
-        "--task=WorkflowTask",
-        "--workflow=workflow",
-#        "--remote-run",
-#        "--compute-service-cfg=ForecastDS/15a4d888-3ab4-5bd2-9bd9-9614dcb066d5",
-        "--input=ForecastDS/8ec0d646-907c-4eba-9e65-24106236d61c",
-        "--token=123",
-        "--target=DemoDS/DMT-demo/SIMARuntimeService/results/"
-    ]
+    command: >-
+        /code/init.sh --result-reference-location=4fe42156-5c4b-414e-9dad-124c6f9f2ae9.jobs.0.result --token=XXXXXX --application-input='{"type":"AnalysisPlatformDS/Blueprints/SIMAApplicationInput","name":"example_app_input","description":"example application input for local container","inputType":"system/SIMOS/NamedEntity","outputType":"AnalysisPlatformDS/Blueprints/Analysis","input":"{\"type\":\"system/SIMOS/NamedEntity\",\"name\":\"exampleInputEntity\",\"description\":\"example\"}","applicationConfig":{"type":"AnalysisPlatformDS/Blueprints/SIMAApplicationConfig","description":"","name":"example_app_config","workflow":"someWorkflow","workflowTask":"someWorkflowTask","resultPath":"AnalysisPlatformDS/Data/Analysis/results"},"SIMAComputeConfig":{}}'
+
 
 networks:
   data-modelling-storage-service_default:

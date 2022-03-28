@@ -65,7 +65,7 @@ class JobHandler(JobHandlerInterface):
                 image=runnerEntity["image"],
                 command=runnerEntity["command"] + [f"--token={self.token}", f"--application-input={app_input}"],
                 name=self.job_entity["name"],
-                # environment=...,
+                environment=["SIMA_LICENSE=NONE"],
                 network="data-modelling-storage-service_default",
                 detach=True,
             )
