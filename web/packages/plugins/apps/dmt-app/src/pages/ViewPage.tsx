@@ -1,8 +1,8 @@
-import React, { useContext } from 'react'
+import React from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { useDocument, ApplicationContext, UIPluginSelector } from '@dmt/common'
+import { ApplicationContext, UIPluginSelector, useDocument } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { SimplifiedTree } from '../components/SimplifiedTree'
@@ -58,7 +58,6 @@ export default ({ settings }: any) => {
             <UIPluginSelector
               absoluteDottedId={`${data_source}/${entity_id}`}
               entity={document}
-              categories={['container']}
             />
           )}
         </Group>

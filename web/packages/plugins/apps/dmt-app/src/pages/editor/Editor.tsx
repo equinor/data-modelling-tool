@@ -1,24 +1,24 @@
 import React from 'react'
-import { Col, Grid, Row } from 'react-styled-flexboxgrid'
-import DocumentComponent from './layout-components/DocumentComponent'
-import Header from '../../components/Header'
 import {
   IDashboard,
   useDashboard,
 } from '../../context/dashboard/DashboardProvider'
-import IndexProvider from '../../context/global-index/IndexProvider'
 import { LayoutComponents } from '../../context/dashboard/useLayout'
 import { ModalProvider } from '../../context/modal/ModalContext'
-import DocumentExplorer from './document-explorer/DocumentExplorer'
 import { GoldenLayoutComponent } from '../../components/golden-layout/GoldenLayoutComponent'
 import GoldenLayoutPanel from '../../components/golden-layout/GoldenLayoutPanel'
-import AddDatasource from './data-source/AddDatasource'
 import styled from 'styled-components'
-import { DmtAPI } from '@dmt/common'
+import { TreeNode, TreeView, UIPluginSelector } from '@dmt/common'
+import { NodeRightClickMenu } from '../../components/context-menu/ContextMenu'
+//@ts-ignore
+import { NotificationManager } from 'react-notifications'
 
-export const Wrapper = styled.div`
-  width: 100%;
-  padding-right: 20px;
+export const TreeWrapper = styled.div`
+  width: 25%;
+  margin-right: 10px;
+  height: 100vh;
+  border-right: black solid 1px;
+  border-radius: 2px;
 `
 
 function wrapComponent(Component: any) {
@@ -42,52 +42,54 @@ const LAYOUT_CONFIG = {
   content: [
     {
       type: 'stack',
-      isClosable: false,
+      isClosable: true,
     },
   ],
 }
 
-const dmtAPI = new DmtAPI()
-
 export default () => {
   const dashboard: IDashboard = useDashboard()
 
+  const open = (node: TreeNode) => {
+    if (Array.isArray(node.entity)) {
+      return
+    }
+    dashboard.models.layout.operations.add(
+      node.nodeId,
+      node?.name || 'None',
+      LayoutComponents.blueprint,
+      {
+        absoluteDottedId: node.nodeId,
+        entity: node.entity,
+      }
+    )
+    dashboard.models.layout.operations.focus(node.nodeId)
+  }
+
   return (
-    <IndexProvider
-      dmtAPI={dmtAPI}
-      dataSources={dashboard.models.dataSources.models.dataSources}
-    >
-      <ModalProvider>
-        <Grid fluid>
-          <Row>
-            <Col xs={12} md={12} lg={3}>
-              <Wrapper>
-                <Header>
-                  <AddDatasource />
-                </Header>
-                {dashboard.models.layout.models.layout.myLayout && (
-                  <DocumentExplorer />
-                )}
-              </Wrapper>
-            </Col>
-            <Col xs={12} md={12} lg={9}>
-              <GoldenLayoutComponent
-                htmlAttrs={{ style: { height: '100vh' } }}
-                config={LAYOUT_CONFIG}
-                registerComponents={(myLayout: any) => {
-                  myLayout.registerComponent(
-                    LayoutComponents.blueprint,
-                    wrapComponent(DocumentComponent)
-                  )
-                  dashboard.models.layout.operations.registerLayout({
-                    myLayout,
-                  })
-                }}
-              />
-            </Col>
-          </Row>
-        </Grid>
-      </ModalProvider>
-    </IndexProvider>
+    <ModalProvider>
+      <div style={{ display: 'flex' }}>
+        <TreeWrapper>
+          <TreeView
+            onSelect={(node: TreeNode) => open(node)}
+            // @ts-ignore
+            NodeWrapper={NodeRightClickMenu}
+          />
+        </TreeWrapper>
+        <GoldenLayoutComponent
+          htmlAttrs={{ style: { height: '100vh', width: '100%' } }}
+          config={LAYOUT_CONFIG}
+          registerComponents={(myLayout: any) => {
+            myLayout.registerComponent(
+              LayoutComponents.blueprint,
+              wrapComponent(UIPluginSelector)
+            )
+            dashboard.models.layout.operations.registerLayout({
+              myLayout,
+            })
+          }}
+        />
+      </div>
+    </ModalProvider>
   )
 }

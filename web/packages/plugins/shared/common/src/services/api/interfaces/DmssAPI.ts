@@ -20,6 +20,8 @@ export interface IDmssAPI {
 
   removeDocument(url: string, token: string): Promise<any>
 
+  removeByPath(path: string, dataSource: string): Promise<any>
+
   updateDocument(url: string, data: any, token: string): Promise<any>
 
   explorerDocumentRename(requestParameters: ExplorerRenameRequest): Promise<any>

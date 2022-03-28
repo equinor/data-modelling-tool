@@ -3,15 +3,12 @@ import { BlueprintEnum } from '../../utils/variables'
 import {
   ApplicationContext,
   DmssAPI,
-  IIndex,
   Modal,
   Spinner,
   Tree,
-  TreeNodeData,
-  TreeNodeRenderProps,
+  TreeNode,
   TReference,
   useDataSources,
-  useIndex,
 } from '../../index'
 import { IDataSources } from '../../hooks/useDataSources'
 import { AuthContext } from '@dmt/common'
@@ -29,80 +26,69 @@ export const EntityPicker = (props: {
   const dmssAPI = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssAPI)
   const application = useContext(ApplicationContext)
-  const index: IIndex = useIndex({
-    dataSources: dataSources.models.dataSources,
-    application,
-  })
-  const handleOpenOrExpand = (props: any) => {
-    index.operations.toggle(props.nodeData.nodeId)
-  }
 
-  const onSelect = (nodeData: TreeNodeData) => {
+  const onSelect = (nodeData: TreeNode) => {
     setShowModal(false)
     onChange({
-      name: nodeData.title,
-      type: nodeData.meta.type,
+      name: nodeData.name || '',
+      type: nodeData.type,
       _id: nodeData.nodeId,
     })
   }
 
-  if (index.loading) {
-    return <Spinner size="1.2em" />
-  }
-
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <Input
-        type="string"
-        value={formData?.name || formData?._id || ''}
-        placeholder="Select"
-        onClick={() => setShowModal(true)}
-        style={{ width: '280px', margin: '0 8px', cursor: 'pointer' }}
-      />
-      <Modal
-        toggle={() => setShowModal(!showModal)}
-        open={showModal}
-        title={'Select an Entity'}
-      >
-        <Tree
-          state={index.models.tree.models.tree}
-          operations={index.models.tree.operations}
-        >
-          {(renderProps: TreeNodeRenderProps) => {
-            const { nodeData } = renderProps
+      {/*<Input*/}
+      {/*  type="string"*/}
+      {/*  value={formData?.name || formData?._id || ''}*/}
+      {/*  placeholder="Select"*/}
+      {/*  onClick={() => setShowModal(true)}*/}
+      {/*  style={{ width: '280px', margin: '0 8px', cursor: 'pointer' }}*/}
+      {/*/>*/}
+      {/*<Modal*/}
+      {/*  toggle={() => setShowModal(!showModal)}*/}
+      {/*  open={showModal}*/}
+      {/*  title={'Select an Entity'}*/}
+      {/*>*/}
+      {/*  <Tree*/}
+      {/*    state={index.models.tree.models.tree}*/}
+      {/*    operations={index.models.tree.operations}*/}
+      {/*  >*/}
+      {/*    {(renderProps: TreeNodeRenderProps) => {*/}
+      {/*      const { nodeData } = renderProps*/}
 
-            if (nodeData.meta.type !== BlueprintEnum.PACKAGE) {
-              const onClick = () => {
-                onSelect(nodeData)
-              }
-              return (
-                <div
-                  style={{ display: 'flex', flexDirection: 'row' }}
-                  onClick={onClick}
-                >
-                  {renderProps.iconGroup(() => onClick)}
-                  {nodeData.title}
-                </div>
-              )
-            } else {
-              return (
-                <div
-                  onClick={() => handleOpenOrExpand(renderProps)}
-                  style={{
-                    display: 'flex',
-                  }}
-                >
-                  {renderProps.iconGroup(() => handleOpenOrExpand(renderProps))}
-                  {nodeData.title}
-                  {nodeData.isLoading && (
-                    <small style={{ paddingLeft: '15px' }}>Loading...</small>
-                  )}
-                </div>
-              )
-            }
-          }}
-        </Tree>
-      </Modal>
+      {/*      if (nodeData.meta.type !== BlueprintEnum.PACKAGE) {*/}
+      {/*        const onClick = () => {*/}
+      {/*          onSelect(nodeData)*/}
+      {/*        }*/}
+      {/*        return (*/}
+      {/*          <div*/}
+      {/*            style={{ display: 'flex', flexDirection: 'row' }}*/}
+      {/*            onClick={onClick}*/}
+      {/*          >*/}
+      {/*            {renderProps.iconGroup(() => onClick)}*/}
+      {/*            {nodeData.title}*/}
+      {/*          </div>*/}
+      {/*        )*/}
+      {/*      } else {*/}
+      {/*        return (*/}
+      {/*          <div*/}
+      {/*            onClick={() => handleOpenOrExpand(renderProps)}*/}
+      {/*            style={{*/}
+      {/*              display: 'flex',*/}
+      {/*            }}*/}
+      {/*          >*/}
+      {/*            {renderProps.iconGroup(() => handleOpenOrExpand(renderProps))}*/}
+      {/*            {nodeData.title}*/}
+      {/*            {nodeData.isLoading && (*/}
+      {/*              <small style={{ paddingLeft: '15px' }}>Loading...</small>*/}
+      {/*            )}*/}
+      {/*          </div>*/}
+      {/*        )*/}
+      {/*      }*/}
+      {/*    }}*/}
+      {/*  </Tree>*/}
+      {/*</Modal>*/}
     </div>
   )
 }

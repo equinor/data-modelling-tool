@@ -5,7 +5,6 @@ import { NotificationManager } from 'react-notifications'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
 import { DmssAPI, Button, AuthContext, UiPluginContext } from '@dmt/common'
 import { useModalContext } from '../../../context/modal/ModalContext'
-import useExplorer, { IUseExplorer } from '../../../hooks/useExplorer'
 
 const constructType = (selectedDatasourceType: string) => {
   let template = ''
@@ -22,7 +21,7 @@ const AddDataSourceComponent = () => {
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  const explorer: IUseExplorer = useExplorer(dmssAPI)
+  // @ts-ignore
   const { getUiPlugin } = useContext(UiPluginContext)
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
     'mongo-db'
@@ -55,7 +54,6 @@ const AddDataSourceComponent = () => {
         />
         <ExternalPlugin
           type={constructType(selectedDatasourceType)}
-          explorer={explorer}
           onSubmit={handleOnSubmit}
         />
       </div>

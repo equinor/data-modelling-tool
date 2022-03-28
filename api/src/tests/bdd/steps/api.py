@@ -1,11 +1,10 @@
 import json
 
-from behave import when, given, then
+from behave import when, given
 
 
 def context_response_json(context):
     response = context.response
-    # if response.status_code == 200 or response.status_code == 201:
     context.response_json = json.loads(response.data)
 
 
