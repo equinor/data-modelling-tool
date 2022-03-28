@@ -22,9 +22,10 @@ const HeaderWrapper = styled.div`
 export const EditLocalContainer = (props: DmtUIPlugin) => {
   const { document, documentId, dataSourceId, onSubmit } = props
   const [formData, setFormData] = useState<any>({ ...document })
-  const [resultReferenceLocation, setResultReferenceLocation] = useState<
-    string
-  >('')
+  const [
+    resultReferenceLocation,
+    setResultReferenceLocation,
+  ] = useState<string>('')
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false)
   const analysisId: string = documentId.split('.')[0] || 'NONE'
   const [analysisDocument, _loading, updateDocument, error] = useDocument(
@@ -68,7 +69,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               // value={formData.crUsername}
               placeholder="Image to run"
               items={['wrapper']}
-              handleSelectedItemChange={selected => {
+              handleSelectedItemChange={(selected) => {
                 setUnsavedChanges(true)
                 setFormData({ ...formData, image: selected.inputValue })
               }}
@@ -84,7 +85,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               items={[
                 `/code/init.sh;--result-reference-location=${resultReferenceLocation}`,
               ]}
-              handleSelectedItemChange={selected => {
+              handleSelectedItemChange={(selected) => {
                 setUnsavedChanges(true)
                 setFormData({
                   ...formData,

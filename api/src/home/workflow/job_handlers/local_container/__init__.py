@@ -58,11 +58,8 @@ class JobHandler(JobHandlerInterface):
             json_separators = (
                 ",",
                 ":",
-            )  # the json string cannot contain any whitespace when using as command for container
+            )
             app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
-
-            if " " in app_input:
-                raise Exception("Cannot have any spaces in the applicationInput for local container job")
 
             self.client.containers.run(
                 image=runnerEntity["image"],

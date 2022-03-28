@@ -36,6 +36,8 @@ for i in "$@"; do
 done
 
 
+APPLICATION_INPUT=`echo $APPLICATION_INPUT | sed 's/ /%20/g'` #replace space with %20 since click cannot have space in the option value
+
 python3 /code/wrapper.py get-and-upload-result --token=$TOKEN --result-reference-location=$RESULT_REFERENCE_LOCATION --application-input=$APPLICATION_INPUT
 time=$(date +'%d/%m/%Y %r')
 echo "** End time: ${time} **"
