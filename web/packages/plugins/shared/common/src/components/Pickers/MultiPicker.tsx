@@ -6,12 +6,9 @@ import { BlueprintEnum } from '../../utils/variables'
 import {
   ApplicationContext,
   DmssAPI,
-  IIndex,
   Modal,
   Tree,
-  TreeNodeRenderProps,
   useDataSources,
-  useIndex,
 } from '../../index'
 import { IDataSources } from '../../hooks/useDataSources'
 import { AuthContext } from '@dmt/common'
@@ -74,14 +71,7 @@ const MultiSelector = ({
   const dmssAPI = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssAPI)
   const application = useContext(ApplicationContext)
-  const index: IIndex = useIndex({
-    dataSources: dataSources.models.dataSources,
-    application,
-  })
 
-  const handleOpenOrExpand = (props: any) => {
-    index.operations.toggle(props.nodeData.nodeId)
-  }
   useEffect(() => {
     setSelectedPackages(formData || [])
   }, [formData])
@@ -154,35 +144,35 @@ const MultiSelector = ({
         open={showModal}
         title={'Select packages to include'}
       >
-        <Tree
-          state={index.models.tree.models.tree}
-          operations={index.models.tree.operations}
-        >
-          {(renderProps: TreeNodeRenderProps) => {
-            const { nodeData } = renderProps
-            const value = `${renderProps.path}/${nodeData.title}`
+        {/*<Tree*/}
+        {/*  state={index.models.tree.models.tree}*/}
+        {/*  operations={index.models.tree.operations}*/}
+        {/*>*/}
+        {/*  {(renderProps: TreeNodeRenderProps) => {*/}
+        {/*    const { nodeData } = renderProps*/}
+        {/*    const value = `${renderProps.path}/${nodeData.title}`*/}
 
-            return (
-              <NodeWrapper>
-                <IconTitleWrapper
-                  onClick={() => handleOpenOrExpand(renderProps)}
-                >
-                  {renderProps.iconGroup(() => {
-                    handleOpenOrExpand(renderProps)
-                  })}
-                  {nodeData.title}
-                </IconTitleWrapper>
-                {typeFilter(nodeData) && (
-                  <TreeNodeSelector
-                    value={value}
-                    selectedPackages={selectedPackages}
-                    handleChange={handleChange}
-                  />
-                )}
-              </NodeWrapper>
-            )
-          }}
-        </Tree>
+        {/*    return (*/}
+        {/*      <NodeWrapper>*/}
+        {/*        <IconTitleWrapper*/}
+        {/*          onClick={() => handleOpenOrExpand(renderProps)}*/}
+        {/*        >*/}
+        {/*          {renderProps.iconGroup(() => {*/}
+        {/*            handleOpenOrExpand(renderProps)*/}
+        {/*          })}*/}
+        {/*          {nodeData.title}*/}
+        {/*        </IconTitleWrapper>*/}
+        {/*        {typeFilter(nodeData) && (*/}
+        {/*          <TreeNodeSelector*/}
+        {/*            value={value}*/}
+        {/*            selectedPackages={selectedPackages}*/}
+        {/*            handleChange={handleChange}*/}
+        {/*          />*/}
+        {/*        )}*/}
+        {/*      </NodeWrapper>*/}
+        {/*    )*/}
+        {/*  }}*/}
+        {/*</Tree>*/}
       </Modal>
     </PackagesWrapper>
   )

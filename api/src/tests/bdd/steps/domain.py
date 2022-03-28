@@ -2,7 +2,7 @@ from behave import given
 
 from domain_classes.blueprint_attribute import BlueprintAttribute
 from domain_classes.tree_node import ListNode, Node
-from enums import SIMOS, SIMOS
+from enums import SIMOS
 from services.dmss import dmss_api
 from services.document_service import DocumentService
 from utils.create_entity_utils import CreateEntity

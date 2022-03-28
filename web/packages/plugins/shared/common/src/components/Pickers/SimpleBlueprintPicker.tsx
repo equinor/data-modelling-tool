@@ -1,13 +1,13 @@
 // @ts-ignore
 import React, { useContext, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
-import { Modal, SimpleTreeNode, SimpleTreeView } from '../../index'
+import { Modal, TreeNode, TreeView } from '../../index'
 import { Input } from '@equinor/eds-core-react'
 
 export const SimpleBlueprintPicker = (props: {
   onChange: (type: string) => void
   formData: string
-  blueprintFilter: string
+  blueprintFilter?: string
 }) => {
   const {
     onChange,
@@ -30,8 +30,8 @@ export const SimpleBlueprintPicker = (props: {
         open={showModal}
         title={'Select a blueprint as type'}
       >
-        <SimpleTreeView
-          onSelect={(node: SimpleTreeNode) => {
+        <TreeView
+          onSelect={(node: TreeNode) => {
             if (node.type !== blueprintFilter) return // Only allowed to select blueprints
             setShowModal(false)
             onChange(node.getPath())

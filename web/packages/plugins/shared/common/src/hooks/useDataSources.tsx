@@ -6,7 +6,7 @@ import DataSourceReducer, {
   initialState,
 } from './DataSourcesReducer'
 import { DmssAPI } from '../services'
-import { DataSource } from '../services/api/interfaces/DataSource'
+import { DataSource } from '../services'
 
 export interface IModels {
   dataSources: DataSource[]

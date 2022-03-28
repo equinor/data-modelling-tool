@@ -5,13 +5,10 @@ import styled from 'styled-components'
 import {
   ApplicationContext,
   DmssAPI,
-  IIndex,
   Modal,
   Spinner,
   Tree,
-  TreeNodeRenderProps,
   useDataSources,
-  useIndex,
 } from '../../index'
 import { IDataSources } from '../../hooks/useDataSources'
 import { AuthContext } from '@dmt/common'
@@ -53,14 +50,6 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   const dmssApi = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssApi)
   const application = useContext(ApplicationContext)
-  const index: IIndex = useIndex({
-    dataSources: dataSources.models.dataSources,
-    application,
-  })
-
-  const handleOpenOrExpand = (props: any) => {
-    index.operations.toggle(props.nodeData.nodeId)
-  }
 
   const onSelect = (nodeId: string, nodePath: string) => {
     const dataSource = nodePath.split('/', 1)[0]
@@ -73,71 +62,67 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
     }
   }
 
-  if (index.loading) {
-    return <Spinner size="1.2em" />
-  }
-
   return (
     <>
-      <b>{title}</b>
-      <div>
-        <input
-          style={{ width: '100%' }}
-          type="string"
-          value={destination}
-          readOnly={true}
-          onClick={() => setShowModal(true)}
-        />
-        <Modal
-          toggle={() => setShowModal(!showModal)}
-          open={showModal}
-          title={'Select a folder as destination'}
-        >
-          <Tree
-            state={index.models.tree.models.tree}
-            operations={index.models.tree.operations}
-          >
-            {(renderProps: TreeNodeRenderProps) => {
-              const { actions, nodeData } = renderProps
-              const type = nodeData.meta.type
+      {/*<b>{title}</b>*/}
+      {/*<div>*/}
+      {/*  <input*/}
+      {/*    style={{ width: '100%' }}*/}
+      {/*    type="string"*/}
+      {/*    value={destination}*/}
+      {/*    readOnly={true}*/}
+      {/*    onClick={() => setShowModal(true)}*/}
+      {/*  />*/}
+      {/*  <Modal*/}
+      {/*    toggle={() => setShowModal(!showModal)}*/}
+      {/*    open={showModal}*/}
+      {/*    title={'Select a folder as destination'}*/}
+      {/*  >*/}
+      {/*    <Tree*/}
+      {/*      state={index.models.tree.models.tree}*/}
+      {/*      operations={index.models.tree.operations}*/}
+      {/*    >*/}
+      {/*      {(renderProps: TreeNodeRenderProps) => {*/}
+      {/*        const { actions, nodeData } = renderProps*/}
+      {/*        const type = nodeData.meta.type*/}
 
-              return (
-                <div style={{ display: 'flex' }}>
-                  {renderProps.iconGroup(() => {
-                    handleOpenOrExpand(renderProps)
-                  })}
-                  <div onClick={() => handleOpenOrExpand(renderProps)}>
-                    {nodeData.title}
-                    {nodeData.isLoading && (
-                      <small style={{ paddingLeft: '15px' }}>Loading...</small>
-                    )}
-                  </div>
-                  {type === blueprintFilter && (
-                    <div
-                      style={{
-                        display: 'flex',
-                        width: '100%',
-                        flexFlow: 'row-reverse',
-                      }}
-                    >
-                      <SelectDestinationButton
-                        onClick={() => {
-                          onSelect(
-                            nodeData.nodeId,
-                            `${renderProps.path}/${nodeData.title}`
-                          )
-                        }}
-                      >
-                        Select
-                      </SelectDestinationButton>
-                    </div>
-                  )}
-                </div>
-              )
-            }}
-          </Tree>
-        </Modal>
-      </div>
+      {/*        return (*/}
+      {/*          <div style={{ display: 'flex' }}>*/}
+      {/*            {renderProps.iconGroup(() => {*/}
+      {/*              handleOpenOrExpand(renderProps)*/}
+      {/*            })}*/}
+      {/*            <div onClick={() => handleOpenOrExpand(renderProps)}>*/}
+      {/*              {nodeData.title}*/}
+      {/*              {nodeData.isLoading && (*/}
+      {/*                <small style={{ paddingLeft: '15px' }}>Loading...</small>*/}
+      {/*              )}*/}
+      {/*            </div>*/}
+      {/*            {type === blueprintFilter && (*/}
+      {/*              <div*/}
+      {/*                style={{*/}
+      {/*                  display: 'flex',*/}
+      {/*                  width: '100%',*/}
+      {/*                  flexFlow: 'row-reverse',*/}
+      {/*                }}*/}
+      {/*              >*/}
+      {/*                <SelectDestinationButton*/}
+      {/*                  onClick={() => {*/}
+      {/*                    onSelect(*/}
+      {/*                      nodeData.nodeId,*/}
+      {/*                      `${renderProps.path}/${nodeData.title}`*/}
+      {/*                    )*/}
+      {/*                  }}*/}
+      {/*                >*/}
+      {/*                  Select*/}
+      {/*                </SelectDestinationButton>*/}
+      {/*              </div>*/}
+      {/*            )}*/}
+      {/*          </div>*/}
+      {/*        )*/}
+      {/*      }}*/}
+      {/*    </Tree>*/}
+      {/*  </Modal>*/}
+      {/*</div>*/}
     </>
   )
 }

@@ -12,7 +12,7 @@ from flask import Flask
 from services.job_service import JobService
 
 from config import config
-from controllers import blueprints, entity, index, system, jobs
+from controllers import blueprints, entity, system, jobs
 from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
@@ -22,7 +22,6 @@ from utils.logging import logger
 def create_app(config):
     app = Flask(__name__)
     app.config.from_object(config)
-    app.register_blueprint(index.blueprint)
     app.register_blueprint(system.blueprint)
     app.register_blueprint(blueprints.blueprint)
     app.register_blueprint(entity.blueprint)

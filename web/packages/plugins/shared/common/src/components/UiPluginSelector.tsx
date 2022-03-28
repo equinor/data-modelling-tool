@@ -106,7 +106,7 @@ export function UIPluginSelector(props: {
       )
     }
     if (!recipesToUse?.length && !categories) {
-      setSelectableRecipe(['yaml', getUiPlugin('yaml'), undefined])
+      setSelectableRecipe([['yaml', getUiPlugin('yaml-view'), {}]])
     } else {
       setSelectableRecipe(
         recipesToUse.map((uiRecipe: any) => [

@@ -2,7 +2,6 @@ import Actions from '../../../../../home/src/actions'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { Entity } from '../domain/types'
-import { IUseExplorer } from './useExplorer'
 import { DmssAPI, DmtAPI } from '@dmt/common'
 
 export enum ActionTypes {
@@ -43,7 +42,6 @@ export type ActionProps = {
   output?: Output
   updateDocument?: Function
   createEntity?: Function
-  explorer?: IUseExplorer
 }
 
 const dmtAPI = new DmtAPI()
@@ -149,7 +147,6 @@ export default function useRunnable({ explorer }: any) {
       output,
       updateDocument: (output: Output) => updateDocument(output, parentId),
       createEntity,
-      explorer,
     })
   }
 
@@ -203,7 +200,6 @@ export default function useRunnable({ explorer }: any) {
           updateDocument: (output: any) =>
             updateDocument(output, destinationParentId),
           createEntity,
-          explorer,
         })
       })
       .catch((error: any) => {

@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
+import { act } from 'react-dom/test-utils'
 import { Form } from './Form'
 import { mockGetBlueprint } from './test-utils'
 

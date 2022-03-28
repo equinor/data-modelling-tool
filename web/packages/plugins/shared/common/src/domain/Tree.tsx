@@ -2,49 +2,100 @@ import { DmssAPI } from '../services'
 import { BlueprintEnum } from '../utils/variables'
 
 type TreeMap = {
-  [nodeId: string]: SimpleTreeNode
+  [nodeId: string]: TreeNode
 }
 
-export class SimpleTreeNode {
-  tree: SimpleTree
+const createContainedChildren = (
+  document: any,
+  parentNode: TreeNode
+): TreeMap => {
+  const newChildren: TreeMap = {}
+  Object.entries(document).forEach(([key, value]: [string, any]) => {
+    if (typeof value === 'object') {
+      const childNodeId = `${parentNode.nodeId}.${key}`
+      newChildren[childNodeId] = new TreeNode(
+        parentNode.tree,
+        childNodeId,
+        parentNode.level + 1,
+        value,
+        parentNode,
+        value?.name || key
+      )
+    }
+    if (Array.isArray(value)) {
+      const childNodeId = `${parentNode.nodeId}.${key}`
+      newChildren[childNodeId] = new TreeNode(
+        parentNode.tree,
+        childNodeId,
+        parentNode.level + 1,
+        value,
+        parentNode,
+        key
+      )
+    }
+  })
+
+  return newChildren
+}
+
+const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
+  const newChildren: TreeMap = {}
+  document.content.forEach((ref: any) => {
+    const newChildId = `${parentNode.dataSource}/${ref?._id}`
+    newChildren[newChildId] = new TreeNode(
+      parentNode.tree,
+      newChildId,
+      parentNode.level + 1,
+      ref,
+      parentNode
+    )
+  })
+  return newChildren
+}
+
+export class TreeNode {
+  tree: Tree
   nodeId: string
   level: number
-  parent?: SimpleTreeNode
+  parent?: TreeNode
   children: TreeMap = {}
   isRoot?: boolean = false
   isDataSource?: boolean = false
   entity?: any
   name?: string
-  type?: string
+  type: string
   expanded?: boolean = false
   message?: string = ''
+  dataSource: string
 
   constructor(
-    tree: SimpleTree,
+    tree: Tree,
     nodeId: string,
     level: number = 0,
     entity: any = {},
-    parent: SimpleTreeNode | undefined = undefined,
+    parent: TreeNode | undefined = undefined,
+    name: string | undefined = undefined,
     isRoot = false,
     isDataSource = false,
     expanded = false
   ) {
     this.tree = tree
     this.nodeId = nodeId
+    this.dataSource = nodeId.split('/', 1)[0]
     this.level = level
     this.parent = parent
     this.isRoot = isRoot
     this.isDataSource = isDataSource
     this.entity = entity
-    this.name = entity?.name
-    this.type = entity?.type
+    this.name = name || entity?.name
+    this.type = entity.type
     this.expanded = expanded
   }
 
-  collapse(node?: SimpleTreeNode): void {
+  collapse(node?: TreeNode): void {
     let _node = node || this
     _node.expanded = false
-    for (const child of Object.values<SimpleTreeNode>(_node?.children || {})) {
+    for (const child of Object.values<TreeNode>(_node?.children || {})) {
       this.collapse(child)
     }
   }
@@ -60,18 +111,11 @@ export class SimpleTreeNode {
           depth: 0,
         })
         .then((response: any) => {
-          const children: TreeMap = {}
-          response?.content.forEach(
-            (ref: any) =>
-              (children[ref?._id] = new SimpleTreeNode(
-                this.tree,
-                `${dataSourceId}/${ref?._id}`,
-                this.level + 1,
-                ref,
-                this
-              ))
-          )
-          this.children = children
+          if (response.type === BlueprintEnum.PACKAGE) {
+            this.children = createFolderChildren(response, this)
+          } else {
+            this.children = createContainedChildren(response, this)
+          }
         })
         .catch((error: Error) => {
           this.type = 'error'
@@ -92,9 +136,17 @@ export class SimpleTreeNode {
     }
     return `${path}${this.name}`
   }
+
+  pathFromRootPackage(): string {
+    return this.getPath().split('/').splice(1).join('/')
+  }
+
+  remove(): void {
+    delete this?.parent?.children[this.nodeId]
+  }
 }
 
-export class SimpleTree {
+export class Tree {
   index: TreeMap = {}
   dmssApi: DmssAPI
   dataSources
@@ -106,12 +158,13 @@ export class SimpleTree {
       (
         dataSourceId: string // Add the dataSources as the top-level nodes
       ) => {
-        this.index[dataSourceId] = new SimpleTreeNode(
+        this.index[dataSourceId] = new TreeNode(
           this,
           dataSourceId,
           0,
           { name: dataSourceId, type: 'dataSource' },
           undefined,
+          dataSourceId,
           false,
           true,
           true
@@ -131,12 +184,13 @@ export class SimpleTree {
           })
           .then((searchResult: Object) => {
             Object.values(searchResult).forEach((rootPackage: any) => {
-              const rootPackageNode = new SimpleTreeNode( // Add the rootPackage nodes to the dataSource
+              const rootPackageNode = new TreeNode( // Add the rootPackage nodes to the dataSource
                 this,
                 `${dataSource}/${rootPackage._id}`,
                 1,
                 rootPackage,
                 this.index[dataSource],
+                rootPackage.name,
                 true,
                 false,
                 false
@@ -146,12 +200,13 @@ export class SimpleTree {
                 (
                   ref: any // Add the rootPackages children
                 ) => {
-                  children[ref?._id] = new SimpleTreeNode(
+                  children[ref?._id] = new TreeNode(
                     this,
                     `${dataSource}/${ref?._id}`,
                     2,
                     ref,
                     rootPackageNode,
+                    ref.name,
                     false,
                     false,
                     false
@@ -170,14 +225,14 @@ export class SimpleTree {
   // "*" describes a generator function
   // See: https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Symbol/iterator
   *[Symbol.iterator]() {
-    function* recursiveYieldChildren(node: SimpleTreeNode): any {
+    function* recursiveYieldChildren(node: TreeNode): any {
       yield node
-      for (const child of Object.values<SimpleTreeNode>(node?.children || {})) {
+      for (const child of Object.values<TreeNode>(node?.children || {})) {
         yield* recursiveYieldChildren(child)
       }
     }
 
-    for (const node of Object.values<SimpleTreeNode>(this.index)) {
+    for (const node of Object.values<TreeNode>(this.index)) {
       yield* recursiveYieldChildren(node)
     }
   }
