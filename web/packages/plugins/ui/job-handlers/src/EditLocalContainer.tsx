@@ -101,6 +101,7 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               as="button"
               onClick={() => {
                 setUnsavedChanges(false)
+                //@ts-ignore
                 onSubmit(formData)
               }}
             >
