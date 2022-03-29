@@ -22,10 +22,6 @@ const HeaderWrapper = styled.div`
 export const EditContainer = (props: DmtUIPlugin) => {
   const { document, documentId, dataSourceId, onSubmit } = props
   const [formData, setFormData] = useState<any>({ ...document })
-  const [
-    resultReferenceLocation,
-    setResultReferenceLocation,
-  ] = useState<string>('')
   const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false)
   const analysisId: string = documentId.split('.')[0] || 'NONE'
   const [analysisDocument, _loading, updateDocument, error] = useDocument(
@@ -41,9 +37,6 @@ export const EditContainer = (props: DmtUIPlugin) => {
           `Edit local container UI plugin can only be used with an analysis entity of type ${analysisBlyeprint}`
         )
       }
-      setResultReferenceLocation(
-        `${analysisDocument._id}.jobs.${analysisDocument.jobs.length}.result`
-      )
     }
   }, [analysisDocument])
   if (_loading) return <div>Loading...</div>
@@ -68,8 +61,8 @@ export const EditContainer = (props: DmtUIPlugin) => {
               label={'Container image'}
               // value={formData.crUsername}
               placeholder="Image to run"
-              items={['publicMSA.azurecr.io/dmt-job/srs:latest']}
-              handleSelectedItemChange={(selected) => {
+              items={['datamodelingtool.azurecr.io/dmt-job/srs:test']}
+              handleSelectedItemChange={selected => {
                 setUnsavedChanges(true)
                 setFormData({ ...formData, image: selected.inputValue })
               }}

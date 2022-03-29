@@ -3,7 +3,7 @@ import os
 from collections import namedtuple
 from time import sleep
 from typing import List, Tuple
-
+import json
 from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import ClientSecretCredential
 from azure.mgmt.containerinstance import ContainerInstanceManagementClient
@@ -26,7 +26,7 @@ from utils.logging import logger
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
 logging.getLogger("azure").setLevel(logging.WARNING)
 
-_SUPPORTED_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJob"
+_SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/AzureContainer"
 
 
 class JobHandler(ServiceJobHandlerInterface):
@@ -35,15 +35,17 @@ class JobHandler(ServiceJobHandlerInterface):
     Support both executable jobs and job services
     """
 
-    def __init__(self, data_source: str, job_entity: dict, token: str):
-        super().__init__(data_source, job_entity, token)
+    def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: callable):
+        super().__init__(
+            data_source, job_entity, token, insert_reference
+        )  # todo cannot see why insert_reference is needed
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
         azure_credentials = ClientSecretCredential(
             client_id=config.AZURE_JOB_SP_CLIENT_ID,
             client_secret=config.AZURE_JOB_SP_SECRET,
             tenant_id=config.AZURE_JOB_SP_TENANT_ID,
         )
-        self.azure_valid_container_name = self.job_entity["name"].lower()
+        self.azure_valid_container_name = self.job_entity["name"].lower().replace(".", "-")
         self.aci_client = ContainerInstanceManagementClient(
             azure_credentials, subscription_id=config.AZURE_JOB_SUBSCRIPTION
         )
@@ -70,22 +72,27 @@ class JobHandler(ServiceJobHandlerInterface):
         for env_string in self.job_entity.get("environmentVariables", []):
             key, value = env_string.split("=", 1)
             env_vars.append(EnvironmentVariable(name=key, value=value))
-
+        runnerEntity: dict = self.job_entity["runner"]
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
-            + f"Image: '{self.job_entity.get('image', 'None')}'\n\t"
+            + f"Image: '{runnerEntity.get('image', 'None')}'\n\t"
             + f"Command: {self.job_entity.get('command', 'None')}\n\t"
             + f"RegistryUsername: '{self.job_entity.get('cr-username', 'None')}'\n\t"
             + f"EnvironmentVariables: {[e.name for e in env_vars]}",
         )
 
         # Configure the container
+        json_separators = (
+            ",",
+            ":",
+        )
+        app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
         compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
         container = Container(
             name=self.azure_valid_container_name,
-            image=self.job_entity["image"],
+            image=runnerEntity["image"],
             resources=ResourceRequirements(requests=compute_resources),
-            command=self.job_entity.get("command") + [f"--token={self.token}"],
+            command=["/code/init.sh", f"--token={self.token}", f"--application-input={app_input}"],
             environment_variables=env_vars,
         )
         image_registry_credential = None
@@ -100,7 +107,7 @@ class JobHandler(ServiceJobHandlerInterface):
 
         # Configure the container group
         group = ContainerGroup(
-            location=self.job_entity.get("azure-location", "norwayeast"),
+            location=self.job_entity.get("azure-location", "northeurope"),
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,

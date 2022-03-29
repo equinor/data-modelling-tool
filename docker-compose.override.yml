@@ -13,7 +13,7 @@ services:
     image: api-dev
     volumes:
       - ./api/src/:/code
-#      - /var/run/docker.sock:/var/run/docker.sock  # Needed for docker-in-docker jobs
+      - /var/run/docker.sock:/var/run/docker.sock  # Needed for docker-in-docker jobs
 #      - ../data-modelling-storage-service/gen/dmss_api:/dmss_api
 #      - ../data-modelling-storage-service:/data-modelling-storage-service
     environment:
@@ -25,12 +25,12 @@ services:
       SCHEDULER_REDIS_HOST: job-store
       SCHEDULER_REDIS_PORT: 6379
       SCHEDULER_REDIS_SSL: "false"
-      AZURE_JOB_SUBSCRIPTION: 93b83577-619d-4fb9-bfdf-f7a07d24cfbe
-      AZURE_JOB_RESOURCE_GROUP: S059-Forecast-of-response
-      AZURE_SP_SECRET: ${AZURE_SP_SECRET}
-      AZURE_JOB_TENANT_ID: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
-      AZURE_JOB_CLIENT_ID: ee7dbf49-e358-4c9c-a7e4-fb6d56c02205
-      #SIMA_LICENSE: |
+      AZURE_JOB_SUBSCRIPTION: 14d57366-b2ae-4da8-8b75-e273c6fdabe2
+      AZURE_JOB_RESOURCE_GROUP: dmt-test-containers
+      AZURE_JOB_SP_SECRET: ${AZURE_JOB_SP_SECRET}
+      AZURE_JOB_SP_TENANT_ID: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
+      AZURE_JOB_SP_CLIENT_ID: 97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
+      SIMA_LICENSE: NONE
 
     depends_on:
       - web

@@ -7,6 +7,7 @@ from typing import Callable, Tuple
 class JobStatus(Enum):
     REGISTERED = "registered"
     STARTING = "starting"
+    WAITING = "Waiting"  # todo the api fails if this is not included... cannot understand why
     RUNNING = "running"
     FAILED = "failed"
     COMPLETED = "completed"

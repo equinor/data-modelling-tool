@@ -3,21 +3,11 @@ from docker.errors import DockerException
 from typing import Tuple
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
-from dmss_api.apis import DefaultApi
+
 import json
 
-import os
 
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/Container"
-
-
-class Settings:
-    PUBLIC_DMSS_API: str = os.getenv("PUBLIC_DMSS_API", "http://dmss:5000")
-
-
-dmss_api = DefaultApi()
-settings = Settings()
-dmss_api.api_client.configuration.host = settings.PUBLIC_DMSS_API
 
 
 class JobHandler(JobHandlerInterface):
