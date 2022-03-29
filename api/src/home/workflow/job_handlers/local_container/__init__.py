@@ -60,7 +60,6 @@ class JobHandler(JobHandlerInterface):
                 ":",
             )
             app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
-
             self.client.containers.run(
                 image=runnerEntity["image"],
                 command=["/code/init.sh", f"--token={self.token}", f"--application-input={app_input}"],

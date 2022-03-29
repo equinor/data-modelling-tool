@@ -147,7 +147,7 @@ def get_and_upload_result(application_input: dict, token: str = None):
     Example function that will find the input entity inside the json string application-input, and upload it to the
     correct folder in dmss, and add a reference to this result to the analysis entity
     """
-    application_input = application_input.replace("%20", " ")
+
     new_id = str(uuid4())
     try:
         application_input = json.loads(application_input)
