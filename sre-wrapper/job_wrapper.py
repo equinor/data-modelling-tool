@@ -142,15 +142,15 @@ def run(
 @cli.command()
 @click.option("--token", help="A valid DMSS Access Token", type=str)
 @click.option("--application-input", help="Json string with application input entity of type SIMAApplicationInput", type=str, required=True)
-def get_and_upload_result(application_input: dict, token: str = None):
+def get_and_upload_result(application_input: str, token: str = None):
     """
     Example function that will find the input entity inside the json string application-input, and upload it to the
     correct folder in dmss, and add a reference to this result to the analysis entity
     """
-    application_input = application_input.replace("%20", " ")
+
     new_id = str(uuid4())
     try:
-        application_input = json.loads(application_input)
+        application_input = json.loads(json.loads(application_input))
         entity_to_upload: dict = json.loads(application_input["input"])
         entity_to_upload["name"] = str(f"resultFromLocalContainer_{new_id}")
         entity_as_string: str = json.dumps(entity_to_upload)

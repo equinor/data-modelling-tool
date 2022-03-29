@@ -66,9 +66,9 @@ done
 #  -consoleLog
 ## Upload results
 #  /code/job_wrapper.py upload --token=$TOKEN --target=$TARGET --result-link-target=$RESULT_LINK_TARGET --task=$TASK --workflow=$WORKFLOW
-APPLICATION_INPUT=`echo $APPLICATION_INPUT | sed 's/ /%20/g'` #replace space with %20 since python click cannot have space in the input value
 
-/code/job_wrapper.py get-and-upload-result --token=$TOKEN --application-input=$APPLICATION_INPUT
+
+/code/job_wrapper.py get-and-upload-result --token=$TOKEN --application-input="$APPLICATION_INPUT"
 
 time=$(date +'%d/%m/%Y %r')
 echo "** End time: ${time} **"

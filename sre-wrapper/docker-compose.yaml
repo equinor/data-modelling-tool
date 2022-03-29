@@ -15,7 +15,7 @@ services:
       - ./tmp:/var/opt/sima
     # The stask and compute-service-cfg are part of the DemoDS in DMT with static UUIDs
     command: >-
-        /code/init.sh --token=XXXXXX --application-input='{"type":"AnalysisPlatformDS/Blueprints/SIMAApplicationInput","name":"example_app_input","description":"example application input for local container","inputType":"system/SIMOS/NamedEntity","outputType":"AnalysisPlatformDS/Blueprints/Analysis","input":"{\"type\":\"system/SIMOS/NamedEntity\",\"name\":\"exampleInputEntity\",\"description\":\"example\"}","workflow":"someWorkflow","workflowTask":"someWorkflowTask","resultPath":"AnalysisPlatformDS/Data/Analysis/results","resultReferenceLocation":"4fe42156-5c4b-414e-9dad-124c6f9f2ae9.jobs.0.result"}'
+        /code/init.sh --token=XXXXXX --application-input='"{\"type\":\"AnalysisPlatformDS/Blueprints/SIMAApplicationInput\",\"name\":\"exampleAppInput\",\"description\":\"example SIMA application input for local container\",\"inputType\":\"system/SIMOS/NamedEntity\",\"outputType\":\"system/SIMOS/NamedEntity\",\"input\":\"{\\\"type\\\":\\\"system/SIMOS/NamedEntity\\\",\\\"name\\\":\\\"exampleInputEntity\\\",\\\"description\\\":\\\"example\\\"}\",\"workflow\":\"someWorkflow\",\"workflowTask\":\"someWorkflowTask\",\"resultPath\":\"AnalysisPlatformDS/Data/Analysis/results\",\"resultReferenceLocation\":\"5483c9b0-d505-46c9-a157-94c79f4d7a6a.jobs.17.result\",\"SIMAComputeConfig\":{},\"stask\":{}}"'
 
 
 networks:
