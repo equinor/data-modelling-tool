@@ -24,11 +24,11 @@
       "attributeType": "string"
     },
     {
-      "attributeType": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+      "attributeType": "object",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "applicationInput",
       "label": "Input",
-      "description": "Input data"
+      "description": "Input entity to a job"
     },
     {
       "name": "started",

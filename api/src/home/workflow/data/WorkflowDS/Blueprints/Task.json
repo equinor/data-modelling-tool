@@ -29,10 +29,10 @@
     },
     {
       "attributeType": "string",
-      "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+      "type": "object",
       "name": "applicationInput",
       "label": "Application input",
-      "description": "Input data for container",
+      "description": "Input entity for container",
       "contained": false,
       "optional": true
     },
