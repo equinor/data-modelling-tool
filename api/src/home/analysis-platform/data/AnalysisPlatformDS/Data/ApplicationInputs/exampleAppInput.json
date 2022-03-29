@@ -1,5 +1,5 @@
 {     "_id": "9229e1f3-e94d-4cde-9fb6-a08031b0b04a",
-      "name": "example_app_input",
+      "name": "exampleAppInput",
       "description": "example SIMA application input for local container",
       "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
       "inputType": "system/SIMOS/NamedEntity",

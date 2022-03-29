@@ -140,10 +140,9 @@ def run(
 
 
 @cli.command()
-@click.option("--result-reference-location", help="dotted id to the operation entity's results list. Should be on the format: entityId.x.simulationConfigs.y.results", type=str, required=True)
 @click.option("--token", help="A valid DMSS Access Token", type=str)
 @click.option("--application-input", help="Json string with application input entity of type SIMAApplicationInput", type=str, required=True)
-def get_and_upload_result(result_reference_location: str, application_input: dict, token: str = None):
+def get_and_upload_result(application_input: dict, token: str = None):
     """
     Example function that will find the input entity inside the json string application-input, and upload it to the
     correct folder in dmss, and add a reference to this result to the analysis entity
@@ -159,6 +158,7 @@ def get_and_upload_result(result_reference_location: str, application_input: dic
         print("An error occurred when extracting the entity to upload! Exiting.", error)
         return
     target = application_input["resultPath"]
+    result_reference_location = application_input["resultReferenceLocation"]
     if (target):
         dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
         data_source, directory = target.split("/", 1)

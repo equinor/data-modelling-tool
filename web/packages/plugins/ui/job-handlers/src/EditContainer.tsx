@@ -19,7 +19,7 @@ const HeaderWrapper = styled.div`
   width: 70%;
 `
 
-export const EditLocalContainer = (props: DmtUIPlugin) => {
+export const EditContainer = (props: DmtUIPlugin) => {
   const { document, documentId, dataSourceId, onSubmit } = props
   const [formData, setFormData] = useState<any>({ ...document })
   const [
@@ -72,26 +72,6 @@ export const EditLocalContainer = (props: DmtUIPlugin) => {
               handleSelectedItemChange={(selected) => {
                 setUnsavedChanges(true)
                 setFormData({ ...formData, image: selected.inputValue })
-              }}
-            />
-          </HeaderWrapper>
-          <HeaderWrapper>
-            <Typography variant="h5">Command list</Typography>
-            <SingleSelect
-              id="command_list"
-              label={'Command list to container'}
-              // value={formData.crUsername}
-              placeholder="Command"
-              items={[
-                `/code/init.sh;--result-reference-location=${resultReferenceLocation}`,
-              ]}
-              handleSelectedItemChange={(selected) => {
-                setUnsavedChanges(true)
-                setFormData({
-                  ...formData,
-                  //@ts-ignore
-                  command: selected.inputValue.split(';'),
-                })
               }}
             />
           </HeaderWrapper>

@@ -63,9 +63,9 @@ class JobHandler(JobHandlerInterface):
 
             self.client.containers.run(
                 image=runnerEntity["image"],
-                command=runnerEntity["command"] + [f"--token={self.token}", f"--application-input={app_input}"],
+                command=["/code/init.sh", f"--token={self.token}", f"--application-input={app_input}"],
                 name=self.job_entity["name"],
-                environment=["SIMA_LICENSE=NONE"],
+                environment=["SIMA_LICENSE=NONE"],  # todo must be updated in prod
                 network="data-modelling-storage-service_default",
                 detach=True,
             )

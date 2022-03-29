@@ -79,7 +79,8 @@ export type TSIMAApplicationInput = {
   stask?: TBlob
   workflow: string
   workflowTask: string
-  resultpath?: string
+  resultPath: string
+  resultReferenceLocation?: string
 }
 
 export type TLocalContainerJob = {

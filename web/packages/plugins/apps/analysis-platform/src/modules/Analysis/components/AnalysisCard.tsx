@@ -77,7 +77,7 @@ const RunAnalysisButton = (props: any) => {
         depth: 0,
       })
       .then((applicationInputEntity: TSIMAApplicationInput) => {
-        const localContainerJob: TJob = {
+        const containerJob: TJob = {
           label: 'Example local container job',
           name: `${analysis._id}.jobs.${runsSoFar}`,
           type: JOB,
@@ -86,10 +86,11 @@ const RunAnalysisButton = (props: any) => {
           runner: task.runner,
           started: new Date().toISOString(),
         }
+        containerJob.applicationInput.resultReferenceLocation = `${analysis._id}.jobs.${runsSoFar}.result`
 
-        if (!applicationInputHasCorrectType(localContainerJob)) {
+        if (!applicationInputHasCorrectType(containerJob)) {
           throw new Error(
-            `type ${localContainerJob.applicationInput.inputType} not found in the application input entity!`
+            `type ${containerJob.applicationInput.inputType} not found in the application input entity!`
           )
         }
 
@@ -97,14 +98,14 @@ const RunAnalysisButton = (props: any) => {
           .explorerAdd({
             absoluteRef: `${analysisAbsoluteReference}.jobs`,
             updateUncontained: false,
-            body: localContainerJob,
+            body: containerJob,
           })
           .then(() => {
             // Start a job from the created job entity (last one in list)
             jobAPI
               .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
               .then((result: any) => {
-                addJob(localContainerJob)
+                addJob(containerJob)
                 NotificationManager.success(
                   JSON.stringify(result.data),
                   'Simulation job started'
