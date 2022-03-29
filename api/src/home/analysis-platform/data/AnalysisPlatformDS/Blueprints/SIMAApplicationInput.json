@@ -33,10 +33,29 @@
       "optional": true
     },
     {
-      "name": "applicationConfig",
-      "attributeType": "AnalysisPlatformDS/Blueprints/SIMAApplicationConfig",
+      "name": "stask",
+      "attributeType": "system/SIMOS/Blob",
       "type": "system/SIMOS/BlueprintAttribute",
-      "description": "Extra configs",
+      "description": "",
+      "optional": true
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflow",
+      "description": "",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflowTask",
+      "description": "",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "resultPath",
+      "description": "Where results from a job should be uploaded. Must be a valid folder location in DMSS. If this value is not provided, no results will be uploaded to DMSS.",
+      "attributeType": "string",
       "optional": true
     }
     ]

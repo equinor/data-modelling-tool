@@ -67,13 +67,6 @@ export type TTask = {
   runner: TJobHandler | TContainerJobHandler
 }
 
-export type TSIMAApplicationConfig = {
-  stask?: TBlob
-  workflow: string
-  workflowTask: string
-  resultPath?: string
-}
-
 export type TSIMAApplicationInput = {
   _id?: string
   name: string
@@ -83,7 +76,10 @@ export type TSIMAApplicationInput = {
   outputType: string
   input: string //entity as a json string
   SIMAComputeConfig?: TBlob
-  applicationConfig: TSIMAApplicationConfig
+  stask?: TBlob
+  workflow: string
+  workflowTask: string
+  resultpath?: string
 }
 
 export type TLocalContainerJob = {

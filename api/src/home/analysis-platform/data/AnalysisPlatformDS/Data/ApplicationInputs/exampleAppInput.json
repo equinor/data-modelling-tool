@@ -5,12 +5,7 @@
       "inputType": "system/SIMOS/NamedEntity",
       "outputType": "system/SIMOS/NamedEntity",
       "input":  "{\"type\":\"system/SIMOS/NamedEntity\",\"name\":\"exampleInputEntity\",\"description\":\"example\"}",
-      "applicationConfig": {
-            "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationConfig",
-            "description": "",
-            "name": "example_app_config",
-            "workflow": "someWorkflow",
-            "workflowTask": "someWorkflowTask",
-            "resultPath": "AnalysisPlatformDS/Data/Analysis/results"
-      }
+      "workflow": "someWorkflow",
+      "workflowTask": "someWorkflowTask",
+      "resultPath": "AnalysisPlatformDS/Data/Analysis/results"
 }

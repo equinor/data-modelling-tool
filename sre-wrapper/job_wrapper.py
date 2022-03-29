@@ -158,7 +158,7 @@ def get_and_upload_result(result_reference_location: str, application_input: dic
     except Exception as error:
         print("An error occurred when extracting the entity to upload! Exiting.", error)
         return
-    target = application_input["applicationConfig"]["resultPath"]
+    target = application_input["resultPath"]
     if (target):
         dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
         data_source, directory = target.split("/", 1)
