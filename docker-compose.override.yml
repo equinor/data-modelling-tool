@@ -66,8 +66,8 @@ services:
   job-store:
     image: redis:6.2.5-alpine
     command: "redis-server --save 30 1 --loglevel notice"
-    #volumes:
-    # - ./redis_data:/data
+    volumes:
+     - ./redis_data:/data
     networks:
       - data-modelling-storage-service_default
 

@@ -17,6 +17,20 @@
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "image"
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "command"
+    }
+  ],
+  "uiRecipes": [
+    {
+      "name": "EditContainer",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-local-container-job",
+      "configType": "",
+      "category": "edit"
     }
   ]
 }

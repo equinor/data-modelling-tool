@@ -62,4 +62,4 @@ class JobHandler(JobHandlerInterface):
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
-        return JobStatus.UNKNOWN, "This job type does not support progress polling"
+        return JobStatus.UNKNOWN, "ReverseDescription job type does not support progress polling"

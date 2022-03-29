@@ -19,11 +19,15 @@ import {
   UIPluginSelector,
   JobApi,
 } from '@dmt/common'
-import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
+import {
+  ANALYSIS_RESULTS_PATH,
+  DEFAULT_DATASOURCE_ID,
+  JOB,
+} from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { poorMansUUID } from '../../../utils/uuid'
+import { TJob, TTask, TSIMAApplicationInput } from '../../../Types'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -55,51 +59,71 @@ const RunAnalysisButton = (props: any) => {
 
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 
-  const saveAndStartJob = () => {
+  const applicationInputHasCorrectType = (job: TJob) => {
+    if (!job.applicationInput.input.includes(job.applicationInput.inputType)) {
+      return false
+    }
+    return true
+  }
+
+  const saveAndStartJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
-    const job: any = {
-      name: `${analysis.task.name}-${poorMansUUID()}`,
-      triggeredBy: tokenData?.name,
-      type: JOB,
-      started: new Date(),
-      outputTarget: analysis.task.outputTarget,
-      input: analysis.task.input,
-      runner: analysis.task.runner,
-    }
-    dmssAPI.generatedDmssApi
-      .explorerAdd({
-        absoluteRef: `${analysisAbsoluteReference}.jobs`,
-        updateUncontained: false,
-        body: job,
+
+    dmssAPI
+      .getDocumentById({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        documentId: task.applicationInput._id,
+        depth: 0,
       })
-      .then(() => {
-        // Add the new job to the state
-        // Start a job from the created job entity (last one in list)
-        jobAPI
-          .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
-          .then((result: any) => {
-            addJob(job)
-            NotificationManager.success(
-              JSON.stringify(result.data),
-              'Simulation job started'
-            )
+      .then((applicationInputEntity: TSIMAApplicationInput) => {
+        const job: TJob = {
+          label: 'Example local container job',
+          name: `${analysis._id}.jobs.${runsSoFar}`,
+          type: JOB,
+          triggeredBy: tokenData?.name,
+          applicationInput: applicationInputEntity,
+          runner: task.runner,
+          started: new Date().toISOString(),
+        }
+        job.applicationInput.resultReferenceLocation = `${analysis._id}.jobs.${runsSoFar}.result`
+
+        if (!applicationInputHasCorrectType(job)) {
+          throw new Error(
+            `type ${job.applicationInput.inputType} not found in the application input entity!`
+          )
+        }
+
+        dmssAPI.generatedDmssApi
+          .explorerAdd({
+            absoluteRef: `${analysisAbsoluteReference}.jobs`,
+            updateUncontained: false,
+            body: job,
           })
-          .catch((error: AxiosError) => {
-            console.error(error)
-            NotificationManager.error(
-              error?.response?.data?.message,
-              'Failed to start job'
-            )
+          .then(() => {
+            // Start a job from the created job entity (last one in list)
+            jobAPI
+              .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
+              .then((result: any) => {
+                addJob(job)
+                NotificationManager.success(
+                  JSON.stringify(result.data),
+                  'Simulation job started'
+                )
+              })
+              .catch((error: AxiosError) => {
+                console.error(error)
+                NotificationManager.error(
+                  error?.response?.data?.message,
+                  'Failed to start job'
+                )
+              })
           })
-          .finally(() => setLoading(false))
       })
-      .catch((error: AxiosError) => {
-        console.error(error)
-        NotificationManager.error(
-          error?.response?.data?.message,
-          'Failed to start job'
-        )
+      .catch((error: any) => {
+        NotificationManager.error(`Error occured when starting job (${error})`)
+      })
+      .finally(() => {
         setLoading(false)
       })
   }
@@ -125,8 +149,8 @@ const RunAnalysisButton = (props: any) => {
           <UIPluginSelector
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
             entity={analysis.task}
-            onSubmit={(task: any) => {
-              saveAndStartJob()
+            onSubmit={(task: TTask) => {
+              saveAndStartJob(task)
               setShowScrim(false)
               NotificationManager.success('Job parameters updated', 'Updated')
             }}
@@ -141,6 +165,7 @@ const RunAnalysisButton = (props: any) => {
 const AnalysisCard = (props: AnalysisCardProps) => {
   const { analysis, addJob, jobs } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
+
   // @ts-ignore
   const { tokenData } = useContext(AuthContext)
 

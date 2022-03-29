@@ -1,0 +1,68 @@
+{
+  "name": "SIMAApplicationInput",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "description": "Entities from this blueprint are used as input to a container (as json string) when running SIMA jobs",
+    "attributes": [
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "inputType",
+      "description": "Type for the input attribute",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "outputType",
+      "description": "output type",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "input",
+      "description": "An input entity as json string (must be of same type as defined by inputType)",
+      "attributeType": "string"
+    },
+    {
+      "name": "SIMAComputeConfig",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "",
+      "optional": true
+    },
+    {
+      "name": "stask",
+      "attributeType": "system/SIMOS/Blob",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "description": "",
+      "optional": true
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflow",
+      "description": "",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "workflowTask",
+      "description": "",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "resultPath",
+      "description": "Where results from a job should be uploaded. Must be a valid folder location in DMSS. If this value is not provided, no results will be uploaded to DMSS.",
+      "attributeType": "string"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "resultReferenceLocation",
+      "description": "Dotted id to an analysis entity's job result. Should be on the format: entityId.jobs.*index*.result. Must be generated at run time since the index can vary.",
+      "attributeType": "string",
+      "optional": true
+    }
+    ]
+}

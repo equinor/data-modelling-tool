@@ -106,7 +106,9 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         open={inputModal}
         title={'Jobs input'}
       >
-        <StyledPre>{JSON.stringify(document.input, null, 2)} </StyledPre>
+        <StyledPre>
+          {JSON.stringify(document.applicationInput, null, 2)}{' '}
+        </StyledPre>
       </Modal>
 
       <div
@@ -139,7 +141,7 @@ export const JobLog = (props: { document: any; jobId: string }) => {
           </ClickableLabel>
         </RowGroup>
         <RowGroup>
-          <Label label="Input:" />
+          <Label label="input:" />
           <ClickableLabel onClick={() => setInputModal(true)}>
             View
           </ClickableLabel>

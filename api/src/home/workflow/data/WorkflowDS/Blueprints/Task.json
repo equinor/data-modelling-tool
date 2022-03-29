@@ -30,9 +30,10 @@
     {
       "attributeType": "string",
       "type": "object",
-      "name": "input",
-      "label": "Input",
-      "description": "Input data",
+      "name": "applicationInput",
+      "label": "Application input",
+      "description": "Input entity for container",
+      "contained": false,
       "optional": true
     },
     {

@@ -1,8 +1,8 @@
 {
-  "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6b",
+  "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6a",
   "type": "AnalysisPlatformDS/Blueprints/Analysis",
   "name": "exampleAnalysis",
-  "description": "",
+  "description": "example analysis",
   "creator": "STOO",
   "created": "2022-03-02T14:15:59.601Z",
   "updated": "2022-03-02T14:15:59.601Z",
@@ -11,15 +11,16 @@
     "name": "task-sKBDJzBE",
     "description": "",
     "label": "",
-    "inputType": "AnalysisPlatformDS/Blueprints/STask",
-    "input": {
-      "description": "This is a description",
-      "name": "dummy2",
-      "type": "AnalysisPlatformDS/Blueprints/STask"
+    "inputType": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+    "applicationInput": {
+      "_id": "9229e1f3-e94d-4cde-9fb6-a08031b0b04a",
+      "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+      "name": "exampleApplicationInput",
+      "contained": false
     },
-    "outputType": "AnalysisPlatformDS/Blueprints/Analysis",
+    "outputType": "Asystem/SIMOS/NamedEntity",
     "runner": {
-      "type": "WorkflowDS/Blueprints/jobHandlers/AzureContainer"
+      "type": "WorkflowDS/Blueprints/jobHandlers/Container"
     }
   },
   "jobs": [{

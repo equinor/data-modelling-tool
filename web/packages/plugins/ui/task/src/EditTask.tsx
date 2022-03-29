@@ -6,6 +6,7 @@ import {
   TReference,
   UIPluginSelector,
   useDocument,
+  BlueprintEnum,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -14,6 +15,7 @@ import styled from 'styled-components'
 
 const Wrapper = styled.div`
   margin: 10px;
+  width: 30vw;
 `
 
 const Column = styled.div`
@@ -62,7 +64,7 @@ export const EditTask = (props: DmtUIPlugin) => {
     <div
       style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
     >
-      <div style={{ maxWidth: '900px', width: '100%', marginBottom: '10px' }}>
+      <div style={{ marginBottom: '10px' }}>
         <Wrapper>
           <HeaderWrapper>
             <Typography variant="h3">Input</Typography>
@@ -74,17 +76,18 @@ export const EditTask = (props: DmtUIPlugin) => {
                     setFormData({ ...formData, inputType: selectedBlueprint })
                   }
                   formData={formData.inputType}
+                  blueprintFilter={BlueprintEnum.BLUEPRINT}
                 />
               </Column>
               <div style={{ display: 'flex' }}>
                 <Column>
                   <Label label={'Input entity'} />
                   <EntityPicker
-                    formData={formData.input}
+                    formData={formData.applicationInput}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({
                         ...formData,
-                        input: {
+                        applicationInput: {
                           _id: selectedEntity._id,
                           name: selectedEntity.name,
                           type: selectedEntity.type,
@@ -93,9 +96,6 @@ export const EditTask = (props: DmtUIPlugin) => {
                     }
                   />
                 </Column>
-                <Button style={{ margin: '15px 10px 0 10px' }} disabled>
-                  Create
-                </Button>
               </div>
             </GroupWrapper>
           </HeaderWrapper>
@@ -110,6 +110,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     setFormData({ ...formData, outputType: selectedBlueprint })
                   }
                   formData={formData.outputType}
+                  blueprintFilter={BlueprintEnum.BLUEPRINT}
                 />
               </Column>
             </GroupWrapper>
@@ -118,7 +119,7 @@ export const EditTask = (props: DmtUIPlugin) => {
           <HeaderWrapper>
             <Typography variant="h3">Job runner</Typography>
             <GroupWrapper>
-              <Column style={{ width: '-webkit-fill-available' }}>
+              <Column>
                 <Label label={'Blueprint'} />
                 <JobHandlerPicker
                   onChange={(selectedBlueprint: string) =>

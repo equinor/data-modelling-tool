@@ -1,5 +1,6 @@
 import { DmtSettings } from '@dmt/common'
 import { ReactNode } from 'react'
+import { TBlob, TReference } from '../../../shared/common'
 
 export type TRoute = {
   path: string
@@ -31,11 +32,62 @@ export type TLayout = {
 }
 
 export type TJob = {
+  label: string
   name: string
+  type: string
+  triggeredBy: string
+  applicationInput: TSIMAApplicationInput
+  runner?: TJobHandler | TContainerJobHandler
+  started: string
+  result?: any
+  ended?: string
+  outputTarget?: string
+}
+
+//Represents Container blueprint from WorkflowDS/Blueprints/jobHandlers/Container.json
+export type TContainerJobHandler = {
   label?: string
   image: string
   command: string[]
+  environmentVariables?: string[]
+}
+
+//Represents JobHandler blueprint from WorkflowDS/Blueprints/jobHandlers/JobHandler.json
+export type TJobHandler = {
+  environmentVariables?: string[]
+}
+
+export type TTask = {
   type: string
-  subnetId?: string
-  logAnalyticsWorkspaceResourceId?: string
+  description: string
+  label: string
+  inputType: string
+  applicationInput: TReference
+  outputType: string
+  runner: TJobHandler | TContainerJobHandler
+}
+
+export type TSIMAApplicationInput = {
+  _id?: string
+  name: string
+  description?: string
+  type: string
+  inputType: string
+  outputType: string
+  input: string //entity as a json string
+  SIMAComputeConfig?: TBlob
+  stask?: TBlob
+  workflow: string
+  workflowTask: string
+  resultPath: string
+  resultReferenceLocation?: string
+}
+
+export type TLocalContainerJob = {
+  type: string
+  name: string
+  label?: string
+  image: string
+  command: string
+  environmentVariables?: string[]
 }
