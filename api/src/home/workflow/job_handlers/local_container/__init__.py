@@ -59,8 +59,8 @@ class JobHandler(JobHandlerInterface):
                 ",",
                 ":",
             )
-            app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
-
+            # double json.dumps() is needed because we need to create a string where all " inside are escaped
+            app_input = json.dumps(json.dumps(self.job_entity["applicationInput"], separators=json_separators))
             self.client.containers.run(
                 image=runnerEntity["image"],
                 command=["/code/init.sh", f"--token={self.token}", f"--application-input={app_input}"],
