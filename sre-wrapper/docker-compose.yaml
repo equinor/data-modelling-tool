@@ -16,7 +16,7 @@ services:
       - ./tmp:/var/opt/sima
     # The stask and compute-service-cfg are part of the DemoDS in DMT with static UUIDs
     command: >-
-        /code/init.sh --input-id=AnalysisPlatformDS/9229e1f3-e94d-4cde-9fb6-a08031b0b04a
+      /code/init.sh --input-id=AnalysisPlatformDS/9229e1f3-e94d-4cde-9fb6-a08031b0b04a
 
 networks:
   data-modelling-storage-service_default:
