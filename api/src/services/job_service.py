@@ -129,7 +129,7 @@ class JobService:
             modules.append(local_containers)
             modules.append(omnia_classic_azure_container_instances)
             for job_handler_module in modules:
-                if job.entity["runner"]["type"] == job_handler_module._SUPPORTED_TYPE:
+                if job.entity["runner"]["type"] in job_handler_module._SUPPORTED_TYPE:
                     return job_handler_module.JobHandler(
                         data_source_id,
                         job.entity,

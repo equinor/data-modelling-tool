@@ -1,24 +1,25 @@
-from typing import Tuple
-
 import docker
-import os
 from docker.errors import DockerException
-
-from config import config
-from services.job_handler_interface import JobStatus, ServiceJobHandlerInterface
+from typing import Tuple
+from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
-_SUPPORTED_TYPE = "DMT-Internal/DMT/Jobs/Container"
+import json
 
 
-class JobHandler(ServiceJobHandlerInterface):
+_SUPPORTED_TYPE = ("DMT-Internal/DMT/Jobs/Container", "WorkflowDS/Blueprints/jobHandlers/Container")
+
+
+class JobHandler(JobHandlerInterface):
     """
-    Job handler plugin for running "sibling" Docker containers (docker-in-docker).
-    Support both executable jobs and job services
+    A job handler to run local docker container. This is similar to the local_containers job handler in DMT, but uses
+    a different blueprint
     """
 
-    def __init__(self, data_source: str, job_entity: dict, token: str):
-        super().__init__(data_source, job_entity, token)
+    # todo consider implementing a pydantic class to check that job_entity is in correct format
+    def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: callable):
+        super().__init__(data_source, job_entity, token, insert_reference)
+        self.headers = {"Access-Key": token}
         try:
             self.client = docker.from_env()
         except DockerException:
@@ -30,41 +31,43 @@ class JobHandler(ServiceJobHandlerInterface):
                 )
             )
 
-    def teardown_service(self, service_id: str) -> str:
-        raise NotImplementedError
-
-    def setup_service(self, service_id: str) -> str:
-        raise NotImplementedError
-
     def start(self) -> str:
-        logger.info(
-            f"JobName: '{self.job_entity.get('_id', self.job_entity.get('name'))}'."
-            + " Starting Local Container job..."
-        )
+        try:
+            runnerEntity: dict = self.job_entity["runner"]
+            logger.info(
+                f"JobName: '{self.job_entity.get('_id', self.job_entity.get('name'))}'."
+                + " Starting Local Container job..."
+            )
+            logger.info(f"job_entity is {self.job_entity}")
 
-        logger.info(
-            "Creating container\n\t"
-            + f"Image: '{self.job_entity['image']}'\n\t"
-            + f"Command: {self.job_entity.get('command', 'None')}"
-        )
+            logger.info(
+                "Creating container\n\t"
+                + f"Image: '{runnerEntity['image']}'\n\t"
+                + f"Command: {runnerEntity.get('command', 'None')}"
+            )
+            json_separators = (
+                ",",
+                ":",
+            )
+            app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
+            self.client.containers.run(
+                image=runnerEntity["image"],
+                command=["/code/init.sh", f"--token={self.token}", f"--application-input={app_input}"],
+                name=self.job_entity["name"],
+                environment=["SIMA_LICENSE=NONE"],  # todo must be updated in prod
+                network="data-modelling-storage-service_default",
+                detach=True,
+            )
 
-        env_vars = [
-            f"{e}={os.getenv(e)}" for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)
-        ] + self.job_entity.get("environmentVariables", [])
+        except KeyError as error:
+            raise Exception(
+                f"Job entity used as input to local container jobs does not include required attribute {error}"
+            )
 
-        self.client.containers.run(
-            image=self.job_entity["image"],
-            command=self.job_entity.get("command") + [f"--token={self.token}"],
-            name=self.job_entity["name"],
-            environment=env_vars,
-            network="forecast-of-response-dmt_for-network",
-            detach=True,
-        )
-
-        logger.setLevel(config.LOGGER_LEVEL)  # I could not find the correctly named logger for this...
+        logger.info("*** Local container job completed ***")
         return "Ok"
 
-    def remove(self) -> Tuple[JobStatus, str]:
+    def remove(self) -> str:
         container = self.client.containers.get(self.job_entity["name"])
         container.remove()
         return JobStatus.UNKNOWN, "Removed"
