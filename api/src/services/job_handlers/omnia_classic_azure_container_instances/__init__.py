@@ -23,9 +23,8 @@ AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
 logging.getLogger("azure.mgmt").setLevel(logging.WARNING)
 logging.getLogger("azure.identity").setLevel(logging.WARNING)
 
-_SUPPORTED_TYPE = ("DMT-Internal/DMT/AzureContainerInstanceJobClassic", "DMT-Internal/DMT/AzureContainerInstanceJob")
-
-
+_SUPPORTED_TYPE = ("WorkflowDS/Blueprints/jobHandlers/AzureContainerOmniaClassic") #"DMT-Internal/DMT/AzureContainerInstanceJobClassic", "DMT-Internal/DMT/AzureContainerInstanceJob")
+#todo to add support for multiple types? (if using blueprints from DMT-internal, jobEntity does not have the applicationInput attribute
 def inject_environment_variables(template: dict, variables: List[EnvironmentVariable]) -> dict:
     template["resources"][1]["properties"]["containers"][0]["properties"]["environmentVariables"] = [
         {"name": e.name, "value": e.value} for e in variables
@@ -39,8 +38,8 @@ class JobHandler(ServiceJobHandlerInterface):
     Support both executable jobs and job services
     """
 
-    def __init__(self, data_source: str, job_entity: dict, token: str):
-        super().__init__(data_source, job_entity, token)
+    def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: callable):
+        super().__init__(data_source, job_entity, token, insert_reference)
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
         azure_credentials = ClientSecretCredential(
             client_id=config.AZURE_JOB_SP_CLIENT_ID,
@@ -63,7 +62,7 @@ class JobHandler(ServiceJobHandlerInterface):
     def start(self) -> str:
         logger.info(
             f"JobName: '{self.job_entity.get('_id', self.job_entity.get('name'))}'."
-            + " Starting Azure Container job..."
+            + " Starting Azure Container job in Omnia classic..."
         )
 
         # Add env-vars from deployment first
@@ -75,25 +74,30 @@ class JobHandler(ServiceJobHandlerInterface):
         for env_string in self.job_entity.get("environmentVariables", []):
             key, value = env_string.split("=", 1)
             env_vars.append(EnvironmentVariable(name=key, value=value))
-
+        runnerEntity: dict = self.job_entity["runner"]
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
-            + f"Image: '{self.job_entity.get('image', 'None')}'\n\t"
+            + f"Image: '{runnerEntity.get('image', 'None')}'\n\t"
             + f"Command: {self.job_entity.get('command', 'None')}\n\t"
             + f"RegistryUsername: '{self.job_entity.get('cr-username', 'None')}'\n\t"
             + f"EnvironmentVariables: {[e.name for e in env_vars]}",
         )
-
+        json_separators = (
+            ",",
+            ":",
+        )
+        app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
         parameters = {
             "name": self.azure_valid_container_name,
-            "image": self.job_entity["image"],
-            "command": self.job_entity.get("command") + [f"--token={self.token}"],
+            "image": runnerEntity["image"],
+            "command": ["/code/init.sh", f"--token={self.token}", f"--application-input={app_input}"],
             "cpuCores": 1,
             "memoryInGb": 2,
             "restartPolicy": "Never",
             "location": "norwayeast",
-            "subnetId": self.job_entity.get("subnetId"),
-            "logAnalyticsWorkspaceResourceId": self.job_entity.get("logAnalyticsWorkspaceResourceId"),
+             "subnetId": "/subscriptions/93b83577-619d-4fb9-bfdf-f7a07d24cfbe/resourceGroups/S059-NOE-network/providers/Microsoft.Network/virtualNetworks/S059-NOE-vnet/subnets/S059-NOE-container-instances",#self.job_entity.get("subnetId"),
+            "logAnalyticsWorkspaceResourceId": "/subscriptions/93b83577-619d-4fb9-bfdf-f7a07d24cfbe/resourcegroups/s059-log/providers/microsoft.operationalinsights/workspaces/s059-log"
+            #self.job_entity.get("logAnalyticsWorkspaceResourceId"),
         }
         with open(f"{Path(__file__).parent}/OmniaClassicContainerInstance.json", "r") as template_file:
             template = json.load(template_file)
@@ -101,6 +105,8 @@ class JobHandler(ServiceJobHandlerInterface):
         template = inject_environment_variables(template, env_vars)
 
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
+
+        todo fix the deployment errors...
         result = self.arm_deployer.deploy(template, self.azure_valid_container_name, parameters)
         logger.setLevel(config.LOGGER_LEVEL)  # I could not find the correctly named logger for this...
         return result or "Ok"
