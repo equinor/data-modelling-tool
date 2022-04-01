@@ -34,7 +34,7 @@
     },
     {
       "name": "stask",
-      "attributeType": "system/SIMOS/Blob",
+      "attributeType": "/STask",
       "type": "system/SIMOS/BlueprintAttribute",
       "description": "",
       "optional": true

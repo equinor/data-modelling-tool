@@ -1,9 +1,9 @@
 {
   "_id": "58a4d888-3ab4-4ad2-9bd9-9614dcb066d4",
   "type": "AnalysisPlatformDS/Blueprints/STask",
-  "name": "dummy2",
+  "name": "forapp",
   "blob": {
-    "name": "/STasks/dummy.stask",
+    "name": "/STasks/forapp.stask",
     "type": "system/SIMOS/Blob",
     "_blob_id": "15cf2783-6118-4bfd-a427-9485b00fa9da"
   }

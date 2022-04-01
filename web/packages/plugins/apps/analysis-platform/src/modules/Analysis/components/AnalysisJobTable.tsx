@@ -3,6 +3,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext, JobApi } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
+import { TJob } from '../../../Types'
 
 type AnalysisJobTableProps = {
   jobs: any
@@ -23,8 +24,8 @@ const ClickableLabel = styled.div`
   text-decoration-line: underline;
 `
 
-const JobRow = (props: any) => {
-  const { job, index, analysisId } = props // @ts-ignore
+const JobRow = (props: { job: TJob }) => {
+  const { job } = props // @ts-ignore
   const { token } = useContext(AuthContext)
   const JobAPI = new JobApi(token)
   const [loading, setLoading] = useState<boolean>(false)
@@ -32,7 +33,7 @@ const JobRow = (props: any) => {
 
   useEffect(() => {
     setLoading(true)
-    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`)
+    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${job.name}`)
       .then((result: any) => {
         setJobStatus(result.data.status)
       })
@@ -44,9 +45,8 @@ const JobRow = (props: any) => {
 
   return (
     <Table.Row
-      key={index}
       onClick={() => {
-        document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
+        document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.name}`
       }}
     >
       <Table.Cell>
@@ -59,7 +59,7 @@ const JobRow = (props: any) => {
         <ClickableLabel
           onClick={(e) => {
             window.open(
-              `/ap/view/AnalysisPlatformDS/${job.result?._id}`,
+              `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.name}`,
               '_blank'
             )
             e.stopPropagation()

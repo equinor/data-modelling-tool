@@ -53,11 +53,16 @@ export class DmssAPI implements IDmssAPI {
     return axios.post(url, data, this.config)
   }
 
-  addDocumentToParent({ absoluteRef, body }: ExplorerAddRequest): Promise<any> {
+  addDocumentToParent({
+    absoluteRef,
+    body,
+    updateUncontained,
+  }: ExplorerAddRequest): Promise<any> {
     return this.generatedDmssApi
       .explorerAdd({
         absoluteRef,
         body,
+        updateUncontained,
       })
       .catch((error: any) => {
         return handleApiError(error)

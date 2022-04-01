@@ -1,23 +1,14 @@
 import docker
 from docker.errors import DockerException
 from typing import Tuple
+
+from config import config
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
-from dmss_api.apis import DefaultApi
-import json
 
 import os
 
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/Container"
-
-
-class Settings:
-    PUBLIC_DMSS_API: str = os.getenv("PUBLIC_DMSS_API", "http://dmss:5000")
-
-
-dmss_api = DefaultApi()
-settings = Settings()
-dmss_api.api_client.configuration.host = settings.PUBLIC_DMSS_API
 
 
 class JobHandler(JobHandlerInterface):
@@ -27,9 +18,9 @@ class JobHandler(JobHandlerInterface):
     """
 
     # todo consider implementing a pydantic class to check that job_entity is in correct format
-    def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: callable):
-        super().__init__(data_source, job_entity, token, insert_reference)
-        self.headers = {"Access-Key": token}
+    def __init__(self, job, data_source: str):
+        super().__init__(job, data_source)
+        self.headers = {"Access-Key": job.token}
         try:
             self.client = docker.from_env()
         except DockerException:
@@ -43,28 +34,24 @@ class JobHandler(JobHandlerInterface):
 
     def start(self) -> str:
         try:
-            runnerEntity: dict = self.job_entity["runner"]
-            logger.info(
-                f"JobName: '{self.job_entity.get('_id', self.job_entity.get('name'))}'."
-                + " Starting Local Container job..."
-            )
-            logger.info(f"job_entity is {self.job_entity}")
-
+            runnerEntity: dict = self.job.entity["runner"]
+            logger.info(f"JobName: '{self.job.job_id}'." + " Starting Local Container job...")
             logger.info(
                 "Creating container\n\t"
                 + f"Image: '{runnerEntity['image']}'\n\t"
-                + f"Command: {runnerEntity.get('command', 'None')}"
+                + f"Command: '--job-id={self.job.job_id}.applicationInput'"
             )
-            json_separators = (
-                ",",
-                ":",
-            )
-            app_input = json.dumps(self.job_entity["applicationInput"], separators=json_separators)
+            envs = [f"{e}={os.getenv(e)}" for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)]
+
+            envs.append(f"DMSS_TOKEN={self.job.token}")
             self.client.containers.run(
                 image=runnerEntity["image"],
-                command=["/code/init.sh", f"--token={self.token}", f"--application-input={app_input}"],
-                name=self.job_entity["name"],
-                environment=["SIMA_LICENSE=NONE"],  # todo must be updated in prod
+                command=[
+                    "/code/init.sh",
+                    f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
+                ],
+                name=self.job.job_id.replace("/", "_"),
+                environment=envs,
                 network="data-modelling-storage-service_default",
                 detach=True,
             )
@@ -78,12 +65,16 @@ class JobHandler(JobHandlerInterface):
         return "Ok"
 
     def remove(self) -> str:
-        container = self.client.containers.get(self.job_entity["name"])
+        container = self.client.containers.get(self.job.entity["name"])
         container.remove()
         return JobStatus.UNKNOWN, "Removed"
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
-        container = self.client.containers.get(self.job_entity["name"])
-        logs = container.logs()
-        return JobStatus.UNKNOWN, logs.decode()
+        try:
+            container = self.client.containers.get(self.job.entity["name"])
+            logs = container.logs()
+            return JobStatus.UNKNOWN, logs.decode()
+        except docker.errors.NotFound as error:
+            logger.error(f"Failed to poll progress of local container: {error}")
+            return JobStatus.UNKNOWN, ""

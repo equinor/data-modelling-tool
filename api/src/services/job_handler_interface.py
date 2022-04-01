@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
-from typing import Callable, Tuple
+from typing import Tuple
 
 
 class JobStatus(Enum):
@@ -67,11 +67,9 @@ class Job:
 
 
 class JobHandlerInterface(ABC):
-    def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: Callable[[dict], None]):
+    def __init__(self, job: Job, data_source: str):
+        self.job = job
         self.data_source = data_source
-        self.job_entity = job_entity
-        self.token = token
-        self.insert_reference = insert_reference
 
     @abstractmethod
     def start(self) -> str:

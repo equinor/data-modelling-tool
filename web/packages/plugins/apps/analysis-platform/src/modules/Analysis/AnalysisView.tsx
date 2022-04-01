@@ -4,6 +4,7 @@ import { AuthContext, UIPluginSelector, useDocument } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import AnalysisInfoCard from './components/AnalysisInfo'
 import AnalysisJobTable from './components/AnalysisJobTable'
+import { TJob } from '../../Types'
 
 export default (): JSX.Element => {
   // @ts-ignore
@@ -19,15 +20,14 @@ export default (): JSX.Element => {
     setJobs(analysis.jobs)
   }, [analysis])
 
-  function addJob(newJob: any) {
-    setJobs([...jobs, newJob])
-    console.log('New job added to state')
-  }
-
   if (isLoading) return <Progress.Linear />
   return (
     <>
-      <AnalysisInfoCard analysis={analysis} addJob={addJob} jobs={jobs} />
+      <AnalysisInfoCard
+        analysis={analysis}
+        addJob={(newJob: TJob) => setJobs([...jobs, newJob])}
+        jobs={jobs}
+      />
       <>
         <UIPluginSelector
           entity={analysis.task}

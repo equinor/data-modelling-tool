@@ -36,7 +36,7 @@ export type TJob = {
   name: string
   type: string
   triggeredBy: string
-  applicationInput: TSIMAApplicationInput
+  applicationInput: TReference
   runner?: TJobHandler | TContainerJobHandler
   started: string
   result?: any
@@ -74,7 +74,7 @@ export type TSIMAApplicationInput = {
   type: string
   inputType: string
   outputType: string
-  input: string //entity as a json string
+  input: any
   SIMAComputeConfig?: TBlob
   stask?: TBlob
   workflow: string
