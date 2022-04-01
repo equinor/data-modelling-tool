@@ -148,16 +148,20 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         </RowGroup>
         <RowGroup>
           <Label label="Result:" />
-          <ClickableLabel
-            onClick={() =>
-              window.open(
-                `/ap/view/AnalysisPlatformDS/${document.result?._id}`,
-                '_blank'
-              )
-            }
-          >
-            Open
-          </ClickableLabel>
+          {Object.keys(document.result).length ? (
+            <ClickableLabel
+              onClick={() =>
+                window.open(
+                  `/ap/view/AnalysisPlatformDS/${document.result?._id}`,
+                  '_blank'
+                )
+              }
+            >
+              Open
+            </ClickableLabel>
+          ) : (
+            <>None</>
+          )}
         </RowGroup>
       </div>
       <div

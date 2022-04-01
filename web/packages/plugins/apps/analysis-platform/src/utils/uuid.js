@@ -1,5 +1,5 @@
-export function poorMansUUID() {
-  const randomNumbers = new Uint8Array(10)
+export function poorMansUUID(length = 10) {
+  const randomNumbers = new Uint8Array(length)
   window.crypto.getRandomValues(randomNumbers)
   return randomNumbers.reduce((a, b) => a.toString() + b.toString()).toString()
 }

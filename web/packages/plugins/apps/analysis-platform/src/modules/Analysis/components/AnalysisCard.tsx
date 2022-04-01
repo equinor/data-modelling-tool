@@ -19,15 +19,12 @@ import {
   UIPluginSelector,
   JobApi,
 } from '@dmt/common'
-import {
-  ANALYSIS_RESULTS_PATH,
-  DEFAULT_DATASOURCE_ID,
-  JOB,
-} from '../../../const'
+import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TJob, TTask, TSIMAApplicationInput } from '../../../Types'
+import { TJob, TTask } from '../../../Types'
+import { poorMansUUID } from '../../../utils/uuid'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -59,70 +56,49 @@ const RunAnalysisButton = (props: any) => {
 
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 
-  const applicationInputHasCorrectType = (job: TJob) => {
-    if (!job.applicationInput.input.includes(job.applicationInput.inputType)) {
-      return false
-    }
-    return true
-  }
-
   const saveAndStartJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
+    const job: TJob = {
+      label: 'Example local container job',
+      name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(5)}`,
+      type: JOB,
+      triggeredBy: tokenData?.name,
+      applicationInput: task.applicationInput,
+      runner: task.runner,
+      started: new Date().toISOString(),
+    }
 
     dmssAPI
-      .getDocumentById({
-        dataSourceId: DEFAULT_DATASOURCE_ID,
-        documentId: task.applicationInput._id,
-        depth: 0,
+      .addDocumentToParent({
+        absoluteRef: `${analysisAbsoluteReference}.jobs`,
+        updateUncontained: false,
+        body: job,
       })
-      .then((applicationInputEntity: TSIMAApplicationInput) => {
-        const job: TJob = {
-          label: 'Example local container job',
-          name: `${analysis._id}.jobs.${runsSoFar}`,
-          type: JOB,
-          triggeredBy: tokenData?.name,
-          applicationInput: applicationInputEntity,
-          runner: task.runner,
-          started: new Date().toISOString(),
-        }
-        job.applicationInput.resultReferenceLocation = `${analysis._id}.jobs.${runsSoFar}.result`
-
-        if (!applicationInputHasCorrectType(job)) {
-          throw new Error(
-            `type ${job.applicationInput.inputType} not found in the application input entity!`
-          )
-        }
-
-        dmssAPI.generatedDmssApi
-          .explorerAdd({
-            absoluteRef: `${analysisAbsoluteReference}.jobs`,
-            updateUncontained: false,
-            body: job,
+      .then(() => {
+        addJob(job)
+        // Start a job from the created job entity (last one in list)
+        jobAPI
+          .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
+          .then((result: any) => {
+            NotificationManager.success(
+              JSON.stringify(result.data),
+              'Simulation job started'
+            )
           })
-          .then(() => {
-            // Start a job from the created job entity (last one in list)
-            jobAPI
-              .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
-              .then((result: any) => {
-                addJob(job)
-                NotificationManager.success(
-                  JSON.stringify(result.data),
-                  'Simulation job started'
-                )
-              })
-              .catch((error: AxiosError) => {
-                console.error(error)
-                NotificationManager.error(
-                  error?.response?.data?.message,
-                  'Failed to start job'
-                )
-              })
+          .catch((error: AxiosError) => {
+            console.error(error)
+            NotificationManager.error(
+              error?.response?.data?.message,
+              'Failed to start job'
+            )
           })
       })
-      .catch((error: any) => {
-        NotificationManager.error(`Error occured when starting job (${error})`)
+      .catch((error: Error) => {
+        console.error(error)
+        NotificationManager.error(`Could not save job (${error})`)
       })
+
       .finally(() => {
         setLoading(false)
       })

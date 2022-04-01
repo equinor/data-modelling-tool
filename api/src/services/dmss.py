@@ -4,8 +4,10 @@ from typing import Union
 import requests
 from dmss_api.apis import DefaultApi
 from flask import request
+from requests import HTTPError
 
 from config import Config
+from utils.logging import logger
 
 dmss_api = DefaultApi()
 dmss_api.api_client.configuration.host = Config.DMSS_API
@@ -45,7 +47,7 @@ def get_document_by_uid(
 
     # The generated API package was transforming data types. ie. parsing datetime from strings...
 
-    headers = {"Authorization": f"Bearer {token or get_access_token()}", "API-Key": token or get_access_token()}
+    headers = {"Authorization": f"Bearer {token or get_access_token()}", "Access-Key": token or get_access_token()}
     params = {"depth": depth, "ui_recipe": ui_recipe, "attribute": attribute}
     req = requests.get(
         f"{Config.DMSS_API}/api/v1/documents/{data_source_id}/{document_id}", params=params, headers=headers
@@ -57,15 +59,18 @@ def get_document_by_uid(
 
 def update_document_by_uid(document_id: str, document: dict, token: str = None) -> dict:
 
-    headers = {"Authorization": f"Bearer {token or get_access_token()}", "API-Key": token or get_access_token()}
+    headers = {"Authorization": f"Bearer {token or get_access_token()}", "Access-Key": token or get_access_token()}
     form_data = {k: json.dumps(v) if isinstance(v, dict) else str(v) for k, v in document.items()}
     req = requests.put(
         f"{Config.DMSS_API}/api/v1/documents/{document_id}/?update_uncontained=False",
         data=form_data,
         headers=headers,
     )
-    req.raise_for_status()
-
+    try:
+        req.raise_for_status()
+    except HTTPError as error:
+        logger.error(error.response.text)
+        raise HTTPError(error.response.text)
     return req.json()
 
 

@@ -148,3 +148,5 @@ api/first-run-false
 /sre-wrapper/sima.lic
 /sre-wrapper/tmp/
 /web/packages/home/public/version.txt
+/api/src/home/analysis-platform/data/AnalysisPlatformDS/Data/STasks/forapp.stask
+/sima.lic

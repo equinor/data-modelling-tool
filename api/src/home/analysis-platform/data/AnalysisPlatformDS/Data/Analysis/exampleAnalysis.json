@@ -20,7 +20,8 @@
     },
     "outputType": "Asystem/SIMOS/NamedEntity",
     "runner": {
-      "type": "WorkflowDS/Blueprints/jobHandlers/Container"
+      "type": "WorkflowDS/Blueprints/jobHandlers/Container",
+      "image": "publicMSA.azurecr.io/dmt-job/srs:latest"
     }
   },
   "jobs": [{

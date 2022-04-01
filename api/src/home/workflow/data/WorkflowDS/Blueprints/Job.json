@@ -28,7 +28,8 @@
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "applicationInput",
       "label": "Input",
-      "description": "Input entity to a job"
+      "description": "Input entity to a job",
+      "contained": false
     },
     {
       "name": "started",

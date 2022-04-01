@@ -22,7 +22,6 @@ from services.job_scheduler import scheduler
 from utils.get_extends_from import get_extends_from
 from utils.logging import logger
 from utils.string_helpers import split_absolute_ref
-from services.job_handlers import azure_container_instances, local_containers, omnia_classic_azure_container_instances
 from apscheduler.schedulers.background import BackgroundScheduler
 
 
@@ -96,7 +95,7 @@ class JobService:
 
     @staticmethod
     def _insert_reference(document_id: str, reference: dict, token: str = None):
-        headers = {"API-Key": token}
+        headers = {"Access-Key": token}
         req = requests.put(f"{config.DMSS_API}/api/v1/reference/{document_id}", json=reference, headers=headers)
         req.raise_for_status()
 
@@ -124,18 +123,9 @@ class JobService:
 
         try:
             modules = [importlib.import_module(module) for module in module_paths]
-            # Add standard modules after plugins
-            modules.append(azure_container_instances)
-            modules.append(local_containers)
-            modules.append(omnia_classic_azure_container_instances)
             for job_handler_module in modules:
                 if job.entity["runner"]["type"] == job_handler_module._SUPPORTED_TYPE:
-                    return job_handler_module.JobHandler(
-                        data_source_id,
-                        job.entity,
-                        job.token,
-                        lambda ref: self._insert_reference(f"{job.job_id}.result", ref, job.token),
-                    )
+                    return job_handler_module.JobHandler(job, data_source_id)
         except ImportError as error:
             traceback.print_exc()
             raise ImportError(
@@ -161,7 +151,9 @@ class JobService:
 
     def register_job(self, job_id: str) -> str:
         if self._get_job(job_id):
-            raise Exception("This job is already registered. Create a new job, or delete the old one.")
+            raise Exception(
+                f"A job with id '{job_id}' is already registered. Create a new job, or delete the old job."
+            )
 
         # A token must be created when there still is a request object.
         token = get_personal_access_token()

@@ -21,7 +21,8 @@
     {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "command"
+      "name": "customCommand",
+      "optional": true
     }
   ],
   "uiRecipes": [
