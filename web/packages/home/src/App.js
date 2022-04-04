@@ -52,10 +52,10 @@ const HorizontalList = styled.div`
   }
 `
 
-const AppSelector = (props) => {
+const AppSelector = props => {
   const { applications } = props
   const history = useHistory()
-  const links = Object.values(applications).map((setting) => (
+  const links = Object.values(applications).map(setting => (
     <div key={setting.name}>
       <CardWrapper onClick={() => history.push(`/${setting.urlPath}`)}>
         <CardHeader>
@@ -82,18 +82,21 @@ function App() {
   const authEnabled = process.env.REACT_APP_AUTH === '1'
   const dmtAPI = new DmtAPI()
 
+  console.error(`AUTH enabled ${authEnabled}`)
+  console.error(`react_app_auth${process.env.REACT_APP_AUTH}`)
+
   useEffect(() => {
     setLoadingAppSettings(true)
     dmtAPI
       .getSystemSettings()
-      .then((res) =>
+      .then(res =>
         setApplications(
           sortApplications(res.data).filter(
-            (application) => application?.hidden !== true
+            application => application?.hidden !== true
           )
         )
       )
-      .catch((error) => console.error(error))
+      .catch(error => console.error(error))
       .finally(() => setLoadingAppSettings(false))
   }, [])
 
@@ -131,7 +134,7 @@ function App() {
           }
         />
         <Switch>
-          {Object.values(applications).map((settings) => (
+          {Object.values(applications).map(settings => (
             <Route
               path={`/${settings.urlPath}`}
               render={() => {
