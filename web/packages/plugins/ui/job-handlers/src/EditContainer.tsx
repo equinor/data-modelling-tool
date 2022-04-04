@@ -61,8 +61,8 @@ export const EditContainer = (props: DmtUIPlugin) => {
               label={'Container image'}
               // value={formData.crUsername}
               placeholder="Image to run"
-              items={['datamodelingtool.azurecr.io/dmt-job/srs:test']}
-              handleSelectedItemChange={(selected) => {
+              items={['datamodelingtool.azurecr.io/ap-job/srs:latest']}
+              handleSelectedItemChange={selected => {
                 setUnsavedChanges(true)
                 setFormData({ ...formData, image: selected.inputValue })
               }}

@@ -3,7 +3,7 @@ version: "3.8"
 services:
   dmt-sre:
     build: .
-    image: datamodelingtool.azurecr.io/dmt-job/srs:test
+    image: datamodelingtool.azurecr.io/ap-job/srs:latest
     environment:
       SIMA_LICENSE: "NONE"
       PUBLIC_DMSS_API: http://dmss:5000
