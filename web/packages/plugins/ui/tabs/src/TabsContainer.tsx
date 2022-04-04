@@ -56,6 +56,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
+  const [baseTypeName, setBaseTypeName] = useState<string>('Home')
   const [entity, _loading, updateDocument, error] = useDocument(
     dataSourceId,
     documentId
@@ -64,6 +65,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   useEffect(() => {
     if (!entity) return
     setFormData({ ...entity })
+    setBaseTypeName(entity.type.split('/').slice(-1)[0])
   }, [entity])
 
   useEffect(() => {
@@ -96,7 +98,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           {selectedTab === 'home' && (
             <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
           )}
-          Base
+          {baseTypeName}
         </BaseTab>
         {Object.values(childTabs).map((tabData: any) => (
           <ChildTab

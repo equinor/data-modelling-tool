@@ -50,7 +50,7 @@ class JobHandler(JobHandlerInterface):
                     "/code/init.sh",
                     f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
                 ],
-                name=self.job.job_id.replace("/", "_"),
+                name=self.job.entity["name"],
                 environment=envs,
                 network="data-modelling-storage-service_default",
                 detach=True,

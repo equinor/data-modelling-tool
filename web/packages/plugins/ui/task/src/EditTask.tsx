@@ -159,6 +159,9 @@ export const EditTask = (props: DmtUIPlugin) => {
                       entity={formData?.runner || { type: defaultRunnerType }}
                       breadcrumb={false}
                       categories={categories}
+                      onChange={(data: any) =>
+                        setFormData({ ...formData, runner: data })
+                      }
                       onSubmit={(data: any) =>
                         setFormData({ ...formData, runner: data })
                       }

@@ -1,12 +1,7 @@
-import { DmtUIPlugin, useDocument } from '@dmt/common'
+import { DmtUIPlugin, Select } from '@dmt/common'
 import * as React from 'react'
-import { useEffect, useState } from 'react'
-import {
-  Button,
-  SingleSelect,
-  TextField,
-  Typography,
-} from '@equinor/eds-core-react'
+import { ChangeEvent, useEffect, useState } from 'react'
+import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -20,33 +15,14 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditContainer = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onSubmit } = props
+  const { document, onSubmit, onChange } = props
   const [formData, setFormData] = useState<any>({ ...document })
-  const [
-    resultReferenceLocation,
-    setResultReferenceLocation,
-  ] = useState<string>('')
-  const [unsavedChanges, setUnsavedChanges] = useState<boolean>(false)
-  const analysisId: string = documentId.split('.')[0] || 'NONE'
-  const [analysisDocument, _loading, updateDocument, error] = useDocument(
-    dataSourceId,
-    analysisId
-  )
+  const imageOptions = ['datamodelingtool.azurecr.io/dmt-job/srs:latest']
 
   useEffect(() => {
-    if (analysisDocument) {
-      const analysisBlyeprint = 'AnalysisPlatformDS/Blueprints/Analysis'
-      if (analysisDocument.type !== analysisBlyeprint) {
-        throw new Error(
-          `Edit local container UI plugin can only be used with an analysis entity of type ${analysisBlyeprint}`
-        )
-      }
-      setResultReferenceLocation(
-        `${analysisDocument._id}.jobs.${analysisDocument.jobs.length}.result`
-      )
-    }
-  }, [analysisDocument])
-  if (_loading) return <div>Loading...</div>
+    if (onChange) onChange(formData)
+  }, [formData])
+
   return (
     <div
       style={{
@@ -63,31 +39,32 @@ export const EditContainer = (props: DmtUIPlugin) => {
         <Wrapper>
           <HeaderWrapper>
             <Typography variant="h5">Container image</Typography>
-            <SingleSelect
-              id="image"
-              label={'Container image'}
-              // value={formData.crUsername}
-              placeholder="Image to run"
-              items={['publicMSA.azurecr.io/dmt-job/srs:latest']}
-              handleSelectedItemChange={(selected) => {
-                setUnsavedChanges(true)
-                setFormData({ ...formData, image: selected.inputValue })
-              }}
-            />
+            <Select
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setFormData({ ...formData, image: e.target.value })
+              }
+              value={formData?.image || null}
+            >
+              {imageOptions.map((image: string, index: number) => (
+                <option key={index} value={image}>
+                  {image}
+                </option>
+              ))}
+            </Select>
           </HeaderWrapper>
 
           <div>
-            <Button
-              as="button"
-              onClick={() => {
-                setUnsavedChanges(false)
-                //@ts-ignore
-                onSubmit(formData)
-              }}
-            >
-              Save
-            </Button>
-            {unsavedChanges && <p>* Unsaved changes</p>}
+            {!onChange && ( // Only show button if no "onChange" function passed
+              <Button
+                as="button"
+                onClick={() => {
+                  //@ts-ignore
+                  onSubmit(formData)
+                }}
+              >
+                Save
+              </Button>
+            )}
           </div>
         </Wrapper>
       </div>
