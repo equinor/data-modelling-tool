@@ -9,7 +9,7 @@ spec:
         from: master
     - name: dev
       build:
-        from: master
+        from: setup-radix
   components:
     - name: web
       image: datamodelingtool.azurecr.io/dmt/web:{imageTagName}
