@@ -118,7 +118,12 @@ export function UIPluginSelector(props: {
     }
   }, [blueprint, loadingBlueprint])
 
-  if (loadingBlueprint || loading) return <DotProgress color="primary" />
+  if (loadingBlueprint || loading)
+    return (
+      <div style={{ alignSelf: 'center', padding: '50px' }}>
+        <DotProgress color="primary" />
+      </div>
+    )
 
   if (error)
     return (

@@ -61,7 +61,7 @@ const RunAnalysisButton = (props: any) => {
     const runsSoFar = jobs.length
     const job: TJob = {
       label: 'Example local container job',
-      name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(5)}`,
+      name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(1)}`,
       type: JOB,
       triggeredBy: tokenData?.name,
       applicationInput: task.applicationInput,
@@ -121,6 +121,8 @@ const RunAnalysisButton = (props: any) => {
         <CustomScrim
           closeScrim={() => setShowScrim(false)}
           header={'Job parameters'}
+          width={'600px'}
+          height={'700px'}
         >
           <UIPluginSelector
             absoluteDottedId={`${analysisAbsoluteReference}.task`}
