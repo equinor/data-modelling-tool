@@ -25,7 +25,6 @@ Read our [contributors' guide](https://potential-train-e73e8904.pages.github.io/
 
 ## How to reset Azure database
 As of 4. April, only a database for the test version is set up. This can be found in the dmt-test resource group in the subscription S398-DataModellingTool.
-Note: the scale settings in the mongodb needs to be set to autoscale to avoid request rate too large (429) exception.
 
 Before run, go to DMSS local folder and substitte the src/home/system/data_sources/system.json file with correct connection info (host, port, username and password)
 Also, change the DMSS docker-compose.override.yml file: set he       MONGO_AZURE_URI: env variable and set AUTH_ENABLED true.
@@ -57,3 +56,5 @@ NB! DO NOT COMMIT DATABASE PASSWORD TO DMSS REPO!
 _Dev URL_  
 DMSS_API=https://dmss-data-modelling-tool-dev.radix.equinor.com
 
+_Prod URL_  
+DMSS_API=https://data-modelling-tool.app.radix.equinor.com
