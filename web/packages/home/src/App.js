@@ -82,9 +82,6 @@ function App() {
   const authEnabled = process.env.REACT_APP_AUTH === '1'
   const dmtAPI = new DmtAPI()
 
-  console.error(`AUTH enabled ${authEnabled}`)
-  console.error(`react_app_auth${process.env.REACT_APP_AUTH}`)
-
   useEffect(() => {
     setLoadingAppSettings(true)
     dmtAPI
