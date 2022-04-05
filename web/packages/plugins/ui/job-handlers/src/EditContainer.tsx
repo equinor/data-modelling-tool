@@ -17,7 +17,10 @@ const HeaderWrapper = styled.div`
 export const EditContainer = (props: DmtUIPlugin) => {
   const { document, onSubmit, onChange } = props
   const [formData, setFormData] = useState<any>({ ...document })
-  const imageOptions = ['datamodelingtool.azurecr.io/dmt-job/srs:latest']
+  const imageOptions = [
+    'datamodelingtool.azurecr.io/dmt-job/srs:latest',
+    'datamodelingtool.azurecr.io/dmt-job/srs:production',
+  ]
 
   useEffect(() => {
     if (onChange) onChange(formData)
