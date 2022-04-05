@@ -35,10 +35,8 @@ class JobHandler(ServiceJobHandlerInterface):
     Support both executable jobs and job services
     """
 
-    def __init__(self, data_source: str, job_entity: dict, token: str, insert_reference: callable):
-        super().__init__(
-            data_source, job_entity, token, insert_reference
-        )  # todo cannot see why insert_reference is needed
+    def __init__(self, data_source: str, job_entity: dict, token: str, ):
+        super().__init__(data_source, job_entity, token)
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
         azure_credentials = ClientSecretCredential(
             client_id=config.AZURE_JOB_SP_CLIENT_ID,
