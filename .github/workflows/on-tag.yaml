@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       tag-ref: ${{ steps.tag-ref.outputs.tag-ref }}
+      oauth-redirect-url: https://data-modelling-tool.app.radix.equinor.com
     steps:
       - uses: actions/checkout@master
       - id: create-ref
@@ -36,6 +37,7 @@ jobs:
     uses: ./.github/workflows/publish.yaml
     with:
       image-tag: ${{ needs.set-tag-ref.outputs.tag-ref }}
+      oauth-redirect-url: https://data-modelling-tool.app.radix.equinor.com
     secrets:
       ACR_SECRET: ${{ secrets.ACR_SECRET }}
 

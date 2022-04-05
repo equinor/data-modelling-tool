@@ -24,6 +24,7 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       commit-ref: ${{ steps.create-ref.outputs.commit-ref }}
+      oauth-redirect-url: https://proxy-data-modelling-tool-dev.radix.equinor.com
     steps:
       - uses: actions/checkout@master
       - id: create-ref
@@ -36,6 +37,7 @@ jobs:
     uses: ./.github/workflows/publish.yaml
     with:
       image-tag: ${{ needs.set-commit-ref.outputs.commit-ref }}
+      oauth-redirect-url: https://proxy-data-modelling-tool-dev.radix.equinor.com
     secrets:
       ACR_SECRET: ${{ secrets.ACR_SECRET }}
 
