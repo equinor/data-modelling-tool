@@ -17,12 +17,8 @@ spec:
       environmentConfig:
         - environment: prod
           imageTagName: production
-          variables:
-            REACT_APP_AUTH_REDIRECT_URI: https://data-modelling-tool.app.radix.equinor.com/
         - environment: dev
           imageTagName: latest
-          variables:
-            REACT_APP_AUTH_REDIRECT_URI: https://proxy-data-modelling-tool-dev.radix.equinor.com/
       ports:
         - name: http
           port: 3000
