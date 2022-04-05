@@ -16,6 +16,7 @@ jobs:
     uses: ./.github/workflows/publish.yaml
     with:
       image-tag: production
+      oauth-redirect-url: https://data-modelling-tool.app.radix.equinor.com
     secrets:
       ACR_SECRET: ${{ secrets.ACR_SECRET }}
 
