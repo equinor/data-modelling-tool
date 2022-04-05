@@ -36,6 +36,7 @@ export type TJob = {
   name: string
   type: string
   triggeredBy: string
+  job_entity_id: string //todo add this to blueprint??
   applicationInput: TReference
   runner?: TJobHandler | TContainerJobHandler
   started: string

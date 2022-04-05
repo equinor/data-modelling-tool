@@ -33,7 +33,7 @@ const JobRow = (props: { job: TJob }) => {
 
   useEffect(() => {
     setLoading(true)
-    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${job.name}`)
+    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${job.job_entity_id}`)
       .then((result: any) => {
         setJobStatus(result.data.status)
       })
@@ -46,7 +46,7 @@ const JobRow = (props: { job: TJob }) => {
   return (
     <Table.Row
       onClick={() => {
-        document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.name}`
+        document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.job_entity_id}`
       }}
     >
       <Table.Cell>
@@ -57,7 +57,7 @@ const JobRow = (props: { job: TJob }) => {
       <Table.Cell>{jobStatus}</Table.Cell>
       <Table.Cell>
         <ClickableLabel
-          onClick={(e) => {
+          onClick={e => {
             window.open(
               `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.name}`,
               '_blank'
