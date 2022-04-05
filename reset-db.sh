@@ -137,8 +137,6 @@ fi
 DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 DS_DIR=$DIR/api/src/home
 CONTAINER_DS_DIR=/code/home
-#DMSS_SYSTEM=$DIR/dmss-system.radix.json
-#COMPOSE_FILE=$DIR/docker-compose.yml
 
 function discover_packages() {
   info "Discovering packages.."
@@ -154,7 +152,6 @@ function discover_data_sources() {
   #api/src/home/<AppName>/data_sources/<DataSource>.json
   IFS=$'\n'
   DATA_SOURCES=($(find "$DS_DIR" -maxdepth 3 -type f -iwholename "*api/src/home/*/data_sources/*.json"))
-  echo "ALL DS:::::: $DATA_SOURCES"
   unset IFS
 }
 
@@ -226,13 +223,6 @@ function set_database_host() {
           warn "    The file does not exist"
         fi
       done
-#      if test -f "$DMSS_SYSTEM"; then
-#          echo "  Updating dmss-system.radix.json"
-#          sed -i "$SED_PATTERN" "$DMSS_SYSTEM"
-#          grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM" && ok || err
-#      else
-#        warn "   The file does not exist"
-#      fi
     else
       fatal "Missing required variable 'MONGO_AZURE_HOST'. Exiting."
     fi
@@ -253,13 +243,6 @@ function set_database_port() {
           warn "    The file does not exist"
         fi
       done
-#      if test -f "$DMSS_SYSTEM"; then
-#          echo "  Updating dmss-system.radix.json"
-#          sed -i "$SED_PATTERN" "$DMSS_SYSTEM"
-#          grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM" && ok || err
-#      else
-#        warn "    The file does not exist"
-#      fi
     else
       fatal "Missing required variable 'MONGO_AZURE_PORT'. Exiting."
     fi
@@ -279,13 +262,6 @@ function set_database_tls() {
           warn "    The file does not exist"
         fi
       done
-#      if test -f "$DMSS_SYSTEM"; then
-#          echo "  Updating dmss-system.radix.json"
-#          sed -i "$SED_PATTERN" "$DMSS_SYSTEM"
-#          grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM" && ok || err
-#      else
-#        warn "    The file does not exist"
-#      fi
 }
 
 function set_database_username() {
@@ -303,13 +279,6 @@ function set_database_username() {
           warn "    The file does not exist"
         fi
       done
-#      if test -f "$DMSS_SYSTEM"; then
-#          echo "  Updating dmss-system.radix.json"
-#          sed -i "$SED_PATTERN" "$DMSS_SYSTEM"
-#          grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM" && ok || err
-#      else
-#        warn "    The file does not exist"
-#      fi
     else
       fatal "- Missing required variable 'MONGO_AZURE_USER'. Exiting."
     fi
@@ -330,13 +299,6 @@ function set_database_password() {
           warn "    The file does not exist"
         fi
       done
-#      if test -f "$DMSS_SYSTEM"; then
-#          echo "  Updating dmss-system.radix.json"
-#          sed -i "$SED_PATTERN" "$DMSS_SYSTEM"
-#          grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM" && ok || err
-#      else
-#        warn "    The file does not exist"
-#      fi
     else
       fatal "- Missing required variable 'MONGO_AZURE_PW'. Exiting."
     fi
@@ -355,26 +317,6 @@ function set_data_source_names() {
   done
 }
 
-#function update_compose_spec() {
-#  TARGET_ENV="ENVIRONMENT: production"
-#  TARGET_LOG="LOGGING_LEVEL: debug"
-#  info "Updating compose spec.."
-#  if test -f "$COMPOSE_FILE"; then
-#    echo "  Updating volume mount"
-#    sed -i "s/dmss-system.local.json:/dmss-system.radix.json:/" "$COMPOSE_FILE"
-#    grep -Eq "^\s{6}- ./dmss-system.radix.json:" "$COMPOSE_FILE" && ok || err
-#
-#    echo "  Updating ENVIRONMENT.."
-#    sed -i "s/ENVIRONMENT: \${DMSS_ENVIRONMENT:-local}/${TARGET_ENV}/" "$COMPOSE_FILE"
-#    dmss_service_spec=$(grep -EA 20 "^\s{2}dmss:" "$COMPOSE_FILE")
-#    echo "$dmss_service_spec" | grep -Eq "^\s{6}${TARGET_ENV}" && ok || err
-#
-#    echo "  Updating LOGGING_LEVEL.."
-#    sed -i "s/LOGGING_LEVEL: \".*\"$/${TARGET_LOG}/g" "$COMPOSE_FILE"
-#    dmss_service_spec=$(grep -EA 20 "^\s{2}dmss:" "$COMPOSE_FILE")
-#    echo "$dmss_service_spec" | grep -Eq "^\s{6}${TARGET_LOG}" && ok || err
-#  fi
-#}
 
 function build_images() {
   info "Building the Docker images.."
@@ -415,33 +357,25 @@ function import_packages() {
     echo "got PACKAGE $package"
     container_path="${package/$ds_dir/$CONTAINER_DS_DIR}"
 
-
-#    echo "/home/kristian/Projects/Equinor/data-modelling-tool/api/src/home/analysis-platform/data/AnalysisPlatformDS/Blueprints" | grep -Po '.*/api/src/home/[a-zA-Z0-9]{1,}/data/*\K[^/].*'
-#   destination=$(echo "$package" | grep -Po '.*/api/src/home/[a-zA-Z0-9]{1,}/data/*\K[^/].*')
     LAST_TWO_FOLDERS=$(expr "$package" : '.*/\([^/]*/[^/]*\)$')
     destination=$LAST_TWO_FOLDERS
     echo "got value for DEST "
 
-
-
-
-    #--- handle aliases ----
+    #---- handle aliases ----
     if test -f "${package/"$destination"/"_aliases_"}"; then
-    echo "Alise file exists."
-        alias_file="${package/"$destination"/"_aliases_"}"
+      echo "Alise file exists."
+          alias_file="${package/"$destination"/"_aliases_"}"
 
-    #get all lines that are not commented out in alias file
-    ALIASES_ARR=($(grep "^[^#;]" $alias_file))
+      #get all lines that are not commented out in alias file
+      ALIASES_ARR=($(grep "^[^#;]" $alias_file))
 
-    for alias in "${ALIASES_ARR[@]}"; do
-      IFS='=' read -r -a alias_arr <<< $alias
+      for alias in "${ALIASES_ARR[@]}"; do
+        IFS='=' read -r -a alias_arr <<< $alias
 
-      #substitute alias in destination
-      destination="${destination/""${alias_arr[0]}""/"${alias_arr[1]}"}"
-    done
-fi
-
-    #--------
+        #substitute alias in destination
+        destination="${destination/""${alias_arr[0]}""/"${alias_arr[1]}"}"
+      done
+    fi
 
     # shellcheck disable=SC2076
     if [[ ! " ${completed[*]} " =~ " ${destination} " ]]; then
@@ -461,15 +395,15 @@ fi
 function cleanup() {
   trap - SIGINT SIGTERM ERR EXIT
   info "Cleaning up.."
-#  if [ "$GIT_RESTORE" == "True" ]; then
-#    echo "  Running 'git restore' on modified JSON and docker(-compose) files.."
-#    git restore api/src/home/* docker-compose.yml dmss-system.radix.json && ok || err
-#  else
-#    echo "  Skipping 'git restore' due to '--no-restore' flag"
-#    warn "  WARNING: Passwords may be stored in clear text in the modified files. Please avoid committing them to git."
-#    warn "    Issue a manual 'git restore' with the following command:"
-#    info "     git restore $DMT_DS $FoR_DS $SIMA_DS $SIMPOS_APP_DB_DS $SIMPOS_MDL_DB_DS $DMSS_SYSTEM $COMPOSE_FILE"
-#  fi
+  if [ "$GIT_RESTORE" == "True" ]; then
+    echo "  Running 'git restore' on modified JSON files.."
+    git restore api/src/home/* && ok || err
+  else
+    echo "  Skipping 'git restore' due to '--no-restore' flag"
+    warn "  WARNING: Passwords may be stored in clear text in the modified files. Please avoid committing them to git."
+    warn "    Issue a manual 'git restore' with the following command:"
+    info "     git restore $DMT_DS $FoR_DS $SIMA_DS $SIMPOS_APP_DB_DS $SIMPOS_MDL_DB_DS $DMSS_SYSTEM $COMPOSE_FILE"
+  fi
   if [ "$COMPOSE_DOWN" == "True" ]; then
     echo "  Running 'docker-compose down'.."
     docker-compose down && ok || err
@@ -490,7 +424,6 @@ function main() {
   set_database_username
   set_database_password
   set_data_source_names
-#  update_compose_spec
   build_images
   dmss_reset_app
   import_data_sources

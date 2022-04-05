@@ -52,10 +52,10 @@ const HorizontalList = styled.div`
   }
 `
 
-const AppSelector = props => {
+const AppSelector = (props) => {
   const { applications } = props
   const history = useHistory()
-  const links = Object.values(applications).map(setting => (
+  const links = Object.values(applications).map((setting) => (
     <div key={setting.name}>
       <CardWrapper onClick={() => history.push(`/${setting.urlPath}`)}>
         <CardHeader>
@@ -86,14 +86,14 @@ function App() {
     setLoadingAppSettings(true)
     dmtAPI
       .getSystemSettings()
-      .then(res =>
+      .then((res) =>
         setApplications(
           sortApplications(res.data).filter(
-            application => application?.hidden !== true
+            (application) => application?.hidden !== true
           )
         )
       )
-      .catch(error => console.error(error))
+      .catch((error) => console.error(error))
       .finally(() => setLoadingAppSettings(false))
   }, [])
 
@@ -131,7 +131,7 @@ function App() {
           }
         />
         <Switch>
-          {Object.values(applications).map(settings => (
+          {Object.values(applications).map((settings) => (
             <Route
               path={`/${settings.urlPath}`}
               render={() => {
