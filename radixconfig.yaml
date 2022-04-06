@@ -9,7 +9,7 @@ spec:
         from: master
     - name: dev
       build:
-        from: fix-api-deploy-issue
+        from: master
   components:
     - name: web
       image: datamodelingtool.azurecr.io/dmt/web:{imageTagName}
@@ -84,7 +84,6 @@ spec:
         - name: nginx
           port: 8080
       publicPort: nginx
-
 
   dnsAppAlias:
     environment: prod
