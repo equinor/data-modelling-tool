@@ -6,10 +6,10 @@ on:
 
 jobs:
   tests:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-      - uses: ./.github/workflows/tests.yaml
+    uses: ./.github/workflows/tests.yaml
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      DMSS_DEPLOY_KEY: ${{ secrets.DMSS_DEPLOY_KEY }}
 
   publish-prod-tag:
     needs: tests
