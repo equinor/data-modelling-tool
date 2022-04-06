@@ -16,6 +16,7 @@ export const CustomScrim = (props: {
         style={{
           width: width ? width : '100%',
           height: height ? height : '100%',
+          overflow: 'auto',
         }}
       >
         <div
@@ -49,7 +50,6 @@ export const CustomScrim = (props: {
               flexDirection: 'column',
               alignItems: 'center',
               maxHeight: '75vh',
-              overflow: 'auto',
             }}
           >
             {children}
