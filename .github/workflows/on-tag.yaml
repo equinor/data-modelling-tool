@@ -9,7 +9,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@master
-      - uses: ./.github/workflows/reusables/tests.yaml
+      - uses: ./.github/workflows/tests.yaml
 
   publish-prod-tag:
     needs: tests
