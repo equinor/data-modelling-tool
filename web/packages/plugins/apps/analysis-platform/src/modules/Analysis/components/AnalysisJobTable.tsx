@@ -57,7 +57,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
       <Table.Cell>{jobStatus}</Table.Cell>
       <Table.Cell>
         <ClickableLabel
-          onClick={e => {
+          onClick={(e) => {
             window.open(
               `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.name}`,
               '_blank'

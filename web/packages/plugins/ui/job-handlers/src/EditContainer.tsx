@@ -55,6 +55,33 @@ export const EditContainer = (props: DmtUIPlugin) => {
               ))}
             </Select>
           </HeaderWrapper>
+          <HeaderWrapper>
+            <Typography variant="h5">
+              Custom command (Not implemented)
+            </Typography>
+            <Select
+              disabled={true}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setFormData({ ...formData, customCommand: e.target.value })
+              }
+              value={formData?.customCommand || null}
+            ></Select>
+          </HeaderWrapper>
+          <HeaderWrapper>
+            <Typography variant="h5">
+              Environment variable list (not implemented)
+            </Typography>
+            <Select
+              disabled={true}
+              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+                setFormData({
+                  ...formData,
+                  environmentVariables: e.target.value,
+                })
+              }
+              value={formData?.environmentVariables || null}
+            ></Select>
+          </HeaderWrapper>
 
           <div>
             {!onChange && ( // Only show button if no "onChange" function passed

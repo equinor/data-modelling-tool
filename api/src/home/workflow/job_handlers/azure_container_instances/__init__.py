@@ -55,7 +55,6 @@ class JobHandler(ServiceJobHandlerInterface):
         raise NotImplementedError
 
     def start(self) -> str:
-        logger.info(f"******JOB entity INPUT {self.job.entity}")
         logger.info(f"JobName: '{self.job.job_id}'. Starting Azure Container job...")
 
         # Add env-vars from deployment first
@@ -73,7 +72,7 @@ class JobHandler(ServiceJobHandlerInterface):
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
             + f"Image: '{runnerEntity.get('image', 'None')}'\n\t"
-            + f"RegistryUsername: '{self.job.entity.get('cr-username', 'None')}'\n\t"
+            + f"RegistryUsername: 'None'\n\t"
             + f"EnvironmentVariables: {[(e.name + '=' + e.value)  for e in env_vars]}",
         )
 
@@ -87,18 +86,9 @@ class JobHandler(ServiceJobHandlerInterface):
         )
         image_registry_credential = None
 
-        # if self.job.entity.get("cr-password"):  # If 'cr-password' is supplied, create and send registry credentials
-        #     image_registry_credential = [
-        #         ImageRegistryCredential(
-        #             server=self.job.entity["image"].split("/")[0],
-        #             username=self.job.entity["cr-username"],
-        #             password=self.job.entity["cr-password"],
-        #         )
-        #     ]
-
         # Configure the container group
         group = ContainerGroup(
-            location=self.job.entity.get("azure-location", "northeurope"),
+            location="northeurope",
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,
