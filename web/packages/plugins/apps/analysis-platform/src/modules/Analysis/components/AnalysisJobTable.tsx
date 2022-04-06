@@ -24,8 +24,8 @@ const ClickableLabel = styled.div`
   text-decoration-line: underline;
 `
 
-const JobRow = (props: { job: TJob }) => {
-  const { job } = props // @ts-ignore
+const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
+  const { job, index, analysisId } = props // @ts-ignore
   const { token } = useContext(AuthContext)
   const JobAPI = new JobApi(token)
   const [loading, setLoading] = useState<boolean>(false)
@@ -33,7 +33,7 @@ const JobRow = (props: { job: TJob }) => {
 
   useEffect(() => {
     setLoading(true)
-    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${job.job_entity_id}`)
+    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${job.name}`)
       .then((result: any) => {
         setJobStatus(result.data.status)
       })
@@ -46,7 +46,7 @@ const JobRow = (props: { job: TJob }) => {
   return (
     <Table.Row
       onClick={() => {
-        document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.job_entity_id}`
+        document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
       }}
     >
       <Table.Cell>
@@ -91,7 +91,7 @@ const AnalysisJobTable = (props: AnalysisJobTableProps) => {
           </Table.Row>
         </Table.Head>
         <Table.Body style={{ cursor: 'pointer' }}>
-          {jobs.map((job: any, index: number) => (
+          {jobs.map((job: TJob, index: number) => (
             <JobRow
               key={index}
               job={job}

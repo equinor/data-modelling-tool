@@ -62,7 +62,6 @@ const RunAnalysisButton = (props: any) => {
     const job: TJob = {
       label: 'Example local container job',
       name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(1)}`,
-      job_entity_id: `${analysis._id}.jobs.${runsSoFar}`,
       type: JOB,
       triggeredBy: tokenData?.name,
       applicationInput: task.applicationInput,

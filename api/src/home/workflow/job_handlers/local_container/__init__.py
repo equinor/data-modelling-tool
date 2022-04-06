@@ -1,12 +1,12 @@
 import docker
 from docker.errors import DockerException
 from typing import Tuple
-import os
+
 from config import config
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
-
+import os
 
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/Container"
 
