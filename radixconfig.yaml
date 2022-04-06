@@ -85,6 +85,7 @@ spec:
           port: 8080
       publicPort: nginx
 
+
   dnsAppAlias:
     environment: prod
     component: proxy
