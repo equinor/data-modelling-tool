@@ -25,28 +25,28 @@ env:
   SRS_IMAGE: datamodelingtool.azurecr.io/dmt-job/srs
 
 jobs:
-  build-and-publish-web-master:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-
-      - name: "Build and Publish Web"
-        run: |
-          echo "Tagging with ${{ inputs.image-tag }}"
-          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
-          docker pull $WEB_IMAGE
-          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/packages/home/public/version.txt
-          docker build \
-          --build-arg REDIRECT_URI=${{inputs.oauth-redirect-url}} \
-          --build-arg AUTH_ENABLED=1 \
-          --build-arg AUTH_SCOPE=api://97a6b5bd-63fb-42c6-bb75-7e5de2394ba0/dmss \
-          --build-arg CLIENT_ID=97a6b5bd-63fb-42c6-bb75-7e5de2394ba0 \
-          --build-arg TENANT_ID=3aa4a235-b6e2-48d5-9195-7fcf05b459b0 \
-          --cache-from ${WEB_IMAGE} \
-          --tag ${WEB_IMAGE} \
-          ./web
-          docker tag $WEB_IMAGE $WEB_IMAGE:${{ inputs.image-tag }}
-          docker push $WEB_IMAGE:${{ inputs.image-tag }}
+#  build-and-publish-web-master:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@master
+#
+#      - name: "Build and Publish Web"
+#        run: |
+#          echo "Tagging with ${{ inputs.image-tag }}"
+#          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+#          docker pull $WEB_IMAGE
+#          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./web/packages/home/public/version.txt
+#          docker build \
+#          --build-arg REDIRECT_URI=${{inputs.oauth-redirect-url}} \
+#          --build-arg AUTH_ENABLED=1 \
+#          --build-arg AUTH_SCOPE=api://97a6b5bd-63fb-42c6-bb75-7e5de2394ba0/dmss \
+#          --build-arg CLIENT_ID=97a6b5bd-63fb-42c6-bb75-7e5de2394ba0 \
+#          --build-arg TENANT_ID=3aa4a235-b6e2-48d5-9195-7fcf05b459b0 \
+#          --cache-from ${WEB_IMAGE} \
+#          --tag ${WEB_IMAGE} \
+#          ./web
+#          docker tag $WEB_IMAGE $WEB_IMAGE:${{ inputs.image-tag }}
+#          docker push $WEB_IMAGE:${{ inputs.image-tag }}
 
   build-and-publish-api-master:
     runs-on: ubuntu-latest
@@ -63,17 +63,17 @@ jobs:
           docker tag $API_IMAGE $API_IMAGE:${{ inputs.image-tag }}
           docker push $API_IMAGE:${{ inputs.image-tag }}
 
-  build-and-publish-srs-master:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-
-      - name: "Build and Publish SRS"
-        run: |
-          echo "Tagging with ${{ inputs.image-tag }}"
-          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
-          docker pull $SRS_IMAGE
-          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./sre-wrapper/version.txt
-          docker build --cache-from $SRS_IMAGE --tag $SRS_IMAGE ./sre-wrapper
-          docker tag $SRS_IMAGE $SRS_IMAGE:${{ inputs.image-tag }}
-          docker push $SRS_IMAGE:${{ inputs.image-tag }}
+#  build-and-publish-srs-master:
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@master
+#
+#      - name: "Build and Publish SRS"
+#        run: |
+#          echo "Tagging with ${{ inputs.image-tag }}"
+#          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+#          docker pull $SRS_IMAGE
+#          echo $(git log -n 1 --format=format:'%h% %>(12) %cs %>(12,mtrunc)%aN%  %s %D') > ./sre-wrapper/version.txt
+#          docker build --cache-from $SRS_IMAGE --tag $SRS_IMAGE ./sre-wrapper
+#          docker tag $SRS_IMAGE $SRS_IMAGE:${{ inputs.image-tag }}
+#          docker push $SRS_IMAGE:${{ inputs.image-tag }}

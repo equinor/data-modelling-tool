@@ -1,18 +1,7 @@
-on:
-  workflow_dispatch:
-  push:
-    branches:
-      - fix-api-deploy-issue
+on: push
 
 jobs:
-  tests:
-    uses: ./.github/workflows/tests.yaml
-    secrets:
-      ACR_SECRET: ${{ secrets.ACR_SECRET }}
-      DMSS_DEPLOY_KEY: ${{ secrets.DMSS_DEPLOY_KEY }}
-
-  publish-latest:
-    needs: tests
+  publish-testapi-tag:
     uses: ./.github/workflows/publish.yaml
     with:
       image-tag: testapi
@@ -21,7 +10,7 @@ jobs:
       ACR_SECRET: ${{ secrets.ACR_SECRET }}
 
   deploy:
-    needs: publish-latest
+    needs: publish-testapi-tag
     uses: ./.github/workflows/deploy.yaml
     with:
       radix-environment: 'dev'

@@ -9,7 +9,7 @@ spec:
         from: master
     - name: dev
       build:
-        from: master
+        from: fix-api-deploy-issue
   components:
     - name: web
       image: datamodelingtool.azurecr.io/dmt/web:{imageTagName}
