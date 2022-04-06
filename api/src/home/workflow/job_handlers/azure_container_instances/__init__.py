@@ -2,7 +2,7 @@ import logging
 import os
 from collections import namedtuple
 from time import sleep
-from typing import  Tuple
+from typing import Tuple
 
 from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import ClientSecretCredential
@@ -27,13 +27,14 @@ logging.getLogger("azure").setLevel(logging.WARNING)
 
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/AzureContainer"
 
+
 class JobHandler(ServiceJobHandlerInterface):
     """
     Job handler plugin for Azure Container Instances.
     Support both executable jobs and job services
     """
 
-    def __init__(self, job, data_source: str ):
+    def __init__(self, job, data_source: str):
         super().__init__(job, data_source)
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
         azure_credentials = ClientSecretCredential(
@@ -55,13 +56,12 @@ class JobHandler(ServiceJobHandlerInterface):
 
     def start(self) -> str:
         logger.info(f"******JOB entity INPUT {self.job.entity}")
-        logger.info(
-            f"JobName: '{self.job.job_id}'. Starting Azure Container job..."
-        )
+        logger.info(f"JobName: '{self.job.job_id}'. Starting Azure Container job...")
 
         # Add env-vars from deployment first
-        env_vars: list[EnvironmentVariable] = \
-            [EnvironmentVariable(name=e, value=os.getenv(e)) for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)]
+        env_vars: list[EnvironmentVariable] = [
+            EnvironmentVariable(name=e, value=os.getenv(e)) for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)
+        ]
 
         env_vars.append(EnvironmentVariable(name="DMSS_TOKEN", value=self.job.token))
 
