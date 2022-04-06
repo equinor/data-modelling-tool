@@ -1,0 +1,29 @@
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - fix-api-deploy-issue
+
+jobs:
+  tests:
+    uses: ./.github/workflows/tests.yaml
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+      DMSS_DEPLOY_KEY: ${{ secrets.DMSS_DEPLOY_KEY }}
+
+  publish-latest:
+    needs: tests
+    uses: ./.github/workflows/publish.yaml
+    with:
+      image-tag: testapi
+      oauth-redirect-url: https://proxy-data-modelling-tool-dev.radix.equinor.com
+    secrets:
+      ACR_SECRET: ${{ secrets.ACR_SECRET }}
+
+  deploy:
+    needs: publish-latest
+    uses: ./.github/workflows/deploy.yaml
+    with:
+      radix-environment: 'dev'
+    secrets:
+      APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.APP_SERVICE_ACCOUNT_TOKEN }}
