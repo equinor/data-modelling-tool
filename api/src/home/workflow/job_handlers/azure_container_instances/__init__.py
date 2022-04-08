@@ -88,7 +88,7 @@ class JobHandler(ServiceJobHandlerInterface):
 
         # Configure the container group
         group = ContainerGroup(
-            location="northeurope",
+            location="norwayeast",
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,
