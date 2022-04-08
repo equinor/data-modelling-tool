@@ -131,7 +131,7 @@ export const JobLog = (props: { document: any; jobId: string }) => {
           <Label label="Started:" />
           <label>
             {new Date(document.started).toLocaleString(navigator.language)}
-            (local)
+            {' (local)'}
           </label>
         </RowGroup>
         <RowGroup>
