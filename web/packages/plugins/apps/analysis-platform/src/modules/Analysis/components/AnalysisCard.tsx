@@ -121,8 +121,8 @@ const RunAnalysisButton = (props: any) => {
         <CustomScrim
           closeScrim={() => setShowScrim(false)}
           header={'Job parameters'}
-          width={'600px'}
-          height={'700px'}
+          width={'40vw'}
+          height={'70vh'}
         >
           <UIPluginSelector
             absoluteDottedId={`${analysisAbsoluteReference}.task`}

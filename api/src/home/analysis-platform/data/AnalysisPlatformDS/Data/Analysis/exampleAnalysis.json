@@ -18,7 +18,7 @@
       "name": "exampleApplicationInput",
       "contained": false
     },
-    "outputType": "Asystem/SIMOS/NamedEntity",
+    "outputType": "system/SIMOS/NamedEntity",
     "runner": {
       "type": "WorkflowDS/Blueprints/jobHandlers/Container",
       "image": "datamodelingtool.azurecr.io/dmt-job/srs:latest"

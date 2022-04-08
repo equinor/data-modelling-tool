@@ -2,7 +2,7 @@ import logging
 import os
 from collections import namedtuple
 from time import sleep
-from typing import List, Tuple
+from typing import Tuple
 
 from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import ClientSecretCredential
@@ -12,7 +12,6 @@ from azure.mgmt.containerinstance.models import (
     ContainerGroup,
     ContainerGroupRestartPolicy,
     EnvironmentVariable,
-    ImageRegistryCredential,
     OperatingSystemTypes,
     ResourceRequests,
     ResourceRequirements,
@@ -26,7 +25,7 @@ from utils.logging import logger
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
 logging.getLogger("azure").setLevel(logging.WARNING)
 
-_SUPPORTED_TYPE = "DMT-Internal/DMT/AzureContainerInstanceJob"
+_SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/AzureContainer"
 
 
 class JobHandler(ServiceJobHandlerInterface):
@@ -35,15 +34,15 @@ class JobHandler(ServiceJobHandlerInterface):
     Support both executable jobs and job services
     """
 
-    def __init__(self, data_source: str, job_entity: dict, token: str):
-        super().__init__(data_source, job_entity, token)
+    def __init__(self, job, data_source: str):
+        super().__init__(job, data_source)
         logger.setLevel(logging.WARNING)  # I could not find the correctly named logger for this...
         azure_credentials = ClientSecretCredential(
             client_id=config.AZURE_JOB_SP_CLIENT_ID,
             client_secret=config.AZURE_JOB_SP_SECRET,
             tenant_id=config.AZURE_JOB_SP_TENANT_ID,
         )
-        self.azure_valid_container_name = self.job_entity["name"].lower()
+        self.azure_valid_container_name = self.job.entity["name"].lower().replace(".", "-")
         self.aci_client = ContainerInstanceManagementClient(
             azure_credentials, subscription_id=config.AZURE_JOB_SUBSCRIPTION
         )
@@ -56,51 +55,40 @@ class JobHandler(ServiceJobHandlerInterface):
         raise NotImplementedError
 
     def start(self) -> str:
-        logger.info(
-            f"JobName: '{self.job_entity.get('_id', self.job_entity.get('name'))}'."
-            + " Starting Azure Container job..."
-        )
+        logger.info(f"JobName: '{self.job.job_id}'. Starting Azure Container job...")
 
         # Add env-vars from deployment first
-        env_vars: List[EnvironmentVariable] = [
+        env_vars: list[EnvironmentVariable] = [
             EnvironmentVariable(name=e, value=os.getenv(e)) for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)
         ]
 
+        env_vars.append(EnvironmentVariable(name="DMSS_TOKEN", value=self.job.token))
+
         # Parse env-vars from job entity
-        for env_string in self.job_entity.get("environmentVariables", []):
+        for env_string in self.job.entity.get("environmentVariables", []):
             key, value = env_string.split("=", 1)
             env_vars.append(EnvironmentVariable(name=key, value=value))
-
+        runnerEntity: dict = self.job.entity["runner"]
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
-            + f"Image: '{self.job_entity.get('image', 'None')}'\n\t"
-            + f"Command: {self.job_entity.get('command', 'None')}\n\t"
-            + f"RegistryUsername: '{self.job_entity.get('cr-username', 'None')}'\n\t"
-            + f"EnvironmentVariables: {[e.name for e in env_vars]}",
+            + f"Image: '{runnerEntity.get('image', 'None')}'\n\t"
+            + f"RegistryUsername: 'None'\n\t"
+            + f"EnvironmentVariables: {[(e.name + '=' + e.value)  for e in env_vars]}",
         )
 
-        # Configure the container
         compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
         container = Container(
             name=self.azure_valid_container_name,
-            image=self.job_entity["image"],
+            image=runnerEntity["image"],
             resources=ResourceRequirements(requests=compute_resources),
-            command=self.job_entity.get("command") + [f"--token={self.token}"],
+            command=["/code/init.sh", f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}"],
             environment_variables=env_vars,
         )
         image_registry_credential = None
-        if self.job_entity.get("cr-password"):  # If 'cr-password' is supplied, create and send registry credentials
-            image_registry_credential = [
-                ImageRegistryCredential(
-                    server=self.job_entity["image"].split("/")[0],
-                    username=self.job_entity["cr-username"],
-                    password=self.job_entity["cr-password"],
-                )
-            ]
 
         # Configure the container group
         group = ContainerGroup(
-            location=self.job_entity.get("azure-location", "norwayeast"),
+            location="norwayeast",
             containers=[container],
             os_type=OperatingSystemTypes.linux,
             restart_policy=ContainerGroupRestartPolicy.never,
