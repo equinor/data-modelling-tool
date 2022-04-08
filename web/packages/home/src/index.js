@@ -1,9 +1,9 @@
 import React from 'react'
 import './index.css'
 import 'react-notifications/lib/notifications.css'
-
+import { createRoot } from 'react-dom/client'
 import App from './App'
-import ReactDOM from 'react-dom'
+
 import { AuthProvider, UiPluginProvider } from '@dmt/common'
 import plugins from './plugins'
 
@@ -23,8 +23,9 @@ const authConfig = {
   postLogin: () =>
     window.location.replace(localStorage.getItem('preLoginPath')),
 }
-
-ReactDOM.render(
+const container = document.getElementById('root')
+const root = createRoot(container)
+root.render(
   <>
     <UiPluginProvider pluginsToLoad={plugins}>
       {authEnabled ? (
@@ -35,6 +36,5 @@ ReactDOM.render(
         <App />
       )}
     </UiPluginProvider>
-  </>,
-  document.getElementById('root')
+  </>
 )
