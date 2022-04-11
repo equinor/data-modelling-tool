@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Modal } from '../Modal'
 import { BlueprintEnum } from '../../utils/variables'
-import { Selector } from '../Pickers'
+/*import { Selector } from '../Pickers'*/
 
 export type OverrideTypeButtonProps = {
   onChange: Function
@@ -19,7 +19,7 @@ export const OverrideTypeButton = (props: OverrideTypeButtonProps) => {
     blueprintFilter,
   }
 
-  return (
+  return /*(
     <div>
       <button onClick={() => setShowModal(!showModal)}>Override type</button>
       <Modal
@@ -30,5 +30,5 @@ export const OverrideTypeButton = (props: OverrideTypeButtonProps) => {
         <Selector {...selectorProps} />
       </Modal>
     </div>
-  )
+  )*/
 }
