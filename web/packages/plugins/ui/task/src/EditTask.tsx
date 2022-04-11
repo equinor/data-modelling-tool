@@ -1,12 +1,12 @@
 import {
+  BlueprintEnum,
+  BlueprintPicker,
   DmtUIPlugin,
   EntityPicker,
   JobHandlerPicker,
-  SimpleBlueprintPicker,
   TReference,
   UIPluginSelector,
   useDocument,
-  BlueprintEnum,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -71,7 +71,7 @@ export const EditTask = (props: DmtUIPlugin) => {
             <GroupWrapper>
               <Column>
                 <Label label={'Blueprint'} />
-                <SimpleBlueprintPicker
+                <BlueprintPicker
                   onChange={(selectedBlueprint: string) =>
                     setFormData({ ...formData, inputType: selectedBlueprint })
                   }
@@ -105,7 +105,7 @@ export const EditTask = (props: DmtUIPlugin) => {
             <GroupWrapper>
               <Column>
                 <Label label={'Blueprint'} />
-                <SimpleBlueprintPicker
+                <BlueprintPicker
                   onChange={(selectedBlueprint: string) =>
                     setFormData({ ...formData, outputType: selectedBlueprint })
                   }

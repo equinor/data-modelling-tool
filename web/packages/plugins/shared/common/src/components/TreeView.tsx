@@ -102,8 +102,9 @@ const TreeNodeComponent = (props: {
 export const TreeView = (props: {
   onSelect: (node: TreeNode) => void
   NodeWrapper?: React.ReactElement
+  NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
-  const { onSelect, NodeWrapper } = props
+  const { onSelect, NodeWrapper, NodeWrapperOnClick } = props
   // @ts-ignore
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
@@ -149,7 +150,12 @@ export const TreeView = (props: {
         if (NodeWrapper) {
           return (
             // @ts-ignore
-            <NodeWrapper node={node} key={node.nodeId} removeNode={removeNode}>
+            <NodeWrapper
+              node={node}
+              key={node.nodeId}
+              onSelect={NodeWrapperOnClick}
+              removeNode={removeNode}
+            >
               <TreeNodeComponent
                 node={node}
                 onClick={(node) => _onClick(node)}
