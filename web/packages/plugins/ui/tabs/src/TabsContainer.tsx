@@ -72,7 +72,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
     if (onChange) onChange(formData)
   }, [formData])
 
-  if (!entity) return null
+  if (!entity || Object.keys(formData).length === 0) return null
 
   return (
     <div
