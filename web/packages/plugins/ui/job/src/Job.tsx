@@ -3,6 +3,7 @@ import styled from 'styled-components'
 import { AuthContext, JobApi, Modal } from '@dmt/common'
 import { Button, Label } from '@equinor/eds-core-react'
 import Icons from './Icons'
+import { AxiosError } from 'axios'
 
 const StyledPre = styled.pre`
   display: flex;
@@ -76,8 +77,11 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         setJobLogs(result.data.log)
         setJobStatus(result.data.status)
       })
-      .catch((e: Error) => {
-        setJobLogs(e.response.data.message)
+      .catch((e: AxiosError) => {
+        if (e.response) {
+          setJobLogs(e.response.data.message)
+        } else setJobLogs('Error occurred when getting status for job')
+
         // setJobStatus(SimulationStatus.FAILED)
         console.error(e)
       })
@@ -121,7 +125,7 @@ export const JobLog = (props: { document: any; jobId: string }) => {
       >
         <RowGroup>
           <Label label="Status:" />
-          <SimStatusWrapper status={jobStatus}>{jobStatus}</SimStatusWrapper>
+          <SimStatusWrapper>{jobStatus}</SimStatusWrapper>
         </RowGroup>
         <RowGroup>
           <Label label="Started by:" />
