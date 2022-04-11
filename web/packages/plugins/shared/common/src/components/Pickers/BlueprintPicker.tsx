@@ -1,5 +1,7 @@
 // @ts-ignore
 import React, { useContext, useState } from 'react'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView } from '../../index'
 import { Input } from '@equinor/eds-core-react'
@@ -7,13 +9,8 @@ import { Input } from '@equinor/eds-core-react'
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
   formData: string
-  blueprintFilter?: string
 }) => {
-  const {
-    onChange,
-    formData,
-    blueprintFilter = BlueprintEnum.BLUEPRINT,
-  } = props
+  const { onChange, formData } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
@@ -32,7 +29,10 @@ export const BlueprintPicker = (props: {
       >
         <TreeView
           onSelect={(node: TreeNode) => {
-            if (node.type !== blueprintFilter) return // Only allowed to select blueprints
+            if (node.type !== BlueprintEnum.BLUEPRINT) {
+              NotificationManager.error('You can only select a blueprint')
+              return
+            } // Only allowed to select blueprints
             setShowModal(false)
             onChange(node.getPath())
           }}
