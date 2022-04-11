@@ -97,7 +97,7 @@ function GraphSelect(props: {
     if (storedGraphs) {
       let newGraphInfo: TGraphInfo[] = []
       let newDataDict: any = {}
-      storedGraphs.forEach(storedGraph => {
+      storedGraphs.forEach((storedGraph) => {
         let [newGraph, newData] = createGraph(
           storedGraph.run,
           storedGraph.response,
@@ -162,7 +162,7 @@ function GraphSelect(props: {
     const graphName = `${runName}: ${responseName} ${statisticName}`
     const description = `${variableRuns[run].responses[response].statistics[statistic].description}`
 
-    if (graphInfo.map(graph => graph.name).includes(graphName))
+    if (graphInfo.map((graph) => graph.name).includes(graphName))
       return [false, {}] // graph already present
     let newDataDict: any = {}
 
