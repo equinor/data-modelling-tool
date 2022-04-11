@@ -40,10 +40,13 @@ export function* dfs(node: Node) {
   }
 }
 
-const isPrimitive = (attribute: AttributeType) =>
-  ['string', 'number', 'integer', 'number', 'boolean'].includes(
-    attribute.attributeType
-  )
+const isPrimitive = (attribute: AttributeType) => {
+  if (attribute.attributeType) {
+    return ['string', 'number', 'integer', 'number', 'boolean'].includes(
+      attribute.attributeType
+    )
+  } else return false
+}
 const primitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
   blueprint.attributes.filter((attribute: AttributeType) =>
     isPrimitive(attribute)

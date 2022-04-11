@@ -16,7 +16,10 @@ export const ErrorGroup = styled.div`
 `
 
 export const View = ({ settings }: any) => {
-  const { data_source, entity_id } = useParams()
+  const { data_source, entity_id } = useParams<{
+    data_source: string
+    entity_id: string
+  }>()
   const [document, documentLoading, setDocument, error] = useDocument(
     data_source,
     entity_id

@@ -1,6 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from 'react'
 import LinesOverTime, { TLineChartDataPoint } from './Plots/LinesOverTime'
 import { Button, Chip, Progress, Tooltip } from '@equinor/eds-core-react'
+//@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import styled from 'styled-components'
 import { useDocument } from '@dmt/common'
@@ -210,7 +211,7 @@ function GraphSelect(props: {
     <GraphSelectorWrapper>
       <StyledSelect
         onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-          setChosenRun(e.target.value)
+          setChosenRun(parseInt(e.target.value))
         }
       >
         {variableRuns.map((run: any, index) => (
@@ -221,7 +222,7 @@ function GraphSelect(props: {
       </StyledSelect>
       <StyledSelect
         onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-          setChosenResponse(e.target.value)
+          setChosenResponse(parseInt(e.target.value))
         }
       >
         {variableRuns[chosenRun].responses.map(
@@ -234,7 +235,7 @@ function GraphSelect(props: {
       </StyledSelect>
       <StyledSelect
         onSelect={(e: ChangeEvent<HTMLSelectElement>) =>
-          setChosenStatistic(e.target.value)
+          setChosenStatistic(parseInt(e.target.value))
         }
       >
         {variableRuns[chosenRun].responses[chosenResponse].statistics.map(
