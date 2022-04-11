@@ -35,7 +35,6 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
         >
           <TreeView
             onSelect={() => {}}
-            // @ts-ignore
             NodeWrapper={SelectPackageButton}
             NodeWrapperOnClick={onSelect}
           />
