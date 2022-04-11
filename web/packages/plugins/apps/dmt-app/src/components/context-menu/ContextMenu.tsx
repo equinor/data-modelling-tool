@@ -2,7 +2,13 @@ import React, { useContext, useState } from 'react'
 import { Button, Dialog, Scrim } from '@equinor/eds-core-react'
 import './react-contextmenu.css'
 import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
-import { AuthContext, BlueprintEnum, DmssAPI, TreeNode } from '@dmt/common'
+import {
+  AuthContext,
+  BlueprintEnum,
+  DmssAPI,
+  NodeWrapperProps,
+  TreeNode,
+} from '@dmt/common'
 
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -106,11 +112,7 @@ function createMenuItems(
   return menuItems
 }
 
-export const NodeRightClickMenu = (props: {
-  node: TreeNode
-  removeNode: Function
-  children: any
-}) => {
+export const NodeRightClickMenu = (props: NodeWrapperProps) => {
   const { node, children, removeNode } = props
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
@@ -120,7 +122,7 @@ export const NodeRightClickMenu = (props: {
   const menuItems = createMenuItems(
     node,
     dmssAPI,
-    removeNode,
+    removeNode!,
     setShowScrim,
     setScrimContent
   )

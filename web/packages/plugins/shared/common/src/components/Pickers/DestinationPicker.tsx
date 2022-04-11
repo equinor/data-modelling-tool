@@ -1,7 +1,7 @@
 // @ts-ignore
 import React, { useContext, useEffect, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
-import { Modal, TreeNode, TreeView } from '../../index'
+import { Modal, NodeWrapperProps, TreeNode, TreeView } from '../../index'
 import { Button, Input } from '@equinor/eds-core-react'
 
 export type DestinationPickerProps = {
@@ -45,11 +45,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   )
 }
 
-export const SelectPackageButton = (props: {
-  onSelect: (node: TreeNode) => void
-  node: TreeNode
-  children: any
-}) => {
+export const SelectPackageButton = (props: NodeWrapperProps) => {
   const { node, children, onSelect } = props
 
   return (
@@ -60,7 +56,7 @@ export const SelectPackageButton = (props: {
           style={{ height: '22px' }}
           variant="ghost"
           onClick={() => {
-            onSelect(node)
+            onSelect!(node)
           }}
         >
           Select

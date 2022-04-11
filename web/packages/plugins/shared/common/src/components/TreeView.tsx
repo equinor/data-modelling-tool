@@ -35,6 +35,13 @@ const StyledTreeNode = styled.div`
   }
 `
 
+export type NodeWrapperProps = {
+  node: TreeNode
+  removeNode?: Function
+  children: any
+  onSelect?: (node: TreeNode) => void
+}
+
 const GetIcon = (props: { node: TreeNode }) => {
   const { node } = props
   if (Array.isArray(node.entity)) {
@@ -101,7 +108,7 @@ const TreeNodeComponent = (props: {
 
 export const TreeView = (props: {
   onSelect: (node: TreeNode) => void
-  NodeWrapper?: React.ReactElement
+  NodeWrapper?: React.FunctionComponent<NodeWrapperProps>
   NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
   const { onSelect, NodeWrapper, NodeWrapperOnClick } = props
@@ -149,7 +156,6 @@ export const TreeView = (props: {
         if (node?.parent?.expanded === false) return null
         if (NodeWrapper) {
           return (
-            // @ts-ignore
             <NodeWrapper
               node={node}
               key={node.nodeId}
