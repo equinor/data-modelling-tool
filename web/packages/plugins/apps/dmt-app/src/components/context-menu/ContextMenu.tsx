@@ -23,45 +23,20 @@ import { NotificationManager } from 'react-notifications'
 
 function sortMenuItems(menuItems: JSX.Element[]) {}
 
-function useTextInput() {
-  const [value, setValue] = useState<string>('')
-  console.log('val in usetextinput', value)
-  const input = <input onChange={e => setValue(e.target.value)} type={'text'} />
-  return [value, input]
-}
+// function useTextInput() {
+//   const [value, setValue] = useState<string>('')
+//   console.log('val in usetextinput', value)
+//   const input = <input onChange={e => setValue(e.target.value)} type={'text'} />
+//   return [value, input]
+// }
 
 function createMenuItems(
   node: TreeNode,
   dmssAPI: DmssAPI,
   removeNode: Function,
-  setShowScrim: Function,
-  setShowScrimId: (id: string) => void,
-  setScrimContent: Function,
-  setFormData: (formData: any) => void,
-  formData: any,
-  getFormData?: () => string
+  setShowScrimId: (id: string) => void
 ): JSX.Element[] {
   let menuItems = []
-
-  const DeleteAction = (node: TreeNode) => {
-    dmssAPI
-      .removeByPath(node.pathFromRootPackage(), node.dataSource)
-      .then(() => {
-        removeNode(node)
-        NotificationManager.success('Deleted')
-      })
-      .catch((error: Error) => {
-        console.error(error)
-        NotificationManager.error(
-          JSON.stringify(error.message),
-          'Failed to delete'
-        )
-      })
-  }
-  const ViewAction = (node: TreeNode) => {
-    // @ts-ignore
-    window.open(`dmt/view/${node.nodeId}`, '_blank').focus()
-  }
 
   // dataSources get a "new root package"
   if (node.type === 'dataSource') {
@@ -74,44 +49,11 @@ function createMenuItems(
 
   // Packages get a "new folder"
   if (node.type == BlueprintEnum.PACKAGE) {
-    const [folderName, userInput] = useTextInput()
-
-    const NewFolderAction = (node: TreeNode, folderName: string) => {
-      // dmssAPI.createDocument()
-      console.log('new folder action with node', node)
-      console.log('with name', folderName)
-      const newPackage = {
-        name: 'test',
-        type: 'system/SIMOS/Package',
-        contained: true,
-      }
-      // setShowScrim(false)
-    }
-
     menuItems.push(
       <MenuItem
-        key={'new-package'}
+        key={'new-folder'}
         onClick={() => {
-          const ref = `${node.nodeId}.content.${node.entity.content.length}`
-          // dmssAPI.addDocumentToParent()
-          setScrimContent(
-            <div>
-              {}
-              <Typography variant="h5">Create new folder</Typography>
-              <Label label="Folder name" />
-
-              <Input
-                type={'string'}
-                onChange={event => setFormData(event.target.value)}
-              />
-              {userInput}
-              {/*@ts-ignore*/}
-              <Button onClick={() => NewFolderAction(node, folderName)}>
-                Create
-              </Button>
-            </div>
-          )
-          setShowScrim(true)
+          setShowScrimId('new-folder')
         }}
       >
         New folder
@@ -135,28 +77,7 @@ function createMenuItems(
       <MenuItem
         key={'delete'}
         onClick={() => {
-          setScrimContent(
-            <Dialog>
-              <Dialog.Title>Confirm deletion</Dialog.Title>
-              <Dialog.CustomContent>
-                Are you sure you want to delete the entity <b>{node.name}</b> of
-                type <b>{node.type}</b>?
-              </Dialog.CustomContent>
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'space-around',
-                  margin: '5px',
-                }}
-              >
-                <Button onClick={() => setShowScrim(false)}>Cancel</Button>
-                <Button color="danger" onClick={() => DeleteAction(node)}>
-                  Delete
-                </Button>
-              </div>
-            </Dialog>
-          )
-          setShowScrim(true)
+          setShowScrimId('delete')
         }}
       >
         Delete
@@ -169,6 +90,11 @@ function createMenuItems(
   return menuItems
 }
 
+const ViewAction = (node: TreeNode) => {
+  // @ts-ignore
+  window.open(`dmt/view/${node.nodeId}`, '_blank').focus()
+}
+
 export const NodeRightClickMenu = (props: {
   node: TreeNode
   removeNode: Function
@@ -178,54 +104,131 @@ export const NodeRightClickMenu = (props: {
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  const [showScrim, setShowScrim] = useState<boolean>(false)
   const [showScrimId, setShowScrimId] = useState<string>('')
-  const [formData, setFormData] = useState<any>('fack')
-  const [scrimContent, setScrimContent] = useState<JSX.Element>(<></>)
-  const getFormData = () => {
-    return formData
-  }
-  const menuItems = createMenuItems(
-    node,
-    dmssAPI,
-    removeNode,
-    setShowScrim,
-    setShowScrimId,
-    setScrimContent,
-    setFormData,
-    formData,
-    getFormData
-  )
+  const [formData, setFormData] = useState<any>('')
 
-  useEffect(() => {
-    console.log('fromdata', formData)
-    console.log('get form data', getFormData())
-  }, [formData])
+  const menuItems = createMenuItems(node, dmssAPI, removeNode, setShowScrimId)
+
+  const DeleteAction = () => {
+    dmssAPI
+      .removeByPath(node.pathFromRootPackage(), node.dataSource)
+      .then(() => {
+        removeNode(node)
+        NotificationManager.success('Deleted')
+      })
+      .catch((error: Error) => {
+        console.error(error)
+        NotificationManager.error(
+          JSON.stringify(error.message),
+          'Failed to delete'
+        )
+      })
+  }
+
+  const NewFolderAction = (node: TreeNode, folderName: string) => {
+    // dmssAPI.createDocument()
+    console.log(node)
+
+    const newFolder = {
+      name: folderName,
+      type: 'system/SIMOS/Package',
+      isRoot: false,
+      content: [],
+    }
+    const ref: string = `${node.nodeId}.content`
+    dmssAPI
+      .addDocumentToParent({
+        absoluteRef: ref,
+        body: newFolder,
+        updateUncontained: true,
+      })
+      .then(() => {
+        console.log('added package!')
+      })
+    // setShowScrim(false)
+  }
+
+  const NewRootPackageAction = (node: TreeNode, packageName: string) => {
+    const newPackage = {
+      name: 'test',
+      type: 'system/SIMOS/Package',
+      isRoot: true,
+      content: [],
+    }
+    const ref: string = node.dataSource
+    dmssAPI
+      .addDocumentToParent({
+        absoluteRef: ref,
+        body: newPackage,
+        updateUncontained: true,
+      })
+      .then(() => {
+        console.log('added package!')
+      })
+    // setShowScrim(false)
+  }
 
   return (
     <div>
-      {showScrim && (
-        <div>
-          <Scrim isDismissable>{scrimContent}</Scrim>
-        </div>
-      )}
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
-      {/*{showScrimId === 'new-folder' && (*/}
-      {/*  <Scrim isDismissable>*/}
-      {/*    <div>*/}
-      {/*      <Typography variant="h5">Create new folder</Typography>*/}
-      {/*      <Label label="Folder name" />*/}
-      {/*      <Input*/}
-      {/*        type={'string'}*/}
-      {/*        onChange={event => setFormData(event.target.value)}*/}
-      {/*      />*/}
-      {/*      <Button onClick={() => console.log('create ', formData)}>*/}
-      {/*        Create*/}
-      {/*      </Button>*/}
-      {/*    </div>*/}
-      {/*  </Scrim>*/}
-      {/*)}*/}
+      {showScrimId === 'new-folder' && (
+        <div>
+          <Scrim isDismissable={true}>
+            <Dialog>
+              <Dialog.Title>Create new folder</Dialog.Title>
+              <Dialog.CustomContent>
+                <Label label="Folder name" />
+                <Input
+                  type={'string'}
+                  onChange={event => setFormData(event.target.value)}
+                />
+                <Button
+                  onClick={() => {
+                    if (formData) {
+                      NewFolderAction(node, formData)
+                      setShowScrimId('')
+                    } else {
+                      NotificationManager.error('Form data cannot be empty!')
+                    }
+                  }}
+                >
+                  Create
+                </Button>
+              </Dialog.CustomContent>
+            </Dialog>
+          </Scrim>
+        </div>
+      )}
+      {showScrimId === 'delete' && (
+        <Scrim isDismissable={true}>
+          <Dialog>
+            <Dialog.Title>Confirm deletion</Dialog.Title>
+            <Dialog.CustomContent>
+              Are you sure you want to delete the entity <b>{node.name}</b> of
+              type <b>{node.type}</b>?
+            </Dialog.CustomContent>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'space-around',
+                margin: '5px',
+              }}
+            >
+              <Button onClick={() => setShowScrimId('')}>Cancel</Button>
+              <Button
+                color="danger"
+                onClick={() => {
+                  DeleteAction()
+                  setShowScrimId('')
+                }}
+              >
+                Delete
+              </Button>
+            </div>
+          </Dialog>
+        </Scrim>
+      )}
     </div>
   )
 }
