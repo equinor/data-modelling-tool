@@ -1,114 +1,43 @@
 // @ts-ignore
 import React, { useContext, useState } from 'react'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
-import { ApplicationContext, DmssAPI, Modal, useDataSources } from '../../index'
-import { IDataSources } from '../../hooks/useDataSources'
-import { AuthContext } from '@dmt/common'
+import { Modal, TreeNode, TreeView } from '../../index'
 import { Input } from '@equinor/eds-core-react'
-import { FaSpinner } from 'react-icons/fa'
-import styled from 'styled-components'
 
-type BlueprintPickerProps = {
-  onChange: Function
-  formData: any
-  uiSchema?: any
-  blueprintFilter?: BlueprintEnum
-}
-
-export const Spinner = styled(FaSpinner)`
-  animation: spin infinite 1s linear;
-
-  @keyframes spin {
-    from {
-      transform: rotate(0deg);
-    }
-    to {
-      transform: rotate(360deg);
-    }
-  }
-`
-
-export const Selector = ({ setShowModal, onChange, blueprintFilter }: any) => {
-  // @ts-ignore-line
-  const { token } = useContext(AuthContext)
-  const dmssApi = new DmssAPI(token)
-  const dataSources: IDataSources = useDataSources(dmssApi)
-  const application = useContext(ApplicationContext)
-
-  const onSelect = (value: string) => {
-    setShowModal(false)
-    onChange(value)
-  }
-
-  return (
-    <div />
-    // <Tree
-    //   state={index.models.tree.models.tree}
-    //   operations={index.models.tree.operations}
-    // >
-    //   {(renderProps: TreeNodeRenderProps) => {
-    //     const { actions, nodeData } = renderProps
-    //
-    //     if (nodeData.meta.type === blueprintFilter) {
-    //       const onClick = () => {
-    //         onSelect(`${renderProps.path}/${nodeData.title}`)
-    //       }
-    //       return (
-    //         <div
-    //           style={{ display: 'flex', flexDirection: 'row' }}
-    //           onClick={onClick}
-    //         >
-    //           {renderProps.iconGroup(() => onClick())}
-    //           {nodeData.title}
-    //         </div>
-    //       )
-    //     } else {
-    //       return (
-    //         <div
-    //           onClick={() => handleOpenOrExpand(renderProps)}
-    //           style={{ display: 'flex', flexDirection: 'row' }}
-    //         >
-    //           {renderProps.iconGroup(() => handleOpenOrExpand(renderProps))}
-    //           {nodeData.title}
-    //           {nodeData.isLoading && (
-    //             <small style={{ paddingLeft: '15px' }}>Loading...</small>
-    //           )}
-    //         </div>
-    //       )
-    //     }
-    //   }}
-    // </Tree>
-  )
-}
-
-export const BlueprintPicker = (props: BlueprintPickerProps) => {
-  const {
-    onChange,
-    formData,
-    uiSchema,
-    blueprintFilter = BlueprintEnum.BLUEPRINT,
-  } = props
+export const BlueprintPicker = (props: {
+  onChange: (type: string) => void
+  formData: string
+}) => {
+  const { onChange, formData } = props
   const [showModal, setShowModal] = useState<boolean>(false)
-  const selectorProps = { setShowModal, onChange, blueprintFilter }
 
   return (
-    <>
-      <div style={{ width: '100%' }}>
-        <Input
-          style={{ width: '280px', margin: '0 8px', cursor: 'pointer' }}
-          type="string"
-          value={formData}
-          placeholder="Select"
-          onClick={() => setShowModal(true)}
+    <div style={{ width: '100vw' }}>
+      <Input
+        style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
+        type="string"
+        value={formData}
+        placeholder="Select"
+        onClick={() => setShowModal(true)}
+      />
+      <Modal
+        toggle={() => setShowModal(!showModal)}
+        open={showModal}
+        title={'Select a blueprint as type'}
+      >
+        <TreeView
+          onSelect={(node: TreeNode) => {
+            if (node.type !== BlueprintEnum.BLUEPRINT) {
+              NotificationManager.warning('You can only select a blueprint')
+              return
+            } // Only allowed to select blueprints
+            setShowModal(false)
+            onChange(node.getPath())
+          }}
         />
-        <Modal
-          toggle={() => setShowModal(!showModal)}
-          open={showModal}
-          title={'Select a blueprint as type'}
-        >
-          <Selector {...selectorProps} />
-        </Modal>
-      </div>
-    </>
+      </Modal>
+    </div>
   )
 }
