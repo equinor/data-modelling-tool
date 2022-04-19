@@ -87,6 +87,31 @@ const ViewAction = (node: TreeNode) => {
   window.open(`dmt/view/${node.nodeId}`, '_blank').focus()
 }
 
+const SingleTextInput = (props: {
+  label: string
+  handleSubmit: () => void
+  setFormData: (newFormData: string) => void
+}) => {
+  const { label, handleSubmit, setFormData } = props
+  return (
+    <div>
+      <Label label={label} />
+      <Input
+        type={'string'}
+        onChange={event => setFormData(event.target.value)}
+      />
+      <Button
+        style={{ marginTop: '10px' }}
+        onClick={() => {
+          handleSubmit()
+        }}
+      >
+        Create
+      </Button>
+    </div>
+  )
+}
+
 export const NodeRightClickMenu = (props: {
   node: TreeNode
   removeNode: Function
@@ -97,7 +122,7 @@ export const NodeRightClickMenu = (props: {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const [showScrimId, setShowScrimId] = useState<string>('')
-  const [formData, setFormData] = useState<any>('')
+  const [formData, setFormData] = useState<string>('')
 
   const menuItems = createMenuItems(node, dmssAPI, removeNode, setShowScrimId)
 
@@ -131,8 +156,11 @@ export const NodeRightClickMenu = (props: {
         body: newFolder,
         updateUncontained: true,
       })
-      .finally(() => {
-        console.log('added package!')
+      .catch((error: Error) => {
+        NotificationManager.error(
+          JSON.stringify(error.message),
+          'Failed to create new folder'
+        )
       })
   }
 
@@ -150,8 +178,28 @@ export const NodeRightClickMenu = (props: {
         body: newPackage,
         updateUncontained: true,
       })
-      .then(() => {})
+      .catch((error: Error) => {
+        NotificationManager.error(
+          JSON.stringify(error.message),
+          'Failed to create new root package'
+        )
+      })
   }
+
+  const handleFormDataSubmit = (
+    node: TreeNode,
+    formData: string,
+    action: Function
+  ) => {
+    if (formData) {
+      action(node, formData)
+      setShowScrimId('')
+      setFormData('')
+    } else {
+      NotificationManager.error('Form data cannot be empty!')
+    }
+  }
+
   //TODO when the tree changes by adding new package or deleting something, must trigger a tree update...
   return (
     <div>
@@ -164,27 +212,13 @@ export const NodeRightClickMenu = (props: {
             header={'Create new folder'}
             closeScrim={() => setShowScrimId('')}
           >
-            <div>
-              <Label label="Folder name" />
-              <Input
-                type={'string'}
-                onChange={event => setFormData(event.target.value)}
-              />
-              <Button
-                style={{ marginTop: '10px' }}
-                onClick={() => {
-                  if (formData) {
-                    NewFolderAction(node, formData)
-                    setShowScrimId('')
-                    setFormData('')
-                  } else {
-                    NotificationManager.error('Form data cannot be empty!')
-                  }
-                }}
-              >
-                Create
-              </Button>
-            </div>
+            <SingleTextInput
+              label={'Folder name'}
+              setFormData={setFormData}
+              handleSubmit={() =>
+                handleFormDataSubmit(node, formData, NewFolderAction)
+              }
+            />
           </CustomScrim>
         </div>
       )}
@@ -226,27 +260,13 @@ export const NodeRightClickMenu = (props: {
           closeScrim={() => setShowScrimId('')}
           header={'New root package'}
         >
-          <div>
-            <Label label="Root package name" />
-            <Input
-              type={'string'}
-              onChange={event => setFormData(event.target.value)}
-            />
-            <Button
-              style={{ marginTop: '10px' }}
-              onClick={() => {
-                if (formData) {
-                  NewRootPackageAction(node, formData)
-                  setShowScrimId('')
-                  setFormData('')
-                } else {
-                  NotificationManager.error('Form data cannot be empty!')
-                }
-              }}
-            >
-              Create
-            </Button>
-          </div>
+          <SingleTextInput
+            label={'Root package name'}
+            handleSubmit={() =>
+              handleFormDataSubmit(node, formData, NewRootPackageAction)
+            }
+            setFormData={setFormData}
+          />
         </CustomScrim>
       )}
     </div>
