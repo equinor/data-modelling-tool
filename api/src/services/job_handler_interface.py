@@ -57,10 +57,10 @@ class Job:
     def from_dict(cls, a_dict: dict):
         return Job(
             job_id=a_dict["job_id"],
-            started="x",
+            started=datetime.fromisoformat(a_dict["started"]),
             status=JobStatus(a_dict["status"]),
             entity=a_dict["entity"],
-            stopped="x",
+            stopped=datetime.fromisoformat(a_dict["stopped"]),
             log=a_dict.get("log"),
             cron_job=a_dict.get("cron_job"),
             token=a_dict.get("token"),
