@@ -6,7 +6,7 @@ import React, {
 } from 'react'
 import { DmtUIPlugin, UiPluginContext, useBlueprint } from '@dmt/common'
 import styled from 'styled-components'
-import { DotProgress } from '@equinor/eds-core-react'
+import { CircularProgress } from '@equinor/eds-core-react'
 
 const lightGray = '#d3d3d3'
 
@@ -116,21 +116,22 @@ export function UIPluginSelector(props: {
         ])
       )
     }
-  }, [blueprint, loadingBlueprint])
+  }, [blueprint])
 
   if (loadingBlueprint || loading)
     return (
       <div style={{ alignSelf: 'center', padding: '50px' }}>
-        <DotProgress color="primary" />
+        <CircularProgress color="primary" />
       </div>
     )
 
-  if (error)
+  if (error) {
     return (
       <div style={{ color: 'red' }}>
         Failed to fetch Blueprint {entity.type}
       </div>
     )
+  }
   if (!selectableRecipe.length) {
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
   }

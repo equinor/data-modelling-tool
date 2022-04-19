@@ -148,7 +148,12 @@ export const TreeView = (props: {
     setIndex([...node.tree])
   }
 
-  if (loading) return <CircularProgress value={0} />
+  if (loading)
+    return (
+      <div style={{ textAlign: 'center', paddingTop: '10px' }}>
+        <CircularProgress value={0} />
+      </div>
+    )
 
   return (
     <>
