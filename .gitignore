@@ -151,3 +151,4 @@ api/first-run-false
 /web/packages/home/public/version.txt
 /api/src/home/analysis-platform/data/AnalysisPlatformDS/Data/STasks/forapp.stask
 /sima.lic
+/api/src/home/analysis-platform/data/AnalysisPlatformDS/Data/sima_test/srs.stask

@@ -139,7 +139,7 @@ def upload_result():
     """
     Uploads the result to the folder given in the input-entity, and add a reference to this result to the analysis entity
     """
-    with open(settings.INPUT_ENTITY_FILE, "w") as input_entity_file:
+    with open(settings.INPUT_ENTITY_FILE, "r") as input_entity_file:
         input_entity: dict = json.loads(input_entity_file.read())
 
     target_data_source, target_directory = input_entity["resultPath"].split("/", 1)
@@ -147,11 +147,11 @@ def upload_result():
 
     with open(settings.RESULT_FILE, "r") as file:
         result_entity = json.loads(file.read())
-        dmss_api.api_client.default_headers["Authorization"] = "Bearer " + settings.DMSS_TOKEN
-        response = dmss_api.explorer_add_to_path(document=file.read(),
+        dmss_api.api_client.default_headers["Authorization"] = "Access-Key " + settings.DMSS_TOKEN
+        response = dmss_api.explorer_add_to_path(document=json.dumps(result_entity),
                                                  directory=target_directory,
                                                  data_source_id=target_data_source)
-        print(f"Result file uploaded successfully -- id: {response['uid']}")
+        print(f"Result file uploaded successfully to '{target_data_source}/{target_directory}' -- id: {response['uid']}")
 
     reference_object = {
         "name": result_entity.get("name", "noname"),

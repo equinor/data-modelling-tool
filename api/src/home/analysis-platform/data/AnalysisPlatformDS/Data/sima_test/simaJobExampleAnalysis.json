@@ -1,0 +1,28 @@
+{
+  "_id": "5583c9b0-d505-46c9-a157-94c79f4d7a6a",
+  "type": "AnalysisPlatformDS/Blueprints/Analysis",
+  "name": "simaJobExampleAnalysis",
+  "description": "example analysis",
+  "creator": "STOO",
+  "created": "2022-03-02T14:15:59.601Z",
+  "updated": "2022-03-02T14:15:59.601Z",
+  "task": {
+    "type": "WorkflowDS/Blueprints/Task",
+    "name": "task-sKBDJzBE",
+    "description": "",
+    "label": "",
+    "inputType": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+    "applicationInput": {
+      "_id": "8329e1f3-e94d-4cde-9fb6-a08031b0b04a",
+      "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
+      "name": "simaTestAppInput",
+      "contained": false
+    },
+    "outputType": "Asystem/SIMOS/NamedEntity",
+    "runner": {
+      "type": "WorkflowDS/Blueprints/jobHandlers/Container",
+      "image": "datamodelingtool.azurecr.io/dmt-job/srs:latest"
+    }
+  },
+  "jobs": []
+}

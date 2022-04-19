@@ -1,0 +1,17 @@
+{
+  "name": "ComparisonGroups",
+  "type": "system/SIMOS/Blueprint",
+  "abstract": false,
+  "extends": ["system/SIMOS/NamedEntity"],
+  "attributes": [
+    {
+      "name": "parameterVariations",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/ParameterVariations",
+      "dimensions": "*",
+      "contained": true,
+      "optional": false
+    }
+  ]
+}
+
