@@ -19,16 +19,10 @@ import {
 import { useCallback } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { CustomScrim } from '../../../../analysis-platform/src/components/CustomScrim'
 // import { CustomScrim } from '../../../../analysis-platform/src/components/CustomScrim'
 
 function sortMenuItems(menuItems: JSX.Element[]) {}
-
-// function useTextInput() {
-//   const [value, setValue] = useState<string>('')
-//   console.log('val in usetextinput', value)
-//   const input = <input onChange={e => setValue(e.target.value)} type={'text'} />
-//   return [value, input]
-// }
 
 function createMenuItems(
   node: TreeNode,
@@ -41,7 +35,10 @@ function createMenuItems(
   // dataSources get a "new root package"
   if (node.type === 'dataSource') {
     menuItems.push(
-      <MenuItem key={'new-root-package'} onClick={() => {}}>
+      <MenuItem
+        key={'new-root-package'}
+        onClick={() => setShowScrimId('new-root-package')}
+      >
         New package
       </MenuItem>
     )
@@ -50,12 +47,7 @@ function createMenuItems(
   // Packages get a "new folder"
   if (node.type == BlueprintEnum.PACKAGE) {
     menuItems.push(
-      <MenuItem
-        key={'new-folder'}
-        onClick={() => {
-          setShowScrimId('new-folder')
-        }}
-      >
+      <MenuItem key={'new-folder'} onClick={() => setShowScrimId('new-folder')}>
         New folder
       </MenuItem>
     )
@@ -126,9 +118,6 @@ export const NodeRightClickMenu = (props: {
   }
 
   const NewFolderAction = (node: TreeNode, folderName: string) => {
-    // dmssAPI.createDocument()
-    console.log(node)
-
     const newFolder = {
       name: folderName,
       type: 'system/SIMOS/Package',
@@ -142,15 +131,14 @@ export const NodeRightClickMenu = (props: {
         body: newFolder,
         updateUncontained: true,
       })
-      .then(() => {
+      .finally(() => {
         console.log('added package!')
       })
-    // setShowScrim(false)
   }
 
   const NewRootPackageAction = (node: TreeNode, packageName: string) => {
     const newPackage = {
-      name: 'test',
+      name: packageName,
       type: 'system/SIMOS/Package',
       isRoot: true,
       content: [],
@@ -162,52 +150,55 @@ export const NodeRightClickMenu = (props: {
         body: newPackage,
         updateUncontained: true,
       })
-      .then(() => {
-        console.log('added package!')
-      })
-    // setShowScrim(false)
+      .then(() => {})
   }
-
+  //TODO when the tree changes by adding new package or deleting something, must trigger a tree update...
   return (
     <div>
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
       {showScrimId === 'new-folder' && (
         <div>
-          <Scrim isDismissable={true}>
-            <Dialog>
-              <Dialog.Title>Create new folder</Dialog.Title>
-              <Dialog.CustomContent>
-                <Label label="Folder name" />
-                <Input
-                  type={'string'}
-                  onChange={event => setFormData(event.target.value)}
-                />
-                <Button
-                  onClick={() => {
-                    if (formData) {
-                      NewFolderAction(node, formData)
-                      setShowScrimId('')
-                    } else {
-                      NotificationManager.error('Form data cannot be empty!')
-                    }
-                  }}
-                >
-                  Create
-                </Button>
-              </Dialog.CustomContent>
-            </Dialog>
-          </Scrim>
+          <CustomScrim
+            width={'30vw'}
+            header={'Create new folder'}
+            closeScrim={() => setShowScrimId('')}
+          >
+            <div>
+              <Label label="Folder name" />
+              <Input
+                type={'string'}
+                onChange={event => setFormData(event.target.value)}
+              />
+              <Button
+                style={{ marginTop: '10px' }}
+                onClick={() => {
+                  if (formData) {
+                    NewFolderAction(node, formData)
+                    setShowScrimId('')
+                    setFormData('')
+                  } else {
+                    NotificationManager.error('Form data cannot be empty!')
+                  }
+                }}
+              >
+                Create
+              </Button>
+            </div>
+          </CustomScrim>
         </div>
       )}
       {showScrimId === 'delete' && (
-        <Scrim isDismissable={true}>
-          <Dialog>
-            <Dialog.Title>Confirm deletion</Dialog.Title>
-            <Dialog.CustomContent>
+        <CustomScrim
+          width={'30vw'}
+          closeScrim={() => setShowScrimId('')}
+          header={'Confirm Deletion'}
+        >
+          <div>
+            <div>
               Are you sure you want to delete the entity <b>{node.name}</b> of
               type <b>{node.type}</b>?
-            </Dialog.CustomContent>
+            </div>
             <div
               style={{
                 display: 'flex',
@@ -226,11 +217,38 @@ export const NodeRightClickMenu = (props: {
                 Delete
               </Button>
             </div>
-          </Dialog>
-        </Scrim>
+          </div>
+        </CustomScrim>
+      )}
+      {showScrimId === 'new-root-package' && (
+        <CustomScrim
+          width={'30vw'}
+          closeScrim={() => setShowScrimId('')}
+          header={'New root package'}
+        >
+          <div>
+            <Label label="Root package name" />
+            <Input
+              type={'string'}
+              onChange={event => setFormData(event.target.value)}
+            />
+            <Button
+              style={{ marginTop: '10px' }}
+              onClick={() => {
+                if (formData) {
+                  NewRootPackageAction(node, formData)
+                  setShowScrimId('')
+                  setFormData('')
+                } else {
+                  NotificationManager.error('Form data cannot be empty!')
+                }
+              }}
+            >
+              Create
+            </Button>
+          </div>
+        </CustomScrim>
       )}
     </div>
   )
 }
-
-// trying to set formData in NodeRightClickMenu and then returning it back into the created scrim is not working. have to refactor the whole component to make this work i think....
