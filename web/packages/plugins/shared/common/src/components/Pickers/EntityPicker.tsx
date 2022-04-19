@@ -20,7 +20,7 @@ export const EntityPicker = (props: {
         value={formData?.name || formData?._id || ''}
         placeholder="Select"
         onClick={() => setShowModal(true)}
-        style={{ width: '280px', margin: '0 8px', cursor: 'pointer' }}
+        style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
       />
       <Modal
         toggle={() => setShowModal(!showModal)}
