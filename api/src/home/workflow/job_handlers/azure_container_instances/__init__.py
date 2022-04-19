@@ -72,7 +72,7 @@ class JobHandler(ServiceJobHandlerInterface):
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
             + f"Image: '{runnerEntity.get('image', 'None')}'\n\t"
-            + f"RegistryUsername: 'None'\n\t"
+            + "RegistryUsername: 'None'\n\t"
             + f"EnvironmentVariables: {[(e.name + '=' + e.value)  for e in env_vars]}",
         )
 

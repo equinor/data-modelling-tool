@@ -142,8 +142,6 @@ export const TypeWidget = (props: TypeProps) => {
             onChange(attributeType, value)
           }}
           formData={blueprintValue}
-          // Hide the label on the BlueprintSelectorWidget
-          uiSchema={{ 'ui:label': '' }}
         />
       )}
     </>
@@ -156,7 +154,6 @@ export const EnumTypePickerWidget = (props: TypeProps) => {
   return (
     <>
       <DestinationPicker
-        blueprintFilter={BlueprintEnum.ENUM}
         title=""
         onChange={(value: any) => {
           onChange(attributeType, value)

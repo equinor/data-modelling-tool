@@ -1,5 +1,6 @@
 import json
 
+import markupsafe
 from flask import Blueprint, request, Response, send_file
 
 from config import config
@@ -26,7 +27,7 @@ def get_application_settings():
             )
         else:
             return Response(
-                f"Error: No application named '{app_name}' is loaded",
+                f"Error: No application named '{markupsafe.escape(app_name)}' is loaded",
                 status=404,
             )
     return Response(

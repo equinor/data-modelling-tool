@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from typing import Tuple
+from dateutil import parser
 
 
 class JobStatus(Enum):
@@ -57,10 +58,10 @@ class Job:
     def from_dict(cls, a_dict: dict):
         return Job(
             job_id=a_dict["job_id"],
-            started=datetime.fromisoformat(a_dict["started"]),
+            started=parser.parse(a_dict["started"]).utcnow().isoformat() + "Z",
             status=JobStatus(a_dict["status"]),
             entity=a_dict["entity"],
-            stopped=datetime.fromisoformat(a_dict["stopped"]),
+            stopped=parser.parse(a_dict["stopped"]).utcnow().isoformat() + "Z",
             log=a_dict.get("log"),
             cron_job=a_dict.get("cron_job"),
             token=a_dict.get("token"),

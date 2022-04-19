@@ -8,7 +8,10 @@ import { TJob } from '../../Types'
 
 export default (): JSX.Element => {
   // @ts-ignore
-  const { data_source, entity_id } = useParams()
+  const { data_source, entity_id } = useParams<{
+    data_source: string
+    entity_id: string
+  }>()
   const [analysis, isLoading, updateDocument, error] = useDocument(
     data_source,
     entity_id
