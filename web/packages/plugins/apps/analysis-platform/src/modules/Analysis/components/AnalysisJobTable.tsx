@@ -59,7 +59,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
         <ClickableLabel
           onClick={(e) => {
             window.open(
-              `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.name}`,
+              `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`,
               '_blank'
             )
             e.stopPropagation()

@@ -9,6 +9,8 @@ import click
 import emoji
 from dmss_api.exceptions import ApiException
 from flask import Flask
+
+from repository.repository_exceptions import ImportReferenceNotFoundException
 from services.job_service import JobService
 
 from config import config
@@ -171,6 +173,9 @@ def init_application(context):
                 root_package = package_tree_from_zip(actual_data_source, folder, memory_file)
                 # Import the package into the data source defined in _aliases_, or using the data_source folder name
                 import_package_tree(root_package, actual_data_source)
+            except ImportReferenceNotFoundException as error:
+                logger.error(error.message)
+                raise error
             except Exception as error:
                 traceback.print_exc()
                 raise Exception(f"Something went wrong trying to upload the package '{package}' to DMSS; {error}")

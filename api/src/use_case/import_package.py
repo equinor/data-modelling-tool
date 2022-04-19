@@ -51,7 +51,7 @@ def replace_relative_references(key: str, value, reference_table: dict = None, z
                     try:
                         extends_list.append(reference_table[value[i]]["absolute"])
                     except KeyError:
-                        raise ImportReferenceNotFoundException(value[i])
+                        raise ImportReferenceNotFoundException(value[i], value)
                 else:
                     extends_list.append(blueprint)
             return extends_list

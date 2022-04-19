@@ -12,7 +12,11 @@
   "description": "Contains different types of analysis for marine operations and structures.",
   "packages": [
     "AnalysisPlatformDS/Blueprints",
-    "AnalysisPlatformDS/Data"
+    "AnalysisPlatformDS/Data",
+    "FoR-BP/Blueprints",
+    "ForecastDS/FoR-BP",
+    "WorkflowDS/Blueprints",
+    "ForApp/io"
   ],
   "models": [],
   "actions": []

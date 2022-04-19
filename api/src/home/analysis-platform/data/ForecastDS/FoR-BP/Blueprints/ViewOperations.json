@@ -1,0 +1,12 @@
+{
+  "name": "ViewOperations",
+  "type": "system/SIMOS/Blueprint",
+  "description": "",
+  "uiRecipes": [
+    {
+      "name": "OperationsTable",
+      "plugin": "for-operations-table",
+      "type": "system/SIMOS/UiRecipe"
+    }
+  ]
+}

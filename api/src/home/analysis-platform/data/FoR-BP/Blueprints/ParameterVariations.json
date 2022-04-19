@@ -1,0 +1,24 @@
+{
+  "name": "ParameterVariations",
+  "type": "system/SIMOS/Blueprint",
+  "abstract": false,
+  "extends": ["system/SIMOS/NamedEntity"],
+  "attributes": [
+    {
+      "name": "variableRuns",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/VariableRun",
+      "contained": false,
+      "optional": false,
+      "description": "uncontained list of variable runs"
+    }, {
+      "name": "parameters",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Variable",
+      "contained": true,
+      "optional": true,
+      "description": "the variable value is a semi-colon separated list of parameters. Name and unit (and values) must correspond to the variables in the associated VariableRun"
+    }
+  ]
+}
+

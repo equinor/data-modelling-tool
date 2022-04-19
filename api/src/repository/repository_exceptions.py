@@ -47,8 +47,8 @@ class ImportAliasNotFoundException(Exception):
 
 
 class ImportReferenceNotFoundException(Exception):
-    def __init__(self, key):
-        self.message = f"IMPORT ERROR: Failed to find the relative reference '{key}' in the reference table."
+    def __init__(self, key, entity=None):
+        self.message = f"IMPORT ERROR: Failed to find the relative reference '{key}' in the reference table. {entity}"
 
 
 class ApplicationNotLoadedException(Exception):
