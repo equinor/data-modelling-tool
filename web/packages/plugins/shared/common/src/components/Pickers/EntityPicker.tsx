@@ -1,5 +1,4 @@
 import React, { useState } from 'react'
-import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView, TReference } from '../../index'
 import { Input } from '@equinor/eds-core-react'
 // @ts-ignore
@@ -8,9 +7,10 @@ import { NotificationManager } from 'react-notifications'
 export const EntityPicker = (props: {
   onChange: (ref: TReference) => void
   formData?: TReference
+  typeFilter?: string
 }) => {
   // TODO: Valid types should be passed to this, and filtered for in the view
-  const { onChange, formData } = props
+  const { onChange, formData, typeFilter } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
@@ -29,10 +29,8 @@ export const EntityPicker = (props: {
       >
         <TreeView
           onSelect={(node: TreeNode) => {
-            if (node.type === BlueprintEnum.PACKAGE) {
-              NotificationManager.error(
-                'You must select an entity, not a blueprint'
-              )
+            if (node.type !== typeFilter) {
+              NotificationManager.warning('Wrong type')
               return
             }
             setShowModal(false)

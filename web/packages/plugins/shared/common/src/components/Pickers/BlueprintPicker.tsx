@@ -30,7 +30,7 @@ export const BlueprintPicker = (props: {
         <TreeView
           onSelect={(node: TreeNode) => {
             if (node.type !== BlueprintEnum.BLUEPRINT) {
-              NotificationManager.error('You can only select a blueprint')
+              NotificationManager.warning('You can only select a blueprint')
               return
             } // Only allowed to select blueprints
             setShowModal(false)

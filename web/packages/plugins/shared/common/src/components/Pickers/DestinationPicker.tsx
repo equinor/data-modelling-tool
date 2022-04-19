@@ -23,7 +23,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
     <>
       <div style={{ width: '100vw' }}>
         <Input
-          style={{ width: '19vw', margin: '0 8px', cursor: 'pointer' }}
+          style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
           type="string"
           value={formData}
           onClick={() => setShowModal(true)}

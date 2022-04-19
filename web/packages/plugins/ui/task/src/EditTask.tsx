@@ -1,5 +1,4 @@
 import {
-  BlueprintEnum,
   BlueprintPicker,
   DmtUIPlugin,
   EntityPicker,
@@ -83,6 +82,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                   <Label label={'Input entity'} />
                   <EntityPicker
                     formData={formData.applicationInput}
+                    typeFilter={formData.inputType}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({
                         ...formData,
