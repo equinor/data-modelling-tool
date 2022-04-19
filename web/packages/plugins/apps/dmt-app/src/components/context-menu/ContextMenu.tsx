@@ -98,7 +98,7 @@ const SingleTextInput = (props: {
       <Label label={label} />
       <Input
         type={'string'}
-        onChange={event => setFormData(event.target.value)}
+        onChange={(event) => setFormData(event.target.value)}
       />
       <Button
         style={{ marginTop: '10px' }}
