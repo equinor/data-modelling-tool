@@ -1,26 +1,12 @@
-import React, { useContext, useEffect, useState } from 'react'
-import {
-  Button,
-  Dialog,
-  Scrim,
-  Typography,
-  Input,
-  Label,
-} from '@equinor/eds-core-react'
+import React, { useContext, useState } from 'react'
+import { Button, Input, Label } from '@equinor/eds-core-react'
 import './react-contextmenu.css'
 import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
-import {
-  AuthContext,
-  BlueprintEnum,
-  DmssAPI,
-  Select,
-  TreeNode,
-} from '@dmt/common'
-import { useCallback } from 'react'
+import { AuthContext, BlueprintEnum, DmssAPI, TreeNode } from '@dmt/common'
+
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { CustomScrim } from '../../../../analysis-platform/src/components/CustomScrim'
-// import { CustomScrim } from '../../../../analysis-platform/src/components/CustomScrim'
 
 function sortMenuItems(menuItems: JSX.Element[]) {}
 
@@ -87,6 +73,7 @@ const ViewAction = (node: TreeNode) => {
   window.open(`dmt/view/${node.nodeId}`, '_blank').focus()
 }
 
+//Component that can be used when a context menu action requires one text (string) input.
 const SingleTextInput = (props: {
   label: string
   handleSubmit: () => void
@@ -121,10 +108,10 @@ export const NodeRightClickMenu = (props: {
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  const [showScrimId, setShowScrimId] = useState<string>('')
+  const [scrimToShow, setScrimToShow] = useState<string>('')
   const [formData, setFormData] = useState<string>('')
 
-  const menuItems = createMenuItems(node, dmssAPI, removeNode, setShowScrimId)
+  const menuItems = createMenuItems(node, dmssAPI, removeNode, setScrimToShow)
 
   const DeleteAction = () => {
     dmssAPI
@@ -193,24 +180,24 @@ export const NodeRightClickMenu = (props: {
   ) => {
     if (formData) {
       action(node, formData)
-      setShowScrimId('')
+      setScrimToShow('')
       setFormData('')
     } else {
       NotificationManager.error('Form data cannot be empty!')
     }
   }
 
-  //TODO when the tree changes by adding new package or deleting something, must trigger a tree update...
+  //TODO when the tree changes by adding new package or deleting something, the tree should be updated to give consistent UI to user
   return (
     <div>
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
-      {showScrimId === 'new-folder' && (
+      {scrimToShow === 'new-folder' && (
         <div>
           <CustomScrim
             width={'30vw'}
             header={'Create new folder'}
-            closeScrim={() => setShowScrimId('')}
+            closeScrim={() => setScrimToShow('')}
           >
             <SingleTextInput
               label={'Folder name'}
@@ -222,10 +209,10 @@ export const NodeRightClickMenu = (props: {
           </CustomScrim>
         </div>
       )}
-      {showScrimId === 'delete' && (
+      {scrimToShow === 'delete' && (
         <CustomScrim
           width={'30vw'}
-          closeScrim={() => setShowScrimId('')}
+          closeScrim={() => setScrimToShow('')}
           header={'Confirm Deletion'}
         >
           <div>
@@ -240,12 +227,12 @@ export const NodeRightClickMenu = (props: {
                 margin: '5px',
               }}
             >
-              <Button onClick={() => setShowScrimId('')}>Cancel</Button>
+              <Button onClick={() => setScrimToShow('')}>Cancel</Button>
               <Button
                 color="danger"
                 onClick={() => {
                   DeleteAction()
-                  setShowScrimId('')
+                  setScrimToShow('')
                 }}
               >
                 Delete
@@ -254,10 +241,10 @@ export const NodeRightClickMenu = (props: {
           </div>
         </CustomScrim>
       )}
-      {showScrimId === 'new-root-package' && (
+      {scrimToShow === 'new-root-package' && (
         <CustomScrim
           width={'30vw'}
-          closeScrim={() => setShowScrimId('')}
+          closeScrim={() => setScrimToShow('')}
           header={'New root package'}
         >
           <SingleTextInput
