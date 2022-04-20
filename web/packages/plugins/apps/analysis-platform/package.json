@@ -4,15 +4,16 @@
   "version": "0.0.2",
   "main": "src/index.tsx",
   "dependencies": {
-    "@equinor/eds-core-react": "^0.14.3",
-    "@equinor/eds-icons": "^0.8.0",
+    "@equinor/eds-core-react": "^0.19.0",
+    "@equinor/eds-icons": "^0.10.0",
     "@equinor/eds-tokens": "^0.7.0",
-    "antd": "^4.16.13",
-    "react-datepicker": "^4.2.1"
+    "antd": "^4.19.5",
+    "react-datepicker": "^4.7.0"
   },
   "devDependencies": {
-    "@types/react": "^17.0.26",
-    "@types/react-router-dom": "^5.1.2",
-    "@types/styled-components": "^4.1.18"
+    "@types/react": "^18.0.5",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "^5.1.25",
+    "yarn-upgrade-all": "^0.7.1"
   }
 }
