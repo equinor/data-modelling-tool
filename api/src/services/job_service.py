@@ -204,3 +204,10 @@ class JobService:
         job_status, remove_message = job_handler.remove()
         self.job_store.delete(job_id)
         return remove_message
+
+    def get_job_result(self, job_id: str) -> Tuple[str, bytearray]:
+        job = self._get_job(job_id)
+        if not job:
+            raise JobNotFoundException(f"No job with id '{job_id}' is registered")
+        job_handler = self._get_job_handler(job)
+        return job_handler.result()

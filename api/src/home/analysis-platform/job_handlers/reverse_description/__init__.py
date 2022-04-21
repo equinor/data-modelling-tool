@@ -1,10 +1,9 @@
 import json
 from datetime import datetime
-from typing import Tuple
 import requests
 
 from config import config
-from services.job_handler_interface import JobHandlerInterface, JobStatus
+from services.job_handler_interface import JobHandlerInterface
 from utils.logging import logger
 
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/ReverseDescription"
@@ -56,10 +55,3 @@ class JobHandler(JobHandlerInterface):
 
         logger.info("ReverseDescription job completed")
         return "OK"
-
-    def remove(self) -> str:
-        return JobStatus.UNKNOWN, "ReverseDescription job removed"
-
-    def progress(self) -> Tuple[JobStatus, str]:
-        """Poll progress from the job instance"""
-        return JobStatus.UNKNOWN, "ReverseDescription job type does not support progress polling"

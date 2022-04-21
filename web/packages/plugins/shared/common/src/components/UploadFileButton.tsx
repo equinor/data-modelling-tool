@@ -8,8 +8,7 @@ export const addToPath = (
   token: string,
   files: File[] | undefined[] = [],
   dataSourceId: string,
-  // TODO: Create a selector for upload target
-  directory: string = 'Data/STasks'
+  directory: string
 ): Promise<string> => {
   // @ts-ignore
   const dmssAPI = new DmssAPI(token)
@@ -18,10 +17,10 @@ export const addToPath = (
     .explorerAddToPath({
       dataSourceId: dataSourceId,
       document: JSON.stringify(body),
-      // TODO: Create a selector for upload target
       directory: directory,
       // @ts-ignore
       files: files.filter((item: any) => item !== undefined),
+      updateUncontained: true,
     })
     .then((uuid: string) => JSON.parse(uuid).uid)
     .catch((error: any) => {
@@ -56,7 +55,7 @@ export function UploadFileButton(props: {
       setError(`Only files of type '${fileSuffix}' can be uploaded here`)
     } else {
       const newDocumentBody = getBody(file.name)
-      addToPath(newDocumentBody, token, [file], dataSourceId)
+      addToPath(newDocumentBody, token, [file], dataSourceId, 'Data/STasks')
         .then((createdUUID: any) =>
           onUpload({
             _id: createdUUID,

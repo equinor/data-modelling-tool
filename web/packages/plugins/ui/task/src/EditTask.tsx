@@ -6,6 +6,7 @@ import {
   TReference,
   UIPluginSelector,
   useDocument,
+  NewEntityButton,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -77,7 +78,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                   formData={formData.inputType}
                 />
               </Column>
-              <div style={{ display: 'flex' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-end' }}>
                 <Column>
                   <Label label={'Input entity'} />
                   <EntityPicker
@@ -86,15 +87,20 @@ export const EditTask = (props: DmtUIPlugin) => {
                     onChange={(selectedEntity: TReference) =>
                       setFormData({
                         ...formData,
-                        applicationInput: {
-                          _id: selectedEntity._id,
-                          name: selectedEntity.name,
-                          type: selectedEntity.type,
-                        },
+                        applicationInput: selectedEntity,
                       })
                     }
                   />
                 </Column>
+                <NewEntityButton
+                  type={formData.inputType}
+                  setReference={(createdEntity: TReference) =>
+                    setFormData({
+                      ...formData,
+                      applicationInput: createdEntity,
+                    })
+                  }
+                />
               </div>
             </GroupWrapper>
           </HeaderWrapper>

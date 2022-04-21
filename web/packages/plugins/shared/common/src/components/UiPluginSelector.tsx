@@ -70,7 +70,7 @@ const SelectPluginButton = styled.div<ISPButton>`
 `
 
 export function UIPluginSelector(props: {
-  absoluteDottedId: string
+  absoluteDottedId?: string
   entity: any
   onSubmit?: Function
   onChange?: Function
@@ -87,7 +87,10 @@ export function UIPluginSelector(props: {
     onChange,
     onOpen,
   } = props
-  const [dataSourceId, documentId] = absoluteDottedId.split('/', 2)
+  let [dataSourceId, documentId] = ['', '']
+  if (absoluteDottedId) {
+    ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
+  }
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)

@@ -78,3 +78,6 @@ class JobHandler(JobHandlerInterface):
         except docker.errors.NotFound as error:
             logger.error(f"Failed to poll progress of local container: {error}")
             return JobStatus.UNKNOWN, ""
+
+    def result(self) -> Tuple[str, bytearray]:
+        return "test 123", b"lkjgfdakljhfdgsllkjhldafgoiu8y03q987hgbloizdjhfpg980"

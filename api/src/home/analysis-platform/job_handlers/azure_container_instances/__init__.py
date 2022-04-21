@@ -19,7 +19,7 @@ from azure.mgmt.containerinstance.models import (
 
 from config import config
 from repository.repository_exceptions import JobNotFoundException
-from services.job_handler_interface import JobStatus, ServiceJobHandlerInterface
+from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
@@ -28,7 +28,7 @@ logging.getLogger("azure").setLevel(logging.WARNING)
 _SUPPORTED_TYPE = "WorkflowDS/Blueprints/jobHandlers/AzureContainer"
 
 
-class JobHandler(ServiceJobHandlerInterface):
+class JobHandler(JobHandlerInterface):
     """
     Job handler plugin for Azure Container Instances.
     Support both executable jobs and job services

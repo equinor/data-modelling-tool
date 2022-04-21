@@ -33,7 +33,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
 
   useEffect(() => {
     setLoading(true)
-    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${job.name}`)
+    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`)
       .then((result: any) => {
         setJobStatus(result.data.status)
       })

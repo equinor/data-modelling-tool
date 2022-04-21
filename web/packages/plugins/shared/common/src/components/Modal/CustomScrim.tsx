@@ -1,6 +1,13 @@
 import { Dialog, Icon, Scrim } from '@equinor/eds-core-react'
-import { ClickableIcon } from './Layout/Header'
 import React from 'react'
+import styled from 'styled-components'
+
+const ClickableIcon = styled.div`
+  &:hover {
+    color: gray;
+    cursor: pointer;
+  }
+`
 
 export const CustomScrim = (props: {
   closeScrim: Function
@@ -11,6 +18,7 @@ export const CustomScrim = (props: {
 }) => {
   const { closeScrim, children, header, width, height } = props
   return (
+    // @ts-ignore
     <Scrim isDismissable onClose={closeScrim} style={{ zIndex: 3 }}>
       <Dialog
         style={{
@@ -38,6 +46,7 @@ export const CustomScrim = (props: {
                 float: 'right',
                 paddingRight: '20px',
               }}
+              // @ts-ignore
               onClick={closeScrim}
             >
               <Icon name="close" size={24} title="Close" />
