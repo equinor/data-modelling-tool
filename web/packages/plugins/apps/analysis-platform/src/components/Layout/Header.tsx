@@ -1,10 +1,9 @@
 import React, { useContext, useState } from 'react'
-import { Button, Scrim, TopBar } from '@equinor/eds-core-react'
+import { TopBar } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import Icon from '../Design/Icons'
 import { Link } from 'react-router-dom'
-import { AuthContext } from '@dmt/common'
-import { CustomScrim } from '../CustomScrim'
+import { AuthContext, CustomScrim } from '@dmt/common'
 
 const Icons = styled.div`
   display: flex;

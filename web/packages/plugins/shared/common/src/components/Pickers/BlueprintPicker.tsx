@@ -14,11 +14,12 @@ export const BlueprintPicker = (props: {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
-    <div style={{ width: '100vw' }}>
+    <div style={{ width: '80%' }}>
       <Input
-        style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
+        style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
         type="string"
         value={formData}
+        onChange={() => {}}
         placeholder="Select"
         onClick={() => setShowModal(true)}
       />

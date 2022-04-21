@@ -1,0 +1,15 @@
+{
+  "name": "SimulationConfig",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/DefaultUiRecipes", "system/SIMOS/NamedEntity"],
+  "description": "",
+  "attributes": [
+    {
+      "name": "variables",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "ForecastDS/FoR-BP/Blueprints/Variable",
+      "optional": true,
+      "dimensions": "*"
+    }
+  ]
+}

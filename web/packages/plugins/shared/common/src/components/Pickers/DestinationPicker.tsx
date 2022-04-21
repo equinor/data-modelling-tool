@@ -3,11 +3,11 @@ import React, { useContext, useEffect, useState } from 'react'
 import { BlueprintEnum } from '../../utils/variables'
 import { Modal, NodeWrapperProps, TreeNode, TreeView } from '../../index'
 import { Button, Input } from '@equinor/eds-core-react'
+import styled from 'styled-components'
 
 export type DestinationPickerProps = {
   onChange: (value: any) => void
   formData: any
-  title?: string
 }
 
 export const DestinationPicker = (props: DestinationPickerProps) => {
@@ -21,11 +21,12 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
 
   return (
     <>
-      <div style={{ width: '100vw' }}>
+      <div>
         <Input
-          style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
+          style={{ width: '24vw', margin: '0 8px', cursor: 'pointer' }}
           type="string"
           value={formData}
+          onChange={() => {}}
           onClick={() => setShowModal(true)}
         />
         <Modal
@@ -44,23 +45,31 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   )
 }
 
+const Wrapper = styled.div`
+  display: flex;
+  &:hover {
+    background-color: #acb7da;
+  }
+`
 export const SelectPackageButton = (props: NodeWrapperProps) => {
   const { node, children, onSelect } = props
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+    <Wrapper>
       {children}
       {node.type === BlueprintEnum.PACKAGE ? (
-        <Button
-          style={{ height: '22px' }}
-          variant="ghost"
-          onClick={() => {
-            onSelect!(node)
-          }}
-        >
-          Select
-        </Button>
+        <div style={{ padding: '0 5px', backgroundColor: 'white' }}>
+          <Button
+            style={{ height: '22px' }}
+            variant="ghost"
+            onClick={() => {
+              onSelect!(node)
+            }}
+          >
+            Select
+          </Button>
+        </div>
       ) : null}
-    </div>
+    </Wrapper>
   )
 }

@@ -29,7 +29,7 @@ const StyledTreeNode = styled.div`
   display: flex;
   padding-left: ${(props: StyledTreeNode) => props.level * 20}px;
   cursor: pointer;
-
+  width: -webkit-fill-available;
   &:hover {
     background-color: #acb7da;
   }

@@ -5,7 +5,6 @@ import { TAnalysis, TTask } from '../Types'
 import styled from 'styled-components'
 import CreateAnalysisForm from './CreateAnalysisForm'
 import AnalysisCard from './AnalysisCard'
-import analysisJobTable from './AnalysisJobTable'
 
 const OnRight = styled.div`
   display: flex;

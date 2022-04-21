@@ -19,6 +19,7 @@ export const EntityPicker = (props: {
         type="string"
         value={formData?.name || formData?._id || ''}
         placeholder="Select"
+        onChange={() => {}}
         onClick={() => setShowModal(true)}
         style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
       />

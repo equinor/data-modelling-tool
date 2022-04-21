@@ -11,13 +11,13 @@ import { AxiosError } from 'axios'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
 import { TAnalysis } from '../Types'
-import { CustomScrim } from '../../../components/CustomScrim'
 import {
   AccessControlList,
   AuthContext,
   DmssAPI,
   UIPluginSelector,
   JobApi,
+  CustomScrim,
 } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'

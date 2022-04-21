@@ -2,7 +2,6 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from typing import Tuple
-from dateutil import parser
 
 
 class JobStatus(Enum):
@@ -38,8 +37,8 @@ class Job:
 
     def update_entity_attributes(self):
         # These attributes are common amongst all Job entities
-        self.entity["started"] = self.started.isoformat()
-        self.entity["stopped"] = self.stopped.isoformat()
+        self.entity["started"] = self.started.isoformat() + "Z"
+        self.entity["stopped"] = self.stopped.isoformat() + "Z"
         self.entity["status"] = self.status.value
 
     def to_dict(self):
@@ -58,10 +57,10 @@ class Job:
     def from_dict(cls, a_dict: dict):
         return Job(
             job_id=a_dict["job_id"],
-            started=parser.parse(a_dict["started"]).utcnow().isoformat() + "Z",
+            started=datetime.fromisoformat(a_dict["started"]),
             status=JobStatus(a_dict["status"]),
             entity=a_dict["entity"],
-            stopped=parser.parse(a_dict["stopped"]).utcnow().isoformat() + "Z",
+            stopped=datetime.fromisoformat(a_dict["stopped"]),
             log=a_dict.get("log"),
             cron_job=a_dict.get("cron_job"),
             token=a_dict.get("token"),
@@ -77,23 +76,25 @@ class JobHandlerInterface(ABC):
     def start(self) -> str:
         """Run or deploy a job or job service"""
 
-    @abstractmethod
     def remove(self) -> str:
         """Terminate and cleanup all job related resources"""
+        raise NotImplementedError
 
-    @abstractmethod
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
+        raise NotImplementedError
 
+    def result(self) -> Tuple[str, bytearray]:
+        """Returns a string for free text and the result of the job as a bytearray"""
+        raise NotImplementedError
 
-class ServiceJobHandlerInterface(JobHandlerInterface):
-    @abstractmethod
     def setup_service(self, service_id: str) -> str:
         """Start a persistent service"""
+        raise NotImplementedError
 
-    @abstractmethod
     def teardown_service(self, service_id: str) -> str:
         """Teardown and cleanup a persistent service"""
+        raise NotImplementedError
 
 
 class ComputeResources(Enum):

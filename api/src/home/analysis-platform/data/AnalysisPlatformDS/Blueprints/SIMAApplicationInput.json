@@ -23,7 +23,8 @@
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "input",
       "description": "An input entity as json string (must be of same type as defined by inputType)",
-      "attributeType": "string"
+      "attributeType": "object",
+      "contained": false
     },
     {
       "name": "SIMAComputeConfig",
