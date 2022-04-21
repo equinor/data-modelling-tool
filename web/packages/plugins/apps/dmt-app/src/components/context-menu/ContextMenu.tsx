@@ -2,11 +2,16 @@ import React, { useContext, useState } from 'react'
 import { Button, Input, Label } from '@equinor/eds-core-react'
 import './react-contextmenu.css'
 import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
-import { AuthContext, BlueprintEnum, DmssAPI, TreeNode } from '@dmt/common'
+import {
+  AuthContext,
+  BlueprintEnum,
+  DmssAPI,
+  TreeNode,
+  CustomScrim,
+} from '@dmt/common'
 
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { CustomScrim } from '../../../../analysis-platform/src/components/CustomScrim'
 
 function sortMenuItems(menuItems: JSX.Element[]) {}
 
