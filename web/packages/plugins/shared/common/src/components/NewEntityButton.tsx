@@ -15,7 +15,6 @@ export function NewEntityButton(props: {
   const { type, setReference } = props
   const [showScrim, setShowScrim] = useState<boolean>(false)
   const [saveDestination, setSaveDestination] = useState<string>('')
-  const typeBaseName = type.split('/').slice(-1)[0]
   // @ts-ignore
   const { token } = useContext(AuthContext)
 
@@ -39,7 +38,7 @@ export function NewEntityButton(props: {
       {showScrim && (
         <CustomScrim
           closeScrim={() => setShowScrim(false)}
-          header={`Create new ${typeBaseName}`}
+          header={`Create new entity`}
           width={'40vw'}
           height={'70vh'}
         >
@@ -83,7 +82,7 @@ export function NewEntityButton(props: {
                   addEntityToPath(newEntity)
                   setShowScrim(false)
                   NotificationManager.success(
-                    `New ${typeBaseName} created`,
+                    `New ${newEntity.type} created`,
                     'Created'
                   )
                 }

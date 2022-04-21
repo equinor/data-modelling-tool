@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AuthContext, JobApi, Modal } from '@dmt/common'
+import { AuthContext, JobApi, Modal, UIPluginSelector } from '@dmt/common'
 import { Button, Label } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'
@@ -58,6 +58,7 @@ const SimStatusWrapper = styled.div`
 
 export const JobLog = (props: { document: any; jobId: string }) => {
   const { jobId, document } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const [loading, setLoading] = useState<boolean>(false)
@@ -110,9 +111,16 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         open={inputModal}
         title={'Jobs input'}
       >
-        <StyledPre>
-          {JSON.stringify(document.applicationInput, null, 2)}{' '}
-        </StyledPre>
+        {!!document.applicationInput ? (
+          <UIPluginSelector
+            entity={document.applicationInput}
+            absoluteDottedId={`${jobId.split('/', 1)[0]}/${
+              document.applicationInput._id
+            }`}
+          />
+        ) : (
+          <pre>None</pre>
+        )}
       </Modal>
 
       <div
@@ -152,7 +160,7 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         </RowGroup>
         <RowGroup>
           <Label label="Result:" />
-          {Object.keys(document.result).length ? (
+          {Object.keys(document?.result || {}).length ? (
             <ClickableLabel
               onClick={() =>
                 window.open(
