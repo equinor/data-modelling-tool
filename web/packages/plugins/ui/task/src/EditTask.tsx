@@ -1,16 +1,16 @@
 import {
   BlueprintPicker,
   DmtUIPlugin,
-  EntityPicker,
   JobHandlerPicker,
   TReference,
   UIPluginSelector,
   useDocument,
   NewEntityButton,
+  EntityPickerButton,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Button, Label, Typography } from '@equinor/eds-core-react'
+import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -81,17 +81,35 @@ export const EditTask = (props: DmtUIPlugin) => {
               <div style={{ display: 'flex', alignItems: 'flex-end' }}>
                 <Column>
                   <Label label={'Input entity'} />
-                  <EntityPicker
-                    formData={formData.applicationInput}
-                    typeFilter={formData.inputType}
-                    onChange={(selectedEntity: TReference) =>
-                      setFormData({
-                        ...formData,
-                        applicationInput: selectedEntity,
+                  <Input
+                    type="string"
+                    value={
+                      formData?.applicationInput.name ||
+                      formData?.applicationInput._id ||
+                      ''
+                    }
+                    placeholder={
+                      formData?.applicationInput?.name || 'Select or create'
+                    }
+                    onChange={() => {}}
+                    onClick={() =>
+                      onOpen({
+                        attribute: 'applicationInput',
+                        entity: formData?.applicationInput,
+                        absoluteDottedId: `${dataSourceId}/${formData?.applicationInput._id}`,
                       })
                     }
                   />
                 </Column>
+                <EntityPickerButton
+                  typeFilter={formData.inputType}
+                  onChange={(selectedEntity: TReference) =>
+                    setFormData({
+                      ...formData,
+                      applicationInput: selectedEntity,
+                    })
+                  }
+                />
                 <NewEntityButton
                   type={formData.inputType}
                   setReference={(createdEntity: TReference) =>

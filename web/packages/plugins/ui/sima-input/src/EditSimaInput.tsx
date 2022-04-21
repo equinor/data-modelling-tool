@@ -1,7 +1,7 @@
 import {
   BlueprintPicker,
   DmtUIPlugin,
-  EntityPicker,
+  EntityPickerInput,
   EntityPickerDropdown,
   TReference,
   UploadFileButton,
@@ -82,7 +82,7 @@ export const EditSimaInput = (props: DmtUIPlugin) => {
               <div style={{ display: 'flex' }}>
                 <Column>
                   <Label label={'Default input entity'} />
-                  <EntityPicker
+                  <EntityPickerInput
                     formData={formData.defaultInput}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({

@@ -20,7 +20,7 @@ export const addToPath = (
       directory: directory,
       // @ts-ignore
       files: files.filter((item: any) => item !== undefined),
-      updateUncontained: true,
+      updateUncontained: false,
     })
     .then((uuid: string) => JSON.parse(uuid).uid)
     .catch((error: any) => {
