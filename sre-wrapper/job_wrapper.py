@@ -143,7 +143,6 @@ def upload_result():
         input_entity: dict = json.loads(input_entity_file.read())
 
     target_data_source, target_directory = input_entity["resultPath"].split("/", 1)
-    result_reference_location = input_entity["resultLinkTarget"]
 
     with open(settings.RESULT_FILE, "r") as file:
         result_entity = json.loads(file.read())
@@ -158,6 +157,7 @@ def upload_result():
         "id": response['uid'],
         "type": result_entity["type"]
     }
+    result_reference_location = input_entity["resultLinkTarget"]
     dmss_api.reference_insert(data_source_id=target_data_source, document_dotted_id=result_reference_location,
                               reference=reference_object)
     print(f"Reference to result was added to {result_reference_location}")

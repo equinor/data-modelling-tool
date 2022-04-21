@@ -1,6 +1,6 @@
 import {
   DmtUIPlugin,
-  EntityPicker,
+  EntityPickerInput,
   JobHandlerPicker,
   TReference,
   UIPluginSelector,
@@ -50,7 +50,7 @@ export const EditReverseTask = (props: DmtUIPlugin) => {
               <div style={{ display: 'flex' }}>
                 <Column>
                   <Label label={'Input entity'} />
-                  <EntityPicker
+                  <EntityPickerInput
                     formData={formData.applicationInput}
                     onChange={(selectedEntity: TReference) =>
                       setFormData({

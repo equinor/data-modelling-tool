@@ -23,7 +23,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
     <>
       <div>
         <Input
-          style={{ width: '24vw', margin: '0 8px', cursor: 'pointer' }}
+          style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
           type="string"
           value={formData}
           onChange={() => {}}
