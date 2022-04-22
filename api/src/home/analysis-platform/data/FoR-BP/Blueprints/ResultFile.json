@@ -27,6 +27,15 @@
       "contained": true,
       "optional": true
     }
+  ],
+  "uiRecipes": [
+    {
+      "name": "SimaReport",
+      "label": "Sima Report",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "simpos-report-view",
+      "category": "view"
+    }
   ]
 }
 

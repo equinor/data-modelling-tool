@@ -136,6 +136,14 @@ function App() {
               path={`/${settings.urlPath}`}
               render={() => {
                 const UiPlugin = getPagePlugin(settings.pluginName)
+                if (!UiPlugin)
+                  return (
+                    <div style={{ color: 'red' }}>
+                      {' '}
+                      <b>Error:</b>Failed to get UiPlugins, see web console for
+                      details.
+                    </div>
+                  )
                 return (
                   <ApplicationContext.Provider value={settings}>
                     <UiPlugin settings={settings} applications={applications} />
