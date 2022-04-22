@@ -2,6 +2,8 @@ import { DmssAPI } from '../services'
 import React, { useContext, useRef, useState } from 'react'
 import { AuthContext } from '../index'
 import { Button } from '@equinor/eds-core-react'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 
 export const addToPath = (
   body: any,
@@ -41,7 +43,6 @@ export function UploadFileButton(props: {
 }) {
   const { fileSuffix, getBody, dataSourceId, onUpload } = props
   const textInput = useRef<HTMLInputElement>(null)
-  const [fileName, setFileName] = useState<string>()
   const [error, setError] = useState<string>()
   // @ts-ignore
   const { token } = useContext(AuthContext)
@@ -49,10 +50,11 @@ export function UploadFileButton(props: {
   function handleUpload(event: any): void {
     setError('')
     const file = event.target.files[0]
-    setFileName(file.name)
     const suffix = file.name.split('.')[file.name.split('.').length - 1]
     if (!fileSuffix.includes(suffix)) {
-      setError(`Only files of type '${fileSuffix}' can be uploaded here`)
+      NotificationManager.error(
+        `Only files of type '${fileSuffix}' can be uploaded here`
+      )
     } else {
       const newDocumentBody = getBody(file.name)
       addToPath(newDocumentBody, token, [file], dataSourceId, 'Data/STasks')
@@ -86,12 +88,6 @@ export function UploadFileButton(props: {
       >
         Upload
       </Button>
-      {fileName && (
-        <div>
-          Selected: <i>{fileName || 'None...'}</i>
-        </div>
-      )}
-      {error && <div style={{ color: 'red' }}>{error}</div>}
     </div>
   )
 }

@@ -65,5 +65,13 @@
       "attributeType": "string",
       "optional": true
     }
-    ]
+  ],
+  "uiRecipes": [
+     {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-sima-application-input",
+      "category": "edit"
+    }
+  ]
 }
