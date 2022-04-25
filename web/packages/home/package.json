@@ -6,7 +6,7 @@
     "@dmt/default-form": "1.0.0",
     "@dmt/default-pdf": "1.0.0",
     "@loadable/component": "^5.14.1",
-    "axios": "^0.21.2",
+    "axios": "^0.26.1",
     "cra-template": "^1.1.2",
     "golden-layout": "1.5.9",
     "jquery": "3.5.0",
