@@ -5,6 +5,7 @@ import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView } from '../../index'
 import { Input } from '@equinor/eds-core-react'
+import { truncatePathString } from '../../../../../apps/analysis-platform/src/utils/truncatePathString'
 
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
@@ -13,12 +14,14 @@ export const BlueprintPicker = (props: {
   const { onChange, formData } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
+  const example = 'AnalysisDS/Blueprints/Common/SubFolder3/RaceCarEngine'
+
   return (
     <div style={{ width: '80%' }}>
       <Input
-        style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
+        style={{ width: '450px', margin: '0 8px', cursor: 'pointer' }}
         type="string"
-        value={formData}
+        value={truncatePathString(formData)}
         onChange={() => {}}
         placeholder="Select"
         onClick={() => setShowModal(true)}
