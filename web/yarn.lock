@@ -9410,10 +9410,10 @@ react-app-rewired@^2.1.6:
   dependencies:
     semver "^5.6.0"
 
-react-collapsed@2.2.2:
-  version "2.2.2"
-  resolved "https://registry.yarnpkg.com/react-collapsed/-/react-collapsed-2.2.2.tgz#c34f98923699d592f327f77caa1aeef73d7e4854"
-  integrity sha512-zbkCCjHwGadGWbQ7cpsAQrY6lKhtYvW7gtqg53YYIx0d42tJGRpxQYMTb1suw10E6xGj5yzrnkqk3LH3BT8Neg==
+react-collapsed@2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/react-collapsed/-/react-collapsed-2.2.3.tgz#089466a3251a45c3116eabd663837b8da741caaa"
+  integrity sha512-SLZ9OKqMHYXZC0zks0vbZDIBna8x3iD/+vLLDUKmM792+brU79ew+/ghuVIw4a2OQxwXMR/fVVMRnjGfTD+4GA==
   dependencies:
     "@babel/runtime" "^7.3.1"
     raf "^3.4.0"
