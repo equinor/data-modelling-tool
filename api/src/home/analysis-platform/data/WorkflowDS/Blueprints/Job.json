@@ -62,6 +62,14 @@
       "label": "Runner",
       "description": "JobRunner that will handle this job",
       "optional": true
+    },
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "referenceTarget",
+      "label": "Reference target",
+      "description": "Dotted id to an analysis entity's job result. Should be on the format: entityId.jobs.*index*.result. Must be generated at run time since the index can vary.",
+      "optional": true
     }
   ],
   "uiRecipes": [

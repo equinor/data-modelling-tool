@@ -68,10 +68,11 @@ class JobHandler(JobHandlerInterface):
         for env_string in self.job.entity.get("environmentVariables", []):
             key, value = env_string.split("=", 1)
             env_vars.append(EnvironmentVariable(name=key, value=value))
-        runnerEntity: dict = self.job.entity["runner"]
+        reference_target: str = self.job.entity["referenceTarget"]
+        runner_entity: dict = self.job.entity["runner"]
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
-            + f"Image: '{runnerEntity.get('image', 'None')}'\n\t"
+            + f"Image: '{runner_entity.get('image', 'None')}'\n\t"
             + "RegistryUsername: 'None'\n\t"
             + f"EnvironmentVariables: {[(e.name + '=' + e.value)  for e in env_vars]}",
         )
@@ -79,9 +80,13 @@ class JobHandler(JobHandlerInterface):
         compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
         container = Container(
             name=self.azure_valid_container_name,
-            image=runnerEntity["image"],
+            image=runner_entity["image"],
             resources=ResourceRequirements(requests=compute_resources),
-            command=["/code/init.sh", f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}"],
+            command=[
+                "/code/init.sh",
+                f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
+                f"--reference-target={reference_target}",
+            ],
             environment_variables=env_vars,
         )
         image_registry_credential = None

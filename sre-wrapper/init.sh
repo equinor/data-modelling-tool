@@ -22,6 +22,10 @@ for i in "$@"; do
       APPLICATION_INPUT="${i#*=}"
       shift # past argument=value
       ;;
+    --reference-target=*)
+      REFERENCE_TARGET="${i#*=}"
+      shift # past argument=value
+      ;;
     *)
       echo "WARNING: Invalid argument '$i'"
       ;;
@@ -38,7 +42,7 @@ done
   -consoleLog
 
 # Upload result
-/code/job_wrapper.py upload-result
+/code/job_wrapper.py upload-result --reference-target="$REFERENCE_TARGET"
 
 time=$(date +'%d/%m/%Y %r')
 echo "** End time: ${time} **"

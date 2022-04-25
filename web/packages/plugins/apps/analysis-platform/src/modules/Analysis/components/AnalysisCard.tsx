@@ -66,6 +66,7 @@ const RunAnalysisButton = (props: any) => {
       triggeredBy: tokenData?.name,
       applicationInput: task.applicationInput,
       runner: task.runner,
+      referenceTarget: `${analysis._id}.jobs.${runsSoFar}.result`,
       started: new Date().toISOString(),
     }
 

@@ -34,21 +34,23 @@ class JobHandler(JobHandlerInterface):
 
     def start(self) -> str:
         try:
-            runnerEntity: dict = self.job.entity["runner"]
+            reference_target: str = self.job.entity["referenceTarget"]
+            runner_entity: dict = self.job.entity["runner"]
             logger.info(f"JobName: '{self.job.job_id}'." + " Starting Local Container job...")
             logger.info(
                 "Creating container\n\t"
-                + f"Image: '{runnerEntity['image']}'\n\t"
+                + f"Image: '{runner_entity['image']}'\n\t"
                 + f"Command: '--job-id={self.job.job_id}.applicationInput'"
             )
             envs = [f"{e}={os.getenv(e)}" for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)]
 
             envs.append(f"DMSS_TOKEN={self.job.token}")
             self.client.containers.run(
-                image=runnerEntity["image"],
+                image=runner_entity["image"],
                 command=[
                     "/code/init.sh",
                     f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
+                    f"--reference-target={reference_target}",
                 ],
                 name=self.job.entity["name"],
                 environment=envs,
