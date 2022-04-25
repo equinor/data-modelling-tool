@@ -197,70 +197,68 @@ export const NodeRightClickMenu = (props: {
     <div>
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
-      {scrimToShow === 'new-folder' && (
-        <div>
-          <CustomScrim
-            width={'30vw'}
-            header={'Create new folder'}
-            closeScrim={() => setScrimToShow('')}
-          >
-            <SingleTextInput
-              label={'Folder name'}
-              setFormData={setFormData}
-              handleSubmit={() =>
-                handleFormDataSubmit(node, formData, NewFolderAction)
-              }
-            />
-          </CustomScrim>
-        </div>
-      )}
-      {scrimToShow === 'delete' && (
+      <div>
         <CustomScrim
+          isOpen={scrimToShow === 'new-folder'}
           width={'30vw'}
+          header={'Create new folder'}
           closeScrim={() => setScrimToShow('')}
-          header={'Confirm Deletion'}
-        >
-          <div>
-            <div>
-              Are you sure you want to delete the entity <b>{node.name}</b> of
-              type <b>{node.type}</b>?
-            </div>
-            <div
-              style={{
-                display: 'flex',
-                justifyContent: 'space-around',
-                margin: '5px',
-              }}
-            >
-              <Button onClick={() => setScrimToShow('')}>Cancel</Button>
-              <Button
-                color="danger"
-                onClick={() => {
-                  DeleteAction()
-                  setScrimToShow('')
-                }}
-              >
-                Delete
-              </Button>
-            </div>
-          </div>
-        </CustomScrim>
-      )}
-      {scrimToShow === 'new-root-package' && (
-        <CustomScrim
-          width={'30vw'}
-          closeScrim={() => setScrimToShow('')}
-          header={'New root package'}
         >
           <SingleTextInput
-            label={'Root package name'}
-            handleSubmit={() =>
-              handleFormDataSubmit(node, formData, NewRootPackageAction)
-            }
+            label={'Folder name'}
             setFormData={setFormData}
+            handleSubmit={() =>
+              handleFormDataSubmit(node, formData, NewFolderAction)
+            }
           />
         </CustomScrim>
-      )}
+      </div>
+      <CustomScrim
+        isOpen={scrimToShow === 'delete'}
+        width={'30vw'}
+        closeScrim={() => setScrimToShow('')}
+        header={'Confirm Deletion'}
+      >
+        <div>
+          <div>
+            Are you sure you want to delete the entity <b>{node.name}</b> of
+            type <b>{node.type}</b>?
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'space-around',
+              margin: '5px',
+            }}
+          >
+            <Button onClick={() => setScrimToShow('')}>Cancel</Button>
+            <Button
+              color="danger"
+              onClick={() => {
+                DeleteAction()
+                setScrimToShow('')
+              }}
+            >
+              Delete
+            </Button>
+          </div>
+        </div>
+      </CustomScrim>
+
+      <CustomScrim
+        isOpen={scrimToShow === 'new-root-package'}
+        width={'30vw'}
+        closeScrim={() => setScrimToShow('')}
+        header={'New root package'}
+      >
+        <SingleTextInput
+          label={'Root package name'}
+          handleSubmit={() =>
+            handleFormDataSubmit(node, formData, NewRootPackageAction)
+          }
+          setFormData={setFormData}
+        />
+      </CustomScrim>
     </div>
   )
 }

@@ -37,61 +37,58 @@ export function NewEntityButton(props: {
   return (
     <div style={{ margin: '0 10px' }}>
       <Button onClick={() => setShowScrim(true)}>New</Button>
-      {showScrim && (
-        <CustomScrim
-          closeScrim={() => setShowScrim(false)}
-          header={`Create new entity`}
-          width={'500px'}
-          height={'400px'}
+      <CustomScrim
+        isOpen={showScrim}
+        closeScrim={() => setShowScrim(false)}
+        header={`Create new entity`}
+        width={'500px'}
+        height={'400px'}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
+          <Label label={'Folder for new entity'} />
+          <DestinationPicker
+            onChange={(value: any) => {
+              setSaveDestination(value)
+            }}
+            formData={saveDestination}
+          />
+          <div style={{ display: 'block' }}>
+            <Label label={'Blueprint'} />
+            <BlueprintPicker
+              onChange={(selectedType: string) => setTypeToCreate(selectedType)}
+              formData={type}
+            />
+          </div>
+          <Label label={'Name'} />
+          <Input
+            style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
+            type="string"
+            value={newName}
+            onChange={(event) => setNewName(event.target.value)}
+            placeholder="Name for new entity"
+          />
+          <Button
+            style={{ marginTop: '40px', width: '200px', alignSelf: 'center' }}
+            onClick={() => {
+              dmtAPI
+                .createEntity(typeToCreate, token)
+                .then((newEntity: any) => {
+                  addEntityToPath({ ...newEntity, name: newName }).then(() =>
+                    setShowScrim(false)
+                  )
+                })
             }}
           >
-            <Label label={'Folder for new entity'} />
-            <DestinationPicker
-              onChange={(value: any) => {
-                setSaveDestination(value)
-              }}
-              formData={saveDestination}
-            />
-            <div style={{ display: 'block' }}>
-              <Label label={'Blueprint'} />
-              <BlueprintPicker
-                onChange={(selectedType: string) =>
-                  setTypeToCreate(selectedType)
-                }
-                formData={type}
-              />
-            </div>
-            <Label label={'Name'} />
-            <Input
-              style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
-              type="string"
-              value={newName}
-              onChange={(event) => setNewName(event.target.value)}
-              placeholder="Name for new entity"
-            />
-            <Button
-              style={{ marginTop: '40px', width: '200px', alignSelf: 'center' }}
-              onClick={() => {
-                dmtAPI
-                  .createEntity(typeToCreate, token)
-                  .then((newEntity: any) => {
-                    addEntityToPath({ ...newEntity, name: newName }).then(() =>
-                      setShowScrim(false)
-                    )
-                  })
-              }}
-            >
-              Create
-            </Button>
-          </div>
-        </CustomScrim>
-      )}
+            Create
+          </Button>
+        </div>
+      </CustomScrim>
     </div>
   )
 }

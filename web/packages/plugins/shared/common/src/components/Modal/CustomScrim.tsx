@@ -1,6 +1,7 @@
 import { Dialog, Icon, Scrim } from '@equinor/eds-core-react'
 import React from 'react'
 import styled from 'styled-components'
+import { isObject } from 'lodash'
 
 const ClickableIcon = styled.div`
   &:hover {
@@ -10,17 +11,24 @@ const ClickableIcon = styled.div`
 `
 
 export const CustomScrim = (props: {
-  closeScrim: Function
+  closeScrim: () => void
+  isOpen: boolean
   children: any
   header: string
   width?: string
   height?: string
 }) => {
-  const { closeScrim, children, header, width, height } = props
+  const { closeScrim, isOpen, children, header, width, height } = props
   return (
     // @ts-ignore
-    <Scrim isDismissable onClose={closeScrim} style={{ zIndex: 3 }}>
+    <Scrim
+      isDismissable
+      open={isOpen}
+      onClose={closeScrim}
+      style={{ zIndex: 3 }}
+    >
       <Dialog
+        open={true}
         style={{
           width: width ? width : '100%',
           height: height ? height : '100%',
@@ -38,6 +46,7 @@ export const CustomScrim = (props: {
               display: 'flex',
               justifyContent: 'space-between',
               borderBottom: '#E6E6E6 1px solid',
+              paddingTop: '10px',
             }}
           >
             <h3 style={{ paddingLeft: '20px' }}>{header}</h3>
