@@ -4,7 +4,11 @@ import { DmssAPI } from '../services/api/DmssAPI'
 import { NotificationManager } from 'react-notifications'
 import { AuthContext } from '@dmt/common'
 
-export const useDocument = (dataSourceId: string, documentId: string) => {
+export const useDocument = (
+  dataSourceId: string,
+  documentId: string,
+  resolved: boolean | undefined
+) => {
   const [document, setDocument] = useState<any>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
@@ -14,8 +18,10 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
 
   useEffect(() => {
     setLoading(true)
+    let depth = 1
+    if (resolved) depth = 999
     dmssAPI
-      .getDocumentById({ dataSourceId, documentId })
+      .getDocumentById({ dataSourceId, documentId, depth })
       .then((document) => {
         setDocument(document)
         setError(null)
@@ -31,6 +37,7 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
         dataSourceId,
         documentId,
         data: JSON.stringify(newDocument),
+        updateUncontained: true,
       })
       .then(() => {
         setDocument(newDocument)
@@ -48,5 +55,6 @@ export const useDocument = (dataSourceId: string, documentId: string) => {
       })
       .finally(() => setLoading(false))
   }
+
   return [document, isLoading, updateDocument, error]
 }
