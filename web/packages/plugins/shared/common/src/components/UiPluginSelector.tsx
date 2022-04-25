@@ -126,6 +126,13 @@ export function UIPluginSelector(props: {
   if (absoluteDottedId) {
     ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
   }
+  if (!entity || !Object.keys(entity).length) {
+    console.error(
+      `UiPluginSelector need an entity with a 'type' attribute. Got '${JSON.stringify(
+        entity
+      )}'`
+    )
+  }
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)

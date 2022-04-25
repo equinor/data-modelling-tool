@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { Button, Input, Label } from '@equinor/eds-core-react'
 import { CustomScrim } from './Modal/CustomScrim'
 // @ts-ignore
@@ -20,18 +20,19 @@ export function NewEntityButton(props: {
   // @ts-ignore
   const { token } = useContext(AuthContext)
 
+  useEffect(() => setTypeToCreate(type), [type])
+
   function addEntityToPath(entity: any): Promise<void> {
     const [dataSource, ...directories] = saveDestination.split('/')
     const directory = directories.join('/')
-    return addToPath(
-      entity,
-      token,
-      [],
-      dataSource,
-      directory
-    ).then((newId: string) =>
-      setReference({ _id: newId, type: entity.type, name: entity.name })
-    )
+    return addToPath(entity, token, [], dataSource, directory)
+      .then((newId: string) =>
+        setReference({ _id: newId, type: entity.type, name: entity.name })
+      )
+      .catch((error: any) => {
+        console.error(error)
+        NotificationManager.error(JSON.stringify(error), 'Failed to create')
+      })
   }
 
   return (
@@ -51,7 +52,7 @@ export function NewEntityButton(props: {
               justifyContent: 'space-between',
             }}
           >
-            <Label label={'Folder for new entity'} />
+            <Label label={typeToCreate} />
             <DestinationPicker
               onChange={(value: any) => {
                 setSaveDestination(value)

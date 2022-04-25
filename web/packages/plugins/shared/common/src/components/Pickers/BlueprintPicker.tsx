@@ -18,7 +18,7 @@ export const BlueprintPicker = (props: {
       <Input
         style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
         type="string"
-        value={formData}
+        value={formData || ''}
         onChange={() => {}}
         placeholder="Select"
         onClick={() => setShowModal(true)}
