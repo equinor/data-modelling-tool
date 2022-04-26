@@ -18,12 +18,16 @@ export const EntityPickerInput = (props: {
   const { onChange, formData, typeFilter } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
+  const inputValue = formData?.name || formData?._id || ''
+
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <Tooltip title={formData?.name || formData?._id || ''}>
+      <Tooltip
+        title={truncatePathString(inputValue) === inputValue ? '' : inputValue}
+      >
         <Input
           type="string"
-          value={truncatePathString(formData?.name || formData?._id || '')}
+          value={truncatePathString(inputValue)}
           placeholder="Select"
           onChange={() => {}}
           onClick={() => setShowModal(true)}

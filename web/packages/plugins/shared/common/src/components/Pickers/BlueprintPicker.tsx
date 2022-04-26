@@ -16,7 +16,9 @@ export const BlueprintPicker = (props: {
 
   return (
     <div style={{ width: '80%', paddingBottom: '8px' }}>
-      <Tooltip title={formData}>
+      <Tooltip
+        title={truncatePathString(formData) === formData ? '' : formData}
+      >
         <Input
           style={{
             width: INPUT_FIELD_WIDTH,
