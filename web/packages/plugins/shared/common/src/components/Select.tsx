@@ -1,4 +1,5 @@
 import styled from 'styled-components'
+import { INPUT_FIELD_WIDTH } from '../utils/variables'
 
 export const Select = styled.select`
   position: relative;
@@ -9,5 +10,5 @@ export const Select = styled.select`
   cursor: pointer;
   width: fit-content;
   background-color: #f7f7f7;
-  min-width: 150px;
+  width: ${INPUT_FIELD_WIDTH};
 `

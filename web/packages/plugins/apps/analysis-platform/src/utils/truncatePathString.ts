@@ -2,7 +2,7 @@ export const truncatePathString = (path: string) => {
   /*
   Truncate path string to have length <= MAX_LENGTH.
    */
-  const MAX_LENGTH: number = 60
+  const MAX_LENGTH: number = 55
   const splitTextOnFolder: string[] = path.split('/')
   const DataSource: string = splitTextOnFolder[0]
   const firstFolder: string = splitTextOnFolder[1]

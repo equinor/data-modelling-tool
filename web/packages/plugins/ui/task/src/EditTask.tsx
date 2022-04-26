@@ -7,6 +7,7 @@ import {
   useDocument,
   NewEntityButton,
   EntityPickerButton,
+  INPUT_FIELD_WIDTH,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -15,19 +16,14 @@ import styled from 'styled-components'
 
 const Wrapper = styled.div`
   margin: 10px;
-  width: 30vw;
+  width: 100%;
 `
 
 const Column = styled.div`
-  display: block;
+  width: ${INPUT_FIELD_WIDTH};
 `
 
-const GroupWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  flex-wrap: wrap;
-`
+const GroupWrapper = styled.div``
 
 const HeaderWrapper = styled.div`
   margin-bottom: 50px;
@@ -64,7 +60,7 @@ export const EditTask = (props: DmtUIPlugin) => {
     <div
       style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
     >
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: '10px', marginTop: '10px' }}>
         <Wrapper>
           <HeaderWrapper>
             <Typography variant="h3">Input</Typography>
@@ -78,7 +74,13 @@ export const EditTask = (props: DmtUIPlugin) => {
                   formData={formData.inputType}
                 />
               </Column>
-              <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+
+              <div
+                style={{
+                  display: 'flex',
+                  alignItems: 'flex-end',
+                }}
+              >
                 <Column>
                   <Label label={'Input entity'} />
                   <Input

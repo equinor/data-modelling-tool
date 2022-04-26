@@ -6,6 +6,8 @@ import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView } from '../../index'
 import { Input } from '@equinor/eds-core-react'
 import { truncatePathString } from '../../../../../apps/analysis-platform/src/utils/truncatePathString'
+//todo fix truncate path import location - probably put the function in shared instead of AP
+import { INPUT_FIELD_WIDTH } from '@dmt/common'
 
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
@@ -19,7 +21,11 @@ export const BlueprintPicker = (props: {
   return (
     <div style={{ width: '80%' }}>
       <Input
-        style={{ width: '450px', margin: '0 8px', cursor: 'pointer' }}
+        style={{
+          width: INPUT_FIELD_WIDTH,
+          marginBottom: '8px',
+          cursor: 'pointer',
+        }}
         type="string"
         value={truncatePathString(formData)}
         onChange={() => {}}

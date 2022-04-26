@@ -13,3 +13,5 @@ export enum NodeType {
   DATA_SOURCE = 'datasource',
   DOCUMENT_NODE = 'document-node',
 }
+
+export const INPUT_FIELD_WIDTH: string = '450px'
