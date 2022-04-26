@@ -2,7 +2,7 @@ import { DmtUIPlugin, UIPluginSelector, useDocument } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Button } from '@equinor/eds-core-react'
+import { Button, Tooltip } from '@equinor/eds-core-react'
 
 interface ITabs {
   active: boolean
@@ -43,6 +43,7 @@ const DotWrapper = styled.div`
 type TChildTab = {
   attribute: string
   entity: any
+  categories?: string[]
   absoluteDottedId: string
   onSubmit: Function
 }
@@ -52,20 +53,26 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const { documentId, dataSourceId, onSubmit, onChange, config } = props
+  const {
+    documentId,
+    dataSourceId,
+    onSubmit,
+    onChange,
+    config,
+    document,
+  } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [baseTypeName, setBaseTypeName] = useState<string>('Home')
   const [entity, _loading, updateDocument, error] = useDocument(
     dataSourceId,
-    documentId
+    documentId,
+    true
   )
 
   useEffect(() => {
     if (!entity) return
     setFormData({ ...entity })
-    setBaseTypeName(entity.type.split('/').slice(-1)[0])
   }, [entity])
 
   useEffect(() => {
@@ -88,29 +95,36 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           flexDirection: 'row',
           display: 'flex',
           borderBottom: '1px black solid',
-          borderTop: '1px black solid',
         }}
       >
-        <BaseTab
-          onClick={() => setSelectedTab('home')}
-          active={selectedTab === 'home'}
-        >
-          {selectedTab === 'home' && (
-            <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
-          )}
-          {baseTypeName}
-        </BaseTab>
-        {Object.values(childTabs).map((tabData: any) => (
-          <ChildTab
-            key={tabData.attribute}
-            onClick={() => setSelectedTab(tabData.attribute)}
-            active={selectedTab === tabData.attribute}
+        <Tooltip enterDelay={600} title={document.type} placement="top-start">
+          <BaseTab
+            onClick={() => setSelectedTab('home')}
+            active={selectedTab === 'home'}
           >
-            {selectedTab === tabData.attribute && (
+            {selectedTab === 'home' && (
               <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
             )}
-            {tabData.attribute}
-          </ChildTab>
+            Base
+          </BaseTab>
+        </Tooltip>
+        {Object.values(childTabs).map((tabData: any) => (
+          <Tooltip
+            key={tabData.attribute}
+            enterDelay={600}
+            title={tabData.entity.type}
+            placement="top-start"
+          >
+            <ChildTab
+              onClick={() => setSelectedTab(tabData.attribute)}
+              active={selectedTab === tabData.attribute}
+            >
+              {selectedTab === tabData.attribute && (
+                <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
+              )}
+              {tabData.attribute}
+            </ChildTab>
+          </Tooltip>
         ))}
       </div>
 
@@ -119,7 +133,9 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           key={'home'}
           absoluteDottedId={`${dataSourceId}/${documentId}`}
           entity={formData}
-          categories={config?.subCategories} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
+          categories={config?.subCategories.filter(
+            (c: string) => c !== 'container'
+          )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
           onSubmit={(newFormData: any) =>
             setFormData({ ...formData, ...newFormData })
           }
@@ -135,8 +151,8 @@ export const TabsContainer = (props: DmtUIPlugin) => {
         <UIPluginSelector
           key={selectedTab}
           absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
-          entity={formData[selectedTab]}
-          categories={config?.subCategories}
+          entity={childTabs[selectedTab].entity}
+          categories={childTabs[selectedTab].categories}
           onSubmit={(newFormData: any) =>
             setFormData({
               ...formData,

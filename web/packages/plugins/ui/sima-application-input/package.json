@@ -1,5 +1,5 @@
 {
-  "name": "@dmt/sima-input",
+  "name": "@dmt/sima-application-input",
   "license": "MIT",
   "version": "1.0.0",
   "main": "src/index.tsx",

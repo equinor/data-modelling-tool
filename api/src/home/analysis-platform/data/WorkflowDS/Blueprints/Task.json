@@ -28,8 +28,8 @@
       "optional": true
     },
     {
-      "attributeType": "string",
-      "type": "object",
+      "attributeType": "object",
+      "type": "system/SIMOS/BlueprintAttribute",
       "name": "applicationInput",
       "label": "Application input",
       "description": "Input entity for container",
@@ -56,13 +56,13 @@
     "uiRecipes": [
     {
       "name": "Tabs",
-      "label": "Edit",
+      "label": "Tabs",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "tabs",
       "category": "container",
       "config": {
         "type": "system/SIMOS/UiPluginSelectorProps",
-        "subCategories": ["edit"]
+        "subCategories": ["edit", "container"]
       }
     },
       {

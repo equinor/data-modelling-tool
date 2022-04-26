@@ -175,7 +175,11 @@ export const TreeView = (props: {
           )
         } else {
           return (
-            <TreeNodeComponent node={node} onClick={(node) => _onClick(node)} />
+            <TreeNodeComponent
+              key={node.nodeId}
+              node={node}
+              onClick={(node) => _onClick(node)}
+            />
           )
         }
       })}
