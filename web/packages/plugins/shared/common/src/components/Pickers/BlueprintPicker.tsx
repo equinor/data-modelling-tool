@@ -5,7 +5,7 @@ import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView } from '../../index'
 import { Input, Tooltip } from '@equinor/eds-core-react'
-import { INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
+import { PATH_INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
 
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
@@ -21,7 +21,7 @@ export const BlueprintPicker = (props: {
       >
         <Input
           style={{
-            width: INPUT_FIELD_WIDTH,
+            width: PATH_INPUT_FIELD_WIDTH,
             cursor: 'pointer',
           }}
           type="string"

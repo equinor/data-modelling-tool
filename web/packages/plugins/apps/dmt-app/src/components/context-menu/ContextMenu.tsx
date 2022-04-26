@@ -95,7 +95,7 @@ const SingleTextInput = (props: {
         onChange={(event) => setFormData(event.target.value)}
       />
       <Button
-        style={{ marginTop: '10px' }}
+        style={{ marginLeft: '8px' }}
         onClick={() => {
           handleSubmit()
         }}
@@ -202,7 +202,7 @@ export const NodeRightClickMenu = (props: {
       {scrimToShow === 'new-folder' && (
         <div>
           <CustomScrim
-            width={'50vw'}
+            width={'30vw'}
             header={'Create new folder'}
             closeScrim={() => setScrimToShow('')}
           >
@@ -250,7 +250,7 @@ export const NodeRightClickMenu = (props: {
       )}
       {scrimToShow === 'new-root-package' && (
         <CustomScrim
-          width={'50vw'}
+          width={'30vw'}
           closeScrim={() => setScrimToShow('')}
           header={'New root package'}
         >

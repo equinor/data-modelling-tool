@@ -14,4 +14,5 @@ export enum NodeType {
   DOCUMENT_NODE = 'document-node',
 }
 
-export const INPUT_FIELD_WIDTH: string = '450px'
+export const PATH_INPUT_FIELD_WIDTH: string = '450px'
+export const INPUT_FIELD_WIDTH: string = '225px'

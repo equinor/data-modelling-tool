@@ -1,6 +1,6 @@
 // @ts-ignore
 import React, { useContext, useEffect, useState } from 'react'
-import { BlueprintEnum, INPUT_FIELD_WIDTH } from '../../utils/variables'
+import { BlueprintEnum, PATH_INPUT_FIELD_WIDTH } from '../../utils/variables'
 import {
   Modal,
   NodeWrapperProps,
@@ -32,7 +32,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
       >
         <Input
           style={{
-            width: INPUT_FIELD_WIDTH,
+            width: PATH_INPUT_FIELD_WIDTH,
             cursor: 'pointer',
           }}
           type="string"

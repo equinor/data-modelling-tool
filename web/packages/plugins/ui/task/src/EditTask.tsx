@@ -15,10 +15,19 @@ import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { EditColumn } from './UiPluginStyledComponents'
 
-const GroupWrapper = styled.div``
+const GroupWrapper = styled.div`
+  & > * {
+    padding-top: 8px;
+  }
+`
 
 const HeaderWrapper = styled.div`
   margin-bottom: 50px;
+  margin-top: 8px;
+`
+
+const Wrapper = styled.div`
+  margin: 10px;
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
@@ -75,7 +84,7 @@ export const EditTask = (props: DmtUIPlugin) => {
               <EditColumn>
                 <Label label={'Input entity'} />
                 <Input
-                  style={{ cursor: 'pointer' }}
+                  style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
                   type="string"
                   value={
                     formData?.applicationInput?.name ||

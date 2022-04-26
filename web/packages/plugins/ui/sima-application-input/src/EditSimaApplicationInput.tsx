@@ -4,10 +4,11 @@ import {
   DmtUIPlugin,
   EntityPickerButton,
   EntityPickerInput,
-  INPUT_FIELD_WIDTH,
+  PATH_INPUT_FIELD_WIDTH,
   NewEntityButton,
   TReference,
   UploadFileButton,
+  INPUT_FIELD_WIDTH,
 } from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
@@ -27,14 +28,14 @@ const Row = styled.div`
   display: flex;
 `
 const GroupWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  flex-wrap: wrap;
+  & > * {
+    padding-top: 8px;
+  }
 `
 
 const HeaderWrapper = styled.div`
   margin-bottom: 50px;
+  margin-top: 8px;
 `
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
@@ -60,150 +61,148 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
     <div
       style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
     >
-      <div style={{ maxWidth: '900px', width: '100%', marginBottom: '10px' }}>
-        <Wrapper>
-          <HeaderWrapper>
-            <Typography variant="h3">Input</Typography>
-            <GroupWrapper>
+      <div style={{ marginBottom: '10px' }}>
+        <HeaderWrapper>
+          <Typography variant="h3">Input</Typography>
+          <GroupWrapper>
+            <EditColumn>
+              <Label label={'Blueprint'} />
+              <BlueprintPicker
+                onChange={(selectedBlueprint: string) =>
+                  setFormData({ ...formData, inputType: selectedBlueprint })
+                }
+                formData={formData?.inputType || ''}
+              />
+            </EditColumn>
+            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
               <EditColumn>
-                <Label label={'Blueprint'} />
-                <BlueprintPicker
-                  onChange={(selectedBlueprint: string) =>
-                    setFormData({ ...formData, inputType: selectedBlueprint })
-                  }
-                  formData={formData?.inputType || ''}
-                />
-              </EditColumn>
-              <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                <EditColumn>
-                  <Label label={'Input entity'} />
-                  <Input
-                    style={{ cursor: 'pointer' }}
-                    type="string"
-                    value={formData?.input?.name || formData?.input?._id || ''}
-                    placeholder={formData?.input?.name || 'Select or create'}
-                    onChange={() => {}}
-                    onClick={() => {
-                      if (formData?.input?.type) {
-                        onOpen({
-                          attribute: 'input',
-                          entity: formData.input,
-                          onChange: (input: any) =>
-                            setFormData({ ...formData, input: input }),
-                          absoluteDottedId: `${dataSourceId}/${formData?.input?._id}`,
-                          categories: [],
-                        })
-                      }
-                    }}
-                  />
-                </EditColumn>
-                <EntityPickerButton
-                  typeFilter={formData?.inputType || ''}
-                  onChange={(selectedEntity: TReference) =>
-                    setFormData({
-                      ...formData,
-                      input: selectedEntity,
-                    })
-                  }
-                />
-                <NewEntityButton
-                  type={formData?.inputType || ''}
-                  setReference={(createdEntity: TReference) =>
-                    setFormData({
-                      ...formData,
-                      input: createdEntity,
-                    })
-                  }
-                />
-              </div>
-            </GroupWrapper>
-          </HeaderWrapper>
-
-          <HeaderWrapper>
-            <Typography variant="h3">Output</Typography>
-            <GroupWrapper>
-              <EditColumn>
-                <Label label={'Blueprint'} />
-                <BlueprintPicker
-                  onChange={(selectedBlueprint: string) =>
-                    setFormData({ ...formData, outputType: selectedBlueprint })
-                  }
-                  formData={formData.outputType}
-                />
-              </EditColumn>
-            </GroupWrapper>
-          </HeaderWrapper>
-
-          <HeaderWrapper>
-            <Typography variant="h3">SIMA Task</Typography>
-            <GroupWrapper>
-              <EditColumn>
-                <Label label={'Select Stask'} />
-                <Row>
-                  <EntityPickerInput
-                    formData={formData.stask}
-                    typeFilter={STaskBlueprint}
-                    onChange={(selectedStask: any) =>
-                      setFormData({
-                        ...formData,
-                        stask: selectedStask,
+                <Label label={'Input entity'} />
+                <Input
+                  style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
+                  type="string"
+                  value={formData?.input?.name || formData?.input?._id || ''}
+                  placeholder={formData?.input?.name || 'Select or create'}
+                  onChange={() => {}}
+                  onClick={() => {
+                    if (formData?.input?.type) {
+                      onOpen({
+                        attribute: 'input',
+                        entity: formData.input,
+                        onChange: (input: any) =>
+                          setFormData({ ...formData, input: input }),
+                        absoluteDottedId: `${dataSourceId}/${formData?.input?._id}`,
+                        categories: [],
                       })
                     }
-                  />
-                  <UploadFileButton
-                    fileSuffix={['stask']}
-                    dataSourceId={dataSourceId}
-                    getBody={(filename: string) => getNewSTaskBody(filename)}
-                    onUpload={(createdRef: TReference) =>
-                      setFormData({
-                        ...formData,
-                        stask: createdRef,
-                      })
-                    }
-                  />
-                </Row>
+                  }}
+                />
               </EditColumn>
-              <TextField
-                id="workflow"
-                label={'Workflow'}
-                value={formData?.workflow || ''}
-                placeholder="Name of workflow to run"
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setFormData({ ...formData, workflow: event.target.value })
+              <EntityPickerButton
+                typeFilter={formData?.inputType || ''}
+                onChange={(selectedEntity: TReference) =>
+                  setFormData({
+                    ...formData,
+                    input: selectedEntity,
+                  })
                 }
-                style={{ width: INPUT_FIELD_WIDTH }}
               />
-              <TextField
-                id="workflowTask"
-                label={'Workflow task'}
-                value={formData?.workflowTask || ''}
-                placeholder="Name of workflowTask to run"
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setFormData({ ...formData, workflowTask: event.target.value })
+              <NewEntityButton
+                type={formData?.inputType || ''}
+                setReference={(createdEntity: TReference) =>
+                  setFormData({
+                    ...formData,
+                    input: createdEntity,
+                  })
                 }
-                style={{ width: INPUT_FIELD_WIDTH }}
               />
-            </GroupWrapper>
-          </HeaderWrapper>
+            </div>
+          </GroupWrapper>
+        </HeaderWrapper>
 
-          <HeaderWrapper>
-            <Typography variant="h3">Result </Typography>
-            <GroupWrapper>
-              <EditColumn>
-                <Label label={'Folder'} />
-                <DestinationPicker
-                  formData={formData?.resultPath || ''}
-                  onChange={(selectedFolder: string) =>
+        <HeaderWrapper>
+          <Typography variant="h3">Output</Typography>
+          <GroupWrapper>
+            <EditColumn>
+              <Label label={'Blueprint'} />
+              <BlueprintPicker
+                onChange={(selectedBlueprint: string) =>
+                  setFormData({ ...formData, outputType: selectedBlueprint })
+                }
+                formData={formData.outputType}
+              />
+            </EditColumn>
+          </GroupWrapper>
+        </HeaderWrapper>
+
+        <HeaderWrapper>
+          <Typography variant="h3">SIMA Task</Typography>
+          <GroupWrapper>
+            <EditColumn>
+              <Label label={'Select Stask'} />
+              <Row>
+                <EntityPickerInput
+                  formData={formData.stask}
+                  typeFilter={STaskBlueprint}
+                  onChange={(selectedStask: any) =>
                     setFormData({
                       ...formData,
-                      resultPath: selectedFolder,
+                      stask: selectedStask,
                     })
                   }
                 />
-              </EditColumn>
-            </GroupWrapper>
-          </HeaderWrapper>
-        </Wrapper>
+                <UploadFileButton
+                  fileSuffix={['stask']}
+                  dataSourceId={dataSourceId}
+                  getBody={(filename: string) => getNewSTaskBody(filename)}
+                  onUpload={(createdRef: TReference) =>
+                    setFormData({
+                      ...formData,
+                      stask: createdRef,
+                    })
+                  }
+                />
+              </Row>
+            </EditColumn>
+            <TextField
+              id="workflow"
+              label={'Workflow'}
+              value={formData?.workflow || ''}
+              placeholder="Name of workflow to run"
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setFormData({ ...formData, workflow: event.target.value })
+              }
+              style={{ width: INPUT_FIELD_WIDTH }}
+            />
+            <TextField
+              id="workflowTask"
+              label={'Workflow task'}
+              value={formData?.workflowTask || ''}
+              placeholder="Name of workflowTask to run"
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setFormData({ ...formData, workflowTask: event.target.value })
+              }
+              style={{ width: INPUT_FIELD_WIDTH }}
+            />
+          </GroupWrapper>
+        </HeaderWrapper>
+
+        <HeaderWrapper>
+          <Typography variant="h3">Result </Typography>
+          <GroupWrapper>
+            <EditColumn>
+              <Label label={'Folder'} />
+              <DestinationPicker
+                formData={formData?.resultPath || ''}
+                onChange={(selectedFolder: string) =>
+                  setFormData({
+                    ...formData,
+                    resultPath: selectedFolder,
+                  })
+                }
+              />
+            </EditColumn>
+          </GroupWrapper>
+        </HeaderWrapper>
       </div>
     </div>
   )

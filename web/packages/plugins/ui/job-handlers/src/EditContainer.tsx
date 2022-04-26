@@ -42,7 +42,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
       >
         <Wrapper>
           <HeaderWrapper>
-            <Typography variant="h3">Container image</Typography>
+            <Typography variant="h5">Container image</Typography>
             <Select
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                 setFormData({ ...formData, image: e.target.value })
@@ -57,7 +57,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
             </Select>
           </HeaderWrapper>
           <HeaderWrapper>
-            <Typography variant="h3">
+            <Typography variant="h5">
               Custom command (Not implemented)
             </Typography>
             <Select
@@ -69,7 +69,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
             ></Select>
           </HeaderWrapper>
           <HeaderWrapper>
-            <Typography variant="h3">
+            <Typography variant="h5">
               Environment variable list (not implemented)
             </Typography>
             <Select
