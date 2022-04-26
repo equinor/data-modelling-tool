@@ -5,7 +5,7 @@ import { CustomScrim } from './Modal/CustomScrim'
 import { NotificationManager } from 'react-notifications'
 import { BlueprintPicker, DestinationPicker } from './Pickers'
 import { addToPath } from './UploadFileButton'
-import { AuthContext, DmtAPI, PATH_INPUT_FIELD_WIDTH, TReference } from '..'
+import { AuthContext, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
 
 export function NewEntityButton(props: {
   type: string
@@ -72,12 +72,12 @@ export function NewEntityButton(props: {
             <Label label={'Name'} />
             <Input
               style={{
-                width: PATH_INPUT_FIELD_WIDTH,
+                width: INPUT_FIELD_WIDTH,
                 cursor: 'text',
               }}
               type="string"
               value={newName}
-              onChange={(event) => setNewName(event.target.value)}
+              onChange={event => setNewName(event.target.value)}
               placeholder="Name for new entity"
             />
             <Button

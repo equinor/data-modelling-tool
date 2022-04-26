@@ -13,7 +13,8 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { EditColumn } from './UiPluginStyledComponents'
+
+const Column = styled.div``
 
 const GroupWrapper = styled.div`
   & > * {
@@ -66,7 +67,7 @@ export const EditTask = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
-            <EditColumn>
+            <Column>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -74,14 +75,14 @@ export const EditTask = (props: DmtUIPlugin) => {
                 }
                 formData={formData.inputType}
               />
-            </EditColumn>
+            </Column>
             <div
               style={{
                 display: 'flex',
                 alignItems: 'flex-end',
               }}
             >
-              <EditColumn>
+              <Column>
                 <Label label={'Input entity'} />
                 <Input
                   style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
@@ -109,7 +110,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     })
                   }}
                 />
-              </EditColumn>
+              </Column>
               <EntityPickerButton
                 typeFilter={formData.inputType}
                 onChange={(selectedEntity: TReference) =>
@@ -135,7 +136,7 @@ export const EditTask = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">Output</Typography>
           <GroupWrapper>
-            <EditColumn>
+            <Column>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -143,14 +144,14 @@ export const EditTask = (props: DmtUIPlugin) => {
                 }
                 formData={formData.outputType}
               />
-            </EditColumn>
+            </Column>
           </GroupWrapper>
         </HeaderWrapper>
 
         <HeaderWrapper>
           <Typography variant="h3">Job runner</Typography>
           <GroupWrapper>
-            <EditColumn>
+            <Column>
               <Label label={'Blueprint'} />
               <JobHandlerPicker
                 onChange={(selectedBlueprint: string) =>
@@ -199,7 +200,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                   />
                 )}
               </div>
-            </EditColumn>
+            </Column>
           </GroupWrapper>
         </HeaderWrapper>
 

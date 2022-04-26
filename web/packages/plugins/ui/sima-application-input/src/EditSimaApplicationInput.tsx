@@ -16,13 +16,13 @@ import { Input, Label, TextField, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { EditColumn } from '../../task/src/UiPluginStyledComponents'
-
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 const Wrapper = styled.div`
   margin: 10px;
 `
+
+const Column = styled.div``
 
 const Row = styled.div`
   display: flex;
@@ -65,7 +65,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
-            <EditColumn>
+            <Column>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -73,9 +73,9 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 }
                 formData={formData?.inputType || ''}
               />
-            </EditColumn>
+            </Column>
             <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-              <EditColumn>
+              <Column>
                 <Label label={'Input entity'} />
                 <Input
                   style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
@@ -96,7 +96,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                     }
                   }}
                 />
-              </EditColumn>
+              </Column>
               <EntityPickerButton
                 typeFilter={formData?.inputType || ''}
                 onChange={(selectedEntity: TReference) =>
@@ -122,7 +122,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">Output</Typography>
           <GroupWrapper>
-            <EditColumn>
+            <Column>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -130,14 +130,14 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 }
                 formData={formData.outputType}
               />
-            </EditColumn>
+            </Column>
           </GroupWrapper>
         </HeaderWrapper>
 
         <HeaderWrapper>
           <Typography variant="h3">SIMA Task</Typography>
           <GroupWrapper>
-            <EditColumn>
+            <Column>
               <Label label={'Select Stask'} />
               <Row>
                 <EntityPickerInput
@@ -162,7 +162,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   }
                 />
               </Row>
-            </EditColumn>
+            </Column>
             <TextField
               id="workflow"
               label={'Workflow'}
@@ -189,7 +189,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">Result </Typography>
           <GroupWrapper>
-            <EditColumn>
+            <Column>
               <Label label={'Folder'} />
               <DestinationPicker
                 formData={formData?.resultPath || ''}
@@ -200,7 +200,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   })
                 }
               />
-            </EditColumn>
+            </Column>
           </GroupWrapper>
         </HeaderWrapper>
       </div>

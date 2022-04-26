@@ -26,7 +26,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   }
 
   return (
-    <div style={{ paddingBottom: '8px' }}>
+    <div>
       <Tooltip
         title={truncatePathString(formData) === formData ? '' : formData}
       >

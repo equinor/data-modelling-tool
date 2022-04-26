@@ -13,13 +13,11 @@ export const EntityPickerInput = (props: {
   const { onChange, formData, typeFilter } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  const inputValue = formData?.name || formData?._id || ''
-
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <Input
         type="string"
-        value={inputValue}
+        value={formData?.name || formData?._id || ''}
         placeholder="Select"
         onChange={() => {}}
         onClick={() => setShowModal(true)}
