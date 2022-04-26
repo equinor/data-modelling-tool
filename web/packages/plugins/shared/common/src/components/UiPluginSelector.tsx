@@ -69,6 +69,41 @@ const SelectPluginButton = styled.div<ISPButton>`
   }
 `
 
+class ErrorBoundary extends React.Component {
+  uiPluginName: string = ''
+
+  constructor(props: any) {
+    super(props)
+    this.uiPluginName = props.uiPluginName
+    this.state = { hasError: false, message: '' }
+  }
+
+  static getDerivedStateFromError(error: any, errorInfo: any) {
+    // Update state so the next render will show the fallback UI.
+    return {
+      hasError: true,
+      message: error,
+    }
+  }
+
+  render() {
+    // @ts-ignore
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return (
+        <div style={{ color: 'red' }}>
+          <h4 style={{ color: 'red' }}>
+            The UiPlugin <i>{this.uiPluginName}</i> crashed...
+          </h4>
+          <pre>{JSON.stringify(this.state.message, null, 2)}</pre>
+        </div>
+      )
+    }
+    // @ts-ignore
+    return this.props.children
+  }
+}
+
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
   entity: any
@@ -128,16 +163,15 @@ export function UIPluginSelector(props: {
       </div>
     )
 
-  if (error) {
+  if (error)
     return (
       <div style={{ color: 'red' }}>
         Failed to fetch Blueprint {entity.type}
       </div>
     )
-  }
-  if (!selectableRecipe.length) {
+  if (!selectableRecipe.length)
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
-  }
+
   const UiPlugin: FunctionComponent<DmtUIPlugin> = selectableRecipe[
     selectedPlugin
   ][1] as FunctionComponent
@@ -163,16 +197,21 @@ export function UIPluginSelector(props: {
           )}
         </PluginTabsWrapper>
       )}
-      <UiPlugin
-        dataSourceId={dataSourceId}
-        documentId={documentId}
-        document={entity}
-        onSubmit={onSubmit}
-        onChange={onChange}
-        onOpen={onOpen}
-        categories={categories}
-        config={config}
-      />
+      <ErrorBoundary
+        key={selectableRecipe[selectedPlugin][0]}
+        uiPluginName={selectableRecipe[selectedPlugin][0]}
+      >
+        <UiPlugin
+          dataSourceId={dataSourceId}
+          documentId={documentId}
+          document={entity}
+          onSubmit={onSubmit}
+          onChange={onChange}
+          onOpen={onOpen}
+          categories={categories}
+          config={config}
+        />
+      </ErrorBoundary>
     </Wrapper>
   )
 }
