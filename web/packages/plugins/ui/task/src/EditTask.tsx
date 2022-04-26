@@ -11,23 +11,9 @@ import {
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import {
-  Button,
-  Input,
-  Label,
-  Tooltip,
-  Typography,
-} from '@equinor/eds-core-react'
+import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-
-const Wrapper = styled.div`
-  margin: 10px;
-  width: 30vw;
-`
-
-const Column = styled.div`
-  width: ${INPUT_FIELD_WIDTH};
-`
+import { EditColumn } from './UiPluginStyledComponents'
 
 const GroupWrapper = styled.div``
 
@@ -63,7 +49,7 @@ export const EditTask = (props: DmtUIPlugin) => {
     if (onChange) onChange(formData)
   }, [formData])
 
-return (
+  return (
     <div
       style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
     >
@@ -71,7 +57,7 @@ return (
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
-            <Column>
+            <EditColumn>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -79,11 +65,17 @@ return (
                 }
                 formData={formData.inputType}
               />
-            </Column>
-            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-              <Column>
+            </EditColumn>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+              }}
+            >
+              <EditColumn>
                 <Label label={'Input entity'} />
                 <Input
+                  style={{ cursor: 'pointer' }}
                   type="string"
                   value={
                     formData?.applicationInput?.name ||
@@ -108,7 +100,7 @@ return (
                     })
                   }}
                 />
-              </Column>
+              </EditColumn>
               <EntityPickerButton
                 typeFilter={formData.inputType}
                 onChange={(selectedEntity: TReference) =>
@@ -134,7 +126,7 @@ return (
         <HeaderWrapper>
           <Typography variant="h3">Output</Typography>
           <GroupWrapper>
-            <Column>
+            <EditColumn>
               <Label label={'Blueprint'} />
               <BlueprintPicker
                 onChange={(selectedBlueprint: string) =>
@@ -142,14 +134,14 @@ return (
                 }
                 formData={formData.outputType}
               />
-            </Column>
+            </EditColumn>
           </GroupWrapper>
         </HeaderWrapper>
 
         <HeaderWrapper>
           <Typography variant="h3">Job runner</Typography>
           <GroupWrapper>
-            <Column>
+            <EditColumn>
               <Label label={'Blueprint'} />
               <JobHandlerPicker
                 onChange={(selectedBlueprint: string) =>
@@ -198,7 +190,7 @@ return (
                   />
                 )}
               </div>
-            </Column>
+            </EditColumn>
           </GroupWrapper>
         </HeaderWrapper>
 

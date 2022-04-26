@@ -4,6 +4,7 @@ import {
   DmtUIPlugin,
   EntityPickerButton,
   EntityPickerInput,
+  INPUT_FIELD_WIDTH,
   NewEntityButton,
   TReference,
   UploadFileButton,
@@ -14,15 +15,12 @@ import { Input, Label, TextField, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { EditColumn } from '../../task/src/UiPluginStyledComponents'
 
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 const Wrapper = styled.div`
   margin: 10px;
-`
-
-const Column = styled.div`
-  display: block;
 `
 
 const Row = styled.div`
@@ -67,7 +65,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           <HeaderWrapper>
             <Typography variant="h3">Input</Typography>
             <GroupWrapper>
-              <Column>
+              <EditColumn>
                 <Label label={'Blueprint'} />
                 <BlueprintPicker
                   onChange={(selectedBlueprint: string) =>
@@ -75,11 +73,12 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   }
                   formData={formData?.inputType || ''}
                 />
-              </Column>
+              </EditColumn>
               <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                <Column>
+                <EditColumn>
                   <Label label={'Input entity'} />
                   <Input
+                    style={{ cursor: 'pointer' }}
                     type="string"
                     value={formData?.input?.name || formData?.input?._id || ''}
                     placeholder={formData?.input?.name || 'Select or create'}
@@ -97,7 +96,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                       }
                     }}
                   />
-                </Column>
+                </EditColumn>
                 <EntityPickerButton
                   typeFilter={formData?.inputType || ''}
                   onChange={(selectedEntity: TReference) =>
@@ -123,7 +122,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           <HeaderWrapper>
             <Typography variant="h3">Output</Typography>
             <GroupWrapper>
-              <Column>
+              <EditColumn>
                 <Label label={'Blueprint'} />
                 <BlueprintPicker
                   onChange={(selectedBlueprint: string) =>
@@ -131,14 +130,14 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   }
                   formData={formData.outputType}
                 />
-              </Column>
+              </EditColumn>
             </GroupWrapper>
           </HeaderWrapper>
 
           <HeaderWrapper>
             <Typography variant="h3">SIMA Task</Typography>
             <GroupWrapper>
-              <Column>
+              <EditColumn>
                 <Label label={'Select Stask'} />
                 <Row>
                   <EntityPickerInput
@@ -163,7 +162,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                     }
                   />
                 </Row>
-              </Column>
+              </EditColumn>
               <TextField
                 id="workflow"
                 label={'Workflow'}
@@ -172,7 +171,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   setFormData({ ...formData, workflow: event.target.value })
                 }
-                style={{ maxWidth: '280px' }}
+                style={{ width: INPUT_FIELD_WIDTH }}
               />
               <TextField
                 id="workflowTask"
@@ -182,7 +181,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   setFormData({ ...formData, workflowTask: event.target.value })
                 }
-                style={{ maxWidth: '280px' }}
+                style={{ width: INPUT_FIELD_WIDTH }}
               />
             </GroupWrapper>
           </HeaderWrapper>
@@ -190,7 +189,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           <HeaderWrapper>
             <Typography variant="h3">Result </Typography>
             <GroupWrapper>
-              <Column>
+              <EditColumn>
                 <Label label={'Folder'} />
                 <DestinationPicker
                   formData={formData?.resultPath || ''}
@@ -201,7 +200,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                     })
                   }
                 />
-              </Column>
+              </EditColumn>
             </GroupWrapper>
           </HeaderWrapper>
         </Wrapper>
