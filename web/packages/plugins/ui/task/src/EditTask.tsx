@@ -11,7 +11,13 @@ import {
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
+import {
+  Button,
+  Input,
+  Label,
+  Tooltip,
+  Typography,
+} from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 const Wrapper = styled.div`
@@ -83,25 +89,20 @@ export const EditTask = (props: DmtUIPlugin) => {
               >
                 <Column>
                   <Label label={'Input entity'} />
-                  <Input
-                    type="string"
-                    value={
-                      formData?.applicationInput.name ||
-                      formData?.applicationInput._id ||
-                      ''
-                    }
-                    placeholder={
-                      formData?.applicationInput?.name || 'Select or create'
-                    }
-                    onChange={() => {}}
-                    onClick={() =>
-                      onOpen({
-                        attribute: 'applicationInput',
-                        entity: formData?.applicationInput,
-                        absoluteDottedId: `${dataSourceId}/${formData?.applicationInput._id}`,
-                      })
-                    }
-                  />
+                  <Tooltip title={`Entity type: ${formData?.inputType}`}>
+                    <Input
+                      style={{ cursor: 'default' }}
+                      type="string"
+                      value={
+                        formData?.applicationInput.name ||
+                        formData?.applicationInput._id ||
+                        ''
+                      }
+                      placeholder={
+                        formData?.applicationInput?.name || 'Select or create'
+                      }
+                    />
+                  </Tooltip>
                 </Column>
                 <EntityPickerButton
                   typeFilter={formData.inputType}

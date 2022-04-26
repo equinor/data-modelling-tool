@@ -1,8 +1,14 @@
 // @ts-ignore
 import React, { useContext, useEffect, useState } from 'react'
-import { BlueprintEnum } from '../../utils/variables'
-import { Modal, NodeWrapperProps, TreeNode, TreeView } from '../../index'
-import { Button, Input } from '@equinor/eds-core-react'
+import { BlueprintEnum, INPUT_FIELD_WIDTH } from '../../utils/variables'
+import {
+  Modal,
+  NodeWrapperProps,
+  TreeNode,
+  TreeView,
+  truncatePathString,
+} from '../../index'
+import { Button, Input, Tooltip } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 export type DestinationPickerProps = {
@@ -20,28 +26,31 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
   }
 
   return (
-    <>
-      <div>
+    <div style={{ paddingBottom: '8px' }}>
+      <Tooltip title={formData}>
         <Input
-          style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
+          style={{
+            width: INPUT_FIELD_WIDTH,
+            cursor: 'pointer',
+          }}
           type="string"
-          value={formData}
+          value={truncatePathString(formData)}
           onChange={() => {}}
           onClick={() => setShowModal(true)}
         />
-        <Modal
-          toggle={() => setShowModal(!showModal)}
-          open={showModal}
-          title={'Select a folder as destination'}
-        >
-          <TreeView
-            onSelect={() => {}}
-            NodeWrapper={SelectPackageButton}
-            NodeWrapperOnClick={onSelect}
-          />
-        </Modal>
-      </div>
-    </>
+      </Tooltip>
+      <Modal
+        toggle={() => setShowModal(!showModal)}
+        open={showModal}
+        title={'Select a folder as destination'}
+      >
+        <TreeView
+          onSelect={() => {}}
+          NodeWrapper={SelectPackageButton}
+          NodeWrapperOnClick={onSelect}
+        />
+      </Modal>
+    </div>
   )
 }
 

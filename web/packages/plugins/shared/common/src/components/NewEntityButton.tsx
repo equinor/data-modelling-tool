@@ -5,7 +5,7 @@ import { CustomScrim } from './Modal/CustomScrim'
 import { NotificationManager } from 'react-notifications'
 import { BlueprintPicker, DestinationPicker } from './Pickers'
 import { addToPath } from './UploadFileButton'
-import { AuthContext, DmtAPI, TReference } from '..'
+import { AuthContext, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
 
 export function NewEntityButton(props: {
   type: string
@@ -41,14 +41,15 @@ export function NewEntityButton(props: {
         <CustomScrim
           closeScrim={() => setShowScrim(false)}
           header={`Create new entity`}
-          width={'500px'}
-          height={'400px'}
+          width={'50vw'}
+          height={'40vh'}
         >
           <div
             style={{
               display: 'flex',
               flexDirection: 'column',
               justifyContent: 'space-between',
+              marginBottom: '20px',
             }}
           >
             <Label label={'Folder for new entity'} />
@@ -69,14 +70,20 @@ export function NewEntityButton(props: {
             </div>
             <Label label={'Name'} />
             <Input
-              style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
+              style={{
+                width: INPUT_FIELD_WIDTH,
+                cursor: 'text',
+              }}
               type="string"
               value={newName}
               onChange={(event) => setNewName(event.target.value)}
               placeholder="Name for new entity"
             />
             <Button
-              style={{ marginTop: '40px', width: '200px', alignSelf: 'center' }}
+              style={{
+                marginTop: '40px',
+                alignSelf: 'center',
+              }}
               onClick={() => {
                 dmtAPI
                   .createEntity(typeToCreate, token)

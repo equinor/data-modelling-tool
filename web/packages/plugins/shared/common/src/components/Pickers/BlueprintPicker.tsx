@@ -4,10 +4,8 @@ import React, { useContext, useState } from 'react'
 import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView } from '../../index'
-import { Input } from '@equinor/eds-core-react'
-import { truncatePathString } from '../../../../../apps/analysis-platform/src/utils/truncatePathString'
-//todo fix truncate path import location - probably put the function in shared instead of AP
-import { INPUT_FIELD_WIDTH } from '@dmt/common'
+import { Input, Tooltip } from '@equinor/eds-core-react'
+import { INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
 
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
@@ -16,22 +14,21 @@ export const BlueprintPicker = (props: {
   const { onChange, formData } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
-  const example = 'AnalysisDS/Blueprints/Common/SubFolder3/RaceCarEngine'
-
   return (
-    <div style={{ width: '80%' }}>
-      <Input
-        style={{
-          width: INPUT_FIELD_WIDTH,
-          marginBottom: '8px',
-          cursor: 'pointer',
-        }}
-        type="string"
-        value={truncatePathString(formData)}
-        onChange={() => {}}
-        placeholder="Select"
-        onClick={() => setShowModal(true)}
-      />
+    <div style={{ width: '80%', paddingBottom: '8px' }}>
+      <Tooltip title={formData}>
+        <Input
+          style={{
+            width: INPUT_FIELD_WIDTH,
+            cursor: 'pointer',
+          }}
+          type="string"
+          value={truncatePathString(formData)}
+          onChange={() => {}}
+          placeholder="Select"
+          onClick={() => setShowModal(true)}
+        />
+      </Tooltip>
       <Modal
         toggle={() => setShowModal(!showModal)}
         open={showModal}

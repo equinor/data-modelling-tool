@@ -8,6 +8,7 @@ import {
   DmssAPI,
   TreeNode,
   CustomScrim,
+  INPUT_FIELD_WIDTH,
 } from '@dmt/common'
 
 // @ts-ignore
@@ -90,6 +91,7 @@ const SingleTextInput = (props: {
       <Label label={label} />
       <Input
         type={'string'}
+        style={{ width: INPUT_FIELD_WIDTH }}
         onChange={(event) => setFormData(event.target.value)}
       />
       <Button
@@ -200,7 +202,7 @@ export const NodeRightClickMenu = (props: {
       {scrimToShow === 'new-folder' && (
         <div>
           <CustomScrim
-            width={'30vw'}
+            width={'50vw'}
             header={'Create new folder'}
             closeScrim={() => setScrimToShow('')}
           >
@@ -248,7 +250,7 @@ export const NodeRightClickMenu = (props: {
       )}
       {scrimToShow === 'new-root-package' && (
         <CustomScrim
-          width={'30vw'}
+          width={'50vw'}
           closeScrim={() => setScrimToShow('')}
           header={'New root package'}
         >

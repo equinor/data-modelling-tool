@@ -1,6 +1,12 @@
 import React, { useState } from 'react'
-import { Modal, TreeNode, TreeView, TReference } from '../../index'
-import { Input } from '@equinor/eds-core-react'
+import {
+  Modal,
+  TreeNode,
+  TreeView,
+  TReference,
+  truncatePathString,
+} from '../../index'
+import { Input, Tooltip } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 
@@ -14,14 +20,16 @@ export const EntityPickerInput = (props: {
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
-      <Input
-        type="string"
-        value={formData?.name || formData?._id || ''}
-        placeholder="Select"
-        onChange={() => {}}
-        onClick={() => setShowModal(true)}
-        style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
-      />
+      <Tooltip title={formData?.name || formData?._id || ''}>
+        <Input
+          type="string"
+          value={truncatePathString(formData?.name || formData?._id || '')}
+          placeholder="Select"
+          onChange={() => {}}
+          onClick={() => setShowModal(true)}
+          style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
+        />
+      </Tooltip>
       <Modal
         toggle={() => setShowModal(!showModal)}
         open={showModal}
