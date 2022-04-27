@@ -1,7 +1,6 @@
 import { Dialog, Icon, Scrim } from '@equinor/eds-core-react'
 import React from 'react'
 import styled from 'styled-components'
-import { isObject } from 'lodash'
 
 const ClickableIcon = styled.div`
   &:hover {
