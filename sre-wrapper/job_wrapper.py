@@ -136,9 +136,11 @@ def run(input_id: str = None):
 
 
 @cli.command()
-def upload_result():
+@click.option("--reference-target", help="Dotted id to specify where reference to result entity should be added.", type=str, required=False)
+def upload_result(reference_target: str=None):
     """
     Uploads the result to the folder given in the input-entity, and add a reference to this result to the analysis entity
+    :param reference_target: a dotted id to specify where to insert result reference
     """
     with open(settings.INPUT_ENTITY_FILE, "r") as input_entity_file:
         input_entity: dict = json.loads(input_entity_file.read())
@@ -161,10 +163,10 @@ def upload_result():
         "id": response['uid'],
         "type": result_entity["type"]
     }
-    result_reference_location = input_entity["resultLinkTarget"]
-    dmss_api.reference_insert(data_source_id=target_data_source, document_dotted_id=result_reference_location,
-                              reference=reference_object)
-    print(f"Reference to result was added to {result_reference_location}")
+    if reference_target:
+        dmss_api.reference_insert(data_source_id=target_data_source, document_dotted_id=reference_target,
+                                  reference=reference_object)
+        print(f"Reference to result was added to {reference_target}")
 
 
 if __name__ == "__main__":
