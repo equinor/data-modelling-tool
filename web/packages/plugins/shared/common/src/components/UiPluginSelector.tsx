@@ -69,7 +69,7 @@ const SelectPluginButton = styled.div<ISPButton>`
   }
 `
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component<any, { hasError: boolean, message: string }> {
   uiPluginName: string = ''
 
   constructor(props: any) {
@@ -87,7 +87,6 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    // @ts-ignore
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
