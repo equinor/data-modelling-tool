@@ -3,12 +3,16 @@ import React from 'react'
 // @ts-ignore
 import { Controller, useFormContext } from 'react-hook-form'
 import { StringFieldProps } from '../types'
+import { useRegistryContext } from '../RegistryContext'
 
 export const StringField = (props: StringFieldProps) => {
   const { control } = useFormContext()
-  const { namePath, displayLabel, defaultValue, optional } = props
+  const { namePath, displayLabel, defaultValue, optional, uiAttribute } = props
 
-  // TODO: const Widget = getWidget(schema, widget, widgets);
+  const { getWidget } = useRegistryContext()
+
+  let defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
+  const Widget = getWidget(namePath, defaultWidget)
 
   return (
     <Controller
@@ -23,16 +27,18 @@ export const StringField = (props: StringFieldProps) => {
         field: { ref, ...props },
         // @ts-ignore
         fieldState: { invalid, error },
-      }) => (
-        <TextWidget
-          {...props}
-          id={namePath}
-          label={displayLabel}
-          inputRef={ref}
-          helperText={error?.message}
-          variant={invalid ? 'error' : 'default'}
-        />
-      )}
+      }) => {
+        return (
+          <Widget
+            {...props}
+            id={namePath}
+            label={displayLabel}
+            inputRef={ref}
+            helperText={error?.message || error?.type}
+            variant={invalid ? 'error' : 'default'}
+          />
+        )
+      }}
     />
   )
 }

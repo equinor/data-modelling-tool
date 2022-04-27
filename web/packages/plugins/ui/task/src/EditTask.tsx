@@ -61,9 +61,7 @@ export const EditTask = (props: DmtUIPlugin) => {
   }, [formData])
 
   return (
-    <div
-      style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
-    >
+    <div>
       <div style={{ marginBottom: '10px' }}>
         <Wrapper>
           <HeaderWrapper>

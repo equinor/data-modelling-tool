@@ -5,17 +5,20 @@ import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView } from '../../index'
 import { Input } from '@equinor/eds-core-react'
+import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types'
 
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
   formData: string
+  variant?: Variants
 }) => {
-  const { onChange, formData } = props
+  const { onChange, formData, variant } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
     <div style={{ width: '80%' }}>
       <Input
+        variant={variant || 'default'}
         style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
         type="string"
         value={formData}

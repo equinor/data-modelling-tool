@@ -19,6 +19,7 @@ const PluginTabsWrapper = styled.div`
 const Wrapper = styled.div`
   align-self: start;
   justify-content: space-evenly;
+  width: 100%;
 `
 
 const PathWrapper = styled.div`
@@ -141,6 +142,7 @@ export function UIPluginSelector(props: {
   const UiPlugin: FunctionComponent<DmtUIPlugin> = selectableRecipe[
     selectedPlugin
   ][1] as FunctionComponent
+
   const config: any = selectableRecipe[selectedPlugin][2]
 
   return (
