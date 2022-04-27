@@ -1,0 +1,5 @@
+{
+  "name": "StringField",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["DMT-Internal/DMT/ui-plugins/form/fields/Field"]
+}

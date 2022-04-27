@@ -31,7 +31,7 @@ const getDisplayLabel = (attribute: any): string => {
 }
 
 export const AttributeField = (props: AttributeFieldProps) => {
-  const { namePath, attribute } = props
+  const { namePath, attribute, uiAttribute } = props
 
   const fieldType = getFieldType(attribute)
 
@@ -39,12 +39,15 @@ export const AttributeField = (props: AttributeFieldProps) => {
 
   switch (fieldType) {
     case 'object':
+      // Get the ui recipe name that should be used for nested
+      const uiRecipeName = uiAttribute && uiAttribute.uiRecipe
       return (
         <ObjectField
           namePath={namePath}
           displayLabel={displayLabel}
           type={attribute.attributeType}
           optional={attribute.optional}
+          uiRecipeName={uiRecipeName}
         />
       )
 
@@ -63,6 +66,7 @@ export const AttributeField = (props: AttributeFieldProps) => {
           displayLabel={displayLabel}
           defaultValue={attribute.default}
           optional={attribute.optional}
+          uiAttribute={uiAttribute}
         />
       )
     case 'boolean':
@@ -71,6 +75,7 @@ export const AttributeField = (props: AttributeFieldProps) => {
           namePath={namePath}
           displayLabel={displayLabel}
           defaultValue={attribute.default}
+          uiAttribute={uiAttribute}
         />
       )
     case 'integer':
@@ -81,6 +86,7 @@ export const AttributeField = (props: AttributeFieldProps) => {
           displayLabel={displayLabel}
           defaultValue={attribute.default}
           optional={attribute.optional}
+          uiAttribute={uiAttribute}
         />
       )
     default:

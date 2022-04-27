@@ -19,6 +19,7 @@ const PluginTabsWrapper = styled.div`
 const Wrapper = styled.div`
   align-self: start;
   justify-content: space-evenly;
+  width: 100%;
 `
 
 const PathWrapper = styled.div`
@@ -69,7 +70,10 @@ const SelectPluginButton = styled.div<ISPButton>`
   }
 `
 
-class ErrorBoundary extends React.Component {
+class ErrorBoundary extends React.Component<
+  any,
+  { hasError: boolean; message: string }
+> {
   uiPluginName: string = ''
 
   constructor(props: any) {
@@ -87,7 +91,6 @@ class ErrorBoundary extends React.Component {
   }
 
   render() {
-    // @ts-ignore
     if (this.state.hasError) {
       // You can render any custom fallback UI
       return (
@@ -182,6 +185,7 @@ export function UIPluginSelector(props: {
   const UiPlugin: FunctionComponent<DmtUIPlugin> = selectableRecipe[
     selectedPlugin
   ][1] as FunctionComponent
+
   const config: any = selectableRecipe[selectedPlugin][2]
 
   return (

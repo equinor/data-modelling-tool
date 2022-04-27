@@ -6,10 +6,14 @@
       "name": "foo",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string"
+    },
+    {
+      "name": "bar",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
     }
   ],
-  "uiRecipes": [
-    {
+  "uiRecipes": [{
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",
