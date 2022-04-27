@@ -69,7 +69,10 @@ const SelectPluginButton = styled.div<ISPButton>`
   }
 `
 
-class ErrorBoundary extends React.Component<any, { hasError: boolean, message: string }> {
+class ErrorBoundary extends React.Component<
+  any,
+  { hasError: boolean; message: string }
+> {
   uiPluginName: string = ''
 
   constructor(props: any) {
