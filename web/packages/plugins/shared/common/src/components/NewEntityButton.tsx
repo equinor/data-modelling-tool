@@ -52,7 +52,7 @@ export function NewEntityButton(props: {
             justifyContent: 'space-between',
           }}
         >
-          <Label label={typeToCreate} />
+          <Label label={'Folder for new entity'} />
           <DestinationPicker
             onChange={(value: any) => {
               setSaveDestination(value)
@@ -71,7 +71,7 @@ export function NewEntityButton(props: {
             style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
             type="string"
             value={newName}
-            onChange={(event) => setNewName(event.target.value)}
+            onChange={event => setNewName(event.target.value)}
             placeholder="Name for new entity"
           />
           <Button
