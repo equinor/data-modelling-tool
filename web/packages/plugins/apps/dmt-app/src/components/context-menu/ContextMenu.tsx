@@ -1,5 +1,5 @@
 import React, { useContext, useState } from 'react'
-import { Button, Input, Label } from '@equinor/eds-core-react'
+import { Button, Input, Label, Progress } from '@equinor/eds-core-react'
 import './react-contextmenu.css'
 import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
 import {
@@ -8,12 +8,12 @@ import {
   DmssAPI,
   TreeNode,
   CustomScrim,
+  BlueprintPicker,
 } from '@dmt/common'
 
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-
-function sortMenuItems(menuItems: JSX.Element[]) {}
+import styled from 'styled-components'
 
 function createMenuItems(
   node: TreeNode,
@@ -36,7 +36,22 @@ function createMenuItems(
   }
 
   // Packages get a "new folder"
+  // and "new entity"
+  // and "new blueprint"
   if (node.type == BlueprintEnum.PACKAGE) {
+    menuItems.push(
+      <MenuItem key={'new-entity'} onClick={() => setShowScrimId('new-entity')}>
+        New entity
+      </MenuItem>
+    )
+    menuItems.push(
+      <MenuItem
+        key={'new-blueprint'}
+        onClick={() => setShowScrimId('new-blueprint')}
+      >
+        New blueprint
+      </MenuItem>
+    )
     menuItems.push(
       <MenuItem key={'new-folder'} onClick={() => setShowScrimId('new-folder')}>
         New folder
@@ -48,7 +63,13 @@ function createMenuItems(
   if (!['dataSource', BlueprintEnum.PACKAGE].includes(node.type)) {
     menuItems.push(
       // @ts-ignore
-      <MenuItem key={'view'} onClick={() => ViewAction(node)}>
+      <MenuItem
+        key={'view'}
+        onClick={() => {
+          // @ts-ignore
+          window.open(`dmt/view/${node.nodeId}`, '_blank').focus()
+        }}
+      >
         View in new tab
       </MenuItem>
     )
@@ -68,14 +89,7 @@ function createMenuItems(
     )
   }
 
-  // TODO: Sort (see old api code)
-  // return sortMenuItems(menuItems)
   return menuItems
-}
-
-const ViewAction = (node: TreeNode) => {
-  // @ts-ignore
-  window.open(`dmt/view/${node.nodeId}`, '_blank').focus()
 }
 
 //Component that can be used when a context menu action requires one text (string) input.
@@ -104,6 +118,12 @@ const SingleTextInput = (props: {
   )
 }
 
+const edsButtonStyleConfig = {
+  marginTop: '40px',
+  width: '200px',
+  alignSelf: 'center',
+}
+
 export const NodeRightClickMenu = (props: {
   node: TreeNode
   removeNode: Function
@@ -114,7 +134,8 @@ export const NodeRightClickMenu = (props: {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const [scrimToShow, setScrimToShow] = useState<string>('')
-  const [formData, setFormData] = useState<string>('')
+  const [formData, setFormData] = useState<any>('')
+  const [loading, setLoading] = useState<boolean>(false)
 
   const menuItems = createMenuItems(node, dmssAPI, removeNode, setScrimToShow)
 
@@ -260,6 +281,113 @@ export const NodeRightClickMenu = (props: {
             setFormData={setFormData}
           />
         </CustomScrim>
+      )}
+      {scrimToShow === 'new-entity' && (
+        <div>
+          <CustomScrim
+            closeScrim={() => setScrimToShow('')}
+            header={`Create new entity`}
+            width={'30vw'}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div style={{ display: 'block' }}>
+                <Label label={'Blueprint'} />
+                <BlueprintPicker
+                  onChange={(selectedType: string) =>
+                    setFormData({ type: selectedType })
+                  }
+                  formData={formData?.type || ''}
+                />
+              </div>
+              {loading ? (
+                <Button style={edsButtonStyleConfig}>
+                  <Progress.Dots />
+                </Button>
+              ) : (
+                <Button
+                  disabled={formData?.type === undefined}
+                  style={edsButtonStyleConfig}
+                  onClick={() => {
+                    setLoading(true)
+                    node
+                      .addEntity(formData?.type, formData?.name || '')
+                      .then(() => {
+                        setScrimToShow('')
+                      })
+                      .catch((error: Error) => {
+                        console.error(error)
+                        NotificationManager.error('Failed to create entity')
+                      })
+                      .finally(() => setLoading(false))
+                  }}
+                >
+                  Create
+                </Button>
+              )}
+            </div>
+          </CustomScrim>
+        </div>
+      )}
+      {scrimToShow === 'new-blueprint' && (
+        <div>
+          <CustomScrim
+            closeScrim={() => setScrimToShow('')}
+            header={`Create new blueprint`}
+            width={'30vw'}
+          >
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              <div style={{ display: 'block' }}>
+                <Label label={'Name'} />
+                <Input
+                  style={{ width: '360px', margin: '0 8px' }}
+                  type="string"
+                  value={formData?.name || ''}
+                  onChange={(event) =>
+                    setFormData({ ...formData, name: event.target.value })
+                  }
+                  placeholder="Name for new blueprint"
+                />
+              </div>
+              {loading ? (
+                <Button style={edsButtonStyleConfig}>
+                  <Progress.Dots />
+                </Button>
+              ) : (
+                <Button
+                  disabled={formData?.type === undefined}
+                  style={edsButtonStyleConfig}
+                  onClick={() => {
+                    setLoading(true)
+                    node
+                      .addEntity(BlueprintEnum.BLUEPRINT, formData?.name)
+                      .then(() => {
+                        setScrimToShow('')
+                      })
+                      .catch((error: Error) => {
+                        console.error(error)
+                        NotificationManager.error('Failed to create blueprint')
+                      })
+                      .finally(() => setLoading(false))
+                  }}
+                >
+                  Create
+                </Button>
+              )}
+            </div>
+          </CustomScrim>
+        </div>
       )}
     </div>
   )

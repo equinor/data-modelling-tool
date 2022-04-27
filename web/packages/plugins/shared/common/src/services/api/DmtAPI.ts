@@ -1,7 +1,13 @@
 import { IDmtAPI } from './interfaces/DmtAPI'
 import axios from 'axios'
+import { Configuration, DefaultApi } from './configs/gen'
 
 export class DmtAPI implements IDmtAPI {
+  token: string
+  constructor(token: string) {
+    this.token = token
+  }
+
   async getSystemSettings(application?: string) {
     if (application)
       return axios.get(`api/system/settings?APPLICATION=${application}`)
@@ -12,20 +18,17 @@ export class DmtAPI implements IDmtAPI {
     return axios.post(`/api/system/settings?APPLICATION=${application}`, data)
   }
 
-  async createEntity(type: string, token: string) {
+  async createEntity(type: string, name: string): Promise<string> {
     return axios
       .post(
         '/api/entity',
-        { name: '', type: type },
+        { name: name, type: type },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: { Authorization: `Bearer ${this.token}` },
         }
       )
       .then((respose) => {
         return respose.data
-      })
-      .catch((error) => {
-        console.error(error)
       })
   }
 }
