@@ -1,8 +1,8 @@
-import TextWidget from '../widgets/TextWidget'
 import React from 'react'
 // @ts-ignore
 import { Controller, useFormContext } from 'react-hook-form'
 import { NumberFieldProps } from '../types'
+import { useRegistryContext } from '../RegistryContext'
 
 // Taken from: https://github.com/rjsf-team/react-jsonschema-form/blob/cff979dae5348e9b100447641bcb53374168367f/packages/core/src/utils.js#L436
 export const asNumber = (value: string): number | string => {
@@ -33,9 +33,12 @@ export const asNumber = (value: string): number | string => {
 
 export const NumberField = (props: NumberFieldProps) => {
   const { control } = useFormContext()
-  const { namePath, displayLabel, defaultValue, optional } = props
+  const { namePath, displayLabel, defaultValue, optional, uiAttribute } = props
 
-  // TODO: const Widget = getWidget(schema, widget, widgets);
+  const { getWidget } = useRegistryContext()
+
+  let defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
+  const Widget = getWidget(namePath, defaultWidget)
 
   return (
     <Controller
@@ -57,7 +60,7 @@ export const NumberField = (props: NumberFieldProps) => {
           onChange(asNumber(value))
         }
         return (
-          <TextWidget
+          <Widget
             {...props}
             onChange={handleChange}
             type="number"

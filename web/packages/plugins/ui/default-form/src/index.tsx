@@ -27,6 +27,7 @@ function useExplorer(dmssAPI: DmssAPI) {
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
+  // @ts-ignore
   const { document, uiRecipeName, onSubmit } = props
   const [config, setConfig] = useState(undefined)
   const [error, setError] = useState<string | null>(null)
