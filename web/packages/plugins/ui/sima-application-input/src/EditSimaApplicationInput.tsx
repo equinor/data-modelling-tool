@@ -18,10 +18,6 @@ import styled from 'styled-components'
 import { NotificationManager } from 'react-notifications'
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
-const Wrapper = styled.div`
-  margin: 10px;
-`
-
 const Column = styled.div``
 
 const Row = styled.div`
@@ -59,7 +55,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
 
   return (
     <div
-      style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
+      style={{ display: 'flex', alignItems: 'left', flexDirection: 'column' }}
     >
       <div style={{ marginBottom: '10px' }}>
         <HeaderWrapper>
