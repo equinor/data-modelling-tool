@@ -27,6 +27,7 @@ function createMenuItems(
   // dataSources get a "new root package"
   if (node.type === 'dataSource') {
     menuItems.push(
+      // @ts-ignore-line - react-contextmenu not supported in typescript
       <MenuItem
         key={'new-root-package'}
         onClick={() => setShowScrimId('new-root-package')}
@@ -39,6 +40,7 @@ function createMenuItems(
   // Packages get a "new folder"
   if (node.type == BlueprintEnum.PACKAGE) {
     menuItems.push(
+      // @ts-ignore-line - react-contextmenu not supported in typescript
       <MenuItem key={'new-folder'} onClick={() => setShowScrimId('new-folder')}>
         New folder
       </MenuItem>
@@ -48,7 +50,7 @@ function createMenuItems(
   // Everything besides dataSources and folders can be viewed
   if (!['dataSource', BlueprintEnum.PACKAGE].includes(node.type)) {
     menuItems.push(
-      // @ts-ignore
+      // @ts-ignore-line - react-contextmenu not supported in typescript
       <MenuItem key={'view'} onClick={() => ViewAction(node)}>
         View in new tab
       </MenuItem>
@@ -58,6 +60,7 @@ function createMenuItems(
   // Everything besides dataSources can be deleted
   if (node.type !== 'dataSource') {
     menuItems.push(
+      // @ts-ignore-line - react-contextmenu not supported in typescript
       <MenuItem
         key={'delete'}
         onClick={() => {
@@ -197,7 +200,9 @@ export const NodeRightClickMenu = (props: {
   //TODO when the tree changes by adding new package or deleting something, the tree should be updated to give consistent UI to user
   return (
     <div>
+      {/*@ts-ignore-line - react-contextmenu not supported in typescript */}
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
+      {/*@ts-ignore-line - react-contextmenu not supported in typescript */}
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
       {scrimToShow === 'new-folder' && (
         <div>
