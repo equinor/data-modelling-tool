@@ -32,6 +32,22 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",
       "category": "edit"
+    },
+    {
+      "name": "aRecipeName",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "form",
+      "category": "edit",
+      "config": {
+        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
+        "attributes": [
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "bar",
+            "widget": "TextareaWidget"
+          }
+        ]
+      }
     }
   ]
 }

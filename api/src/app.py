@@ -1,3 +1,4 @@
+import concurrent.futures
 import io
 import json
 import os
@@ -60,7 +61,8 @@ def cli(token: str):
 def remove_application():
     logger.info("-------------- REMOVING OLD APPLICATION FILES ----------------")
     logger.debug(("Removing application specific files from" f" the configured DMSS instance; {config.DMSS_API}"))
-    for app_name, settings in config.APP_SETTINGS.items():
+
+    def thread_function(settings: dict) -> None:
         for package in settings.get("packages", []):
             data_source_alias, folder = package.split("/", 1)
             actual_data_source = next(
@@ -75,6 +77,9 @@ def remove_application():
                     pass
                 else:
                     raise error
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.map(thread_function, config.APP_SETTINGS.values())
     logger.info("-------------- DONE ----------------")
 
 
@@ -138,9 +143,10 @@ def import_data_source(path: str):
 @click.pass_context
 def init_application(context):
     logger.info("-------------- IMPORTING PACKAGES ----------------")
-    for app_name, settings in config.APP_SETTINGS.items():
+
+    def thread_function(settings: dict) -> None:
         app_directory_name = Path(settings["file_loc"]).parent.name
-        logger.debug(f"Importing data for app '{app_name}'")
+        logger.debug(f"Importing data for app '{settings['name']}'")
         logger.debug("_____ importing data sources _____")
         ds_dir = f"{config.APPLICATION_HOME}/{app_directory_name}/{config.APPS_DATASOURCE_SUBFOLDER}/"
         data_sources_to_import = []
@@ -180,6 +186,10 @@ def init_application(context):
                 traceback.print_exc()
                 raise Exception(f"Something went wrong trying to upload the package '{package}' to DMSS; {error}")
         logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings.get('packages', []))}_____")
+
+    with concurrent.futures.ThreadPoolExecutor() as executor:
+        executor.map(thread_function, config.APP_SETTINGS.values())
+
     logger.info(emoji.emojize("-------------- DONE ---------------- :check_mark_button:"))
 
 

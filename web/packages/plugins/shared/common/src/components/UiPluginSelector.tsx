@@ -19,6 +19,7 @@ const PluginTabsWrapper = styled.div`
 const Wrapper = styled.div`
   align-self: start;
   justify-content: space-evenly;
+  width: 100%;
 `
 
 const PathWrapper = styled.div`
@@ -69,6 +70,43 @@ const SelectPluginButton = styled.div<ISPButton>`
   }
 `
 
+class ErrorBoundary extends React.Component<
+  any,
+  { hasError: boolean; message: string }
+> {
+  uiPluginName: string = ''
+
+  constructor(props: any) {
+    super(props)
+    this.uiPluginName = props.uiPluginName
+    this.state = { hasError: false, message: '' }
+  }
+
+  static getDerivedStateFromError(error: any, errorInfo: any) {
+    // Update state so the next render will show the fallback UI.
+    return {
+      hasError: true,
+      message: error,
+    }
+  }
+
+  render() {
+    if (this.state.hasError) {
+      // You can render any custom fallback UI
+      return (
+        <div style={{ color: 'red' }}>
+          <h4 style={{ color: 'red' }}>
+            The UiPlugin <i>{this.uiPluginName}</i> crashed...
+          </h4>
+          <pre>{JSON.stringify(this.state.message, null, 2)}</pre>
+        </div>
+      )
+    }
+    // @ts-ignore
+    return this.props.children
+  }
+}
+
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
   entity: any
@@ -90,6 +128,13 @@ export function UIPluginSelector(props: {
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
     ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
+  }
+  if (!entity || !Object.keys(entity).length) {
+    console.error(
+      `UiPluginSelector need an entity with a 'type' attribute. Got '${JSON.stringify(
+        entity
+      )}'`
+    )
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
@@ -128,19 +173,19 @@ export function UIPluginSelector(props: {
       </div>
     )
 
-  if (error) {
+  if (error)
     return (
       <div style={{ color: 'red' }}>
         Failed to fetch Blueprint {entity.type}
       </div>
     )
-  }
-  if (!selectableRecipe.length) {
+  if (!selectableRecipe.length)
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
-  }
+
   const UiPlugin: FunctionComponent<DmtUIPlugin> = selectableRecipe[
     selectedPlugin
   ][1] as FunctionComponent
+
   const config: any = selectableRecipe[selectedPlugin][2]
 
   return (
@@ -163,16 +208,21 @@ export function UIPluginSelector(props: {
           )}
         </PluginTabsWrapper>
       )}
-      <UiPlugin
-        dataSourceId={dataSourceId}
-        documentId={documentId}
-        document={entity}
-        onSubmit={onSubmit}
-        onChange={onChange}
-        onOpen={onOpen}
-        categories={categories}
-        config={config}
-      />
+      <ErrorBoundary
+        key={selectableRecipe[selectedPlugin][0]}
+        uiPluginName={selectableRecipe[selectedPlugin][0]}
+      >
+        <UiPlugin
+          dataSourceId={dataSourceId}
+          documentId={documentId}
+          document={entity}
+          onSubmit={onSubmit}
+          onChange={onChange}
+          onOpen={onOpen}
+          categories={categories}
+          config={config}
+        />
+      </ErrorBoundary>
     </Wrapper>
   )
 }

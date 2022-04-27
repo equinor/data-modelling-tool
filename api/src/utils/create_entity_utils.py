@@ -115,20 +115,4 @@ class CreateEntity:
                     blueprint = Blueprint(DTO(blueprint))
                 if attr.is_array():
                     entity[attr.name] = attr.dimensions.create_default_array(self.blueprint_provider, CreateEntity)
-                else:
-                    if attr.is_optional():
-                        entity[attr.name] = {}
-
-                    elif CreateEntity.is_json(attr):
-                        value = CreateEntity.parse_json(attr)
-                        if len(value) > 0:
-                            entity[attr.name] = CreateEntity.parse_json(attr)
-                        else:
-                            entity[attr.name] = self._get_entity(
-                                blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type}
-                            )
-                    else:
-                        entity[attr.name] = self._get_entity(
-                            blueprint=blueprint, entity={"name": attr.name, "type": attr.attribute_type}
-                        )
         return entity

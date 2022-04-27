@@ -94,6 +94,42 @@ describe('Form', () => {
     })
   })
 
+  describe('TextareaWidget', () => {
+    it('should render textarea', async () => {
+      const mock = mockGetBlueprint([
+        {
+          type: 'system/SIMOS/Blueprint',
+          name: 'Root',
+          attributes: [
+            {
+              name: 'foo',
+              type: 'system/SIMOS/BlueprintAttribute',
+              attributeType: 'string',
+            },
+          ],
+        },
+      ])
+
+      const config = {
+        attributes: [
+          {
+            name: 'foo',
+            widget: 'TextareaWidget',
+          },
+        ],
+      }
+
+      const { container } = render(<Form type="Root" config={config} />)
+      await waitFor(() => {
+        expect(screen.getAllByRole('button').length).toBe(1)
+        expect(container.querySelector(`textarea[name="foo"]`)).toBeTruthy()
+        // Should only call get blueprint once
+        expect(mock).toHaveBeenCalledWith({ typeRef: 'Root' })
+        expect(mock).toHaveBeenCalledTimes(1)
+      })
+    })
+  })
+
   describe.skip('Submit handler', () => {})
   describe.skip('Error handler', () => {})
 })
