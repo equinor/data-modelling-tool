@@ -41,8 +41,14 @@ done
   -commands file=$SRE_HOME/commands.txt \
   -consoleLog
 
-# Upload result
-/code/job_wrapper.py upload-result --reference-target="$REFERENCE_TARGET"
+if [ "$REFERENCE_TARGET" == "" ]
+then
+  # Upload result
+  /code/job_wrapper.py upload-result
+else
+  # Upload result and add reference
+  /code/job_wrapper.py upload-result --reference-target="$REFERENCE_TARGET"
+fi
 
 time=$(date +'%d/%m/%Y %r')
 echo "** End time: ${time} **"

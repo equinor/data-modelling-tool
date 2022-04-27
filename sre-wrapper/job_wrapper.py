@@ -136,8 +136,8 @@ def run(input_id: str = None):
 
 
 @cli.command()
-@click.option("--reference-target", help="Dotted id to an analysis entity's job result. Should be on the format: entityId.jobs.*index*.result.", type=str, required=True)
-def upload_result(reference_target: str):
+@click.option("--reference-target", help="Dotted id to specify where reference to result entity should be added.", type=str, required=False)
+def upload_result(reference_target: str=None):
     """
     Uploads the result to the folder given in the input-entity, and add a reference to this result to the analysis entity
     :param reference_target: a dotted id to specify where to insert result reference
@@ -163,10 +163,10 @@ def upload_result(reference_target: str):
         "id": response['uid'],
         "type": result_entity["type"]
     }
-
-    dmss_api.reference_insert(data_source_id=target_data_source, document_dotted_id=reference_target,
-                              reference=reference_object)
-    print(f"Reference to result was added to {reference_target}")
+    if reference_target:
+        dmss_api.reference_insert(data_source_id=target_data_source, document_dotted_id=reference_target,
+                                  reference=reference_object)
+        print(f"Reference to result was added to {reference_target}")
 
 
 if __name__ == "__main__":
