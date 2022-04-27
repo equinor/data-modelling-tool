@@ -101,7 +101,7 @@ class ErrorBoundary extends React.Component<
         </div>
       )
     }
-    // @ts-ignore
+
     return this.props.children
   }
 }

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useState, useEffect } from 'react'
 import { Button, Input, Label } from '@equinor/eds-core-react'
 import { CustomScrim } from './Modal/CustomScrim'
 // @ts-ignore

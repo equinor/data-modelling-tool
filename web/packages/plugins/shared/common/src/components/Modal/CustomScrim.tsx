@@ -19,7 +19,6 @@ export const CustomScrim = (props: {
 }) => {
   const { closeScrim, isOpen, children, header, width, height } = props
   return (
-    // @ts-ignore
     <Scrim
       isDismissable
       open={isOpen}
@@ -54,7 +53,6 @@ export const CustomScrim = (props: {
                 float: 'right',
                 paddingRight: '20px',
               }}
-              // @ts-ignore
               onClick={closeScrim}
             >
               <Icon name="close" size={24} title="Close" />
