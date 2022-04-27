@@ -38,7 +38,8 @@
       "attributeType": "/STask",
       "type": "system/SIMOS/BlueprintAttribute",
       "description": "",
-      "optional": true
+      "optional": true,
+      "contained": false
     },
     {
       "type": "system/SIMOS/BlueprintAttribute",
@@ -65,5 +66,24 @@
       "attributeType": "string",
       "optional": true
     }
-    ]
+  ],
+  "uiRecipes": [
+    {
+      "name": "Tabs",
+      "label": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container",
+      "config": {
+        "type": "system/SIMOS/UiPluginSelectorProps",
+        "subCategories": ["edit", "container"]
+      }
+    },
+     {
+      "name": "Edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-sima-application-input",
+      "category": "edit"
+    }
+  ]
 }
