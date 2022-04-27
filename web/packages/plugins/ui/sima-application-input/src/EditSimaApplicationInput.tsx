@@ -1,16 +1,19 @@
 import {
   BlueprintPicker,
+  DestinationPicker,
   DmtUIPlugin,
+  EntityPickerButton,
   EntityPickerInput,
-  EntityPickerDropdown,
+  NewEntityButton,
   TReference,
   UploadFileButton,
-  useDocument,
 } from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { Button, Label, TextField, Typography } from '@equinor/eds-core-react'
+import { Input, Label, TextField, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
@@ -36,19 +39,13 @@ const HeaderWrapper = styled.div`
   margin-bottom: 50px;
 `
 
-export const EditSimaInput = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onSubmit } = props
-  // using the passed updateDocument from props causes way too much rerendering. This should probably be fixed...
-  const [_document, documentLoading, updateDocument, error] = useDocument(
-    dataSourceId,
-    documentId
-  )
-  const [formData, setFormData] = useState<any>({})
+export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
+  const { document, dataSourceId, onChange, onOpen } = props
+  const [formData, setFormData] = useState<any>({ ...document })
 
   useEffect(() => {
-    if (!_document) return
-    setFormData({ ..._document })
-  }, [_document])
+    if (onChange) onChange(formData)
+  }, [formData])
 
   function getNewSTaskBody(filename: string): any {
     return {
@@ -76,29 +73,49 @@ export const EditSimaInput = (props: DmtUIPlugin) => {
                   onChange={(selectedBlueprint: string) =>
                     setFormData({ ...formData, inputType: selectedBlueprint })
                   }
-                  formData={formData.inputType}
+                  formData={formData?.inputType || ''}
                 />
               </Column>
-              <div style={{ display: 'flex' }}>
+              <div style={{ display: 'flex', alignItems: 'flex-end' }}>
                 <Column>
-                  <Label label={'Default input entity'} />
-                  <EntityPickerInput
-                    formData={formData.defaultInput}
-                    onChange={(selectedEntity: TReference) =>
-                      setFormData({
-                        ...formData,
-                        defaultInput: {
-                          _id: selectedEntity._id,
-                          name: selectedEntity.name,
-                          type: selectedEntity.type,
-                        },
-                      })
-                    }
+                  <Label label={'Input entity'} />
+                  <Input
+                    type="string"
+                    value={formData?.input?.name || formData?.input?._id || ''}
+                    placeholder={formData?.input?.name || 'Select or create'}
+                    onChange={() => {}}
+                    onClick={() => {
+                      if (formData?.input?.type) {
+                        onOpen({
+                          attribute: 'input',
+                          entity: formData.input,
+                          onChange: (input: any) =>
+                            setFormData({ ...formData, input: input }),
+                          absoluteDottedId: `${dataSourceId}/${formData?.input?._id}`,
+                          categories: [],
+                        })
+                      }
+                    }}
                   />
                 </Column>
-                <Button style={{ margin: '15px 10px 0 10px' }} disabled>
-                  Create
-                </Button>
+                <EntityPickerButton
+                  typeFilter={formData?.inputType || ''}
+                  onChange={(selectedEntity: TReference) =>
+                    setFormData({
+                      ...formData,
+                      input: selectedEntity,
+                    })
+                  }
+                />
+                <NewEntityButton
+                  type={formData?.inputType || ''}
+                  setReference={(createdEntity: TReference) =>
+                    setFormData({
+                      ...formData,
+                      input: createdEntity,
+                    })
+                  }
+                />
               </div>
             </GroupWrapper>
           </HeaderWrapper>
@@ -124,20 +141,15 @@ export const EditSimaInput = (props: DmtUIPlugin) => {
               <Column>
                 <Label label={'Select Stask'} />
                 <Row>
-                  <EntityPickerDropdown
+                  <EntityPickerInput
+                    formData={formData.stask}
+                    typeFilter={STaskBlueprint}
                     onChange={(selectedStask: any) =>
                       setFormData({
                         ...formData,
-                        stask: {
-                          _id: selectedStask._id,
-                          name: selectedStask.name,
-                          type: selectedStask.type,
-                        },
+                        stask: selectedStask,
                       })
                     }
-                    typeFilter={STaskBlueprint}
-                    dataSourceId={dataSourceId}
-                    formData={formData.stask}
                   />
                   <UploadFileButton
                     fileSuffix={['stask']}
@@ -155,7 +167,7 @@ export const EditSimaInput = (props: DmtUIPlugin) => {
               <TextField
                 id="workflow"
                 label={'Workflow'}
-                value={formData.workflow}
+                value={formData?.workflow || ''}
                 placeholder="Name of workflow to run"
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   setFormData({ ...formData, workflow: event.target.value })
@@ -165,7 +177,7 @@ export const EditSimaInput = (props: DmtUIPlugin) => {
               <TextField
                 id="workflowTask"
                 label={'Workflow task'}
-                value={formData.workflowTask}
+                value={formData?.workflowTask || ''}
                 placeholder="Name of workflowTask to run"
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
                   setFormData({ ...formData, workflowTask: event.target.value })
@@ -176,42 +188,22 @@ export const EditSimaInput = (props: DmtUIPlugin) => {
           </HeaderWrapper>
 
           <HeaderWrapper>
-            <Typography variant="h3">Job type</Typography>
+            <Typography variant="h3">Result </Typography>
             <GroupWrapper>
               <Column>
-                <Label label={'Blueprint'} />
-                <BlueprintPicker
-                  onChange={(selectedBlueprint: string) =>
-                    setFormData({ ...formData, jobType: selectedBlueprint })
+                <Label label={'Folder'} />
+                <DestinationPicker
+                  formData={formData?.resultPath || ''}
+                  onChange={(selectedFolder: string) =>
+                    setFormData({
+                      ...formData,
+                      resultPath: selectedFolder,
+                    })
                   }
-                  formData={formData.jobType}
                 />
               </Column>
             </GroupWrapper>
           </HeaderWrapper>
-
-          <div style={{ justifyContent: 'space-around', display: 'flex' }}>
-            <Button
-              as="button"
-              variant="outlined"
-              color="danger"
-              onClick={() => setFormData({ ...document })}
-            >
-              Reset
-            </Button>
-            <Button
-              as="button"
-              onClick={() => {
-                if (onSubmit) {
-                  onSubmit(formData)
-                } else {
-                  updateDocument(formData, true)
-                }
-              }}
-            >
-              Ok
-            </Button>
-          </div>
         </Wrapper>
       </div>
     </div>

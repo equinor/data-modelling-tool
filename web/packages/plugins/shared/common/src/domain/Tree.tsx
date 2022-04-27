@@ -100,6 +100,18 @@ export class TreeNode {
     }
   }
 
+  // Fetches the unresolved document of the node
+  async fetch() {
+    const [dataSourceId, documentId] = this.nodeId.split('/', 2)
+    return this.tree.dmssApi
+      .getDocumentById({
+        dataSourceId: dataSourceId,
+        documentId: documentId,
+        depth: 0,
+      })
+      .then((doc: any) => doc)
+  }
+
   async expand() {
     this.expanded = true
     if (this.type !== 'dataSource') {

@@ -27,6 +27,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
           type="string"
           value={formData}
           onChange={() => {}}
+          placeholder="Select"
           onClick={() => setShowModal(true)}
         />
         <Modal

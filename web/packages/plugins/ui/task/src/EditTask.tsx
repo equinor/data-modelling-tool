@@ -13,11 +13,6 @@ import { useEffect, useState } from 'react'
 import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
-const Wrapper = styled.div`
-  margin: 10px;
-  width: 30vw;
-`
-
 const Column = styled.div`
   display: block;
 `
@@ -45,7 +40,8 @@ export const EditTask = (props: DmtUIPlugin) => {
   } = props
   const [_document, _loading, updateDocument, error] = useDocument(
     dataSourceId,
-    documentId
+    documentId,
+    false
   )
   const [formData, setFormData] = useState<any>({ ...document })
   const defaultRunnerType = 'WorkflowDS/Blueprints/jobHandlers/AzureContainer'
@@ -63,160 +59,164 @@ export const EditTask = (props: DmtUIPlugin) => {
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
-        <Wrapper>
-          <HeaderWrapper>
-            <Typography variant="h3">Input</Typography>
-            <GroupWrapper>
+        <HeaderWrapper>
+          <Typography variant="h3">Input</Typography>
+          <GroupWrapper>
+            <Column>
+              <Label label={'Blueprint'} />
+              <BlueprintPicker
+                onChange={(selectedBlueprint: string) =>
+                  setFormData({ ...formData, inputType: selectedBlueprint })
+                }
+                formData={formData.inputType}
+              />
+            </Column>
+            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
               <Column>
-                <Label label={'Blueprint'} />
-                <BlueprintPicker
-                  onChange={(selectedBlueprint: string) =>
-                    setFormData({ ...formData, inputType: selectedBlueprint })
+                <Label label={'Input entity'} />
+                <Input
+                  type="string"
+                  value={
+                    formData?.applicationInput?.name ||
+                    formData?.applicationInput?._id ||
+                    ''
                   }
-                  formData={formData.inputType}
-                />
-              </Column>
-              <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-                <Column>
-                  <Label label={'Input entity'} />
-                  <Input
-                    type="string"
-                    value={
-                      formData?.applicationInput.name ||
-                      formData?.applicationInput._id ||
-                      ''
-                    }
-                    placeholder={
-                      formData?.applicationInput?.name || 'Select or create'
-                    }
-                    onChange={() => {}}
-                    onClick={() =>
-                      onOpen({
-                        attribute: 'applicationInput',
-                        entity: formData?.applicationInput,
-                        absoluteDottedId: `${dataSourceId}/${formData?.applicationInput._id}`,
-                      })
-                    }
-                  />
-                </Column>
-                <EntityPickerButton
-                  typeFilter={formData.inputType}
-                  onChange={(selectedEntity: TReference) =>
-                    setFormData({
-                      ...formData,
-                      applicationInput: selectedEntity,
+                  placeholder={
+                    formData?.applicationInput?.name || 'Select or create'
+                  }
+                  onChange={() => {}}
+                  onClick={() => {
+                    onOpen({
+                      attribute: 'applicationInput',
+                      onChange: (appInput: any) =>
+                        setFormData({
+                          ...formData,
+                          applicationInput: appInput,
+                        }),
+                      entity: formData.applicationInput,
+                      absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
+                      categories: ['container'],
                     })
-                  }
-                />
-                <NewEntityButton
-                  type={formData.inputType}
-                  setReference={(createdEntity: TReference) =>
-                    setFormData({
-                      ...formData,
-                      applicationInput: createdEntity,
-                    })
-                  }
-                />
-              </div>
-            </GroupWrapper>
-          </HeaderWrapper>
-
-          <HeaderWrapper>
-            <Typography variant="h3">Output</Typography>
-            <GroupWrapper>
-              <Column>
-                <Label label={'Blueprint'} />
-                <BlueprintPicker
-                  onChange={(selectedBlueprint: string) =>
-                    setFormData({ ...formData, outputType: selectedBlueprint })
-                  }
-                  formData={formData.outputType}
-                />
-              </Column>
-            </GroupWrapper>
-          </HeaderWrapper>
-
-          <HeaderWrapper>
-            <Typography variant="h3">Job runner</Typography>
-            <GroupWrapper>
-              <Column>
-                <Label label={'Blueprint'} />
-                <JobHandlerPicker
-                  onChange={(selectedBlueprint: string) =>
-                    setFormData({
-                      ...formData,
-                      runner: { ...formData?.runner, type: selectedBlueprint },
-                    })
-                  }
-                  formData={formData?.runner?.type || defaultRunnerType}
-                />
-                <div
-                  style={{
-                    margin: '10px 20px',
-                    borderLeft: '2px solid grey',
-                    paddingLeft: '10px',
                   }}
-                >
-                  {onOpen ? (
-                    <Button
-                      onClick={() =>
-                        onOpen({
-                          attribute: 'runner',
-                          entity: formData?.runner || {
-                            type: defaultRunnerType,
-                          },
-                          absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
-                          onSubmit: (data: any) =>
-                            setFormData({ ...formData, runner: data }),
-                        })
-                      }
-                    >
-                      Open
-                    </Button>
-                  ) : (
-                    <UIPluginSelector
-                      absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                      entity={formData?.runner || { type: defaultRunnerType }}
-                      breadcrumb={false}
-                      categories={categories}
-                      onChange={(data: any) =>
-                        setFormData({ ...formData, runner: data })
-                      }
-                      onSubmit={(data: any) =>
-                        setFormData({ ...formData, runner: data })
-                      }
-                    />
-                  )}
-                </div>
+                />
               </Column>
-            </GroupWrapper>
-          </HeaderWrapper>
+              <EntityPickerButton
+                typeFilter={formData.inputType}
+                onChange={(selectedEntity: TReference) =>
+                  setFormData({
+                    ...formData,
+                    applicationInput: selectedEntity,
+                  })
+                }
+              />
+              <NewEntityButton
+                type={formData.inputType}
+                setReference={(createdEntity: TReference) =>
+                  setFormData({
+                    ...formData,
+                    applicationInput: createdEntity,
+                  })
+                }
+              />
+            </div>
+          </GroupWrapper>
+        </HeaderWrapper>
 
-          {onChange === undefined && (
-            <div style={{ justifyContent: 'space-around', display: 'flex' }}>
-              <Button
-                as="button"
-                variant="outlined"
-                color="danger"
-                onClick={() => setFormData({ ...document })}
-              >
-                Reset
-              </Button>
-              <Button
-                as="button"
-                onClick={() => {
-                  if (onSubmit) {
-                    onSubmit(formData)
-                  } else {
-                    updateDocument(formData, true)
-                  }
+        <HeaderWrapper>
+          <Typography variant="h3">Output</Typography>
+          <GroupWrapper>
+            <Column>
+              <Label label={'Blueprint'} />
+              <BlueprintPicker
+                onChange={(selectedBlueprint: string) =>
+                  setFormData({ ...formData, outputType: selectedBlueprint })
+                }
+                formData={formData.outputType}
+              />
+            </Column>
+          </GroupWrapper>
+        </HeaderWrapper>
+
+        <HeaderWrapper>
+          <Typography variant="h3">Job runner</Typography>
+          <GroupWrapper>
+            <Column>
+              <Label label={'Blueprint'} />
+              <JobHandlerPicker
+                onChange={(selectedBlueprint: string) =>
+                  setFormData({
+                    ...formData,
+                    runner: { ...formData?.runner, type: selectedBlueprint },
+                  })
+                }
+                formData={formData?.runner?.type || defaultRunnerType}
+              />
+              <div
+                style={{
+                  margin: '10px 20px',
+                  borderLeft: '2px solid grey',
+                  paddingLeft: '10px',
                 }}
               >
-                Ok
-              </Button>
-            </div>
-          )}
-        </Wrapper>
+                {onOpen ? (
+                  <Button
+                    onClick={() =>
+                      onOpen({
+                        attribute: 'runner',
+                        entity: formData?.runner || {
+                          type: defaultRunnerType,
+                        },
+                        absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
+                        onSubmit: (data: any) =>
+                          setFormData({ ...formData, runner: data }),
+                      })
+                    }
+                  >
+                    Open
+                  </Button>
+                ) : (
+                  <UIPluginSelector
+                    absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
+                    entity={formData?.runner || { type: defaultRunnerType }}
+                    breadcrumb={false}
+                    categories={categories}
+                    onChange={(data: any) =>
+                      setFormData({ ...formData, runner: data })
+                    }
+                    onSubmit={(data: any) =>
+                      setFormData({ ...formData, runner: data })
+                    }
+                  />
+                )}
+              </div>
+            </Column>
+          </GroupWrapper>
+        </HeaderWrapper>
+
+        {onChange === undefined && (
+          <div style={{ justifyContent: 'space-around', display: 'flex' }}>
+            <Button
+              as="button"
+              variant="outlined"
+              color="danger"
+              onClick={() => setFormData({ ...document })}
+            >
+              Reset
+            </Button>
+            <Button
+              as="button"
+              onClick={() => {
+                if (onSubmit) {
+                  onSubmit(formData)
+                } else {
+                  updateDocument(formData, true)
+                }
+              }}
+            >
+              Ok
+            </Button>
+          </div>
+        )}
       </div>
     </div>
   )
