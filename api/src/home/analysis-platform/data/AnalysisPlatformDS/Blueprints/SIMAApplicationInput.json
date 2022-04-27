@@ -82,7 +82,7 @@
             "widget": "BlueprintPickerWidget"
           }
         ]
-    },
+      }},
     {
       "name": "Tabs",
       "label": "Tabs",
@@ -91,15 +91,17 @@
       "category": "container",
       "config": {
         "type": "system/SIMOS/UiPluginSelectorProps",
-        "subCategories": ["edit", "container"]
+        "subCategories": [
+          "edit",
+          "container"
+        ]
       }
     },
-     {
+    {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-sima-application-input",
       "category": "edit"
-
     }
   ]
 }
