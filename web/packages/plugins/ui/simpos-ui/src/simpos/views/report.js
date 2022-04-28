@@ -133,28 +133,28 @@ function Table({ columns, data }) {
 const ColTableData = (tabDoc) => {
   var columns = []
 
-  for (var i = 0; i < tabDoc.strColumns.length; i++) {
+  for (var i = 0; i < tabDoc.columns.length; i++) {
     columns.push({
-      Header: tabDoc.strColumns[i].header + ' ' + tabDoc.strColumns[i].label,
+      Header: tabDoc.columns[i].header + ' ' + tabDoc.columns[i].label,
       accessor: 'col_' + i,
     })
   }
 
   // console.log(columns)
-  const nrows = tabDoc.strColumns[0].value.length
+  const nrows = tabDoc.columns[0].value.length
 
   var data = []
 
   // var row = {}
-  // for (var i = 0; i < tabDoc.strColumns.length; i++) {
-  //   row['col_'+ i] = tabDoc.strColumns[i].label
+  // for (var i = 0; i < tabDoc.columns.length; i++) {
+  //   row['col_'+ i] = tabDoc.columns[i].label
   // }
   // data.push(row)
 
   for (var ri = 0; ri < nrows; ri++) {
     var row = {}
-    for (var i = 0; i < tabDoc.strColumns.length; i++) {
-      row['col_' + i] = tabDoc.strColumns[i].value[ri]
+    for (var i = 0; i < tabDoc.columns.length; i++) {
+      row['col_' + i] = tabDoc.columns[i].value[ri]
     }
     data.push(row)
   }
@@ -164,28 +164,28 @@ const ColTableData = (tabDoc) => {
 }
 
 const TransposedColTableData = (tabDoc) => {
+  // console.log(tabDoc)
   var columns = []
-  columns.push({ Header: tabDoc.strColumns[0].header, accessor: 'col_' + 0 })
-  columns.push({ Header: tabDoc.strColumns[0].label, accessor: 'col_' + 1 })
+  columns.push({ Header: tabDoc.columns[0].header, accessor: 'col_' + 0 })
+  columns.push({ Header: tabDoc.columns[0].label, accessor: 'col_' + 1 })
 
-  for (var i = 0; i < tabDoc.strColumns[0].value.length; i++) {
+  for (var i = 0; i < tabDoc.columns[0].cells.length; i++) {
     columns.push({
-      Header: tabDoc.strColumns[0].value[i],
+      Header: tabDoc.columns[0].cells[i],
       accessor: 'col_' + i + 2,
     })
   }
-
   //console.log(columns)
 
   var data = []
 
-  for (var i = 1; i < tabDoc.strColumns.length; i++) {
-    var col = tabDoc.strColumns[i]
+  for (var i = 1; i < tabDoc.columns.length; i++) {
+    var col = tabDoc.columns[i]
     var row = {}
     row['col_0'] = col.header
     row['col_1'] = col.label
-    for (var ri = 0; ri < col.value.length; ri++) {
-      row['col_' + ri + 2] = col.value[ri]
+    for (var ri = 0; ri < col.cells.length; ri++) {
+      row['col_' + ri + 2] = col.cells[ri]
     }
     data.push(row)
   }
@@ -232,20 +232,26 @@ const PlotView = ({ plotDoc }) => {
     <div className="container">
       <Plot
         data={plotDoc.lines.map(function (line) {
-          if (line.style == 'bar') {
+          // console.log(line)
+          if (line.linestyle == 'bar') {
             return {
-              x: line.xvalue,
-              y: line.value,
-              type: line.style,
-              marker: { color: 'rgb(' + line.color + ')' },
+              x: line.x,
+              y: line.y,
+              type: 'bar',
+              marker: {
+                color: '#' + line.color,
+              },
             }
           }
           return {
-            x: line.xvalue,
-            y: line.value,
+            x: line.x,
+            y: line.y,
             type: line.style,
             mode: 'lines',
-            marker: { color: 'rgb(' + line.color + ')' },
+            line: {
+              color: '#' + line.color,
+              width: line.linewidth,
+            },
           }
         })}
         layout={{
@@ -273,14 +279,30 @@ const CollapsedView = ({ doc }) => {
   let section
   var defaultState = false
 
-  if (doc.type.includes('XYPlot')) {
+  if (doc.type.includes('ReportFragment')) {
+    section = <FragmentView doc={doc} />
+    sectionTitle = doc.name
+    defaultState = false
+  } else if (doc.type.includes('Section')) {
+    section = <SectionView doc={doc} />
+    sectionTitle = section.title
+    defaultState = false
+    return (
+      <Wrapper>
+        <Content>{section}</Content>
+      </Wrapper>
+    )
+  } else if (doc.type.includes('LinePlot')) {
     section = <PlotView plotDoc={doc} />
     sectionTitle = 'Plot: ' + doc.caption
     defaultState = false
-  } else if (doc.type.includes('ColTable')) {
+  } else if (doc.type.includes('Table')) {
     section = <TableView tabDoc={doc} />
     defaultState = true
     sectionTitle = 'Table: ' + doc.caption
+  } else if (doc.type.includes('Paragraph')) {
+    section = <ParagraphView doc={doc} />
+    defaultState = false
   } else {
     console.log(doc.type + ' is not known. : view_SRSReportView')
   }
@@ -292,7 +314,10 @@ const CollapsedView = ({ doc }) => {
     <Wrapper>
       <Toggle
         {...getToggleProps({
-          onClick: () => setOpen((oldOpen) => !oldOpen),
+          onClick: () => {
+            console.log(doc)
+            setOpen((oldOpen) => !oldOpen)
+          },
         })}
       >
         <Icons>
@@ -311,6 +336,7 @@ const SectionView = ({ doc }) => {
   const { getCollapseProps, getToggleProps } = useCollapse({ isOpen })
 
   const sectionTitle = doc.name
+  console.log(doc)
 
   return (
     <Wrapper>
@@ -326,13 +352,28 @@ const SectionView = ({ doc }) => {
         {sectionTitle}
       </Toggle>
       <Content {...getCollapseProps()}>
-        {doc.sections.map((item, index) => (
-          <SectionView doc={item} key={index} />
-        ))}
-        {doc.tables.map((item, index) => (
+        {doc.items.map((item, index) => (
           <CollapsedView doc={item} key={index} />
         ))}
-        {doc.plots.map((item, index) => (
+      </Content>
+    </Wrapper>
+  )
+}
+
+//********************************************************//
+const ParagraphView = ({ doc }) => {
+  return (
+    //Does not work..
+    <div>{doc.text}</div>
+  )
+}
+
+//********************************************************//
+const FragmentView = ({ doc }) => {
+  return (
+    <Wrapper>
+      <Content>
+        {doc.items.map((item, index) => (
           <CollapsedView doc={item} key={index} />
         ))}
       </Content>

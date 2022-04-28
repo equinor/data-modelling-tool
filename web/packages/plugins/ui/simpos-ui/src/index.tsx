@@ -30,6 +30,15 @@ import { SimposReportView } from './simpos/views/SimposReportView'
 import { SimposRunOutputView } from './simpos/views/SimposRunOutputView'
 import { SimposStatusView } from './simpos/views/SimposRunOutputView'
 
+//SIMA Models
+import { SIMA_Model_QuadCurrentCoeffPlot } from './sima/model/views/QuadCurrentCoeffPlot'
+import { SIMA_Model_StructuralMass } from './sima/model/views/StructuralMass'
+import { SIMA_Model_FirstOrderMotionTransferFunction } from './sima/model/views/FirstOrderMotionTransferFunction'
+import { SIMA_Model_SIMOBody } from './sima/model/views/SIMOBody'
+
+import { SIMA_Workflow_View } from './sima/workflow/views/Workflow'
+import { SIMA_WorkflowTask_View } from './sima/workflow/views/WorkflowTask'
+
 //***********************************************************
 //***********************************************************
 
@@ -108,6 +117,52 @@ export const plugins: any = [
     pluginType: DmtPluginType.UI,
     content: {
       component: SimposStatusView,
+    },
+  },
+
+  //********************************************************
+  //SIMA Model
+  //********************************************************
+  {
+    pluginName: 'sima-model-view-quad-current-coeff',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: SIMA_Model_QuadCurrentCoeffPlot,
+    },
+  },
+  {
+    pluginName: 'sima-model-view-simo-structural-mass',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: SIMA_Model_StructuralMass,
+    },
+  },
+  {
+    pluginName: 'sima-model-view-FirstOrderMotionTransferFunction',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: SIMA_Model_FirstOrderMotionTransferFunction,
+    },
+  },
+  {
+    pluginName: 'sima-model-view-simo-body',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: SIMA_Model_SIMOBody,
+    },
+  },
+  {
+    pluginName: 'sima-workflow-view',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: SIMA_Workflow_View,
+    },
+  },
+  {
+    pluginName: 'sima-workflow-task-view',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: SIMA_WorkflowTask_View,
     },
   },
   //********************************************************

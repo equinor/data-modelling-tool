@@ -7,7 +7,8 @@ const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, documentLoading, updateDocument, error] = useDocument(
     dataSourceId,
-    documentId
+    documentId,
+    false
   )
   if (documentLoading) return <div>Loading...</div>
   return <JobLog document={document} jobId={`${dataSourceId}/${documentId}`} />

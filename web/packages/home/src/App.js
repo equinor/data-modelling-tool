@@ -135,7 +135,7 @@ function App() {
             <Route
               path={`/${settings.urlPath}`}
               render={() => {
-                const UiPlugin = getPagePlugin(settings.pluginName)
+                const UiPlugin = getPagePlugin(settings?.pluginName || '')
                 if (!UiPlugin)
                   return (
                     <div style={{ color: 'red' }}>

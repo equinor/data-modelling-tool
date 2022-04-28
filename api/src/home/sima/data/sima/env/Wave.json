@@ -1,0 +1,29 @@
+{
+ "name" : "Wave",
+ "type" : "system/SIMOS/Blueprint",
+ "abstract" : false,
+ "extends" : ["system/SIMOS/NamedEntity"],
+ "attributes" : [{
+   "name" : "hs",
+   "type" : "system/SIMOS/BlueprintAttribute",
+   "attributeType" : "number"
+  }, {
+   "name" : "tp",
+   "type" : "system/SIMOS/BlueprintAttribute",
+   "attributeType" : "number"
+  }, {
+   "name" : "other",
+   "type" : "system/SIMOS/BlueprintAttribute",
+   "attributeType" : "/Other",
+   "contained" : true,
+   "optional" : true
+  }, {
+   "name" : "headings",
+   "type" : "system/SIMOS/BlueprintAttribute",
+   "dimension" : "*",
+   "attributeType" : "number"
+  }],
+ "storageRecipes" : [],
+ "uiRecipes" : []
+}
+

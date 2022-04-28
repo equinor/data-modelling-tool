@@ -1,0 +1,17 @@
+{
+  "name": "sima",
+  "repositories": {
+    "sima": {
+      "type": "mongo-db",
+      "host": "db",
+      "port": 27017,
+      "username": "maf",
+      "password": "maf",
+      "tls": false,
+      "database": "sima",
+      "collection": "sima"
+    }
+  }
+}
+
+
