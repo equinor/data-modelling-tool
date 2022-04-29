@@ -10,6 +10,13 @@
       "description": "id for the data blob",
       "attributeType": "system/SIMOS/Blob",
       "contained": true
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "tag",
+      "description": "",
+      "attributeType": "string",
+      "optional": true
     }
   ]
 }
