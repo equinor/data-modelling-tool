@@ -13,6 +13,13 @@ export const truncatePathString = (path: string): string => {
   const truncatedText: string = `${firstFolder}/${secondFolder}/.../${finalName}`
   const truncatedTextSmall: string = `${firstFolder}/.../${finalName}`
 
+  // let temp_path: string = `.../${finalName}`
+  // let counter: number = 0
+  // while (temp_path.length <= MAX_LENGTH) {
+  //   temp_path = temp_path.replace('...', `${splitTextOnFolders[counter]}/...`)
+  //   counter += 1
+  // }
+
   if (truncatedText.length <= MAX_LENGTH) {
     return truncatedText
   } else if (
