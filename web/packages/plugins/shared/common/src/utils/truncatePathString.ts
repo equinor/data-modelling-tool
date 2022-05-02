@@ -7,31 +7,22 @@ export const truncatePathString = (path: string): string => {
     return path
   }
   const splitTextOnFolders: string[] = path.split('/')
-  const firstFolder: string = splitTextOnFolders[0]
-  const secondFolder: string = splitTextOnFolders[1]
   const finalName: string = splitTextOnFolders[splitTextOnFolders.length - 1]
-  const truncatedText: string = `${firstFolder}/${secondFolder}/.../${finalName}`
-  const truncatedTextSmall: string = `${firstFolder}/.../${finalName}`
 
-  // let temp_path: string = `.../${finalName}`
-  // let counter: number = 0
-  // while (temp_path.length <= MAX_LENGTH) {
-  //   temp_path = temp_path.replace('...', `${splitTextOnFolders[counter]}/...`)
-  //   counter += 1
-  // }
-
-  if (truncatedText.length <= MAX_LENGTH) {
-    return truncatedText
-  } else if (
-    truncatedText.length > MAX_LENGTH &&
-    truncatedTextSmall.length <= MAX_LENGTH
-  ) {
-    return truncatedTextSmall
-  } else if (
-    truncatedText.length > MAX_LENGTH &&
-    truncatedTextSmall.length > MAX_LENGTH
-  ) {
-    return `.../${finalName}`
+  let truncatedPath: string = `.../${finalName}`
+  let previousPath: string = ''
+  let counter: number = 0
+  while (truncatedPath.length <= MAX_LENGTH) {
+    previousPath = truncatedPath
+    truncatedPath = truncatedPath.replace(
+      '...',
+      `${splitTextOnFolders[counter]}/...`
+    )
+    if (truncatedPath.length >= MAX_LENGTH) {
+      truncatedPath = previousPath
+      break
+    }
+    counter += 1
   }
-  return path
+  return truncatedPath
 }
