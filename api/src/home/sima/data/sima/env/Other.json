@@ -1,0 +1,14 @@
+{
+ "name" : "Other",
+ "type" : "system/SIMOS/Blueprint",
+ "abstract" : false,
+ "extends" : ["system/SIMOS/NamedEntity"],
+ "attributes" : [{
+   "name" : "shouldExport",
+   "type" : "system/SIMOS/BlueprintAttribute",
+   "attributeType" : "boolean"
+  }],
+ "storageRecipes" : [],
+ "uiRecipes" : []
+}
+

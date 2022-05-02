@@ -1,0 +1,27 @@
+{
+  "name": "@sintef/simpos-ui",
+  "version": "1.0.1",
+  "main": "src/index.tsx",
+  "dependencies": {
+    "@material-ui/core": "^4.9.5",
+    "@material-ui/icons": "^4.9.1",
+    "material-table": "^1.57.2",
+    "react-table": "^7.0.0-beta.27",
+    "plotly.js": "^2.11.1",
+    "react-3d-viewer": "^1.0.12",
+    "@projectstorm/geometry": "^6.6.1",
+    "@projectstorm/react-canvas-core": "^6.6.1",
+    "@projectstorm/react-diagrams": "^6.6.1",
+    "@projectstorm/react-diagrams-core": "^6.6.1",
+    "@projectstorm/react-diagrams-defaults": "^6.6.1",
+    "@projectstorm/react-diagrams-routing": "^6.6.1",
+    "@emotion/react": "^11.6.0",
+    "@emotion/styled": "^11.6.0",
+    "dagre": "^0.8.5",
+    "lodash": "^4.17.21",
+    "pathfinding": "^0.4.18",
+    "paths-js": "^0.4.11",
+    "resize-observer-polyfill": "^1.5.1",
+    "@mui/material": "^5.2.1"
+  }
+}

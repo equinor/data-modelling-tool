@@ -64,7 +64,7 @@ class JobHandler(JobHandlerInterface):
                 f"Job entity used as input to local container jobs does not include required attribute {error}"
             )
 
-        logger.info("*** Local container job completed ***")
+        logger.info("*** Local container job started successfully ***")
         return "Ok"
 
     def remove(self) -> str:

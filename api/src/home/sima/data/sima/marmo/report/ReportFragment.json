@@ -1,0 +1,29 @@
+{
+ "name" : "ReportFragment",
+ "type" : "system/SIMOS/Blueprint",
+ "abstract" : false,
+ "extends" : ["system/SIMOS/NamedEntity", "/report/ReportItemContainer", "/report/ReportItem"],
+ "attributes" : [],
+ "storageRecipes" : [],
+ "uiRecipes" : [
+    {
+        "type": "system/SIMOS/UiRecipe",
+        "name": "SIMA Report View",
+        "description": "Some external plugin",
+        "plugin": "simpos-report-view",
+        "attributes": []
+      },
+   {
+      "name": "Tabs",
+      "label": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container",
+      "config": {
+        "type": "system/SIMOS/UiPluginSelectorProps",
+        "subCategories": []
+      }
+    }
+ ]
+}
+

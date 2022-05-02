@@ -4,9 +4,9 @@
   "label": "Data Modeling Tool",
   "pluginName": "DMT",
   "urlPath": "DMT",
-  "tabIndex": 0,
+  "tabIndex": 1,
   "hidden": false,
-  "visibleDataSources": ["DemoDS",  "WorkflowDS", "AnalysisPlatformDS", "system",  "ForApp"],
+  "visibleDataSources": ["DemoDS",  "WorkflowDS", "AnalysisPlatformDS", "system",  "ForApp", "app_mooring_db", "app_asgardb_db", "sima"],
   "description": "Generic Blueprint and Entity browser. Provides edit, search, and views.",
   "packages": ["DMT-internals/DMT","demoDSAlias/DMT-demo"],
   "models": [
