@@ -12,13 +12,13 @@ export function NewEntityButton(props: {
   setReference: (r: TReference) => void
 }) {
   const { type, setReference } = props
-  const dmtAPI = new DmtAPI()
   const [showScrim, setShowScrim] = useState<boolean>(false)
   const [saveDestination, setSaveDestination] = useState<string>('')
   const [newName, setNewName] = useState<string>('')
   const [typeToCreate, setTypeToCreate] = useState<string>(type)
   // @ts-ignore
   const { token } = useContext(AuthContext)
+  const dmtAPI = new DmtAPI(token)
 
   useEffect(() => setTypeToCreate(type), [type])
 
@@ -87,9 +87,9 @@ export function NewEntityButton(props: {
               }}
               onClick={() => {
                 dmtAPI
-                  .createEntity(typeToCreate, token)
+                  .createEntity(typeToCreate, newName)
                   .then((newEntity: any) => {
-                    addEntityToPath({ ...newEntity, name: newName }).then(() =>
+                    addEntityToPath({ ...newEntity }).then(() =>
                       setShowScrim(false)
                     )
                   })

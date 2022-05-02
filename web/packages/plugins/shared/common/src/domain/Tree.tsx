@@ -1,4 +1,4 @@
-import { DmssAPI } from '../services'
+import { DmssAPI, DmtAPI } from '../services'
 import { BlueprintEnum } from '../utils/variables'
 
 type TreeMap = {
@@ -156,15 +156,35 @@ export class TreeNode {
   remove(): void {
     delete this?.parent?.children[this.nodeId]
   }
+
+  // Creates a new entity on DMSS of the given type and saves it to this package,
+  // returns the entity's UUID
+  async addEntity(type: string, name: string): Promise<string> {
+    if (this.type !== BlueprintEnum.PACKAGE)
+      throw 'Entities can only be added to packages'
+
+    return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) => {
+      return this.tree.dmssApi.generatedDmssApi
+        .explorerAddToPath({
+          dataSourceId: this.dataSource,
+          document: JSON.stringify(newEntity),
+          directory: this.pathFromRootPackage(),
+          updateUncontained: false,
+        })
+        .then((uuid: string) => JSON.parse(uuid).uid)
+    })
+  }
 }
 
 export class Tree {
   index: TreeMap = {}
   dmssApi: DmssAPI
+  dmtApi: DmtAPI
   dataSources
 
   constructor(token: string, dataSources: string[]) {
     this.dmssApi = new DmssAPI(token)
+    this.dmtApi = new DmtAPI(token)
     this.dataSources = dataSources
     dataSources.forEach(
       (
