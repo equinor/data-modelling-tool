@@ -9,7 +9,7 @@ import {
   TreeNode,
   CustomScrim,
   BlueprintPicker,
-  INPUT_FIELD_WIDTH
+  INPUT_FIELD_WIDTH,
 } from '@dmt/common'
 
 // @ts-ignore
@@ -106,7 +106,7 @@ const SingleTextInput = (props: {
       <Input
         type={'string'}
         style={{ width: INPUT_FIELD_WIDTH }}
-        onChange={(event) => setFormData(event.target.value)}
+        onChange={event => setFormData(event.target.value)}
       />
       <Button
         style={{ marginLeft: '8px' }}
@@ -219,6 +219,7 @@ export const NodeRightClickMenu = (props: {
   return (
     <div>
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
+
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
       {scrimToShow === 'new-folder' && (
         <div>
@@ -356,7 +357,7 @@ export const NodeRightClickMenu = (props: {
                   style={{ width: '360px', margin: '0 8px' }}
                   type="string"
                   value={formData?.name || ''}
-                  onChange={(event) =>
+                  onChange={event =>
                     setFormData({ ...formData, name: event.target.value })
                   }
                   placeholder="Name for new blueprint"
