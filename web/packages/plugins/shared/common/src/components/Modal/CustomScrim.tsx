@@ -55,10 +55,7 @@ export const CustomScrim = (props: {
           <div
             style={{
               padding: '20px 30px 30px 30px',
-              display: 'flex',
-              flexDirection: 'column',
               alignItems: 'center',
-              maxHeight: '75vh',
             }}
           >
             {children}
