@@ -42,6 +42,7 @@ export type TJob = {
   result?: any
   ended?: string
   outputTarget?: string
+  referenceTarget?: string
 }
 
 //Represents Container blueprint from WorkflowDS/Blueprints/jobHandlers/Container.json

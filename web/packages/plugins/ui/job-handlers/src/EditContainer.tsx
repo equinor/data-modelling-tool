@@ -37,6 +37,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
       <div
         style={{
           marginBottom: '10px',
+          marginTop: '10px',
         }}
       >
         <Wrapper>

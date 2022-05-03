@@ -2,6 +2,7 @@ import styled from 'styled-components'
 import React, { useState } from 'react'
 import { TAnalysis } from '../Types'
 import { Button, TextField } from '@equinor/eds-core-react'
+import { INPUT_FIELD_WIDTH } from '@dmt/common'
 
 type Errors = {
   [key: string]: any
@@ -62,22 +63,22 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
   }
 
   return (
-    <form onSubmit={formHandler} style={{ maxWidth: '400px' }}>
+    <form onSubmit={formHandler}>
       <Wrapper>
         <TextField
+          style={{ width: INPUT_FIELD_WIDTH }}
           id="name"
           label="Name"
           placeholder="Analysis name"
           onChange={handleInputChange}
           helperText={
-            error.name
-              ? error.name
-              : 'Provide the name of the analysis to be created'
+            error.name ? error.name : 'Provide the name of the analysis'
           }
           variant={error.name ? 'error' : 'default'}
           value={analysis.name}
         />
         <TextField
+          style={{ width: INPUT_FIELD_WIDTH }}
           id="description"
           label="Description"
           placeholder="Description"
@@ -90,16 +91,16 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
           variant={error.description ? 'error' : 'default'}
           value={analysis.description}
         />
+        <div>
+          <Button
+            type="submit"
+            style={{ marginTop: '14px' }}
+            onSubmit={formHandler}
+          >
+            Create
+          </Button>
+        </div>
       </Wrapper>
-      <div style={{ display: 'flex', justifyContent: 'center' }}>
-        <Button
-          type="submit"
-          style={{ marginTop: '14px' }}
-          onSubmit={formHandler}
-        >
-          Ok
-        </Button>
-      </div>
     </form>
   )
 }

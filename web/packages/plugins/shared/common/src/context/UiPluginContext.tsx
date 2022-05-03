@@ -78,7 +78,10 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
         })
         setPlugins(newPluginMap)
       })
-      .catch((e: any) => console.error(e))
+      .catch((e: any) => {
+        console.error(e)
+        return []
+      })
       .finally(() => setLoading(false))
   }, [pluginsToLoad])
 

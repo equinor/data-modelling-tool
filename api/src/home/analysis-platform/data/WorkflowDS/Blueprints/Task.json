@@ -2,16 +2,8 @@
   "name": "Task",
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
-  "extends": [
-    "system/SIMOS/NamedEntity"
-  ],
   "description": "Task holds parameters that is used to create different job instances",
   "attributes": [
-    {
-      "name": "label",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
-    },
     {
       "name": "outputTarget",
       "type": "system/SIMOS/BlueprintAttribute",
