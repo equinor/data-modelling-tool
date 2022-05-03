@@ -6,7 +6,8 @@
   "tabIndex": 0,
   "hidden": false,
   "visibleDataSources": [
-    "AnalysisPlatformDS"
+    "AnalysisPlatformDS",
+    "app_mooring_db", "app_asgardb_db", "sima"
   ],
   "type": "system/SIMOS/Application",
   "description": "Contains different types of analysis for marine operations and structures.",

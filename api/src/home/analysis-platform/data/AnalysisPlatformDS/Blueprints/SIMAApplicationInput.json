@@ -6,7 +6,7 @@
     "system/SIMOS/NamedEntity"
   ],
   "description": "Entities from this blueprint are used as input to a container (as json string) when running SIMA jobs",
-    "attributes": [
+  "attributes": [
     {
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "inputType",
@@ -58,16 +58,24 @@
       "name": "resultPath",
       "description": "Where results from a job should be uploaded. Must be a valid folder location in DMSS. If this value is not provided, no results will be uploaded to DMSS.",
       "attributeType": "string"
-    },
-    {
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "resultReferenceLocation",
-      "description": "Dotted id to an analysis entity's job result. Should be on the format: entityId.jobs.*index*.result. Must be generated at run time since the index can vary.",
-      "attributeType": "string",
-      "optional": true
     }
   ],
   "uiRecipes": [
+    {
+      "name": "Form",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "form",
+      "category": "edit",
+      "config": {
+        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
+        "attributes": [
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "inputType",
+            "widget": "BlueprintPickerWidget"
+          }
+        ]
+      }},
     {
       "name": "Tabs",
       "label": "Tabs",
@@ -76,10 +84,13 @@
       "category": "container",
       "config": {
         "type": "system/SIMOS/UiPluginSelectorProps",
-        "subCategories": ["edit", "container"]
+        "subCategories": [
+          "edit",
+          "container"
+        ]
       }
     },
-     {
+    {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-sima-application-input",

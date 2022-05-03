@@ -1,0 +1,14 @@
+{
+ "name" : "Report",
+ "type" : "system/SIMOS/Blueprint",
+ "abstract" : false,
+ "extends" : ["system/SIMOS/NamedEntity"],
+ "attributes" : [{
+   "name" : "label",
+   "type" : "system/SIMOS/BlueprintAttribute",
+   "attributeType" : "string"
+  }],
+ "storageRecipes" : [],
+ "uiRecipes" : []
+}
+

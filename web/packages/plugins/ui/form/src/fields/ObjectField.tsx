@@ -59,19 +59,32 @@ const withOptional = (WrappedComponent: any) => (props: any) => {
 }
 
 const AttributeList = (props: any) => {
-  const { type, namePath } = props
+  const { type, namePath, config, uiRecipeName } = props
 
   const [blueprint, isLoading, error] = useBlueprint(type)
   if (isLoading) return <div>Loading...</div>
   if (blueprint === undefined) return <div>Could not find blueprint</div>
 
+  // The root object uses the ui recipe config that is passed into the ui plugin,
+  // the nested objects uses ui recipes names that are passed down from parent configs.
+  const uiRecipeConfig = uiRecipeName
+    ? blueprint.uiRecipes.find(
+        (uiRecipe: any) => uiRecipe.name === uiRecipeName
+      ).config
+    : config
   const prefix = namePath === '' ? `` : `${namePath}.`
   const attributeFields = blueprint.attributes.map((attribute: any) => {
+    const uiAttribute =
+      uiRecipeConfig &&
+      uiRecipeConfig.attributes.find(
+        (uiAttribute: any) => uiAttribute.name === attribute.name
+      )
     return (
       <AttributeField
         key={`${prefix}${attribute.name}`}
         namePath={`${prefix}${attribute.name}`}
         attribute={attribute}
+        uiAttribute={uiAttribute}
       />
     )
   })
@@ -80,7 +93,14 @@ const AttributeList = (props: any) => {
 }
 
 export const ObjectField = (props: ObjectFieldProps) => {
-  const { type, namePath, displayLabel = '', optional = false } = props
+  const {
+    type,
+    namePath,
+    displayLabel = '',
+    optional = false,
+    config,
+    uiRecipeName,
+  } = props
 
   // TODO: How to handle object type?
   if (type === 'object') return <></>
@@ -89,8 +109,13 @@ export const ObjectField = (props: ObjectFieldProps) => {
 
   return (
     <Wrapper>
-      <Typography>{displayLabel}</Typography>
-      <Content type={type} namePath={namePath} />
+      <Typography bold={true}>{displayLabel}</Typography>
+      <Content
+        type={type}
+        namePath={namePath}
+        config={config}
+        uiRecipeName={uiRecipeName}
+      />
     </Wrapper>
   )
 }

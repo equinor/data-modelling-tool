@@ -1,0 +1,16 @@
+{
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/DefaultUiRecipes","system/SIMOS/NamedEntity"],
+  "name": "FormInput",
+  "description": "",
+  "attributes": [
+    {
+      "name": "attributes",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "DMT-Internal/DMT/ui-plugins/fields/Field",
+      "dimensions": "*",
+      "optional": true,
+      "contained": true
+    }
+  ]
+}

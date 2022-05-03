@@ -1,28 +1,38 @@
-// @ts-ignore
-import React, { useContext, useState } from 'react'
+import React, { useState } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
 import { Modal, TreeNode, TreeView } from '../../index'
-import { Input } from '@equinor/eds-core-react'
+import { Input, Tooltip } from '@equinor/eds-core-react'
+import { PATH_INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
+import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types'
 
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
   formData: string
+  variant?: Variants
 }) => {
-  const { onChange, formData } = props
+  const { onChange, formData, variant } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
     <div style={{ width: '80%' }}>
-      <Input
-        style={{ width: '360px', margin: '0 8px', cursor: 'pointer' }}
-        type="string"
-        value={formData || ''}
-        onChange={() => {}}
-        placeholder="Select"
-        onClick={() => setShowModal(true)}
-      />
+      <Tooltip
+        title={truncatePathString(formData) === formData ? '' : formData}
+      >
+        <Input
+          variant={variant || 'default'}
+          style={{
+            width: PATH_INPUT_FIELD_WIDTH,
+            cursor: 'pointer',
+          }}
+          type="string"
+          value={truncatePathString(formData) || ''}
+          onChange={() => {}}
+          placeholder="Select"
+          onClick={() => setShowModal(true)}
+        />
+      </Tooltip>
       <Modal
         toggle={() => setShowModal(!showModal)}
         open={showModal}

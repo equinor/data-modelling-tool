@@ -1,7 +1,7 @@
-import base64
 import json
+import string
 from json import JSONDecodeError
-from os import urandom
+from random import choices
 
 from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
@@ -12,7 +12,8 @@ from domain_classes.dto import DTO
 def generate_name(type: str):
     name_of_type = type.split("/")[-1]
     lower_case_type_name = name_of_type.lower()
-    random_suffix = base64.urlsafe_b64encode(urandom(6)).decode()
+    # This random string generation is not used in a cryptographically manner, so disable bandit warning
+    random_suffix = "".join(choices(string.ascii_lowercase + string.digits, k=4))  # nosec B311
     return f"{lower_case_type_name}-{random_suffix}"
 
 

@@ -3,6 +3,7 @@ import { Modal, TreeNode, TreeView, TReference } from '../../index'
 import { Input } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { INPUT_FIELD_WIDTH } from '../../utils/variables'
 
 export const EntityPickerInput = (props: {
   onChange: (ref: TReference) => void
@@ -20,7 +21,7 @@ export const EntityPickerInput = (props: {
         placeholder="Select"
         onChange={() => {}}
         onClick={() => setShowModal(true)}
-        style={{ width: '18vw', margin: '0 8px', cursor: 'pointer' }}
+        style={{ width: INPUT_FIELD_WIDTH, cursor: 'pointer' }}
       />
       <Modal
         toggle={() => setShowModal(!showModal)}

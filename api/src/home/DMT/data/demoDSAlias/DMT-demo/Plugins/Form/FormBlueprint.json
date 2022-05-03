@@ -7,16 +7,34 @@
   ],
   "attributes": [
     {
+      "name": "blueprintPicker",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "label":  "Blueprint picker widget"
+    },
+    {
       "name": "aNumber",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "number",
       "label":  "A number"
     },
     {
+      "name": "aBool",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "boolean",
+      "label":  "A bool"
+    },
+    {
       "name": "aString",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
       "label":  "A string"
+    },
+    {
+      "name": "aStringAsTextfield",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "label":  "A string as textfield"
     },
     {
       "name": "aOptionalNumber",
@@ -58,7 +76,27 @@
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",
-      "category": "edit"
+      "category": "edit",
+      "config": {
+        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
+        "attributes": [
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "aStringAsTextfield",
+            "widget": "TextareaWidget"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ObjectField",
+            "name": "aNestedObject",
+            "uiRecipe": "aRecipeName"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "blueprintPicker",
+            "widget": "BlueprintPickerWidget"
+          }
+        ]
+      }
     }
   ]
 }

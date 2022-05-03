@@ -7,25 +7,28 @@ import {
   useDocument,
   NewEntityButton,
   EntityPickerButton,
+  INPUT_FIELD_WIDTH,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
-const Column = styled.div`
-  display: block;
-`
+const Column = styled.div``
 
 const GroupWrapper = styled.div`
-  display: flex;
-  justify-content: space-between;
-  flex-direction: row;
-  flex-wrap: wrap;
+  & > * {
+    padding-top: 8px;
+  }
 `
 
 const HeaderWrapper = styled.div`
   margin-bottom: 50px;
+  margin-top: 8px;
+`
+
+const Wrapper = styled.div`
+  margin: 10px;
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
@@ -57,9 +60,7 @@ export const EditTask = (props: DmtUIPlugin) => {
   }, [formData])
 
   return (
-    <div
-      style={{ display: 'flex', alignItems: 'center', flexDirection: 'column' }}
-    >
+    <div>
       <div style={{ marginBottom: '10px' }}>
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
@@ -73,10 +74,16 @@ export const EditTask = (props: DmtUIPlugin) => {
                 formData={formData.inputType}
               />
             </Column>
-            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'flex-end',
+              }}
+            >
               <Column>
                 <Label label={'Input entity'} />
                 <Input
+                  style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
                   type="string"
                   value={
                     formData?.applicationInput?.name ||
