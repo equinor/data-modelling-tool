@@ -95,6 +95,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                   }
                   onChange={() => {}}
                   onClick={() => {
+                    if (!formData?.applicationInput) return
                     onOpen({
                       attribute: 'applicationInput',
                       onChange: (appInput: any) =>
@@ -111,12 +112,12 @@ export const EditTask = (props: DmtUIPlugin) => {
               </Column>
               <EntityPickerButton
                 typeFilter={formData.inputType}
-                onChange={(selectedEntity: TReference) =>
+                onChange={(selectedEntity: any) => {
                   setFormData({
                     ...formData,
                     applicationInput: selectedEntity,
                   })
-                }
+                }}
               />
               <NewEntityButton
                 type={formData.inputType}

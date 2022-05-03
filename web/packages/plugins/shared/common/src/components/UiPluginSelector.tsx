@@ -1,10 +1,15 @@
 import React, {
+  FunctionComponent,
   useContext,
   useEffect,
   useState,
-  FunctionComponent,
 } from 'react'
-import { DmtUIPlugin, UiPluginContext, useBlueprint } from '@dmt/common'
+import {
+  DmtUIPlugin,
+  ErrorBoundary,
+  UiPluginContext,
+  useBlueprint,
+} from '@dmt/common'
 import styled from 'styled-components'
 import { CircularProgress } from '@equinor/eds-core-react'
 
@@ -13,7 +18,6 @@ const lightGray = '#d3d3d3'
 const PluginTabsWrapper = styled.div`
   display: flex;
   justify-content: space-evenly;
-  padding-bottom: 15px;
 `
 
 const Wrapper = styled.div`
@@ -69,43 +73,6 @@ const SelectPluginButton = styled.div<ISPButton>`
     cursor: pointer;
   }
 `
-
-class ErrorBoundary extends React.Component<
-  any,
-  { hasError: boolean; message: string }
-> {
-  uiPluginName: string = ''
-
-  constructor(props: any) {
-    super(props)
-    this.uiPluginName = props.uiPluginName
-    this.state = { hasError: false, message: '' }
-  }
-
-  static getDerivedStateFromError(error: any, errorInfo: any) {
-    // Update state so the next render will show the fallback UI.
-    return {
-      hasError: true,
-      message: error,
-    }
-  }
-
-  render() {
-    if (this.state.hasError) {
-      // You can render any custom fallback UI
-      return (
-        <div style={{ color: 'red' }}>
-          <h4 style={{ color: 'red' }}>
-            The UiPlugin <i>{this.uiPluginName}</i> crashed...
-          </h4>
-          <pre>{JSON.stringify(this.state.message, null, 2)}</pre>
-        </div>
-      )
-    }
-
-    return this.props.children
-  }
-}
 
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
@@ -210,7 +177,11 @@ export function UIPluginSelector(props: {
       )}
       <ErrorBoundary
         key={selectableRecipe[selectedPlugin][0]}
-        uiPluginName={selectableRecipe[selectedPlugin][0]}
+        fallBack={() => (
+          <h4 style={{ color: 'red' }}>
+            The UiPlugin <i>{selectableRecipe[selectedPlugin][0]}</i> crashed...
+          </h4>
+        )}
       >
         <UiPlugin
           dataSourceId={dataSourceId}

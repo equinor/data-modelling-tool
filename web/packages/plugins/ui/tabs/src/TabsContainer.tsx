@@ -2,7 +2,7 @@ import { DmtUIPlugin, UIPluginSelector, useDocument } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Button, Tooltip } from '@equinor/eds-core-react'
+import { Button, Icon, Tooltip } from '@equinor/eds-core-react'
 
 interface ITabs {
   active: boolean
@@ -29,15 +29,6 @@ const BaseTab = styled(Tab)`
 
 const ChildTab = styled(Tab)`
   background-color: #d1d1d1;
-`
-
-const DotWrapper = styled.div`
-  height: 3px;
-  color: orange;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 5px;
 `
 
 type TChildTab = {
@@ -102,10 +93,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
             onClick={() => setSelectedTab('home')}
             active={selectedTab === 'home'}
           >
-            {selectedTab === 'home' && (
-              <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
-            )}
-            Base
+            <Icon name="home" size={24} />
           </BaseTab>
         </Tooltip>
         {Object.values(childTabs).map((tabData: any) => (
@@ -119,9 +107,6 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               onClick={() => setSelectedTab(tabData.attribute)}
               active={selectedTab === tabData.attribute}
             >
-              {selectedTab === tabData.attribute && (
-                <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
-              )}
               {tabData.attribute}
             </ChildTab>
           </Tooltip>
