@@ -10808,10 +10808,10 @@ react-notifications@^1.4.3:
     prop-types "^15.5.10"
     react-transition-group "^4.4.1"
 
-react-oauth2-code-pkce@^1.2.2-c:
-  version "1.2.2-c"
-  resolved "https://registry.yarnpkg.com/react-oauth2-code-pkce/-/react-oauth2-code-pkce-1.2.2-c.tgz#54d5d99e017c791f73be3429ecf48415b82cf89a"
-  integrity sha512-qOynLWSZVFXkbtXl5A70UDUlh5gB7LFYRDu3iwzypmzBt9853pjamBAZDUruIQUvMyK90i/+RvJ4EK13mgNSmg==
+react-oauth2-code-pkce@^1.2.3:
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/react-oauth2-code-pkce/-/react-oauth2-code-pkce-1.2.3.tgz#1516ae8e38ea7564a3cf69c8235f64104a6d4fdb"
+  integrity sha512-SJvdmXfPZxoWzy83LPJ5JhOpBlkMraYOXzZE9JaYVM8PEqWR/JEBTOd/IGdHCwMG+WEfK5iAg3KMBhZ4beWZAg==
 
 react-onclickoutside@^6.12.0:
   version "6.12.1"
