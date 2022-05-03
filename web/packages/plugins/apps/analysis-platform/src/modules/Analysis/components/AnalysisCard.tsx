@@ -118,25 +118,24 @@ const RunAnalysisButton = (props: any) => {
         Run analysis
         <Icons name="play" title="play" />
       </Button>
-      {showScrim && (
-        <CustomScrim
-          closeScrim={() => setShowScrim(false)}
-          header={'Job parameters'}
-          width={'70vw'}
-          height={'75vh'}
-        >
-          <UIPluginSelector
-            absoluteDottedId={`${analysisAbsoluteReference}.task`}
-            entity={analysis.task}
-            onSubmit={(task: TTask) => {
-              saveAndStartJob(task)
-              setShowScrim(false)
-              NotificationManager.success('Job parameters updated', 'Updated')
-            }}
-            categories={['container']}
-          />
-        </CustomScrim>
-      )}
+      <CustomScrim
+        isOpen={showScrim}
+        closeScrim={() => setShowScrim(false)}
+        header={'Job parameters'}
+        width={'40vw'}
+        height={'70vh'}
+      >
+        <UIPluginSelector
+          absoluteDottedId={`${analysisAbsoluteReference}.task`}
+          entity={analysis.task}
+          onSubmit={(task: TTask) => {
+            saveAndStartJob(task)
+            setShowScrim(false)
+            NotificationManager.success('Job parameters updated', 'Updated')
+          }}
+          categories={['container']}
+        />
+      </CustomScrim>
     </div>
   )
 }
@@ -211,17 +210,16 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           )}
         </Card.Actions>
       </Card>
-      {viewACL && (
-        <CustomScrim
-          header={'Access control'}
-          closeScrim={() => setViewACL(false)}
-        >
-          <AccessControlList
-            documentId={analysis._id}
-            dataSourceId={DEFAULT_DATASOURCE_ID}
-          />
-        </CustomScrim>
-      )}
+      <CustomScrim
+        isOpen={viewACL}
+        header={'Access control'}
+        closeScrim={() => setViewACL(false)}
+      >
+        <AccessControlList
+          documentId={analysis._id}
+          dataSourceId={DEFAULT_DATASOURCE_ID}
+        />
+      </CustomScrim>
     </CardWrapper>
   )
 }

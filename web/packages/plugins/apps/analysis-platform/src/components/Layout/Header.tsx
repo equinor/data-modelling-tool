@@ -60,26 +60,25 @@ export default (props: { appName: string; homeUrl: string }): JSX.Element => {
           </ClickableIcon>
         </Icons>
       </TopBar.Actions>
-      {visibleUserInfo && (
-        <CustomScrim
-          header={'User info'}
-          closeScrim={() => setVisibleUserInfo(false)}
-        >
-          <pre style={{ whiteSpace: 'pre-line' }}>
-            {JSON.stringify(
-              {
-                name: tokenData?.name,
-                preferred_username: tokenData?.preferred_username,
-                roles: tokenData?.roles,
-                scope: tokenData?.scp,
-                token_issuer: tokenData?.iss,
-              } || '',
-              null,
-              2
-            )}
-          </pre>
-        </CustomScrim>
-      )}
+      <CustomScrim
+        isOpen={visibleUserInfo}
+        header={'User info'}
+        closeScrim={() => setVisibleUserInfo(false)}
+      >
+        <pre style={{ whiteSpace: 'pre-line' }}>
+          {JSON.stringify(
+            {
+              name: tokenData?.name,
+              preferred_username: tokenData?.preferred_username,
+              roles: tokenData?.roles,
+              scope: tokenData?.scp,
+              token_issuer: tokenData?.iss,
+            } || '',
+            null,
+            2
+          )}
+        </pre>
+      </CustomScrim>
     </TopBar>
   )
 }
