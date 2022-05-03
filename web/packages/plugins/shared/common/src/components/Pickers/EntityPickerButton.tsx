@@ -26,11 +26,16 @@ export const EntityPickerButton = (props: {
               return
             }
             setShowModal(false)
-            onChange({
-              name: node.name ? node.name : '',
-              type: node.type ? node.type : '',
-              _id: node.nodeId,
-            })
+            node
+              .fetch()
+              .then((doc: any) => {
+                setShowModal(false)
+                onChange(doc)
+              })
+              .catch((error: any) => {
+                console.error(error)
+                NotificationManager.error('Failed to fetch')
+              })
           }}
         />
       </Modal>
