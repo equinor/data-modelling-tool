@@ -109,13 +109,13 @@ class JobService:
         data_source_id = job.job_id.split("/", 1)[0]
 
         job_handler_directories = []
-        try:
-            for app in config.APP_NAMES:
+        for app in config.APP_NAMES:
+            try:
                 for f in Path(f"{config.APPLICATION_HOME}/{app}/job_handlers").iterdir():
                     if f.is_dir() and f.name[0] != "_":  # Python modules can not start with "_"
                         job_handler_directories.append(str(f))
-        except FileNotFoundError:
-            pass
+            except FileNotFoundError:
+                pass
 
         module_paths = [
             f"home{f.removeprefix(config.APPLICATION_HOME).replace('/', '.')}" for f in job_handler_directories

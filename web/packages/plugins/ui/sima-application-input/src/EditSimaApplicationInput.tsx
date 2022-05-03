@@ -9,10 +9,18 @@ import {
   TReference,
   UploadFileButton,
   INPUT_FIELD_WIDTH,
+  useDocument,
 } from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
-import { Input, Label, TextField, Typography } from '@equinor/eds-core-react'
+import {
+  Input,
+  Label,
+  TextField,
+  Typography,
+  Tooltip,
+  Button,
+} from '@equinor/eds-core-react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -35,8 +43,13 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, onChange, onOpen } = props
+  const { document, dataSourceId, onChange, onOpen, documentId } = props
   const [formData, setFormData] = useState<any>({ ...document })
+  const [_document, loading, updateDocument] = useDocument(
+    dataSourceId,
+    documentId,
+    true
+  )
 
   useEffect(() => {
     if (onChange) onChange(formData)
@@ -124,7 +137,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, outputType: selectedBlueprint })
                 }
-                formData={formData.outputType}
+                formData={formData?.outputType || ''}
               />
             </Column>
           </GroupWrapper>
@@ -183,6 +196,52 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
         </HeaderWrapper>
 
         <HeaderWrapper>
+          <Typography variant="h3">Input/Output Paths</Typography>
+          <GroupWrapper>
+            <Tooltip
+              enterDelay={300}
+              title={
+                "Which file the STask is configured to read it's input from."
+              }
+              placement="right"
+            >
+              <TextField
+                id="inputPath"
+                label={'Input path'}
+                value={formData?.simaInputFilePath || ''}
+                placeholder="The simulations input file"
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  setFormData({
+                    ...formData,
+                    simaInputFilePath: event.target.value,
+                  })
+                }
+                style={{ width: INPUT_FIELD_WIDTH }}
+              />
+            </Tooltip>
+            <Tooltip
+              enterDelay={300}
+              title={'Which file SIMA will write the result into'}
+              placement="right"
+            >
+              <TextField
+                id="outputPath"
+                label={'Output path'}
+                value={formData?.simaOutputFilePath || ''}
+                placeholder="The simulations output file"
+                onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                  setFormData({
+                    ...formData,
+                    simaOutputFilePath: event.target.value,
+                  })
+                }
+                style={{ width: INPUT_FIELD_WIDTH }}
+              />
+            </Tooltip>
+          </GroupWrapper>
+        </HeaderWrapper>
+
+        <HeaderWrapper>
           <Typography variant="h3">Result </Typography>
           <GroupWrapper>
             <Column>
@@ -199,6 +258,10 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
             </Column>
           </GroupWrapper>
         </HeaderWrapper>
+
+        {!onChange && (
+          <Button onClick={() => updateDocument(formData, true)}>Submit</Button>
+        )}
       </div>
     </div>
   )
