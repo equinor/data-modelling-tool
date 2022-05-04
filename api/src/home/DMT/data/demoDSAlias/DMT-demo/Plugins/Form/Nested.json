@@ -28,6 +28,12 @@
   ],
   "uiRecipes": [
     {
+      "name": "custom",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "yaml-view",
+      "category": "view"
+    },
+    {
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",

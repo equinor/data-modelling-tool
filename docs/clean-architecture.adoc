@@ -30,7 +30,9 @@ You know *where* things are, *why* components are there, and *what* something is
 
 === Benefits
 
-This architecture is framework independent (or as much as it can be). This means it doesn’t matter which database, frameworks, UI, external services you are using, the entities and the business logic of the application will always stay the same.
+Team and product scalability.
+
+This architecture is framework independent (or as much as it can be). This means it dosesn’t matter which database, frameworks, UI, external services you are using, the entities and the business logic of the application will always stay the same.
 
 It is also designed so that every part of the architecture is easy testable.
 

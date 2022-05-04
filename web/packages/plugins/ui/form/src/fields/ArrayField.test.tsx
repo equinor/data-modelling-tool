@@ -33,7 +33,7 @@ describe('ArrayField', () => {
       }
       render(<Form type="MyBlueprint" formData={formData} />)
       await waitFor(() => {
-        expect(screen.getByText('Could not find blueprint')).toBeDefined()
+        expect(screen.getByText('Could not find the blueprint')).toBeDefined()
       })
     })
   })

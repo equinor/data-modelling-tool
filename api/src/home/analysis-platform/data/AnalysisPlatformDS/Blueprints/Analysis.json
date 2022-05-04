@@ -60,7 +60,57 @@
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",
-      "category": "edit"
+      "category": "edit",
+      "config": {
+        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
+        "attributes": [
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "description",
+            "widget": "TextareaWidget"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "created",
+            "widget": "TextWidget",
+            "format": "date-time"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "updated",
+            "widget": "TextWidget",
+            "format": "date-time"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ArrayField",
+            "name": "jobs",
+            "columns": ["started", "ended", "triggeredBy"]
+          }
+        ],
+        "order": [
+          "name",
+          "type",
+          "description",
+          "created",
+          "updated",
+          "creator",
+          "schedule",
+          "label",
+          "task",
+          "jobs",
+          "*"
+        ]
+      }
+    },
+    {
+      "name": "Tabs",
+      "label": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container",
+      "config": {
+        "type": "system/SIMOS/UiPluginSelectorProps"
+      }
     }
   ]
 }

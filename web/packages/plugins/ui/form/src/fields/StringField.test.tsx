@@ -99,7 +99,10 @@ describe('StringField', () => {
           ],
         },
       ])
-      const { container } = render(<Form type="SingleField" />)
+      const onSubmit = jest.fn()
+      const { container } = render(
+        <Form type="SingleField" onSubmit={onSubmit} />
+      )
       await waitFor(() => {
         const inputNode: Element | null = container.querySelector(
           ` input[name="foo"]`
@@ -108,6 +111,10 @@ describe('StringField', () => {
         const value = inputNode !== null ? inputNode.getAttribute('value') : ''
         expect(value).toBe('boo')
         fireEvent.submit(screen.getByRole('button'))
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({
+          foo: 'boo',
+        })
       })
     })
 
@@ -229,13 +236,15 @@ describe('StringField', () => {
           ],
         },
       ])
-
+      const onSubmit = jest.fn()
       const formData = {}
       const { container } = render(
-        <Form type="SingleField" formData={formData} />
+        <Form type="SingleField" formData={formData} onSubmit={onSubmit} />
       )
       await waitFor(() => {
         fireEvent.submit(screen.getByRole('button'))
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({})
       })
     })
 
@@ -254,14 +263,15 @@ describe('StringField', () => {
           ],
         },
       ])
-
+      const onSubmit = jest.fn()
       const formData = {}
       const { container } = render(
-        <Form type="SingleField" formData={formData} />
+        <Form type="SingleField" formData={formData} onSubmit={onSubmit} />
       )
       await waitFor(() => {
         fireEvent.submit(screen.getByRole('button'))
-
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({})
         expect(screen.getByText('foo (optional)')).toBeDefined()
       })
     })
@@ -281,8 +291,13 @@ describe('StringField', () => {
           ],
         },
       ])
-      render(<Form type="SingleField" />)
+      const onSubmit = jest.fn()
+      render(<Form type="SingleField" onSubmit={onSubmit} />)
       fireEvent.submit(screen.getByRole('button'))
+      await waitFor(() => {
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledTimes(0)
+      })
     })
 
     it.skip('should render a string field with a description', () => {})

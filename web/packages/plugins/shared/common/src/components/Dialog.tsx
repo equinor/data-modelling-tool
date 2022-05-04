@@ -20,6 +20,7 @@ export const Dialog = (props: {
   const { closeScrim, isOpen, children, header, width, height } = props
   return (
     <EdsDialog
+      // @ts-ignore
       isDismissable
       open={isOpen}
       onClose={closeScrim}

@@ -3,6 +3,7 @@ import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { Form } from '../Form'
 import { mockBlueprintGet } from '../test-utils'
 import userEvent from '@testing-library/user-event'
+import { act } from 'react-dom/test-utils'
 
 describe('BooleanField', () => {
   afterEach(() => {
@@ -120,13 +121,16 @@ describe('BooleanField', () => {
             {
               name: 'foo',
               type: 'system/SIMOS/BlueprintAttribute',
-              attributeType: 'string',
-              default: true,
+              attributeType: 'boolean',
+              default: 'True',
             },
           ],
         },
       ])
-      const { container } = render(<Form type="SingleField" />)
+      const onSubmit = jest.fn()
+      const { container } = render(
+        <Form type="SingleField" onSubmit={onSubmit} />
+      )
       await waitFor(() => {
         const inputNode: Element | null = container.querySelector(
           ` input[name="foo"]`
@@ -135,6 +139,10 @@ describe('BooleanField', () => {
         const value = inputNode !== null ? inputNode.getAttribute('value') : ''
         expect(value).toBe('true')
         fireEvent.submit(screen.getByRole('button'))
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({
+          foo: true,
+        })
       })
     })
 
