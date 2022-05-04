@@ -1,4 +1,5 @@
 import { useEffect, useState, useContext } from 'react'
+//@ts-ignore
 import { DmssAPI, AuthContext } from '@dmt/common'
 
 export const useSearch = (body: any, dataSourceId: string): any => {
@@ -12,12 +13,12 @@ export const useSearch = (body: any, dataSourceId: string): any => {
   useEffect(() => {
     setIsLoading(true)
     dmssAPI
-      .searchDocuments({
+      .search({
         dataSources: [dataSourceId],
         body: body,
       })
       .then((result: any) => {
-        // @ts-ignore-line
+        // @ts-ignore
         setSearchResult(Object.values(result))
       })
       .catch((err: any) => {

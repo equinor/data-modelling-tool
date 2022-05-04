@@ -1,5 +1,6 @@
 import React, { ChangeEvent, useContext } from 'react'
 import { useSearch } from '../../index'
+//@ts-ignore
 import { Select, AuthContext } from '@dmt/common'
 import DmssAPI from '../../services/api/DmssAPI'
 
@@ -21,7 +22,9 @@ export const JobHandlerPicker = (props: {
 
   const handleChange = (blueprintId: string) => {
     dmssApi
-      .resolveBlueprintId(`WorkflowDS/${blueprintId}`)
+      .blueprintResolve({
+        absoluteId: `WorkflowDS/${blueprintId}`,
+      })
       .then((res: any) => {
         onChange(res.data)
       })

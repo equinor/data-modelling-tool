@@ -9,7 +9,8 @@ import {
 // @ts-ignore
 import objectPath from 'object-path'
 import { BlueprintAttribute } from './domain/BlueprintAttribute'
-import { DmssAPI, IDmssAPI } from '@dmt/common'
+//@ts-ignore
+import { DmssAPI } from '@dmt/common'
 
 interface IBlueprintSchema {
   getSchema: () => object
@@ -32,7 +33,7 @@ export class BlueprintSchema implements IBlueprintSchema {
   private blueprintType: BlueprintType
   private blueprint: Blueprint
   private blueprintProvider: Function
-  private dmssAPI: IDmssAPI
+  private dmssAPI: DmssAPI
 
   constructor(
     blueprintType: BlueprintType,

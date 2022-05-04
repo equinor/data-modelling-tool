@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
+//@ts-ignore
 import { AuthContext, DmssAPI } from '@dmt/common'
 
 export const ErrorGroup = styled.div`
@@ -36,8 +37,11 @@ export const ViewerPDFPlugin = (props: any) => {
   useEffect(() => {
     setError(null)
     dmssAPI
-      .blobGetById({ dataSourceId, blobId: document.blob._blob_id })
-      .then((result: Blob) => {
+      .blobGetById({
+        dataSourceId: dataSourceId,
+        blobId: document.blob._blob_id,
+      })
+      .then((result: any) => {
         // @ts-ignore
         const blob = new Blob([result], { type: 'application/pdf' })
         // @ts-ignore

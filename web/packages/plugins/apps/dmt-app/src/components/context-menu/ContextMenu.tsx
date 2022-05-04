@@ -10,6 +10,7 @@ import {
   CustomScrim,
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
+  //@ts-ignore
 } from '@dmt/common'
 
 // @ts-ignore
@@ -141,7 +142,12 @@ export const NodeRightClickMenu = (props: {
 
   const DeleteAction = () => {
     dmssAPI
-      .removeByPath(node.pathFromRootPackage(), node.dataSource)
+      .explorerRemoveByPath({
+        dataSourceId: node.dataSource,
+        removeByPathRequest: {
+          directory: node.pathFromRootPackage(),
+        },
+      })
       .then(() => {
         removeNode(node)
         NotificationManager.success('Deleted')
@@ -164,7 +170,7 @@ export const NodeRightClickMenu = (props: {
     }
     const ref: string = `${node.nodeId}.content`
     dmssAPI
-      .addDocumentToParent({
+      .explorerAdd({
         absoluteRef: ref,
         body: newFolder,
         updateUncontained: true,
@@ -186,7 +192,7 @@ export const NodeRightClickMenu = (props: {
     }
     const ref: string = node.dataSource
     dmssAPI
-      .addDocumentToParent({
+      .explorerAdd({
         absoluteRef: ref,
         body: newPackage,
         updateUncontained: true,

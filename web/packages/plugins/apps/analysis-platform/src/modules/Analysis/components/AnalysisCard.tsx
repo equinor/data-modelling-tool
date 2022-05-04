@@ -18,6 +18,7 @@ import {
   UIPluginSelector,
   JobApi,
   CustomScrim,
+  //@ts-ignore
 } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
@@ -71,7 +72,7 @@ const RunAnalysisButton = (props: any) => {
     }
 
     dmssAPI
-      .addDocumentToParent({
+      .explorerAdd({
         absoluteRef: `${analysisAbsoluteReference}.jobs`,
         updateUncontained: false,
         body: job,

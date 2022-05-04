@@ -104,7 +104,7 @@ export class TreeNode {
   async fetch() {
     const [dataSourceId, documentId] = this.nodeId.split('/', 2)
     return this.tree.dmssApi
-      .getDocumentById({
+      .documentGetById({
         dataSourceId: dataSourceId,
         documentId: documentId,
         depth: 0,
@@ -117,7 +117,7 @@ export class TreeNode {
     if (this.type !== 'dataSource') {
       const [dataSourceId, documentId] = this.nodeId.split('/', 2)
       return this.tree.dmssApi
-        .getDocumentById({
+        .documentGetById({
           dataSourceId: dataSourceId,
           documentId: documentId,
           depth: 0,
@@ -164,14 +164,14 @@ export class TreeNode {
       throw 'Entities can only be added to packages'
 
     return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) => {
-      return this.tree.dmssApi.generatedDmssApi
+      return this.tree.dmssApi
         .explorerAddToPath({
           dataSourceId: this.dataSource,
           document: JSON.stringify(newEntity),
           directory: this.pathFromRootPackage(),
           updateUncontained: false,
         })
-        .then((uuid: string) => JSON.parse(uuid).uid)
+        .then((response: any) => response.uid)
     })
   }
 }
@@ -209,7 +209,7 @@ export class Tree {
     await Promise.all(
       this.dataSources.map((dataSource: string) =>
         this.dmssApi
-          .searchDocuments({
+          .search({
             // Find all rootPackages in every dataSource
             body: { type: BlueprintEnum.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],

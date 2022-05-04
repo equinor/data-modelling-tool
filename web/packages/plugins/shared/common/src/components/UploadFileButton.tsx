@@ -12,10 +12,9 @@ export const addToPath = (
   dataSourceId: string,
   directory: string
 ): Promise<string> => {
-  // @ts-ignore
   const dmssAPI = new DmssAPI(token)
 
-  return dmssAPI.generatedDmssApi
+  return dmssAPI
     .explorerAddToPath({
       dataSourceId: dataSourceId,
       document: JSON.stringify(body),
@@ -24,7 +23,7 @@ export const addToPath = (
       files: files.filter((item: any) => item !== undefined),
       updateUncontained: false,
     })
-    .then((uuid: string) => JSON.parse(uuid).uid)
+    .then((response: any) => response.uid)
     .catch((error: any) => {
       return error.json().then((response: any) => {
         throw response.message || response.detail || JSON.stringify(response)

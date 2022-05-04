@@ -13,7 +13,7 @@ export async function createFormConfigs(props: any): Promise<FormConfig> {
   const rootBlueprint = undefined
   const type = document.type
 
-  const blueprint = await explorer.getBlueprint(type)
+  const blueprint = await explorer.blueprintGet(type)
 
   if (!blueprint) throw new Error(`Could not find the blueprint '${type}'`)
 
@@ -25,12 +25,12 @@ export async function createFormConfigs(props: any): Promise<FormConfig> {
   const schemaGenerator = new BlueprintSchema(
     blueprint,
     uiRecipe,
-    (typeRef: string) => explorer.getBlueprint(typeRef),
+    (typeRef: string) => explorer.blueprintGet(typeRef),
     token,
     rootBlueprint
   )
   await schemaGenerator.execute(document, (typeRef: string) =>
-    explorer.getBlueprint(typeRef)
+    explorer.blueprintGet(typeRef)
   )
   const schema = schemaGenerator.getSchema()
 
@@ -38,10 +38,10 @@ export async function createFormConfigs(props: any): Promise<FormConfig> {
     blueprint,
     uiRecipe,
     uiRecipeName,
-    (typeRef: string) => explorer.getBlueprint(typeRef)
+    (typeRef: string) => explorer.blueprintGet(typeRef)
   )
   await uiSchemaGenerator.execute((typeRef: string) =>
-    explorer.getBlueprint(typeRef)
+    explorer.blueprintGet(typeRef)
   )
   const uiSchema = uiSchemaGenerator.getSchema()
 

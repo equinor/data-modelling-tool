@@ -1,3 +1,4 @@
+//@ts-ignore
 import { DmssAPI } from '@dmt/common'
 import { AttributeType, BlueprintType } from './types'
 
@@ -60,7 +61,7 @@ const nonPrimitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
 const search = async (token: string, query: any) => {
   const dmssAPI = new DmssAPI(token)
 
-  let result = await dmssAPI.searchDocuments({
+  let result = await dmssAPI.search({
     dataSources: ['WorkflowDS'],
     body: query,
     sortByAttribute: 'name',
@@ -77,7 +78,7 @@ export const loader = async (
   await Promise.all(
     nonPrimitiveAttributes(document).map(async (attribute: AttributeType) => {
       if (attribute['attributeType'] !== 'object') {
-        const child: BlueprintType = await explorer.getBlueprint(
+        const child: BlueprintType = await explorer.blueprintGet(
           attribute['attributeType']
         )
         let childNode: Node = await loader(token, explorer, child)

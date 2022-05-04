@@ -2,6 +2,7 @@ import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+//@ts-ignore
 import { AuthContext } from '@dmt/common'
 
 export const useDocument = (
@@ -20,7 +21,11 @@ export const useDocument = (
     let depth = 1
     if (resolved) depth = 999
     dmssAPI
-      .getDocumentById({ dataSourceId, documentId, depth })
+      .documentGetById({
+        dataSourceId: dataSourceId,
+        documentId: documentId,
+        depth: depth,
+      })
       .then((document) => {
         setDocument(document)
         setError(null)
@@ -32,9 +37,9 @@ export const useDocument = (
   function updateDocument(newDocument: Object, notify: boolean) {
     setLoading(true)
     dmssAPI
-      .updateDocumentById({
-        dataSourceId,
-        documentId,
+      .documentUpdate({
+        dataSourceId: dataSourceId,
+        documentId: documentId,
         data: JSON.stringify(newDocument),
         updateUncontained: true,
       })

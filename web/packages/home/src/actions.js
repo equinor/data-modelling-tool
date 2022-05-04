@@ -46,7 +46,7 @@ async function simulateCat3StormResultInEntity({
   await updateDocument(output)
   let newEntity = await createEntity(output.entity.type)
   console.log(newEntity)
-  let blueprint = await explorer.getBlueprint(newEntity.type)
+  let blueprint = await explorer.blueprintGet(newEntity.type)
   console.log(blueprint)
 }
 

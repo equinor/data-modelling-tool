@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
+//@ts-ignore
 import { AuthContext } from '@dmt/common'
 
 export const useBlueprint = (typeRef: string) => {
@@ -12,7 +13,7 @@ export const useBlueprint = (typeRef: string) => {
   useEffect(() => {
     setLoading(true)
     dmssAPI
-      .getBlueprint({ typeRef: typeRef })
+      .blueprintGet({ typeRef: typeRef })
       .then((document) => {
         setBlueprint(document)
         setError(null)

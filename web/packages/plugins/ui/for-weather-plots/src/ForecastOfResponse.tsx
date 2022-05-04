@@ -3,6 +3,7 @@ import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import styled from 'styled-components'
+//@ts-ignore
 import { AuthContext, DmssAPI } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from './const'
 import Result from './Result'
@@ -84,7 +85,7 @@ export function FoRResultWrapper(props: {
     simulationConfig.plots = plotWindowHandlers.getPlots()
 
     dmssAPI
-      .updateDocumentById({
+      .documentUpdate({
         dataSourceId: DEFAULT_DATASOURCE_ID,
         documentId: dottedId.split('.', 1)[0],
         data: JSON.stringify(simulationConfig),

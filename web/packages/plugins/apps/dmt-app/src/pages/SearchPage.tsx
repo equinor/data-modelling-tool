@@ -164,7 +164,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
-        .getBlueprint({ typeRef: attribute.getAttributeType() })
+        .blueprintGet({ typeRef: attribute.getAttributeType() })
         .then((result) => {
           setNestedAttributes(result.attributes)
         })
@@ -240,7 +240,7 @@ function FilterContainer({
   useEffect(() => {
     if (searchFilter?.type) {
       dmssAPI
-        .getBlueprint({ typeRef: searchFilter.type })
+        .blueprintGet({ typeRef: searchFilter.type })
         .then((result) => {
           setAttributes(result.attributes)
         })

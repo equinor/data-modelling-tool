@@ -9,6 +9,7 @@ import {
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
+//@ts-ignore
 import { AuthContext } from '@dmt/common'
 import DmssAPI from '../services/api/DmssAPI'
 import { useLocalStorage } from '../hooks/useLocalStorage'
@@ -334,11 +335,11 @@ export const AccessControlList = (props: {
     if (tokenWithReadAccess !== '') {
       setLoadingACLDocument(true)
       dmssAPI
-        .getDocumentAcl({
+        .getAcl({
           dataSourceId: dataSourceId,
           documentId: documentId,
         })
-        .then((response: TAcl) => {
+        .then((response: any) => {
           convertACLFromUserIdToUsername(response)
             .then((newACL: TAcl) => {
               setDocumentACL(newACL)
@@ -375,10 +376,10 @@ export const AccessControlList = (props: {
 
     convertACLFromUsernameToUserId(acl)
       .then((newACL) => {
-        dmssAPI.setDocumentAcl({
+        dmssAPI.setAcl({
           dataSourceId: dataSourceId,
           documentId: documentId,
-          //@ts-ignore - ACL class from generated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
+          //@ts-ignore
           aCL: newACL,
           recursively: storeACLRecursively,
         })

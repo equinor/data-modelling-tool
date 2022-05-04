@@ -5,6 +5,7 @@
  * @param user The username of the authenticated user
  */
 import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
+//@ts-ignore
 import { DmssAPI } from '@dmt/common'
 
 export const createAnalysis = (
@@ -15,16 +16,15 @@ export const createAnalysis = (
   const dmssAPI = new DmssAPI(token)
 
   return new Promise((resolve, reject) => {
-    dmssAPI.generatedDmssApi
+    dmssAPI
       .explorerAddToPath({
         dataSourceId: DEFAULT_DATASOURCE_ID,
         document: JSON.stringify(body),
         directory: ANALYSIS_PATH,
         files: files.filter((item: any) => item !== undefined),
       })
-      .then((response: string) => {
-        const data = JSON.parse(response)
-        resolve(data.uid)
+      .then((response: any) => {
+        resolve(response.uid)
       })
       .catch((err: any) => {
         reject(err)
