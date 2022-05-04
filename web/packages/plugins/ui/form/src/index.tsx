@@ -7,8 +7,10 @@ import {
   useDocument,
 } from '@dmt/common'
 import { Form } from './Form'
-import { Typography } from '@equinor/eds-core-react'
+import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
+import { useFormContext } from 'react-hook-form'
+import { useRegistryContext } from './RegistryContext'
 
 // The custom widgets goes under here,
 // this may at some point be moved out from the form package.
@@ -35,10 +37,11 @@ const widgets = {
       </>
     )
   },
+  ObjectWidget: (props: any) => {},
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { config, onSubmit } = props
+  const { config, onSubmit, onChange, onOpen } = props
   const { documentId, dataSourceId } = props
   const [document, loading, updateDocument] = useDocument<any>(
     dataSourceId,
@@ -47,12 +50,18 @@ const PluginComponent = (props: DmtUIPlugin) => {
   )
   if (loading) return <div>Loading...</div>
 
+  console.log(documentId, dataSourceId, document)
+
   return (
     <Form
+      onOpen={onOpen}
+      documentId={documentId}
+      dataSourceId={dataSourceId}
       widgets={widgets}
       type={document.type}
       config={config}
       formData={document}
+      onChange={onChange}
       onSubmit={onSubmit}
       updateDocument={updateDocument}
     />

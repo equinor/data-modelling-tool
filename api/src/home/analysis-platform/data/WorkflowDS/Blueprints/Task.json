@@ -12,14 +12,6 @@
       "optional": true
     },
     {
-      "attributeType": "string",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "name": "inputType",
-      "label": "Input type",
-      "description": "Reference to a Blueprint",
-      "optional": true
-    },
-    {
       "attributeType": "object",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "applicationInput",
@@ -45,7 +37,23 @@
       "optional": true
     }
   ],
-    "uiRecipes": [
+  "uiRecipes": [
+    {
+      "name": "Form",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "form",
+      "category": "edit",
+      "config": {
+        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
+        "attributes": [
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "outputType",
+            "widget": "BlueprintPickerWidget"
+          }
+        ]
+      }
+    },
     {
       "name": "Tabs",
       "label": "Tabs",
@@ -54,10 +62,13 @@
       "category": "container",
       "config": {
         "type": "system/SIMOS/UiPluginSelectorProps",
-        "subCategories": ["edit", "container"]
+        "subCategories": [
+          "edit",
+          "container"
+        ]
       }
     },
-      {
+    {
       "name": "Yaml",
       "label": "View",
       "type": "system/SIMOS/UiRecipe",

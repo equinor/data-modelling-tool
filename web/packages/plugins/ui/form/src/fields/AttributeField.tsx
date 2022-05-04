@@ -45,6 +45,7 @@ export const AttributeField = (props: AttributeFieldProps) => {
         <ObjectField
           namePath={namePath}
           displayLabel={displayLabel}
+          contained={attribute.contained}
           type={attribute.attributeType}
           optional={attribute.optional}
           uiRecipeName={uiRecipeName}

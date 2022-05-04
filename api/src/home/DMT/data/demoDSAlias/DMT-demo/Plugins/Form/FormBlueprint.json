@@ -69,9 +69,34 @@
       "attributeType": "/Plugins/Form/Nested",
       "label":  "A optional nested object",
       "optional": true
+    },
+    {
+      "name": "aNestedObjectWithCustomUI",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Plugins/Form/Nested",
+      "label":  "A nested object with custom ui"
+    },
+    {
+      "name": "input",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Plugins/Form/Input",
+      "label":  "Input"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "inputEntity",
+      "description": "Generic input entity",
+      "attributeType": "object",
+      "contained": false
     }
   ],
   "uiRecipes": [
+    {
+      "name": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container"
+    },
     {
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
@@ -94,6 +119,21 @@
             "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
             "name": "blueprintPicker",
             "widget": "BlueprintPickerWidget"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ObjectField",
+            "name": "aNestedObjectWithCustomUI",
+            "uiRecipe": "custom"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ObjectField",
+            "name": "input",
+            "uiRecipe": "custom"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "blueprintPicker",
+            "widget": "ObjectWidget"
           }
         ]
       }

@@ -14,7 +14,20 @@ const Wrapper = styled.div`
 `
 
 export const Form = (props: FormProps) => {
-  const { type, onSubmit, formData, widgets, config, updateDocument } = props
+  const {
+    type,
+    onSubmit,
+    onChange,
+    formData,
+    widgets,
+    config,
+    updateDocument,
+    dataSourceId,
+    documentId,
+    onOpen,
+  } = props
+
+  console.log(formData)
 
   const methods = useForm({
     // Set initial state.
@@ -27,7 +40,9 @@ export const Form = (props: FormProps) => {
   const handleSubmit = methods.handleSubmit(
     (data: UnpackNestedValue<TFieldValues>, errors: any) => {
       if (errors) console.debug(errors)
-      if (onSubmit) {
+      if (onChange) {
+        onChange(data)
+      } else if (onSubmit) {
         onSubmit(data)
       } else if (updateDocument) {
         updateDocument(data, true)
@@ -35,10 +50,21 @@ export const Form = (props: FormProps) => {
     }
   )
 
+  methods.watch((data: any) => {
+    // @ts-ignore
+    console.log(data)
+    //onChange && data && onChange(data);
+  })
+
   return (
     <Wrapper>
       <FormProvider {...methods}>
-        <RegistryProvider widgets={widgets}>
+        <RegistryProvider
+          onOpen={onOpen}
+          widgets={widgets}
+          dataSourceId={dataSourceId}
+          documentId={documentId}
+        >
           <form onSubmit={handleSubmit}>
             {type && (
               <ObjectField config={config} namePath={namePath} type={type} />

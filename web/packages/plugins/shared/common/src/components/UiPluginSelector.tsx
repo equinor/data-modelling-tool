@@ -92,6 +92,9 @@ export function UIPluginSelector(props: {
     onChange,
     onOpen,
   } = props
+
+  console.log(categories)
+
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
     ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
@@ -153,6 +156,8 @@ export function UIPluginSelector(props: {
   if (!selectableRecipe.length)
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
 
+  console.log(selectableRecipe)
+
   const UiPlugin: FunctionComponent<DmtUIPlugin> = selectableRecipe[
     selectedPlugin
   ][1] as FunctionComponent
@@ -196,6 +201,7 @@ export function UIPluginSelector(props: {
           onOpen={onOpen}
           categories={categories}
           config={config}
+          type={entity.type}
         />
       </ErrorBoundary>
     </Wrapper>

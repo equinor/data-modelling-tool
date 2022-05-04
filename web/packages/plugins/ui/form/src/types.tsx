@@ -12,15 +12,20 @@ export type Widget =
   | React.ComponentClass<WidgetProps>
 
 export type FormProps = {
+  documentId?: string
+  dataSourceId?: string
   type?: string
   formData?: any
   onSubmit?: Function
+  onChange?: Function
   updateDocument?: Function
   widgets?: { [name: string]: Widget }
   config?: any
 }
 
 export type ObjectFieldProps = {
+  contained?: boolean
+  plugin: string
   namePath: string
   type: string
   displayLabel?: string
