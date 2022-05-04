@@ -93,7 +93,7 @@ const About = () => {
     axios
       .get('version.txt')
       .then((response) => setVersion(response.data))
-      .catch((error) => console.error(error))
+      .catch(() => null)
   }, [])
 
   return (

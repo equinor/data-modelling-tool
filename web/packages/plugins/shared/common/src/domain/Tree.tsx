@@ -249,6 +249,12 @@ export class Tree {
               this.index[dataSource].children[rootPackage._id] = rootPackageNode
             })
           })
+          .catch((error: Error) => {
+            // If the search fail, set the DataSource as an error node.
+            console.error(error)
+            this.index[dataSource].type = 'error'
+            this.index[dataSource].message = error.message
+          })
       )
     )
   }

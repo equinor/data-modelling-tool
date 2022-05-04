@@ -85,7 +85,9 @@ const TreeNodeComponent = (props: {
     <StyledTreeNode
       key={node.nodeId}
       level={node.level}
-      onClick={() => onClick(node)}
+      onClick={() => {
+        if (node.type !== 'error') onClick(node)
+      }}
     >
       {[BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type || '') ? (
         <ExpandButton>
