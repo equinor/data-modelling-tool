@@ -2,7 +2,7 @@
 import React, { useEffect, useState } from 'react'
 import { FaChevronDown, FaChevronUp, FaCog, FaPlus } from 'react-icons/fa'
 import styled from 'styled-components'
-import { Modal, DmtAPI } from '@dmt/common'
+import { CustomScrim, DmtAPI } from '@dmt/common'
 import { BlueprintsPicker, PackagesPicker, BlueprintPicker } from '@dmt/common'
 
 //@ts-ignore
@@ -234,11 +234,11 @@ export default () => {
       <ButtonWrapper onClick={() => setModalOpen(!modalOpen)}>
         <FaCog />
       </ButtonWrapper>
-      <Modal
-        toggle={() => setModalOpen(!modalOpen)}
-        open={modalOpen}
-        title={'Configure Application'}
-        width={'50%'}
+      <CustomScrim
+        isOpen={modalOpen}
+        closeScrim={() => setModalOpen(false)}
+        header={'Configure Application'}
+        width={'50vw'}
       >
         <TextInput
           label={'Name'}
@@ -306,7 +306,7 @@ export default () => {
             Save and Reload
           </button>
         </div>
-      </Modal>
+      </CustomScrim>
     </>
   )
 }

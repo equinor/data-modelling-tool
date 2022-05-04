@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Input, Label } from '@equinor/eds-core-react'
-import { CustomScrim } from './Modal/CustomScrim'
+import { CustomScrim } from './CustomScrim'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { BlueprintPicker, DestinationPicker } from './Pickers'

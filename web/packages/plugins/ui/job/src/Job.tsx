@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AuthContext, JobApi, Modal, UIPluginSelector } from '@dmt/common'
+import { AuthContext, CustomScrim, JobApi, UIPluginSelector } from '@dmt/common'
 import { Button, Label } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'
@@ -98,17 +98,25 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         margin: '10px',
       }}
     >
-      <Modal
-        toggle={() => setRunnerModal(!runnerModal)}
-        open={runnerModal}
-        title={'Jobs runner configuration'}
+      <CustomScrim
+        isOpen={runnerModal}
+        closeScrim={() => setRunnerModal(false)}
+        header={'Jobs runner configuration'}
+        width={'30vw'}
       >
-        <StyledPre>{JSON.stringify(document.runner, null, 2)} </StyledPre>
-      </Modal>
-      <Modal
-        toggle={() => setInputModal(!inputModal)}
-        open={inputModal}
-        title={'Jobs input'}
+        <StyledPre>
+          {JSON.stringify(
+            document?.runner || 'There is no runner config for this job',
+            null,
+            2
+          )}{' '}
+        </StyledPre>
+      </CustomScrim>
+      <CustomScrim
+        isOpen={inputModal}
+        closeScrim={() => setInputModal(false)}
+        header={'Jobs input'}
+        width={'30vw'}
       >
         {!!document.applicationInput ? (
           <UIPluginSelector
@@ -120,7 +128,7 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         ) : (
           <pre>None</pre>
         )}
-      </Modal>
+      </CustomScrim>
 
       <div
         style={{

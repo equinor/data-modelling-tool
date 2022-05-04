@@ -1,12 +1,11 @@
-// @ts-ignore
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { BlueprintEnum, PATH_INPUT_FIELD_WIDTH } from '../../utils/variables'
 import {
-  Modal,
   NodeWrapperProps,
   TreeNode,
   TreeView,
   truncatePathString,
+  CustomScrim,
 } from '../../index'
 import { Button, Input, Tooltip } from '@equinor/eds-core-react'
 import styled from 'styled-components'
@@ -42,17 +41,18 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
           onClick={() => setShowModal(true)}
         />
       </Tooltip>
-      <Modal
-        toggle={() => setShowModal(!showModal)}
-        open={showModal}
-        title={'Select a folder as destination'}
+      <CustomScrim
+        isOpen={showModal}
+        closeScrim={() => setShowModal(false)}
+        header={'Select a folder as destination'}
+        width={'30vw'}
       >
         <TreeView
           onSelect={() => {}}
           NodeWrapper={SelectPackageButton}
           NodeWrapperOnClick={onSelect}
         />
-      </Modal>
+      </CustomScrim>
     </div>
   )
 }
@@ -69,7 +69,7 @@ export const SelectPackageButton = (props: NodeWrapperProps) => {
   return (
     <Wrapper>
       {children}
-      {node.type === BlueprintEnum.PACKAGE ? (
+      {node.type === BlueprintEnum.PACKAGE && (
         <div style={{ padding: '0 5px', backgroundColor: 'white' }}>
           <Button
             style={{ height: '22px' }}
@@ -81,7 +81,7 @@ export const SelectPackageButton = (props: NodeWrapperProps) => {
             Select
           </Button>
         </div>
-      ) : null}
+      )}
     </Wrapper>
   )
 }

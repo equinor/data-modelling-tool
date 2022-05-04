@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, TreeNode, TreeView, TReference } from '../../index'
+import { CustomScrim, TreeNode, TreeView, TReference } from '../../index'
 import { Button } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -14,10 +14,11 @@ export const EntityPickerButton = (props: {
   return (
     <div style={{ display: 'flex', flexDirection: 'row', margin: '0 10px' }}>
       <Button onClick={() => setShowModal(true)}>Select</Button>
-      <Modal
-        toggle={() => setShowModal(!showModal)}
-        open={showModal}
-        title={'Select an Entity'}
+      <CustomScrim
+        isOpen={showModal}
+        closeScrim={() => setShowModal(false)}
+        header={'Select an Entity'}
+        width={'30vw'}
       >
         <TreeView
           onSelect={(node: TreeNode) => {
@@ -38,7 +39,7 @@ export const EntityPickerButton = (props: {
               })
           }}
         />
-      </Modal>
+      </CustomScrim>
     </div>
   )
 }

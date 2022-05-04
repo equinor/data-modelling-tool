@@ -6,8 +6,8 @@ import {
   AuthContext,
   Button,
   JsonView,
-  Modal,
   sortApplications,
+  CustomScrim,
 } from '@dmt/common'
 import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
@@ -66,19 +66,17 @@ function UserInfo() {
     <div style={{ display: 'flex', alignItems: 'center', columnGap: '5px' }}>
       <UserInfoBox onClick={() => setExpanded(!expanded)}>
         <div>{tokenData?.name || 'Not logged in'}</div>
-        <Modal
-          toggle={() => setExpanded(!expanded)}
-          open={expanded}
-          title={'Logged in user info'}
+        <CustomScrim
+          isOpen={expanded}
+          closeScrim={() => setExpanded(false)}
+          header={'Logged in user info'}
+          width={'30vw'}
         >
           <JsonView data={tokenData} />
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Button onClick={() => logOut()}>Log out</Button>
-            <Button type={'button'} onClick={() => setExpanded(false)}>
-              Close
-            </Button>
           </div>
-        </Modal>
+        </CustomScrim>
       </UserInfoBox>
     </div>
   )
@@ -100,13 +98,14 @@ const About = () => {
       <QuestionWrapper onClick={() => setExpanded(!expanded)}>
         <FaQuestion />
       </QuestionWrapper>
-      <Modal
-        toggle={() => setExpanded(!expanded)}
-        open={expanded}
-        title={'About Data Modelling Tool'}
+      <CustomScrim
+        isOpen={expanded}
+        closeScrim={() => setExpanded(false)}
+        header={'About Data Modelling Tool'}
+        width={'30vw'}
       >
         <b>Last commit: {version}</b>
-      </Modal>
+      </CustomScrim>
     </div>
   )
 }

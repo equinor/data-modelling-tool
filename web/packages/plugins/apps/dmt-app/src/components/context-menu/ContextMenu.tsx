@@ -14,7 +14,6 @@ import {
 
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import styled from 'styled-components'
 
 function createMenuItems(
   node: TreeNode,
@@ -109,7 +108,7 @@ const SingleTextInput = (props: {
         onChange={(event) => setFormData(event.target.value)}
       />
       <Button
-        style={{ marginLeft: '8px' }}
+        style={edsButtonStyleConfig}
         onClick={() => {
           handleSubmit()
         }}
@@ -220,22 +219,20 @@ export const NodeRightClickMenu = (props: {
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
 
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
-      <div>
-        <CustomScrim
-          isOpen={scrimToShow === 'new-folder'}
-          width={'30vw'}
-          header={'Create new folder'}
-          closeScrim={() => setScrimToShow('')}
-        >
-          <SingleTextInput
-            label={'Folder name'}
-            setFormData={setFormData}
-            handleSubmit={() =>
-              handleFormDataSubmit(node, formData, NewFolderAction)
-            }
-          />
-        </CustomScrim>
-      </div>
+      <CustomScrim
+        isOpen={scrimToShow === 'new-folder'}
+        width={'30vw'}
+        header={'Create new folder'}
+        closeScrim={() => setScrimToShow('')}
+      >
+        <SingleTextInput
+          label={'Folder name'}
+          setFormData={setFormData}
+          handleSubmit={() =>
+            handleFormDataSubmit(node, formData, NewFolderAction)
+          }
+        />
+      </CustomScrim>
 
       <CustomScrim
         isOpen={scrimToShow === 'delete'}
@@ -284,112 +281,108 @@ export const NodeRightClickMenu = (props: {
         />
       </CustomScrim>
 
-      <div>
-        <CustomScrim
-          isOpen={scrimToShow === 'new-entity'}
-          closeScrim={() => setScrimToShow('')}
-          header={`Create new entity`}
-          width={'30vw'}
+      <CustomScrim
+        isOpen={scrimToShow === 'new-entity'}
+        closeScrim={() => setScrimToShow('')}
+        header={`Create new entity`}
+        width={'30vw'}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div style={{ display: 'block' }}>
-              <Label label={'Blueprint'} />
-              <BlueprintPicker
-                onChange={(selectedType: string) =>
-                  setFormData({ type: selectedType })
-                }
-                formData={formData?.type || ''}
-              />
-            </div>
-            {loading ? (
-              <Button style={edsButtonStyleConfig}>
-                <Progress.Dots />
-              </Button>
-            ) : (
-              <Button
-                disabled={formData?.type === undefined}
-                style={edsButtonStyleConfig}
-                onClick={() => {
-                  setLoading(true)
-                  node
-                    .addEntity(formData?.type, formData?.name || '')
-                    .then(() => {
-                      setScrimToShow('')
-                    })
-                    .catch((error: Error) => {
-                      console.error(error)
-                      NotificationManager.error('Failed to create entity')
-                    })
-                    .finally(() => setLoading(false))
-                }}
-              >
-                Create
-              </Button>
-            )}
+          <div style={{ display: 'block' }}>
+            <Label label={'Blueprint'} />
+            <BlueprintPicker
+              onChange={(selectedType: string) =>
+                setFormData({ type: selectedType })
+              }
+              formData={formData?.type || ''}
+            />
           </div>
-        </CustomScrim>
-      </div>
+          {loading ? (
+            <Button style={edsButtonStyleConfig}>
+              <Progress.Dots />
+            </Button>
+          ) : (
+            <Button
+              disabled={formData?.type === undefined}
+              style={edsButtonStyleConfig}
+              onClick={() => {
+                setLoading(true)
+                node
+                  .addEntity(formData?.type, formData?.name || '')
+                  .then(() => {
+                    setScrimToShow('')
+                  })
+                  .catch((error: Error) => {
+                    console.error(error)
+                    NotificationManager.error('Failed to create entity')
+                  })
+                  .finally(() => setLoading(false))
+              }}
+            >
+              Create
+            </Button>
+          )}
+        </div>
+      </CustomScrim>
 
-      <div>
-        <CustomScrim
-          isOpen={scrimToShow === 'new-blueprint'}
-          closeScrim={() => setScrimToShow('')}
-          header={`Create new blueprint`}
-          width={'30vw'}
+      <CustomScrim
+        isOpen={scrimToShow === 'new-blueprint'}
+        closeScrim={() => setScrimToShow('')}
+        header={`Create new blueprint`}
+        width={'30vw'}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
         >
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            <div style={{ display: 'block' }}>
-              <Label label={'Name'} />
-              <Input
-                style={{ width: '360px', margin: '0 8px' }}
-                type="string"
-                value={formData?.name || ''}
-                onChange={(event) =>
-                  setFormData({ ...formData, name: event.target.value })
-                }
-                placeholder="Name for new blueprint"
-              />
-            </div>
-            {loading ? (
-              <Button style={edsButtonStyleConfig}>
-                <Progress.Dots />
-              </Button>
-            ) : (
-              <Button
-                disabled={formData?.type === undefined}
-                style={edsButtonStyleConfig}
-                onClick={() => {
-                  setLoading(true)
-                  node
-                    .addEntity(BlueprintEnum.BLUEPRINT, formData?.name)
-                    .then(() => {
-                      setScrimToShow('')
-                    })
-                    .catch((error: Error) => {
-                      console.error(error)
-                      NotificationManager.error('Failed to create blueprint')
-                    })
-                    .finally(() => setLoading(false))
-                }}
-              >
-                Create
-              </Button>
-            )}
+          <div style={{ display: 'block' }}>
+            <Label label={'Name'} />
+            <Input
+              style={{ width: '360px', margin: '0 8px' }}
+              type="string"
+              value={formData?.name || ''}
+              onChange={(event) =>
+                setFormData({ ...formData, name: event.target.value })
+              }
+              placeholder="Name for new blueprint"
+            />
           </div>
-        </CustomScrim>
-      </div>
+          {loading ? (
+            <Button style={edsButtonStyleConfig}>
+              <Progress.Dots />
+            </Button>
+          ) : (
+            <Button
+              disabled={formData?.name === undefined}
+              style={edsButtonStyleConfig}
+              onClick={() => {
+                setLoading(true)
+                node
+                  .addEntity(BlueprintEnum.BLUEPRINT, formData?.name)
+                  .then(() => {
+                    setScrimToShow('')
+                  })
+                  .catch((error: Error) => {
+                    console.error(error)
+                    NotificationManager.error('Failed to create blueprint')
+                  })
+                  .finally(() => setLoading(false))
+              }}
+            >
+              Create
+            </Button>
+          )}
+        </div>
+      </CustomScrim>
     </div>
   )
 }
