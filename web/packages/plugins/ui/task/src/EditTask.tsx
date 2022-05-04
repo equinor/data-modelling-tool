@@ -67,7 +67,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, inputType: selectedBlueprint })
                 }
-                formData={formData.inputType}
+                formData={formData?.inputType || ''}
               />
             </Column>
             <div
@@ -138,7 +138,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, outputType: selectedBlueprint })
                 }
-                formData={formData.outputType}
+                formData={formData?.outputType || ''}
               />
             </Column>
           </GroupWrapper>
