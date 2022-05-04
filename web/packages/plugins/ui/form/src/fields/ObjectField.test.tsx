@@ -70,7 +70,10 @@ describe('ObjectField', () => {
 
     it('should handle object fields change events', async () => {
       mockBlueprintGet([blueprint])
-      const { container } = render(<Form type="MyBlueprint" />)
+      const onSubmit = jest.fn()
+      const { container } = render(
+        <Form type="MyBlueprint" onSubmit={onSubmit} />
+      )
       await waitFor(() => {
         fireEvent.change(screen.getByRole('textbox'), {
           target: { value: 'changed' },
@@ -121,12 +124,13 @@ describe('ObjectField', () => {
         ],
       },
     ])
-
-    render(<Form type="Parent" />)
+    const onSubmit = jest.fn()
+    render(<Form type="Parent" onSubmit={onSubmit} />)
     await waitFor(() => {
       // It's ok to submit
       fireEvent.submit(screen.getByText('Submit'))
-
+      expect(onSubmit).toHaveBeenCalled()
+      expect(onSubmit).toHaveBeenCalledWith({})
       // Show optional in label
       expect(screen.getByText('nested (optional)')).toBeDefined()
       // Add button

@@ -147,7 +147,6 @@ export class TreeNode {
   }
 
   async expand() {
-    this.expanded = true
     if (this.type !== 'dataSource') {
       const [dataSourceId, documentId] = this.nodeId.split('/', 2)
       const parentBlueprint: TBlueprint = await this.tree.dmssApi
@@ -166,6 +165,7 @@ export class TreeNode {
           } else {
             this.children = createContainedChildren(data, this, parentBlueprint)
           }
+          this.expanded = true
         })
         .catch((error: Error) => {
           this.type = 'error'

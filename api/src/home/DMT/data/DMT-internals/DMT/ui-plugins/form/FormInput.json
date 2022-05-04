@@ -11,6 +11,15 @@
       "dimensions": "*",
       "optional": true,
       "contained": true
+    },
+    {
+      "name": "order",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "dimensions": "*",
+      "optional": true,
+      "contained": true,
+      "description": "Define the order in which attributes are rendered"
     }
   ]
 }

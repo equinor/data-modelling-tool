@@ -151,6 +151,7 @@ export function UIPluginSelector(props: {
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   const roles =
     [JSON.parse(localStorage.getItem('impersonateRoles') || 'null')] ||
@@ -224,6 +225,7 @@ export function UIPluginSelector(props: {
           onOpen={onOpen}
           categories={categories}
           config={config}
+          type={entity.type}
         />
       </ErrorBoundary>
     </Wrapper>

@@ -6,11 +6,12 @@
   ],
   "attributes": [
     {
-      "name": "format",
+      "name": "columns",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
-      "label": "Format",
-      "default": ""
+      "label": "Columns",
+      "default": "",
+      "dimensions": "*"
     }
   ]
 }

@@ -43,6 +43,7 @@ export function UploadFileButton(props: {
   const { fileSuffix, getBody, dataSourceId, onUpload } = props
   const textInput = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string>()
+  // @ts-ignore
   const { token } = useContext(AuthContext)
 
   function handleUpload(event: any): void {

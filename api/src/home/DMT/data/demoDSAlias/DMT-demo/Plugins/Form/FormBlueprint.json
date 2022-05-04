@@ -19,6 +19,12 @@
       "label":  "A number"
     },
     {
+      "name": "aDate",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "label":  "A date"
+    },
+    {
       "name": "aBool",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "boolean",
@@ -69,9 +75,35 @@
       "attributeType": "/Plugins/Form/Nested",
       "label":  "A optional nested object",
       "optional": true
+    },
+    {
+      "name": "aNestedObjectWithCustomUI",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Plugins/Form/Nested",
+      "label":  "A nested object with custom ui"
+    },
+    {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "inputEntity",
+      "description": "Generic input entity",
+      "attributeType": "object",
+      "contained": false
+    },
+    {
+      "name": "listOfObjects",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Plugins/Form/Nested",
+      "dimensions": "*",
+      "label":  "A list of objects"
     }
   ],
   "uiRecipes": [
+    {
+      "name": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container"
+    },
     {
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
@@ -80,6 +112,22 @@
       "config": {
         "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
         "attributes": [
+          {
+            "type":"DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "type",
+            "widget": "TypeWidget"
+          },
+          {
+            "type":"DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "aDate",
+            "widget": "TextWidget",
+            "format": "date-time"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "description",
+            "widget": "TextareaWidget"
+          },
           {
             "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
             "name": "aStringAsTextfield",
@@ -94,7 +142,30 @@
             "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
             "name": "blueprintPicker",
             "widget": "BlueprintPickerWidget"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ObjectField",
+            "name": "aNestedObjectWithCustomUI",
+            "uiRecipe": "custom"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "blueprintPicker",
+            "widget": "ObjectWidget"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ArrayField",
+            "name": "listOfObjects",
+            "widget": "TableWidget",
+            "columns": ["name", "foo", "bar", "baz"]
           }
+        ],
+        "order": [
+          "name",
+          "type",
+          "description",
+          "aBool",
+          "*"
         ]
       }
     }

@@ -42,7 +42,10 @@ describe('NumberField', () => {
           ],
         },
       ])
-      const { container } = render(<Form type="SingleField" />)
+      const onSubmit = jest.fn()
+      const { container } = render(
+        <Form type="SingleField" onSubmit={onSubmit} />
+      )
       await waitFor(() => {
         const inputNode: Element | null = container.querySelector(
           ` input[name="foo"]`
@@ -51,6 +54,10 @@ describe('NumberField', () => {
         const value = inputNode !== null ? inputNode.getAttribute('value') : ''
         expect(value).toBe('2')
         fireEvent.submit(screen.getByRole('button'))
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({
+          foo: 2,
+        })
       })
     })
 
@@ -130,9 +137,12 @@ describe('NumberField', () => {
           ],
         },
       ])
-      render(<Form type="SingleField" />)
+      const onSubmit = jest.fn()
+      render(<Form type="SingleField" onSubmit={onSubmit} />)
       await waitFor(() => {
         fireEvent.submit(screen.getByRole('button'))
+        expect(onSubmit).toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledWith({})
         expect(screen.getByText('foo (optional)')).toBeDefined()
       })
     })
@@ -152,8 +162,13 @@ describe('NumberField', () => {
           ],
         },
       ])
-      render(<Form type="SingleField" />)
+      const onSubmit = jest.fn()
+      render(<Form type="SingleField" onSubmit={onSubmit} />)
       fireEvent.submit(screen.getByRole('button'))
+      await waitFor(() => {
+        expect(onSubmit).not.toHaveBeenCalled()
+        expect(onSubmit).toHaveBeenCalledTimes(0)
+      })
     })
   })
 })

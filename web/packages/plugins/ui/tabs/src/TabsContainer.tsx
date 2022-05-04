@@ -3,6 +3,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { Icon, Tooltip } from '@equinor/eds-core-react'
+import { TabsProvider } from './TabsContext'
 
 interface ITabs {
   active: boolean
@@ -62,68 +63,75 @@ export const TabsContainer = (props: DmtUIPlugin) => {
 
   if (!entity || Object.keys(formData).length === 0) return null
 
+  const handleOpen = (tabData: any) => {
+    setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
+    setSelectedTab(tabData.attribute)
+  }
+
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'center',
-        flexDirection: 'column',
-      }}
-    >
+    <TabsProvider onOpen={handleOpen}>
       <div
         style={{
-          width: '100%',
-          flexDirection: 'row',
           display: 'flex',
-          borderBottom: '1px black solid',
+          alignItems: 'center',
+          flexDirection: 'column',
         }}
       >
-        <Tooltip enterDelay={600} title={document.type} placement="top-start">
-          <BaseTab
-            onClick={() => setSelectedTab('home')}
-            active={selectedTab === 'home'}
-          >
-            <Icon name="home" size={24} />
-          </BaseTab>
-        </Tooltip>
-        {Object.values(childTabs).map((tabData: any) => (
-          <Tooltip
-            key={tabData.attribute}
-            enterDelay={600}
-            title={tabData.entity.type}
-            placement="top-start"
-          >
-            <ChildTab
-              onClick={() => setSelectedTab(tabData.attribute)}
-              active={selectedTab === tabData.attribute}
-            >
-              {tabData.attribute}
-            </ChildTab>
-          </Tooltip>
-        ))}
-      </div>
-
-      {selectedTab === 'home' ? (
-        <UIPluginSelector
-          key={'home'}
-          absoluteDottedId={`${dataSourceId}/${documentId}`}
-          entity={formData}
-          categories={config?.subCategories.filter(
-            (c: string) => c !== 'container'
-          )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
-          onOpen={(tabData: any) => {
-            setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
-            setSelectedTab(tabData.attribute)
+        <div
+          style={{
+            width: '100%',
+            flexDirection: 'row',
+            display: 'flex',
+            borderBottom: '1px black solid',
           }}
-        />
-      ) : (
-        <UIPluginSelector
-          key={selectedTab}
-          absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
-          entity={childTabs[selectedTab].entity}
-          categories={childTabs[selectedTab].categories}
-        />
-      )}
-    </div>
+        >
+          <Tooltip enterDelay={600} title={document.type} placement="top-start">
+            <BaseTab
+              onClick={() => setSelectedTab('home')}
+              active={selectedTab === 'home'}
+            >
+              <Icon name="home" size={24} />
+            </BaseTab>
+          </Tooltip>
+          {Object.values(childTabs).map((tabData: any) => (
+            <Tooltip
+              key={tabData.attribute}
+              enterDelay={600}
+              title={tabData.entity.type}
+              placement="top-start"
+            >
+              <ChildTab
+                onClick={() => setSelectedTab(tabData.attribute)}
+                active={selectedTab === tabData.attribute}
+              >
+                {tabData.attribute}
+              </ChildTab>
+            </Tooltip>
+          ))}
+        </div>
+
+        {selectedTab === 'home' ? (
+          <UIPluginSelector
+            key={'home'}
+            absoluteDottedId={`${dataSourceId}/${documentId}`}
+            entity={formData}
+            categories={config?.subCategories?.filter(
+              (c: string) => c !== 'container'
+            )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
+            onOpen={(tabData: any) => {
+              setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
+              setSelectedTab(tabData.attribute)
+            }}
+          />
+        ) : (
+          <UIPluginSelector
+            key={selectedTab}
+            absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
+            entity={childTabs[selectedTab].entity}
+            categories={childTabs[selectedTab].categories}
+          />
+        )}
+      </div>
+    </TabsProvider>
   )
 }

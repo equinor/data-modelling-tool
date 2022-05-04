@@ -25,6 +25,9 @@
     "packages/plugins/**",
     "custom-plugins/*"
   ],
+  "devDependencies": {
+    "node-notifier": "^10.0.1"
+  },
   "nohoist": [
     "workspaces/**/webpack-dev-server",
     "**/babel-loader"

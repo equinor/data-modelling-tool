@@ -11,7 +11,8 @@ export const BooleanField = (props: BooleanFieldProps) => {
   const { getWidget } = useRegistryContext()
 
   // We need to convert default values coming from the API since they are always strings
-  const usedDefaultValue = defaultValue !== undefined && defaultValue == 'True'
+  const usedDefaultValue =
+    (defaultValue !== undefined && defaultValue == 'True') || false
 
   let defaultWidget = uiAttribute ? uiAttribute.widget : 'CheckboxWidget'
   const Widget = getWidget(namePath, defaultWidget)
@@ -31,8 +32,8 @@ export const BooleanField = (props: BooleanFieldProps) => {
           {...props}
           id={namePath}
           value={value}
-          label={displayLabel}
           inputRef={ref}
+          label={displayLabel}
           helperText={error?.message}
           variant={invalid ? 'error' : 'default'}
         />

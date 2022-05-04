@@ -1,33 +1,25 @@
-export interface WidgetProps
-  extends Pick<
-    React.HTMLAttributes<HTMLElement>,
-    Exclude<keyof React.HTMLAttributes<HTMLElement>, 'onBlur' | 'onFocus'>
-  > {
-  id: string
-  [prop: string]: any // Allow for other props
-}
-
-export type Widget =
-  | React.StatelessComponent<WidgetProps>
-  | React.ComponentClass<WidgetProps>
-
 export type FormProps = {
+  documentId?: string
+  dataSourceId?: string
   type?: string
   formData?: any
-  updateDocument?: Function
-  widgets?: { [name: string]: Widget }
+  onSubmit?: Function
+  widgets?: any
   config?: any
+  onOpen?: Function
 }
 
 export type ObjectFieldProps = {
+  contained?: boolean
+  // plugin: string
   namePath: string
   type: string
   displayLabel?: string
   optional?: boolean
   config?: any
   uiRecipeName?: string
+  uiAttribute?: any
 }
-
 export type AttributeFieldProps = {
   namePath: string
   attribute: any

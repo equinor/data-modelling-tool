@@ -89,6 +89,11 @@
             "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
             "name": "inputType",
             "widget": "BlueprintPickerWidget"
+          },
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ObjectField",
+            "name": "stask",
+            "widget": "UploadFileWidget"
           }
         ]
       }},
