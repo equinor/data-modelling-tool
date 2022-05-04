@@ -29,7 +29,6 @@ export function FoRResultWrapper(props: {
     [poorMansUUID()]: { graphs: [] },
   })
   const [loading, setLoading] = useState<boolean>(false)
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

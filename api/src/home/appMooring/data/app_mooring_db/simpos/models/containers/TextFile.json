@@ -44,16 +44,7 @@
       "plugin": "EXTERNAL",
       "attributes": []
     },
-    {
-      "name": "Edit",
-      "type": "system/SIMOS/UiRecipe",
-      "description": "",
-      "plugin": "EDIT_PLUGIN",
-      "field": "",
-      "hideTab": true,
-      "options": [],
-      "attributes": []
-    },
+
     {
       "name": "Raw",
       "type": "system/SIMOS/UiRecipe",

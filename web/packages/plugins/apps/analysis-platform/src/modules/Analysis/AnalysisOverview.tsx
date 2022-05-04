@@ -29,7 +29,6 @@ type AnalysisOverviewProps = {
 
 const AnalysisOverview = (props: AnalysisOverviewProps) => {
   const { settings } = props
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
 
   return (

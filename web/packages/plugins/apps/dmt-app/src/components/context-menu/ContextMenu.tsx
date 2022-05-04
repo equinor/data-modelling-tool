@@ -132,7 +132,6 @@ export const NodeRightClickMenu = (props: {
   children: any
 }) => {
   const { node, children, removeNode } = props
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const [scrimToShow, setScrimToShow] = useState<string>('')

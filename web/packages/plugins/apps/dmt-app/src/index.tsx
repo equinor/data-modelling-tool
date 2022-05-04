@@ -15,8 +15,6 @@ const Wrapper = styled.div`
 
 const PageComponent = (props: any) => {
   const { applications, settings } = props
-
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

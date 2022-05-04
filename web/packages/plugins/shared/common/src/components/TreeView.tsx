@@ -114,7 +114,6 @@ export const TreeView = (props: {
   NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
   const { onSelect, NodeWrapper, NodeWrapperOnClick } = props
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
   const tree = new Tree(token, appConfig.visibleDataSources)

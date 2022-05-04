@@ -119,6 +119,10 @@ export function UIPluginSelector(props: {
       recipesToUse = recipesToUse.filter((recipe: any) =>
         categories.includes(recipe?.category)
       )
+      // If there are no recipes with the correct filter, show them all
+      if (recipesToUse.length === 0) {
+        recipesToUse = blueprint.uiRecipes
+      }
     }
     if (!recipesToUse?.length && !categories) {
       setSelectableRecipe([['yaml', getUiPlugin('yaml-view'), {}]])

@@ -9,7 +9,6 @@ export const JobHandlerPicker = (props: {
 }) => {
   const { onChange, formData } = props
   const blueprintName = formData.split('/').pop()
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssApi = new DmssAPI(token)
   const [searchResult] = useSearch(

@@ -67,8 +67,6 @@ function useExplorer(dmssAPI: DmssAPI) {
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { document } = props
-
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer = useExplorer(dmssAPI)

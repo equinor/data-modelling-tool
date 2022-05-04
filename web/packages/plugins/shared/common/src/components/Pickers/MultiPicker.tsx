@@ -66,7 +66,6 @@ const MultiSelector = ({
 }: MultiSelectorProps) => {
   const [selectedPackages, setSelectedPackages] = useState<string[]>([])
   const [showModal, setShowModal] = useState<boolean>(false)
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const dataSources: IDataSources = useDataSources(dmssAPI)

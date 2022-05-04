@@ -58,7 +58,6 @@ const SimStatusWrapper = styled.div`
 
 export const JobLog = (props: { document: any; jobId: string }) => {
   const { jobId, document } = props
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const [loading, setLoading] = useState<boolean>(false)

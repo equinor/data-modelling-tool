@@ -149,7 +149,6 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
   const [expanded, setExpanded] = useState<boolean>(value)
   const [nestedAttributes, setNestedAttributes] = useState([])
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -231,7 +230,6 @@ function FilterContainer({
   resetSearchSettings,
 }) {
   const [attributes, setAttributes] = useState<Array<any>>([])
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   function onChange(filterChange: any) {
@@ -432,7 +430,6 @@ export default ({ settings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   useEffect(() => {

@@ -30,7 +30,6 @@ export const ViewerPDFPlugin = (props: any) => {
   const [blobUrl, setBlobUrl] = useState('')
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

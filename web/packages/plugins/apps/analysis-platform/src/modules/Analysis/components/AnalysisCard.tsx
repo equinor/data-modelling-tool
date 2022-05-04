@@ -144,7 +144,6 @@ const AnalysisCard = (props: AnalysisCardProps) => {
   const { analysis, addJob, jobs } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
 
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
 
   return (

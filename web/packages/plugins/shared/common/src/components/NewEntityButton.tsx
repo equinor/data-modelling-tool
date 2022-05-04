@@ -16,7 +16,6 @@ export function NewEntityButton(props: {
   const [saveDestination, setSaveDestination] = useState<string>('')
   const [newName, setNewName] = useState<string>('')
   const [typeToCreate, setTypeToCreate] = useState<string>(type)
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmtAPI = new DmtAPI(token)
 

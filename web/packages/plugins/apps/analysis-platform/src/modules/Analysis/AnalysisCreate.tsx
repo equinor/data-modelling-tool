@@ -9,7 +9,6 @@ import { DEFAULT_DATASOURCE_ID, TASK } from '../../const'
 import CreateAnalysisForm from './components/CreateAnalysisForm'
 
 const AnalysisNew = (): JSX.Element => {
-  // @ts-ignore
   const { tokenData, token } = useContext(AuthContext)
   const user = getUsername(tokenData) || 'NoLogin'
   const [isLoading, setIsLoading] = useState<boolean>(false)

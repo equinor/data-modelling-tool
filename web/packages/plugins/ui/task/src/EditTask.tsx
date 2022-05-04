@@ -27,10 +27,6 @@ const HeaderWrapper = styled.div`
   margin-top: 8px;
 `
 
-const Wrapper = styled.div`
-  margin: 10px;
-`
-
 export const EditTask = (props: DmtUIPlugin) => {
   const {
     document,
@@ -105,6 +101,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                         }),
                       entity: formData.applicationInput,
                       absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
+                      // Child entities should use plugins with this category tag, if they have any
                       categories: ['container'],
                     })
                   }}
