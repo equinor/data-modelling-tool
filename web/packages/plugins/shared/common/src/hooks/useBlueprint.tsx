@@ -14,8 +14,7 @@ export const useBlueprint = (typeRef: string) => {
     dmssAPI
       .blueprintGet({ typeRef: typeRef })
       .then((response: any) => {
-        const data = response.data
-        setBlueprint(data)
+        setBlueprint(response)
         setError(null)
       })
       .catch((error: Error) => setError(error))

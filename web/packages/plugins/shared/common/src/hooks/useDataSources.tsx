@@ -24,8 +24,8 @@ export const useDataSources = (dmssAPI: DmssAPI): IDataSources => {
 
   const fetchData = async () => {
     try {
-      const response = await dmssAPI.dataSourceGetAll()
-      const dataSources: DataSources = response.data
+      const dataSources = await dmssAPI.dataSourceGetAll()
+      //@ts-ignore
       dispatch(DocumentActions.addDataSources(dataSources))
     } catch (error) {
       console.error(error)
