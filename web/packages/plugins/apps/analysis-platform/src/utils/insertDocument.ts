@@ -1,4 +1,3 @@
-//@ts-ignore
 import { DmssAPI } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, ENTITIES } from '../const'
 

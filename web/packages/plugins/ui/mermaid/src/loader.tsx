@@ -1,4 +1,3 @@
-//@ts-ignore
 import { DmssAPI } from '@dmt/common'
 import { AttributeType, BlueprintType } from './types'
 

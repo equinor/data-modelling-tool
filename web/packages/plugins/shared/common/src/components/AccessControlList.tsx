@@ -9,7 +9,6 @@ import {
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-//@ts-ignore
 import { AuthContext } from '@dmt/common'
 import DmssAPI from '../services/api/DmssAPI'
 import { useLocalStorage } from '../hooks/useLocalStorage'

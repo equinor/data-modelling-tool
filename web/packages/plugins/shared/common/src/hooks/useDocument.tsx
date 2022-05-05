@@ -2,7 +2,6 @@ import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-//@ts-ignore
 import { AuthContext } from '@dmt/common'
 
 export const useDocument = (

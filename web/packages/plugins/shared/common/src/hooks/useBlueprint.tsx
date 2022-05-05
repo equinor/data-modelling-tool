@@ -1,6 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
-//@ts-ignore
 import { AuthContext } from '@dmt/common'
 
 export const useBlueprint = (typeRef: string) => {

@@ -1,7 +1,6 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
-//@ts-ignore
 import { AuthContext, DmssAPI, DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import Mermaid from './Mermaid'
 import { dfs, loader, Node } from './loader'

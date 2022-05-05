@@ -9,7 +9,6 @@ import {
 // @ts-ignore
 import objectPath from 'object-path'
 import { BlueprintAttribute } from './domain/BlueprintAttribute'
-//@ts-ignore
 import { DmssAPI } from '@dmt/common'
 
 interface IBlueprintSchema {

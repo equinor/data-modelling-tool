@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-//@ts-ignore
 import { AuthContext, DmssAPI } from '@dmt/common'
 
 export const ErrorGroup = styled.div`

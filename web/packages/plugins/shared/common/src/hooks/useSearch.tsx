@@ -1,5 +1,4 @@
 import { useEffect, useState, useContext } from 'react'
-//@ts-ignore
 import { DmssAPI, AuthContext } from '@dmt/common'
 
 export const useSearch = (body: any, dataSourceId: string): any => {

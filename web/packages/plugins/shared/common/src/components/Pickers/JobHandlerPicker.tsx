@@ -1,6 +1,5 @@
 import React, { ChangeEvent, useContext } from 'react'
 import { useSearch } from '../../index'
-//@ts-ignore
 import { Select, AuthContext } from '@dmt/common'
 import DmssAPI from '../../services/api/DmssAPI'
 

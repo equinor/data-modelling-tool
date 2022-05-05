@@ -10,7 +10,6 @@ import {
   CustomScrim,
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
-  //@ts-ignore
 } from '@dmt/common'
 
 // @ts-ignore

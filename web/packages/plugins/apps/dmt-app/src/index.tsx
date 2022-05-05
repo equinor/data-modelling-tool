@@ -1,5 +1,4 @@
 import * as React from 'react'
-//@ts-ignore
 import { AuthContext, DmssAPI, DmtPluginType } from '@dmt/common'
 import Header from './AppHeader'
 import SearchPage from './pages/SearchPage'

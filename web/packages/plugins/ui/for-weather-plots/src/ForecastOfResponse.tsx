@@ -3,7 +3,6 @@ import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import styled from 'styled-components'
-//@ts-ignore
 import { AuthContext, DmssAPI } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from './const'
 import Result from './Result'

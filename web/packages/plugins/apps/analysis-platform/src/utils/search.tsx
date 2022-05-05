@@ -1,4 +1,3 @@
-//@ts-ignore
 import { DmssAPI } from '@dmt/common'
 
 export const search = async (
