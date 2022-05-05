@@ -44,15 +44,14 @@ describe('the dashboard provider component', () => {
 
     it('should have fetched the index for all data sources', async () => {
       const api = mock<DmssAPI>()
-      const dataSources: DataSources = [
+      const dataSources = [
         {
           id: 'localhost',
           name: 'localhost',
         },
       ]
-      api.getAllDataSources.mockImplementation(() =>
-        Promise.resolve(dataSources)
-      )
+      //@ts-ignore
+      api.dataSourceGetAll.mockResolvedValue(dataSources)
 
       const { result, waitForNextUpdate } = renderHook(useDashboard, {
         wrapper,
@@ -63,7 +62,7 @@ describe('the dashboard provider component', () => {
       })
       await waitForNextUpdate()
 
-      expect(api.getAllDataSources).toHaveBeenCalledTimes(1)
+      expect(api.dataSourceGetAll).toHaveBeenCalledTimes(1)
       expect(result.current.models.dataSources.models.dataSources).toEqual(
         dataSources
       )
