@@ -29,7 +29,7 @@ As of 4. April, only a database for the test version is set up. This can be foun
 Before run, go to DMSS local folder and substitte the src/home/system/data_sources/system.json file with correct connection info (host, port, username and password).
 
 Also, change the DMSS docker-compose.override.yml file: set the MONGO_AZURE_URI: env variable and set AUTH_ENABLED true.
- Afterwards, you can start up dmss as normal with docker-compose 
+ Afterwards, you can start up dmss as normal with docker-compose  
 NB! DO NOT COMMIT DATABASE PASSWORD TO DMSS REPO!
 
 

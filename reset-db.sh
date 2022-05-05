@@ -79,6 +79,8 @@ ok() {
   msg "${GREEN}    OK${NOFORMAT}"
 }
 
+setup_colors
+
 for i in "$@"; do
   case $i in
     -h | --help)
@@ -317,7 +319,6 @@ function set_data_source_names() {
   done
 }
 
-
 function build_images() {
   info "Building the Docker images.."
   docker-compose build --quiet api  && ok || err
@@ -363,7 +364,7 @@ function import_packages() {
 
     #---- handle aliases ----
     if test -f "${package/"$destination"/"_aliases_"}"; then
-      echo "Alise file exists."
+      echo "Alias file exists."
           alias_file="${package/"$destination"/"_aliases_"}"
 
       #get all lines that are not commented out in alias file
@@ -383,7 +384,7 @@ function import_packages() {
       sleep 30s #sleeping is required. If not, we get an request rate too large (429) exception from Mongodb
       echo "done sleeping!"
       if [ "$DRY_RUN" == "False" ]; then
-        docker-compose run --rm -e MONGO_AZURE_URI="$MONGO_AZURE_URI" -e DMSS_API="$DMSS_API" api --token="$TOKEN" reset-package "$container_path" "$destination" && ok || err
+        docker-compose run --rm -e MONGO_AZURE_URI="$MONGO_AZURE_URI" -e DMSS_API="$DMSS_API" api --token="$TOKEN" reset-package "$container_path" "$destination" && ok || fatal "Failed to import package $container_path"
       else
         echo "    Skipping (dry run)"
       fi
@@ -430,5 +431,4 @@ function main() {
   import_packages
 }
 
-setup_colors
 main
