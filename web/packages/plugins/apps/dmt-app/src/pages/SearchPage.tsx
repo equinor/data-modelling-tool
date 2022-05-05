@@ -165,8 +165,9 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
         .blueprintGet({ typeRef: attribute.getAttributeType() })
-        .then((result) => {
-          setNestedAttributes(result.attributes)
+        .then((response: any) => {
+          const data = response.data
+          setNestedAttributes(data.attributes)
         })
         .catch((error) => {
           NotificationManager.error(`${error.message}`)
@@ -241,8 +242,9 @@ function FilterContainer({
     if (searchFilter?.type) {
       dmssAPI
         .blueprintGet({ typeRef: searchFilter.type })
-        .then((result) => {
-          setAttributes(result.attributes)
+        .then((response: any) => {
+          const data = response.data
+          setAttributes(data.attributes)
         })
         .catch((error) => {
           NotificationManager.error(`${error.message}`)
@@ -435,7 +437,8 @@ export default ({ settings }: any) => {
   useEffect(() => {
     dmssAPI
       .getAllDataSources()
-      .then((dataSources: DataSources) => {
+      .then((response: any) => {
+        const dataSources: DataSources = response.data
         setDataSources(dataSources)
       })
       .catch((error) => {
@@ -454,7 +457,8 @@ export default ({ settings }: any) => {
         body: query,
         sortByAttribute: searchSettings.sortByAttribute,
       })
-      .then((result: any) => {
+      .then((response: any) => {
+        const result = response.data
         setQueryError('')
         let resultList = Object.values(result)
         if (resultList.length === 0) {

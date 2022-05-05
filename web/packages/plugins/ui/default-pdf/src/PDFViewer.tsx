@@ -41,9 +41,10 @@ export const ViewerPDFPlugin = (props: any) => {
         dataSourceId: dataSourceId,
         blobId: document.blob._blob_id,
       })
-      .then((result: any) => {
+      .then((response: any) => {
+        const data = response.data
         // @ts-ignore
-        const blob = new Blob([result], { type: 'application/pdf' })
+        const blob = new Blob([data], { type: 'application/pdf' })
         // @ts-ignore
         setBlobUrl(window.URL.createObjectURL(blob))
       })

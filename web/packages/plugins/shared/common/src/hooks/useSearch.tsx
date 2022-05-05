@@ -17,9 +17,10 @@ export const useSearch = (body: any, dataSourceId: string): any => {
         dataSources: [dataSourceId],
         body: body,
       })
-      .then((result: any) => {
+      .then((response: any) => {
+        const data = response.data
         // @ts-ignore
-        setSearchResult(Object.values(result))
+        setSearchResult(Object.values(data))
       })
       .catch((err: any) => {
         console.error(err)

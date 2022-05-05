@@ -44,9 +44,9 @@ async function simulateCat3StormResultInEntity({
 }) {
   output.entity.diameter = 222
   await updateDocument(output)
-  let newEntity = await createEntity(output.entity.type)
+  let newEntity = await createEntity(output.entity.type).data
   console.log(newEntity)
-  let blueprint = await explorer.blueprintGet(newEntity.type)
+  let blueprint = await explorer.blueprintGet(newEntity.type).data
   console.log(blueprint)
 }
 

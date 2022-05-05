@@ -26,8 +26,9 @@ export const useDocument = (
         documentId: documentId,
         depth: depth,
       })
-      .then((document) => {
-        setDocument(document)
+      .then((response: any) => {
+        const data = response.data
+        setDocument(data)
         setError(null)
       })
       .catch((error: Error) => setError(error))

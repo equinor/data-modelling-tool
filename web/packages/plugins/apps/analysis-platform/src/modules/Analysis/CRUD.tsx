@@ -24,7 +24,8 @@ export const createAnalysis = (
         files: files.filter((item: any) => item !== undefined),
       })
       .then((response: any) => {
-        resolve(response.uid)
+        const data = response.data
+        resolve(data.uid)
       })
       .catch((err: any) => {
         reject(err)

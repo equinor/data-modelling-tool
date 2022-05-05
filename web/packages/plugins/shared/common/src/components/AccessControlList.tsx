@@ -340,7 +340,8 @@ export const AccessControlList = (props: {
           documentId: documentId,
         })
         .then((response: any) => {
-          convertACLFromUserIdToUsername(response)
+          const acl = response.data
+          convertACLFromUserIdToUsername(acl)
             .then((newACL: TAcl) => {
               setDocumentACL(newACL)
             })

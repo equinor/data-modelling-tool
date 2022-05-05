@@ -61,11 +61,12 @@ const nonPrimitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
 const search = async (token: string, query: any) => {
   const dmssAPI = new DmssAPI(token)
 
-  let result = await dmssAPI.search({
+  let response = await dmssAPI.search({
     dataSources: ['WorkflowDS'],
     body: query,
     sortByAttribute: 'name',
   })
+  const result = response.data
   return Object.values(result)
 }
 
@@ -80,7 +81,7 @@ export const loader = async (
       if (attribute['attributeType'] !== 'object') {
         const child: BlueprintType = await explorer.blueprintGet(
           attribute['attributeType']
-        )
+        ).data
         let childNode: Node = await loader(token, explorer, child)
         childNode.attribute = attribute
         childNode.entity = child

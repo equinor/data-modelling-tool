@@ -21,10 +21,10 @@ import {
 } from '@dmt/common'
 
 function useExplorer(dmssAPI: DmssAPI) {
-  const getBlueprint = (typeRef: string) =>
+  const blueprintGet = (typeRef: string) =>
     dmssAPI.blueprintGet({ typeRef: typeRef })
   return {
-    getBlueprint,
+    blueprintGet,
   }
 }
 

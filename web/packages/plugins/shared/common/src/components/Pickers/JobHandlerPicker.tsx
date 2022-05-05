@@ -25,8 +25,8 @@ export const JobHandlerPicker = (props: {
       .blueprintResolve({
         absoluteId: `WorkflowDS/${blueprintId}`,
       })
-      .then((res: any) => {
-        onChange(res.data)
+      .then((response: any) => {
+        onChange(response.data)
       })
       .catch((error: any) => console.error(error))
   }

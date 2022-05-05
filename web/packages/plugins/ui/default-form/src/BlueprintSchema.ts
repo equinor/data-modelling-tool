@@ -323,7 +323,7 @@ export class BlueprintSchema implements IBlueprintSchema {
             `Could not fetch document by path: ${dataSourceId}/${path}. (${error})`
           )
         })
-      const document = response
+      const document = response.data
       if (document) {
         property.title = attr.name
         property.type = 'string'

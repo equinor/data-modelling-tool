@@ -23,7 +23,7 @@ export const addToPath = (
       files: files.filter((item: any) => item !== undefined),
       updateUncontained: false,
     })
-    .then((response: any) => response.uid)
+    .then((response: any) => response.data.uid)
     .catch((error: any) => {
       return error.json().then((response: any) => {
         throw response.message || response.detail || JSON.stringify(response)

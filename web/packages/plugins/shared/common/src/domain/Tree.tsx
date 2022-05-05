@@ -109,7 +109,7 @@ export class TreeNode {
         documentId: documentId,
         depth: 0,
       })
-      .then((doc: any) => doc)
+      .then((response: any) => response.data)
   }
 
   async expand() {
@@ -123,10 +123,11 @@ export class TreeNode {
           depth: 0,
         })
         .then((response: any) => {
-          if (response.type === BlueprintEnum.PACKAGE) {
-            this.children = createFolderChildren(response, this)
+          const data = response.data
+          if (data.type === BlueprintEnum.PACKAGE) {
+            this.children = createFolderChildren(data, this)
           } else {
-            this.children = createContainedChildren(response, this)
+            this.children = createContainedChildren(data, this)
           }
         })
         .catch((error: Error) => {
@@ -171,7 +172,7 @@ export class TreeNode {
           directory: this.pathFromRootPackage(),
           updateUncontained: false,
         })
-        .then((response: any) => response.uid)
+        .then((response: any) => response.data.uid)
     })
   }
 }
@@ -214,8 +215,8 @@ export class Tree {
             body: { type: BlueprintEnum.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],
           })
-          .then((searchResult: Object) => {
-            Object.values(searchResult).forEach((rootPackage: any) => {
+          .then((response: any) => {
+            Object.values(response.data).forEach((rootPackage: any) => {
               const rootPackageNode = new TreeNode( // Add the rootPackage nodes to the dataSource
                 this,
                 `${dataSource}/${rootPackage._id}`,
