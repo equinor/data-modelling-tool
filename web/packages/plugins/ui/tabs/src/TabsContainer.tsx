@@ -22,6 +22,7 @@ const Tab = styled.div<ITabs>`
   font-size: medium;
 `
 
+// @ts-ignore
 const BaseTab = styled(Tab)`
   background-color: #024654;
   color: white;

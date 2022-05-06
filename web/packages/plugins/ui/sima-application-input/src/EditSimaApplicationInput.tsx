@@ -94,14 +94,15 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   onChange={() => {}}
                   onClick={() => {
                     if (formData?.input?.type) {
-                      onOpen({
-                        attribute: 'input',
-                        entity: formData.input,
-                        onChange: (input: any) =>
-                          setFormData({ ...formData, input: input }),
-                        absoluteDottedId: `${dataSourceId}/${formData?.input?._id}`,
-                        categories: [],
-                      })
+                      if (onOpen)
+                        onOpen({
+                          attribute: 'input',
+                          entity: formData.input,
+                          onChange: (input: any) =>
+                            setFormData({ ...formData, input: input }),
+                          absoluteDottedId: `${dataSourceId}/${formData?.input?._id}`,
+                          categories: [],
+                        })
                     }
                   }}
                 />

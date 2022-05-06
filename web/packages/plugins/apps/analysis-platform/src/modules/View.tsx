@@ -22,7 +22,8 @@ export const View = ({ settings }: any) => {
   }>()
   const [document, documentLoading, setDocument, error] = useDocument(
     data_source,
-    entity_id
+    entity_id,
+    true
   )
 
   if (error)

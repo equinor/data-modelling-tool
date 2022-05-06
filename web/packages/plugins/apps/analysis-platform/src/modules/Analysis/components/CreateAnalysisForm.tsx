@@ -9,7 +9,7 @@ type Errors = {
 }
 
 type CreateFormProps = {
-  data: any
+  data?: any
   onSubmit: Function
 }
 
@@ -32,6 +32,12 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
   const [analysis, setAnalysis] = useState<TAnalysis>({
     name: data?.name || '',
     description: data?.description || '',
+    _id: '',
+    created: '',
+    updated: '',
+    creator: '',
+    schedule: '',
+    task: {},
   })
 
   const formHandler = (event: any) => {

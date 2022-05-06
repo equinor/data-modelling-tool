@@ -6,12 +6,12 @@ import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import { SRSSceForm } from './sce.js'
 
 const SRSSceForm_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, attribute, updateDocument } = props
+  const { dataSourceId, documentId, updateDocument } = props
 
   const [document, isLoading, setDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
-    attribute
+    true
   )
 
   if (isLoading) {

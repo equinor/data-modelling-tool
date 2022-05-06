@@ -1,7 +1,6 @@
-import { DmtSettings } from '@dmt/core-plugins'
 import { OperationStatus } from './Enums'
 
-export type DmtSettings = DmtSettings
+export type DmtSettings = any
 
 export type TRoute = {
   path: string

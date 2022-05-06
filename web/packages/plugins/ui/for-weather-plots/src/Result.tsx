@@ -300,7 +300,8 @@ export default (props: {
   const [chartData, setChartData] = useState<TLineChartDataPoint[]>([])
   const [document, isLoading, updateDocument, error] = useDocument(
     DEFAULT_DATASOURCE_ID,
-    result._id
+    result._id,
+    true
   )
 
   useEffect(() => {

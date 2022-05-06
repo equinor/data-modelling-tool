@@ -9,7 +9,6 @@ import {
   sortApplications,
   CustomScrim,
 } from '@dmt/common'
-import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
 
@@ -142,7 +141,6 @@ export default ({ applications }: AppHeaderProps) => {
         >
           <UserInfo />
           <About />
-          <ConfigureApplication />
         </div>
       </HeaderWrapper>
       <div

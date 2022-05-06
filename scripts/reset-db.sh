@@ -2,6 +2,8 @@
 
 set -euo pipefail
 
+source ./reset-db.env
+
 # Required variables
 ## CLI arguments (optionally specify in env)
 TOKEN=${TOKEN:-}

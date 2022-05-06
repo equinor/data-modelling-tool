@@ -6,12 +6,12 @@ import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import { SignalESSForm } from './signaless_src.js'
 
 const SignalESSForm_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, attribute, updateDocument } = props
+  const { dataSourceId, documentId, updateDocument } = props
 
   const [document, isLoading, setDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
-    attribute
+    true
   )
 
   if (isLoading) {

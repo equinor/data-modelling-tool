@@ -30,7 +30,7 @@ export class Node {
 }
 
 // Iterate in pre-order depth-first search order (DFS)
-export function* dfs(node: Node) {
+export function* dfs(node: Node): any {
   yield node
 
   if (Array.isArray(node.children)) {

@@ -99,7 +99,7 @@ const CollapsedView = ({ section, sectionTitle, defaultState }) => {
 
 //********************************************************//
 
-const SIMA_Model_SIMOBody = ({ parent, document, children }) => {
+const SIMA_Model_SIMOBody = ({ parent, document, children }: any) => {
   console.log(document)
 
   var section = ''

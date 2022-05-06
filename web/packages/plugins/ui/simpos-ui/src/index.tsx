@@ -31,13 +31,13 @@ import { SimposRunOutputView } from './simpos/views/SimposRunOutputView'
 import { SimposStatusView } from './simpos/views/SimposRunOutputView'
 
 //SIMA Models
-import { SIMA_Model_QuadCurrentCoeffPlot } from './sima/model/views/QuadCurrentCoeffPlot'
 import { SIMA_Model_StructuralMass } from './sima/model/views/StructuralMass'
 import { SIMA_Model_FirstOrderMotionTransferFunction } from './sima/model/views/FirstOrderMotionTransferFunction'
-import { SIMA_Model_SIMOBody } from './sima/model/views/SIMOBody'
 
 import { SIMA_Workflow_View } from './sima/workflow/views/Workflow'
 import { SIMA_WorkflowTask_View } from './sima/workflow/views/WorkflowTask'
+import { SIMA_Model_SIMOBody } from './sima/model/views/SIMOBody_src'
+import { SIMA_Model_QuadCurrentCoeffPlot } from './sima/model/views/QuadCurrentCoeffPlot_src'
 
 //***********************************************************
 //***********************************************************

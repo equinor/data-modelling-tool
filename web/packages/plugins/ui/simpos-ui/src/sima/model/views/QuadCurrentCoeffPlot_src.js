@@ -3,7 +3,11 @@ import React from 'react'
 
 import Plot from 'react-plotly.js'
 
-const SIMA_Model_QuadCurrentCoeffPlot = ({ parent, document, children }) => {
+const SIMA_Model_QuadCurrentCoeffPlot = ({
+  parent,
+  document,
+  children,
+}: any) => {
   console.log(document)
 
   let doc = document

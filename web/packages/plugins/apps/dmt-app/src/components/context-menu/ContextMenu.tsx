@@ -26,6 +26,7 @@ function createMenuItems(
   // dataSources get a "new root package"
   if (node.type === 'dataSource') {
     menuItems.push(
+      // @ts-ignore
       <MenuItem
         key={'new-root-package'}
         onClick={() => setShowScrimId('new-root-package')}
@@ -40,11 +41,13 @@ function createMenuItems(
   // and "new blueprint"
   if (node.type == BlueprintEnum.PACKAGE) {
     menuItems.push(
+      // @ts-ignore
       <MenuItem key={'new-entity'} onClick={() => setShowScrimId('new-entity')}>
         New entity
       </MenuItem>
     )
     menuItems.push(
+      // @ts-ignore
       <MenuItem
         key={'new-blueprint'}
         onClick={() => setShowScrimId('new-blueprint')}
@@ -53,6 +56,7 @@ function createMenuItems(
       </MenuItem>
     )
     menuItems.push(
+      // @ts-ignore
       <MenuItem key={'new-folder'} onClick={() => setShowScrimId('new-folder')}>
         New folder
       </MenuItem>
@@ -78,6 +82,7 @@ function createMenuItems(
   // Everything besides dataSources can be deleted
   if (node.type !== 'dataSource') {
     menuItems.push(
+      //@ts-ignore
       <MenuItem
         key={'delete'}
         onClick={() => {
@@ -221,8 +226,9 @@ export const NodeRightClickMenu = (props: {
   //TODO when the tree changes by adding new package or deleting something, the tree should be updated to give consistent UI to user
   return (
     <div>
+      {/*@ts-ignore*/}
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
-
+      {/*@ts-ignore*/}
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
       <CustomScrim
         isOpen={scrimToShow === 'new-folder'}

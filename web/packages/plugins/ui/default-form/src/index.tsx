@@ -10,8 +10,6 @@ import FileDirectoryWidget from './widgets/FileDirectoryWidget'
 import { CollapsibleField } from './components/CollapsibleField'
 import { KeyValue } from './domain/types'
 import {
-  BlueprintsPicker,
-  PackagesPicker,
   BlueprintPicker,
   DestinationPicker,
   AuthContext,
@@ -72,8 +70,6 @@ const PluginComponent = (props: DmtUIPlugin) => {
           collapsible: CollapsibleField,
           destination: DestinationPicker,
           blueprint: BlueprintPicker,
-          blueprints: BlueprintsPicker,
-          packages: PackagesPicker,
           matrix: ReadOnlyWidget,
           hidden: () => <div />,
         }}

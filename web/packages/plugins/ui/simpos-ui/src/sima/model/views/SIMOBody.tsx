@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument } from '@dmt/common'
-import { DmtUIPlugin } from '@dmt/core-plugins'
+import { useDocument, DmtUIPlugin } from '@dmt/common'
 
 import { SIMA_Model_SIMOBody } from './SIMOBody_src.js'
 
-const SIMA_Model_SIMOBody_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, attribute, updateDocument } = props
+export const SIMA_Model_SIMOBody_Component = (props: DmtUIPlugin) => {
+  const { dataSourceId, documentId, updateDocument } = props
 
   const [document, isLoading, setDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
-    attribute
+    true
   )
 
   if (isLoading) {
@@ -23,5 +22,3 @@ const SIMA_Model_SIMOBody_Component = (props: DmtUIPlugin) => {
 
   return <SIMA_Model_SIMOBody document={document} />
 }
-
-export { SIMA_Model_SIMOBody_Component as SIMA_Model_SIMOBody }

@@ -154,7 +154,6 @@ export const EnumTypePickerWidget = (props: TypeProps) => {
   return (
     <>
       <DestinationPicker
-        title=""
         onChange={(value: any) => {
           onChange(attributeType, value)
         }}

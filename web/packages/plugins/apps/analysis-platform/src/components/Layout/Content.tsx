@@ -26,6 +26,7 @@ export default (props: TContent): JSX.Element => {
       <PageHeading>
         <Heading text={heading} />
       </PageHeading>
+      {/*@ts-ignore*/}
       <PageContent>{content({ settings: props.settings })}</PageContent>
     </Content>
   )

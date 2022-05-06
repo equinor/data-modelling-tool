@@ -1,16 +1,15 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument } from '@dmt/common'
-import { DmtUIPlugin } from '@dmt/core-plugins'
+import { useDocument, DmtUIPlugin } from '@dmt/common'
 
 import { SIMA_Model_FirstOrderMotionTransferFunction } from './FirstOrderMotionTransferFunction_src.js'
 
 const FirstOrderMotionTransferFunction_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, attribute, updateDocument } = props
+  const { dataSourceId, documentId, updateDocument } = props
 
   const [document, isLoading, setDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
-    attribute
+    true
   )
 
   if (isLoading) {

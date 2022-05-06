@@ -42,7 +42,8 @@ const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, loading, updateDocument] = useDocument(
     dataSourceId,
-    documentId
+    documentId,
+    true
   )
   if (loading) return <div>Loading...</div>
 

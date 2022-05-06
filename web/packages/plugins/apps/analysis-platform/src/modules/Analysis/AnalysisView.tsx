@@ -14,7 +14,8 @@ export default (): JSX.Element => {
   }>()
   const [analysis, isLoading, updateDocument, error] = useDocument(
     data_source,
-    entity_id
+    entity_id,
+    true
   )
   const [jobs, setJobs] = useState<any[]>([])
 

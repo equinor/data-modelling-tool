@@ -92,18 +92,19 @@ export const EditTask = (props: DmtUIPlugin) => {
                   onChange={() => {}}
                   onClick={() => {
                     if (!formData?.applicationInput) return
-                    onOpen({
-                      attribute: 'applicationInput',
-                      onChange: (appInput: any) =>
-                        setFormData({
-                          ...formData,
-                          applicationInput: appInput,
-                        }),
-                      entity: formData.applicationInput,
-                      absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
-                      // Child entities should use plugins with this category tag, if they have any
-                      categories: ['container'],
-                    })
+                    if (onOpen)
+                      onOpen({
+                        attribute: 'applicationInput',
+                        onChange: (appInput: any) =>
+                          setFormData({
+                            ...formData,
+                            applicationInput: appInput,
+                          }),
+                        entity: formData.applicationInput,
+                        absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
+                        // Child entities should use plugins with this category tag, if they have any
+                        categories: ['container'],
+                      })
                   }}
                 />
               </Column>
