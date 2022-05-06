@@ -7,5 +7,5 @@
   "urlPath": "sima",
   "hidden": false,
   "visibleDataSources": [ "sima"],
-  "packages": ["sima/input", "sima/marmo"]
+  "packages": [ "sima/input", "sima/marmo"]
 }

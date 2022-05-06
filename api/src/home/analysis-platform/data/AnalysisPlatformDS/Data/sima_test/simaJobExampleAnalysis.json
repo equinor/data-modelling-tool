@@ -13,9 +13,9 @@
     "label": "",
     "inputType": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
     "applicationInput": {
-      "_id": "8329e1f3-e94d-4cde-9fb6-a08031b0b04a",
+      "_id": "9429e1f3-e94d-4cde-9fb6-a08031b0b04a",
+      "name": "ULS_Intact",
       "type": "AnalysisPlatformDS/Blueprints/SIMAApplicationInput",
-      "name": "simaTestAppInput",
       "contained": false
     },
     "outputType": "Asystem/SIMOS/NamedEntity",

@@ -20,12 +20,8 @@ MONGO_COLLECTIONS=(
     "analysis-platform/default"
     "workflow/default"
     "app_asgardb_db/app_asgardb_db"
-    "forecast/FoR-BP"
-    "forecast/ForApp"
-    "forecast/default"
-    "workflow/default"
-    "sima/sima"
     "app_mooring_db/app_mooring_db"
+    "sima/sima"
     )
 
 for collection in "${MONGO_COLLECTIONS[@]}"; do

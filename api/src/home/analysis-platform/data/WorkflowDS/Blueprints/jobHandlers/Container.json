@@ -16,7 +16,8 @@
     {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "image"
+      "name": "image",
+      "default": "python:alpine"
     },
     {
       "attributeType": "string",
