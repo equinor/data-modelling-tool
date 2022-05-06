@@ -19,7 +19,9 @@ export default (props: { appRootPath: string }): JSX.Element => {
       theme="light"
       width="250"
       collapsible
+      //@ts-ignore
       collapsed={collapsed}
+      //@ts-ignore
       onCollapse={(collapsed: boolean) => setCollapsed(collapsed)}
     >
       <Menu

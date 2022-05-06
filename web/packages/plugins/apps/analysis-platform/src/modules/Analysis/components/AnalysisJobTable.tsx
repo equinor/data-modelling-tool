@@ -46,6 +46,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
   return (
     <Table.Row
       onClick={() => {
+        //@ts-ignore
         document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
       }}
     >
@@ -80,7 +81,7 @@ const AnalysisJobTable = (props: AnalysisJobTableProps) => {
 
   return (
     <>
-      <Table density="comfortable" style={{ width: '100%' }}>
+      <Table style={{ width: '100%' }}>
         <Table.Caption>
           <Typography variant="h3">Runs</Typography>
         </Table.Caption>

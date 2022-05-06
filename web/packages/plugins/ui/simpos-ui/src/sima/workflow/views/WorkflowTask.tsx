@@ -3,17 +3,15 @@ import { MakeDiagram } from './Diagram'
 
 import { VerticalTabs, TabProp } from './VerticalTabs'
 
-//import {useEffect, useState} from 'react'
-import { useDocument } from '@dmt/common'
-import { DmtUIPlugin } from '@dmt/core-plugins'
+import { useDocument, DmtUIPlugin } from '@dmt/common'
 
 const WorkflowTask_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, attribute, updateDocument } = props
+  const { dataSourceId, documentId, updateDocument } = props
 
   const [document, isLoading, setDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
-    attribute
+    true
   )
 
   if (isLoading) {
@@ -27,11 +25,9 @@ const WorkflowTask_Component = (props: DmtUIPlugin) => {
   return <WorkflowTask document={document} />
 }
 
-const WorkflowTask = ({ document }) => {
-  console.log(document)
-
-  var tabs = []
-  document.workflows.map((wf, index) =>
+const WorkflowTask = ({ document }: any) => {
+  var tabs: any = []
+  document.workflows.map((wf: any, index: number) =>
     tabs.push({ label: wf.name, content: <MakeDiagram document={wf} /> })
   )
 

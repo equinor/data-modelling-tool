@@ -3,7 +3,7 @@ param location string = 'norwayeast'
 param environment string
 
 resource jobStore 'Microsoft.Cache/redis@2021-06-01' = {
-  name: 'dtm-jobStore-${environment}'
+  name: 'dmt-jobStore-${environment}'
   location: location
   properties: {
     enableNonSslPort: false
@@ -26,6 +26,10 @@ resource database 'Microsoft.DocumentDB/databaseAccounts@2021-10-15'= {
   }
   kind: 'MongoDB'
   properties: {
+    capacity:{
+      totalThroughputLimit: -1
+    }
+    // autoScale may only be set per database, not databaseAccount :(
     databaseAccountOfferType: 'Standard'
     apiProperties:{
       serverVersion: '4.0'

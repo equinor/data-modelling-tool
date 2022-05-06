@@ -7,13 +7,9 @@ import * as React from 'react'
 import { CanvasWidget } from '@projectstorm/react-canvas-core'
 import { DemoCanvasWidget } from '../helpers/DemoCanvasWidget'
 
-//import {useEffect, useState} from 'react'
-import { useDocument } from '@dmt/common'
-import { DmtUIPlugin } from '@dmt/core-plugins'
-
 const idFlag = '__id'
 
-const makeNode = (snode, ports) => {
+const makeNode = (snode: any, ports: any) => {
   var node = undefined
 
   if (snode.type.includes('sima/workflow/WorkflowInput')) {
@@ -155,14 +151,14 @@ const makeNode = (snode, ports) => {
   return node
 }
 
-const makeLink = (slink, ports) => {
+const makeLink = (slink: any, ports: any) => {
   var link = undefined
 
   let port1 = ports[slink.fromSlot[idFlag]]
   let port2 = ports[slink.toSlot[idFlag]]
 
   try {
-    link = port1.link<DefaultLinkModel>(port2)
+    link = port1.link(port2)
   } catch (err) {
     return link
   }
@@ -172,7 +168,7 @@ const makeLink = (slink, ports) => {
   return link
 }
 
-const MakeDiagram = ({ document }) => {
+const MakeDiagram = ({ document }: any) => {
   console.log(document)
 
   //1) setup the diagram engine

@@ -157,3 +157,4 @@ api/first-run-false
 /api/src/home/analysis-platform/data/AnalysisPlatformDS/Data/sima_test/srs.stask
 /scripts/analysis.json
 /scripts/testSTask.stask
+/web/packages/home/build/
