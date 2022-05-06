@@ -91,26 +91,26 @@ def run(input_id: str = None):
     remote_run = config.get("remote_run", False)
     sima_input = config["input"]
     pp.pprint(sima_input)
+    print("")
 
     # Save it for later use in the "upload" command
     with open(settings.CONFIG_FILE, "w") as sima_config_file:
         sima_config_file.write(json.dumps(config))
 
-    input_file = config.get("simaInputFilePath", settings.SIMA_INPUT_FILE)
-    output_file = config.get("simaOutputFilePath", settings.RESULT_FILE)
+    input_file = Path(config.get("simaInputFilePath", settings.SIMA_INPUT_FILE)).absolute()
+    output_file = Path(config.get("simaOutputFilePath", settings.RESULT_FILE)).absolute()
     if not validate_path_is_under_location(input_file, settings.SRE_HOME) \
             or not validate_path_is_under_location(output_file, settings.SRE_HOME):
         raise ValueError(
             f"Invalid input/output paths ('{input_file}', '{output_file}'). Must be under '{settings.SRE_HOME}'")
 
-    print(f"Will create SIMA input file at '{Path(input_file).absolute()}'")
-    print(f"Will create SIMA output file at '{Path(output_file).absolute()}'")
+    print(f"Will create SIMA input file at '{input_file}'")
     # Ensure directories
     os.makedirs(Path(input_file).parent, exist_ok=True)
     os.makedirs(Path(output_file).parent, exist_ok=True)
 
     # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
-    with open(f"{input_file}", "w") as simulation_config_file:
+    with open(input_file, "w") as simulation_config_file:
         simulation_config_file.write(json.dumps(sima_input))
 
     # Prepares the local environment with the given stask and workflow configuration
@@ -164,7 +164,8 @@ def upload_result(reference_target: str = None):
 
     target_data_source, target_directory = config_entity["resultPath"].split("/", 1)
 
-    output_file = config_entity.get("simaOutputFilePath", settings.RESULT_FILE)
+    output_file = Path(config_entity.get("simaOutputFilePath", settings.RESULT_FILE)).absolute()
+    print(f"Will read SIMA output file from '{output_file}'")
 
     with open(output_file, "r") as result_file:
         result_entity = json.loads(result_file.read())

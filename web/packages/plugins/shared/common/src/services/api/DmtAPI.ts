@@ -1,6 +1,5 @@
 import { IDmtAPI } from './interfaces/DmtAPI'
 import axios from 'axios'
-import { Configuration, DefaultApi } from './configs/gen'
 
 export class DmtAPI implements IDmtAPI {
   token: string

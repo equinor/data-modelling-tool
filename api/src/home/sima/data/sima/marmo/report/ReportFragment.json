@@ -12,18 +12,7 @@
         "description": "Some external plugin",
         "plugin": "simpos-report-view",
         "attributes": []
-      },
-   {
-      "name": "Tabs",
-      "label": "Tabs",
-      "type": "system/SIMOS/UiRecipe",
-      "plugin": "tabs",
-      "category": "container",
-      "config": {
-        "type": "system/SIMOS/UiPluginSelectorProps",
-        "subCategories": []
       }
-    }
  ]
 }
 

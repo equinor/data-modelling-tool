@@ -29,7 +29,7 @@ const SRSSceForm_Component = (props: DmtUIPlugin) => {
   // console.log(document)
   // console.log("*** testing form");
 
-  return <SRSSceForm document={document} updateEntity={updateDocument} />
+  return <SRSSceForm document={document} updateEntity={setDocument} />
 }
 
 export { SRSSceForm_Component as SRSSceForm }

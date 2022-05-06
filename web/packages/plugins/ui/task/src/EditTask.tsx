@@ -90,7 +90,8 @@ export const EditTask = (props: DmtUIPlugin) => {
                   }
                   onChange={() => {}}
                   onClick={() => {
-                    if (!formData?.applicationInput) return
+                    if (!Object.keys(formData?.applicationInput || {}).length)
+                      return
                     if (onOpen)
                       onOpen({
                         attribute: 'applicationInput',
@@ -175,6 +176,8 @@ export const EditTask = (props: DmtUIPlugin) => {
                         },
                         absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
                         onSubmit: (data: any) =>
+                          setFormData({ ...formData, runner: data }),
+                        onChange: (data: any) =>
                           setFormData({ ...formData, runner: data }),
                       })
                     }
