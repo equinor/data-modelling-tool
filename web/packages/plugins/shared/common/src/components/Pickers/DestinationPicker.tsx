@@ -37,7 +37,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
           type="string"
           value={truncatePathString(formData)}
           onChange={() => {}}
-          placeholder="Select"
+          placeholder="Select destination"
           onClick={() => setShowModal(true)}
         />
       </Tooltip>

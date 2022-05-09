@@ -52,7 +52,7 @@ export function NewEntityButton(props: {
             marginBottom: '20px',
           }}
         >
-          <Label label={typeToCreate} />
+          <Label label={'Folder'} />
           <DestinationPicker
             onChange={(value: any) => {
               setSaveDestination(value)
