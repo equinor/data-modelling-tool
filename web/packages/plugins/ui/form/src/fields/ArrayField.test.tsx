@@ -1,4 +1,4 @@
-import { mockGetBlueprint } from '../test-utils'
+import { mockBlueprintGet } from '../test-utils'
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { Form } from '../Form'
 import React from 'react'
@@ -10,7 +10,7 @@ describe('ArrayField', () => {
 
   describe('Unsupported array', () => {
     it('should warn on wrong attribute type', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'MyBlueprint',
           type: 'system/SIMOS/Blueprint',
@@ -53,7 +53,7 @@ describe('ArrayField', () => {
     }
 
     it('should contain no field in the list by default', async () => {
-      mockGetBlueprint([blueprint])
+      mockBlueprintGet([blueprint])
       const { container } = render(<Form type="MyBlueprint" />)
       await waitFor(() => {
         expect(container.querySelectorAll(` input[type=text]`).length).toBe(0)
@@ -61,7 +61,7 @@ describe('ArrayField', () => {
     })
 
     it('should have an add button', async () => {
-      mockGetBlueprint([blueprint])
+      mockBlueprintGet([blueprint])
       const { container } = render(<Form type="MyBlueprint" />)
       await waitFor(() => {
         expect(screen.getByText('Add')).toBeDefined()
@@ -69,7 +69,7 @@ describe('ArrayField', () => {
     })
 
     it('should add a new field when clicking the add button', async () => {
-      mockGetBlueprint([blueprint])
+      mockBlueprintGet([blueprint])
       const { container } = render(<Form type="MyBlueprint" />)
       await waitFor(() => {
         fireEvent.click(screen.getByText('Add'))
@@ -78,7 +78,7 @@ describe('ArrayField', () => {
     })
 
     it('should fill an array field with data', async () => {
-      mockGetBlueprint([blueprint])
+      mockBlueprintGet([blueprint])
       const formData = {
         array: ['foo', 'bar'],
       }
@@ -94,7 +94,7 @@ describe('ArrayField', () => {
     })
 
     it('should render the input widgets with the expected ids', async () => {
-      mockGetBlueprint([blueprint])
+      mockBlueprintGet([blueprint])
       const formData = {
         array: ['foo', 'bar'],
       }
@@ -134,7 +134,7 @@ describe('ArrayField', () => {
         ],
       }
 
-      mockGetBlueprint([parentBlueprint, nestedBlueprint])
+      mockBlueprintGet([parentBlueprint, nestedBlueprint])
       const formData = {
         array: [
           {
@@ -180,7 +180,7 @@ describe('ArrayField', () => {
     }
 
     it('should render two lists of inputs inside of a list', async () => {
-      mockGetBlueprint([outer, inner])
+      mockBlueprintGet([outer, inner])
       const formData = {
         array: [
           {
@@ -199,7 +199,7 @@ describe('ArrayField', () => {
     })
 
     it.skip('should add an inner when clicking the add button', async () => {
-      mockGetBlueprint([outer, inner])
+      mockBlueprintGet([outer, inner])
       const { container } = render(<Form type="Root" />)
       await waitFor(() => {
         fireEvent.click(screen.getByTestId('add-array'))

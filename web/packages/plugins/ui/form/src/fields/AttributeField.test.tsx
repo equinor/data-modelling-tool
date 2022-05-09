@@ -1,4 +1,4 @@
-import { mockGetBlueprint } from '../test-utils'
+import { mockBlueprintGet } from '../test-utils'
 import { render, screen, waitFor } from '@testing-library/react'
 import { Form } from '../Form'
 import React from 'react'
@@ -6,7 +6,7 @@ import React from 'react'
 describe('AttributeField', () => {
   describe('Unsupported field', () => {
     it('should warn on invalid type (missing blueprint(', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',

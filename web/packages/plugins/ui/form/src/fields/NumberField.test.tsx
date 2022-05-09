@@ -1,13 +1,13 @@
 import React from 'react'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { Form } from '../Form'
-import { mockGetBlueprint } from '../test-utils'
+import { mockBlueprintGet } from '../test-utils'
 import userEvent from '@testing-library/user-event'
 
 describe('NumberField', () => {
   describe('TextWidget', () => {
     it('should render a single number field', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -28,7 +28,7 @@ describe('NumberField', () => {
     })
 
     it('should assign a default value', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -62,7 +62,7 @@ describe('NumberField', () => {
     })
 
     it('should fill field with data', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -93,7 +93,7 @@ describe('NumberField', () => {
     })
 
     it('should handle a change event', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -123,7 +123,7 @@ describe('NumberField', () => {
     })
 
     it('should handle optional', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -148,7 +148,7 @@ describe('NumberField', () => {
     })
 
     it('should not call onSubmit if non-optional field are missing value', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
