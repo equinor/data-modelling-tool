@@ -104,12 +104,12 @@ export class TreeNode {
   async fetch() {
     const [dataSourceId, documentId] = this.nodeId.split('/', 2)
     return this.tree.dmssApi
-      .getDocumentById({
+      .documentGetById({
         dataSourceId: dataSourceId,
         documentId: documentId,
         depth: 0,
       })
-      .then((doc: any) => doc)
+      .then((response: any) => response.data)
   }
 
   async expand() {
@@ -117,16 +117,17 @@ export class TreeNode {
     if (this.type !== 'dataSource') {
       const [dataSourceId, documentId] = this.nodeId.split('/', 2)
       return this.tree.dmssApi
-        .getDocumentById({
+        .documentGetById({
           dataSourceId: dataSourceId,
           documentId: documentId,
           depth: 0,
         })
         .then((response: any) => {
-          if (response.type === BlueprintEnum.PACKAGE) {
-            this.children = createFolderChildren(response, this)
+          const data = response.data
+          if (data.type === BlueprintEnum.PACKAGE) {
+            this.children = createFolderChildren(data, this)
           } else {
-            this.children = createContainedChildren(response, this)
+            this.children = createContainedChildren(data, this)
           }
         })
         .catch((error: Error) => {
@@ -164,14 +165,14 @@ export class TreeNode {
       throw 'Entities can only be added to packages'
 
     return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) => {
-      return this.tree.dmssApi.generatedDmssApi
+      return this.tree.dmssApi
         .explorerAddToPath({
           dataSourceId: this.dataSource,
           document: JSON.stringify(newEntity),
           directory: this.pathFromRootPackage(),
           updateUncontained: false,
         })
-        .then((uuid: string) => JSON.parse(uuid).uid)
+        .then((response: any) => response.data.uid)
     })
   }
 }
@@ -209,13 +210,13 @@ export class Tree {
     await Promise.all(
       this.dataSources.map((dataSource: string) =>
         this.dmssApi
-          .searchDocuments({
+          .search({
             // Find all rootPackages in every dataSource
             body: { type: BlueprintEnum.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],
           })
-          .then((searchResult: Object) => {
-            Object.values(searchResult).forEach((rootPackage: any) => {
+          .then((response: any) => {
+            Object.values(response.data).forEach((rootPackage: any) => {
               const rootPackageNode = new TreeNode( // Add the rootPackage nodes to the dataSource
                 this,
                 `${dataSource}/${rootPackage._id}`,

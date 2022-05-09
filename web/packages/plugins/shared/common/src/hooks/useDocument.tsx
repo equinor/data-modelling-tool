@@ -20,9 +20,14 @@ export const useDocument = (
     let depth = 1
     if (resolved) depth = 999
     dmssAPI
-      .getDocumentById({ dataSourceId, documentId, depth })
-      .then((document) => {
-        setDocument(document)
+      .documentGetById({
+        dataSourceId: dataSourceId,
+        documentId: documentId,
+        depth: depth,
+      })
+      .then((response: any) => {
+        const data = response.data
+        setDocument(data)
         setError(null)
       })
       .catch((error: Error) => setError(error))
@@ -32,9 +37,9 @@ export const useDocument = (
   function updateDocument(newDocument: Object, notify: boolean) {
     setLoading(true)
     dmssAPI
-      .updateDocumentById({
-        dataSourceId,
-        documentId,
+      .documentUpdate({
+        dataSourceId: dataSourceId,
+        documentId: documentId,
         data: JSON.stringify(newDocument),
         updateUncontained: true,
       })

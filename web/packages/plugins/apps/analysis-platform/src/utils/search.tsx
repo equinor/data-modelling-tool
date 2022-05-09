@@ -1,4 +1,4 @@
-import { DmssAPI } from '@dmt/common/services/api/DmssAPI'
+import { DmssAPI } from '@dmt/common'
 
 export const search = async (
   dataSourceId: string,
@@ -7,10 +7,10 @@ export const search = async (
 ) => {
   const dmssAPI = new DmssAPI(token)
 
-  let result = await dmssAPI.searchDocuments({
+  let response = await dmssAPI.searchDocuments({
     dataSources: [dataSourceId],
     body: query,
     sortByAttribute: 'name',
   })
-  return Object.values(result)
+  return Object.values(response.data)
 }

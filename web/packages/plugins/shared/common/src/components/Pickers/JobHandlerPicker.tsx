@@ -21,9 +21,11 @@ export const JobHandlerPicker = (props: {
 
   const handleChange = (blueprintId: string) => {
     dmssApi
-      .resolveBlueprintId(`WorkflowDS/${blueprintId}`)
-      .then((res: any) => {
-        onChange(res.data)
+      .blueprintResolve({
+        absoluteId: `WorkflowDS/${blueprintId}`,
+      })
+      .then((response: any) => {
+        onChange(response.data)
       })
       .catch((error: any) => console.error(error))
   }

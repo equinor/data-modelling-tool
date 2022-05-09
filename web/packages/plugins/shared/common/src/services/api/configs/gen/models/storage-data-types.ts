@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+
+
 /**
  * An enumeration.
  * @export
@@ -25,15 +27,5 @@ export enum StorageDataTypes {
     Blob = 'blob'
 }
 
-export function StorageDataTypesFromJSON(json: any): StorageDataTypes {
-    return StorageDataTypesFromJSONTyped(json, false);
-}
 
-export function StorageDataTypesFromJSONTyped(json: any, ignoreDiscriminator: boolean): StorageDataTypes {
-    return json as StorageDataTypes;
-}
-
-export function StorageDataTypesToJSON(value?: StorageDataTypes | null): any {
-    return value as any;
-}
 

@@ -15,15 +15,15 @@ export const createAnalysis = (
   const dmssAPI = new DmssAPI(token)
 
   return new Promise((resolve, reject) => {
-    dmssAPI.generatedDmssApi
+    dmssAPI
       .explorerAddToPath({
         dataSourceId: DEFAULT_DATASOURCE_ID,
         document: JSON.stringify(body),
         directory: ANALYSIS_PATH,
         files: files.filter((item: any) => item !== undefined),
       })
-      .then((response: string) => {
-        const data = JSON.parse(response)
+      .then((response: any) => {
+        const data = response.data
         resolve(data.uid)
       })
       .catch((err: any) => {

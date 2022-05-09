@@ -31,7 +31,7 @@ const AddDataSourceComponent = () => {
   const handleOnSubmit = (data: any) => {
     data.type = selectedDatasourceType
     dmssAPI
-      .saveDataSource({ dataSourceId: data.name, dataSourceRequest: data })
+      .dataSourceSave({ dataSourceId: data.name, dataSourceRequest: data })
       .then(() => {
         NotificationManager.success(`Created datasource ${data.name}`)
         // @todo fix when endpoint is ready.

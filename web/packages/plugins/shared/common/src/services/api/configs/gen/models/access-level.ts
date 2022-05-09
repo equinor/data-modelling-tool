@@ -12,26 +12,18 @@
  * Do not edit the class manually.
  */
 
+
+
 /**
  * An enumeration.
  * @export
  * @enum {string}
  */
 export enum AccessLevel {
-    NUMBER_2 = 2,
-    NUMBER_1 = 1,
-    NUMBER_0 = 0
+    WRITE = 2,
+    READ = 1,
+    NONE = 0
 }
 
-export function AccessLevelFromJSON(json: any): AccessLevel {
-    return AccessLevelFromJSONTyped(json, false);
-}
 
-export function AccessLevelFromJSONTyped(json: any, ignoreDiscriminator: boolean): AccessLevel {
-    return json as AccessLevel;
-}
-
-export function AccessLevelToJSON(value?: AccessLevel | null): any {
-    return value as any;
-}
 

@@ -2,7 +2,7 @@ import { render, screen, waitFor } from '@testing-library/react'
 import React, { useEffect, useState } from 'react'
 import { act } from 'react-dom/test-utils'
 import { Form } from './Form'
-import { mockGetBlueprint } from './test-utils'
+import { mockBlueprintGet } from './test-utils'
 
 describe('Form', () => {
   afterEach(() => {
@@ -18,7 +18,7 @@ describe('Form', () => {
 
   describe('With Type', () => {
     it('should render attributes', async () => {
-      const mock = mockGetBlueprint([
+      const mock = mockBlueprintGet([
         {
           type: 'system/SIMOS/Blueprint',
           name: 'Root',
@@ -52,7 +52,7 @@ describe('Form', () => {
 
   describe('Nested', () => {
     it('should render nested attributes', async () => {
-      const mock = mockGetBlueprint([
+      const mock = mockBlueprintGet([
         {
           type: 'system/SIMOS/Blueprint',
           name: 'Root',
@@ -96,7 +96,7 @@ describe('Form', () => {
 
   describe('TextareaWidget', () => {
     it('should render textarea', async () => {
-      const mock = mockGetBlueprint([
+      const mock = mockBlueprintGet([
         {
           type: 'system/SIMOS/Blueprint',
           name: 'Root',

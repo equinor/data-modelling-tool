@@ -13,6 +13,25 @@
  */
 
 
-export * from "./api";
-export * from "./configuration";
-export * from "./models";
+
+/**
+ * 
+ * @export
+ * @interface MoveRequest
+ */
+export interface MoveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveRequest
+     */
+    source: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof MoveRequest
+     */
+    destination: string;
+}
+
+

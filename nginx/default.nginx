@@ -51,9 +51,6 @@ server {
         proxy_set_header X-Forwarded-For $remote_addr;
         proxy_set_header X-Forwarded-Port $server_port;
         proxy_set_header X-Request-Start $msec;
-
-        # Code generation may take a while
-        proxy_read_timeout 180;
     }
     location / {
         proxy_pass http://web:3000/;

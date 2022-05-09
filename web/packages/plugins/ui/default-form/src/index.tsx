@@ -1,5 +1,4 @@
 import * as React from 'react'
-
 import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import { useEffect, useState, useContext } from 'react'
 import { Blueprint } from './domain/Blueprint'
@@ -20,9 +19,10 @@ import {
 } from '@dmt/common'
 
 function useExplorer(dmssAPI: DmssAPI) {
-  const getBlueprint = (typeRef: string) => dmssAPI.getBlueprint({ typeRef })
+  const blueprintGet = (typeRef: string) =>
+    dmssAPI.blueprintGet({ typeRef: typeRef })
   return {
-    getBlueprint,
+    blueprintGet,
   }
 }
 

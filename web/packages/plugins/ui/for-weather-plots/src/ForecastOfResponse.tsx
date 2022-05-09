@@ -84,7 +84,7 @@ export function FoRResultWrapper(props: {
     simulationConfig.plots = plotWindowHandlers.getPlots()
 
     dmssAPI
-      .updateDocumentById({
+      .documentUpdate({
         dataSourceId: DEFAULT_DATASOURCE_ID,
         documentId: dottedId.split('.', 1)[0],
         data: JSON.stringify(simulationConfig),

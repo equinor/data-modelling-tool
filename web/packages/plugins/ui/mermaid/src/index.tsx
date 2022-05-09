@@ -59,9 +59,10 @@ const createChart = (tree: Node): string => {
 }
 
 function useExplorer(dmssAPI: DmssAPI) {
-  const getBlueprint = (typeRef: string) => dmssAPI.getBlueprint({ typeRef })
+  const blueprintGet = (typeRef: string) =>
+    dmssAPI.blueprintGet({ typeRef: typeRef })
   return {
-    getBlueprint,
+    blueprintGet,
   }
 }
 

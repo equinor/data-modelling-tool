@@ -13,6 +13,25 @@
  */
 
 
-export * from "./api";
-export * from "./configuration";
-export * from "./models";
+
+/**
+ * 
+ * @export
+ * @interface RemoveByPathRequest
+ */
+export interface RemoveByPathRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof RemoveByPathRequest
+     */
+    directory: string;
+    /**
+     * 
+     * @type {string}
+     * @memberof RemoveByPathRequest
+     */
+    data_source_id?: string;
+}
+
+

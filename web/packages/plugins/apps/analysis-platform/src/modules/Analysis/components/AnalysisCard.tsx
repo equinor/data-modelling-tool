@@ -71,7 +71,7 @@ const RunAnalysisButton = (props: any) => {
     }
 
     dmssAPI
-      .addDocumentToParent({
+      .explorerAdd({
         absoluteRef: `${analysisAbsoluteReference}.jobs`,
         updateUncontained: false,
         body: job,

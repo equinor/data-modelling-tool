@@ -12,6 +12,8 @@
  * Do not edit the class manually.
  */
 
+
+
 /**
  * An enumeration.
  * @export
@@ -23,15 +25,5 @@ export enum RepositoryType {
     LocalStorage = 'localStorage'
 }
 
-export function RepositoryTypeFromJSON(json: any): RepositoryType {
-    return RepositoryTypeFromJSONTyped(json, false);
-}
 
-export function RepositoryTypeFromJSONTyped(json: any, ignoreDiscriminator: boolean): RepositoryType {
-    return json as RepositoryType;
-}
-
-export function RepositoryTypeToJSON(value?: RepositoryType | null): any {
-    return value as any;
-}
 

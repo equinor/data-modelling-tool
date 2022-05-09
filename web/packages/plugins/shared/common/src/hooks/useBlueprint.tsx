@@ -12,9 +12,10 @@ export const useBlueprint = (typeRef: string) => {
   useEffect(() => {
     setLoading(true)
     dmssAPI
-      .getBlueprint({ typeRef: typeRef })
-      .then((document) => {
-        setBlueprint(document)
+      .blueprintGet({ typeRef: typeRef })
+      .then((response: any) => {
+        const data = response.data
+        setBlueprint(data)
         setError(null)
       })
       .catch((error: Error) => setError(error))

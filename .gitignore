@@ -121,6 +121,9 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# vscode
+.vscode/
+
 # dotenv environment variables file
 .env
 reset-db.env

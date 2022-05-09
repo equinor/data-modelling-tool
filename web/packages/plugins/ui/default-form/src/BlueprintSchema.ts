@@ -9,7 +9,7 @@ import {
 // @ts-ignore
 import objectPath from 'object-path'
 import { BlueprintAttribute } from './domain/BlueprintAttribute'
-import { DmssAPI, IDmssAPI } from '@dmt/common'
+import { DmssAPI } from '@dmt/common'
 
 interface IBlueprintSchema {
   getSchema: () => object
@@ -32,7 +32,7 @@ export class BlueprintSchema implements IBlueprintSchema {
   private blueprintType: BlueprintType
   private blueprint: Blueprint
   private blueprintProvider: Function
-  private dmssAPI: IDmssAPI
+  private dmssAPI: DmssAPI
 
   constructor(
     blueprintType: BlueprintType,
@@ -322,7 +322,7 @@ export class BlueprintSchema implements IBlueprintSchema {
             `Could not fetch document by path: ${dataSourceId}/${path}. (${error})`
           )
         })
-      const document = response
+      const document = response.data
       if (document) {
         property.title = attr.name
         property.type = 'string'

@@ -6,7 +6,7 @@ import DataSourceReducer, {
   initialState,
 } from './DataSourcesReducer'
 import { DmssAPI } from '../services'
-import { DataSource } from '../services'
+import { DataSource, DataSources } from '../services'
 
 export interface IModels {
   dataSources: DataSource[]
@@ -24,7 +24,8 @@ export const useDataSources = (dmssAPI: DmssAPI): IDataSources => {
 
   const fetchData = async () => {
     try {
-      const dataSources = await dmssAPI.getAllDataSources()
+      const dataSources = await dmssAPI.dataSourceGetAll()
+      //@ts-ignore
       dispatch(DocumentActions.addDataSources(dataSources))
     } catch (error) {
       console.error(error)

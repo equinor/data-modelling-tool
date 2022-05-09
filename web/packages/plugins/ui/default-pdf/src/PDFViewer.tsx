@@ -36,10 +36,14 @@ export const ViewerPDFPlugin = (props: any) => {
   useEffect(() => {
     setError(null)
     dmssAPI
-      .blobGetById({ dataSourceId, blobId: document.blob._blob_id })
-      .then((result: Blob) => {
+      .blobGetById({
+        dataSourceId: dataSourceId,
+        blobId: document.blob._blob_id,
+      })
+      .then((response: any) => {
+        const data = response.data
         // @ts-ignore
-        const blob = new Blob([result], { type: 'application/pdf' })
+        const blob = new Blob([data], { type: 'application/pdf' })
         // @ts-ignore
         setBlobUrl(window.URL.createObjectURL(blob))
       })
