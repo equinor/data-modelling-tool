@@ -56,17 +56,20 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
       <Table.Cell>{}</Table.Cell>
       <Table.Cell>{jobStatus}</Table.Cell>
       <Table.Cell>
-        <ClickableLabel
-          onClick={(e) => {
-            window.open(
-              `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`,
-              '_blank'
-            )
-            e.stopPropagation()
-          }}
-        >
-          Open
-        </ClickableLabel>
+        {Object.keys(job?.result || {}).length ? (
+          <ClickableLabel
+            onClick={() => {
+              window.open(
+                `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.result?._id}`,
+                '_blank'
+              )
+            }}
+          >
+            Open
+          </ClickableLabel>
+        ) : (
+          <>None</>
+        )}
       </Table.Cell>
     </Table.Row>
   )
