@@ -1,5 +1,14 @@
 #! /usr/bin/env bash
 
+##############################################################################
+#  This script does this;
+#   1. Download the analysis given as analysisId input (first argument)
+#   2. Create a new SimaApplicationConfig based on the old with the CI's generated stask file as the "stask" attribute
+#   3. Upload the SimaApplicationConfig
+#   4. Create a job entity with the SimaApplicationConfig as "input"
+#   5. Start the job
+##############################################################################
+
 set -eu # Will cause any error to abort the script execution
 
 DMSS_API=${DMSS_API:="http://localhost:8000/api/v1"}
@@ -7,7 +16,7 @@ DMT_JOB_API=${DMT_JOB_API:="http://localhost:5000/api/job"}
 ANALYSIS_ID=${1:-"AnalysisPlatformDS/4483c9b0-d505-46c9-a157-94c79f4d7a6a"}
 STASK_BLOB_PATH=${2:-"./testSTask.stask"}
 TOKEN=${DMSS_SECRET_TOKEN:=""}  # Should be fed in as a github secret
-GITHUB_REF=${GITHUB_REF:="refs/heads/feature-branch-1"}  # Sets a default value incase it is not run in Github Actions CI
+GITHUB_REF=${GITHUB_REF:="refs/heads/branch-name-goes-here"}  # Sets a default value incase it is not run in Github Actions CI
 GITHUB_SHA=${GITHUB_SHA:="thisisalongmocksha"}
 SHORT_GIT_SHA=$(echo "$GITHUB_SHA" | tail -c 9)
 
@@ -92,7 +101,7 @@ function create_job_document(){
   echo '{"type":"WorkflowDS/Blueprints/Job","name":"myJob","label":"Example local container job","triggeredBy":"SIMA CI Pipeline","started":"REPLACE_TIMESTAMP",
     "referenceTarget":"REPLACE_REFERENCE_TARGET",
     "result":{},
-    "runner":{"type":"WorkflowDS/Blueprints/jobHandlers/Container","image":"datamodelingtool.azurecr.io/dmt-job/srs:latest"},
+    "runner":{"type":"WorkflowDS/Blueprints/jobHandlers/AzureContainer","image":"datamodelingtool.azurecr.io/dmt-job/srs:latest"},
     "applicationInput":{"_id":"REPLACE_APP_INPUT","type":"AnalysisPlatformDS/Blueprints/SIMAApplicationInput","name":"simaTestAppInput","contained":false}}' | \
   jq --arg name "$NAME" --arg refTarget "$REF_TARGET" --arg appInput "$APP_INPUT_ID" \
     '.name = $name | .referenceTarget = $refTarget | .applicationInput._id = $appInput'
@@ -137,7 +146,10 @@ echo "----------------------------------------"
 SIMA_CONFIG_UID=$(upload_document 'AnalysisPlatformDS' \
   'Data/ApplicationInputs' \
   "$SIMA_CONFIG" \
-  "$STASK_BLOB_PATH")
+  "$STASK_BLOB_PATH" | jq .uid)
+
+SIMA_CONFIG_UID=$(echo $SIMA_CONFIG_UID | tr -d '"')
+
 echo "Uploaded SIMAApplicationInput with id '$SIMA_CONFIG_UID'"
 echo "-----------------  OK  ------------------"
 
@@ -162,7 +174,7 @@ echo "Triggering job..."
 echo "----------------------------------------"
 JOB_ID="$ANALYSIS_ID.jobs.$RUNS_SO_FAR"
 echo $JOB_ID
-curl --request 'POST' --fail "${DMT_JOB_API}/$JOB_ID" --header 'accept: application/json'
+curl --request 'POST' --fail --header 'accept: application/json' --header "Access-Key: ${TOKEN}" "${DMT_JOB_API}/$JOB_ID"
 echo ""
 echo "-------------------  OK ---------------------"
 echo "Script completed successfully. Exiting..."
