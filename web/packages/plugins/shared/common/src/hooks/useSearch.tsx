@@ -1,8 +1,11 @@
 import { useEffect, useState, useContext } from 'react'
 import { DmssAPI, AuthContext } from '@dmt/common'
 
-export const useSearch = (body: any, dataSourceId: string): any => {
-  const [searchResult, setSearchResult] = useState([])
+export function useSearch<T>(
+  body: any,
+  dataSourceId: string
+): [T[], boolean, boolean] {
+  const [searchResult, setSearchResult] = useState<T[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   // @ts-ignore
