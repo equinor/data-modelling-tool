@@ -2,7 +2,7 @@ import { DmtUIPlugin, UIPluginSelector, useDocument } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Button, Icon, Tooltip } from '@equinor/eds-core-react'
+import { Icon, Tooltip } from '@equinor/eds-core-react'
 
 interface ITabs {
   active: boolean
@@ -45,14 +45,7 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const {
-    documentId,
-    dataSourceId,
-    onSubmit,
-    onChange,
-    config,
-    document,
-  } = props
+  const { documentId, dataSourceId, config, document } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
@@ -66,10 +59,6 @@ export const TabsContainer = (props: DmtUIPlugin) => {
     if (!entity) return
     setFormData({ ...entity })
   }, [entity])
-
-  useEffect(() => {
-    if (onChange) onChange(formData)
-  }, [formData])
 
   if (!entity || Object.keys(formData).length === 0) return null
 
@@ -139,50 +128,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
           entity={childTabs[selectedTab].entity}
           categories={childTabs[selectedTab].categories}
-          onSubmit={(newFormData: any) =>
-            setFormData({
-              ...formData,
-              [selectedTab]: newFormData,
-            })
-          }
-          onChange={(newFormData: any) =>
-            setFormData({
-              ...formData,
-              [selectedTab]: newFormData,
-            })
-          }
         />
-      )}
-      {onChange === undefined && (
-        <div
-          style={{
-            justifyContent: 'space-around',
-            display: 'flex',
-            width: '100%',
-            margin: '5px',
-          }}
-        >
-          <Button
-            as="button"
-            variant="outlined"
-            color="danger"
-            onClick={() => setFormData({ ...entity })}
-          >
-            Reset
-          </Button>
-          <Button
-            as="button"
-            onClick={() => {
-              if (onSubmit) {
-                onSubmit(formData)
-              } else {
-                updateDocument(formData, true)
-              }
-            }}
-          >
-            Ok
-          </Button>
-        </div>
       )}
     </div>
   )
