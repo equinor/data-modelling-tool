@@ -31,4 +31,4 @@ jobs:
         - name: "Run"
           run: |
             DMSS_SECRET_TOKEN=${{ secrets.DMSS_TOKEN }}
-            ./upload-config-run-job.sh "$INPUTS_ANALYSIS_ID "$STASK_BLOB_PATH"
+            ./upload-config-run-job.sh "$INPUTS_ANALYSIS_ID" "$STASK_BLOB_PATH"
