@@ -24,7 +24,7 @@ jobs:
 
         - name: "Download script"
           run: |
-            curl "https://raw.githubusercontent.com/equinor/data-modelling-tool/test-ci-script/scripts/upload-config-run-job.sh" \
+            curl "https://raw.githubusercontent.com/equinor/data-modelling-tool/master/scripts/upload-config-run-job.sh" \
             --output "./upload-config-run-job.sh"
             chmod +x ./upload-config-run-job.sh
 

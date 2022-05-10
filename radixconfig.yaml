@@ -51,7 +51,7 @@ spec:
           imageTagName: latest
           variables:
             SCHEDULER_REDIS_HOST: dtm-jobStore-test.redis.cache.windows.net
-            PUBLIC_DMSS_API: https://dmss-data-modelling-tool-dev.radix.equinor.com/
+            PUBLIC_DMSS_API: https://dmss-data-modelling-tool-dev.radix.equinor.com
       ports:
         - name: flask
           port: 5000
