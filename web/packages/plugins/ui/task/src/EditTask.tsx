@@ -32,7 +32,6 @@ export const EditTask = (props: DmtUIPlugin) => {
     document,
     documentId,
     dataSourceId,
-    onSubmit,
     onOpen,
     onChange,
     categories,
@@ -188,12 +187,6 @@ export const EditTask = (props: DmtUIPlugin) => {
                     entity={formData?.runner || { type: defaultRunnerType }}
                     breadcrumb={false}
                     categories={categories}
-                    onChange={(data: any) =>
-                      setFormData({ ...formData, runner: data })
-                    }
-                    onSubmit={(data: any) =>
-                      setFormData({ ...formData, runner: data })
-                    }
                   />
                 )}
               </div>
@@ -201,30 +194,24 @@ export const EditTask = (props: DmtUIPlugin) => {
           </GroupWrapper>
         </HeaderWrapper>
 
-        {onChange === undefined && (
-          <div style={{ justifyContent: 'space-around', display: 'flex' }}>
-            <Button
-              as="button"
-              variant="outlined"
-              color="danger"
-              onClick={() => setFormData({ ...document })}
-            >
-              Reset
-            </Button>
-            <Button
-              as="button"
-              onClick={() => {
-                if (onSubmit) {
-                  onSubmit(formData)
-                } else {
-                  updateDocument(formData, true)
-                }
-              }}
-            >
-              Ok
-            </Button>
-          </div>
-        )}
+        <div style={{ justifyContent: 'space-around', display: 'flex' }}>
+          <Button
+            as="button"
+            variant="outlined"
+            color="danger"
+            onClick={() => setFormData({ ...document })}
+          >
+            Reset
+          </Button>
+          <Button
+            as="button"
+            onClick={() => {
+              updateDocument(formData, true)
+            }}
+          >
+            Ok
+          </Button>
+        </div>
       </div>
     </div>
   )

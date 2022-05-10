@@ -4,15 +4,14 @@ import {
   DmtUIPlugin,
   EntityPickerButton,
   EntityPickerInput,
-  PATH_INPUT_FIELD_WIDTH,
+  INPUT_FIELD_WIDTH,
   NewEntityButton,
   TReference,
   UploadFileButton,
-  INPUT_FIELD_WIDTH,
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import {
   Input,
   Label,
@@ -43,17 +42,13 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, onChange, onOpen, documentId } = props
+  const { document, dataSourceId, onOpen, documentId } = props
   const [formData, setFormData] = useState<any>({ ...document })
   const [_document, loading, updateDocument] = useDocument(
     dataSourceId,
     documentId,
-    true
+    false
   )
-
-  useEffect(() => {
-    if (onChange) onChange(formData)
-  }, [formData])
 
   function getNewSTaskBody(filename: string): any {
     return {
@@ -260,9 +255,24 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           </GroupWrapper>
         </HeaderWrapper>
 
-        {!onChange && (
-          <Button onClick={() => updateDocument(formData, true)}>Submit</Button>
-        )}
+        <div style={{ justifyContent: 'space-around', display: 'flex' }}>
+          <Button
+            as="button"
+            variant="outlined"
+            color="danger"
+            onClick={() => setFormData({ ...document })}
+          >
+            Reset
+          </Button>
+          <Button
+            as="button"
+            onClick={() => {
+              updateDocument(formData, true)
+            }}
+          >
+            Ok
+          </Button>
+        </div>
       </div>
     </div>
   )

@@ -42,7 +42,7 @@ export function useDocument<T>(
         dataSourceId: dataSourceId,
         documentId: documentId,
         data: JSON.stringify(newDocument),
-        updateUncontained: true,
+        updateUncontained: false,
       })
       .then(() => {
         setDocument(newDocument)
