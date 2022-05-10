@@ -11,7 +11,7 @@ export const JobHandlerPicker = (props: {
   const blueprintName = formData.split('/').pop()
   const { token } = useContext(AuthContext)
   const dmssApi = new DmssAPI(token)
-  const [searchResult] = useSearch(
+  const [searchResult] = useSearch<any>(
     {
       type: 'system/SIMOS/Blueprint',
       extends: ['WorkflowDS/Blueprints/jobHandlers/JobHandler'],
@@ -34,7 +34,7 @@ export const JobHandlerPicker = (props: {
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <Select
         onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-          handleChange(searchResult[e.target.value]._id)
+          handleChange(searchResult[parseInt(e.target.value)]._id)
         }
         value={searchResult.findIndex(
           (resultEntry: any) => resultEntry.name === blueprintName

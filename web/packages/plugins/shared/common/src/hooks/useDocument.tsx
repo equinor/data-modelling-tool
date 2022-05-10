@@ -4,14 +4,15 @@ import { DmssAPI } from '../services/api/DmssAPI'
 import { NotificationManager } from 'react-notifications'
 import { AuthContext } from '@dmt/common'
 
-export const useDocument = (
+export function useDocument<T>(
   dataSourceId: string,
   documentId: string,
-  resolved: boolean | undefined
-) => {
-  const [document, setDocument] = useState<any>(null)
+  resolved?: boolean | undefined
+): [T | null, boolean, Function, Error | null] {
+  const [document, setDocument] = useState<T | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
+  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -34,7 +35,7 @@ export const useDocument = (
       .finally(() => setLoading(false))
   }, [dataSourceId, documentId])
 
-  function updateDocument(newDocument: Object, notify: boolean) {
+  function updateDocument(newDocument: T, notify: boolean) {
     setLoading(true)
     dmssAPI
       .documentUpdate({
