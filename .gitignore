@@ -126,7 +126,7 @@ typings/
 
 # dotenv environment variables file
 .env
-reset-db.env
+scripts/reset-db.env
 
 # next.js build output
 .next

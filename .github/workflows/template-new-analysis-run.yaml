@@ -2,7 +2,7 @@
 on:
   workflow_dispatch:  # Only manual trigger
     inputs:
-      analysisId:
+      ANALYSIS_ID:
         description: 'Analysis to get config from, and append jobs to'
         required: true
         default: 'AnalysisPlatformDS/4483c9b0-d505-46c9-a157-94c79f4d7a6a'
@@ -31,4 +31,4 @@ jobs:
         - name: "Run"
           run: |
             DMSS_SECRET_TOKEN=${{ secrets.DMSS_TOKEN }}
-            ./upload-config-run-job.sh ${{ inputs.analysisId }} "$STASK_BLOB_PATH"
+            ./upload-config-run-job.sh "$INPUTS_ANALYSIS_ID "$STASK_BLOB_PATH"
