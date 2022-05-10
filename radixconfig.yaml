@@ -46,7 +46,7 @@ spec:
           imageTagName: production
           variables:
             SCHEDULER_REDIS_HOST: dtm-jobStore-prod.redis.cache.windows.net
-            PUBLIC_DMSS_API: https://dmss-data-modelling-tool-prod.radix.equinor.com/
+            PUBLIC_DMSS_API: https://dmss-data-modelling-tool-prod.radix.equinor.com
         - environment: dev
           imageTagName: latest
           variables:
