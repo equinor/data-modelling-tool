@@ -1,4 +1,4 @@
-FROM nginx:latest
+FROM nginx:alpine
 
 # Copy configs
 COPY nginx.conf /etc/nginx/nginx.conf
