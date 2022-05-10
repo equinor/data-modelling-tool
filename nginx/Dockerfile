@@ -2,11 +2,7 @@ FROM nginx:latest
 
 # Copy configs
 COPY nginx.conf /etc/nginx/nginx.conf
-
-COPY config/general.conf /etc/nginx/config/general.conf
-COPY config/security.conf /etc/nginx/config/security.conf
-COPY config/proxy.conf /etc/nginx/config/proxy.conf
-COPY config/websocket.conf /etc/nginx/config/websocket.conf
+COPY config/ /etc/nginx/config
 
 # Remove default nginx config
 RUN rm /etc/nginx/conf.d/default.conf
