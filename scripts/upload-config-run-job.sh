@@ -9,16 +9,17 @@
 #   5. Start the job
 ##############################################################################
 
-set -eu # Will cause any error to abort the script execution
+set -euo pipefail # Will cause any error to abort the script execution
 
 DMSS_API=${DMSS_API:="http://localhost:8000/api/v1"}
 DMT_JOB_API=${DMT_JOB_API:="http://localhost:5000/api/job"}
 ANALYSIS_ID=${1:-"AnalysisPlatformDS/4483c9b0-d505-46c9-a157-94c79f4d7a6a"}
 STASK_BLOB_PATH=${2:-"./testSTask.stask"}
+SIMA_CONFIG_PREFIX=${3:-"mySimaConfig"}
 TOKEN=${DMSS_SECRET_TOKEN:=""}  # Should be fed in as a github secret
 GITHUB_REF=${GITHUB_REF:="refs/heads/branch-name-goes-here"}  # Sets a default value incase it is not run in Github Actions CI
 GITHUB_SHA=${GITHUB_SHA:="thisisalongmocksha"}
-SHORT_GIT_SHA=$(echo "$GITHUB_SHA" | tail -c 9)
+SHORT_GIT_SHA=$(echo "$GITHUB_SHA" | head -c 9)
 
 echo "DMSS_API: '${DMSS_API}'"
 echo "DMT_JOB_API: '${DMT_JOB_API}'"
@@ -100,10 +101,11 @@ function create_job_document(){
 
   echo '{"type":"WorkflowDS/Blueprints/Job","name":"myJob","label":"Example local container job","triggeredBy":"SIMA CI Pipeline","started":"REPLACE_TIMESTAMP",
     "referenceTarget":"REPLACE_REFERENCE_TARGET",
+    "description": "REPLACE_DESCRIPTION",
     "result":{},
     "runner":{"type":"WorkflowDS/Blueprints/jobHandlers/AzureContainer","image":"datamodelingtool.azurecr.io/dmt-job/srs:latest"},
     "applicationInput":{"_id":"REPLACE_APP_INPUT","type":"AnalysisPlatformDS/Blueprints/SIMAApplicationInput","name":"simaTestAppInput","contained":false}}' | \
-  jq --arg name "$NAME" --arg refTarget "$REF_TARGET" --arg appInput "$APP_INPUT_ID" \
+  jq --arg name "$NAME" --arg description "${GITHUB_REF##*/}-${SHORT_GIT_SHA}" --arg refTarget "$REF_TARGET" --arg appInput "$APP_INPUT_ID" \
     '.name = $name | .referenceTarget = $refTarget | .applicationInput._id = $appInput'
 }
 
@@ -130,9 +132,8 @@ echo "Fetching analysis... '${ANALYSIS_ID}'"
 ANALYSIS=$(get_document "$ANALYSIS_ID" "./analysis.json")
 RUNS_SO_FAR=$(echo $ANALYSIS | jq '.jobs | length')
 echo "Runs so far: $RUNS_SO_FAR"
-NEW_SIMA_CONFIG_NAME="mySIMAConfig-$(echo $RANDOM | md5sum | head -c 5; echo;)"
+NEW_SIMA_CONFIG_NAME="${SIMA_CONFIG_PREFIX}-${GITHUB_REF##*/}-${SHORT_GIT_SHA}"
 
-# TODO: Might want to use git ref or commit-message for name
 echo "Creating SIMAApplicationInput with '${STASK_BLOB_PATH}' named '$NEW_SIMA_CONFIG_NAME'"
 echo "----------------------------------------"
 STASK=$(create_stask_document "$NEW_SIMA_CONFIG_NAME" "$STASK_BLOB_PATH")
