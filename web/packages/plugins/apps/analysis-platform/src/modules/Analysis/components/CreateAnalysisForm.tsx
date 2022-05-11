@@ -1,8 +1,9 @@
 import styled from 'styled-components'
 import React, { useState } from 'react'
-import { TAnalysis } from '../Types'
 import { Button, TextField } from '@equinor/eds-core-react'
 import { INPUT_FIELD_WIDTH } from '@dmt/common'
+import { TAnalysis } from '../../../Types'
+import { TASK } from '../../../const'
 
 type Errors = {
   [key: string]: any
@@ -30,14 +31,28 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
     description: '',
   })
   const [analysis, setAnalysis] = useState<TAnalysis>({
+    _id: '',
     name: data?.name || '',
     description: data?.description || '',
-    _id: '',
+    jobs: [],
+    label: '',
     created: '',
     updated: '',
     creator: '',
     schedule: '',
-    task: {},
+    task: {
+      type: TASK,
+      name: '',
+      description: '',
+      label: '',
+      inputType: '',
+      outputType: '',
+      applicationInput: {
+        _id: '',
+        name: '',
+        type: '',
+      },
+    },
   })
 
   const formHandler = (event: any) => {

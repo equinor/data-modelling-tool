@@ -49,7 +49,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, _loading, updateDocument, error] = useDocument(
+  const [entity, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
     true

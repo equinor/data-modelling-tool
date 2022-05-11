@@ -4,6 +4,7 @@
     "rootDir": "src",
     "outDir": "build",
     "noEmit": true,
+    "skipLibCheck": true,
     "jsx": "react",
     "lib": ["dom", "dom.iterable", "esnext"],
     "allowJs": true,

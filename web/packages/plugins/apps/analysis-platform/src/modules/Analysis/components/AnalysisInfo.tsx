@@ -1,10 +1,10 @@
 import { Button } from '@equinor/eds-core-react'
 import Icons from '../../../components/Design/Icons'
 import React, { useState } from 'react'
-import { TAnalysis, TTask } from '../Types'
 import styled from 'styled-components'
 import CreateAnalysisForm from './CreateAnalysisForm'
 import AnalysisCard from './AnalysisCard'
+import { TAnalysis, TTask } from '../../../Types'
 
 const OnRight = styled.div`
   display: flex;

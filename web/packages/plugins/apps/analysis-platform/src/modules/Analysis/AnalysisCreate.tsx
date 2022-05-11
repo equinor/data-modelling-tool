@@ -2,13 +2,13 @@ import React, { useContext, useState } from 'react'
 import { getUsername } from '../../utils/auth'
 import { AuthContext } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
-import { TAnalysis } from './Types'
 import { createAnalysis } from './CRUD'
 import { Blueprints } from '../../Enums'
 import { DEFAULT_DATASOURCE_ID, TASK } from '../../const'
 import CreateAnalysisForm from './components/CreateAnalysisForm'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { TAnalysis } from '../../Types'
 
 const AnalysisNew = (): JSX.Element => {
   const { tokenData, token } = useContext(AuthContext)

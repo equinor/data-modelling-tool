@@ -65,7 +65,10 @@ jobs:
         run: |
           docker login -u datamodelingtool -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
           docker pull $WEB_IMAGE
-          docker build --cache-from $WEB_IMAGE --target development --tag web-development ./web
+          docker build --cache-from $WEB_IMAGE --target development --tag web-dev ./web
 
       - name: "Web Tests"
         run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web yarn test
+
+      - name: "Test for typescript errors"
+        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run web tsc

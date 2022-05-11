@@ -10,7 +10,6 @@ import { hasExpertRole } from '../../../utils/auth'
 import { AxiosError } from 'axios'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
-import { TAnalysis } from '../Types'
 import {
   AccessControlList,
   AuthContext,
@@ -23,7 +22,7 @@ import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TJob, TTask } from '../../../Types'
+import { TAnalysis, TJob, TTask } from '../../../Types'
 import { poorMansUUID } from '../../../utils/uuid'
 
 const FlexWrapper = styled.div`

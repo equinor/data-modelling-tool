@@ -7,7 +7,8 @@
     "build": "yarn workspace @dmt/home run build",
     "test": "jest test",
     "test:watch": "jest --watch --coverage --no-cache",
-    "test:watchAll": "yarn build && jest --watchAll --coverage --notify"
+    "test:watchAll": "yarn build && jest --watchAll --coverage --notify",
+    "tsc": "yarn workspace @dmt/home run tsc"
   },
   "main": "dist/index",
   "types": "dist/index",

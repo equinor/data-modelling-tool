@@ -36,7 +36,7 @@ export const EditTask = (props: DmtUIPlugin) => {
     onChange,
     categories,
   } = props
-  const [_document, _loading, updateDocument, error] = useDocument(
+  const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
     false

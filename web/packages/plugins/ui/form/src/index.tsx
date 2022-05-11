@@ -40,7 +40,7 @@ const widgets = {
 const PluginComponent = (props: DmtUIPlugin) => {
   const { config, onSubmit } = props
   const { documentId, dataSourceId } = props
-  const [document, loading, updateDocument] = useDocument(
+  const [document, loading, updateDocument] = useDocument<any>(
     dataSourceId,
     documentId,
     true

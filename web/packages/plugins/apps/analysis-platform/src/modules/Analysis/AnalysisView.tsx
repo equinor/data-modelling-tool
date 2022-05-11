@@ -4,7 +4,7 @@ import { AuthContext, UIPluginSelector, useDocument } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import AnalysisInfoCard from './components/AnalysisInfo'
 import AnalysisJobTable from './components/AnalysisJobTable'
-import { TJob } from '../../Types'
+import { TAnalysis, TJob } from '../../Types'
 
 export default (): JSX.Element => {
   // @ts-ignore
@@ -12,7 +12,7 @@ export default (): JSX.Element => {
     data_source: string
     entity_id: string
   }>()
-  const [analysis, isLoading, updateDocument, error] = useDocument(
+  const [analysis, isLoading, updateDocument, error] = useDocument<TAnalysis>(
     data_source,
     entity_id,
     true
@@ -24,7 +24,7 @@ export default (): JSX.Element => {
     setJobs(analysis.jobs)
   }, [analysis])
 
-  if (isLoading) return <Progress.Linear />
+  if (isLoading || !analysis) return <Progress.Linear />
   return (
     <>
       <AnalysisInfoCard

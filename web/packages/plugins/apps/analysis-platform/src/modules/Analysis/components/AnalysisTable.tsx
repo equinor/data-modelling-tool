@@ -3,9 +3,9 @@ import { Progress } from '@equinor/eds-core-react'
 import React from 'react'
 import DynamicTable from '../../../components/DynamicTable'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
-import { TAnalysis } from '../Types'
 import { formatDate } from '../../../utils/dateFormater'
 import { useSearch } from '@dmt/common'
+import { TAnalysis } from '../../../Types'
 
 const columns: Array<string> = [
   'Analysis name',
