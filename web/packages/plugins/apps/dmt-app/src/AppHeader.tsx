@@ -8,9 +8,12 @@ import {
   JsonView,
   sortApplications,
   CustomScrim,
+  DmssAPI,
 } from '@dmt/common'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -59,19 +62,45 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
-  const { tokenData, logOut } = useContext(AuthContext)
+  const { tokenData, token, logOut } = useContext(AuthContext)
   const [expanded, setExpanded] = useState(false)
+  const [apiKey, setAPIKey] = useState<string | null>(null)
+  const dmssApi = new DmssAPI(token)
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', columnGap: '5px' }}>
-      <UserInfoBox onClick={() => setExpanded(!expanded)}>
-        <div>{tokenData?.name || 'Not logged in'}</div>
+      <UserInfoBox>
+        <div onClick={() => setExpanded(!expanded)}>
+          {tokenData?.name || 'Not logged in'}
+        </div>
         <CustomScrim
           isOpen={expanded}
-          closeScrim={() => setExpanded(false)}
+          closeScrim={() => {
+            setExpanded(false)
+            setAPIKey(null)
+          }}
           header={'Logged in user info'}
           width={'30vw'}
         >
           <JsonView data={tokenData} />
+          <div>
+            <Button
+              onClick={() =>
+                dmssApi
+                  .tokenCreate()
+                  .then((response: any) => setAPIKey(response.data))
+                  .catch((error: any) => {
+                    console.error(error)
+                    NotificationManager.error(
+                      'Failed to create personal access token'
+                    )
+                  })
+              }
+            >
+              Create API-Key
+            </Button>
+            {apiKey && <pre>{apiKey}</pre>}
+          </div>
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Button onClick={() => logOut()}>Log out</Button>
           </div>
