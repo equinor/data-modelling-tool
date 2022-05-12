@@ -16,6 +16,8 @@ import { Controller, useForm, useFormContext } from 'react-hook-form'
 import ArrayField from './ArrayField'
 import { StringField } from './StringField'
 import { BooleanField } from './BooleanField'
+// @ts-ignore
+import { useTabContext } from '@dmt/tabs'
 
 const Wrapper = styled.div`
   margin-top: 20px;
@@ -56,6 +58,7 @@ const AddExternal = (props: any) => {
       <NewEntityButton
         data-testid={`new-entity-${namePath}`}
         setReference={handleAdd}
+        type={type}
       />
     </ButtonGroup>
   )
@@ -109,7 +112,7 @@ const OpenObject = (props: any) => {
             }
             setValue(namePath, data, options)
             onChange()
-          }, // console.log(data)
+          },
           // setFormData({...formData, runner: data}),
         })
       }
@@ -251,7 +254,7 @@ const External = (props: any) => {
   )
 }
 
-export const ObjectField = (props: ObjectFieldProps) => {
+export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
   const {
     type,
     namePath,
@@ -264,7 +267,7 @@ export const ObjectField = (props: ObjectFieldProps) => {
   const { watch } = useForm()
   const [blueprint, isLoading, error] = useBlueprint(type)
   const { getValues, control, setValue } = useFormContext()
-  const { documentId, dataSourceId } = useRegistryContext()
+  const { documentId, dataSourceId, onOpen } = useRegistryContext()
   const initialValue = getValues(namePath)
   // const watchObject = watch(namePath, initialValue);
 
@@ -309,12 +312,6 @@ export const ObjectField = (props: ObjectFieldProps) => {
     )
   } else {
     if (type === 'object') {
-      console.log('NOT CONTAINED', namePath)
-
-      const handleChange = (value: string) => {
-        // onChange(value)
-      }
-
       return (
         <Wrapper>
           <Typography bold={true}>{displayLabel}</Typography>
@@ -345,25 +342,28 @@ export const ObjectField = (props: ObjectFieldProps) => {
                         setValue(namePath, null, options)
                       }}
                     />
-                    <OpenObject
-                      type={type}
-                      namePath={namePath}
-                      contained={contained}
-                      dataSourceId={dataSourceId}
-                      documentId={value._id}
-                      entity={value}
-                    />
-                    <External
-                      type={type}
-                      namePath={namePath}
-                      config={uiRecipe ? uiRecipe.config : config}
-                      blueprint={blueprint}
-                      contained={contained}
-                      dataSourceId={dataSourceId}
-                      //documentId={initialValue && initialValue._id}
-                      documentId={value._id}
-                      onChange={handleChange}
-                    />
+                    {onOpen && (
+                      <OpenObject
+                        type={type}
+                        namePath={namePath}
+                        contained={contained}
+                        dataSourceId={dataSourceId}
+                        documentId={value._id}
+                        entity={value}
+                      />
+                    )}
+                    {!onOpen && (
+                      <External
+                        type={type}
+                        namePath={namePath}
+                        config={uiRecipe ? uiRecipe.config : config}
+                        blueprint={blueprint}
+                        contained={contained}
+                        dataSourceId={dataSourceId}
+                        //documentId={initialValue && initialValue._id}
+                        documentId={value._id}
+                      />
+                    )}
                   </>
                 )
               } else {
@@ -383,4 +383,6 @@ export const ObjectField = (props: ObjectFieldProps) => {
       )
     }
   }
+
+  return <>Unkown object field</>
 }

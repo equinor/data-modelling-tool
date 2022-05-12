@@ -19,13 +19,14 @@ export type FormProps = {
   onSubmit?: Function
   onChange?: Function
   updateDocument?: Function
-  widgets?: { [name: string]: Widget }
+  widgets?: any
   config?: any
+  onOpen?: Function
 }
 
 export type ObjectFieldProps = {
   contained?: boolean
-  plugin: string
+  // plugin: string
   namePath: string
   type: string
   displayLabel?: string

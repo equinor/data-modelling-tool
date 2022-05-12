@@ -37,7 +37,6 @@ const widgets = {
       </>
     )
   },
-  ObjectWidget: (props: any) => {},
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
