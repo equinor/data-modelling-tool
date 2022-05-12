@@ -38,8 +38,6 @@ export const EditInput = (props: DmtUIPlugin) => {
     categories,
   } = props
 
-  console.log(props)
-
   const { onOpen } = useTabContext()
 
   const [_document, _loading, updateDocument, error] = useDocument(

@@ -15,6 +15,8 @@ export const StringField = (props: StringFieldProps) => {
 
   const { getWidget } = useRegistryContext()
 
+  console.log(namePath, uiAttribute)
+
   let defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
   const Widget = getWidget(namePath, defaultWidget)
 
