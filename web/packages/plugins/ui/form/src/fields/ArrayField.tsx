@@ -10,6 +10,15 @@ const Wrapper = styled.div`
   margin-top: 20px;
 `
 
+const ItemsWrapper = styled.div`
+  margin-bottom: 20px;
+`
+
+const ItemWrapper = styled.div`
+  display: flex;
+  padding: 4px;
+`
+
 export default function Fields(props: any) {
   const { namePath, displayLabel, type } = props
 
@@ -22,11 +31,11 @@ export default function Fields(props: any) {
 
   return (
     <Wrapper>
-      <Typography>{displayLabel}</Typography>
-      <div>
+      <Typography bold={true}>{displayLabel}</Typography>
+      <ItemsWrapper>
         {fields.map((item: any, index: number) => {
           return (
-            <div key={item.id}>
+            <ItemWrapper key={item.id}>
               <AttributeField
                 namePath={`${namePath}.${index}`}
                 attribute={{
@@ -37,10 +46,10 @@ export default function Fields(props: any) {
               <Button type="button" onClick={() => remove(index)}>
                 Remove
               </Button>
-            </div>
+            </ItemWrapper>
           )
         })}
-      </div>
+      </ItemsWrapper>
       <Button
         data-testid={`add-${namePath}`}
         onClick={() => {

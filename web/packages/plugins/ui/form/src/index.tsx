@@ -4,6 +4,8 @@ import {
   BlueprintPicker,
   DmtPluginType,
   DmtUIPlugin,
+  TReference,
+  UploadFileButton,
   useDocument,
 } from '@dmt/common'
 import { Form } from './Form'
@@ -37,6 +39,40 @@ const widgets = {
       </>
     )
   },
+  UploadFileWidget: (props: any) => {
+    const { namePath, label, variant, onChange, value, helperText } = props
+    const { documentId, dataSourceId } = useRegistryContext()
+    const { getValues, control, setValue } = useFormContext()
+    const initialValue = getValues(namePath)
+
+    function getNewSTaskBody(filename: string): any {
+      return {
+        type: 'AnalysisPlatformDS/Blueprints/STask',
+        name: filename.replace('.', '_'),
+        blob: {
+          name: filename,
+          type: 'system/SIMOS/Blob',
+        },
+      }
+    }
+
+    const handleUploadedFile = (createdRef: TReference) => {
+      onChange(createdRef)
+    }
+
+    return (
+      <div>
+        <div>Name: {initialValue.name}</div>
+        <div>Uid: {initialValue.uid}</div>
+        <UploadFileButton
+          fileSuffix={['stask']}
+          dataSourceId={dataSourceId}
+          getBody={(filename: string) => getNewSTaskBody(filename)}
+          onUpload={handleUploadedFile}
+        />
+      </div>
+    )
+  },
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
@@ -49,7 +85,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
   )
   if (loading) return <div>Loading...</div>
 
-  console.log(documentId, dataSourceId, document)
+  // console.log(documentId, dataSourceId, document)
 
   return (
     <Form

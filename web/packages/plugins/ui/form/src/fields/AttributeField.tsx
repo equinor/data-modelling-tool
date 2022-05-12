@@ -50,6 +50,8 @@ export const AttributeField = (props: AttributeFieldProps) => {
           type={attribute.attributeType}
           optional={attribute.optional}
           uiRecipeName={uiRecipeName}
+          // @ts-ignore
+          uiAttribute={uiAttribute}
         />
       )
 

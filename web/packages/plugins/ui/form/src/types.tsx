@@ -33,8 +33,8 @@ export type ObjectFieldProps = {
   optional?: boolean
   config?: any
   uiRecipeName?: string
+  uiAttribute?: any
 }
-
 export type AttributeFieldProps = {
   namePath: string
   attribute: any

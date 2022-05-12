@@ -1,11 +1,15 @@
 import {
+  AuthContext,
+  DmssAPI,
+  DmtAPI,
   EntityPickerButton,
   NewEntityButton,
   TReference,
   UIPluginSelector,
   useBlueprint,
+  useDocument,
 } from '@dmt/common'
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'
 import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
@@ -21,6 +25,7 @@ import { useTabContext } from '@dmt/tabs'
 
 const Wrapper = styled.div`
   margin-top: 20px;
+  margin-bottom: 20px;
 `
 
 const AttributeListWrapper = styled.div`
@@ -37,7 +42,6 @@ const AddExternal = (props: any) => {
   const { setValue } = useFormContext()
 
   const handleAdd = (entity: any) => {
-    console.log(entity)
     // TODO: Fill with default values using createEntity?
     //const values = entity
     //const options = {
@@ -65,21 +69,41 @@ const AddExternal = (props: any) => {
 }
 
 const AddObject = (props: any) => {
-  const { type, namePath, onAdd } = props
+  const { type, namePath, onAdd, contained, dataSourceId, documentId } = props
   const { setValue } = useFormContext()
-
+  const { token } = useContext(AuthContext)
+  const dmtApi = new DmtAPI(token)
+  const dmssAPI = new DmssAPI(token)
   const handleAdd = () => {
     // TODO: Fill with default values using createEntity?
     const values = {
       type: type,
+      name: namePath,
     }
     const options = {
       shouldValidate: true,
       shouldDirty: true,
       shouldTouch: true,
     }
-    setValue(namePath, values, options)
-    onAdd()
+    const name: string = namePath
+
+    dmtApi.createEntity(type, name).then((newEntity: any) => {
+      dmssAPI
+        .documentUpdate({
+          dataSourceId: dataSourceId,
+          documentId: contained ? `${documentId}.${namePath}` : namePath,
+          data: JSON.stringify(newEntity),
+          updateUncontained: false,
+        })
+        .then((response: any) => {
+          console.log('response', response)
+          setValue(namePath, response.data.data, options)
+          onAdd()
+        })
+        .catch((error: Error) => {
+          console.error(error)
+        })
+    })
   }
   return (
     <Button data-testid={`add-${namePath}`} onClick={handleAdd}>
@@ -143,59 +167,10 @@ const RemoveObject = (props: any) => {
   )
 }
 
-const withOptional = (WrappedComponent: any) => (props: any) => {
-  const { type, namePath, contained } = props
-
-  const { getValues, setValue } = useFormContext()
-  const initialValue = getValues(namePath) !== undefined
-  console.log(getValues(namePath))
-  const [isDefined, setIsDefined] = useState(initialValue)
-  const [documentId, setDocumentId] = useState(props.documentId)
-
-  if (!isDefined) {
-    if (contained) {
-      return (
-        <AddObject
-          namePath={namePath}
-          type={type}
-          onAdd={() => setIsDefined(true)}
-        />
-      )
-    } else {
-      return (
-        <AddExternal
-          namePath={namePath}
-          type={type}
-          onAdd={(documentId: string) => {
-            setDocumentId(documentId)
-            setIsDefined(true)
-          }}
-        />
-      )
-    }
-  } else {
-    return (
-      <div>
-        <RemoveObject
-          namePath={namePath}
-          type={type}
-          onRemove={() => {
-            const options = {
-              shouldValidate: false,
-              shouldDirty: true,
-              shouldTouch: true,
-            }
-            setValue(namePath, null, options)
-          }}
-        />
-        <WrappedComponent {...props} documentId={documentId} />
-      </div>
-    )
-  }
-}
-
 const AttributeList = (props: any) => {
   const { type, namePath, config, blueprint } = props
+
+  console.log(namePath)
 
   const prefix = namePath === '' ? `` : `${namePath}.`
   const attributeFields =
@@ -234,6 +209,7 @@ const External = (props: any) => {
   } = props
 
   const { getValues, control } = useFormContext()
+  const { onOpen } = useRegistryContext()
 
   const initialValue = getValues(namePath) || {
     type: type,
@@ -242,19 +218,209 @@ const External = (props: any) => {
     ? `${dataSourceId}/${documentId}.${namePath}`
     : `${dataSourceId}/${documentId}`
 
+  console.log('onOpen', onOpen)
+
   return (
     <UIPluginSelector
       key={namePath}
       absoluteDottedId={absoluteDottedId}
       entity={initialValue}
-      onChange={onChange}
+      //onChange={onChange}
       //categories={['container', 'edit', 'view']}
-      categories={['edit']}
+      //categories={['edit']}
+      onOpen={onOpen}
     />
   )
 }
 
+export const Contained = (props: any): JSX.Element => {
+  const {
+    type,
+    namePath,
+    displayLabel = '',
+    optional = false,
+    contained = true,
+    config,
+    uiRecipe,
+    blueprint,
+  } = props
+
+  const { getValues, setValue } = useFormContext()
+  const { documentId, dataSourceId, onOpen } = useRegistryContext()
+  const [isDefined, setIsDefined] = useState(
+    namePath == '' ? getValues() : getValues(namePath)
+  )
+  const hasOpen = onOpen !== 'undefined'
+  const isRoot = namePath == ''
+  const values = isRoot ? getValues() : getValues(namePath)
+  const hasValues = values !== undefined
+  const shouldOpen = hasOpen && !isRoot
+
+  console.log('onOpen', onOpen)
+
+  return (
+    <Wrapper>
+      <div>
+        <Typography bold={true}>{displayLabel}</Typography>
+        <Typography>Name: {values && values.name}</Typography>
+      </div>
+      {!isDefined && (
+        <AddObject
+          dataSourceId={dataSourceId}
+          documentId={documentId}
+          contained={contained}
+          namePath={namePath}
+          type={type}
+          onAdd={() => setIsDefined(true)}
+        />
+      )}
+      {shouldOpen && hasValues && (
+        <OpenObject
+          type={type}
+          namePath={namePath}
+          contained={contained}
+          dataSourceId={dataSourceId}
+          documentId={documentId}
+          entity={values}
+        />
+      )}
+      {isDefined && !shouldOpen && (
+        <>
+          {!isRoot && (
+            <RemoveObject
+              namePath={namePath}
+              type={type}
+              onRemove={() => {
+                const options = {
+                  shouldValidate: false,
+                  shouldDirty: true,
+                  shouldTouch: true,
+                }
+                setValue(namePath, null, options)
+              }}
+            />
+          )}
+          <AttributeList
+            type={type}
+            namePath={namePath}
+            config={uiRecipe ? uiRecipe.config : config}
+            blueprint={blueprint}
+            contained={contained}
+            dataSourceId={dataSourceId}
+            documentId={documentId}
+          />
+        </>
+      )}
+    </Wrapper>
+  )
+}
+
+export const NonContained = (props: any): JSX.Element => {
+  const {
+    type,
+    namePath,
+    displayLabel = '',
+    optional = false,
+    contained = true,
+    config,
+    uiRecipe,
+    blueprint,
+  } = props
+  const { getValues, control, setValue } = useFormContext()
+  const { dataSourceId, onOpen } = useRegistryContext()
+  const initialValue = getValues(namePath)
+
+  //if (type === 'object') {
+  return (
+    <Wrapper>
+      <Typography bold={true}>{displayLabel}</Typography>
+      <Controller
+        name={namePath}
+        control={control}
+        defaultValue={initialValue}
+        render={({
+          // @ts-ignore
+          field: { ref, onChange, value },
+          // @ts-ignore
+          fieldState: { invalid, error },
+          formState,
+        }) => {
+          if (value && value._id) {
+            return (
+              <div>
+                <div>
+                  <Typography>Name: {value.name}</Typography>
+                  <Typography>Id: {value._id}</Typography>
+                </div>
+                <RemoveObject
+                  namePath={namePath}
+                  type={type}
+                  onRemove={() => {
+                    const options = {
+                      shouldValidate: false,
+                      shouldDirty: true,
+                      shouldTouch: true,
+                    }
+                    setValue(namePath, null, options)
+                  }}
+                />
+                {onOpen && (
+                  <OpenObject
+                    type={type}
+                    namePath={namePath}
+                    contained={contained}
+                    dataSourceId={dataSourceId}
+                    documentId={value._id}
+                    entity={value}
+                  />
+                )}
+                {!onOpen && (
+                  <External
+                    type={type}
+                    namePath={namePath}
+                    config={uiRecipe ? uiRecipe.config : config}
+                    //blueprint={blueprint}
+                    contained={contained}
+                    dataSourceId={dataSourceId}
+                    //documentId={initialValue && initialValue._id}
+                    documentId={value._id}
+                    onOpen={onOpen}
+                  />
+                )}
+              </div>
+            )
+          } else {
+            const handleAdd = (entity: any) => onChange(entity)
+
+            return (
+              <AddExternal type={type} namePath={namePath} onAdd={handleAdd} />
+            )
+          }
+        }}
+      />
+    </Wrapper>
+  )
+  //}
+}
+
 export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
+  // @ts-ignore
+  const { type, namePath, uiAttribute } = props
+  const { getValues } = useFormContext()
+  const { getWidget } = useRegistryContext()
+
+  console.log(uiAttribute)
+
+  let Widget =
+    uiAttribute && uiAttribute.widget
+      ? getWidget(namePath, uiAttribute.widget)
+      : ObjectTypeSelector
+
+  const values = getValues(namePath)
+  return <Widget {...props} type={type === 'object' ? values.type : type} />
+}
+
+export const ObjectTypeSelector = (props: ObjectFieldProps): JSX.Element => {
   const {
     type,
     namePath,
@@ -264,15 +430,15 @@ export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
     config,
     uiRecipeName,
   } = props
-  const { watch } = useForm()
+
   const [blueprint, isLoading, error] = useBlueprint(type)
-  const { getValues, control, setValue } = useFormContext()
-  const { documentId, dataSourceId, onOpen } = useRegistryContext()
-  const initialValue = getValues(namePath)
-  // const watchObject = watch(namePath, initialValue);
+  const { documentId, dataSourceId } = useRegistryContext()
 
   if (isLoading) return <div>Loading...</div>
   if (blueprint === undefined) return <div>Could not find the blueprint</div>
+  //if (error !== null) {
+  //return <div>Error fetching blueprint</div>
+  //}
 
   // The root object uses the ui recipe config that is passed into the ui plugin,
   // the nested objects uses ui recipes names that are passed down from parent configs.
@@ -282,107 +448,33 @@ export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
       )
     : null
 
-  if (uiRecipe && uiRecipe.plugin !== 'form') {
-    console.log('HERE', namePath)
-    return (
-      <External
-        {...props}
-        documentId={documentId}
-        dataSourceId={dataSourceId}
-      />
-    )
-  }
+  console.log(namePath, uiRecipeName)
 
-  if (contained) {
-    console.log('CONTAINED', namePath)
-    const Content = optional ? withOptional(AttributeList) : AttributeList
+  if (uiRecipe && uiRecipe.plugin !== 'form') {
     return (
       <Wrapper>
         <Typography bold={true}>{displayLabel}</Typography>
-        <Content
-          type={type}
-          namePath={namePath}
-          config={uiRecipe ? uiRecipe.config : config}
-          blueprint={blueprint}
-          contained={contained}
-          dataSourceId={dataSourceId}
+        <External
+          {...props}
           documentId={documentId}
+          dataSourceId={dataSourceId}
         />
       </Wrapper>
     )
-  } else {
-    if (type === 'object') {
-      return (
-        <Wrapper>
-          <Typography bold={true}>{displayLabel}</Typography>
-          <Controller
-            name={namePath}
-            control={control}
-            defaultValue={initialValue}
-            render={({
-              // @ts-ignore
-              field: { ref, onChange, value },
-              // @ts-ignore
-              fieldState: { invalid, error },
-              formState,
-            }) => {
-              if (value) {
-                console.log('VALUE', value)
-                return (
-                  <>
-                    <RemoveObject
-                      namePath={namePath}
-                      type={type}
-                      onRemove={() => {
-                        const options = {
-                          shouldValidate: false,
-                          shouldDirty: true,
-                          shouldTouch: true,
-                        }
-                        setValue(namePath, null, options)
-                      }}
-                    />
-                    {onOpen && (
-                      <OpenObject
-                        type={type}
-                        namePath={namePath}
-                        contained={contained}
-                        dataSourceId={dataSourceId}
-                        documentId={value._id}
-                        entity={value}
-                      />
-                    )}
-                    {!onOpen && (
-                      <External
-                        type={type}
-                        namePath={namePath}
-                        config={uiRecipe ? uiRecipe.config : config}
-                        blueprint={blueprint}
-                        contained={contained}
-                        dataSourceId={dataSourceId}
-                        //documentId={initialValue && initialValue._id}
-                        documentId={value._id}
-                      />
-                    )}
-                  </>
-                )
-              } else {
-                const handleAdd = (entity: any) => onChange(entity)
-
-                return (
-                  <AddExternal
-                    type={type}
-                    namePath={namePath}
-                    onAdd={handleAdd}
-                  />
-                )
-              }
-            }}
-          />
-        </Wrapper>
-      )
-    }
   }
 
-  return <>Unkown object field</>
+  const Content = contained ? Contained : NonContained
+
+  return (
+    <Content
+      type={type}
+      namePath={namePath}
+      displayLabel={displayLabel}
+      optional={optional}
+      contained={contained}
+      config={config}
+      blueprint={blueprint}
+      uiRecipe={uiRecipe}
+    />
+  )
 }

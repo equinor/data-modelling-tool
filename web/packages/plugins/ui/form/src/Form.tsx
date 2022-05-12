@@ -39,12 +39,16 @@ export const Form = (props: FormProps) => {
 
   const handleSubmit = methods.handleSubmit(
     (data: UnpackNestedValue<TFieldValues>, errors: any) => {
+      console.log(data)
       if (errors) console.debug(errors)
       if (onChange) {
+        console.log('onChange')
         onChange(data)
       } else if (onSubmit) {
+        console.log('onSubmit')
         onSubmit(data)
       } else if (updateDocument) {
+        console.log('updateDocument')
         updateDocument(data, true)
       }
     }

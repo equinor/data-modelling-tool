@@ -77,12 +77,6 @@
       "label":  "A nested object with custom ui"
     },
     {
-      "name": "input",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "/Plugins/Form/Input",
-      "label":  "Input"
-    },
-    {
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "inputEntity",
       "description": "Generic input entity",
@@ -123,11 +117,6 @@
           {
             "type": "DMT-Internal/DMT/ui-plugins/form/fields/ObjectField",
             "name": "aNestedObjectWithCustomUI",
-            "uiRecipe": "custom"
-          },
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ObjectField",
-            "name": "input",
             "uiRecipe": "custom"
           },
           {

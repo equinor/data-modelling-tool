@@ -115,15 +115,15 @@ export const TabsContainer = (props: DmtUIPlugin) => {
             key={'home'}
             absoluteDottedId={`${dataSourceId}/${documentId}`}
             entity={formData}
-            categories={config?.subCategories.filter(
+            categories={config?.subCategories?.filter(
               (c: string) => c !== 'container'
             )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
-            onSubmit={(newFormData: any) =>
-              setFormData({ ...formData, ...newFormData })
-            }
-            onChange={(newFormData: any) =>
-              setFormData({ ...formData, ...newFormData })
-            }
+            //onSubmit={(newFormData: any) =>
+            //  setFormData({ ...formData, ...newFormData })
+            //}
+            //onChange={(newFormData: any) =>
+            ///  setFormData({ ...formData, ...newFormData })
+            //}
             onOpen={(tabData: any) => {
               setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
               setSelectedTab(tabData.attribute)

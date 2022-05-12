@@ -18,5 +18,13 @@
       "attributeType": "string",
       "optional": true
     }
+  ],
+  "uiRecipes": [
+    {
+      "name": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container"
+    }
   ]
 }

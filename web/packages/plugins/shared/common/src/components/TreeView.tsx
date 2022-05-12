@@ -130,16 +130,15 @@ export const TreeView = (props: {
   }, [])
 
   const _onClick = (node: TreeNode) => {
-    if (!node.expanded) {
+    if (![BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type)) {
+      onSelect(node)
+    } else if (!node.expanded) {
       // @ts-ignore
       node.expand().then(() => setIndex([...node.tree]))
     } else {
       node.collapse()
       // @ts-ignore
       setIndex([...node.tree])
-    }
-    if (![BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type)) {
-      onSelect(node)
     }
   }
 
