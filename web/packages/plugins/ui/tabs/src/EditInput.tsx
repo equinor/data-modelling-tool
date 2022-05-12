@@ -52,7 +52,10 @@ export const EditInput = (props: DmtUIPlugin) => {
   useEffect(() => {
     if (!_document) return
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
-    if (!onChange) setFormData({ ..._document })
+    if (!onChange) {
+      // @ts-ignore
+      setFormData({ ..._document })
+    }
   }, [_document])
 
   useEffect(() => {
