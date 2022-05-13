@@ -7,6 +7,9 @@ We use __Bicep__ to define our _Infrastructure as Code_
 
 <https://docs.microsoft.com/en-us/azure/templates/>
 
+### How to reference existing or new resources
+<https://ochzhen.com/blog/reference-new-or-existing-resource-in-azure-bicep/>
+
 ## How to test
 
 `az bicep build --file ./IaC/main.bicep --stdout`  
