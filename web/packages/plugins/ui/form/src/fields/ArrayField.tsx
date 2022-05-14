@@ -19,6 +19,11 @@ const ItemWrapper = styled.div`
   padding: 4px;
 `
 
+const isPrimitiveType = (value: string): boolean => {
+  // dont make this a static method. Needs to read attribute types later?
+  return ['string', 'number', 'integer', 'number', 'boolean'].includes(value)
+}
+
 export default function Fields(props: any) {
   const { namePath, displayLabel, type } = props
 
@@ -28,6 +33,8 @@ export default function Fields(props: any) {
     control,
     name: namePath,
   })
+
+  if (!isPrimitiveType(type)) return <></>
 
   return (
     <Wrapper>

@@ -57,19 +57,25 @@
   ],
   "uiRecipes": [
     {
+      "name": "navigator",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "navigator",
+      "category": "container"
+    },
+    {
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",
-      "category": "edit"
-    },
-    {
-      "name": "Tabs",
-      "label": "Tabs",
-      "type": "system/SIMOS/UiRecipe",
-      "plugin": "tabs",
-      "category": "container",
+      "category": "edit",
       "config": {
-        "type": "system/SIMOS/UiPluginSelectorProps"
+        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
+        "attributes": [
+          {
+            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
+            "name": "description",
+            "widget": "TextareaWidget"
+          }
+        ]
       }
     }
   ]

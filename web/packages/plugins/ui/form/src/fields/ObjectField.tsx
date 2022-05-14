@@ -96,7 +96,6 @@ const AddObject = (props: any) => {
           updateUncontained: false,
         })
         .then((response: any) => {
-          console.log('response', response)
           setValue(namePath, response.data.data, options)
           onAdd()
         })
@@ -170,8 +169,6 @@ const RemoveObject = (props: any) => {
 const AttributeList = (props: any) => {
   const { type, namePath, config, blueprint } = props
 
-  console.log(namePath)
-
   const prefix = namePath === '' ? `` : `${namePath}.`
   const attributeFields =
     blueprint &&
@@ -218,8 +215,6 @@ const External = (props: any) => {
     ? `${dataSourceId}/${documentId}.${namePath}`
     : `${dataSourceId}/${documentId}`
 
-  console.log('onOpen', onOpen)
-
   return (
     <UIPluginSelector
       key={namePath}
@@ -246,24 +241,28 @@ export const Contained = (props: any): JSX.Element => {
   } = props
 
   const { getValues, setValue } = useFormContext()
-  const { documentId, dataSourceId, onOpen } = useRegistryContext()
+  const { documentId, dataSourceId, onOpen, hideObjects } = useRegistryContext()
   const [isDefined, setIsDefined] = useState(
     namePath == '' ? getValues() : getValues(namePath)
   )
+
   const hasOpen = onOpen !== 'undefined'
   const isRoot = namePath == ''
   const values = isRoot ? getValues() : getValues(namePath)
   const hasValues = values !== undefined
   const shouldOpen = hasOpen && !isRoot
+  const ownRecipe = (uiRecipe && uiRecipe.plugin !== 'form') || false
 
-  console.log('onOpen', onOpen)
+  console.log(values)
 
   return (
     <Wrapper>
-      <div>
-        <Typography bold={true}>{displayLabel}</Typography>
-        <Typography>Name: {values && values.name}</Typography>
-      </div>
+      {!hideObjects ||
+        (optional && !hasValues && (
+          <div>
+            <Typography bold={true}>{displayLabel}</Typography>
+          </div>
+        ))}
       {!isDefined && (
         <AddObject
           dataSourceId={dataSourceId}
@@ -274,7 +273,7 @@ export const Contained = (props: any): JSX.Element => {
           onAdd={() => setIsDefined(true)}
         />
       )}
-      {shouldOpen && hasValues && (
+      {shouldOpen && hasValues && !hideObjects && (
         <OpenObject
           type={type}
           namePath={namePath}
@@ -300,15 +299,28 @@ export const Contained = (props: any): JSX.Element => {
               }}
             />
           )}
-          <AttributeList
-            type={type}
-            namePath={namePath}
-            config={uiRecipe ? uiRecipe.config : config}
-            blueprint={blueprint}
-            contained={contained}
-            dataSourceId={dataSourceId}
-            documentId={documentId}
-          />
+          {ownRecipe && (
+            <Wrapper>
+              <Typography bold={true}>{displayLabel}</Typography>
+              <External
+                {...props}
+                documentId={documentId}
+                dataSourceId={dataSourceId}
+              />
+            </Wrapper>
+          )}
+          {(!ownRecipe && !hideObjects) ||
+            (isRoot && (
+              <AttributeList
+                type={type}
+                namePath={namePath}
+                config={uiRecipe ? uiRecipe.config : config}
+                blueprint={blueprint}
+                contained={contained}
+                dataSourceId={dataSourceId}
+                documentId={documentId}
+              />
+            ))}
         </>
       )}
     </Wrapper>
@@ -327,8 +339,10 @@ export const NonContained = (props: any): JSX.Element => {
     blueprint,
   } = props
   const { getValues, control, setValue } = useFormContext()
-  const { dataSourceId, onOpen } = useRegistryContext()
+  const { dataSourceId, onOpen, hideObjects } = useRegistryContext()
   const initialValue = getValues(namePath)
+
+  //if (namePath !== '' && hideObjects) return <></>
 
   //if (type === 'object') {
   return (
@@ -349,7 +363,6 @@ export const NonContained = (props: any): JSX.Element => {
             return (
               <div>
                 <div>
-                  <Typography>Name: {value.name}</Typography>
                   <Typography>Id: {value._id}</Typography>
                 </div>
                 <RemoveObject
@@ -364,7 +377,7 @@ export const NonContained = (props: any): JSX.Element => {
                     setValue(namePath, null, options)
                   }}
                 />
-                {onOpen && (
+                {onOpen && !hideObjects && (
                   <OpenObject
                     type={type}
                     namePath={namePath}
@@ -374,7 +387,7 @@ export const NonContained = (props: any): JSX.Element => {
                     entity={value}
                   />
                 )}
-                {!onOpen && (
+                {!onOpen && !hideObjects && (
                   <External
                     type={type}
                     namePath={namePath}
@@ -407,9 +420,7 @@ export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
   // @ts-ignore
   const { type, namePath, uiAttribute } = props
   const { getValues } = useFormContext()
-  const { getWidget } = useRegistryContext()
-
-  console.log(uiAttribute)
+  const { getWidget, hideObjects } = useRegistryContext()
 
   let Widget =
     uiAttribute && uiAttribute.widget
@@ -417,7 +428,9 @@ export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
       : ObjectTypeSelector
 
   const values = getValues(namePath)
-  return <Widget {...props} type={type === 'object' ? values.type : type} />
+  return (
+    <Widget {...props} type={type === 'object' ? values?.type || type : type} />
+  )
 }
 
 export const ObjectTypeSelector = (props: ObjectFieldProps): JSX.Element => {
@@ -447,21 +460,6 @@ export const ObjectTypeSelector = (props: ObjectFieldProps): JSX.Element => {
         (uiRecipe: any) => uiRecipe.name === uiRecipeName
       )
     : null
-
-  console.log(namePath, uiRecipeName)
-
-  if (uiRecipe && uiRecipe.plugin !== 'form') {
-    return (
-      <Wrapper>
-        <Typography bold={true}>{displayLabel}</Typography>
-        <External
-          {...props}
-          documentId={documentId}
-          dataSourceId={dataSourceId}
-        />
-      </Wrapper>
-    )
-  }
 
   const Content = contained ? Contained : NonContained
 

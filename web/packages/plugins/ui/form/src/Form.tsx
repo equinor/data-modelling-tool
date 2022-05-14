@@ -27,8 +27,6 @@ export const Form = (props: FormProps) => {
     onOpen,
   } = props
 
-  console.log(formData)
-
   const methods = useForm({
     // Set initial state.
     defaultValues: formData || {},
@@ -56,7 +54,7 @@ export const Form = (props: FormProps) => {
 
   methods.watch((data: any) => {
     // @ts-ignore
-    console.log(data)
+    // console.log(data)
     //onChange && data && onChange(data);
   })
 

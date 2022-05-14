@@ -3,6 +3,7 @@ export { useTabContext } from './TabsContext'
 import { DmtPluginType } from '@dmt/common'
 import { TabsContainer } from './TabsContainer'
 import { EditInput } from './EditInput'
+import { NavigatorContainer } from './NavigatorContainer'
 
 export const plugins: any = [
   {
@@ -17,6 +18,13 @@ export const plugins: any = [
     pluginType: DmtPluginType.UI,
     content: {
       component: EditInput,
+    },
+  },
+  {
+    pluginName: 'navigator',
+    pluginType: DmtPluginType.UI,
+    content: {
+      component: NavigatorContainer,
     },
   },
 ]

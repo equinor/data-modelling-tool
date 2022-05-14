@@ -3,6 +3,9 @@
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
   "description": "Task holds parameters that is used to create different job instances",
+  "extends": [
+    "system/SIMOS/NamedEntity"
+  ],
   "attributes": [
     {
       "name": "outputTarget",
@@ -80,6 +83,12 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-task",
       "category": "edit"
+    },
+     {
+      "name": "navigator",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "navigator",
+      "category": "container"
     }
   ]
 }

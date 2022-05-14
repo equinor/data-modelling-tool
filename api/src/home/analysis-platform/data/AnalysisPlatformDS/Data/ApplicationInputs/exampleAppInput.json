@@ -6,6 +6,9 @@
   "inputType": "system/SIMOS/NamedEntity",
   "outputType": "system/SIMOS/NamedEntity",
   "input": {
+    "_id": "6683c9b0-d505-46c9-a157-94c79f4d7a6a",
+    "name": "mooringSRS",
+    "type": "app_mooring_db/simpos/mooringSRS/MooringSRS"
   },
   "workflowTask": "response_forecast",
   "workflow": "runEnsemble",

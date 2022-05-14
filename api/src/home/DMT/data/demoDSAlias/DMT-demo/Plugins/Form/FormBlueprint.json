@@ -92,6 +92,12 @@
       "category": "container"
     },
     {
+      "name": "navigator",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "navigator",
+      "category": "container"
+    },
+    {
       "name": "Form",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",

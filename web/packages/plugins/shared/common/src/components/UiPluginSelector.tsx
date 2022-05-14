@@ -17,7 +17,11 @@ const lightGray = '#d3d3d3'
 
 const PluginTabsWrapper = styled.div`
   display: flex;
-  justify-content: space-evenly;
+`
+
+const Content = styled.div`
+  padding: 10px;
+  margin-top: 30px;
 `
 
 const Wrapper = styled.div`
@@ -64,7 +68,6 @@ interface ISPButton {
 const SelectPluginButton = styled.div<ISPButton>`
   padding: 5px 10px;
   text-align: center;
-  width: 100%;
   border-bottom: ${(props: any) =>
     (props.active == true && '2px #017078FF solid') ||
     `2px ${lightGray} solid`};
@@ -93,8 +96,6 @@ export function UIPluginSelector(props: {
     onOpen,
   } = props
 
-  console.log(onOpen)
-
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
     ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
@@ -110,8 +111,8 @@ export function UIPluginSelector(props: {
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
+  // @ts-ignore
   const [selectableRecipe, setSelectableRecipe] = useState<
-    // name, component, config
     [string, Function, any][]
   >([])
 
@@ -190,17 +191,19 @@ export function UIPluginSelector(props: {
           </h4>
         )}
       >
-        <UiPlugin
-          dataSourceId={dataSourceId}
-          documentId={documentId}
-          document={entity}
-          onSubmit={onSubmit}
-          onChange={onChange}
-          onOpen={onOpen}
-          categories={categories}
-          config={config}
-          type={entity.type}
-        />
+        <Content>
+          <UiPlugin
+            dataSourceId={dataSourceId}
+            documentId={documentId}
+            document={entity}
+            onSubmit={onSubmit}
+            onChange={onChange}
+            onOpen={onOpen}
+            categories={categories}
+            config={config}
+            type={entity.type}
+          />
+        </Content>
       </ErrorBoundary>
     </Wrapper>
   )

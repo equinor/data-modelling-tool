@@ -76,16 +76,14 @@ const widgets = {
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { config, onSubmit, onChange, onOpen } = props
+  const { config, onSubmit, onChange, onOpen, document } = props
   const { documentId, dataSourceId } = props
-  const [document, loading, updateDocument] = useDocument<any>(
+  const [entity, loading, updateDocument] = useDocument<any>(
     dataSourceId,
     documentId,
     true
   )
   if (loading) return <div>Loading...</div>
-
-  // console.log(documentId, dataSourceId, document)
 
   return (
     <Form
@@ -95,7 +93,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
       widgets={widgets}
       type={document.type}
       config={config}
-      formData={document}
+      formData={Object.keys(entity).length > 0 ? entity : document}
       onChange={onChange}
       onSubmit={onSubmit}
       updateDocument={updateDocument}

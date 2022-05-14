@@ -6,12 +6,18 @@ type TreeMap = {
 }
 
 const createContainedChildren = (
+  blueprint: any,
   document: any,
   parentNode: TreeNode
 ): TreeMap => {
   const newChildren: TreeMap = {}
+
   Object.entries(document).forEach(([key, value]: [string, any]) => {
+    const attribute = blueprint.attributes.find(
+      (attribute: any) => attribute.name === key
+    )
     if (typeof value === 'object') {
+      console.log(key, value.contained, attribute)
       const childNodeId = `${parentNode.nodeId}.${key}`
       newChildren[childNodeId] = new TreeNode(
         parentNode.tree,
@@ -19,7 +25,13 @@ const createContainedChildren = (
         parentNode.level + 1,
         value,
         parentNode,
-        value?.name || key
+        value?.name || key,
+        false,
+        false,
+        false,
+        value.contained,
+        key,
+        attribute
       )
     }
     if (Array.isArray(value)) {
@@ -30,7 +42,13 @@ const createContainedChildren = (
         parentNode.level + 1,
         value,
         parentNode,
-        key
+        key,
+        false,
+        false,
+        false,
+        attribute.contained,
+        key,
+        attribute
       )
     }
   })
@@ -64,9 +82,12 @@ export class TreeNode {
   entity?: any
   name?: string
   type: string
+  attribute?: string
   expanded?: boolean = false
   message?: string = ''
   dataSource: string
+  contained: boolean = true
+  attributeData: any = {}
 
   constructor(
     tree: Tree,
@@ -77,7 +98,10 @@ export class TreeNode {
     name: string | undefined = undefined,
     isRoot = false,
     isDataSource = false,
-    expanded = false
+    expanded = false,
+    contained = true,
+    attribute = '',
+    attributeData: any = {}
   ) {
     this.tree = tree
     this.nodeId = nodeId
@@ -90,6 +114,9 @@ export class TreeNode {
     this.name = name || entity?.name
     this.type = entity.type
     this.expanded = expanded
+    this.contained = contained
+    this.attribute = attribute
+    this.attributeData = attributeData
   }
 
   collapse(node?: TreeNode): void {
@@ -121,14 +148,33 @@ export class TreeNode {
           documentId: documentId,
           depth: 0,
         })
-        .then((response: any) => {
+        .then(async (response: any) => {
           const data = response.data
-          if (data.type === BlueprintEnum.PACKAGE) {
-            this.children = createFolderChildren(data, this)
-          } else {
-            this.children = createContainedChildren(data, this)
-          }
-          this.expanded = true
+          await this.tree.dmssApi
+            .blueprintGet({
+              typeRef: Array.isArray(data) ? data[0].type : data.type,
+            })
+            .then((responseBlueprint: any) => {
+              if (data.type === BlueprintEnum.PACKAGE) {
+                this.children = createFolderChildren(data, this)
+              } else {
+                this.children = createContainedChildren(
+                  responseBlueprint.data,
+                  data,
+                  this
+                )
+              }
+              this.expanded = true
+              if (this.tree.expand) {
+                // @ts-ignore
+                this.children
+                  .values()
+                  .forEach((child: TreeNode) => child.expand())
+              }
+            })
+            .catch((error: Error) => {
+              console.log(error)
+            })
         })
         .catch((error: Error) => {
           this.type = 'error'
@@ -182,8 +228,9 @@ export class Tree {
   dmssApi: DmssAPI
   dmtApi: DmtAPI
   dataSources
+  expand: boolean
 
-  constructor(token: string, dataSources: string[]) {
+  constructor(token: string, dataSources: string[], expand = false) {
     this.dmssApi = new DmssAPI(token)
     this.dmtApi = new DmtAPI(token)
     this.dataSources = dataSources
@@ -204,6 +251,23 @@ export class Tree {
         )
       }
     )
+    this.expand = expand
+  }
+
+  async from(absoluteId: string, entity: any) {
+    const root = new TreeNode( // Add the rootPackage nodes to the dataSource
+      this,
+      absoluteId,
+      1,
+      entity,
+      undefined,
+      entity.name,
+      true,
+      false,
+      false
+    )
+    this.index[absoluteId] = root
+    await root.expand()
   }
 
   async init() {
@@ -244,6 +308,9 @@ export class Tree {
                     false,
                     false
                   )
+                  if (this.expand) {
+                    children[ref?._id].expand()
+                  }
                 }
               )
               rootPackageNode.children = children

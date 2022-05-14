@@ -9,10 +9,6 @@ interface ITabs {
   active: boolean
 }
 
-const Content = styled.div`
-  padding: 30px;
-`
-
 const Tab = styled.div<ITabs>`
   width: fit-content;
   height: 30px;
@@ -45,15 +41,11 @@ type TChildTab = {
   onSubmit: Function
 }
 
-type TStringMap = {
-  [key: string]: TChildTab
-}
-
-export const TabsContainer = (props: DmtUIPlugin) => {
+export const BreadcrumbsContainer = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, config, document } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
-  const [childTabs, setChildTabs] = useState<TStringMap>({})
+  const [childTabs, setChildTabs] = useState([])
   const [entity, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
@@ -68,7 +60,8 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   if (!entity || Object.keys(formData).length === 0) return null
 
   const handleOpen = (tabData: any) => {
-    setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
+    // @ts-ignore
+    setChildTabs([...childTabs, tabData])
     setSelectedTab(tabData.attribute)
   }
 
@@ -114,35 +107,28 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           ))}
         </div>
 
-        <Content>
-          {selectedTab === 'home' ? (
-            <UIPluginSelector
-              key={'home'}
-              absoluteDottedId={`${dataSourceId}/${documentId}`}
-              entity={formData}
-              categories={config?.subCategories?.filter(
-                (c: string) => c !== 'container'
-              )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
-              //onSubmit={(newFormData: any) =>
-              //  setFormData({ ...formData, ...newFormData })
-              //}
-              //onChange={(newFormData: any) =>
-              ///  setFormData({ ...formData, ...newFormData })
-              //}
-              onOpen={(tabData: any) => {
-                setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
-                setSelectedTab(tabData.attribute)
-              }}
-            />
-          ) : (
-            <UIPluginSelector
-              key={selectedTab}
-              absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
-              entity={childTabs[selectedTab].entity}
-              categories={childTabs[selectedTab].categories}
-            />
-          )}
-        </Content>
+        {selectedTab === 'home' ? (
+          <UIPluginSelector
+            key={'home'}
+            absoluteDottedId={`${dataSourceId}/${documentId}`}
+            entity={formData}
+            categories={config?.subCategories?.filter(
+              (c: string) => c !== 'container'
+            )}
+            onOpen={(tabData: any) => {
+              // @ts-ignore
+              setChildTabs([...childTabs, tabData])
+              setSelectedTab(tabData.attribute)
+            }}
+          />
+        ) : (
+          <UIPluginSelector
+            key={selectedTab}
+            absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
+            entity={childTabs[selectedTab].entity}
+            categories={childTabs[selectedTab].categories}
+          />
+        )}
       </div>
     </TabsProvider>
   )
