@@ -37,7 +37,8 @@ const createContainedChildren = (
     ) as TAttribute
     if (Array.isArray(document)) {
       // If the passed document was an array, use attribute from parent
-      attribute = parentNode.attribute
+      // @ts-ignore
+      attribute = parentNode?.attribute
     }
     if (!attribute) return false // If no attribute, there likely where some invalid keys. Ignore those
     // Skip adding nodes for primitives
@@ -91,7 +92,7 @@ export class TreeNode {
   level: number
   dataSource: string
   children: TreeMap = {}
-  attribute: TAttribute
+  attribute: TAttribute | undefined
   parent?: TreeNode
   isRoot?: boolean = false
   isDataSource?: boolean = false
@@ -105,7 +106,7 @@ export class TreeNode {
     nodeId: string,
     level: number = 0,
     entity: any = {},
-    attribute: TAttribute,
+    attribute: TAttribute | undefined,
     parent: TreeNode | undefined = undefined,
     name: string | undefined = undefined,
     isRoot = false,
@@ -121,7 +122,7 @@ export class TreeNode {
     this.isDataSource = isDataSource
     this.entity = entity
     this.name = name || entity?.name
-    this.type = attribute.attributeType
+    this.type = attribute?.attributeType || ''
     this.expanded = expanded
     this.attribute = attribute
   }
@@ -166,6 +167,12 @@ export class TreeNode {
             this.children = createContainedChildren(data, this, parentBlueprint)
           }
           this.expanded = true
+          if (this.tree.expand) {
+            this.children
+              // @ts-ignore
+              .values()
+              .forEach((child: TreeNode) => child.expand())
+          }
         })
         .catch((error: Error) => {
           this.type = 'error'
@@ -221,8 +228,9 @@ export class Tree {
   dmssApi: DmssAPI
   dmtApi: DmtAPI
   dataSources
+  expand: boolean
 
-  constructor(token: string, dataSources: string[]) {
+  constructor(token: string, dataSources: string[], expand = false) {
     this.dmssApi = new DmssAPI(token)
     this.dmtApi = new DmtAPI(token)
     this.dataSources = dataSources
@@ -244,6 +252,32 @@ export class Tree {
         )
       }
     )
+    this.expand = expand
+  }
+
+  async from(absoluteId: string, entity: any) {
+    const attribute = {
+      attributeType: entity.type,
+      name: entity.name,
+      type: BlueprintEnum.ATTRIBUTE,
+      contained: false,
+      optional: false,
+      dimensions: '',
+    }
+    const root = new TreeNode( // Add the rootPackage nodes to the dataSource
+      this,
+      absoluteId,
+      1,
+      entity,
+      attribute,
+      undefined,
+      entity.name,
+      true,
+      false,
+      true
+    )
+    this.index[absoluteId] = root
+    await root.expand()
   }
 
   async init() {
@@ -286,6 +320,9 @@ export class Tree {
                     false,
                     false
                   )
+                  if (this.expand) {
+                    children[ref?._id].expand()
+                  }
                 }
               )
               rootPackageNode.children = children

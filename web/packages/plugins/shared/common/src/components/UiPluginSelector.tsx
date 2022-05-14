@@ -226,7 +226,6 @@ export function UIPluginSelector(props: {
           onOpen={onOpen}
           categories={categories}
           config={config}
-          type={entity.type}
         />
       </ErrorBoundary>
     </Wrapper>

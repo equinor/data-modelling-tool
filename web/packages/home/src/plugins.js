@@ -13,6 +13,7 @@ export default [
   import('@dmt/job'),
   import('@dmt/form'),
   import('@dmt/tabs'),
+  import('@dmt/navigator'),
   import('@sintef/simpos-ui'),
   import('@sintef/simos-ui'),
   import('@sintef/marmo-ui'),
