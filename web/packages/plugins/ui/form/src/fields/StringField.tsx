@@ -15,10 +15,10 @@ export const StringField = (props: StringFieldProps) => {
 
   const { getWidget } = useRegistryContext()
 
-  console.log(namePath, uiAttribute)
-
   let defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
   const Widget = getWidget(namePath, defaultWidget)
+
+  console.log(defaultValue)
 
   return (
     <Controller
@@ -27,7 +27,7 @@ export const StringField = (props: StringFieldProps) => {
       rules={{
         required: !optional,
       }}
-      defaultValue={defaultValue || ''}
+      defaultValue={defaultValue !== undefined ? defaultValue : ''}
       render={({
         // @ts-ignore
         field: { ref, value, ...props },
@@ -40,6 +40,7 @@ export const StringField = (props: StringFieldProps) => {
           value = formatDate(value)
           readOnly = true
         }
+        console.log(error)
         return (
           <Widget
             readOnly={readOnly}

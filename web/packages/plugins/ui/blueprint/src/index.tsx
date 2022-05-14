@@ -7,8 +7,6 @@ export const plugins: any = [
   {
     pluginName: 'edit-blueprint',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: EditBlueprint,
-    },
+    component: EditBlueprint,
   },
 ]

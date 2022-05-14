@@ -13,12 +13,14 @@
     "bar"
   ],
   "aNestedObject" : {
+    "name": "A very nested object",
     "type": "/Plugins/Form/Nested",
     "foo": 1337,
     "bar": "hello",
     "baz": "testing"
   },
   "aNestedObjectWithCustomUI": {
+    "name": "A very nested object with custom ui",
     "type": "/Plugins/Form/Nested",
     "foo": 1337,
     "bar": "hello",

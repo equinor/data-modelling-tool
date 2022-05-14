@@ -28,6 +28,7 @@ export const Form = (props: FormProps) => {
   const methods = useForm({
     // Set initial state.
     defaultValues: formData || {},
+    mode: 'onSubmit',
   })
 
   // Every react hook form controller needs to have a unique name
@@ -35,6 +36,7 @@ export const Form = (props: FormProps) => {
 
   const handleSubmit = methods.handleSubmit(
     (data: UnpackNestedValue<TFieldValues>) => {
+      console.log('Submit!!!')
       if (onSubmit !== undefined) onSubmit(data)
     }
   )

@@ -38,7 +38,7 @@ function createMenuItems(
   }
 
   // Append to lists
-  if (node.attribute.dimensions !== '') {
+  if (node?.attribute?.dimensions !== '') {
     menuItems.push(
       // @ts-ignore
       <MenuItem
@@ -330,7 +330,7 @@ export const NodeRightClickMenu = (props: {
                 setLoading(true)
                 node
                   .addEntity(
-                    node.attribute.attributeType,
+                    node?.attribute?.attributeType || '',
                     `${node.entity.length}`
                   )
                   .then(() => {

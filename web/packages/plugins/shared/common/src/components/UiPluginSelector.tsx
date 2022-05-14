@@ -137,6 +137,7 @@ export function UIPluginSelector(props: {
     onSubmit,
     onOpen,
   } = props
+
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
     ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
@@ -187,6 +188,8 @@ export function UIPluginSelector(props: {
   const UiPlugin: (props: DmtUIPlugin) => JSX.Element =
     selectablePlugins[selectedPlugin].component
   const config: any = selectablePlugins[selectedPlugin].config
+
+  console.log(UiPlugin, selectedPlugin)
 
   return (
     <Wrapper>

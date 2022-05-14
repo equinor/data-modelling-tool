@@ -26,11 +26,14 @@ export const RegistryProvider = (props: any) => {
     return () => <div>Did not find widget: {name} </div>
   }
 
+  const hideObjects = true
+
   const value = {
     getWidget,
     dataSourceId,
     documentId,
     onOpen,
+    hideObjects,
   }
 
   return (

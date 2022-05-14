@@ -42,7 +42,7 @@ export type NodeWrapperProps = {
   onSelect?: (node: TreeNode) => void
 }
 
-const GetIcon = (props: { node: TreeNode }) => {
+export const GetIcon = (props: { node: TreeNode }) => {
   const { node } = props
   if (Array.isArray(node.entity)) {
     return <FaList />

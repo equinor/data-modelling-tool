@@ -2,7 +2,7 @@ import React, { useContext } from 'react'
 // @ts-ignore
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { AttributeField } from './AttributeField'
-import { Button, Typography } from '@equinor/eds-core-react'
+import { Accordion, Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { isPrimitive } from '../utils'
 import { useRegistryContext } from '../RegistryContext'
@@ -25,7 +25,6 @@ const Stretch = styled.div`
   margin-right: 10px;
   margin-bottom: 8px;
 `
-
 const Sticky = styled.div``
 
 const FixedContainer = styled.div`
@@ -129,32 +128,66 @@ export default function Fields(props: any) {
   return (
     <Wrapper>
       <Typography bold={true}>{displayLabel}</Typography>
-      <FixedContainer>
-        {fields.map((item: any, index: number) => {
-          return (
-            <ItemWrapper key={item.id}>
-              <Stretch>
-                <AttributeField
-                  namePath={`${namePath}.${index}`}
-                  attribute={{
-                    attributeType: type,
-                    dimensions: '',
-                  }}
-                />
-              </Stretch>
-              <Sticky>
-                <Button
-                  variant="outlined"
-                  type="button"
-                  onClick={() => remove(index)}
-                >
-                  Remove
-                </Button>
-              </Sticky>
-            </ItemWrapper>
-          )
-        })}
-      </FixedContainer>
+
+      {isPrimitiveType(type) && (
+        <FixedContainer>
+          {fields.map((item: any, index: number) => {
+            return (
+              <ItemWrapper key={item.id}>
+                <Stretch>
+                  <AttributeField
+                    namePath={`${namePath}.${index}`}
+                    attribute={{
+                      attributeType: type,
+                      dimensions: '',
+                    }}
+                  />
+                </Stretch>
+                <Sticky>
+                  <Button
+                    variant="outlined"
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    Remove
+                  </Button>
+                </Sticky>
+              </ItemWrapper>
+            )
+          })}
+        </FixedContainer>
+      )}
+
+      {!isPrimitiveType(type) && (
+        <Accordion>
+          {fields.map((item: any, index: number) => {
+            console.log(`${namePath}.${index}`)
+            return (
+              <Accordion.Item key={index}>
+                <Accordion.Header>
+                  {item.name}
+                  <Button
+                    variant="outlined"
+                    type="button"
+                    onClick={() => remove(index)}
+                  >
+                    Remove
+                  </Button>
+                </Accordion.Header>
+                <Accordion.Panel>
+                  <AttributeField
+                    namePath={`${namePath}.${index}`}
+                    attribute={{
+                      attributeType: type,
+                      dimensions: '',
+                    }}
+                  />
+                </Accordion.Panel>
+              </Accordion.Item>
+            )
+          })}
+        </Accordion>
+      )}
 
       <Button
         variant="outlined"

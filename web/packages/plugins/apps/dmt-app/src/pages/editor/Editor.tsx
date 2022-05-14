@@ -27,7 +27,7 @@ function wrapComponent(Component: any) {
     render() {
       return (
         <GoldenLayoutPanel {...this.props}>
-          <Component categories={['container']} />
+          <Component />
         </GoldenLayoutPanel>
       )
     }
