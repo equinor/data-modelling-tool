@@ -4,7 +4,6 @@
   "license": "MIT",
   "dependencies": {
     "@dmt/common": "1.0.0",
-    "@dmt/default-form": "1.0.0",
     "@dmt/default-pdf": "1.0.0",
     "@loadable/component": "^5.14.1",
     "axios": "^0.21.2",
