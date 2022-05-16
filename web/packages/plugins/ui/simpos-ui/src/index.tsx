@@ -46,9 +46,7 @@ export const plugins: any = [
   {
     pluginName: 'simpos-single-object-form',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SingleObjectForm,
-    },
+    component: SingleObjectForm,
   },
 
   //********************************************************
@@ -64,16 +62,12 @@ export const plugins: any = [
   {
     pluginName: 'simpos-srs-sce-form',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SRSSceForm,
-    },
+    component: SRSSceForm,
   },
   {
     pluginName: 'simpos-srs-sce-simulation-form',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SRSSceSimulationForm,
-    },
+    component: SRSSceSimulationForm,
   },
   //********************************************************
   //LS forms
@@ -81,9 +75,7 @@ export const plugins: any = [
   {
     pluginName: 'simpos-ls-sce-form',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: LSSceForm,
-    },
+    component: LSSceForm,
   },
   //********************************************************
   //RAO forms
@@ -91,9 +83,7 @@ export const plugins: any = [
   {
     pluginName: 'simpos-rao-sce-form',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: RAOSceForm,
-    },
+    component: RAOSceForm,
   },
   //********************************************************
   //SIMA General
@@ -101,23 +91,17 @@ export const plugins: any = [
   {
     pluginName: 'simpos-report-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SimposReportView,
-    },
+    component: SimposReportView,
   },
   {
     pluginName: 'simpos-run-output-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SimposRunOutputView,
-    },
+    component: SimposRunOutputView,
   },
   {
     pluginName: 'simpos-run-status-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SimposStatusView,
-    },
+    component: SimposStatusView,
   },
 
   //********************************************************
@@ -126,44 +110,32 @@ export const plugins: any = [
   {
     pluginName: 'sima-model-view-quad-current-coeff',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SIMA_Model_QuadCurrentCoeffPlot,
-    },
+    component: SIMA_Model_QuadCurrentCoeffPlot,
   },
   {
     pluginName: 'sima-model-view-simo-structural-mass',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SIMA_Model_StructuralMass,
-    },
+    component: SIMA_Model_StructuralMass,
   },
   {
     pluginName: 'sima-model-view-FirstOrderMotionTransferFunction',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SIMA_Model_FirstOrderMotionTransferFunction,
-    },
+    component: SIMA_Model_FirstOrderMotionTransferFunction,
   },
   {
     pluginName: 'sima-model-view-simo-body',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SIMA_Model_SIMOBody,
-    },
+    component: SIMA_Model_SIMOBody,
   },
   {
     pluginName: 'sima-workflow-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SIMA_Workflow_View,
-    },
+    component: SIMA_Workflow_View,
   },
   {
     pluginName: 'sima-workflow-task-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SIMA_WorkflowTask_View,
-    },
+    component: SIMA_WorkflowTask_View,
   },
   //********************************************************
   //********************************************************

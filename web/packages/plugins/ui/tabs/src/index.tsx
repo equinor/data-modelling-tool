@@ -7,8 +7,6 @@ export const plugins: any = [
   {
     pluginName: 'tabs',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: TabsContainer,
-    },
+    component: TabsContainer,
   },
 ]

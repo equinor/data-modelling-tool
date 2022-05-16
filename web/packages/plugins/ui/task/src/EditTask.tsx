@@ -28,14 +28,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const {
-    document,
-    documentId,
-    dataSourceId,
-    onOpen,
-    onChange,
-    categories,
-  } = props
+  const { document, documentId, dataSourceId, onOpen, categories } = props
   const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
@@ -47,12 +40,8 @@ export const EditTask = (props: DmtUIPlugin) => {
   useEffect(() => {
     if (!_document) return
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
-    if (!onChange) setFormData({ ..._document })
+    setFormData({ ..._document })
   }, [_document])
-
-  useEffect(() => {
-    if (onChange) onChange(formData)
-  }, [formData])
 
   return (
     <div>

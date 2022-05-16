@@ -18,8 +18,6 @@ export const plugins: any = [
   {
     pluginName: 'job',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

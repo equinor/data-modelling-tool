@@ -94,8 +94,6 @@ export const plugins: any = [
   {
     pluginName: 'mermaid',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

@@ -1,14 +1,11 @@
-import React, {
-  FunctionComponent,
-  useContext,
-  useEffect,
-  useState,
-} from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
+  DmtPlugin,
   DmtUIPlugin,
   ErrorBoundary,
   UiPluginContext,
   useBlueprint,
+  AuthContext,
 } from '@dmt/common'
 import styled from 'styled-components'
 import { CircularProgress } from '@equinor/eds-core-react'
@@ -74,11 +71,61 @@ const SelectPluginButton = styled.div<ISPButton>`
   }
 `
 
+type TSelectablePlugins = {
+  name: string
+  component: (props: DmtUIPlugin) => JSX.Element
+  config: any
+}
+
+function filterPlugins(
+  blueprint: any,
+  categories: string[],
+  roles: string[],
+  getUIPlugin: (name: string) => DmtPlugin
+): TSelectablePlugins[] {
+  let uiRecipes = blueprint.uiRecipes
+  let fallbackPlugin = [
+    { name: 'yaml', component: getUIPlugin('yaml-view').component, config: {} },
+  ]
+  // Blueprint has no recipes
+  if (!uiRecipes.length) return fallbackPlugin
+
+  // Filter on category and role
+  uiRecipes = uiRecipes.filter((recipe: any) => {
+    if (categories.length) {
+      return categories.includes(recipe?.category)
+    }
+    return true
+  })
+  uiRecipes = uiRecipes.filter((recipe: any) => {
+    // If no role filter on recipe, keep it. Else, only keep it if one of the active roles match one of the roles
+    // given in recipe
+    if (recipe.roles?.length) {
+      return (
+        roles.filter((activeRole: string) => recipe.roles.includes(activeRole))
+          .length > 0
+      )
+    }
+    return true
+  })
+
+  // If there are no recipes with the correct filter, show fallback
+  if (!uiRecipes.length) {
+    return fallbackPlugin
+  }
+
+  // Return the remaining recipes
+  return uiRecipes.map((uiRecipe: any) => ({
+    name: uiRecipe?.label || uiRecipe?.name || uiRecipe?.plugin || 'No name',
+    component: getUIPlugin(uiRecipe?.plugin).component,
+    config: uiRecipe?.config,
+  }))
+}
+
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
   entity: any
   onSubmit?: Function
-  onChange?: Function
   categories?: string[]
   breadcrumb?: boolean
   onOpen?: Function
@@ -89,7 +136,6 @@ export function UIPluginSelector(props: {
     categories,
     breadcrumb,
     onSubmit,
-    onChange,
     onOpen,
   } = props
   let [dataSourceId, documentId] = ['', '']
@@ -106,35 +152,17 @@ export function UIPluginSelector(props: {
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
+  const { tokenData } = useContext(AuthContext)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
-  const [selectableRecipe, setSelectableRecipe] = useState<
-    // name, component, config
-    [string, Function, any][]
+  const [selectablePlugins, setSelectablePlugins] = useState<
+    TSelectablePlugins[]
   >([])
 
   useEffect(() => {
     if (!blueprint) return
-    let recipesToUse = blueprint.uiRecipes
-    if (categories?.length) {
-      recipesToUse = recipesToUse.filter((recipe: any) =>
-        categories.includes(recipe?.category)
-      )
-      // If there are no recipes with the correct filter, show them all
-      if (recipesToUse.length === 0) {
-        recipesToUse = blueprint.uiRecipes
-      }
-    }
-    if (!recipesToUse?.length && !categories) {
-      setSelectableRecipe([['yaml', getUiPlugin('yaml-view'), {}]])
-    } else {
-      setSelectableRecipe(
-        recipesToUse.map((uiRecipe: any) => [
-          uiRecipe?.label || uiRecipe?.name || uiRecipe?.plugin || 'no name',
-          getUiPlugin(uiRecipe?.plugin),
-          uiRecipe?.config,
-        ])
-      )
-    }
+    setSelectablePlugins(
+      filterPlugins(blueprint, categories || [], tokenData?.roles, getUiPlugin)
+    )
   }, [blueprint])
 
   if (loadingBlueprint || loading)
@@ -150,40 +178,39 @@ export function UIPluginSelector(props: {
         Failed to fetch Blueprint {entity.type}
       </div>
     )
-  if (!selectableRecipe.length)
+  if (!selectablePlugins.length)
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
 
-  const UiPlugin: FunctionComponent<DmtUIPlugin> = selectableRecipe[
-    selectedPlugin
-  ][1] as FunctionComponent
-
-  const config: any = selectableRecipe[selectedPlugin][2]
+  const UiPlugin: (props: DmtUIPlugin) => JSX.Element =
+    selectablePlugins[selectedPlugin].component
+  const config: any = selectablePlugins[selectedPlugin].config
 
   return (
     <Wrapper>
       {breadcrumb && (
         <DocumentPath absoluteDottedId={`${dataSourceId}/${documentId}`} />
       )}
-      {selectableRecipe.length > 1 && (
+      {selectablePlugins.length > 1 && (
         <PluginTabsWrapper>
-          {selectableRecipe.map(
-            (component: [string, Function, any], index: number) => (
+          {selectablePlugins.map(
+            (component: TSelectablePlugins, index: number) => (
               <SelectPluginButton
                 key={index}
                 onClick={() => setSelectedPlugin(index)}
                 active={index === selectedPlugin}
               >
-                {component[0]}
+                {component.name}
               </SelectPluginButton>
             )
           )}
         </PluginTabsWrapper>
       )}
       <ErrorBoundary
-        key={selectableRecipe[selectedPlugin][0]}
+        key={selectablePlugins[selectedPlugin].name}
         fallBack={() => (
           <h4 style={{ color: 'red' }}>
-            The UiPlugin <i>{selectableRecipe[selectedPlugin][0]}</i> crashed...
+            The UiPlugin <i>{selectablePlugins[selectedPlugin].name}</i>{' '}
+            crashed...
           </h4>
         )}
       >
@@ -192,7 +219,6 @@ export function UIPluginSelector(props: {
           documentId={documentId}
           document={entity}
           onSubmit={onSubmit}
-          onChange={onChange}
           onOpen={onOpen}
           categories={categories}
           config={config}

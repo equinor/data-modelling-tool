@@ -18,8 +18,6 @@ export const plugins: any = [
   {
     pluginName: 'for-weather-plots',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

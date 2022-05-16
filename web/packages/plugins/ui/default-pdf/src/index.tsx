@@ -21,8 +21,6 @@ export const plugins: any = [
   {
     pluginName: 'default-pdf',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

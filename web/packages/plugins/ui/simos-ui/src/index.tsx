@@ -14,9 +14,7 @@ export const plugins: any = [
   {
     pluginName: 'dmt-blueprint-table-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: DMTBluePrintTableView,
-    },
+    component: DMTBluePrintTableView,
   },
   //********************************************************
   //simos forms
@@ -24,9 +22,7 @@ export const plugins: any = [
   {
     pluginName: 'simos-raw-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SIMOSRawView,
-    },
+    component: SIMOSRawView,
   },
   //********************************************************
   //********************************************************

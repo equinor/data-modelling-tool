@@ -11,8 +11,6 @@ export const plugins: any = [
   {
     pluginName: 'default-preview',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]
