@@ -16,7 +16,7 @@ export const BlueprintPicker = (props: {
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
-    <div style={{ width: '80%' }}>
+    <div>
       <Tooltip
         title={truncatePathString(formData) === formData ? '' : formData}
       >
