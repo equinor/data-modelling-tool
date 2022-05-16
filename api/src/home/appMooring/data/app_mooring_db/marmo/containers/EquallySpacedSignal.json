@@ -146,16 +146,6 @@
     "description": "external editor",
     "plugin": "marmo-edit-ess",
     "attributes": []
-  },    
-  {
-    "name": "Edit",
-    "type": "system/SIMOS/UiRecipe",
-    "description": "",
-    "plugin": "default-form",
-    "field": "",
-    "hideTab": false,
-    "options": [],
-    "attributes": []
   },
   {
     "name": "Raw",

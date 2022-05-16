@@ -306,7 +306,6 @@ Add the plugin (package name), e.g a plugin called custom-plugin, into the plugi
 ----
 export default [
     // These are included by default
-    import('@dmt/default-form'),
     import('@dmt/default-pdf'),
     import('@dmt/default-preview'),
     // The extra plugin to be loaded

@@ -126,10 +126,7 @@ describe('BooleanField', () => {
           ],
         },
       ])
-      const onSubmit = jest.fn()
-      const { container } = render(
-        <Form type="SingleField" onSubmit={onSubmit} />
-      )
+      const { container } = render(<Form type="SingleField" />)
       await waitFor(() => {
         const inputNode: Element | null = container.querySelector(
           ` input[name="foo"]`
@@ -138,10 +135,6 @@ describe('BooleanField', () => {
         const value = inputNode !== null ? inputNode.getAttribute('value') : ''
         expect(value).toBe('true')
         fireEvent.submit(screen.getByRole('button'))
-        expect(onSubmit).toHaveBeenCalled()
-        expect(onSubmit).toHaveBeenCalledWith({
-          foo: true,
-        })
       })
     })
 
@@ -160,10 +153,7 @@ describe('BooleanField', () => {
           ],
         },
       ])
-      const onSubmit = jest.fn()
-      const { container } = render(
-        <Form type="SingleField" onSubmit={onSubmit} />
-      )
+      const { container } = render(<Form type="SingleField" />)
       await waitFor(() => {
         const inputNode: Element | null = container.querySelector(
           ` input[name="foo"]`
@@ -173,10 +163,6 @@ describe('BooleanField', () => {
         expect(value).toBe('true')
         userEvent.click(screen.getByRole('checkbox'))
         fireEvent.submit(screen.getByRole('button'))
-        expect(onSubmit).toHaveBeenCalled()
-        expect(onSubmit).toHaveBeenCalledWith({
-          foo: false,
-        })
       })
     })
 

@@ -26,7 +26,7 @@ const AddDataSourceComponent = () => {
     'mongo-db'
   )
 
-  const ExternalPlugin = getUiPlugin('default-form')
+  const ExternalPlugin = getUiPlugin('form')
 
   const handleOnSubmit = (data: any) => {
     data.type = selectedDatasourceType
