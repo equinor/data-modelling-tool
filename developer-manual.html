@@ -663,12 +663,6 @@ pre.rouge {
 <ul class="sectlevel2">
 <li><a href="#_prerequisites">Prerequisites</a></li>
 <li><a href="#_installation">Installation</a></li>
-<li><a href="#_usage">Usage</a></li>
-</ul>
-</li>
-<li><a href="#_tools_used">Tools used</a>
-<ul class="sectlevel2">
-<li><a href="#_pre_commit">Pre-commit</a></li>
 </ul>
 </li>
 <li><a href="#_architecture">Architecture</a>
@@ -753,98 +747,6 @@ pre.rouge {
 git clone git@github.com:equinor/data-modelling-storage service.git
 <span class="nb">cd </span>data-modelling-tool</code></pre>
 </div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_usage">Usage</h3>
-<div class="sect3">
-<h4 id="_starting">Starting</h4>
-<div class="paragraph">
-<p>When running locally, in development mode, DMSS need to be running alongside DMT. Since DMT try to use the same network as DMSS, DMSS needs to be started first.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="bash"><span class="nb">cd</span> ../data-modelling-storage-service
-docker-compose up
-<span class="nb">cd</span> ../data-modelling-tool
-docker-compose up</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The DMT will be available at <a href="http://localhost" class="bare">localhost</a></p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_stopping">Stopping</h4>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="bash">docker-compose down</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_import_data_and_reset_database">Import data and reset database</h4>
-<div class="paragraph">
-<p>Import local documents to the configured DMSS_HOST (from /api/home directory).
-Token is optional, but required if DMSS is configured with authentication.
-Token can be acquired from the DMT Web application .</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="bash">docker-compose run <span class="nt">--rm</span> api reset-app <span class="nt">--token</span><span class="o">=</span>Eyxx.xxxx.xxxx</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If the data is corrupted or in a bad state some way, a hard reset of the DMSS is often a solution.
-This command will remove every <em>mongo database using the same database host as the core</em>, and upload DMSS&#8217;s core documents.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="bash">docker-compose run <span class="nt">--rm</span> dmss reset-app</code></pre>
-</div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_running_tests">Running Tests</h4>
-<div class="paragraph">
-<p>Unit tests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="bash">docker-compose run <span class="nt">--rm</span> api pytest</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>BDD tests:</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="bash">docker-compose run <span class="nt">--rm</span> api behave</code></pre>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_tools_used">Tools used</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_pre_commit">Pre-commit</h3>
-<div class="paragraph">
-<p>Code is among other things automatically prettified upon commit using precommit hooks.</p>
-</div>
-<div class="paragraph">
-<p>The project provides a [.pre-commit-config.yaml](.pre-commit-config.yaml) file that is used to setup git <em>pre-commit hooks</em>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="rouge highlight"><code data-lang="bash">pip <span class="nb">install </span>pre-commit
-pre-commit <span class="nb">install</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Alternative pre-commit installations can be found <a href="https://pre-commit.com/#install">here</a>.</p>
 </div>
 </div>
 </div>
@@ -1086,7 +988,7 @@ then I should see one todo.</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2022-05-16 07:20:02 UTC
+Last updated 2022-05-16 07:36:47 UTC
 </div>
 </div>
 </body>
