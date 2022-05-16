@@ -436,7 +436,7 @@ export default ({ settings }: any) => {
   const dmssAPI = new DmssAPI(token)
   useEffect(() => {
     dmssAPI
-      .getAllDataSources()
+      .dataSourceGetAll()
       .then((response: any) => {
         const dataSources: DataSources = response.data
         setDataSources(dataSources)
@@ -452,7 +452,7 @@ export default ({ settings }: any) => {
     if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
     dmssAPI
-      .searchDocuments({
+      .search({
         dataSources: [searchSettings.dataSource],
         body: query,
         sortByAttribute: searchSettings.sortByAttribute,
