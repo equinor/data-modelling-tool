@@ -19,8 +19,6 @@ export const plugins: any = [
   {
     pluginName: 'yaml-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

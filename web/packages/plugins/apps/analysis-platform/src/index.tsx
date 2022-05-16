@@ -7,8 +7,6 @@ export const plugins: any = [
   {
     pluginName: 'analysisPlatformApp',
     pluginType: DmtPluginType.PAGE,
-    content: {
-      component: App,
-    },
+    component: App,
   },
 ]

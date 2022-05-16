@@ -47,8 +47,6 @@ export const plugins: any = [
   {
     pluginName: 'DMT',
     pluginType: DmtPluginType.PAGE,
-    content: {
-      component: PageComponent,
-    },
+    component: PageComponent,
   },
 ]

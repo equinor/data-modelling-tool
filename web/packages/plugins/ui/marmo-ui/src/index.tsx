@@ -25,25 +25,19 @@ export const plugins: any = [
   {
     pluginName: 'marmo-ess-plot-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SignalPlot,
-    },
+    component: SignalPlot,
   },
 
   {
     pluginName: 'marmo-ess-table-view',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SignalTable,
-    },
+    component: SignalTable,
   },
 
   {
     pluginName: 'marmo-ess-edit-form',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SignalESSForm,
-    },
+    component: SignalESSForm,
   },
   //********************************************************
   //********************************************************
@@ -51,9 +45,7 @@ export const plugins: any = [
   {
     pluginName: 'marmo-edit-ess',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: SingleObjectForm,
-    },
+    component: SingleObjectForm,
   },
   //********************************************************
   //********************************************************

@@ -62,13 +62,15 @@
       "label": "View",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "yaml-view",
-      "category": "view"
+      "category": "view",
+      "roles": ["operator"]
     },
-    {
+      {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-task",
-      "category": "edit"
+      "category": "edit",
+      "roles": ["expert"]
     }
   ]
 }

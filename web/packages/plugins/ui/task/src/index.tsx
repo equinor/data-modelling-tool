@@ -8,15 +8,11 @@ export const plugins: any = [
   {
     pluginName: 'edit-task',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: EditTask,
-    },
+    component: EditTask,
   },
   {
     pluginName: 'view-task',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: ViewTask,
-    },
+    component: ViewTask,
   },
 ]

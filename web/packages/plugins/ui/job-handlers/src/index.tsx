@@ -7,15 +7,11 @@ export const plugins: any = [
   {
     pluginName: 'edit-azure-container',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: EditContainer,
-    },
+    component: EditContainer,
   },
   {
     pluginName: 'edit-local-container-job',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: EditContainer,
-    },
+    component: EditContainer,
   },
 ]

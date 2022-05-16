@@ -7,8 +7,6 @@ export const plugins: any = [
   {
     pluginName: 'edit-sima-application-input',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: EditSimaApplicationInput,
-    },
+    component: EditSimaApplicationInput,
   },
 ]
