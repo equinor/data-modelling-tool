@@ -1,7 +1,0 @@
-{
-  "name": "ViewPlugin",
-  "type": "/UiViewPlugin",
-  "label": "View",
-  "required": false,
-  "widgets": []
-}

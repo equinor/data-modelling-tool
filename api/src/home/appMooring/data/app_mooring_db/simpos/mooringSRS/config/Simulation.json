@@ -52,33 +52,6 @@
       "attributes": []
     },
     {
-      "name": "INDEX",
-      "type": "system/SIMOS/UiRecipe",
-      "description": "",
-      "plugin": "INDEX",
-      "hideTab": true,
-      "options": [],
-      "attributes": [
-        {
-          "name": "simulationLength",
-          "type": "system/SIMOS/UiAttribute",
-          "attributeType": "system/SIMOS/BlueprintAttribute",
-          "widget": "hidden",
-          "contained": false,
-          "options": []
-        },
-        {
-          "name": "numberOfSeeds",
-          "type": "system/SIMOS/UiAttribute",
-          "attributeType": "system/SIMOS/BlueprintAttribute",
-          "widget": "hidden",
-          "contained": false,
-          "options": []
-        }
-      ]
-    },
-
-    {
       "name": "Raw",
       "type": "system/SIMOS/UiRecipe",
       "description": "",

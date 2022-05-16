@@ -1,7 +1,0 @@
-{
-  "name": "EditPlugin",
-  "type": "/UiViewPlugin",
-  "label": "Edit Plugin",
-  "required": true,
-  "widgets": []
-}
