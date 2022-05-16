@@ -23,8 +23,11 @@ Set active subscription for operations
 Create a resource group for the environment  
 `az group create --name dmt-test --location norwayeast -o table`
 
-Deploy the template  
+### Deploy Redis
 `az deployment group create --resource-group dmt-test --template-file ./IaC/main.bicep`
+
+### Deploy database VM
+`az deployment group create --resource-group dmt-test --template-file ./IaC/databaseVM.bicep`
 
 Teardown  (this deletes everything in the resource group)  
 `az group delete --name dmt-test`
