@@ -12,12 +12,67 @@ Some features:
 
 ## Documentation
 
-You can find the Data Modelling Tool documentation [here](https://potential-train-e73e8904.pages.github.io/).
+You can find the Data Modelling Tool documentation here; [https://equinor.github.io/data-modelling-tool](https://equinor.github.io/data-modelling-tool).
 
 ## Developing
  
-Please see [developer docs](https://potential-train-e73e8904.pages.github.io/developer-manual.html) for how to get the Data Modelling Tool up and running on your local machine for development and testing purposes.
+When running locally, in development mode, DMSS need to be running alongside DMT. Since DMT use the same virtual network as DMSS, DMSS needs to be started first.
+
+### Starting
+
+```shell
+cd ../data-modelling-storage-service
+docker-compose up
+cd ../data-modelling-tool
+docker-compose up
+```
+
+The web app will be served at http://localhost
+
+### Import data and reset database
+
+Import local documents to the configured DMSS_HOST (from /api/home directory).  
+Token is optional, but required if DMSS is configured with authentication.  
+Token can be acquired from the DMT Web application.
+
+```shell
+docker-compose run --rm api reset-app --token=Eyxx.xxxx.xxxx
+```
+
+If the data is corrupted or in a bad state, a hard reset of the DMSS is often a solution.
+This command will remove every _mongo database using the same database host as the core_, and upload DMSS's core documents.
+
+```shell
+docker-compose run --rm dmss reset-app
+```
+
+### Running Tests
+
+Unit tests:
+
+`docker-compose run --rm api pytest`  
+`docker-compose run --rm web yarn test`
+
+Integration tests:
+
+`docker-compose run --rm api behave`
+
+### Pre-commit
+
+We use pre-commit to do a minimum of checks on the developer pc before committing. The same checks, plus a few more are
+also run in the build pipeline.  
+You should catch any errors early to save time.
+
+Setup;
+
+```shell
+pip install pre-commit  # Should be installed in global python environment
+pre-commit install  # Pre-commit will now run on every commit (can be skipped with 'git commit --no-verify')
+
+# To run manually on all files
+pre-commit run -a 
+```
 
 ## Contributing 
 
-Read our [contributors' guide](https://potential-train-e73e8904.pages.github.io/contribute-guide.html) to get started.
+Read our [contributors' guide](https://https://equinor.github.io/data-modelling-tool/contribute-guide.html) to get started.
