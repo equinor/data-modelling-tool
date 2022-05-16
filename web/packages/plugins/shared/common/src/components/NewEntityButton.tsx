@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Button, Input, Label } from '@equinor/eds-core-react'
-import { CustomScrim } from './CustomScrim'
+import { Dialog } from './Dialog'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { BlueprintPicker, DestinationPicker } from './Pickers'
@@ -37,7 +37,7 @@ export function NewEntityButton(props: {
   return (
     <div style={{ margin: '0 10px' }}>
       <Button onClick={() => setShowScrim(true)}>New</Button>
-      <CustomScrim
+      <Dialog
         isOpen={showScrim}
         closeScrim={() => setShowScrim(false)}
         header={`Create new entity`}
@@ -95,7 +95,7 @@ export function NewEntityButton(props: {
             Create
           </Button>
         </div>
-      </CustomScrim>
+      </Dialog>
     </div>
   )
 }

@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AuthContext, CustomScrim, JobApi, UIPluginSelector } from '@dmt/common'
+import { AuthContext, Dialog, JobApi, UIPluginSelector } from '@dmt/common'
 import { Button, Label } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'
@@ -98,7 +98,7 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         margin: '10px',
       }}
     >
-      <CustomScrim
+      <Dialog
         isOpen={runnerModal}
         closeScrim={() => setRunnerModal(false)}
         header={'Jobs runner configuration'}
@@ -111,8 +111,8 @@ export const JobLog = (props: { document: any; jobId: string }) => {
             2
           )}{' '}
         </StyledPre>
-      </CustomScrim>
-      <CustomScrim
+      </Dialog>
+      <Dialog
         isOpen={inputModal}
         closeScrim={() => setInputModal(false)}
         header={'Jobs input'}
@@ -128,7 +128,7 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         ) : (
           <pre>None</pre>
         )}
-      </CustomScrim>
+      </Dialog>
 
       <div
         style={{

@@ -5,7 +5,7 @@ import {
   TreeNode,
   TreeView,
   truncatePathString,
-  CustomScrim,
+  Dialog,
 } from '../../index'
 import { Button, Input, Tooltip } from '@equinor/eds-core-react'
 import styled from 'styled-components'
@@ -41,7 +41,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
           onClick={() => setShowModal(true)}
         />
       </Tooltip>
-      <CustomScrim
+      <Dialog
         isOpen={showModal}
         closeScrim={() => setShowModal(false)}
         header={'Select a folder as destination'}
@@ -52,7 +52,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
           NodeWrapper={SelectPackageButton}
           NodeWrapperOnClick={onSelect}
         />
-      </CustomScrim>
+      </Dialog>
     </div>
   )
 }

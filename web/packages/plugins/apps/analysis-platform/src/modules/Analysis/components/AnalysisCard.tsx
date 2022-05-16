@@ -16,7 +16,7 @@ import {
   DmssAPI,
   UIPluginSelector,
   JobApi,
-  CustomScrim,
+  Dialog,
 } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
@@ -117,7 +117,7 @@ const RunAnalysisButton = (props: any) => {
         Run analysis
         <Icons name="play" title="play" />
       </Button>
-      <CustomScrim
+      <Dialog
         isOpen={showScrim}
         closeScrim={() => setShowScrim(false)}
         header={'Job parameters'}
@@ -134,7 +134,7 @@ const RunAnalysisButton = (props: any) => {
           }}
           categories={['container']}
         />
-      </CustomScrim>
+      </Dialog>
     </div>
   )
 }
@@ -208,7 +208,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           )}
         </Card.Actions>
       </Card>
-      <CustomScrim
+      <Dialog
         isOpen={viewACL}
         header={'Access control'}
         closeScrim={() => setViewACL(false)}
@@ -217,7 +217,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           documentId={analysis._id}
           dataSourceId={DEFAULT_DATASOURCE_ID}
         />
-      </CustomScrim>
+      </Dialog>
     </CardWrapper>
   )
 }

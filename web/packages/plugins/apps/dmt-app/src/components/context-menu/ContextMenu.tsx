@@ -7,7 +7,7 @@ import {
   BlueprintEnum,
   DmssAPI,
   TreeNode,
-  CustomScrim,
+  Dialog,
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
 } from '@dmt/common'
@@ -230,7 +230,7 @@ export const NodeRightClickMenu = (props: {
       <ContextMenuTrigger id={node.nodeId}>{children}</ContextMenuTrigger>
       {/*@ts-ignore*/}
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
-      <CustomScrim
+      <Dialog
         isOpen={scrimToShow === 'new-folder'}
         width={'30vw'}
         header={'Create new folder'}
@@ -243,9 +243,9 @@ export const NodeRightClickMenu = (props: {
             handleFormDataSubmit(node, formData, NewFolderAction)
           }
         />
-      </CustomScrim>
+      </Dialog>
 
-      <CustomScrim
+      <Dialog
         isOpen={scrimToShow === 'delete'}
         width={'30vw'}
         closeScrim={() => setScrimToShow('')}
@@ -275,9 +275,9 @@ export const NodeRightClickMenu = (props: {
             </Button>
           </div>
         </div>
-      </CustomScrim>
+      </Dialog>
 
-      <CustomScrim
+      <Dialog
         isOpen={scrimToShow === 'new-root-package'}
         width={'30vw'}
         closeScrim={() => setScrimToShow('')}
@@ -290,9 +290,9 @@ export const NodeRightClickMenu = (props: {
           }
           setFormData={setFormData}
         />
-      </CustomScrim>
+      </Dialog>
 
-      <CustomScrim
+      <Dialog
         isOpen={scrimToShow === 'new-entity'}
         closeScrim={() => setScrimToShow('')}
         header={`Create new entity`}
@@ -340,9 +340,9 @@ export const NodeRightClickMenu = (props: {
             </Button>
           )}
         </div>
-      </CustomScrim>
+      </Dialog>
 
-      <CustomScrim
+      <Dialog
         isOpen={scrimToShow === 'new-blueprint'}
         closeScrim={() => setScrimToShow('')}
         header={`Create new blueprint`}
@@ -393,7 +393,7 @@ export const NodeRightClickMenu = (props: {
             </Button>
           )}
         </div>
-      </CustomScrim>
+      </Dialog>
     </div>
   )
 }

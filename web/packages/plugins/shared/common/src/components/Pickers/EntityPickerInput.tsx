@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { CustomScrim, TreeNode, TreeView, TReference } from '../../index'
+import { Dialog, TreeNode, TreeView, TReference } from '../../index'
 import { Input } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -23,7 +23,7 @@ export const EntityPickerInput = (props: {
         onClick={() => setShowModal(true)}
         style={{ width: INPUT_FIELD_WIDTH, cursor: 'pointer' }}
       />
-      <CustomScrim
+      <Dialog
         isOpen={showModal}
         closeScrim={() => setShowModal(false)}
         header={'Select an Entity'}
@@ -47,7 +47,7 @@ export const EntityPickerInput = (props: {
               })
           }}
         />
-      </CustomScrim>
+      </Dialog>
     </div>
   )
 }

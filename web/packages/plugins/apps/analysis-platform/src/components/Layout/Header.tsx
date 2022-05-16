@@ -3,7 +3,7 @@ import { TopBar } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import Icon from '../Design/Icons'
 import { Link } from 'react-router-dom'
-import { AuthContext, CustomScrim } from '@dmt/common'
+import { AuthContext, Dialog } from '@dmt/common'
 
 const Icons = styled.div`
   display: flex;
@@ -60,7 +60,7 @@ export default (props: { appName: string; homeUrl: string }): JSX.Element => {
           </ClickableIcon>
         </Icons>
       </TopBar.Actions>
-      <CustomScrim
+      <Dialog
         isOpen={visibleUserInfo}
         header={'User info'}
         closeScrim={() => setVisibleUserInfo(false)}
@@ -78,7 +78,7 @@ export default (props: { appName: string; homeUrl: string }): JSX.Element => {
             2
           )}
         </pre>
-      </CustomScrim>
+      </Dialog>
     </TopBar>
   )
 }

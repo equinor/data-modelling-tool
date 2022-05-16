@@ -7,7 +7,7 @@ import {
   Button,
   JsonView,
   sortApplications,
-  CustomScrim,
+  Dialog,
   DmssAPI,
 } from '@dmt/common'
 import axios from 'axios'
@@ -73,7 +73,7 @@ function UserInfo() {
         <div onClick={() => setExpanded(!expanded)}>
           {tokenData?.name || 'Not logged in'}
         </div>
-        <CustomScrim
+        <Dialog
           isOpen={expanded}
           closeScrim={() => {
             setExpanded(false)
@@ -104,7 +104,7 @@ function UserInfo() {
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Button onClick={() => logOut()}>Log out</Button>
           </div>
-        </CustomScrim>
+        </Dialog>
       </UserInfoBox>
     </div>
   )
@@ -126,14 +126,14 @@ const About = () => {
       <QuestionWrapper onClick={() => setExpanded(!expanded)}>
         <FaQuestion />
       </QuestionWrapper>
-      <CustomScrim
+      <Dialog
         isOpen={expanded}
         closeScrim={() => setExpanded(false)}
         header={'About Data Modelling Tool'}
         width={'30vw'}
       >
         <b>Last commit: {version}</b>
-      </CustomScrim>
+      </Dialog>
     </div>
   )
 }

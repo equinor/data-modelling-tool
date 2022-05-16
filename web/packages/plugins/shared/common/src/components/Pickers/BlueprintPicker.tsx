@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { BlueprintEnum } from '../../utils/variables'
-import { CustomScrim, TreeNode, TreeView } from '../../index'
+import { Dialog, TreeNode, TreeView } from '../../index'
 import { Input, Tooltip } from '@equinor/eds-core-react'
 import { PATH_INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
 import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types'
@@ -33,7 +33,7 @@ export const BlueprintPicker = (props: {
           onClick={() => setShowModal(true)}
         />
       </Tooltip>
-      <CustomScrim
+      <Dialog
         isOpen={showModal}
         closeScrim={() => setShowModal(false)}
         header={`Select a blueprint as type`}
@@ -49,7 +49,7 @@ export const BlueprintPicker = (props: {
             onChange(node.getPath())
           }}
         />
-      </CustomScrim>
+      </Dialog>
     </div>
   )
 }
