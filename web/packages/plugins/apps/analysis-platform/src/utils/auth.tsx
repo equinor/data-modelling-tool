@@ -1,4 +1,9 @@
-const EXPERT_ROLES = ['EXPERT', 'dmss-admin']
+const EXPERT_ROLES = [
+  'expert-operator',
+  'domain-developer',
+  'domain-expert',
+  'dmss-admin',
+]
 
 export function hasExpertRole(userData: any): boolean {
   // Always return true if auth is not enabled

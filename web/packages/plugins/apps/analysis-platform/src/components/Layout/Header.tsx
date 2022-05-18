@@ -1,9 +1,9 @@
 import React, { useContext, useState } from 'react'
-import { TopBar } from '@equinor/eds-core-react'
+import { Radio, TopBar } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import Icon from '../Design/Icons'
 import { Link } from 'react-router-dom'
-import { AuthContext, Dialog } from '@dmt/common'
+import { AuthContext, Dialog, useLocalStorage } from '@dmt/common'
 
 const Icons = styled.div`
   display: flex;
@@ -19,6 +19,12 @@ export const ClickableIcon = styled.div`
     color: gray;
     cursor: pointer;
   }
+`
+const UnstyledList = styled.ul`
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  display: inline-flex;
 `
 
 const StyledLink = styled(Link)`
@@ -36,10 +42,15 @@ const StyledLink = styled(Link)`
   }
 `
 
-export default (props: { appName: string; homeUrl: string }): JSX.Element => {
-  const { appName, homeUrl } = props
+export default (props: { appName: string }): JSX.Element => {
+  const { appName } = props
   const [visibleUserInfo, setVisibleUserInfo] = useState<boolean>(false)
   const { tokenData } = useContext(AuthContext)
+  const [checked, updateChecked] = useLocalStorage<string | null>(
+    'impersonateRoles',
+    null
+  )
+
   return (
     <TopBar>
       <TopBar.Header>
@@ -78,6 +89,32 @@ export default (props: { appName: string; homeUrl: string }): JSX.Element => {
             2
           )}
         </pre>
+        {tokenData?.roles.includes('dmss-admin') && (
+          <>
+            <p>Impersonate a role (UI only)</p>
+            <UnstyledList>
+              {[
+                'dmss-admin',
+                'operator',
+                'expert-operator',
+                'domain-expert',
+                'domain-developer',
+              ].map((role: string) => (
+                <li>
+                  <Radio
+                    key={role}
+                    label={role}
+                    name="impersonate-role"
+                    value={role}
+                    checked={checked === role}
+                    //@ts-ignore
+                    onChange={(e: any) => updateChecked(e.target.value)}
+                  />
+                </li>
+              ))}
+            </UnstyledList>
+          </>
+        )}
       </Dialog>
     </TopBar>
   )

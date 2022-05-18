@@ -108,7 +108,6 @@ function filterPlugins(
     }
     return true
   })
-
   // If there are no recipes with the correct filter, show fallback
   if (!uiRecipes.length) {
     return fallbackPlugin
@@ -153,6 +152,9 @@ export function UIPluginSelector(props: {
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
+  const roles =
+    [JSON.parse(localStorage.getItem('impersonateRoles') || 'null')] ||
+    tokenData?.roles
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
   const [selectablePlugins, setSelectablePlugins] = useState<
     TSelectablePlugins[]
@@ -161,7 +163,7 @@ export function UIPluginSelector(props: {
   useEffect(() => {
     if (!blueprint) return
     setSelectablePlugins(
-      filterPlugins(blueprint, categories || [], tokenData?.roles, getUiPlugin)
+      filterPlugins(blueprint, categories || [], roles, getUiPlugin)
     )
   }, [blueprint])
 

@@ -13,7 +13,7 @@ const MainLayout = (props: TLayout) => {
   const { heading, content, settings } = props
   return (
     <>
-      <Header appName={settings.label} homeUrl={settings.name} />
+      <Header appName={settings.label} />
       <Layout style={{ background: backgroundColorDefault }}>
         <Menu appRootPath={settings.urlPath} />
         <Content settings={settings} heading={heading} content={content} />
