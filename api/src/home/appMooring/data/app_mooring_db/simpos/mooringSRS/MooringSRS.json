@@ -55,28 +55,26 @@
       "name": "SRS Sce Form",
       "description": "Some external plugin",
       "plugin": "simpos-srs-sce-form",
-      "attributes": []
+      "category": "edit"
     },
     {
       "type": "system/SIMOS/UiRecipe",
       "name": "SRS Simulation",
       "description": "Some external plugin",
-      "plugin": "simpos-srs-sce-simulation-form",
-      "attributes": []
+      "plugin": "simpos-srs-sce-simulation-form"
     },
     {
       "type": "system/SIMOS/UiRecipe",
       "name": "SIMOS Raw View",
       "description": "Some external plugin",
       "plugin": "simos-raw-view",
-      "attributes": []
+      "category": "view"
     },
     {
       "type": "system/SIMOS/UiRecipe",
       "name": "Blueprint",
       "description": "Viewing the entities Blueprint.",
-      "plugin": "dmt-blueprint-table-view",
-      "attributes": []
+      "plugin": "dmt-blueprint-table-view"
     }
   ]
 }
