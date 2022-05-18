@@ -1,0 +1,80 @@
+---
+# users.yml
+# https://docs.ansible.com/ansible/latest/collections/ansible/builtin/user_module.html
+- block:
+  - name: Ensure common_users.sudo users are present
+    become: "yes"
+    user:
+      name: "{{ item.username }}"
+      state: "{{ item.state }}"
+      group: "{{ item.group | default(item.username) }}"
+      groups: "{{ item.groups | default('sudo') }}"
+      append: "yes"
+    with_items: "{{ common_users.sudo }}"
+
+  - name: Ensure common_users.sudo public keys are added to users' authorized_keys
+    authorized_key:
+      user: "{{ item.username }}"
+      state: "present"
+      key: "{{ item.authorized_keys | join('\n') }}"
+    with_items: "{{ common_users.sudo }}"
+
+  - name: Add sudoers to group sudo
+    become: "yes"
+    user:
+      name: "{{ item.username }}"
+      state: "{{ item.state }}"
+      groups: sudo
+      append: "yes"
+    with_items: "{{ users.sudo }}"
+    when: common_users.sudo | length > 0
+
+  when: common_users.sudo | length > 0
+
+- block:
+  - name: Ensure common_users.standard users are present
+    become: "yes"
+    user:
+      name: "{{ item.username }}"
+      state: "{{ item.state }}"
+      group: "{{ item.username }}"
+      groups: "users {{ item.groups }}"
+      append: "yes"
+    with_items: "{{ common_users.standard }}"
+
+  - name: Ensure common_users.standard public keys are added to users' authorized_keys
+    authorized_key:
+      user: "{{ item.username }}"
+      state: "present"
+      key: "{{ item.authorized_keys | join('\n') }}"
+    with_items: "{{ common_users.standard }}"
+  when: common_users.standard | length > 0
+
+- block:
+  - name: Ensure common_users.service users are present
+    become: "yes"
+    user:
+      name: "{{ item.username }}"
+      state: "{{ item.state }}"
+      group: "service"
+      groups: "{{ item.groups }}"
+      append: "yes"
+    with_items: "{{ common_users.service }}"
+
+  - name: Ensure common_users.service public keys are added to users' authorized_keys
+    authorized_key:
+      user: "{{ item.username }}"
+      state: "present"
+      key: "{{ item.authorized_keys | join('\n') }}"
+    with_items: "{{ common_users.service }}"
+  when: common_users.service | length > 0
+
+- name: Ensure generic default users are absent
+  become: "yes"
+  user:
+    name: "{{ item }}"
+    state: absent
+    remove: "yes"
+  with_items: "{{ common_users_remove_generic }}"
+  ignore_errors: true
+...

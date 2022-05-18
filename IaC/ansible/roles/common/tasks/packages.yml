@@ -1,0 +1,42 @@
+---
+- block:
+  - name: Update apt cache
+    become: "yes"
+    apt:
+      update_cache: "yes"
+      cache_valid_time: 1800
+
+  - name: Ensure blacklisted packages are absent
+    become: "yes"
+    apt:
+      name: "{{ common_apt_pkg_blacklist }}"
+      state: absent
+      purge: "yes"
+    when: common_apt_pkg_blacklist | length > 0
+
+  - name: Ensure unused packages are absent
+    become: "yes"
+    apt:
+      name: "{{ common_apt_pkg_unused }}"
+      state: absent
+      purge: "yes"
+    when: common_apt_pkg_unused | length > 0
+
+  - name: Ensure not needed dependency packages are absent
+    become: "yes"
+    apt:
+      autoclean: "yes"
+      autoremove: "yes"
+
+  - name: Ensure wanted packages are present
+    apt:
+      name: "{{ common_apt_pkg_wanted }}"
+      state: present
+      install_recommends: "no"
+    when: common_apt_pkg_wanted | length > 0
+  when: common_configure_packages_apt
+
+- name: Ensure wanted pip packages are present
+  pip:
+    name: "{{ common_pip_pkg_wanted }}"
+  when: common_configure_packages_pip
