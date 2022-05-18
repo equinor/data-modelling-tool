@@ -1,0 +1,14 @@
+- hosts: all
+  become: true
+  gather_facts: true
+
+  vars:
+    docker_edition: 'ce'
+    docker_install_compose: false
+
+  vars_files:
+    - vars/common.yml
+
+  roles:
+    - common
+    - geerlingguy.docker
