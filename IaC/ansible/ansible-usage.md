@@ -22,19 +22,16 @@ _Includes tasks for common necessities, such as packages needed and the creation
 [`directories.yml`](./roles/common/tasks/directories.yml)
 - Handles creation of directories
 
-### selfsigned
-_Includes tasks for the installation of selfsigned SSL certificates_
-#### Tasks:
-[`ssl.yml`](./roles/selfsigned/tasks/ssl.yml)
-- Creates a directory for the SSL (TLS) certificate files
-- Writes the certificate, certificate key, and DH params to disk
-- Sets file permissions and ownership
-
 ### mongo
 _Includes tasks for the deployment of the Mongo service_
+#### Tasks:
 [`deploy_container.yml`](./roles/mongo/tasks/deploy_container.yml)
 - Pulls Docker image from registry
 - Deploys the mongo service as a container
+[`tls.yml`](./roles/mongo/tasks/tls.yml)
+- Creates a directory for the TLS (SSL) certificate files
+- Writes the certificate, certificate key, and DH params to disk
+- Sets file permissions and ownership
 
 ## Playbooks
 ### [`init-host.yml`](./init-host.yml)
@@ -70,7 +67,7 @@ Let's say we wish to change the MongoDB root user password. We would then need t
 6. Save the file, then stage, commit and push it to git. The secret is now updated.
 
 #### Example: Updating the secret by reading the contents of a file
->E.g. when setting the secrets for `ssl_crt` in [`vars/tls.yml`](./vars/tls.yml)
+>E.g. when setting the secrets for `tls_certificate_crt` in [`vars/tls.yml`](./vars/tls.yml)
 
 Let's say we have a local file `certificate.crt` in our current working directory, which we wish to encrypt the contents of.
 
