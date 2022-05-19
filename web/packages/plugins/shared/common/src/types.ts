@@ -1,7 +1,7 @@
 export type TReference = {
-  name: string
   type: string
   _id: string
+  name?: string
 }
 
 export type TBlob = {

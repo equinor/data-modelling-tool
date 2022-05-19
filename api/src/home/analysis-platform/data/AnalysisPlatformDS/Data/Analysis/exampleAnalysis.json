@@ -25,6 +25,7 @@
     }
   },
   "jobs": [{
+    "name": "anExampleJob",
     "type": "WorkflowDS/Blueprints/Job",
     "started": "2022-03-02T14:15:59.601Z",
     "ended": "2022-03-02T14:15:59.601Z"

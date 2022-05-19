@@ -10,6 +10,7 @@ import {
   Dialog,
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
+  TAttribute,
 } from '@dmt/common'
 
 // @ts-ignore
@@ -32,6 +33,19 @@ function createMenuItems(
         onClick={() => setShowScrimId('new-root-package')}
       >
         New package
+      </MenuItem>
+    )
+  }
+
+  // Append to lists
+  if (node.attribute.dimensions !== '') {
+    menuItems.push(
+      // @ts-ignore
+      <MenuItem
+        key={'append-entity'}
+        onClick={() => setShowScrimId('append-entity')}
+      >
+        Append {node.name}
       </MenuItem>
     )
   }
@@ -290,6 +304,49 @@ export const NodeRightClickMenu = (props: {
           }
           setFormData={setFormData}
         />
+      </Dialog>
+
+      <Dialog
+        isOpen={scrimToShow === 'append-entity'}
+        closeScrim={() => setScrimToShow('')}
+        header={`Append new entity to list`}
+        width={'30vw'}
+      >
+        <div
+          style={{
+            display: 'flex',
+            flexDirection: 'column',
+            justifyContent: 'space-between',
+          }}
+        >
+          {loading ? (
+            <Button style={edsButtonStyleConfig}>
+              <Progress.Dots />
+            </Button>
+          ) : (
+            <Button
+              style={edsButtonStyleConfig}
+              onClick={() => {
+                setLoading(true)
+                node
+                  .addEntity(
+                    node.attribute.attributeType,
+                    `${node.entity.length}`
+                  )
+                  .then(() => {
+                    setScrimToShow('')
+                  })
+                  .catch((error: Error) => {
+                    console.error(error)
+                    NotificationManager.error('Failed to create entity')
+                  })
+                  .finally(() => setLoading(false))
+              }}
+            >
+              Create
+            </Button>
+          )}
+        </div>
       </Dialog>
 
       <Dialog
