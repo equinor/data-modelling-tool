@@ -16,6 +16,10 @@ var virtualMachineAdminSSHKeys = [
     path: '/home/${virtualMachineAdmin}/.ssh/authorized_keys'
   }
 ]
+var allowedMongoIPRanges = [
+  '20.223.122.0/30' // radix
+  '143.97.0.0/16'   // AS42175 (Equinor ASA asn)
+]
 
 // VNET & SNET
 var vnetName = '${resourcePrefix}-vnet'
@@ -58,6 +62,19 @@ resource databaseNSG 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
           priority: 1000
           protocol: 'Tcp'
           sourceAddressPrefix: '*'
+          sourcePortRange: '*'
+        }
+      }
+      {
+        name: 'internal-allow-mongo-ingress'
+        properties: {
+          access: 'Allow'
+          destinationAddressPrefix: '*'
+          destinationPortRange: '10255'
+          direction: 'Inbound'
+          priority: 1001
+          protocol: 'Tcp'
+          sourceAddressPrefixes: allowedMongoIPRanges
           sourcePortRange: '*'
         }
       }
