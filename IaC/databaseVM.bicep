@@ -5,7 +5,7 @@ param locationShortName string = 'NOE'
 param environment string
 @description('The number prefix of the subscription (e.g. "S398"). Used in the resource naming prefix.')
 param subscriptionNumber string
-param dbVirtualMachineName string = 'dmt-db01-${environment}'
+param dbVirtualMachineName string = 'dmt-db-${environment}'
 param virtualMachineAdmin string = 'dmt-admin'
 
 var resourcePrefix = '${subscriptionNumber}-${locationShortName}'
@@ -67,12 +67,16 @@ resource databaseNSG 'Microsoft.Network/networkSecurityGroups@2021-08-01' = {
 var nsgId = resourceId('Microsoft.Network/networkSecurityGroups', nsgName)
 
 // Public IP
-var pipName = '${resourcePrefix}-ip-ext'
+var pipName = '${resourcePrefix}-ip-ext-${environment}'
 resource databasePublicIP 'Microsoft.Network/publicIPAddresses@2021-08-01' = {
   name: pipName
   location: location
   properties: {
     publicIPAllocationMethod: 'Dynamic'
+  }
+  sku: {
+    name: 'Standard'
+    tier: 'Global'
   }
 }
 var pipId = resourceId('Microsoft.Network/publicIPAddresses', pipName)
@@ -92,7 +96,7 @@ resource databaseNIC 'Microsoft.Network/networkInterfaces@2021-08-01' = {
           publicIPAddress: {
             id: pipId
             properties: {
-              deleteOption: 'Delete'
+              deleteOption: 'Detach'
             }
           }
           subnet: {
