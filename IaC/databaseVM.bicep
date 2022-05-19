@@ -72,11 +72,10 @@ resource databasePublicIP 'Microsoft.Network/publicIPAddresses@2021-08-01' = {
   name: pipName
   location: location
   properties: {
-    publicIPAllocationMethod: 'Dynamic'
+    publicIPAllocationMethod: 'Static'
   }
   sku: {
     name: 'Standard'
-    tier: 'Global'
   }
 }
 var pipId = resourceId('Microsoft.Network/publicIPAddresses', pipName)
