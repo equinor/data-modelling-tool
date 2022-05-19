@@ -49,4 +49,4 @@ tls_file_modes:
   pem: '644'
   cacrt: '644'
 
-mongo_conn_str: "mongodb://{{ mongo_root_username }}:<PASSWORD_REPLACE_ME>@{{ ansible_ssh_host }}:{{ mongo_port_external }}/?ssl=true&authSource=admin"
+mongo_conn_str: "mongodb://{{ mongo_root_username }}:<PASSWORD_REPLACE_ME>@{{ fqdn }}:{{ mongo_port_external }}/?ssl=true&authSource=admin"
