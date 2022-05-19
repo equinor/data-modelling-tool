@@ -90,6 +90,9 @@ resource databasePublicIP 'Microsoft.Network/publicIPAddresses@2021-08-01' = {
   location: location
   properties: {
     publicIPAllocationMethod: 'Static'
+    dnsSettings: {
+      domainNameLabel: dbVirtualMachineName
+    }
   }
   sku: {
     name: 'Standard'
