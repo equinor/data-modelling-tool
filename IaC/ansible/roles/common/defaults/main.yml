@@ -10,7 +10,6 @@ common_users:
       state: present
       authorized_keys: []
         #- ssh-rsa AAAAB3NzaC1yc....
-      docker_user: true
 
 common_groups:
   - name: service
@@ -24,11 +23,11 @@ common_users_remove_generic:
   - news
   - sync
 
-common_directories: []
-  # - path: /opt/dmt-db
-  #   owner: dmt-db
-  #   group: service
-  #   mode: 740
+common_directories:
+  - path: /opt/dmt-db
+    owner: dmt-db
+    group: service
+    mode: 740
 
 # apt packages
 common_configure_packages_apt: true
