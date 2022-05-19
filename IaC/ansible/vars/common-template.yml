@@ -1,0 +1,24 @@
+common_users:
+  sudo: []
+  standard: []
+  service:
+    - username: dmt-db
+      groups:
+        - service
+      state: present
+      authorized_keys: []
+        #- ssh-rsa AAAAB3Nz...
+
+# used by geerlingguy.docker
+docker_users:
+  - dmt-db
+
+common_directories:
+  - path: /opt/dmt-db
+    owner: dmt-db
+    group: service
+    mode: 740
+  - path: /opt/dmt-db/data
+    owner: dmt-db
+    group: service
+    mode: 640
