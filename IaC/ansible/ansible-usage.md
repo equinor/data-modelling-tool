@@ -67,23 +67,22 @@ Let's say we wish to change the MongoDB root user password. We would then need t
 6. Save the file, then stage, commit and push it to git. The secret is now updated.
 
 #### Example: Updating the secret by reading the contents of a file
->E.g. when setting the secrets for `tls_certificate_crt` in [`vars/tls.yml`](./vars/tls.yml)
+>E.g. when setting the secrets for `tls_certificate_pem` in [`vars/tls.yml`](./vars/tls.yml)
 
-Let's say we have a local file `certificate.crt` in our current working directory, which we wish to encrypt the contents of.
+Let's say we have a local file `certificate.pem` in our current working directory, which we wish to encrypt the contents of.
 
 You would then issue the following command:
-`ansible-vault encrypt_string --vault-password-file .vault-pwd "$(cat certificate.crt)"`
+`ansible-vault encrypt_string --vault-password-file .vault-pwd "$(cat certificate.pem)"`
 
 E.g.: 
 ```bash
 # Read the file to verify contents
-$ cat certificate.crt
------BEGIN CERTIFICATE-----
-MIIJHzCCBwegAwIBAgIEWc7oXDANBgkq
+$ cat certificate.pem
+-----BEGIN PRIVATE KEY-----
 [...]
 
 # Encrypt the contents of the file, outputting the ciphertext in the terminal
-$ ansible-vault encrypt_string --vault-password-file .vault-pwd "$(cat certificate.crt)"
+$ ansible-vault encrypt_string --vault-password-file .vault-pwd "$(cat certificate.pem)"
 !vault |
     $ANSIBLE_VAULT;1.1;AES256
     62613863343230333035393263656631656339353666343636653966663966363536623433623838

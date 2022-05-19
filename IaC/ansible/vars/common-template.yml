@@ -21,4 +21,8 @@ common_directories:
   - path: /opt/dmt-db/data
     owner: dmt-db
     group: service
-    mode: 640
+    mode: 740
+  - path: /opt/dmt-db/config
+    owner: dmt-db
+    group: service
+    mode: 740

@@ -28,6 +28,14 @@ common_directories:
     owner: dmt-db
     group: service
     mode: 740
+  - path: /opt/dmt-db/data
+    owner: dmt-db
+    group: service
+    mode: 740
+  - path: /opt/dmt-db/config
+    owner: dmt-db
+    group: service
+    mode: 740
 
 # apt packages
 common_configure_packages_apt: true
