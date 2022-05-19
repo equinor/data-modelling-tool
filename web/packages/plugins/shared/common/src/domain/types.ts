@@ -1,26 +1,21 @@
-export type AttributeType = {
+export type TAttribute = {
   type: string
   name: string
-  attributeType?: string
+  dimensions: string
+  attributeType: string
+  optional: boolean
+  contained: boolean
   description?: string
   label?: string
-  optional?: boolean
-  contained?: boolean
   enumType?: string
   default?: string
-  dimensions?: string
-  value?: string
 }
 
-export type BaseBlueprint = {
+export type TBlueprint = {
   name: string
   type: string
-}
-
-export interface BlueprintType extends BaseBlueprint {
-  abstract: boolean
   description: string
-  attributes: AttributeType[]
+  attributes: TAttribute[]
   uiRecipes?: any[]
   storageRecipes?: any[]
 }

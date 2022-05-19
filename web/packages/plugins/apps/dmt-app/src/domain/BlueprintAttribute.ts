@@ -1,9 +1,9 @@
-import { BlueprintAttributeType } from './types'
+import { TAttribute } from '@dmt/common'
 
 export class BlueprintAttribute {
-  private attr: BlueprintAttributeType
+  private attr: TAttribute
 
-  constructor(attr: BlueprintAttributeType) {
+  constructor(attr: TAttribute) {
     this.attr = attr
   }
 
@@ -15,10 +15,6 @@ export class BlueprintAttribute {
     return this.attr.name.charAt(0).toUpperCase() + this.attr.name.substr(1)
   }
 
-  public getDescription(): string | undefined {
-    return this.attr.description
-  }
-
   public isArray() {
     return this.attr.dimensions && this.attr.dimensions === '*'
   }
@@ -27,31 +23,8 @@ export class BlueprintAttribute {
     return this.attr.dimensions?.includes(',')
   }
 
-  public getDefault(): any {
-    return this.attr.default
-  }
-
   public static isArray(value: string) {
     return value !== ''
-  }
-
-  public isPrimitiveType(value: string): boolean {
-    // dont make this a static method. Needs to read attribute types later?
-    return ['string', 'number', 'integer', 'number', 'boolean'].includes(value)
-  }
-
-  /**
-   * @Depecrated
-   *
-   * Use for easier migration of the BlueprintAttribute class
-   * Later: check usages and remove this getter.x
-   */
-  public getBlueprintAttributeType(): BlueprintAttributeType {
-    return this.attr
-  }
-
-  public getAttributeType(): string | undefined {
-    return this.attr.attributeType
   }
 
   public isPrimitive(): boolean {
