@@ -1,0 +1,13 @@
+- hosts: dmt_db
+  become: false
+  gather_facts: false
+
+  vars_files:
+    - vars/secrets.yml
+    - vars/tls.yml
+
+  vars:
+    env: production
+
+  roles:
+    - mongo
