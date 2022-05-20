@@ -61,7 +61,7 @@ spec:
       image: datamodelingtool.azurecr.io/dmss:latest
       alwaysPullImageOnDeploy: true
       secrets:
-        - MONGO_AZURE_URI
+        - MONGO_URI
         - SECRET_KEY
       variables:
         LOGGING_LEVEL: "debug"
