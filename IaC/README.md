@@ -28,6 +28,8 @@ Create a resource group for the environment
 
 ### Deploy database VM
 `az deployment group create --resource-group dmt-test --template-file ./IaC/databaseVM.bicep`
+- To configure the database VM and deploy services (mongo), see the [`ansible README`](./ansible/README.md)
 
-Teardown  (this deletes everything in the resource group)  
+
+### Teardown  (this deletes everything in the resource group)  
 `az group delete --name dmt-test`
