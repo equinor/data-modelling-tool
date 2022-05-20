@@ -17,29 +17,3 @@ resource jobStore 'Microsoft.Cache/redis@2021-06-01' = {
     }
   }
 }
-
-resource database 'Microsoft.DocumentDB/databaseAccounts@2021-10-15'= {
-  name: 'dmt-db-${environment}'
-  location: location
-  tags:{
-    defaultExperience: 'MongoDB'
-  }
-  kind: 'MongoDB'
-  properties: {
-    capacity:{
-      totalThroughputLimit: -1
-    }
-    // autoScale may only be set per database, not databaseAccount :(
-    databaseAccountOfferType: 'Standard'
-    apiProperties:{
-      serverVersion: '4.0'
-    }
-    locations: [
-      {
-        failoverPriority: 0
-        isZoneRedundant: false
-        locationName: location
-      }
-    ]
-  }
-}
