@@ -3,7 +3,7 @@
   gather_facts: false
 
   vars_files:
-    - vars/secrets.yml
+    - vars/mongo.yml
     - vars/tls.yml
 
   vars:

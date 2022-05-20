@@ -2,7 +2,7 @@ hostname: "{{ inventory_hostname }}"
 domain: example.com
 fqdn: "{{ hostname }}.{{ domain }}"
 
-# secrets, overriden in encrypted file vars/secrets.yml
+# secrets, overriden in encrypted file vars/mongo.yml
 mongo_root_username: "db-admin"
 mongo_root_password: "0verrideMe.please"
 
