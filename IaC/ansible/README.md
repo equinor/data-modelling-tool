@@ -8,7 +8,7 @@
 - A `sudo` user has been created on the host(s) to configure; and
   - Your public key has been added to the user's authorized keys
   - *See the "Reset password" tab on the VM's page on the Azure Portal*
-- Access to the `ansible-vault` password (stored in Azure Key Vault)
+- Access to the `ansible-vault` password (stored in Azure Key Vault) if you wish to use the predefined encrypted values.
 
 ### Install requirements
 ```sh
@@ -30,8 +30,10 @@ _You might need to decrypt the hosts file first; `ansible-vault decrypt --vault-
 dmt_db:
   [...]
   hosts:
-    test01:
+    <HOSTNAME>:
       ansible_ssh_host: <IP_ADDRESS or FQDN>
+    <HOSTNAME_2>:
+      ansible_ssh_host: <HOSTNAME_2.somedomain.tld>
 ```
 
 ### Create the `ansible-vault` password file `.vault-pwd`
@@ -41,9 +43,8 @@ dmt_db:
 $ echo "<VAULT_PASSWORD>" > .vault-pwd
 ```
 
-### Add your public key to the `dmt-db` user's authorized keys
-1. Locate the `authorized_keys` of user `dmt-db` under `common_users` in [main.yml#L12](./roles/common/defaults/main.yml#L12)
-2. Add your public key as a new entry under `authorized_keys` by adding a new line prepended with a dash (-)
+### Configure secrets
+See [secret-variables.md](./docs/secret-variables.md)
 
 ### Playbook: Initialize host
 *Installs Docker++, configures users, etc.*
