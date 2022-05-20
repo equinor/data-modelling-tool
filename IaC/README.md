@@ -11,8 +11,7 @@ We use __Bicep__ to define our _Infrastructure as Code_
 <https://ochzhen.com/blog/reference-new-or-existing-resource-in-azure-bicep/>
 
 ## How to test
-
-`az bicep build --file ./IaC/main.bicep --stdout`  
+`az bicep build --file ./IaC/main.bicep --stdout`
 `az deployment group create --resource-group dmt-test --template-file ./IaC/main.bicep --what-if`
 
 ## How to deploy
@@ -23,10 +22,14 @@ Set active subscription for operations
 Create a resource group for the environment  
 `az group create --name dmt-test --location norwayeast -o table`
 
-### Deploy Redis
+### Deploy services
 `az deployment group create --resource-group dmt-test --template-file ./IaC/main.bicep`
 
-### Deploy database VM
+### Deploy a single service
+#### Deploy Redis
+`az deployment group create --resource-group dmt-test --template-file ./IaC/redis.bicep`
+
+#### Deploy database VM
 `az deployment group create --resource-group dmt-test --template-file ./IaC/databaseVM.bicep`
 - To configure the database VM and deploy services (mongo), see the [`ansible README`](./ansible/README.md)
 

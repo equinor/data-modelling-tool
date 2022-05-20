@@ -4,7 +4,7 @@ param location string = 'norwayeast'
 param locationShortName string = 'NOE'
 param environment string
 @description('The number prefix of the subscription (e.g. "S398"). Used in the resource naming prefix.')
-param subscriptionNumber string
+param subscriptionNumber string = 'S398'
 param dbVirtualMachineName string = 'dmt-db-${environment}'
 param virtualMachineAdmin string = 'dmt-admin'
 
