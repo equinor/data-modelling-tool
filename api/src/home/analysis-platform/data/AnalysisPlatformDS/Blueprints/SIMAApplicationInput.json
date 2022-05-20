@@ -97,14 +97,7 @@
       "label": "Tabs",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "tabs",
-      "category": "container",
-      "config": {
-        "type": "system/SIMOS/UiPluginSelectorProps",
-        "subCategories": [
-          "edit",
-          "container"
-        ]
-      }
+      "category": "container"
     },
     {
       "name": "Edit",

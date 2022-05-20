@@ -54,14 +54,7 @@ export const Dialog = (props: {
             <Icon name="close" size={24} title="Close" />
           </ClickableIcon>
         </div>
-        <div
-          style={{
-            padding: '20px 30px 30px 30px',
-            alignItems: 'center',
-          }}
-        >
-          {children}
-        </div>
+        {children}
       </div>
     </EdsDialog>
   )

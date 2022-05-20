@@ -5,12 +5,7 @@ import { EditContainer } from './EditContainer'
 
 export const plugins: any = [
   {
-    pluginName: 'edit-azure-container',
-    pluginType: DmtPluginType.UI,
-    component: EditContainer,
-  },
-  {
-    pluginName: 'edit-local-container-job',
+    pluginName: 'edit-container-job',
     pluginType: DmtPluginType.UI,
     component: EditContainer,
   },

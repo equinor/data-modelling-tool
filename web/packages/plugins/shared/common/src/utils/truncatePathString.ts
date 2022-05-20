@@ -1,4 +1,5 @@
-export const truncatePathString = (path: string): string => {
+export const truncatePathString = (path: string | undefined): string => {
+  if (!path) return ''
   /*
   Truncate path string to have length <= MAX_LENGTH.
    */

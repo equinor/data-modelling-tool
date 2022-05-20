@@ -12,6 +12,8 @@ const PluginComponent = (props: DmtUIPlugin) => {
     true
   )
   if (loading) return <div>Loading...</div>
+  if (error)
+    return <pre style={{ color: 'red' }}>{JSON.stringify(error, null, 2)}</pre>
   return <PreviewPlugin document={document} />
 }
 

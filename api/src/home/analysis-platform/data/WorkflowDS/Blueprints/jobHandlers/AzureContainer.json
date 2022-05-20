@@ -3,20 +3,5 @@
   "name": "AzureContainer",
   "description": "Description of a executable job running as an Azure Container Instance",
   "extends": ["system/SIMOS/DefaultUiRecipes", "/jobHandlers/Container", "/jobHandlers/JobHandler"],
-  "attributes": [],
-  "uiRecipes": [
-    {
-      "name": "Edit",
-      "type": "system/SIMOS/UiRecipe",
-      "plugin": "edit-azure-container",
-      "configType": "",
-      "category": "edit"
-    },
-    {
-      "name": "Tabs",
-      "type": "system/SIMOS/UiRecipe",
-      "plugin": "tabs",
-      "category": "container"
-    }
-  ]
+  "attributes": []
 }

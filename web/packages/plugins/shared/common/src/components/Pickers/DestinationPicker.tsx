@@ -46,6 +46,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
         closeScrim={() => setShowModal(false)}
         header={'Select a folder as destination'}
         width={'30vw'}
+        height={'50vh'}
       >
         <TreeView
           onSelect={() => {}}

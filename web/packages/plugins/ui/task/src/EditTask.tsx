@@ -79,8 +79,8 @@ export const EditTask = (props: DmtUIPlugin) => {
                   }
                   onChange={() => {}}
                   onClick={() => {
-                    if (!Object.keys(formData?.applicationInput || {}).length)
-                      return
+                    // if (!Object.keys(formData?.applicationInput || {}).length)
+                    //   return
                     if (onOpen)
                       onOpen({
                         attribute: 'applicationInput',
@@ -108,12 +108,12 @@ export const EditTask = (props: DmtUIPlugin) => {
               />
               <NewEntityButton
                 type={formData.inputType}
-                setReference={(createdEntity: TReference) =>
+                setReference={(createdEntity: TReference) => {
                   setFormData({
                     ...formData,
                     applicationInput: createdEntity,
                   })
-                }
+                }}
               />
             </div>
           </GroupWrapper>
@@ -176,7 +176,10 @@ export const EditTask = (props: DmtUIPlugin) => {
                 ) : (
                   <UIPluginSelector
                     absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                    entity={formData?.runner || { type: defaultRunnerType }}
+                    entity={
+                      (Object.keys(formData?.runner).length &&
+                        formData.runner) || { type: defaultRunnerType }
+                    }
                     breadcrumb={false}
                     categories={categories}
                   />

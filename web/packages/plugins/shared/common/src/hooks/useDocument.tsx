@@ -1,4 +1,5 @@
 import { useContext, useEffect, useState } from 'react'
+import { AxiosError } from 'axios'
 import { DmssAPI } from '../services/api/DmssAPI'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -31,7 +32,7 @@ export function useDocument<T>(
         setDocument(data)
         setError(null)
       })
-      .catch((error: Error) => setError(error))
+      .catch((error: AxiosError) => setError(error?.response?.data))
       .finally(() => setLoading(false))
   }, [dataSourceId, documentId])
 

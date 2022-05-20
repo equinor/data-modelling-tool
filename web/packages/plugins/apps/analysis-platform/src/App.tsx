@@ -31,6 +31,7 @@ export default (props: TApp): JSX.Element => {
         <Route
           exact
           path={`/${settings.urlPath}${route.path}`}
+          key={route.path}
           render={() => (
             <MainLayout
               heading={route.heading}
@@ -38,7 +39,6 @@ export default (props: TApp): JSX.Element => {
               settings={settings}
             />
           )}
-          key={route.path}
         />
       ))}
     </>

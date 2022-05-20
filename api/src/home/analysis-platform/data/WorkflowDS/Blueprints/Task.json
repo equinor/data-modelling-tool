@@ -43,6 +43,12 @@
     }
   ],
   "uiRecipes": [
+   {
+      "name": "Tabs",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "tabs",
+      "category": "container"
+    },
     {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",

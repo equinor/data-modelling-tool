@@ -9,7 +9,7 @@ import { Variants } from '@equinor/eds-core-react/dist/types/components/TextFiel
 
 export const BlueprintPicker = (props: {
   onChange: (type: string) => void
-  formData: string
+  formData: string | undefined
   variant?: Variants
 }) => {
   const { onChange, formData, variant } = props
@@ -17,9 +17,7 @@ export const BlueprintPicker = (props: {
 
   return (
     <div>
-      <Tooltip
-        title={truncatePathString(formData) === formData ? '' : formData}
-      >
+      <Tooltip title={truncatePathString(formData)}>
         <Input
           variant={variant || 'default'}
           style={{
@@ -27,7 +25,7 @@ export const BlueprintPicker = (props: {
             cursor: 'pointer',
           }}
           type="string"
-          value={truncatePathString(formData) || ''}
+          value={truncatePathString(formData)}
           onChange={() => {}}
           placeholder="Select"
           onClick={() => setShowModal(true)}
@@ -38,6 +36,7 @@ export const BlueprintPicker = (props: {
         closeScrim={() => setShowModal(false)}
         header={`Select a blueprint as type`}
         width={'30vw'}
+        height={'50vh'}
       >
         <TreeView
           onSelect={(node: TreeNode) => {

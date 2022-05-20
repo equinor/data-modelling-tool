@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaRegFileAlt } from 'react-icons/fa'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import { Pre, TAttribute } from '@dmt/common'
+import { TAttribute } from '@dmt/common'
 type SimplifiedTreeProps = {
   datasourceId: string
   document: any
@@ -35,7 +35,7 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
 
   if (complexTypes.length === 0) return <div />
   return (
-    <Pre style={{ width: '50%' }}>
+    <pre style={{ width: '50%' }}>
       <FaRegFileAlt /> {document['name']}
       <div>
         {complexTypes.map((type, index) => (
@@ -57,6 +57,6 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
           </Link>
         ))}
       </div>
-    </Pre>
+    </pre>
   )
 }

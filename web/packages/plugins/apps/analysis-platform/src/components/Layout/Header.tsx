@@ -100,9 +100,8 @@ export default (props: { appName: string }): JSX.Element => {
                 'domain-expert',
                 'domain-developer',
               ].map((role: string) => (
-                <li>
+                <li key={role}>
                   <Radio
-                    key={role}
                     label={role}
                     name="impersonate-role"
                     value={role}

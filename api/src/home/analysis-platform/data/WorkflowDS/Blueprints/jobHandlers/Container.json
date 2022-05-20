@@ -30,7 +30,7 @@
     {
       "name": "EditContainer",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "edit-local-container-job",
+      "plugin": "edit-container-job",
       "configType": "",
       "category": "edit"
     }

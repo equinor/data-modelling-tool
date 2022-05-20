@@ -23,7 +23,12 @@ export default (): JSX.Element => {
     if (!analysis) return
     setJobs(analysis.jobs)
   }, [analysis])
-
+  if (error)
+    return (
+      <pre style={{ color: 'red' }}>
+        {JSON.stringify(error.message, null, 2)}
+      </pre>
+    )
   if (isLoading || !analysis) return <Progress.Linear />
   return (
     <>
@@ -36,7 +41,7 @@ export default (): JSX.Element => {
         <UIPluginSelector
           entity={analysis.task}
           absoluteDottedId={`${data_source}/${analysis._id}.task`}
-          categories={['container', 'view', 'edit']}
+          categories={['container', 'edit']}
         />
         <AnalysisJobTable jobs={jobs} analysisId={analysis._id} />
       </>

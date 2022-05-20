@@ -41,29 +41,28 @@ export function NewEntityButton(props: {
         isOpen={showScrim}
         closeScrim={() => setShowScrim(false)}
         header={`Create new entity`}
-        width={'50vw'}
-        height={'40vh'}
+        width={'600px'}
+        height={'370px'}
       >
         <div
           style={{
             display: 'flex',
             flexDirection: 'column',
             justifyContent: 'space-between',
-            marginBottom: '20px',
+            margin: '20px',
+            minHeight: '270px',
           }}
         >
           <Label label={'Folder'} />
           <DestinationPicker
-            onChange={(value: any) => {
-              setSaveDestination(value)
-            }}
+            onChange={(value: any) => setSaveDestination(value)}
             formData={saveDestination}
           />
           <div style={{ display: 'block' }}>
             <Label label={'Blueprint'} />
             <BlueprintPicker
               onChange={(selectedType: string) => setTypeToCreate(selectedType)}
-              formData={type}
+              formData={typeToCreate}
             />
           </div>
           <Label label={'Name'} />
@@ -82,6 +81,7 @@ export function NewEntityButton(props: {
               marginTop: '40px',
               alignSelf: 'center',
             }}
+            type="submit"
             onClick={() => {
               dmtAPI
                 .createEntity(typeToCreate, newName)
