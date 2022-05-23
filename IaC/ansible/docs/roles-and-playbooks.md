@@ -30,7 +30,7 @@ _Includes tasks for the deployment of the Mongo service_
 - Deploys the mongo service as a container
 [`tls.yml`](../roles/mongo/tasks/tls.yml)
 - Creates a directory for the TLS (SSL) certificate files
-- Writes the full-chain server certificate (PEM) and root certificate authority certificate (PEM) to disk
+- Writes the full-chain server certificate (PEM) and root certificate authority certificate (CRT) to disk
 - Sets file permissions and ownership
 
 ## Playbooks

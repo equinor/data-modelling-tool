@@ -26,7 +26,7 @@
         - "{{ data_dir }}:/data/db"
         - "{{ mongod_conf_file.path }}:{{ mongo_container_conf_file_path }}"
         - "{{ tls_certificate_pem_path }}:{{ mongo_container_certkey_file_path }}"
-        - "{{ tls_certificate_authority_pem_path }}:{{ mongo_container_ca_cert_file_path }}"
+        - "{{ tls_certificate_authority_crt_path }}:{{ mongo_container_ca_cert_file_path }}"
       ports:
         - "{{ mongo_port_external }}:27017"
       env: "{{ mongo_env_vars }}"
