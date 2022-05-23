@@ -23,12 +23,13 @@ common_users_remove_generic:
   - news
   - sync
 
+common_datadisk_path: /datadir
 common_directories:
   - path: /opt/dmt-db
     owner: dmt-db
     group: service
     mode: 740
-  - path: /opt/dmt-db/data
+  - path: "{{ common_datadisk_path }}/dmt-db/data"
     owner: dmt-db
     group: service
     mode: 740

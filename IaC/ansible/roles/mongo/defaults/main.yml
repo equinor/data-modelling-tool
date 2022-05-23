@@ -20,7 +20,8 @@ mongo_container_conf_file_path: "/etc/mongod.conf"
 
 # created in role 'common'
 service_dir: /opt/dmt-db
-data_dir: "{{ service_dir }}/data"
+common_datadisk_path: /datadir
+data_dir: "{{ common_datadisk_path }}/dmt-db/data"
 cfg_dir: "{{ service_dir }}/config"
 
 mongod_conf_file:

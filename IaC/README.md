@@ -24,6 +24,7 @@ Create a resource group for the environment
 
 ### Deploy services
 `az deployment group create --resource-group dmt-test --template-file ./IaC/main.bicep`
+> NB: See [Deploy database VM](#deploy-database-vm) below for details on post creation actions for the database VM
 
 ### Deploy a single service
 #### Deploy Redis
@@ -31,8 +32,37 @@ Create a resource group for the environment
 
 #### Deploy database VM
 `az deployment group create --resource-group dmt-test --template-file ./IaC/databaseVM.bicep`
+- After creating a new VM, please follow the steps outlined in [Post-deployment actions for the database VM](#post-deployment-actions-for-the-database-vm)
 - To configure the database VM and deploy services (mongo), see the [`ansible README`](./ansible/README.md)
 
 
 ### Teardown  (this deletes everything in the resource group)  
 `az group delete --name dmt-test`
+
+
+## Post-deployment actions for the database VM
+> Manual steps required to partition, format, and mount the datadisk associated with the VM
+1. `ssh` into the host as the sudo-user (`dmt-admin` by default, see [databaseVM.bicep#L9](databaseVM.bicep#L9))
+2. Become super user:
+    - `sudo -i`
+3. List the disks:
+    - `fdisk -l | less`
+4. Identify the unpartitioned disk to use for data:
+    - Locate the disk which should be used for storing the data
+        - Usually a disk prefixed with `/dev/sdX`, where `X` is a single letter (e.g. `a` => `/dev/sda`)
+        - The disk in question should **not** have any partitions. Take care **not** to use the disk with partitions (listed under "Device") with a "Type" of "BIOS boot" and "EFI System"
+        - See example output in [fdisk_output_example.png](./fdisk_output_example.png)
+5. Open the disk in `fdisk`:
+    - `fdisk /dev/sdX` (where `X` is the disk you identified in the previous step)
+6. Create a GPT disklabel:
+    - Enter `g` as a command, then hit `Return`
+7. Create a new partition:
+    - Enter `n` as a command, then accept the defaults on all prompts by hitting `Return` (3 times in total)
+8. Write the new partition table:
+    - Enter `w` to write the new partition table, then hit `Return`
+9. Format the disk:
+    - `mkfs.ext4 /dev/sdX1` (where `X` is the disk you identified in step 4)
+10. Mount the disk:
+    - Create a new directory: `mkdir -p /datadir`
+    - Mount the disk to the new directory: `mount /dev/sdX1 /datadir`
+
