@@ -70,17 +70,17 @@ class JobHandler(JobHandlerInterface):
     def remove(self) -> str:
         container = self.client.containers.get(self.job.entity["name"])
         container.remove()
-        return JobStatus.UNKNOWN, "Removed"
+        return JobStatus.REMOVED, "Removed"
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
         try:
             container = self.client.containers.get(self.job.entity["name"])
             logs = container.logs()
-            return JobStatus.UNKNOWN, logs.decode()
+            return self.job.status, logs.decode()
         except docker.errors.NotFound as error:
             logger.error(f"Failed to poll progress of local container: {error}")
-            return JobStatus.UNKNOWN, ""
+            return self.job.status, self.job.log
 
     def result(self) -> Tuple[str, bytearray]:
         return "test 123", b"lkjgfdakljhfdgsllkjhldafgoiu8y03q987hgbloizdjhfpg980"

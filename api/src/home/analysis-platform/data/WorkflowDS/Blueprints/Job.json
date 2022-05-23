@@ -17,6 +17,13 @@
       "optional": true
     },
     {
+      "name": "status",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false,
+      "default": "Not registered"
+    },
+    {
       "attributeType": "object",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "applicationInput",

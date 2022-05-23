@@ -6,6 +6,7 @@ import { NotificationManager } from 'react-notifications'
 import { BlueprintPicker, DestinationPicker } from './Pickers'
 import { addToPath } from './UploadFileButton'
 import { AuthContext, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
+import { AxiosError } from 'axios'
 
 export function NewEntityButton(props: {
   type: string
@@ -28,9 +29,12 @@ export function NewEntityButton(props: {
       .then((newId: string) =>
         setReference({ _id: newId, type: entity.type, name: entity.name })
       )
-      .catch((error: any) => {
+      .catch((error: AxiosError) => {
         console.error(error)
-        NotificationManager.error(JSON.stringify(error), 'Failed to create')
+        NotificationManager.error(
+          JSON.stringify(error?.response?.data?.message),
+          'Failed to create'
+        )
       })
   }
 

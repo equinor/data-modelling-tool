@@ -124,16 +124,31 @@ const RunAnalysisButton = (props: any) => {
         width={'40vw'}
         height={'70vh'}
       >
-        <UIPluginSelector
-          absoluteDottedId={`${analysisAbsoluteReference}.task`}
-          entity={analysis.task}
-          onSubmit={(task: TTask) => {
-            saveAndStartJob(task)
-            setShowScrim(false)
-            NotificationManager.success('Job parameters updated', 'Updated')
+        <div
+          style={{
+            margin: '0 20px',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
           }}
-          categories={['container']}
-        />
+        >
+          <UIPluginSelector
+            absoluteDottedId={`${analysisAbsoluteReference}.task`}
+            entity={analysis.task}
+            categories={['container']}
+          />
+          <Button
+            style={{ width: '200px', marginTop: '30px' }}
+            onClick={() => {
+              saveAndStartJob(analysis.task)
+              setShowScrim(false)
+              NotificationManager.success('Job parameters updated', 'Updated')
+            }}
+          >
+            Start
+            <Icons name="play" title="play" />
+          </Button>
+        </div>
       </Dialog>
     </div>
   )

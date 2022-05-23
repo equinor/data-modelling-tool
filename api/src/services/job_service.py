@@ -2,6 +2,7 @@ import importlib
 import json
 from datetime import datetime
 from pathlib import Path
+from time import sleep
 from typing import Callable, Tuple, Union
 
 import redis
@@ -9,6 +10,7 @@ import traceback
 
 import requests
 from redis import AuthenticationError
+from requests import HTTPError
 
 from config import config
 from enums import SIMOS
@@ -139,15 +141,25 @@ class JobService:
 
     def _run_job(self, job_id: str) -> str:
         job: Job = self._get_job(job_id)
-        job_handler = self._get_job_handler(job)
-        job.status = JobStatus.STARTING
-        job.started = datetime.now()
-        job.update_entity_attributes()
-        self._set_job(job)
-        self._update_job_entity(job.job_id, job.entity, job.token)  # Update in DMSS with status etc.
-        start_output = job_handler.start()
-        job.log = start_output
-        return start_output
+        sleep(2)
+        try:
+            job_handler = self._get_job_handler(job)
+            job.status = JobStatus.STARTING
+            job.started = datetime.now()
+            job.update_entity_attributes()
+            self._set_job(job)
+            self._update_job_entity(job.job_id, job.entity, job.token)  # Update in DMSS with status etc.
+            start_output = job_handler.start()
+            job.log = start_output
+            return start_output
+        except (HTTPError, NotImplementedError) as error:
+            logger.warning(f"Failed to run job; {job_id}")
+            print(traceback.format_exc())
+            job.status = JobStatus.FAILED
+            job.update_entity_attributes()
+            job.log = f"{job.log}\n\n {error}"
+            self._set_job(job)
+            return error.args[0]
 
     def register_job(self, job_id: str) -> str:
         if self._get_job(job_id):

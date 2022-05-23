@@ -140,7 +140,8 @@ export const JobLog = (props: { document: any; jobId: string }) => {
       >
         <RowGroup>
           <Label label="Status:" />
-          <SimStatusWrapper>{jobStatus}</SimStatusWrapper>
+          {/*@ts-ignore*/}
+          <SimStatusWrapper status={jobStatus}>{jobStatus}</SimStatusWrapper>
         </RowGroup>
         <RowGroup>
           <Label label="Started by:" />

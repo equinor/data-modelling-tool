@@ -24,11 +24,6 @@ export const addToPath = (
       updateUncontained: false,
     })
     .then((response: any) => response.data.uid)
-    .catch((error: any) => {
-      return error.json().then((response: any) => {
-        throw response.message || response.detail || JSON.stringify(response)
-      })
-    })
 }
 
 // fileSuffix - A list of strings with allowed file suffixes without '.'. For example to allow yaml uploads; ['yaml', 'yml']

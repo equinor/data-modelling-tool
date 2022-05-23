@@ -50,12 +50,13 @@ export function useDocument<T>(
         setError(null)
         if (notify) NotificationManager.success('Document updated')
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError) => {
         console.error(error)
         if (notify)
           NotificationManager.error(
-            JSON.stringify(error.message),
-            'Failed to update document'
+            JSON.stringify(error?.response?.data?.message),
+            'Failed to update document',
+            0
           )
         setError(error)
       })

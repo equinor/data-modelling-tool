@@ -147,9 +147,10 @@ class JobHandler(JobHandlerInterface):
             try:
                 logs = container_group.containers[0].instance_view.events[-1].message
             except TypeError:
+                logs = self.job.log
                 pass
 
-        job_status = JobStatus.UNKNOWN
+        job_status = self.job.status
         if status == "Terminated":
             job_status = JobStatus.COMPLETED
         if status == "Waiting":
