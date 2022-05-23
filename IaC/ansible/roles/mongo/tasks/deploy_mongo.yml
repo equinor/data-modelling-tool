@@ -30,7 +30,7 @@
       ports:
         - "{{ mongo_port_external }}:27017"
       env: "{{ mongo_env_vars }}"
-      memory: "{{ mongo_memory_in_gb }}g"
+      # memory: "{{ mongo_memory_in_gb }}g"
       state: started
       recreate: yes
 
