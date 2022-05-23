@@ -10,7 +10,7 @@ TOKEN=${TOKEN:-}
 DMSS_API=${DMSS_API:-}
 ## Environment variables
 SECRET_KEY=${SECRET_KEY:-}
-MONGO_AZURE_URI=${MONGO_AZURE_URI:-}
+MONGO_URI=${MONGO_URI:-}
 
 # Optional variables
 ## CLI arguments
@@ -133,8 +133,8 @@ if [ -z "$SECRET_KEY" ]; then
     fatal "You must either provide the environment variable 'SECRET_KEY', or run the script with '--create-key'. Exiting."
   fi
 fi
-if [ -z "$MONGO_AZURE_URI" ]; then
-  fatal "Missing required variable 'MONGO_AZURE_URI'. Exiting."
+if [ -z "$MONGO_URI" ]; then
+  fatal "Missing required variable 'MONGO_URI'. Exiting."
 fi
 
 # File paths
@@ -161,26 +161,26 @@ function discover_data_sources() {
 
 function parse_mongo_conn_str() {
   info "Parsing Mongo connection string.."
-  if [[ "$MONGO_AZURE_URI" =~ ^mongodb:\/\/[^\/\,]+:{1}[^\/\,]*@{1}.*$ ]]; then
-    stripped_conn_str=$(echo "$MONGO_AZURE_URI" | awk -F'://' '{ print $2 }' | awk -F'/' '{ print $1 }')
+  if [[ "$MONGO_URI" =~ ^mongodb:\/\/[^\/\,]+:{1}[^\/\,]*@{1}.*$ ]]; then
+    stripped_conn_str=$(echo "$MONGO_URI" | awk -F'://' '{ print $2 }' | awk -F'/' '{ print $1 }')
     MONGO_AZURE_USER=$(echo "$stripped_conn_str" | awk -F':' '{ print $1 }')
     MONGO_AZURE_PW=$(echo "$stripped_conn_str" | awk -F':' '{ print $2 }' | awk -F'@' '{ print $1 }')
     MONGO_AZURE_HOST=$(echo "$stripped_conn_str" | awk -F':' '{ print $2 }' | awk -F'@' '{ print $2 }')
     MONGO_AZURE_PORT=$(echo "$stripped_conn_str" | awk -F':' '{ print $3 }')
     if [ -z "$MONGO_AZURE_USER" ]; then
-      fatal "Failed to extract the username from the Mongo connection string ('MONGO_AZURE_URI'). Exiting."
+      fatal "Failed to extract the username from the Mongo connection string ('MONGO_URI'). Exiting."
     fi
     if [ -z "$MONGO_AZURE_PW" ]; then
-      fatal "Failed to extract the password from the Mongo connection string ('MONGO_AZURE_URI'). Exiting."
+      fatal "Failed to extract the password from the Mongo connection string ('MONGO_URI'). Exiting."
     fi
     if [ -z "$MONGO_AZURE_HOST" ]; then
-      fatal "Failed to extract the hostname from the Mongo connection string ('MONGO_AZURE_URI'). Exiting."
+      fatal "Failed to extract the hostname from the Mongo connection string ('MONGO_URI'). Exiting."
     fi
     if [ -z "$MONGO_AZURE_PORT" ]; then
-      fatal "Failed to extract the port from the Mongo connection string ('MONGO_AZURE_URI'). Exiting."
+      fatal "Failed to extract the port from the Mongo connection string ('MONGO_URI'). Exiting."
     fi
   else
-    fatal "Environment variable 'MONGO_AZURE_URI' is not a valid mongo connection string. Exiting."
+    fatal "Environment variable 'MONGO_URI' is not a valid mongo connection string. Exiting."
   fi
 }
 
@@ -330,7 +330,7 @@ function dmss_reset_app() {
   info "Resetting DMSS.."
   if [ "$DRY_RUN" == "False" ]; then
     cd ../data-modelling-storage-service
-    docker-compose run --rm -e SECRET_KEY="$SECRET_KEY" -e MONGO_AZURE_URI="$MONGO_AZURE_URI" dmss reset-app && ok || err
+    docker-compose run --rm -e SECRET_KEY="$SECRET_KEY" -e MONGO_URI="$MONGO_URI" dmss reset-app && ok || err
     cd ../data-modelling-tool
   else
     echo "    Skipping (dry run)"
@@ -386,7 +386,7 @@ function import_packages() {
       sleep 30s #sleeping is required. If not, we get an request rate too large (429) exception from Mongodb
       echo "done sleeping!"
       if [ "$DRY_RUN" == "False" ]; then
-        docker-compose run --rm -e MONGO_AZURE_URI="$MONGO_AZURE_URI" -e DMSS_API="$DMSS_API" api --token="$TOKEN" reset-package "$container_path" "$destination" && ok || fatal "Failed to import package $container_path"
+        docker-compose run --rm -e MONGO_URI="$MONGO_URI" -e DMSS_API="$DMSS_API" api --token="$TOKEN" reset-package "$container_path" "$destination" && ok || fatal "Failed to import package $container_path"
       else
         echo "    Skipping (dry run)"
       fi
