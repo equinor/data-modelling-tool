@@ -17,8 +17,8 @@ var virtualMachineAdminSSHKeys = [
   }
 ]
 var allowedMongoIPRanges = [
-  '20.223.122.0/30' // radix
-  '143.97.0.0/16'   // AS42175 (Equinor ASA asn)
+  '52.178.214.192/29' //radix-prod egress (https://console.radix.equinor.com/about)
+  '143.97.0.0/16'     // AS42175 (Equinor ASA asn)
 ]
 
 // VNET & SNET
