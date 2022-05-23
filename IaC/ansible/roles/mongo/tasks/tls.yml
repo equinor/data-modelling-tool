@@ -22,11 +22,11 @@
       group: "{{ tls_file_permissions.group }}"
       mode: "{{ tls_file_modes.pem }}"
 
-  - name: Ensure 'tls_certificate_authority_crt' CA certificate file is present
+  - name: Ensure 'tls_certificate_authority_pem' CA certificate file is present
     copy:
-      dest: "{{ tls_certificate_authority_crt_path }}"
+      dest: "{{ tls_certificate_authority_pem_path }}"
       content: |
-        {{ tls_certificate_authority_crt }}
+        {{ tls_certificate_authority_pem }}
       force: yes
       owner: "{{ tls_file_permissions.owner }}"
       group: "{{ tls_file_permissions.group }}"
@@ -35,7 +35,7 @@
   when:
     - configure_tls_certs
     - tls_certificate_pem is defined
-    - tls_certificate_authority_crt is defined
+    - tls_certificate_authority_pem is defined
   tags:
     - tls
     - ssl

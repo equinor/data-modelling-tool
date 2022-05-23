@@ -25,7 +25,7 @@ These secrets reside inside the directory named [`vars`](../vars):
 ### [`tls-template.yml`](../vars/tls-template.yml)
 - Run `cp vars/common-template.yml vars/common.yml` to copy the template, then modify the variables.
 - **Required:**
-  - Currently, this role assumes that you're using self-signed certificates and as such, you must provide both the full-chain server certificate (`tls_certificate_pem`) and the Root Certificate Authority certificate (`tls_certificate_authority_crt`)
+  - Currently, this role assumes that you're using self-signed certificates and as such, you must provide both the full-chain server certificate (`tls_certificate_pem`) and the Root Certificate Authority certificate (`tls_certificate_authority_pem`)
 - **The variable values (not the entire file) should be encrypted**. See [Encrypted variables in an unencrypted file](#encrypted-variables-in-an-unencrypted-file) for details.
 
 ## Updating a secret (pre-existing secret variable files)

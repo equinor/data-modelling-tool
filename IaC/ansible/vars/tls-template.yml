@@ -1,2 +1,2 @@
 tls_certificate_pem: ""
-tls_certificate_authority_crt: ""
+tls_certificate_authority_pem: ""
