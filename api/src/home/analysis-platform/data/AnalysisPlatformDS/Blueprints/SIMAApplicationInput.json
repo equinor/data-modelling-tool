@@ -97,7 +97,11 @@
       "label": "Tabs",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "tabs",
-      "category": "container"
+      "category": "container",
+      "config": {
+        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "subCategories": ["edit"]
+      }
     },
     {
       "name": "Edit",

@@ -61,7 +61,8 @@
       "type": "system/SIMOS/UiRecipe",
       "name": "SRS Simulation",
       "description": "Some external plugin",
-      "plugin": "simpos-srs-sce-simulation-form"
+      "plugin": "simpos-srs-sce-simulation-form",
+      "category": "edit"
     },
     {
       "type": "system/SIMOS/UiRecipe",

@@ -93,6 +93,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                         absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
                         // Child entities should use plugins with this category tag, if they have any
                         categories: ['container'],
+                        config: { subCategories: ['edit'] },
                       })
                   }}
                 />
@@ -181,7 +182,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                         formData.runner) || { type: defaultRunnerType }
                     }
                     breadcrumb={false}
-                    categories={categories}
+                    categories={['edit']}
                   />
                 )}
               </div>
@@ -204,7 +205,7 @@ export const EditTask = (props: DmtUIPlugin) => {
               updateDocument(formData, true)
             }}
           >
-            Ok
+            Save
           </Button>
         </div>
       </div>

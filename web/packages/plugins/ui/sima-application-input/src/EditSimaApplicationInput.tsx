@@ -96,7 +96,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                           onChange: (input: any) =>
                             setFormData({ ...formData, input: input }),
                           absoluteDottedId: `${dataSourceId}/${formData?.input?._id}`,
-                          categories: [],
+                          categories: ['edit'],
                         })
                     }
                   }}

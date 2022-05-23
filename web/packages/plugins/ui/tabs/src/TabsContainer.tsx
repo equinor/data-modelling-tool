@@ -61,7 +61,6 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   }, [entity])
 
   if (!entity || Object.keys(formData).length === 0) return null
-
   return (
     <div
       style={{
