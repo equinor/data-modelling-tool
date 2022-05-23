@@ -41,7 +41,7 @@ export default (): JSX.Element => {
         <UIPluginSelector
           entity={analysis.task}
           absoluteDottedId={`${data_source}/${analysis._id}.task`}
-          categories={['container', 'edit']}
+          categories={['container']}
         />
         <AnalysisJobTable jobs={jobs} analysisId={analysis._id} />
       </>
