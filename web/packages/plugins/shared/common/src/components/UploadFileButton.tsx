@@ -1,9 +1,10 @@
 import { DmssAPI } from '../services'
 import React, { useContext, useRef, useState } from 'react'
 import { AuthContext } from '../index'
-import { Button } from '@equinor/eds-core-react'
+import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { AxiosError } from 'axios'
 
 export const addToPath = (
   body: any,
@@ -19,8 +20,7 @@ export const addToPath = (
     .explorerAddToPath({
       dataSourceId: dataSourceId,
       document: JSON.stringify(body),
-      directory: directory,
-      // @ts-ignore
+      directory: directory, // @ts-ignore
       files: files.filter((item: any) => item !== undefined),
       updateUncontained: updateUncontainer,
     })
@@ -39,6 +39,7 @@ export function UploadFileButton(props: {
   const { fileSuffix, getBody, dataSourceId, onUpload } = props
   const textInput = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string>()
+  const [loading, setLoading] = useState<boolean>(false)
   const { token } = useContext(AuthContext)
 
   function handleUpload(event: any): void {
@@ -51,6 +52,7 @@ export function UploadFileButton(props: {
       )
     } else {
       const newDocumentBody = getBody(file.name)
+      setLoading(true)
       addToPath(
         newDocumentBody,
         token,
@@ -66,12 +68,13 @@ export function UploadFileButton(props: {
             type: newDocumentBody.type,
           })
         )
-        .catch((error: any) => setError(error))
+        .catch((error: AxiosError) => setError(error.response?.data?.message))
+        .finally(() => setLoading(false))
     }
   }
 
   return (
-    <div style={{ display: 'flex' }}>
+    <div style={{ display: 'flex', alignItems: 'baseline' }}>
       {/* We want to upload files via a custom button instead of the default html <input> element.
         Therefore, we create a ref for the <input> and make clicks on the <Button>
         triggers clicks on that hidden <input> element.
@@ -83,12 +86,19 @@ export function UploadFileButton(props: {
         style={{ display: 'none' }}
         onChange={(event: any) => handleUpload(event)}
       />
-      <Button
-        onClick={() => textInput?.current?.click()}
-        style={{ margin: '0 10px' }}
-      >
-        Upload
-      </Button>
+      {loading ? (
+        <Button style={{ margin: '0 10px' }}>
+          <Progress.Dots />
+        </Button>
+      ) : (
+        <Button
+          onClick={() => textInput?.current?.click()}
+          style={{ margin: '0 10px' }}
+        >
+          Upload
+        </Button>
+      )}
+      {error && <p style={{ color: 'red' }}>{error}</p>}
     </div>
   )
 }

@@ -161,6 +161,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     onClick={() =>
                       onOpen({
                         attribute: 'runner',
+                        categories: ['edit'],
                         entity: formData?.runner || {
                           type: defaultRunnerType,
                         },

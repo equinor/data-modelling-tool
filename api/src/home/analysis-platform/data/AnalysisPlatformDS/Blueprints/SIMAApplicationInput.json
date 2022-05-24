@@ -78,21 +78,6 @@
   ],
   "uiRecipes": [
     {
-      "name": "Form",
-      "type": "system/SIMOS/UiRecipe",
-      "plugin": "form",
-      "category": "edit",
-      "config": {
-        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
-        "attributes": [
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
-            "name": "inputType",
-            "widget": "BlueprintPickerWidget"
-          }
-        ]
-      }},
-    {
       "name": "Tabs",
       "label": "Tabs",
       "type": "system/SIMOS/UiRecipe",

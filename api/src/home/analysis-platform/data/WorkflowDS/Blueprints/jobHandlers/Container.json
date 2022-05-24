@@ -28,7 +28,7 @@
   ],
   "uiRecipes": [
     {
-      "name": "EditContainer",
+      "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-container-job",
       "configType": "",
