@@ -10,7 +10,7 @@ mongo_root_password: "0verrideMe.please"
 mongo_docker_image: mongo:4.4
 mongo_restart_policy: unless-stopped
 mongo_port_external: 10255
-mongo_memory_in_gb: 4
+# mongo_memory_in_gb: 4
 mongo_env_vars:
   MONGO_INITDB_ROOT_USERNAME="{{ mongo_root_username }}"
   MONGO_INITDB_ROOT_PASSWORD="{{ mongo_root_password }}"
@@ -20,7 +20,8 @@ mongo_container_conf_file_path: "/etc/mongod.conf"
 
 # created in role 'common'
 service_dir: /opt/dmt-db
-data_dir: "{{ service_dir }}/data"
+common_datadisk_path: /datadir
+data_dir: "{{ common_datadisk_path }}/dmt-db/data"
 cfg_dir: "{{ service_dir }}/config"
 
 mongod_conf_file:
