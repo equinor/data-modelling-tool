@@ -77,13 +77,14 @@ export const JobLog = (props: { document: any; jobId: string }) => {
         setJobLogs(result.data.log)
         setJobStatus(result.data.status)
       })
-      .catch((e: AxiosError) => {
-        if (e.response) {
-          setJobLogs(e.response.data.message)
+      .catch((error: AxiosError) => {
+        if (error.response) {
+          //@ts-ignore
+          setJobLogs(error?.response?.data?.message || error.message)
         } else setJobLogs('Error occurred when getting status for job')
 
         // setJobStatus(SimulationStatus.FAILED)
-        console.error(e)
+        console.error(error)
       })
       .finally(() => setLoading(false))
   }, [jobId, refreshCount])

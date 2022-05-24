@@ -32,7 +32,8 @@ export function NewEntityButton(props: {
       .catch((error: AxiosError) => {
         console.error(error)
         NotificationManager.error(
-          JSON.stringify(error?.response?.data?.message),
+          // @ts-ignore
+          JSON.stringify(error?.response?.data?.message || error.message),
           'Failed to create'
         )
       })
