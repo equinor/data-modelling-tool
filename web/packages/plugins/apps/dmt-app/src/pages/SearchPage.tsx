@@ -149,7 +149,6 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   const attribute = new BlueprintAttribute(attr)
   const [expanded, setExpanded] = useState<boolean>(value)
   const [nestedAttributes, setNestedAttributes] = useState([])
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -165,9 +164,10 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
-        .getBlueprint({ typeRef: attribute.getAttributeType() })
-        .then((result) => {
-          setNestedAttributes(result.attributes)
+        .blueprintGet({ typeRef: attribute.getAttributeType() })
+        .then((response: any) => {
+          const data = response.data
+          setNestedAttributes(data.attributes)
         })
         .catch((error) => {
           NotificationManager.error(`${error.message}`)
@@ -231,7 +231,6 @@ function FilterContainer({
   resetSearchSettings,
 }) {
   const [attributes, setAttributes] = useState<Array<any>>([])
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   function onChange(filterChange: any) {
@@ -242,9 +241,10 @@ function FilterContainer({
   useEffect(() => {
     if (searchFilter?.type) {
       dmssAPI
-        .getBlueprint({ typeRef: searchFilter.type })
-        .then((result) => {
-          setAttributes(result.attributes)
+        .blueprintGet({ typeRef: searchFilter.type })
+        .then((response: any) => {
+          const data = response.data
+          setAttributes(data.attributes)
         })
         .catch((error) => {
           NotificationManager.error(`${error.message}`)
@@ -432,13 +432,13 @@ export default ({ settings }: any) => {
   const [result, setResult] = useState([])
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   useEffect(() => {
     dmssAPI
-      .getAllDataSources()
-      .then((dataSources: DataSources) => {
+      .dataSourceGetAll()
+      .then((response: any) => {
+        const dataSources: DataSources = response.data
         setDataSources(dataSources)
       })
       .catch((error) => {
@@ -452,12 +452,13 @@ export default ({ settings }: any) => {
     if (!searchSettings.dataSource)
       NotificationManager.warning('No datasource selected')
     dmssAPI
-      .searchDocuments({
+      .search({
         dataSources: [searchSettings.dataSource],
         body: query,
         sortByAttribute: searchSettings.sortByAttribute,
       })
-      .then((result: any) => {
+      .then((response: any) => {
+        const result = response.data
         setQueryError('')
         let resultList = Object.values(result)
         if (resultList.length === 0) {

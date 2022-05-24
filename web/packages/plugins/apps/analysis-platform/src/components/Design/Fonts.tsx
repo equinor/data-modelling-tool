@@ -17,17 +17,9 @@ import { Typography } from '@equinor/eds-core-react'
  * }}
  * @constructor
  */
-export const Heading = (props: {
-  variant?: string
-  text: string
-  tokens?: any
-}): JSX.Element => {
-  const { variant, text, tokens } = props
-  return (
-    <Typography variant={variant || 'h1'} tokens={tokens}>
-      {text}
-    </Typography>
-  )
+export const Heading = (props: { text: string }): JSX.Element => {
+  const { text } = props
+  return <Typography variant={'h1'}>{text}</Typography>
 }
 
 export const Meta = (props: { text: string }) => {

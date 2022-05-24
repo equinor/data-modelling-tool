@@ -17,8 +17,8 @@ ENV REACT_APP_AUTH_REDIRECT_URI=$REDIRECT_URI
 
 WORKDIR /code/
 COPY jest.config.base.js package.json yarn.lock jest.config.js tsconfig.json ./
-COPY ./packages ./packages
-RUN yarn install --ignore-scripts  --frozen-lockfile
+COPY --chown=1000 ./packages ./packages
+RUN yarn install --ignore-scripts  --frozen-lockfile --link-duplicates
 
 FROM base as development
 CMD ["yarn", "start"]

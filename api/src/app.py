@@ -62,7 +62,7 @@ def remove_application():
     logger.info("-------------- REMOVING OLD APPLICATION FILES ----------------")
     logger.debug(("Removing application specific files from" f" the configured DMSS instance; {config.DMSS_API}"))
 
-    def thread_function(settings: dict) -> None:
+    def thread_function(settings: dict) -> bool:
         for package in settings.get("packages", []):
             data_source_alias, folder = package.split("/", 1)
             actual_data_source = next(
@@ -77,9 +77,11 @@ def remove_application():
                     pass
                 else:
                     raise error
+            return True
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.map(thread_function, config.APP_SETTINGS.values())
+        for result in executor.map(thread_function, config.APP_SETTINGS.values()):
+            logger.debug(result)
     logger.info("-------------- DONE ----------------")
 
 
@@ -188,8 +190,8 @@ def init_application(context):
         logger.debug(f"_____ DONE importing blueprints and entities {tuple(settings.get('packages', []))}_____")
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
-        executor.map(thread_function, config.APP_SETTINGS.values())
-
+        for result in executor.map(thread_function, config.APP_SETTINGS.values()):
+            logger.debug(result)
     logger.info(emoji.emojize("-------------- DONE ---------------- :check_mark_button:"))
 
 

@@ -27,21 +27,9 @@ const HeaderWrapper = styled.div`
   margin-top: 8px;
 `
 
-const Wrapper = styled.div`
-  margin: 10px;
-`
-
 export const EditTask = (props: DmtUIPlugin) => {
-  const {
-    document,
-    documentId,
-    dataSourceId,
-    onSubmit,
-    onOpen,
-    onChange,
-    categories,
-  } = props
-  const [_document, _loading, updateDocument, error] = useDocument(
+  const { document, documentId, dataSourceId, onOpen, categories } = props
+  const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
     false
@@ -52,12 +40,8 @@ export const EditTask = (props: DmtUIPlugin) => {
   useEffect(() => {
     if (!_document) return
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
-    if (!onChange) setFormData({ ..._document })
+    setFormData({ ..._document })
   }, [_document])
-
-  useEffect(() => {
-    if (onChange) onChange(formData)
-  }, [formData])
 
   return (
     <div>
@@ -71,7 +55,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, inputType: selectedBlueprint })
                 }
-                formData={formData.inputType}
+                formData={formData?.inputType || ''}
               />
             </Column>
             <div
@@ -95,37 +79,42 @@ export const EditTask = (props: DmtUIPlugin) => {
                   }
                   onChange={() => {}}
                   onClick={() => {
-                    onOpen({
-                      attribute: 'applicationInput',
-                      onChange: (appInput: any) =>
-                        setFormData({
-                          ...formData,
-                          applicationInput: appInput,
-                        }),
-                      entity: formData.applicationInput,
-                      absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
-                      categories: ['container'],
-                    })
+                    // if (!Object.keys(formData?.applicationInput || {}).length)
+                    //   return
+                    if (onOpen)
+                      onOpen({
+                        attribute: 'applicationInput',
+                        onChange: (appInput: any) =>
+                          setFormData({
+                            ...formData,
+                            applicationInput: appInput,
+                          }),
+                        entity: formData.applicationInput,
+                        absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
+                        // Child entities should use plugins with this category tag, if they have any
+                        categories: ['container'],
+                        config: { subCategories: ['edit'] },
+                      })
                   }}
                 />
               </Column>
               <EntityPickerButton
                 typeFilter={formData.inputType}
-                onChange={(selectedEntity: TReference) =>
+                onChange={(selectedEntity: any) => {
                   setFormData({
                     ...formData,
                     applicationInput: selectedEntity,
                   })
-                }
+                }}
               />
               <NewEntityButton
                 type={formData.inputType}
-                setReference={(createdEntity: TReference) =>
+                setReference={(createdEntity: TReference) => {
                   setFormData({
                     ...formData,
                     applicationInput: createdEntity,
                   })
-                }
+                }}
               />
             </div>
           </GroupWrapper>
@@ -140,7 +129,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, outputType: selectedBlueprint })
                 }
-                formData={formData.outputType}
+                formData={formData?.outputType || ''}
               />
             </Column>
           </GroupWrapper>
@@ -178,6 +167,8 @@ export const EditTask = (props: DmtUIPlugin) => {
                         absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
                         onSubmit: (data: any) =>
                           setFormData({ ...formData, runner: data }),
+                        onChange: (data: any) =>
+                          setFormData({ ...formData, runner: data }),
                       })
                     }
                   >
@@ -186,15 +177,12 @@ export const EditTask = (props: DmtUIPlugin) => {
                 ) : (
                   <UIPluginSelector
                     absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                    entity={formData?.runner || { type: defaultRunnerType }}
+                    entity={
+                      (Object.keys(formData?.runner).length &&
+                        formData.runner) || { type: defaultRunnerType }
+                    }
                     breadcrumb={false}
-                    categories={categories}
-                    onChange={(data: any) =>
-                      setFormData({ ...formData, runner: data })
-                    }
-                    onSubmit={(data: any) =>
-                      setFormData({ ...formData, runner: data })
-                    }
+                    categories={['edit']}
                   />
                 )}
               </div>
@@ -202,30 +190,24 @@ export const EditTask = (props: DmtUIPlugin) => {
           </GroupWrapper>
         </HeaderWrapper>
 
-        {onChange === undefined && (
-          <div style={{ justifyContent: 'space-around', display: 'flex' }}>
-            <Button
-              as="button"
-              variant="outlined"
-              color="danger"
-              onClick={() => setFormData({ ...document })}
-            >
-              Reset
-            </Button>
-            <Button
-              as="button"
-              onClick={() => {
-                if (onSubmit) {
-                  onSubmit(formData)
-                } else {
-                  updateDocument(formData, true)
-                }
-              }}
-            >
-              Ok
-            </Button>
-          </div>
-        )}
+        <div style={{ justifyContent: 'space-around', display: 'flex' }}>
+          <Button
+            as="button"
+            variant="outlined"
+            color="danger"
+            onClick={() => setFormData({ ...document })}
+          >
+            Reset
+          </Button>
+          <Button
+            as="button"
+            onClick={() => {
+              updateDocument(formData, true)
+            }}
+          >
+            Save
+          </Button>
+        </div>
       </div>
     </div>
   )

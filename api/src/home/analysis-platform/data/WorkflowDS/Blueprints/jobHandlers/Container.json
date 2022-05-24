@@ -16,7 +16,8 @@
     {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "image"
+      "name": "image",
+      "default": "python:alpine"
     },
     {
       "attributeType": "string",
@@ -29,7 +30,7 @@
     {
       "name": "EditContainer",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "edit-local-container-job",
+      "plugin": "edit-container-job",
       "configType": "",
       "category": "edit"
     }

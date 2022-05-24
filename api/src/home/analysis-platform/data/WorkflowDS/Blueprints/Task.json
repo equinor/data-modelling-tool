@@ -3,6 +3,7 @@
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
   "description": "Task holds parameters that is used to create different job instances",
+  "extends": ["system/SIMOS/DefaultUiRecipes"],
   "attributes": [
     {
       "name": "outputTarget",
@@ -10,16 +11,14 @@
       "attributeType": "string",
       "description": "Reference to a location where the result should be stored (path format)",
       "optional": true
-    },
-    {
+    }, {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "inputType",
       "label": "Input type",
       "description": "Reference to a Blueprint",
       "optional": true
-    },
-    {
+    }, {
       "attributeType": "object",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "applicationInput",
@@ -27,16 +26,14 @@
       "description": "Input entity for container",
       "contained": false,
       "optional": true
-    },
-    {
+    }, {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "outputType",
       "label": "Output type",
       "description": "Reference to a Blueprint",
       "optional": true
-    },
-    {
+    }, {
       "attributeType": "/jobHandlers/JobHandler",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "runner",
@@ -45,30 +42,40 @@
       "optional": true
     }
   ],
-    "uiRecipes": [
+  "uiRecipes": [
     {
-      "name": "Tabs",
-      "label": "Tabs",
+      "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "tabs",
       "category": "container",
       "config": {
-        "type": "system/SIMOS/UiPluginSelectorProps",
-        "subCategories": ["edit", "container"]
+        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "subCategories": ["edit"]
       }
     },
-      {
-      "name": "Yaml",
-      "label": "View",
+    {
+      "name": "View",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "yaml-view",
-      "category": "view"
+      "plugin": "tabs",
+      "category": "container",
+      "config": {
+        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "subCategories": ["view"]
+      }
     },
     {
-      "name": "Edit",
+      "name": "Advanced edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-task",
-      "category": "edit"
+      "category": "edit",
+      "roles": ["dmss-admin", "domain-expert", "domain-developer"]
+    },
+    {
+      "name": "Operator edit",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-task-expert-operator",
+      "category": "edit",
+      "roles": ["expert-operator"]
     }
   ]
 }

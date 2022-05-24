@@ -18,7 +18,6 @@ const constructType = (selectedDatasourceType: string) => {
 }
 
 const AddDataSourceComponent = () => {
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   // @ts-ignore
@@ -27,12 +26,12 @@ const AddDataSourceComponent = () => {
     'mongo-db'
   )
 
-  const ExternalPlugin = getUiPlugin('default-form')
+  const ExternalPlugin = getUiPlugin('form')
 
   const handleOnSubmit = (data: any) => {
     data.type = selectedDatasourceType
     dmssAPI
-      .saveDataSource({ dataSourceId: data.name, dataSourceRequest: data })
+      .dataSourceSave({ dataSourceId: data.name, dataSourceRequest: data })
       .then(() => {
         NotificationManager.success(`Created datasource ${data.name}`)
         // @todo fix when endpoint is ready.

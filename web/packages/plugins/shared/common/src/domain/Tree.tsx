@@ -1,36 +1,59 @@
 import { DmssAPI, DmtAPI } from '../services'
 import { BlueprintEnum } from '../utils/variables'
+import { TAttribute, TBlueprint } from './types'
+import { TReference } from '../types'
 
 type TreeMap = {
   [nodeId: string]: TreeNode
 }
 
+const dataSourceAttribute: TAttribute = {
+  attributeType: 'dataSource',
+  name: 'dataSource',
+  type: BlueprintEnum.ATTRIBUTE,
+  contained: false,
+  optional: false,
+  dimensions: '',
+}
+
+const packageAttribute: TAttribute = {
+  attributeType: BlueprintEnum.PACKAGE,
+  name: 'package',
+  type: BlueprintEnum.ATTRIBUTE,
+  contained: false,
+  optional: false,
+  dimensions: '',
+}
+
 const createContainedChildren = (
   document: any,
-  parentNode: TreeNode
+  parentNode: TreeNode,
+  blueprint: TBlueprint
 ): TreeMap => {
   const newChildren: TreeMap = {}
   Object.entries(document).forEach(([key, value]: [string, any]) => {
-    if (typeof value === 'object') {
-      const childNodeId = `${parentNode.nodeId}.${key}`
-      newChildren[childNodeId] = new TreeNode(
-        parentNode.tree,
-        childNodeId,
-        parentNode.level + 1,
-        value,
-        parentNode,
-        value?.name || key
-      )
+    let attribute = blueprint.attributes.find(
+      (attr: TAttribute) => attr.name === key
+    ) as TAttribute
+    if (Array.isArray(document)) {
+      // If the passed document was an array, use attribute from parent
+      attribute = parentNode.attribute
     }
-    if (Array.isArray(value)) {
+    if (!attribute) return false // If no attribute, there likely where some invalid keys. Ignore those
+    // Skip adding nodes for primitives
+    if (!['string', 'number', 'boolean'].includes(attribute.attributeType)) {
       const childNodeId = `${parentNode.nodeId}.${key}`
       newChildren[childNodeId] = new TreeNode(
         parentNode.tree,
         childNodeId,
         parentNode.level + 1,
         value,
+        attribute,
         parentNode,
-        key
+        value?.name || key,
+        false,
+        false,
+        false
       )
     }
   })
@@ -40,13 +63,21 @@ const createContainedChildren = (
 
 const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
   const newChildren: TreeMap = {}
-  document.content.forEach((ref: any) => {
+  document.content.forEach((ref: TReference) => {
     const newChildId = `${parentNode.dataSource}/${ref?._id}`
     newChildren[newChildId] = new TreeNode(
       parentNode.tree,
       newChildId,
       parentNode.level + 1,
       ref,
+      {
+        attributeType: ref.type,
+        name: ref?.name || ref?._id,
+        type: BlueprintEnum.ATTRIBUTE,
+        contained: false,
+        optional: false,
+        dimensions: '',
+      },
       parentNode
     )
   })
@@ -55,24 +86,26 @@ const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
 
 export class TreeNode {
   tree: Tree
+  type: string
   nodeId: string
   level: number
-  parent?: TreeNode
+  dataSource: string
   children: TreeMap = {}
+  attribute: TAttribute
+  parent?: TreeNode
   isRoot?: boolean = false
   isDataSource?: boolean = false
   entity?: any
   name?: string
-  type: string
   expanded?: boolean = false
   message?: string = ''
-  dataSource: string
 
   constructor(
     tree: Tree,
     nodeId: string,
     level: number = 0,
     entity: any = {},
+    attribute: TAttribute,
     parent: TreeNode | undefined = undefined,
     name: string | undefined = undefined,
     isRoot = false,
@@ -88,8 +121,9 @@ export class TreeNode {
     this.isDataSource = isDataSource
     this.entity = entity
     this.name = name || entity?.name
-    this.type = entity.type
+    this.type = attribute.attributeType
     this.expanded = expanded
+    this.attribute = attribute
   }
 
   collapse(node?: TreeNode): void {
@@ -104,29 +138,33 @@ export class TreeNode {
   async fetch() {
     const [dataSourceId, documentId] = this.nodeId.split('/', 2)
     return this.tree.dmssApi
-      .getDocumentById({
+      .documentGetById({
         dataSourceId: dataSourceId,
         documentId: documentId,
         depth: 0,
       })
-      .then((doc: any) => doc)
+      .then((response: any) => response.data)
   }
 
   async expand() {
     this.expanded = true
     if (this.type !== 'dataSource') {
       const [dataSourceId, documentId] = this.nodeId.split('/', 2)
+      const parentBlueprint: TBlueprint = await this.tree.dmssApi
+        .blueprintGet({ typeRef: this.type })
+        .then((response: any) => response.data)
       return this.tree.dmssApi
-        .getDocumentById({
+        .documentGetById({
           dataSourceId: dataSourceId,
           documentId: documentId,
           depth: 0,
         })
         .then((response: any) => {
-          if (response.type === BlueprintEnum.PACKAGE) {
-            this.children = createFolderChildren(response, this)
+          const data = response.data
+          if (data.type === BlueprintEnum.PACKAGE) {
+            this.children = createFolderChildren(data, this)
           } else {
-            this.children = createContainedChildren(response, this)
+            this.children = createContainedChildren(data, this, parentBlueprint)
           }
         })
         .catch((error: Error) => {
@@ -160,19 +198,21 @@ export class TreeNode {
   // Creates a new entity on DMSS of the given type and saves it to this package,
   // returns the entity's UUID
   async addEntity(type: string, name: string): Promise<string> {
-    if (this.type !== BlueprintEnum.PACKAGE)
-      throw 'Entities can only be added to packages'
+    if (this.type !== BlueprintEnum.PACKAGE && !Array.isArray(this.entity)) {
+      throw 'Entities can only be added to packages and lists'
+    }
+    let packageContent = ''
+    if (this.type === BlueprintEnum.PACKAGE) packageContent = '.content'
 
-    return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) => {
-      return this.tree.dmssApi.generatedDmssApi
-        .explorerAddToPath({
-          dataSourceId: this.dataSource,
-          document: JSON.stringify(newEntity),
-          directory: this.pathFromRootPackage(),
-          updateUncontained: false,
+    return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) =>
+      this.tree.dmssApi
+        .explorerAdd({
+          absoluteRef: `${this.nodeId}${packageContent}`,
+          body: newEntity,
+          updateUncontained: true,
         })
-        .then((uuid: string) => JSON.parse(uuid).uid)
-    })
+        .then((response: any) => response.data.uid)
+    )
   }
 }
 
@@ -195,6 +235,7 @@ export class Tree {
           dataSourceId,
           0,
           { name: dataSourceId, type: 'dataSource' },
+          dataSourceAttribute,
           undefined,
           dataSourceId,
           false,
@@ -209,18 +250,19 @@ export class Tree {
     await Promise.all(
       this.dataSources.map((dataSource: string) =>
         this.dmssApi
-          .searchDocuments({
+          .search({
             // Find all rootPackages in every dataSource
             body: { type: BlueprintEnum.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],
           })
-          .then((searchResult: Object) => {
-            Object.values(searchResult).forEach((rootPackage: any) => {
+          .then((response: any) => {
+            Object.values(response.data).forEach((rootPackage: any) => {
               const rootPackageNode = new TreeNode( // Add the rootPackage nodes to the dataSource
                 this,
                 `${dataSource}/${rootPackage._id}`,
                 1,
                 rootPackage,
+                packageAttribute,
                 this.index[dataSource],
                 rootPackage.name,
                 true,
@@ -237,6 +279,7 @@ export class Tree {
                     `${dataSource}/${ref?._id}`,
                     2,
                     ref,
+                    packageAttribute,
                     rootPackageNode,
                     ref.name,
                     false,
@@ -248,6 +291,12 @@ export class Tree {
               rootPackageNode.children = children
               this.index[dataSource].children[rootPackage._id] = rootPackageNode
             })
+          })
+          .catch((error: Error) => {
+            // If the search fail, set the DataSource as an error node.
+            console.error(error)
+            this.index[dataSource].type = 'error'
+            this.index[dataSource].message = error.message
           })
       )
     )

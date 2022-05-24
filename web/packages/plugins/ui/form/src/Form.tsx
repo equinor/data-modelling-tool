@@ -14,7 +14,7 @@ const Wrapper = styled.div`
 `
 
 export const Form = (props: FormProps) => {
-  const { type, onSubmit, formData, widgets, config, updateDocument } = props
+  const { type, formData, widgets, config, updateDocument } = props
 
   const methods = useForm({
     // Set initial state.
@@ -27,11 +27,7 @@ export const Form = (props: FormProps) => {
   const handleSubmit = methods.handleSubmit(
     (data: UnpackNestedValue<TFieldValues>, errors: any) => {
       if (errors) console.debug(errors)
-      if (onSubmit) {
-        onSubmit(data)
-      } else if (updateDocument) {
-        updateDocument(data, true)
-      }
+      if (updateDocument) updateDocument(data, true)
     }
   )
 

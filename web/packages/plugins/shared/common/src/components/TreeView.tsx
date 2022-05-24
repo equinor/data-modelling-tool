@@ -85,7 +85,9 @@ const TreeNodeComponent = (props: {
     <StyledTreeNode
       key={node.nodeId}
       level={node.level}
-      onClick={() => onClick(node)}
+      onClick={() => {
+        if (node.type !== 'error') onClick(node)
+      }}
     >
       {[BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type || '') ? (
         <ExpandButton>
@@ -112,7 +114,6 @@ export const TreeView = (props: {
   NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
   const { onSelect, NodeWrapper, NodeWrapperOnClick } = props
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
   const tree = new Tree(token, appConfig.visibleDataSources)

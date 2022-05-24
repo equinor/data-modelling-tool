@@ -10,7 +10,7 @@ interface TabPanelProps {
   value: number
 }
 
-interface TabProp {
+export interface TabProp {
   label: string
   content: React.ReactNode
 }
@@ -42,7 +42,7 @@ function a11yProps(index: number) {
   }
 }
 
-function VerticalTabs({ tabProps }) {
+function VerticalTabs({ tabProps }: any) {
   const [value, setValue] = React.useState(0)
 
   const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -75,11 +75,11 @@ function VerticalTabs({ tabProps }) {
         aria-label="Workflow Task View"
         sx={{ borderRight: 1, borderColor: 'divider' }}
       >
-        {tabProps.map((item, index: number) => (
+        {tabProps.map((item: any, index: number) => (
           <Tab label={item.label} {...a11yProps(index)} />
         ))}
       </Tabs>
-      {tabProps.map((item, index: number) => (
+      {tabProps.map((item: any, index: number) => (
         <TabPanel value={value} index={index}>
           {item.content}
         </TabPanel>
@@ -89,4 +89,3 @@ function VerticalTabs({ tabProps }) {
 }
 
 export { VerticalTabs as VerticalTabs }
-export { TabProp as TabProp }

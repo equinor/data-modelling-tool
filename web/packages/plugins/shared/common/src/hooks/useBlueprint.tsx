@@ -6,16 +6,16 @@ export const useBlueprint = (typeRef: string) => {
   const [blueprint, setBlueprint] = useState<any | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
     setLoading(true)
     dmssAPI
-      .getBlueprint({ typeRef: typeRef })
-      .then((document) => {
-        setBlueprint(document)
+      .blueprintGet({ typeRef: typeRef })
+      .then((response: any) => {
+        const data = response.data
+        setBlueprint(data)
         setError(null)
       })
       .catch((error: Error) => setError(error))

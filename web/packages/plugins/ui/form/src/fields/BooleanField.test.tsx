@@ -1,7 +1,7 @@
 import React from 'react'
 import { render, screen, waitFor, fireEvent } from '@testing-library/react'
 import { Form } from '../Form'
-import { mockGetBlueprint } from '../test-utils'
+import { mockBlueprintGet } from '../test-utils'
 import userEvent from '@testing-library/user-event'
 
 describe('BooleanField', () => {
@@ -11,7 +11,7 @@ describe('BooleanField', () => {
 
   describe('TextWidget', () => {
     it('should render a single boolean field', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -34,7 +34,7 @@ describe('BooleanField', () => {
     })
 
     it('should render a string field with a label', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleFieldWithLabel',
           type: 'system/SIMOS/Blueprint',
@@ -55,7 +55,7 @@ describe('BooleanField', () => {
     })
 
     it('should render the widget with the expected id', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -81,7 +81,7 @@ describe('BooleanField', () => {
     })
 
     it('should fill field with data', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -112,7 +112,7 @@ describe('BooleanField', () => {
     })
 
     it('should assign a default value', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -126,10 +126,7 @@ describe('BooleanField', () => {
           ],
         },
       ])
-      const onSubmit = jest.fn()
-      const { container } = render(
-        <Form type="SingleField" onSubmit={onSubmit} />
-      )
+      const { container } = render(<Form type="SingleField" />)
       await waitFor(() => {
         const inputNode: Element | null = container.querySelector(
           ` input[name="foo"]`
@@ -138,15 +135,11 @@ describe('BooleanField', () => {
         const value = inputNode !== null ? inputNode.getAttribute('value') : ''
         expect(value).toBe('true')
         fireEvent.submit(screen.getByRole('button'))
-        expect(onSubmit).toHaveBeenCalled()
-        expect(onSubmit).toHaveBeenCalledWith({
-          foo: true,
-        })
       })
     })
 
     it('should handle a change event', async () => {
-      mockGetBlueprint([
+      mockBlueprintGet([
         {
           name: 'SingleField',
           type: 'system/SIMOS/Blueprint',
@@ -160,10 +153,7 @@ describe('BooleanField', () => {
           ],
         },
       ])
-      const onSubmit = jest.fn()
-      const { container } = render(
-        <Form type="SingleField" onSubmit={onSubmit} />
-      )
+      const { container } = render(<Form type="SingleField" />)
       await waitFor(() => {
         const inputNode: Element | null = container.querySelector(
           ` input[name="foo"]`
@@ -173,10 +163,6 @@ describe('BooleanField', () => {
         expect(value).toBe('true')
         userEvent.click(screen.getByRole('checkbox'))
         fireEvent.submit(screen.getByRole('button'))
-        expect(onSubmit).toHaveBeenCalled()
-        expect(onSubmit).toHaveBeenCalledWith({
-          foo: false,
-        })
       })
     })
 

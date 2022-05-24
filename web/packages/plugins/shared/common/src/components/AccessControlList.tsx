@@ -254,7 +254,6 @@ export const AccessControlList = (props: {
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingACLDocument, setLoadingACLDocument] = useState<boolean>(false)
   const [tokenWithReadAccess, setTokenWithReadAccess] = useState<string>('')
-  //@ts-ignore
   const { token } = useContext(AuthContext)
   const [refreshToken, setRefreshToken] = useLocalStorage(
     'ROCP_refreshToken',
@@ -335,12 +334,13 @@ export const AccessControlList = (props: {
     if (tokenWithReadAccess !== '') {
       setLoadingACLDocument(true)
       dmssAPI
-        .getDocumentAcl({
+        .getAcl({
           dataSourceId: dataSourceId,
           documentId: documentId,
         })
-        .then((response: TAcl) => {
-          convertACLFromUserIdToUsername(response)
+        .then((response: any) => {
+          const acl = response.data
+          convertACLFromUserIdToUsername(acl)
             .then((newACL: TAcl) => {
               setDocumentACL(newACL)
             })
@@ -376,10 +376,10 @@ export const AccessControlList = (props: {
 
     convertACLFromUsernameToUserId(acl)
       .then((newACL) => {
-        dmssAPI.setDocumentAcl({
+        dmssAPI.setAcl({
           dataSourceId: dataSourceId,
           documentId: documentId,
-          //@ts-ignore - ACL class from generated openAPI spec have wrong enum keys (NUMBER_2 instead of WRITE etc)
+          //@ts-ignore
           aCL: newACL,
           recursively: storeACLRecursively,
         })

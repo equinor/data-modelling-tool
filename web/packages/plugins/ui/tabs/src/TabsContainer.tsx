@@ -2,7 +2,7 @@ import { DmtUIPlugin, UIPluginSelector, useDocument } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { Button, Tooltip } from '@equinor/eds-core-react'
+import { Icon, Tooltip } from '@equinor/eds-core-react'
 
 interface ITabs {
   active: boolean
@@ -22,6 +22,7 @@ const Tab = styled.div<ITabs>`
   font-size: medium;
 `
 
+// @ts-ignore
 const BaseTab = styled(Tab)`
   background-color: #024654;
   color: white;
@@ -29,15 +30,6 @@ const BaseTab = styled(Tab)`
 
 const ChildTab = styled(Tab)`
   background-color: #d1d1d1;
-`
-
-const DotWrapper = styled.div`
-  height: 3px;
-  color: orange;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin: 0 5px;
 `
 
 type TChildTab = {
@@ -53,18 +45,11 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const {
-    documentId,
-    dataSourceId,
-    onSubmit,
-    onChange,
-    config,
-    document,
-  } = props
+  const { documentId, dataSourceId, config, document } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, _loading, updateDocument, error] = useDocument(
+  const [entity, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
     true
@@ -75,12 +60,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
     setFormData({ ...entity })
   }, [entity])
 
-  useEffect(() => {
-    if (onChange) onChange(formData)
-  }, [formData])
-
   if (!entity || Object.keys(formData).length === 0) return null
-
   return (
     <div
       style={{
@@ -102,10 +82,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
             onClick={() => setSelectedTab('home')}
             active={selectedTab === 'home'}
           >
-            {selectedTab === 'home' && (
-              <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
-            )}
-            Base
+            <Icon name="home" size={24} />
           </BaseTab>
         </Tooltip>
         {Object.values(childTabs).map((tabData: any) => (
@@ -119,9 +96,6 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               onClick={() => setSelectedTab(tabData.attribute)}
               active={selectedTab === tabData.attribute}
             >
-              {selectedTab === tabData.attribute && (
-                <DotWrapper style={{ color: 'orange' }}>&#9679;</DotWrapper>
-              )}
               {tabData.attribute}
             </ChildTab>
           </Tooltip>
@@ -136,12 +110,6 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           categories={config?.subCategories.filter(
             (c: string) => c !== 'container'
           )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
-          onSubmit={(newFormData: any) =>
-            setFormData({ ...formData, ...newFormData })
-          }
-          onChange={(newFormData: any) =>
-            setFormData({ ...formData, ...newFormData })
-          }
           onOpen={(tabData: any) => {
             setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
             setSelectedTab(tabData.attribute)
@@ -153,50 +121,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
           entity={childTabs[selectedTab].entity}
           categories={childTabs[selectedTab].categories}
-          onSubmit={(newFormData: any) =>
-            setFormData({
-              ...formData,
-              [selectedTab]: newFormData,
-            })
-          }
-          onChange={(newFormData: any) =>
-            setFormData({
-              ...formData,
-              [selectedTab]: newFormData,
-            })
-          }
         />
-      )}
-      {onChange === undefined && (
-        <div
-          style={{
-            justifyContent: 'space-around',
-            display: 'flex',
-            width: '100%',
-            margin: '5px',
-          }}
-        >
-          <Button
-            as="button"
-            variant="outlined"
-            color="danger"
-            onClick={() => setFormData({ ...entity })}
-          >
-            Reset
-          </Button>
-          <Button
-            as="button"
-            onClick={() => {
-              if (onSubmit) {
-                onSubmit(formData)
-              } else {
-                updateDocument(formData, true)
-              }
-            }}
-          >
-            Ok
-          </Button>
-        </div>
       )}
     </div>
   )

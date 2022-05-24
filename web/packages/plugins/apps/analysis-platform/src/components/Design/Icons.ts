@@ -26,10 +26,16 @@ import {
   add,
   refresh,
   play,
+  remove,
+  close_circle_outlined,
+  remove_outlined,
   time,
 } from '@equinor/eds-icons'
 
 Icon.add({
+  remove,
+  close_circle_outlined,
+  remove_outlined,
   arrow_forward,
   assignment_user,
   waves,

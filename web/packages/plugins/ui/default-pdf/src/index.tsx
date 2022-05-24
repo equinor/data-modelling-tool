@@ -8,7 +8,8 @@ const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, isLoading, setDocument, error] = useDocument(
     dataSourceId,
-    documentId
+    documentId,
+    true
   )
 
   if (isLoading) return <div>Loading...</div>
@@ -20,8 +21,6 @@ export const plugins: any = [
   {
     pluginName: 'default-pdf',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

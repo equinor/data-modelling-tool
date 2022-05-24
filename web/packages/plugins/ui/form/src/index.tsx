@@ -38,11 +38,12 @@ const widgets = {
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { config, onSubmit } = props
+  const { config } = props
   const { documentId, dataSourceId } = props
-  const [document, loading, updateDocument] = useDocument(
+  const [document, loading, updateDocument] = useDocument<any>(
     dataSourceId,
-    documentId
+    documentId,
+    true
   )
   if (loading) return <div>Loading...</div>
 
@@ -52,7 +53,6 @@ const PluginComponent = (props: DmtUIPlugin) => {
       type={document.type}
       config={config}
       formData={document}
-      onSubmit={onSubmit}
       updateDocument={updateDocument}
     />
   )
@@ -62,8 +62,6 @@ export const plugins: any = [
   {
     pluginName: 'form',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

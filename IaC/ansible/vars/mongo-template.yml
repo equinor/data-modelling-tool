@@ -1,0 +1,5 @@
+---
+domain: "norwayeast.cloudapp.azure.com"
+mongo_root_username: "db-admin"
+mongo_root_password: ""
+...

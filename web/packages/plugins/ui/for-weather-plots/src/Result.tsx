@@ -298,9 +298,10 @@ export default (props: {
   const [graphInfo, setGraphInfo] = useState<TGraphInfo[]>([])
   const [variableRuns, setVariableRuns] = useState<any[]>([])
   const [chartData, setChartData] = useState<TLineChartDataPoint[]>([])
-  const [document, isLoading, updateDocument, error] = useDocument(
+  const [document, isLoading, updateDocument, error] = useDocument<any>(
     DEFAULT_DATASOURCE_ID,
-    result._id
+    result._id,
+    true
   )
 
   useEffect(() => {

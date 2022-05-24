@@ -1,7 +1,0 @@
-{
-  "name": "DefaultEdit",
-  "type": "/UiViewPlugin",
-  "label": "Edit",
-  "required": true,
-  "widgets": []
-}

@@ -6,18 +6,11 @@ import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 type PreviewProps = {
   document: any
-  uiRecipe: any
 }
 
 export default (props: PreviewProps) => {
-  const { document, uiRecipe } = props
+  const { document } = props
   let infoText: string = ''
-  if (uiRecipe?.options) {
-    const infoOption: string = uiRecipe.options.find((v: string) =>
-      v.includes('info=')
-    )
-    if (infoOption) infoText = infoOption.split('=')[1]
-  }
 
   return (
     <div>

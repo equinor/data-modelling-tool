@@ -2,26 +2,26 @@
   "name": "Job",
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/NamedEntity"],
   "attributes": [
-      {
-      "name": "type",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
-    },
-    {
-      "name": "name",
-      "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
-    },
     {
       "name": "label",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
     },
     {
       "name": "triggeredBy",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "status",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": false,
+      "default": "Not registered"
     },
     {
       "attributeType": "object",
@@ -29,12 +29,14 @@
       "name": "applicationInput",
       "label": "Input",
       "description": "Input entity to a job",
-      "contained": false
+      "contained": false,
+      "optional": true
     },
     {
       "name": "started",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
     },
     {
       "name": "ended",

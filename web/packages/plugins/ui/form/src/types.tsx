@@ -14,7 +14,6 @@ export type Widget =
 export type FormProps = {
   type?: string
   formData?: any
-  onSubmit?: Function
   updateDocument?: Function
   widgets?: { [name: string]: Widget }
   config?: any

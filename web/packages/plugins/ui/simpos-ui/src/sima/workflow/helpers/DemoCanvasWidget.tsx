@@ -57,7 +57,9 @@ namespace S {
   `
 }
 
-export class DemoCanvasWidget extends React.Component<DemoCanvasWidgetProps> {
+export class DemoCanvasWidget extends React.Component<
+  DemoCanvasWidgetProps | any
+> {
   render() {
     return (
       <>

@@ -1,24 +1,12 @@
 import React, { useEffect, useState } from 'react'
 
-import { DmtUIPlugin } from '@dmt/core-plugins'
+import { DmtUIPlugin, useBlueprint } from '@dmt/common'
 
 import { DMTBluePrintTableView } from './blueprint.js'
 
 const DMTBluePrintTableView_Component = (props: DmtUIPlugin) => {
-  const { document, fetchBlueprint } = props
-
-  // Since fetchBlueprint is returning a promise,
-  // we need to wait for it,
-  // and after resolving,
-  // we set the result in a state,
-  // so that the react component will re-render
-  // when promise is resolved.
-  const [blueprint, setBlueprint] = useState()
-  useEffect(() => {
-    fetchBlueprint(document.type).then((result) => {
-      setBlueprint(result)
-    })
-  }, [])
+  const { document } = props
+  const [blueprint, isLoading, error] = useBlueprint(document.type)
 
   if (!blueprint) {
     return <>Loading...</>

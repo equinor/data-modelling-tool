@@ -14,10 +14,7 @@
   "packages": [
     "AnalysisPlatformDS/Blueprints",
     "AnalysisPlatformDS/Data",
-    "FoR-BP/Blueprints",
-    "ForecastDS/FoR-BP",
-    "WorkflowDS/Blueprints",
-    "ForApp/io"
+    "WorkflowDS/Blueprints"
   ],
   "models": [],
   "actions": []

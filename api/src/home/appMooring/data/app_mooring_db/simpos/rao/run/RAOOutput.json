@@ -57,16 +57,7 @@
       "plugin": "EXTERNAL",
       "attributes": []
     },
-    {
-      "name": "Edit",
-      "type": "system/SIMOS/UiRecipe",
-      "description": "",
-      "plugin": "EDIT_PLUGIN",
-      "field": "",
-      "hideTab": true,
-      "options": [],
-      "attributes": []
-    },
+
     {
       "name": "Raw",
       "type": "system/SIMOS/UiRecipe",
@@ -76,32 +67,6 @@
       "hideTab": true,
       "options": [],
       "attributes": []
-    },
-    {
-      "name": "INDEX",
-      "type": "system/SIMOS/UiRecipe",
-      "description": "",
-      "plugin": "INDEX",
-      "hideTab": true,
-      "options": [],
-      "attributes": [
-        {
-          "name": "status",
-          "type": "system/SIMOS/UiAttribute",
-          "attributeType": "system/SIMOS/BlueprintAttribute",
-          "widget": "hidden",
-          "contained": false,
-          "options": []
-        },
-        {
-          "name": "serverConfig",
-          "type": "system/SIMOS/UiAttribute",
-          "attributeType": "system/SIMOS/BlueprintAttribute",
-          "widget": "hidden",
-          "contained": false,
-          "options": []
-        }
-      ]
     }
   ]
 }

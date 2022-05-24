@@ -13,6 +13,13 @@ from pydantic.env_settings import BaseSettings
 from pydantic.fields import Field
 
 
+def validate_path_is_under_location(path: str, valid_location: str) -> bool:
+    # return Path(path).is_relative_to(valid_location)  # TODO: Need python 3.9 for this
+    parent_path = os.path.abspath(valid_location)
+    child_path = os.path.abspath(path)
+    return os.path.commonpath([parent_path]) == os.path.commonpath([parent_path, child_path])
+
+
 class Settings(BaseSettings):
     PUBLIC_DMSS_API: str = Field("http://dmss:5000", env="PUBLIC_DMSS_API")
     DMSS_TOKEN: str = Field(None, env="DMSS_TOKEN")
@@ -22,7 +29,7 @@ class Settings(BaseSettings):
     INPUT_DIR: str = f"{SRE_HOME}/storage/inputs"
     RESULT_FILE: str = f"{OUTPUT_DIR}/results_file.json"
     SIMA_INPUT_FILE: str = f"{INPUT_DIR}/simulationConfig.json"  # The entity fed to SIMA
-    INPUT_ENTITY_FILE: str = f"/tmp/input-entity.json"  # The entity with the configuration for the SIMA run
+    CONFIG_FILE: str = f"/tmp/input-entity.json"  # The entity with the configuration for the SIMA run
 
 
 start_time = time.time()
@@ -74,20 +81,37 @@ def after_commands(*args, **kwargs):
 @cli.command()
 @click.option("--input-id", help="DataSource and UUID to the input entity in DMSS (DS/UUID)", type=str)
 def run(input_id: str = None):
-    input_entity = get_by_id(input_id, depth=99)
+    config = get_by_id(input_id, depth=99)
     # Assume the stask blob is stored in same DS. As we don't support cross DS references...
     data_souce = input_id.split("/", 1)[0]
-    stask_id = f"{data_souce}/{input_entity['stask']['blob']['_blob_id']}"
-    task = input_entity["workflowTask"]
-    workflow = input_entity["workflow"]
-    compute_service_cfg = input_entity.get("compute_service_cfg")
-    remote_run = input_entity.get("remote_run", False)
-    sima_input = input_entity["input"]
+    stask_id = f"{data_souce}/{config['stask']['blob']['_blob_id']}"
+    task = config["workflowTask"]
+    workflow = config["workflow"]
+    compute_service_cfg = config.get("compute_service_cfg")
+    remote_run = config.get("remote_run", False)
+    sima_input = config["input"]
     pp.pprint(sima_input)
+    print("")
 
     # Save it for later use in the "upload" command
-    with open(settings.INPUT_ENTITY_FILE, "w") as input_entity_file:
-        input_entity_file.write(json.dumps(input_entity))
+    with open(settings.CONFIG_FILE, "w") as sima_config_file:
+        sima_config_file.write(json.dumps(config))
+
+    input_file = Path(config.get("simaInputFilePath", settings.SIMA_INPUT_FILE)).absolute()
+    output_file = Path(config.get("simaOutputFilePath", settings.RESULT_FILE)).absolute()
+    if not validate_path_is_under_location(input_file, settings.SRE_HOME) \
+            or not validate_path_is_under_location(output_file, settings.SRE_HOME):
+        raise ValueError(
+            f"Invalid input/output paths ('{input_file}', '{output_file}'). Must be under '{settings.SRE_HOME}'")
+
+    print(f"Will create SIMA input file at '{input_file}'")
+    # Ensure directories
+    os.makedirs(Path(input_file).parent, exist_ok=True)
+    os.makedirs(Path(output_file).parent, exist_ok=True)
+
+    # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
+    with open(input_file, "w") as simulation_config_file:
+        simulation_config_file.write(json.dumps(sima_input))
 
     # Prepares the local environment with the given stask and workflow configuration
     print(f"Received parameters: \n\tstask='{stask_id}'\n\tworkflow='{task}'"
@@ -106,14 +130,6 @@ def run(input_id: str = None):
         print(f"Fetching SIMA compute service config '{compute_service_cfg}'...\n")
         download_blob_by_id(compute_service_cfg, f"{settings.SRE_HOME}/compute.yml")
         print(f"\nWrote compute service config blob to '{settings.SRE_HOME}/compute.yml'")
-
-    # Ensure that the "storage" directory is present
-    os.makedirs(settings.INPUT_DIR, exist_ok=True)
-
-    # Create the simulationConfig.json file (generic Stask entity, not related to DMT blueprint)
-    with open(f"{settings.SIMA_INPUT_FILE}", "w") as simulation_config_file:
-        print(f"Writing input to '{settings.SIMA_INPUT_FILE}'...")
-        simulation_config_file.write(json.dumps(sima_input))
 
     # Create the commands file (test data: task=WorkflowTask workflow: wave_180 & wave_90
     with open(f"{settings.SRE_HOME}/commands.txt", "w") as commands_file:
@@ -136,19 +152,23 @@ def run(input_id: str = None):
 
 
 @cli.command()
-@click.option("--reference-target", help="Dotted id to specify where reference to result entity should be added.", type=str, required=False)
-def upload_result(reference_target: str=None):
+@click.option("--reference-target", help="Dotted id to specify where reference to result entity should be added.",
+              type=str, required=False)
+def upload_result(reference_target: str = None):
     """
     Uploads the result to the folder given in the input-entity, and add a reference to this result to the analysis entity
     :param reference_target: a dotted id to specify where to insert result reference
     """
-    with open(settings.INPUT_ENTITY_FILE, "r") as input_entity_file:
-        input_entity: dict = json.loads(input_entity_file.read())
+    with open(settings.CONFIG_FILE, "r") as config_file:
+        config_entity: dict = json.loads(config_file.read())
 
-    target_data_source, target_directory = input_entity["resultPath"].split("/", 1)
+    target_data_source, target_directory = config_entity["resultPath"].split("/", 1)
 
-    with open(settings.RESULT_FILE, "r") as file:
-        result_entity = json.loads(file.read())
+    output_file = Path(config_entity.get("simaOutputFilePath", settings.RESULT_FILE)).absolute()
+    print(f"Will read SIMA output file from '{output_file}'")
+
+    with open(output_file, "r") as result_file:
+        result_entity = json.loads(result_file.read())
         timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
         result_entity["name"] = result_entity["name"] + "-" + timestamp
@@ -156,7 +176,8 @@ def upload_result(reference_target: str=None):
         response = dmss_api.explorer_add_to_path(document=json.dumps(result_entity),
                                                  directory=target_directory,
                                                  data_source_id=target_data_source)
-        print(f"Result file uploaded successfully to '{target_data_source}/{target_directory}' -- id: {response['uid']}")
+        print(
+            f"Result file uploaded successfully to '{target_data_source}/{target_directory}' -- id: {response['uid']}")
 
     reference_object = {
         "name": result_entity.get("name", "noname"),

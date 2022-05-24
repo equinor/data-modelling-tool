@@ -46,6 +46,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
   return (
     <Table.Row
       onClick={() => {
+        //@ts-ignore
         document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
       }}
     >
@@ -56,17 +57,20 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
       <Table.Cell>{}</Table.Cell>
       <Table.Cell>{jobStatus}</Table.Cell>
       <Table.Cell>
-        <ClickableLabel
-          onClick={(e) => {
-            window.open(
-              `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`,
-              '_blank'
-            )
-            e.stopPropagation()
-          }}
-        >
-          Open
-        </ClickableLabel>
+        {Object.keys(job?.result || {}).length ? (
+          <ClickableLabel
+            onClick={() => {
+              window.open(
+                `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.result?._id}`,
+                '_blank'
+              )
+            }}
+          >
+            Open
+          </ClickableLabel>
+        ) : (
+          <>None</>
+        )}
       </Table.Cell>
     </Table.Row>
   )
@@ -77,7 +81,7 @@ const AnalysisJobTable = (props: AnalysisJobTableProps) => {
 
   return (
     <>
-      <Table density="comfortable" style={{ width: '100%' }}>
+      <Table style={{ width: '100%' }}>
         <Table.Caption>
           <Typography variant="h3">Runs</Typography>
         </Table.Caption>

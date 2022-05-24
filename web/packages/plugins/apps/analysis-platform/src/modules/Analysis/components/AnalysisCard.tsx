@@ -10,20 +10,19 @@ import { hasExpertRole } from '../../../utils/auth'
 import { AxiosError } from 'axios'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
-import { TAnalysis } from '../Types'
 import {
   AccessControlList,
   AuthContext,
   DmssAPI,
   UIPluginSelector,
   JobApi,
-  CustomScrim,
+  Dialog,
 } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TJob, TTask } from '../../../Types'
+import { TAnalysis, TJob, TTask } from '../../../Types'
 import { poorMansUUID } from '../../../utils/uuid'
 
 const FlexWrapper = styled.div`
@@ -71,7 +70,7 @@ const RunAnalysisButton = (props: any) => {
     }
 
     dmssAPI
-      .addDocumentToParent({
+      .explorerAdd({
         absoluteRef: `${analysisAbsoluteReference}.jobs`,
         updateUncontained: false,
         body: job,
@@ -118,24 +117,39 @@ const RunAnalysisButton = (props: any) => {
         Run analysis
         <Icons name="play" title="play" />
       </Button>
-      <CustomScrim
+      <Dialog
         isOpen={showScrim}
         closeScrim={() => setShowScrim(false)}
         header={'Job parameters'}
         width={'40vw'}
         height={'70vh'}
       >
-        <UIPluginSelector
-          absoluteDottedId={`${analysisAbsoluteReference}.task`}
-          entity={analysis.task}
-          onSubmit={(task: TTask) => {
-            saveAndStartJob(task)
-            setShowScrim(false)
-            NotificationManager.success('Job parameters updated', 'Updated')
+        <div
+          style={{
+            margin: '0 20px',
+            alignItems: 'center',
+            display: 'flex',
+            flexDirection: 'column',
           }}
-          categories={['container']}
-        />
-      </CustomScrim>
+        >
+          <UIPluginSelector
+            absoluteDottedId={`${analysisAbsoluteReference}.task`}
+            entity={analysis.task}
+            categories={['container']}
+          />
+          <Button
+            style={{ width: '200px', marginTop: '30px' }}
+            onClick={() => {
+              saveAndStartJob(analysis.task)
+              setShowScrim(false)
+              NotificationManager.success('Job parameters updated', 'Updated')
+            }}
+          >
+            Start
+            <Icons name="play" title="play" />
+          </Button>
+        </div>
+      </Dialog>
     </div>
   )
 }
@@ -144,7 +158,6 @@ const AnalysisCard = (props: AnalysisCardProps) => {
   const { analysis, addJob, jobs } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
 
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
 
   return (
@@ -210,7 +223,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           )}
         </Card.Actions>
       </Card>
-      <CustomScrim
+      <Dialog
         isOpen={viewACL}
         header={'Access control'}
         closeScrim={() => setViewACL(false)}
@@ -219,7 +232,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           documentId={analysis._id}
           dataSourceId={DEFAULT_DATASOURCE_ID}
         />
-      </CustomScrim>
+      </Dialog>
     </CardWrapper>
   )
 }

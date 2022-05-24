@@ -1,0 +1,52 @@
+hostname: "{{ inventory_hostname }}"
+domain: example.com
+fqdn: "{{ hostname }}.{{ domain }}"
+
+# secrets, overriden in encrypted file vars/mongo.yml
+mongo_root_username: "db-admin"
+mongo_root_password: "0verrideMe.please"
+
+# mongo container
+mongo_docker_image: mongo:4.4
+mongo_restart_policy: unless-stopped
+mongo_port_external: 10255
+mongo_memory_in_gb: 4
+mongo_env_vars:
+  MONGO_INITDB_ROOT_USERNAME="{{ mongo_root_username }}"
+  MONGO_INITDB_ROOT_PASSWORD="{{ mongo_root_password }}"
+mongo_container_certkey_file_path: "/etc/ssl/dmt-db.pem"
+mongo_container_ca_cert_file_path: "/etc/ssl/dmt-rootCA.crt"
+mongo_container_conf_file_path: "/etc/mongod.conf"
+
+# created in role 'common'
+service_dir: /opt/dmt-db
+data_dir: "{{ service_dir }}/data"
+cfg_dir: "{{ service_dir }}/config"
+
+mongod_conf_file:
+  path: "{{ cfg_dir }}/mongod.conf"
+  owner: dmt-db
+  group: service
+  mode: 644
+
+# TLS
+configure_tls_certs: true
+## tls secrets, overriden in encrypted file vars/tls.yml
+tls_certificate_pem: ""
+tls_certificate_authority_crt: ""
+
+## tls file paths and permissions
+### Paths in which to store the certificate and related files
+tls_certificate_base_path: "{{ service_dir }}/tls"
+tls_certificate_pem_path: "{{ tls_certificate_base_path }}/dmt-db.pem"
+tls_certificate_authority_crt_path: "{{ tls_certificate_base_path }}/dmt-rootCA.crt"
+### Ownership and file modes of tls files
+tls_file_permissions:
+  owner: dmt-db
+  group: service
+tls_file_modes:
+  dir: '744'
+  pem: '644'
+  cacrt: '644'
+
+mongo_conn_str: "mongodb://{{ mongo_root_username }}:<PASSWORD_REPLACE_ME>@{{ fqdn }}:{{ mongo_port_external }}/?ssl=true&authSource=admin"

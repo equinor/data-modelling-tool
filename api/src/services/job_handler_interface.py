@@ -11,6 +11,7 @@ class JobStatus(Enum):
     RUNNING = "running"
     FAILED = "failed"
     COMPLETED = "completed"
+    REMOVED = "removed"
     UNKNOWN = "unknown"
 
 

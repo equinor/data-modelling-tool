@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Modal, TreeNode, TreeView, TReference } from '../../index'
+import { Dialog, TreeNode, TreeView, TReference } from '../../index'
 import { Input } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -23,10 +23,11 @@ export const EntityPickerInput = (props: {
         onClick={() => setShowModal(true)}
         style={{ width: INPUT_FIELD_WIDTH, cursor: 'pointer' }}
       />
-      <Modal
-        toggle={() => setShowModal(!showModal)}
-        open={showModal}
-        title={'Select an Entity'}
+      <Dialog
+        isOpen={showModal}
+        closeScrim={() => setShowModal(false)}
+        header={'Select an Entity'}
+        width={'30vw'}
       >
         <TreeView
           onSelect={(node: TreeNode) => {
@@ -46,7 +47,7 @@ export const EntityPickerInput = (props: {
               })
           }}
         />
-      </Modal>
+      </Dialog>
     </div>
   )
 }

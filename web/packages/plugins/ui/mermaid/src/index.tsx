@@ -59,16 +59,15 @@ const createChart = (tree: Node): string => {
 }
 
 function useExplorer(dmssAPI: DmssAPI) {
-  const getBlueprint = (typeRef: string) => dmssAPI.getBlueprint({ typeRef })
+  const blueprintGet = (typeRef: string) =>
+    dmssAPI.blueprintGet({ typeRef: typeRef })
   return {
-    getBlueprint,
+    blueprintGet,
   }
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { document } = props
-
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer = useExplorer(dmssAPI)
@@ -95,8 +94,6 @@ export const plugins: any = [
   {
     pluginName: 'mermaid',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: PluginComponent,
-    },
+    component: PluginComponent,
   },
 ]

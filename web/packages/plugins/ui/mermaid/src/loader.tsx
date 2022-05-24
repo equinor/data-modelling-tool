@@ -30,7 +30,7 @@ export class Node {
 }
 
 // Iterate in pre-order depth-first search order (DFS)
-export function* dfs(node: Node) {
+export function* dfs(node: Node): any {
   yield node
 
   if (Array.isArray(node.children)) {
@@ -60,11 +60,12 @@ const nonPrimitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
 const search = async (token: string, query: any) => {
   const dmssAPI = new DmssAPI(token)
 
-  let result = await dmssAPI.searchDocuments({
+  let response = await dmssAPI.search({
     dataSources: ['WorkflowDS'],
     body: query,
     sortByAttribute: 'name',
   })
+  const result = response.data
   return Object.values(result)
 }
 
@@ -77,9 +78,9 @@ export const loader = async (
   await Promise.all(
     nonPrimitiveAttributes(document).map(async (attribute: AttributeType) => {
       if (attribute['attributeType'] !== 'object') {
-        const child: BlueprintType = await explorer.getBlueprint(
+        const child: BlueprintType = await explorer.blueprintGet(
           attribute['attributeType']
-        )
+        ).data
         let childNode: Node = await loader(token, explorer, child)
         childNode.attribute = attribute
         childNode.entity = child

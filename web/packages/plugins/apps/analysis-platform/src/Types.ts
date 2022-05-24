@@ -1,6 +1,5 @@
-import { DmtSettings } from '@dmt/common'
+import { DmtSettings, TBlob, TReference } from '@dmt/common'
 import { ReactNode } from 'react'
-import { TBlob, TReference } from '../../../shared/common'
 
 export type TRoute = {
   path: string
@@ -11,6 +10,19 @@ export type TRoute = {
 export type TApp = {
   applications: any
   settings: DmtSettings
+}
+
+export type TAnalysis = {
+  _id: string
+  name: string
+  description: string
+  created: string
+  updated: string
+  label?: string
+  creator: string
+  schedule: string
+  task: TTask
+  jobs: TJob[]
 }
 
 export type TCronJob = {
@@ -60,12 +72,13 @@ export type TJobHandler = {
 
 export type TTask = {
   type: string
+  name: string
   description: string
   label: string
   inputType: string
-  applicationInput: TReference
   outputType: string
-  runner: TJobHandler | TContainerJobHandler
+  applicationInput: TReference
+  runner?: TJobHandler | TContainerJobHandler
 }
 
 export type TSIMAApplicationInput = {

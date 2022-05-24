@@ -1,9 +1,9 @@
 {
   "name": "@dmt/home",
   "version": "0.1.0",
+  "license": "MIT",
   "dependencies": {
     "@dmt/common": "1.0.0",
-    "@dmt/default-form": "1.0.0",
     "@dmt/default-pdf": "1.0.0",
     "@loadable/component": "^5.14.1",
     "axios": "^0.26.1",
@@ -17,7 +17,7 @@
     "react-dom": "^17.0.2",
     "react-icons": "3.11.0",
     "react-notifications": "^1.4.3",
-    "react-oauth2-code-pkce": "^1.2.2-c",
+    "react-oauth2-code-pkce": "^1.2.3",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^5.0.0",
     "react-styled-flexboxgrid": "3.2.1",
@@ -28,9 +28,9 @@
   },
   "scripts": {
     "start": "node_modules/.bin/react-app-rewired start",
-    "build": "TSC_COMPILE_ON_ERROR=true node_modules/.bin/react-app-rewired build",
+    "build": "node_modules/.bin/react-app-rewired build",
     "test": "node_modules/.bin/react-app-rewired test",
-    "tsc": "node_modules/.bin/tsc --traceResolution",
+    "tsc": "node_modules/.bin/tsc --noEmit",
     "coverage": "node_modules/.bin/react-scripts test --coverage --watchAll=false",
     "prettier": "node_modules/.bin/prettier --write './src/**/*.{ts,tsx,js,css,html,json}'",
     "prettier:home": "node_modules/.bin/prettier --write '../api/home/**/*.json'"
@@ -64,7 +64,7 @@
     "jest-mock-extended": "^1.0.13",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
-    "react-app-rewired": "^2.1.6",
+    "react-app-rewired": "^2.2.1",
     "react-test-renderer": "^16.8.6",
     "require-context.macro": "^1.0.4",
     "ts-jest": "^27.1.3"

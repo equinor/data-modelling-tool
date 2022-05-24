@@ -1,8 +1,11 @@
 import { useEffect, useState, useContext } from 'react'
 import { DmssAPI, AuthContext } from '@dmt/common'
 
-export const useSearch = (body: any, dataSourceId: string): any => {
-  const [searchResult, setSearchResult] = useState([])
+export function useSearch<T>(
+  body: any,
+  dataSourceId: string
+): [T[], boolean, boolean] {
+  const [searchResult, setSearchResult] = useState<T[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
   // @ts-ignore
@@ -12,13 +15,14 @@ export const useSearch = (body: any, dataSourceId: string): any => {
   useEffect(() => {
     setIsLoading(true)
     dmssAPI
-      .searchDocuments({
+      .search({
         dataSources: [dataSourceId],
         body: body,
       })
-      .then((result: any) => {
-        // @ts-ignore-line
-        setSearchResult(Object.values(result))
+      .then((response: any) => {
+        const data = response.data
+        // @ts-ignore
+        setSearchResult(Object.values(data))
       })
       .catch((err: any) => {
         console.error(err)

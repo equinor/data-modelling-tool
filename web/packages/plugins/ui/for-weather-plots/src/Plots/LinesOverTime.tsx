@@ -17,7 +17,7 @@ import { plotColors } from './plotColors'
 export type TLineChartDataPoint = {
   // @ts-ignore
   timestamp: string
-  [key: string]: number | number[]
+  [key: string]: number
 }
 
 export default (props: {

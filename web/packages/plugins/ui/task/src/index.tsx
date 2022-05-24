@@ -1,22 +1,24 @@
 import * as React from 'react'
 
-import { DmtPluginType } from '@dmt/common'
+import { DmtPlugin, DmtPluginType } from '@dmt/common'
 import { EditTask } from './EditTask'
 import { ViewTask } from './ViewTask'
+import { EditSIMAInput } from './SIMAInputOnly'
 
-export const plugins: any = [
+export const plugins: DmtPlugin[] = [
   {
     pluginName: 'edit-task',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: EditTask,
-    },
+    component: EditTask,
   },
   {
     pluginName: 'view-task',
     pluginType: DmtPluginType.UI,
-    content: {
-      component: ViewTask,
-    },
+    component: ViewTask,
+  },
+  {
+    pluginName: 'edit-task-expert-operator',
+    pluginType: DmtPluginType.UI,
+    component: EditSIMAInput,
   },
 ]

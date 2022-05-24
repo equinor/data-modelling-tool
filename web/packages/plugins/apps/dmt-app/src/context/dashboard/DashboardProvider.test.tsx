@@ -4,7 +4,7 @@ import DashboardProvider, { useDashboard } from './DashboardProvider'
 import {
   ApplicationContext,
   DataSources,
-  IDmssAPI,
+  DmssAPI,
   AuthProvider,
 } from '@dmt/common'
 import { mock } from 'jest-mock-extended'
@@ -23,7 +23,7 @@ describe('the dashboard provider component', () => {
   describe('when provider is initialized', () => {
     it('should correctly return the DashboardContext object', async () => {
       await act(async () => {
-        const api = mock<IDmssAPI>()
+        const api = mock<DmssAPI>()
         const { result, waitForNextUpdate } = renderHook(useDashboard, {
           wrapper,
           initialProps: {
@@ -43,16 +43,15 @@ describe('the dashboard provider component', () => {
     })
 
     it('should have fetched the index for all data sources', async () => {
-      const api = mock<IDmssAPI>()
-      const dataSources: DataSources = [
+      const api = mock<DmssAPI>()
+      const dataSources = [
         {
           id: 'localhost',
           name: 'localhost',
         },
       ]
-      api.getAllDataSources.mockImplementation(() =>
-        Promise.resolve(dataSources)
-      )
+      //@ts-ignore
+      api.dataSourceGetAll.mockResolvedValue(dataSources)
 
       const { result, waitForNextUpdate } = renderHook(useDashboard, {
         wrapper,
@@ -63,7 +62,7 @@ describe('the dashboard provider component', () => {
       })
       await waitForNextUpdate()
 
-      expect(api.getAllDataSources).toHaveBeenCalledTimes(1)
+      expect(api.dataSourceGetAll).toHaveBeenCalledTimes(1)
       expect(result.current.models.dataSources.models.dataSources).toEqual(
         dataSources
       )

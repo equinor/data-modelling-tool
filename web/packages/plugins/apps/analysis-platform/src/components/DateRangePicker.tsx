@@ -18,6 +18,7 @@ const DateRangePicker = (props: {
       <Space direction="vertical" size={12}>
         <RangePicker
           defaultValue={value}
+          //@ts-ignore
           onChange={(dates: any[]) => {
             if (dates) {
               setDateRange([

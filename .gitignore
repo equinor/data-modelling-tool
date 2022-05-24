@@ -121,9 +121,12 @@ typings/
 # Yarn Integrity file
 .yarn-integrity
 
+# vscode
+.vscode/
+
 # dotenv environment variables file
 .env
-reset-db.env
+scripts/reset-db.env
 
 # next.js build output
 .next
@@ -152,3 +155,6 @@ api/first-run-false
 /api/src/home/analysis-platform/data/AnalysisPlatformDS/Data/sima_test/forapp.stask
 /sima.lic
 /api/src/home/analysis-platform/data/AnalysisPlatformDS/Data/sima_test/srs.stask
+/scripts/analysis.json
+/scripts/testSTask.stask
+/web/packages/home/build/

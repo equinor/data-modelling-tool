@@ -1,6 +1,11 @@
-import { DmtUIPlugin, Select } from '@dmt/common'
+import {
+  DmtUIPlugin,
+  PATH_INPUT_FIELD_WIDTH,
+  Select,
+  useDocument,
+} from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useEffect, useState } from 'react'
+import { ChangeEvent, useState } from 'react'
 import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
@@ -15,22 +20,22 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditContainer = (props: DmtUIPlugin) => {
-  const { document, onSubmit, onChange } = props
+  const { document, dataSourceId, documentId } = props
   const [formData, setFormData] = useState<any>({ ...document })
+  const [_document, loading, updateDocument] = useDocument(
+    dataSourceId,
+    documentId,
+    false
+  )
   const imageOptions = [
     'datamodelingtool.azurecr.io/dmt-job/srs:latest',
     'datamodelingtool.azurecr.io/dmt-job/srs:production',
   ]
 
-  useEffect(() => {
-    if (onChange) onChange(formData)
-  }, [formData])
-
   return (
     <div
       style={{
         display: 'flex',
-        alignItems: 'center',
         flexDirection: 'column',
       }}
     >
@@ -44,10 +49,11 @@ export const EditContainer = (props: DmtUIPlugin) => {
           <HeaderWrapper>
             <Typography variant="h5">Container image</Typography>
             <Select
+              style={{ width: PATH_INPUT_FIELD_WIDTH }}
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                 setFormData({ ...formData, image: e.target.value })
               }
-              value={formData?.image || null}
+              value={formData?.image || ''}
             >
               {imageOptions.map((image: string, index: number) => (
                 <option key={index} value={image}>
@@ -56,46 +62,43 @@ export const EditContainer = (props: DmtUIPlugin) => {
               ))}
             </Select>
           </HeaderWrapper>
-          <HeaderWrapper>
-            <Typography variant="h5">
-              Custom command (Not implemented)
-            </Typography>
-            <Select
-              disabled={true}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                setFormData({ ...formData, customCommand: e.target.value })
-              }
-              value={formData?.customCommand || null}
-            ></Select>
-          </HeaderWrapper>
-          <HeaderWrapper>
-            <Typography variant="h5">
-              Environment variable list (not implemented)
-            </Typography>
-            <Select
-              disabled={true}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                setFormData({
-                  ...formData,
-                  environmentVariables: e.target.value,
-                })
-              }
-              value={formData?.environmentVariables || null}
-            ></Select>
-          </HeaderWrapper>
+          {/*<HeaderWrapper>*/}
+          {/*  <Typography variant="h5">*/}
+          {/*    Custom command (Not implemented)*/}
+          {/*  </Typography>*/}
+          {/*  <Select*/}
+          {/*    disabled={true}*/}
+          {/*    onChange={(e: ChangeEvent<HTMLSelectElement>) =>*/}
+          {/*      setFormData({ ...formData, customCommand: e.target.value })*/}
+          {/*    }*/}
+          {/*    value={formData?.customCommand || null}*/}
+          {/*  ></Select>*/}
+          {/*</HeaderWrapper>*/}
+          {/*<HeaderWrapper>*/}
+          {/*  <Typography variant="h5">*/}
+          {/*    Environment variable list (not implemented)*/}
+          {/*  </Typography>*/}
+          {/*  <Select*/}
+          {/*    disabled={true}*/}
+          {/*    onChange={(e: ChangeEvent<HTMLSelectElement>) =>*/}
+          {/*      setFormData({*/}
+          {/*        ...formData,*/}
+          {/*        environmentVariables: e.target.value,*/}
+          {/*      })*/}
+          {/*    }*/}
+          {/*    value={formData?.environmentVariables || null}*/}
+          {/*  ></Select>*/}
+          {/*</HeaderWrapper>*/}
 
           <div>
-            {!onChange && ( // Only show button if no "onChange" function passed
-              <Button
-                as="button"
-                onClick={() => {
-                  //@ts-ignore
-                  onSubmit(formData)
-                }}
-              >
-                Save
-              </Button>
-            )}
+            <Button
+              as="button"
+              onClick={() => {
+                updateDocument(formData, true)
+              }}
+            >
+              Save
+            </Button>
           </div>
         </Wrapper>
       </div>

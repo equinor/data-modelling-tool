@@ -73,8 +73,7 @@ class JobHandler(JobHandlerInterface):
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
             + f"Image: '{runner_entity.get('image', 'None')}'\n\t"
-            + "RegistryUsername: 'None'\n\t"
-            + f"EnvironmentVariables: {[(e.name + '=' + e.value) for e in env_vars]}",
+            + "RegistryUsername: 'None'"
         )
         command_list = [
             "/code/init.sh",
@@ -148,9 +147,10 @@ class JobHandler(JobHandlerInterface):
             try:
                 logs = container_group.containers[0].instance_view.events[-1].message
             except TypeError:
+                logs = self.job.log
                 pass
 
-        job_status = JobStatus.UNKNOWN
+        job_status = self.job.status
         if status == "Terminated":
             job_status = JobStatus.COMPLETED
         if status == "Waiting":

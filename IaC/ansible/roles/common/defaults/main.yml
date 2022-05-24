@@ -1,0 +1,55 @@
+---
+# users and groups
+common_users:
+  sudo: []
+  standard: []
+  service:
+    - username: dmt-db
+      groups:
+        - service
+      state: present
+      authorized_keys: []
+        #- ssh-rsa AAAAB3NzaC1yc....
+
+common_groups:
+  - name: service
+    state: present
+
+common_users_remove_generic:
+  - games
+  - gnats
+  - irc
+  - list
+  - news
+  - sync
+
+common_directories:
+  - path: /opt/dmt-db
+    owner: dmt-db
+    group: service
+    mode: 740
+  - path: /opt/dmt-db/data
+    owner: dmt-db
+    group: service
+    mode: 740
+  - path: /opt/dmt-db/config
+    owner: dmt-db
+    group: service
+    mode: 740
+
+# apt packages
+common_configure_packages_apt: true
+common_apt_pkg_wanted:
+  - sudo
+  - apt-transport-https
+  - vim
+  - git
+  - python3
+  - python3-pip
+common_apt_pkg_blacklist: []
+common_apt_pkg_unused: []
+# pip packages
+common_configure_packages_pip: true
+common_pip_pkg_wanted:
+  - docker
+...

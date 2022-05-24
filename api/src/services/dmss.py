@@ -86,5 +86,7 @@ def get_personal_access_token() -> str:
     """
     Fetches a long lived Access Token
     """
+    if pat_in_header := request.headers.get("Access-Key"):
+        return pat_in_header
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
     return dmss_api.token_create()

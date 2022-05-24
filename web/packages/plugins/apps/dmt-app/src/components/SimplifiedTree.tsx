@@ -1,9 +1,8 @@
 import React, { useEffect, useState } from 'react'
 import { FaRegFileAlt } from 'react-icons/fa'
-import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 // @ts-ignore
 import { Link } from 'react-router-dom'
-import { Pre } from '@dmt/common'
+import { TAttribute } from '@dmt/common'
 type SimplifiedTreeProps = {
   datasourceId: string
   document: any
@@ -22,7 +21,7 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
   }, [document])
 
   const getComplexTypesInDocument = (document: any) => {
-    let complexTypes: BlueprintAttribute[] = []
+    let complexTypes: TAttribute[] = []
     if (Object.keys(document).length !== 0) {
       for (const key in document) {
         //check if document attribute is an object, meaning that it's a complex type
@@ -36,7 +35,7 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
 
   if (complexTypes.length === 0) return <div />
   return (
-    <Pre style={{ width: '50%' }}>
+    <pre style={{ width: '50%' }}>
       <FaRegFileAlt /> {document['name']}
       <div>
         {complexTypes.map((type, index) => (
@@ -58,6 +57,6 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
           </Link>
         ))}
       </div>
-    </Pre>
+    </pre>
   )
 }

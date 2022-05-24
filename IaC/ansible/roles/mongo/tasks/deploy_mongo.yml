@@ -1,0 +1,40 @@
+---
+- block:
+  - name: Ensure 'mongod.conf' config file is present
+    template:
+      src: mongod.conf.j2
+      dest: "{{ mongod_conf_file.path }}"
+      owner: "{{ mongod_conf_file.owner }}"
+      group: "{{ mongod_conf_file.group }}"
+      mode: "{{ mongod_conf_file.mode }}"
+
+  - name: Pull mongo image
+    community.docker.docker_image:
+      name: "{{ mongo_docker_image }}"
+      source: pull
+      force_source: yes
+
+  - name: Deploy mongo service
+    docker_container:
+      image: "{{ mongo_docker_image }}"
+      command: "mongod --config {{ mongo_container_conf_file_path }}"
+      name: "{{ hostname }}"
+      hostname: "{{ hostname }}"
+      domainname: "{{ domain }}"
+      restart_policy: "{{ mongo_restart_policy }}"
+      volumes:
+        - "{{ data_dir }}:/data/db"
+        - "{{ mongod_conf_file.path }}:{{ mongo_container_conf_file_path }}"
+        - "{{ tls_certificate_pem_path }}:{{ mongo_container_certkey_file_path }}"
+        - "{{ tls_certificate_authority_crt_path }}:{{ mongo_container_ca_cert_file_path }}"
+      ports:
+        - "{{ mongo_port_external }}:27017"
+      env: "{{ mongo_env_vars }}"
+      memory: "{{ mongo_memory_in_gb }}g"
+      state: started
+      recreate: yes
+
+  - name: Output connection string
+    debug:
+      msg: "{{ mongo_conn_str }}"
+...

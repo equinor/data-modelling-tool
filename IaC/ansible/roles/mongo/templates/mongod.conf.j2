@@ -1,0 +1,9 @@
+net:
+   port: 27017
+   tls:
+      mode: requireTLS
+      certificateKeyFile: {{ mongo_container_certkey_file_path }}
+      CAFile: {{ mongo_container_ca_cert_file_path }}
+      allowConnectionsWithoutCertificates: true
+storage:
+   dbPath: "/data/db"

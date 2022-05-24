@@ -1,10 +1,10 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { AuthContext, UIPluginSelector, useDocument } from '@dmt/common'
+import { UIPluginSelector, useDocument } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import AnalysisInfoCard from './components/AnalysisInfo'
 import AnalysisJobTable from './components/AnalysisJobTable'
-import { TJob } from '../../Types'
+import { TAnalysis, TJob } from '../../Types'
 
 export default (): JSX.Element => {
   // @ts-ignore
@@ -12,9 +12,10 @@ export default (): JSX.Element => {
     data_source: string
     entity_id: string
   }>()
-  const [analysis, isLoading, updateDocument, error] = useDocument(
+  const [analysis, isLoading, updateDocument, error] = useDocument<TAnalysis>(
     data_source,
-    entity_id
+    entity_id,
+    true
   )
   const [jobs, setJobs] = useState<any[]>([])
 
@@ -22,8 +23,13 @@ export default (): JSX.Element => {
     if (!analysis) return
     setJobs(analysis.jobs)
   }, [analysis])
-
-  if (isLoading) return <Progress.Linear />
+  if (error)
+    return (
+      <pre style={{ color: 'red' }}>
+        {JSON.stringify(error.message, null, 2)}
+      </pre>
+    )
+  if (isLoading || !analysis) return <Progress.Linear />
   return (
     <>
       <AnalysisInfoCard
@@ -35,7 +41,7 @@ export default (): JSX.Element => {
         <UIPluginSelector
           entity={analysis.task}
           absoluteDottedId={`${data_source}/${analysis._id}.task`}
-          categories={['container', 'view']}
+          categories={['container']}
         />
         <AnalysisJobTable jobs={jobs} analysisId={analysis._id} />
       </>

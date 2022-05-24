@@ -3,7 +3,7 @@ import React, { createContext, useEffect, useState } from 'react'
 export interface DmtPlugin {
   pluginType: DmtPluginType
   pluginName: string
-  content: any
+  component: (props: DmtUIPlugin) => JSX.Element
 }
 
 export type UiPluginMap = {
@@ -20,7 +20,6 @@ export interface DmtUIPlugin {
   dataSourceId: string
   documentId: string
   onSubmit?: Function
-  onChange?: Function
   onOpen?: Function
   document?: any
   updateDocument?: any
@@ -70,10 +69,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
         pluginPackageList.forEach((pluginPackage: DmtPlugin[]) => {
           pluginPackage.forEach(
             (plugin) =>
-              (newPluginMap = {
-                ...newPluginMap,
-                [plugin.pluginName]: plugin.content.component,
-              })
+              (newPluginMap = { ...newPluginMap, [plugin.pluginName]: plugin })
           )
         })
         setPlugins(newPluginMap)
@@ -85,10 +81,14 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
       .finally(() => setLoading(false))
   }, [pluginsToLoad])
 
-  function getUiPlugin(uiRecipeName: string) {
+  function getUiPlugin(uiRecipeName: string): DmtPlugin {
     const pluginName = uiRecipeName.trim()
     if (pluginName in plugins) return plugins[pluginName]
-    return () => <div>Did not find the plugin: {pluginName} </div>
+    return {
+      pluginName: 'NotFound',
+      pluginType: DmtPluginType.UI,
+      component: () => <div>Did not find the plugin: {pluginName} </div>,
+    }
   }
 
   function getPagePlugin(uiRecipeName: string) {

@@ -6,12 +6,14 @@ import {
   AuthContext,
   Button,
   JsonView,
-  Modal,
   sortApplications,
+  Dialog,
+  DmssAPI,
 } from '@dmt/common'
-import ConfigureApplication from './components/ConfigureApplication'
 import axios from 'axios'
 import { FaQuestion } from 'react-icons/fa'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 
 const TabStyled: any = styled.div`
   color: ${(props: any) => (props.isSelected ? 'black' : 'black')};
@@ -60,26 +62,49 @@ const UserInfoBox = styled.div`
 `
 
 function UserInfo() {
-  // @ts-ignore-line
-  const { tokenData, logOut } = useContext(AuthContext)
+  const { tokenData, token, logOut } = useContext(AuthContext)
   const [expanded, setExpanded] = useState(false)
+  const [apiKey, setAPIKey] = useState<string | null>(null)
+  const dmssApi = new DmssAPI(token)
+
   return (
     <div style={{ display: 'flex', alignItems: 'center', columnGap: '5px' }}>
-      <UserInfoBox onClick={() => setExpanded(!expanded)}>
-        <div>{tokenData?.name || 'Not logged in'}</div>
-        <Modal
-          toggle={() => setExpanded(!expanded)}
-          open={expanded}
-          title={'Logged in user info'}
+      <UserInfoBox>
+        <div onClick={() => setExpanded(!expanded)}>
+          {tokenData?.name || 'Not logged in'}
+        </div>
+        <Dialog
+          isOpen={expanded}
+          closeScrim={() => {
+            setExpanded(false)
+            setAPIKey(null)
+          }}
+          header={'Logged in user info'}
+          width={'30vw'}
         >
           <JsonView data={tokenData} />
+          <div>
+            <Button
+              onClick={() =>
+                dmssApi
+                  .tokenCreate()
+                  .then((response: any) => setAPIKey(response.data))
+                  .catch((error: any) => {
+                    console.error(error)
+                    NotificationManager.error(
+                      'Failed to create personal access token'
+                    )
+                  })
+              }
+            >
+              Create API-Key
+            </Button>
+            {apiKey && <pre>{apiKey}</pre>}
+          </div>
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
             <Button onClick={() => logOut()}>Log out</Button>
-            <Button type={'button'} onClick={() => setExpanded(false)}>
-              Close
-            </Button>
           </div>
-        </Modal>
+        </Dialog>
       </UserInfoBox>
     </div>
   )
@@ -93,7 +118,7 @@ const About = () => {
     axios
       .get('version.txt')
       .then((response) => setVersion(response.data))
-      .catch((error) => console.error(error))
+      .catch(() => null)
   }, [])
 
   return (
@@ -101,13 +126,14 @@ const About = () => {
       <QuestionWrapper onClick={() => setExpanded(!expanded)}>
         <FaQuestion />
       </QuestionWrapper>
-      <Modal
-        toggle={() => setExpanded(!expanded)}
-        open={expanded}
-        title={'About Data Modelling Tool'}
+      <Dialog
+        isOpen={expanded}
+        closeScrim={() => setExpanded(false)}
+        header={'About Data Modelling Tool'}
+        width={'30vw'}
       >
         <b>Last commit: {version}</b>
-      </Modal>
+      </Dialog>
     </div>
   )
 }
@@ -144,7 +170,6 @@ export default ({ applications }: AppHeaderProps) => {
         >
           <UserInfo />
           <About />
-          <ConfigureApplication />
         </div>
       </HeaderWrapper>
       <div

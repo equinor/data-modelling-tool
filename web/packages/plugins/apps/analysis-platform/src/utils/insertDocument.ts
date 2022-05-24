@@ -11,15 +11,15 @@ export const addToPath = (
   const dmssAPI = new DmssAPI(token)
 
   return new Promise((resolve, reject) => {
-    dmssAPI.generatedDmssApi
+    dmssAPI
       .explorerAddToPath({
         dataSourceId: dataSourceId,
         document: JSON.stringify(body),
         directory: directory,
         files: files.filter((item: any) => item !== undefined),
       })
-      .then((response: string) => {
-        const data = JSON.parse(response)
+      .then((response: any) => {
+        const data = response.data
         resolve(data.uid)
       })
       .catch((err: any) => {
