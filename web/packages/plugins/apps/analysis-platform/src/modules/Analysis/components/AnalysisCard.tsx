@@ -89,7 +89,8 @@ const RunAnalysisButton = (props: any) => {
           .catch((error: AxiosError) => {
             console.error(error)
             NotificationManager.error(
-              error?.response?.data?.message,
+              //@ts-ignore
+              error?.response?.data?.message || error.message,
               'Failed to start job'
             )
           })
