@@ -32,7 +32,7 @@ export function useDocument<T>(
         setDocument(data)
         setError(null)
       })
-      .catch((error: AxiosError) => setError(error?.response?.data))
+      .catch((error: AxiosError) => setError(error))
       .finally(() => setLoading(false))
   }, [dataSourceId, documentId])
 
@@ -54,7 +54,8 @@ export function useDocument<T>(
         console.error(error)
         if (notify)
           NotificationManager.error(
-            JSON.stringify(error?.response?.data?.message),
+            //@ts-ignore
+            JSON.stringify(error?.response?.data?.message || error.message),
             'Failed to update document',
             0
           )
