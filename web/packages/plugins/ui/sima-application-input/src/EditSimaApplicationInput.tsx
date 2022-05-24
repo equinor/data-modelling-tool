@@ -270,7 +270,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
               updateDocument(formData, true)
             }}
           >
-            Ok
+            Save
           </Button>
         </div>
       </div>

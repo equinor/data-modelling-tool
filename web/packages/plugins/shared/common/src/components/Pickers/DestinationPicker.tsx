@@ -1,5 +1,10 @@
 import React, { useState } from 'react'
-import { BlueprintEnum, PATH_INPUT_FIELD_WIDTH } from '../../utils/variables'
+import {
+  BlueprintEnum,
+  PATH_INPUT_FIELD_WIDTH,
+  TREE_DIALOG_HEIGHT,
+  TREE_DIALOG_WIDTH,
+} from '../../utils/variables'
 import {
   NodeWrapperProps,
   TreeNode,
@@ -45,8 +50,8 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
         isOpen={showModal}
         closeScrim={() => setShowModal(false)}
         header={'Select a folder as destination'}
-        width={'30vw'}
-        height={'50vh'}
+        width={TREE_DIALOG_WIDTH}
+        height={TREE_DIALOG_HEIGHT}
       >
         <TreeView
           onSelect={() => {}}

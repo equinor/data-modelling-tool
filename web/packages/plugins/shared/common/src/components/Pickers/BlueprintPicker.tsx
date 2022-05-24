@@ -1,7 +1,11 @@
 import React, { useState } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintEnum } from '../../utils/variables'
+import {
+  BlueprintEnum,
+  TREE_DIALOG_HEIGHT,
+  TREE_DIALOG_WIDTH,
+} from '../../utils/variables'
 import { Dialog, TreeNode, TreeView } from '../../index'
 import { Input, Tooltip } from '@equinor/eds-core-react'
 import { PATH_INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
@@ -35,8 +39,8 @@ export const BlueprintPicker = (props: {
         isOpen={showModal}
         closeScrim={() => setShowModal(false)}
         header={`Select a blueprint as type`}
-        width={'30vw'}
-        height={'50vh'}
+        width={TREE_DIALOG_WIDTH}
+        height={TREE_DIALOG_HEIGHT}
       >
         <TreeView
           onSelect={(node: TreeNode) => {
