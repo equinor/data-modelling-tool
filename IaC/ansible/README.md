@@ -48,6 +48,7 @@ See [secret-variables.md](./docs/secret-variables.md)
 
 ### Playbook: Initialize host
 *Installs Docker++, configures users, etc.*
+- See details in [roles-and-playbooks.md](./docs/roles-and-playbooks.md)
 > ⚠️ NB: This playbook requires sudo permissions. Make sure to run as the user you created in the Azure Portal with `-u <username>`
 #### Run the playbook
 ```sh
@@ -56,6 +57,7 @@ $ ansible-playbook -i hosts.yml --vault-password-file .vault-pwd -u <username> i
 
 ### Playbook: Deploy database
 *Pulls docker images, runs docker-compose up*
+- See details in [roles-and-playbooks.md](./docs/roles-and-playbooks.md)
 > ⚠️ NB: This playbook should **not** be run with sudo permissions. Make sure to run as user _dmt-db_ with `-u dmt-db`
 #### Run the playbook
 ```sh
