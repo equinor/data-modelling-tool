@@ -30,7 +30,7 @@ export const EntityPickerButton = (props: {
       >
         <TreeView
           onSelect={(node: TreeNode) => {
-            if (node.type !== typeFilter) {
+            if (typeFilter && node.type !== typeFilter) {
               NotificationManager.warning('Wrong type')
               return
             }

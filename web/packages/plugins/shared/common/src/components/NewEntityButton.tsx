@@ -9,18 +9,18 @@ import { AuthContext, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
 import { AxiosError } from 'axios'
 
 export function NewEntityButton(props: {
-  type: string
+  type?: string
   setReference: (r: TReference) => void
 }) {
   const { type, setReference } = props
   const [showScrim, setShowScrim] = useState<boolean>(false)
   const [saveDestination, setSaveDestination] = useState<string>('')
   const [newName, setNewName] = useState<string>('')
-  const [typeToCreate, setTypeToCreate] = useState<string>(type)
+  const [typeToCreate, setTypeToCreate] = useState<string>(type || '')
   const { token } = useContext(AuthContext)
   const dmtAPI = new DmtAPI(token)
 
-  useEffect(() => setTypeToCreate(type), [type])
+  useEffect(() => setTypeToCreate(type || ''), [type])
 
   function addEntityToPath(entity: any): Promise<void> {
     const [dataSource, ...directories] = saveDestination.split('/')

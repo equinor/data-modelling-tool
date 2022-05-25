@@ -11,7 +11,7 @@ import {
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import {
   Input,
   Label,
@@ -50,6 +50,11 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
     false
   )
 
+  useEffect(() => {
+    if (!_document) return
+    setFormData(_document)
+  }, [_document])
+
   function getNewSTaskBody(filename: string): any {
     return {
       type: 'AnalysisPlatformDS/Blueprints/STask',
@@ -63,7 +68,12 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
 
   return (
     <div
-      style={{ display: 'flex', alignItems: 'left', flexDirection: 'column' }}
+      style={{
+        display: 'flex',
+        alignItems: 'left',
+        flexDirection: 'column',
+        margin: '10px 20px',
+      }}
     >
       <div style={{ marginBottom: '10px' }}>
         <HeaderWrapper>

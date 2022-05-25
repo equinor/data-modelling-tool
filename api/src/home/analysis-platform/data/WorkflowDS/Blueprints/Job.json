@@ -2,7 +2,7 @@
   "name": "Job",
   "abstract": true,
   "type": "system/SIMOS/Blueprint",
-  "extends": ["system/SIMOS/NamedEntity"],
+  "extends": ["system/SIMOS/NamedEntity", "system/SIMOS/DefaultUiRecipes"],
   "attributes": [
     {
       "name": "label",
@@ -58,7 +58,7 @@
       "optional": true
     },
     {
-      "attributeType": "string",
+      "attributeType": "/jobHandlers/JobHandler",
       "type": "system/SIMOS/BlueprintAttribute",
       "name": "runner",
       "label": "Runner",
@@ -76,15 +76,16 @@
   ],
   "uiRecipes": [
     {
-      "name": "Job",
+      "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "job",
-      "category": "view"
+      "plugin": "jobEdit",
+      "category": "edit",
+      "roles": ["dmss-admin", "domain-expert", "domain-developer"]
     },
     {
-      "name": "Yaml",
+      "name": "Control pane",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "yaml-view",
+      "plugin": "jobControl",
       "category": "view"
     }
   ]

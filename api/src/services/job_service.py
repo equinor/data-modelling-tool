@@ -93,7 +93,7 @@ class JobService:
     @staticmethod
     def _get_job_entity(job_id: str, token: str = None):
         data_source_id, job_entity_id, attribute = split_absolute_ref(job_id)
-        return get_document_by_uid(data_source_id, job_entity_id, attribute=attribute, token=token)
+        return get_document_by_uid(data_source_id, job_entity_id, attribute=attribute, token=token, depth=0)
 
     @staticmethod
     def _insert_reference(document_id: str, reference: dict, token: str = None):
@@ -200,9 +200,14 @@ class JobService:
             raise JobNotFoundException(f"No job with id '{job_id}' is registered")
         job_handler = self._get_job_handler(job)
         status, log = job_handler.progress()
+        if status is JobStatus.COMPLETED:
+            result_reference = self._get_job_entity(job_id, job.token)["result"]
+            job.entity["result"] = result_reference
         job.status = status
         job.log = log
         self._set_job(job)
+        job.update_entity_attributes()
+        self._update_job_entity(job.job_id, job.entity, job.token)
         if job.cron_job:
             cron_job = scheduler.get_job(job_id)
             return status, job.log, f"Next scheduled run @ {cron_job.next_run_time} {cron_job.next_run_time.tzinfo}"

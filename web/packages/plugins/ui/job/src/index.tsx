@@ -1,23 +1,58 @@
 import * as React from 'react'
 
 import { DmtPluginType, DmtUIPlugin, useDocument } from '@dmt/common'
-import { JobLog } from './Job'
+import { JobControl } from './JobControl'
+import { TJob } from './types'
+import { JobEdit } from './JobEdit'
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const JobControlWrapper = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
-  const [document, documentLoading, updateDocument, error] = useDocument(
+  const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
     documentId,
     false
   )
   if (documentLoading) return <div>Loading...</div>
-  return <JobLog document={document} jobId={`${dataSourceId}/${documentId}`} />
+  if (error) return <div>Something went wrong; {error}</div>
+  if (!document) return <div>The job document is empty</div>
+  return (
+    <JobControl
+      document={document}
+      jobId={`${dataSourceId}/${documentId}`}
+      updateDocument={updateDocument}
+    />
+  )
+}
+
+const JobEditWrapper = (props: DmtUIPlugin) => {
+  const { documentId, dataSourceId, onOpen } = props
+  const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
+    dataSourceId,
+    documentId,
+    false
+  )
+  if (documentLoading) return <div>Loading...</div>
+  if (error) return <div>Something went wrong; {error}</div>
+  if (!document) return <div>The job document is empty</div>
+  return (
+    <JobEdit
+      document={document}
+      dataSourceId={dataSourceId}
+      documentId={documentId}
+      updateDocument={updateDocument}
+    />
+  )
 }
 
 export const plugins: any = [
   {
-    pluginName: 'job',
+    pluginName: 'jobControl',
     pluginType: DmtPluginType.UI,
-    component: PluginComponent,
+    component: JobControlWrapper,
+  },
+  {
+    pluginName: 'jobEdit',
+    pluginType: DmtPluginType.UI,
+    component: JobEditWrapper,
   },
 ]
