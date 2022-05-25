@@ -38,7 +38,7 @@ export function UploadFileButton(props: {
 }) {
   const { fileSuffix, getBody, dataSourceId, onUpload } = props
   const textInput = useRef<HTMLInputElement>(null)
-  const [error, setError] = useState<string>()
+  const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState<boolean>(false)
   const { token } = useContext(AuthContext)
 
@@ -68,7 +68,9 @@ export function UploadFileButton(props: {
             type: newDocumentBody.type,
           })
         )
-        .catch((error: AxiosError) => setError(error.response?.data?.message))
+        .catch((error: AxiosError<any>) =>
+          setError(error.response?.data?.message)
+        )
         .finally(() => setLoading(false))
     }
   }

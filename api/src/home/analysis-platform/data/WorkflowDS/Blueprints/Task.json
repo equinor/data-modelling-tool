@@ -58,6 +58,7 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "tabs",
       "category": "container",
+      "roles": ["dmss-admin", "domain-developer"],
       "config": {
         "type": "DMT-Internal/ui-plugins/tabs/Config",
         "subCategories": ["view"]

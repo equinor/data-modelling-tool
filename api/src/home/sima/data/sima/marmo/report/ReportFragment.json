@@ -11,7 +11,7 @@
         "name": "SIMA Report View",
         "description": "Some external plugin",
         "plugin": "simpos-report-view",
-        "attributes": []
+        "category": "view"
       }
  ]
 }
