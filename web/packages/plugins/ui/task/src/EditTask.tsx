@@ -35,7 +35,6 @@ export const EditTask = (props: DmtUIPlugin) => {
     false
   )
   const [formData, setFormData] = useState<any>({ ...document })
-  const defaultRunnerType = 'WorkflowDS/Blueprints/jobHandlers/AzureContainer'
 
   useEffect(() => {
     if (!_document) return
@@ -147,7 +146,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     runner: { ...formData?.runner, type: selectedBlueprint },
                   })
                 }
-                formData={formData?.runner?.type || defaultRunnerType}
+                formData={formData?.runner?.type || ''}
               />
               <div
                 style={{
@@ -163,7 +162,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                         attribute: 'runner',
                         categories: ['edit'],
                         entity: formData?.runner || {
-                          type: defaultRunnerType,
+                          type: '',
                         },
                         absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
                         onSubmit: (data: any) =>
@@ -180,7 +179,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
                     entity={
                       (Object.keys(formData?.runner).length &&
-                        formData.runner) || { type: defaultRunnerType }
+                        formData.runner) || { type: '' }
                     }
                     breadcrumb={false}
                     categories={['edit']}

@@ -33,13 +33,16 @@ export const JobHandlerPicker = (props: {
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
       <Select
-        onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-          handleChange(searchResult[parseInt(e.target.value)]._id)
-        }
+        onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+          return handleChange(searchResult[parseInt(e.target.value)]._id)
+        }}
         value={searchResult.findIndex(
           (resultEntry: any) => resultEntry.name === blueprintName
         )}
       >
+        <option value={-1} selected disabled hidden>
+          Choose runner...
+        </option>
         {searchResult.map((resultEntry: any, index: number) => (
           <option key={index} value={index}>
             {resultEntry.name}

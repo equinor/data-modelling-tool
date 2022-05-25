@@ -53,8 +53,13 @@ export const EditContainer = (props: DmtUIPlugin) => {
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                 setFormData({ ...formData, image: e.target.value })
               }
-              value={formData?.image || ''}
+              value={imageOptions.find(
+                (image: string) => image === formData?.image
+              )}
             >
+              <option value={''} selected disabled hidden>
+                Choose image...
+              </option>
               {imageOptions.map((image: string, index: number) => (
                 <option key={index} value={image}>
                   {image}

@@ -58,6 +58,15 @@ const RunAnalysisButton = (props: any) => {
   const saveAndStartJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
+
+    if (!task.runner || Object.keys(task.runner).length === 0) {
+      NotificationManager.error(
+        'You must save the job runner before starting the job!'
+      )
+      setLoading(false)
+      return
+    }
+
     const job: TJob = {
       label: 'Example local container job',
       name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(1)}`,
