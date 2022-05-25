@@ -10,6 +10,12 @@
       "dimensions": "*",
       "optional": true,
       "description": "a list of strings on format 'myVar=myValue'"
+    },
+    {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "optional": false
     }
   ]
 }
