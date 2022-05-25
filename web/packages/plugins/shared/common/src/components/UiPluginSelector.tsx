@@ -152,9 +152,10 @@ export function UIPluginSelector(props: {
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
-  const roles =
-    [JSON.parse(localStorage.getItem('impersonateRoles') || 'null')] ||
-    tokenData?.roles
+  let roles = tokenData?.roles
+  if (localStorage.getItem('impersonateRoles')) {
+    roles = [JSON.parse(localStorage.getItem('impersonateRoles') || 'null')]
+  }
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
   const [selectablePlugins, setSelectablePlugins] = useState<
     TSelectablePlugins[]

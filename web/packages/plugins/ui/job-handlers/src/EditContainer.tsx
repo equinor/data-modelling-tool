@@ -96,12 +96,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
           {/*</HeaderWrapper>*/}
 
           <div>
-            <Button
-              as="button"
-              onClick={() => {
-                updateDocument(formData, true)
-              }}
-            >
+            <Button as="button" onClick={() => updateDocument(formData, true)}>
               Save
             </Button>
           </div>

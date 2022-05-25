@@ -7,23 +7,15 @@ import {
   Typography,
 } from '@equinor/eds-core-react'
 import { hasExpertRole } from '../../../utils/auth'
-import { AxiosError } from 'axios'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
-import {
-  AccessControlList,
-  AuthContext,
-  DmssAPI,
-  UIPluginSelector,
-  JobApi,
-  Dialog,
-} from '@dmt/common'
+import { AccessControlList, AuthContext, Dialog, DmssAPI } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TAnalysis, TJob, TTask } from '../../../Types'
 import { poorMansUUID } from '../../../utils/uuid'
+import { JobStatus, TAnalysis, TJob, TTask } from '../../../Types'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -47,21 +39,19 @@ type AnalysisCardProps = {
 
 const RunAnalysisButton = (props: any) => {
   const { analysis, addJob, jobs } = props
-  const [showScrim, setShowScrim] = useState<boolean>(false)
   const [loading, setLoading] = useState<boolean>(false)
   const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  const jobAPI = new JobApi(token)
 
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
 
-  const saveAndStartJob = (task: TTask) => {
+  const createJob = (task: TTask) => {
     setLoading(true)
     const runsSoFar = jobs.length
 
     if (!task.runner || Object.keys(task.runner).length === 0) {
       NotificationManager.error(
-        'You must save the job runner before starting the job!'
+        'You must save the job runner before creating the job!'
       )
       setLoading(false)
       return
@@ -71,11 +61,12 @@ const RunAnalysisButton = (props: any) => {
       label: 'Example local container job',
       name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(1)}`,
       type: JOB,
+      status: JobStatus.CREATED,
       triggeredBy: tokenData?.name,
       applicationInput: task.applicationInput,
       runner: task.runner,
       referenceTarget: `${analysis._id}.jobs.${runsSoFar}.result`,
-      started: new Date().toISOString(),
+      started: '',
     }
 
     dmssAPI
@@ -84,26 +75,7 @@ const RunAnalysisButton = (props: any) => {
         updateUncontained: false,
         body: job,
       })
-      .then(() => {
-        addJob(job)
-        // Start a job from the created job entity (last one in list)
-        jobAPI
-          .startJob(`${analysisAbsoluteReference}.jobs.${runsSoFar}`)
-          .then((result: any) => {
-            NotificationManager.success(
-              JSON.stringify(result.data),
-              'Simulation job started'
-            )
-          })
-          .catch((error: AxiosError) => {
-            console.error(error)
-            NotificationManager.error(
-              //@ts-ignore
-              error?.response?.data?.message || error.message,
-              'Failed to start job'
-            )
-          })
-      })
+      .then(() => addJob(job))
       .catch((error: Error) => {
         console.error(error)
         NotificationManager.error(`Could not save job (${error})`)
@@ -114,52 +86,21 @@ const RunAnalysisButton = (props: any) => {
       })
   }
 
-  if (loading) {
-    return <Progress.Linear />
-  }
-
   return (
     <div>
-      <Button
-        onClick={() => setShowScrim(true)}
-        style={{ width: 'max-content' }}
-      >
-        Run analysis
-        <Icons name="play" title="play" />
-      </Button>
-      <Dialog
-        isOpen={showScrim}
-        closeScrim={() => setShowScrim(false)}
-        header={'Job parameters'}
-        width={'40vw'}
-        height={'70vh'}
-      >
-        <div
-          style={{
-            margin: '0 20px',
-            alignItems: 'center',
-            display: 'flex',
-            flexDirection: 'column',
-          }}
+      {loading ? (
+        <Button style={{ width: '130px' }}>
+          <Progress.Dots />
+        </Button>
+      ) : (
+        <Button
+          style={{ width: '130px' }}
+          onClick={() => createJob(analysis.task)}
         >
-          <UIPluginSelector
-            absoluteDottedId={`${analysisAbsoluteReference}.task`}
-            entity={analysis.task}
-            categories={['container']}
-          />
-          <Button
-            style={{ width: '200px', marginTop: '30px' }}
-            onClick={() => {
-              saveAndStartJob(analysis.task)
-              setShowScrim(false)
-              NotificationManager.success('Job parameters updated', 'Updated')
-            }}
-          >
-            Start
-            <Icons name="play" title="play" />
-          </Button>
-        </div>
-      </Dialog>
+          New job
+          <Icons name="add" title="new job" />
+        </Button>
+      )}
     </div>
   )
 }
@@ -207,15 +148,6 @@ const AnalysisCard = (props: AnalysisCardProps) => {
           </div>
         </div>
         <Card.Actions>
-          {hasExpertRole(tokenData) && (
-            <Button
-              onClick={() => setViewACL(!viewACL)}
-              style={{ width: 'max-content' }}
-            >
-              Access control
-              <Icons name="assignment_user" title="assignment_user" />
-            </Button>
-          )}
           {'task' in analysis && Object.keys(analysis.task).length > 0 && (
             <>
               <RunAnalysisButton
@@ -230,6 +162,15 @@ const AnalysisCard = (props: AnalysisCardProps) => {
                 </Button>
               </Tooltip>
             </>
+          )}
+          {hasExpertRole(tokenData) && (
+            <Button
+              onClick={() => setViewACL(!viewACL)}
+              style={{ width: 'max-content' }}
+            >
+              Access control
+              <Icons name="assignment_user" title="assignment_user" />
+            </Button>
           )}
         </Card.Actions>
       </Card>

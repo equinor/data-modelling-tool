@@ -36,7 +36,7 @@ export function useDocument<T>(
       .finally(() => setLoading(false))
   }, [dataSourceId, documentId])
 
-  function updateDocument(newDocument: T, notify: boolean) {
+  function updateDocument(newDocument: T, notify: boolean): void {
     setLoading(true)
     dmssAPI
       .documentUpdate({

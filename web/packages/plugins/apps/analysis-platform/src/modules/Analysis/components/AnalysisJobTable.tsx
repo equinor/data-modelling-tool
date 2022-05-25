@@ -1,21 +1,13 @@
-import { Table, Typography } from '@equinor/eds-core-react'
+import { Button, Icon, Table, Typography } from '@equinor/eds-core-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext, JobApi } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
-import { TJob } from '../../../Types'
+import { JobStatus, TJob } from '../../../Types'
 
 type AnalysisJobTableProps = {
   jobs: any
   analysisId: string
-}
-
-enum JobStatus {
-  STARTING = 'starting',
-  RUNNING = 'running',
-  FAILED = 'failed',
-  COMPLETED = 'completed',
-  UNKNOWN = 'unknown',
 }
 
 const ClickableLabel = styled.div`
@@ -39,10 +31,11 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
       })
       .catch((e: Error) => {
         console.error(e)
+        setJobStatus(job.status)
       })
       .finally(() => setLoading(false))
   }, [])
-
+  console.log(jobStatus)
   return (
     <Table.Row
       onClick={() => {
@@ -51,7 +44,9 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
       }}
     >
       <Table.Cell>
-        {new Date(job.started).toLocaleString(navigator.language)}
+        {jobStatus !== JobStatus.CREATED
+          ? new Date(job.started).toLocaleString(navigator.language)
+          : 'Not started'}
       </Table.Cell>
       <Table.Cell>{job.triggeredBy}</Table.Cell>
       <Table.Cell>{}</Table.Cell>
@@ -70,6 +65,17 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
           </ClickableLabel>
         ) : (
           <>None</>
+        )}
+      </Table.Cell>
+      <Table.Cell>
+        {jobStatus === JobStatus.CREATED ? (
+          <Button variant="ghost_icon">
+            <Icon name="play" title="play" />
+          </Button>
+        ) : (
+          <Button variant="ghost_icon" color="danger">
+            <Icon name="delete_forever" title="delete" />
+          </Button>
         )}
       </Table.Cell>
     </Table.Row>
@@ -92,6 +98,7 @@ const AnalysisJobTable = (props: AnalysisJobTableProps) => {
             <Table.Cell>Duration</Table.Cell>
             <Table.Cell>Status</Table.Cell>
             <Table.Cell>Result</Table.Cell>
+            <Table.Cell>Control</Table.Cell>
           </Table.Row>
         </Table.Head>
         <Table.Body style={{ cursor: 'pointer' }}>

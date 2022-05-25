@@ -43,10 +43,20 @@ export type TLayout = {
   settings: DmtSettings
 }
 
+export enum JobStatus {
+  CREATED = 'created',
+  STARTING = 'starting',
+  RUNNING = 'running',
+  FAILED = 'failed',
+  COMPLETED = 'completed',
+  UNKNOWN = 'unknown',
+}
+
 export type TJob = {
   label: string
   name: string
   type: string
+  status: JobStatus
   triggeredBy: string
   applicationInput: TReference
   runner?: TJobHandler | TContainerJobHandler
