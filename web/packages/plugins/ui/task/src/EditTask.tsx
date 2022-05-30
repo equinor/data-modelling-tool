@@ -28,19 +28,14 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onOpen, categories } = props
-  const [_document, _loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId,
-    false
-  )
+  const { document, documentId, dataSourceId, onOpen, updateDocument } = props
   const [formData, setFormData] = useState<any>({ ...document })
 
   useEffect(() => {
-    if (!_document) return
+    if (!document) return
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
-    setFormData({ ..._document })
-  }, [_document])
+    setFormData({ ...document })
+  }, [document])
 
   return (
     <div>
@@ -176,6 +171,9 @@ export const EditTask = (props: DmtUIPlugin) => {
                   </Button>
                 ) : (
                   <UIPluginSelector
+                    handleUpdateDocument={(newDocument) =>
+                      updateDocument(newDocument)
+                    }
                     absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
                     entity={
                       (Object.keys(formData?.runner).length &&
@@ -202,7 +200,7 @@ export const EditTask = (props: DmtUIPlugin) => {
           <Button
             as="button"
             onClick={() => {
-              updateDocument(formData, true)
+              updateDocument(formData)
             }}
           >
             Save

@@ -45,22 +45,17 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const { documentId, dataSourceId, config, document } = props
+  const { documentId, dataSourceId, config, updateDocument, document } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, _loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId,
-    true
-  )
 
   useEffect(() => {
-    if (!entity) return
-    setFormData({ ...entity })
-  }, [entity])
+    if (!document) return
+    setFormData({ ...document })
+  }, [document])
 
-  if (!entity || Object.keys(formData).length === 0) return null
+  if (!document || Object.keys(formData).length === 0) return null
   return (
     <div
       style={{
@@ -104,6 +99,9 @@ export const TabsContainer = (props: DmtUIPlugin) => {
 
       {selectedTab === 'home' ? (
         <UIPluginSelector
+          handleUpdateDocument={(newDocument: any) =>
+            updateDocument(newDocument)
+          }
           key={'home'}
           absoluteDottedId={`${dataSourceId}/${documentId}`}
           entity={formData}
@@ -118,6 +116,9 @@ export const TabsContainer = (props: DmtUIPlugin) => {
       ) : (
         <UIPluginSelector
           key={selectedTab}
+          handleUpdateDocument={(newDocument: any) =>
+            updateDocument(newDocument)
+          }
           absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
           entity={childTabs[selectedTab].entity}
           categories={childTabs[selectedTab].categories}

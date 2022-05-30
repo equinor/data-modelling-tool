@@ -40,6 +40,9 @@ export default (): JSX.Element => {
       <>
         <UIPluginSelector
           entity={analysis.task}
+          handleUpdateDocument={(newDocument: any) =>
+            updateDocument({ ...analysis, task: newDocument })
+          }
           absoluteDottedId={`${data_source}/${analysis._id}.task`}
           categories={['container']}
         />

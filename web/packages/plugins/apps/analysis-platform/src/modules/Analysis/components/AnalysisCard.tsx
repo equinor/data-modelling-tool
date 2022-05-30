@@ -50,31 +50,7 @@ const RunAnalysisButton = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false)
   const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  const { data_source, entity_id } = useParams<{
-    data_source: string
-    entity_id: string
-  }>()
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
-
-  const handleCreateJob = () => {
-    setLoading(true)
-
-    //fetch last version of task from database
-    dmssAPI
-      .documentGetById({
-        dataSourceId: data_source,
-        documentId: entity_id,
-        depth: 999, // ???
-      })
-      .then((response: any) => {
-        const task = response.data.task
-        createJob(task)
-        // setError(null)
-      })
-      .catch((error: AxiosError) => console.log(error))
-      .finally(() => setLoading(false))
-    // createJob("x")
-  }
 
   const createJob = (task: TTask) => {
     setLoading(true)
@@ -124,7 +100,10 @@ const RunAnalysisButton = (props: any) => {
           <Progress.Dots />
         </Button>
       ) : (
-        <Button style={{ width: '130px' }} onClick={() => handleCreateJob()}>
+        <Button
+          style={{ width: '130px' }}
+          onClick={() => createJob(analysis.task)}
+        >
           New job
           <Icons name="add" title="new job" />
         </Button>
