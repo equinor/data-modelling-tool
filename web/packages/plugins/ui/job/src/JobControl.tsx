@@ -1,6 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
-import { AuthContext, Dialog, JobApi, UIPluginSelector } from '@dmt/common'
+import {
+  AuthContext,
+  Dialog,
+  DmssAPI,
+  JobApi,
+  UIPluginSelector,
+} from '@dmt/common'
 import { Button, Label, Progress } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'
@@ -63,8 +69,10 @@ export const JobControl = (props: {
   updateDocument: Function
 }) => {
   const { jobId, document } = props
+  const [dataSourceId, documentId] = jobId.split('/', 2)
   const { token } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
+  const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobLogs, setJobLogs] = useState<any>()
   const [jobStatus, setJobStatus] = useState<JobStatus>(JobStatus.UNKNOWN)
@@ -78,7 +86,6 @@ export const JobControl = (props: {
       .statusJob(jobId)
       .then((result: any) => {
         setJobLogs(result.data.log)
-        console.log(result.data.status)
         setJobStatus(result.data.status)
       })
       .catch((error: AxiosError) => {
@@ -114,6 +121,24 @@ export const JobControl = (props: {
         )
       })
       .finally(() => setLoading(false))
+  }
+
+  async function removeJob(): Promise<void> {
+    setLoading(true)
+    try {
+      await jobAPI.removeJob(jobId)
+      await dmssAPI.explorerRemove({
+        dataSourceId: dataSourceId,
+        dottedId: documentId,
+      })
+    } catch (error) {
+      console.error(error)
+      NotificationManager.error(
+        //@ts-ignore
+        error?.response?.data?.message || error.message,
+        'Failed to remove job'
+      )
+    }
   }
 
   if (loading) return <Progress.Linear style={{ margin: '5px 0' }} />

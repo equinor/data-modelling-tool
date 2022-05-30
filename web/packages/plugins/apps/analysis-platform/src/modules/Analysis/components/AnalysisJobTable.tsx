@@ -1,9 +1,18 @@
-import { Button, Icon, Table, Typography } from '@equinor/eds-core-react'
+import {
+  Button,
+  Icon,
+  Progress,
+  Table,
+  Typography,
+} from '@equinor/eds-core-react'
 import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext, JobApi } from '@dmt/common'
+import { AuthContext, DmssAPI, JobApi } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
 import { JobStatus, TJob } from '../../../Types'
+import { AxiosError } from 'axios'
+// @ts-ignore
+import { NotificationManager } from 'react-notifications'
 
 type AnalysisJobTableProps = {
   jobs: any
@@ -19,13 +28,62 @@ const ClickableLabel = styled.div`
 const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
   const { job, index, analysisId } = props // @ts-ignore
   const { token } = useContext(AuthContext)
-  const JobAPI = new JobApi(token)
+  const jobAPI = new JobApi(token)
+  const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobStatus, setJobStatus] = useState<JobStatus>(JobStatus.UNKNOWN)
+  const viewURL = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
+
+  const startJob = () => {
+    setLoading(true)
+    jobAPI
+      .startJob(`${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`)
+      .then((result: any) => {
+        NotificationManager.success(
+          JSON.stringify(result.data),
+          'Simulation job started'
+        )
+        setJobStatus(JobStatus.STARTING)
+      })
+      .catch((error: AxiosError) => {
+        console.error(error)
+        NotificationManager.error(
+          //@ts-ignore
+          error?.response?.data?.message || error.message,
+          'Failed to start job'
+        )
+      })
+      .finally(() => setLoading(false))
+  }
+
+  async function removeJob(): Promise<void> {
+    NotificationManager.warning('Not implemented')
+    return
+    setLoading(true)
+    try {
+      await dmssAPI.explorerRemove({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        dottedId: `${analysisId}.jobs.${index}`,
+      })
+      await jobAPI.removeJob(
+        `${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
+      )
+      setLoading(false)
+    } catch (error) {
+      console.error(error)
+      NotificationManager.error(
+        //@ts-ignore
+        error?.response?.data?.message || error.message,
+        'Failed to start job'
+      )
+      setLoading(false)
+    }
+  }
 
   useEffect(() => {
     setLoading(true)
-    JobAPI.statusJob(`${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`)
+    jobAPI
+      .statusJob(`${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`)
       .then((result: any) => {
         setJobStatus(result.data.status)
       })
@@ -35,22 +93,34 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
       })
       .finally(() => setLoading(false))
   }, [])
-  console.log(jobStatus)
   return (
-    <Table.Row
-      onClick={() => {
-        //@ts-ignore
-        document.location = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
-      }}
-    >
-      <Table.Cell>
+    <Table.Row>
+      <Table.Cell
+        onClick={() => {
+          //@ts-ignore
+          document.location = viewURL
+        }}
+      >
         {jobStatus !== JobStatus.CREATED
           ? new Date(job.started).toLocaleString(navigator.language)
           : 'Not started'}
       </Table.Cell>
-      <Table.Cell>{job.triggeredBy}</Table.Cell>
-      <Table.Cell>{}</Table.Cell>
-      <Table.Cell>{jobStatus}</Table.Cell>
+      <Table.Cell
+        onClick={() => {
+          //@ts-ignore
+          document.location = viewURL
+        }}
+      >
+        {job.triggeredBy}
+      </Table.Cell>
+      <Table.Cell
+        onClick={() => {
+          //@ts-ignore
+          document.location = viewURL
+        }}
+      >
+        {jobStatus}
+      </Table.Cell>
       <Table.Cell>
         {Object.keys(job?.result || {}).length ? (
           <ClickableLabel
@@ -67,17 +137,27 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
           <>None</>
         )}
       </Table.Cell>
-      <Table.Cell>
-        {jobStatus === JobStatus.CREATED ? (
-          <Button variant="ghost_icon">
-            <Icon name="play" title="play" />
-          </Button>
-        ) : (
-          <Button variant="ghost_icon" color="danger">
-            <Icon name="delete_forever" title="delete" />
-          </Button>
-        )}
-      </Table.Cell>
+      {loading ? (
+        <Table.Cell>
+          <Progress.Circular />
+        </Table.Cell>
+      ) : (
+        <Table.Cell>
+          {jobStatus === JobStatus.CREATED ? (
+            <Button variant="ghost_icon" onClick={() => startJob()}>
+              <Icon name="play" title="play" />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost_icon"
+              color="danger"
+              onClick={() => removeJob()}
+            >
+              <Icon name="delete_forever" title="delete" />
+            </Button>
+          )}
+        </Table.Cell>
+      )}
     </Table.Row>
   )
 }
@@ -95,7 +175,6 @@ const AnalysisJobTable = (props: AnalysisJobTableProps) => {
           <Table.Row>
             <Table.Cell>Started</Table.Cell>
             <Table.Cell>Started by</Table.Cell>
-            <Table.Cell>Duration</Table.Cell>
             <Table.Cell>Status</Table.Cell>
             <Table.Cell>Result</Table.Cell>
             <Table.Cell>Control</Table.Cell>

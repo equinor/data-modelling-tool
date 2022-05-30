@@ -79,9 +79,9 @@ class JobHandler(JobHandlerInterface):
             status = self.job.status
             if container.status == "running":
                 status = JobStatus.RUNNING
-            if container.attrs["State"]["ExitCode"] == 1:
+            elif container.attrs["State"]["ExitCode"] >= 1:
                 status = JobStatus.FAILED
-            if container.attrs["State"]["ExitCode"] == 0:
+            elif container.attrs["State"]["ExitCode"] == 0:
                 status = JobStatus.COMPLETED
             logs = container.logs()
             return status, logs.decode()
