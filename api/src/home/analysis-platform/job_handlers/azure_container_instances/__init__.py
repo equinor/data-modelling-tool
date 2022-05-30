@@ -143,6 +143,7 @@ class JobHandler(JobHandlerInterface):
             config.AZURE_JOB_RESOURCE_GROUP, self.azure_valid_container_name
         )
         status = container_group.containers[0].instance_view.current_state.state
+        exit_code = container_group.containers[0].instance_view.current_state.exit_code
         if not logs:  # If no container logs, get the Container Instance events instead
             try:
                 logs = container_group.containers[0].instance_view.events[-1].message
@@ -151,8 +152,14 @@ class JobHandler(JobHandlerInterface):
                 pass
 
         job_status = self.job.status
-        if status == "Terminated":
-            job_status = JobStatus.COMPLETED
-        if status == "Waiting":
-            job_status = JobStatus.STARTING
+
+        match (status, exit_code):
+            case ("Running", None):
+                job_status = JobStatus.RUNNING
+            case ("Terminated", 0):
+                job_status = JobStatus.COMPLETED
+            case ("Terminated", exit_code) if exit_code >= 1:
+                job_status = JobStatus.FAILED
+            case ("Waiting", None):
+                job_status = JobStatus.STARTING
         return job_status, logs

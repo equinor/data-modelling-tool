@@ -6,7 +6,7 @@ authors = ["Stig Ofstad <stoo@equinor.com>","Christoffer","Eirik"]
 license = "TBD"
 
 [tool.poetry.dependencies]
-python = "3.9.*"
+python = "^3.10.4"
 flask = "^2.1.1"
 urllib3 = "^1.25.9"
 toml = "^.10.1"
