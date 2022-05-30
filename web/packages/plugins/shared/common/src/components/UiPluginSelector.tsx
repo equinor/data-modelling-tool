@@ -6,6 +6,7 @@ import {
   UiPluginContext,
   useBlueprint,
   AuthContext,
+  getRoles,
 } from '@dmt/common'
 import styled from 'styled-components'
 import { CircularProgress } from '@equinor/eds-core-react'
@@ -152,10 +153,7 @@ export function UIPluginSelector(props: {
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
-  let roles = tokenData?.roles
-  if (localStorage.getItem('impersonateRoles')) {
-    roles = [JSON.parse(localStorage.getItem('impersonateRoles') || 'null')]
-  }
+  const roles = getRoles(tokenData)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
   const [selectablePlugins, setSelectablePlugins] = useState<
     TSelectablePlugins[]
