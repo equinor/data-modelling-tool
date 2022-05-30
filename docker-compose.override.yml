@@ -2,8 +2,6 @@ version: "3.4"
 
 services:
   nginx:
-    image: nginx-dev
-    build: ./nginx
     networks:
       - data-modelling-storage-service_default
 
@@ -20,11 +18,6 @@ services:
       FLASK_DEBUG: 1
       ENVIRONMENT: local
       LOGGING_LEVEL: INFO
-      JOB_SERVICE_ENABLED: 1
-      SCHEDULER_ENVS_TO_EXPORT: "PUBLIC_DMSS_API,SIMA_LICENSE"
-      SCHEDULER_REDIS_HOST: job-store
-      SCHEDULER_REDIS_PORT: 6379
-      SCHEDULER_REDIS_SSL: "false"
       AZURE_JOB_SUBSCRIPTION: 14d57366-b2ae-4da8-8b75-e273c6fdabe2
       AZURE_JOB_RESOURCE_GROUP: dmt-test-containers
       AZURE_SP_SECRET: ${AZURE_SP_SECRET}
@@ -58,16 +51,10 @@ services:
       - ./web/packages/plugins:/code/packages/plugins
     environment:
       - NODE_ENV=development
-    ports:
-      - "3000:3000"
     networks:
       - data-modelling-storage-service_default
 
   job-store:
-    image: redis:6.2.5-alpine
-    command: "redis-server --save 30 1 --loglevel notice"
-    #    volumes:
-    #     - ./redis_data:/data
     networks:
       - data-modelling-storage-service_default
 
