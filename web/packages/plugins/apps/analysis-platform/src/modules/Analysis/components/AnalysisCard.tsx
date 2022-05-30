@@ -9,13 +9,21 @@ import {
 import { hasExpertRole } from '../../../utils/auth'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
-import { AccessControlList, AuthContext, Dialog, DmssAPI } from '@dmt/common'
+import {
+  AccessControlList,
+  AuthContext,
+  Dialog,
+  DmssAPI,
+  useDocument,
+} from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { poorMansUUID } from '../../../utils/uuid'
 import { JobStatus, TAnalysis, TJob, TTask } from '../../../Types'
+import { useParams } from 'react-router-dom'
+import { AxiosError } from 'axios'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -42,8 +50,31 @@ const RunAnalysisButton = (props: any) => {
   const [loading, setLoading] = useState<boolean>(false)
   const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-
+  const { data_source, entity_id } = useParams<{
+    data_source: string
+    entity_id: string
+  }>()
   const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
+
+  const handleCreateJob = () => {
+    setLoading(true)
+
+    //fetch last version of task from database
+    dmssAPI
+      .documentGetById({
+        dataSourceId: data_source,
+        documentId: entity_id,
+        depth: 999, // ???
+      })
+      .then((response: any) => {
+        const task = response.data.task
+        createJob(task)
+        // setError(null)
+      })
+      .catch((error: AxiosError) => console.log(error))
+      .finally(() => setLoading(false))
+    // createJob("x")
+  }
 
   const createJob = (task: TTask) => {
     setLoading(true)
@@ -93,10 +124,7 @@ const RunAnalysisButton = (props: any) => {
           <Progress.Dots />
         </Button>
       ) : (
-        <Button
-          style={{ width: '130px' }}
-          onClick={() => createJob(analysis.task)}
-        >
+        <Button style={{ width: '130px' }} onClick={() => handleCreateJob()}>
           New job
           <Icons name="add" title="new job" />
         </Button>
