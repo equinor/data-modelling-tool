@@ -70,9 +70,20 @@ export type TJob = {
 //Represents Container blueprint from WorkflowDS/Blueprints/jobHandlers/Container.json
 export type TContainerJobHandler = {
   label?: string
-  image: string
+  image: TContainerImage
   command: string[]
   environmentVariables?: string[]
+}
+
+todo - update Container.json entities to use  dict in the container attribute and not string
+
+export type TContainerImage = {
+  name: string
+  subName?: string
+  description?: string
+  type: string
+  version: string
+  registryName: string
 }
 
 //Represents JobHandler blueprint from WorkflowDS/Blueprints/jobHandlers/JobHandler.json

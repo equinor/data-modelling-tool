@@ -1,0 +1,29 @@
+{
+  "name": "ContainerImage",
+  "type": "system/SIMOS/Blueprint",
+  "extends": [
+    "system/SIMOS/DefaultUiRecipes",
+    "system/SIMOS/NamedEntity"
+  ],
+  "description": "Container image used as job runner for a task. Full container image name is name/subName",
+  "attributes": [
+    {
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "subName",
+      "optional": true
+    },
+    {
+      "name": "version",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "default": "latest"
+    },
+    {
+      "name": "registryName",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    }
+  ],
+  "uiRecipes": []
+}
