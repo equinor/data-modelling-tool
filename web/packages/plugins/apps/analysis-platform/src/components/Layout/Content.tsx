@@ -19,13 +19,10 @@ const PageContent = styled.div`
 `
 
 export default (props: TContent): JSX.Element => {
-  const { heading, content } = props
+  const { content } = props
 
   return (
     <Content style={{ margin: '0px 0px 10px 0px' }}>
-      <PageHeading>
-        <Heading text={heading} />
-      </PageHeading>
       {/*@ts-ignore*/}
       <PageContent>{content({ settings: props.settings })}</PageContent>
     </Content>

@@ -14,6 +14,7 @@ export type TApp = {
 
 export type TAnalysis = {
   _id: string
+  type: string
   name: string
   description: string
   created: string
@@ -32,13 +33,11 @@ export type TCronJob = {
 }
 
 export type TContent = {
-  heading: string
   content: ReactNode
   settings: DmtSettings
 }
 
 export type TLayout = {
-  heading: string
   content: ReactNode
   settings: DmtSettings
   allApps: DmtSettings[]
