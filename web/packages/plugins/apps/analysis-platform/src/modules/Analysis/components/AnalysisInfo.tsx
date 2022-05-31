@@ -1,4 +1,4 @@
-import { Button } from '@equinor/eds-core-react'
+import { Button, Tooltip } from '@equinor/eds-core-react'
 import Icons from '../../../components/Design/Icons'
 import React, { useState } from 'react'
 import styled from 'styled-components'
@@ -38,9 +38,15 @@ const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
       ) : (
         <OnRight>
           <AnalysisCard analysis={analysis} addJob={addJob} jobs={jobs} />
-          <Button onClick={() => setIsEditing(true)} variant="ghost_icon">
-            <Icons name="edit_text" title="edit_text" />
-          </Button>
+          <Tooltip title={'Not implemented'}>
+            <Button
+              disabled
+              onClick={() => setIsEditing(true)}
+              variant="ghost_icon"
+            >
+              <Icons name="edit_text" title="edit_text" />
+            </Button>
+          </Tooltip>
         </OnRight>
       )}
     </>
