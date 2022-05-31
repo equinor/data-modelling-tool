@@ -125,6 +125,7 @@ export function UIPluginSelector(props: {
   absoluteDottedId?: string
   entity: any
   onSubmit?: Function
+  entityUpdatedInDatabase?: Function
   categories?: string[]
   breadcrumb?: boolean
   onOpen?: Function
@@ -136,6 +137,7 @@ export function UIPluginSelector(props: {
     breadcrumb,
     onSubmit,
     onOpen,
+    entityUpdatedInDatabase,
   } = props
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
@@ -225,6 +227,7 @@ export function UIPluginSelector(props: {
           onOpen={onOpen}
           categories={categories}
           config={config}
+          entityUpdatedInDatabase={entityUpdatedInDatabase}
         />
       </ErrorBoundary>
     </Wrapper>

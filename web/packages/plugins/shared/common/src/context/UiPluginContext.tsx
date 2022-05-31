@@ -24,6 +24,7 @@ export interface DmtUIPlugin {
   document?: any
   updateDocument?: any
   config?: any
+  entityUpdatedInDatabase?: Function
 }
 
 export enum DmtPluginType {

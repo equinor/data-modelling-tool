@@ -45,15 +45,23 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const { documentId, dataSourceId, config, document } = props
+  const {
+    documentId,
+    dataSourceId,
+    config,
+    entityUpdatedInDatabase,
+    document,
+  } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, _loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId,
-    true
-  )
+  const [
+    entity,
+    _loading,
+    updateDocument,
+    fetchDocument,
+    error,
+  ] = useDocument<any>(dataSourceId, documentId, true)
 
   useEffect(() => {
     if (!entity) return
@@ -61,6 +69,11 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   }, [entity])
 
   if (!entity || Object.keys(formData).length === 0) return null
+  if (!entityUpdatedInDatabase) {
+    console.error(
+      'Cannot use the EditTask UI plugin without defining entityUpdatedInDatabase prop'
+    )
+  }
   return (
     <div
       style={{
@@ -106,6 +119,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
         <UIPluginSelector
           key={'home'}
           absoluteDottedId={`${dataSourceId}/${documentId}`}
+          entityUpdatedInDatabase={entityUpdatedInDatabase}
           entity={formData}
           categories={config?.subCategories.filter(
             (c: string) => c !== 'container'
@@ -119,6 +133,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
         <UIPluginSelector
           key={selectedTab}
           absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
+          entityUpdatedInDatabase={entityUpdatedInDatabase}
           entity={childTabs[selectedTab].entity}
           categories={childTabs[selectedTab].categories}
         />

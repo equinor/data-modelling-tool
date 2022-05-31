@@ -28,19 +28,41 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onOpen, categories } = props
+  const {
+    document,
+    documentId,
+    dataSourceId,
+    onOpen,
+    categories,
+    entityUpdatedInDatabase,
+  } = props
   const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
     false
   )
   const [formData, setFormData] = useState<any>({ ...document })
+  const [updateDatabase, setUpdateDatabase] = useState<boolean>(false)
 
   useEffect(() => {
     if (!_document) return
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
     setFormData({ ..._document })
   }, [_document])
+
+  if (!entityUpdatedInDatabase) {
+    console.error(
+      'Cannot use the EditTask UI plugin without defining entityUpdatedInDatabase prop'
+    )
+    return <div></div>
+  }
+
+  useEffect(() => {
+    if (!_loading && updateDatabase) {
+      entityUpdatedInDatabase()
+      setUpdateDatabase(false)
+    }
+  }, [_loading])
 
   return (
     <div>
@@ -203,6 +225,7 @@ export const EditTask = (props: DmtUIPlugin) => {
             as="button"
             onClick={() => {
               updateDocument(formData, true)
+              setUpdateDatabase(true)
             }}
           >
             Save

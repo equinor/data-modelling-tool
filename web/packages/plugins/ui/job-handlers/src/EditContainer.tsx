@@ -5,7 +5,7 @@ import {
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
@@ -20,9 +20,10 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditContainer = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, documentId } = props
+  const { document, dataSourceId, documentId, entityUpdatedInDatabase } = props
   const [formData, setFormData] = useState<any>({ ...document })
-  const [_document, loading, updateDocument] = useDocument(
+  const [updateDatabase, setUpdateDatabase] = useState<boolean>(false)
+  const [_document, _loading, updateDocument] = useDocument(
     dataSourceId,
     documentId,
     false
@@ -31,6 +32,20 @@ export const EditContainer = (props: DmtUIPlugin) => {
     'datamodelingtool.azurecr.io/dmt-job/srs:latest',
     'datamodelingtool.azurecr.io/dmt-job/srs:production',
   ]
+
+  if (!entityUpdatedInDatabase) {
+    console.error(
+      'Cannot use the EditTask UI plugin without defining entityUpdatedInDatabase prop'
+    )
+    return <div></div>
+  }
+
+  useEffect(() => {
+    if (!_loading && updateDatabase) {
+      entityUpdatedInDatabase()
+      setUpdateDatabase(false)
+    }
+  }, [_loading])
 
   return (
     <div
@@ -96,7 +111,13 @@ export const EditContainer = (props: DmtUIPlugin) => {
           {/*</HeaderWrapper>*/}
 
           <div>
-            <Button as="button" onClick={() => updateDocument(formData, true)}>
+            <Button
+              as="button"
+              onClick={() => {
+                updateDocument(formData, true)
+                setUpdateDatabase(true)
+              }}
+            >
               Save
             </Button>
           </div>

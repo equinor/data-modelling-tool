@@ -12,11 +12,13 @@ export default (): JSX.Element => {
     data_source: string
     entity_id: string
   }>()
-  const [analysis, isLoading, updateDocument, error] = useDocument<TAnalysis>(
-    data_source,
-    entity_id,
-    true
-  )
+  const [
+    analysis,
+    isLoading,
+    updateDocument,
+    error,
+    fetchDocument,
+  ] = useDocument<TAnalysis>(data_source, entity_id, true)
   const [jobs, setJobs] = useState<any[]>([])
 
   useEffect(() => {
@@ -30,6 +32,11 @@ export default (): JSX.Element => {
       </pre>
     )
   if (isLoading || !analysis) return <Progress.Linear />
+
+  const handleEntityUpdated = () => {
+    fetchDocument()
+  }
+
   return (
     <>
       <AnalysisInfoCard
@@ -40,6 +47,7 @@ export default (): JSX.Element => {
       <>
         <UIPluginSelector
           entity={analysis.task}
+          entityUpdatedInDatabase={handleEntityUpdated}
           absoluteDottedId={`${data_source}/${analysis._id}.task`}
           categories={['container']}
         />
