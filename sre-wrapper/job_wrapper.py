@@ -172,7 +172,7 @@ def upload_result(reference_target: str = None):
         timestamp = datetime.now().strftime("%d-%m-%Y_%H-%M-%S")
 
         result_entity["name"] = result_entity["name"] + "-" + timestamp
-        dmss_api.api_client.default_headers["Authorization"] = "Access-Key " + settings.DMSS_TOKEN
+        dmss_api.api_client.default_headers["Access-Key"] = settings.DMSS_TOKEN
         response = dmss_api.explorer_add_to_path(document=json.dumps(result_entity),
                                                  directory=target_directory,
                                                  data_source_id=target_data_source)
