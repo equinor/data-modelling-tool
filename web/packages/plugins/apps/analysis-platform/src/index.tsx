@@ -10,3 +10,5 @@ export const plugins: any = [
     component: App,
   },
 ]
+
+export * from './modules/Analysis'
