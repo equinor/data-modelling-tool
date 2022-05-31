@@ -14,6 +14,13 @@ spec:
     - name: web
       image: datamodelingtool.azurecr.io/dmt/web:{imageTagName}
       alwaysPullImageOnDeploy: true
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "1000m"
+        limits:
+          memory: "256Mi"
+          cpu: "2000m"
       environmentConfig:
         - environment: prod
           imageTagName: production
@@ -26,6 +33,13 @@ spec:
     - name: api
       image: datamodelingtool.azurecr.io/dmt/api:{imageTagName}
       alwaysPullImageOnDeploy: true
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "1000m"
+        limits:
+          memory: "256Mi"
+          cpu: "2000m"
       secrets:
         - AZURE_SP_SECRET
         - SCHEDULER_REDIS_PASSWORD
@@ -60,6 +74,13 @@ spec:
     - name: dmss
       image: datamodelingtool.azurecr.io/dmss:latest
       alwaysPullImageOnDeploy: true
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "1000m"
+        limits:
+          memory: "256Mi"
+          cpu: "2000m"
       secrets:
         - MONGO_URI
         - SECRET_KEY
@@ -100,6 +121,13 @@ spec:
 
     - name: proxy
       image: datamodelingtool.azurecr.io/dmt/nginx:latest
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "1000m"
+        limits:
+          memory: "256Mi"
+          cpu: "2000m"
       ports:
         - name: nginx
           port: 8080
