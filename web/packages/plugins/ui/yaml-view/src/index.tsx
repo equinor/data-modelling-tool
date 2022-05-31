@@ -13,7 +13,11 @@ const PluginComponent = (props: DmtUIPlugin) => {
   )
   if (loading) return <div>Loading...</div>
   if (error)
-    return <pre style={{ color: 'red' }}>{JSON.stringify(error, null, 2)}</pre>
+    return (
+      <pre style={{ color: 'red' }}>
+        {JSON.stringify(error.response?.data?.message || '', null, 2)}
+      </pre>
+    )
   return <PreviewPlugin document={document} />
 }
 

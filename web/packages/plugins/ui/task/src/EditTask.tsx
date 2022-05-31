@@ -78,8 +78,8 @@ export const EditTask = (props: DmtUIPlugin) => {
                   }
                   onChange={() => {}}
                   onClick={() => {
-                    // if (!Object.keys(formData?.applicationInput || {}).length)
-                    //   return
+                    if (!Object.keys(formData?.applicationInput || {}).length)
+                      return
                     if (onOpen)
                       onOpen({
                         attribute: 'applicationInput',

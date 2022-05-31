@@ -9,10 +9,10 @@ export function useDocument<T>(
   dataSourceId: string,
   documentId: string,
   resolved?: boolean | undefined
-): [T | null, boolean, Function, Error | null] {
+): [T | null, boolean, Function, AxiosError<any> | null] {
   const [document, setDocument] = useState<T | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
-  const [error, setError] = useState<Error | null>(null)
+  const [error, setError] = useState<AxiosError<any> | null>(null)
   // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
@@ -50,12 +50,11 @@ export function useDocument<T>(
         setError(null)
         if (notify) NotificationManager.success('Document updated')
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<any>) => {
         console.error(error)
         if (notify)
           NotificationManager.error(
-            //@ts-ignore
-            JSON.stringify(error?.response?.data?.message || error.message),
+            JSON.stringify(error?.response?.data?.message),
             'Failed to update document',
             0
           )
