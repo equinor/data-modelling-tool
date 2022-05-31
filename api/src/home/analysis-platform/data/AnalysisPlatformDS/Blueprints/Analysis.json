@@ -61,56 +61,21 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "form",
       "category": "edit",
-      "config": {
-        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
-        "attributes": [
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
-            "name": "description",
-            "widget": "TextareaWidget"
-          },
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
-            "name": "created",
-            "widget": "TextWidget",
-            "format": "date-time"
-          },
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
-            "name": "updated",
-            "widget": "TextWidget",
-            "format": "date-time"
-          },
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ArrayField",
-            "name": "jobs",
-            "columns": ["started", "ended", "triggeredBy"]
-          }
-        ],
-        "order": [
-          "name",
-          "type",
-          "description",
-          "created",
-          "updated",
-          "creator",
-          "schedule",
-          "label",
-          "task",
-          "jobs",
-          "*"
-        ]
-      }
+      "roles": ["expert-operator", "domain-developer", "domain-expert", "dmss-admin"]
     },
     {
-      "name": "Tabs",
-      "label": "Tabs",
+      "name": "Expert view",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "tabs",
-      "category": "container",
-      "config": {
-        "type": "system/SIMOS/UiPluginSelectorProps"
-      }
+      "plugin": "view-analysis-expert",
+      "category": "view",
+      "roles": ["expert-operator", "domain-developer", "domain-expert", "dmss-admin"]
+    },
+    {
+      "name": "Operator view",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "view-analysis-operator",
+      "category": "view",
+      "roles": ["operator"]
     }
   ]
 }
