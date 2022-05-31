@@ -144,9 +144,9 @@ export function UIPluginSelector(props: {
   }
   if (!entity || !Object.keys(entity).length) {
     console.error(
-      `UiPluginSelector need an entity with a 'type' attribute. Got '${JSON.stringify(
+      `UiPluginSelector requires an entity with a 'type' attribute. Got '${JSON.stringify(
         entity
-      )}'`
+      )}' (for ${absoluteDottedId})`
     )
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
@@ -176,7 +176,8 @@ export function UIPluginSelector(props: {
   if (error)
     return (
       <div style={{ color: 'red' }}>
-        Failed to fetch Blueprint {entity.type}
+        Failed to fetch Blueprint{' '}
+        {entity.type || `(missing type in ${absoluteDottedId})`}
       </div>
     )
   if (!selectablePlugins.length)
