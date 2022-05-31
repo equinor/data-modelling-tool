@@ -32,8 +32,5 @@
   "nohoist": [
     "workspaces/**/webpack-dev-server",
     "**/babel-loader"
-  ],
-  "dependencies": {
-    "nth-check": "^2.0.1"
-  }
+  ]
 }
