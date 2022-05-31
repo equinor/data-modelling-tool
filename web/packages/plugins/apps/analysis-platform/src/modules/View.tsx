@@ -5,6 +5,7 @@ import styled from 'styled-components'
 import { useDocument, UIPluginSelector } from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { TValidEntity } from '@dmt/common'
 
 export const ErrorGroup = styled.div`
   display: flex;
@@ -20,11 +21,12 @@ export const View = ({ settings }: any) => {
     data_source: string
     entity_id: string
   }>()
-  const [document, documentLoading, setDocument, error] = useDocument(
-    data_source,
-    entity_id,
-    true
-  )
+  const [
+    document,
+    documentLoading,
+    setDocument,
+    error,
+  ] = useDocument<TValidEntity>(data_source, entity_id, true)
 
   if (error)
     return (

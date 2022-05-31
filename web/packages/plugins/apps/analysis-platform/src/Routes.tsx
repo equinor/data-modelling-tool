@@ -1,6 +1,5 @@
 import { TRoute } from './Types'
 import AnalysisOverview from './modules/Analysis/AnalysisOverview'
-import { AnalysisView } from './modules/Analysis/AnalysisView'
 import AnalysisCreate from './modules/Analysis/AnalysisCreate'
 import { View } from './modules/View'
 
@@ -18,7 +17,7 @@ const Routes: Array<TRoute> = [
   {
     path: '/analysis/:data_source/:entity_id',
     //@ts-ignore
-    content: AnalysisView,
+    content: View,
   },
   {
     path: '/view/:data_source/:entity_id',
