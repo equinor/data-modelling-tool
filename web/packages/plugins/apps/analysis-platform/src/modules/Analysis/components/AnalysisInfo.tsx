@@ -6,7 +6,7 @@ import styled from 'styled-components'
 import CreateAnalysisForm from './CreateAnalysisForm'
 import AnalysisCard from './AnalysisCard'
 import { TAnalysis, TTask } from '../../../Types'
-import { hasExpertRole } from '@dmt/analysis-platform'
+import { hasExpertRole } from '../../../utils/auth'
 
 const OnRight = styled.div`
   display: flex;

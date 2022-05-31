@@ -6,7 +6,7 @@ import {
   Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
-import { hasExpertRole } from '@dmt/analysis-platform'
+import { hasExpertRole } from '../../../utils/auth'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
 import { AccessControlList, AuthContext, Dialog, DmssAPI } from '@dmt/common'

@@ -2,7 +2,7 @@ import { AuthContext, DmtSettings } from '@dmt/common'
 import React, { ReactNode, useContext } from 'react'
 import AnalysisTable from './components/AnalysisTable'
 import { Link, useLocation } from 'react-router-dom'
-import { hasExpertRole } from '@dmt/analysis-platform'
+import { hasExpertRole } from '../../utils/auth'
 import { Button, Divider } from '@equinor/eds-core-react'
 
 type NewAnalysisButtonProps = {

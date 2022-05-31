@@ -7,7 +7,7 @@ import {
 } from '@equinor/eds-core-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext, DmssAPI, JobApi } from '@dmt/common'
-import { hasExpertRole } from '@dmt/analysis-platform'
+import { hasExpertRole } from '../../../utils/auth'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
 import { JobStatus, TJob } from '../../../Types'
