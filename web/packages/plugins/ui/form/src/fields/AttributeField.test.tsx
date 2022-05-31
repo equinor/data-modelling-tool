@@ -21,7 +21,9 @@ describe('AttributeField', () => {
       ])
       render(<Form type="SingleField" />)
       await waitFor(() => {
-        expect(screen.getByText('Could not find blueprint')).toBeDefined()
+        expect(
+          screen.getByText('Could not find the blueprint', { exact: false })
+        ).toBeDefined()
       })
     })
   })

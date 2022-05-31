@@ -114,6 +114,7 @@ export const TreeView = (props: {
   NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
   const { onSelect, NodeWrapper, NodeWrapperOnClick } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
   const tree = new Tree(token, appConfig.visibleDataSources)
@@ -138,6 +139,7 @@ export const TreeView = (props: {
       // @ts-ignore
       setIndex([...node.tree])
     }
+
     if (![BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type)) {
       onSelect(node)
     }

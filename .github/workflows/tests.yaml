@@ -1,5 +1,7 @@
 on:
+  # Workflow dispatch is used for manual triggers
   workflow_dispatch:
+  # Workflow call is used for called from another workflow
   workflow_call:
     secrets:
       ACR_SECRET:

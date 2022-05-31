@@ -254,6 +254,7 @@ export const AccessControlList = (props: {
   const [loading, setLoading] = useState<boolean>(false)
   const [loadingACLDocument, setLoadingACLDocument] = useState<boolean>(false)
   const [tokenWithReadAccess, setTokenWithReadAccess] = useState<string>('')
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const [refreshToken, setRefreshToken] = useLocalStorage(
     'ROCP_refreshToken',

@@ -51,7 +51,7 @@ describe('Form', () => {
   })
 
   describe('Nested', () => {
-    it('should render nested attributes', async () => {
+    it('should render nested attributes ', async () => {
       const mock = mockBlueprintGet([
         {
           type: 'system/SIMOS/Blueprint',
@@ -81,8 +81,12 @@ describe('Form', () => {
           ],
         },
       ])
-
-      const { container } = render(<Form type="Root" />)
+      const formData = {
+        child: {
+          bar: '',
+        },
+      }
+      const { container } = render(<Form type="Root" formData={formData} />)
       await waitFor(() => {
         expect(screen.getAllByRole('button').length).toBe(1)
         expect(container.querySelector(`input[name="foo"]`)).toBeTruthy()
