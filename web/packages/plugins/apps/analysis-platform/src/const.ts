@@ -5,4 +5,5 @@ export const BLUEPRINTS = 'Blueprints'
 export const ENTITIES = 'Data'
 export const ANALYSIS_PATH = `${ENTITIES}/Analysis`
 export const ANALYSIS_RESULTS_PATH = `${DEFAULT_DATASOURCE_ID}/${ANALYSIS_PATH}/results`
-export const TASK = 'WorkflowDS/Blueprints/Task'
+export const TASK = `${WORKFLOW_DATASOURCE}/${BLUEPRINTS}/Task`
+export const ANALYSIS = `${DEFAULT_DATASOURCE_ID}/${BLUEPRINTS}/Analysis`

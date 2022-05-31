@@ -2,7 +2,12 @@ import React from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
-import { ApplicationContext, UIPluginSelector, useDocument } from '@dmt/common'
+import {
+  ApplicationContext,
+  TValidEntity,
+  UIPluginSelector,
+  useDocument,
+} from '@dmt/common'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { SimplifiedTree } from '../components/SimplifiedTree'
@@ -22,11 +27,12 @@ export default ({ settings }: any) => {
     data_source: string
     entity_id: string
   }>()
-  const [document, documentLoading, setDocument, error] = useDocument(
-    data_source,
-    entity_id,
-    false
-  )
+  const [
+    document,
+    documentLoading,
+    setDocument,
+    error,
+  ] = useDocument<TValidEntity>(data_source, entity_id, false)
 
   if (error)
     return (

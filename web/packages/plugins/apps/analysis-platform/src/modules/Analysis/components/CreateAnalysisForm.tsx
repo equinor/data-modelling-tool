@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button, TextField } from '@equinor/eds-core-react'
 import { INPUT_FIELD_WIDTH } from '@dmt/common'
 import { TAnalysis } from '../../../Types'
-import { TASK } from '../../../const'
+import { ANALYSIS, TASK } from '../../../const'
 
 type Errors = {
   [key: string]: any
@@ -32,6 +32,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
   })
   const [analysis, setAnalysis] = useState<TAnalysis>({
     _id: '',
+    type: ANALYSIS,
     name: data?.name || '',
     description: data?.description || '',
     jobs: [],

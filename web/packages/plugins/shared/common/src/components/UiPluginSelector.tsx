@@ -7,6 +7,7 @@ import {
   useBlueprint,
   AuthContext,
   getRoles,
+  TValidEntity,
 } from '@dmt/common'
 import styled from 'styled-components'
 import { CircularProgress } from '@equinor/eds-core-react'
@@ -124,7 +125,7 @@ function filterPlugins(
 
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
-  entity: any
+  entity: TValidEntity
   onSubmit?: Function
   categories?: string[]
   breadcrumb?: boolean
@@ -176,8 +177,8 @@ export function UIPluginSelector(props: {
   if (error)
     return (
       <div style={{ color: 'red' }}>
-        Failed to fetch Blueprint{' '}
-        {entity.type || `(missing type in ${absoluteDottedId})`}
+        Failed to fetch Blueprint
+        {entity.type}
       </div>
     )
   if (!selectablePlugins.length)
