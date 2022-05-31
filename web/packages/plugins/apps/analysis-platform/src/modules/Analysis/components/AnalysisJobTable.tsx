@@ -7,6 +7,7 @@ import {
 } from '@equinor/eds-core-react'
 import React, { useContext, useEffect, useState } from 'react'
 import { AuthContext, DmssAPI, JobApi } from '@dmt/common'
+import { hasExpertRole } from '@dmt/analysis-platform'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import styled from 'styled-components'
 import { JobStatus, TJob } from '../../../Types'
@@ -27,12 +28,24 @@ const ClickableLabel = styled.div`
 
 const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
   const { job, index, analysisId } = props // @ts-ignore
-  const { token } = useContext(AuthContext)
+  const { token, tokenData } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
-  const [jobStatus, setJobStatus] = useState<JobStatus>(job.status)
-  const viewURL = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
+  const [jobStatus, setJobStatus] = useState<JobStatus>(JobStatus.UNKNOWN)
+  const jobURL = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
+  const resultURL = job.result?._id
+    ? `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.result?._id}`
+    : undefined
+  const viewURL = hasExpertRole(tokenData) ? jobURL : resultURL
+
+  const viewResult = () => {
+    if (viewURL) {
+      document.location = viewURL
+    } else {
+      NotificationManager.warning('Result is not ready')
+    }
+  }
 
   const startJob = () => {
     setLoading(true)
@@ -95,40 +108,18 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
   }, [])
   return (
     <Table.Row>
-      <Table.Cell
-        onClick={() => {
-          //@ts-ignore
-          document.location = viewURL
-        }}
-      >
+      <Table.Cell onClick={viewResult}>
         {jobStatus !== JobStatus.CREATED
           ? new Date(job.started).toLocaleString(navigator.language)
           : 'Not started'}
       </Table.Cell>
-      <Table.Cell
-        onClick={() => {
-          //@ts-ignore
-          document.location = viewURL
-        }}
-      >
-        {job.triggeredBy}
-      </Table.Cell>
-      <Table.Cell
-        onClick={() => {
-          //@ts-ignore
-          document.location = viewURL
-        }}
-      >
-        {jobStatus}
-      </Table.Cell>
+      <Table.Cell onClick={viewResult}>{job.triggeredBy}</Table.Cell>
+      <Table.Cell onClick={viewResult}>{jobStatus}</Table.Cell>
       <Table.Cell>
         {Object.keys(job?.result || {}).length ? (
           <ClickableLabel
             onClick={() => {
-              window.open(
-                `/ap/view/${DEFAULT_DATASOURCE_ID}/${job.result?._id}`,
-                '_blank'
-              )
+              window.open(resultURL, '_blank')
             }}
           >
             Open
@@ -142,21 +133,23 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
           <Progress.Circular style={{ height: '24px' }} />
         </Table.Cell>
       ) : (
-        <Table.Cell>
-          {jobStatus === JobStatus.CREATED ? (
-            <Button variant="ghost_icon" onClick={() => startJob()}>
-              <Icon name="play" title="play" />
-            </Button>
-          ) : (
-            <Button
-              variant="ghost_icon"
-              color="danger"
-              onClick={() => removeJob()}
-            >
-              <Icon name="delete_forever" title="delete" />
-            </Button>
-          )}
-        </Table.Cell>
+        hasExpertRole(tokenData) && (
+          <Table.Cell>
+            {jobStatus === JobStatus.CREATED ? (
+              <Button variant="ghost_icon" onClick={() => startJob()}>
+                <Icon name="play" title="play" />
+              </Button>
+            ) : (
+              <Button
+                variant="ghost_icon"
+                color="danger"
+                onClick={() => removeJob()}
+              >
+                <Icon name="delete_forever" title="delete" />
+              </Button>
+            )}
+          </Table.Cell>
+        )
       )}
     </Table.Row>
   )
@@ -164,6 +157,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
 
 export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
   const { jobs, analysisId } = props
+  const { tokenData } = useContext(AuthContext)
 
   return (
     <>
@@ -177,7 +171,7 @@ export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
             <Table.Cell>Started by</Table.Cell>
             <Table.Cell>Status</Table.Cell>
             <Table.Cell>Result</Table.Cell>
-            <Table.Cell>Control</Table.Cell>
+            {hasExpertRole(tokenData) && <Table.Cell>Control</Table.Cell>}
           </Table.Row>
         </Table.Head>
         <Table.Body style={{ cursor: 'pointer' }}>

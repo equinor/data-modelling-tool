@@ -12,3 +12,4 @@ export const plugins: any = [
 ]
 
 export * from './modules/Analysis'
+export * from './utils/auth'
