@@ -162,7 +162,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
   )
 }
 
-const AnalysisJobTable = (props: AnalysisJobTableProps) => {
+export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
   const { jobs, analysisId } = props
 
   return (
@@ -194,5 +194,3 @@ const AnalysisJobTable = (props: AnalysisJobTableProps) => {
     </>
   )
 }
-
-export default AnalysisJobTable

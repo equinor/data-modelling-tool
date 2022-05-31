@@ -17,7 +17,7 @@ type AnalysisInfoCardProps = {
   jobs: any
 }
 
-const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
+export const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
   const { analysis, addJob, jobs } = props
   const [isEditing, setIsEditing] = useState<boolean>(false)
 
@@ -52,5 +52,3 @@ const AnalysisInfoCard = (props: AnalysisInfoCardProps) => {
     </>
   )
 }
-
-export default AnalysisInfoCard
