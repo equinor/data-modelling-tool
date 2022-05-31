@@ -9,21 +9,13 @@ import {
 import { hasExpertRole } from '../../../utils/auth'
 import Icons from '../../../components/Design/Icons'
 import React, { useContext, useState } from 'react'
-import {
-  AccessControlList,
-  AuthContext,
-  Dialog,
-  DmssAPI,
-  useDocument,
-} from '@dmt/common'
+import { AccessControlList, AuthContext, Dialog, DmssAPI } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { poorMansUUID } from '../../../utils/uuid'
 import { JobStatus, TAnalysis, TJob, TTask } from '../../../Types'
-import { useParams } from 'react-router-dom'
-import { AxiosError } from 'axios'
 
 const FlexWrapper = styled.div`
   display: flex;

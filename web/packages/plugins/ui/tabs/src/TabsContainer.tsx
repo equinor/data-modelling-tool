@@ -99,9 +99,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
 
       {selectedTab === 'home' ? (
         <UIPluginSelector
-          handleUpdateDocument={(newDocument: any) =>
-            updateDocument(newDocument)
-          }
+          handleUpdateEntity={(newDocument: any) => updateDocument(newDocument)}
           key={'home'}
           absoluteDottedId={`${dataSourceId}/${documentId}`}
           entity={formData}
@@ -116,9 +114,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
       ) : (
         <UIPluginSelector
           key={selectedTab}
-          handleUpdateDocument={(newDocument: any) =>
-            updateDocument(newDocument)
-          }
+          handleUpdateEntity={(newDocument: any) => updateDocument(newDocument)}
           absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
           entity={childTabs[selectedTab].entity}
           categories={childTabs[selectedTab].categories}

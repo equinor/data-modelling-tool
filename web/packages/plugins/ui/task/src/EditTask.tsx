@@ -171,7 +171,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                   </Button>
                 ) : (
                   <UIPluginSelector
-                    handleUpdateDocument={(newDocument) =>
+                    handleUpdateEntity={newDocument =>
                       updateDocument(newDocument)
                     }
                     absoluteDottedId={`${dataSourceId}/${documentId}.runner`}

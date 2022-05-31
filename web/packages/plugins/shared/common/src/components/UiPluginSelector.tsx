@@ -127,7 +127,7 @@ export function UIPluginSelector(props: {
   onSubmit?: Function
   categories?: string[]
   breadcrumb?: boolean
-  handleUpdateDocument?: (newDocument: any) => void
+  handleUpdateEntity?: (newDocument: any) => void
   onOpen?: Function
 }): JSX.Element {
   const {
@@ -137,7 +137,7 @@ export function UIPluginSelector(props: {
     breadcrumb,
     onSubmit,
     onOpen,
-    handleUpdateDocument,
+    handleUpdateEntity,
   } = props
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
@@ -226,8 +226,8 @@ export function UIPluginSelector(props: {
           onSubmit={onSubmit}
           onOpen={onOpen}
           updateDocument={
-            handleUpdateDocument
-              ? (newDocument: any) => handleUpdateDocument(newDocument)
+            handleUpdateEntity
+              ? (newDocument: any) => handleUpdateEntity(newDocument)
               : undefined
           }
           categories={categories}
