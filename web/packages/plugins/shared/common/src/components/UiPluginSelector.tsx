@@ -177,8 +177,7 @@ export function UIPluginSelector(props: {
   if (error)
     return (
       <div style={{ color: 'red' }}>
-        Failed to fetch Blueprint
-        {entity.type}
+        Failed to fetch Blueprint {entity.type || '(unknown type)'}
       </div>
     )
   if (!selectablePlugins.length)
