@@ -1,10 +1,7 @@
 {
   "name": "Analysis",
   "type": "system/SIMOS/Blueprint",
-  "extends": [
-    "system/SIMOS/DefaultUiRecipes",
-    "system/SIMOS/NamedEntity"
-  ],
+  "extends": ["system/SIMOS/NamedEntity"],
   "description": "",
   "attributes": [
     {
@@ -57,13 +54,6 @@
   ],
   "uiRecipes": [
     {
-      "name": "Form",
-      "type": "system/SIMOS/UiRecipe",
-      "plugin": "form",
-      "category": "edit",
-      "roles": ["expert-operator", "domain-developer", "domain-expert", "dmss-admin"]
-    },
-    {
       "name": "Expert view",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "view-analysis-expert",
@@ -75,7 +65,11 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "view-analysis-operator",
       "category": "view",
-      "roles": ["operator"]
+      "roles": ["operator"],
+      "config": {
+        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "subCategories": ["view"]
+      }
     }
   ]
 }

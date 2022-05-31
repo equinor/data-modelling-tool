@@ -157,13 +157,13 @@ class JobHandler(JobHandlerInterface):
 
         job_status = self.job.status
 
-        match (status, exit_code):
-            case ("Running", None):
+        match (status, exit_code):  # noqa: E211,E999
+            case ("Running", None):  # noqa: E211
                 job_status = JobStatus.RUNNING
-            case ("Terminated", 0):
+            case ("Terminated", 0):  # noqa: E211
                 job_status = JobStatus.COMPLETED
-            case ("Terminated", exit_code) if exit_code >= 1:
+            case ("Terminated", exit_code) if exit_code >= 1:  # noqa: E211
                 job_status = JobStatus.FAILED
-            case ("Waiting", None):
+            case ("Waiting", None):  # noqa: E211
                 job_status = JobStatus.STARTING
         return job_status, logs
