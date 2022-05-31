@@ -126,7 +126,7 @@ const SingleTextInput = (props: {
         <Input
           type={'string'}
           style={{ width: INPUT_FIELD_WIDTH }}
-          onChange={event => setFormData(event.target.value)}
+          onChange={(event) => setFormData(event.target.value)}
         />
       </div>
       <div
@@ -453,7 +453,7 @@ export const NodeRightClickMenu = (props: {
               style={{ width: INPUT_FIELD_WIDTH }}
               type="string"
               value={formData?.name || ''}
-              onChange={event =>
+              onChange={(event) =>
                 setFormData({ ...formData, name: event.target.value })
               }
               placeholder="Name for new blueprint"
