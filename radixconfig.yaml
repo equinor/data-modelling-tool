@@ -84,6 +84,15 @@ spec:
       secrets:
         - MONGO_URI
         - SECRET_KEY
+      environmentConfig:
+        - environment: prod
+          horizontalScaling:
+            minReplicas: 2
+            maxReplicas: 6
+        - environment: dev
+          horizontalScaling:
+            minReplicas: 2
+            maxReplicas: 6
       variables:
         LOGGING_LEVEL: "debug"
         AUTH_ENABLED: "True"
