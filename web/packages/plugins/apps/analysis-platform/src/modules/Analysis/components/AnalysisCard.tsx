@@ -147,10 +147,9 @@ const AnalysisCard = (props: AnalysisCardProps) => {
             </FlexWrapper>
           </div>
         </div>
-        <Card.Actions>
-          {hasExpertRole(tokenData) &&
-            'task' in analysis &&
-            Object.keys(analysis.task).length > 0 && (
+        {hasExpertRole(tokenData) && (
+          <Card.Actions>
+            {'task' in analysis && Object.keys(analysis.task).length > 0 && (
               <>
                 <RunAnalysisButton
                   analysis={analysis}
@@ -165,7 +164,6 @@ const AnalysisCard = (props: AnalysisCardProps) => {
                 </Tooltip>
               </>
             )}
-          {hasExpertRole(tokenData) && (
             <Button
               onClick={() => setViewACL(!viewACL)}
               style={{ width: 'max-content' }}
@@ -173,8 +171,8 @@ const AnalysisCard = (props: AnalysisCardProps) => {
               Access control
               <Icons name="assignment_user" title="assignment_user" />
             </Button>
-          )}
-        </Card.Actions>
+          </Card.Actions>
+        )}
       </Card>
       <Dialog
         isOpen={viewACL}
