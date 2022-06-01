@@ -39,10 +39,10 @@ export const EditContainer = (props: DmtUIPlugin) => {
     '_id'
   )
 
-  const findImageStoredInFormData = (
+  const getImageStoredInFormData = (
     images: TContainerImage[],
     formData: any
-  ) => {
+  ): string => {
     const image: TContainerImage | undefined = images.find(
       (image: TContainerImage) => {
         delete image['_id']
@@ -88,7 +88,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
                 setFormData({ ...formData, image: JSON.parse(e.target.value) })
               }
-              value={findImageStoredInFormData(containerImages, formData)}
+              value={getImageStoredInFormData(containerImages, formData)}
             >
               <option value={''} selected disabled hidden>
                 Choose image...
