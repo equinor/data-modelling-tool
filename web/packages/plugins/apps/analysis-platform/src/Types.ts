@@ -75,11 +75,8 @@ export type TContainerJobHandler = {
   environmentVariables?: string[]
 }
 
-todo - update Container.json entities to use  dict in the container attribute and not string
-
 export type TContainerImage = {
-  name: string
-  subName?: string
+  imageName: string
   description?: string
   type: string
   version: string

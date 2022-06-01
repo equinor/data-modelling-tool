@@ -7,10 +7,26 @@
   ],
   "description": "Container image used as job runner for a task. Full container image name is name/subName",
   "attributes": [
+      {
+      "name": "type",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "label": "Type",
+      "default": "",
+      "optional": false
+    },
+    {
+      "name": "description",
+      "attributeType": "string",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "default": "",
+      "optional": true,
+      "label": "Description"
+    },
     {
       "attributeType": "string",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "subName",
+      "name": "imageName",
       "optional": true
     },
     {
