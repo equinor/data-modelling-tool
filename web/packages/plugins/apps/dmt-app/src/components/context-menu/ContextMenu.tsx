@@ -116,24 +116,36 @@ const SingleTextInput = (props: {
   label: string
   handleSubmit: () => void
   setFormData: (newFormData: string) => void
+  buttonisDisabled: boolean
 }) => {
-  const { label, handleSubmit, setFormData } = props
+  const { label, handleSubmit, setFormData, buttonisDisabled } = props
   return (
     <div>
-      <Label label={label} />
-      <Input
-        type={'string'}
-        style={{ width: INPUT_FIELD_WIDTH }}
-        onChange={(event) => setFormData(event.target.value)}
-      />
-      <Button
-        style={edsButtonStyleConfig}
-        onClick={() => {
-          handleSubmit()
+      <div style={{ display: 'block', padding: '10px 0 0 10px' }}>
+        <Label label={label} />
+        <Input
+          type={'string'}
+          style={{ width: INPUT_FIELD_WIDTH }}
+          onChange={(event) => setFormData(event.target.value)}
+        />
+      </div>
+      <div
+        style={{
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
         }}
       >
-        Create
-      </Button>
+        <Button
+          disabled={buttonisDisabled}
+          style={edsButtonStyleConfig}
+          onClick={() => {
+            handleSubmit()
+          }}
+        >
+          Create
+        </Button>
+      </div>
     </div>
   )
 }
@@ -155,6 +167,9 @@ export const NodeRightClickMenu = (props: {
   const [scrimToShow, setScrimToShow] = useState<string>('')
   const [formData, setFormData] = useState<any>('')
   const [loading, setLoading] = useState<boolean>(false)
+
+  const STANDARD_DIALOG_WIDTH = '30vw'
+  const STANDARD_DIALOG_HEIGHT = '20vh'
 
   const menuItems = createMenuItems(node, dmssAPI, removeNode, setScrimToShow)
 
@@ -246,9 +261,13 @@ export const NodeRightClickMenu = (props: {
       <ContextMenu id={node.nodeId}>{menuItems}</ContextMenu>
       <Dialog
         isOpen={scrimToShow === 'new-folder'}
-        width={'30vw'}
+        width={STANDARD_DIALOG_WIDTH}
+        height={STANDARD_DIALOG_HEIGHT}
         header={'Create new folder'}
-        closeScrim={() => setScrimToShow('')}
+        closeScrim={() => {
+          setFormData(undefined)
+          setScrimToShow('')
+        }}
       >
         <SingleTextInput
           label={'Folder name'}
@@ -256,16 +275,26 @@ export const NodeRightClickMenu = (props: {
           handleSubmit={() =>
             handleFormDataSubmit(node, formData, NewFolderAction)
           }
+          buttonisDisabled={formData === undefined || formData === ''}
         />
       </Dialog>
 
       <Dialog
         isOpen={scrimToShow === 'delete'}
-        width={'30vw'}
+        width={STANDARD_DIALOG_WIDTH}
+        height={STANDARD_DIALOG_HEIGHT}
         closeScrim={() => setScrimToShow('')}
         header={'Confirm Deletion'}
       >
-        <div>
+        <div
+          style={{
+            padding: '10px',
+            height: '100%',
+            display: 'flex',
+            justifyContent: 'space-between',
+            flexDirection: 'column',
+          }}
+        >
           <div>
             Are you sure you want to delete the entity <b>{node.name}</b> of
             type <b>{node.type}</b>?
@@ -274,7 +303,6 @@ export const NodeRightClickMenu = (props: {
             style={{
               display: 'flex',
               justifyContent: 'space-around',
-              margin: '5px',
             }}
           >
             <Button onClick={() => setScrimToShow('')}>Cancel</Button>
@@ -293,8 +321,12 @@ export const NodeRightClickMenu = (props: {
 
       <Dialog
         isOpen={scrimToShow === 'new-root-package'}
-        width={'30vw'}
-        closeScrim={() => setScrimToShow('')}
+        width={STANDARD_DIALOG_WIDTH}
+        height={STANDARD_DIALOG_HEIGHT}
+        closeScrim={() => {
+          setFormData(undefined)
+          setScrimToShow('')
+        }}
         header={'New root package'}
       >
         <SingleTextInput
@@ -303,6 +335,7 @@ export const NodeRightClickMenu = (props: {
             handleFormDataSubmit(node, formData, NewRootPackageAction)
           }
           setFormData={setFormData}
+          buttonisDisabled={formData === undefined || formData === ''}
         />
       </Dialog>
 
@@ -310,7 +343,7 @@ export const NodeRightClickMenu = (props: {
         isOpen={scrimToShow === 'append-entity'}
         closeScrim={() => setScrimToShow('')}
         header={`Append new entity to list`}
-        width={'30vw'}
+        width={STANDARD_DIALOG_WIDTH}
       >
         <div
           style={{
@@ -353,7 +386,8 @@ export const NodeRightClickMenu = (props: {
         isOpen={scrimToShow === 'new-entity'}
         closeScrim={() => setScrimToShow('')}
         header={`Create new entity`}
-        width={'30vw'}
+        width={STANDARD_DIALOG_WIDTH}
+        height={STANDARD_DIALOG_HEIGHT}
       >
         <div
           style={{
@@ -362,7 +396,7 @@ export const NodeRightClickMenu = (props: {
             justifyContent: 'space-between',
           }}
         >
-          <div style={{ display: 'block' }}>
+          <div style={{ display: 'block', padding: '10px 0 0 10px' }}>
             <Label label={'Blueprint'} />
             <BlueprintPicker
               onChange={(selectedType: string) =>
@@ -403,7 +437,8 @@ export const NodeRightClickMenu = (props: {
         isOpen={scrimToShow === 'new-blueprint'}
         closeScrim={() => setScrimToShow('')}
         header={`Create new blueprint`}
-        width={'30vw'}
+        width={STANDARD_DIALOG_WIDTH}
+        height={STANDARD_DIALOG_HEIGHT}
       >
         <div
           style={{
@@ -412,10 +447,10 @@ export const NodeRightClickMenu = (props: {
             justifyContent: 'space-between',
           }}
         >
-          <div style={{ display: 'block' }}>
+          <div style={{ display: 'block', padding: '10px 0 0 10px' }}>
             <Label label={'Name'} />
             <Input
-              style={{ width: '360px', margin: '0 8px' }}
+              style={{ width: INPUT_FIELD_WIDTH }}
               type="string"
               value={formData?.name || ''}
               onChange={(event) =>
