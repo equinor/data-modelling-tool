@@ -134,6 +134,13 @@ spec:
         - name: nginx
           port: 8080
       publicPort: nginx
+      resources:
+        requests:
+          memory: "256Mi"
+          cpu: "1000m"
+        limits:
+          memory: "4Gi"
+          cpu: "4000m"
 
   dnsAppAlias:
     environment: prod
