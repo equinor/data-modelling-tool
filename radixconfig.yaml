@@ -19,8 +19,8 @@ spec:
           memory: "256Mi"
           cpu: "1000m"
         limits:
-          memory: "256Mi"
-          cpu: "2000m"
+          memory: "4Gi"
+          cpu: "4000m"
       environmentConfig:
         - environment: prod
           imageTagName: production
@@ -38,8 +38,8 @@ spec:
           memory: "256Mi"
           cpu: "1000m"
         limits:
-          memory: "256Mi"
-          cpu: "2000m"
+          memory: "4Gi"
+          cpu: "4000m"
       secrets:
         - AZURE_SP_SECRET
         - SCHEDULER_REDIS_PASSWORD
@@ -79,8 +79,8 @@ spec:
           memory: "256Mi"
           cpu: "1000m"
         limits:
-          memory: "256Mi"
-          cpu: "2000m"
+          memory: "4Gi"
+          cpu: "4000m"
       secrets:
         - MONGO_URI
         - SECRET_KEY
