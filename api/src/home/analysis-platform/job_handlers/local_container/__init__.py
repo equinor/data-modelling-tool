@@ -36,10 +36,11 @@ class JobHandler(JobHandlerInterface):
         try:
             reference_target: str = self.job.entity.get("referenceTarget", None)
             runner_entity: dict = self.job.entity["runner"]
+            full_image_name: str = f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}:{runner_entity['image']['version']}"
             logger.info(f"JobName: '{self.job.job_id}'." + " Starting Local Container job...")
             logger.info(
                 "Creating container\n\t"
-                + f"Image: '{runner_entity['image']}'\n\t"
+                + f"Image: '{full_image_name}'\n\t"
                 + f"Command: '--job-id={self.job.job_id}.applicationInput'"
             )
             envs = [f"{e}={os.getenv(e)}" for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)]
@@ -49,9 +50,10 @@ class JobHandler(JobHandlerInterface):
             ]
             if reference_target:
                 command_list.append(f"--reference-target={reference_target}")
+
             envs.append(f"DMSS_TOKEN={self.job.token}")
             self.client.containers.run(
-                image=runner_entity["image"],
+                image=full_image_name,
                 command=command_list,
                 name=self.job.entity["name"],
                 environment=envs,

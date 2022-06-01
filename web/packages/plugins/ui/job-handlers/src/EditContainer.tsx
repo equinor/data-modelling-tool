@@ -47,7 +47,6 @@ export const EditContainer = (props: DmtUIPlugin) => {
       (image: TContainerImage) => {
         delete image['_id']
         delete image['uid']
-        delete formData?.image['_id']
         return _.isEqual(image, formData?.image)
       }
     )
