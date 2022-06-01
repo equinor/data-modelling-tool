@@ -31,22 +31,6 @@ export enum DmtPluginType {
   PAGE,
 }
 
-export interface DmtSettings {
-  name: string
-  label: string
-  tabIndex: number
-  hidden: boolean
-  visibleDataSources: any
-  type: string
-  description: string
-  packages: any
-  models: any
-  actions: any
-  file_loc: string
-  data_source_aliases: any
-  urlPath: string
-}
-
 export const UiPluginContext = createContext({})
 
 export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {

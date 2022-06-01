@@ -1,17 +1,11 @@
 import * as React from 'react'
-import { AuthContext, DmssAPI, DmtPluginType } from '@dmt/common'
-import Header from './AppHeader'
+import { AuthContext, DmssAPI, DmtPluginType, Header } from '@dmt/common'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { Route } from 'react-router-dom'
-import styled from 'styled-components'
 import { useContext } from 'react'
 import DashboardProvider from './context/dashboard/DashboardProvider'
 import Editor from './pages/editor/Editor'
-
-const Wrapper = styled.div`
-  padding: 20px;
-`
 
 const PageComponent = (props: any) => {
   const { applications, settings } = props
@@ -19,8 +13,12 @@ const PageComponent = (props: any) => {
   const dmssAPI = new DmssAPI(token)
 
   return (
-    <Wrapper>
-      <Header applications={applications} />
+    <div>
+      <Header
+        allApps={applications}
+        appName={settings.label}
+        urlPath={settings.urlPath}
+      />
       <Route
         path="/DMT/search"
         render={() => <SearchPage settings={settings} />}
@@ -39,7 +37,7 @@ const PageComponent = (props: any) => {
           </DashboardProvider>
         )}
       />
-    </Wrapper>
+    </div>
   )
 }
 

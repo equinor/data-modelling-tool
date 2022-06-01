@@ -99,7 +99,7 @@ function App() {
 
   if (authEnabled && !token) {
     // Avoid rendering loading icons if the user is about to be redirected to a login endpoint
-    return null
+    return <div>You are not logged in. Reload page to login</div>
   }
 
   if (loading || loadingAppSettings)

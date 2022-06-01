@@ -16,7 +16,8 @@ import { NotificationManager } from 'react-notifications'
 export const TreeWrapper = styled.div`
   width: 25%;
   min-width: 15vw;
-  margin-right: 10px;
+  padding-left: 15px;
+  padding-top: 15px;
   height: 100vh;
   border-right: black solid 1px;
   border-radius: 2px;

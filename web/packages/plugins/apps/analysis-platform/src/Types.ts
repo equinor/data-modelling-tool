@@ -8,7 +8,7 @@ export type TRoute = {
 }
 
 export type TApp = {
-  applications: any
+  applications: DmtSettings[]
   settings: DmtSettings
 }
 
@@ -41,6 +41,7 @@ export type TLayout = {
   heading: string
   content: ReactNode
   settings: DmtSettings
+  allApps: DmtSettings[]
 }
 
 export enum JobStatus {
@@ -89,29 +90,4 @@ export type TTask = {
   outputType: string
   applicationInput: TReference
   runner?: TJobHandler | TContainerJobHandler
-}
-
-export type TSIMAApplicationInput = {
-  _id?: string
-  name: string
-  description?: string
-  type: string
-  inputType: string
-  outputType: string
-  input: any
-  SIMAComputeConfig?: TBlob
-  stask?: TBlob
-  workflow: string
-  workflowTask: string
-  resultPath: string
-  resultReferenceLocation?: string
-}
-
-export type TLocalContainerJob = {
-  type: string
-  name: string
-  label?: string
-  image: string
-  command: string
-  environmentVariables?: string[]
 }

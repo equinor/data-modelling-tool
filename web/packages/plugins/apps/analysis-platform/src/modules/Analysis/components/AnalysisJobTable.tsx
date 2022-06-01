@@ -31,7 +31,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
-  const [jobStatus, setJobStatus] = useState<JobStatus>(JobStatus.UNKNOWN)
+  const [jobStatus, setJobStatus] = useState<JobStatus>(job.status)
   const viewURL = `/ap/view/${DEFAULT_DATASOURCE_ID}/${analysisId}.jobs.${index}`
 
   const startJob = () => {
@@ -139,7 +139,7 @@ const JobRow = (props: { job: TJob; index: number; analysisId: string }) => {
       </Table.Cell>
       {loading ? (
         <Table.Cell>
-          <Progress.Circular />
+          <Progress.Circular style={{ height: '24px' }} />
         </Table.Cell>
       ) : (
         <Table.Cell>
