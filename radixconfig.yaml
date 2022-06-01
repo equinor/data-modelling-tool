@@ -130,13 +130,6 @@ spec:
 
     - name: proxy
       image: datamodelingtool.azurecr.io/dmt/nginx:latest
-      resources:
-        requests:
-          memory: "256Mi"
-          cpu: "1000m"
-        limits:
-          memory: "256Mi"
-          cpu: "2000m"
       ports:
         - name: nginx
           port: 8080
