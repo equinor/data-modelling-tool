@@ -25,7 +25,8 @@
         "imageName": "dmt-job/srs",
         "type": "AnalysisPlatformDS/Blueprints/ContainerImage",
         "version": "latest",
-        "registryName": "datamodelingtool.azurecr.io"
+        "registryName": "datamodelingtool.azurecr.io",
+        "description": ""
       }
     }
   },
