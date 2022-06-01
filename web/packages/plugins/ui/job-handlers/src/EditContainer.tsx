@@ -2,14 +2,14 @@ import {
   DmtUIPlugin,
   PATH_INPUT_FIELD_WIDTH,
   Select,
+  TContainerImage,
   useDocument,
+  getFullContainerImageName,
 } from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useState } from 'react'
 import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { TContainerImage } from '../../../apps/analysis-platform/src/Types'
-import { getFullContainerImageName } from '../../../apps/analysis-platform/src/utils/GetFullContainerImageName'
 
 const Wrapper = styled.div`
   margin: 10px;
