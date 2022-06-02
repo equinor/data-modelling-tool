@@ -5,12 +5,14 @@
     {
       "name": "foo",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
     },
     {
       "name": "bar",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
     }
   ],
   "uiRecipes": [{

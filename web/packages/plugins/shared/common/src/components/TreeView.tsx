@@ -13,7 +13,7 @@ import {
   FaList,
   FaRegFileAlt,
 } from 'react-icons/fa'
-import { CircularProgress, Tooltip } from '@equinor/eds-core-react'
+import { CircularProgress, Progress, Tooltip } from '@equinor/eds-core-react'
 
 type StyledTreeNode = {
   level: number
@@ -78,15 +78,16 @@ const GetIcon = (props: { node: TreeNode }) => {
 
 const TreeNodeComponent = (props: {
   node: TreeNode
-  onClick: (node: TreeNode) => void
+  onClick: (node: TreeNode, setLoading: (l: boolean) => void) => void
 }) => {
   const { node, onClick } = props
+  const [loading, setLoading] = useState<boolean>(false)
   return (
     <StyledTreeNode
       key={node.nodeId}
       level={node.level}
       onClick={() => {
-        if (node.type !== 'error') onClick(node)
+        if (node.type !== 'error') onClick(node, setLoading)
       }}
     >
       {[BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type || '') ? (
@@ -104,6 +105,13 @@ const TreeNodeComponent = (props: {
       >
         <div style={{ paddingLeft: '5px' }}>{node.name || node.nodeId}</div>
       </Tooltip>
+      {loading && (
+        <Progress.Circular
+          color={'primary'}
+          size={16}
+          style={{ marginLeft: '5px' }}
+        />
+      )}
     </StyledTreeNode>
   )
 }
@@ -130,10 +138,14 @@ export const TreeView = (props: {
       .finally(() => setLoading(false))
   }, [])
 
-  const _onClick = (node: TreeNode) => {
+  const _onClick = (node: TreeNode, setLoading: (l: boolean) => void) => {
     if (!node.expanded) {
-      // @ts-ignore
-      node.expand().then(() => setIndex([...node.tree]))
+      setLoading(true)
+      node
+        .expand()
+        // @ts-ignore
+        .then(() => setIndex([...node.tree]))
+        .finally(() => setLoading(false))
     } else {
       node.collapse()
       // @ts-ignore
@@ -172,7 +184,9 @@ export const TreeView = (props: {
             >
               <TreeNodeComponent
                 node={node}
-                onClick={(node) => _onClick(node)}
+                onClick={(node: TreeNode, setLoading: (l: boolean) => void) =>
+                  _onClick(node, setLoading)
+                }
               />
             </NodeWrapper>
           )
@@ -181,7 +195,9 @@ export const TreeView = (props: {
             <TreeNodeComponent
               key={node.nodeId}
               node={node}
-              onClick={(node) => _onClick(node)}
+              onClick={(node: TreeNode, setLoading: (l: boolean) => void) =>
+                _onClick(node, setLoading)
+              }
             />
           )
         }

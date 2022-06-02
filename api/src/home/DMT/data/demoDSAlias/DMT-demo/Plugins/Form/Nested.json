@@ -1,22 +1,21 @@
 {
   "name": "Nested",
   "type": "system/SIMOS/Blueprint",
-  "extends": [
-    "system/SIMOS/DefaultUiRecipes",
-    "system/SIMOS/NamedEntity"
-  ],
+  "extends": ["system/SIMOS/DefaultUiRecipes"],
   "attributes": [
     {
       "name": "foo",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "number",
-      "label":  "Foo"
+      "label":  "Foo",
+      "optional": true
     },
     {
       "name": "bar",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
-      "label":  "Bar"
+      "label":  "Bar",
+      "optional": true
     },
     {
       "name": "baz",

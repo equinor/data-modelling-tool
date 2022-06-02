@@ -10,7 +10,8 @@
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
       "label": "Format",
-      "default": ""
+      "default": "",
+      "optional": true
     }
   ]
 }

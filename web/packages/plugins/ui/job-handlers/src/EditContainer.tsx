@@ -9,7 +9,12 @@ import {
 } from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useState } from 'react'
-import { Button, CircularProgress, Typography } from '@equinor/eds-core-react'
+import {
+  Button,
+  CircularProgress,
+  Progress,
+  Typography,
+} from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -130,9 +135,18 @@ export const EditContainer = (props: DmtUIPlugin) => {
           {/*</HeaderWrapper>*/}
 
           <div>
-            <Button as="button" onClick={() => updateDocument(formData, true)}>
-              Save
-            </Button>
+            {loading ? (
+              <Button>
+                <Progress.Dots />
+              </Button>
+            ) : (
+              <Button
+                as="button"
+                onClick={() => updateDocument(formData, true)}
+              >
+                Save
+              </Button>
+            )}
           </div>
         </Wrapper>
       </div>
