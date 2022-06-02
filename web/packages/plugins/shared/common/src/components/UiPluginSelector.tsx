@@ -151,7 +151,6 @@ export function UIPluginSelector(props: {
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   let roles = tokenData?.roles
   if (localStorage.getItem('impersonateRoles')) {
