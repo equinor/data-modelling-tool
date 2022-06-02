@@ -75,7 +75,7 @@ export const JobControl = (props: {
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobLogs, setJobLogs] = useState<any>()
-  const [jobStatus, setJobStatus] = useState<JobStatus>(JobStatus.UNKNOWN)
+  const [jobStatus, setJobStatus] = useState<JobStatus>(document.status)
   const [refreshCount, setRefreshCount] = useState<number>(0)
   const [runnerModal, setRunnerModal] = useState<boolean>(false)
   const [inputModal, setInputModal] = useState<boolean>(false)
@@ -140,8 +140,6 @@ export const JobControl = (props: {
       )
     }
   }
-
-  if (loading) return <Progress.Linear style={{ margin: '5px 0' }} />
 
   return (
     <div
@@ -276,9 +274,13 @@ export const JobControl = (props: {
       >
         <h4 style={{ alignSelf: 'self-end' }}>Logs:</h4>
       </div>
-      <div style={{ paddingBottom: '20px' }}>
-        <StyledPre>{jobLogs}</StyledPre>
-      </div>
+      {loading ? (
+        <Progress.Dots color="primary" />
+      ) : (
+        <div style={{ paddingBottom: '20px' }}>
+          <StyledPre>{jobLogs}</StyledPre>
+        </div>
+      )}
     </div>
   )
 }
