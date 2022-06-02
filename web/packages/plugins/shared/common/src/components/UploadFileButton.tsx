@@ -1,10 +1,11 @@
 import { DmssAPI } from '../services'
-import React, { useContext, useRef, useState } from 'react'
+import React, { useContext, useEffect, useRef, useState } from 'react'
 import { AuthContext } from '../index'
 import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { AxiosError } from 'axios'
+import { format_list_numbered } from '@equinor/eds-icons'
 
 export const addToPath = (
   body: any,
@@ -30,17 +31,21 @@ export const addToPath = (
 // fileSuffix - A list of strings with allowed file suffixes without '.'. For example to allow yaml uploads; ['yaml', 'yml']
 // getBody - A callback function to get the body of the document where file (Blob) should be created in.
 // onUpload - Function to call when the document has been created on the server. Sends the new document's reference as an argument
+// formData - only used to clear 'error' state when the parent form using this component changes
 export function UploadFileButton(props: {
   fileSuffix: string[]
   getBody: Function
   dataSourceId: string
   onUpload: Function
+  formData: string
 }) {
-  const { fileSuffix, getBody, dataSourceId, onUpload } = props
+  const { fileSuffix, getBody, dataSourceId, onUpload, formData } = props
   const textInput = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState<boolean>(false)
   const { token } = useContext(AuthContext)
+
+  useEffect(() => setError(undefined), [formData])
 
   function handleUpload(event: any): void {
     setError('')

@@ -2,6 +2,7 @@ import React, { useContext, useState } from 'react'
 import { Button, Input, Label, Progress } from '@equinor/eds-core-react'
 import './react-contextmenu.css'
 import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
+import { AxiosError } from 'axios'
 import {
   AuthContext,
   BlueprintEnum,
@@ -367,11 +368,15 @@ export const NodeRightClickMenu = (props: {
                     `${node.entity.length}`
                   )
                   .then(() => {
+                    node.expand()
                     setScrimToShow('')
                   })
-                  .catch((error: Error) => {
+                  .catch((error: AxiosError<any>) => {
                     console.error(error)
-                    NotificationManager.error('Failed to create entity')
+                    NotificationManager.error(
+                      error?.response?.data?.message,
+                      'Failed to create entity'
+                    )
                   })
                   .finally(() => setLoading(false))
               }}

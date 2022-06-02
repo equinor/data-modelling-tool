@@ -19,10 +19,12 @@ import {
   Typography,
   Tooltip,
   Button,
+  Progress,
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 const Column = styled.div``
@@ -166,6 +168,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   }
                 />
                 <UploadFileButton
+                  formData={formData.stask}
                   fileSuffix={['stask']}
                   dataSourceId={dataSourceId}
                   getBody={(filename: string) => getNewSTaskBody(filename)}
@@ -184,7 +187,10 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
               value={formData?.workflow || ''}
               placeholder="Name of workflow to run"
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setFormData({ ...formData, workflow: event.target.value })
+                setFormData({
+                  ...formData,
+                  workflow: event.target.value,
+                })
               }
               style={{ width: INPUT_FIELD_WIDTH }}
             />
@@ -194,7 +200,10 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
               value={formData?.workflowTask || ''}
               placeholder="Name of workflowTask to run"
               onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setFormData({ ...formData, workflowTask: event.target.value })
+                setFormData({
+                  ...formData,
+                  workflowTask: event.target.value,
+                })
               }
               style={{ width: INPUT_FIELD_WIDTH }}
             />
@@ -274,14 +283,15 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           >
             Reset
           </Button>
-          <Button
-            as="button"
-            onClick={() => {
-              updateDocument(formData, true)
-            }}
-          >
-            Save
-          </Button>
+          {loading ? (
+            <Button>
+              <Progress.Dots />
+            </Button>
+          ) : (
+            <Button as="button" onClick={() => updateDocument(formData, true)}>
+              Save
+            </Button>
+          )}
         </div>
       </div>
     </div>
