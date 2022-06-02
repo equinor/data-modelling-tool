@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { DmtUIPlugin, UIPluginSelector } from '@dmt/common'
-import { AnalysisInfoCard, AnalysisJobTable } from '@dmt/analysis-platform'
-import { TJob } from 'packages/plugins/apps/analysis-platform/src/Types'
+import { DmtUIPlugin, UIPluginSelector, TJob } from '@dmt/common'
+import { AnalysisInfoCard, AnalysisJobTable } from './components'
 
 export const ExpertView = (props: DmtUIPlugin): JSX.Element => {
-  const { dataSourceId, document: analysis } = props
+  const { document: analysis, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
 
   useEffect(() => {
@@ -18,6 +17,7 @@ export const ExpertView = (props: DmtUIPlugin): JSX.Element => {
         analysis={analysis}
         addJob={(newJob: TJob) => setJobs([...jobs, newJob])}
         jobs={jobs}
+        dataSourceId={dataSourceId}
       />
       <>
         <UIPluginSelector
@@ -25,7 +25,11 @@ export const ExpertView = (props: DmtUIPlugin): JSX.Element => {
           absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
           categories={['container']}
         />
-        <AnalysisJobTable jobs={jobs} analysisId={analysis._id} />
+        <AnalysisJobTable
+          jobs={jobs}
+          analysisId={analysis._id}
+          dataSourceId={dataSourceId}
+        />
       </>
     </>
   )

@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { DmtUIPlugin } from '@dmt/common'
-import { AnalysisInfoCard, AnalysisJobTable } from '@dmt/analysis-platform'
-import { TJob } from 'packages/plugins/apps/analysis-platform/src/Types'
+import { DmtUIPlugin, TJob } from '@dmt/common'
+import { AnalysisInfoCard, AnalysisJobTable } from './components'
 
 export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
-  const { document: analysis } = props
+  const { document: analysis, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
 
   useEffect(() => {
@@ -18,8 +17,13 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
         analysis={analysis}
         addJob={(newJob: TJob) => false}
         jobs={jobs}
+        dataSourceId={dataSourceId}
       />
-      <AnalysisJobTable jobs={jobs} analysisId={analysis._id} />
+      <AnalysisJobTable
+        jobs={jobs}
+        analysisId={analysis._id}
+        dataSourceId={dataSourceId}
+      />
     </>
   )
 }
