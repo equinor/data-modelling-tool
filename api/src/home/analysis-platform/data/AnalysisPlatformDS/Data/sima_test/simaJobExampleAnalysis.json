@@ -21,7 +21,13 @@
     "outputType": "system/SIMOS/NamedEntity",
     "runner": {
       "type": "WorkflowDS/Blueprints/jobHandlers/Container",
-      "image": "datamodelingtool.azurecr.io/dmt-job/srs:latest"
+      "image": {
+        "imageName": "dmt-job/srs",
+        "type": "AnalysisPlatformDS/Blueprints/ContainerImage",
+        "version": "latest",
+        "registryName": "datamodelingtool.azurecr.io",
+        "description": ""
+      }
     }
   },
   "jobs": []

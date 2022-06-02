@@ -70,9 +70,10 @@ class JobHandler(JobHandlerInterface):
             env_vars.append(EnvironmentVariable(name=key, value=value))
         reference_target: str = self.job.entity.get("referenceTarget", None)
         runner_entity: dict = self.job.entity["runner"]
+        full_image_name: str = f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}:{runner_entity['image']['version']}"
         logger.info(
             f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
-            + f"Image: '{runner_entity.get('image', 'None')}'\n\t"
+            + f"Image: '{full_image_name}'\n\t"
             + "RegistryUsername: 'None'"
         )
         command_list = [
@@ -84,7 +85,7 @@ class JobHandler(JobHandlerInterface):
         compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
         container = Container(
             name=self.azure_valid_container_name,
-            image=runner_entity["image"],
+            image=full_image_name,
             resources=ResourceRequirements(requests=compute_resources),
             command=command_list,
             environment_variables=env_vars,

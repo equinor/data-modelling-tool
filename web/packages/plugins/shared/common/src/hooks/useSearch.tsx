@@ -3,7 +3,8 @@ import { DmssAPI, AuthContext } from '@dmt/common'
 
 export function useSearch<T>(
   body: any,
-  dataSourceId: string
+  dataSourceId: string,
+  sortByAttribute?: string
 ): [T[], boolean, boolean] {
   const [searchResult, setSearchResult] = useState<T[]>([])
   const [isLoading, setIsLoading] = useState(true)
@@ -18,6 +19,7 @@ export function useSearch<T>(
       .search({
         dataSources: [dataSourceId],
         body: body,
+        sortByAttribute: sortByAttribute,
       })
       .then((response: any) => {
         const data = response.data

@@ -17,3 +17,13 @@ export type TLocation = {
   _id?: string
   type?: string
 }
+
+export type TContainerImage = {
+  _id?: string
+  uid?: string
+  imageName: string
+  description?: string
+  type: string
+  version: string
+  registryName: string
+}

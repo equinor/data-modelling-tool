@@ -14,10 +14,9 @@
       "optional": true
     },
     {
-      "attributeType": "string",
+      "attributeType": "AnalysisPlatformDS/Blueprints/ContainerImage",
       "type": "system/SIMOS/BlueprintAttribute",
-      "name": "image",
-      "default": "python:alpine"
+      "name": "image"
     },
     {
       "attributeType": "string",

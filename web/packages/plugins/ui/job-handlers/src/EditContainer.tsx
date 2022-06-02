@@ -2,12 +2,16 @@ import {
   DmtUIPlugin,
   PATH_INPUT_FIELD_WIDTH,
   Select,
+  TContainerImage,
   useDocument,
+  getFullContainerImageName,
+  useSearch,
 } from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useState } from 'react'
-import { Button, Typography } from '@equinor/eds-core-react'
+import { Button, CircularProgress, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
+import _ from 'lodash'
 
 const Wrapper = styled.div`
   margin: 10px;
@@ -27,10 +31,39 @@ export const EditContainer = (props: DmtUIPlugin) => {
     documentId,
     false
   )
-  const imageOptions = [
-    'datamodelingtool.azurecr.io/dmt-job/srs:latest',
-    'datamodelingtool.azurecr.io/dmt-job/srs:production',
-  ]
+  const [containerImages, isLoading, hasError] = useSearch<TContainerImage>(
+    {
+      type: 'AnalysisPlatformDS/Blueprints/ContainerImage',
+    },
+    dataSourceId,
+    '_id'
+  )
+
+  const getImageStoredInFormData = (
+    images: TContainerImage[],
+    formData: any
+  ): string => {
+    const image: TContainerImage | undefined = images.find(
+      (image: TContainerImage) => {
+        delete image['_id']
+        delete image['uid']
+        return _.isEqual(image, formData?.image)
+      }
+    )
+    if (image) {
+      return JSON.stringify(image)
+    } else {
+      return ''
+    }
+  }
+
+  if (isLoading) {
+    return (
+      <div style={{ textAlign: 'center', paddingTop: '50px' }}>
+        <CircularProgress />
+      </div>
+    )
+  }
 
   return (
     <div
@@ -48,23 +81,24 @@ export const EditContainer = (props: DmtUIPlugin) => {
         <Wrapper>
           <HeaderWrapper>
             <Typography variant="h5">Container image</Typography>
+
             <Select
               style={{ width: PATH_INPUT_FIELD_WIDTH }}
               onChange={(e: ChangeEvent<HTMLSelectElement>) =>
-                setFormData({ ...formData, image: e.target.value })
+                setFormData({ ...formData, image: JSON.parse(e.target.value) })
               }
-              value={imageOptions.find(
-                (image: string) => image === formData?.image
-              )}
+              value={getImageStoredInFormData(containerImages, formData)}
             >
               <option value={''} selected disabled hidden>
                 Choose image...
               </option>
-              {imageOptions.map((image: string, index: number) => (
-                <option key={index} value={image}>
-                  {image}
-                </option>
-              ))}
+              {containerImages.map((image: TContainerImage, index: number) => {
+                return (
+                  <option key={index} value={JSON.stringify(image)}>
+                    {getFullContainerImageName(image)}
+                  </option>
+                )
+              })}
             </Select>
           </HeaderWrapper>
           {/*<HeaderWrapper>*/}

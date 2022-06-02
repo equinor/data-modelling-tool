@@ -1,4 +1,4 @@
-import { DmtSettings, TBlob, TReference } from '@dmt/common'
+import { DmtSettings, TBlob, TContainerImage, TReference } from '@dmt/common'
 import { ReactNode } from 'react'
 
 export type TRoute = {
@@ -70,7 +70,7 @@ export type TJob = {
 //Represents Container blueprint from WorkflowDS/Blueprints/jobHandlers/Container.json
 export type TContainerJobHandler = {
   label?: string
-  image: string
+  image: TContainerImage
   command: string[]
   environmentVariables?: string[]
 }
