@@ -1,10 +1,10 @@
 import React, { useState } from 'react'
 import {
-  BlueprintEnum,
   PATH_INPUT_FIELD_WIDTH,
   TREE_DIALOG_HEIGHT,
   TREE_DIALOG_WIDTH,
 } from '../../utils/variables'
+import { EBlueprint } from '../../Enums'
 import {
   NodeWrapperProps,
   TreeNode,
@@ -75,7 +75,7 @@ export const SelectPackageButton = (props: NodeWrapperProps) => {
   return (
     <Wrapper>
       {children}
-      {node.type === BlueprintEnum.PACKAGE && (
+      {node.type === EBlueprint.PACKAGE && (
         <div style={{ padding: '0 5px', backgroundColor: 'white' }}>
           <Button
             style={{ height: '22px' }}

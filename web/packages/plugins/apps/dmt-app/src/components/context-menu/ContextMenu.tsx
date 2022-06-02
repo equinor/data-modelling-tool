@@ -5,7 +5,7 @@ import { ContextMenu, ContextMenuTrigger, MenuItem } from 'react-contextmenu'
 import { AxiosError } from 'axios'
 import {
   AuthContext,
-  BlueprintEnum,
+  EBlueprint,
   DmssAPI,
   TreeNode,
   Dialog,
@@ -54,7 +54,7 @@ function createMenuItems(
   // Packages get a "new folder"
   // and "new entity"
   // and "new blueprint"
-  if (node.type == BlueprintEnum.PACKAGE) {
+  if (node.type == EBlueprint.PACKAGE) {
     menuItems.push(
       // @ts-ignore
       <MenuItem key={'new-entity'} onClick={() => setShowScrimId('new-entity')}>
@@ -79,7 +79,7 @@ function createMenuItems(
   }
 
   // Everything besides dataSources and folders can be viewed
-  if (!['dataSource', BlueprintEnum.PACKAGE].includes(node.type)) {
+  if (!['dataSource', EBlueprint.PACKAGE].includes(node.type)) {
     menuItems.push(
       // @ts-ignore
       <MenuItem
@@ -475,7 +475,7 @@ export const NodeRightClickMenu = (props: {
               onClick={() => {
                 setLoading(true)
                 node
-                  .addEntity(BlueprintEnum.BLUEPRINT, formData?.name)
+                  .addEntity(EBlueprint.BLUEPRINT, formData?.name)
                   .then(() => {
                     setScrimToShow('')
                   })

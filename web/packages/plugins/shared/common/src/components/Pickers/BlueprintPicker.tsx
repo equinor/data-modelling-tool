@@ -1,11 +1,8 @@
 import React, { useState } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import {
-  BlueprintEnum,
-  TREE_DIALOG_HEIGHT,
-  TREE_DIALOG_WIDTH,
-} from '../../utils/variables'
+import { TREE_DIALOG_HEIGHT, TREE_DIALOG_WIDTH } from '../../utils/variables'
+import { EBlueprint } from '../../Enums'
 import { Dialog, TreeNode, TreeView } from '../../index'
 import { Input, Tooltip } from '@equinor/eds-core-react'
 import { PATH_INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
@@ -44,7 +41,7 @@ export const BlueprintPicker = (props: {
       >
         <TreeView
           onSelect={(node: TreeNode) => {
-            if (node.type !== BlueprintEnum.BLUEPRINT) {
+            if (node.type !== EBlueprint.BLUEPRINT) {
               NotificationManager.warning('You can only select a blueprint')
               return
             } // Only allowed to select blueprints
