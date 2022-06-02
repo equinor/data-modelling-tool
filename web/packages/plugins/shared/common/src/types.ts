@@ -1,3 +1,27 @@
+import { ReactNode } from 'react'
+import { EJobStatus } from './Enums'
+
+export type TRoute = {
+  path: string
+  content: ReactNode
+}
+
+export type TApp = {
+  applications: any
+  settings: DmtSettings
+}
+
+export type TContent = {
+  content: ReactNode
+  settings: DmtSettings
+}
+
+export type TLayout = {
+  content: ReactNode
+  settings: DmtSettings
+  allApps: DmtSettings[]
+}
+
 export type TReference = {
   type: string
   _id: string
@@ -42,4 +66,49 @@ export type DmtSettings = {
   file_loc: string
   data_source_aliases: any
   urlPath: string
+}
+
+//Represents JobHandler blueprint from WorkflowDS/Blueprints/jobHandlers/JobHandler.json
+export type TJobHandler = {
+  type: string
+  environmentVariables?: string[]
+}
+
+//Represents Container blueprint from WorkflowDS/Blueprints/jobHandlers/Container.json
+export type TContainerJobHandler = {
+  type: string
+  label?: string
+  image: string
+  command: string[]
+  environmentVariables?: string[]
+}
+
+export type TJob = {
+  label: string
+  name: string
+  type: string
+  status: EJobStatus
+  triggeredBy: string
+  applicationInput: TReference
+  runner: TJobHandler | TContainerJobHandler
+  started: string
+  result?: any
+  ended?: string
+  outputTarget?: string
+  referenceTarget?: string
+}
+
+export type TLocalContainerJob = {
+  type: string
+  name: string
+  label?: string
+  image: string
+  command: string
+  environmentVariables?: string[]
+}
+
+export type TCronJob = {
+  cron: string
+  startDate: Date
+  endDate: Date
 }

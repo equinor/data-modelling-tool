@@ -2,16 +2,10 @@ import React from 'react'
 import { Layout } from 'antd'
 import styled from 'styled-components'
 
-import { TContent } from '../../Types'
+import { TContent } from '@dmt/common'
 import { backgroundColorDefault, backgroundColorLight } from '../Design/Colors'
-import { Heading } from '../Design/Fonts'
 
 const { Content } = Layout
-
-const PageHeading = styled.div`
-  padding: 20px;
-  background-color: ${backgroundColorLight};
-`
 
 const PageContent = styled.div`
   padding: 20px;
