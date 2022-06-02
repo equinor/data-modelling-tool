@@ -1,8 +1,7 @@
-import { AuthContext, DmtSettings } from '@dmt/common'
+import { AuthContext, DmtSettings, hasExpertRole } from '@dmt/common'
 import React, { ReactNode, useContext } from 'react'
-import AnalysisTable from './components/AnalysisTable'
+import { AnalysisTable } from './components'
 import { Link, useLocation } from 'react-router-dom'
-import { hasExpertRole } from '../../utils/auth'
 import { Button, Divider } from '@equinor/eds-core-react'
 
 type NewAnalysisButtonProps = {
@@ -27,7 +26,7 @@ type AnalysisOverviewProps = {
   settings: DmtSettings
 }
 
-const AnalysisOverview = (props: AnalysisOverviewProps): ReactNode => {
+export const AnalysisOverview = (props: AnalysisOverviewProps): ReactNode => {
   const { settings } = props
   const { tokenData } = useContext(AuthContext)
 
@@ -41,5 +40,3 @@ const AnalysisOverview = (props: AnalysisOverviewProps): ReactNode => {
     </>
   )
 }
-
-export default AnalysisOverview

@@ -1,7 +1,7 @@
-import { TRoute } from './Types'
-import AnalysisOverview from './modules/Analysis/AnalysisOverview'
-import AnalysisCreate from './modules/Analysis/AnalysisCreate'
-import { View } from './modules/View'
+import { TRoute } from '@dmt/common'
+import { AnalysisOverview } from './modules/Analysis'
+import { AnalysisCreate } from './modules/Analysis'
+import { View } from './modules'
 
 const Routes: Array<TRoute> = [
   {

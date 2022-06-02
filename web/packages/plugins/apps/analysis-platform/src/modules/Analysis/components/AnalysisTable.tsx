@@ -1,4 +1,4 @@
-import { Blueprints } from '../../../Enums'
+import { EBlueprints } from '../../../Enums'
 import { Progress } from '@equinor/eds-core-react'
 import React from 'react'
 import DynamicTable from '../../../components/DynamicTable'
@@ -29,10 +29,10 @@ const onRowClicked = (event: any) => {
   document.location = `${document.location.pathname}/analysis/${DEFAULT_DATASOURCE_ID}/${documentId}`
 }
 
-const AnalysisTable = () => {
+export const AnalysisTable = () => {
   const [analysis, isLoading, hasError] = useSearch<TAnalysis>(
     {
-      type: Blueprints.ANALYSIS,
+      type: EBlueprints.ANALYSIS,
     },
     DEFAULT_DATASOURCE_ID
   )
@@ -58,5 +58,3 @@ const AnalysisTable = () => {
     <DynamicTable columns={columns} rows={rows} onRowClicked={onRowClicked} />
   )
 }
-
-export default AnalysisTable

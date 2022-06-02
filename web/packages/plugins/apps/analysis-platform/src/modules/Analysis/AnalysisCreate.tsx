@@ -3,14 +3,14 @@ import { getUsername } from '../../utils/auth'
 import { AuthContext } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import { createAnalysis } from './CRUD'
-import { Blueprints } from '../../Enums'
-import { DEFAULT_DATASOURCE_ID, TASK } from '../../const'
-import CreateAnalysisForm from './components/CreateAnalysisForm'
+import { EBlueprints } from '../../Enums'
+import { DEFAULT_DATASOURCE_ID } from '../../const'
+import { CreateAnalysisForm } from './components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { TAnalysis } from '../../Types'
 
-const AnalysisNew = (): JSX.Element => {
+export const AnalysisCreate = (): JSX.Element => {
   const { tokenData, token } = useContext(AuthContext)
   const user = getUsername(tokenData) || 'NoLogin'
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -19,12 +19,12 @@ const AnalysisNew = (): JSX.Element => {
     setIsLoading(true)
     const data = {
       ...formData,
-      type: Blueprints.ANALYSIS,
+      type: EBlueprints.ANALYSIS,
       creator: user,
       created: new Date().toISOString(),
       updated: new Date().toISOString(),
       task: {
-        type: TASK,
+        type: EBlueprints.TASK,
       },
     }
     createAnalysis(data, token, [])
@@ -48,5 +48,3 @@ const AnalysisNew = (): JSX.Element => {
 
   return <CreateAnalysisForm onSubmit={handleCreateAnalysis} />
 }
-
-export default AnalysisNew
