@@ -33,6 +33,11 @@ const ChildTab = styled(Tab)`
   background-color: #d1d1d1;
 `
 
+const HidableWrapper = styled.div<any>`
+display: ${(props: any) => (props.hidden && 'none') || 'flex'}
+align-self: normal;
+`
+
 type TChildTab = {
   attribute: string
   entity: any
@@ -70,13 +75,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
 
   return (
     <TabsProvider onOpen={handleOpen}>
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          flexDirection: 'column',
-        }}
-      >
+      <div style={{ display: 'flex', flexDirection: 'column' }}>
         <div
           style={{
             width: '100%',
@@ -109,8 +108,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
             </Tooltip>
           ))}
         </div>
-
-        {selectedTab === 'home' ? (
+        <HidableWrapper hidden={'home' !== selectedTab}>
           <UIPluginSelector
             key={'home'}
             absoluteDottedId={`${dataSourceId}/${documentId}`}
@@ -123,14 +121,20 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               setSelectedTab(tabData.attribute)
             }}
           />
-        ) : (
-          <UIPluginSelector
-            key={selectedTab}
-            absoluteDottedId={childTabs[selectedTab].absoluteDottedId}
-            entity={childTabs[selectedTab].entity}
-            categories={childTabs[selectedTab].categories}
-          />
-        )}
+        </HidableWrapper>
+        {Object.values(childTabs).map((childTab: any) => {
+          console.log(childTab)
+          return (
+            <HidableWrapper hidden={childTab.attribute !== selectedTab}>
+              <UIPluginSelector
+                key={childTab.attribute}
+                absoluteDottedId={childTab.absoluteDottedId}
+                entity={childTab.entity}
+                categories={childTab.categories}
+              />
+            </HidableWrapper>
+          )
+        })}
       </div>
     </TabsProvider>
   )

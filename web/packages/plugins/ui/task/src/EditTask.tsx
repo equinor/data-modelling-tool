@@ -28,7 +28,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onOpen, categories } = props
+  const { document, documentId, dataSourceId, onOpen } = props
   const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
@@ -83,11 +83,6 @@ export const EditTask = (props: DmtUIPlugin) => {
                     if (onOpen)
                       onOpen({
                         attribute: 'applicationInput',
-                        onChange: (appInput: any) =>
-                          setFormData({
-                            ...formData,
-                            applicationInput: appInput,
-                          }),
                         entity: formData.applicationInput,
                         absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
                         // Child entities should use plugins with this category tag, if they have any
@@ -166,8 +161,6 @@ export const EditTask = (props: DmtUIPlugin) => {
                         },
                         absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
                         onSubmit: (data: any) =>
-                          setFormData({ ...formData, runner: data }),
-                        onChange: (data: any) =>
                           setFormData({ ...formData, runner: data }),
                       })
                     }
