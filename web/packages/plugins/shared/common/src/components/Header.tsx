@@ -154,7 +154,7 @@ export const Header = (props: {
         isOpen={aboutOpen}
         closeScrim={() => setAboutOpen(false)}
         header={'About Data Modelling Tool'}
-        width={'30vw'}
+        width={'40vw'}
       >
         <b>Last commit: {version}</b>
       </Dialog>
@@ -162,7 +162,7 @@ export const Header = (props: {
         isOpen={visibleUserInfo}
         header={'User info'}
         closeScrim={() => setVisibleUserInfo(false)}
-        width={'30vw'}
+        width={'40vw'}
       >
         <div style={{ margin: '20px' }}>
           <pre style={{ whiteSpace: 'pre-wrap' }}>
@@ -173,13 +173,20 @@ export const Header = (props: {
                 roles: tokenData?.roles,
                 scope: tokenData?.scp,
                 token_issuer: tokenData?.iss,
-                token: token,
               } || '',
               null,
               2
             )}
           </pre>
           <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+            <Button
+              onClick={() => {
+                navigator.clipboard.writeText(token)
+                NotificationManager.success('Copied token to clipboard')
+              }}
+            >
+              Copy token to clipboard
+            </Button>
             <Button
               onClick={() =>
                 dmssApi
