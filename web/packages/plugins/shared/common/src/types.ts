@@ -127,3 +127,48 @@ export type TValidEntity = {
   type: string
   [key: string]: any
 }
+
+//Represents JobHandler blueprint from WorkflowDS/Blueprints/jobHandlers/JobHandler.json
+export type TJobHandler = {
+  type: string
+  environmentVariables?: string[]
+}
+
+//Represents Container blueprint from WorkflowDS/Blueprints/jobHandlers/Container.json
+export type TContainerJobHandler = {
+  type: string
+  label?: string
+  image: string
+  command: string[]
+  environmentVariables?: string[]
+}
+
+export type TJob = {
+  label: string
+  name: string
+  type: string
+  status: EJobStatus
+  triggeredBy: string
+  applicationInput: TReference
+  runner: TJobHandler | TContainerJobHandler
+  started: string
+  result?: any
+  ended?: string
+  outputTarget?: string
+  referenceTarget?: string
+}
+
+export type TLocalContainerJob = {
+  type: string
+  name: string
+  label?: string
+  image: string
+  command: string
+  environmentVariables?: string[]
+}
+
+export type TCronJob = {
+  cron: string
+  startDate: Date
+  endDate: Date
+}
