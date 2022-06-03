@@ -122,3 +122,8 @@ export type TContainerImage = {
   version: string
   registryName: string
 }
+
+export type TValidEntity = {
+  type: string
+  [key: string]: any
+}
