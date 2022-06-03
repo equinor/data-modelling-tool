@@ -108,7 +108,7 @@ export const Header = (props: {
 
   useEffect(() => {
     axios
-      .get('version.txt')
+      .get('/version.txt')
       .then((response: AxiosResponse<string>) => setVersion(response.data))
       .catch(() => null)
   }, [])
