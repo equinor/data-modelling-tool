@@ -1,4 +1,3 @@
-import React from 'react'
 import styled from 'styled-components'
 
 import { translate_entity_dmt_to_simos } from '../tools/translate.js'

@@ -3,9 +3,13 @@ import { Button, Input, Label } from '@equinor/eds-core-react'
 import { Dialog } from './Dialog'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { BlueprintPicker, DestinationPicker } from './Pickers'
+import {
+  BlueprintPicker,
+  DestinationPicker,
+  EntityPickerButton,
+} from './Pickers'
 import { addToPath } from './UploadFileButton'
-import { AuthContext, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
+import { AuthContext, DmssAPI, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
 import { AxiosError } from 'axios'
 
 export function NewEntityButton(props: {
@@ -16,6 +20,9 @@ export function NewEntityButton(props: {
   const [showScrim, setShowScrim] = useState<boolean>(false)
   const [saveDestination, setSaveDestination] = useState<string>('')
   const [newName, setNewName] = useState<string>('')
+  const [copyTarget, setCopyTarget] = useState<TReference | undefined>(
+    undefined
+  )
   const [typeToCreate, setTypeToCreate] = useState<string>(type || '')
   const { token } = useContext(AuthContext)
   const dmtAPI = new DmtAPI(token)
@@ -66,9 +73,15 @@ export function NewEntityButton(props: {
           <div style={{ display: 'block' }}>
             <Label label={'Blueprint'} />
             <BlueprintPicker
+              disabled={!!copyTarget}
               onChange={(selectedType: string) => setTypeToCreate(selectedType)}
               formData={typeToCreate}
             />
+            {!!copyTarget && (
+              <div
+                style={{ marginLeft: '40px' }}
+              >{`Copying entity named '${copyTarget.name}'`}</div>
+            )}
           </div>
           <Label label={'Name'} />
           <Input
@@ -81,24 +94,56 @@ export function NewEntityButton(props: {
             onChange={(event) => setNewName(event.target.value)}
             placeholder="Name for new entity"
           />
-          <Button
+          <div
             style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
               marginTop: '40px',
-              alignSelf: 'center',
-            }}
-            type="submit"
-            onClick={() => {
-              dmtAPI
-                .createEntity(typeToCreate, newName)
-                .then((newEntity: any) => {
-                  addEntityToPath({ ...newEntity }).then(() =>
-                    setShowScrim(false)
-                  )
-                })
             }}
           >
-            Create
-          </Button>
+            {!copyTarget ? (
+              <EntityPickerButton
+                variant="outlined"
+                text="Copy existing"
+                onChange={(ref: TReference) => setCopyTarget(ref)}
+              />
+            ) : (
+              <Button
+                onClick={() => setCopyTarget(undefined)}
+                variant="outlined"
+                color="danger"
+              >
+                Don't copy
+              </Button>
+            )}
+            <Button
+              disabled={
+                !(newName && saveDestination && (typeToCreate || copyTarget))
+              }
+              type="submit"
+              onClick={() => {
+                if (copyTarget) {
+                  // @ts-ignore
+                  delete copyTarget._id
+                  copyTarget.name = newName
+                  addEntityToPath({ ...copyTarget }).then(() =>
+                    setShowScrim(false)
+                  )
+                } else {
+                  dmtAPI
+                    .createEntity(typeToCreate, newName)
+                    .then((newEntity: any) => {
+                      addEntityToPath({ ...newEntity }).then(() =>
+                        setShowScrim(false)
+                      )
+                    })
+                }
+              }}
+            >
+              Create
+            </Button>
+          </div>
         </div>
       </Dialog>
     </div>

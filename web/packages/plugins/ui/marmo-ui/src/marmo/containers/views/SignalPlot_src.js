@@ -1,7 +1,4 @@
-import React from 'react'
 //import ReactDOM from 'react-dom';
-
-import Plot from 'react-plotly.js'
 
 const ESSPlotPlugin = ({ document }) => {
   console.log(document)

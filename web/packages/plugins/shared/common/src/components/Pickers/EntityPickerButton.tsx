@@ -14,13 +14,20 @@ import { NotificationManager } from 'react-notifications'
 export const EntityPickerButton = (props: {
   onChange: (ref: TReference) => void
   typeFilter?: string
+  text?: string
+  variant?: 'contained' | 'outlined' | 'ghost' | 'ghost_icon'
 }) => {
-  const { onChange, typeFilter } = props
+  const { onChange, typeFilter, text, variant } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', margin: '0 10px' }}>
-      <Button onClick={() => setShowModal(true)}>Select</Button>
+      <Button
+        variant={variant || 'contained'}
+        onClick={() => setShowModal(true)}
+      >
+        {text || 'Select'}
+      </Button>
       <Dialog
         isOpen={showModal}
         closeScrim={() => setShowModal(false)}

@@ -18,8 +18,6 @@
 
 //import { VictoryTheme, VictoryChart, VictoryLine, VictoryBar } from 'victory'
 
-import React from 'react'
-
 //********************************************************//
 //********************************************************//
 //making tables

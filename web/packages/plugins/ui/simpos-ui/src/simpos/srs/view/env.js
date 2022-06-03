@@ -16,8 +16,6 @@
  * External plugins must have a unique name, not conflicting with the DMT official plugin names.
  */
 
-import React from 'react'
-
 import styled from 'styled-components'
 import { useTable } from 'react-table'
 

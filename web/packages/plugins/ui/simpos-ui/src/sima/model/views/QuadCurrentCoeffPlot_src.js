@@ -1,7 +1,4 @@
-import React from 'react'
 //import ReactDOM from 'react-dom';
-
-import Plot from 'react-plotly.js'
 
 const SIMA_Model_QuadCurrentCoeffPlot = ({ parent, document, children }) => {
   console.log(document)

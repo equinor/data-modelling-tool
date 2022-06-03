@@ -16,11 +16,8 @@
  * External plugins must have a unique name, not conflicting with the DMT official plugin names.
  */
 
-import React from 'react'
-
 //import ReactDOM from 'react-dom';
 
-import Plot from 'react-plotly.js'
 //********************************************************//
 const StatusView = ({ document }) => {
   //console.log(document)

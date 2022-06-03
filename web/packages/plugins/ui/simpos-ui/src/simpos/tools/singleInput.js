@@ -18,16 +18,12 @@
 
 //****************************************************** */
 
-import React from 'react'
-
 //table
 import styled from 'styled-components'
 
 //collapsable sections
 import { useState } from 'react'
 import useCollapse from 'react-collapsed'
-
-import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
 
 //****************************************************** */
 
