@@ -80,7 +80,7 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "jobEdit",
       "category": "edit",
-      "roles": ["dmss-admin", "domain-expert", "domain-developer"]
+      "roles": ["dmss-admin", "domain-expert", "expert-operator", "operator"]
     },
     {
       "name": "Control pane",

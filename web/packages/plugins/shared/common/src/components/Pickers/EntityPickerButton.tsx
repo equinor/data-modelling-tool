@@ -6,6 +6,7 @@ import {
   TreeNode,
   TreeView,
   TReference,
+  truncatePathString,
 } from '../../index'
 import { Button } from '@equinor/eds-core-react'
 // @ts-ignore
@@ -31,7 +32,9 @@ export const EntityPickerButton = (props: {
         <TreeView
           onSelect={(node: TreeNode) => {
             if (typeFilter && node.type !== typeFilter) {
-              NotificationManager.warning('Wrong type')
+              NotificationManager.warning(
+                `Type must be '${truncatePathString(typeFilter, 43)}'`
+              )
               return
             }
             setShowModal(false)
