@@ -112,3 +112,13 @@ export type TCronJob = {
   startDate: Date
   endDate: Date
 }
+
+export type TContainerImage = {
+  _id?: string
+  uid?: string
+  imageName: string
+  description?: string
+  type: string
+  version: string
+  registryName: string
+}
