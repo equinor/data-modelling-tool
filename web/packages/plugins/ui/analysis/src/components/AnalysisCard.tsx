@@ -154,24 +154,26 @@ const AnalysisCard = (props: TAnalysisCardProps) => {
             </FlexWrapper>
           </div>
         </div>
-        {hasExpertRole(tokenData) && (
-          <Card.Actions>
-            {'task' in analysis && Object.keys(analysis.task).length > 0 && (
-              <>
-                <RunAnalysisButton
-                  analysis={analysis}
-                  addJob={addJob}
-                  jobs={jobs}
-                  dataSourceId={dataSourceId}
-                />
+        <Card.Actions>
+          {'task' in analysis && Object.keys(analysis.task).length > 0 && (
+            <>
+              <RunAnalysisButton
+                analysis={analysis}
+                addJob={addJob}
+                jobs={jobs}
+                dataSourceId={dataSourceId}
+              />
+              {hasExpertRole(tokenData) && (
                 <Tooltip title={'Not implemented'}>
                   <Button style={{ width: 'max-content' }} disabled>
                     Configure schedule
                     <Icons name="time" title="time" />
                   </Button>
                 </Tooltip>
-              </>
-            )}
+              )}
+            </>
+          )}
+          {hasExpertRole(tokenData) && (
             <Button
               onClick={() => setViewACL(!viewACL)}
               style={{ width: 'max-content' }}
@@ -179,8 +181,8 @@ const AnalysisCard = (props: TAnalysisCardProps) => {
               Access control
               <Icons name="assignment_user" title="assignment_user" />
             </Button>
-          </Card.Actions>
-        )}
+          )}
+        </Card.Actions>
       </Card>
       <Dialog
         isOpen={viewACL}

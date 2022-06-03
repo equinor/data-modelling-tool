@@ -54,18 +54,22 @@
   ],
   "uiRecipes": [
     {
-      "name": "Expert view",
+      "name": "Inspector view",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "view-analysis-expert",
+      "plugin": "view-analysis-inspector",
       "category": "view",
-      "roles": ["expert-operator", "domain-developer", "domain-expert", "dmss-admin"]
+      "roles": ["inspector"],
+      "config": {
+        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "subCategories": ["view"]
+      }
     },
     {
       "name": "Operator view",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "view-analysis-operator",
       "category": "view",
-      "roles": ["operator"],
+      "roles": ["operator", "expert-operator", "domain-developer", "domain-expert", "dmss-admin"],
       "config": {
         "type": "DMT-Internal/ui-plugins/tabs/Config",
         "subCategories": ["view"]

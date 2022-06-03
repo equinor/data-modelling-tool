@@ -6,14 +6,7 @@ import {
   Typography,
 } from '@equinor/eds-core-react'
 import React, { useContext, useEffect, useState } from 'react'
-import {
-  AuthContext,
-  DmssAPI,
-  JobApi,
-  hasExpertRole,
-  EJobStatus,
-  TJob,
-} from '@dmt/common'
+import { AuthContext, DmssAPI, JobApi, EJobStatus, TJob } from '@dmt/common'
 import styled from 'styled-components'
 import { AxiosError } from 'axios'
 // @ts-ignore
@@ -38,7 +31,7 @@ const JobRow = (props: {
   dataSourceId: string
 }) => {
   const { job, index, analysisId, dataSourceId } = props // @ts-ignore
-  const { token, tokenData } = useContext(AuthContext)
+  const { token } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
@@ -47,11 +40,10 @@ const JobRow = (props: {
   const resultURL = job.result?._id
     ? `/ap/view/${dataSourceId}/${job.result?._id}`
     : undefined
-  const viewURL = hasExpertRole(tokenData) ? jobURL : resultURL
 
   const viewResult = () => {
-    if (viewURL) {
-      document.location = viewURL
+    if (jobURL) {
+      document.location = jobURL
     } else {
       NotificationManager.warning('Result is not ready')
     }
@@ -141,23 +133,21 @@ const JobRow = (props: {
           <Progress.Circular style={{ height: '24px' }} />
         </Table.Cell>
       ) : (
-        hasExpertRole(tokenData) && (
-          <Table.Cell>
-            {jobStatus === EJobStatus.CREATED ? (
-              <Button variant="ghost_icon" onClick={() => startJob()}>
-                <Icon name="play" title="play" />
-              </Button>
-            ) : (
-              <Button
-                variant="ghost_icon"
-                color="danger"
-                onClick={() => removeJob()}
-              >
-                <Icon name="delete_forever" title="delete" />
-              </Button>
-            )}
-          </Table.Cell>
-        )
+        <Table.Cell>
+          {jobStatus === EJobStatus.CREATED ? (
+            <Button variant="ghost_icon" onClick={() => startJob()}>
+              <Icon name="play" title="play" />
+            </Button>
+          ) : (
+            <Button
+              variant="ghost_icon"
+              color="danger"
+              onClick={() => removeJob()}
+            >
+              <Icon name="delete_forever" title="delete" />
+            </Button>
+          )}
+        </Table.Cell>
       )}
     </Table.Row>
   )
@@ -165,7 +155,6 @@ const JobRow = (props: {
 
 export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
   const { jobs, analysisId, dataSourceId } = props
-  const { tokenData } = useContext(AuthContext)
 
   return (
     <>
@@ -179,7 +168,7 @@ export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
             <Table.Cell>Started by</Table.Cell>
             <Table.Cell>Status</Table.Cell>
             <Table.Cell>Result</Table.Cell>
-            {hasExpertRole(tokenData) && <Table.Cell>Control</Table.Cell>}
+            <Table.Cell>Control</Table.Cell>
           </Table.Row>
         </Table.Head>
         <Table.Body style={{ cursor: 'pointer' }}>

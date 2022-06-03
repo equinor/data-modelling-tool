@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { DmtUIPlugin, TJob } from '@dmt/common'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
 
-export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
+export const InspectorView = (props: DmtUIPlugin): JSX.Element => {
   const { document: analysis, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
 
