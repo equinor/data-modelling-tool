@@ -3,10 +3,9 @@ import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import styled from 'styled-components'
-import { AuthContext, DmssAPI } from '@dmt/common'
+import { AuthContext, DmssAPI, poorMansUUID } from '@dmt/common'
 import { DEFAULT_DATASOURCE_ID } from './const'
 import Result from './Result'
-import { poorMansUUID } from './uuid'
 import Icons from './Icons'
 import { TPlot, TGraph } from './types'
 

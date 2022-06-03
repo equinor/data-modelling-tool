@@ -1,10 +1,7 @@
 {
   "name": "Analysis",
   "type": "system/SIMOS/Blueprint",
-  "extends": [
-    "system/SIMOS/DefaultUiRecipes",
-    "system/SIMOS/NamedEntity"
-  ],
+  "extends": ["system/SIMOS/NamedEntity"],
   "description": "",
   "attributes": [
     {
@@ -57,59 +54,25 @@
   ],
   "uiRecipes": [
     {
-      "name": "Form",
+      "name": "Inspector view",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "form",
-      "category": "edit",
+      "plugin": "view-analysis-inspector",
+      "category": "view",
+      "roles": ["inspector"],
       "config": {
-        "type": "DMT-Internal/DMT/ui-plugins/form/FormInput",
-        "attributes": [
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
-            "name": "description",
-            "widget": "TextareaWidget"
-          },
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
-            "name": "created",
-            "widget": "TextWidget",
-            "format": "date-time"
-          },
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/StringField",
-            "name": "updated",
-            "widget": "TextWidget",
-            "format": "date-time"
-          },
-          {
-            "type": "DMT-Internal/DMT/ui-plugins/form/fields/ArrayField",
-            "name": "jobs",
-            "columns": ["started", "ended", "triggeredBy"]
-          }
-        ],
-        "order": [
-          "name",
-          "type",
-          "description",
-          "created",
-          "updated",
-          "creator",
-          "schedule",
-          "label",
-          "task",
-          "jobs",
-          "*"
-        ]
+        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "subCategories": ["view"]
       }
     },
     {
-      "name": "Tabs",
-      "label": "Tabs",
+      "name": "Operator view",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "tabs",
-      "category": "container",
+      "plugin": "view-analysis-operator",
+      "category": "view",
+      "roles": ["operator", "expert-operator", "domain-developer", "domain-expert", "dmss-admin"],
       "config": {
-        "type": "system/SIMOS/UiPluginSelectorProps"
+        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "subCategories": ["view"]
       }
     }
   ]

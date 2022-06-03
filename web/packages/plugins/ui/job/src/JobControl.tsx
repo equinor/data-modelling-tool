@@ -6,13 +6,14 @@ import {
   DmssAPI,
   JobApi,
   UIPluginSelector,
+  EJobStatus,
+  TJob,
 } from '@dmt/common'
 import { Button, Label, Progress } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { JobStatus, TJob } from './types'
 
 const StyledPre = styled.pre`
   display: flex;
@@ -34,15 +35,15 @@ const ClickableLabel = styled.div`
 
 function colorFromStatus(status: string): string {
   switch (status) {
-    case JobStatus.CREATED:
+    case EJobStatus.CREATED:
       return 'slateblue'
-    case JobStatus.STARTING:
+    case EJobStatus.STARTING:
       return 'orange'
-    case JobStatus.RUNNING:
+    case EJobStatus.RUNNING:
       return 'orange'
-    case JobStatus.COMPLETED:
+    case EJobStatus.COMPLETED:
       return 'green'
-    case JobStatus.FAILED:
+    case EJobStatus.FAILED:
       return 'red'
     default:
       return 'darkgrey'
@@ -75,7 +76,7 @@ export const JobControl = (props: {
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobLogs, setJobLogs] = useState<any>()
-  const [jobStatus, setJobStatus] = useState<JobStatus>(document.status)
+  const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
   const [refreshCount, setRefreshCount] = useState<number>(0)
   const [runnerModal, setRunnerModal] = useState<boolean>(false)
   const [inputModal, setInputModal] = useState<boolean>(false)
@@ -110,7 +111,7 @@ export const JobControl = (props: {
           JSON.stringify(result.data),
           'Simulation job started'
         )
-        setJobStatus(JobStatus.STARTING)
+        setJobStatus(EJobStatus.STARTING)
       })
       .catch((error: AxiosError) => {
         console.error(error)
@@ -205,7 +206,7 @@ export const JobControl = (props: {
         </RowGroup>
         <RowGroup>
           <Label label="Started:" />
-          {document.status === JobStatus.CREATED ? (
+          {document.status === EJobStatus.CREATED ? (
             <label>Not started</label>
           ) : (
             <label>
@@ -258,7 +259,7 @@ export const JobControl = (props: {
         >
           <Icons name="refresh" title="refresh" />
         </Button>
-        {jobStatus === JobStatus.CREATED && (
+        {jobStatus === EJobStatus.CREATED && (
           <Button style={{ width: '150px' }} onClick={() => startJob()}>
             Start job
             <Icons name="play" title="play" />

@@ -698,7 +698,7 @@ class DynamicTable extends Component {
               label="Data"
               multiline
               fullWidth
-              rowsMax="20"
+              maxRows="20"
               variant="outlined"
               defaultValue={this.getRowsTextRepresentation()}
               onChange={this.importTextHandleChange}

@@ -1,5 +1,5 @@
 import { DmssAPI, DmtAPI } from '../services'
-import { BlueprintEnum } from '../utils/variables'
+import { EBlueprint } from '../Enums'
 import { TAttribute, TBlueprint } from './types'
 import { TReference } from '../types'
 
@@ -10,16 +10,16 @@ type TreeMap = {
 const dataSourceAttribute: TAttribute = {
   attributeType: 'dataSource',
   name: 'dataSource',
-  type: BlueprintEnum.ATTRIBUTE,
+  type: EBlueprint.ATTRIBUTE,
   contained: false,
   optional: false,
   dimensions: '',
 }
 
 const packageAttribute: TAttribute = {
-  attributeType: BlueprintEnum.PACKAGE,
+  attributeType: EBlueprint.PACKAGE,
   name: 'package',
-  type: BlueprintEnum.ATTRIBUTE,
+  type: EBlueprint.ATTRIBUTE,
   contained: false,
   optional: false,
   dimensions: '',
@@ -73,7 +73,7 @@ const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
       {
         attributeType: ref.type,
         name: ref?.name || ref?._id,
-        type: BlueprintEnum.ATTRIBUTE,
+        type: EBlueprint.ATTRIBUTE,
         contained: false,
         optional: false,
         dimensions: '',
@@ -160,7 +160,7 @@ export class TreeNode {
         })
         .then((response: any) => {
           const data = response.data
-          if (data.type === BlueprintEnum.PACKAGE) {
+          if (data.type === EBlueprint.PACKAGE) {
             this.children = createFolderChildren(data, this)
           } else {
             this.children = createContainedChildren(data, this, parentBlueprint)
@@ -198,11 +198,11 @@ export class TreeNode {
   // Creates a new entity on DMSS of the given type and saves it to this package,
   // returns the entity's UUID
   async addEntity(type: string, name: string): Promise<string> {
-    if (this.type !== BlueprintEnum.PACKAGE && !Array.isArray(this.entity)) {
+    if (this.type !== EBlueprint.PACKAGE && !Array.isArray(this.entity)) {
       throw 'Entities can only be added to packages and lists'
     }
     let packageContent = ''
-    if (this.type === BlueprintEnum.PACKAGE) packageContent = '.content'
+    if (this.type === EBlueprint.PACKAGE) packageContent = '.content'
 
     return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) =>
       this.tree.dmssApi
@@ -252,7 +252,7 @@ export class Tree {
         this.dmssApi
           .search({
             // Find all rootPackages in every dataSource
-            body: { type: BlueprintEnum.PACKAGE, isRoot: 'true' },
+            body: { type: EBlueprint.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],
           })
           .then((response: any) => {

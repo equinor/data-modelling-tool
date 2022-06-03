@@ -6,6 +6,8 @@ import {
   UiPluginContext,
   useBlueprint,
   AuthContext,
+  getRoles,
+  TValidEntity,
 } from '@dmt/common'
 import styled from 'styled-components'
 import { CircularProgress } from '@equinor/eds-core-react'
@@ -123,7 +125,7 @@ function filterPlugins(
 
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
-  entity: any
+  entity: TValidEntity
   onSubmit?: Function
   categories?: string[]
   breadcrumb?: boolean
@@ -143,19 +145,16 @@ export function UIPluginSelector(props: {
   }
   if (!entity || !Object.keys(entity).length) {
     console.error(
-      `UiPluginSelector need an entity with a 'type' attribute. Got '${JSON.stringify(
+      `UiPluginSelector requires an entity with a 'type' attribute. Got '${JSON.stringify(
         entity
-      )}'`
+      )}' (for ${absoluteDottedId})`
     )
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
-  let roles = tokenData?.roles
-  if (localStorage.getItem('impersonateRoles')) {
-    roles = [JSON.parse(localStorage.getItem('impersonateRoles') || 'null')]
-  }
+  const roles = getRoles(tokenData)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)
   const [selectablePlugins, setSelectablePlugins] = useState<
     TSelectablePlugins[]
@@ -178,7 +177,7 @@ export function UIPluginSelector(props: {
   if (error)
     return (
       <div style={{ color: 'red' }}>
-        Failed to fetch Blueprint {entity.type}
+        Failed to fetch Blueprint {entity.type || '(unknown type)'}
       </div>
     )
   if (!selectablePlugins.length)

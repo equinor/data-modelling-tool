@@ -1,8 +1,7 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin, useDocument } from '@dmt/common'
+import { DmtPluginType, DmtUIPlugin, useDocument, TJob } from '@dmt/common'
 import { JobControl } from './JobControl'
-import { TJob } from './types'
 import { JobEdit } from './JobEdit'
 
 const JobControlWrapper = (props: DmtUIPlugin) => {

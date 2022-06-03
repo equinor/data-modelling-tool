@@ -3,14 +3,13 @@ import { Route } from 'react-router-dom'
 import { Layout } from 'antd'
 
 import Routes from './Routes'
-import { TApp, TLayout } from './Types'
-import { Header } from '@dmt/common'
+import { Header, TApp, TLayout } from '@dmt/common'
 import { backgroundColorDefault } from './components/Design/Colors'
 import Content from './components/Layout/Content'
 import Menu from './components/Layout/Menu'
 
 const MainLayout = (props: TLayout) => {
-  const { heading, content, settings, allApps } = props
+  const { content, settings, allApps } = props
   return (
     <>
       <Header
@@ -20,7 +19,7 @@ const MainLayout = (props: TLayout) => {
       />
       <Layout style={{ background: backgroundColorDefault }}>
         <Menu appRootPath={settings.urlPath} />
-        <Content settings={settings} heading={heading} content={content} />
+        <Content settings={settings} content={content} />
       </Layout>
     </>
   )
@@ -39,7 +38,6 @@ export default (props: TApp): JSX.Element => {
           render={() => (
             <MainLayout
               allApps={applications}
-              heading={route.heading}
               content={route.content}
               settings={settings}
             />

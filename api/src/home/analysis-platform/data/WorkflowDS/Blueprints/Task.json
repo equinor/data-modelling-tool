@@ -72,7 +72,7 @@
       "roles": ["dmss-admin", "domain-expert", "domain-developer"]
     },
     {
-      "name": "Operator edit",
+      "name": "Expert operator edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-task-expert-operator",
       "category": "edit",

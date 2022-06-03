@@ -170,10 +170,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                 ) : (
                   <UIPluginSelector
                     absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                    entity={
-                      (Object.keys(formData?.runner).length &&
-                        formData.runner) || { type: '' }
-                    }
+                    entity={formData.runner}
                     breadcrumb={false}
                     categories={['edit']}
                   />

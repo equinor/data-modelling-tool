@@ -1,6 +1,6 @@
 import { Tree, TreeNode } from '../domain/Tree'
 import React, { useContext, useEffect, useState } from 'react'
-import { ApplicationContext, AuthContext, BlueprintEnum } from '../index'
+import { ApplicationContext, AuthContext, EBlueprint } from '../index'
 import styled from 'styled-components'
 
 import {
@@ -55,9 +55,9 @@ const GetIcon = (props: { node: TreeNode }) => {
       return <FaDatabase style={{ color: 'gray' }} />
     case 'error':
       return <FaExclamationTriangle style={{ color: 'orange' }} />
-    case BlueprintEnum.BLUEPRINT:
+    case EBlueprint.BLUEPRINT:
       return <FaRegFileAlt style={{ color: '#2966FF' }} />
-    case BlueprintEnum.PACKAGE:
+    case EBlueprint.PACKAGE:
       if (node.expanded) {
         if (node.isRoot) {
           return <FaFolderOpen style={{ color: '#8531A3' }} />
@@ -90,7 +90,7 @@ const TreeNodeComponent = (props: {
         if (node.type !== 'error') onClick(node, setLoading)
       }}
     >
-      {[BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type || '') ? (
+      {[EBlueprint.PACKAGE, 'dataSource'].includes(node.type || '') ? (
         <ExpandButton>
           {node.expanded ? <FaChevronDown /> : <FaChevronRight />}
         </ExpandButton>
@@ -151,8 +151,7 @@ export const TreeView = (props: {
       // @ts-ignore
       setIndex([...node.tree])
     }
-
-    if (![BlueprintEnum.PACKAGE, 'dataSource'].includes(node.type)) {
+    if (![EBlueprint.PACKAGE, 'dataSource'].includes(node.type)) {
       onSelect(node)
     }
   }

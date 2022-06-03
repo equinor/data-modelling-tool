@@ -6,16 +6,24 @@ import {
   Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
-import { hasExpertRole } from '../../../utils/auth'
-import Icons from '../../../components/Design/Icons'
+import Icons from './Design/Icons'
 import React, { useContext, useState } from 'react'
-import { AccessControlList, AuthContext, Dialog, DmssAPI } from '@dmt/common'
-import { DEFAULT_DATASOURCE_ID, JOB } from '../../../const'
+import {
+  AccessControlList,
+  AuthContext,
+  Dialog,
+  DmssAPI,
+  hasExpertRole,
+  poorMansUUID,
+  EJobStatus,
+  TJob,
+  EBlueprint,
+} from '@dmt/common'
+import { TAnalysis, TTask } from '../Types'
+import { TAnalysisCardProps } from '../Types'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { poorMansUUID } from '../../../utils/uuid'
-import { JobStatus, TAnalysis, TJob, TTask } from '../../../Types'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -31,19 +39,18 @@ const CardWrapper = styled.div`
   border-radius: 5px;
 `
 
-type AnalysisCardProps = {
+const RunAnalysisButton = (props: {
   analysis: TAnalysis
   addJob: Function
   jobs: any
-}
-
-const RunAnalysisButton = (props: any) => {
-  const { analysis, addJob, jobs } = props
+  dataSourceId: string
+}) => {
+  const { analysis, addJob, jobs, dataSourceId } = props
   const [loading, setLoading] = useState<boolean>(false)
   const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
-  const analysisAbsoluteReference = `${DEFAULT_DATASOURCE_ID}/${analysis._id}`
+  const analysisAbsoluteReference = `${dataSourceId}/${analysis._id}`
 
   const createJob = (task: TTask) => {
     setLoading(true)
@@ -60,8 +67,8 @@ const RunAnalysisButton = (props: any) => {
     const job: TJob = {
       label: 'Example local container job',
       name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(1)}`,
-      type: JOB,
-      status: JobStatus.CREATED,
+      type: EBlueprint.JOB,
+      status: EJobStatus.CREATED,
       triggeredBy: tokenData?.name,
       applicationInput: task.applicationInput,
       runner: task.runner,
@@ -105,8 +112,8 @@ const RunAnalysisButton = (props: any) => {
   )
 }
 
-const AnalysisCard = (props: AnalysisCardProps) => {
-  const { analysis, addJob, jobs } = props
+const AnalysisCard = (props: TAnalysisCardProps) => {
+  const { analysis, addJob, jobs, dataSourceId } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
 
   const { tokenData } = useContext(AuthContext)
@@ -154,13 +161,16 @@ const AnalysisCard = (props: AnalysisCardProps) => {
                 analysis={analysis}
                 addJob={addJob}
                 jobs={jobs}
+                dataSourceId={dataSourceId}
               />
-              <Tooltip title={'Not implemented'}>
-                <Button style={{ width: 'max-content' }} disabled>
-                  Configure schedule
-                  <Icons name="time" title="time" />
-                </Button>
-              </Tooltip>
+              {hasExpertRole(tokenData) && (
+                <Tooltip title={'Not implemented'}>
+                  <Button style={{ width: 'max-content' }} disabled>
+                    Configure schedule
+                    <Icons name="time" title="time" />
+                  </Button>
+                </Tooltip>
+              )}
             </>
           )}
           {hasExpertRole(tokenData) && (
@@ -181,7 +191,7 @@ const AnalysisCard = (props: AnalysisCardProps) => {
       >
         <AccessControlList
           documentId={analysis._id}
-          dataSourceId={DEFAULT_DATASOURCE_ID}
+          dataSourceId={dataSourceId}
         />
       </Dialog>
     </CardWrapper>

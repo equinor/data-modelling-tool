@@ -5,12 +5,13 @@ import {
   NewEntityButton,
   TReference,
   UIPluginSelector,
+  EJobStatus,
+  TJob,
 } from '@dmt/common'
 import * as React from 'react'
 import { useState } from 'react'
 import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { JobStatus, TJob } from './types'
 
 const Column = styled.div``
 
@@ -34,7 +35,7 @@ export const JobEdit = (props: {
   const { document, documentId, dataSourceId, updateDocument } = props
 
   const [formData, setFormData] = useState<TJob>({ ...document })
-  if (document.status !== JobStatus.CREATED) {
+  if (document.status !== EJobStatus.CREATED) {
     return (
       <div
         style={{
@@ -132,10 +133,7 @@ export const JobEdit = (props: {
               >
                 <UIPluginSelector
                   absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                  entity={
-                    (Object.keys(formData?.runner).length &&
-                      formData.runner) || { type: '' }
-                  }
+                  entity={formData.runner}
                   breadcrumb={false}
                   categories={['edit']}
                 />

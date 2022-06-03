@@ -4,12 +4,11 @@ import { Button, Chip, Progress, Tooltip } from '@equinor/eds-core-react'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import styled from 'styled-components'
-import { useDocument } from '@dmt/common'
+import { useDocument, poorMansUUID } from '@dmt/common'
 
 import ArrowPlots from './Plots/ArrowPlots'
 import { DEFAULT_DATASOURCE_ID } from './const'
 import { plotColors } from './Plots/plotColors'
-import { poorMansUUID } from './uuid'
 import Icons from './Icons'
 import { TGraph } from './types'
 

@@ -3,7 +3,7 @@ import React, { useState } from 'react'
 import { Button, TextField } from '@equinor/eds-core-react'
 import { INPUT_FIELD_WIDTH } from '@dmt/common'
 import { TAnalysis } from '../../../Types'
-import { TASK } from '../../../const'
+import { EBlueprints } from '../../../Enums'
 
 type Errors = {
   [key: string]: any
@@ -24,7 +24,7 @@ const Wrapper = styled.div`
 const hasErrors = (error: Errors) =>
   error['name'] !== '' || error['description'] !== ''
 
-const CreateAnalysisForm = (props: CreateFormProps) => {
+export const CreateAnalysisForm = (props: CreateFormProps) => {
   const { onSubmit, data } = props
   const [error, setError] = useState<Errors>({
     name: '',
@@ -32,6 +32,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
   })
   const [analysis, setAnalysis] = useState<TAnalysis>({
     _id: '',
+    type: EBlueprints.ANALYSIS,
     name: data?.name || '',
     description: data?.description || '',
     jobs: [],
@@ -41,7 +42,7 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
     creator: '',
     schedule: '',
     task: {
-      type: TASK,
+      type: EBlueprints.TASK,
       name: '',
       description: '',
       label: '',
@@ -125,5 +126,3 @@ const CreateAnalysisForm = (props: CreateFormProps) => {
     </form>
   )
 }
-
-export default CreateAnalysisForm

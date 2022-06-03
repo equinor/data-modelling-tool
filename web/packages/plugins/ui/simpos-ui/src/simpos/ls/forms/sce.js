@@ -112,7 +112,7 @@ class Form extends Component {
               id={'description'}
               label={'Description'}
               multiline
-              rowsMax="4"
+              maxRows="4"
               inputProps={{ style: { fontSize: 16 } }} // font size of input text
               InputLabelProps={{ style: { fontSize: 16 } }} // font size of input label
               variant="filled"
