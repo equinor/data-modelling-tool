@@ -18,18 +18,13 @@
 
 //import { VictoryTheme, VictoryChart, VictoryLine, VictoryBar } from 'victory'
 
-import React from 'react'
 //import ReactDOM from 'react-dom';
-
-import Plot from 'react-plotly.js'
 
 import styled from 'styled-components'
 import { useTable } from 'react-table'
 
 import { useState } from 'react'
 import useCollapse from 'react-collapsed'
-
-import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
 
 /* ********************************************************* */
 //Custom views

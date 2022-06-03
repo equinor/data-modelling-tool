@@ -6,9 +6,6 @@
  *
  * External plugins must have a unique name, not conflicting with the DMT official plugin names.
  */
-import React from 'react'
-
-import { OBJModel } from 'react-3d-viewer'
 
 //********************************************************//
 

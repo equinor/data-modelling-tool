@@ -30,7 +30,9 @@
     "custom-plugins/*"
   ],
   "devDependencies": {
-    "node-notifier": "^10.0.1"
+    "node-notifier": "^10.0.1",
+    "eslint": "^8.0.0",
+    "eslint-plugin-unused-imports": "^2.0.0"
   },
   "nohoist": [
     "workspaces/**/webpack-dev-server",

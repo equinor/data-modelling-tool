@@ -1,7 +1,4 @@
-import React from 'react'
 //import ReactDOM from 'react-dom';
-
-import Plot from 'react-plotly.js'
 
 function ModeData({ rao, motInd }) {
   console.log(rao)

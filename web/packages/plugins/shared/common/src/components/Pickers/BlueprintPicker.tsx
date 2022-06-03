@@ -12,14 +12,16 @@ export const BlueprintPicker = (props: {
   onChange: (type: string) => void
   formData: string | undefined
   variant?: Variants
+  disabled?: boolean
 }) => {
-  const { onChange, formData, variant } = props
+  const { onChange, formData, variant, disabled } = props
   const [showModal, setShowModal] = useState<boolean>(false)
 
   return (
     <div>
       <Tooltip title={truncatePathString(formData)}>
         <Input
+          disabled={disabled}
           variant={variant || 'default'}
           style={{
             width: PATH_INPUT_FIELD_WIDTH,
