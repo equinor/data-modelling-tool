@@ -36,7 +36,10 @@ class JobHandler(JobHandlerInterface):
         try:
             reference_target: str = self.job.entity.get("referenceTarget", None)
             runner_entity: dict = self.job.entity["runner"]
-            full_image_name: str = f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}:{runner_entity['image']['version']}"
+            full_image_name: str = (
+                f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
+                + f":{runner_entity['image']['version']}"
+            )
             logger.info(f"JobName: '{self.job.job_id}'." + " Starting Local Container job...")
             logger.info(
                 "Creating container\n\t"

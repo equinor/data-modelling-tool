@@ -76,7 +76,7 @@
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-task-expert-operator",
       "category": "edit",
-      "roles": ["expert-operator"]
+      "roles": ["expert-operator", "operator"]
     }
   ]
 }

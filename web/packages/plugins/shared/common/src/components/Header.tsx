@@ -162,6 +162,7 @@ export const Header = (props: {
         isOpen={visibleUserInfo}
         header={'User info'}
         closeScrim={() => setVisibleUserInfo(false)}
+        width={'30vw'}
       >
         <div style={{ margin: '20px' }}>
           <pre style={{ whiteSpace: 'pre-wrap' }}>
