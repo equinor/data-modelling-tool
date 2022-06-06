@@ -51,7 +51,7 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const { documentId, dataSourceId, config, document } = props
+  const { documentId, dataSourceId, config, document, onSubmit } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
@@ -72,7 +72,11 @@ export const TabsContainer = (props: DmtUIPlugin) => {
     setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
     setSelectedTab(tabData.attribute)
   }
-
+  if (!onSubmit) {
+    throw new Error(
+      'TabsContainer plugin must have an onSubmit function as props'
+    )
+  }
   return (
     <TabsProvider onOpen={handleOpen}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -120,6 +124,9 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
               setSelectedTab(tabData.attribute)
             }}
+            onSubmit={() => {
+              onSubmit()
+            }}
           />
         </HidableWrapper>
         {Object.values(childTabs).map((childTab: any) => {
@@ -130,6 +137,9 @@ export const TabsContainer = (props: DmtUIPlugin) => {
                 key={childTab.attribute}
                 absoluteDottedId={childTab.absoluteDottedId}
                 entity={childTab.entity}
+                onSubmit={() => {
+                  onSubmit()
+                }}
                 categories={childTab.categories}
               />
             </HidableWrapper>

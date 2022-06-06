@@ -28,7 +28,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onOpen } = props
+  const { document, documentId, dataSourceId, onOpen, onSubmit } = props
   const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
@@ -41,6 +41,12 @@ export const EditTask = (props: DmtUIPlugin) => {
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
     setFormData({ ..._document })
   }, [_document])
+
+  if (!onSubmit) {
+    throw new Error(
+      'EditTask UI plugin must have an onSubmit function as props'
+    )
+  }
 
   return (
     <div>
@@ -173,6 +179,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                     entity={formData.runner}
                     breadcrumb={false}
                     categories={['edit']}
+                    onSubmit={() => onSubmit()}
                   />
                 )}
               </div>
@@ -192,7 +199,7 @@ export const EditTask = (props: DmtUIPlugin) => {
           <Button
             as="button"
             onClick={() => {
-              updateDocument(formData, true)
+              updateDocument(formData, true, onSubmit)
             }}
           >
             Save

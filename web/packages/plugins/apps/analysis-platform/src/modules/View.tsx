@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect } from 'react'
 // @ts-ignore
 import { useParams } from 'react-router-dom'
 import { useDocument, UIPluginSelector } from '@dmt/common'
@@ -17,6 +17,7 @@ export const View = ({ settings }: any) => {
     documentLoading,
     setDocument,
     error,
+    fetchDocument,
   ] = useDocument<TValidEntity>(data_source, entity_id, true)
 
   if (error)
@@ -39,6 +40,9 @@ export const View = ({ settings }: any) => {
           absoluteDottedId={`${data_source}/${entity_id}`}
           entity={document}
           breadcrumb={true}
+          onSubmit={() => {
+            fetchDocument()
+          }}
         />
       )}
     </>

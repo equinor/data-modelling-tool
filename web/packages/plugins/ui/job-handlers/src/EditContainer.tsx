@@ -29,7 +29,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditContainer = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, documentId } = props
+  const { document, dataSourceId, documentId, onSubmit } = props
   const [formData, setFormData] = useState<any>({ ...document })
   const [_document, loading, updateDocument] = useDocument(
     dataSourceId,
@@ -69,7 +69,11 @@ export const EditContainer = (props: DmtUIPlugin) => {
       </div>
     )
   }
-
+  if (!onSubmit) {
+    throw new Error(
+      'EditContainer plugin must have an onSubmit function as props'
+    )
+  }
   return (
     <div
       style={{
@@ -142,7 +146,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
             ) : (
               <Button
                 as="button"
-                onClick={() => updateDocument(formData, true)}
+                onClick={() => updateDocument(formData, true, onSubmit)}
               >
                 Save
               </Button>

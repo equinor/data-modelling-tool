@@ -9,15 +9,18 @@ export function useDocument<T>(
   dataSourceId: string,
   documentId: string,
   resolved?: boolean | undefined
-): [T | null, boolean, Function, AxiosError<any> | null] {
+): [T | null, boolean, Function, AxiosError<any> | null, Function] {
   const [document, setDocument] = useState<T | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<AxiosError<any> | null>(null)
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
+    fetchDocument()
+  }, [dataSourceId, documentId])
+
+  function fetchDocument(): void {
     setLoading(true)
     let depth = 1
     if (resolved) depth = 999
@@ -34,9 +37,18 @@ export function useDocument<T>(
       })
       .catch((error: AxiosError) => setError(error))
       .finally(() => setLoading(false))
-  }, [dataSourceId, documentId])
+  }
 
-  function updateDocument(newDocument: T, notify: boolean): void {
+  function updateDocument(
+    newDocument: T,
+    notify: boolean,
+    functionToRunAfterUpdate?: Function
+  ): void {
+    /*
+      Will update the document in the database.
+      functionToRunAfterUpdate is an optional function that will run
+       after the database update is complete.
+     */
     setLoading(true)
     dmssAPI
       .documentUpdate({
@@ -48,6 +60,9 @@ export function useDocument<T>(
       .then(() => {
         setDocument(newDocument)
         setError(null)
+        if (functionToRunAfterUpdate) {
+          functionToRunAfterUpdate()
+        }
         if (notify) NotificationManager.success('Document updated')
       })
       .catch((error: AxiosError<any>) => {
@@ -63,5 +78,5 @@ export function useDocument<T>(
       .finally(() => setLoading(false))
   }
 
-  return [document, isLoading, updateDocument, error]
+  return [document, isLoading, updateDocument, error, fetchDocument]
 }
