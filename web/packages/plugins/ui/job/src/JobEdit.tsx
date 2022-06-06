@@ -31,8 +31,9 @@ export const JobEdit = (props: {
   updateDocument: Function
   documentId: string
   dataSourceId: string
+  onSubmit: Function
 }) => {
-  const { document, documentId, dataSourceId, updateDocument } = props
+  const { document, documentId, dataSourceId, updateDocument, onSubmit } = props
 
   const [formData, setFormData] = useState<TJob>({ ...document })
   if (document.status !== EJobStatus.CREATED) {
@@ -105,6 +106,7 @@ export const JobEdit = (props: {
                 entity={formData.applicationInput}
                 absoluteDottedId={`${dataSourceId}/${formData.applicationInput._id}`}
                 categories={['container']}
+                onSubmit={onSubmit}
               />
             </div>
           </GroupWrapper>
@@ -136,6 +138,7 @@ export const JobEdit = (props: {
                   entity={formData.runner}
                   breadcrumb={false}
                   categories={['edit']}
+                  onSubmit={onSubmit}
                 />
               </div>
             </Column>
@@ -154,7 +157,7 @@ export const JobEdit = (props: {
           <Button
             as="button"
             onClick={() => {
-              updateDocument(formData, true)
+              updateDocument(formData, true) //Todo do i need onsubmit as extra param??
             }}
           >
             Save
