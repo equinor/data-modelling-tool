@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import {
   IDashboard,
   useDashboard,
@@ -8,7 +8,12 @@ import { ModalProvider } from '../../context/modal/ModalContext'
 import { GoldenLayoutComponent } from '../../components/golden-layout/GoldenLayoutComponent'
 import GoldenLayoutPanel from '../../components/golden-layout/GoldenLayoutPanel'
 import styled from 'styled-components'
-import { TreeNode, TreeView, UIPluginSelector } from '@dmt/common'
+import {
+  FSTreeContext,
+  TreeNode,
+  TreeView,
+  UIPluginSelector,
+} from '@dmt/common'
 import { NodeRightClickMenu } from '../../components/context-menu/ContextMenu'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -51,6 +56,7 @@ const LAYOUT_CONFIG = {
 
 export default () => {
   const dashboard: IDashboard = useDashboard()
+  const { index } = useContext(FSTreeContext)
 
   const open = (node: TreeNode) => {
     if (Array.isArray(node.entity)) {
@@ -73,6 +79,7 @@ export default () => {
       <div style={{ display: 'flex' }}>
         <TreeWrapper>
           <TreeView
+            index={index}
             onSelect={(node: TreeNode) => open(node)}
             // @ts-ignore
             NodeWrapper={NodeRightClickMenu}

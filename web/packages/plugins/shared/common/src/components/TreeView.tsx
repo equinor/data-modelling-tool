@@ -117,57 +117,24 @@ const TreeNodeComponent = (props: {
 }
 
 export const TreeView = (props: {
+  index: TreeNode[]
   onSelect: (node: TreeNode) => void
   NodeWrapper?: React.FunctionComponent<NodeWrapperProps>
   NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
-  const { onSelect, NodeWrapper, NodeWrapperOnClick } = props
-  // @ts-ignore
-  const { token } = useContext(AuthContext)
-  const appConfig = useContext(ApplicationContext)
-  const tree = new Tree(token, appConfig.visibleDataSources)
-  const [index, setIndex] = useState<TreeNode[]>([])
-  const [loading, setLoading] = useState<boolean>(false)
-
-  useEffect(() => {
-    setLoading(true)
-    tree
-      .init()
-      // @ts-ignore
-      .then(() => setIndex([...tree]))
-      .finally(() => setLoading(false))
-  }, [])
+  const { index, onSelect, NodeWrapper, NodeWrapperOnClick } = props
 
   const _onClick = (node: TreeNode, setLoading: (l: boolean) => void) => {
     if (!node.expanded) {
       setLoading(true)
-      node
-        .expand()
-        // @ts-ignore
-        .then(() => setIndex([...node.tree]))
-        .finally(() => setLoading(false))
+      node.expand().finally(() => setLoading(false))
     } else {
       node.collapse()
-      // @ts-ignore
-      setIndex([...node.tree])
     }
     if (![EBlueprint.PACKAGE, 'dataSource'].includes(node.type)) {
       onSelect(node)
     }
   }
-
-  const removeNode = (node: TreeNode) => {
-    node.remove()
-    // @ts-ignore
-    setIndex([...node.tree])
-  }
-
-  if (loading)
-    return (
-      <div style={{ textAlign: 'center', paddingTop: '10px' }}>
-        <CircularProgress value={0} />
-      </div>
-    )
 
   return (
     <>
@@ -179,7 +146,6 @@ export const TreeView = (props: {
               node={node}
               key={node.nodeId}
               onSelect={NodeWrapperOnClick}
-              removeNode={removeNode}
             >
               <TreeNodeComponent
                 node={node}
