@@ -20,7 +20,7 @@ export const EntityPickerInput = (props: {
 }) => {
   const { onChange, formData, typeFilter } = props
   const [showModal, setShowModal] = useState<boolean>(false)
-  const { index } = useContext(FSTreeContext)
+  const { treeNodes } = useContext(FSTreeContext)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row' }}>
@@ -40,7 +40,7 @@ export const EntityPickerInput = (props: {
         height={TREE_DIALOG_HEIGHT}
       >
         <TreeView
-          index={index}
+          nodes={treeNodes}
           onSelect={(node: TreeNode) => {
             if (node.type !== typeFilter) {
               NotificationManager.warning('Wrong type')
