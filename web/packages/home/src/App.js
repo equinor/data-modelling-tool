@@ -1,26 +1,14 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled, { createGlobalStyle, ThemeProvider } from 'styled-components'
-import {
-  BrowserRouter as Router,
-  Redirect,
-  Route,
-  useHistory,
-} from 'react-router-dom'
+import { BrowserRouter as Router, Routes, Route, useNavigate } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
-import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
 import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
 import {
-  sortApplications,
-  UiPluginContext,
-  ApplicationContext,
+  sortApplications, UiPluginContext, ApplicationContext,
 } from '@dmt/common'
 import {
-  CardBody,
-  CardFieldset,
-  CardHeader,
-  CardHeading,
-  CardWrapper,
+  CardBody, CardFieldset, CardHeader, CardHeading, CardWrapper,
 } from './components/Card'
 import { AuthContext } from 'react-oauth2-code-pkce'
 
@@ -52,32 +40,48 @@ const HorizontalList = styled.div`
   }
 `
 
+const ApplicationsCardsWrapper = ({settings, applications}) => {
+  const { loading, getPagePlugin } = useContext(UiPluginContext)
+  if (loading) return (<Progress.Circular
+      style={{
+        display: 'block', marginLeft: 'auto', marginRight: 'auto', marginTop: '150px',
+      }}
+  />)
+  const UiPlugin = getPagePlugin(settings?.pluginName || '').component
+
+  if (!UiPlugin) return (<div style={{ color: 'red' }}>
+    {' '}
+    <b>Error:</b>Failed to get UiPlugins, see web console for
+    details.
+  </div>)
+  return (<ApplicationContext.Provider value={settings}>
+    <UiPlugin settings={settings} applications={applications}/>
+  </ApplicationContext.Provider>)
+}
+
+
 const AppSelector = (props) => {
   const { applications } = props
-  const history = useHistory()
-  const links = Object.values(applications).map((setting) => (
-    <div key={setting.name}>
-      <CardWrapper onClick={() => history.push(`/${setting.urlPath}`)}>
-        <CardHeader>
-          <CardHeading>{`${setting.label}`}</CardHeading>
-        </CardHeader>
-        <CardBody>
-          <CardFieldset>{`${setting.description}`}</CardFieldset>
-        </CardBody>
-      </CardWrapper>
-    </div>
-  ))
-  return (
-    <div>
-      <HorizontalList>{links}</HorizontalList>
-    </div>
-  )
+  const navigate = useNavigate()
+  const links = Object.values(applications).map((setting) => (<div key={setting.name}>
+    <CardWrapper onClick={() => navigate(`/${setting.urlPath}`)}>
+      <CardHeader>
+        <CardHeading>{`${setting.label}`}</CardHeading>
+      </CardHeader>
+      <CardBody>
+        <CardFieldset>{`${setting.description}`}</CardFieldset>
+      </CardBody>
+    </CardWrapper>
+  </div>))
+  return (<div>
+    <HorizontalList>{links}</HorizontalList>
+  </div>)
 }
 
 function App() {
-  const [applications, setApplications] = useState(undefined)
+  const [applications, setApplications] = useState()
   const [loadingAppSettings, setLoadingAppSettings] = useState(false)
-  const { loading, getPagePlugin } = useContext(UiPluginContext)
+
   const { token } = useContext(AuthContext)
   const authEnabled = process.env.REACT_APP_AUTH === '1'
   const dmtAPI = new DmtAPI()
@@ -85,16 +89,10 @@ function App() {
   useEffect(() => {
     setLoadingAppSettings(true)
     dmtAPI
-      .getSystemSettings()
-      .then((res) =>
-        setApplications(
-          sortApplications(res.data).filter(
-            (application) => application?.hidden !== true
-          )
-        )
-      )
-      .catch((error) => console.error(error))
-      .finally(() => setLoadingAppSettings(false))
+        .getSystemSettings()
+        .then((res) => setApplications(sortApplications(res.data).filter((application) => application?.hidden !== true)))
+        .catch((error) => console.error(error))
+        .finally(() => setLoadingAppSettings(false))
   }, [])
 
   if (authEnabled && !token) {
@@ -102,62 +100,30 @@ function App() {
     return <div>You are not logged in. Reload page to login</div>
   }
 
-  if (loading || loadingAppSettings)
-    return (
-      <Progress.Circular
-        style={{
-          display: 'block',
-          marginLeft: 'auto',
-          marginRight: 'auto',
-          marginTop: '150px',
-        }}
-      />
-    )
+  if (!applications || loadingAppSettings) return (<Progress.Circular
+      style={{
+        display: 'block', marginLeft: 'auto', marginRight: 'auto', marginTop: '150px',
+      }}
+  />)
 
-  return (
-    <ThemeProvider theme={theme}>
-      <Router>
-        <GlobalStyle />
-        <NotificationContainer />
+  return (<ThemeProvider theme={theme}>
+    <GlobalStyle/>
+    <NotificationContainer/>
+    <Router>
+      <Routes>
         <Route
-          exact
-          path="/"
-          render={() =>
-            applications.length === 1 ? (
-              <Redirect to={applications[0].urlPath} />
-            ) : (
-              <AppSelector applications={applications} />
-            )
-          }
+            exact
+            path="/"
+            element={<AppSelector applications={applications}/>}
         />
-        <Switch>
-          {Object.values(applications).map((settings) => (
-            <Route
-              path={`/${settings.urlPath}`}
-              render={() => {
-                const UiPlugin = getPagePlugin(settings?.pluginName || '')
-                  .component
-                if (!UiPlugin)
-                  return (
-                    <div style={{ color: 'red' }}>
-                      {' '}
-                      <b>Error:</b>Failed to get UiPlugins, see web console for
-                      details.
-                    </div>
-                  )
-                return (
-                  <ApplicationContext.Provider value={settings}>
-                    <UiPlugin settings={settings} applications={applications} />
-                  </ApplicationContext.Provider>
-                )
-              }}
-              key={settings.name}
-            />
-          ))}
-        </Switch>
-      </Router>
-    </ThemeProvider>
-  )
+        {Object.values(applications).map((settings) => (<Route
+            path={`/${settings.urlPath}/*`}
+            element={<ApplicationsCardsWrapper settings={settings} applications={applications}/>}
+            key={settings.name}
+        />))}
+      </Routes>
+    </Router>
+  </ThemeProvider>)
 }
 
 export default App

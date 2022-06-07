@@ -85,6 +85,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 
   return (
     <div>
+      {/*@ts-ignore*/}
       <Mermaid chart={chart} />
     </div>
   )

@@ -203,7 +203,9 @@ const MakeDiagram = ({ document }: any) => {
 
   //6) render the diagram!
   return (
+    // @ts-ignore
     <DemoCanvasWidget>
+      {/*@ts-ignore*/}
       <CanvasWidget engine={engine} />
     </DemoCanvasWidget>
   )

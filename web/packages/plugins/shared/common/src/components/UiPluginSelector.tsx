@@ -207,6 +207,7 @@ export function UIPluginSelector(props: {
           )}
         </PluginTabsWrapper>
       )}
+      {/*@ts-ignore*/}
       <ErrorBoundary
         key={selectablePlugins[selectedPlugin].name}
         fallBack={() => (

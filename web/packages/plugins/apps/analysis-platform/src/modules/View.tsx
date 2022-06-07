@@ -8,15 +8,16 @@ import { TValidEntity } from '@dmt/common'
 import { ErrorGroup } from '../components/ErrorGroup'
 
 export const View = ({ settings }: any) => {
-  const { data_source, entity_id } = useParams<{
+  const { data_source, entity_id } = useParams() as {
     data_source: string
     entity_id: string
-  }>()
+  }
   const [
     document,
     documentLoading,
     setDocument,
     error,
+    // @ts-ignore
   ] = useDocument<TValidEntity>(data_source, entity_id, true)
 
   if (error)

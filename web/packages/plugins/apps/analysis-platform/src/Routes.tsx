@@ -20,7 +20,7 @@ const Routes: Array<TRoute> = [
     content: View,
   },
   {
-    path: '/view/:data_source/:entity_id',
+    path: '/view/:data_source/:entity_id/*',
     //@ts-ignore
     content: View,
   },

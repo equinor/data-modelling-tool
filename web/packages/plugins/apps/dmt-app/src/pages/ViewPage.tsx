@@ -23,10 +23,10 @@ const Group = styled.div`
 `
 
 export default ({ settings }: any) => {
-  const { data_source, entity_id } = useParams<{
+  const { data_source, entity_id } = useParams() as {
     data_source: string
     entity_id: string
-  }>()
+  }
   const [
     document,
     documentLoading,

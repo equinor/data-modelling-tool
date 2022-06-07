@@ -7,7 +7,7 @@ import { useLocalStorage } from '@dmt/common'
 
 const { Sider } = Layout
 
-export default (props: { appRootPath: string }): JSX.Element => {
+export default (props: { appRootPath: string }) => {
   const { appRootPath } = props
   const location = useLocation()
   const [collapsed, setCollapsed] = useLocalStorage('menuCollapsed', false)
@@ -24,11 +24,13 @@ export default (props: { appRootPath: string }): JSX.Element => {
       //@ts-ignore
       onCollapse={(collapsed: boolean) => setCollapsed(collapsed)}
     >
+      {/*@ts-ignore*/}
       <Menu
         theme="light"
         defaultSelectedKeys={[location.pathname]}
         mode="inline"
       >
+        {/*@ts-ignore*/}
         <Menu.Item key={menuUrl[0]} icon={<Icon name="home" size={iconSize} />}>
           <Link to={{ pathname: menuUrl[0] }}>Analysis</Link>
         </Menu.Item>

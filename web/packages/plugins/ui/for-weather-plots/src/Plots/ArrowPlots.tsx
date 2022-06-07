@@ -1,3 +1,4 @@
+// @ts-nocheck
 import React from 'react'
 import { PlotType, TGraphInfo } from '../Result'
 import {
