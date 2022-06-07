@@ -1,6 +1,7 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   Dialog,
+  FSTreeContext,
   TREE_DIALOG_HEIGHT,
   TREE_DIALOG_WIDTH,
   TreeNode,
@@ -20,6 +21,7 @@ export const EntityPickerButton = (props: {
 }) => {
   const { onChange, typeFilter, text, variant } = props
   const [showModal, setShowModal] = useState<boolean>(false)
+  const { index } = useContext(FSTreeContext)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', margin: '0 10px' }}>
@@ -37,6 +39,7 @@ export const EntityPickerButton = (props: {
         height={TREE_DIALOG_HEIGHT}
       >
         <TreeView
+          index={index}
           onSelect={(node: TreeNode) => {
             if (typeFilter && node.type !== typeFilter) {
               NotificationManager.warning(

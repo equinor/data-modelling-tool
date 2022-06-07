@@ -234,7 +234,7 @@ export const EditBlueprint = (props: DmtUIPlugin) => {
       />
       <Spacer />
       <Extends
-        formData={formData?.extends}
+        formData={formData?.extends || []}
         setExtends={(newExtends: string[]) =>
           setFormData({ ...formData, extends: newExtends })
         }
@@ -252,46 +252,47 @@ export const EditBlueprint = (props: DmtUIPlugin) => {
       <Spacer />
       <Label label="Attributes" />
       <Accordion>
-        {formData.attributes.map((attribute: any, index: number) => (
-          <Accordion.Item key={index}>
-            <Accordion.Header>
-              {attribute.name} {attribute.attributeType}{' '}
-              {attribute?.dimensions || '-'}
-              {attribute?.contained === undefined ||
-              attribute?.contained === true
-                ? 'Contained'
-                : 'Uncontained'}
-              <Button
-                variant="ghost_icon"
-                color="danger"
-                style={{ width: '24px', height: '24px' }}
-                onClick={() => {
-                  formData.attributes.splice(index, 1)
-                  setFormData({
-                    ...formData,
-                    attributes: [...formData.attributes],
-                  })
-                }}
-              >
-                <Icon
-                  name="close_circle_outlined"
-                  title="remove attribute"
-                  size={24}
+        {Array.isArray(formData?.attribute) &&
+          formData.attributes.map((attribute: any, index: number) => (
+            <Accordion.Item key={index}>
+              <Accordion.Header>
+                {attribute.name} {attribute.attributeType}{' '}
+                {attribute?.dimensions || '-'}
+                {attribute?.contained === undefined ||
+                attribute?.contained === true
+                  ? 'Contained'
+                  : 'Uncontained'}
+                <Button
+                  variant="ghost_icon"
+                  color="danger"
+                  style={{ width: '24px', height: '24px' }}
+                  onClick={() => {
+                    formData.attributes.splice(index, 1)
+                    setFormData({
+                      ...formData,
+                      attributes: [...formData.attributes],
+                    })
+                  }}
+                >
+                  <Icon
+                    name="close_circle_outlined"
+                    title="remove attribute"
+                    size={24}
+                  />
+                </Button>
+              </Accordion.Header>
+              <Accordion.Panel>
+                <BlueprintAttribute
+                  attribute={attribute}
+                  setAttribute={(changedAttribute: any) => {
+                    let newAttributes = [...formData.attributes]
+                    newAttributes[index] = changedAttribute
+                    setFormData({ ...formData, attributes: newAttributes })
+                  }}
                 />
-              </Button>
-            </Accordion.Header>
-            <Accordion.Panel>
-              <BlueprintAttribute
-                attribute={attribute}
-                setAttribute={(changedAttribute: any) => {
-                  let newAttributes = [...formData.attributes]
-                  newAttributes[index] = changedAttribute
-                  setFormData({ ...formData, attributes: newAttributes })
-                }}
-              />
-            </Accordion.Panel>
-          </Accordion.Item>
-        ))}
+              </Accordion.Panel>
+            </Accordion.Item>
+          ))}
       </Accordion>
       <div style={{ display: 'flex', justifyContent: 'end', margin: '5px' }}>
         <Button

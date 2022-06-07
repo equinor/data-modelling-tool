@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 import {
   PATH_INPUT_FIELD_WIDTH,
   TREE_DIALOG_HEIGHT,
@@ -11,6 +11,7 @@ import {
   TreeView,
   truncatePathString,
   Dialog,
+  FSTreeContext,
 } from '../../index'
 import { Button, Input, Tooltip } from '@equinor/eds-core-react'
 import styled from 'styled-components'
@@ -22,6 +23,7 @@ export type DestinationPickerProps = {
 
 export const DestinationPicker = (props: DestinationPickerProps) => {
   const { onChange, formData } = props
+  const { index } = useContext(FSTreeContext)
   const [showModal, setShowModal] = useState<boolean>(false)
 
   const onSelect = (node: TreeNode) => {
@@ -54,6 +56,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
         height={TREE_DIALOG_HEIGHT}
       >
         <TreeView
+          index={index}
           onSelect={() => {}}
           NodeWrapper={SelectPackageButton}
           NodeWrapperOnClick={onSelect}

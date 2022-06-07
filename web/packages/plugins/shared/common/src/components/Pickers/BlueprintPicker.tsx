@@ -1,9 +1,9 @@
-import React, { useState } from 'react'
+import React, { useContext, useState } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { TREE_DIALOG_HEIGHT, TREE_DIALOG_WIDTH } from '../../utils/variables'
 import { EBlueprint } from '../../Enums'
-import { Dialog, TreeNode, TreeView } from '../../index'
+import { Dialog, FSTreeContext, TreeNode, TreeView } from '../../index'
 import { Input, Tooltip } from '@equinor/eds-core-react'
 import { PATH_INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
 import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types'
@@ -16,6 +16,7 @@ export const BlueprintPicker = (props: {
 }) => {
   const { onChange, formData, variant, disabled } = props
   const [showModal, setShowModal] = useState<boolean>(false)
+  const { index } = useContext(FSTreeContext)
 
   return (
     <div>
@@ -42,6 +43,7 @@ export const BlueprintPicker = (props: {
         height={TREE_DIALOG_HEIGHT}
       >
         <TreeView
+          index={index}
           onSelect={(node: TreeNode) => {
             if (node.type !== EBlueprint.BLUEPRINT) {
               NotificationManager.warning('You can only select a blueprint')

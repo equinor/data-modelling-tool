@@ -2,6 +2,7 @@ import { DmssAPI, DmtAPI } from '../services'
 import { EBlueprint } from '../Enums'
 import { TAttribute, TBlueprint } from './types'
 import { TReference } from '../types'
+import { AxiosResponse } from 'axios'
 
 type TreeMap = {
   [nodeId: string]: TreeNode
@@ -31,32 +32,34 @@ const createContainedChildren = (
   blueprint: TBlueprint
 ): TreeMap => {
   const newChildren: TreeMap = {}
-  Object.entries(document).forEach(([key, value]: [string, any]) => {
-    let attribute = blueprint.attributes.find(
-      (attr: TAttribute) => attr.name === key
-    ) as TAttribute
-    if (Array.isArray(document)) {
-      // If the passed document was an array, use attribute from parent
-      attribute = parentNode.attribute
+  Object.entries(document).forEach(
+    ([key, value]: [string, any], index: number) => {
+      let attribute = blueprint.attributes.find(
+        (attr: TAttribute) => attr.name === key
+      ) as TAttribute
+      if (Array.isArray(document)) {
+        // If the passed document was an array, use attribute from parent
+        attribute = parentNode.attribute
+      }
+      if (!attribute) return false // If no attribute, there likely where some invalid keys. Ignore those
+      // Skip adding nodes for primitives
+      if (!['string', 'number', 'boolean'].includes(attribute.attributeType)) {
+        const childNodeId = `${parentNode.nodeId}.${key}`
+        newChildren[childNodeId] = new TreeNode(
+          parentNode.tree,
+          childNodeId,
+          parentNode.level + 1,
+          value,
+          attribute,
+          parentNode,
+          value?.name || key,
+          false,
+          false,
+          false
+        )
+      }
     }
-    if (!attribute) return false // If no attribute, there likely where some invalid keys. Ignore those
-    // Skip adding nodes for primitives
-    if (!['string', 'number', 'boolean'].includes(attribute.attributeType)) {
-      const childNodeId = `${parentNode.nodeId}.${key}`
-      newChildren[childNodeId] = new TreeNode(
-        parentNode.tree,
-        childNodeId,
-        parentNode.level + 1,
-        value,
-        attribute,
-        parentNode,
-        value?.name || key,
-        false,
-        false,
-        false
-      )
-    }
-  })
+  )
 
   return newChildren
 }
@@ -127,10 +130,15 @@ export class TreeNode {
   }
 
   collapse(node?: TreeNode): void {
+    this._collapse(node || this)
+    this.tree.setIndex(this.tree)
+  }
+
+  _collapse(node?: TreeNode): void {
     let _node = node || this
     _node.expanded = false
     for (const child of Object.values<TreeNode>(_node?.children || {})) {
-      this.collapse(child)
+      this._collapse(child)
     }
   }
 
@@ -146,13 +154,13 @@ export class TreeNode {
       .then((response: any) => response.data)
   }
 
-  async expand() {
-    if (this.type !== 'dataSource') {
+  async expand(): Promise<void> {
+    if (!this.isDataSource) {
       const [dataSourceId, documentId] = this.nodeId.split('/', 2)
       const parentBlueprint: TBlueprint = await this.tree.dmssApi
         .blueprintGet({ typeRef: this.type })
         .then((response: any) => response.data)
-      return this.tree.dmssApi
+      this.tree.dmssApi
         .documentGetById({
           dataSourceId: dataSourceId,
           documentId: documentId,
@@ -166,6 +174,7 @@ export class TreeNode {
             this.children = createContainedChildren(data, this, parentBlueprint)
           }
           this.expanded = true
+          this.tree.setIndex(this.tree)
         })
         .catch((error: Error) => {
           this.type = 'error'
@@ -174,7 +183,9 @@ export class TreeNode {
     } else {
       // Expanding a dataSource node will not trigger a fetch request. Return an instantly resolved Promise
       return new Promise((resolve) => {
-        resolve(null)
+        this.expanded = true
+        this.tree.setIndex(this.tree)
+        resolve()
       })
     }
   }
@@ -193,6 +204,7 @@ export class TreeNode {
 
   remove(): void {
     delete this?.parent?.children[this.nodeId]
+    this.tree.setIndex(this.tree)
   }
 
   // Creates a new entity on DMSS of the given type and saves it to this package,
@@ -204,15 +216,16 @@ export class TreeNode {
     let packageContent = ''
     if (this.type === EBlueprint.PACKAGE) packageContent = '.content'
 
-    return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) =>
-      this.tree.dmssApi
-        .explorerAdd({
-          absoluteRef: `${this.nodeId}${packageContent}`,
-          body: newEntity,
-          updateUncontained: true,
-        })
-        .then((response: any) => response.data.uid)
+    const newEntity: any = await this.tree.dmtApi.createEntity(type, name)
+    const createResponse: AxiosResponse<any> = await this.tree.dmssApi.explorerAdd(
+      {
+        absoluteRef: `${this.nodeId}${packageContent}`,
+        body: newEntity,
+        updateUncontained: true,
+      }
     )
+    await this.expand()
+    return createResponse.data.uid
   }
 }
 
@@ -221,11 +234,17 @@ export class Tree {
   dmssApi: DmssAPI
   dmtApi: DmtAPI
   dataSources
+  setIndex: (t: Tree) => void
 
-  constructor(token: string, dataSources: string[]) {
+  constructor(
+    token: string,
+    dataSources: string[],
+    setIndex: (t: Tree) => void
+  ) {
     this.dmssApi = new DmssAPI(token)
     this.dmtApi = new DmtAPI(token)
     this.dataSources = dataSources
+    this.setIndex = setIndex
     dataSources.forEach(
       (
         dataSourceId: string // Add the dataSources as the top-level nodes
@@ -299,7 +318,7 @@ export class Tree {
             this.index[dataSource].message = error.message
           })
       )
-    )
+    ).then(() => this.setIndex(this))
   }
 
   // "[Symbol.iterator]" is similar to "__next__" in a python class.
