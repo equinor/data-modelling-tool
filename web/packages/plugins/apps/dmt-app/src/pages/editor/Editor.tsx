@@ -17,6 +17,7 @@ import {
 import { NodeRightClickMenu } from '../../components/context-menu/ContextMenu'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { Progress } from '@equinor/eds-core-react'
 
 export const TreeWrapper = styled.div`
   width: 25%;
@@ -56,7 +57,7 @@ const LAYOUT_CONFIG = {
 
 export default () => {
   const dashboard: IDashboard = useDashboard()
-  const { index } = useContext(FSTreeContext)
+  const { treeNodes, loading } = useContext(FSTreeContext)
 
   const open = (node: TreeNode) => {
     if (Array.isArray(node.entity)) {
@@ -78,12 +79,18 @@ export default () => {
     <ModalProvider>
       <div style={{ display: 'flex' }}>
         <TreeWrapper>
-          <TreeView
-            index={index}
-            onSelect={(node: TreeNode) => open(node)}
-            // @ts-ignore
-            NodeWrapper={NodeRightClickMenu}
-          />
+          {loading ? (
+            <div style={{ display: 'flex', justifyContent: 'center' }}>
+              <Progress.Circular />
+            </div>
+          ) : (
+            <TreeView
+              nodes={treeNodes}
+              onSelect={(node: TreeNode) => open(node)}
+              // @ts-ignore
+              NodeWrapper={NodeRightClickMenu}
+            />
+          )}
         </TreeWrapper>
         <GoldenLayoutComponent
           htmlAttrs={{ style: { height: '100vh', width: '100%' } }}

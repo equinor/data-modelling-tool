@@ -1,6 +1,6 @@
-import { Tree, TreeNode } from '../domain/Tree'
-import React, { useContext, useEffect, useState } from 'react'
-import { ApplicationContext, AuthContext, EBlueprint } from '../index'
+import { TreeNode } from '../domain/Tree'
+import { useEffect, useState } from 'react'
+import { EBlueprint } from '../index'
 import styled from 'styled-components'
 
 import {
@@ -13,7 +13,8 @@ import {
   FaList,
   FaRegFileAlt,
 } from 'react-icons/fa'
-import { CircularProgress, Progress, Tooltip } from '@equinor/eds-core-react'
+import { Progress, Tooltip } from '@equinor/eds-core-react'
+import React from 'react'
 
 type StyledTreeNode = {
   level: number
@@ -42,8 +43,8 @@ export type NodeWrapperProps = {
   onSelect?: (node: TreeNode) => void
 }
 
-const GetIcon = (props: { node: TreeNode }) => {
-  const { node } = props
+const GetIcon = (props: { node: TreeNode; expanded: boolean }) => {
+  const { node, expanded } = props
   if (Array.isArray(node.entity)) {
     return <FaList />
   }
@@ -58,7 +59,7 @@ const GetIcon = (props: { node: TreeNode }) => {
     case EBlueprint.BLUEPRINT:
       return <FaRegFileAlt style={{ color: '#2966FF' }} />
     case EBlueprint.PACKAGE:
-      if (node.expanded) {
+      if (expanded) {
         if (node.isRoot) {
           return <FaFolderOpen style={{ color: '#8531A3' }} />
         } else {
@@ -78,9 +79,10 @@ const GetIcon = (props: { node: TreeNode }) => {
 
 const TreeNodeComponent = (props: {
   node: TreeNode
+  expanded: boolean
   onClick: (node: TreeNode, setLoading: (l: boolean) => void) => void
 }) => {
-  const { node, onClick } = props
+  const { node, expanded, onClick } = props
   const [loading, setLoading] = useState<boolean>(false)
   return (
     <StyledTreeNode
@@ -92,12 +94,12 @@ const TreeNodeComponent = (props: {
     >
       {[EBlueprint.PACKAGE, 'dataSource'].includes(node.type || '') ? (
         <ExpandButton>
-          {node.expanded ? <FaChevronDown /> : <FaChevronRight />}
+          {expanded ? <FaChevronDown /> : <FaChevronRight />}
         </ExpandButton>
       ) : (
         <div style={{ width: '18px' }} />
       )}
-      <GetIcon node={node} />
+      <GetIcon node={node} expanded={expanded} />
       <Tooltip
         enterDelay={600}
         title={node?.message || node?.type || ''}
@@ -117,20 +119,42 @@ const TreeNodeComponent = (props: {
 }
 
 export const TreeView = (props: {
-  index: TreeNode[]
+  nodes: TreeNode[]
   onSelect: (node: TreeNode) => void
   NodeWrapper?: React.FunctionComponent<NodeWrapperProps>
   NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
-  const { index, onSelect, NodeWrapper, NodeWrapperOnClick } = props
+  const { nodes, onSelect, NodeWrapper, NodeWrapperOnClick } = props
+  // Use a per TreeView state to keep track of expanded nodes.
+  // This is so clicking in one tree will not affect other TreeViews
+  const [expandedNodes, setExpandedNodes] = useState<{ [k: string]: boolean }>(
+    {}
+  )
+
+  useEffect(() => {
+    let expandedNodes: { [k: string]: boolean } = {}
+    nodes.forEach((node: TreeNode) => {
+      // Initialize expanded state where only top level DataSources are expanded
+      expandedNodes[node.nodeId] = node.isDataSource
+    })
+    setExpandedNodes(expandedNodes)
+  }, [])
 
   const _onClick = (node: TreeNode, setLoading: (l: boolean) => void) => {
-    if (!node.expanded) {
+    let newExpandedNodes: { [k: string]: boolean } = {}
+    if (!expandedNodes[node.nodeId]) {
       setLoading(true)
       node.expand().finally(() => setLoading(false))
+      newExpandedNodes[node.nodeId] = true
     } else {
-      node.collapse()
+      // Set all children nodes as collapsed recursively
+      // @ts-ignore
+      for (const child of node) {
+        newExpandedNodes[child.nodeId] = false
+      }
+      newExpandedNodes[node.nodeId] = false
     }
+    setExpandedNodes({ ...expandedNodes, ...newExpandedNodes })
     if (![EBlueprint.PACKAGE, 'dataSource'].includes(node.type)) {
       onSelect(node)
     }
@@ -138,8 +162,9 @@ export const TreeView = (props: {
 
   return (
     <>
-      {index.map((node: TreeNode) => {
-        if (node?.parent?.expanded === false) return null
+      {nodes.map((node: TreeNode) => {
+        // If it has a parent, and the parent is not expanded, hide node
+        if (node?.parent && !expandedNodes[node.parent?.nodeId]) return null
         if (NodeWrapper) {
           return (
             <NodeWrapper
@@ -149,6 +174,7 @@ export const TreeView = (props: {
             >
               <TreeNodeComponent
                 node={node}
+                expanded={expandedNodes[node.nodeId]}
                 onClick={(node: TreeNode, setLoading: (l: boolean) => void) =>
                   _onClick(node, setLoading)
                 }
@@ -160,6 +186,7 @@ export const TreeView = (props: {
             <TreeNodeComponent
               key={node.nodeId}
               node={node}
+              expanded={expandedNodes[node.nodeId]}
               onClick={(node: TreeNode, setLoading: (l: boolean) => void) =>
                 _onClick(node, setLoading)
               }

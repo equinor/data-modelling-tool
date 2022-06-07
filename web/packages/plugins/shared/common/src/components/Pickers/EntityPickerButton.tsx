@@ -9,7 +9,7 @@ import {
   TReference,
   truncatePathString,
 } from '../../index'
-import { Button } from '@equinor/eds-core-react'
+import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 
@@ -21,7 +21,7 @@ export const EntityPickerButton = (props: {
 }) => {
   const { onChange, typeFilter, text, variant } = props
   const [showModal, setShowModal] = useState<boolean>(false)
-  const { index } = useContext(FSTreeContext)
+  const { treeNodes, loading } = useContext(FSTreeContext)
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', margin: '0 10px' }}>
@@ -38,28 +38,34 @@ export const EntityPickerButton = (props: {
         width={TREE_DIALOG_WIDTH}
         height={TREE_DIALOG_HEIGHT}
       >
-        <TreeView
-          index={index}
-          onSelect={(node: TreeNode) => {
-            if (typeFilter && node.type !== typeFilter) {
-              NotificationManager.warning(
-                `Type must be '${truncatePathString(typeFilter, 43)}'`
-              )
-              return
-            }
-            setShowModal(false)
-            node
-              .fetch()
-              .then((doc: any) => {
-                setShowModal(false)
-                onChange(doc)
-              })
-              .catch((error: any) => {
-                console.error(error)
-                NotificationManager.error('Failed to fetch')
-              })
-          }}
-        />
+        {loading ? (
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Progress.Circular />
+          </div>
+        ) : (
+          <TreeView
+            nodes={treeNodes}
+            onSelect={(node: TreeNode) => {
+              if (typeFilter && node.type !== typeFilter) {
+                NotificationManager.warning(
+                  `Type must be '${truncatePathString(typeFilter, 43)}'`
+                )
+                return
+              }
+              setShowModal(false)
+              node
+                .fetch()
+                .then((doc: any) => {
+                  setShowModal(false)
+                  onChange(doc)
+                })
+                .catch((error: any) => {
+                  console.error(error)
+                  NotificationManager.error('Failed to fetch')
+                })
+            }}
+          />
+        )}
       </Dialog>
     </div>
   )
