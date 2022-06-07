@@ -1,10 +1,12 @@
-export const truncatePathString = (path: string | undefined): string => {
+export function truncatePathString(
+  path: string | undefined,
+  maxLength: number | undefined = 55
+): string {
   if (!path) return ''
   /*
-  Truncate path string to have length <= MAX_LENGTH.
+  Truncate path string to have length <= maxLength.
    */
-  const MAX_LENGTH: number = 55
-  if (!path.includes('/') || path.length <= MAX_LENGTH) {
+  if (!path.includes('/') || path.length <= maxLength) {
     return path
   }
   const splitTextOnFolders: string[] = path.split('/')
@@ -13,13 +15,13 @@ export const truncatePathString = (path: string | undefined): string => {
   let truncatedPath: string = `.../${finalName}`
   let previousPath: string = ''
   let counter: number = 0
-  while (truncatedPath.length <= MAX_LENGTH) {
+  while (truncatedPath.length <= maxLength) {
     previousPath = truncatedPath
     truncatedPath = truncatedPath.replace(
       '...',
       `${splitTextOnFolders[counter]}/...`
     )
-    if (truncatedPath.length >= MAX_LENGTH) {
+    if (truncatedPath.length >= maxLength) {
       truncatedPath = previousPath
       break
     }

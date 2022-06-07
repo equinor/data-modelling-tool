@@ -62,8 +62,8 @@
       "name": "SRS Simulation",
       "description": "Some external plugin",
       "plugin": "simpos-srs-sce-simulation-form",
-      "category": "edit",
-      "roles": ["expert-operator", "domain-developer", "domain-expert"]
+      "roles": ["expert-operator", "domain-expert", "dmss-admin"],
+      "category": "edit"
     },
     {
       "type": "system/SIMOS/UiRecipe",

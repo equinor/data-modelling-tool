@@ -1,6 +1,7 @@
 import {
   EntityPickerButton,
   INPUT_FIELD_WIDTH,
+  JobHandlerPicker,
   NewEntityButton,
   TReference,
   UIPluginSelector,
@@ -9,13 +10,7 @@ import {
 } from '@dmt/common'
 import * as React from 'react'
 import { useState } from 'react'
-import {
-  Button,
-  Input,
-  Label,
-  Typography,
-  Tooltip,
-} from '@equinor/eds-core-react'
+import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 const Column = styled.div``
@@ -31,14 +26,13 @@ const HeaderWrapper = styled.div`
   margin-top: 8px;
 `
 
-export const JobEdit = (props: {
+export const JobEditAdvanced = (props: {
   document: TJob
   updateDocument: Function
   documentId: string
   dataSourceId: string
-  onSubmit: Function
 }) => {
-  const { document, documentId, dataSourceId, updateDocument, onSubmit } = props
+  const { document, documentId, dataSourceId, updateDocument } = props
 
   const [formData, setFormData] = useState<TJob>({ ...document })
   if (document.status !== EJobStatus.CREATED) {
@@ -70,26 +64,20 @@ export const JobEdit = (props: {
             >
               <Column>
                 <Label label={'Input entity'} />
-                <Tooltip
-                  title={formData.applicationInput.type}
-                  placement={'top-end'}
-                >
-                  <Input
-                    style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
-                    type="string"
-                    value={
-                      formData?.applicationInput?.name ||
-                      formData?.applicationInput?._id ||
-                      ''
-                    }
-                    placeholder={
-                      formData?.applicationInput?.name || 'Select or create'
-                    }
-                  />
-                </Tooltip>
+                <Input
+                  style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
+                  type="string"
+                  value={
+                    formData?.applicationInput?.name ||
+                    formData?.applicationInput?._id ||
+                    ''
+                  }
+                  placeholder={
+                    formData?.applicationInput?.name || 'Select or create'
+                  }
+                />
               </Column>
               <EntityPickerButton
-                typeFilter={formData.applicationInput.type}
                 onChange={(selectedEntity: any) => {
                   setFormData({
                     ...formData,
@@ -113,22 +101,47 @@ export const JobEdit = (props: {
                 paddingLeft: '10px',
               }}
             >
-              {/*@ts-ignore*/}
-              {Object.keys(formData.applicationInput.input).length ? (
-                <UIPluginSelector
-                  // @ts-ignore
-                  entity={formData.applicationInput.input}
-                  // @ts-ignore
-                  absoluteDottedId={`${dataSourceId}/${formData.applicationInput.input._id}`}
-                  categories={['edit']}
-                  onSubmit={onSubmit}
-                />
-              ) : (
-                <pre style={{ color: 'red' }}>
-                  The jobs input object has no attribute named "input"
-                </pre>
-              )}
+              <UIPluginSelector
+                entity={formData.applicationInput}
+                absoluteDottedId={`${dataSourceId}/${formData.applicationInput._id}`}
+                categories={['container']}
+              />
             </div>
+          </GroupWrapper>
+        </HeaderWrapper>
+
+        <HeaderWrapper>
+          <Typography variant="h3">Job runner</Typography>
+          <GroupWrapper>
+            <Column>
+              <Label label={'Blueprint'} />
+              <JobHandlerPicker
+                onChange={(selectedBlueprint: string) =>
+                  setFormData({
+                    ...formData,
+                    runner: { ...formData?.runner, type: selectedBlueprint },
+                  })
+                }
+                formData={formData?.runner?.type || ''}
+              />
+              <div
+                style={{
+                  margin: '10px 20px',
+                  borderLeft: '2px solid grey',
+                  paddingLeft: '10px',
+                }}
+              >
+                <UIPluginSelector
+                  absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
+                  entity={
+                    (Object.keys(formData?.runner).length &&
+                      formData.runner) || { type: '' }
+                  }
+                  breadcrumb={false}
+                  categories={['edit']}
+                />
+              </div>
+            </Column>
           </GroupWrapper>
         </HeaderWrapper>
 
