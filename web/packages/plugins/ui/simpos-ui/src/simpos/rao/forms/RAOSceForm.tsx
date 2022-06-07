@@ -8,7 +8,7 @@ import { RAOSceForm } from './raoSce.js'
 const RAOSceForm_Component = (props: DmtUIPlugin) => {
   const { dataSourceId, documentId, updateDocument } = props
 
-  const [document, isLoading, hasError] = useDocument(
+  const [document, isLoading, setDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
     true
