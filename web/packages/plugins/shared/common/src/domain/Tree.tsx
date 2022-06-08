@@ -2,8 +2,9 @@ import { DmssAPI, DmtAPI } from '../services'
 import { EBlueprint } from '../Enums'
 import { TAttribute, TBlueprint } from './types'
 import { TReference } from '../types'
+import { AxiosResponse } from 'axios'
 
-type TreeMap = {
+export type TreeMap = {
   [nodeId: string]: TreeNode
 }
 
@@ -53,7 +54,9 @@ const createContainedChildren = (
         value?.name || key,
         false,
         false,
-        false
+        // If this "new" node already exists on parent, instantiate the node with the same old children.
+        // If not the tree will lose already loaded children whenever a node is expanded()
+        parentNode.children?.[childNodeId]?.children || {}
       )
     }
   })
@@ -78,7 +81,11 @@ const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
         optional: false,
         dimensions: '',
       },
-      parentNode
+      parentNode,
+      undefined,
+      false,
+      false,
+      parentNode.children?.[newChildId]?.children || {}
     )
   })
   return newChildren
@@ -93,12 +100,11 @@ export class TreeNode {
   children: TreeMap = {}
   attribute: TAttribute
   parent?: TreeNode
-  isRoot?: boolean = false
-  isDataSource?: boolean = false
+  isRoot: boolean = false
+  isDataSource: boolean = false
   entity?: any
   name?: string
-  expanded?: boolean = false
-  message?: string = ''
+  message: string = ''
 
   constructor(
     tree: Tree,
@@ -110,7 +116,7 @@ export class TreeNode {
     name: string | undefined = undefined,
     isRoot = false,
     isDataSource = false,
-    expanded = false
+    children: TreeMap = {}
   ) {
     this.tree = tree
     this.nodeId = nodeId
@@ -122,15 +128,20 @@ export class TreeNode {
     this.entity = entity
     this.name = name || entity?.name
     this.type = attribute.attributeType
-    this.expanded = expanded
     this.attribute = attribute
+    this.children = children
   }
 
-  collapse(node?: TreeNode): void {
-    let _node = node || this
-    _node.expanded = false
-    for (const child of Object.values<TreeNode>(_node?.children || {})) {
-      this.collapse(child)
+  *[Symbol.iterator]() {
+    function* recursiveYieldChildren(node: TreeNode): any {
+      yield node
+      for (const child of Object.values<TreeNode>(node?.children || {})) {
+        yield* recursiveYieldChildren(child)
+      }
+    }
+
+    for (const node of Object.values<TreeNode>(Object.values(this.children))) {
+      yield* recursiveYieldChildren(node)
     }
   }
 
@@ -146,13 +157,13 @@ export class TreeNode {
       .then((response: any) => response.data)
   }
 
-  async expand() {
-    if (this.type !== 'dataSource') {
+  async expand(): Promise<void> {
+    if (!this.isDataSource) {
       const [dataSourceId, documentId] = this.nodeId.split('/', 2)
       const parentBlueprint: TBlueprint = await this.tree.dmssApi
         .blueprintGet({ typeRef: this.type })
         .then((response: any) => response.data)
-      return this.tree.dmssApi
+      this.tree.dmssApi
         .documentGetById({
           dataSourceId: dataSourceId,
           documentId: documentId,
@@ -165,7 +176,7 @@ export class TreeNode {
           } else {
             this.children = createContainedChildren(data, this, parentBlueprint)
           }
-          this.expanded = true
+          this.tree.updateCallback(this.tree)
         })
         .catch((error: Error) => {
           this.type = 'error'
@@ -174,7 +185,8 @@ export class TreeNode {
     } else {
       // Expanding a dataSource node will not trigger a fetch request. Return an instantly resolved Promise
       return new Promise((resolve) => {
-        resolve(null)
+        this.tree.updateCallback(this.tree)
+        resolve()
       })
     }
   }
@@ -193,6 +205,7 @@ export class TreeNode {
 
   remove(): void {
     delete this?.parent?.children[this.nodeId]
+    this.tree.updateCallback(this.tree)
   }
 
   // Creates a new entity on DMSS of the given type and saves it to this package,
@@ -204,15 +217,16 @@ export class TreeNode {
     let packageContent = ''
     if (this.type === EBlueprint.PACKAGE) packageContent = '.content'
 
-    return this.tree.dmtApi.createEntity(type, name).then((newEntity: any) =>
-      this.tree.dmssApi
-        .explorerAdd({
-          absoluteRef: `${this.nodeId}${packageContent}`,
-          body: newEntity,
-          updateUncontained: true,
-        })
-        .then((response: any) => response.data.uid)
+    const newEntity: any = await this.tree.dmtApi.createEntity(type, name)
+    const createResponse: AxiosResponse<any> = await this.tree.dmssApi.explorerAdd(
+      {
+        absoluteRef: `${this.nodeId}${packageContent}`,
+        body: newEntity,
+        updateUncontained: true,
+      }
     )
+    await this.expand()
+    return createResponse.data.uid
   }
 }
 
@@ -221,11 +235,17 @@ export class Tree {
   dmssApi: DmssAPI
   dmtApi: DmtAPI
   dataSources
+  updateCallback: (t: Tree) => void
 
-  constructor(token: string, dataSources: string[]) {
+  constructor(
+    token: string,
+    dataSources: string[],
+    updateCallback: (t: Tree) => void
+  ) {
     this.dmssApi = new DmssAPI(token)
     this.dmtApi = new DmtAPI(token)
     this.dataSources = dataSources
+    this.updateCallback = updateCallback
     dataSources.forEach(
       (
         dataSourceId: string // Add the dataSources as the top-level nodes
@@ -239,7 +259,6 @@ export class Tree {
           undefined,
           dataSourceId,
           false,
-          true,
           true
         )
       }
@@ -266,7 +285,6 @@ export class Tree {
                 this.index[dataSource],
                 rootPackage.name,
                 true,
-                false,
                 false
               )
               const children: TreeMap = {}
@@ -283,7 +301,6 @@ export class Tree {
                     rootPackageNode,
                     ref.name,
                     false,
-                    false,
                     false
                   )
                 }
@@ -299,7 +316,7 @@ export class Tree {
             this.index[dataSource].message = error.message
           })
       )
-    )
+    ).then(() => this.updateCallback(this))
   }
 
   // "[Symbol.iterator]" is similar to "__next__" in a python class.

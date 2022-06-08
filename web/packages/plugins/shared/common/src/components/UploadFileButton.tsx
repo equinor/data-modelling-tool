@@ -5,7 +5,6 @@ import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { AxiosError } from 'axios'
-import { format_list_numbered } from '@equinor/eds-icons'
 
 export const addToPath = (
   body: any,

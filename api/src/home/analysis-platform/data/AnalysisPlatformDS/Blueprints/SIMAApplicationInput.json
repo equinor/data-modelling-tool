@@ -84,7 +84,7 @@
       "plugin": "tabs",
       "category": "container",
       "config": {
-        "type": "DMT-Internal/ui-plugins/tabs/Config",
+        "type": "DMT-Internal/DMT/ui-plugins/tabs/Config",
         "subCategories": ["edit"]
       }
     },

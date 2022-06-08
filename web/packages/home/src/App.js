@@ -14,6 +14,7 @@ import {
   sortApplications,
   UiPluginContext,
   ApplicationContext,
+  FSTreeProvider,
 } from '@dmt/common'
 import {
   CardBody,
@@ -147,7 +148,12 @@ function App() {
                   )
                 return (
                   <ApplicationContext.Provider value={settings}>
-                    <UiPlugin settings={settings} applications={applications} />
+                    <FSTreeProvider>
+                      <UiPlugin
+                        settings={settings}
+                        applications={applications}
+                      />
+                    </FSTreeProvider>
                   </ApplicationContext.Provider>
                 )
               }}

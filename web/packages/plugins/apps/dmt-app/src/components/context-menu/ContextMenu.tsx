@@ -174,7 +174,7 @@ export const NodeRightClickMenu = (props: {
 
   const menuItems = createMenuItems(node, dmssAPI, removeNode, setScrimToShow)
 
-  const DeleteAction = () => {
+  const DeleteAction = (node: TreeNode) => {
     dmssAPI
       .explorerRemoveByPath({
         dataSourceId: node.dataSource,
@@ -183,7 +183,7 @@ export const NodeRightClickMenu = (props: {
         },
       })
       .then(() => {
-        removeNode(node)
+        node.remove()
         NotificationManager.success('Deleted')
       })
       .catch((error: Error) => {
@@ -209,9 +209,10 @@ export const NodeRightClickMenu = (props: {
         body: newFolder,
         updateUncontained: true,
       })
-      .catch((error: Error) => {
+      .then(() => node.expand())
+      .catch((error: AxiosError<any>) => {
         NotificationManager.error(
-          JSON.stringify(error.message),
+          JSON.stringify(error.response?.data?.message),
           'Failed to create new folder'
         )
       })
@@ -310,7 +311,7 @@ export const NodeRightClickMenu = (props: {
             <Button
               color="danger"
               onClick={() => {
-                DeleteAction()
+                DeleteAction(node)
                 setScrimToShow('')
               }}
             >
@@ -424,6 +425,7 @@ export const NodeRightClickMenu = (props: {
                   .addEntity(formData?.type, formData?.name || '')
                   .then(() => {
                     setScrimToShow('')
+                    NotificationManager.success(`New entity created`, 'Success')
                   })
                   .catch((error: Error) => {
                     console.error(error)

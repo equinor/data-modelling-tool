@@ -26,6 +26,8 @@ import { useTable } from 'react-table'
 import { useState } from 'react'
 import useCollapse from 'react-collapsed'
 
+import { FaChevronDown, FaChevronRight } from 'react-icons/fa'
+
 /* ********************************************************* */
 //Custom views
 /* ********************************************************* */
