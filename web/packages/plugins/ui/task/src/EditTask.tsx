@@ -28,7 +28,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onOpen } = props
+  const { document, documentId, dataSourceId, onOpen, onSubmit } = props
   const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
@@ -41,6 +41,11 @@ export const EditTask = (props: DmtUIPlugin) => {
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
     setFormData({ ..._document })
   }, [_document])
+
+  useEffect(() => {
+    //make sure local state is up to date with document prop
+    setFormData(document)
+  }, [document])
 
   return (
     <div>
@@ -193,6 +198,9 @@ export const EditTask = (props: DmtUIPlugin) => {
             as="button"
             onClick={() => {
               updateDocument(formData, true)
+              if (onSubmit) {
+                onSubmit(formData)
+              }
             }}
           >
             Save

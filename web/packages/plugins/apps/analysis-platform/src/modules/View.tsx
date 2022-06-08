@@ -1,5 +1,4 @@
 import React from 'react'
-// @ts-ignore
 import { useParams } from 'react-router-dom'
 import { useDocument, UIPluginSelector } from '@dmt/common'
 // @ts-ignore
@@ -12,12 +11,9 @@ export const View = ({ settings }: any) => {
     data_source: string
     entity_id: string
   }>()
-  const [
-    document,
-    documentLoading,
-    setDocument,
-    error,
-  ] = useDocument<TValidEntity>(data_source, entity_id, true)
+  const [document, documentLoading, setDocument, error] = useDocument<
+    TValidEntity
+  >(data_source, entity_id, true)
 
   if (error)
     return (
@@ -39,6 +35,9 @@ export const View = ({ settings }: any) => {
           absoluteDottedId={`${data_source}/${entity_id}`}
           entity={document}
           breadcrumb={true}
+          onSubmit={(formData: any) => {
+            setDocument(formData)
+          }}
         />
       )}
     </>

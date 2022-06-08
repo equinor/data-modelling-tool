@@ -29,7 +29,7 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditContainer = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, documentId } = props
+  const { document, dataSourceId, documentId, onSubmit } = props
   const [formData, setFormData] = useState<any>({ ...document })
   const [_document, loading, updateDocument] = useDocument(
     dataSourceId,
@@ -142,7 +142,12 @@ export const EditContainer = (props: DmtUIPlugin) => {
             ) : (
               <Button
                 as="button"
-                onClick={() => updateDocument(formData, true)}
+                onClick={() => {
+                  updateDocument(formData, true)
+                  if (onSubmit) {
+                    onSubmit(formData)
+                  }
+                }}
               >
                 Save
               </Button>
