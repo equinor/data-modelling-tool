@@ -143,39 +143,39 @@ export const EditTask = (props: DmtUIPlugin) => {
                 }
                 formData={formData?.runner?.type || ''}
               />
-              <div
-                style={{
-                  margin: '10px 20px',
-                  borderLeft: '2px solid grey',
-                  paddingLeft: '10px',
-                }}
-              >
-                {onOpen ? (
-                  <Button
-                    onClick={() =>
-                      onOpen({
-                        attribute: 'runner',
-                        categories: ['edit'],
-                        entity: formData?.runner || {
-                          type: '',
-                        },
-                        absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
-                        onSubmit: (data: any) =>
-                          setFormData({ ...formData, runner: data }),
-                      })
-                    }
-                  >
-                    Open
-                  </Button>
-                ) : (
-                  <UIPluginSelector
-                    absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                    entity={formData.runner}
-                    breadcrumb={false}
-                    categories={['edit']}
-                  />
-                )}
-              </div>
+              {formData?.runner?.type && (
+                <div
+                  style={{
+                    margin: '10px 20px',
+                    borderLeft: '2px solid grey',
+                    paddingLeft: '10px',
+                  }}
+                >
+                  {onOpen ? (
+                    <Button
+                      onClick={() =>
+                        onOpen({
+                          attribute: 'runner',
+                          categories: ['edit'],
+                          entity: formData?.runner,
+                          absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
+                          onSubmit: (data: any) =>
+                            setFormData({ ...formData, runner: data }),
+                        })
+                      }
+                    >
+                      Open
+                    </Button>
+                  ) : (
+                    <UIPluginSelector
+                      absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
+                      entity={formData.runner}
+                      breadcrumb={false}
+                      categories={['edit']}
+                    />
+                  )}
+                </div>
+              )}
             </Column>
           </GroupWrapper>
         </HeaderWrapper>

@@ -17,7 +17,7 @@ export const View = ({ settings }: any) => {
     documentLoading,
     setDocument,
     error,
-  ] = useDocument<TValidEntity>(data_source, entity_id, true)
+  ] = useDocument<TValidEntity>(data_source, entity_id, false)
 
   if (error)
     return (

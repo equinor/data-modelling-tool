@@ -424,6 +424,7 @@ export const NodeRightClickMenu = (props: {
                   .addEntity(formData?.type, formData?.name || '')
                   .then(() => {
                     setScrimToShow('')
+                    NotificationManager.success(`New entity created`, 'Success')
                   })
                   .catch((error: Error) => {
                     console.error(error)

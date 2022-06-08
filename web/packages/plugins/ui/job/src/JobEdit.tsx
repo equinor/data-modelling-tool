@@ -70,7 +70,9 @@ export const JobEdit = (props: {
               <Column>
                 <Label label={'Input entity'} />
                 <Tooltip
-                  title={formData.applicationInput.type}
+                  title={
+                    formData.applicationInput.type || 'No input entity selected'
+                  }
                   placement={'top-end'}
                 >
                   <Input
@@ -113,7 +115,7 @@ export const JobEdit = (props: {
               }}
             >
               {/*@ts-ignore*/}
-              {Object.keys(formData.applicationInput.input).length ? (
+              {Object.keys(formData.applicationInput?.input || {}).length ? (
                 <UIPluginSelector
                   // @ts-ignore
                   entity={formData.applicationInput.input}

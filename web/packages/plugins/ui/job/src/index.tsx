@@ -13,7 +13,8 @@ const JobControlWrapper = (props: DmtUIPlugin) => {
     false
   )
   if (documentLoading) return <div>Loading...</div>
-  if (error) return <div>Something went wrong; {error}</div>
+  if (error)
+    return <div>Something went wrong; {error.response?.data?.message}</div>
   if (!document) return <div>The job document is empty</div>
   return (
     <JobControl
