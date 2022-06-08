@@ -5,6 +5,8 @@ import styled from 'styled-components'
 import { NotificationManager } from 'react-notifications'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
+import { MultiSelect } from '@equinor/eds-core-react'
+import { AxiosResponse } from 'axios'
 // @ts-ignore
 import { Link } from 'react-router-dom'
 import {
@@ -15,14 +17,10 @@ import {
   ApplicationContext,
   AuthContext,
   useLocalStorage,
+  DataSource,
 } from '@dmt/common'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
-
-const StyledSelect = styled.select`
-  font-size: large;
-  margin: 0 5px 0 10px;
-`
 
 const Wrapper = styled.div`
   display: flex;
@@ -129,6 +127,7 @@ function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
     <FilterGroup>
       <AttributeName>Sort by:</AttributeName>
       <input
+        style={{ maxHeight: '30px' }}
         key="sortByAttribute"
         value={sortByAttribute}
         type={'text'}
@@ -164,7 +163,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
   useEffect(() => {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
-        .blueprintGet({ typeRef: attribute.getAttributeType() })
+        .blueprintGet({ typeRef: attribute.attr.attributeType })
         .then((response: any) => {
           const data = response.data
           setNestedAttributes(data.attributes)
@@ -192,7 +191,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
             nestedOnChange(event.target.value)
           }}
         />
-        <TypeHint>{attribute.getAttributeType()}</TypeHint>
+        <TypeHint>{attribute.attr.attributeType}</TypeHint>
       </FilterGroup>
     )
   // Filter for complex attributes
@@ -347,7 +346,8 @@ function FilterContainer({
 }
 
 // Return a TableRow for an entity. Clickable to toggle view of the raw document
-function EntityRow({ entity, dataSource }: any) {
+function EntityRow(props: { entity: any; absoluteId: string }) {
+  const { entity, absoluteId } = props
   return (
     <>
       <tr>
@@ -356,7 +356,7 @@ function EntityRow({ entity, dataSource }: any) {
         <TabelData>{entity.description}</TabelData>
         <TabelData>{entity._id}</TabelData>
         <td style={{ padding: '5px' }}>
-          <Link to={{ pathname: `/view/${dataSource}/${entity._id}` }}>
+          <Link to={{ pathname: `view/${absoluteId}` }}>
             View
             <EyeIcon />
           </Link>
@@ -366,7 +366,8 @@ function EntityRow({ entity, dataSource }: any) {
   )
 }
 
-function ResultContainer({ result, dataSource }: any) {
+function ResultContainer(props: { result: { [key: string]: any } }) {
+  const { result } = props
   return (
     <Wrapper style={{ marginTop: '10px' }}>
       <b>Result</b>
@@ -381,13 +382,15 @@ function ResultContainer({ result, dataSource }: any) {
               <th style={{ width: '50px' }}></th>
             </tr>
 
-            {result.map((entity: any) => (
-              <EntityRow
-                key={entity._id}
-                entity={entity}
-                dataSource={dataSource}
-              />
-            ))}
+            {Object.entries(result).map(
+              ([absoluteId, entity]: [string, any]) => (
+                <EntityRow
+                  key={entity._id}
+                  entity={entity}
+                  absoluteId={absoluteId}
+                />
+              )
+            )}
           </tbody>
         </table>
       </Group>
@@ -395,27 +398,37 @@ function ResultContainer({ result, dataSource }: any) {
   )
 }
 
-function SelectDataSource({
-  selectedDataSource,
-  setDataSource,
-  dataSources,
-}: any) {
+function SelectDataSource(props: {
+  selectedDataSources: string[]
+  setDataSources: (ds: string[]) => void
+  allDataSources: DataSources
+}) {
+  const { selectedDataSources, setDataSources, allDataSources } = props
   return (
-    <Wrapper style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-      <b>Select datasource to search:</b>
-      <StyledSelect
-        value={selectedDataSource}
-        onChange={(event: UIEvent) => setDataSource(event.target.value)}
-      >
-        {dataSources.map((dataSource) => {
-          return (
-            <option value={dataSource.name} key={dataSource.id}>
-              {dataSource.name}
-            </option>
-          )
-        })}
-      </StyledSelect>
-      <FaDatabase style={{ color: 'gray', width: '20px', height: '20px' }} />
+    <Wrapper
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'flex-end',
+        alignItems: 'self-end',
+        marginTop: '10px',
+      }}
+    >
+      <MultiSelect
+        label="Select data sources to search"
+        initialSelectedItems={selectedDataSources}
+        handleSelectedItemsChange={(
+          event: UseMultipleSelectionStateChange<string>
+        ) => setDataSources(event.selectedItems)}
+        items={allDataSources.map((dataSource: DataSource) => dataSource.id)}
+      ></MultiSelect>
+      <FaDatabase
+        style={{
+          color: 'gray',
+          width: '28px',
+          height: '28px',
+          marginLeft: '5px',
+        }}
+      />
     </Wrapper>
   )
 }
@@ -424,16 +437,17 @@ export default ({ settings }: any) => {
   const [searchSettings, setSearchSettings] = useLocalStorage(
     'searchSettings',
     {
-      dataSource: '',
+      dataSources: [],
       sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
       filter: {},
     }
   )
-  const [result, setResult] = useState([])
+  const [result, setResult] = useState<{ [key: string]: any }>({})
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
+
   useEffect(() => {
     dmssAPI
       .dataSourceGetAll()
@@ -448,34 +462,30 @@ export default ({ settings }: any) => {
   }, [])
 
   function search(query: any) {
-    query['extends'] = ['WorkflowDS/Blueprints/Task']
-    if (!searchSettings.dataSource)
-      NotificationManager.warning('No datasource selected')
     dmssAPI
       .search({
-        dataSources: [searchSettings.dataSource],
+        dataSources: searchSettings.dataSource,
         body: query,
         sortByAttribute: searchSettings.sortByAttribute,
       })
-      .then((response: any) => {
-        const result = response.data
+      .then((response: AxiosResponse<{ [key: string]: any }>) => {
         setQueryError('')
-        let resultList = Object.values(result)
-        if (resultList.length === 0) {
+        let nResults = Object.keys(response.data).length
+        if (nResults === 0) {
           NotificationManager.warning('No entities found', 'Search')
         } else {
           NotificationManager.success(
-            `Found ${resultList.length} matching ${
-              resultList.length > 1 ? 'entities' : 'entity'
+            `Found ${nResults} matching ${
+              nResults > 1 ? 'entities' : 'entity'
             }`,
             'Search'
           )
         }
         // @ts-ignore
-        setResult(resultList)
+        setResult(response.data)
       })
-      .catch((err: any) => {
-        setQueryError(err.message)
+      .catch((err: AxiosError<any>) => {
+        setQueryError(err.response.data.message)
         console.error(err)
       })
   }
@@ -483,11 +493,11 @@ export default ({ settings }: any) => {
   return (
     <>
       <SelectDataSource
-        selectedDataSource={searchSettings.dataSource}
-        setDataSource={(dataSource) =>
-          setSearchSettings({ ...searchSettings, dataSource: dataSource })
+        selectedDataSources={searchSettings.dataSource}
+        setDataSources={(dataSources) =>
+          setSearchSettings({ ...searchSettings, dataSources: dataSources })
         }
-        dataSources={dataSources}
+        allDataSources={dataSources}
       />
       <ApplicationContext.Provider
         value={{ ...settings, displayAllDataSources: true }}
@@ -510,7 +520,7 @@ export default ({ settings }: any) => {
             setSearchSettings({
               sortByAttribute: DEFAULT_SORT_BY_ATTRIBUTE,
               filter: {},
-              dataSource: searchSettings.dataSource,
+              dataSources: searchSettings.dataSource,
             })
           }
         />
