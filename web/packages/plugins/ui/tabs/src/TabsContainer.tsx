@@ -51,7 +51,7 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const { documentId, dataSourceId, config, document } = props
+  const { documentId, dataSourceId, config, document, onSubmit } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
@@ -120,10 +120,15 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
               setSelectedTab(tabData.attribute)
             }}
+            onSubmit={(formData: any) => {
+              setFormData({ ...formData })
+              if (onSubmit) {
+                onSubmit(formData)
+              }
+            }}
           />
         </HidableWrapper>
-        {Object.values(childTabs).map((childTab: any) => {
-          console.log(childTab)
+        {Object.values(childTabs).map((childTab: TChildTab) => {
           return (
             <HidableWrapper hidden={childTab.attribute !== selectedTab}>
               <UIPluginSelector
@@ -131,6 +136,16 @@ export const TabsContainer = (props: DmtUIPlugin) => {
                 absoluteDottedId={childTab.absoluteDottedId}
                 entity={childTab.entity}
                 categories={childTab.categories}
+                onSubmit={(data: any) => {
+                  const newFormData = {
+                    ...formData,
+                    [childTab.attribute]: data,
+                  }
+                  setFormData(newFormData)
+                  if (onSubmit) {
+                    onSubmit(newFormData)
+                  }
+                }}
               />
             </HidableWrapper>
           )

@@ -1,5 +1,4 @@
 import React from 'react'
-// @ts-ignore
 import { useParams } from 'react-router-dom'
 import { useDocument, UIPluginSelector } from '@dmt/common'
 // @ts-ignore
