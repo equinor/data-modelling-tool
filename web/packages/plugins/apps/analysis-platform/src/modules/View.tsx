@@ -11,12 +11,9 @@ export const View = ({ settings }: any) => {
     data_source: string
     entity_id: string
   }>()
-  const [
-    document,
-    documentLoading,
-    setDocument,
-    error,
-  ] = useDocument<TValidEntity>(data_source, entity_id, false)
+  const [document, documentLoading, setDocument, error] = useDocument<
+    TValidEntity
+  >(data_source, entity_id, false)
 
   if (error)
     return (
@@ -38,9 +35,6 @@ export const View = ({ settings }: any) => {
           absoluteDottedId={`${data_source}/${entity_id}`}
           entity={document}
           breadcrumb={true}
-          onSubmit={(formData: any) => {
-            setDocument(formData)
-          }}
         />
       )}
     </>
