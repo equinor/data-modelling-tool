@@ -29,16 +29,19 @@ const HeaderWrapper = styled.div`
 
 export const EditTask = (props: DmtUIPlugin) => {
   const { document, documentId, dataSourceId, onOpen, onSubmit } = props
-  const [_document, _loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId,
-    false
-  )
+  const [
+    _document,
+    _loading,
+    updateDocument,
+    error,
+    fetchDocument,
+  ] = useDocument<any>(dataSourceId, documentId, false)
   const [formData, setFormData] = useState<any>({ ...document })
 
   useEffect(() => {
     if (!_document) return
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
+    console.log('edit task formdata updated')
     setFormData({ ..._document })
   }, [_document])
 
@@ -179,7 +182,13 @@ export const EditTask = (props: DmtUIPlugin) => {
                     entity={formData.runner}
                     breadcrumb={false}
                     categories={['edit']}
-                    onSubmit={() => onSubmit()}
+                    onSubmit={() => {
+                      console.log(
+                        'uipluginselector onsubmit prop run in edittask'
+                      )
+                      // fetchDocument()
+                      onSubmit()
+                    }}
                   />
                 )}
               </div>

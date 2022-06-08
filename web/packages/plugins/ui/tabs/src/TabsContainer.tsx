@@ -55,15 +55,16 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, _loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId,
-    true
-  )
+  const [entity, _loading, updateDocument, error, fetchDocument] = useDocument<
+    any
+  >(dataSourceId, documentId, true)
 
   useEffect(() => {
+    console.log('entity in tabscontainer changed')
     if (!entity) return
     setFormData({ ...entity })
+    console.log('Updated formdata in tabscontaienr to ', { ...entity })
+    // there is something buggy here.. formdata not updated correctly.
   }, [entity])
 
   if (!entity || Object.keys(formData).length === 0) return null
@@ -125,12 +126,12 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               setSelectedTab(tabData.attribute)
             }}
             onSubmit={() => {
-              onSubmit()
+              fetchDocument(onSubmit)
             }}
           />
         </HidableWrapper>
         {Object.values(childTabs).map((childTab: any) => {
-          console.log(childTab)
+          // console.log(childTab)
           return (
             <HidableWrapper hidden={childTab.attribute !== selectedTab}>
               <UIPluginSelector
@@ -138,7 +139,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
                 absoluteDottedId={childTab.absoluteDottedId}
                 entity={childTab.entity}
                 onSubmit={() => {
-                  onSubmit()
+                  fetchDocument(onSubmit)
                 }}
                 categories={childTab.categories}
               />

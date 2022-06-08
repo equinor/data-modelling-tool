@@ -16,6 +16,10 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
     )
   }
 
+  useEffect(() => {
+    console.log('analysis entity chagned in operator view ', analysis)
+  }, [analysis])
+
   return (
     <>
       <AnalysisInfoCard
@@ -30,6 +34,7 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
           absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
           categories={['container']}
           onSubmit={() => {
+            console.log('onsubmit in opview')
             onSubmit()
           }}
         />

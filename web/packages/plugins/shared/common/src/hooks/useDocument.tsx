@@ -20,7 +20,8 @@ export function useDocument<T>(
     fetchDocument()
   }, [dataSourceId, documentId])
 
-  function fetchDocument(): void {
+  function fetchDocument(functionToRunAfterFetch?: Function): void {
+    // console.log('fetching doc')
     setLoading(true)
     let depth = 1
     if (resolved) depth = 999
@@ -33,6 +34,9 @@ export function useDocument<T>(
       .then((response: any) => {
         const data = response.data
         setDocument(data)
+        if (functionToRunAfterFetch) {
+          functionToRunAfterFetch()
+        }
         setError(null)
       })
       .catch((error: AxiosError) => setError(error))
@@ -61,6 +65,7 @@ export function useDocument<T>(
         setDocument(newDocument)
         setError(null)
         if (functionToRunAfterUpdate) {
+          console.log('ran functToRunafterupdate from useDoc')
           functionToRunAfterUpdate()
         }
         if (notify) NotificationManager.success('Document updated')
