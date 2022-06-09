@@ -60,7 +60,7 @@ def cli(token: str):
 @cli.command()
 def remove_application():
     logger.info("-------------- REMOVING OLD APPLICATION FILES ----------------")
-    logger.debug(("Removing application specific files from" f" the configured DMSS instance; {config.DMSS_API}"))
+    logger.debug(f"Removing application specific files from the configured DMSS instance; {config.DMSS_API}")
 
     def thread_function(settings: dict) -> bool:
         for package in settings.get("packages", []):
@@ -77,7 +77,7 @@ def remove_application():
                     pass
                 else:
                     raise error
-            return True
+        return True
 
     with concurrent.futures.ThreadPoolExecutor() as executor:
         for result in executor.map(thread_function, config.APP_SETTINGS.values()):
@@ -184,6 +184,8 @@ def init_application(context):
             except ImportReferenceNotFoundException as error:
                 logger.error(error.message)
                 raise error
+            except ApiException as error:
+                raise ApiException(error.body)
             except Exception as error:
                 traceback.print_exc()
                 raise Exception(f"Something went wrong trying to upload the package '{package}' to DMSS; {error}")
