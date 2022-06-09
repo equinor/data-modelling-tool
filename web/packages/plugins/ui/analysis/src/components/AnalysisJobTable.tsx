@@ -54,10 +54,7 @@ const JobRow = (props: {
     jobAPI
       .startJob(`${dataSourceId}/${analysisId}.jobs.${index}`)
       .then((result: any) => {
-        NotificationManager.success(
-          JSON.stringify(result.data),
-          'Simulation job started'
-        )
+        NotificationManager.success(result.data, 'Simulation job started')
         setJobStatus(EJobStatus.STARTING)
       })
       .catch((error: AxiosError) => {

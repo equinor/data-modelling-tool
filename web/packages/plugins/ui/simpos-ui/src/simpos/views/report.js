@@ -22,6 +22,7 @@
 
 import styled from 'styled-components'
 import { useTable } from 'react-table'
+import Plot from 'react-plotly.js'
 
 import { useState } from 'react'
 import useCollapse from 'react-collapsed'
@@ -137,7 +138,6 @@ const ColTableData = (tabDoc) => {
     })
   }
 
-  // console.log(columns)
   const nrows = tabDoc.columns[0].value.length
 
   var data = []
@@ -155,13 +155,11 @@ const ColTableData = (tabDoc) => {
     }
     data.push(row)
   }
-  // console.log(data)
 
   return { columns, data }
 }
 
 const TransposedColTableData = (tabDoc) => {
-  // console.log(tabDoc)
   var columns = []
   columns.push({ Header: tabDoc.columns[0].header, accessor: 'col_' + 0 })
   columns.push({ Header: tabDoc.columns[0].label, accessor: 'col_' + 1 })
@@ -172,7 +170,6 @@ const TransposedColTableData = (tabDoc) => {
       accessor: 'col_' + i + 2,
     })
   }
-  //console.log(columns)
 
   var data = []
 
@@ -187,15 +184,10 @@ const TransposedColTableData = (tabDoc) => {
     data.push(row)
   }
 
-  //console.log(data)
-
   return { columns, data }
 }
 
 const TableView = ({ tabDoc }) => {
-  console.log('*** Making Table')
-  //console.log(tabDoc);
-
   let tabData
 
   if (tabDoc.transposed) {
@@ -203,8 +195,6 @@ const TableView = ({ tabDoc }) => {
   } else {
     tabData = ColTableData(tabDoc)
   }
-
-  //console.log(tabData);
 
   return (
     <TableStyles>
@@ -220,16 +210,12 @@ const TableView = ({ tabDoc }) => {
 //********************************************************//
 //********************************************************//
 const PlotView = ({ plotDoc }) => {
-  console.log('*** Making Plot')
-  //console.log(plotDoc);
-
   var pdatas = []
 
   return (
     <div className="container">
       <Plot
         data={plotDoc.lines.map(function (line) {
-          // console.log(line)
           if (line.linestyle == 'bar') {
             return {
               x: line.x,
@@ -301,7 +287,6 @@ const CollapsedView = ({ doc }) => {
     section = <ParagraphView doc={doc} />
     defaultState = false
   } else {
-    console.log(doc.type + ' is not known. : view_SRSReportView')
   }
 
   const [isOpen, setOpen] = useState(defaultState)
@@ -312,7 +297,6 @@ const CollapsedView = ({ doc }) => {
       <Toggle
         {...getToggleProps({
           onClick: () => {
-            console.log(doc)
             setOpen((oldOpen) => !oldOpen)
           },
         })}
@@ -333,7 +317,6 @@ const SectionView = ({ doc }) => {
   const { getCollapseProps, getToggleProps } = useCollapse({ isOpen })
 
   const sectionTitle = doc.name
-  console.log(doc)
 
   return (
     <Wrapper>
