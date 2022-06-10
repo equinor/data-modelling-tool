@@ -32,7 +32,6 @@ const createContainedChildren = (
   blueprint: TBlueprint
 ): TreeMap => {
   const newChildren: TreeMap = {}
-  console.log('create contained child with doc', document)
   Object.entries(document).forEach(([key, value]: [string, any]) => {
     let attribute = blueprint.attributes.find(
       (attr: TAttribute) => attr.name === key
@@ -45,7 +44,6 @@ const createContainedChildren = (
     // Skip adding nodes for primitives
     if (!['string', 'number', 'boolean'].includes(attribute.attributeType)) {
       const childNodeId = `${parentNode.nodeId}.${key}`
-      console.log('entity used in node is', value)
       newChildren[childNodeId] = new TreeNode(
         parentNode.tree,
         childNodeId,
@@ -68,10 +66,8 @@ const createContainedChildren = (
 
 const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
   const newChildren: TreeMap = {}
-  console.log('create folde child')
   document.content.forEach((ref: TReference) => {
     const newChildId = `${parentNode.dataSource}/${ref?._id}`
-    console.log('entity used in node is', ref)
     newChildren[newChildId] = new TreeNode(
       parentNode.tree,
       newChildId,
@@ -167,27 +163,19 @@ export class TreeNode {
       const parentBlueprint: TBlueprint = await this.tree.dmssApi
         .blueprintGet({ typeRef: this.type })
         .then((response: any) => response.data)
-      console.log('doc id', documentId)
       this.tree.dmssApi
         .documentGetById({
           dataSourceId: dataSourceId,
           documentId: documentId,
-          depth: 0,
+          depth: 1,
         })
         .then((response: any) => {
           const data = response.data
-          // this.entity = data //??
-          console.log('resp from getDocBy id', data)
-          console.log(
-            'data.type === EBlueprint.PACKAGE',
-            data.type === EBlueprint.PACKAGE
-          )
           if (data.type === EBlueprint.PACKAGE) {
             this.children = createFolderChildren(data, this)
           } else {
             this.children = createContainedChildren(data, this, parentBlueprint)
           }
-          console.log('tree', this)
           this.tree.updateCallback(this.tree)
         })
         .catch((error: Error) => {

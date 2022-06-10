@@ -15,8 +15,6 @@ export const View = ({ settings }: any) => {
     TValidEntity
   >(data_source, entity_id, false)
 
-  console.log('view doc', document)
-
   if (error)
     return (
       <ErrorGroup>

@@ -14,11 +14,8 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
 
   useEffect(() => {
     //make sure local state is up to date with document prop
-    console.log('doc changed to ', document)
     setAnalysis(document)
   }, [document])
-  console.log('doc', document)
-  console.log('analysis op view', analysis)
 
   return (
     <>
