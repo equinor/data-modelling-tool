@@ -10,17 +10,17 @@ const Routes: Array<TRoute> = [
     content: AnalysisOverview,
   },
   {
-    path: '/analysis/new',
+    path: 'analysis/new',
     //@ts-ignore
     content: AnalysisCreate,
   },
   {
-    path: '/analysis/:data_source/:entity_id',
+    path: 'analysis/:data_source/:entity_id',
     //@ts-ignore
     content: View,
   },
   {
-    path: '/view/:data_source/:entity_id/*',
+    path: 'view/:data_source/:entity_id',
     //@ts-ignore
     content: View,
   },

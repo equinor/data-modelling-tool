@@ -210,14 +210,14 @@ export const EditBlueprint = (props: DmtUIPlugin) => {
     documentId,
     false
   )
-  const [formData, setFormData] = useState<any>({ ...document })
+  const [formData, setFormData] = useState<any>(null)
 
   useEffect(() => {
     if (!document) return
     setFormData(document)
   }, [document])
 
-  if (!document || _loading) return <div>Loading...</div>
+  if (!formData || _loading) return <div>Loading...</div>
 
   return (
     <div style={{ margin: '10px' }}>

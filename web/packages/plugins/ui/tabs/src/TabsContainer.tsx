@@ -58,7 +58,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   const [entity, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId,
-    true
+    false
   )
 
   useEffect(() => {

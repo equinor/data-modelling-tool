@@ -12,22 +12,36 @@ const PageComponent = (props: any) => {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
-  return (<div>
-    <Header
-      allApps={applications}
-      appName={settings.label}
-      urlPath={settings.urlPath}
-    />
-    <Routes>
-      <Route path="/DMT/search" element={<SearchPage settings={settings}/>}/>
-      <Route path="/DMT/view/:data_source/:entity_id" element={<ViewPage settings={settings}/>}/>
-      <Route path={`/${settings.name}/*`} element={<DashboardProvider dmssAPI={dmssAPI}>
-        <Editor/>
-      </DashboardProvider>}/>
-    </Routes>
-  </div>)
+  return (
+    <div>
+      <Header
+        allApps={applications}
+        appName={settings.label}
+        urlPath={settings.urlPath}
+      />
+      <Routes>
+        <Route path="search" element={<SearchPage settings={settings} />} />
+        <Route
+          path="view/:data_source/:entity_id"
+          element={<ViewPage settings={settings} />}
+        />
+        <Route
+          path={`*`}
+          element={
+            <DashboardProvider dmssAPI={dmssAPI}>
+              <Editor />
+            </DashboardProvider>
+          }
+        />
+      </Routes>
+    </div>
+  )
 }
 
-export const plugins: any = [{
-  pluginName: 'DMT', pluginType: DmtPluginType.PAGE, component: PageComponent,
-}]
+export const plugins: any = [
+  {
+    pluginName: 'DMT',
+    pluginType: DmtPluginType.PAGE,
+    component: PageComponent,
+  },
+]
