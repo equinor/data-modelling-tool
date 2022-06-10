@@ -11,7 +11,13 @@ import {
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
-import { Button, Input, Label, Typography } from '@equinor/eds-core-react'
+import {
+  Button,
+  Input,
+  Label,
+  Progress,
+  Typography,
+} from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 const Column = styled.div``
@@ -194,17 +200,25 @@ export const EditTask = (props: DmtUIPlugin) => {
           >
             Reset
           </Button>
-          <Button
-            as="button"
-            onClick={() => {
-              updateDocument(formData, true)
-              if (onSubmit) {
-                onSubmit(formData)
-              }
-            }}
-          >
-            Save
-          </Button>
+          <div>
+            {_loading ? (
+              <Button>
+                <Progress.Dots />
+              </Button>
+            ) : (
+              <Button
+                as="button"
+                onClick={() => {
+                  updateDocument(formData, true)
+                  if (onSubmit) {
+                    onSubmit(formData)
+                  }
+                }}
+              >
+                Save
+              </Button>
+            )}
+          </div>
         </div>
       </div>
     </div>
