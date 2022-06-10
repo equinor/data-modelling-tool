@@ -103,7 +103,16 @@ function create_job_document(){
     "referenceTarget":"REPLACE_REFERENCE_TARGET",
     "description": "REPLACE_DESCRIPTION",
     "result":{},
-    "runner":{"type":"WorkflowDS/Blueprints/jobHandlers/AzureContainer","image":"datamodelingtool.azurecr.io/dmt-job/srs:latest"},
+    "runner":{
+      "type":"WorkflowDS/Blueprints/jobHandlers/AzureContainer",
+      "image":{
+        "imageName": "dmt-job/srs",
+        "description": "",
+        "type": "AnalysisPlatformDS/Blueprints/ContainerImage",
+        "version": "latest",
+        "registryName": "datamodelingtool.azurecr.io"
+      }
+    },
     "applicationInput":{"_id":"REPLACE_APP_INPUT","type":"AnalysisPlatformDS/Blueprints/SIMAApplicationInput","name":"simaTestAppInput","contained":false}}' | \
   jq --arg name "$NAME" --arg description "${GITHUB_REF##*/}-${SHORT_GIT_SHA}" --arg refTarget "$REF_TARGET" --arg appInput "$APP_INPUT_ID" \
     '.name = $name | .referenceTarget = $refTarget | .applicationInput._id = $appInput'
