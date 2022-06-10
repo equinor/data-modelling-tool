@@ -184,7 +184,7 @@ export class TreeNode {
         })
     } else {
       // Expanding a dataSource node will not trigger a fetch request. Return an instantly resolved Promise
-      return new Promise(resolve => {
+      return new Promise((resolve) => {
         this.tree.updateCallback(this.tree)
         resolve()
       })
@@ -200,10 +200,7 @@ export class TreeNode {
   }
 
   pathFromRootPackage(): string {
-    return this.getPath()
-      .split('/')
-      .splice(1)
-      .join('/')
+    return this.getPath().split('/').splice(1).join('/')
   }
 
   remove(): void {
