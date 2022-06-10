@@ -76,10 +76,11 @@ export const JobControl = (props: {
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobLogs, setJobLogs] = useState<any>()
-  const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
+  const [jobStatus, setJobStatus] = useState<EJobStatus>(document.status)
   const [refreshCount, setRefreshCount] = useState<number>(0)
   const [runnerModal, setRunnerModal] = useState<boolean>(false)
   const [inputModal, setInputModal] = useState<boolean>(false)
+  const [showLogs, setShowLogs] = useState<boolean>(false)
 
   useEffect(() => {
     setLoading(true)
@@ -248,7 +249,7 @@ export const JobControl = (props: {
       <div
         style={{
           display: 'flex',
-          paddingTop: '20px',
+          marginTop: '20px',
           justifyContent: 'space-between',
           flexDirection: 'row-reverse',
         }}
@@ -269,18 +270,28 @@ export const JobControl = (props: {
       <div
         style={{
           display: 'flex',
-          justifyContent: 'space-between',
-          marginTop: '5px',
+          marginTop: '25px',
         }}
       >
-        <h4 style={{ alignSelf: 'self-end' }}>Logs:</h4>
+        <h4 style={{ alignSelf: 'self-end', marginRight: '10px' }}>Logs:</h4>
+        <Button
+          style={{ height: '20px' }}
+          variant="outlined"
+          onClick={() => setShowLogs(!showLogs)}
+        >
+          {(showLogs && 'Hide') || 'View'}
+        </Button>
       </div>
-      {loading ? (
-        <Progress.Dots color="primary" />
-      ) : (
-        <div style={{ paddingBottom: '20px' }}>
-          <StyledPre>{jobLogs}</StyledPre>
-        </div>
+      {showLogs && (
+        <>
+          {loading ? (
+            <Progress.Dots color="primary" />
+          ) : (
+            <div style={{ paddingBottom: '20px' }}>
+              <StyledPre>{jobLogs}</StyledPre>
+            </div>
+          )}
+        </>
       )}
     </div>
   )
