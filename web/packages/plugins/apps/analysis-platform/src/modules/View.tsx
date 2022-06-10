@@ -11,12 +11,11 @@ export const View = ({ settings }: any) => {
     data_source: string
     entity_id: string
   }>()
-  const [
-    document,
-    documentLoading,
-    setDocument,
-    error,
-  ] = useDocument<TValidEntity>(data_source, entity_id, false)
+  const [document, documentLoading, setDocument, error] = useDocument<
+    TValidEntity
+  >(data_source, entity_id, false)
+
+  console.log('view doc', document)
 
   if (error)
     return (

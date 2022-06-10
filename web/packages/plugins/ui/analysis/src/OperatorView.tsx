@@ -5,7 +5,7 @@ import { AnalysisInfoCard, AnalysisJobTable } from './components'
 export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
   const { document, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
-  const [analysis, setAnalysis] = useState<any>(document)
+  const [analysis, setAnalysis] = useState<any>({ ...document })
 
   useEffect(() => {
     if (!analysis) return
@@ -14,8 +14,11 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
 
   useEffect(() => {
     //make sure local state is up to date with document prop
+    console.log('doc changed to ', document)
     setAnalysis(document)
   }, [document])
+  console.log('doc', document)
+  console.log('analysis op view', analysis)
 
   return (
     <>
