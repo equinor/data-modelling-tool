@@ -6,7 +6,14 @@ import {
   Typography,
 } from '@equinor/eds-core-react'
 import React, { useContext, useEffect, useState } from 'react'
-import { AuthContext, DmssAPI, JobApi, EJobStatus, TJob } from '@dmt/common'
+import {
+  AuthContext,
+  DmssAPI,
+  JobApi,
+  EJobStatus,
+  TJob,
+  hasOperatorRole,
+} from '@dmt/common'
 import styled from 'styled-components'
 import { AxiosError } from 'axios'
 // @ts-ignore
@@ -31,7 +38,7 @@ const JobRow = (props: {
   dataSourceId: string
 }) => {
   const { job, index, analysisId, dataSourceId } = props // @ts-ignore
-  const { token } = useContext(AuthContext)
+  const { token, tokenData } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
@@ -41,11 +48,15 @@ const JobRow = (props: {
     ? `/ap/view/${dataSourceId}/${job.result?._id}`
     : undefined
 
-  const viewResult = () => {
-    if (jobURL) {
+  const viewJob = () => {
+    if (hasOperatorRole(tokenData)) {
       document.location = jobURL
     } else {
-      NotificationManager.warning('Result is not ready')
+      if (resultURL) {
+        document.location = resultURL
+      } else {
+        NotificationManager.warning('Result is not ready')
+      }
     }
   }
 
@@ -105,13 +116,13 @@ const JobRow = (props: {
   }, [])
   return (
     <Table.Row>
-      <Table.Cell onClick={viewResult}>
+      <Table.Cell onClick={viewJob}>
         {jobStatus !== EJobStatus.CREATED
           ? new Date(job.started).toLocaleString(navigator.language)
           : 'Not started'}
       </Table.Cell>
-      <Table.Cell onClick={viewResult}>{job.triggeredBy}</Table.Cell>
-      <Table.Cell onClick={viewResult}>{jobStatus}</Table.Cell>
+      <Table.Cell onClick={viewJob}>{job.triggeredBy}</Table.Cell>
+      <Table.Cell onClick={viewJob}>{jobStatus}</Table.Cell>
       <Table.Cell>
         {Object.keys(job?.result || {}).length ? (
           <ClickableLabel
@@ -129,7 +140,7 @@ const JobRow = (props: {
         <Table.Cell>
           <Progress.Circular style={{ height: '24px' }} />
         </Table.Cell>
-      ) : (
+      ) : hasOperatorRole(tokenData) ? (
         <Table.Cell>
           {jobStatus === EJobStatus.CREATED ? (
             <Button variant="ghost_icon" onClick={() => startJob()}>
@@ -145,6 +156,8 @@ const JobRow = (props: {
             </Button>
           )}
         </Table.Cell>
+      ) : (
+        <></>
       )}
     </Table.Row>
   )
@@ -152,6 +165,7 @@ const JobRow = (props: {
 
 export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
   const { jobs, analysisId, dataSourceId } = props
+  const { tokenData } = useContext(AuthContext)
 
   return (
     <>
@@ -165,7 +179,7 @@ export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
             <Table.Cell>Started by</Table.Cell>
             <Table.Cell>Status</Table.Cell>
             <Table.Cell>Result</Table.Cell>
-            <Table.Cell>Control</Table.Cell>
+            {hasOperatorRole(tokenData) && <Table.Cell>Control</Table.Cell>}
           </Table.Row>
         </Table.Head>
         <Table.Body style={{ cursor: 'pointer' }}>
