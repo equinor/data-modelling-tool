@@ -72,6 +72,7 @@ export default () => {
         entity: node.entity,
       }
     )
+    console.log('opened node', node)
     dashboard.models.layout.operations.focus(node.nodeId)
   }
 
