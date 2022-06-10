@@ -22,4 +22,8 @@ export class JobApi {
   removeJob(jobId: string) {
     return axios.delete(`${this.jobUrl}/${jobId}`, this.requestConfig)
   }
+
+  result(jobId: string) {
+    return axios.get(`${this.jobUrl}/${jobId}/result`, this.requestConfig)
+  }
 }
