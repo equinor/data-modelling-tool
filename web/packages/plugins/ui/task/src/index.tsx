@@ -3,7 +3,7 @@ import * as React from 'react'
 import { DmtPlugin, DmtPluginType } from '@dmt/common'
 import { EditTask } from './EditTask'
 import { ViewTask } from './ViewTask'
-import { EditSIMAInput } from './SIMAInputOnly'
+import { EditInput } from './InputOnly'
 
 export const plugins: DmtPlugin[] = [
   {
@@ -17,8 +17,8 @@ export const plugins: DmtPlugin[] = [
     component: ViewTask,
   },
   {
-    pluginName: 'edit-task-expert-operator',
+    pluginName: 'edit-task-operator',
     pluginType: DmtPluginType.UI,
-    component: EditSIMAInput,
+    component: EditInput,
   },
 ]
