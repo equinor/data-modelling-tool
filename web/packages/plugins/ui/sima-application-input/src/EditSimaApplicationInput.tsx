@@ -2,10 +2,8 @@ import {
   BlueprintPicker,
   DestinationPicker,
   DmtUIPlugin,
-  EntityPickerButton,
   EntityPickerInput,
   INPUT_FIELD_WIDTH,
-  NewEntityButton,
   TReference,
   UploadFileButton,
   useDocument,
@@ -13,39 +11,28 @@ import {
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import {
-  Input,
-  Label,
-  TextField,
-  Typography,
-  Tooltip,
   Button,
+  Label,
   Progress,
+  TextField,
+  Tooltip,
+  Typography,
 } from '@equinor/eds-core-react'
-import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import {
+  Column,
+  EditInputEntity,
+  GroupWrapper,
+  HeaderWrapper,
+  Row,
+} from './components'
 
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
-const Column = styled.div``
-
-const Row = styled.div`
-  display: flex;
-`
-const GroupWrapper = styled.div`
-  & > * {
-    padding-top: 8px;
-  }
-`
-
-const HeaderWrapper = styled.div`
-  margin-bottom: 50px;
-  margin-top: 8px;
-`
-
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
   const { document, dataSourceId, onOpen, documentId } = props
-  const [formData, setFormData] = useState<any>({ ...document })
+  const [formData, setFormData] = useState<any>(null)
   const [_document, loading, updateDocument] = useDocument(
     dataSourceId,
     documentId,
@@ -67,6 +54,8 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
       },
     }
   }
+
+  if (!formData) return <>Loading...</>
 
   return (
     <div
@@ -90,49 +79,12 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 formData={formData?.inputType || ''}
               />
             </Column>
-            <div style={{ display: 'flex', alignItems: 'flex-end' }}>
-              <Column>
-                <Label label={'Input entity'} />
-                <Input
-                  style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
-                  type="string"
-                  value={formData?.input?.name || formData?.input?._id || ''}
-                  placeholder={formData?.input?.name || 'Select or create'}
-                  onChange={() => {}}
-                  onClick={() => {
-                    if (formData?.input?.type) {
-                      if (onOpen)
-                        onOpen({
-                          attribute: 'input',
-                          entity: formData.input,
-                          onChange: (input: any) =>
-                            setFormData({ ...formData, input: input }),
-                          absoluteDottedId: `${dataSourceId}/${formData?.input?._id}`,
-                          categories: ['edit'],
-                        })
-                    }
-                  }}
-                />
-              </Column>
-              <EntityPickerButton
-                typeFilter={formData?.inputType || ''}
-                onChange={(selectedEntity: TReference) =>
-                  setFormData({
-                    ...formData,
-                    input: selectedEntity,
-                  })
-                }
-              />
-              <NewEntityButton
-                type={formData?.inputType || ''}
-                setReference={(createdEntity: TReference) =>
-                  setFormData({
-                    ...formData,
-                    input: createdEntity,
-                  })
-                }
-              />
-            </div>
+            <EditInputEntity
+              formData={formData}
+              setFormData={setFormData}
+              dataSourceId={dataSourceId}
+              onOpen={onOpen}
+            />
           </GroupWrapper>
         </HeaderWrapper>
 
