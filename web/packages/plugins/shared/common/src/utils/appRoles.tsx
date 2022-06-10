@@ -6,13 +6,13 @@ export const APP_ROLES: string[] = [
   'domain-expert',
   'domain-developer',
 ]
-export const EXPERT_ROLES = [
+export const EXPERT_ROLES: string[] = [
   'expert-operator',
   'domain-developer',
   'domain-expert',
   'dmss-admin',
 ]
-export const OPERATOR_ROLES = EXPERT_ROLES.concat(['operator'])
+export const OPERATOR_ROLES: string[] = EXPERT_ROLES.concat(['operator'])
 
 export function getRoles(tokenData: any): string[] {
   /**
