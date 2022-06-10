@@ -52,6 +52,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
       (image: TContainerImage) => {
         delete image['_id']
         delete image['uid']
+        delete formData?.image['_id']
         return _.isEqual(image, formData?.image)
       }
     )
@@ -89,15 +90,17 @@ export const EditContainer = (props: DmtUIPlugin) => {
 
             <Select
               style={{ width: PATH_INPUT_FIELD_WIDTH }}
-              onChange={(e: ChangeEvent<HTMLSelectElement>) =>
+              onChange={(e: ChangeEvent<HTMLSelectElement>) => {
+                console.log('parse res', JSON.parse(e.target.value))
                 setFormData({ ...formData, image: JSON.parse(e.target.value) })
-              }
+              }}
               value={getImageStoredInFormData(containerImages, formData)}
             >
               <option value={''} selected disabled hidden>
                 Choose image...
               </option>
               {containerImages.map((image: TContainerImage, index: number) => {
+                console.log('image as jsonstrign', JSON.stringify(image))
                 return (
                   <option key={index} value={JSON.stringify(image)}>
                     {getFullContainerImageName(image)}
