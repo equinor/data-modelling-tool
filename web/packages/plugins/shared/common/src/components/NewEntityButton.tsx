@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react'
-import { Button, Input, Label } from '@equinor/eds-core-react'
+import { Button, Input, Label, Progress } from '@equinor/eds-core-react'
 import { Dialog } from './Dialog'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -24,6 +24,7 @@ export function NewEntityButton(props: {
     undefined
   )
   const [typeToCreate, setTypeToCreate] = useState<string>(type || '')
+  const [loading, setLoading] = useState<boolean>(false)
   const { token } = useContext(AuthContext)
   const dmtAPI = new DmtAPI(token)
 
@@ -123,13 +124,15 @@ export function NewEntityButton(props: {
               }
               type="submit"
               onClick={() => {
+                setLoading(true)
                 if (copyTarget) {
                   // @ts-ignore
                   delete copyTarget._id
                   copyTarget.name = newName
-                  addEntityToPath({ ...copyTarget }).then(() =>
-                    setShowScrim(false)
-                  )
+
+                  addEntityToPath({ ...copyTarget })
+                    .then(() => setShowScrim(false))
+                    .finally(() => setLoading(false))
                 } else {
                   dmtAPI
                     .createEntity(typeToCreate, newName)
@@ -138,10 +141,11 @@ export function NewEntityButton(props: {
                         setShowScrim(false)
                       )
                     })
+                    .finally(() => setLoading(false))
                 }
               }}
             >
-              Create
+              {loading ? <Progress.Dots /> : 'Create'}
             </Button>
           </div>
         </div>
