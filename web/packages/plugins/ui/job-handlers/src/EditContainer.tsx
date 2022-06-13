@@ -33,8 +33,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
   const [formData, setFormData] = useState<any>({ ...document })
   const [_document, loading, updateDocument] = useDocument(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   const [containerImages, isLoading, hasError] = useSearch<TContainerImage>(
     {

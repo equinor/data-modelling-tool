@@ -48,8 +48,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
   const [formData, setFormData] = useState<any>({ ...document })
   const [_document, loading, updateDocument] = useDocument(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
 
   useEffect(() => {

@@ -57,8 +57,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   const [childTabs, setChildTabs] = useState<TStringMap>({})
   const [entity, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
 
   useEffect(() => {

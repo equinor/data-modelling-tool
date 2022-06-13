@@ -11,7 +11,7 @@ const SingleObjectForm_Component = (props: DmtUIPlugin) => {
   const [document, isLoading, setDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
-    true
+    999
   )
 
   if (isLoading) {

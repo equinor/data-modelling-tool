@@ -8,8 +8,7 @@ const SimposReportView_Component = (props: DmtUIPlugin) => {
   const { dataSourceId, documentId } = props
   const [document, documentLoading, updateDocument, error] = useDocument(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   if (!document) return <>Loading...</>
   return <SimposReportView document={document} />

@@ -207,8 +207,7 @@ export const EditBlueprint = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   const [formData, setFormData] = useState<any>({ ...document })
 

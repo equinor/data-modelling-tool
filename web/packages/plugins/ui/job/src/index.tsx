@@ -9,8 +9,7 @@ const JobControlWrapper = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   if (documentLoading) return <div>Loading...</div>
   if (error)
@@ -29,8 +28,7 @@ const JobEditWrapper = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   if (documentLoading) return <div>Loading...</div>
   if (error) return <div>Something went wrong; {error}</div>
@@ -49,8 +47,7 @@ const JobEditAdvancedWrapper = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   if (documentLoading) return <div>Loading...</div>
   if (error)

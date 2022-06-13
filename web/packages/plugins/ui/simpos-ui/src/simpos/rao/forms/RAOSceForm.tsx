@@ -11,7 +11,7 @@ const RAOSceForm_Component = (props: DmtUIPlugin) => {
   const [document, isLoading, hasError] = useDocument(
     dataSourceId,
     documentId,
-    true
+    999
   )
 
   if (isLoading) {

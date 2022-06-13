@@ -37,8 +37,7 @@ export const EditTask = (props: DmtUIPlugin) => {
   const { document, documentId, dataSourceId, onOpen, onSubmit } = props
   const [_document, _loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   const [formData, setFormData] = useState<any>({ ...document })
 

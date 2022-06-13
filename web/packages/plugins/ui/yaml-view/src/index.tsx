@@ -9,7 +9,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
   const [document, loading, updateDocument, error] = useDocument(
     dataSourceId,
     documentId,
-    true
+    999
   )
   if (loading) return <div>Loading...</div>
   if (error)

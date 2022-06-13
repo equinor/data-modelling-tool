@@ -32,7 +32,7 @@ export default ({ settings }: any) => {
     documentLoading,
     setDocument,
     error,
-  ] = useDocument<TValidEntity>(data_source, entity_id, false)
+  ] = useDocument<TValidEntity>(data_source, entity_id)
 
   if (error)
     return (
