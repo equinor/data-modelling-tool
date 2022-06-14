@@ -252,7 +252,7 @@ export const EditBlueprint = (props: DmtUIPlugin) => {
       <Spacer />
       <Label label="Attributes" />
       <Accordion>
-        {Array.isArray(formData?.attribute) &&
+        {Array.isArray(formData?.attributes) &&
           formData.attributes.map((attribute: any, index: number) => (
             <Accordion.Item key={index}>
               <Accordion.Header>
