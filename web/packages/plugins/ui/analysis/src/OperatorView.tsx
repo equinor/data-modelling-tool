@@ -1,11 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import { DmtUIPlugin, UIPluginSelector, TJob } from '@dmt/common'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
+import { hasDomainRole } from '@dmt/common'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
   const { document, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
   const [analysis, setAnalysis] = useState<any>(document)
+  const { tokenData } = useContext(AuthContext)
 
   useEffect(() => {
     if (!analysis) return
@@ -26,14 +29,16 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
         dataSourceId={dataSourceId}
       />
       <>
-        <UIPluginSelector
-          entity={analysis.task}
-          absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
-          categories={['container']}
-          onSubmit={(formData: any) => {
-            setAnalysis({ ...analysis, task: formData })
-          }}
-        />
+        {hasDomainRole(tokenData) && (
+          <UIPluginSelector
+            entity={analysis.task}
+            absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
+            categories={['container']}
+            onSubmit={(formData: any) => {
+              setAnalysis({ ...analysis, task: formData })
+            }}
+          />
+        )}
         <AnalysisJobTable
           jobs={jobs}
           analysisId={analysis._id}
