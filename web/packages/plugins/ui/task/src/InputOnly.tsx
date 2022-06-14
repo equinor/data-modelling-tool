@@ -1,8 +1,20 @@
-import { DmtUIPlugin, UIPluginSelector } from '@dmt/common'
+import {
+  DmtUIPlugin,
+  Loading,
+  UIPluginSelector,
+  useDocument,
+} from '@dmt/common'
 import * as React from 'react'
 
 export const EditInput = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onOpen } = props
+  const { documentId, dataSourceId, onOpen } = props
+  const [document, loading, updateDocument, error] = useDocument<any>(
+    dataSourceId,
+    documentId
+  )
+  if (loading) {
+    return <Loading />
+  }
   if (!document?.applicationInput) {
     return <pre style={{ color: 'red' }}>No input exists for the analysis</pre>
   }
@@ -10,7 +22,7 @@ export const EditInput = (props: DmtUIPlugin) => {
     <div>
       <UIPluginSelector
         absoluteDottedId={`${dataSourceId}/${documentId}.applicationInput`}
-        entity={document?.applicationInput}
+        type={document?.applicationInput.type}
         categories={['edit']}
         referencedBy={`${dataSourceId}/${documentId}.applicationInput`}
         onOpen={onOpen}

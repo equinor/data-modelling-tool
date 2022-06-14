@@ -1,13 +1,23 @@
 import React, { useEffect, useState, useContext } from 'react'
-import { DmtUIPlugin, UIPluginSelector, TJob } from '@dmt/common'
+import {
+  DmtUIPlugin,
+  UIPluginSelector,
+  TJob,
+  useDocument,
+  Loading,
+  hasDomainRole,
+} from '@dmt/common'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
-import { hasDomainRole } from '@dmt/common'
 import { AuthContext } from 'react-oauth2-code-pkce'
 
 export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
-  const { document, dataSourceId } = props
+  const { documentId, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
-  const [analysis, setAnalysis] = useState<any>(document)
+  const [analysis, setAnalysis] = useState<any>()
+  const [document, loading, updateDocument] = useDocument(
+    dataSourceId,
+    documentId
+  )
   const { tokenData } = useContext(AuthContext)
 
   useEffect(() => {
@@ -16,10 +26,11 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
   }, [analysis])
 
   useEffect(() => {
-    //make sure local state is up to date with document prop
     setAnalysis(document)
   }, [document])
-
+  if (loading) {
+    return <Loading />
+  }
   return (
     <>
       <AnalysisInfoCard
@@ -31,7 +42,7 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
       <>
         {hasDomainRole(tokenData) && (
           <UIPluginSelector
-            entity={analysis.task}
+            type={analysis.task.type}
             absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
             categories={['container']}
             onSubmit={(formData: any) => {

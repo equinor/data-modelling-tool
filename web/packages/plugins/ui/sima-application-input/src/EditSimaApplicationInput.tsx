@@ -4,6 +4,7 @@ import {
   DmtUIPlugin,
   EntityPickerInput,
   INPUT_FIELD_WIDTH,
+  Loading,
   TReference,
   UploadFileButton,
   useDocument,
@@ -31,18 +32,17 @@ import {
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, onOpen, documentId } = props
+  const { dataSourceId, onOpen, documentId } = props
   const [formData, setFormData] = useState<any>(null)
-  const [_document, loading, updateDocument] = useDocument(
+  const [document, loading, updateDocument] = useDocument(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
 
   useEffect(() => {
-    if (!_document) return
-    setFormData(_document)
-  }, [_document])
+    if (!document) return
+    setFormData(document)
+  }, [document])
 
   function getNewSTaskBody(filename: string): any {
     return {
@@ -55,8 +55,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
     }
   }
 
-  if (!formData) return <>Loading...</>
-
+  if (loading) return <Loading />
   return (
     <div
       style={{

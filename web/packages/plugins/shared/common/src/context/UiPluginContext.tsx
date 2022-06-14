@@ -21,8 +21,6 @@ export interface DmtUIPlugin {
   documentId: string
   onSubmit?: Function
   onOpen?: Function
-  document?: any
-  updateDocument?: any
   config?: any
 }
 

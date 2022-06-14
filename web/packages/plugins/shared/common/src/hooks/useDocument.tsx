@@ -8,8 +8,8 @@ import { AuthContext } from '@dmt/common'
 export function useDocument<T>(
   dataSourceId: string,
   documentId: string,
-  resolved?: boolean | undefined
-): [T | null, boolean, Function, AxiosError<any> | null] {
+  depth?: number | undefined
+): [any | null, boolean, Function, AxiosError<any> | null] {
   const [document, setDocument] = useState<T | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<AxiosError<any> | null>(null)
@@ -19,13 +19,14 @@ export function useDocument<T>(
 
   useEffect(() => {
     setLoading(true)
-    let depth = 1
-    if (resolved) depth = 999
+    let documentDepth: number = depth || 1
+    if (documentDepth < 0 || documentDepth > 999)
+      throw new Error('Depth must be a positive number < 999')
     dmssAPI
       .documentGetById({
         dataSourceId: dataSourceId,
         documentId: documentId,
-        depth: depth,
+        depth: documentDepth,
       })
       .then((response: any) => {
         const data = response.data

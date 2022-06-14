@@ -1,15 +1,22 @@
 import React, { useEffect, useState } from 'react'
 
-import { DmtUIPlugin, useBlueprint } from '@dmt/common'
+import { DmtUIPlugin, Loading, useBlueprint, useDocument } from '@dmt/common'
 
 import { DMTBluePrintTableView } from './blueprint.js'
 
 const DMTBluePrintTableView_Component = (props: DmtUIPlugin) => {
-  const { document } = props
-  const [blueprint, isLoading, error] = useBlueprint(document.type)
+  const { documentId, dataSourceId } = props
+  const [type, setType] = useState<string>('')
+  const [blueprint, loadingBlueprint, error] = useBlueprint(type)
+  const [document, loadingDocument] = useDocument(dataSourceId, documentId)
 
-  if (!blueprint) {
-    return <>Loading...</>
+  useEffect(() => {
+    if (!document) return
+    setType(document.type)
+  }, [document])
+
+  if (loadingDocument || loadingBlueprint) {
+    return <Loading />
   }
 
   return <DMTBluePrintTableView document={blueprint} />

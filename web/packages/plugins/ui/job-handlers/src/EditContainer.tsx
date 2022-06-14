@@ -6,9 +6,10 @@ import {
   useDocument,
   getFullContainerImageName,
   useSearch,
+  Loading,
 } from '@dmt/common'
 import * as React from 'react'
-import { ChangeEvent, useState } from 'react'
+import { ChangeEvent, useEffect, useState } from 'react'
 import {
   Button,
   CircularProgress,
@@ -29,14 +30,14 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditContainer = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, documentId, onSubmit } = props
-  const [formData, setFormData] = useState<any>({ ...document })
-  const [_document, loading, updateDocument] = useDocument(
+  const { dataSourceId, documentId, onSubmit } = props
+  const [formData, setFormData] = useState<any>()
+  const [document, loadingDocument, updateDocument] = useDocument(
     dataSourceId,
     documentId,
-    false
+    999
   )
-  const [containerImages, isLoading, hasError] = useSearch<TContainerImage>(
+  const [containerImages, loadingImages, hasError] = useSearch<TContainerImage>(
     {
       type: 'AnalysisPlatformDS/Blueprints/ContainerImage',
     },
@@ -44,15 +45,24 @@ export const EditContainer = (props: DmtUIPlugin) => {
     '_id'
   )
 
+  useEffect(() => {
+    if (!document) return
+    setFormData(document)
+  }, [document])
+
   const getImageStoredInFormData = (
     images: TContainerImage[],
     formData: any
   ): string => {
+    if (!formData?.image) {
+      return ''
+    }
     const image: TContainerImage | undefined = images.find(
       (image: TContainerImage) => {
         delete image['_id']
         delete image['uid']
         delete formData?.image['_id']
+        delete formData?.image['uid']
         return _.isEqual(image, formData?.image)
       }
     )
@@ -62,13 +72,8 @@ export const EditContainer = (props: DmtUIPlugin) => {
       return ''
     }
   }
-
-  if (isLoading) {
-    return (
-      <div style={{ textAlign: 'center', paddingTop: '50px' }}>
-        <CircularProgress />
-      </div>
-    )
+  if (loadingDocument || loadingImages) {
+    return <Loading />
   }
 
   return (
@@ -136,7 +141,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
           {/*</HeaderWrapper>*/}
 
           <div>
-            {loading ? (
+            {loadingDocument ? (
               <Button>
                 <Progress.Dots />
               </Button>

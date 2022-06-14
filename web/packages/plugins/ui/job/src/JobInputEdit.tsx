@@ -1,6 +1,7 @@
 import {
   DmtUIPlugin,
   EJobStatus,
+  Loading,
   TJob,
   UIPluginSelector,
   useDocument,
@@ -12,8 +13,7 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   const [formData, setFormData] = useState<TJob | null>(null)
 
@@ -22,7 +22,7 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
     setFormData(document)
   }, [document])
 
-  if (documentLoading) return <div>Loading...</div>
+  if (documentLoading) return <Loading />
   if (error) return <div>Something went wrong; {error}</div>
   if (!formData) return <div>The job document is empty</div>
 
@@ -46,7 +46,7 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
       <div style={{ marginBottom: '10px' }}>
         {Object.keys(formData.applicationInput || {}).length ? (
           <UIPluginSelector
-            entity={formData.applicationInput}
+            type={formData.applicationInput.type}
             absoluteDottedId={`${dataSourceId}/${formData.applicationInput._id}`}
             categories={['edit']}
             onSubmit={(data: any) =>

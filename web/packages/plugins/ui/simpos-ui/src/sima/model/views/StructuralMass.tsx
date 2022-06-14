@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, DmtUIPlugin } from '@dmt/common'
+import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
 
 import { SIMA_Model_StructuralMass } from './StructuralMass_src.js'
 
 const StructuralMass_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, updateDocument } = props
+  const { dataSourceId, documentId } = props
 
-  const [document, isLoading, setDocument, hasError] = useDocument(
+  const [document, loading, updateDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
-    true
+    999
   )
 
-  if (isLoading) {
-    return <div>Loading document...</div>
+  if (loading) {
+    return <Loading />
   }
 
   if (hasError) {

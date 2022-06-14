@@ -4,7 +4,12 @@ import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 import PreviewPlugin from './PreviewPlugin'
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  return <PreviewPlugin document={props.document} />
+  return (
+    <PreviewPlugin
+      documentId={props.documentId}
+      dataSourceId={props.dataSourceId}
+    />
+  )
 }
 
 export const plugins: any = [

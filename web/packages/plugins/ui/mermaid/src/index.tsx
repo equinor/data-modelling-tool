@@ -1,7 +1,14 @@
 import * as React from 'react'
 import { useContext, useEffect, useState } from 'react'
 
-import { AuthContext, DmssAPI, DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import {
+  AuthContext,
+  DmssAPI,
+  DmtPluginType,
+  DmtUIPlugin,
+  Loading,
+  useDocument,
+} from '@dmt/common'
 import Mermaid from './Mermaid'
 import { dfs, loader, Node } from './loader'
 import { AttributeType } from './types'
@@ -67,12 +74,17 @@ function useExplorer(dmssAPI: DmssAPI) {
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { document } = props
+  const { documentId, dataSourceId } = props
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer = useExplorer(dmssAPI)
 
   const [chart, setChart] = useState<string | undefined>(undefined)
+
+  const [document, loading, updateDocument] = useDocument(
+    dataSourceId,
+    documentId
+  )
 
   useEffect(() => {
     loader(token, explorer, document).then(async (tree: Node) => {
@@ -82,7 +94,9 @@ const PluginComponent = (props: DmtUIPlugin) => {
   }, [])
 
   if (!chart) return <div>Creating chart...</div>
-
+  if (loading) {
+    return <Loading />
+  }
   return (
     <div>
       <Mermaid chart={chart} />

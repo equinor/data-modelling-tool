@@ -300,7 +300,7 @@ export default (props: {
   const [document, isLoading, updateDocument, error] = useDocument<any>(
     DEFAULT_DATASOURCE_ID,
     result._id,
-    true
+    999
   )
 
   useEffect(() => {

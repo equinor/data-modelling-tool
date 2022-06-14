@@ -69,7 +69,7 @@ export default () => {
       LayoutComponents.blueprint,
       {
         absoluteDottedId: node.nodeId,
-        entity: node.entity,
+        type: node.entity.type,
       }
     )
     dashboard.models.layout.operations.focus(node.nodeId)

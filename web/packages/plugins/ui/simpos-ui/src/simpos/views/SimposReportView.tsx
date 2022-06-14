@@ -1,17 +1,16 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin, useDocument } from '@dmt/common'
+import { DmtPluginType, DmtUIPlugin, Loading, useDocument } from '@dmt/common'
 
 import { SimposReportView } from './report.js'
 
 const SimposReportView_Component = (props: DmtUIPlugin) => {
   const { dataSourceId, documentId } = props
-  const [document, documentLoading, updateDocument, error] = useDocument(
+  const [document, loading, updateDocument, error] = useDocument(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
-  if (!document) return <>Loading...</>
+  if (loading) return <Loading />
   return <SimposReportView document={document} />
 }
 

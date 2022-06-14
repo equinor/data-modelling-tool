@@ -4,6 +4,7 @@ import {
   BlueprintPicker,
   DmtPluginType,
   DmtUIPlugin,
+  Loading,
   TReference,
   UploadFileButton,
   useBlueprint,
@@ -27,7 +28,7 @@ const widgets = {
     const { label, variant, onChange, value, helperText } = props
     const [blueprint, isLoading] = useBlueprint(value)
 
-    if (isLoading) return <div>Loading...</div>
+    if (isLoading) return <Loading />
     if (blueprint === undefined) return <div>Could not find the blueprint</div>
 
     const datasourceId = value.split('/')[0]
@@ -109,9 +110,9 @@ const PluginComponent = (props: DmtUIPlugin) => {
   const [document, loading, updateDocument] = useDocument<any>(
     dataSourceId,
     documentId,
-    true
+    999
   )
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loading />
 
   const handleOnSubmit = (formData: any) => {
     updateDocument(formData)

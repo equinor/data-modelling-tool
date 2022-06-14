@@ -1,4 +1,4 @@
-import { DmtUIPlugin, useDocument } from '@dmt/common'
+import { DmtUIPlugin, Loading, useDocument } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Button, Progress, Typography } from '@equinor/eds-core-react'
@@ -7,20 +7,19 @@ import { NotificationManager } from 'react-notifications'
 import { EditInputEntity, GroupWrapper } from './components'
 
 export const UpdateInputOnly = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, onOpen, documentId } = props
+  const { dataSourceId, onOpen, documentId } = props
   const [formData, setFormData] = useState<any>(null)
-  const [_document, loading, updateDocument] = useDocument(
+  const [document, loading, updateDocument] = useDocument(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
 
   useEffect(() => {
-    if (!_document) return
-    setFormData(_document)
-  }, [_document])
+    if (!document) return
+    setFormData(document)
+  }, [document])
 
-  if (!formData) return <>Loading...</>
+  if (loading) return <Loading />
 
   return (
     <div

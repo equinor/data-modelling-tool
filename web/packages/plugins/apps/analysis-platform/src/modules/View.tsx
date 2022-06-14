@@ -16,7 +16,7 @@ export const View = ({ settings }: any) => {
     documentLoading,
     setDocument,
     error,
-  ] = useDocument<TValidEntity>(data_source, entity_id, false)
+  ] = useDocument<TValidEntity>(data_source, entity_id)
 
   if (error)
     return (
@@ -36,7 +36,7 @@ export const View = ({ settings }: any) => {
       {document && (
         <UIPluginSelector
           absoluteDottedId={`${data_source}/${entity_id}`}
-          entity={document}
+          type={document.type}
         />
       )}
     </>

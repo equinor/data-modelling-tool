@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-import { AuthContext, DmssAPI } from '@dmt/common'
+import { AuthContext, DmssAPI, Loading } from '@dmt/common'
 
 export const ErrorGroup = styled.div`
   display: flex;
@@ -67,7 +67,7 @@ export const ViewerPDFPlugin = (props: any) => {
       </ErrorGroup>
     )
 
-  if (loading) return <>Loading...</>
+  if (loading) return <Loading />
 
   return (
     <>
