@@ -3,7 +3,8 @@ import {
   DestinationPicker,
   DmtUIPlugin,
   EntityPickerInput,
-  INPUT_FIELD_WIDTH, Loading,
+  INPUT_FIELD_WIDTH,
+  Loading,
   TReference,
   UploadFileButton,
   useDocument,
@@ -54,7 +55,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
     }
   }
 
-  if (loading) return <Loading/>
+  if (loading) return <Loading />
   return (
     <div
       style={{

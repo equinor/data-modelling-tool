@@ -5,7 +5,7 @@ import {
   TJob,
   useDocument,
   Loading,
-  hasDomainRole
+  hasDomainRole,
 } from '@dmt/common'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
 import { AuthContext } from 'react-oauth2-code-pkce'
@@ -41,14 +41,14 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
       />
       <>
         {hasDomainRole(tokenData) && (
-                <UIPluginSelector
-          type={analysis.task.type}
-          absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
-          categories={['container']}
-          onSubmit={(formData: any) => {
-            setAnalysis({ ...analysis, task: formData })
-          }}
-        />
+          <UIPluginSelector
+            type={analysis.task.type}
+            absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
+            categories={['container']}
+            onSubmit={(formData: any) => {
+              setAnalysis({ ...analysis, task: formData })
+            }}
+          />
         )}
         <AnalysisJobTable
           jobs={jobs}
