@@ -2,6 +2,7 @@ import {
   BlueprintPicker,
   DmtUIPlugin,
   INPUT_FIELD_WIDTH,
+  Loading,
   Select,
   truncatePathString,
   useDocument,
@@ -216,7 +217,7 @@ export const EditBlueprint = (props: DmtUIPlugin) => {
     setFormData(document)
   }, [document])
 
-  if (!document || _loading) return <div>Loading...</div>
+  if (!document || _loading) return <Loading />
 
   return (
     <div style={{ margin: '10px' }}>

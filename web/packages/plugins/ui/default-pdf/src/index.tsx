@@ -1,18 +1,18 @@
 import * as React from 'react'
 import { ViewerPDFPlugin } from './PDFViewer'
 
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, DmtUIPlugin, Loading } from '@dmt/common'
 import { useDocument } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
-  const [document, isLoading, setDocument, error] = useDocument(
+  const [document, loading, updateDocument, error] = useDocument(
     dataSourceId,
     documentId,
     999
   )
 
-  if (isLoading) return <div>Loading...</div>
+  if (loading) return <Loading />
 
   return <ViewerPDFPlugin document={document} dataSourceId={dataSourceId} />
 }

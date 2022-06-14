@@ -1,6 +1,7 @@
 import {
   DmtUIPlugin,
   EJobStatus,
+  Loading,
   TJob,
   UIPluginSelector,
   useDocument,
@@ -21,7 +22,7 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
     setFormData(document)
   }, [document])
 
-  if (documentLoading) return <div>Loading...</div>
+  if (documentLoading) return <Loading />
   if (error) return <div>Something went wrong; {error}</div>
   if (!formData) return <div>The job document is empty</div>
 

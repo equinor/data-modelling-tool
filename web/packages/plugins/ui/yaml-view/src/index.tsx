@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import './index.css'
-import { DmtPluginType, DmtUIPlugin, useDocument } from '@dmt/common'
+import { DmtPluginType, DmtUIPlugin, Loading, useDocument } from '@dmt/common'
 import PreviewPlugin from './YamlPlugin'
 
 const PluginComponent = (props: DmtUIPlugin) => {
@@ -11,7 +11,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
     documentId,
     999
   )
-  if (loading) return <div>Loading...</div>
+  if (loading) return <Loading />
   if (error)
     return (
       <pre style={{ color: 'red' }}>

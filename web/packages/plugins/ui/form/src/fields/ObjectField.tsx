@@ -3,6 +3,7 @@ import {
   DmssAPI,
   DmtAPI,
   EntityPickerButton,
+  Loading,
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
@@ -479,7 +480,7 @@ export const ObjectTypeSelector = (props: ObjectFieldProps): JSX.Element => {
 
   const [blueprint, isLoading] = useBlueprint(type)
 
-  if (isLoading) return <div>Loading...</div>
+  if (isLoading) return <Loading />
   if (blueprint === undefined) return <div>Could not find the blueprint</div>
 
   // The root object uses the ui recipe config that is passed into the ui plugin,
