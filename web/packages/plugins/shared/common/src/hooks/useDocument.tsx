@@ -19,15 +19,14 @@ export function useDocument<T>(
 
   useEffect(() => {
     setLoading(true)
-    let defaultDepth = 1
-    if (depth === undefined) depth = defaultDepth
-    if (depth < 0 || depth > 999)
+    let documentDepth: number = depth || 1
+    if (documentDepth < 0 || documentDepth > 999)
       throw new Error('Depth must be a positive number < 999')
     dmssAPI
       .documentGetById({
         dataSourceId: dataSourceId,
         documentId: documentId,
-        depth: depth,
+        depth: documentDepth,
       })
       .then((response: any) => {
         const data = response.data
