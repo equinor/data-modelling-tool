@@ -1,23 +1,26 @@
 import React from 'react'
-import { JsonView, Button } from '@dmt/common'
+import { JsonView, Button, useDocument, Loading } from '@dmt/common'
 
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
 type PreviewProps = {
-  document: any
+  documentId: string
+  dataSourceId: string
 }
 
 export default (props: PreviewProps) => {
-  const { document } = props
+  const { documentId, dataSourceId } = props
+  const [document, loading] = useDocument(dataSourceId, documentId)
   let infoText: string = ''
-
+  if (loading) {
+    return <Loading />
+  }
   return (
     <div>
       <div
         style={{
           display: 'flex',
-
           justifyContent: 'space-between',
           color: '#9e4949',
         }}

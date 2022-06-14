@@ -2,19 +2,19 @@ import * as React from 'react'
 import { MakeDiagram } from './Diagram'
 
 //import {useEffect, useState} from 'react'
-import { useDocument, DmtUIPlugin } from '@dmt/common'
+import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
 
 const Workflow_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, updateDocument } = props
+  const { dataSourceId, documentId } = props
 
-  const [document, isLoading, setDocument, hasError] = useDocument(
+  const [document, loading, updateDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
     999
   )
 
-  if (isLoading) {
-    return <div>Loading document...</div>
+  if (loading) {
+    return <Loading />
   }
 
   if (hasError) {
@@ -25,8 +25,6 @@ const Workflow_Component = (props: DmtUIPlugin) => {
 }
 
 const Workflow = ({ document }: any) => {
-  console.log(document)
-
   //6) render the diagram!
   return <MakeDiagram document={document} />
 }

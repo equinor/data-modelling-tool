@@ -5,6 +5,7 @@ import {
   EntityPickerButton,
   EntityPickerInput,
   INPUT_FIELD_WIDTH,
+  Loading,
   NewEntityButton,
   TReference,
   UploadFileButton,
@@ -44,17 +45,17 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
-  const { document, dataSourceId, onOpen, documentId } = props
-  const [formData, setFormData] = useState<any>({ ...document })
-  const [_document, loading, updateDocument] = useDocument(
+  const { documentId, dataSourceId, onOpen } = props
+  const [formData, setFormData] = useState<any>()
+  const [document, loading, updateDocument] = useDocument(
     dataSourceId,
     documentId
   )
 
   useEffect(() => {
-    if (!_document) return
-    setFormData(_document)
-  }, [_document])
+    if (!document) return
+    setFormData(document)
+  }, [document])
 
   function getNewSTaskBody(filename: string): any {
     return {
@@ -66,7 +67,9 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
       },
     }
   }
-
+  if (loading) {
+    return <Loading />
+  }
   return (
     <div
       style={{

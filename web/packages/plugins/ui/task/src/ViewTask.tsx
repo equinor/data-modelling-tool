@@ -1,14 +1,22 @@
 import React from 'react'
 import { Card, Icon, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { DmtUIPlugin } from '@dmt/common'
+import { DmtUIPlugin, Loading, useDocument } from '@dmt/common'
 
 const Pre = styled.pre`
   font-size: 0.9em;
 `
 
 export const ViewTask = (props: DmtUIPlugin): JSX.Element => {
-  const { document: task } = props
+  const { documentId, dataSourceId } = props
+
+  const [task, loading, updateDocument, error] = useDocument<any>(
+    dataSourceId,
+    documentId
+  )
+  if (loading) {
+    return <Loading />
+  }
 
   return (
     <>

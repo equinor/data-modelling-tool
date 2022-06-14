@@ -219,7 +219,6 @@ export function UIPluginSelector(props: {
         <UiPlugin
           dataSourceId={dataSourceId}
           documentId={documentId}
-          document={entity}
           onSubmit={onSubmit}
           onOpen={onOpen}
           categories={categories}

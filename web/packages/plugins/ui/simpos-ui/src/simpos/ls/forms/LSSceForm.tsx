@@ -1,21 +1,21 @@
 import * as React from 'react'
 
-import { useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { Loading, useDocument } from '@dmt/common'
+import { DmtUIPlugin } from '@dmt/common'
 
 import { LSSceForm } from './sce.js'
 
 const LSSceForm_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, updateDocument } = props
+  const { dataSourceId, documentId } = props
 
-  const [document, isLoading, setDocument, hasError] = useDocument(
+  const [document, loading, updateDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
     999
   )
 
-  if (isLoading) {
-    return <div>Loading document...</div>
+  if (loading) {
+    return <Loading />
   }
 
   if (hasError) {

@@ -1,4 +1,9 @@
-import { DmtUIPlugin, UIPluginSelector, useDocument } from '@dmt/common'
+import {
+  DmtUIPlugin,
+  Loading,
+  UIPluginSelector,
+  useDocument,
+} from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import styled from 'styled-components'
@@ -51,11 +56,11 @@ type TStringMap = {
 }
 
 export const TabsContainer = (props: DmtUIPlugin) => {
-  const { documentId, dataSourceId, config, document, onSubmit } = props
+  const { documentId, dataSourceId, config, onSubmit } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, _loading, updateDocument, error] = useDocument<any>(
+  const [entity, loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
     documentId
   )
@@ -71,7 +76,9 @@ export const TabsContainer = (props: DmtUIPlugin) => {
     setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
     setSelectedTab(tabData.attribute)
   }
-
+  if (loading) {
+    return <Loading />
+  }
   return (
     <TabsProvider onOpen={handleOpen}>
       <div style={{ display: 'flex', flexDirection: 'column' }}>
@@ -83,7 +90,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
             borderBottom: '1px black solid',
           }}
         >
-          <Tooltip enterDelay={600} title={document.type} placement="top-start">
+          <Tooltip enterDelay={600} title={entity.type} placement="top-start">
             <BaseTab
               onClick={() => setSelectedTab('home')}
               active={selectedTab === 'home'}
@@ -119,10 +126,10 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
               setSelectedTab(tabData.attribute)
             }}
-            onSubmit={(formData: any) => {
-              setFormData({ ...formData })
+            onSubmit={(newFormData: any) => {
+              setFormData({ ...newFormData })
               if (onSubmit) {
-                onSubmit(formData)
+                onSubmit(newFormData)
               }
             }}
           />
@@ -141,8 +148,8 @@ export const TabsContainer = (props: DmtUIPlugin) => {
                     [childTab.attribute]: data,
                   }
                   setFormData(newFormData)
-                  if (onSubmit) {
-                    onSubmit(newFormData)
+                  if (childTab?.onSubmit) {
+                    childTab.onSubmit(data)
                   }
                 }}
               />

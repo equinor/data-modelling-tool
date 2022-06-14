@@ -4,9 +4,9 @@ import { useDocument, DmtUIPlugin } from '@dmt/common'
 import { SIMA_Model_FirstOrderMotionTransferFunction } from './FirstOrderMotionTransferFunction_src.js'
 
 const FirstOrderMotionTransferFunction_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, updateDocument } = props
+  const { dataSourceId, documentId } = props
 
-  const [document, isLoading, setDocument, hasError] = useDocument(
+  const [document, isLoading, updateDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
     999

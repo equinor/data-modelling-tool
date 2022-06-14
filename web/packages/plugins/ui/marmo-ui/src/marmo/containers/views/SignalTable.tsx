@@ -1,19 +1,19 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, DmtUIPlugin } from '@dmt/common'
+import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
 
 import { SignalTable } from './SignalTable_src.js'
 
 const SignalTable_Component = (props: DmtUIPlugin) => {
-  const { dataSourceId, documentId, updateDocument } = props
+  const { dataSourceId, documentId } = props
 
-  const [document, isLoading, setDocument, hasError] = useDocument(
+  const [document, loading, updateDocument, hasError] = useDocument(
     dataSourceId,
     documentId,
     999
   )
 
-  if (isLoading) {
-    return <div>Loading document...</div>
+  if (loading) {
+    return <Loading />
   }
 
   if (hasError) {

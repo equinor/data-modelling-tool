@@ -8,6 +8,7 @@ import {
   NewEntityButton,
   EntityPickerButton,
   INPUT_FIELD_WIDTH,
+  Loading,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -34,24 +35,25 @@ const HeaderWrapper = styled.div`
 `
 
 export const EditTask = (props: DmtUIPlugin) => {
-  const { document, documentId, dataSourceId, onOpen, onSubmit } = props
-  const [_document, _loading, updateDocument, error] = useDocument<any>(
+  const { documentId, dataSourceId, onOpen, onSubmit } = props
+  const [document, loading, updateDocument, error] = useDocument<any>(
     dataSourceId,
-    documentId
+    documentId,
+    999
   )
-  const [formData, setFormData] = useState<any>({ ...document })
 
+  const [formData, setFormData] = useState<any>()
+  const runnerTypeHasChanged =
+    formData?.runner?.type && formData?.runner?.type === document?.runner?.type
   useEffect(() => {
-    if (!_document) return
+    if (!document) return
     // onChange is an indicator if the plugin is used within another plugin. If so, don't override formData
-    setFormData({ ..._document })
-  }, [_document])
-
-  useEffect(() => {
-    //make sure local state is up to date with document prop
-    setFormData(document)
+    setFormData({ ...document })
   }, [document])
 
+  if (loading) {
+    return <Loading />
+  }
   return (
     <div>
       <div style={{ marginBottom: '10px' }}>
@@ -145,12 +147,12 @@ export const EditTask = (props: DmtUIPlugin) => {
             <Column>
               <Label label={'Blueprint'} />
               <JobHandlerPicker
-                onChange={(selectedBlueprint: string) =>
+                onChange={(selectedBlueprint: string) => {
                   setFormData({
                     ...formData,
-                    runner: { ...formData?.runner, type: selectedBlueprint },
+                    runner: { type: selectedBlueprint },
                   })
-                }
+                }}
                 formData={formData?.runner?.type || ''}
               />
               {formData?.runner?.type && (
@@ -161,16 +163,23 @@ export const EditTask = (props: DmtUIPlugin) => {
                     paddingLeft: '10px',
                   }}
                 >
+                  {runnerTypeHasChanged ? (
+                    <p></p>
+                  ) : (
+                    <p>Please save the analysis before opening job runner</p>
+                  )}
                   {onOpen ? (
                     <Button
+                      disabled={!runnerTypeHasChanged}
                       onClick={() =>
                         onOpen({
                           attribute: 'runner',
                           categories: ['edit'],
                           entity: formData?.runner,
                           absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
-                          onSubmit: (data: any) =>
-                            setFormData({ ...formData, runner: data }),
+                          onSubmit: (data: any) => {
+                            setFormData({ ...formData, runner: data })
+                          },
                         })
                       }
                     >
@@ -200,7 +209,7 @@ export const EditTask = (props: DmtUIPlugin) => {
             Reset
           </Button>
           <div>
-            {_loading ? (
+            {loading ? (
               <Button>
                 <Progress.Dots />
               </Button>

@@ -9,7 +9,7 @@ export function useDocument<T>(
   dataSourceId: string,
   documentId: string,
   depth?: number | undefined
-): [T | null, boolean, Function, AxiosError<any> | null] {
+): [any | null, boolean, Function, AxiosError<any> | null] {
   const [document, setDocument] = useState<T | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<AxiosError<any> | null>(null)

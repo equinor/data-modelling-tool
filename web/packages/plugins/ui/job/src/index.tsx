@@ -1,6 +1,12 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin, useDocument, TJob } from '@dmt/common'
+import {
+  DmtPluginType,
+  DmtUIPlugin,
+  useDocument,
+  TJob,
+  Loading,
+} from '@dmt/common'
 import { JobControl } from './JobControl'
 import { JobEdit } from './JobEdit'
 import { JobEditAdvanced } from './JobEditAdvanced'
@@ -26,11 +32,11 @@ const JobControlWrapper = (props: DmtUIPlugin) => {
 
 const JobEditWrapper = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen } = props
-  const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
+  const [document, loading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
     documentId
   )
-  if (documentLoading) return <div>Loading...</div>
+  if (loading) return <Loading />
   if (error) return <div>Something went wrong; {error}</div>
   if (!document) return <div>The job document is empty</div>
   return (
