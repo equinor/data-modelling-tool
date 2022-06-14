@@ -12,8 +12,7 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
-    documentId,
-    false
+    documentId
   )
   const [formData, setFormData] = useState<TJob | null>(null)
 
@@ -46,7 +45,7 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
       <div style={{ marginBottom: '10px' }}>
         {Object.keys(formData.applicationInput || {}).length ? (
           <UIPluginSelector
-            entity={formData.applicationInput}
+            type={formData.applicationInput.type}
             absoluteDottedId={`${dataSourceId}/${formData.applicationInput._id}`}
             categories={['edit']}
             onSubmit={(data: any) =>
