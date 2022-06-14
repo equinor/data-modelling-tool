@@ -92,7 +92,16 @@
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-sima-application-input",
-      "category": "edit"
+      "category": "edit",
+      "roles": ["dmss-admin", "domain-expert"]
+    },
+    {
+      "name": "Analysis Input",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "edit-sima-application-input-input",
+      "category": "edit",
+      "roles": ["operator", "expert-operator"]
     }
   ]
 }
+

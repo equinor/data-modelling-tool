@@ -1,12 +1,14 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useContext } from 'react'
 import {
   DmtUIPlugin,
   UIPluginSelector,
   TJob,
   useDocument,
   Loading,
+  hasDomainRole
 } from '@dmt/common'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props
@@ -16,6 +18,7 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
     dataSourceId,
     documentId
   )
+  const { tokenData } = useContext(AuthContext)
 
   useEffect(() => {
     if (!analysis) return
@@ -37,7 +40,8 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
         dataSourceId={dataSourceId}
       />
       <>
-        <UIPluginSelector
+        {hasDomainRole(tokenData) && (
+                <UIPluginSelector
           type={analysis.task.type}
           absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
           categories={['container']}
@@ -45,6 +49,7 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
             setAnalysis({ ...analysis, task: formData })
           }}
         />
+        )}
         <AnalysisJobTable
           jobs={jobs}
           analysisId={analysis._id}

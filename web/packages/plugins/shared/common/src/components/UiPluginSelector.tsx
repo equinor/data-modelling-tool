@@ -43,10 +43,10 @@ export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
   const parts = absoluteDottedId.split('.')
   return (
     <PathWrapper>
-      {parts.map((part: string) => {
+      {parts.map((part: string, index: number) => {
         return (
           <div style={{ display: 'flex', flexWrap: 'nowrap' }} key={part}>
-            <PathPart>/</PathPart>
+            {index !== 0 && <PathPart>/</PathPart>}
             <PathPart>{part}</PathPart>
           </div>
         )
@@ -128,6 +128,7 @@ export function UIPluginSelector(props: {
   onSubmit?: Function
   categories?: string[]
   breadcrumb?: boolean
+  referencedBy?: string
   onOpen?: Function
 }): JSX.Element {
   const {
@@ -135,6 +136,7 @@ export function UIPluginSelector(props: {
     type,
     categories,
     breadcrumb,
+    referencedBy,
     onSubmit,
     onOpen,
   } = props
@@ -184,6 +186,7 @@ export function UIPluginSelector(props: {
       {breadcrumb && (
         <DocumentPath absoluteDottedId={`${dataSourceId}/${documentId}`} />
       )}
+      {referencedBy && <DocumentPath absoluteDottedId={referencedBy} />}
       {selectablePlugins.length > 1 && (
         <PluginTabsWrapper>
           {selectablePlugins.map(

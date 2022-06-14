@@ -11,6 +11,7 @@ import {
   sortApplications,
   useLocalStorage,
 } from '../index'
+import { APP_ROLES, DMSS_ADMIN_ROLE } from '../utils/appRoles'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import axios, { AxiosResponse } from 'axios'
@@ -206,17 +207,11 @@ export const Header = (props: {
           </div>
           {apiKey && <pre>{apiKey}</pre>}
 
-          {tokenData?.roles.includes('dmss-admin') && (
+          {tokenData?.roles.includes(DMSS_ADMIN_ROLE) && (
             <>
               <p>Impersonate a role (UI only)</p>
               <UnstyledList>
-                {[
-                  'dmss-admin',
-                  'operator',
-                  'expert-operator',
-                  'domain-expert',
-                  'domain-developer',
-                ].map((role: string) => (
+                {APP_ROLES.map((role: string) => (
                   <li key={role}>
                     <Radio
                       label={role}

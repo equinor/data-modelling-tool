@@ -18,6 +18,7 @@ import {
   EJobStatus,
   TJob,
   EBlueprint,
+  hasOperatorRole,
 } from '@dmt/common'
 import { TAnalysis, TTask } from '../Types'
 import { TAnalysisCardProps } from '../Types'
@@ -154,35 +155,37 @@ const AnalysisCard = (props: TAnalysisCardProps) => {
             </FlexWrapper>
           </div>
         </div>
-        <Card.Actions>
-          {'task' in analysis && Object.keys(analysis.task).length > 0 && (
-            <>
-              <RunAnalysisButton
-                analysis={analysis}
-                addJob={addJob}
-                jobs={jobs}
-                dataSourceId={dataSourceId}
-              />
-              {hasExpertRole(tokenData) && (
-                <Tooltip title={'Not implemented'}>
-                  <Button style={{ width: 'max-content' }} disabled>
-                    Configure schedule
-                    <Icons name="time" title="time" />
-                  </Button>
-                </Tooltip>
-              )}
-            </>
-          )}
-          {hasExpertRole(tokenData) && (
-            <Button
-              onClick={() => setViewACL(!viewACL)}
-              style={{ width: 'max-content' }}
-            >
-              Access control
-              <Icons name="assignment_user" title="assignment_user" />
-            </Button>
-          )}
-        </Card.Actions>
+        {hasOperatorRole(tokenData) && (
+          <Card.Actions>
+            {'task' in analysis && Object.keys(analysis.task).length > 0 && (
+              <>
+                <RunAnalysisButton
+                  analysis={analysis}
+                  addJob={addJob}
+                  jobs={jobs}
+                  dataSourceId={dataSourceId}
+                />
+                {hasExpertRole(tokenData) && (
+                  <Tooltip title={'Not implemented'}>
+                    <Button style={{ width: 'max-content' }} disabled>
+                      Configure schedule
+                      <Icons name="time" title="time" />
+                    </Button>
+                  </Tooltip>
+                )}
+              </>
+            )}
+            {hasExpertRole(tokenData) && (
+              <Button
+                onClick={() => setViewACL(!viewACL)}
+                style={{ width: 'max-content' }}
+              >
+                Access control
+                <Icons name="assignment_user" title="assignment_user" />
+              </Button>
+            )}
+          </Card.Actions>
+        )}
       </Card>
       <Dialog
         isOpen={viewACL}

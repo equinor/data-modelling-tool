@@ -78,7 +78,7 @@
     {
       "name": "Edit",
       "type": "system/SIMOS/UiRecipe",
-      "plugin": "jobEdit",
+      "plugin": "jobInputEdit",
       "category": "edit",
       "roles": ["dmss-admin", "domain-expert", "expert-operator", "operator"]
     },
@@ -86,7 +86,8 @@
       "name": "Control pane",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "jobControl",
-      "category": "view"
+      "category": "view",
+      "roles": ["dmss-admin", "domain-expert", "expert-operator", "operator"]
     }
   ]
 }
