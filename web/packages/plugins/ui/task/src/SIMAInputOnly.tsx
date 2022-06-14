@@ -22,7 +22,7 @@ export const EditSIMAInput = (props: DmtUIPlugin) => {
     <div>
       <UIPluginSelector
         absoluteDottedId={`${dataSourceId}/${documentId}.applicationInput.input`}
-        entity={document?.applicationInput?.input}
+        type={document?.applicationInput?.input.type}
         categories={['edit']}
       />
     </div>

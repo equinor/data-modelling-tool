@@ -102,7 +102,7 @@ export const JobEditAdvanced = (props: {
               }}
             >
               <UIPluginSelector
-                entity={formData.applicationInput}
+                type={formData.applicationInput.type}
                 absoluteDottedId={`${dataSourceId}/${formData.applicationInput._id}`}
                 categories={['container']}
               />
@@ -133,9 +133,10 @@ export const JobEditAdvanced = (props: {
               >
                 <UIPluginSelector
                   absoluteDottedId={`${dataSourceId}/${documentId}.runner`}
-                  entity={
+                  type={
                     (Object.keys(formData?.runner).length &&
-                      formData.runner) || { type: '' }
+                      formData.runner.type) ||
+                    ''
                   }
                   breadcrumb={false}
                   categories={['edit']}

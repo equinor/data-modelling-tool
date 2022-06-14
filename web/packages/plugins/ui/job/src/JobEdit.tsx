@@ -118,7 +118,7 @@ export const JobEdit = (props: {
               {Object.keys(formData.applicationInput?.input || {}).length ? (
                 <UIPluginSelector
                   // @ts-ignore
-                  entity={formData.applicationInput.input}
+                  type={formData.applicationInput.input.type}
                   // @ts-ignore
                   absoluteDottedId={`${dataSourceId}/${formData.applicationInput.input._id}`}
                   categories={['edit']}

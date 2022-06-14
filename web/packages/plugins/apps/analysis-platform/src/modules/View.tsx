@@ -36,7 +36,7 @@ export const View = ({ settings }: any) => {
       {document && (
         <UIPluginSelector
           absoluteDottedId={`${data_source}/${entity_id}`}
-          entity={document}
+          type={document.type}
           breadcrumb={true}
         />
       )}

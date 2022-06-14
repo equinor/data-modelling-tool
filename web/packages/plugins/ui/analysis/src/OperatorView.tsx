@@ -38,7 +38,7 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
       />
       <>
         <UIPluginSelector
-          entity={analysis.task}
+          type={analysis.task.type}
           absoluteDottedId={`${dataSourceId}/${analysis._id}.task`}
           categories={['container']}
           onSubmit={(formData: any) => {

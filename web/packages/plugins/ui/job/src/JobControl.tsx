@@ -161,7 +161,7 @@ export const JobControl = (props: {
         {!!document.runner ? (
           <UIPluginSelector
             categories={['view']}
-            entity={document.runner}
+            type={document.runner.type}
             absoluteDottedId={`${jobId}.runner`}
           />
         ) : (
@@ -178,7 +178,7 @@ export const JobControl = (props: {
         {!!document.applicationInput ? (
           <UIPluginSelector
             categories={['view']}
-            entity={document.applicationInput}
+            type={document.applicationInput.type}
             absoluteDottedId={`${jobId.split('/', 1)[0]}/${
               document.applicationInput._id
             }`}

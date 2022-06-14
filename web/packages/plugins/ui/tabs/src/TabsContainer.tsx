@@ -118,7 +118,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
           <UIPluginSelector
             key={'home'}
             absoluteDottedId={`${dataSourceId}/${documentId}`}
-            entity={formData}
+            type={formData.type}
             categories={config?.subCategories?.filter(
               (c: string) => c !== 'container'
             )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
@@ -140,7 +140,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               <UIPluginSelector
                 key={childTab.attribute}
                 absoluteDottedId={childTab.absoluteDottedId}
-                entity={childTab.entity}
+                type={childTab.entity.type}
                 categories={childTab.categories}
                 onSubmit={(data: any) => {
                   const newFormData = {

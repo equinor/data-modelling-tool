@@ -264,7 +264,7 @@ const External = (props: any) => {
     <UIPluginSelector
       key={namePath}
       absoluteDottedId={absoluteDottedId}
-      entity={initialValue}
+      type={initialValue.type}
       onOpen={onOpen}
     />
   )

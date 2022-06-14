@@ -7,7 +7,6 @@ import {
   useBlueprint,
   AuthContext,
   getRoles,
-  TValidEntity,
 } from '@dmt/common'
 import styled from 'styled-components'
 import { CircularProgress } from '@equinor/eds-core-react'
@@ -125,7 +124,7 @@ function filterPlugins(
 
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
-  entity: TValidEntity
+  type: string
   onSubmit?: Function
   categories?: string[]
   breadcrumb?: boolean
@@ -133,7 +132,7 @@ export function UIPluginSelector(props: {
 }): JSX.Element {
   const {
     absoluteDottedId,
-    entity,
+    type,
     categories,
     breadcrumb,
     onSubmit,
@@ -143,14 +142,7 @@ export function UIPluginSelector(props: {
   if (absoluteDottedId) {
     ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
   }
-  if (!entity || !Object.keys(entity).length) {
-    console.error(
-      `UiPluginSelector requires an entity with a 'type' attribute. Got '${JSON.stringify(
-        entity
-      )}' (for ${absoluteDottedId})`
-    )
-  }
-  const [blueprint, loadingBlueprint, error] = useBlueprint(entity.type)
+  const [blueprint, loadingBlueprint, error] = useBlueprint(type)
   // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
@@ -177,7 +169,7 @@ export function UIPluginSelector(props: {
   if (error)
     return (
       <div style={{ color: 'red' }}>
-        Failed to fetch Blueprint {entity.type || '(unknown type)'}
+        Failed to fetch Blueprint {type || '(unknown type)'}
       </div>
     )
   if (!selectablePlugins.length)

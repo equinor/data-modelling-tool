@@ -67,7 +67,7 @@ export default ({ settings }: any) => {
           {document && (
             <UIPluginSelector
               absoluteDottedId={`${data_source}/${entity_id}`}
-              entity={document}
+              type={document.type}
             />
           )}
         </Group>
