@@ -74,14 +74,16 @@ spec:
     - name: dmss
       environmentConfig:
         - environment: prod
+          imageTagName: v0.3.18-prod-test
           horizontalScaling:
             minReplicas: 2
             maxReplicas: 6
         - environment: dev
+          imageTagName: latest
           horizontalScaling:
             minReplicas: 2
             maxReplicas: 6
-      image: datamodelingtool.azurecr.io/dmss:latest
+      image: datamodelingtool.azurecr.io/dmss:{imageTagName}
       alwaysPullImageOnDeploy: true
       resources:
         requests:
