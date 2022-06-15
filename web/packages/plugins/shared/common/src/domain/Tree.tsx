@@ -127,7 +127,9 @@ export class TreeNode {
     this.isDataSource = isDataSource
     this.entity = entity
     this.name = name || entity?.name
-    this.type = attribute.attributeType
+    this.type = Object.keys(entity).length
+      ? entity.type
+      : attribute.attributeType
     this.attribute = attribute
     this.children = children
   }
