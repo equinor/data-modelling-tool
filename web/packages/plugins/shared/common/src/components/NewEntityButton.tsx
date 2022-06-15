@@ -15,10 +15,14 @@ import { AxiosError } from 'axios'
 export function NewEntityButton(props: {
   type?: string
   setReference: (r: TReference) => void
+  defaultDestination?: string
 }) {
-  const { type, setReference } = props
+  const { type, setReference, defaultDestination } = props
   const [showScrim, setShowScrim] = useState<boolean>(false)
-  const [saveDestination, setSaveDestination] = useState<string>('')
+  const [saveDestination, setSaveDestination] = useState<string>(
+    defaultDestination ? defaultDestination : ''
+  )
+
   const [newName, setNewName] = useState<string>('')
   const [copyTarget, setCopyTarget] = useState<TReference | undefined>(
     undefined
@@ -29,6 +33,11 @@ export function NewEntityButton(props: {
   const dmtAPI = new DmtAPI(token)
 
   useEffect(() => setTypeToCreate(type || ''), [type])
+  useEffect(() => {
+    if (defaultDestination) {
+      setSaveDestination(defaultDestination)
+    }
+  }, [defaultDestination])
 
   function addEntityToPath(entity: any): Promise<void> {
     const [dataSource, ...directories] = saveDestination.split('/')
@@ -66,15 +75,10 @@ export function NewEntityButton(props: {
             minHeight: '270px',
           }}
         >
-          <Label label={'Folder'} />
-          <DestinationPicker
-            onChange={(value: any) => setSaveDestination(value)}
-            formData={saveDestination}
-          />
           <div style={{ display: 'block' }}>
             <Label label={'Blueprint'} />
             <BlueprintPicker
-              disabled={!!copyTarget}
+              disabled={!!copyTarget || !!type}
               onChange={(selectedType: string) => setTypeToCreate(selectedType)}
               formData={typeToCreate}
             />
@@ -83,6 +87,16 @@ export function NewEntityButton(props: {
                 style={{ marginLeft: '40px' }}
               >{`Copying entity named '${copyTarget.name}'`}</div>
             )}
+          </div>
+          <div>
+            <Label label={'Entity destination folder'} />
+            <DestinationPicker
+              onChange={(selectedFolder: string) =>
+                setSaveDestination(selectedFolder)
+              }
+              disabled={!!defaultDestination}
+              formData={saveDestination}
+            />
           </div>
           <Label label={'Name'} />
           <Input
@@ -106,6 +120,7 @@ export function NewEntityButton(props: {
             {!copyTarget ? (
               <EntityPickerButton
                 variant="outlined"
+                typeFilter={typeToCreate}
                 text="Copy existing"
                 onChange={(ref: TReference) => setCopyTarget(ref)}
               />

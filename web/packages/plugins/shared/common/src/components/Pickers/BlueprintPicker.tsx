@@ -20,7 +20,9 @@ export const BlueprintPicker = (props: {
 
   return (
     <div>
-      <Tooltip title={truncatePathString(formData)}>
+      <Tooltip
+        title={truncatePathString(formData) === formData ? '' : formData}
+      >
         <Input
           disabled={disabled}
           variant={variant || 'default'}
