@@ -74,12 +74,10 @@ spec:
     - name: dmss
       environmentConfig:
         - environment: prod
-          imageTagName: production
           horizontalScaling:
             minReplicas: 2
             maxReplicas: 6
         - environment: dev
-          imageTagName: latest
           horizontalScaling:
             minReplicas: 2
             maxReplicas: 6
