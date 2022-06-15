@@ -261,6 +261,8 @@ const CollapsedView = ({ doc }) => {
   var sectionTitle = ''
   let section
   var defaultState = false
+  const [isOpen, setOpen] = useState(defaultState)
+  const { getCollapseProps, getToggleProps } = useCollapse({ isOpen })
 
   if (doc.type.includes('ReportFragment')) {
     section = <FragmentView doc={doc} />
@@ -270,11 +272,7 @@ const CollapsedView = ({ doc }) => {
     section = <SectionView doc={doc} />
     sectionTitle = section.title
     defaultState = false
-    return (
-      <Wrapper>
-        <Content>{section}</Content>
-      </Wrapper>
-    )
+    return <Content>{section}</Content>
   } else if (doc.type.includes('LinePlot')) {
     section = <PlotView plotDoc={doc} />
     sectionTitle = 'Plot: ' + doc.caption
@@ -289,11 +287,8 @@ const CollapsedView = ({ doc }) => {
   } else {
   }
 
-  const [isOpen, setOpen] = useState(defaultState)
-  const { getCollapseProps, getToggleProps } = useCollapse({ isOpen })
-
   return (
-    <Wrapper>
+    <>
       <Toggle
         {...getToggleProps({
           onClick: () => {
@@ -308,8 +303,39 @@ const CollapsedView = ({ doc }) => {
         {sectionTitle}
       </Toggle>
       <Content {...getCollapseProps()}>{section}</Content>
-    </Wrapper>
+    </>
   )
+}
+const SimpleView = ({ doc }) => {
+  var sectionTitle = ''
+  let section
+  var defaultState = false
+  const [isOpen, setOpen] = useState(defaultState)
+  // const { getCollapseProps, getToggleProps } = useCollapse({ isOpen })
+
+  if (doc.type.includes('ReportFragment')) {
+    return <FragmentView doc={doc} />
+    sectionTitle = doc.name
+    defaultState = false
+  } else if (doc.type.includes('Section')) {
+    return <SectionView doc={doc} />
+    sectionTitle = section.title
+    defaultState = false
+    return <Content>{section}</Content>
+  } else if (doc.type.includes('LinePlot')) {
+    return <PlotView plotDoc={doc} />
+    sectionTitle = 'Plot: ' + doc.caption
+    defaultState = false
+  } else if (doc.type.includes('Table')) {
+    return <TableView tabDoc={doc} />
+    defaultState = true
+    sectionTitle = 'Table: ' + doc.caption
+  } else if (doc.type.includes('Paragraph')) {
+    return <ParagraphView doc={doc} />
+    defaultState = false
+  } else {
+    return null
+  }
 }
 //********************************************************//
 const SectionView = ({ doc }) => {
@@ -333,7 +359,7 @@ const SectionView = ({ doc }) => {
       </Toggle>
       <Content {...getCollapseProps()}>
         {doc.items.map((item, index) => (
-          <CollapsedView doc={item} key={index} />
+          <SimpleView doc={item} key={index} />
         ))}
       </Content>
     </Wrapper>
@@ -351,20 +377,18 @@ const ParagraphView = ({ doc }) => {
 //********************************************************//
 const FragmentView = ({ doc }) => {
   return (
-    <Wrapper>
-      <Content>
-        {doc.items.map((item, index) => (
-          <CollapsedView doc={item} key={index} />
-        ))}
-      </Content>
-    </Wrapper>
+    <Content>
+      {doc.items.map((item, index) => (
+        <SimpleView doc={item} key={index} />
+      ))}
+    </Content>
   )
 }
 //********************************************************//
 const ReportView = ({ document }) => {
   return (
     <div className="container">
-      <SectionView doc={document} />
+      <SimpleView doc={document} />
     </div>
   )
 }

@@ -2,7 +2,7 @@
  "name" : "ReportFragment",
  "type" : "system/SIMOS/Blueprint",
  "abstract" : false,
- "extends" : ["system/SIMOS/NamedEntity", "/report/ReportItemContainer", "/report/ReportItem"],
+ "extends" : ["system/SIMOS/NamedEntity", "/report/ReportItemContainer", "/report/ReportItem", "system/SIMOS/DefaultUiRecipes"],
  "attributes" : [],
  "storageRecipes" : [],
  "uiRecipes" : [
