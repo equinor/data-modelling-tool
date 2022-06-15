@@ -3,6 +3,7 @@ import {
   Icon,
   Progress,
   Table,
+  Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
 import React, { useContext, useEffect, useState } from 'react'
@@ -80,8 +81,6 @@ const JobRow = (props: {
   }
 
   async function removeJob(): Promise<void> {
-    NotificationManager.warning('Not implemented')
-    return
     setLoading(true)
     try {
       await dmssAPI.explorerRemove({
@@ -147,13 +146,16 @@ const JobRow = (props: {
               <Icon name="play" title="play" />
             </Button>
           ) : (
-            <Button
-              variant="ghost_icon"
-              color="danger"
-              onClick={() => removeJob()}
-            >
-              <Icon name="delete_forever" title="delete" />
-            </Button>
+            <Tooltip title={'Not implemented'}>
+              <Button
+                variant="ghost_icon"
+                color="danger"
+                disabled
+                onClick={() => removeJob()}
+              >
+                <Icon name="delete_forever" title="delete" />
+              </Button>
+            </Tooltip>
           )}
         </Table.Cell>
       ) : (
