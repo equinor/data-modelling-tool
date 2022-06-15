@@ -1,7 +1,0 @@
-authorityKeyIdentifier=keyid,issuer
-basicConstraints=CA:FALSE
-keyUsage = digitalSignature, nonRepudiation, keyEncipherment, dataEncipherment
-subjectAltName = @alt_names
-[alt_names]
-DNS.1 = dmt-db-test.norwayeast.cloudapp.azure.com
-DNS.2 = dmt-db-tmp.norwayeast.cloudapp.azure.com

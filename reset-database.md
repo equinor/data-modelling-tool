@@ -4,7 +4,7 @@ As of 4. April, only a database for the test version is set up. This can be foun
 
 Before run, go to DMSS local folder and substitte the src/home/system/data_sources/system.json file with correct connection info (host, port, username and password).
 
-Also, change the DMSS docker-compose.override.yml file: set the MONGO_URI: env variable and set AUTH_ENABLED true.
+Also, change the DMSS docker-compose.override.yml file: set the MONGO_AZURE_URI: env variable and set AUTH_ENABLED true.
  Afterwards, you can start up dmss as normal with docker-compose  
 NB! DO NOT COMMIT DATABASE PASSWORD TO DMSS REPO!
 
@@ -18,7 +18,7 @@ NB! DO NOT COMMIT DATABASE PASSWORD TO DMSS REPO!
          1. Note: If you wish to generate a new secret key, this value can be left blank.
             1. NB: Make sure to run the script with `--create-key`.
             2. NB! remeber to update the SECRET_KEY environment variable in radix. 
-      4. `MONGO_URI`: The Mongo connection string of the Mongo database for the environment you wish to reset.
+      4. `MONGO_AZURE_URI`: The Mongo connection string of the Mongo database for the environment you wish to reset.
    3. Source the environment variables:
       1. `source reset-db.env`
 2. Run the script:

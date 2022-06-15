@@ -1,8 +1,0 @@
----
-- name: Ensure common_groups are  present
-  group:
-    name: "{{ item.name }}"
-    state: "{{ item.state }}"
-  with_items: "{{ common_groups }}"
-  when: common_groups | length > 0
-...
