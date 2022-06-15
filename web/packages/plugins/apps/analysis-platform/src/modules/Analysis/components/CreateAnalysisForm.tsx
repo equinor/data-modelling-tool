@@ -105,6 +105,9 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
           label="Description"
           placeholder="Description"
           onChange={handleInputChange}
+          multiline
+          rows={1}
+          rowsMax={5}
           helperText={
             error.description
               ? error.description
