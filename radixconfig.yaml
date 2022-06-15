@@ -72,6 +72,17 @@ spec:
       publicPort: flask
 
     - name: dmss
+      environmentConfig:
+        - environment: prod
+          imageTagName: production
+          horizontalScaling:
+            minReplicas: 2
+            maxReplicas: 6
+        - environment: dev
+          imageTagName: latest
+          horizontalScaling:
+            minReplicas: 2
+            maxReplicas: 6
       image: datamodelingtool.azurecr.io/dmss:latest
       alwaysPullImageOnDeploy: true
       resources:
@@ -84,15 +95,7 @@ spec:
       secrets:
         - MONGO_AZURE_URI
         - SECRET_KEY
-      environmentConfig:
-        - environment: prod
-          horizontalScaling:
-            minReplicas: 2
-            maxReplicas: 6
-        - environment: dev
-          horizontalScaling:
-            minReplicas: 2
-            maxReplicas: 6
+
       variables:
         LOGGING_LEVEL: "debug"
         AUTH_ENABLED: "True"
@@ -109,7 +112,12 @@ spec:
 
 
     - name: proxy
-      image: datamodelingtool.azurecr.io/dmt/nginx:latest
+      environmentConfig:
+        - environment: prod
+          imageTagName: production
+        - environment: dev
+          imageTagName: latest
+      image: datamodelingtool.azurecr.io/dmt/nginx:{imageTagName}
       ports:
         - name: nginx
           port: 8080
