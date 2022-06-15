@@ -14,6 +14,8 @@ We use __Bicep__ to define our _Infrastructure as Code_
 
 ## How to deploy
 
+Note: azure-cli version 2.2.0 or higher is required.
+
 Set active subscription for operations  
 `az account set --subscription "S398-DataModellingTool"`
 

@@ -32,4 +32,4 @@ _Dev URL_
 DMSS_API=<https://dmss-data-modelling-tool-dev.radix.equinor.com>
 
 _Prod URL_  
-DMSS_API=<https://data-modelling-tool.app.radix.equinor.com>
+DMSS_API=<https://dmss-data-modelling-tool-prod.radix.equinor.com>
