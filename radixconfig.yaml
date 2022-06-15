@@ -93,7 +93,7 @@ spec:
           memory: "4Gi"
           cpu: "4000m"
       secrets:
-        - MONGO_AZURE_URI
+        - MONGO_URI
         - SECRET_KEY
 
       variables:
