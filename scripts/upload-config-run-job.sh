@@ -141,7 +141,7 @@ echo "Fetching analysis... '${ANALYSIS_ID}'"
 ANALYSIS=$(get_document "$ANALYSIS_ID" "./analysis.json")
 RUNS_SO_FAR=$(echo $ANALYSIS | jq '.jobs | length')
 echo "Runs so far: $RUNS_SO_FAR"
-NEW_SIMA_CONFIG_NAME="${SIMA_CONFIG_PREFIX}-${GITHUB_REF##*/}-${SHORT_GIT_SHA}"
+NEW_SIMA_CONFIG_NAME="${SIMA_CONFIG_PREFIX}-${GITHUB_REF##*/}-${SHORT_GIT_SHA}-$(echo $RANDOM | md5sum | head -c 5; echo;)"
 
 echo "Creating SIMAApplicationInput with '${STASK_BLOB_PATH}' named '$NEW_SIMA_CONFIG_NAME'"
 echo "----------------------------------------"
