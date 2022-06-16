@@ -1,5 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import { Icon, Radio, TopBar } from '@equinor/eds-core-react'
+import { grid_on, info_circle, account_circle } from '@equinor/eds-icons'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
 import {
@@ -15,6 +16,12 @@ import { APP_ROLES, DMSS_ADMIN_ROLE } from '../utils/appRoles'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import axios, { AxiosResponse } from 'axios'
+
+Icon.add({
+  grid_on,
+  info_circle,
+  account_circle,
+})
 
 const Icons = styled.div`
   display: flex;
