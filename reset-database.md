@@ -1,12 +1,5 @@
 # How to reset Azure database
 
-As of 4. April, only a database for the test version is set up. This can be found in the dmt-test resource group in the subscription S398-DataModellingTool.
-
-Before run, go to DMSS local folder and substitte the src/home/system/data_sources/system.json file with correct connection info (host, port, username and password).
-
-Also, change the DMSS docker-compose.override.yml file: set the MONGO_AZURE_URI: env variable and set AUTH_ENABLED true.
- Afterwards, you can start up dmss as normal with docker-compose  
-NB! DO NOT COMMIT DATABASE PASSWORD TO DMSS REPO!
 
 1. Set the necessary environment variables:
    1. Copy the env-template file `reset-db.env-template`:
@@ -21,6 +14,9 @@ NB! DO NOT COMMIT DATABASE PASSWORD TO DMSS REPO!
       4. `MONGO_AZURE_URI`: The Mongo connection string of the Mongo database for the environment you wish to reset.
    3. Source the environment variables:
       1. `source reset-db.env`
+   4. Go to DMSS local folder and edit the src/home/system/data_sources/system.json file to have correct connection info (host, port, username and password).
+   5. In local DMSS folder, change the DMSS docker-compose.override.yml file: set the MONGO_AZURE_URI: env variable and set AUTH_ENABLED true.
+ Afterwards, you can start up dmss as normal with docker-compose  
 2. Run the script:
    1. Print help: `./reset-db.sh -h`
    2. Run the script: `./reset-db.sh`
