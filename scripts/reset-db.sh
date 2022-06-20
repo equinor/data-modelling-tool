@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-source ./scripts/reset-db.env
+source ./reset-db.env
 
 # Required variables
 ## CLI arguments (optionally specify in env)
@@ -138,9 +138,11 @@ if [ -z "$MONGO_URI" ]; then
 fi
 
 # File paths
-DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
-DS_DIR=$DIR/api/src/home
+SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
+BASE_DIR=$(cd "$SCRIPT_DIR/.." &>/dev/null && pwd -P)
+DS_DIR=$BASE_DIR/api/src/home
 CONTAINER_DS_DIR=/code/home
+DMSS_DIR=$(cd "$BASE_DIR/../data-modelling-storage-service" &>/dev/null && pwd -P)
 
 function discover_packages() {
   info "Discovering packages.."
@@ -188,12 +190,12 @@ function set_env_vars() {
     if [ "$CREATE_DMSS_KEY" == "True" ]; then
       sk_outfile_name="generated-secret-key.env"
       sk_outfile_perms="0600"
-      echo "Generating new DMSS SECRET_KEY.."
+      info "Generating new DMSS SECRET_KEY.."
       create_key_output=$(docker-compose run --rm dmss create-key)
       SECRET_KEY=$(echo "$create_key_output" | tail -n 1)
       echo "SECRET_KEY=$SECRET_KEY" > "$sk_outfile_name"
       chmod "$sk_outfile_perms" "$sk_outfile_name"
-      echo "Wrote secret key to '$sk_outfile_name' with permissions '$sk_outfile_perms'"
+      info "Wrote secret key to '$sk_outfile_name' with permissions '$sk_outfile_perms'"
       echo " /==========================================\ "
       echo "/               NEW SECRET KEY               \\"
       msg "${ORANGE} $SECRET_KEY ${NOFORMAT}"
@@ -219,7 +221,7 @@ function set_database_host() {
     info "Setting database hosts.."
     if [ -n "$MONGO_AZURE_HOST" ]; then
       for data_source in "${DATA_SOURCES[@]}"; do
-        echo "  Updating $data_source"
+        info "  Updating $data_source"
         if test -f "$data_source"; then
           sed -i "$SED_PATTERN" "$data_source"
           grep -Eq "$GREP_PATTERN" "$data_source" && ok || err
@@ -239,7 +241,7 @@ function set_database_port() {
     info "Setting database ports.."
     if [ -n "$MONGO_AZURE_PORT" ]; then
       for data_source in "${DATA_SOURCES[@]}"; do
-        echo "  Updating $data_source"
+        info "  Updating $data_source"
         if test -f "$data_source"; then
           sed -E -i "$SED_PATTERN" "$data_source"
           grep -Eq "$GREP_PATTERN" "$data_source" && ok || err
@@ -258,7 +260,7 @@ function set_database_tls() {
 
     info "Setting database TLS mode.."
     for data_source in "${DATA_SOURCES[@]}"; do
-        echo "  Updating $data_source"
+        info "  Updating $data_source"
         if test -f "$data_source"; then
           sed -E -i "$SED_PATTERN" "$data_source"
           grep -Eq "$GREP_PATTERN" "$data_source" && ok || err
@@ -275,7 +277,7 @@ function set_database_username() {
     info "Setting database usernames.."
     if [ -n "$MONGO_AZURE_USER" ]; then
       for data_source in "${DATA_SOURCES[@]}"; do
-        echo "  Updating $data_source"
+        info "  Updating $data_source"
         if test -f "$data_source"; then
           sed -i "$SED_PATTERN" "$data_source"
           grep -Eq "$GREP_PATTERN" "$data_source" && ok || err
@@ -295,7 +297,7 @@ function set_database_password() {
     info "Setting database passwords.."
     if [ -n "$MONGO_AZURE_PW" ]; then
       for data_source in "${DATA_SOURCES[@]}"; do
-        echo "  Updating $data_source"
+        info "  Updating $data_source"
         if test -f "$data_source"; then
           sed -i "$SED_PATTERN" "$data_source"
           grep -Eq "$GREP_PATTERN" "$data_source" && ok || err
@@ -311,7 +313,7 @@ function set_database_password() {
 function set_data_source_names() {
   info "Removing 'Test'-prefix from data source names.."
   for data_source in "${DATA_SOURCES[@]}"; do
-    echo "  Updating $data_source"
+    info "  Updating $data_source"
     if test -f "$data_source"; then
       if grep -Eq '"name": "Test.*",' "$data_source"; then
         sed -i -E "s/\"name\": \"Test/\"name\": \"/" "$data_source"
@@ -323,17 +325,25 @@ function set_data_source_names() {
 
 function build_images() {
   info "Building the Docker images.."
-  docker-compose build --quiet api  && ok || err
+  docker-compose build --quiet api && ok || err
+  cd $DMSS_DIR
+  docker-compose build --quiet dmss && ok || err
+  cd $BASE_DIR
 }
 
 function dmss_reset_app() {
   info "Resetting DMSS.."
   if [ "$DRY_RUN" == "False" ]; then
-    cd ../data-modelling-storage-service
-    docker-compose run --rm -e SECRET_KEY="$SECRET_KEY" -e MONGO_URI="$MONGO_URI" dmss reset-app && ok || err
-    cd ../data-modelling-tool
+    if test -d "$DMSS_DIR"; then
+      cd $DMSS_DIR
+      docker-compose build --quiet dmss && ok || err
+      docker-compose run --rm -e SECRET_KEY="$SECRET_KEY" -e MONGO_URI="$MONGO_URI" -e AUTH_ENABLED="True" dmss reset-app && ok || err
+      cd $BASE_DIR
+    else
+      fatal "The directory '$DMSS_DIR' does not exist. Please clone 'equinor/data-modelling-storage-service' into the given path."
+    fi
   else
-    echo "    Skipping (dry run)"
+    info "    Skipping (dry run)"
   fi
 }
 
@@ -342,11 +352,11 @@ function import_data_sources() {
   for data_source in "${DATA_SOURCES[@]}"; do
     ds_dir=$(echo "$DS_DIR" | sed 's/\//\\\//g')
     container_path="${data_source/$ds_dir/$CONTAINER_DS_DIR}"
-    echo "  Importing data source '$container_path'"
+    info "  Importing data source '$container_path'"
     if [ "$DRY_RUN" == "False" ]; then
       docker-compose run --rm -e DMSS_API="$DMSS_API" api --token="$TOKEN" import-data-source "$container_path" && ok || err
     else
-      echo "    Skipping (dry run)"
+      info "    Skipping (dry run)"
     fi
   done
 }
@@ -354,15 +364,12 @@ function import_data_sources() {
 function import_packages() {
   completed=()
   info "Importing packages.."
-  echo "${PACKAGES[@]}"
   for package in "${PACKAGES[@]}"; do
     ds_dir=$(echo "$DS_DIR" | sed 's/\//\\\//g')
-    echo "got PACKAGE $package"
     container_path="${package/$ds_dir/$CONTAINER_DS_DIR}"
 
     LAST_TWO_FOLDERS=$(expr "$package" : '.*/\([^/]*/[^/]*\)$')
     destination=$LAST_TWO_FOLDERS
-    echo "got value for DEST "
 
     #---- handle aliases ----
     if test -f "${package/"$destination"/"_aliases_"}"; then
@@ -382,13 +389,12 @@ function import_packages() {
 
     # shellcheck disable=SC2076
     if [[ ! " ${completed[*]} " =~ " ${destination} " ]]; then
-      echo "  Resetting package '$destination'"
-      sleep 30s #sleeping is required. If not, we get an request rate too large (429) exception from Mongodb
+      info "  Resetting package '$destination'"
       echo "done sleeping!"
       if [ "$DRY_RUN" == "False" ]; then
         docker-compose run --rm -e MONGO_URI="$MONGO_URI" -e DMSS_API="$DMSS_API" api --token="$TOKEN" reset-package "$container_path" "$destination" && ok || fatal "Failed to import package $container_path"
       else
-        echo "    Skipping (dry run)"
+        info "    Skipping (dry run)"
       fi
       completed+=("$destination")
     fi
@@ -399,16 +405,16 @@ function cleanup() {
   trap - SIGINT SIGTERM ERR EXIT
   info "Cleaning up.."
   if [ "$GIT_RESTORE" == "True" ]; then
-    echo "  Running 'git restore' on modified JSON files.."
-    git restore api/src/home/* && ok || err
+    info "  Running 'git restore' on modified JSON files.."
+    git restore $DS_DIR/* && ok || err
   else
-    echo "  Skipping 'git restore' due to '--no-restore' flag"
+    info "  Skipping 'git restore' due to '--no-restore' flag"
     warn "  WARNING: Passwords may be stored in clear text in the modified files. Please avoid committing them to git."
     warn "    Issue a manual 'git restore' with the following command:"
     info "     git restore $DMT_DS $FoR_DS $SIMA_DS $SIMPOS_APP_DB_DS $SIMPOS_MDL_DB_DS $DMSS_SYSTEM $COMPOSE_FILE"
   fi
   if [ "$COMPOSE_DOWN" == "True" ]; then
-    echo "  Running 'docker-compose down'.."
+    info "  Running 'docker-compose down'.."
     docker-compose down && ok || err
   fi
 }
