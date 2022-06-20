@@ -58,7 +58,7 @@ export const EditTask = (props: DmtUIPlugin) => {
   }
   return (
     <div>
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: '0px' }}>
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
