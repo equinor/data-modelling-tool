@@ -14,8 +14,6 @@
       4. `MONGO_AZURE_URI`: The Mongo connection string of the Mongo database for the environment you wish to reset.
    3. Source the environment variables:
       1. `source reset-db.env`
-   4. Go to DMSS local folder and edit the src/home/system/data_sources/system.json file to have correct connection info (host, port, username and password).
-   5. In local DMSS folder, change the DMSS docker-compose.override.yml file: set the MONGO_AZURE_URI: env variable and set AUTH_ENABLED true.
  Afterwards, you can start up dmss as normal with docker-compose  
 2. Run the script:
    1. Print help: `./reset-db.sh -h`
@@ -23,6 +21,7 @@
    3. Run and create a new secret key: `./reset-db.sh --create-key`
       1. NB: Make sure to set the new key in the Radix secrets for DMSS for the environment you wish to reset.
       2. The new secret key is written to a file named `generated-secret-key.env`
+3. Go to th local DMSS repo and reset changes made to the system.json file (The reset script will change the mongo connection info in this file)
 
 _Dev URL_  
 DMSS_API=<https://dmss-data-modelling-tool-dev.radix.equinor.com>

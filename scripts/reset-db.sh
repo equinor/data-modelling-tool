@@ -143,13 +143,13 @@ BASE_DIR=$(cd "$SCRIPT_DIR/.." &>/dev/null && pwd -P)
 DS_DIR=$BASE_DIR/api/src/home
 CONTAINER_DS_DIR=/code/home
 DMSS_DIR=$(cd "$BASE_DIR/../data-modelling-storage-service" &>/dev/null && pwd -P)
+DMSS_DS_DIR=$DMSS_DIR/src/home
 
 function discover_packages() {
   info "Discovering packages.."
   #api/src/home/<AppName>/data/<DataSource>/<Package>
   IFS=$'\n'
   PACKAGES=($(find "$DS_DIR" -maxdepth 4 -type d -iwholename "*api/src/home/*/data/*/*"))
-  echo "*** found packages $PACKAGES"
   unset IFS
 }
 
@@ -158,6 +158,9 @@ function discover_data_sources() {
   #api/src/home/<AppName>/data_sources/<DataSource>.json
   IFS=$'\n'
   DATA_SOURCES=($(find "$DS_DIR" -maxdepth 3 -type f -iwholename "*api/src/home/*/data_sources/*.json"))
+  cd $DMSS_DIR
+  DMSS_SYSTEM_DATA_SOURCE=($(find "$DMSS_DS_DIR" -maxdepth 3 -type f -iwholename "*src/home/system/data_sources/system.json"))
+  cd $BASE_DIR
   unset IFS
 }
 
@@ -229,6 +232,15 @@ function set_database_host() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "Missing required variable 'MONGO_AZURE_HOST'. Exiting."
     fi
@@ -249,6 +261,15 @@ function set_database_port() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -E -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "Missing required variable 'MONGO_AZURE_PORT'. Exiting."
     fi
@@ -267,7 +288,16 @@ function set_database_tls() {
         else
           warn "    The file does not exist"
         fi
-      done
+    done
+    cd $DMSS_DIR
+    info "  Updating DMSS system data source"
+    if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+      sed -E -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+      grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+    else
+      warn "    The file does not exist"
+    fi
+    cd $BASE_DIR
 }
 
 function set_database_username() {
@@ -285,6 +315,15 @@ function set_database_username() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "- Missing required variable 'MONGO_AZURE_USER'. Exiting."
     fi
@@ -305,6 +344,15 @@ function set_database_password() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "- Missing required variable 'MONGO_AZURE_PW'. Exiting."
     fi
@@ -373,7 +421,7 @@ function import_packages() {
 
     #---- handle aliases ----
     if test -f "${package/"$destination"/"_aliases_"}"; then
-      echo "Alias file exists."
+      info "Alias file exists."
           alias_file="${package/"$destination"/"_aliases_"}"
 
       #get all lines that are not commented out in alias file
@@ -390,7 +438,6 @@ function import_packages() {
     # shellcheck disable=SC2076
     if [[ ! " ${completed[*]} " =~ " ${destination} " ]]; then
       info "  Resetting package '$destination'"
-      echo "done sleeping!"
       if [ "$DRY_RUN" == "False" ]; then
         docker-compose run --rm -e MONGO_URI="$MONGO_URI" -e DMSS_API="$DMSS_API" api --token="$TOKEN" reset-package "$container_path" "$destination" && ok || fatal "Failed to import package $container_path"
       else
