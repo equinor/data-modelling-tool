@@ -2,6 +2,9 @@ FROM nginx:1.22.0-alpine
 
 RUN apk upgrade --update-cache
 
+RUN deluser nginx
+RUN adduser --disabled-password --no-create-home --gecos "" --uid 1000  nginx
+
 # Copy configs
 COPY nginx.conf /etc/nginx/nginx.conf
 COPY config/ /etc/nginx/config
