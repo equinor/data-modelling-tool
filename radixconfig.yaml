@@ -74,7 +74,7 @@ spec:
     - name: dmss
       environmentConfig:
         - environment: prod
-          imageTagName: v0.3.18-prod-test
+          imageTagName: production
           horizontalScaling:
             minReplicas: 2
             maxReplicas: 6
