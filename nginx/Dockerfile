@@ -27,5 +27,5 @@ RUN mkdir -p /tmp/nginx && \
 RUN touch /var/run/nginx.pid && \
     chown -R nginx:nginx /var/run/nginx.pid
 
-# Run master process as user nginx
-USER nginx
+# Run master process as non-root user
+USER 1000
