@@ -50,7 +50,7 @@ const LAYOUT_CONFIG = {
   content: [
     {
       type: 'stack',
-      isClosable: true,
+      isClosable: false,
     },
   ],
 }
