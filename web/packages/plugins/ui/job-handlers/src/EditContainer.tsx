@@ -140,7 +140,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
           {/*  ></Select>*/}
           {/*</HeaderWrapper>*/}
 
-          <div>
+          <div style={{ flexDirection: 'row' }}>
             {loadingDocument ? (
               <Button>
                 <Progress.Dots />
@@ -155,7 +155,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
                   }
                 }}
               >
-                Save
+                {!_.isEqual(document, formData) ? 'Save *' : 'Save'}
               </Button>
             )}
           </div>

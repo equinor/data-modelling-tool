@@ -28,6 +28,7 @@ import {
   HeaderWrapper,
   Row,
 } from './components'
+import _ from 'lodash'
 
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
@@ -240,7 +241,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
             </Button>
           ) : (
             <Button as="button" onClick={() => updateDocument(formData, true)}>
-              Save
+              {!_.isEqual(document, formData) ? 'Save *' : 'Save'}
             </Button>
           )}
         </div>

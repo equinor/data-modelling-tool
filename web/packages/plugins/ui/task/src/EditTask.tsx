@@ -21,7 +21,7 @@ import {
   Typography,
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-
+import _ from 'lodash'
 const Column = styled.div``
 
 const GroupWrapper = styled.div`
@@ -56,6 +56,8 @@ export const EditTask = (props: DmtUIPlugin) => {
   if (loading) {
     return <Loading />
   }
+  console.log('form', formData)
+  console.log('doc', document)
   return (
     <div>
       <div style={{ marginBottom: '0px' }}>
@@ -220,7 +222,7 @@ export const EditTask = (props: DmtUIPlugin) => {
           >
             Reset
           </Button>
-          <div>
+          <div style={{ display: 'flex', flexDirection: 'row' }}>
             {loading ? (
               <Button>
                 <Progress.Dots />
@@ -235,7 +237,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                   }
                 }}
               >
-                Save
+                {!_.isEqual(document, formData) ? 'Save *' : 'Save'}
               </Button>
             )}
           </div>
