@@ -174,8 +174,9 @@ export const NodeRightClickMenu = (props: {
 
   const menuItems = createMenuItems(node, dmssAPI, removeNode, setScrimToShow)
 
-  const DeleteAction = (node: TreeNode) => {
-    dmssAPI
+  const DeleteAction = async (node: TreeNode) => {
+    setLoading(true)
+    await dmssAPI
       .explorerRemoveByPath({
         dataSourceId: node.dataSource,
         removeByPathRequest: {
@@ -193,6 +194,7 @@ export const NodeRightClickMenu = (props: {
           'Failed to delete'
         )
       })
+      .finally(() => setLoading(false))
   }
 
   const NewFolderAction = (node: TreeNode, folderName: string) => {
@@ -310,12 +312,12 @@ export const NodeRightClickMenu = (props: {
             <Button onClick={() => setScrimToShow('')}>Cancel</Button>
             <Button
               color="danger"
-              onClick={() => {
-                DeleteAction(node)
+              onClick={async () => {
+                await DeleteAction(node)
                 setScrimToShow('')
               }}
             >
-              Delete
+              {loading ? <Progress.Dots /> : 'Delete'}
             </Button>
           </div>
         </div>
