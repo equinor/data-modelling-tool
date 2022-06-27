@@ -6,7 +6,7 @@ spec:
   environments:
     - name: prod
       build:
-        from: prod-environment
+        from: master
     - name: dev
       build:
         from: master
