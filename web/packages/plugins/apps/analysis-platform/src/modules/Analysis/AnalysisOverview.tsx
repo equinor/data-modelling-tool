@@ -1,4 +1,4 @@
-import { AuthContext, DmtSettings, hasExpertRole } from '@dmt/common'
+import { AuthContext, DmtSettings, hasDomainRole } from '@dmt/common'
 import React, { ReactNode, useContext } from 'react'
 import { AnalysisTable } from './components'
 import { Link, useLocation } from 'react-router-dom'
@@ -32,7 +32,7 @@ export const AnalysisOverview = (props: AnalysisOverviewProps): ReactNode => {
 
   return (
     <>
-      {hasExpertRole(tokenData) && (
+      {hasDomainRole(tokenData) && (
         <NewAnalysisButton urlPath={settings.urlPath} />
       )}
       <Divider variant="medium" />
