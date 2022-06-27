@@ -38,23 +38,24 @@ const JobRow = (props: {
   analysisId: string
   dataSourceId: string
 }) => {
-  const { job, index, analysisId, dataSourceId } = props // @ts-ignore
+  const { job, index, analysisId, dataSourceId } = props
   const { token, tokenData } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
-  const jobURL = `/ap/view/${dataSourceId}/${analysisId}.jobs.${index}`
+  const [started, setStarted] = useState<string>('')
+  const jobURL: string = `/ap/view/${dataSourceId}/${analysisId}.jobs.${index}`
   const resultURL = job.result?._id
     ? `/ap/view/${dataSourceId}/${job.result?._id}`
     : undefined
 
   const viewJob = () => {
     if (hasOperatorRole(tokenData)) {
-      document.location = jobURL
+      document.location.href = jobURL
     } else {
       if (resultURL) {
-        document.location = resultURL
+        document.location.href = resultURL
       } else {
         NotificationManager.warning('Result is not ready')
       }
@@ -68,6 +69,7 @@ const JobRow = (props: {
       .then((result: any) => {
         NotificationManager.success(result.data, 'Simulation job started')
         setJobStatus(EJobStatus.STARTING)
+        setStarted(new Date().toLocaleString(navigator.language))
       })
       .catch((error: AxiosError) => {
         console.error(error)
@@ -117,7 +119,9 @@ const JobRow = (props: {
     <Table.Row>
       <Table.Cell onClick={viewJob}>
         {jobStatus !== EJobStatus.CREATED
-          ? new Date(job.started).toLocaleString(navigator.language)
+          ? job.started
+            ? new Date(job.started).toLocaleString(navigator.language)
+            : started
           : 'Not started'}
       </Table.Cell>
       <Table.Cell onClick={viewJob}>{job.triggeredBy}</Table.Cell>
