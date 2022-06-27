@@ -11,14 +11,29 @@ import {
 import { addToPath } from './UploadFileButton'
 import { AuthContext, DmssAPI, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
 import { AxiosError } from 'axios'
+import styled from 'styled-components'
+
+const DialogWrapper = styled.div`
+  display: flex;
+  flex-direction: column;
+  justifycontent: space-between;
+  margin: 20px;
+  & > * {
+    padding-top: 8px;
+  }
+`
 
 export function NewEntityButton(props: {
   type?: string
   setReference: (r: TReference) => void
+  defaultDestination?: string
 }) {
-  const { type, setReference } = props
+  const { type, setReference, defaultDestination } = props
   const [showScrim, setShowScrim] = useState<boolean>(false)
-  const [saveDestination, setSaveDestination] = useState<string>('')
+  const [saveDestination, setSaveDestination] = useState<string>(
+    defaultDestination ? defaultDestination : ''
+  )
+
   const [newName, setNewName] = useState<string>('')
   const [copyTarget, setCopyTarget] = useState<TReference | undefined>(
     undefined
@@ -29,6 +44,11 @@ export function NewEntityButton(props: {
   const dmtAPI = new DmtAPI(token)
 
   useEffect(() => setTypeToCreate(type || ''), [type])
+  useEffect(() => {
+    if (defaultDestination) {
+      setSaveDestination(defaultDestination)
+    }
+  }, [defaultDestination])
 
   function addEntityToPath(entity: any): Promise<void> {
     const [dataSource, ...directories] = saveDestination.split('/')
@@ -57,33 +77,31 @@ export function NewEntityButton(props: {
         width={'600px'}
         height={'370px'}
       >
-        <div
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            justifyContent: 'space-between',
-            margin: '20px',
-            minHeight: '270px',
-          }}
-        >
-          <Label label={'Folder'} />
-          <DestinationPicker
-            onChange={(value: any) => setSaveDestination(value)}
-            formData={saveDestination}
-          />
-          <div style={{ display: 'block' }}>
-            <Label label={'Blueprint'} />
-            <BlueprintPicker
-              disabled={!!copyTarget}
-              onChange={(selectedType: string) => setTypeToCreate(selectedType)}
-              formData={typeToCreate}
-            />
-            {!!copyTarget && (
-              <div
-                style={{ marginLeft: '40px' }}
-              >{`Copying entity named '${copyTarget.name}'`}</div>
-            )}
-          </div>
+        <DialogWrapper>
+          {!type && (
+            <div style={{ display: 'block' }}>
+              <Label label={'Blueprint'} />
+              <BlueprintPicker
+                disabled={!!copyTarget}
+                onChange={(selectedType: string) =>
+                  setTypeToCreate(selectedType)
+                }
+                formData={typeToCreate}
+              />
+            </div>
+          )}
+
+          {!defaultDestination && (
+            <div>
+              <Label label={'Entity destination folder'} />
+              <DestinationPicker
+                onChange={(selectedFolder: string) =>
+                  setSaveDestination(selectedFolder)
+                }
+                formData={saveDestination}
+              />
+            </div>
+          )}
           <Label label={'Name'} />
           <Input
             style={{
@@ -95,6 +113,9 @@ export function NewEntityButton(props: {
             onChange={(event) => setNewName(event.target.value)}
             placeholder="Name for new entity"
           />
+          {!!copyTarget && (
+            <div>{`Copying entity named '${copyTarget.name}'`}</div>
+          )}
           <div
             style={{
               display: 'flex',
@@ -106,6 +127,7 @@ export function NewEntityButton(props: {
             {!copyTarget ? (
               <EntityPickerButton
                 variant="outlined"
+                typeFilter={typeToCreate}
                 text="Copy existing"
                 onChange={(ref: TReference) => setCopyTarget(ref)}
               />
@@ -125,6 +147,7 @@ export function NewEntityButton(props: {
               type="submit"
               onClick={() => {
                 setLoading(true)
+
                 if (copyTarget) {
                   // @ts-ignore
                   delete copyTarget._id
@@ -132,7 +155,11 @@ export function NewEntityButton(props: {
 
                   addEntityToPath({ ...copyTarget })
                     .then(() => setShowScrim(false))
-                    .finally(() => setLoading(false))
+                    .finally(() => {
+                      setCopyTarget(undefined)
+                      setNewName('')
+                      setLoading(false)
+                    })
                 } else {
                   dmtAPI
                     .createEntity(typeToCreate, newName)
@@ -141,14 +168,18 @@ export function NewEntityButton(props: {
                         setShowScrim(false)
                       )
                     })
-                    .finally(() => setLoading(false))
+                    .finally(() => {
+                      setLoading(false)
+                      setCopyTarget(undefined)
+                      setNewName('')
+                    })
                 }
               }}
             >
               {loading ? <Progress.Dots /> : 'Create'}
             </Button>
           </div>
-        </div>
+        </DialogWrapper>
       </Dialog>
     </div>
   )

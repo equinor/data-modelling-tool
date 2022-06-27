@@ -9,6 +9,7 @@ import {
   EntityPickerButton,
   INPUT_FIELD_WIDTH,
   Loading,
+  DestinationPicker,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -43,6 +44,7 @@ export const EditTask = (props: DmtUIPlugin) => {
   )
 
   const [formData, setFormData] = useState<any>()
+  const [entityDestination, setEntityDestination] = useState<string>('')
   const runnerTypeHasChanged =
     formData?.runner?.type && formData?.runner?.type === document?.runner?.type
   useEffect(() => {
@@ -56,7 +58,7 @@ export const EditTask = (props: DmtUIPlugin) => {
   }
   return (
     <div>
-      <div style={{ marginBottom: '10px' }}>
+      <div style={{ marginBottom: '0px' }}>
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
@@ -67,6 +69,15 @@ export const EditTask = (props: DmtUIPlugin) => {
                   setFormData({ ...formData, inputType: selectedBlueprint })
                 }
                 formData={formData?.inputType || ''}
+              />
+            </Column>
+            <Column>
+              <Label label={'Entity destination folder'} />
+              <DestinationPicker
+                onChange={(selectedFolder: string) =>
+                  setEntityDestination(selectedFolder)
+                }
+                formData={entityDestination}
               />
             </Column>
             <div
@@ -115,6 +126,7 @@ export const EditTask = (props: DmtUIPlugin) => {
               />
               <NewEntityButton
                 type={formData.inputType}
+                defaultDestination={entityDestination}
                 setReference={(createdEntity: TReference) => {
                   setFormData({
                     ...formData,

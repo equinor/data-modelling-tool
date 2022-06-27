@@ -19,10 +19,11 @@ import styled from 'styled-components'
 export type DestinationPickerProps = {
   onChange: (value: any) => void
   formData: any
+  disabled?: boolean
 }
 
 export const DestinationPicker = (props: DestinationPickerProps) => {
-  const { onChange, formData } = props
+  const { onChange, formData, disabled } = props
   const { treeNodes, loading } = useContext(FSTreeContext)
   const [showModal, setShowModal] = useState<boolean>(false)
 
@@ -41,6 +42,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
             width: PATH_INPUT_FIELD_WIDTH,
             cursor: 'pointer',
           }}
+          disabled={disabled || false}
           type="string"
           value={truncatePathString(formData)}
           onChange={() => {}}
