@@ -78,7 +78,7 @@ export function NewEntityButton(props: {
         height={'370px'}
       >
         <DialogWrapper>
-          {!!!type && (
+          {!type && (
             <div style={{ display: 'block' }}>
               <Label label={'Blueprint'} />
               <BlueprintPicker
@@ -91,7 +91,7 @@ export function NewEntityButton(props: {
             </div>
           )}
 
-          {!!!defaultDestination && (
+          {!defaultDestination && (
             <div>
               <Label label={'Entity destination folder'} />
               <DestinationPicker
