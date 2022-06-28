@@ -159,6 +159,72 @@ export class TreeNode {
       .then((response: any) => response.data)
   }
 
+  async updateDataSourceContent() {
+    // Function for updating content in a datasource. This function will search the DMSS database
+    // for root packages in a given datasource, and update the tree if any packages from DMSS is missing in the tree.
+    if (!this.isDataSource) {
+      throw new Error('Function must be called on a data source tree node!')
+    }
+    await this.tree.dmssApi
+      .search({
+        body: { type: EBlueprint.PACKAGE, isRoot: 'true' },
+        dataSources: [this.dataSource],
+      })
+      .then((response: any) => {
+        Object.values(response.data).forEach((rootPackage: any) => {
+          if (
+            !Object.keys(this.tree.index[this.dataSource].children).includes(
+              rootPackage['_id']
+            )
+          ) {
+            const rootPackageNode = new TreeNode(
+              this.tree,
+              `${this.dataSource}/${rootPackage._id}`,
+              1,
+              rootPackage,
+              packageAttribute,
+              this.tree.index[this.dataSource],
+              rootPackage.name,
+              true,
+              false
+            )
+            const children: TreeMap = {}
+            rootPackage?.content.forEach(
+              (
+                ref: any // Add the rootPackages children
+              ) => {
+                children[ref?._id] = new TreeNode(
+                  this.tree,
+                  `${this.dataSource}/${ref?._id}`,
+                  2,
+                  ref,
+                  packageAttribute,
+                  rootPackageNode,
+                  ref.name,
+                  false,
+                  false
+                )
+              }
+            )
+            rootPackageNode.children = children
+            this.tree.index[this.dataSource].children[
+              rootPackage._id
+            ] = rootPackageNode
+            return rootPackageNode
+          }
+        })
+      })
+      .catch((error: Error) => {
+        // If the search fail, set the DataSource as an error node.
+        console.error(error)
+        this.tree.index[this.dataSource].type = 'error'
+        this.tree.index[this.dataSource].message = error.message
+      })
+      .finally(() => {
+        this.tree.updateCallback(this.tree)
+      })
+  }
+
   async expand(): Promise<void> {
     if (!this.isDataSource) {
       const [dataSourceId, documentId] = this.nodeId.split('/', 2)

@@ -234,6 +234,9 @@ export const NodeRightClickMenu = (props: {
         body: newPackage,
         updateUncontained: true,
       })
+      .then(() => {
+        node.updateDataSourceContent()
+      })
       .catch((error: Error) => {
         NotificationManager.error(
           JSON.stringify(error.message),
@@ -371,7 +374,6 @@ export const NodeRightClickMenu = (props: {
                     `${node.entity.length}`
                   )
                   .then(() => {
-                    node.expand()
                     setScrimToShow('')
                   })
                   .catch((error: AxiosError<any>) => {
