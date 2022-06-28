@@ -23,6 +23,7 @@ env:
   API_IMAGE: datamodelingtool.azurecr.io/dmt/api
   WEB_IMAGE: datamodelingtool.azurecr.io/dmt/web
   SRS_IMAGE: datamodelingtool.azurecr.io/dmt-job/srs
+  NGINX_IMAGE: datamodelingtool.azurecr.io/dmt/nginx
 
 jobs:
   build-and-publish-web-master:
@@ -77,3 +78,16 @@ jobs:
           docker build --cache-from $SRS_IMAGE --tag $SRS_IMAGE ./sre-wrapper
           docker tag $SRS_IMAGE $SRS_IMAGE:${{ inputs.image-tag }}
           docker push $SRS_IMAGE:${{ inputs.image-tag }}
+
+  build-and-publish-nginx:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@master
+      - name: "Build and Publish nginx"
+        run: |
+          echo "Tagging with ${{ inputs.image-tag }}"
+          docker login -u $REGISTRY_USER -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
+          docker pull $NGINX_IMAGE
+          docker build --cache-from $NGINX_IMAGE --tag $NGINX_IMAGE ./nginx
+          docker tag $NGINX_IMAGE $NGINX_IMAGE:${{ inputs.image-tag }}
+          docker push $NGINX_IMAGE:${{ inputs.image-tag }}

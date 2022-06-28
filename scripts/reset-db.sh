@@ -11,26 +11,6 @@ DMSS_API=${DMSS_API:-}
 ## Environment variables
 SECRET_KEY=${SECRET_KEY:-}
 MONGO_URI=${MONGO_URI:-}
-MONGO_SELF_SIGN_CA_CRT="-----BEGIN CERTIFICATE-----
-MIIDJzCCAg+gAwIBAgIUUWTa1ePaavivdscS2LG8WlPexDAwDQYJKoZIhvcNAQEL
-BQAwIzELMAkGA1UEBhMCTk8xFDASBgNVBAMMC0RNVC1Sb290LUNBMB4XDTIyMDUx
-OTA5NTEyOFoXDTI1MDMwODA5NTEyOFowIzELMAkGA1UEBhMCTk8xFDASBgNVBAMM
-C0RNVC1Sb290LUNBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAqijE
-1wyjjPPPNR6GbXeFkbJv3xvpsYrZT9pHN0ervFGU/+B/RAgiogE5avz4lLGMpI+Y
-uD42AHWmtPDS1zuked9e5KXil8Y3X6QHfj1Bv72smlh2pvw8NSc0nrZK2tUSNDO9
-snfr3bZexpJsM3N23sJLpQbOmx88bpfNiWMeCHsqcwPtKWVpZvGqFAkmuojIUl7e
-kgtWvwEwZjLE1htAu61rENs3dfzDRT30BkA2Rpl3qculCPbrKDyz3wRidYVSRMsQ
-3G9rAzSaRrwZ7A9y64uz1ek1L84EdHeQiV4w1Vd6fl3NCtAB+C9JiQGBjHKpbWr6
-hIL8KDfUtDUEl/5SYQIDAQABo1MwUTAdBgNVHQ4EFgQUaUf5zU7vHb+9puULThXa
-T5v+GawwHwYDVR0jBBgwFoAUaUf5zU7vHb+9puULThXaT5v+GawwDwYDVR0TAQH/
-BAUwAwEB/zANBgkqhkiG9w0BAQsFAAOCAQEAII8/MHIn+pDF7Rv9Fa2c1PWpHPq8
-a2GBD188moaVNjgElBEAMDiE2vKOkneioLOhE/XmK1jvIQSmieIj5O0Hdbhi0TY+
-R4gkuhkajWlHGKYK9CkYpPIM6VN7vqKCMvSg9/iyJouNvYG5/wQeWzAK3KrxLdpn
-MVY0sgIuJmZlHzRt7o/fBAg48QhtFkv54VhWm0bwDC5oM/tV0mXCp+SjPexFeKv6
-1uCA+NDSIHLSdzFw4DCYKxfw9HUb8zAdVxKk2lgSEDo5HJzMW49QdUy34uh0U2m0
-/8zKVhZUPd/6FJ/WOvVLPlF5ypz9HR4xWR26KDXoqobii1sBc4nqAU1+og==
------END CERTIFICATE-----
-"
 
 # Optional variables
 ## CLI arguments
@@ -163,6 +143,7 @@ BASE_DIR=$(cd "$SCRIPT_DIR/.." &>/dev/null && pwd -P)
 DS_DIR=$BASE_DIR/api/src/home
 CONTAINER_DS_DIR=/code/home
 DMSS_DIR=$(cd "$BASE_DIR/../data-modelling-storage-service" &>/dev/null && pwd -P)
+DMSS_DS_DIR=$DMSS_DIR/src/home
 
 function discover_packages() {
   info "Discovering packages.."
@@ -177,6 +158,9 @@ function discover_data_sources() {
   #api/src/home/<AppName>/data_sources/<DataSource>.json
   IFS=$'\n'
   DATA_SOURCES=($(find "$DS_DIR" -maxdepth 3 -type f -iwholename "*api/src/home/*/data_sources/*.json"))
+  cd $DMSS_DIR
+  DMSS_SYSTEM_DATA_SOURCE=($(find "$DMSS_DS_DIR" -maxdepth 3 -type f -iwholename "*src/home/system/data_sources/system.json"))
+  cd $BASE_DIR
   unset IFS
 }
 
@@ -248,6 +232,15 @@ function set_database_host() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "Missing required variable 'MONGO_AZURE_HOST'. Exiting."
     fi
@@ -268,6 +261,15 @@ function set_database_port() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -E -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "Missing required variable 'MONGO_AZURE_PORT'. Exiting."
     fi
@@ -286,7 +288,16 @@ function set_database_tls() {
         else
           warn "    The file does not exist"
         fi
-      done
+    done
+    cd $DMSS_DIR
+    info "  Updating DMSS system data source"
+    if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+      sed -E -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+      grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+    else
+      warn "    The file does not exist"
+    fi
+    cd $BASE_DIR
 }
 
 function set_database_username() {
@@ -304,6 +315,15 @@ function set_database_username() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "- Missing required variable 'MONGO_AZURE_USER'. Exiting."
     fi
@@ -324,6 +344,15 @@ function set_database_password() {
           warn "    The file does not exist"
         fi
       done
+      cd $DMSS_DIR
+      info "  Updating DMSS system data source"
+      if test -f "$DMSS_SYSTEM_DATA_SOURCE"; then
+        sed -i "$SED_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE"
+        grep -Eq "$GREP_PATTERN" "$DMSS_SYSTEM_DATA_SOURCE" && ok || err
+      else
+        warn "    The file does not exist"
+      fi
+      cd $BASE_DIR
     else
       fatal "- Missing required variable 'MONGO_AZURE_PW'. Exiting."
     fi
@@ -356,7 +385,7 @@ function dmss_reset_app() {
     if test -d "$DMSS_DIR"; then
       cd $DMSS_DIR
       docker-compose build --quiet dmss && ok || err
-      docker-compose run --rm -e SECRET_KEY="$SECRET_KEY" -e MONGO_URI="$MONGO_URI" -e MONGO_SELF_SIGN_CA_CRT="$MONGO_SELF_SIGN_CA_CRT" -e AUTH_ENABLED="True" dmss reset-app && ok || err
+      docker-compose run --rm -e SECRET_KEY="$SECRET_KEY" -e MONGO_URI="$MONGO_URI" -e AUTH_ENABLED="True" dmss reset-app && ok || err
       cd $BASE_DIR
     else
       fatal "The directory '$DMSS_DIR' does not exist. Please clone 'equinor/data-modelling-storage-service' into the given path."

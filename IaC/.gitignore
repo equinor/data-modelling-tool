@@ -1,7 +1,0 @@
-*.crt
-*.csr
-*.pem
-*.key
-*.srl
-
-.vault-pwd
