@@ -56,8 +56,7 @@ export const EditTask = (props: DmtUIPlugin) => {
   if (loading) {
     return <Loading />
   }
-  console.log('form', formData)
-  console.log('doc', document)
+
   return (
     <div>
       <div style={{ marginBottom: '0px' }}>

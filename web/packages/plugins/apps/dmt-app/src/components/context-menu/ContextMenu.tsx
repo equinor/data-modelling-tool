@@ -374,6 +374,7 @@ export const NodeRightClickMenu = (props: {
                     `${node.entity.length}`
                   )
                   .then(() => {
+                    node.expand()
                     setScrimToShow('')
                   })
                   .catch((error: AxiosError<any>) => {
