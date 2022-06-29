@@ -22,15 +22,15 @@ jobs:
 
   set-tag-ref:
     runs-on: ubuntu-latest
-    outputs:
-      tag-ref: ${{ steps.tag-ref.outputs.tag-ref }}
-      oauth-redirect-url: https://data-modelling-tool.app.radix.equinor.com
     steps:
       - uses: actions/checkout@master
       - id: create-ref
         run: |
           TAG_REF=$(echo $GITHUB_REF | cut -d / -f 3)
           echo "::set-output name=tag-ref::TAG_REF"
+    outputs:
+      tag-ref: ${{ steps.create-ref.outputs.tag-ref }}
+      oauth-redirect-url: https://data-modelling-tool.app.radix.equinor.com
 
   publish-tag-ref:
     needs: [set-tag-ref, tests]
