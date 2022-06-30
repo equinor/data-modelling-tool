@@ -24,14 +24,15 @@ export const FSTreeProvider = (props: { children: ReactNode }) => {
 
   const tree: Tree = new Tree(
     token,
-    appConfig.visibleDataSources,
     // @ts-ignore
     (t: Tree) => setTreeNodes([...t])
   )
 
   useEffect(() => {
     setLoading(true)
-    tree.init().finally(() => setLoading(false))
+    tree
+      .initFromDataSources(appConfig.visibleDataSources)
+      .finally(() => setLoading(false))
   }, [])
 
   return (

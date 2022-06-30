@@ -10,8 +10,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 export const HeaderWrapper = styled.div`
-  margin-bottom: 50px;
-  margin-top: 8px;
+  margin: 8px 0;
 `
 export const Column = styled.div``
 
@@ -33,7 +32,7 @@ export function EditInputEntity(props: {
   const { formData, setFormData, dataSourceId, onOpen } = props
 
   return (
-    <HeaderWrapper>
+    <div>
       <div style={{ display: 'flex', alignItems: 'flex-end' }}>
         <Column>
           <Label label={'Input entity'} />
@@ -65,6 +64,7 @@ export function EditInputEntity(props: {
               input: selectedEntity,
             })
           }
+          scope={formData?.inputPresetFolder}
         />
         <NewEntityButton
           type={formData?.inputType || ''}
@@ -93,6 +93,6 @@ export function EditInputEntity(props: {
           )}
         </div>
       )}
-    </HeaderWrapper>
+    </div>
   )
 }

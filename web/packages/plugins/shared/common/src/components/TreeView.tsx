@@ -134,8 +134,8 @@ export const TreeView = (props: {
   useEffect(() => {
     let expandedNodes: { [k: string]: boolean } = {}
     nodes.forEach((node: TreeNode) => {
-      // Initialize expanded state where only top level DataSources are expanded
-      expandedNodes[node.nodeId] = node.isDataSource
+      // Initialize expanded state where only top level nodes are expanded
+      expandedNodes[node.nodeId] = node.level === 0
     })
     setExpandedNodes(expandedNodes)
   }, [])

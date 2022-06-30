@@ -78,6 +78,13 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 formData={formData?.inputType || ''}
               />
             </Column>
+            <Label label={'Folder presented for input selection'} />
+            <DestinationPicker
+              onChange={(presetFolder: string) =>
+                setFormData({ ...formData, inputPresetFolder: presetFolder })
+              }
+              formData={formData?.inputPresetFolder}
+            />
             <EditInputEntity
               formData={formData}
               setFormData={setFormData}

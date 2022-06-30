@@ -236,40 +236,31 @@ export class Tree {
   index: TreeMap = {}
   dmssApi: DmssAPI
   dmtApi: DmtAPI
-  dataSources
   updateCallback: (t: Tree) => void
 
-  constructor(
-    token: string,
-    dataSources: string[],
-    updateCallback: (t: Tree) => void
-  ) {
+  constructor(token: string, updateCallback: (t: Tree) => void) {
     this.dmssApi = new DmssAPI(token)
     this.dmtApi = new DmtAPI(token)
-    this.dataSources = dataSources
     this.updateCallback = updateCallback
-    dataSources.forEach(
-      (
-        dataSourceId: string // Add the dataSources as the top-level nodes
-      ) => {
-        this.index[dataSourceId] = new TreeNode(
-          this,
-          dataSourceId,
-          0,
-          { name: dataSourceId, type: 'dataSource' },
-          dataSourceAttribute,
-          undefined,
-          dataSourceId,
-          false,
-          true
-        )
-      }
-    )
   }
 
-  async init() {
+  async initFromDataSources(dataSources: string[]) {
+    // Add the dataSources as the top-level nodes
+    dataSources.forEach((dataSourceId: string) => {
+      this.index[dataSourceId] = new TreeNode(
+        this,
+        dataSourceId,
+        0,
+        { name: dataSourceId, type: 'dataSource' },
+        dataSourceAttribute,
+        undefined,
+        dataSourceId,
+        false,
+        true
+      )
+    })
     await Promise.all(
-      this.dataSources.map((dataSource: string) =>
+      dataSources.map((dataSource: string) =>
         this.dmssApi
           .search({
             // Find all rootPackages in every dataSource
@@ -319,6 +310,53 @@ export class Tree {
           })
       )
     ).then(() => this.updateCallback(this))
+  }
+
+  async initFromFolder(folderPath: string) {
+    const [dataSourceId, ...pathArray] = folderPath.split('/')
+    const path = pathArray.join('/')
+    this.dmssApi
+      .documentGetByPath({ dataSourceId: dataSourceId, path: path })
+      .then((response: any) => {
+        const data = response.data
+        let folderNode = new TreeNode(
+          this,
+          `${dataSourceId}/${data._id}`,
+          0,
+          data,
+          packageAttribute,
+          undefined,
+          data?.name || data._id,
+          true,
+          false
+        )
+        if (data.type !== EBlueprint.PACKAGE)
+          throw new Error('Path does not resolve to a package')
+
+        folderNode.children = createFolderChildren(data, folderNode)
+        this.index = { [`${dataSourceId}/${data._id}`]: folderNode }
+      })
+      .catch((error: Error) => {
+        let folderNode = new TreeNode(
+          this,
+          folderPath,
+          0,
+          {
+            type: EBlueprint.PACKAGE,
+            name: 'failed',
+            description: error.message,
+          },
+          packageAttribute,
+          undefined,
+          'unknown',
+          true,
+          false
+        )
+        folderNode.type = 'error'
+        folderNode.message = error.message
+        this.index = { [folderPath]: folderNode }
+      })
+      .finally(() => this.updateCallback(this))
   }
 
   // "[Symbol.iterator]" is similar to "__next__" in a python class.
