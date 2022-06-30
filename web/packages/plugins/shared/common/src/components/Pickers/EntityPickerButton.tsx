@@ -1,7 +1,9 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
+  ApplicationContext,
+  AuthContext,
   Dialog,
-  FSTreeContext,
+  Tree,
   TREE_DIALOG_HEIGHT,
   TREE_DIALOG_WIDTH,
   TreeNode,
@@ -18,10 +20,31 @@ export const EntityPickerButton = (props: {
   typeFilter?: string
   text?: string
   variant?: 'contained' | 'outlined' | 'ghost' | 'ghost_icon'
+  scope?: string // Path to a folder to limit the view within
 }) => {
-  const { onChange, typeFilter, text, variant } = props
+  const { onChange, typeFilter, text, variant, scope } = props
+  const { token } = useContext(AuthContext)
+  const appConfig = useContext(ApplicationContext)
   const [showModal, setShowModal] = useState<boolean>(false)
-  const { treeNodes, loading } = useContext(FSTreeContext)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [treeNodes, setTreeNodes] = useState<TreeNode[]>([])
+
+  const tree: Tree = new Tree(
+    token,
+    // @ts-ignore
+    (t: Tree) => setTreeNodes([...t])
+  )
+
+  useEffect(() => {
+    setLoading(true)
+    if (scope) {
+      tree.initFromFolder(scope).finally(() => setLoading(false))
+    } else {
+      tree
+        .initFromDataSources(appConfig.visibleDataSources)
+        .finally(() => setLoading(false))
+    }
+  }, [scope])
 
   return (
     <div style={{ display: 'flex', flexDirection: 'row', margin: '0 10px' }}>

@@ -1,4 +1,4 @@
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import {
   PATH_INPUT_FIELD_WIDTH,
   TREE_DIALOG_HEIGHT,
@@ -11,7 +11,9 @@ import {
   TreeView,
   truncatePathString,
   Dialog,
-  FSTreeContext,
+  AuthContext,
+  ApplicationContext,
+  Tree,
 } from '../../index'
 import { Button, Input, Progress, Tooltip } from '@equinor/eds-core-react'
 import styled from 'styled-components'
@@ -20,12 +22,33 @@ export type DestinationPickerProps = {
   onChange: (value: any) => void
   formData: any
   disabled?: boolean
+  scope?: string // Path to a folder to limit the view within
 }
 
 export const DestinationPicker = (props: DestinationPickerProps) => {
-  const { onChange, formData, disabled } = props
-  const { treeNodes, loading } = useContext(FSTreeContext)
+  const { onChange, formData, disabled, scope } = props
+  const { token } = useContext(AuthContext)
+  const appConfig = useContext(ApplicationContext)
   const [showModal, setShowModal] = useState<boolean>(false)
+  const [loading, setLoading] = useState<boolean>(true)
+  const [treeNodes, setTreeNodes] = useState<TreeNode[]>([])
+
+  const tree: Tree = new Tree(
+    token,
+    // @ts-ignore
+    (t: Tree) => setTreeNodes([...t])
+  )
+
+  useEffect(() => {
+    setLoading(true)
+    if (scope) {
+      tree.initFromFolder(scope).finally(() => setLoading(false))
+    } else {
+      tree
+        .initFromDataSources(appConfig.visibleDataSources)
+        .finally(() => setLoading(false))
+    }
+  }, [scope])
 
   const onSelect = (node: TreeNode) => {
     onChange(node.getPath())
@@ -46,14 +69,14 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
           type="string"
           value={truncatePathString(formData)}
           onChange={() => {}}
-          placeholder="Select destination"
+          placeholder="Select folder"
           onClick={() => setShowModal(true)}
         />
       </Tooltip>
       <Dialog
         isOpen={showModal}
         closeScrim={() => setShowModal(false)}
-        header={'Select a folder as destination'}
+        header={'Select a folder'}
         width={TREE_DIALOG_WIDTH}
         height={TREE_DIALOG_HEIGHT}
       >

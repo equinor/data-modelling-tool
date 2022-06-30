@@ -27,6 +27,12 @@
       "contained": false
     },
     {
+      "type": "system/SIMOS/BlueprintAttribute",
+      "name": "inputPresetFolder",
+      "description": "Path to a folder inputs can be selected from",
+      "attributeType": "string"
+    },
+    {
       "name": "SIMAComputeConfig",
       "attributeType": "system/SIMOS/Blob",
       "type": "system/SIMOS/BlueprintAttribute",

@@ -47,8 +47,8 @@ services:
     image: web-dev
     stdin_open: true
     volumes:
-      - ./web/packages/home/src:/code/packages/home/src
-      - ./web/packages/plugins:/code/packages/plugins
+      - ./web/packages:/code/packages
+
     environment:
       - NODE_ENV=development
     networks:
