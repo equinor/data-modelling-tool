@@ -235,7 +235,7 @@ export const NodeRightClickMenu = (props: {
         updateUncontained: true,
       })
       .then(() => {
-        node.updateDataSourceContent()
+        node.expand()
       })
       .catch((error: Error) => {
         NotificationManager.error(
