@@ -125,6 +125,7 @@ const JobRow = (props: {
           : 'Not started'}
       </Table.Cell>
       <Table.Cell onClick={viewJob}>{job.triggeredBy}</Table.Cell>
+      <Table.Cell onClick={viewJob}>{job.description}</Table.Cell>
       <Table.Cell onClick={viewJob}>{jobStatus}</Table.Cell>
       <Table.Cell>
         {Object.keys(job?.result || {}).length ? (
@@ -183,6 +184,7 @@ export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
           <Table.Row>
             <Table.Cell>Started</Table.Cell>
             <Table.Cell>Started by</Table.Cell>
+            <Table.Cell>Description</Table.Cell>
             <Table.Cell>Status</Table.Cell>
             <Table.Cell>Result</Table.Cell>
             {hasOperatorRole(tokenData) && <Table.Cell>Control</Table.Cell>}
