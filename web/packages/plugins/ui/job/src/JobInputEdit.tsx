@@ -73,6 +73,9 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
         //     workflow: event.target.value,
         //   })
         // }
+        multiline
+        rows={1}
+        rowsMax={5}
         style={{ width: INPUT_FIELD_WIDTH }}
       />
     </div>
