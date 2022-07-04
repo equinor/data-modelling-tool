@@ -36,6 +36,8 @@ class JobHandler(JobHandlerInterface):
         try:
             reference_target: str = self.job.entity.get("referenceTarget", None)
             runner_entity: dict = self.job.entity["runner"]
+            if not runner_entity['image'].get('registryName', None):
+                raise KeyError("Container image in job runner")
             full_image_name: str = (
                 f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
                 + f":{runner_entity['image']['version']}"
@@ -64,10 +66,12 @@ class JobHandler(JobHandlerInterface):
                 detach=True,
             )
 
-        except KeyError as error:
+        except (KeyError, AttributeError) as error:
             raise Exception(
-                f"Job entity used as input to local container jobs does not include required attribute {error}"
+                f"Job entity used as input to local container jobs is missing: {error}. Please make required changes and create a new job."
             )
+        except Exception as error:
+            raise Exception(f"Error occurred when staring local container job: {error}")
 
         logger.info("*** Local container job started successfully ***")
         return "Ok"
@@ -81,7 +85,6 @@ class JobHandler(JobHandlerInterface):
         """Poll progress from the job instance"""
         try:
             container = self.client.containers.get(self.job.entity["name"])
-            status = self.job.status
             if container.status == "running":
                 status = JobStatus.RUNNING
             elif container.attrs["State"]["ExitCode"] >= 1:

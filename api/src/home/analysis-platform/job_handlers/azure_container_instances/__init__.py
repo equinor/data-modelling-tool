@@ -55,61 +55,73 @@ class JobHandler(JobHandlerInterface):
         raise NotImplementedError
 
     def start(self) -> str:
-        logger.info(f"JobName: '{self.job.job_id}'. Starting Azure Container job...")
+        try:
+            logger.info(f"JobName: '{self.job.job_id}'. Starting Azure Container job...")
 
-        # Add env-vars from deployment first
-        env_vars: list[EnvironmentVariable] = [
-            EnvironmentVariable(name=e, value=os.getenv(e)) for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)
-        ]
+            # Add env-vars from deployment first
+            env_vars: list[EnvironmentVariable] = [
+                EnvironmentVariable(name=e, value=os.getenv(e)) for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)
+            ]
 
-        env_vars.append(EnvironmentVariable(name="DMSS_TOKEN", value=self.job.token))
+            env_vars.append(EnvironmentVariable(name="DMSS_TOKEN", value=self.job.token))
 
-        # Parse env-vars from job entity
-        for env_string in self.job.entity.get("environmentVariables", []):
-            key, value = env_string.split("=", 1)
-            env_vars.append(EnvironmentVariable(name=key, value=value))
-        reference_target: str = self.job.entity.get("referenceTarget", None)
-        runner_entity: dict = self.job.entity["runner"]
-        full_image_name: str = (
-            f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
-            + f":{runner_entity['image']['version']}"
-        )
-        logger.info(
-            f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
-            + f"Image: '{full_image_name}'\n\t"
-            + "RegistryUsername: 'None'"
-        )
-        command_list = [
-            "/code/init.sh",
-            f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
-        ]
-        if reference_target:
-            command_list.append(f"--reference-target={reference_target}")
-        compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
-        container = Container(
-            name=self.azure_valid_container_name,
-            image=full_image_name,
-            resources=ResourceRequirements(requests=compute_resources),
-            command=command_list,
-            environment_variables=env_vars,
-        )
-        image_registry_credential = None
+            # Parse env-vars from job entity
+            for env_string in self.job.entity.get("environmentVariables", []):
+                key, value = env_string.split("=", 1)
+                env_vars.append(EnvironmentVariable(name=key, value=value))
+            reference_target: str = self.job.entity.get("referenceTarget", None)
+            runner_entity: dict = self.job.entity["runner"]
+            if not runner_entity['image']['registryName']:
+                raise ValueError("Container image in job runner")
+            full_image_name: str = (
+                f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
+                + f":{runner_entity['image']['version']}"
+            )
+            logger.info(
+                f"Creating Azure container '{self.azure_valid_container_name}':\n\t"
+                + f"Image: '{full_image_name}'\n\t"
+                + "RegistryUsername: 'None'"
+            )
+            command_list = [
+                "/code/init.sh",
+                f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
+            ]
+            if reference_target:
+                command_list.append(f"--reference-target={reference_target}")
+            compute_resources = ResourceRequests(memory_in_gb=1.5, cpu=1.0)
+            container = Container(
+                name=self.azure_valid_container_name,
+                image=full_image_name,
+                resources=ResourceRequirements(requests=compute_resources),
+                command=command_list,
+                environment_variables=env_vars,
+            )
+            image_registry_credential = None
 
-        # Configure the container group
-        group = ContainerGroup(
-            location="norwayeast",
-            containers=[container],
-            os_type=OperatingSystemTypes.linux,
-            restart_policy=ContainerGroupRestartPolicy.never,
-            image_registry_credentials=image_registry_credential,
-        )
+            # Configure the container group
+            group = ContainerGroup(
+                location="norwayeast",
+                containers=[container],
+                os_type=OperatingSystemTypes.linux,
+                restart_policy=ContainerGroupRestartPolicy.never,
+                image_registry_credentials=image_registry_credential,
+            )
 
-        # Create the container group
-        result = self.aci_client.container_groups.begin_create_or_update(
-            config.AZURE_JOB_RESOURCE_GROUP, self.azure_valid_container_name, group
-        )
+            # Create the container group
+            result = self.aci_client.container_groups.begin_create_or_update(
+                config.AZURE_JOB_RESOURCE_GROUP, self.azure_valid_container_name, group
+            )
 
-        return result.status()
+            return result.status()
+
+        except (KeyError, AttributeError) as error:
+            raise Exception(
+                f"Job entity used as input to azure container jobs is missing: {error}. Please make required changes and create a new job."
+            )
+        except Exception as error:
+            raise Exception(f"Error occurred when staring azure container job: {error}")
+
+        logger.info("*** Azure container job started successfully ***")
 
     def remove(self) -> Tuple[JobStatus, str]:
         logger.setLevel(logging.WARNING)

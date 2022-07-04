@@ -17,8 +17,6 @@ if config.JOB_SERVICE_ENABLED:
         use_case = StartJobUseCase()
         response = use_case.execute({"job_id": job_id})
         return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-    må ha en måte å sende exceptions fra en job runner tilbake hit.. er det mulig å vente til container har startet før
-    dette endepunktet returnerer noe?
     
 
     @blueprint.route("/api/job/<path:job_id>", methods=["GET"])

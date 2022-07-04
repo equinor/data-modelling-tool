@@ -4,7 +4,6 @@ from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import Callable, Tuple, Union
-
 import redis
 import traceback
 
@@ -152,12 +151,12 @@ class JobService:
             start_output = job_handler.start()
             job.log = start_output
             return start_output
-        except (HTTPError, NotImplementedError) as error:
+        except Exception as error:
             logger.warning(f"Failed to run job; {job_id}")
             print(traceback.format_exc())
             job.status = JobStatus.FAILED
             job.update_entity_attributes()
-            job.log = f"{job.log}\n\n {error}"
+            job.log = f"{job.log if job.log else ''}\n\n {error}"
             self._set_job(job)
             return error.args[0]
 
