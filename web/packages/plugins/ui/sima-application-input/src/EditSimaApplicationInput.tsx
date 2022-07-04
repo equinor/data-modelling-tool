@@ -28,6 +28,7 @@ import {
   HeaderWrapper,
   Row,
 } from './components'
+import _ from 'lodash'
 
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
@@ -140,19 +141,6 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
               </Row>
             </Column>
             <TextField
-              id="workflow"
-              label={'Workflow'}
-              value={formData?.workflow || ''}
-              placeholder="Name of workflow to run"
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setFormData({
-                  ...formData,
-                  workflow: event.target.value,
-                })
-              }
-              style={{ width: INPUT_FIELD_WIDTH }}
-            />
-            <TextField
               id="workflowTask"
               label={'Workflow task'}
               value={formData?.workflowTask || ''}
@@ -161,6 +149,19 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                 setFormData({
                   ...formData,
                   workflowTask: event.target.value,
+                })
+              }
+              style={{ width: INPUT_FIELD_WIDTH }}
+            />
+            <TextField
+              id="workflow"
+              label={'Workflow'}
+              value={formData?.workflow || ''}
+              placeholder="Name of workflow to run"
+              onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                setFormData({
+                  ...formData,
+                  workflow: event.target.value,
                 })
               }
               style={{ width: INPUT_FIELD_WIDTH }}
@@ -247,7 +248,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
             </Button>
           ) : (
             <Button as="button" onClick={() => updateDocument(formData, true)}>
-              Save
+              {!_.isEqual(document, formData) ? 'Save *' : 'Save'}
             </Button>
           )}
         </div>

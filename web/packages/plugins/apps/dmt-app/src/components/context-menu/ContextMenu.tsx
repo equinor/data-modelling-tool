@@ -234,6 +234,9 @@ export const NodeRightClickMenu = (props: {
         body: newPackage,
         updateUncontained: true,
       })
+      .then(() => {
+        node.expand()
+      })
       .catch((error: Error) => {
         NotificationManager.error(
           JSON.stringify(error.message),

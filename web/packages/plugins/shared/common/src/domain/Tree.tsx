@@ -91,6 +91,54 @@ const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
   return newChildren
 }
 
+const updateRootPackagesInTree = (
+  rootPackages: any,
+  tree: Tree,
+  dataSource: string
+) => {
+  // Update content in a datasource. Search the DMSS database for root packages in a given datasource
+  // and update the tree only if any packages from DMSS is missing in the tree.
+
+  Object.values(rootPackages).forEach((rootPackage: any) => {
+    //Only update tree if package is missing.
+    if (
+      !Object.keys(tree.index[dataSource].children).includes(rootPackage['_id'])
+    ) {
+      const rootPackageNode = new TreeNode( // Add the rootPackage nodes to the dataSource
+        tree,
+        `${dataSource}/${rootPackage._id}`,
+        1,
+        rootPackage,
+        packageAttribute,
+        tree.index[dataSource],
+        rootPackage.name,
+        true,
+        false
+      )
+      const children: TreeMap = {}
+      rootPackage?.content.forEach(
+        (
+          ref: any // Add the rootPackages children
+        ) => {
+          children[ref?._id] = new TreeNode(
+            tree,
+            `${dataSource}/${ref?._id}`,
+            2,
+            ref,
+            packageAttribute,
+            rootPackageNode,
+            ref.name,
+            false,
+            false
+          )
+        }
+      )
+      rootPackageNode.children = children
+      tree.index[dataSource].children[rootPackage._id] = rootPackageNode
+    }
+  })
+}
+
 export class TreeNode {
   tree: Tree
   type: string
@@ -185,11 +233,25 @@ export class TreeNode {
           this.message = error.message
         })
     } else {
-      // Expanding a dataSource node will not trigger a fetch request. Return an instantly resolved Promise
-      return new Promise((resolve) => {
-        this.tree.updateCallback(this.tree)
-        resolve()
-      })
+      // Update content in a datasource. Search the DMSS database for root packages in a given datasource
+      // and update the tree if any packages from DMSS is missing in the tree.
+      await this.tree.dmssApi
+        .search({
+          body: { type: EBlueprint.PACKAGE, isRoot: 'true' },
+          dataSources: [this.dataSource],
+        })
+        .then((response: any) => {
+          updateRootPackagesInTree(response.data, this.tree, this.dataSource)
+        })
+        .catch((error: Error) => {
+          // If the search fail, set the DataSource as an error node.
+          console.error(error)
+          this.tree.index[this.dataSource].type = 'error'
+          this.tree.index[this.dataSource].message = error.message
+        })
+        .finally(() => {
+          this.tree.updateCallback(this.tree)
+        })
     }
   }
 
@@ -267,40 +329,8 @@ export class Tree {
             body: { type: EBlueprint.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],
           })
-          .then((response: any) => {
-            Object.values(response.data).forEach((rootPackage: any) => {
-              const rootPackageNode = new TreeNode( // Add the rootPackage nodes to the dataSource
-                this,
-                `${dataSource}/${rootPackage._id}`,
-                1,
-                rootPackage,
-                packageAttribute,
-                this.index[dataSource],
-                rootPackage.name,
-                true,
-                false
-              )
-              const children: TreeMap = {}
-              rootPackage?.content.forEach(
-                (
-                  ref: any // Add the rootPackages children
-                ) => {
-                  children[ref?._id] = new TreeNode(
-                    this,
-                    `${dataSource}/${ref?._id}`,
-                    2,
-                    ref,
-                    packageAttribute,
-                    rootPackageNode,
-                    ref.name,
-                    false,
-                    false
-                  )
-                }
-              )
-              rootPackageNode.children = children
-              this.index[dataSource].children[rootPackage._id] = rootPackageNode
-            })
+          .then((response) => {
+            updateRootPackagesInTree(response.data, this, dataSource)
           })
           .catch((error: Error) => {
             // If the search fail, set the DataSource as an error node.
