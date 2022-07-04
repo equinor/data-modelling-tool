@@ -17,7 +17,6 @@ if config.JOB_SERVICE_ENABLED:
         use_case = StartJobUseCase()
         response = use_case.execute({"job_id": job_id})
         return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
-    
 
     @blueprint.route("/api/job/<path:job_id>", methods=["GET"])
     def status(job_id: str):

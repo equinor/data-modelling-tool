@@ -46,7 +46,9 @@ class JobHandler(JobHandlerInterface):
             result = input
             result["description"] = input.get("description", "")[::-1]
             result["name"] = (
-                f"reverse-description-job-result-{datetime.now()}".replace(".", "_").replace(":", "_").replace(" ", "_")
+                f"reverse-description-job-result-{datetime.now()}".replace(".", "_")
+                .replace(":", "_")
+                .replace(" ", "_")
             )
             result.pop("_id", None)
 
@@ -59,7 +61,6 @@ class JobHandler(JobHandlerInterface):
             )
         except Exception as error:
             raise Exception(f"Error occurred when staring reverse description job: {error}")
-
 
         logger.info("ReverseDescription job completed")
         return "OK"

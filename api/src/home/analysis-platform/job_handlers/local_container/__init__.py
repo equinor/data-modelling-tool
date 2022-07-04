@@ -36,7 +36,7 @@ class JobHandler(JobHandlerInterface):
         try:
             reference_target: str = self.job.entity.get("referenceTarget", None)
             runner_entity: dict = self.job.entity["runner"]
-            if not runner_entity['image'].get('registryName', None):
+            if not runner_entity["image"].get("registryName", None):
                 raise KeyError("Container image in job runner")
             full_image_name: str = (
                 f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
@@ -84,7 +84,7 @@ class JobHandler(JobHandlerInterface):
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
         if self.job.status == JobStatus.SETUP_FAILED:
-            #If setup fails, the container is not started
+            # If setup fails, the container is not started
             return self.job.status, self.job.log
         try:
             container = self.client.containers.get(self.job.entity["name"])

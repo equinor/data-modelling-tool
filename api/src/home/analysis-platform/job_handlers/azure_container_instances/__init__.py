@@ -60,7 +60,9 @@ class JobHandler(JobHandlerInterface):
 
             # Add env-vars from deployment first
             env_vars: list[EnvironmentVariable] = [
-                EnvironmentVariable(name=e, value=os.getenv(e)) for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)
+                EnvironmentVariable(name=e, value=os.getenv(e))
+                for e in config.SCHEDULER_ENVS_TO_EXPORT
+                if os.getenv(e)
             ]
 
             env_vars.append(EnvironmentVariable(name="DMSS_TOKEN", value=self.job.token))
@@ -71,7 +73,7 @@ class JobHandler(JobHandlerInterface):
                 env_vars.append(EnvironmentVariable(name=key, value=value))
             reference_target: str = self.job.entity.get("referenceTarget", None)
             runner_entity: dict = self.job.entity["runner"]
-            if not runner_entity['image']['registryName']:
+            if not runner_entity["image"]["registryName"]:
                 raise ValueError("Container image in job runner")
             full_image_name: str = (
                 f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
@@ -122,6 +124,7 @@ class JobHandler(JobHandlerInterface):
             raise Exception(f"Error occurred when staring azure container job: {error}")
 
         logger.info("*** Azure container job started successfully ***")
+        return result.status()
 
     def remove(self) -> Tuple[JobStatus, str]:
         logger.setLevel(logging.WARNING)
