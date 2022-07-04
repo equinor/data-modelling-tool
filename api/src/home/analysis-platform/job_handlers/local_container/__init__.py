@@ -83,8 +83,12 @@ class JobHandler(JobHandlerInterface):
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
+        if self.job.status == JobStatus.SETUP_FAILED:
+            #If setup fails, the container is not started
+            return self.job.status, self.job.log
         try:
             container = self.client.containers.get(self.job.entity["name"])
+            status = self.job.status
             if container.status == "running":
                 status = JobStatus.RUNNING
             elif container.attrs["State"]["ExitCode"] >= 1:

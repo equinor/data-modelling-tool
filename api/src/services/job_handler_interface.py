@@ -13,6 +13,7 @@ class JobStatus(Enum):
     COMPLETED = "completed"
     REMOVED = "removed"
     UNKNOWN = "unknown"
+    SETUP_FAILED = "setup failed"
 
 
 class Job:

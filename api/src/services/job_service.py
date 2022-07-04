@@ -154,9 +154,10 @@ class JobService:
         except Exception as error:
             logger.warning(f"Failed to run job; {job_id}")
             print(traceback.format_exc())
-            job.status = JobStatus.FAILED
+            job.status = JobStatus.SETUP_FAILED
+            job.stopped = datetime.now()
             job.update_entity_attributes()
-            job.log = f"{job.log if job.log else ''}\n\n {error}"
+            job.log = f"{job.log if job.log else ''}\n\nFailed to run job \n\n {error}"
             self._set_job(job)
             return error.args[0]
 
