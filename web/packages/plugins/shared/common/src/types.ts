@@ -86,6 +86,7 @@ export type TContainerJobHandler = {
 export type TJob = {
   label: string
   name: string
+  description?: string
   type: string
   status: EJobStatus
   triggeredBy: string
