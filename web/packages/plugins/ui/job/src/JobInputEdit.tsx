@@ -1,3 +1,4 @@
+import { TextField } from '@equinor/eds-core-react'
 import {
   DmtUIPlugin,
   EJobStatus,
@@ -5,6 +6,7 @@ import {
   TJob,
   UIPluginSelector,
   useDocument,
+  INPUT_FIELD_WIDTH,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -60,6 +62,19 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
           </pre>
         )}
       </div>
+      <TextField
+        id="jobDescription"
+        label={'Description'}
+        value={formData.description}
+        placeholder="Describe the job.."
+        // onChange={(event: ChangeEvent<HTMLInputElement>) =>
+        //   setFormData({
+        //     ...formData,
+        //     workflow: event.target.value,
+        //   })
+        // }
+        style={{ width: INPUT_FIELD_WIDTH }}
+      />
     </div>
   )
 }
