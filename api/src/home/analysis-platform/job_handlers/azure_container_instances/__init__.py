@@ -55,7 +55,6 @@ class JobHandler(JobHandlerInterface):
         raise NotImplementedError
 
     def start(self) -> str:
-        # try:
         logger.info(f"JobName: '{self.job.job_id}'. Starting Azure Container job...")
 
         # Add env-vars from deployment first
