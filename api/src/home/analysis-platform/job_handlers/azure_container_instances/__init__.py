@@ -114,11 +114,6 @@ class JobHandler(JobHandlerInterface):
 
         return result.status()
 
-        # except (KeyError, AttributeError) as error:
-        #     raise Exception(
-        #         f"Job entity used as input to azure container jobs is missing: {error}. Please make required changes and create a new job."
-        #     )
-
         logger.info("*** Azure container job started successfully ***")
         return result.status()
 
