@@ -37,30 +37,21 @@ class JobHandler(JobHandlerInterface):
         return req.json()
 
     def start(self) -> str:
-        try:
-            logger.info("Starting ReverseDescription job.")
-            output_data_source, output_directory = self.job_entity["outputTarget"].split("/", 1)
-            input = self.job_entity["input"]
-            if self.job_entity["input"].get("_id", None):  # If input has _id, fetch the document
-                input = self._get_by_id(f"{output_data_source}/{self.job_entity['input']['_id']}")
-            result = input
-            result["description"] = input.get("description", "")[::-1]
-            result["name"] = (
-                f"reverse-description-job-result-{datetime.now()}".replace(".", "_")
-                .replace(":", "_")
-                .replace(" ", "_")
-            )
-            result.pop("_id", None)
+        logger.info("Starting ReverseDescription job.")
+        output_data_source, output_directory = self.job_entity["outputTarget"].split("/", 1)
+        input = self.job_entity["input"]
+        if self.job_entity["input"].get("_id", None):  # If input has _id, fetch the document
+            input = self._get_by_id(f"{output_data_source}/{self.job_entity['input']['_id']}")
+        result = input
+        result["description"] = input.get("description", "")[::-1]
+        result["name"] = (
+            f"reverse-description-job-result-{datetime.now()}".replace(".", "_").replace(":", "_").replace(" ", "_")
+        )
+        result.pop("_id", None)
 
-            add_response = self._add_to_path(output_data_source, {"directory": output_directory, "document": result})
+        add_response = self._add_to_path(output_data_source, {"directory": output_directory, "document": result})
 
-            self.insert_reference({"name": result["name"], "type": result["type"], "_id": add_response["uid"]})
-        except (KeyError, AttributeError) as error:
-            raise Exception(
-                f"Input to reverse description job is missing: {error}. Please make required changes and create a new job."
-            )
-        except Exception as error:
-            raise Exception(f"Error occurred when staring reverse description job: {error}")
+        self.insert_reference({"name": result["name"], "type": result["type"], "_id": add_response["uid"]})
 
         logger.info("ReverseDescription job completed")
         return "OK"

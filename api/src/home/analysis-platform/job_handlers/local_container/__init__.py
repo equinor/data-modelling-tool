@@ -33,45 +33,35 @@ class JobHandler(JobHandlerInterface):
             )
 
     def start(self) -> str:
-        try:
-            reference_target: str = self.job.entity.get("referenceTarget", None)
-            runner_entity: dict = self.job.entity["runner"]
-            if not runner_entity["image"].get("registryName", None):
-                raise KeyError("Container image in job runner")
-            full_image_name: str = (
-                f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
-                + f":{runner_entity['image']['version']}"
-            )
-            logger.info(f"JobName: '{self.job.job_id}'." + " Starting Local Container job...")
-            logger.info(
-                "Creating container\n\t"
-                + f"Image: '{full_image_name}'\n\t"
-                + f"Command: '--job-id={self.job.job_id}.applicationInput'"
-            )
-            envs = [f"{e}={os.getenv(e)}" for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)]
-            command_list = [
-                "/code/init.sh",
-                f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
-            ]
-            if reference_target:
-                command_list.append(f"--reference-target={reference_target}")
+        reference_target: str = self.job.entity.get("referenceTarget", None)
+        runner_entity: dict = self.job.entity["runner"]
+        full_image_name: str = (
+            f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
+            + f":{runner_entity['image']['version']}"
+        )
+        logger.info(f"JobName: '{self.job.job_id}'." + " Starting Local Container job...")
+        logger.info(
+            "Creating container\n\t"
+            + f"Image: '{full_image_name}'\n\t"
+            + f"Command: '--job-id={self.job.job_id}.applicationInput'"
+        )
+        envs = [f"{e}={os.getenv(e)}" for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)]
+        command_list = [
+            "/code/init.sh",
+            f"--input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}",
+        ]
+        if reference_target:
+            command_list.append(f"--reference-target={reference_target}")
 
-            envs.append(f"DMSS_TOKEN={self.job.token}")
-            self.client.containers.run(
-                image=full_image_name,
-                command=command_list,
-                name=self.job.entity["name"],
-                environment=envs,
-                network="data-modelling-storage-service_default",
-                detach=True,
-            )
-
-        except (KeyError, AttributeError) as error:
-            raise Exception(
-                f"Job entity used as input to local container jobs is missing: {error}. Please make required changes and create a new job."
-            )
-        except Exception as error:
-            raise Exception(f"Error occurred when staring local container job: {error}")
+        envs.append(f"DMSS_TOKEN={self.job.token}")
+        self.client.containers.run(
+            image=full_image_name,
+            command=command_list,
+            name=self.job.entity["name"],
+            environment=envs,
+            network="data-modelling-storage-service_default",
+            detach=True,
+        )
 
         logger.info("*** Local container job started successfully ***")
         return "Ok"
@@ -83,7 +73,7 @@ class JobHandler(JobHandlerInterface):
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
-        if self.job.status == JobStatus.SETUP_FAILED:
+        if self.job.status == JobStatus.FAILED:
             # If setup fails, the container is not started
             return self.job.status, self.job.log
         try:
