@@ -22,7 +22,12 @@ export const GroupWrapper = styled.div`
     padding-top: 8px;
   }
 `
-
+export const Container = styled.div`
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+  margin: 10px 20px;
+`
 export function EditInputEntity(props: {
   formData: any
   setFormData: Function

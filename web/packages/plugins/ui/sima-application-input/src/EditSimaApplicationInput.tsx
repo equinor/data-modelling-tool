@@ -23,6 +23,7 @@ import {
 import { NotificationManager } from 'react-notifications'
 import {
   Column,
+  Container,
   EditInputEntity,
   GroupWrapper,
   HeaderWrapper,
@@ -58,14 +59,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
 
   if (loading) return <Loading />
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'left',
-        flexDirection: 'column',
-        margin: '10px 20px',
-      }}
-    >
+    <Container>
       <div style={{ marginBottom: '10px' }}>
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
@@ -253,6 +247,6 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           )}
         </div>
       </div>
-    </div>
+    </Container>
   )
 }
