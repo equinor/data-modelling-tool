@@ -11,19 +11,19 @@ export class JobApi {
     }
   }
 
-  startJob(jobId: string) {
-    return axios.post(`${this.jobUrl}/${jobId}`, null, this.requestConfig)
+  startJob(jobDMSSPath: string) {
+    return axios.post(`${this.jobUrl}/${jobDMSSPath}`, null, this.requestConfig)
   }
 
-  statusJob(jobId: string) {
-    return axios.get(`${this.jobUrl}/${jobId}`, this.requestConfig)
+  statusJob(jobUID: string) {
+    return axios.get(`${this.jobUrl}/${jobUID}`, this.requestConfig)
   }
 
-  removeJob(jobId: string) {
-    return axios.delete(`${this.jobUrl}/${jobId}`, this.requestConfig)
+  removeJob(jobUID: string) {
+    return axios.delete(`${this.jobUrl}/${jobUID}`, this.requestConfig)
   }
 
-  result(jobId: string) {
-    return axios.get(`${this.jobUrl}/${jobId}/result`, this.requestConfig)
+  result(jobUID: string) {
+    return axios.get(`${this.jobUrl}/${jobUID}/result`, this.requestConfig)
   }
 }

@@ -114,7 +114,9 @@ function App() {
         }}
       />
     )
-
+  if (!applications) {
+    return <>Error: Failed to fetch Application settings</>
+  }
   return (
     <ThemeProvider theme={theme}>
       <Router>
