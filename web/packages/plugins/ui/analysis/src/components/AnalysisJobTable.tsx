@@ -10,10 +10,10 @@ import React, { useContext, useEffect, useState } from 'react'
 import {
   AuthContext,
   DmssAPI,
-  JobApi,
   EJobStatus,
-  TJob,
   hasOperatorRole,
+  JobApi,
+  TJob,
 } from '@dmt/common'
 import styled from 'styled-components'
 import { AxiosError } from 'axios'
@@ -24,6 +24,7 @@ type AnalysisJobTableProps = {
   jobs: any
   analysisId: string
   dataSourceId: string
+  setJobs: Function
 }
 
 const ClickableLabel = styled.div`
@@ -37,8 +38,9 @@ const JobRow = (props: {
   index: number
   analysisId: string
   dataSourceId: string
+  removeJob: Function
 }) => {
-  const { job, index, analysisId, dataSourceId } = props
+  const { job, index, analysisId, dataSourceId, removeJob } = props
   const { token, tokenData } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
@@ -67,7 +69,10 @@ const JobRow = (props: {
     jobAPI
       .startJob(`${dataSourceId}/${analysisId}.jobs.${index}`)
       .then((result: any) => {
-        NotificationManager.success(result.data, 'Simulation job started')
+        NotificationManager.success(
+          result.data.message,
+          'Simulation job started'
+        )
         setJobStatus(EJobStatus.STARTING)
         setStarted(new Date().toLocaleString(navigator.language))
       })
@@ -81,14 +86,15 @@ const JobRow = (props: {
       .finally(() => setLoading(false))
   }
 
-  async function removeJob(): Promise<void> {
+  async function deleteJob(): Promise<void> {
     setLoading(true)
     try {
       await dmssAPI.explorerRemove({
         dataSourceId: dataSourceId,
         dottedId: `${analysisId}.jobs.${index}`,
       })
-      await jobAPI.removeJob(`${dataSourceId}/${analysisId}.jobs.${index}`)
+      if (job?.uid) await jobAPI.removeJob(job.uid)
+      removeJob()
       setLoading(false)
     } catch (error) {
       console.error(error)
@@ -101,9 +107,14 @@ const JobRow = (props: {
   }
 
   useEffect(() => {
+    if (!job?.uid) {
+      // Job has not been started
+      setJobStatus(job.status)
+      return
+    }
     setLoading(true)
     jobAPI
-      .statusJob(`${dataSourceId}/${analysisId}.jobs.${index}`)
+      .statusJob(job.uid)
       .then((result: any) => {
         setJobStatus(result.data.status)
       })
@@ -152,8 +163,7 @@ const JobRow = (props: {
               <Button
                 variant="ghost_icon"
                 color="danger"
-                disabled
-                onClick={() => removeJob()}
+                onClick={() => deleteJob()}
               >
                 <Icon name="delete_forever" title="delete" />
               </Button>
@@ -168,7 +178,7 @@ const JobRow = (props: {
 }
 
 export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
-  const { jobs, analysisId, dataSourceId } = props
+  const { jobs, analysisId, dataSourceId, setJobs } = props
   const { tokenData } = useContext(AuthContext)
 
   return (
@@ -194,6 +204,10 @@ export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
               index={index}
               analysisId={analysisId}
               dataSourceId={dataSourceId}
+              removeJob={() => {
+                jobs.splice(index, 1)
+                setJobs([...jobs])
+              }}
             />
           ))}
         </Table.Body>

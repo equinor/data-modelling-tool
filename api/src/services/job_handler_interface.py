@@ -2,12 +2,12 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from typing import Tuple
+from uuid import uuid4, UUID
 
 
 class JobStatus(str, Enum):
     REGISTERED = "registered"
     STARTING = "starting"
-    WAITING = "Waiting"  # todo the api fails if this is not included... cannot understand why
     RUNNING = "running"
     FAILED = "failed"
     COMPLETED = "completed"
@@ -18,16 +18,18 @@ class JobStatus(str, Enum):
 class Job:
     def __init__(
         self,
-        job_id: str,
+        dmss_id: str,
         started: datetime,
         status: JobStatus,
         entity: dict,
+        job_uid: UUID = uuid4(),
         stopped: datetime = datetime(1, 1, 1),
         log: str = None,
         cron_job: bool = False,
         token: str = None,
     ):
-        self.job_id: str = job_id
+        self.dmss_id: str = dmss_id
+        self.job_uid: UUID = job_uid
         self.started: datetime = started
         self.status: JobStatus = status
         self.entity: dict = entity
@@ -41,10 +43,12 @@ class Job:
         self.entity["started"] = self.started.isoformat() + "Z"
         self.entity["stopped"] = self.stopped.isoformat() + "Z"
         self.entity["status"] = self.status.value
+        self.entity["uid"] = str(self.job_uid)
 
     def to_dict(self):
         return {
-            "job_id": self.job_id,
+            "job_uid": str(self.job_uid),
+            "dmss_id": self.dmss_id,
             "started": self.started.isoformat(),
             "status": self.status.value,
             "entity": self.entity,
@@ -57,7 +61,8 @@ class Job:
     @classmethod
     def from_dict(cls, a_dict: dict):
         return Job(
-            job_id=a_dict["job_id"],
+            dmss_id=a_dict["dmss_id"],
+            job_uid=UUID(a_dict["job_uid"]),
             started=datetime.fromisoformat(a_dict["started"]),
             status=JobStatus(a_dict["status"]),
             entity=a_dict["entity"],
@@ -96,8 +101,3 @@ class JobHandlerInterface(ABC):
     def teardown_service(self, service_id: str) -> str:
         """Teardown and cleanup a persistent service"""
         raise NotImplementedError
-
-
-class ComputeResources(Enum):
-    LOW = "low"
-    HIGH = "high"

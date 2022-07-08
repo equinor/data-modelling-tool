@@ -3,7 +3,7 @@ from docker.errors import DockerException
 from typing import Tuple
 
 from config import config
-from services.job_handler_interface import JobHandlerInterface, JobStatus
+from services.job_handler_interface import Job, JobHandlerInterface, JobStatus
 from utils.logging import logger
 
 import os
@@ -18,7 +18,7 @@ class JobHandler(JobHandlerInterface):
     """
 
     # todo consider implementing a pydantic class to check that job_entity is in correct format
-    def __init__(self, job, data_source: str):
+    def __init__(self, job: Job, data_source: str):
         super().__init__(job, data_source)
         self.headers = {"Access-Key": job.token}
         try:
@@ -39,11 +39,11 @@ class JobHandler(JobHandlerInterface):
             f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
             + f":{runner_entity['image']['version']}"
         )
-        logger.info(f"JobName: '{self.job.job_id}'." + " Starting Local Container job...")
+        logger.info(f"Job path: '{self.job.dmss_id} ({self.job.job_uid})'." + " Starting Local Container job...")
         logger.info(
             "Creating container\n\t"
             + f"Image: '{full_image_name}'\n\t"
-            + f"Command: '--job-id={self.job.job_id}.applicationInput'"
+            + f"Command: /code/init.sh --input-id={self.data_source}/{self.job.entity['applicationInput']['_id']}"
         )
         envs = [f"{e}={os.getenv(e)}" for e in config.SCHEDULER_ENVS_TO_EXPORT if os.getenv(e)]
         command_list = [
@@ -62,7 +62,6 @@ class JobHandler(JobHandlerInterface):
             network="data-modelling-storage-service_default",
             detach=True,
         )
-
         logger.info("*** Local container job started successfully ***")
         return "Ok"
 

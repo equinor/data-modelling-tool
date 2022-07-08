@@ -80,6 +80,7 @@ export const JobControl = (props: {
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
+  const [jobUID, setJobUID] = useState<string | undefined>(document?.uid)
   const [jobLogs, setJobLogs] = useState<any>()
   const [jobStatus, setJobStatus] = useState<EJobStatus>(document.status)
   const [refreshCount, setRefreshCount] = useState<number>(0)
@@ -88,9 +89,10 @@ export const JobControl = (props: {
   const [showLogs, setShowLogs] = useState<boolean>(false)
 
   useEffect(() => {
+    if (!jobUID) return // job has not been started
     setLoading(true)
     jobAPI
-      .statusJob(jobId)
+      .statusJob(jobUID)
       .then((result: any) => {
         setJobLogs(result.data.log)
         setJobStatus(result.data.status)
@@ -101,7 +103,6 @@ export const JobControl = (props: {
           setJobStatus(document.status)
         } else setJobLogs('Error occurred when getting status for job')
 
-        // setJobStatus(SimulationStatus.FAILED)
         console.error(error)
       })
       .finally(() => setLoading(false))
@@ -113,9 +114,11 @@ export const JobControl = (props: {
       .startJob(jobId)
       .then((result: any) => {
         NotificationManager.success(
-          JSON.stringify(result.data),
+          JSON.stringify(result.data.message),
           'Simulation job started'
         )
+        setJobUID(result.data.uid)
+        setJobLogs(result.data.message)
         setJobStatus(EJobStatus.STARTING)
       })
       .catch((error: AxiosError<any>) => {
@@ -130,9 +133,10 @@ export const JobControl = (props: {
 
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function removeJob(): Promise<void> {
+    if (!jobUID) return // job has not been started
     setLoading(true)
     try {
-      await jobAPI.removeJob(jobId)
+      await jobAPI.removeJob(jobUID)
       await dmssAPI.explorerRemove({
         dataSourceId: dataSourceId,
         dottedId: documentId,

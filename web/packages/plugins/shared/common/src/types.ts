@@ -92,6 +92,7 @@ export type TJob = {
   applicationInput: TReference
   runner: TJobHandler | TContainerJobHandler
   started: string
+  uid?: string
   result?: any
   ended?: string
   outputTarget?: string
