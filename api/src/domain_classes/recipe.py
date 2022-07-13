@@ -54,7 +54,7 @@ class Recipe:
         if attribute.attribute_type in PRIMITIVES:
             return primitive_contained
         else:
-            if attribute.is_array():
+            if attribute.is_array:
                 return array_contained
             else:
                 return single_contained
