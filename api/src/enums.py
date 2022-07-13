@@ -4,9 +4,6 @@ from enum import Enum
 PRIMITIVES = {"string", "number", "integer", "boolean"}
 
 
-BLOB_TYPES = "system/SIMOS/blob_types/PDF"
-
-
 class StorageDataTypes(Enum):
     DEFAULT = "default"
     LARGE = "large"

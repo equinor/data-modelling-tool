@@ -21,27 +21,32 @@ class BlueprintAttribute:
         self.name = name
         self.attribute_type = attribute_type
         self.type = SIMOS.BLUEPRINT_ATTRIBUTE.value
-        self.description = description if description else ""
-        self.label = label if label else ""
-        self.default = default if default else ""
-        self.dimensions: Dimension = Dimension(dimensions, self.attribute_type)
+        self.description = description if description else None
+        self.label = label if label else None
+        self.default = default if default else None
         self.optional = optional if optional is not None else False
         self.contained = contained if contained is not None else True
         self.enum_type = enum_type if enum_type else ""
+        self.dimensions: Dimension = Dimension(dimensions, self.attribute_type, self)
 
+    def __repr__(self):
+        return f"Name: {self.name}, attributeType: {self.attribute_type}"
+
+    @property
     def is_array(self):
-        return self.dimensions.is_array()
+        return self.dimensions.is_array
 
+    @property
     def is_matrix(self):
-        return self.dimensions.is_matrix()
+        return self.dimensions.is_matrix
 
+    @property
     def is_primitive(self):
         return self.attribute_type in PRIMITIVES
 
+    @property
     def is_optional(self):
-        # todo get default from blueprint attribute optional's default value.
-        default_optional = False
-        return self.optional if self.optional is not None else default_optional
+        return self.optional
 
     def to_dict(self):
         return {
@@ -55,16 +60,6 @@ class BlueprintAttribute:
             "optional": self.optional,
             "contained": self.contained,
             "enumType": self.enum_type,
-        }
-
-    def to_json_schema(self):
-        return {
-            "name": self.name,
-            "type": self.attribute_type,
-            "description": self.description,
-            "title": self.label,
-            "default": self.default if not self.attribute_type == "boolean" else True,
-            "optional": self.optional,
         }
 
     @classmethod

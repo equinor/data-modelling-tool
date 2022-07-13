@@ -19,7 +19,7 @@ from utils.create_application_utils import (
     zip_all,
     zip_package,
 )
-from utils.create_entity_utils import CreateEntity
+from utils.create_entity_utils import create_entity
 from utils.logging import logger
 
 
@@ -37,31 +37,29 @@ class ApplicationService:
         related_blueprints = {}
 
         first = self.document_service.get_blueprint(blueprint)
-        related_blueprints[blueprint] = first.to_dict()
+        related_blueprints[blueprint] = first.entity
 
         def get_blueprints_recursive(type: Blueprint):
             for attr in type.get_none_primitive_types():
                 bp = self.document_service.get_blueprint(attr.attribute_type)
-                related_blueprints[attr.attribute_type] = bp.to_dict()
+                related_blueprints[attr.attribute_type] = bp.entity
                 if attr.attribute_type not in related_blueprints.keys():
                     get_blueprints_recursive(bp)
 
         for attr in first.get_none_primitive_types():
             bp = self.document_service.get_blueprint(attr.attribute_type)
-            related_blueprints[attr.attribute_type] = bp.to_dict()
+            related_blueprints[attr.attribute_type] = bp.entity
             get_blueprints_recursive(bp)
 
         return related_blueprints
 
-    def instantiate_entity(self, type: str, name: str = None):
-        entity: dict = CreateEntity(
-            self.document_service.blueprint_provider, name=name, type=type, description=""
-        ).entity
+    def instantiate_entity(self, entity: dict):
+        entity: dict = create_entity(self.document_service.get_blueprint, entity)
         return entity
 
     def create_application(self, data_source_id: str, application_id: str) -> io.BytesIO:
         raise NotImplementedError("Creating and exporting an application is no longer supported")
-        application: DTO = DTO(self.document_service.uid_document_provider(data_source_id, application_id))
+        application: dict = self.document_service.uid_document_provider(data_source_id, application_id)
         if not application:
             raise EntityNotFoundException(uid=application_id)
 
@@ -74,12 +72,12 @@ class ApplicationService:
             zip_all(zip_file, f"{home_path}/applications/DMT", real_name="api/home/applications/DMT")
             zip_all(zip_file, f"{home_path}/data_sources", real_name="api/home/data_sources")
             zip_all(zip_file, f"{home_path}/code_generators", real_name="api/home/code_generators")
-            application.data.pop("_id", None)
-            application.data.pop("uid", None)
-            json_data = json.dumps(application.data)
+            application.pop("_id", None)
+            application.pop("uid", None)
+            json_data = json.dumps(application)
             binary_data = json_data.encode()
             zip_file.writestr("api/home/settings.json", binary_data)
-            runnable_file = generate_runnable_file(application.data["actions"])
+            runnable_file = generate_runnable_file(application["actions"])
             zip_file.writestr("web/actions.js", runnable_file)
             zip_file.writestr("docker-compose.yml", DOCKER_COMPOSE)
             zip_file.writestr("web/Dockerfile", WEB_DOCKERFILE)
@@ -87,7 +85,7 @@ class ApplicationService:
             zip_file.writestr("web/config.js", generate_plugins())
             zip_file.writestr("web/custom-plugins/README.md", generate_plugins_readme())
 
-            for package in application.data["packages"]:
+            for package in application["packages"]:
                 logger.info(f"Add package: {package}")
                 # TODO: Support including packages from different data sources
                 # This is a temp. hack

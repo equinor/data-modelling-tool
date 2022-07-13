@@ -1,17 +1,20 @@
-from typing import List
+from typing import Callable, List
 
-from utils.get_python_type import get_python_type_from_dmt_type
+from enums import PRIMITIVES
 
 
 class Dimension:
-    def __init__(self, dimensions: str, attribute_type: str):
+    def __init__(self, dimensions: str, attribute_type: str, attribute=None):
         self.dimensions: List[str] = dimensions.split(",")
-        self.type: attribute_type = get_python_type_from_dmt_type(attribute_type)
+        self.type: attribute_type = attribute_type
         self.value = None
+        self.attribute = attribute
 
+    @property
     def is_array(self):
         return self.dimensions != [""]
 
+    @property
     def is_matrix(self):
         return len(self.dimensions) > 1
 
@@ -19,26 +22,24 @@ class Dimension:
     def is_unfixed(self):
         return self.dimensions[-1] == "*"
 
-    def create_default_array(self, blueprint_provider, create_entity_class):
+    def create_default_array(self, blueprint_provider, create_entity: Callable):
         def create_default_array_recursive(dimensions: List[str]) -> List:
             if len(dimensions) == 1:
                 # Return an empty list if size is "*".
                 if dimensions[0] == "*":
                     return []
                 # Return a list initialized with default values for the size of the array.
-                if not type(self.type) is type:
+                if self.type not in PRIMITIVES:
                     # For fixed complex types, create the entity with default values. Set name from list index.
                     return [
-                        create_entity_class(blueprint_provider, self.type, "", str(n)).entity
+                        create_entity(blueprint_provider, {"type": self.type, "name": str(n)})
                         for n in range(int(dimensions[0]))
                     ]
-                if self.type is int:
+                if self.type == "number":
                     return [0 for n in range(int(dimensions[0]))]
-                if self.type is float:
-                    return [0.00 for n in range(int(dimensions[0]))]
-                if self.type is str:
+                if self.type == "string":
                     return ["" for n in range(int(dimensions[0]))]
-                if self.type is bool:
+                if self.type == "boolean":
                     return [False for n in range(int(dimensions[0]))]
 
             if dimensions[0] == "*":
@@ -51,7 +52,11 @@ class Dimension:
 
         if self.dimensions == [""]:
             raise Exception("This attribute is not an array!")
-        self.value = create_default_array_recursive(self.dimensions)
+
+        if self.attribute and self.attribute.default:
+            self.value = self.attribute.default
+        else:
+            self.value = create_default_array_recursive(self.dimensions)
         return self.value
 
     def to_dict(self):

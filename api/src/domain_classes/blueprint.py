@@ -1,7 +1,6 @@
 from typing import Dict, List
 
 from domain_classes.blueprint_attribute import BlueprintAttribute
-from domain_classes.dto import DTO
 from domain_classes.recipe import DefaultRecipe, Recipe, RecipeAttribute
 from domain_classes.storage_recipe import DefaultStorageRecipe, StorageRecipe
 from enums import PRIMITIVES, StorageDataTypes
@@ -42,47 +41,19 @@ def get_ui_recipe(recipes: List[Dict]):
 
 
 class Blueprint:
-    def __init__(self, dto: DTO):
-        self.name = dto.name
-        self.extends = dto.data.get("extends", [])
-        self.description = dto.data.get("description", "")
-        self.type = dto.type
-        self.dto = dto
+    def __init__(self, entity: dict):
+        self.name = entity["name"]
+        self.entity = entity
+        self.extends = entity.get("extends", [])
+        self.description = entity.get("description", "")
+        self.type = entity["type"]
         self.attributes: List[BlueprintAttribute] = [
-            BlueprintAttribute.from_dict(attribute) for attribute in dto.data.get("attributes", [])
+            BlueprintAttribute.from_dict(attribute) for attribute in entity.get("attributes", [])
         ]
         self.storage_recipes: List[StorageRecipe] = get_storage_recipes(
-            dto.data.get("storageRecipes", []), self.attributes
+            entity.get("storageRecipes", []), self.attributes
         )
-        self.ui_recipes: List[Recipe] = get_ui_recipe(dto.data.get("uiRecipes", []))
-
-    @classmethod
-    def from_dict(cls, adict):
-        instance = cls(DTO(adict))
-        instance.attributes = [BlueprintAttribute.from_dict(attr) for attr in adict.get("attributes", [])]
-        instance.storage_recipes = get_storage_recipes(adict.get("storageRecipes", []), instance.attributes)
-        instance.ui_recipes = get_ui_recipe(adict.get("uiRecipes", []))
-        return instance
-
-    def to_dict_raw(self):
-        data = self.dto.data
-        if "_id" in data:
-            data.pop("_id")
-        return data
-
-    def to_dict(self):
-        return {
-            "name": self.name,
-            "extends": self.extends,
-            "description": self.description,
-            "type": self.type,
-            "attributes": [attribute.to_dict() for attribute in self.attributes],
-            "storageRecipes": [recipe.to_dict() for recipe in self.storage_recipes],
-            "uiRecipes": [recipe.to_dict() for recipe in self.ui_recipes],
-        }
-
-    def __eq__(self, other):
-        return self.to_dict() == other.to_dict()
+        self.ui_recipes: List[Recipe] = get_ui_recipe(entity.get("uiRecipes", []))
 
     def get_none_primitive_types(self) -> List[BlueprintAttribute]:
         blueprints = [attribute for attribute in self.attributes if attribute.attribute_type not in PRIMITIVES]
@@ -120,9 +91,9 @@ class Blueprint:
 
     def is_attr_removable(self, attribute_name):
         for attr in self.attributes:
-            if attr.name == attribute_name and not attr.is_primitive():
-                if attr.is_array():
+            if attr.name == attribute_name and not attr.is_primitive:
+                if attr.is_array:
                     return False
-                elif not attr.is_optional():
+                elif not attr.is_optional:
                     return False
         return True

@@ -47,7 +47,7 @@ def zip_package(ob: ZipFile, document: DTO, path: str, document_service: Documen
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
         is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.attribute_type)
-        if attribute.is_array():
+        if attribute.is_array:
             if not is_contained_in_storage:
                 if name in document.keys():
                     references = document[name]
@@ -104,7 +104,7 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
         is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.attribute_type)
-        if attribute.is_array():
+        if attribute.is_array:
             if not is_contained_in_storage:
                 if name in document.keys():
                     references = document[name]

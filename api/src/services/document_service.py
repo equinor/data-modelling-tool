@@ -2,7 +2,6 @@ from functools import lru_cache
 
 from config import Config
 from domain_classes.blueprint import Blueprint
-from domain_classes.tree_node import Node
 from services.dmss import get_blueprint, get_document, get_document_by_uid
 
 
@@ -23,11 +22,7 @@ class DocumentService:
     @lru_cache(maxsize=Config.CACHE_MAX_SIZE)
     def get_blueprint(self, type: str) -> Blueprint:
         # Assumes resolved blueprints
-        return Blueprint.from_dict(self.blueprint_provider(type))
+        return Blueprint(self.blueprint_provider(type))
 
     def clear_blueprint_cache(self):
         self.get_blueprint.cache_clear()
-
-    def get_node_by_uid(self, data_source_id: str, document_uid: str, depth: int = 999) -> Node:
-        document = self.uid_document_provider(data_source_id, document_uid, depth)
-        return Node.from_dict(document, document["_id"], blueprint_provider=self.get_blueprint)
