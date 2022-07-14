@@ -1,17 +1,13 @@
 import json
 
 import io
-from behave import given, then, when
+from behave import given
 from zipfile import ZipFile
 
-from domain_classes.dto import DTO
-from domain_classes.schema import Factory
 from config import Config
-from repository.dmss.TemplateRepositoryFromDMSS import TemplateRepositoryFromDMSS
 from services.dmss import dmss_api
 from utils.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
-from utils.data_structure.compare import pretty_eq
 
 
 @given("data modelling tool blueprints are imported")
@@ -29,23 +25,6 @@ def step_impl(context):
 
 @given('there exist document with id "{uid}" in data source "{data_source_id}"')
 def step_impl_2(context, uid: str, data_source_id: str):
-    document: DTO = DTO(uid=uid, data=json.loads(context.text))
-    response = dmss_api.explorer_add_simple(data_source_id, document.to_dict())
-    print(response)
-
-
-@when('I create a Python class from the template "{template_name}"')
-def step_impl_create_template(context, template_name: str):
-    document_repository = TemplateRepositoryFromDMSS()
-    factory = Factory(document_repository)
-    context.template_name = template_name
-    context.template = factory.create(template_name)
-
-
-@then("it should be able to recreate the template")
-def step_impl_compare(context):
-    expected = TemplateRepositoryFromDMSS().get(context.template_name)
-    actual = context.template.to_dict()
-    # TODO: Why do we need to remove _id
-    del expected["_id"]
-    pretty_eq(expected, actual)
+    document: dict = json.loads(context.text)
+    document["_id"] = uid
+    dmss_api.explorer_add_simple(data_source_id, document)

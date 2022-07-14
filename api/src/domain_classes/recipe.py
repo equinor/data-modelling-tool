@@ -1,6 +1,5 @@
 from typing import List, Dict
 
-from enums import PRIMITIVES
 
 from domain_classes.blueprint_attribute import BlueprintAttribute
 
@@ -43,7 +42,6 @@ class Recipe:
 
     def is_contained(self, attribute: BlueprintAttribute):
 
-        primitive_contained = True
         array_contained = False
         single_contained = False
 
@@ -51,8 +49,8 @@ class Recipe:
         if ui_attribute:
             return ui_attribute.contained
 
-        if attribute.attribute_type in PRIMITIVES:
-            return primitive_contained
+        if attribute.is_primitive:
+            return True
         else:
             if attribute.is_array:
                 return array_contained

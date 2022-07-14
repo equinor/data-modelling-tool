@@ -50,7 +50,7 @@ class Dimension:
                 nested_list = [create_default_array_recursive(dimensions[1:]) for n in range(int(dimensions[0]))]
             return nested_list
 
-        if self.dimensions == [""]:
+        if not self.is_array:
             raise Exception("This attribute is not an array!")
 
         if self.attribute and self.attribute.default:

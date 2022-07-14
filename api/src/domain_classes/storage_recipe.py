@@ -61,9 +61,6 @@ class StorageRecipe:
             "attributes": [attribute.to_dict() for attribute in self.storage_attributes.values()],
         }
 
-    def none_contained_attributes(self) -> List[str]:
-        return [attr.name for attr in self.storage_attributes if not attr.is_contained]
-
 
 class DefaultStorageRecipe(StorageRecipe):
     def __init__(self, attributes: List[BlueprintAttribute]):

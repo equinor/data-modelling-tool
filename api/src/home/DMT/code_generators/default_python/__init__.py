@@ -142,12 +142,12 @@ class GeneratePythonCode:
         self.documents = documents
         self._factory = Factory(self.documents)
 
-    def get_blueprints(self, blueprint: DTO, files: dict = None, prefix: str = "") -> Dict[str, type]:
+    def get_blueprints(self, blueprint: dict, files: dict = None, prefix: str = "") -> Dict[str, type]:
         if files is None:
             files = {}
-        if "_id" in blueprint.data:
-            del blueprint.data["_id"]
-        name = blueprint.name
+        if "_id" in blueprint.keys():
+            del blueprint["_id"]
+        name = blueprint["name"]
         if prefix:
             name = f"{prefix}/{name}"
         if is_package(blueprint):

@@ -5,7 +5,6 @@ from zipfile import ZipFile
 
 from config import Config
 from domain_classes.blueprint import Blueprint
-from domain_classes.dto import DTO
 from repository.repository_exceptions import EntityNotFoundException
 from services.document_service import DocumentService
 from utils.create_application_utils import (
@@ -90,7 +89,7 @@ class ApplicationService:
                 # TODO: Support including packages from different data sources
                 # This is a temp. hack
                 package = strip_datasource(package)
-                root_package: DTO = DTO(self.document_service.document_provider(f"{data_source_id}/{package}"))
+                root_package: dict = self.document_service.document_provider(f"{data_source_id}/{package}")
                 zip_package(zip_file, root_package, "api/home/blueprints", self.document_service, data_source_id)
 
         memory_file.seek(0)

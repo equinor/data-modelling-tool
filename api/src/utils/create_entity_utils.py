@@ -3,7 +3,7 @@ from random import choices
 
 from domain_classes.blueprint import Blueprint
 from domain_classes.blueprint_attribute import BlueprintAttribute
-from enums import BuiltinDataTypes, PRIMITIVES
+from enums import BuiltinDataTypes
 
 
 def generate_name(type: str):
@@ -38,7 +38,7 @@ def create_entity(blueprint_provider, entity: dict):
     blueprint: Blueprint = blueprint_provider(entity["type"])
 
     for attr in blueprint.attributes:
-        if attr.attribute_type in PRIMITIVES and not attr.is_array:
+        if attr.is_primitive and not attr.is_array:
             if attr.attribute_type == "string" and attr.name == "name":
                 entity[attr.name] = entity.get(attr.name, generate_name(entity["type"]))
                 continue

@@ -37,10 +37,6 @@ class BlueprintAttribute:
         return self.dimensions.is_array
 
     @property
-    def is_matrix(self):
-        return self.dimensions.is_matrix
-
-    @property
     def is_primitive(self):
         return self.attribute_type in PRIMITIVES
 
