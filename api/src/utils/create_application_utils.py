@@ -6,7 +6,6 @@ from zipfile import ZipFile
 from jinja2 import Template
 
 from config import Config
-from domain_classes.dto import DTO
 from enums import SIMOS
 from services.document_service import DocumentService
 
@@ -29,36 +28,6 @@ def zip_all(ob, path, rel=""):
         ob.write(path, os.path.join(rel, basename))
     else:
         pass
-
-
-def zip_package(ob: ZipFile, document: DTO, path: str, document_service: DocumentService, data_source_id: str):
-    document.data.pop("_id", None)
-    document.data.pop("uid", None)
-    json_data = json.dumps(document.data)
-    binary_data = json_data.encode()
-    write_to = f"{path}/{document.name}.json"
-    logger.info(f"Writing: {document['type']} to {write_to}")
-
-    if document["type"] != SIMOS.PACKAGE.value:
-        ob.writestr(write_to, binary_data)
-
-    blueprint = document_service.get_blueprint(document.type)
-    document_references = []
-    for attribute in blueprint.get_none_primitive_types():
-        name = attribute.name
-        is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.attribute_type)
-        if attribute.is_array:
-            if not is_contained_in_storage:
-                if name in document.keys():
-                    references = document[name]
-                    for reference in references:
-                        document_reference: DTO = DTO(
-                            document_service.uid_document_provider(data_source_id, reference["_id"])
-                        )
-                        document_references.append(document_reference)
-
-    for document_reference in document_references:
-        zip_package(ob, document_reference, f"{path}/{document.name}", document_service, data_source_id)
 
 
 def strip_datasource(path):
@@ -88,18 +57,17 @@ def zip_all(zip_file: ZipFile, path: str, real_name="", write_folder: bool = Tru
         pass
 
 
-def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentService(), data_source_id):
-    document.data.pop("_id", None)
-    document.data.pop("uid", None)
-    json_data = json.dumps(document.data)
+def zip_package(ob: ZipFile, document: dict, path, document_service: DocumentService(), data_source_id):
+    document.pop("_id", None)
+    json_data = json.dumps(document)
     binary_data = json_data.encode()
-    write_to = f"{path}/{document.name}.json"
+    write_to = f"{path}/{document['name']}.json"
     logger.info(f"Writing: {document['type']} to {write_to}")
 
     if document["type"] != SIMOS.PACKAGE.value:
         ob.writestr(write_to, binary_data)
 
-    blueprint = document_service.get_blueprint(document.type)
+    blueprint = document_service.get_blueprint(document["type"])
     document_references = []
     for attribute in blueprint.get_none_primitive_types():
         name = attribute.name
@@ -109,13 +77,13 @@ def zip_package(ob: ZipFile, document: DTO, path, document_service: DocumentServ
                 if name in document.keys():
                     references = document[name]
                     for reference in references:
-                        document_reference: DTO = DTO(
-                            document_service.uid_document_provider(data_source_id, reference["_id"])
+                        document_reference: dict = document_service.uid_document_provider(
+                            data_source_id, reference["_id"]
                         )
                         document_references.append(document_reference)
 
     for document_reference in document_references:
-        zip_package(ob, document_reference, f"{path}/{document.name}", document_service, data_source_id)
+        zip_package(ob, document_reference, f"{path}/{document['name']}", document_service, data_source_id)
 
 
 API_DOCKERFILE = f"""\

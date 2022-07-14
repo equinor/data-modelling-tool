@@ -1,7 +1,7 @@
 from enum import Enum
 
 
-PRIMITIVES = {"string", "number", "integer", "boolean"}
+PRIMITIVES = {"string", "number", "boolean"}
 
 
 class StorageDataTypes(Enum):

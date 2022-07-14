@@ -13,12 +13,6 @@ def step_access_url(context, url):
     context.url = str(url)
 
 
-def get_headers(context):
-    header = {}
-    # Add authentication?
-    return header
-
-
 @when('i make a "{method}" request')
 def step_make_request(context, method):
     data = {}
@@ -26,7 +20,7 @@ def step_make_request(context, method):
         context.request_json = json.loads(context.text)
         data = json.dumps(context.request_json)
 
-    headers = get_headers(context)
+    headers = {}
 
     if method == "PUT":
         context.response = context.client.put(url=context.url, data=data, headers=headers)
