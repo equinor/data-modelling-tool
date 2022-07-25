@@ -3,7 +3,7 @@ import * as React from 'react'
 import { DmtPluginType } from '@dmt/common'
 import { EditSimaApplicationInput } from './EditSimaApplicationInput'
 import { UpdateInputOnly } from './UpdateInputOnly'
-import { ViewInput } from './ViewInput'
+import { ViewSimaApplicationInput } from './ViewSimaApplicationInput'
 
 export const plugins: any = [
   {
@@ -19,6 +19,6 @@ export const plugins: any = [
   {
     pluginName: 'view-sima-application-input',
     pluginType: DmtPluginType.UI,
-    component: ViewInput,
+    component: ViewSimaApplicationInput,
   },
 ]
