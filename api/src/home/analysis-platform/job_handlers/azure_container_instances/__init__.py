@@ -70,6 +70,8 @@ class JobHandler(JobHandlerInterface):
             env_vars.append(EnvironmentVariable(name=key, value=value))
         reference_target: str = self.job.entity.get("referenceTarget", None)
         runner_entity: dict = self.job.entity["runner"]
+        if not runner_entity["image"]["registryName"]:
+            raise ValueError("Container image in job runner")
         full_image_name: str = (
             f"{runner_entity['image']['registryName']}/{runner_entity['image']['imageName']}"
             + f":{runner_entity['image']['version']}"
@@ -111,6 +113,9 @@ class JobHandler(JobHandlerInterface):
 
         return result.status()
 
+        logger.info("*** Azure container job started successfully ***")
+        return result.status()
+
     def remove(self) -> Tuple[JobStatus, str]:
         logger.setLevel(logging.WARNING)
         operation = self.aci_client.container_groups.begin_delete(
@@ -130,6 +135,9 @@ class JobHandler(JobHandlerInterface):
 
     def progress(self) -> Tuple[JobStatus, str]:
         """Poll progress from the job instance"""
+        if self.job.status == JobStatus.FAILED:
+            # If setup fails, the container is not started
+            return self.job.status, self.job.log
         try:
             logger.setLevel(logging.WARNING)
             logs = self.aci_client.containers.list_logs(

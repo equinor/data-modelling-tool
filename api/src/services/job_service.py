@@ -4,7 +4,6 @@ from datetime import datetime
 from pathlib import Path
 from time import sleep
 from typing import Callable, Tuple, Union
-
 import redis
 import traceback
 
@@ -141,25 +140,30 @@ class JobService:
 
     def _run_job(self, job_id: str) -> str:
         job: Job = self._get_job(job_id)
-        sleep(2)
         try:
             job_handler = self._get_job_handler(job)
-            job.status = JobStatus.STARTING
             job.started = datetime.now()
-            job.update_entity_attributes()
-            self._set_job(job)
-            self._update_job_entity(job.job_id, job.entity, job.token)  # Update in DMSS with status etc.
-            start_output = job_handler.start()
-            job.log = start_output
-            return start_output
-        except (HTTPError, NotImplementedError) as error:
-            logger.warning(f"Failed to run job; {job_id}")
-            print(traceback.format_exc())
-            job.status = JobStatus.FAILED
-            job.update_entity_attributes()
+            job.status = JobStatus.STARTING
+            try:
+                job.log = job_handler.start()
+            except Exception as error:
+                print(traceback.format_exc())
+                logger.warning(f"Failed to run job; {job_id}")
+                job.status = JobStatus.FAILED
+                raise error
+        except NotImplementedError as error:
+            job.log = (
+                f"{job.log}\n\n The jobHandler '{type(job_handler).__name__}' is missing some implementations: {error}"
+            )
+        except KeyError as error:
+            job.log = f"{job.log}\n\n The jobHandler '{type(job_handler).__name__}' tried to access a missing attribute: {error}"
+        except Exception as error:
             job.log = f"{job.log}\n\n {error}"
+        finally:
+            job.update_entity_attributes()
+            self._update_job_entity(job.job_id, job.entity, job.token)  # Update in DMSS with status etc.
             self._set_job(job)
-            return error.args[0]
+            return job.log
 
     def register_job(self, job_id: str) -> str:
         if self._get_job(job_id):
