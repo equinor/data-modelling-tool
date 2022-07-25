@@ -157,7 +157,6 @@ class JobService:
             )
         except KeyError as error:
             job.log = f"{job.log}\n\n The jobHandler '{type(job_handler).__name__}' tried to access a missing attribute: {error}"
-            print(traceback.format_exc())
         except Exception as error:
             job.log = f"{job.log}\n\n {error}"
         finally:
