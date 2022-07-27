@@ -1,6 +1,5 @@
 import json
-from typing import Union
-
+from auth_middleware import get_access_token
 import requests
 from dmss_api.apis import DefaultApi
 from flask import request
@@ -13,14 +12,6 @@ dmss_api = DefaultApi()
 dmss_api.api_client.configuration.host = Config.DMSS_API
 
 
-def get_access_token() -> Union[str, None]:
-    if auth_header_value := request.headers.get("Authorization"):
-        head_split = auth_header_value.split(" ")
-        if head_split[0].lower() == "bearer" and len(head_split) == 2:
-            return head_split[1]
-        raise ValueError("Authorization header malformed. Should be; 'Bearer myAccessTokenString'")
-    else:
-        return ""
 
 
 def get_document(fully_qualified_path: str) -> dict:

@@ -84,7 +84,7 @@ fi
 if [ "$1" = 'api' ]; then
   service_is_ready
 #  flask run --host=0.0.0.0
-  gunicorn newapp:create_app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:5000
+  gunicorn newapp:create_app --reload --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:5000
 elif [ "$1" = 'behave' ]; then
   service_is_ready
   shift

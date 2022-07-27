@@ -33,5 +33,5 @@ if config.JOB_SERVICE_ENABLED:
         response = use_case.execute({"job_id": job_id})
         message, bytesvalue = response.value
         return JSONResponse(
-            json.dumps({"message": message, "result": bytesvalue.decode("UTF-8")}), status=STATUS_CODES[response.type]
+            json.dumps({"message": message, "result": bytesvalue.decode("UTF-8")}), status_code=STATUS_CODES[response.type]
         )

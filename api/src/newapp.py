@@ -19,7 +19,7 @@ from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
 from utils.logging import logger
-
+from auth_middleware import AuthMiddleware
 server_root = "/api"
 prefix = f"{server_root}"
 
@@ -45,6 +45,7 @@ def create_app():
     )
     app.include_router(public_routes, prefix=prefix)
 
+    app.add_middleware(AuthMiddleware)
 
     return app
 
@@ -206,7 +207,7 @@ def reset_app(context):
 @cli.command()
 def run():
     uvicorn.run(
-        "app:create_app",
+        "newapp:create_app", #todo rename newapp to app in several places
         host="0.0.0.0",  # nosec
         port=5000,
         reload=config.ENVIRONMENT == "local",

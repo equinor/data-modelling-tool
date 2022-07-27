@@ -19,22 +19,25 @@ router = APIRouter(tags=["System"], prefix="/system")
 
 @router.get("/settings", operation_id="get_app_settings")
 def get_application_settings(request: Request):
-    logger.info("******", request.query_params)
-    app_name = request.query_params["APPLICATION"]
+    app_name = ""
+    try:
+        app_name = request.query_params["APPLICATION"] #todo check if this works...
+    except:
+        logger.info("no app name found")
     if app_name:
         if app_name in config.APP_SETTINGS:  # Return settings for the specific application
             return JSONResponse(
                 config.APP_SETTINGS.get(app_name),
-                status=STATUS_CODES[res.ResponseSuccess.SUCCESS],
+                status_code=STATUS_CODES[res.ResponseSuccess.SUCCESS],
             )
         else:
             return PlainTextResponse(
                 f"Error: No application named '{markupsafe.escape(app_name)}' is loaded",
-                status=404,
+                status_code=404,
             )
     return JSONResponse(
-        json.dumps(config.APP_SETTINGS),
-        status=200,
+        config.APP_SETTINGS,
+        status_code=200,
     )
 
 
@@ -50,9 +53,9 @@ def set_application_settings(request: Request):
             request_data = json.dumps(request.json)
             f.write(request_data)
         config.load_app_settings()
-        return PlainTextResponse("OK", status=200)
+        return PlainTextResponse("OK", status_code=200)
     except Exception:
-        return PlainTextResponse("Error: Failed to save the settings file.", status=500)
+        return PlainTextResponse("Error: Failed to save the settings file.", status_code=500)
 
 
 # Auth is handled by DMSS
@@ -66,10 +69,10 @@ def create_application(data_source_id: str, application_id: str):
 
     if response.type == res.ResponseSuccess.SUCCESS:
         return StreamingResponse(
-            response.value,media_type="application/x-zip-compressed", filename="application.zip"
+            response.value, media_type="application/x-zip-compressed", filename="application.zip"
         )
     else:
-        return JSONResponse(json.dumps(response.value), status=STATUS_CODES[response.type])
+        return JSONResponse(json.dumps(response.value), status_code=STATUS_CODES[response.type])
 
 
 # Auth is handled by DMSS
@@ -78,7 +81,7 @@ def create_application(data_source_id: str, application_id: str):
 def generate_code_with_plugin(data_source_id: str, plugin_name: str, document_path: str):
     return JSONResponse(
         json.dumps("Error: This feature has been deprecated"),
-        status=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
+        status_code=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
     )
     # logger.info(f"Generating code for document {document_path}, with plugin {plugin_name}")
     # request_object = GenerateCodeWithPluginRequestObject.from_dict(

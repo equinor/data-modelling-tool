@@ -11,6 +11,7 @@ from restful import response_object as res
 import traceback
 
 
+#todo avoud using the custom response object, use built in fast api things instead
 class UseCase(object):
     def execute(self, request_object):
         if not request_object:
