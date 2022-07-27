@@ -11,6 +11,7 @@ from utils.logging import logger
 dmss_api = DefaultApi()
 dmss_api.api_client.configuration.host = Config.DMSS_API
 
+
 def get_access_token() -> Union[str, None]:
     auth_header = get_auth_header()
     if auth_header:
@@ -20,6 +21,7 @@ def get_access_token() -> Union[str, None]:
         raise ValueError("Authorization header malformed. Should be; 'Bearer myAccessTokenString'")
     else:
         return ""
+
 
 def get_document(fully_qualified_path: str) -> dict:
     """

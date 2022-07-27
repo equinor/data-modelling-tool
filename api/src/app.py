@@ -33,10 +33,7 @@ def create_app():
     public_routes.include_router(jobs.router)
     public_routes.include_router(system.router)
 
-    app = FastAPI(
-        title="Data Modelling Tool",
-        description="API for Data Modeling Tool (DMT)"
-    )
+    app = FastAPI(title="Data Modelling Tool", description="API for Data Modeling Tool (DMT)")
     app.include_router(public_routes, prefix=prefix)
 
     app.add_middleware(StoreHeadersMiddleware)

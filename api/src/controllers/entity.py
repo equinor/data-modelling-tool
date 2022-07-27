@@ -1,9 +1,8 @@
 from fastapi import APIRouter
 from use_case.instantiate_entity import InstantiateEntityUseCase
-
+from use_case.instantiate_entity import BasicEntity
 
 router = APIRouter(tags=["Entities"], prefix="/entity")
-from use_case.instantiate_entity import BasicEntity
 
 # Auth is handled by DMSS
 

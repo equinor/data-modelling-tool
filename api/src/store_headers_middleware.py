@@ -13,6 +13,7 @@ _access_key_header_ctx_var: ContextVar[str] = ContextVar(ACCESS_KEY_HEADER_CTX_K
 def get_auth_header() -> str:
     return _auth_header_ctx_var.get()
 
+
 def get_access_key_header() -> str:
     return _access_key_header_ctx_var.get()
 
