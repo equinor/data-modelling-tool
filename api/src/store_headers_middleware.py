@@ -6,30 +6,22 @@ from typing import Union
 AUTH_HEADER_CTX_KEY = "auth_header"
 ACCESS_KEY_HEADER_CTX_KEY = "access_key_header"
 
-_auth_header_ctx_var: ContextVar[str] = ContextVar(AUTH_HEADER_CTX_KEY, default=None)
-_access_key_header_ctx_var: ContextVar[str] = ContextVar(ACCESS_KEY_HEADER_CTX_KEY, default=None)
+_auth_header_ctx_var: ContextVar[str] = ContextVar(AUTH_HEADER_CTX_KEY, default="")
+_access_key_header_ctx_var: ContextVar[str] = ContextVar(ACCESS_KEY_HEADER_CTX_KEY, default="")
 
 
-def get_access_token() -> Union[str, None]:
-    auth_header = _auth_header_ctx_var.get()
-    if auth_header:
-        head_split = auth_header.split(" ")
-        if head_split[0].lower() == "bearer" and len(head_split) == 2:
-            return head_split[1]
-        raise ValueError("Authorization header malformed. Should be; 'Bearer myAccessTokenString'")
-    else:
-        return ""
+def get_auth_header() -> str:
+    return _auth_header_ctx_var.get()
 
-
-def get_access_key_header() -> Union[str, None]:
+def get_access_key_header() -> str:
     return _access_key_header_ctx_var.get()
 
 
-class AuthMiddleware:
+class StoreHeadersMiddleware:
     """
-    Fast API middleware to set a "global" auth header variable. This variable has scope equal to the
-    http request handled by Fast API.
-    The auth header value is used by get_access_token() function to get the access token from the http request.
+    Fast API middleware to set global variables for different headers. These variables has scope equal to the
+    http request.
+
     Inspired by: https://github.com/encode/starlette/issues/420
     """
 
@@ -53,15 +45,16 @@ class AuthMiddleware:
         else:
             auth_header = _auth_header_ctx_var.set("")
 
-        # set access keys header
+        # set access key header
         index_list = [index for index, v in enumerate(scope["headers"]) if v[0] == b"access-key"]
         if len(index_list):
-            auth_header_index = index_list[0]
-            auth_header_value = scope["headers"][auth_header_index][1].decode()
-            auth_header = _auth_header_ctx_var.set(auth_header_value)
+            access_key_header_index = index_list[0]
+            access_key_header_value = scope["headers"][access_key_header_index][1].decode()
+            access_key_header = _access_key_header_ctx_var.set(access_key_header_value)
         else:
-            auth_header = _auth_header_ctx_var.set("")
+            access_key_header = _access_key_header_ctx_var.set("")
 
         await self.app(scope, receive, send)
 
         _auth_header_ctx_var.reset(auth_header)
+        _access_key_header_ctx_var.reset(access_key_header)

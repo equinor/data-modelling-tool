@@ -1,8 +1,8 @@
 import json
-from auth_middleware import get_access_token, get_access_key_header
+from store_headers_middleware import get_auth_header, get_access_key_header
 import requests
 from dmss_api.apis import DefaultApi
-
+from typing import Union
 from requests import HTTPError
 
 from config import Config
@@ -11,6 +11,15 @@ from utils.logging import logger
 dmss_api = DefaultApi()
 dmss_api.api_client.configuration.host = Config.DMSS_API
 
+def get_access_token() -> Union[str, None]:
+    auth_header = get_auth_header()
+    if auth_header:
+        head_split = auth_header.split(" ")
+        if head_split[0].lower() == "bearer" and len(head_split) == 2:
+            return head_split[1]
+        raise ValueError("Authorization header malformed. Should be; 'Bearer myAccessTokenString'")
+    else:
+        return ""
 
 def get_document(fully_qualified_path: str) -> dict:
     """

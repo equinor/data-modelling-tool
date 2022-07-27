@@ -19,7 +19,7 @@ from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
 from utils.logging import logger
-from auth_middleware import AuthMiddleware
+from store_headers_middleware import StoreHeadersMiddleware
 
 prefix = "/api"
 
@@ -39,7 +39,7 @@ def create_app():
     )
     app.include_router(public_routes, prefix=prefix)
 
-    app.add_middleware(AuthMiddleware)
+    app.add_middleware(StoreHeadersMiddleware)
 
     return app
 
