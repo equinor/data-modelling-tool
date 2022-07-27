@@ -21,8 +21,7 @@ from utils.create_application_utils import zip_all
 from utils.logging import logger
 from auth_middleware import AuthMiddleware
 
-server_root = "/api"
-prefix = f"{server_root}"
+prefix = "/api"
 
 
 def create_app():
@@ -36,8 +35,7 @@ def create_app():
 
     app = FastAPI(
         title="Data Modelling Tool",
-        description="API for Data Modeling Tool (DMT)",
-        swagger_ui_init_oauth={"usePkceWithAuthorizationCodeGrant": True, "clientId": config.OAUTH_CLIENT_ID},
+        description="API for Data Modeling Tool (DMT)"
     )
     app.include_router(public_routes, prefix=prefix)
 
@@ -204,7 +202,7 @@ def reset_app(context):
 @cli.command()
 def run():
     uvicorn.run(
-        "app:create_app",  # todo rename newapp to app in several places
+        "app:create_app",
         host="0.0.0.0",  # nosec
         port=5000,
         reload=config.ENVIRONMENT == "local",

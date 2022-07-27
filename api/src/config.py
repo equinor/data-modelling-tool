@@ -66,7 +66,6 @@ class Config:
     DMT_ENTITIES_HOME = f"{Path(__file__).parent}/demo_app_home"
     VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
     DMSS_API = os.getenv("DMSS_API", "http://dmss:5000")
-    OAUTH_CLIENT_ID = os.getenv("OAUTH_CLIENT_ID", "None")
 
     # Azure stuff
     # Where to run jobs in Azure
