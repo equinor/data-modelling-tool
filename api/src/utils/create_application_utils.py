@@ -150,8 +150,8 @@ services:
     depends_on:
       - dmss
     environment:
-      FLASK_DEBUG: 1
-      FLASK_ENV: production
+      API_DEBUG: 1
+      API_ENV: production
       ENVIRONMENT: local
       DMSS_HOST: dmss
       DMSS_PORT: 5000

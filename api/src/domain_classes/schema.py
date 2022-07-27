@@ -1117,7 +1117,7 @@ from domain_classes.dto import DTO
         definition = self.class_from_schema(schema)
         name = schema["name"]
         path = f"<string/{name}>"
-        if Config.FLASK_DEBUG:
+        if Config.API_DEBUG:
             where = ".generated"
             if not Path(where).exists():
                 os.mkdir(where)

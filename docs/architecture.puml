@@ -49,7 +49,7 @@ System_Boundary(azure, "Azure (Omnia Standalone)", $link="https://portal.azure.c
 
 System_Boundary(radix, "Radix", $link="https://console.radix.equinor.com/applications/forecast-of-response") {
     Container(data_modelling_tool_web, "Web application", "JavaScript and React", "Entrypoint to access the DMT and analysis portal. The user interface used for modelling, searching, and viewing blueprint based domain models.", "react_original")
-    Container(data_modelling_tool_api, "DMT API", "Python and Flask", "The API that handles business logic for DMT (index creation, helper functions).", "python")
+    Container(data_modelling_tool_api, "DMT API", "Python and Fast API", "The API that handles business logic for DMT (index creation, helper functions).", "python")
     Container(job_api, "Job API", "Python and Fast API", "The API handles schedule jobs", "python")
     Rel(data_modelling_tool_web, data_modelling_tool_api, "Uses")
     Container(data_modelling_storage_service, "Data Modelling Storage Service", "Python and Fast API", "Handles the storing and retrieving of documents.", "python")

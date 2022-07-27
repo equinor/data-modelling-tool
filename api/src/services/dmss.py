@@ -1,8 +1,8 @@
 import json
-from auth_middleware import get_access_token
+from auth_middleware import get_access_token, get_access_key_header
 import requests
 from dmss_api.apis import DefaultApi
-from flask import request
+
 from requests import HTTPError
 
 from config import Config
@@ -75,7 +75,8 @@ def get_personal_access_token() -> str:
     """
     Fetches a long lived Access Token
     """
-    if pat_in_header := request.headers.get("Access-Key"):
+    pat_in_header = get_access_key_header()
+    if pat_in_header:
         return pat_in_header
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
     return dmss_api.token_create()
