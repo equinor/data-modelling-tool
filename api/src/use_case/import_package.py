@@ -8,12 +8,12 @@ from zipfile import ZipFile
 
 from dmss_api import ApiException
 from progress.bar import IncrementalBar
-
+from starlette.responses import JSONResponse
 from domain_classes.package import Package
 from enums import SIMOS
 from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
 from restful import request_object as req
-from restful import response_object as res
+
 from restful import use_case as uc
 from services.dmss import dmss_api
 from services.document_service import DocumentService
@@ -260,4 +260,4 @@ class ImportPackageUseCase(uc.UseCase):
 
         import_package_tree(root_package, req.data_source_id)
 
-        return res.ResponseSuccess("ok")
+        return JSONResponse("ok")

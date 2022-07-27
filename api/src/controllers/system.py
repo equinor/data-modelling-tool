@@ -1,12 +1,10 @@
 import json
 
 import markupsafe
-import requests
 
 from fastapi import APIRouter, Request
 from config import config
 from enums import STATUS_CODES
-from restful import response_object as res
 from use_case.create_application_use_case import CreateApplicationRequestObject, CreateApplicationUseCase
 from utils.logging import logger
 from starlette.responses import JSONResponse, PlainTextResponse
@@ -29,16 +27,16 @@ def get_application_settings(request: Request):
         if app_name in config.APP_SETTINGS:  # Return settings for the specific application
             return JSONResponse(
                 config.APP_SETTINGS.get(app_name),
-                status_code=STATUS_CODES[res.ResponseSuccess.SUCCESS],
+                status_code=STATUS_CODES["SUCCESS"],
             )
         else:
             return PlainTextResponse(
                 f"Error: No application named '{markupsafe.escape(app_name)}' is loaded",
-                status_code=404,
+                status_code=STATUS_CODES["RESOURCE_ERROR"],
             )
     return JSONResponse(
         config.APP_SETTINGS,
-        status_code=200,
+        status_code=STATUS_CODES["SUCCESS"],
     )
 
 
@@ -49,15 +47,17 @@ def get_application_settings(request: Request):
 def set_application_settings(request: Request):
     app_name = request.query_params("APPLICATION")
     if config.ENVIRONMENT != "local":
-        return PlainTextResponse("Changing systems settings can only be done in local deployments.", status=403)
+        return PlainTextResponse(
+            "Changing systems settings can only be done in local deployments.", status=STATUS_CODES["FORBIDDEN"]
+        )
     try:
         with open(config.APP_SETTINGS.get(app_name).get("file_loc"), "w") as f:
             request_data = json.dumps(request.json)
             f.write(request_data)
         config.load_app_settings()
-        return PlainTextResponse("OK", status_code=200)
+        return PlainTextResponse("OK", status_code=STATUS_CODES["SUCCESS"])
     except Exception:
-        return PlainTextResponse("Error: Failed to save the settings file.", status_code=500)
+        return PlainTextResponse("Error: Failed to save the settings file.", status_code=STATUS_CODES["SYSTEM_ERROR"])
 
 
 # Auth is handled by DMSS
@@ -70,7 +70,7 @@ def create_application(data_source_id: str, application_id: str):
     use_case = CreateApplicationUseCase(data_source_id)
     response = use_case.execute(request_object)
 
-    if response.type == res.ResponseSuccess.SUCCESS:
+    if response.status_code == STATUS_CODES["SUCCESS"]:
         return StreamingResponse(response.value, media_type="application/x-zip-compressed", filename="application.zip")
     else:
         return JSONResponse(json.dumps(response.value), status_code=STATUS_CODES[response.type])
@@ -83,7 +83,7 @@ def create_application(data_source_id: str, application_id: str):
 def generate_code_with_plugin(data_source_id: str, plugin_name: str, document_path: str):
     return JSONResponse(
         json.dumps("Error: This feature has been deprecated"),
-        status_code=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
+        status_code=STATUS_CODES["SYSTEM_ERROR"],
     )
     # logger.info(f"Generating code for document {document_path}, with plugin {plugin_name}")
     # request_object = GenerateCodeWithPluginRequestObject.from_dict(

@@ -2,7 +2,7 @@ from restful.use_case import UseCase
 from services.application_service import ApplicationService
 from services.document_service import DocumentService
 from restful import request_object as req
-from restful import response_object
+from starlette.responses import JSONResponse
 
 
 class CreateApplicationRequestObject(req.ValidRequestObject):
@@ -28,6 +28,4 @@ class CreateApplicationUseCase(UseCase):
 
     def process_request(self, request_object: CreateApplicationRequestObject):
         application_service = ApplicationService(DocumentService())
-        return response_object.ResponseSuccess(
-            application_service.create_application(self.data_source_id, request_object.application_id)
-        )
+        return JSONResponse(application_service.create_application(self.data_source_id, request_object.application_id))
