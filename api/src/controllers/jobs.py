@@ -14,22 +14,22 @@ router = APIRouter(tags=["Jobs"], prefix="/job")
 
 if config.JOB_SERVICE_ENABLED:
 
-    @router.post("/{job_id}", operation_id="start_job")
+    @router.post("/{job_id:path}", operation_id="start_job")
     def start(job_id: str):
         use_case = StartJobUseCase()
         return use_case.execute({"job_id": job_id})
 
-    @router.get("/{job_id}", operation_id="job_status")
+    @router.get("/{job_id:path}", operation_id="job_status")
     def status(job_id: str):
         use_case = StatusJobUseCase()
         return use_case.execute({"job_id": job_id})
 
-    @router.delete("/{job_id}", operation_id="remove_job")
+    @router.delete("/{job_id:path}", operation_id="remove_job")
     def remove(job_id: str):
         use_case = DeleteJobUseCase()
         return use_case.execute({"job_id": job_id})
 
-    @router.get("/{job_id}/result", operation_id="job_result")
+    @router.get("/{job_id:path}/result", operation_id="job_result")
     def result(job_id: str):
         use_case = GetResultJobUseCase()
         response = use_case.execute({"job_id": job_id})
