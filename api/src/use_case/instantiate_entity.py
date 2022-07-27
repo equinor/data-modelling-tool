@@ -4,7 +4,7 @@ from services.application_service import ApplicationService
 from pydantic import BaseModel
 from starlette.responses import JSONResponse
 
-# todo define as an entity instead?
+
 class BasicEntity(BaseModel):
     name: str
     type: str

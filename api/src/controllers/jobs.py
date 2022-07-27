@@ -36,5 +36,5 @@ if config.JOB_SERVICE_ENABLED:
         message, bytesvalue = response.value
         return JSONResponse(
             json.dumps({"message": message, "result": bytesvalue.decode("UTF-8")}),
-            status_code=STATUS_CODES[response.type],
+            status_code=response.status_code,
         )

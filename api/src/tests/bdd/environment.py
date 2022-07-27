@@ -48,8 +48,6 @@ def before_scenario(context, scenario):
         scenario.skip("Marked with @skip")
     test_client = TestClient(app)
     context.client = test_client
-    # context.ctx = app.test_request_context()
-    # context.ctx.push()
 
 
 def after_step(context, step):

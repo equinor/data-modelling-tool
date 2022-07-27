@@ -20,7 +20,7 @@ router = APIRouter(tags=["System"], prefix="/system")
 def get_application_settings(request: Request):
     app_name = ""
     try:
-        app_name = request.query_params["APPLICATION"]  # todo check if this works...
+        app_name = request.query_params["APPLICATION"]
     except:
         logger.info("no app name found")
     if app_name:
@@ -73,7 +73,7 @@ def create_application(data_source_id: str, application_id: str):
     if response.status_code == STATUS_CODES["SUCCESS"]:
         return StreamingResponse(response.value, media_type="application/x-zip-compressed", filename="application.zip")
     else:
-        return JSONResponse(json.dumps(response.value), status_code=STATUS_CODES[response.type])
+        return JSONResponse(json.dumps(response.value), status_code=response.status_code)
 
 
 # Auth is handled by DMSS

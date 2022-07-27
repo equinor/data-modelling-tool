@@ -39,6 +39,4 @@ def step_make_request(context, method):
 
     context.response_status = context.response.status_code
 
-    # if context.response.media_type == "application/json":
-    #     context_response_json(context)
     context_response_json(context)

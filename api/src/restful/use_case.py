@@ -33,7 +33,6 @@ def create_error_response(
     return JSONResponse({"type": types[status], "message": f"{error.__class__.__name__}: {message}"}, status)
 
 
-# todo avoud using the custom response object, use built in fast api things instead
 class UseCase(object):
     def execute(self, request_object):
         if not request_object:
