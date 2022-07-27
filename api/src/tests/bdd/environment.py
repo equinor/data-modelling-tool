@@ -1,16 +1,16 @@
 from pymongo import MongoClient
 
-from app import create_app
-from config import Config
+from newapp import create_app
+from config import config
 from tests.bdd.results import print_overview_errors, print_overview_features
 from tests.bdd.steps.data_source import data_source_collection_client
+from fastapi.testclient import TestClient
+app = create_app()
+config.TESTING = True
+config.PRESERVE_CONTEXT_ON_EXCEPTION = False
+config.CACHE_MAX_SIZE = 0
 
-app = create_app(Config)
-app.config["TESTING"] = True
-app.config["PRESERVE_CONTEXT_ON_EXCEPTION"] = False
-app.config["CACHE_MAX_SIZE"] = 0
-
-client = MongoClient("db", username=Config.MONGO_USERNAME, password=Config.MONGO_PASSWORD)
+client = MongoClient("db", username=config.MONGO_USERNAME, password=config.MONGO_PASSWORD)
 
 
 def wipe_db():
@@ -45,10 +45,10 @@ def before_scenario(context, scenario):
     wipe_db()
     if "skip" in scenario.effective_tags:
         scenario.skip("Marked with @skip")
-
-    context.client = app.test_client()
-    context.ctx = app.test_request_context()
-    context.ctx.push()
+    test_client = TestClient(app)
+    context.client = test_client
+    # context.ctx = app.test_request_context()
+    # context.ctx.push()
 
 
 def after_step(context, step):

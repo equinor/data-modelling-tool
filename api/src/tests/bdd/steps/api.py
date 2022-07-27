@@ -5,7 +5,7 @@ from behave import when, given
 
 def context_response_json(context):
     response = context.response
-    context.response_json = json.loads(response.data)
+    context.response_json = response.json()
 
 
 @given('i access the resource url "{url}"')
@@ -29,16 +29,18 @@ def step_make_request(context, method):
     headers = get_headers(context)
 
     if method == "PUT":
-        context.response = context.client.put(context.url, data=data, content_type="application/json", headers=headers)
+        context.response = context.client.put(url=context.url, data=data, headers=headers)
     elif method == "POST":
-        context.response = context.client.create_application(
-            context.url, data=data, content_type="application/json", headers=headers
+        context.response = context.client.post(
+            url=context.url, data=data, headers=headers
         )
     elif method == "GET":
-        context.response = context.client.get(context.url, content_type="application/json", headers=headers)
+        context.response = context.client.get(url=context.url, headers=headers)
     elif method == "DELETE":
-        context.response = context.client.delete(context.url, content_type="application/json", headers=headers)
+        context.response = context.client.delete(url=context.url, headers=headers)
 
     context.response_status = context.response.status_code
-    if context.response.content_type == "application/json":
-        context_response_json(context)
+
+    # if context.response.media_type == "application/json":
+    #     context_response_json(context)
+    context_response_json(context)
