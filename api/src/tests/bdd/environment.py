@@ -1,6 +1,6 @@
 from pymongo import MongoClient
 
-from newapp import create_app
+from app import create_app
 from config import config
 from tests.bdd.results import print_overview_errors, print_overview_features
 from tests.bdd.steps.data_source import data_source_collection_client

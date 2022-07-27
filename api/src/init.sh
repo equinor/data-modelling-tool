@@ -83,7 +83,7 @@ fi
 
 if [ "$1" = 'api' ]; then
   service_is_ready
-  gunicorn newapp:create_app --reload --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:5000
+  gunicorn app:create_app --reload --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:5000 #TODO remove --reload
 elif [ "$1" = 'behave' ]; then
   service_is_ready
   shift
