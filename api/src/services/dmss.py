@@ -12,8 +12,6 @@ dmss_api = DefaultApi()
 dmss_api.api_client.configuration.host = Config.DMSS_API
 
 
-
-
 def get_document(fully_qualified_path: str) -> dict:
     """
     The default DMSS document getter.

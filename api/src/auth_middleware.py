@@ -7,6 +7,7 @@ AUTH_HEADER_CTX_KEY = "auth_header"
 
 _auth_header_ctx_var: ContextVar[str] = ContextVar(AUTH_HEADER_CTX_KEY, default=None)
 
+
 def get_access_token() -> Union[str, None]:
     auth_header = _auth_header_ctx_var.get()
     if auth_header:
@@ -17,6 +18,7 @@ def get_access_token() -> Union[str, None]:
     else:
         return ""
 
+
 class AuthMiddleware:
     """
     Fast API middleware to set a "global" auth header variable. This variable has scope equal to the
@@ -24,6 +26,7 @@ class AuthMiddleware:
     The auth header value is used by get_access_token() function to get the access token from the http request.
     Inspired by: https://github.com/encode/starlette/issues/420
     """
+
     def __init__(
         self,
         app: ASGIApp,
@@ -34,8 +37,8 @@ class AuthMiddleware:
         if scope["type"] not in ["http", "websocket"]:
             await self.app(scope, receive, send)
             return
-        index_list = [index for index, v in enumerate(scope["headers"]) if v[0] == b'authorization']
-        if (len(index_list)):
+        index_list = [index for index, v in enumerate(scope["headers"]) if v[0] == b"authorization"]
+        if len(index_list):
             auth_header_index = index_list[0]
             auth_header_value = scope["headers"][auth_header_index][1].decode()
             auth_header = _auth_header_ctx_var.set(auth_header_value)

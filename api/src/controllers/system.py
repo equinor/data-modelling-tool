@@ -17,11 +17,12 @@ router = APIRouter(tags=["System"], prefix="/system")
 
 # This is a public endpoint with no authentication. So don't put secrets in settings.json
 
+
 @router.get("/settings", operation_id="get_app_settings")
 def get_application_settings(request: Request):
     app_name = ""
     try:
-        app_name = request.query_params["APPLICATION"] #todo check if this works...
+        app_name = request.query_params["APPLICATION"]  # todo check if this works...
     except:
         logger.info("no app name found")
     if app_name:
@@ -43,6 +44,7 @@ def get_application_settings(request: Request):
 
 # Endpoint is only available on ENVIRONMENT=local
 
+
 @router.post("/settings", operation_id="set_app_settings")
 def set_application_settings(request: Request):
     app_name = request.query_params("APPLICATION")
@@ -60,6 +62,7 @@ def set_application_settings(request: Request):
 
 # Auth is handled by DMSS
 
+
 @router.get("/{data_source_id}/create-application/{application_id}", operation_id="create_app")
 def create_application(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
@@ -68,14 +71,13 @@ def create_application(data_source_id: str, application_id: str):
     response = use_case.execute(request_object)
 
     if response.type == res.ResponseSuccess.SUCCESS:
-        return StreamingResponse(
-            response.value, media_type="application/x-zip-compressed", filename="application.zip"
-        )
+        return StreamingResponse(response.value, media_type="application/x-zip-compressed", filename="application.zip")
     else:
         return JSONResponse(json.dumps(response.value), status_code=STATUS_CODES[response.type])
 
 
 # Auth is handled by DMSS
+
 
 @router.get("/{data_source_id}/generate-code/{plugin_name}/{document_path}", operation_id="generate_code")
 def generate_code_with_plugin(data_source_id: str, plugin_name: str, document_path: str):

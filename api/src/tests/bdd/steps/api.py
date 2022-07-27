@@ -31,9 +31,7 @@ def step_make_request(context, method):
     if method == "PUT":
         context.response = context.client.put(url=context.url, data=data, headers=headers)
     elif method == "POST":
-        context.response = context.client.post(
-            url=context.url, data=data, headers=headers
-        )
+        context.response = context.client.post(url=context.url, data=data, headers=headers)
     elif method == "GET":
         context.response = context.client.get(url=context.url, headers=headers)
     elif method == "DELETE":
