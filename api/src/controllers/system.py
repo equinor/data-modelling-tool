@@ -12,9 +12,7 @@ from fastapi.responses import StreamingResponse
 
 router = APIRouter(tags=["System"], prefix="/system")
 
-
 # This is a public endpoint with no authentication. So don't put secrets in settings.json
-
 
 @router.get("/settings", operation_id="get_app_settings")
 def get_application_settings(request: Request):
@@ -60,9 +58,7 @@ def set_application_settings(request: Request):
         return PlainTextResponse("Error: Failed to save the settings file.", status_code=STATUS_CODES["SYSTEM_ERROR"])
 
 
-# Auth is handled by DMSS
-
-
+#TODO seems like this is not used anymore
 @router.get("/{data_source_id}/create-application/{application_id}", operation_id="create_app")
 def create_application(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
@@ -75,10 +71,7 @@ def create_application(data_source_id: str, application_id: str):
     else:
         return JSONResponse(json.dumps(response.value), status_code=response.status_code)
 
-
-# Auth is handled by DMSS
-
-
+#TODO seems like this is not used anymore
 @router.get("/{data_source_id}/generate-code/{plugin_name}/{document_path}", operation_id="generate_code")
 def generate_code_with_plugin(data_source_id: str, plugin_name: str, document_path: str):
     return JSONResponse(

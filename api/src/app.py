@@ -27,6 +27,7 @@ prefix = "/api"
 def create_app():
     from controllers import blueprints, entity, jobs, system
 
+    # Using public routes, since authentication is handled by DMSS
     public_routes = APIRouter()
     public_routes.include_router(blueprints.router)
     public_routes.include_router(entity.router)
