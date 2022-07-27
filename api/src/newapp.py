@@ -21,7 +21,7 @@ from utils.create_application_utils import zip_all
 from utils.logging import logger
 
 server_root = "/api"
-prefix = f"{server_root}/"
+prefix = f"{server_root}"
 
 def create_app():
     from controllers import (
@@ -34,7 +34,9 @@ def create_app():
 
     public_routes = APIRouter()
     public_routes.include_router(blueprints.router)
-
+    public_routes.include_router(entity.router)
+    public_routes.include_router(jobs.router)
+    public_routes.include_router(system.router)
 
     app = FastAPI(
         title="Data Modelling Tool",

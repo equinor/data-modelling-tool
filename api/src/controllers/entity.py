@@ -1,17 +1,14 @@
 import json
-
-from flask import Blueprint, request, Response
-
-from enums import STATUS_CODES
+from fastapi import APIRouter
+from flask import request
 from use_case.instantiate_entity import InstantiateEntityUseCase
 from utils.logging import logger
 
-blueprint = Blueprint("entities", __name__)
+router = APIRouter(tags=["Entities"], prefix="/entity")
 
 # Auth is handled by DMSS
 
-
-@blueprint.route("/api/entity", methods=["POST"])
+@router.post("/", operation_id="entity")
 def instantiate():
     request_data = request.get_json()
     try:
@@ -24,5 +21,4 @@ def instantiate():
 
     logger.info(f"Creating entity for type '{type}'")
     use_case = InstantiateEntityUseCase()
-    response = use_case.execute({"name": name, "type": type})
-    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+    return use_case.execute({"name": name, "type": type})

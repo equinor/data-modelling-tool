@@ -13,4 +13,4 @@ def get(target: str):
     use_case = GetRelatedBlueprintsUseCase()
     request_object = GetRelatedBlueprintsRequestObject(blueprint=target)
     response = use_case.execute(request_object)
-    return json.dumps(response.value)
+    return use_case.execute(request_object)
