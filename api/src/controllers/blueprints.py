@@ -1,9 +1,9 @@
 from fastapi import APIRouter
-
 from use_case.get_related_blueprints_use_case import GetRelatedBlueprintsRequestObject, GetRelatedBlueprintsUseCase
 from utils.logging import logger
 
 router = APIRouter(tags=["Blueprints"], prefix="/blueprints")
+
 
 # TODO seems like this is not used anymore
 @router.get("/{target:path}", operation_id="get_blueprints")

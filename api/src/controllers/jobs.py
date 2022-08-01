@@ -2,7 +2,6 @@ import json
 
 from fastapi import APIRouter
 from config import config
-from enums import STATUS_CODES
 from use_case.delete_job import DeleteJobUseCase
 from use_case.get_result_job import GetResultJobUseCase
 from use_case.start_job import StartJobUseCase

@@ -12,7 +12,7 @@ from dmss_api.exceptions import ApiException
 
 from repository.repository_exceptions import ImportReferenceNotFoundException
 
-from fastapi import APIRouter, FastAPI, Security
+from fastapi import APIRouter, FastAPI
 from config import config
 
 from services.dmss import dmss_api

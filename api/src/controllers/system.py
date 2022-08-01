@@ -20,7 +20,7 @@ def get_application_settings(request: Request):
     app_name = ""
     try:
         app_name = request.query_params["APPLICATION"]
-    except:
+    except Exception:
         logger.info("no app name found")
     if app_name:
         if app_name in config.APP_SETTINGS:  # Return settings for the specific application

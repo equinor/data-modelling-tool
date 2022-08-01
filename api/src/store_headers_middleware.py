@@ -1,6 +1,5 @@
 from starlette.types import ASGIApp, Receive, Scope, Send
 from contextvars import ContextVar
-from typing import Union
 
 
 AUTH_HEADER_CTX_KEY = "auth_header"
