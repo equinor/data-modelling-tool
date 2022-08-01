@@ -1,6 +1,6 @@
 # Data Modelling Tool
-
-![CI](https://github.com/equinor/data-modelling-tool/workflows/.github/workflows/main.yaml/badge.svg)
+[![License][license-badge]][license]
+[![On master push][on-master-push-branch-badge]][on-master-push-branch-action]
 
 The data modelling tool is a tool for modelling complex domain models.
 
@@ -76,3 +76,9 @@ pre-commit run -a
 ## Contributing 
 
 Read our [contributors' guide](https://https://equinor.github.io/data-modelling-tool/contribute-guide.html) to get started.
+
+[license-badge]: https://img.shields.io/badge/License-MIT-yellow.svg
+[license]: https://github.com/equinor/data-modelling-tool/blob/master/LICENSE
+[releases]: https://github.com/equinor/data-modelling-tool/releases
+[on-master-push-branch-badge]: https://github.com/equinor/data-modelling-tool/actions/workflows/on-master-push.yaml/badge.svg
+[on-master-push-branch-action]: https://github.com/equinor/data-modelling-tool/actions/workflows/on-master-push.yaml
