@@ -165,13 +165,14 @@ class JobHandler(JobHandlerInterface):
 
         job_status = self.job.status
 
-        match (status, exit_code):
-            case ("Running", None):
+        # Flake8 does not seem to have support for match case. Using noqa to disable warnings.
+        match [status, exit_code]:  # noqa
+            case ["Running", None]:  # noqa
                 job_status = JobStatus.RUNNING
-            case ("Terminated", 0):
+            case ["Terminated", 0]:  # noqa
                 job_status = JobStatus.COMPLETED
-            case ("Terminated", exit_code) if exit_code >= 1:
+            case ["Terminated", exit_code] if exit_code >= 1:  # noqa
                 job_status = JobStatus.FAILED
-            case ("Waiting", None):
+            case ["Waiting", None]:  # noqa
                 job_status = JobStatus.STARTING
         return job_status, logs

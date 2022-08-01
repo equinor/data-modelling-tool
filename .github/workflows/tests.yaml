@@ -39,6 +39,9 @@ jobs:
       - name: "Black Linting"
         run: docker run --rm api-development black --check  --target-version py310 --diff --exclude dmss .
 
+      - name: "flake8 style check"
+        run: docker run --rm api-development python -m flake8 --config=.flake8
+
       - name: "Bandit Static Code Security Analyzis"
         run: docker run --rm api-development bandit --recursive . --exclude ./tests,./dmss
 
