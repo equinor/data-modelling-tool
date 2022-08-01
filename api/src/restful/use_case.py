@@ -40,7 +40,7 @@ class UseCase(object):
         try:
             return self.process_request(request_object)
         except ServiceException as dmss_exception:
-            return create_error_response(dmss_exception, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return create_error_response(dmss_exception, status.HTTP_503_SERVICE_UNAVAILABLE)
         except (EntityNotFoundException, JobNotFoundException) as not_found:
             return create_error_response(not_found, status.HTTP_404_NOT_FOUND)
         except FileNotFoundException as not_found:
@@ -49,16 +49,14 @@ class UseCase(object):
                 status.HTTP_404_NOT_FOUND,
             )
         except ApplicationNotLoadedException as e:
-            return create_error_response(
-                Exception(f"Failed to fetch index: {e.message}"), status.HTTP_500_INTERNAL_SERVER_ERROR
-            )
+            return create_error_response(Exception(f"Failed to fetch index: {e.message}"), status.HTTP_404_NOT_FOUND)
 
         except UnauthorizedException as e:
             message = json.loads(e.body)["detail"]
             return create_error_response(Exception(message), status.HTTP_401_UNAUTHORIZED)
-        except Exception as exc:
+        except Exception as e:
             traceback.print_exc()
-            return create_error_response(exc, status.HTTP_500_INTERNAL_SERVER_ERROR)
+            return create_error_response(e, status.HTTP_500_INTERNAL_SERVER_ERROR)
 
     def process_request(self, request_object):
         raise NotImplementedError("process_request() not implemented by UseCase class")
