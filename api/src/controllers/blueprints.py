@@ -5,7 +5,7 @@ from utils.logging import logger
 
 router = APIRouter(tags=["Blueprints"], prefix="/blueprints")
 
-#TODO seems like this is not used anymore
+# TODO seems like this is not used anymore
 @router.get("/{target:path}", operation_id="get_blueprints")
 def get(target: str):
     logger.info(f"Getting blueprints used by '{target}'")
