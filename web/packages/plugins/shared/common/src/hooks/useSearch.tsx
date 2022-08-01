@@ -9,7 +9,6 @@ export function useSearch<T>(
   const [searchResult, setSearchResult] = useState<T[]>([])
   const [isLoading, setIsLoading] = useState(true)
   const [hasError, setHasError] = useState(false)
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -23,7 +22,6 @@ export function useSearch<T>(
       })
       .then((response: any) => {
         const data = response.data
-        // @ts-ignore
         setSearchResult(Object.values(data))
       })
       .catch((err: any) => {

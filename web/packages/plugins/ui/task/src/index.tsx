@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import { DmtPlugin, DmtPluginType } from '@dmt/common'
 import { EditTask } from './EditTask'
 import { ViewTask } from './ViewTask'

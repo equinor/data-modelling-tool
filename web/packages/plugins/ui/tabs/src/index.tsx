@@ -1,8 +1,7 @@
-import * as React from 'react'
 import { DmtPluginType } from '@dmt/common'
 import { TabsContainer } from './TabsContainer'
 
-export const plugins: any = [
+export const plugins = [
   {
     pluginName: 'tabs',
     pluginType: DmtPluginType.UI,

@@ -45,7 +45,7 @@ const JobRow = (props: {
   const [loading, setLoading] = useState<boolean>(false)
   const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
   const [started, setStarted] = useState<string>('')
-  const jobURL: string = `/ap/view/${dataSourceId}/${analysisId}.jobs.${index}`
+  const jobURL = `/ap/view/${dataSourceId}/${analysisId}.jobs.${index}`
   const resultURL = job.result?._id
     ? `/ap/view/${dataSourceId}/${job.result?._id}`
     : undefined
@@ -71,10 +71,9 @@ const JobRow = (props: {
         setJobStatus(EJobStatus.STARTING)
         setStarted(new Date().toLocaleString(navigator.language))
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<any>) => {
         console.error(error)
         NotificationManager.error(
-          //@ts-ignore
           error?.response?.data?.message || error.message,
           'Failed to start job'
         )
@@ -94,7 +93,6 @@ const JobRow = (props: {
     } catch (error) {
       console.error(error)
       NotificationManager.error(
-        //@ts-ignore
         error?.response?.data?.message || error.message,
         'Failed to start job'
       )

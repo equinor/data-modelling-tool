@@ -10,8 +10,8 @@ const DateRangePicker = (props: {
 }): JSX.Element => {
   const { setDateRange, value } = props
   // onChange returns (date: Moment[], dateString: string[]) with start at [0] and end at [1]
-  const START_INDEX: number = 0
-  const END_INDEX: number = 1
+  const START_INDEX = 0
+  const END_INDEX = 1
   return (
     <div>
       <Label label="Specify date range" />

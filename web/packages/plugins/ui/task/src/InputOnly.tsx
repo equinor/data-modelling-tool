@@ -8,10 +8,7 @@ import * as React from 'react'
 
 export const EditInput = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen } = props
-  const [document, loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId
-  )
+  const [document, loading] = useDocument<any>(dataSourceId, documentId)
   if (loading) {
     return <Loading />
   }

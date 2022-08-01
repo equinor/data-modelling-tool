@@ -23,7 +23,7 @@ function createMenuItems(
   removeNode: Function,
   setShowScrimId: (id: string) => void
 ): JSX.Element[] {
-  let menuItems = []
+  const menuItems = []
 
   // dataSources get a "new root package"
   if (node.type === 'dataSource') {
@@ -204,7 +204,7 @@ export const NodeRightClickMenu = (props: {
       isRoot: false,
       content: [],
     }
-    const ref: string = `${node.nodeId}.content`
+    const ref = `${node.nodeId}.content`
     dmssAPI
       .explorerAdd({
         absoluteRef: ref,

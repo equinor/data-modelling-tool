@@ -23,7 +23,6 @@ export class ErrorBoundary extends React.Component<any, { hasError: boolean }> {
       // You can render any custom fallback UI
       return this.fallBack()
     }
-    // @ts-ignore
     return this.props.children
   }
 }

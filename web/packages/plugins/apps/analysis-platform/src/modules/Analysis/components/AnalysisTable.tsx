@@ -43,7 +43,7 @@ export const AnalysisTable = () => {
 
   const rows: Array<TAnalysisRow> = []
   analysis?.forEach((analysis) => {
-    let row: TAnalysisRow = {
+    const row: TAnalysisRow = {
       _id: analysis._id,
       name: analysis.label || analysis.name,
       description: analysis.description,

@@ -470,7 +470,7 @@ export default ({ settings }: any) => {
       })
       .then((response: AxiosResponse<{ [key: string]: any }>) => {
         setQueryError('')
-        let nResults = Object.keys(response.data).length
+        const nResults = Object.keys(response.data).length
         if (nResults === 0) {
           NotificationManager.warning('No entities found', 'Search')
         } else {

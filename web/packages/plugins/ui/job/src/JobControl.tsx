@@ -50,7 +50,11 @@ function colorFromStatus(status: string): string {
   }
 }
 
-const SimStatusWrapper = styled.div`
+interface ISimStatusWrapper {
+  status: string
+}
+
+const SimStatusWrapper = styled.div<ISimStatusWrapper>`
   display: flex;
   justify-content: center;
   align-items: center;
@@ -60,14 +64,15 @@ const SimStatusWrapper = styled.div`
   border-radius: 5px;
   padding: 0 10px;
   margin-left: 10px;
-  border: ${(props: any) => `${colorFromStatus(props.status)} 3px solid`};
-  color: ${(props: any) => colorFromStatus(props.status)};
+  border: ${(props: ISimStatusWrapper) =>
+    `${colorFromStatus(props.status)} 3px solid`};
+  color: ${(props: ISimStatusWrapper) => colorFromStatus(props.status)};
 `
 
 export const JobControl = (props: {
   document: TJob
   jobId: string
-  updateDocument: Function
+  updateDocument: (newDocument: any, notify: boolean) => void
 }) => {
   const { jobId, document } = props
   const [dataSourceId, documentId] = jobId.split('/', 2)
@@ -85,15 +90,14 @@ export const JobControl = (props: {
   useEffect(() => {
     setLoading(true)
     jobAPI
-      .statusJob(jobId)
+      .statusJob('jobId')
       .then((result: any) => {
         setJobLogs(result.data.log)
         setJobStatus(result.data.status)
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<any>) => {
         if (error.response) {
-          //@ts-ignore
-          setJobLogs(error?.response?.data?.message || error.message)
+          setJobLogs(error.response.data?.message || error.message)
           setJobStatus(document.status)
         } else setJobLogs('Error occurred when getting status for job')
 
@@ -114,11 +118,10 @@ export const JobControl = (props: {
         )
         setJobStatus(EJobStatus.STARTING)
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<any>) => {
         console.error(error)
         NotificationManager.error(
-          //@ts-ignore
-          error?.response?.data?.message || error.message,
+          (error.response && error.response.data?.message) || error.message,
           'Failed to start job'
         )
       })
@@ -136,7 +139,6 @@ export const JobControl = (props: {
     } catch (error) {
       console.error(error)
       NotificationManager.error(
-        //@ts-ignore
         error?.response?.data?.message || error.message,
         'Failed to remove job'
       )
@@ -158,7 +160,7 @@ export const JobControl = (props: {
         width={'50vw'}
         height={'70vh'}
       >
-        {!!document.runner ? (
+        {document.runner ? (
           <UIPluginSelector
             categories={['view']}
             type={document.runner.type}
@@ -175,7 +177,7 @@ export const JobControl = (props: {
         height={'80vh'}
         width={'50vw'}
       >
-        {!!document.applicationInput ? (
+        {document.applicationInput ? (
           <UIPluginSelector
             categories={['view']}
             type={document.applicationInput.type}
@@ -198,7 +200,6 @@ export const JobControl = (props: {
       >
         <RowGroup>
           <Label label="Status:" />
-          {/*@ts-ignore*/}
           <SimStatusWrapper status={jobStatus}>{jobStatus}</SimStatusWrapper>
         </RowGroup>
         <RowGroup>

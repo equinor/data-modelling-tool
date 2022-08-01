@@ -1,5 +1,5 @@
 import React, { useContext } from 'react'
-// @ts-ignore
+
 import { useFieldArray, useFormContext } from 'react-hook-form'
 import { AttributeField } from './AttributeField'
 import { Button, Typography } from '@equinor/eds-core-react'
@@ -52,7 +52,7 @@ export default function Fields(props: any) {
   })
 
   const handleAddObject = () => {
-    const name: string = `${namePath}-${fields.length}`
+    const name = `${namePath}-${fields.length}`
     dmtApi.createEntity(type, name).then((newEntity: any) => {
       dmssAPI
         .documentUpdate({
@@ -77,7 +77,7 @@ export default function Fields(props: any) {
         ? [...uiAttribute.columns, 'actions']
         : ['name', 'actions']
     fields.map((item: any, index: number) => {
-      let row: any = {}
+      const row: any = {}
       columns.forEach((column: any) => (row[column] = item[column]))
 
       row['actions'] = (

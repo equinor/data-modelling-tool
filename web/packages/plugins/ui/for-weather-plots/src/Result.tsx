@@ -94,10 +94,10 @@ function GraphSelect(props: {
   useEffect(() => {
     const storedGraphs = plotWindowHandlers.getGraphs()
     if (storedGraphs) {
-      let newGraphInfo: TGraphInfo[] = []
-      let newDataDict: any = {}
+      const newGraphInfo: TGraphInfo[] = []
+      const newDataDict: any = {}
       storedGraphs.forEach((storedGraph) => {
-        let [newGraph, newData] = createGraph(
+        const [newGraph, newData] = createGraph(
           storedGraph.run,
           storedGraph.response,
           storedGraph.statistic,
@@ -114,10 +114,10 @@ function GraphSelect(props: {
   }, [])
 
   function addGraphFromSelector() {
-    let uuid = poorMansUUID()
-    let newGraphInfo: TGraphInfo[] = graphInfo
-    let newDataDict: any = {}
-    let [newGraph, newData] = createGraph(
+    const uuid = poorMansUUID()
+    const newGraphInfo: TGraphInfo[] = graphInfo
+    const newDataDict: any = {}
+    const [newGraph, newData] = createGraph(
       chosenRun,
       chosenResponse,
       chosenStatistic,
@@ -131,7 +131,7 @@ function GraphSelect(props: {
         newDataDict[key] = { ...newDataDict[key], ...value }
       })
       setChartData(Object.values(newDataDict))
-      let graph: TGraph = {
+      const graph: TGraph = {
         run: chosenRun,
         response: chosenResponse,
         statistic: chosenStatistic,
@@ -163,7 +163,7 @@ function GraphSelect(props: {
 
     if (graphInfo.map((graph) => graph.name).includes(graphName))
       return [false, {}] // graph already present
-    let newDataDict: any = {}
+    const newDataDict: any = {}
 
     // Create a object for the chartData array (so we can lookup on timestamp)
     chartData.forEach(
@@ -314,7 +314,7 @@ export default (props: {
   }, [result])
 
   function removeGraph(name: string, uuid: string) {
-    let newDataDict: any = {}
+    const newDataDict: any = {}
 
     chartData.forEach((dataPoint: any) => {
       delete dataPoint[name]

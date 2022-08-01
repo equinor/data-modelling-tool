@@ -14,10 +14,7 @@ export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
   const [analysis, setAnalysis] = useState<any>()
-  const [document, loading, updateDocument] = useDocument(
-    dataSourceId,
-    documentId
-  )
+  const [document, loading] = useDocument(dataSourceId, documentId)
   const { tokenData } = useContext(AuthContext)
 
   useEffect(() => {

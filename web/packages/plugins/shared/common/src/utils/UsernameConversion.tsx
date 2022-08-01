@@ -54,7 +54,7 @@ export const getUsernameMappingFromUserId = (
         userId: userId,
       }
     })
-    .catch((error) => {
+    .catch(() => {
       NotificationManager.error(`Failed to get username from username ID.`)
       return { username: '', userId: userId }
     })

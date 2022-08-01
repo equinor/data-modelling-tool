@@ -14,7 +14,7 @@ enum Interval {
 
 // Creates a list like ["00:00",...,"24:00"]
 function generateSelectableTimes(): string[] {
-  let selectableTimes = []
+  const selectableTimes = []
   for (let i = 0; i < 25; i++) {
     selectableTimes.push(`${i}:00`)
   }
@@ -63,10 +63,10 @@ export function CreateReoccurringJob(props: {
   }
 
   useEffect(() => {
-    let newMinute = minute
+    const newMinute = minute
     let newHour = hour
     let dayOfMonth = '*'
-    let month = '*'
+    const month = '*'
     let dayOfWeek = '*'
 
     switch (interval) {

@@ -19,8 +19,7 @@ import {
   Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
+
 import {
   Column,
   EditInputEntity,

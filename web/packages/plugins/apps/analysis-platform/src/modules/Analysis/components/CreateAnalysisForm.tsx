@@ -59,7 +59,7 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
   const formHandler = (event: any) => {
     event.preventDefault()
 
-    let formErrors: Errors = {
+    const formErrors: Errors = {
       name: '',
       description: '',
     }

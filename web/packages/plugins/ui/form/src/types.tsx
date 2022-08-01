@@ -3,7 +3,7 @@ export type FormProps = {
   dataSourceId?: string
   type?: string
   formData?: any
-  onSubmit?: Function
+  onSubmit?: (data: any) => void
   widgets?: any
   config?: any
   onOpen?: Function

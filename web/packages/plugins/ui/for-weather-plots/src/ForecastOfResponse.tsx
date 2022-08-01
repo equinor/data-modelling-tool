@@ -34,7 +34,7 @@ export function FoRResultWrapper(props: {
   useEffect(() => {
     if (simulationConfig.plots) {
       // Retrieve the "stored plots"
-      let storedPlots: any = {}
+      const storedPlots: any = {}
       simulationConfig.plots.map((storedPlot: any) => {
         storedPlots[poorMansUUID()] = storedPlot
       })
@@ -137,8 +137,7 @@ export function FoRResultWrapper(props: {
             result={result}
             plotKey={plotKey}
             plotWindowHandlers={{
-              addPlotWindow: (plotKey?: string | undefined) =>
-                plotWindowHandlers.addPlotWindow(),
+              addPlotWindow: () => plotWindowHandlers.addPlotWindow(),
               deletePlotWindow: (plotKey: string) =>
                 plotWindowHandlers.deletePlotWindow(plotKey),
               addGraph: (graph: TGraph) =>

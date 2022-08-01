@@ -32,7 +32,7 @@ export type TAnalysis = {
 
 export type TAnalysisCardProps = {
   analysis: TAnalysis
-  addJob: Function
+  addJob: (job: TJob) => void
   jobs: any
   dataSourceId: string
 }

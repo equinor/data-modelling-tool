@@ -148,16 +148,16 @@ export class TreeNode {
   children: TreeMap = {}
   attribute: TAttribute
   parent?: TreeNode
-  isRoot: boolean = false
-  isDataSource: boolean = false
+  isRoot = false
+  isDataSource = false
   entity?: any
   name?: string
-  message: string = ''
+  message = ''
 
   constructor(
     tree: Tree,
     nodeId: string,
-    level: number = 0,
+    level = 0,
     entity: any = {},
     attribute: TAttribute,
     parent: TreeNode | undefined = undefined,
@@ -349,7 +349,7 @@ export class Tree {
       .documentGetByPath({ dataSourceId: dataSourceId, path: path })
       .then((response: any) => {
         const data = response.data
-        let folderNode = new TreeNode(
+        const folderNode = new TreeNode(
           this,
           `${dataSourceId}/${data._id}`,
           0,
@@ -367,7 +367,7 @@ export class Tree {
         this.index = { [`${dataSourceId}/${data._id}`]: folderNode }
       })
       .catch((error: Error) => {
-        let folderNode = new TreeNode(
+        const folderNode = new TreeNode(
           this,
           folderPath,
           0,

@@ -1,8 +1,7 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useDocument, UIPluginSelector } from '@dmt/common'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
+
 import { TValidEntity } from '@dmt/common'
 import { ErrorGroup } from '../components/ErrorGroup'
 

@@ -42,7 +42,7 @@ const CardWrapper = styled.div`
 
 const RunAnalysisButton = (props: {
   analysis: TAnalysis
-  addJob: Function
+  addJob: (job: TJob) => void
   jobs: any
   dataSourceId: string
 }) => {

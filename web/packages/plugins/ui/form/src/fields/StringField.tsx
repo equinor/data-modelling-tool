@@ -1,6 +1,4 @@
-import TextWidget from '../widgets/TextWidget'
 import React from 'react'
-// @ts-ignore
 import { Controller, useFormContext } from 'react-hook-form'
 import { StringFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
@@ -15,7 +13,7 @@ export const StringField = (props: StringFieldProps) => {
 
   const { getWidget } = useRegistryContext()
 
-  let defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
+  const defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
   const Widget = getWidget(namePath, defaultWidget)
 
   return (
@@ -27,9 +25,7 @@ export const StringField = (props: StringFieldProps) => {
       }}
       defaultValue={defaultValue || ''}
       render={({
-        // @ts-ignore
         field: { ref, value, ...props },
-        // @ts-ignore
         fieldState: { invalid, error },
       }) => {
         // Support date-time format, and make it default to readonly

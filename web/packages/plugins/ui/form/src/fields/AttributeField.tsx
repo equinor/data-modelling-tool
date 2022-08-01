@@ -42,7 +42,6 @@ export const AttributeField = (props: AttributeFieldProps) => {
       // Get the ui recipe name that should be used for nested
       const uiRecipeName = uiAttribute && uiAttribute.uiRecipe
       return (
-        // @ts-ignore
         <ObjectField
           namePath={namePath}
           displayLabel={displayLabel}
@@ -50,7 +49,6 @@ export const AttributeField = (props: AttributeFieldProps) => {
           type={attribute.attributeType}
           optional={attribute.optional}
           uiRecipeName={uiRecipeName}
-          // @ts-ignore
           uiAttribute={uiAttribute}
         />
       )

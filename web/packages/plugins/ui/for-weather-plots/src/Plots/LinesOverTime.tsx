@@ -25,7 +25,7 @@ export default (props: {
   graphInfo: TGraphInfo[]
 }): JSX.Element => {
   const { data, graphInfo } = props
-  const fontSize: number = 8
+  const fontSize = 8
   const victoryTooltip = (
     <VictoryTooltip
       style={{ fontSize: fontSize }}
@@ -36,8 +36,8 @@ export default (props: {
       }
     />
   )
-  const chartWidth: number = 800
-  const plotHeight: number = 200
+  const chartWidth = 800
+  const plotHeight = 200
   //TODO: Read threshold values from result file
 
   const getAreaPlotData = (

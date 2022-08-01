@@ -1,10 +1,8 @@
 import * as React from 'react'
 
-// @ts-ignore
-import { useForm, FormProvider, TFieldValues } from 'react-hook-form'
+import { useForm, FormProvider } from 'react-hook-form'
 import { Button } from '@equinor/eds-core-react'
 import { ObjectField } from './fields/ObjectField'
-import { UnpackNestedValue } from 'react-hook-form/dist/types/form'
 import { FormProps } from './types'
 import { RegistryProvider } from './RegistryContext'
 import styled from 'styled-components'
@@ -31,13 +29,11 @@ export const Form = (props: FormProps) => {
   })
 
   // Every react hook form controller needs to have a unique name
-  const namePath: string = ''
+  const namePath = ''
 
-  const handleSubmit = methods.handleSubmit(
-    (data: UnpackNestedValue<TFieldValues>) => {
-      if (onSubmit !== undefined) onSubmit(data)
-    }
-  )
+  const handleSubmit = methods.handleSubmit((data) => {
+    if (onSubmit !== undefined) onSubmit(data)
+  })
 
   return (
     <Wrapper>

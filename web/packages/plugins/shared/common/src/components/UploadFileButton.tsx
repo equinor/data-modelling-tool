@@ -12,7 +12,7 @@ export const addToPath = (
   files: File[] | undefined[] = [],
   dataSourceId: string,
   directory: string,
-  updateUncontainer: boolean = false
+  updateUncontainer = false
 ): Promise<string> => {
   const dmssAPI = new DmssAPI(token)
 

@@ -6,11 +6,7 @@ import { useDocument } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
-  const [document, loading, updateDocument, error] = useDocument(
-    dataSourceId,
-    documentId,
-    999
-  )
+  const [document, loading] = useDocument(dataSourceId, documentId, 999)
 
   if (loading) return <Loading />
 

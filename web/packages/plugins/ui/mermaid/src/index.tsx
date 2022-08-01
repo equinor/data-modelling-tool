@@ -38,7 +38,7 @@ const edgeElement = (node: Node) => {
 }
 
 const createChart = (tree: Node): string => {
-  let classElements: any = {}
+  const classElements: any = {}
   let edgeElements = ``
 
   for (const node of dfs(tree)) {
@@ -81,10 +81,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 
   const [chart, setChart] = useState<string | undefined>(undefined)
 
-  const [document, loading, updateDocument] = useDocument(
-    dataSourceId,
-    documentId
-  )
+  const [document, loading] = useDocument(dataSourceId, documentId)
 
   useEffect(() => {
     loader(token, explorer, document).then(async (tree: Node) => {
