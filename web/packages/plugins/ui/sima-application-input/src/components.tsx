@@ -10,7 +10,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 export const HeaderWrapper = styled.div`
-  margin: 8px 0;
+  margin: 0px 0px 24px 0px;
 `
 export const Column = styled.div``
 

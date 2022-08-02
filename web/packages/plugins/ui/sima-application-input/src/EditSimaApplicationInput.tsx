@@ -15,15 +15,12 @@ import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import {
   Button,
-  Input,
-  Label,
   Progress,
   TextField,
   Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
+
 import {
   Column,
   Container,
@@ -34,18 +31,18 @@ import {
 } from './components'
 import _ from 'lodash'
 
-const ReadOnlyPathTextField = (props: { path: string }) => {
+const ReadOnlyPathTextField = (props: { path: string; label: string }) => {
   return (
     <Tooltip
       title={truncatePathString(props.path) === props.path ? '' : props.path}
     >
-      <Input
-        variant={'default'}
+      <TextField
+        id={props.label}
         style={{
           width: PATH_INPUT_FIELD_WIDTH,
-          cursor: 'default',
         }}
         type="string"
+        label={props.label || ''}
         value={truncatePathString(props.path)}
       />
     </Tooltip>
@@ -58,7 +55,7 @@ const ReadOnlyTextField = (props: { text: string; label: string }) => {
       id={props.label}
       label={props.label}
       value={props.text}
-      style={{ width: INPUT_FIELD_WIDTH, cursor: 'default' }}
+      style={{ width: INPUT_FIELD_WIDTH }}
     />
   )
 }
@@ -97,9 +94,11 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Blueprint'} />
               {readOnly ? (
-                <ReadOnlyPathTextField path={formData?.inputType || 'None'} />
+                <ReadOnlyPathTextField
+                  label={'Blueprint'}
+                  path={formData?.inputType || 'None'}
+                />
               ) : (
                 <BlueprintPicker
                   onChange={(selectedBlueprint: string) =>
@@ -116,8 +115,8 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
               />
             ) : (
               <>
-                <Label label={'Folder presented for input selection'} />
                 <DestinationPicker
+                  label={'Folder presented for input selection'}
                   onChange={(presetFolder: string) =>
                     setFormData({
                       ...formData,
@@ -141,9 +140,11 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           <Typography variant="h3">Output</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Blueprint'} />
               {readOnly ? (
-                <ReadOnlyPathTextField path={formData?.outputType || 'None'} />
+                <ReadOnlyPathTextField
+                  label={'Blueprint'}
+                  path={formData?.outputType || 'None'}
+                />
               ) : (
                 <BlueprintPicker
                   onChange={(selectedBlueprint: string) =>
@@ -181,9 +182,9 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
             ) : (
               <>
                 <Column>
-                  <Label label={'Select Stask'} />
                   <Row>
                     <EntityPickerInput
+                      label={'Select Stask'}
                       formData={formData.stask}
                       typeFilter={STaskBlueprint}
                       onChange={(selectedStask: any) =>
@@ -193,18 +194,22 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                         })
                       }
                     />
-                    <UploadFileButton
-                      formData={formData.stask}
-                      fileSuffix={['stask']}
-                      dataSourceId={dataSourceId}
-                      getBody={(filename: string) => getNewSTaskBody(filename)}
-                      onUpload={(createdRef: TReference) =>
-                        setFormData({
-                          ...formData,
-                          stask: createdRef,
-                        })
-                      }
-                    />
+                    <div style={{ paddingTop: '16px' }}>
+                      <UploadFileButton
+                        formData={formData.stask}
+                        fileSuffix={['stask']}
+                        dataSourceId={dataSourceId}
+                        getBody={(filename: string) =>
+                          getNewSTaskBody(filename)
+                        }
+                        onUpload={(createdRef: TReference) =>
+                          setFormData({
+                            ...formData,
+                            stask: createdRef,
+                          })
+                        }
+                      />
+                    </div>
                   </Row>
                 </Column>
                 <TextField
@@ -258,7 +263,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   id="inputPath"
                   label={'Input path'}
                   value={formData?.simaInputFilePath || ''}
-                  placeholder="The simulations input file"
+                  placeholder="The simulations input file path"
                   onChange={(event: ChangeEvent<HTMLInputElement>) =>
                     setFormData({
                       ...formData,
@@ -284,7 +289,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                   id="outputPath"
                   label={'Output path'}
                   value={formData?.simaOutputFilePath || ''}
-                  placeholder="The simulations output file"
+                  placeholder="The simulations output file path"
                   onChange={(event: ChangeEvent<HTMLInputElement>) =>
                     setFormData({
                       ...formData,
@@ -302,11 +307,14 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           <Typography variant="h3">Result</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Folder'} />
               {readOnly ? (
-                <ReadOnlyPathTextField path={formData?.resultPath || 'None'} />
+                <ReadOnlyPathTextField
+                  label={'Folder'}
+                  path={formData?.resultPath || 'None'}
+                />
               ) : (
                 <DestinationPicker
+                  label={'Folder'}
                   formData={formData?.resultPath || ''}
                   onChange={(selectedFolder: string) =>
                     setFormData({
