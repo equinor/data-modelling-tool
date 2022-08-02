@@ -4,7 +4,7 @@ import { NotificationManager } from 'react-notifications'
 import { TREE_DIALOG_HEIGHT, TREE_DIALOG_WIDTH } from '../../utils/variables'
 import { EBlueprint } from '../../Enums'
 import { Dialog, FSTreeContext, TreeNode, TreeView } from '../../index'
-import { Input, Progress, Tooltip } from '@equinor/eds-core-react'
+import { Input, Label, Progress, Tooltip } from '@equinor/eds-core-react'
 import { PATH_INPUT_FIELD_WIDTH, truncatePathString } from '@dmt/common'
 import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types'
 
@@ -13,13 +13,15 @@ export const BlueprintPicker = (props: {
   formData: string | undefined
   variant?: Variants
   disabled?: boolean
+  label?: string
 }) => {
-  const { onChange, formData, variant, disabled } = props
+  const { onChange, formData, variant, disabled, label } = props
   const [showModal, setShowModal] = useState<boolean>(false)
   const { treeNodes, loading } = useContext(FSTreeContext)
 
   return (
     <div>
+      <Label label={label || 'Blueprint'} />
       <Tooltip
         title={truncatePathString(formData) === formData ? '' : formData}
       >

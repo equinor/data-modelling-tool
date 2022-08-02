@@ -10,7 +10,7 @@ import * as React from 'react'
 import styled from 'styled-components'
 
 export const HeaderWrapper = styled.div`
-  margin: 8px 0;
+  margin: 0px 0px 24px 0px;
 `
 export const Column = styled.div``
 
@@ -22,7 +22,12 @@ export const GroupWrapper = styled.div`
     padding-top: 8px;
   }
 `
-
+export const Container = styled.div`
+  display: flex;
+  align-items: left;
+  flex-direction: column;
+  margin: 10px 20px;
+`
 export function EditInputEntity(props: {
   formData: any
   setFormData: Function

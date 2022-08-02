@@ -5,7 +5,9 @@ import {
   EntityPickerInput,
   INPUT_FIELD_WIDTH,
   Loading,
+  PATH_INPUT_FIELD_WIDTH,
   TReference,
+  truncatePathString,
   UploadFileButton,
   useDocument,
 } from '@dmt/common'
@@ -13,16 +15,15 @@ import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import {
   Button,
-  Label,
   Progress,
   TextField,
   Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
+
 import {
   Column,
+  Container,
   EditInputEntity,
   GroupWrapper,
   HeaderWrapper,
@@ -30,10 +31,39 @@ import {
 } from './components'
 import _ from 'lodash'
 
+const ReadOnlyPathTextField = (props: { path: string; label: string }) => {
+  return (
+    <Tooltip
+      title={truncatePathString(props.path) === props.path ? '' : props.path}
+    >
+      <TextField
+        id={props.label}
+        style={{
+          width: PATH_INPUT_FIELD_WIDTH,
+        }}
+        type="string"
+        label={props.label || ''}
+        value={truncatePathString(props.path)}
+      />
+    </Tooltip>
+  )
+}
+
+const ReadOnlyTextField = (props: { text: string; label: string }) => {
+  return (
+    <TextField
+      id={props.label}
+      label={props.label}
+      value={props.text}
+      style={{ width: INPUT_FIELD_WIDTH }}
+    />
+  )
+}
+
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
-  const { dataSourceId, onOpen, documentId } = props
+  const { dataSourceId, onOpen, documentId, readOnly } = props
   const [formData, setFormData] = useState<any>(null)
   const [document, loading, updateDocument] = useDocument(
     dataSourceId,
@@ -58,40 +88,51 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
 
   if (loading) return <Loading />
   return (
-    <div
-      style={{
-        display: 'flex',
-        alignItems: 'left',
-        flexDirection: 'column',
-        margin: '10px 20px',
-      }}
-    >
+    <Container>
       <div style={{ marginBottom: '10px' }}>
         <HeaderWrapper>
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Blueprint'} />
-              <BlueprintPicker
-                onChange={(selectedBlueprint: string) =>
-                  setFormData({ ...formData, inputType: selectedBlueprint })
-                }
-                formData={formData?.inputType || ''}
-              />
+              {readOnly ? (
+                <ReadOnlyPathTextField
+                  label={'Blueprint'}
+                  path={formData?.inputType || 'None'}
+                />
+              ) : (
+                <BlueprintPicker
+                  onChange={(selectedBlueprint: string) =>
+                    setFormData({ ...formData, inputType: selectedBlueprint })
+                  }
+                  formData={formData?.inputType || ''}
+                />
+              )}
             </Column>
-            <Label label={'Folder presented for input selection'} />
-            <DestinationPicker
-              onChange={(presetFolder: string) =>
-                setFormData({ ...formData, inputPresetFolder: presetFolder })
-              }
-              formData={formData?.inputPresetFolder}
-            />
-            <EditInputEntity
-              formData={formData}
-              setFormData={setFormData}
-              dataSourceId={dataSourceId}
-              onOpen={onOpen}
-            />
+            {readOnly ? (
+              <ReadOnlyTextField
+                text={formData?.input?.name || formData?.input?._id || 'None'}
+                label={'Input entity'}
+              />
+            ) : (
+              <>
+                <DestinationPicker
+                  label={'Folder presented for input selection'}
+                  onChange={(presetFolder: string) =>
+                    setFormData({
+                      ...formData,
+                      inputPresetFolder: presetFolder,
+                    })
+                  }
+                  formData={formData?.inputPresetFolder}
+                />
+                <EditInputEntity
+                  formData={formData}
+                  setFormData={setFormData}
+                  dataSourceId={dataSourceId}
+                  onOpen={onOpen}
+                />
+              </>
+            )}
           </GroupWrapper>
         </HeaderWrapper>
 
@@ -99,13 +140,19 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
           <Typography variant="h3">Output</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Blueprint'} />
-              <BlueprintPicker
-                onChange={(selectedBlueprint: string) =>
-                  setFormData({ ...formData, outputType: selectedBlueprint })
-                }
-                formData={formData?.outputType || ''}
-              />
+              {readOnly ? (
+                <ReadOnlyPathTextField
+                  label={'Blueprint'}
+                  path={formData?.outputType || 'None'}
+                />
+              ) : (
+                <BlueprintPicker
+                  onChange={(selectedBlueprint: string) =>
+                    setFormData({ ...formData, outputType: selectedBlueprint })
+                  }
+                  formData={formData?.outputType || ''}
+                />
+              )}
             </Column>
           </GroupWrapper>
         </HeaderWrapper>
@@ -113,59 +160,86 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
         <HeaderWrapper>
           <Typography variant="h3">SIMA Task</Typography>
           <GroupWrapper>
-            <Column>
-              <Label label={'Select Stask'} />
-              <Row>
-                <EntityPickerInput
-                  formData={formData.stask}
-                  typeFilter={STaskBlueprint}
-                  onChange={(selectedStask: any) =>
+            {readOnly ? (
+              <>
+                <Column>
+                  <ReadOnlyTextField
+                    text={
+                      formData.stask?.name || formData.stask?.name || 'None'
+                    }
+                    label={'Select Stask'}
+                  />
+                </Column>
+                <ReadOnlyTextField
+                  text={formData?.workflowTask || 'None'}
+                  label={'Workflow task'}
+                />
+                <ReadOnlyTextField
+                  text={formData?.workflow || 'None'}
+                  label={'Workflow'}
+                />
+              </>
+            ) : (
+              <>
+                <Column>
+                  <Row>
+                    <EntityPickerInput
+                      label={'Select Stask'}
+                      formData={formData.stask}
+                      typeFilter={STaskBlueprint}
+                      onChange={(selectedStask: any) =>
+                        setFormData({
+                          ...formData,
+                          stask: selectedStask,
+                        })
+                      }
+                    />
+                    <div style={{ paddingTop: '16px' }}>
+                      <UploadFileButton
+                        formData={formData.stask}
+                        fileSuffix={['stask']}
+                        dataSourceId={dataSourceId}
+                        getBody={(filename: string) =>
+                          getNewSTaskBody(filename)
+                        }
+                        onUpload={(createdRef: TReference) =>
+                          setFormData({
+                            ...formData,
+                            stask: createdRef,
+                          })
+                        }
+                      />
+                    </div>
+                  </Row>
+                </Column>
+                <TextField
+                  id="workflowTask"
+                  label={'Workflow task'}
+                  value={formData?.workflowTask || ''}
+                  placeholder="Name of workflowTask to run"
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
                     setFormData({
                       ...formData,
-                      stask: selectedStask,
+                      workflowTask: event.target.value,
                     })
                   }
+                  style={{ width: INPUT_FIELD_WIDTH }}
                 />
-                <UploadFileButton
-                  formData={formData.stask}
-                  fileSuffix={['stask']}
-                  dataSourceId={dataSourceId}
-                  getBody={(filename: string) => getNewSTaskBody(filename)}
-                  onUpload={(createdRef: TReference) =>
+                <TextField
+                  id="workflow"
+                  label={'Workflow'}
+                  value={formData?.workflow || ''}
+                  placeholder="Name of workflow to run"
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
                     setFormData({
                       ...formData,
-                      stask: createdRef,
+                      workflow: event.target.value,
                     })
                   }
+                  style={{ width: INPUT_FIELD_WIDTH }}
                 />
-              </Row>
-            </Column>
-            <TextField
-              id="workflowTask"
-              label={'Workflow task'}
-              value={formData?.workflowTask || ''}
-              placeholder="Name of workflowTask to run"
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setFormData({
-                  ...formData,
-                  workflowTask: event.target.value,
-                })
-              }
-              style={{ width: INPUT_FIELD_WIDTH }}
-            />
-            <TextField
-              id="workflow"
-              label={'Workflow'}
-              value={formData?.workflow || ''}
-              placeholder="Name of workflow to run"
-              onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                setFormData({
-                  ...formData,
-                  workflow: event.target.value,
-                })
-              }
-              style={{ width: INPUT_FIELD_WIDTH }}
-            />
+              </>
+            )}
           </GroupWrapper>
         </HeaderWrapper>
 
@@ -179,80 +253,111 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
               }
               placement="right"
             >
-              <TextField
-                id="inputPath"
-                label={'Input path'}
-                value={formData?.simaInputFilePath || ''}
-                placeholder="The simulations input file"
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setFormData({
-                    ...formData,
-                    simaInputFilePath: event.target.value,
-                  })
-                }
-                style={{ width: INPUT_FIELD_WIDTH }}
-              />
+              {readOnly ? (
+                <ReadOnlyTextField
+                  text={formData?.simaInputFilePath || 'None'}
+                  label={'Input path'}
+                />
+              ) : (
+                <TextField
+                  id="inputPath"
+                  label={'Input path'}
+                  value={formData?.simaInputFilePath || ''}
+                  placeholder="The simulations input file path"
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                    setFormData({
+                      ...formData,
+                      simaInputFilePath: event.target.value,
+                    })
+                  }
+                  style={{ width: INPUT_FIELD_WIDTH }}
+                />
+              )}
             </Tooltip>
             <Tooltip
               enterDelay={300}
               title={'Which file SIMA will write the result into'}
               placement="right"
             >
-              <TextField
-                id="outputPath"
-                label={'Output path'}
-                value={formData?.simaOutputFilePath || ''}
-                placeholder="The simulations output file"
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setFormData({
-                    ...formData,
-                    simaOutputFilePath: event.target.value,
-                  })
-                }
-                style={{ width: INPUT_FIELD_WIDTH }}
-              />
+              {readOnly ? (
+                <ReadOnlyTextField
+                  text={formData?.simaOutputFilePath || 'None'}
+                  label={'Output path'}
+                />
+              ) : (
+                <TextField
+                  id="outputPath"
+                  label={'Output path'}
+                  value={formData?.simaOutputFilePath || ''}
+                  placeholder="The simulations output file path"
+                  onChange={(event: ChangeEvent<HTMLInputElement>) =>
+                    setFormData({
+                      ...formData,
+                      simaOutputFilePath: event.target.value,
+                    })
+                  }
+                  style={{ width: INPUT_FIELD_WIDTH }}
+                />
+              )}
             </Tooltip>
           </GroupWrapper>
         </HeaderWrapper>
 
         <HeaderWrapper>
-          <Typography variant="h3">Result </Typography>
+          <Typography variant="h3">Result</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Folder'} />
-              <DestinationPicker
-                formData={formData?.resultPath || ''}
-                onChange={(selectedFolder: string) =>
-                  setFormData({
-                    ...formData,
-                    resultPath: selectedFolder,
-                  })
-                }
-              />
+              {readOnly ? (
+                <ReadOnlyPathTextField
+                  label={'Folder'}
+                  path={formData?.resultPath || 'None'}
+                />
+              ) : (
+                <DestinationPicker
+                  label={'Folder'}
+                  formData={formData?.resultPath || ''}
+                  onChange={(selectedFolder: string) =>
+                    setFormData({
+                      ...formData,
+                      resultPath: selectedFolder,
+                    })
+                  }
+                />
+              )}
             </Column>
           </GroupWrapper>
         </HeaderWrapper>
-
-        <div style={{ justifyContent: 'space-around', display: 'flex' }}>
-          <Button
-            as="button"
-            variant="outlined"
-            color="danger"
-            onClick={() => setFormData({ ...document })}
+        {!readOnly && (
+          <div
+            style={{
+              justifyContent: 'space-around',
+              display: 'flex',
+              marginTop: '20px',
+            }}
           >
-            Reset
-          </Button>
-          {loading ? (
-            <Button>
-              <Progress.Dots />
+            <Button
+              as="button"
+              variant="outlined"
+              color="danger"
+              onClick={() => setFormData({ ...document })}
+            >
+              Reset
             </Button>
-          ) : (
-            <Button as="button" onClick={() => updateDocument(formData, true)}>
-              {!_.isEqual(document, formData) ? 'Save *' : 'Save'}
-            </Button>
-          )}
-        </div>
+            {loading ? (
+              <Button>
+                <Progress.Dots />
+              </Button>
+            ) : (
+              <Button
+                as="button"
+                onClick={() => updateDocument(formData, true)}
+              >
+                {!_.isEqual(document, formData) ? 'Save *' : 'Save'}
+              </Button>
+            )}
+          </div>
+        )}
       </div>
-    </div>
+    </Container>
   )
 }

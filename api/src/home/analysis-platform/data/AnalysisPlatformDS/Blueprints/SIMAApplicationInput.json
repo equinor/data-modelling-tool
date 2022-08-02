@@ -102,6 +102,12 @@
       "roles": ["dmss-admin", "domain-expert"]
     },
     {
+      "name": "View",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "view-sima-application-input",
+      "category": "view"
+    },
+    {
       "name": "Analysis Input",
       "type": "system/SIMOS/UiRecipe",
       "plugin": "edit-sima-application-input-input",
