@@ -58,6 +58,7 @@ const createChart = (tree: Node): string => {
     `
 
   // Add class elements to chart.
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   for (const [key, value] of Object.entries(classElements)) {
     chart += value
   }

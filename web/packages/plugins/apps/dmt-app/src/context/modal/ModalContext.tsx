@@ -54,7 +54,13 @@ const ModalContext = React.createContext({
   data: {},
 })
 
-const ModalInner = ({ data, ModalContent }) => {
+const ModalInner = ({
+  data,
+  ModalContent,
+}: {
+  data: any
+  ModalContent: any
+}) => {
   return (
     <>
       <ModalHeader>

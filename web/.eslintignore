@@ -1,4 +1,5 @@
 *.config.js
+*.config.base.js
 *.test.tsx
 /packages/plugins/ui/simpos-ui/src/*
 /packages/plugins/ui/simos-ui/src/*

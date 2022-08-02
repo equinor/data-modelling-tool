@@ -120,9 +120,9 @@ const ACLSelect = ({ value, handleChange }: any): JSX.Element => {
     <div style={{ width: '150px', padding: '10px' }}>
       <StyledSelect
         value={value}
-        onChange={(event) => handleChange(event.target.value)}
+        onChange={event => handleChange(event.target.value)}
       >
-        {Object.values(ACLEnum).map((accessLevel) => (
+        {Object.values(ACLEnum).map(accessLevel => (
           <StyledOption value={accessLevel} key={accessLevel}>
             {accessLevel}
           </StyledOption>
@@ -148,7 +148,7 @@ const ACLOwnerPanel = ({
         <Input
           style={{ width: '150px', marginLeft: '5px' }}
           placeholder={acl.owner}
-          onChange={(event) => handleChange({ owner: event.target.value })}
+          onChange={event => handleChange({ owner: event.target.value })}
         />
         <Icon name="edit_text" size={24} style={{ color: 'teal' }} />
       </CenteredRow>
@@ -167,7 +167,7 @@ const ACLOwnerPanel = ({
 
 interface URPanelProps {
   entities: { [key: string]: ACLEnum }
-  handleChange: Function
+  handleChange: (data: any) => void
   aclKey: string
 }
 
@@ -195,7 +195,7 @@ const ACLUserRolesPanel = ({
         <Input
           style={{ width: '170px' }}
           placeholder={getPlaceholderText()}
-          onChange={(e) => setNewRole(e.target.value)}
+          onChange={e => setNewRole(e.target.value)}
         />
         <Button
           onClick={() =>
@@ -304,7 +304,7 @@ export const AccessControlList = (props: {
       })
     )
       .then((userIdMappings: UserIdMapping[]) => {
-        userIdMappings.map((userIdMapping: UserIdMapping, index) => {
+        userIdMappings.map((userIdMapping: UserIdMapping) => {
           newUsers[userIdMapping.userId] = aclCopy.users[userIdMapping.username]
         })
         aclCopy.users = newUsers
@@ -339,7 +339,7 @@ export const AccessControlList = (props: {
             .then((newACL: TAcl) => {
               setDocumentACL(newACL)
             })
-            .catch((error) => {
+            .catch(error => {
               NotificationManager.error(
                 `Could not convert username ID to username (${error})`
               )
@@ -370,7 +370,7 @@ export const AccessControlList = (props: {
     setLoading(true)
 
     convertACLFromUsernameToUserId(acl)
-      .then((newACL) => {
+      .then(newACL => {
         dmssAPI.setAcl({
           dataSourceId: dataSourceId,
           documentId: documentId,
@@ -388,7 +388,7 @@ export const AccessControlList = (props: {
       .finally(() => setLoading(false))
   }
 
-  function handleChange(value: Object) {
+  function handleChange(value: any) {
     setDocumentACL({ ...documentACL, ...value })
   }
 

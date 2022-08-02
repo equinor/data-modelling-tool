@@ -3,7 +3,7 @@ import { Layout } from 'antd'
 import styled from 'styled-components'
 
 import { TContent } from '@dmt/common'
-import { backgroundColorDefault, backgroundColorLight } from '../Design/Colors'
+import { backgroundColorDefault } from '../Design/Colors'
 
 const { Content } = Layout
 

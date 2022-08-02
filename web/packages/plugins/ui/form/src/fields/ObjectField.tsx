@@ -171,9 +171,7 @@ export const orderAttributes = (attributes: any, order: any) => {
     }, {})
 
   const propertyHash = arrayToHash(attributes)
-  const orderFiltered = order.filter(
-    (prop) => prop === '*' || propertyHash[prop]
-  )
+  const orderFiltered = order.filter(prop => prop === '*' || propertyHash[prop])
   const orderHash = arrayToHash(orderFiltered)
   const rest = attributes.filter((prop: any) => !orderHash[prop])
   const restIndex = orderFiltered.indexOf('*')

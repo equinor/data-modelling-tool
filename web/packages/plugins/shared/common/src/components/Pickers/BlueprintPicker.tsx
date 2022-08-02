@@ -32,7 +32,6 @@ export const BlueprintPicker = (props: {
           }}
           type="string"
           value={truncatePathString(formData)}
-          onChange={() => {}}
           placeholder="Select"
           onClick={() => setShowModal(true)}
         />

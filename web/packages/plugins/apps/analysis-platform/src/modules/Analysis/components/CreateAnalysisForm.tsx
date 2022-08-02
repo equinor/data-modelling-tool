@@ -11,7 +11,7 @@ type Errors = {
 
 type CreateFormProps = {
   data?: any
-  onSubmit: Function
+  onSubmit: (analysis: TAnalysis) => void
 }
 
 const Wrapper = styled.div`

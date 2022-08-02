@@ -12,11 +12,9 @@ export interface IModels {
   dataSources: DataSource[]
 }
 
-export interface IOperations {}
-
 export interface IDataSources {
   models: IModels
-  operations: IOperations
+  operations: {}
 }
 
 export const useDataSources = (dmssAPI: DmssAPI): IDataSources => {

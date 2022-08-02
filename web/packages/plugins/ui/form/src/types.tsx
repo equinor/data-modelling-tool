@@ -6,7 +6,7 @@ export type FormProps = {
   onSubmit?: (data: any) => void
   widgets?: any
   config?: any
-  onOpen?: Function
+  onOpen?: (data: any) => void
 }
 
 export type ObjectFieldProps = {

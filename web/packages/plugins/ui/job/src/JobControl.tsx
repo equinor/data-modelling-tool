@@ -128,6 +128,7 @@ export const JobControl = (props: {
       .finally(() => setLoading(false))
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   async function removeJob(): Promise<void> {
     setLoading(true)
     try {

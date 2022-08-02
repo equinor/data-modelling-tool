@@ -86,6 +86,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
         ) : (
           <TreeView
             nodes={treeNodes}
+            // eslint-disable-next-line @typescript-eslint/no-empty-function
             onSelect={() => {}}
             NodeWrapper={SelectPackageButton}
             NodeWrapperOnClick={onSelect}

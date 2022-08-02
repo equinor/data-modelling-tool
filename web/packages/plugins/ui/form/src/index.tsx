@@ -25,6 +25,7 @@ const ErrorHelperText = styled.div`
 
 const widgets = {
   TypeWidget: (props: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { label, variant, onChange, value, helperText } = props
     const [blueprint, isLoading] = useBlueprint(value)
 
@@ -68,6 +69,7 @@ const widgets = {
     )
   },
   UploadFileWidget: (props: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { namePath, label, variant, onChange, value, helperText } = props
     const { dataSourceId } = useRegistryContext()
     const { getValues } = useFormContext()

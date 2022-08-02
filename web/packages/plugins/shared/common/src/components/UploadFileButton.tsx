@@ -1,6 +1,6 @@
 import { DmssAPI } from '../services'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { AuthContext } from '../index'
+import { AuthContext, TReference } from '../index'
 import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -33,9 +33,9 @@ export const addToPath = (
 // formData - only used to clear 'error' state when the parent form using this component changes
 export function UploadFileButton(props: {
   fileSuffix: string[]
-  getBody: Function
+  getBody: (filename: string) => any
   dataSourceId: string
-  onUpload: Function
+  onUpload: (createdRef: TReference) => void
   formData: string
 }) {
   const { fileSuffix, getBody, dataSourceId, onUpload, formData } = props
