@@ -58,6 +58,7 @@ export default class Mermaid extends React.Component {
     mermaid.contentLoaded()
   }
   render() {
-    return <div className="mermaid">{this.props.chart}</div> // eslint-disable-line
+    // eslint-disable-next-line react/prop-types
+    return <div className="mermaid">{this.props.chart}</div>
   }
 }

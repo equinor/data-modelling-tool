@@ -90,7 +90,7 @@ export const JobControl = (props: {
   useEffect(() => {
     setLoading(true)
     jobAPI
-      .statusJob('jobId')
+      .statusJob(jobId)
       .then((result: any) => {
         setJobLogs(result.data.log)
         setJobStatus(result.data.status)

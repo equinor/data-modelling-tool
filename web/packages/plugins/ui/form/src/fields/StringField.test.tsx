@@ -213,7 +213,9 @@ describe('StringField', () => {
       const formData = {
         foo: 'beep',
       }
-      render(<Form type="SingleField" formData={formData} />)
+      const { container } = render(
+        <Form type="SingleField" formData={formData} />
+      )
       await waitFor(() => {
         fireEvent.change(screen.getByRole('textbox'), { target: { value: '' } })
         expect(screen.getByRole('textbox').getAttribute('value')).toBe('')
@@ -236,7 +238,7 @@ describe('StringField', () => {
       ])
       const onSubmit = jest.fn()
       const formData = {}
-      render(
+      const { container } = render(
         <Form type="SingleField" formData={formData} onSubmit={onSubmit} />
       )
       await waitFor(() => {
@@ -263,7 +265,7 @@ describe('StringField', () => {
       ])
       const onSubmit = jest.fn()
       const formData = {}
-      render(
+      const { container } = render(
         <Form type="SingleField" formData={formData} onSubmit={onSubmit} />
       )
       await waitFor(() => {
