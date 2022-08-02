@@ -16,21 +16,13 @@ def create_error_response(
     error: Exception,
     status: int,
 ) -> JSONResponse:
-    types = {
-        400: "PARAMETERS_ERROR",
-        401: "UNAUTHORIZED",
-        403: "FORBIDDEN",
-        404: "RESOURCE_ERROR",
-        422: "UNPROCESSABLE_ENTITY",
-        500: "SYSTEM_ERROR",
-    }
     if error.__class__.__name__ == "HTTPError":
         message = error.response.text
     elif error.__class__.__name__ == "Exception":
         message = error.args[0]
     else:
         message = error.message
-    return JSONResponse({"type": types[status], "message": f"{error.__class__.__name__}: {message}"}, status)
+    return JSONResponse({"type": status, "message": f"{error.__class__.__name__}: {message}"}, status_code=status)
 
 
 class UseCase(object):

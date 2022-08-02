@@ -29,7 +29,7 @@ export class DmtAPI implements IDmtAPI {
           headers: { Authorization: `Bearer ${this.token}` },
         }
       )
-      .then(respose => {
+      .then((respose) => {
         return respose.data
       })
   }

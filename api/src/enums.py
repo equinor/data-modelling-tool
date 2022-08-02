@@ -3,14 +3,6 @@ from enum import Enum
 
 PRIMITIVES = {"string", "number", "integer", "boolean"}
 
-STATUS_CODES = {
-    "SUCCESS": 200,
-    "RESOURCE_ERROR": 404,
-    "FORBIDDEN": 403,
-    "PARAMETERS_ERROR": 400,
-    "SYSTEM_ERROR": 500,
-}
-
 
 BLOB_TYPES = "system/SIMOS/blob_types/PDF"
 
