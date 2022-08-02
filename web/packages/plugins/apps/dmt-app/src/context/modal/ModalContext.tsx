@@ -50,6 +50,7 @@ const ModalContext = React.createContext({
   content: null,
   closeModal: () => null,
   open: false,
+  // eslint-disable-next-line
   openModal: (content: any, data: any) => null,
   data: {},
 })
@@ -71,7 +72,7 @@ const ModalInner = ({
   )
 }
 
-const Modal = ({ data }) => {
+const Modal = ({ data }: { data: any }) => {
   const { closeModal, content: ModalContent } = useModalContext()
   if (!ModalContent) {
     return null
@@ -88,7 +89,7 @@ export const useModalContext = () => {
   return React.useContext(ModalContext)
 }
 
-export const ModalProvider = ({ children }) => {
+export const ModalProvider = ({ children }: { children: any }) => {
   const [{ open, content, data }, setContent] = React.useState({
     open: false,
     content: () => ({}),

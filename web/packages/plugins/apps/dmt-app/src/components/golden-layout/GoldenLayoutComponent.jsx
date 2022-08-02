@@ -13,6 +13,7 @@ export class GoldenLayoutComponent extends React.Component {
   render() {
     let panels = Array.from(this.state.renderPanels || [])
     return (
+      // eslint-disable-next-line react/prop-types
       <div ref={this.containerRef} {...this.props.htmlAttrs}>
         {panels.map(panel => {
           return ReactDOM.createPortal(
@@ -46,11 +47,16 @@ export class GoldenLayoutComponent extends React.Component {
   goldenLayoutInstance = undefined
 
   componentDidMount() {
+    // eslint-disable-next-line react/prop-types
     this.goldenLayoutInstance = new GoldenLayout(
+      // eslint-disable-next-line react/prop-types
       this.props.config || {},
+      // eslint-disable-next-line react/prop-types
       this.containerRef.current
     )
+    // eslint-disable-next-line react/prop-types
     if (this.props.registerComponents instanceof Function)
+      // eslint-disable-next-line react/prop-types
       this.props.registerComponents(this.goldenLayoutInstance)
     this.goldenLayoutInstance.reactContainer = this
     this.goldenLayoutInstance.init()

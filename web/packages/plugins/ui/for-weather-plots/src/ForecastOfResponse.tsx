@@ -53,6 +53,7 @@ export function FoRResultWrapper(props: {
     },
     getPlots: (): TPlot[] => {
       const plots: TPlot[] = []
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(plotWindows).forEach(([key, plotWindow]: any) => {
         plotWindow.graphs?.forEach((graph: TGraph) => {
           graph.type = Blueprints.GRAPH

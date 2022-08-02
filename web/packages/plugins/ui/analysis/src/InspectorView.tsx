@@ -26,6 +26,7 @@ export const InspectorView = (props: DmtUIPlugin): JSX.Element => {
     <>
       <AnalysisInfoCard
         analysis={analysis}
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         addJob={(newJob: TJob) => false}
         jobs={jobs}
         dataSourceId={dataSourceId}

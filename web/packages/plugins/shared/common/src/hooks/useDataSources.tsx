@@ -11,10 +11,12 @@ import { DataSource } from '../services'
 export interface IModels {
   dataSources: DataSource[]
 }
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface IOperations {}
 
 export interface IDataSources {
   models: IModels
-  operations: {}
+  operations: IOperations
 }
 
 export const useDataSources = (dmssAPI: DmssAPI): IDataSources => {

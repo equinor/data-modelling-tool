@@ -171,7 +171,9 @@ export const orderAttributes = (attributes: any, order: any) => {
     }, {})
 
   const propertyHash = arrayToHash(attributes)
-  const orderFiltered = order.filter(prop => prop === '*' || propertyHash[prop])
+  const orderFiltered = order.filter(
+    (prop) => prop === '*' || propertyHash[prop]
+  )
   const orderHash = arrayToHash(orderFiltered)
   const rest = attributes.filter((prop: any) => !orderHash[prop])
   const restIndex = orderFiltered.indexOf('*')
@@ -364,8 +366,11 @@ export const NonContained = (props: any): JSX.Element => {
         control={control}
         defaultValue={initialValue}
         render={({
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           field: { ref, onChange, value },
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           fieldState: { invalid, error },
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           formState,
         }) => {
           if (value && value._id) {

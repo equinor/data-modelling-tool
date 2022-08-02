@@ -12,7 +12,9 @@ export const View = () => {
   }>()
   const [
     document,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     documentLoading,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setDocument,
     error,
   ] = useDocument<TValidEntity>(data_source, entity_id)

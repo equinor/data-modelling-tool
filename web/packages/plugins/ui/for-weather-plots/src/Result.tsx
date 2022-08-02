@@ -297,6 +297,7 @@ export default (props: {
   const [graphInfo, setGraphInfo] = useState<TGraphInfo[]>([])
   const [variableRuns, setVariableRuns] = useState<any[]>([])
   const [chartData, setChartData] = useState<TLineChartDataPoint[]>([])
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [document, isLoading, updateDocument, error] = useDocument<any>(
     DEFAULT_DATASOURCE_ID,
     result._id,
