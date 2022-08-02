@@ -21,7 +21,7 @@ from utils.create_application_utils import zip_all
 from utils.logging import logger
 from store_headers_middleware import StoreHeadersMiddleware
 
-prefix = "/api"
+prefix = "/api/v1"
 
 
 def create_app():

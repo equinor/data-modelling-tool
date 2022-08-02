@@ -86,7 +86,7 @@ Feature: Get all related blueprints
     """
 
   Scenario: Get all connected blueprints
-    Given i access the resource url "/api/blueprints/blueprints/root_package/ParentBlueprint"
+    Given i access the resource url "/api/v1/blueprints/blueprints/root_package/ParentBlueprint"
     When i make a "GET" request
     Then the response status should be "OK"
     And the response should contain

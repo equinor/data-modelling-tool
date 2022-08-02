@@ -2,7 +2,7 @@ import axios from 'axios'
 
 export class JobApi {
   urlRoot = location.origin
-  jobUrl = `${this.urlRoot}/api/job`
+  jobUrl = `${this.urlRoot}/api/v1/job`
   requestConfig = {}
 
   constructor(token: string) {
