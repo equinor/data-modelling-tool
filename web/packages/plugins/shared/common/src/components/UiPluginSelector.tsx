@@ -142,7 +142,8 @@ export function UIPluginSelector(props: {
   } = props
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
-    [dataSourceId, documentId] = absoluteDottedId.split('/', 2)
+    dataSourceId = absoluteDottedId.split('/', 2)[0]
+    documentId = absoluteDottedId.split('/', 2)[1]
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(type)
   // @ts-ignore
