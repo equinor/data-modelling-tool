@@ -5,9 +5,15 @@ repos:
     - id: check-ast
       language_version: python3.10
     - id: check-merge-conflict
+    - id: check-case-conflict
     - id: check-json
+    - id: check-toml
     - id: check-yaml
-      exclude: ^IaC/ansible/(hosts.yml|vars/)
+    - id: trailing-whitespace
+      exclude: ^.*\.(lock)$||^docs\/
+    - id: mixed-line-ending
+      exclude: ^.*\.(lock)$||^docs\/
+    - id: detect-private-key
 
 - repo: https://github.com/ambv/black
   rev: 22.3.0
