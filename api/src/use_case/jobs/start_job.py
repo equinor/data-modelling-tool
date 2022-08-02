@@ -3,8 +3,7 @@ from services.job_service import JobService
 from starlette.responses import JSONResponse
 
 
-class StartJobUseCase(uc.UseCase):
-    def process_request(self, request_object):
-        job_service = JobService()
-        result = job_service.register_job(request_object["job_id"])
-        return JSONResponse(result)
+def start_job_use_case(job_id: str) -> str:
+    job_service = JobService()
+    result: str = job_service.register_job(job_id)
+    return result

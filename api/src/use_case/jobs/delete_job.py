@@ -3,8 +3,7 @@ from services.job_service import JobService
 from starlette.responses import JSONResponse
 
 
-class DeleteJobUseCase(uc.UseCase):
-    def process_request(self, request_object):
-        job_service = JobService()
-        result = job_service.remove_job(request_object["job_id"])
-        return JSONResponse(result)
+def delete_job_use_case(job_id: str) -> str:
+    job_service = JobService()
+    result: str = job_service.remove_job(job_id)
+    return result

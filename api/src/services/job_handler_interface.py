@@ -4,7 +4,7 @@ from enum import Enum
 from typing import Tuple
 
 
-class JobStatus(Enum):
+class JobStatus(str, Enum):
     REGISTERED = "registered"
     STARTING = "starting"
     WAITING = "Waiting"  # todo the api fails if this is not included... cannot understand why

@@ -1,10 +1,13 @@
-from restful import use_case as uc
 from services.job_service import JobService
-from starlette.responses import JSONResponse
+from pydantic import BaseModel
 
 
-class GetResultJobUseCase(uc.UseCase):
-    def process_request(self, request_object):
-        job_service = JobService()
-        result = job_service.get_job_result(request_object["job_id"])
-        return JSONResponse(result)
+class GetJobResultResponse(BaseModel):
+    message: str
+    result: str
+
+
+def get_job_result_use_case(job_id: str) -> GetJobResultResponse:
+    job_service = JobService()
+    message, bytesvalue = job_service.get_job_result(job_id)
+    return GetJobResultResponse(**{"message": message, "result": bytesvalue.decode("UTF-8")})
