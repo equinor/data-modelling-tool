@@ -38,7 +38,7 @@ const StyledTreeNode = styled.div`
 
 export type NodeWrapperProps = {
   node: TreeNode
-  removeNode?: Function
+  removeNode?: () => void
   children: any
   onSelect?: (node: TreeNode) => void
 }

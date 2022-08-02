@@ -4,7 +4,7 @@ import { Select, AuthContext } from '@dmt/common'
 import DmssAPI from '../../services/api/DmssAPI'
 
 export const JobHandlerPicker = (props: {
-  onChange: Function
+  onChange: (data: string) => void
   formData: string
 }) => {
   const { onChange, formData } = props

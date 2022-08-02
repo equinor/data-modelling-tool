@@ -3,7 +3,7 @@ import { useSearch } from '../../index'
 import { Select } from '@dmt/common'
 
 export const EntityPickerDropdown = (props: {
-  onChange: Function
+  onChange: (data: any) => void
   typeFilter: string
   dataSourceId: string
   formData: any

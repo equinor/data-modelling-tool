@@ -23,7 +23,7 @@ export const FSTreeProvider = (props: { children: ReactNode }) => {
   const appConfig = useContext(ApplicationContext)
   const [loading, setLoading] = useState<boolean>(true)
   const [treeNodes, setTreeNodes] = useState<TreeNode[]>([])
-
+  //@ts-ignore
   const tree: Tree = new Tree(token, (t: Tree) => setTreeNodes([...t]))
 
   useEffect(() => {

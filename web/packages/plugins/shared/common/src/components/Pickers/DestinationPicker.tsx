@@ -68,7 +68,6 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
           disabled={disabled || false}
           type="string"
           value={truncatePathString(formData)}
-          onChange={() => {}}
           placeholder="Select folder"
           onClick={() => setShowModal(true)}
         />
@@ -115,7 +114,9 @@ export const SelectPackageButton = (props: NodeWrapperProps) => {
             style={{ height: '22px' }}
             variant="ghost"
             onClick={() => {
-              onSelect!(node)
+              if (onSelect) {
+                return onSelect(node)
+              }
             }}
           >
             Select

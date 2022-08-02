@@ -134,7 +134,7 @@ const ACLSelect = ({ value, handleChange }: any): JSX.Element => {
 
 interface ACLOwnerPanelProps {
   acl: TAcl
-  handleChange: Function
+  handleChange: (data: any) => void
 }
 
 const ACLOwnerPanel = ({
@@ -148,9 +148,7 @@ const ACLOwnerPanel = ({
         <Input
           style={{ width: '150px', marginLeft: '5px' }}
           placeholder={acl.owner}
-          onChange={(event): Event =>
-            handleChange({ owner: event.target.value })
-          }
+          onChange={(event) => handleChange({ owner: event.target.value })}
         />
         <Icon name="edit_text" size={24} style={{ color: 'teal' }} />
       </CenteredRow>
@@ -255,10 +253,7 @@ export const AccessControlList = (props: {
   const [loadingACLDocument, setLoadingACLDocument] = useState<boolean>(false)
   const [tokenWithReadAccess, setTokenWithReadAccess] = useState<string>('')
   const { token } = useContext(AuthContext)
-  const [refreshToken, setRefreshToken] = useLocalStorage(
-    'ROCP_refreshToken',
-    ''
-  )
+  const [refreshToken] = useLocalStorage('ROCP_refreshToken', '')
   const dmssAPI = new DmssAPI(token)
 
   const [documentACL, setDocumentACL] = useState<TAcl>({

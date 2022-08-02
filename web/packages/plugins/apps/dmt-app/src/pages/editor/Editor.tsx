@@ -15,8 +15,7 @@ import {
   UIPluginSelector,
 } from '@dmt/common'
 import { NodeRightClickMenu } from '../../components/context-menu/ContextMenu'
-//@ts-ignore
-import { NotificationManager } from 'react-notifications'
+
 import { Progress } from '@equinor/eds-core-react'
 
 export const TreeWrapper = styled.div`
