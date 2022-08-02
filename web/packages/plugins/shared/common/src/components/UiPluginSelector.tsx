@@ -33,6 +33,14 @@ const PathWrapper = styled.div`
   overflow: hidden;
 `
 
+const PathPartLink = styled.a`
+  color: #007079;
+  &:hover {
+    color: #004f55;
+    font-weight: bold;
+  }
+`
+
 const PathPart = styled.div`
   margin-top: 0;
   margin-right: 15px;
@@ -60,7 +68,10 @@ export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
         return (
           <div style={{ display: 'flex', flexWrap: 'nowrap' }} key={part}>
             {index !== 0 && <PathPart>/</PathPart>}
-            <PathPart as="a" href={getHref(dataSource, parts, index)}>
+            <PathPart
+              as={PathPartLink}
+              href={getHref(dataSource, parts, index)}
+            >
               {part}
             </PathPart>
           </div>
