@@ -2,14 +2,12 @@ import importlib
 import json
 from datetime import datetime
 from pathlib import Path
-from time import sleep
 from typing import Callable, Tuple, Union
 import redis
 import traceback
 
 import requests
 from redis import AuthenticationError
-from requests import HTTPError
 
 from config import config
 from enums import SIMOS
@@ -153,10 +151,13 @@ class JobService:
                 raise error
         except NotImplementedError as error:
             job.log = (
-                f"{job.log}\n\n The jobHandler '{type(job_handler).__name__}' is missing some implementations: {error}"
+                f"{job.log}\n\nThe jobHandler '{type(job_handler).__name__}' is missing some implementations: {error}"
             )
         except KeyError as error:
-            job.log = f"{job.log}\n\n The jobHandler '{type(job_handler).__name__}' tried to access a missing attribute: {error}"
+            job.log = (
+                f"{job.log}\n\nThe jobHandler '{type(job_handler).__name__}' "
+                f"tried to access a missing attribute: {error}"
+            )
         except Exception as error:
             job.log = f"{job.log}\n\n {error}"
         finally:
