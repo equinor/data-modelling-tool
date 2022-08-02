@@ -10,7 +10,7 @@ import { DemoCanvasWidget } from '../helpers/DemoCanvasWidget'
 const idFlag = '__id'
 
 const makeNode = (snode: any, ports: any) => {
-  var node = undefined
+  let node = undefined
 
   if (snode.type.includes('sima/workflow/WorkflowInput')) {
     node = new DefaultNodeModel({
@@ -19,7 +19,7 @@ const makeNode = (snode: any, ports: any) => {
     })
     console.log(snode)
     node.setPosition(snode.x, snode.y)
-    let port = node.addOutPort('')
+    const port = node.addOutPort('')
     ports[snode.outputSlot[idFlag]] = port
   } else if (snode.type.includes('sima/workflow/WorkflowOutput')) {
     node = new DefaultNodeModel({
@@ -27,7 +27,7 @@ const makeNode = (snode: any, ports: any) => {
       color: 'rgb(192,255,0)',
     })
     node.setPosition(snode.x, snode.y)
-    let port = node.addInPort('')
+    const port = node.addInPort('')
     ports[snode.inputSlot[idFlag]] = port
   } else if (snode.type.includes('sima/workflow/RealNumberInput')) {
     node = new DefaultNodeModel({
@@ -36,10 +36,10 @@ const makeNode = (snode: any, ports: any) => {
     })
     node.setPosition(snode.x, snode.y)
 
-    let portName = snode.array
+    const portName = snode.array
       ? JSON.stringify(snode.values)
       : snode.value.toString()
-    let port = node.addOutPort(portName)
+    const port = node.addOutPort(portName)
     ports[snode.outputSlot[idFlag]] = port
   } else if (snode.type.includes('sima/post/AddConstantFilter')) {
     let nodeName =
@@ -54,8 +54,8 @@ const makeNode = (snode: any, ports: any) => {
       color: 'rgb(192,155,0)',
     })
     node.setPosition(snode.x, snode.y)
-    let portout = node.addOutPort('o')
-    let portin = node.addInPort('i')
+    const portout = node.addOutPort('o')
+    const portin = node.addInPort('i')
 
     ports[snode.filterOutputSlots[0][idFlag]] = portout
     ports[snode.filterInputSlots[0][idFlag]] = portin
@@ -67,21 +67,21 @@ const makeNode = (snode: any, ports: any) => {
     node.setPosition(snode.x, snode.y)
 
     for (var ind = 0; ind < snode.workflowOutputSlots.length; ind++) {
-      let sport = snode.workflowOutputSlots[ind]
-      let port = node.addOutPort(sport.name)
+      const sport = snode.workflowOutputSlots[ind]
+      const port = node.addOutPort(sport.name)
       ports[sport[idFlag]] = port
     }
 
     for (var ind = 0; ind < snode.workflowInputSlots.length; ind++) {
-      let sport = snode.workflowInputSlots[ind]
-      let port = node.addInPort(sport.name)
+      const sport = snode.workflowInputSlots[ind]
+      const port = node.addInPort(sport.name)
       ports[sport[idFlag]] = port
     }
 
     if (snode.input == 'From input') {
       for (var ind = 0; ind < snode.variableInputSetSlots.length; ind++) {
-        let sport = snode.variableInputSetSlots[ind]
-        let port = node.addInPort(sport.name)
+        const sport = snode.variableInputSetSlots[ind]
+        const port = node.addInPort(sport.name)
         ports[sport[idFlag]] = port
       }
     }
@@ -93,14 +93,14 @@ const makeNode = (snode: any, ports: any) => {
     node.setPosition(snode.x, snode.y)
 
     for (var ind = 0; ind < snode.workflowOutputSlots.length; ind++) {
-      let sport = snode.workflowOutputSlots[ind]
-      let port = node.addOutPort(sport.name)
+      const sport = snode.workflowOutputSlots[ind]
+      const port = node.addOutPort(sport.name)
       ports[sport[idFlag]] = port
     }
 
     for (var ind = 0; ind < snode.workflowInputSlots.length; ind++) {
-      let sport = snode.workflowInputSlots[ind]
-      let port = node.addInPort(sport.name)
+      const sport = snode.workflowInputSlots[ind]
+      const port = node.addInPort(sport.name)
       ports[sport[idFlag]] = port
     }
   } else if (snode.type.includes('sima/workflow/ConditionInputNode')) {
@@ -110,13 +110,13 @@ const makeNode = (snode: any, ports: any) => {
     })
     node.setPosition(snode.x, snode.y)
 
-    let sport = snode.outputSlot
-    let port = node.addOutPort(sport.name)
+    const sport = snode.outputSlot
+    const port = node.addOutPort(sport.name)
     ports[sport[idFlag]] = port
 
     for (var ind = 0; ind < snode.variableInputSlots.length; ind++) {
-      let sport = snode.variableInputSlots[ind]
-      let port = node.addInPort(sport.name)
+      const sport = snode.variableInputSlots[ind]
+      const port = node.addInPort(sport.name)
       ports[sport[idFlag]] = port
     }
   } else if (snode.type.includes('sima/post/SignalSelectionOperation')) {
@@ -126,16 +126,16 @@ const makeNode = (snode: any, ports: any) => {
     })
     node.setPosition(snode.x, snode.y)
 
-    let sport = snode.inputSlot
-    let port = node.addInPort(sport.name)
+    const sport = snode.inputSlot
+    const port = node.addInPort(sport.name)
     ports[sport[idFlag]] = port
 
     for (var ind = 0; ind < snode.requirementOutputSlots.length; ind++) {
-      let sport = snode.requirementOutputSlots[ind]
-      var pname = ''
+      const sport = snode.requirementOutputSlots[ind]
+      let pname = ''
       if (sport.useQuery == false) {
-        var filters = []
-        for (var usi = 0; usi < sport.userRequirements.length; usi++) {
+        const filters = []
+        for (let usi = 0; usi < sport.userRequirements.length; usi++) {
           filters.push(
             sport.userRequirements[usi].attribute +
               '=' +
@@ -144,7 +144,7 @@ const makeNode = (snode: any, ports: any) => {
         }
         pname = '[' + filters.join('&') + ']  ' + sport.name
       }
-      let port = node.addOutPort(pname)
+      const port = node.addOutPort(pname)
       ports[sport[idFlag]] = port
     }
   }
@@ -152,10 +152,10 @@ const makeNode = (snode: any, ports: any) => {
 }
 
 const makeLink = (slink: any, ports: any) => {
-  var link = undefined
+  let link = undefined
 
-  let port1 = ports[slink.fromSlot[idFlag]]
-  let port2 = ports[slink.toSlot[idFlag]]
+  const port1 = ports[slink.fromSlot[idFlag]]
+  const port2 = ports[slink.toSlot[idFlag]]
 
   try {
     link = port1.link(port2)
@@ -172,16 +172,16 @@ const MakeDiagram = ({ document }: any) => {
   console.log(document)
 
   //1) setup the diagram engine
-  var engine = createEngine()
+  const engine = createEngine()
 
   //2) setup the diagram model
-  var model = new DiagramModel()
+  const model = new DiagramModel()
 
-  var nodes = []
-  var ports = {}
+  const nodes = []
+  const ports = {}
 
   for (var i = 0; i < document.nodes.length; i++) {
-    var node = makeNode(document.nodes[i], ports)
+    const node = makeNode(document.nodes[i], ports)
     if (node != undefined) {
       nodes.push(node)
       model.addAll(node)
@@ -189,7 +189,7 @@ const MakeDiagram = ({ document }: any) => {
   }
 
   for (var i = 0; i < document.connections.length; i++) {
-    var link = makeLink(document.connections[i], ports)
+    const link = makeLink(document.connections[i], ports)
     if (link != undefined) {
       model.addAll(link)
     }
