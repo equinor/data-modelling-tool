@@ -1,9 +1,8 @@
 import json
-from typing import Union
-
+from store_headers_middleware import get_auth_header, get_access_key_header
 import requests
 from dmss_api.apis import DefaultApi
-from flask import request
+from typing import Union
 from requests import HTTPError
 
 from config import Config
@@ -14,8 +13,9 @@ dmss_api.api_client.configuration.host = Config.DMSS_API
 
 
 def get_access_token() -> Union[str, None]:
-    if auth_header_value := request.headers.get("Authorization"):
-        head_split = auth_header_value.split(" ")
+    auth_header = get_auth_header()
+    if auth_header:
+        head_split = auth_header.split(" ")
         if head_split[0].lower() == "bearer" and len(head_split) == 2:
             return head_split[1]
         raise ValueError("Authorization header malformed. Should be; 'Bearer myAccessTokenString'")
@@ -86,7 +86,8 @@ def get_personal_access_token() -> str:
     """
     Fetches a long lived Access Token
     """
-    if pat_in_header := request.headers.get("Access-Key"):
+    pat_in_header = get_access_key_header()
+    if pat_in_header:
         return pat_in_header
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + get_access_token()
     return dmss_api.token_create()

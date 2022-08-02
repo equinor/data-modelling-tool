@@ -1,28 +1,11 @@
-import json
-
-from flask import Blueprint, request, Response
-
-from enums import STATUS_CODES
+from fastapi import APIRouter
 from use_case.instantiate_entity import InstantiateEntityUseCase
-from utils.logging import logger
+from use_case.instantiate_entity import BasicEntity
 
-blueprint = Blueprint("entities", __name__)
-
-# Auth is handled by DMSS
+router = APIRouter(tags=["Entities"], prefix="/entity")
 
 
-@blueprint.route("/api/entity", methods=["POST"])
-def instantiate():
-    request_data = request.get_json()
-    try:
-        name = request_data["name"]
-        type = request_data["type"]
-    except [KeyError, TypeError]:
-        msg = "Invalid request for 'instantiate entity'. 'name' or 'type' missing from request"
-        logger.error(msg)
-        raise Exception(msg)
-
-    logger.info(f"Creating entity for type '{type}'")
+@router.post("", operation_id="instantiate_entity")
+def instantiate(entity: BasicEntity):
     use_case = InstantiateEntityUseCase()
-    response = use_case.execute({"name": name, "type": type})
-    return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+    return use_case.execute(entity)
