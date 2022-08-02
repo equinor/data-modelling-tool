@@ -40,7 +40,6 @@ export const AttributeField = (props: AttributeFieldProps) => {
   switch (fieldType) {
     case 'object':
       // Get the ui recipe name that should be used for nested
-      const uiRecipeName = uiAttribute && uiAttribute.uiRecipe
       return (
         <ObjectField
           namePath={namePath}
@@ -48,7 +47,7 @@ export const AttributeField = (props: AttributeFieldProps) => {
           contained={attribute.contained}
           type={attribute.attributeType}
           optional={attribute.optional}
-          uiRecipeName={uiRecipeName}
+          uiRecipeName={uiAttribute && uiAttribute.uiRecipe}
           uiAttribute={uiAttribute}
         />
       )

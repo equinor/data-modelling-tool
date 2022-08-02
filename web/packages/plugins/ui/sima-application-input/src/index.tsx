@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import { DmtPluginType } from '@dmt/common'
 import { EditSimaApplicationInput } from './EditSimaApplicationInput'
 import { UpdateInputOnly } from './UpdateInputOnly'

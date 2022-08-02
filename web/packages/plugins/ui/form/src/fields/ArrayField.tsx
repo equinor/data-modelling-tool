@@ -40,13 +40,13 @@ const isPrimitiveType = (value: string): boolean => {
 export default function Fields(props: any) {
   const { namePath, displayLabel, type, uiAttribute } = props
 
-  const { documentId, dataSourceId, onOpen, setValue } = useRegistryContext()
+  const { documentId, dataSourceId, onOpen } = useRegistryContext()
   const { token } = useContext(AuthContext)
   const dmtApi = new DmtAPI(token)
   const dmssAPI = new DmssAPI(token)
   const { control } = useFormContext()
 
-  const { fields, append, remove, prepend } = useFieldArray({
+  const { fields, append, remove } = useFieldArray({
     control,
     name: namePath,
   })
@@ -61,7 +61,7 @@ export default function Fields(props: any) {
           data: JSON.stringify([...fields, newEntity]),
           updateUncontained: true,
         })
-        .then((response: any) => {
+        .then(() => {
           append(newEntity)
         })
         .catch((error: Error) => {
@@ -107,11 +107,7 @@ export default function Fields(props: any) {
       <Wrapper>
         <Typography bold={true}>{displayLabel}</Typography>
         <FixedContainer>
-          <DynamicTable
-            columns={columns}
-            rows={rows}
-            onRowClicked={(data: any) => {}}
-          />
+          <DynamicTable columns={columns} rows={rows} />
         </FixedContainer>
         <Button
           variant="outlined"

@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import { DmtPluginType } from '@dmt/common'
 import { EditContainer } from './EditContainer'
 
