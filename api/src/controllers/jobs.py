@@ -2,10 +2,10 @@ import json
 
 from fastapi import APIRouter
 from config import config
-from use_case.delete_job import DeleteJobUseCase
-from use_case.get_result_job import GetResultJobUseCase
-from use_case.start_job import StartJobUseCase
-from use_case.status_job import StatusJobUseCase
+from use_case.jobs.delete_job import DeleteJobUseCase
+from use_case.jobs.get_result_job import GetResultJobUseCase
+from use_case.jobs.start_job import StartJobUseCase
+from use_case.jobs.status_job import StatusJobUseCase
 from starlette.responses import JSONResponse
 
 router = APIRouter(tags=["Jobs"], prefix="/job")

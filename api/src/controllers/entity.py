@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from use_case.instantiate_entity import InstantiateEntityUseCase
-from use_case.instantiate_entity import BasicEntity
+from use_case.entity.instantiate_entity import InstantiateEntityUseCase
+from use_case.entity.instantiate_entity import BasicEntity
 
 router = APIRouter(tags=["Entities"], prefix="/entity")
 

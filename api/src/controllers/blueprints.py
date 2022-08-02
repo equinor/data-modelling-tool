@@ -1,5 +1,8 @@
 from fastapi import APIRouter
-from use_case.get_related_blueprints_use_case import GetRelatedBlueprintsRequestObject, GetRelatedBlueprintsUseCase
+from use_case.blueprints.get_related_blueprints_use_case import (
+    GetRelatedBlueprintsRequestObject,
+    GetRelatedBlueprintsUseCase,
+)
 from utils.logging import logger
 
 router = APIRouter(tags=["Blueprints"], prefix="/blueprints")
