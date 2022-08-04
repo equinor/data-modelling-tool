@@ -75,13 +75,7 @@ export interface Repository {
      * @type {string}
      * @memberof Repository
      */
-    account_name?: string;
-    /**
-     * 
-     * @type {string}
-     * @memberof Repository
-     */
-    account_key?: string;
+    account_url?: string;
     /**
      * 
      * @type {string}
