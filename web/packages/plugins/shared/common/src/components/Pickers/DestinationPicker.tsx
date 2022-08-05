@@ -15,7 +15,13 @@ import {
   ApplicationContext,
   Tree,
 } from '../../index'
-import { Button, Input, Progress, Tooltip } from '@equinor/eds-core-react'
+import {
+  Button,
+  Input,
+  Label,
+  Progress,
+  Tooltip,
+} from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
 export type DestinationPickerProps = {
@@ -23,10 +29,11 @@ export type DestinationPickerProps = {
   formData: any
   disabled?: boolean
   scope?: string // Path to a folder to limit the view within
+  label?: string
 }
 
 export const DestinationPicker = (props: DestinationPickerProps) => {
-  const { onChange, formData, disabled, scope } = props
+  const { onChange, formData, disabled, scope, label } = props
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
   const [showModal, setShowModal] = useState<boolean>(false)
@@ -57,6 +64,7 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
 
   return (
     <div>
+      <Label label={label || 'Destination'} />
       <Tooltip
         title={truncatePathString(formData) === formData ? '' : formData}
       >

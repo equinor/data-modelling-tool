@@ -1,40 +1,39 @@
 import json
-from flask import Blueprint, Response
 
+from fastapi import APIRouter
 from config import config
-from enums import STATUS_CODES
 from use_case.delete_job import DeleteJobUseCase
 from use_case.get_result_job import GetResultJobUseCase
 from use_case.start_job import StartJobUseCase
 from use_case.status_job import StatusJobUseCase
+from starlette.responses import JSONResponse
 
-blueprint = Blueprint("jobs", __name__)
+router = APIRouter(tags=["Jobs"], prefix="/job")
+
 
 if config.JOB_SERVICE_ENABLED:
 
-    @blueprint.route("/api/job/<path:job_id>", methods=["POST"])
+    @router.post("/{job_id:path}", operation_id="start_job")
     def start(job_id: str):
         use_case = StartJobUseCase()
-        response = use_case.execute({"job_id": job_id})
-        return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+        return use_case.execute({"job_id": job_id})
 
-    @blueprint.route("/api/job/<path:job_id>", methods=["GET"])
+    @router.get("/{job_id:path}", operation_id="job_status")
     def status(job_id: str):
         use_case = StatusJobUseCase()
-        response = use_case.execute({"job_id": job_id})
-        return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+        return use_case.execute({"job_id": job_id})
 
-    @blueprint.route("/api/job/<path:job_id>", methods=["DELETE"])
+    @router.delete("/{job_id:path}", operation_id="remove_job")
     def remove(job_id: str):
         use_case = DeleteJobUseCase()
-        response = use_case.execute({"job_id": job_id})
-        return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+        return use_case.execute({"job_id": job_id})
 
-    @blueprint.route("/api/job/<path:job_id>/result", methods=["GET"])
+    @router.get("/{job_id:path}/result", operation_id="job_result")
     def result(job_id: str):
         use_case = GetResultJobUseCase()
         response = use_case.execute({"job_id": job_id})
         message, bytesvalue = response.value
-        return Response(
-            json.dumps({"message": message, "result": bytesvalue.decode("UTF-8")}), status=STATUS_CODES[response.type]
+        return JSONResponse(
+            json.dumps({"message": message, "result": bytesvalue.decode("UTF-8")}),
+            status_code=response.status_code,
         )

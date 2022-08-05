@@ -1,7 +1,7 @@
 #!/bin/bash
 set -eu
 ENVIRON=${ENVIRONMENT:="production"}
-FLA_ENV=${FLASK_ENV:="production"}
+API_ENV=${API_ENV:="production"}
 
 # Wait until the storage services is ready before continuing.
 # This is to ensure that the services is initialized before the API tries to connect.
@@ -33,7 +33,7 @@ install_dmss_package() {
 }
 
 # Try to install the local version of the DMSS-API pypi package. Soft fail.
-if [ "$ENVIRON" = 'local' ] && [ "$FLA_ENV" = 'development' ]; then
+if [ "$ENVIRON" = 'local' ] && [ "$API_ENV" = 'development' ]; then
   install_dmss_package
 fi
 
@@ -83,7 +83,7 @@ fi
 
 if [ "$1" = 'api' ]; then
   service_is_ready
-  flask run --host=0.0.0.0
+  gunicorn app:create_app --workers 4 --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:5000
 elif [ "$1" = 'behave' ]; then
   service_is_ready
   shift

@@ -22,6 +22,7 @@ export interface DmtUIPlugin {
   onSubmit?: (data: any) => void
   onOpen?: (data: any) => void
   config?: any
+  readOnly?: boolean
 }
 
 export enum DmtPluginType {

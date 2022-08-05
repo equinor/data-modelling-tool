@@ -35,7 +35,7 @@ const CardWrapper = styled.div`
   width: 400px;
   box-sizing: border-box;
   display: grid;
-  grid-template-columns: repeat(2, 320px);
+  grid-template-columns: repeat(1, auto);
   grid-gap: 32px 32px;
   border-radius: 5px;
 `

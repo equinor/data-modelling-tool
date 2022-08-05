@@ -1,16 +1,7 @@
 from enum import Enum
 
-from restful import response_object
 
 PRIMITIVES = {"string", "number", "integer", "boolean"}
-
-STATUS_CODES = {
-    response_object.ResponseSuccess.SUCCESS: 200,
-    response_object.ResponseFailure.RESOURCE_ERROR: 404,
-    response_object.ResponseFailure.FORBIDDEN: 403,
-    response_object.ResponseFailure.PARAMETERS_ERROR: 400,
-    response_object.ResponseFailure.SYSTEM_ERROR: 500,
-}
 
 
 BLOB_TYPES = "system/SIMOS/blob_types/PDF"

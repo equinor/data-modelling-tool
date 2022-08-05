@@ -151,11 +151,11 @@ class JobService:
                 raise error
         except NotImplementedError as error:
             job.log = (
-                f"{job.log}\n\n The jobHandler '{type(job_handler).__name__}' is missing some implementations: {error}"
+                f"{job.log}\n\nThe jobHandler '{type(job_handler).__name__}' is missing some implementations: {error}"
             )
         except KeyError as error:
             job.log = (
-                f"{job.log}\n\n The jobHandler '{type(job_handler).__name__}' "
+                f"{job.log}\n\nThe jobHandler '{type(job_handler).__name__}' "
                 f"tried to access a missing attribute: {error}"
             )
         except Exception as error:

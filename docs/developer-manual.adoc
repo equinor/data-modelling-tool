@@ -111,7 +111,7 @@ Person(application_users, "Application User", "A user that wants to use custom a
 
 System_Boundary(data_modelling_tool, "Data Modelling Tool") {
     Container(data_modelling_tool_web, "Web application", "JavaScript and React", "The user interface used for modelling, searching, and viewing blueprint based domain models.")
-    Container(data_modelling_tool_api, "Rest API", "Python and Flask", "The API that handles business logic for DMT.")
+    Container(data_modelling_tool_api, "Rest API", "Python and Fast API", "The API that handles business logic for DMT.")
     Rel(data_modelling_tool_web, data_modelling_tool_api, "Uses")
 }
 
@@ -119,7 +119,7 @@ Rel(domain_export, data_modelling_tool_web, "Uses")
 Rel(application_developer, data_modelling_tool_web, "Uses")
 Rel(application_users, data_modelling_tool_web, "Uses")
 
-Container_Ext(data_modelling_storage_service, "Data Modelling Storage Service System", "Python and Flask", "Handles the storing and retrieving of data.")
+Container_Ext(data_modelling_storage_service, "Data Modelling Storage Service System", "Python and Fast API", "Handles the storing and retrieving of data.")
 Rel(data_modelling_tool_api, data_modelling_storage_service, "Read and write")
 
 ContainerDb(data_source_a, "Data Source A", "MongoDB", "Holds documents (e.g. blueprints and entities).")

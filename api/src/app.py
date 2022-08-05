@@ -5,49 +5,41 @@ import os
 import traceback
 from pathlib import Path
 from zipfile import ZipFile
-
+import uvicorn
 import click
 import emoji
 from dmss_api.exceptions import ApiException
-from flask import Flask
 
 from repository.repository_exceptions import ImportReferenceNotFoundException
-from services.job_service import JobService
 
+from fastapi import APIRouter, FastAPI
 from config import config
-from controllers import blueprints, entity, system, jobs
+
 from services.dmss import dmss_api
 from use_case.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
 from utils.logging import logger
+from store_headers_middleware import StoreHeadersMiddleware
+
+prefix = "/api/v1"
 
 
-def create_app(config):
-    app = Flask(__name__)
-    app.config.from_object(config)
-    app.register_blueprint(system.blueprint)
-    app.register_blueprint(blueprints.blueprint)
-    app.register_blueprint(entity.blueprint)
-    app.register_blueprint(jobs.blueprint)
-    app.secret_key = os.urandom(64)
+def create_app():
+    from controllers import blueprints, entity, jobs, system
+
+    # Using public routes, since authentication is handled by DMSS
+    public_routes = APIRouter()
+    public_routes.include_router(blueprints.router)
+    public_routes.include_router(entity.router)
+    public_routes.include_router(jobs.router)
+    public_routes.include_router(system.router)
+
+    app = FastAPI(title="Data Modelling Tool", description="API for Data Modeling Tool (DMT)")
+    app.include_router(public_routes, prefix=prefix)
+
+    app.add_middleware(StoreHeadersMiddleware)
+
     return app
-
-
-try:
-    with open("./version.txt") as version_file:
-        print(f"VERSION: {version_file.read()}")
-except FileNotFoundError:
-    pass
-
-app = create_app(config)
-
-
-# Using this decorator is needed so we don't get more than
-# one instance of the job scheduler running the same jobs multiple times.
-@app.before_first_request
-def load_cron_jobs():
-    if config.JOB_SERVICE_ENABLED == 1:
-        JobService().load_cron_jobs()
 
 
 @click.group()
@@ -203,6 +195,17 @@ def reset_app(context):
     context.invoke(remove_application)
     context.invoke(init_application)
     config.load_app_settings()
+
+
+@cli.command()
+def run():
+    uvicorn.run(
+        "app:create_app",
+        host="0.0.0.0",  # nosec
+        port=5000,
+        reload=config.ENVIRONMENT == "local",
+        log_level=config.LOGGER_LEVEL.lower(),
+    )
 
 
 if __name__ == "__main__":

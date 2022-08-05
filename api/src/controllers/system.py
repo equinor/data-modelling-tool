@@ -1,89 +1,86 @@
 import json
 
 import markupsafe
-from flask import Blueprint, request, Response, send_file
-
+from starlette import status
+from fastapi import APIRouter, Request
 from config import config
-from enums import STATUS_CODES
-from restful import response_object as res
+
 from use_case.create_application_use_case import CreateApplicationRequestObject, CreateApplicationUseCase
 from utils.logging import logger
+from starlette.responses import JSONResponse, PlainTextResponse
+from fastapi.responses import StreamingResponse
 
-blueprint = Blueprint("system", __name__)
-
+router = APIRouter(tags=["System"], prefix="/system")
 
 # This is a public endpoint with no authentication. So don't put secrets in settings.json
 
 
-@blueprint.route("/api/system/settings", methods=["GET"])
-def get_application_settings():
-    app_name = request.args.get("APPLICATION")
+@router.get("/settings", operation_id="get_app_settings")
+def get_application_settings(request: Request):
+    app_name = ""
+    try:
+        app_name = request.query_params["APPLICATION"]
+    except Exception:
+        logger.info("no app name found")
     if app_name:
         if app_name in config.APP_SETTINGS:  # Return settings for the specific application
-            return Response(
+            return JSONResponse(
                 config.APP_SETTINGS.get(app_name),
-                mimetype="application/json",
-                status=STATUS_CODES[res.ResponseSuccess.SUCCESS],
+                status_code=status.HTTP_200_OK,
             )
         else:
-            return Response(
+            return PlainTextResponse(
                 f"Error: No application named '{markupsafe.escape(app_name)}' is loaded",
-                status=404,
+                status_code=status.HTTP_404_NOT_FOUND,
             )
-    return Response(
-        json.dumps(config.APP_SETTINGS),
-        mimetype="application/json",
-        status=200,
+    return JSONResponse(
+        config.APP_SETTINGS,
+        status_code=status.HTTP_200_OK,
     )
 
 
 # Endpoint is only available on ENVIRONMENT=local
 
 
-@blueprint.route("/api/system/settings", methods=["POST"])
-def set_application_settings():
-    app_name = request.args.get("APPLICATION")
+@router.post("/settings", operation_id="set_app_settings")
+def set_application_settings(request: Request):
+    app_name = request.query_params("APPLICATION")
     if config.ENVIRONMENT != "local":
-        return Response("Changing systems settings can only be done in local deployments.", status=403)
+        return PlainTextResponse(
+            "Changing systems settings can only be done in local deployments.", status=status.HTTP_403_FORBIDDEN
+        )
     try:
         with open(config.APP_SETTINGS.get(app_name).get("file_loc"), "w") as f:
             request_data = json.dumps(request.json)
             f.write(request_data)
         config.load_app_settings()
-        return Response("OK", status=200)
+        return PlainTextResponse("OK", status_code=status.HTTP_200_OK)
     except Exception:
-        return Response("Error: Failed to save the settings file.", status=500)
+        return PlainTextResponse(
+            "Error: Failed to save the settings file.", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
+        )
 
 
-# Auth is handled by DMSS
-
-
-@blueprint.route("/api/v2/system/<string:data_source_id>/create-application/<string:application_id>", methods=["GET"])
+# TODO seems like this is not used anymore
+@router.get("/{data_source_id}/create-application/{application_id}", operation_id="create_app")
 def create_application(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
     request_object = CreateApplicationRequestObject.from_dict({"applicationId": application_id})
     use_case = CreateApplicationUseCase(data_source_id)
     response = use_case.execute(request_object)
 
-    if response.type == res.ResponseSuccess.SUCCESS:
-        return send_file(
-            response.value, mimetype="application/zip", as_attachment=True, attachment_filename="application.zip"
-        )
+    if response.status_code == status.HTTP_200_OK:
+        return StreamingResponse(response.value, media_type="application/x-zip-compressed", filename="application.zip")
     else:
-        return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
+        return JSONResponse(json.dumps(response.value), status_code=response.status_code)
 
 
-# Auth is handled by DMSS
-
-
-@blueprint.route(
-    "/api/system/<string:data_source_id>/generate-code/<string:plugin_name>/<path:document_path>", methods=["GET"]
-)
+# TODO seems like this is not used anymore
+@router.get("/{data_source_id}/generate-code/{plugin_name}/{document_path}", operation_id="generate_code")
 def generate_code_with_plugin(data_source_id: str, plugin_name: str, document_path: str):
-    return Response(
+    return JSONResponse(
         json.dumps("Error: This feature has been deprecated"),
-        mimetype="application/json",
-        status=STATUS_CODES[res.ResponseFailure.SYSTEM_ERROR],
+        status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )
     # logger.info(f"Generating code for document {document_path}, with plugin {plugin_name}")
     # request_object = GenerateCodeWithPluginRequestObject.from_dict(

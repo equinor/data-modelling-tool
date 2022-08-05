@@ -33,21 +33,47 @@ const PathWrapper = styled.div`
   overflow: hidden;
 `
 
+const PathPartLink = styled.a`
+  color: #007079;
+  &:hover {
+    color: #004f55;
+    font-weight: bold;
+  }
+`
+
 const PathPart = styled.div`
   margin-top: 0;
   margin-right: 15px;
 `
 
+const getHref = (
+  dataSource: string,
+  parts: string[],
+  index: number
+): string => {
+  // Get the HREF for the document
+  return parts
+    .slice(0, index + 1)
+    .join('.')
+    .replace(`${dataSource}/`, '')
+}
+
 export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
   const { absoluteDottedId } = props
   const parts = absoluteDottedId.split('.')
+  const dataSource = absoluteDottedId.split('/')[0]
   return (
     <PathWrapper>
       {parts.map((part: string, index: number) => {
         return (
           <div style={{ display: 'flex', flexWrap: 'nowrap' }} key={part}>
             {index !== 0 && <PathPart>/</PathPart>}
-            <PathPart>{part}</PathPart>
+            <PathPart
+              as={PathPartLink}
+              href={getHref(dataSource, parts, index)}
+            >
+              {part}
+            </PathPart>
           </div>
         )
       })}

@@ -67,9 +67,9 @@ spec:
             SCHEDULER_REDIS_HOST: dmt-jobStore-test.redis.cache.windows.net
             PUBLIC_DMSS_API: https://dmss-data-modelling-tool-dev.radix.equinor.com
       ports:
-        - name: flask
+        - name: api
           port: 5000
-      publicPort: flask
+      publicPort: api
 
     - name: dmss
       environmentConfig:

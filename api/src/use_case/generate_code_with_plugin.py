@@ -4,7 +4,7 @@ import importlib
 import io
 import sys
 
-
+from starlette.responses import JSONResponse
 from domain_classes.tree_node import Node
 from config import Config
 from enums import SIMOS
@@ -12,7 +12,6 @@ from repository.repository_exceptions import PluginNotLoadedException
 from services.application_service import ApplicationService
 from services.document_service import DocumentService
 from restful import request_object as req
-from restful import response_object as res
 from restful import use_case as uc
 
 
@@ -100,4 +99,4 @@ class GenerateCodeWithPluginUseCase(uc.UseCase):
 
         # Call the main function in the plugin module, with the dict of required blueprints as the single argument
         result: io.BytesIO = module.main(blueprints)
-        return res.ResponseSuccess(result)
+        return JSONResponse(result)
