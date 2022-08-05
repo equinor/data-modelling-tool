@@ -148,16 +148,16 @@ export class TreeNode {
   children: TreeMap = {}
   attribute: TAttribute
   parent?: TreeNode
-  isRoot = false
-  isDataSource = false
+  isRoot: boolean = false
+  isDataSource: boolean = false
   entity?: any
   name?: string
-  message = ''
+  message: string = ''
 
   constructor(
     tree: Tree,
     nodeId: string,
-    level = 0,
+    level: number = 0,
     entity: any = {},
     attribute: TAttribute,
     parent: TreeNode | undefined = undefined,

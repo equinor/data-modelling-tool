@@ -29,7 +29,7 @@ export const Form = (props: FormProps) => {
   })
 
   // Every react hook form controller needs to have a unique name
-  const namePath = ''
+  const namePath: string = ''
 
   const handleSubmit = methods.handleSubmit((data) => {
     if (onSubmit !== undefined) onSubmit(data)

@@ -12,7 +12,7 @@ type PreviewProps = {
 export default (props: PreviewProps) => {
   const { documentId, dataSourceId } = props
   const [document, loading] = useDocument(dataSourceId, documentId)
-  const infoText = ''
+  const infoText: string = ''
   if (loading) {
     return <Loading />
   }

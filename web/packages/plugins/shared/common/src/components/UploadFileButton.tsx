@@ -12,7 +12,7 @@ export const addToPath = (
   files: File[] | undefined[] = [],
   dataSourceId: string,
   directory: string,
-  updateUncontainer = false
+  updateUncontained = false
 ): Promise<string> => {
   const dmssAPI = new DmssAPI(token)
 
@@ -22,7 +22,7 @@ export const addToPath = (
       document: JSON.stringify(body),
       directory: directory, // @ts-ignore
       files: files.filter((item: any) => item !== undefined),
-      updateUncontained: updateUncontainer,
+      updateUncontained: updateUncontained,
     })
     .then((response: any) => response.data.uid)
 }

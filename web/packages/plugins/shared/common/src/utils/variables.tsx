@@ -1,4 +1,4 @@
-export const PATH_INPUT_FIELD_WIDTH = '450px'
-export const INPUT_FIELD_WIDTH = '285px'
-export const TREE_DIALOG_HEIGHT = '50vh'
-export const TREE_DIALOG_WIDTH = '20vw'
+export const PATH_INPUT_FIELD_WIDTH: string = '450px'
+export const INPUT_FIELD_WIDTH: string = '285px'
+export const TREE_DIALOG_HEIGHT: string = '50vh'
+export const TREE_DIALOG_WIDTH: string = '20vw'

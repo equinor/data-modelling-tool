@@ -27,14 +27,14 @@ class RotatedArrow extends React.Component<RotatedArrowProps> {
     const iconWidth: 16 | 24 | 32 | 40 | 48 = 16
 
     //offset to center the arrows in the plot - this value depends on height of plot window
-    const yAxisOffset = 25
-    const translation = `${x - iconWidth / 2}, ${
+    const yAxisOffset: number = 25
+    const translation: string = `${x - iconWidth / 2}, ${
       y + yAxisOffset - iconWidth / 2
     }`
     // Rotate the arrow an extra 180 degree, so it points in the "going to" direction
-    const rotation = `${datum[attributeNameForData] - 180}, ${iconWidth / 2}, ${
+    const rotation: string = `${datum[attributeNameForData] - 180}, ${
       iconWidth / 2
-    }`
+    }, ${iconWidth / 2}`
 
     return (
       <g transform={`translate(${translation}) rotate(${rotation})`}>
@@ -50,10 +50,10 @@ export default (props: {
 }): JSX.Element => {
   const { data, graphInfo } = props
 
-  const fontSize = 8
+  const fontSize: number = 8
 
-  const chartWidth = 800
-  const arrowPlotHeight = 60
+  const chartWidth: number = 800
+  const arrowPlotHeight: number = 60
 
   return (
     <div
@@ -67,7 +67,7 @@ export default (props: {
             const plotData = data.map((dataPoint) => {
               return { ...dataPoint, y: 0 }
             })
-            const tooltipOffset = 30
+            const tooltipOffset: number = 30
             return (
               <VictoryChart
                 key={index}

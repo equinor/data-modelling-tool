@@ -52,7 +52,7 @@ export default function Fields(props: any) {
   })
 
   const handleAddObject = () => {
-    const name = `${namePath}-${fields.length}`
+    const name: string = `${namePath}-${fields.length}`
     dmtApi.createEntity(type, name).then((newEntity: any) => {
       dmssAPI
         .documentUpdate({

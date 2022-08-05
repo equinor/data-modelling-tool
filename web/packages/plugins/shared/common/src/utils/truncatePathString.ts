@@ -12,9 +12,9 @@ export function truncatePathString(
   const splitTextOnFolders: string[] = path.split('/')
   const finalName: string = splitTextOnFolders[splitTextOnFolders.length - 1]
 
-  let truncatedPath = `.../${finalName}`
-  let previousPath = ''
-  let counter = 0
+  let truncatedPath: string = `.../${finalName}`
+  let previousPath: string = ''
+  let counter: number = 0
   while (truncatedPath.length <= maxLength) {
     previousPath = truncatedPath
     truncatedPath = truncatedPath.replace(

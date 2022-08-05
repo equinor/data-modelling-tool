@@ -1,5 +1,5 @@
-export const DMSS_ADMIN_ROLE = 'dmss-admin'
-export const INSPECTOR_ROLE = 'inspector'
+export const DMSS_ADMIN_ROLE: string = 'dmss-admin'
+export const INSPECTOR_ROLE: string = 'inspector'
 // Domain roles
 export const DOMAIN_ROLES: string[] = [
   'domain-developer',

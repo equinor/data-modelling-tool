@@ -28,6 +28,7 @@
     "@typescript-eslint/no-explicit-any": "off",
     "react/display-name": "off",
     "@typescript-eslint/ban-ts-comment": "off",
-    "react/no-unescaped-entities": "off"
+    "react/no-unescaped-entities": "off",
+    "@typescript-eslint/no-inferrable-types": "off"
   }
 }
