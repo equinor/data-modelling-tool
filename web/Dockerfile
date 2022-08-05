@@ -16,7 +16,7 @@ ENV REACT_APP_LOGOUT_ENDPOINT=https://login.microsoftonline.com/${REACT_APP_AUTH
 ENV REACT_APP_AUTH_REDIRECT_URI=$REDIRECT_URI
 
 WORKDIR /code/
-COPY jest.config.base.js package.json yarn.lock jest.config.js tsconfig.json ./
+COPY jest.config.base.js package.json yarn.lock jest.config.js tsconfig.json .eslintignore .eslintrc.json ./
 COPY --chown=1000 ./packages ./packages
 RUN yarn install --ignore-scripts  --frozen-lockfile --link-duplicates
 

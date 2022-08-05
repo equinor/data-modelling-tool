@@ -1,0 +1,8 @@
+*.config.js
+*.config.base.js
+*.test.tsx
+/packages/plugins/ui/simpos-ui/src/*
+/packages/plugins/ui/simos-ui/src/*
+/packages/plugins/ui/marmo-ui/src/*
+/packages/home/src/plugins.js
+/packages/plugins/ui/form/src/test-utils.tsx

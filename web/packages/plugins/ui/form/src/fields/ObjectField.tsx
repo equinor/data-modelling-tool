@@ -15,8 +15,6 @@ import styled from 'styled-components'
 import { ObjectFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 import { Controller, useFormContext } from 'react-hook-form'
-// @ts-ignore
-import { useTabContext } from '@dmt/tabs'
 
 const Wrapper = styled.div`
   margin-bottom: 20px;
@@ -36,24 +34,8 @@ const ItemWrapper = styled.div``
 
 const AddExternal = (props: any) => {
   const { type, namePath, onAdd } = props
-  const { token } = useContext(AuthContext)
-  //const {documentId, dataSourceId} = useRegistryContext()
-  //const dmssAPI = new DmssAPI(token)
 
   const handleSelect = (entity: any) => {
-    // dmssAPI
-    //     .documentUpdate({
-    //         dataSourceId: dataSourceId,
-    //         documentId: `${documentId}.${namePath}`,
-    //         data: JSON.stringify(entity),
-    //         updateUncontained: false,
-    //     })
-    //     .then((response: any) => {
-    //         onAdd(entity)
-    //     })
-    //     .catch((error: Error) => {
-    //         console.error(error)
-    //     })
     onAdd(entity)
   }
 
@@ -79,7 +61,6 @@ const AddExternal = (props: any) => {
 const AddObject = (props: any) => {
   const { type, namePath, onAdd, contained, dataSourceId, documentId } = props
   const { setValue } = useFormContext()
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmtApi = new DmtAPI(token)
   const dmssAPI = new DmssAPI(token)
@@ -385,10 +366,11 @@ export const NonContained = (props: any): JSX.Element => {
         control={control}
         defaultValue={initialValue}
         render={({
-          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           field: { ref, onChange, value },
-          // @ts-ignore
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           fieldState: { invalid, error },
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           formState,
         }) => {
           if (value && value._id) {
@@ -446,13 +428,12 @@ export const NonContained = (props: any): JSX.Element => {
 }
 
 export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
-  // @ts-ignore
   const { type, namePath, uiAttribute } = props
   const { getValues } = useFormContext()
   const { getWidget } = useRegistryContext()
 
   // Be able to override the object field
-  let Widget =
+  const Widget =
     uiAttribute && uiAttribute.widget
       ? getWidget(namePath, uiAttribute.widget)
       : ObjectTypeSelector

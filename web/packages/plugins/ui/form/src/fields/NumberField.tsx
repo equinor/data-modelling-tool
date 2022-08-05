@@ -1,5 +1,4 @@
 import React from 'react'
-// @ts-ignore
 import { Controller, useFormContext } from 'react-hook-form'
 import { NumberFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
@@ -37,7 +36,7 @@ export const NumberField = (props: NumberFieldProps) => {
 
   const { getWidget } = useRegistryContext()
 
-  let defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
+  const defaultWidget = uiAttribute ? uiAttribute.widget : 'TextWidget'
   const Widget = getWidget(namePath, defaultWidget)
 
   return (
@@ -50,9 +49,7 @@ export const NumberField = (props: NumberFieldProps) => {
       }}
       defaultValue={defaultValue || undefined}
       render={({
-        // @ts-ignore
         field: { ref, onChange, ...props },
-        // @ts-ignore
         fieldState: { invalid, error },
       }) => {
         // Convert to number

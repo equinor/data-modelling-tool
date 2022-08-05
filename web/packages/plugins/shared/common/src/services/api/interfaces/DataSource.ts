@@ -4,4 +4,4 @@ export type DataSource = {
   type?: string
   host?: string
 }
-export interface DataSources extends Array<DataSource> {}
+export type DataSources = Array<DataSource>

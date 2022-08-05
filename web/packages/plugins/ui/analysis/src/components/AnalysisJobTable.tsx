@@ -71,10 +71,9 @@ const JobRow = (props: {
         setJobStatus(EJobStatus.STARTING)
         setStarted(new Date().toLocaleString(navigator.language))
       })
-      .catch((error: AxiosError) => {
+      .catch((error: AxiosError<any>) => {
         console.error(error)
         NotificationManager.error(
-          //@ts-ignore
           error?.response?.data?.message || error.message,
           'Failed to start job'
         )
@@ -94,7 +93,6 @@ const JobRow = (props: {
     } catch (error) {
       console.error(error)
       NotificationManager.error(
-        //@ts-ignore
         error?.response?.data?.message || error.message,
         'Failed to start job'
       )

@@ -10,7 +10,7 @@ import * as React from 'react'
 import { useEffect, useState } from 'react'
 
 export const JobInputEdit = (props: DmtUIPlugin) => {
-  const { documentId, dataSourceId, onOpen } = props
+  const { documentId, dataSourceId } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
     documentId
@@ -23,7 +23,13 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
   }, [document])
 
   if (documentLoading) return <Loading />
-  if (error) return <div>Something went wrong; {error}</div>
+  if (error)
+    return (
+      <div>
+        <div>Something went wrong when fetching document: </div>
+        {JSON.stringify(error.response?.data?.message)}
+      </div>
+    )
   if (!formData) return <div>The job document is empty</div>
 
   if (formData.status !== EJobStatus.CREATED) {

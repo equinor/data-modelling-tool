@@ -1,5 +1,4 @@
 import React from 'react'
-// @ts-ignore
 import { useParams } from 'react-router-dom'
 import styled from 'styled-components'
 import {
@@ -8,8 +7,7 @@ import {
   UIPluginSelector,
   useDocument,
 } from '@dmt/common'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
+
 import { SimplifiedTree } from '../components/SimplifiedTree'
 import { ErrorGroup } from '../components/Wrappers'
 
@@ -29,7 +27,9 @@ export default ({ settings }: any) => {
   }>()
   const [
     document,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     documentLoading,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setDocument,
     error,
   ] = useDocument<TValidEntity>(data_source, entity_id)

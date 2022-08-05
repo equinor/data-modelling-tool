@@ -10,12 +10,7 @@ import {
 } from '@dmt/common'
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
-import {
-  Button,
-  CircularProgress,
-  Progress,
-  Typography,
-} from '@equinor/eds-core-react'
+import { Button, Progress, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import _ from 'lodash'
 
@@ -37,7 +32,7 @@ export const EditContainer = (props: DmtUIPlugin) => {
     documentId,
     999
   )
-  const [containerImages, loadingImages, hasError] = useSearch<TContainerImage>(
+  const [containerImages, loadingImages] = useSearch<TContainerImage>(
     {
       type: 'AnalysisPlatformDS/Blueprints/ContainerImage',
     },

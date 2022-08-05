@@ -1,5 +1,3 @@
-import * as React from 'react'
-
 import { DmtPlugin, DmtPluginType } from '@dmt/common'
 import { OperatorView } from './OperatorView'
 import { InspectorView } from './InspectorView'

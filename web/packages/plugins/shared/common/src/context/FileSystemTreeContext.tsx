@@ -7,13 +7,15 @@ import React, {
 } from 'react'
 import { ApplicationContext, AuthContext, Tree, TreeNode } from '../index'
 
-export let FSTreeContext: React.Context<{
-  tree: Tree | null
+export const FSTreeContext = createContext<{
+  tree: null | Tree
   treeNodes: TreeNode[]
   loading: boolean
-}>
-// @ts-ignore
-FSTreeContext = createContext({ tree: null, treeNodes: [], loading: false })
+}>({
+  tree: null,
+  treeNodes: [],
+  loading: false,
+})
 
 export const FSTreeProvider = (props: { children: ReactNode }) => {
   const { children } = props
@@ -21,12 +23,8 @@ export const FSTreeProvider = (props: { children: ReactNode }) => {
   const appConfig = useContext(ApplicationContext)
   const [loading, setLoading] = useState<boolean>(true)
   const [treeNodes, setTreeNodes] = useState<TreeNode[]>([])
-
-  const tree: Tree = new Tree(
-    token,
-    // @ts-ignore
-    (t: Tree) => setTreeNodes([...t])
-  )
+  //@ts-ignore
+  const tree: Tree = new Tree(token, (t: Tree) => setTreeNodes([...t]))
 
   useEffect(() => {
     setLoading(true)

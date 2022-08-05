@@ -6,7 +6,7 @@ export class Helper {
    * since the actual story book stories are rendered as an iFrame.
    */
   static logMousePosition() {
-    let element = window.parent.document.createElement('mouse-position')
+    const element = window.parent.document.createElement('mouse-position')
     element.style.position = 'absolute'
     element.style.top = '0px'
     element.style.left = '0px'

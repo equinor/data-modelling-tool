@@ -34,7 +34,7 @@ export function FoRResultWrapper(props: {
   useEffect(() => {
     if (simulationConfig.plots) {
       // Retrieve the "stored plots"
-      let storedPlots: any = {}
+      const storedPlots: any = {}
       simulationConfig.plots.map((storedPlot: any) => {
         storedPlots[poorMansUUID()] = storedPlot
       })
@@ -53,6 +53,7 @@ export function FoRResultWrapper(props: {
     },
     getPlots: (): TPlot[] => {
       const plots: TPlot[] = []
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       Object.entries(plotWindows).forEach(([key, plotWindow]: any) => {
         plotWindow.graphs?.forEach((graph: TGraph) => {
           graph.type = Blueprints.GRAPH
@@ -137,8 +138,7 @@ export function FoRResultWrapper(props: {
             result={result}
             plotKey={plotKey}
             plotWindowHandlers={{
-              addPlotWindow: (plotKey?: string | undefined) =>
-                plotWindowHandlers.addPlotWindow(),
+              addPlotWindow: () => plotWindowHandlers.addPlotWindow(),
               deletePlotWindow: (plotKey: string) =>
                 plotWindowHandlers.deletePlotWindow(plotKey),
               addGraph: (graph: TGraph) =>

@@ -1,11 +1,5 @@
 import * as React from 'react'
-import {
-  AuthContext,
-  DmssAPI,
-  DmtPluginType,
-  FSTreeProvider,
-  Header,
-} from '@dmt/common'
+import { AuthContext, DmssAPI, DmtPluginType, Header } from '@dmt/common'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { Route } from 'react-router-dom'

@@ -1,7 +1,6 @@
 import React, { createContext, useContext } from 'react'
 
-// @ts-ignore
-export const TabsContext = createContext<any>()
+export const TabsContext = createContext<any>({})
 
 export const useTabContext = () => {
   const context = useContext(TabsContext)

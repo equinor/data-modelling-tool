@@ -41,7 +41,10 @@ enum AttributeTypes {
   object = 'object',
 }
 
-const Extends = (props: { formData: string[]; setExtends: Function }) => {
+const Extends = (props: {
+  formData: string[]
+  setExtends: (data: any) => void
+}) => {
   const { formData, setExtends } = props
   const [newBlueprint, setNewBlueprint] = useState<string>('')
 
@@ -206,7 +209,7 @@ const BlueprintAttribute = (props: {
 
 export const EditBlueprint = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
-  const [document, _loading, updateDocument, error] = useDocument<any>(
+  const [document, _loading, updateDocument] = useDocument<any>(
     dataSourceId,
     documentId
   )
@@ -285,7 +288,7 @@ export const EditBlueprint = (props: DmtUIPlugin) => {
                 <BlueprintAttribute
                   attribute={attribute}
                   setAttribute={(changedAttribute: any) => {
-                    let newAttributes = [...formData.attributes]
+                    const newAttributes = [...formData.attributes]
                     newAttributes[index] = changedAttribute
                     setFormData({ ...formData, attributes: newAttributes })
                   }}

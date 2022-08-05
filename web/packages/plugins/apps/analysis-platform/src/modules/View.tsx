@@ -1,19 +1,20 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import { useDocument, UIPluginSelector } from '@dmt/common'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
+
 import { TValidEntity } from '@dmt/common'
 import { ErrorGroup } from '../components/ErrorGroup'
 
-export const View = ({ settings }: any) => {
+export const View = () => {
   const { data_source, entity_id } = useParams<{
     data_source: string
     entity_id: string
   }>()
   const [
     document,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     documentLoading,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     setDocument,
     error,
   ] = useDocument<TValidEntity>(data_source, entity_id)

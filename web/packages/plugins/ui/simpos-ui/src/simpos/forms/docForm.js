@@ -396,7 +396,7 @@ class SectionView extends Component {
 }
 
 const docForm = ({ entity, parents }) => {
-  var parents = Array()
+  var parents = []
 
   return (
     <div>

@@ -38,7 +38,7 @@ const StyledTreeNode = styled.div`
 
 export type NodeWrapperProps = {
   node: TreeNode
-  removeNode?: Function
+  removeNode?: () => void
   children: any
   onSelect?: (node: TreeNode) => void
 }
@@ -132,7 +132,7 @@ export const TreeView = (props: {
   )
 
   useEffect(() => {
-    let expandedNodes: { [k: string]: boolean } = {}
+    const expandedNodes: { [k: string]: boolean } = {}
     nodes.forEach((node: TreeNode) => {
       // Initialize expanded state where only top level nodes are expanded
       expandedNodes[node.nodeId] = node.level === 0
@@ -141,7 +141,7 @@ export const TreeView = (props: {
   }, [])
 
   const _onClick = (node: TreeNode, setLoading: (l: boolean) => void) => {
-    let newExpandedNodes: { [k: string]: boolean } = {}
+    const newExpandedNodes: { [k: string]: boolean } = {}
     if (!expandedNodes[node.nodeId]) {
       setLoading(true)
       node.expand().finally(() => setLoading(false))

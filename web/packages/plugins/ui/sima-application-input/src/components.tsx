@@ -30,9 +30,9 @@ export const Container = styled.div`
 `
 export function EditInputEntity(props: {
   formData: any
-  setFormData: Function
+  setFormData: (data: any) => void
   dataSourceId: string
-  onOpen?: Function
+  onOpen?: (data: any) => void
 }) {
   const { formData, setFormData, dataSourceId, onOpen } = props
 
@@ -46,7 +46,6 @@ export function EditInputEntity(props: {
             type="string"
             value={formData?.input?.name || formData?.input?._id || ''}
             placeholder={formData?.input?.name || 'Select or create'}
-            onChange={() => {}}
             onClick={() => {
               if (formData?.input?.type) {
                 if (onOpen) {

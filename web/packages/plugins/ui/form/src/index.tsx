@@ -11,7 +11,7 @@ import {
   useDocument,
 } from '@dmt/common'
 import { Form } from './Form'
-import { Button, Typography } from '@equinor/eds-core-react'
+import { Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { useFormContext } from 'react-hook-form'
 import { useRegistryContext } from './RegistryContext'
@@ -25,6 +25,7 @@ const ErrorHelperText = styled.div`
 
 const widgets = {
   TypeWidget: (props: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { label, variant, onChange, value, helperText } = props
     const [blueprint, isLoading] = useBlueprint(value)
 
@@ -68,9 +69,10 @@ const widgets = {
     )
   },
   UploadFileWidget: (props: any) => {
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const { namePath, label, variant, onChange, value, helperText } = props
-    const { documentId, dataSourceId } = useRegistryContext()
-    const { getValues, control, setValue } = useFormContext()
+    const { dataSourceId } = useRegistryContext()
+    const { getValues } = useFormContext()
     const initialValue = getValues(namePath)
 
     function getNewSTaskBody(filename: string): any {
@@ -105,7 +107,7 @@ const widgets = {
 }
 
 const PluginComponent = (props: DmtUIPlugin) => {
-  const { config, onSubmit, onOpen } = props
+  const { config, onOpen } = props
   const { documentId, dataSourceId } = props
   const [document, loading, updateDocument] = useDocument<any>(
     dataSourceId,
@@ -115,7 +117,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
   if (loading) return <Loading />
 
   const handleOnSubmit = (formData: any) => {
-    updateDocument(formData)
+    updateDocument(formData, true)
   }
 
   return (

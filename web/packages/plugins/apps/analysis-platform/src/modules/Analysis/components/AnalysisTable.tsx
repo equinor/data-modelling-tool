@@ -26,11 +26,12 @@ type TAnalysisRow = {
 
 const onRowClicked = (event: any) => {
   const documentId = event.target.parentElement.accessKey
+  //@ts-ignore
   document.location = `${document.location.pathname}/analysis/${DEFAULT_DATASOURCE_ID}/${documentId}`
 }
 
 export const AnalysisTable = () => {
-  const [analysis, isLoading, hasError] = useSearch<TAnalysis>(
+  const [analysis, isLoading] = useSearch<TAnalysis>(
     {
       type: EBlueprints.ANALYSIS,
     },
@@ -43,7 +44,7 @@ export const AnalysisTable = () => {
 
   const rows: Array<TAnalysisRow> = []
   analysis?.forEach((analysis) => {
-    let row: TAnalysisRow = {
+    const row: TAnalysisRow = {
       _id: analysis._id,
       name: analysis.label || analysis.name,
       description: analysis.description,

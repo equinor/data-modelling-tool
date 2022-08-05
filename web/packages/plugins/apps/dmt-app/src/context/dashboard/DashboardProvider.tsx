@@ -6,14 +6,14 @@ export interface IModels {
   layout: ILayout
   dataSources: IDataSources
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IOperations {}
 
 export interface IDashboard {
   models: IModels
   operations: IOperations
 }
-
+// eslint-disable-next-line @typescript-eslint/no-non-null-assertion
 const DashboardContext = createContext<IDashboard>(null!)
 
 export const DashboardConsumer = DashboardContext.Consumer

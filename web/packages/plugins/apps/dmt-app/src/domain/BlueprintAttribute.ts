@@ -1,7 +1,7 @@
 import { TAttribute } from '@dmt/common'
 
 export class BlueprintAttribute {
-  private attr: TAttribute
+  public attr: TAttribute
 
   constructor(attr: TAttribute) {
     this.attr = attr

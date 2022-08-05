@@ -11,7 +11,7 @@ type Errors = {
 
 type CreateFormProps = {
   data?: any
-  onSubmit: Function
+  onSubmit: (analysis: TAnalysis) => void
 }
 
 const Wrapper = styled.div`
@@ -59,7 +59,7 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
   const formHandler = (event: any) => {
     event.preventDefault()
 
-    let formErrors: Errors = {
+    const formErrors: Errors = {
       name: '',
       description: '',
     }

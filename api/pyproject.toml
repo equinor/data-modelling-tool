@@ -7,18 +7,18 @@ license = "TBD"
 
 [tool.poetry.dependencies]
 python = "^3.10.4"
-urllib3 = "^1.25.9"
+urllib3 = "^1.26.11"
 toml = "^.10.1"
 dmss-api = "^0.3.17"
-progress = "^1.5"
-emoji = "^1.2.0"
-azure-mgmt-containerinstance = "^9.1.0"
-redis = "^4.2.2"
+progress = "^1.6"
+emoji = "^2.0.0"
+azure-mgmt-containerinstance = "^9.2.0"
+redis = "^4.3.4"
 stringcase = "^1.2.0"
-Jinja2 = "^3.0.1"
-azure-mgmt-resource = "^21.0.0"
-azure-identity = "^1.7.0"
-APScheduler = "^3.8.1"
+Jinja2 = "^3.1.2"
+azure-mgmt-resource = "^21.1.0"
+azure-identity = "^1.10.0"
+APScheduler = "^3.9.1"
 docker = "^5.0.3"
 fastapi = "^0.79.0"
 gunicorn = "^20.1.0"
@@ -26,27 +26,27 @@ uvicorn = {extras = ["standard"], version = "^0.18.2"}
 
 
 [tool.poetry.dev-dependencies]
-pydevd = "^1.6"
+pydevd = "^2.8.0"
 pytest = "^7.1.1"
 behave = "1.2.6"
 colorclass = "^2.2.2"
 terminaltables = "^3.1.10"
 snapshottest = "^0.6.0"
-deepdiff = "^5.7.0"
-pre-commit = "^2.9.2"
-pygments = "^2.7.4"
-coverage = "^6.3.2"
-flake8 = "^4.0.1"
-bandit = "^1.6.2"
-safety = "^1.8.7"
+deepdiff = "^5.8.1"
+pre-commit = "^2.19.0"
+pygments = "^2.12.0"
+coverage = "^6.4.2"
+flake8 = "^5.0.1"
+bandit = "^1.7.4"
+safety = "^2.1.1"
 pymongo = "^3.10.1"
 dictdiffer = "^0.9.0"
-black = "^22.3.0"
+black = "^22.6.0"
 
 
 [tool.black]
 line-length = 119
-target-version = ['py38']
+target-version = ['py10']
 exclude = '''
 /(
     \.eggs

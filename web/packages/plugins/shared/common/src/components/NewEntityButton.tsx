@@ -9,7 +9,7 @@ import {
   EntityPickerButton,
 } from './Pickers'
 import { addToPath } from './UploadFileButton'
-import { AuthContext, DmssAPI, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
+import { AuthContext, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '..'
 import { AxiosError } from 'axios'
 import styled from 'styled-components'
 

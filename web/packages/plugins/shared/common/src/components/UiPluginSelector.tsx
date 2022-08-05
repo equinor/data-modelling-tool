@@ -111,7 +111,7 @@ function filterPlugins(
   getUIPlugin: (name: string) => DmtPlugin
 ): TSelectablePlugins[] {
   let uiRecipes = blueprint.uiRecipes
-  let fallbackPlugin = [
+  const fallbackPlugin = [
     { name: 'yaml', component: getUIPlugin('yaml-view').component, config: {} },
   ]
   // Blueprint has no recipes
@@ -151,11 +151,11 @@ function filterPlugins(
 export function UIPluginSelector(props: {
   absoluteDottedId?: string
   type: string
-  onSubmit?: Function
+  onSubmit?: (data: any) => void
   categories?: string[]
   breadcrumb?: boolean
   referencedBy?: string
-  onOpen?: Function
+  onOpen?: (data: any) => void
 }): JSX.Element {
   const {
     absoluteDottedId,
@@ -168,7 +168,8 @@ export function UIPluginSelector(props: {
   } = props
   let [dataSourceId, documentId] = ['', '']
   if (absoluteDottedId) {
-    ;[dataSourceId, documentId] = absoluteDottedId.split('/', 2)
+    dataSourceId = absoluteDottedId.split('/', 2)[0]
+    documentId = absoluteDottedId.split('/', 2)[1]
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(type)
   // @ts-ignore

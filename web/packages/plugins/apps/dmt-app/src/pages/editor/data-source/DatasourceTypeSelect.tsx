@@ -3,7 +3,7 @@ import { DatasourceOption } from './DatasourceSelect'
 
 type Props = {
   selectedDatasourceType: string
-  setSelectedDatasourceType: Function
+  setSelectedDatasourceType: (newDatasourceType: string) => void
 }
 
 export default (props: Props) => {

@@ -6,12 +6,12 @@ import DataSourceReducer, {
   initialState,
 } from './DataSourcesReducer'
 import { DmssAPI } from '../services'
-import { DataSource, DataSources } from '../services'
+import { DataSource } from '../services'
 
 export interface IModels {
   dataSources: DataSource[]
 }
-
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IOperations {}
 
 export interface IDataSources {
