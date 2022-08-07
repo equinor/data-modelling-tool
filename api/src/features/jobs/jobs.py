@@ -1,13 +1,14 @@
 from fastapi import APIRouter
 from config import config
-from use_case.jobs.delete_job import delete_job_use_case
-from use_case.jobs.get_result_job import get_job_result_use_case, GetJobResultResponse
-from use_case.jobs.status_job import status_job_use_case, StatusJobResponse
+from features.jobs.use_cases.delete_job import delete_job_use_case
+from features.jobs.use_cases.get_result_job import get_job_result_use_case, GetJobResultResponse
+from features.jobs.use_cases.status_job import status_job_use_case, StatusJobResponse
 from starlette.responses import JSONResponse, PlainTextResponse
-from use_case.jobs.start_job import start_job_use_case
+from features.jobs.use_cases.start_job import start_job_use_case
+from restful.responses import create_response
 
 router = APIRouter(tags=["Jobs"], prefix="/job")
-from restful.responses import create_response
+
 
 if config.JOB_SERVICE_ENABLED:
 

@@ -1,5 +1,5 @@
 from fastapi import APIRouter
-from use_case.blueprints.get_related_blueprints_use_case import get_related_blueprints_use_case
+from features.blueprints.use_cases.get_related_blueprints_use_case import get_related_blueprints_use_case
 from restful.responses import create_response
 from utils.logging import logger
 from starlette.responses import JSONResponse

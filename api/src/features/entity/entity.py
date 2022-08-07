@@ -1,6 +1,6 @@
 from fastapi import APIRouter
-from use_case.entity.instantiate_entity import instantiate_entity_use_case
-from use_case.entity.instantiate_entity import BasicEntity
+from features.entity.use_cases.instantiate_entity import instantiate_entity_use_case
+from features.entity.use_cases.instantiate_entity import BasicEntity
 from restful.responses import create_response
 from starlette.responses import JSONResponse
 

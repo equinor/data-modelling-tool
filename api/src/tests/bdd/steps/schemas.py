@@ -9,7 +9,7 @@ from domain_classes.schema import Factory
 from config import Config
 from repository.dmss.TemplateRepositoryFromDMSS import TemplateRepositoryFromDMSS
 from services.dmss import dmss_api
-from use_case.import_package import import_package_tree, package_tree_from_zip
+from utils.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
 from utils.data_structure.compare import pretty_eq
 

@@ -5,7 +5,10 @@ from starlette import status
 from fastapi import APIRouter, Request
 from config import config
 
-from use_case.system.create_application_use_case import CreateApplicationRequestObject, CreateApplicationUseCase
+from features.system.use_cases.create_application_use_case import (
+    CreateApplicationRequestObject,
+    CreateApplicationUseCase,
+)
 from utils.logging import logger
 from starlette.responses import JSONResponse, PlainTextResponse
 from fastapi.responses import StreamingResponse
