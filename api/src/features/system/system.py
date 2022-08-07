@@ -4,14 +4,11 @@ import markupsafe
 from starlette import status
 from fastapi import APIRouter, Request
 from config import config
-
-from features.system.use_cases.create_application_use_case import (
-    CreateApplicationRequestObject,
-    CreateApplicationUseCase,
-)
+from restful.responses import create_response
+from features.system.use_cases.create_application_use_case import create_application_use_case
 from utils.logging import logger
 from starlette.responses import JSONResponse, PlainTextResponse
-from fastapi.responses import StreamingResponse
+
 
 router = APIRouter(tags=["System"], prefix="/system")
 
@@ -66,16 +63,10 @@ def set_application_settings(request: Request):
 
 # TODO seems like this is not used anymore
 @router.get("/{data_source_id}/create-application/{application_id}", operation_id="create_app")
+@create_response(JSONResponse)
 def create_application(data_source_id: str, application_id: str):
     logger.info(f"Creating application in data source '{data_source_id}' from application settings '{application_id}'")
-    request_object = CreateApplicationRequestObject.from_dict({"applicationId": application_id})
-    use_case = CreateApplicationUseCase(data_source_id)
-    response = use_case.execute(request_object)
-
-    if response.status_code == status.HTTP_200_OK:
-        return StreamingResponse(response.value, media_type="application/x-zip-compressed", filename="application.zip")
-    else:
-        return JSONResponse(json.dumps(response.value), status_code=response.status_code)
+    return create_application_use_case(data_source_id=data_source_id, application_id=application_id)
 
 
 # TODO seems like this is not used anymore
