@@ -3,7 +3,7 @@ import { Label, Search } from '@equinor/eds-core-react'
 
 const SearchInput = (props: {
   placeholder?: string
-  onChange: Function
+  onChange: () => void
 }): JSX.Element => {
   const { placeholder, onChange } = props
   return (

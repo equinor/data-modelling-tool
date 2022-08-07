@@ -5,9 +5,15 @@ repos:
     - id: check-ast
       language_version: python3.10
     - id: check-merge-conflict
+    - id: check-case-conflict
     - id: check-json
+    - id: check-toml
     - id: check-yaml
-      exclude: ^IaC/ansible/(hosts.yml|vars/)
+    - id: trailing-whitespace
+      exclude: ^.*\.(lock)$||^docs\/
+    - id: mixed-line-ending
+      exclude: ^.*\.(lock)$||^docs\/
+    - id: detect-private-key
 
 - repo: https://github.com/ambv/black
   rev: 22.3.0
@@ -31,15 +37,6 @@ repos:
       files: ^web/.*\.(ts|tsx|js|css|html|json)$
       args: ['--config=web/.prettierrc.js', '--ignore-path=web/.prettierignore']
 
-# TODO: Enable this
-#-   repo: https://github.com/pre-commit/mirrors-eslint
-#    rev: 'v8.16.0'
-#    hooks:
-#    -   id: eslint
-#        additional_dependencies:
-#          - eslint@8.16.0
-#          - eslint-plugin-unused-imports@2.0.0
-#        args: ["--fix"]
 
 - repo: local
   hooks:
@@ -56,4 +53,8 @@ repos:
     - id: pytest
       name: API Unit Tests
       entry: sh -c "export PYTHONPATH=./api/src && api/.venv/bin/python -m pytest api/src/tests"
+      language: system
+    - id: eslint
+      name: ESlint
+      entry: sh -c "cd web; npm run lint:fix"
       language: system

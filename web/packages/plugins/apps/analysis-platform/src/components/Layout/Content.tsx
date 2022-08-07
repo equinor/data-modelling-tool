@@ -1,9 +1,10 @@
 import React from 'react'
 import { Layout } from 'antd'
 import styled from 'styled-components'
+import { useParams } from 'react-router-dom'
 
-import { TContent } from '@dmt/common'
-import { backgroundColorDefault, backgroundColorLight } from '../Design/Colors'
+import { TContent, DocumentPath } from '@dmt/common'
+import { backgroundColorDefault } from '../Design/Colors'
 
 const { Content } = Layout
 
@@ -14,9 +15,16 @@ const PageContent = styled.div`
 
 export default (props: TContent): JSX.Element => {
   const { content } = props
+  const { data_source, entity_id } = useParams<{
+    data_source: string
+    entity_id: string
+  }>()
 
   return (
     <Content style={{ margin: '0px 0px 10px 0px' }}>
+      {data_source && entity_id && (
+        <DocumentPath absoluteDottedId={`${data_source}/${entity_id}`} />
+      )}
       {/*@ts-ignore*/}
       <PageContent>{content({ settings: props.settings })}</PageContent>
     </Content>

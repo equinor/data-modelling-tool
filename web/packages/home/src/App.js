@@ -81,9 +81,9 @@ function App() {
   const { loading, getPagePlugin } = useContext(UiPluginContext)
   const { token } = useContext(AuthContext)
   const authEnabled = process.env.REACT_APP_AUTH === '1'
-  const dmtAPI = new DmtAPI()
 
   useEffect(() => {
+    const dmtAPI = new DmtAPI('')
     setLoadingAppSettings(true)
     dmtAPI
       .getSystemSettings()

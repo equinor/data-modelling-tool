@@ -11,7 +11,6 @@ import {
   Dialog,
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
-  TAttribute,
 } from '@dmt/common'
 
 // @ts-ignore
@@ -20,10 +19,10 @@ import { NotificationManager } from 'react-notifications'
 function createMenuItems(
   node: TreeNode,
   dmssAPI: DmssAPI,
-  removeNode: Function,
+  removeNode: () => void,
   setShowScrimId: (id: string) => void
 ): JSX.Element[] {
-  let menuItems = []
+  const menuItems = []
 
   // dataSources get a "new root package"
   if (node.type === 'dataSource') {
@@ -159,7 +158,7 @@ const edsButtonStyleConfig = {
 
 export const NodeRightClickMenu = (props: {
   node: TreeNode
-  removeNode: Function
+  removeNode: () => void
   children: any
 }) => {
   const { node, children, removeNode } = props
@@ -204,7 +203,7 @@ export const NodeRightClickMenu = (props: {
       isRoot: false,
       content: [],
     }
-    const ref: string = `${node.nodeId}.content`
+    const ref = `${node.nodeId}.content`
     dmssAPI
       .explorerAdd({
         absoluteRef: ref,
@@ -248,7 +247,7 @@ export const NodeRightClickMenu = (props: {
   const handleFormDataSubmit = (
     node: TreeNode,
     formData: string,
-    action: Function
+    action: (node: TreeNode, formData: string) => void
   ) => {
     if (formData) {
       action(node, formData)

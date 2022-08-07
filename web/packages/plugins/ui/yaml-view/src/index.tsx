@@ -6,6 +6,7 @@ import PreviewPlugin from './YamlPlugin'
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
+  // eslint-disable-next-line
   const [document, loading, updateDocument, error] = useDocument(
     dataSourceId,
     documentId,

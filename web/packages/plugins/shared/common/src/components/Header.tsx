@@ -225,7 +225,6 @@ export const Header = (props: {
                       name="impersonate-role"
                       value={role}
                       checked={checked === role}
-                      //@ts-ignore
                       onChange={(e: any) => updateChecked(e.target.value)}
                     />
                   </li>

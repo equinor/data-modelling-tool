@@ -26,7 +26,7 @@ const WorkflowTask_Component = (props: DmtUIPlugin) => {
 }
 
 const WorkflowTask = ({ document }: any) => {
-  var tabs: any = []
+  const tabs: any = []
   document.workflows.map((wf: any, index: number) =>
     tabs.push({ label: wf.name, content: <MakeDiagram document={wf} /> })
   )

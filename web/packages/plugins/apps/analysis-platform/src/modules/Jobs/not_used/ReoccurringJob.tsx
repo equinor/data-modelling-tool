@@ -3,7 +3,7 @@ import { Button, Label } from '@equinor/eds-core-react'
 import { StyledSelect } from '../../../components/Input'
 import DateRangePicker from '../../../components/DateRangePicker'
 import styled from 'styled-components'
-import { TCronJob } from '../../../Types'
+import { TCronJob } from '@dmt/common'
 
 enum Interval {
   HOURLY = 'Hourly',
@@ -14,7 +14,7 @@ enum Interval {
 
 // Creates a list like ["00:00",...,"24:00"]
 function generateSelectableTimes(): string[] {
-  let selectableTimes = []
+  const selectableTimes = []
   for (let i = 0; i < 25; i++) {
     selectableTimes.push(`${i}:00`)
   }
@@ -36,9 +36,9 @@ const ButtonWrapper = styled.div`
 `
 
 export function CreateReoccurringJob(props: {
-  close: Function
-  removeJob: Function
-  setCronJob: Function
+  close: () => void
+  removeJob: () => void
+  setCronJob: (job: TCronJob) => void
   cronJob?: TCronJob | undefined
 }) {
   const { close, removeJob, setCronJob, cronJob } = props
@@ -63,10 +63,10 @@ export function CreateReoccurringJob(props: {
   }
 
   useEffect(() => {
-    let newMinute = minute
+    const newMinute = minute
     let newHour = hour
     let dayOfMonth = '*'
-    let month = '*'
+    const month = '*'
     let dayOfWeek = '*'
 
     switch (interval) {

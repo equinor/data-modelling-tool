@@ -23,18 +23,17 @@ const Tab = styled.div<ITabs>`
     color: gray;
   }
   cursor: pointer;
-  border-bottom: ${(props: any) =>
+  border-bottom: ${(props: ITabs) =>
     (props.active == true && '3px red solid') || '3px grey solid'};
   font-size: medium;
 `
 
-// @ts-ignore
-const BaseTab = styled(Tab)`
+const BaseTab = styled(Tab as any)`
   background-color: #024654;
   color: white;
 `
 
-const ChildTab = styled(Tab)`
+const ChildTab = styled(Tab as any)`
   background-color: #d1d1d1;
 `
 
@@ -48,7 +47,7 @@ type TChildTab = {
   entity: any
   categories?: string[]
   absoluteDottedId: string
-  onSubmit: Function
+  onSubmit: (data: any) => void
 }
 
 type TStringMap = {
@@ -60,10 +59,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId
-  )
+  const [entity, loading] = useDocument<any>(dataSourceId, documentId)
 
   useEffect(() => {
     if (!entity) return
@@ -136,9 +132,11 @@ export const TabsContainer = (props: DmtUIPlugin) => {
         </HidableWrapper>
         {Object.values(childTabs).map((childTab: TChildTab) => {
           return (
-            <HidableWrapper hidden={childTab.attribute !== selectedTab}>
+            <HidableWrapper
+              key={childTab.attribute}
+              hidden={childTab.attribute !== selectedTab}
+            >
               <UIPluginSelector
-                key={childTab.attribute}
                 absoluteDottedId={childTab.absoluteDottedId}
                 type={childTab.entity.type}
                 categories={childTab.categories}

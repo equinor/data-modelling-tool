@@ -1,4 +1,3 @@
-// @ts-nocheck
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
@@ -6,8 +5,8 @@ import { NotificationManager } from 'react-notifications'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
 import { MultiSelect } from '@equinor/eds-core-react'
-import { AxiosResponse } from 'axios'
-// @ts-ignore
+import { AxiosError, AxiosResponse } from 'axios'
+
 import { Link } from 'react-router-dom'
 import {
   DmssAPI,
@@ -173,7 +172,6 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
           console.error(error)
         })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [expanded])
 
   // Don't render anything for the "type" attribute
@@ -228,6 +226,14 @@ function FilterContainer({
   sortByAttribute,
   setSortByAttribute,
   resetSearchSettings,
+}: {
+  search: (query: any) => void
+  queryError: string
+  searchFilter: any
+  setSearchFilter: (newFilter: any) => void
+  sortByAttribute: string
+  setSortByAttribute: (newAttribute: string) => void
+  resetSearchSettings: () => void
 }) {
   const [attributes, setAttributes] = useState<Array<any>>([])
   const { token } = useContext(AuthContext)
@@ -250,7 +256,6 @@ function FilterContainer({
           console.error(error)
         })
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [searchFilter?.type])
 
   return (
@@ -269,7 +274,6 @@ function FilterContainer({
             <BlueprintPicker
               formData={searchFilter?.type || ''}
               onChange={(event: any) => setSearchFilter({ type: event })}
-              uiSchema={{ 'ui:label': '' }}
             />
           </FilterGroup>
           {attributes.length !== 0 && (
@@ -416,9 +420,9 @@ function SelectDataSource(props: {
       <MultiSelect
         label="Select data sources to search"
         initialSelectedItems={selectedDataSources}
-        handleSelectedItemsChange={(
-          event: UseMultipleSelectionStateChange<string>
-        ) => setDataSources(event.selectedItems)}
+        handleSelectedItemsChange={(event: any) =>
+          setDataSources(event.selectedItems)
+        }
         items={allDataSources.map((dataSource: DataSource) => dataSource.id)}
       ></MultiSelect>
       <FaDatabase
@@ -470,7 +474,7 @@ export default ({ settings }: any) => {
       })
       .then((response: AxiosResponse<{ [key: string]: any }>) => {
         setQueryError('')
-        let nResults = Object.keys(response.data).length
+        const nResults = Object.keys(response.data).length
         if (nResults === 0) {
           NotificationManager.warning('No entities found', 'Search')
         } else {
@@ -485,7 +489,7 @@ export default ({ settings }: any) => {
         setResult(response.data)
       })
       .catch((err: AxiosError<any>) => {
-        setQueryError(err.response.data.message)
+        setQueryError(err.response?.data?.message)
         console.error(err)
       })
   }
@@ -525,7 +529,7 @@ export default ({ settings }: any) => {
           }
         />
       </ApplicationContext.Provider>
-      <ResultContainer result={result} dataSource={searchSettings.dataSource} />
+      <ResultContainer result={result} />
     </>
   )
 }

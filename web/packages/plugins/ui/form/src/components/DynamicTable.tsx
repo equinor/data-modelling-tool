@@ -15,7 +15,7 @@ const prepareColumns = (columns: Array<string>): Array<Column> => {
 const DynamicTable = (props: {
   columns: Array<string>
   rows: Array<any>
-  onRowClicked: MouseEventHandler
+  onRowClicked?: MouseEventHandler
 }): JSX.Element => {
   const { columns, rows, onRowClicked } = props
   const cols = prepareColumns(columns)
@@ -31,7 +31,7 @@ const DynamicTable = (props: {
           </Table.Row>
         </Table.Head>
         <Table.Body onClick={onRowClicked} style={{ cursor: 'pointer' }}>
-          {rows?.map((row, index) => (
+          {rows?.map((row) => (
             <Table.Row key={row._id} accessKey={row._id}>
               {Object.keys(row)
                 .filter((key) => key !== '_id')

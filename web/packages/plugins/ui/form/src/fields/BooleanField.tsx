@@ -1,5 +1,4 @@
 import React from 'react'
-// @ts-ignore
 import { Controller, useFormContext } from 'react-hook-form'
 import { BooleanFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
@@ -14,7 +13,7 @@ export const BooleanField = (props: BooleanFieldProps) => {
   const usedDefaultValue =
     (defaultValue !== undefined && defaultValue == 'True') || false
 
-  let defaultWidget = uiAttribute ? uiAttribute.widget : 'CheckboxWidget'
+  const defaultWidget = uiAttribute ? uiAttribute.widget : 'CheckboxWidget'
   const Widget = getWidget(namePath, defaultWidget)
 
   return (
@@ -23,9 +22,7 @@ export const BooleanField = (props: BooleanFieldProps) => {
       control={control}
       defaultValue={usedDefaultValue}
       render={({
-        // @ts-ignore
         field: { ref, value, ...props },
-        // @ts-ignore
         fieldState: { invalid, error },
       }) => (
         <Widget

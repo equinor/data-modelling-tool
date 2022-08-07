@@ -1,7 +1,6 @@
 import React, { createContext, useContext } from 'react'
 import defaultWidgets from './widgets'
 
-// @ts-ignore
 export const RegistryContext = createContext<any>({
   fields: {},
   widgets: {},

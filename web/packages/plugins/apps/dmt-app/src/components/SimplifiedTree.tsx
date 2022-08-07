@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { FaRegFileAlt } from 'react-icons/fa'
-// @ts-ignore
+
 import { Link } from 'react-router-dom'
 import { TAttribute } from '@dmt/common'
 type SimplifiedTreeProps = {
@@ -14,14 +14,14 @@ export const SimplifiedTree = (props: SimplifiedTreeProps) => {
 
   useEffect(() => {
     if (!document) return
-    let path = document.type.split('/')
+    const path = document.type.split('/')
     path.shift()
-    let complexTypes = getComplexTypesInDocument(document)
+    const complexTypes = getComplexTypesInDocument(document)
     setComplexTypes(complexTypes)
   }, [document])
 
   const getComplexTypesInDocument = (document: any) => {
-    let complexTypes: TAttribute[] = []
+    const complexTypes: TAttribute[] = []
     if (Object.keys(document).length !== 0) {
       for (const key in document) {
         //check if document attribute is an object, meaning that it's a complex type

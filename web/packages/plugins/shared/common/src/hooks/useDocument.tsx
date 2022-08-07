@@ -9,17 +9,21 @@ export function useDocument<T>(
   dataSourceId: string,
   documentId: string,
   depth?: number | undefined
-): [any | null, boolean, Function, AxiosError<any> | null] {
+): [
+  any | null,
+  boolean,
+  (newDocument: T, notify: boolean) => void,
+  AxiosError<any> | null
+] {
   const [document, setDocument] = useState<T | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<AxiosError<any> | null>(null)
-  // @ts-ignore-line
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
     setLoading(true)
-    let documentDepth: number = depth || 1
+    const documentDepth: number = depth || 1
     if (documentDepth < 0 || documentDepth > 999)
       throw new Error('Depth must be a positive number < 999')
     dmssAPI

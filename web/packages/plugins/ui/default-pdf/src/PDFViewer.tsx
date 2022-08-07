@@ -42,9 +42,7 @@ export const ViewerPDFPlugin = (props: any) => {
       })
       .then((response: any) => {
         const data = response.data
-        // @ts-ignore
         const blob = new Blob([data], { type: 'application/pdf' })
-        // @ts-ignore
         setBlobUrl(window.URL.createObjectURL(blob))
       })
       .catch((error: any) => {

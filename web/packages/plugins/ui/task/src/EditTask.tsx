@@ -37,7 +37,7 @@ const HeaderWrapper = styled.div`
 
 export const EditTask = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen, onSubmit } = props
-  const [document, loading, updateDocument, error] = useDocument<any>(
+  const [document, loading, updateDocument] = useDocument<any>(
     dataSourceId,
     documentId,
     999
@@ -100,7 +100,6 @@ export const EditTask = (props: DmtUIPlugin) => {
                   placeholder={
                     formData?.applicationInput?.name || 'Select or create'
                   }
-                  onChange={() => {}}
                   onClick={() => {
                     if (!Object.keys(formData?.applicationInput || {}).length)
                       return
@@ -118,7 +117,7 @@ export const EditTask = (props: DmtUIPlugin) => {
               </Column>
               <EntityPickerButton
                 typeFilter={formData.inputType}
-                onChange={(selectedEntity: any) => {
+                onChange={(selectedEntity) => {
                   setFormData({
                     ...formData,
                     applicationInput: selectedEntity,

@@ -2,8 +2,6 @@ import { DmtUIPlugin, Loading, useDocument } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Button, Progress, Typography } from '@equinor/eds-core-react'
-// @ts-ignore
-import { NotificationManager } from 'react-notifications'
 import { EditInputEntity, GroupWrapper } from './components'
 
 export const UpdateInputOnly = (props: DmtUIPlugin) => {

@@ -34,7 +34,7 @@ export function* dfs(node: Node): any {
   yield node
 
   if (Array.isArray(node.children)) {
-    for (let child of node.children) {
+    for (const child of node.children) {
       yield* dfs(child)
     }
   }
@@ -60,7 +60,7 @@ const nonPrimitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
 const search = async (token: string, query: any) => {
   const dmssAPI = new DmssAPI(token)
 
-  let response = await dmssAPI.search({
+  const response = await dmssAPI.search({
     dataSources: ['WorkflowDS'],
     body: query,
     sortByAttribute: 'name',
@@ -81,7 +81,7 @@ export const loader = async (
         const child: BlueprintType = await explorer.blueprintGet(
           attribute['attributeType']
         ).data
-        let childNode: Node = await loader(token, explorer, child)
+        const childNode: Node = await loader(token, explorer, child)
         childNode.attribute = attribute
         childNode.entity = child
         // If the attribute is abstract, we need to search for concrete definitions.
@@ -93,7 +93,7 @@ export const loader = async (
           await Promise.all(
             concreteDefinitions.map(
               async (concreteDefinition: BlueprintType) => {
-                let concertNode = await loader(
+                const concertNode = await loader(
                   token,
                   explorer,
                   concreteDefinition

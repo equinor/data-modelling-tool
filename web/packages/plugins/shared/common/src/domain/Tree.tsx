@@ -349,7 +349,7 @@ export class Tree {
       .documentGetByPath({ dataSourceId: dataSourceId, path: path })
       .then((response: any) => {
         const data = response.data
-        let folderNode = new TreeNode(
+        const folderNode = new TreeNode(
           this,
           `${dataSourceId}/${data._id}`,
           0,
@@ -367,7 +367,7 @@ export class Tree {
         this.index = { [`${dataSourceId}/${data._id}`]: folderNode }
       })
       .catch((error: Error) => {
-        let folderNode = new TreeNode(
+        const folderNode = new TreeNode(
           this,
           folderPath,
           0,

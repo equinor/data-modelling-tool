@@ -10,10 +10,7 @@ const Pre = styled.pre`
 export const ViewTask = (props: DmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props
 
-  const [task, loading, updateDocument, error] = useDocument<any>(
-    dataSourceId,
-    documentId
-  )
+  const [task, loading] = useDocument<any>(dataSourceId, documentId)
   if (loading) {
     return <Loading />
   }
