@@ -15,6 +15,8 @@ from repository.repository_exceptions import (
     JobNotFoundException,
 )
 
+from features.system.exceptions import ApplicationNotFoundException, SetApplicationSettingsForbidden
+
 TResponse = TypeVar("TResponse", bound=Response)
 
 
@@ -37,11 +39,15 @@ def create_response(response_class: Type[TResponse]) -> Callable[..., Callable[.
                     str(f"The file '{not_found.file}' was not found on data source '{not_found.data_source_id}'"),
                     status_code=status.HTTP_404_NOT_FOUND,
                 )
+            except SetApplicationSettingsForbidden as e:
+                return PlainTextResponse(e.message, status_code=status.HTTP_403_FORBIDDEN)
             except ApplicationNotLoadedException as e:
                 logger.error(e)
                 return PlainTextResponse(
                     str(f"Failed to fetch index: {e.message}"), status_code=status.HTTP_404_NOT_FOUND
                 )
+            except ApplicationNotFoundException as e:
+                return PlainTextResponse(str(e.message), status_code=status.HTTP_404_NOT_FOUND)
             except UnauthorizedException as e:
                 message = json.loads(e.body)["detail"]
                 return PlainTextResponse(str(message), status.HTTP_401_UNAUTHORIZED)

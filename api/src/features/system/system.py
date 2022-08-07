@@ -1,14 +1,14 @@
 import json
 
-import markupsafe
 from starlette import status
 from fastapi import APIRouter, Request
-from config import config
+
 from restful.responses import create_response
 from features.system.use_cases.create_application_use_case import create_application_use_case
 from utils.logging import logger
 from starlette.responses import JSONResponse, PlainTextResponse
-
+from features.system.use_cases.get_application_settings_use_case import get_application_settings_use_case
+from features.system.use_cases.set_application_settings_use_case import set_application_settings_use_case
 
 router = APIRouter(tags=["System"], prefix="/system")
 
@@ -16,49 +16,18 @@ router = APIRouter(tags=["System"], prefix="/system")
 
 
 @router.get("/settings", operation_id="get_app_settings")
-def get_application_settings(request: Request):
-    app_name = ""
-    try:
-        app_name = request.query_params["APPLICATION"]
-    except Exception:
-        logger.info("no app name found")
-    if app_name:
-        if app_name in config.APP_SETTINGS:  # Return settings for the specific application
-            return JSONResponse(
-                config.APP_SETTINGS.get(app_name),
-                status_code=status.HTTP_200_OK,
-            )
-        else:
-            return PlainTextResponse(
-                f"Error: No application named '{markupsafe.escape(app_name)}' is loaded",
-                status_code=status.HTTP_404_NOT_FOUND,
-            )
-    return JSONResponse(
-        config.APP_SETTINGS,
-        status_code=status.HTTP_200_OK,
-    )
+@create_response(JSONResponse)
+def get_application_settings(application_name: str = ""):
+    return get_application_settings_use_case(application_name=application_name)
 
 
 # Endpoint is only available on ENVIRONMENT=local
 
 
 @router.post("/settings", operation_id="set_app_settings")
+@create_response(PlainTextResponse)
 def set_application_settings(request: Request):
-    app_name = request.query_params("APPLICATION")
-    if config.ENVIRONMENT != "local":
-        return PlainTextResponse(
-            "Changing systems settings can only be done in local deployments.", status=status.HTTP_403_FORBIDDEN
-        )
-    try:
-        with open(config.APP_SETTINGS.get(app_name).get("file_loc"), "w") as f:
-            request_data = json.dumps(request.json)
-            f.write(request_data)
-        config.load_app_settings()
-        return PlainTextResponse("OK", status_code=status.HTTP_200_OK)
-    except Exception:
-        return PlainTextResponse(
-            "Error: Failed to save the settings file.", status_code=status.HTTP_500_INTERNAL_SERVER_ERROR
-        )
+    return set_application_settings_use_case(request=request)
 
 
 # TODO seems like this is not used anymore
