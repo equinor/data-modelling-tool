@@ -1,0 +1,26 @@
+{
+  "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6b",
+  "type": "AnalysisPlatformDS/Blueprints/Asset",
+  "name": "exampleAsset",
+  "description": "example asset",
+  "creator": "MOAMU",
+  "created": "2022-08-08T14:42:59.601Z",
+  "updated": "2022-08-08T14:42:59.601Z",
+  "analyses": [
+    {
+      "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6a",
+      "type": "AnalysisPlatformDS/Blueprints/Analysis",
+      "name": "exampleAnalysis",
+      "contained": false
+    }
+  ],
+  "location": {
+    "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6c",
+    "type": "AnalysisPlatformDS/Blueprints/Location",
+    "name": "Example Location",
+    "contained": false
+  },
+  "start": "2023-01-01T00:01:23.601Z",
+  "end": "2024-01-01T00:01:23.601Z",
+  "responsible": "Babak"
+}
