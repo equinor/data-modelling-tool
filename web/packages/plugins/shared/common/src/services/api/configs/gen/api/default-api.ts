@@ -31,6 +31,8 @@ import { HTTPValidationError } from '../models';
 // @ts-ignore
 import { MoveRequest } from '../models';
 // @ts-ignore
+import { PATData } from '../models';
+// @ts-ignore
 import { Reference } from '../models';
 // @ts-ignore
 import { RemoveByPathRequest } from '../models';
@@ -983,11 +985,11 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         },
         /**
          * 
-         * @summary Healthcheck
+         * @summary Get
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        healthcheck: async (options: any = {}): Promise<RequestArgs> => {
+        getApiV1HealthcheckGet: async (options: any = {}): Promise<RequestArgs> => {
             const localVarPath = `/api/v1/healthcheck`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
@@ -1119,7 +1121,7 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
         search: async (body: object, dataSources?: Array<string>, sortByAttribute?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'body' is not null or undefined
             assertParamExists('search', 'body', body)
-            const localVarPath = `/api/v1/search/`;
+            const localVarPath = `/api/v1/search`;
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -1411,7 +1413,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async blobUpload(dataSourceId: string, blobId: string, file: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async blobUpload(dataSourceId: string, blobId: string, file: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.blobUpload(dataSourceId, blobId, file, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1444,7 +1446,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async dataSourceGet(dataSourceId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async dataSourceGet(dataSourceId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.dataSourceGet(dataSourceId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1454,7 +1456,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.dataSourceGetAll(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1466,7 +1468,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async dataSourceSave(dataSourceId: string, dataSourceRequest: DataSourceRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async dataSourceSave(dataSourceId: string, dataSourceRequest: DataSourceRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.dataSourceSave(dataSourceId, dataSourceRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1524,7 +1526,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerAdd(absoluteRef: string, body: object, updateUncontained?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async explorerAdd(absoluteRef: string, body: object, updateUncontained?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerAdd(absoluteRef, body, updateUncontained, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1536,7 +1538,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerAddSimple(dataSourceId: string, body: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async explorerAddSimple(dataSourceId: string, body: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerAddSimple(dataSourceId, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1551,7 +1553,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async explorerAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerAddToPath(dataSourceId, document, directory, updateUncontained, files, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1563,7 +1565,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerMove(dataSourceId: string, moveRequest: MoveRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async explorerMove(dataSourceId: string, moveRequest: MoveRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerMove(dataSourceId, moveRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1575,7 +1577,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRemove(dataSourceId: string, dottedId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async explorerRemove(dataSourceId: string, dottedId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemove(dataSourceId, dottedId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1587,7 +1589,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRemoveByPath(dataSourceId: string, removeByPathRequest: RemoveByPathRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async explorerRemoveByPath(dataSourceId: string, removeByPathRequest: RemoveByPathRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemoveByPath(dataSourceId, removeByPathRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1599,7 +1601,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRename(dataSourceId: string, renameRequest: RenameRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async explorerRename(dataSourceId: string, renameRequest: RenameRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRename(dataSourceId, renameRequest, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1617,12 +1619,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
         },
         /**
          * 
-         * @summary Healthcheck
+         * @summary Get
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async healthcheck(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.healthcheck(options);
+        async getApiV1HealthcheckGet(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getApiV1HealthcheckGet(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1685,7 +1687,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async tokenCreate(scope?: AccessLevel, timeToLive?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async tokenCreate(scope?: AccessLevel, timeToLive?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.tokenCreate(scope, timeToLive, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1696,7 +1698,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async tokenDelete(tokenId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async tokenDelete(tokenId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.tokenDelete(tokenId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1706,7 +1708,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async tokenListAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+        async tokenListAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<PATData>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.tokenListAll(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1760,7 +1762,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        blobUpload(dataSourceId: string, blobId: string, file: any, options?: any): AxiosPromise<any> {
+        blobUpload(dataSourceId: string, blobId: string, file: any, options?: any): AxiosPromise<string> {
             return localVarFp.blobUpload(dataSourceId, blobId, file, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1790,7 +1792,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        dataSourceGet(dataSourceId: string, options?: any): AxiosPromise<any> {
+        dataSourceGet(dataSourceId: string, options?: any): AxiosPromise<object> {
             return localVarFp.dataSourceGet(dataSourceId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1799,7 +1801,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        dataSourceGetAll(options?: any): AxiosPromise<any> {
+        dataSourceGetAll(options?: any): AxiosPromise<Array<object>> {
             return localVarFp.dataSourceGetAll(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1810,7 +1812,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        dataSourceSave(dataSourceId: string, dataSourceRequest: DataSourceRequest, options?: any): AxiosPromise<any> {
+        dataSourceSave(dataSourceId: string, dataSourceRequest: DataSourceRequest, options?: any): AxiosPromise<string> {
             return localVarFp.dataSourceSave(dataSourceId, dataSourceRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1864,7 +1866,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerAdd(absoluteRef: string, body: object, updateUncontained?: boolean, options?: any): AxiosPromise<any> {
+        explorerAdd(absoluteRef: string, body: object, updateUncontained?: boolean, options?: any): AxiosPromise<object> {
             return localVarFp.explorerAdd(absoluteRef, body, updateUncontained, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1875,7 +1877,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerAddSimple(dataSourceId: string, body: object, options?: any): AxiosPromise<any> {
+        explorerAddSimple(dataSourceId: string, body: object, options?: any): AxiosPromise<string> {
             return localVarFp.explorerAddSimple(dataSourceId, body, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1889,7 +1891,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): AxiosPromise<any> {
+        explorerAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): AxiosPromise<object> {
             return localVarFp.explorerAddToPath(dataSourceId, document, directory, updateUncontained, files, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1900,7 +1902,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerMove(dataSourceId: string, moveRequest: MoveRequest, options?: any): AxiosPromise<any> {
+        explorerMove(dataSourceId: string, moveRequest: MoveRequest, options?: any): AxiosPromise<string> {
             return localVarFp.explorerMove(dataSourceId, moveRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1911,7 +1913,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemove(dataSourceId: string, dottedId: string, options?: any): AxiosPromise<any> {
+        explorerRemove(dataSourceId: string, dottedId: string, options?: any): AxiosPromise<string> {
             return localVarFp.explorerRemove(dataSourceId, dottedId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1922,7 +1924,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemoveByPath(dataSourceId: string, removeByPathRequest: RemoveByPathRequest, options?: any): AxiosPromise<any> {
+        explorerRemoveByPath(dataSourceId: string, removeByPathRequest: RemoveByPathRequest, options?: any): AxiosPromise<string> {
             return localVarFp.explorerRemoveByPath(dataSourceId, removeByPathRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1933,7 +1935,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRename(dataSourceId: string, renameRequest: RenameRequest, options?: any): AxiosPromise<any> {
+        explorerRename(dataSourceId: string, renameRequest: RenameRequest, options?: any): AxiosPromise<object> {
             return localVarFp.explorerRename(dataSourceId, renameRequest, options).then((request) => request(axios, basePath));
         },
         /**
@@ -1949,12 +1951,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
         },
         /**
          * 
-         * @summary Healthcheck
+         * @summary Get
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        healthcheck(options?: any): AxiosPromise<any> {
-            return localVarFp.healthcheck(options).then((request) => request(axios, basePath));
+        getApiV1HealthcheckGet(options?: any): AxiosPromise<string> {
+            return localVarFp.getApiV1HealthcheckGet(options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2012,7 +2014,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        tokenCreate(scope?: AccessLevel, timeToLive?: number, options?: any): AxiosPromise<any> {
+        tokenCreate(scope?: AccessLevel, timeToLive?: number, options?: any): AxiosPromise<string> {
             return localVarFp.tokenCreate(scope, timeToLive, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2022,7 +2024,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        tokenDelete(tokenId: string, options?: any): AxiosPromise<any> {
+        tokenDelete(tokenId: string, options?: any): AxiosPromise<string> {
             return localVarFp.tokenDelete(tokenId, options).then((request) => request(axios, basePath));
         },
         /**
@@ -2031,7 +2033,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        tokenListAll(options?: any): AxiosPromise<any> {
+        tokenListAll(options?: any): AxiosPromise<Array<PATData>> {
             return localVarFp.tokenListAll(options).then((request) => request(axios, basePath));
         },
         /**
@@ -2877,13 +2879,13 @@ export class DefaultApi extends BaseAPI {
 
     /**
      * 
-     * @summary Healthcheck
+     * @summary Get
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      * @memberof DefaultApi
      */
-    public healthcheck(options?: any) {
-        return DefaultApiFp(this.configuration).healthcheck(options).then((request) => request(this.axios, this.basePath));
+    public getApiV1HealthcheckGet(options?: any) {
+        return DefaultApiFp(this.configuration).getApiV1HealthcheckGet(options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

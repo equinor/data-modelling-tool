@@ -153,8 +153,8 @@ const BlueprintAttribute = (props: {
         </div>
         {!['string', 'number', 'boolean'].includes(attribute.attributeType) && (
           <div style={{ marginLeft: '10px' }}>
-            <Label label={'Select blueprint'} />
             <BlueprintPicker
+              label={'Select blueprint'}
               onChange={(selectedBlueprint: string) =>
                 setAttribute({
                   ...attribute,

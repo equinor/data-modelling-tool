@@ -54,8 +54,8 @@ const widgets = {
     const { label, variant, onChange, value, helperText } = props
     return (
       <>
-        <Typography>{label}</Typography>
         <BlueprintPicker
+          label={label}
           variant={variant}
           onChange={onChange}
           formData={value}

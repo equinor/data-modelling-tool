@@ -14,5 +14,17 @@
 
 
 
+export * from './api/access-control-api';
+export * from './api/blob-api';
+export * from './api/blueprint-api';
+export * from './api/datasource-api';
 export * from './api/default-api';
+export * from './api/document-api';
+export * from './api/explorer-api';
+export * from './api/export-api';
+export * from './api/health-check-api';
+export * from './api/personal-access-token-api';
+export * from './api/reference-api';
+export * from './api/search-api';
+export * from './api/whoami-api';
 

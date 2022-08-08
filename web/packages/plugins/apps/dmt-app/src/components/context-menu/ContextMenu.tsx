@@ -407,8 +407,8 @@ export const NodeRightClickMenu = (props: {
           }}
         >
           <div style={{ display: 'block', padding: '10px 0 0 10px' }}>
-            <Label label={'Blueprint'} />
             <BlueprintPicker
+              label={'Blueprint'}
               onChange={(selectedType: string) =>
                 setFormData({ type: selectedType })
               }

@@ -16,6 +16,7 @@ export const AnalysisCreate = (): JSX.Element => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleCreateAnalysis = (formData: TAnalysis) => {
+    console.log('run')
     setIsLoading(true)
     const data = {
       ...formData,
@@ -30,6 +31,7 @@ export const AnalysisCreate = (): JSX.Element => {
     createAnalysis(data, token, [])
       .then((documentId: any) => {
         // TODO: Should we use props.history.push instead?
+        console.log('doc id', documentId)
         //@ts-ignore
         document.location = `${DEFAULT_DATASOURCE_ID}/${documentId}/`
       })

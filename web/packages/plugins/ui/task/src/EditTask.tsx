@@ -64,8 +64,8 @@ export const EditTask = (props: DmtUIPlugin) => {
           <Typography variant="h3">Input</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Blueprint'} />
               <BlueprintPicker
+                label={'Blueprint'}
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, inputType: selectedBlueprint })
                 }
@@ -73,8 +73,8 @@ export const EditTask = (props: DmtUIPlugin) => {
               />
             </Column>
             <Column>
-              <Label label={'Entity destination folder'} />
               <DestinationPicker
+                label={'Entity destination folder'}
                 onChange={(selectedFolder: string) =>
                   setEntityDestination(selectedFolder)
                 }
@@ -142,8 +142,8 @@ export const EditTask = (props: DmtUIPlugin) => {
           <Typography variant="h3">Output</Typography>
           <GroupWrapper>
             <Column>
-              <Label label={'Blueprint'} />
               <BlueprintPicker
+                label={'Blueprint'}
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, outputType: selectedBlueprint })
                 }

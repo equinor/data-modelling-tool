@@ -22,10 +22,10 @@
 export interface ValidationError {
     /**
      * 
-     * @type {Array<string>}
+     * @type {Array<string | number>}
      * @memberof ValidationError
      */
-    loc: Array<string>;
+    loc: Array<string | number>;
     /**
      * 
      * @type {string}
