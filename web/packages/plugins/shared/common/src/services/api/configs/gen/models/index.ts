@@ -3,6 +3,7 @@ export * from './access-level';
 export * from './data-source-request';
 export * from './httpvalidation-error';
 export * from './move-request';
+export * from './patdata';
 export * from './reference';
 export * from './remove-by-path-request';
 export * from './rename-request';
