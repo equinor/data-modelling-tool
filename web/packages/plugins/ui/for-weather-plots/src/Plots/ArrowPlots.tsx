@@ -93,7 +93,7 @@ export default (props: {
                     />
                   }
                   style={{ labels: { fontSize: fontSize } }}
-                  labels={({ datum }) => {
+                  labels={({ datum }: any) => {
                     return `${datum.timestamp} \n ${graphInfo.name}: ${datum[
                       graphInfo.name
                     ].toFixed(2)} ${graphInfo.unit}`

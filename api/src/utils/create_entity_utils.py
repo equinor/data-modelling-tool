@@ -30,6 +30,8 @@ def set_default(attr: BlueprintAttribute, blueprint_provider):
             return 0.0
         case "string":
             return ""
+        case "integer":
+            return 0
 
 
 def create_entity(blueprint_provider, entity: dict):
