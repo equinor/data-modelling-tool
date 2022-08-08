@@ -64,14 +64,8 @@ export const DestinationPicker = (props: DestinationPickerProps) => {
 
   return (
     <div>
-<<<<<<< HEAD
       <Label label={label || 'Destination'} />
-      <Tooltip
-        title={truncatePathString(formData) === formData ? '' : formData}
-      >
-=======
       <Tooltip title={formData || 'None selected'}>
->>>>>>> 3643796e (have create entity work again)
         <Input
           style={{
             width: PATH_INPUT_FIELD_WIDTH,

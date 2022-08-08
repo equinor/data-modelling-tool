@@ -55,6 +55,6 @@ class Blueprint:
         )
         self.ui_recipes: List[Recipe] = get_ui_recipe(entity.get("uiRecipes", []))
 
-    def get_none_primitive_types(self) -> List[BlueprintAttribute]:
+    def get_non_primitive_types(self) -> List[BlueprintAttribute]:
         blueprints = [attribute for attribute in self.attributes if not attribute.is_primitive]
         return blueprints

@@ -61,7 +61,7 @@ test_blueprints = {
                 "dimensions": "*",
             },
             {
-                "attributeType": "number",
+                "attributeType": "integer",
                 "type": "system/SIMOS/BlueprintAttribute",
                 "name": "intValues",
                 "dimensions": "*",

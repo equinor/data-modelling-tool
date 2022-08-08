@@ -39,13 +39,13 @@ class ApplicationService:
         related_blueprints[blueprint] = first.entity
 
         def get_blueprints_recursive(type: Blueprint):
-            for attr in type.get_none_primitive_types():
+            for attr in type.get_non_primitive_types():
                 bp = self.document_service.get_blueprint(attr.attribute_type)
                 related_blueprints[attr.attribute_type] = bp.entity
                 if attr.attribute_type not in related_blueprints.keys():
                     get_blueprints_recursive(bp)
 
-        for attr in first.get_none_primitive_types():
+        for attr in first.get_non_primitive_types():
             bp = self.document_service.get_blueprint(attr.attribute_type)
             related_blueprints[attr.attribute_type] = bp.entity
             get_blueprints_recursive(bp)

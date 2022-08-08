@@ -69,7 +69,7 @@ def zip_package(ob: ZipFile, document: dict, path, document_service: DocumentSer
 
     blueprint = document_service.get_blueprint(document["type"])
     document_references = []
-    for attribute in blueprint.get_none_primitive_types():
+    for attribute in blueprint.get_non_primitive_types():
         name = attribute.name
         is_contained_in_storage = blueprint.storage_recipes[0].is_contained(attribute.name, attribute.attribute_type)
         if attribute.is_array:
