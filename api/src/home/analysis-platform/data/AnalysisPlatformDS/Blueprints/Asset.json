@@ -8,7 +8,8 @@
       "name": "analyses",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "/Analysis",
-      "optional": true,
+      "optional": false,
+      "default": [],
       "dimensions": "*"
     },
     {
