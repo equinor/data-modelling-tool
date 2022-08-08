@@ -4,7 +4,7 @@ from features.entity.use_cases.instantiate_entity import BasicEntity
 from restful.responses import create_response
 from starlette.responses import JSONResponse
 
-router = APIRouter(tags=["Entities"], prefix="/entity")
+router = APIRouter(tags=["DMT", "Entities"], prefix="/entity")
 
 
 @router.post("", operation_id="instantiate_entity")

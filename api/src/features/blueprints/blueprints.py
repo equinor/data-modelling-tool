@@ -4,7 +4,7 @@ from restful.responses import create_response
 from utils.logging import logger
 from starlette.responses import JSONResponse
 
-router = APIRouter(tags=["Blueprints"], prefix="/blueprints")
+router = APIRouter(tags=["DMT", "Blueprints"], prefix="/blueprints")
 
 
 # TODO seems like this is not used anymore

@@ -9,7 +9,7 @@ from restful.responses import create_response
 import json
 from starlette import status
 
-router = APIRouter(tags=["Jobs"], prefix="/job")
+router = APIRouter(tags=["DMT", "Jobs"], prefix="/job")
 
 
 job_service_disabled_error = JSONResponse(

@@ -10,7 +10,7 @@ from starlette.responses import JSONResponse, PlainTextResponse
 from features.system.use_cases.get_application_settings_use_case import get_application_settings_use_case
 from features.system.use_cases.set_application_settings_use_case import set_application_settings_use_case
 
-router = APIRouter(tags=["System"], prefix="/system")
+router = APIRouter(tags=["DMT", "System"], prefix="/system")
 
 # This is a public endpoint with no authentication. So don't put secrets in settings.json
 
@@ -45,16 +45,3 @@ def generate_code_with_plugin(data_source_id: str, plugin_name: str, document_pa
         json.dumps("Error: This feature has been deprecated"),
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
     )
-    # logger.info(f"Generating code for document {document_path}, with plugin {plugin_name}")
-    # request_object = GenerateCodeWithPluginRequestObject.from_dict(
-    #     {"documentPath": document_path, "pluginName": plugin_name, "dataSourceId": data_source_id}
-    # )
-    # use_case = GenerateCodeWithPluginUseCase()
-    # response = use_case.execute(request_object)
-    #
-    # if response.type == res.ResponseSuccess.SUCCESS:
-    #     return send_file(
-    #         response.value, mimetype="application/zip", as_attachment=True, attachment_filename="generated-code.zip"
-    #     )
-    # else:
-    #     return Response(json.dumps(response.value), mimetype="application/json", status=STATUS_CODES[response.type])
