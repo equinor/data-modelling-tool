@@ -1,0 +1,69 @@
+{
+  "name": "Asset",
+  "type": "system/SIMOS/Blueprint",
+  "extends": ["system/SIMOS/NamedEntity"],
+  "description": "",
+  "attributes": [
+    {
+      "name": "analyses",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Analysis",
+      "optional": true,
+      "dimensions": "*"
+    },
+    {
+      "name": "location",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "/Location",
+      "optional": true,
+      "contained": false
+    },
+    {
+      "name": "start",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "end",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "description",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "responsible",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "creator",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string"
+    },
+    {
+      "name": "description",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "created",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
+      "name": "updated",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    }
+  ],
+  "uiRecipes": []
+}
