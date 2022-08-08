@@ -5,7 +5,7 @@ from pydantic import BaseModel
 
 class StatusJobResponse(BaseModel):
     status: JobStatus
-    log: str
+    log: str | None
     message: str
 
 
