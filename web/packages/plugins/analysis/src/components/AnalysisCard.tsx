@@ -27,7 +27,14 @@ const CardWrapper = styled.div`
 `
 
 export const DocumentInfoCard = (props: TDocumentInfoCardProps) => {
-  const { document, dataSourceId, fields, actions } = props
+  const {
+    document,
+    dataSourceId,
+    fields,
+    actions,
+    disableDefaultFields,
+    disableDefaultActions,
+  } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
 
   const { tokenData } = useContext(AuthContext)
@@ -50,28 +57,36 @@ export const DocumentInfoCard = (props: TDocumentInfoCardProps) => {
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            {document.creator && (
-              <FlexWrapper>
-                <Label label="Creator:" />
-                {document.creator}
-              </FlexWrapper>
+            {!disableDefaultFields && (
+              <>
+                {document.creator && (
+                  <FlexWrapper>
+                    <Label label="Creator:" />
+                    {document.creator}
+                  </FlexWrapper>
+                )}
+                {document.created && (
+                  <FlexWrapper>
+                    <Label label="Created:" />
+                    {new Date(document.created).toLocaleString(
+                      navigator.language
+                    )}
+                  </FlexWrapper>
+                )}
+                {document.updated && (
+                  <FlexWrapper>
+                    <Label label="Updated:" />
+                    {new Date(document.updated).toLocaleString(
+                      navigator.language
+                    )}
+                  </FlexWrapper>
+                )}
+                <FlexWrapper>
+                  <Label label="Description:" />
+                  {document.description}
+                </FlexWrapper>
+              </>
             )}
-            {document.created && (
-              <FlexWrapper>
-                <Label label="Created:" />
-                {new Date(document.created).toLocaleString(navigator.language)}
-              </FlexWrapper>
-            )}
-            {document.updated && (
-              <FlexWrapper>
-                <Label label="Updated:" />
-                {new Date(document.updated).toLocaleString(navigator.language)}
-              </FlexWrapper>
-            )}
-            <FlexWrapper>
-              <Label label="Description:" />
-              {document.description}
-            </FlexWrapper>
             <>
               {fields &&
                 Object.entries(fields).map(([label, val]) => (
@@ -85,19 +100,19 @@ export const DocumentInfoCard = (props: TDocumentInfoCardProps) => {
         </div>
         {hasOperatorRole(tokenData) && (
           <Card.Actions>
-            <>
-              {actions?.forEach((action: JSX.Element) => {
-                action
-              })}
-            </>
-            {hasExpertRole(tokenData) && (
-              <Button
-                onClick={() => setViewACL(!viewACL)}
-                style={{ width: 'max-content' }}
-              >
-                Access control
-                <Icons name="assignment_user" title="assignment_user" />
-              </Button>
+            {actions}
+            {!disableDefaultActions && (
+              <>
+                {hasExpertRole(tokenData) && (
+                  <Button
+                    onClick={() => setViewACL(!viewACL)}
+                    style={{ width: 'max-content' }}
+                  >
+                    Access control
+                    <Icons name="assignment_user" title="assignment_user" />
+                  </Button>
+                )}
+              </>
             )}
           </Card.Actions>
         )}
