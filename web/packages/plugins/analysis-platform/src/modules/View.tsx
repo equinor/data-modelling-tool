@@ -1,8 +1,12 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useDocument, UIPluginSelector, DmtSettings } from '@dmt/common'
+import {
+  useDocument,
+  UIPluginSelector,
+  DmtSettings,
+  TValidEntity,
+} from '@dmt/common'
 
-import { TValidEntity } from '@dmt/common'
 import { ErrorGroup } from '../components/ErrorGroup'
 
 export const View = (props: { settings: DmtSettings }) => {
