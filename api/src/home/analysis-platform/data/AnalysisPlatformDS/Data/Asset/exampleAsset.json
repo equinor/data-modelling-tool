@@ -17,7 +17,7 @@
   "location": {
     "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6c",
     "type": "AnalysisPlatformDS/Blueprints/Location",
-    "name": "Example Location",
+    "name": "exampleLocation",
     "contained": false
   },
   "start": "2023-01-01T00:01:23.601Z",

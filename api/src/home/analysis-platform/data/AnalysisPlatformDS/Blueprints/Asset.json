@@ -5,6 +5,12 @@
   "description": "",
   "attributes": [
     {
+      "name": "label",
+      "type": "system/SIMOS/BlueprintAttribute",
+      "attributeType": "string",
+      "optional": true
+    },
+    {
       "name": "analyses",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "/Analysis",

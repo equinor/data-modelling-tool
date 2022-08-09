@@ -13,6 +13,12 @@
         "name": "long",
         "type": "system/SIMOS/BlueprintAttribute",
         "attributeType": "number"
+      },
+      {
+        "name": "label",
+        "type": "system/SIMOS/BlueprintAttribute",
+        "attributeType": "string",
+        "optional": true
       }
     ]
   }
