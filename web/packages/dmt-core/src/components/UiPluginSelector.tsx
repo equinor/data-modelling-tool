@@ -156,6 +156,7 @@ export function UIPluginSelector(props: {
   breadcrumb?: boolean
   referencedBy?: string
   onOpen?: (data: any) => void
+  settings?: any
 }): JSX.Element {
   const {
     absoluteDottedId,
@@ -245,6 +246,7 @@ export function UIPluginSelector(props: {
           onOpen={onOpen}
           categories={categories}
           config={config}
+          settings={props.settings}
         />
       </ErrorBoundary>
     </Wrapper>
