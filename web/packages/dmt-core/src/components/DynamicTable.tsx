@@ -31,8 +31,8 @@ export const DynamicTable = (props: {
           </Table.Row>
         </Table.Head>
         <Table.Body onClick={onRowClicked} style={{ cursor: 'pointer' }}>
-          {rows?.map((row) => (
-            <Table.Row key={row._id} accessKey={row._id}>
+          {rows?.map((row, index) => (
+            <Table.Row key={row._id} tabIndex={index} accessKey={row._id}>
               {Object.keys(row)
                 .filter((key) => key !== '_id')
                 .map((attrKey: string) => (

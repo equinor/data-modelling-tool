@@ -8,6 +8,7 @@ import {
   UIPluginSelector,
   EJobStatus,
   TJob,
+  ApplicationContext,
 } from '@dmt/common'
 import { Button, Label, Progress } from '@equinor/eds-core-react'
 import Icons from './Icons'
@@ -77,6 +78,7 @@ export const JobControl = (props: {
   const { jobId, document } = props
   const [dataSourceId, documentId] = jobId.split('/', 2)
   const { token } = useContext(AuthContext)
+  const settings = useContext(ApplicationContext)
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
@@ -240,7 +242,7 @@ export const JobControl = (props: {
             <ClickableLabel
               onClick={() =>
                 window.open(
-                  `/ap/view/AnalysisPlatformDS/${document.result?._id}`,
+                  `/${settings.urlPath}/view/AnalysisPlatformDS/${document.result?._id}`,
                   '_blank'
                 )
               }
