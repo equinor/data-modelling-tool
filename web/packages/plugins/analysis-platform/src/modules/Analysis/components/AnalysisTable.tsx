@@ -31,7 +31,7 @@ const onRowClicked = (event: any) => {
 }
 
 export const AnalysisTable = () => {
-  const [analysis, isLoading] = useSearch<TAnalysis>(
+  const [analyses, isLoading] = useSearch<TAnalysis>(
     {
       type: EBlueprints.ANALYSIS,
     },
@@ -43,7 +43,7 @@ export const AnalysisTable = () => {
   }
 
   const rows: Array<TAnalysisRow> = []
-  analysis?.forEach((analysis) => {
+  analyses?.forEach((analysis) => {
     const row: TAnalysisRow = {
       _id: analysis._id,
       name: analysis.label || analysis.name,
