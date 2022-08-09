@@ -80,8 +80,8 @@ export function NewEntityButton(props: {
         <DialogWrapper>
           {!type && (
             <div style={{ display: 'block' }}>
-              <Label label={'Blueprint'} />
               <BlueprintPicker
+                label={'Blueprint'}
                 disabled={!!copyTarget}
                 onChange={(selectedType: string) =>
                   setTypeToCreate(selectedType)
@@ -93,8 +93,8 @@ export function NewEntityButton(props: {
 
           {!defaultDestination && (
             <div>
-              <Label label={'Entity destination folder'} />
               <DestinationPicker
+                label={'Entity destination folder'}
                 onChange={(selectedFolder: string) =>
                   setSaveDestination(selectedFolder)
                 }
