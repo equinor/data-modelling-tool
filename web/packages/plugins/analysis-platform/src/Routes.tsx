@@ -1,5 +1,5 @@
 import { TRoute } from '@dmt/common'
-import { AnalysisOverview } from './modules/Analysis'
+import { AssetOverview } from './modules/Asset'
 import { AnalysisCreate } from './modules/Analysis'
 import { View } from './modules'
 
@@ -7,7 +7,7 @@ const Routes: Array<TRoute> = [
   {
     path: '',
     //@ts-ignore
-    content: AnalysisOverview,
+    content: AssetOverview,
   },
   {
     path: '/analysis/new',

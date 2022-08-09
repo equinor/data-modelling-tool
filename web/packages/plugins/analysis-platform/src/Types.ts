@@ -3,7 +3,24 @@ import {
   TJob,
   TJobHandler,
   TContainerJobHandler,
+  TLocation,
 } from '@dmt/common'
+
+export type TAsset = {
+  _id: string
+  type: string
+  name: string
+  description?: string
+  created: string
+  updated: string
+  label?: string
+  creator: string
+  analyses: TAnalysis[]
+  location?: TLocation
+  start?: string
+  end?: string
+  responsible?: string
+}
 
 export type TAnalysis = {
   _id: string
