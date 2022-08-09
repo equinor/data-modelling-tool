@@ -72,5 +72,17 @@
       "optional": true
     }
   ],
-  "uiRecipes": []
+  "uiRecipes": [
+    {
+      "name": "View Asset",
+      "type": "system/SIMOS/UiRecipe",
+      "plugin": "view-asset",
+      "category": "view",
+      "roles": [],
+      "config": {
+        "type": "DMT-Internal/DMT/ui-plugins/tabs/Config",
+        "subCategories": ["view"]
+      }
+    }
+  ]
 }
