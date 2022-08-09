@@ -38,6 +38,7 @@ export type TLocation = {
   lat: number
   long: number
   name: string
+  label?: string
   _id?: string
   type?: string
 }
