@@ -1,10 +1,4 @@
-import {
-  Button,
-  Card,
-  Label,
-  Tooltip,
-  Typography,
-} from '@equinor/eds-core-react'
+import { Button, Card, Label, Typography } from '@equinor/eds-core-react'
 import Icons from './Design/Icons'
 import React, { useContext, useState } from 'react'
 import {
@@ -14,8 +8,7 @@ import {
   hasExpertRole,
   hasOperatorRole,
 } from '@dmt/common'
-import { TAnalysisCardProps } from '../Types'
-import { CreateJobButton } from './CreateJobButton'
+import { TDocumentInfoCardProps } from '../Types'
 import styled from 'styled-components'
 // @ts-ignore
 
@@ -33,8 +26,8 @@ const CardWrapper = styled.div`
   border-radius: 5px;
 `
 
-const AnalysisCard = (props: TAnalysisCardProps) => {
-  const { analysis, addJob, jobs, dataSourceId } = props
+export const DocumentInfoCard = (props: TDocumentInfoCardProps) => {
+  const { document, dataSourceId, fields, actions } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
 
   const { tokenData } = useContext(AuthContext)
@@ -45,7 +38,7 @@ const AnalysisCard = (props: TAnalysisCardProps) => {
         <Card.Header>
           <Card.HeaderTitle>
             <Typography variant="h5">
-              {analysis.label || analysis.name}
+              {document.label || document.name}
             </Typography>
           </Card.HeaderTitle>
         </Card.Header>
@@ -57,44 +50,46 @@ const AnalysisCard = (props: TAnalysisCardProps) => {
           }}
         >
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <FlexWrapper>
-              <Label label="Creator:" />
-              {analysis.creator}
-            </FlexWrapper>
-            <FlexWrapper>
-              <Label label="Created:" />
-              {new Date(analysis.created).toLocaleString(navigator.language)}
-            </FlexWrapper>
-            <FlexWrapper>
-              <Label label="Updated:" />
-              {new Date(analysis.updated).toLocaleString(navigator.language)}
-            </FlexWrapper>
+            {document.creator && (
+              <FlexWrapper>
+                <Label label="Creator:" />
+                {document.creator}
+              </FlexWrapper>
+            )}
+            {document.created && (
+              <FlexWrapper>
+                <Label label="Created:" />
+                {new Date(document.created).toLocaleString(navigator.language)}
+              </FlexWrapper>
+            )}
+            {document.updated && (
+              <FlexWrapper>
+                <Label label="Updated:" />
+                {new Date(document.updated).toLocaleString(navigator.language)}
+              </FlexWrapper>
+            )}
             <FlexWrapper>
               <Label label="Description:" />
-              {analysis.description}
+              {document.description}
             </FlexWrapper>
+            <>
+              {fields &&
+                Object.entries(fields).map(([label, val]) => (
+                  <FlexWrapper key={label}>
+                    <Label label={label} />
+                    {val}
+                  </FlexWrapper>
+                ))}
+            </>
           </div>
         </div>
         {hasOperatorRole(tokenData) && (
           <Card.Actions>
-            {'task' in analysis && Object.keys(analysis.task).length > 0 && (
-              <>
-                <CreateJobButton
-                  analysis={analysis}
-                  addJob={addJob}
-                  jobs={jobs}
-                  dataSourceId={dataSourceId}
-                />
-                {hasExpertRole(tokenData) && (
-                  <Tooltip title={'Not implemented'}>
-                    <Button style={{ width: 'max-content' }} disabled>
-                      Configure schedule
-                      <Icons name="time" title="time" />
-                    </Button>
-                  </Tooltip>
-                )}
-              </>
-            )}
+            <>
+              {actions?.forEach((action: JSX.Element) => {
+                action
+              })}
+            </>
             {hasExpertRole(tokenData) && (
               <Button
                 onClick={() => setViewACL(!viewACL)}
@@ -113,12 +108,10 @@ const AnalysisCard = (props: TAnalysisCardProps) => {
         closeScrim={() => setViewACL(false)}
       >
         <AccessControlList
-          documentId={analysis._id}
+          documentId={document._id}
           dataSourceId={dataSourceId}
         />
       </Dialog>
     </CardWrapper>
   )
 }
-
-export default AnalysisCard
