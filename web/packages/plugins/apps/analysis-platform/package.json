@@ -7,7 +7,7 @@
     "@equinor/eds-core-react": "^0.20.0",
     "@equinor/eds-icons": "^0.12.0",
     "@equinor/eds-tokens": "^0.7.1",
-    "antd": "^4.19.5",
+    "antd": "^4.21.7",
     "react-datepicker": "^4.7.0"
   },
   "devDependencies": {
