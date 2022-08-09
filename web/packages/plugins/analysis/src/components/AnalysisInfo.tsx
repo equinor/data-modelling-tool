@@ -1,24 +1,57 @@
-import React from 'react'
-import styled from 'styled-components'
-import AnalysisCard from './AnalysisCard'
-import { TAnalysisCardProps } from '../Types'
+import React, { useContext } from 'react'
+import { Button, Tooltip } from '@equinor/eds-core-react'
+import Icons from './Design/Icons'
 
-const OnRight = styled.div`
-  display: flex;
-  margin-right: 50px;
-`
+import { AuthContext, hasExpertRole } from '@dmt/common'
+import { TAnalysisInfoCardProps } from '../Types'
+import { CreateJobButton } from './CreateJobButton'
+import { DocumentInfoCard } from './DocumentInfoCard'
+import { OnRight } from './Design/Styled'
 
-export const AnalysisInfoCard = (props: TAnalysisCardProps) => {
+const AnalysisInfoCardActions = (props: TAnalysisInfoCardProps) => {
+  const { analysis, addJob, jobs, dataSourceId } = props
+  const { tokenData } = useContext(AuthContext)
+  return (
+    <>
+      {'task' in analysis && Object.keys(analysis.task).length > 0 && (
+        <>
+          <CreateJobButton
+            analysis={analysis}
+            addJob={addJob}
+            jobs={jobs}
+            dataSourceId={dataSourceId}
+          />
+          {hasExpertRole(tokenData) && (
+            <Tooltip title={'Not implemented'}>
+              <Button style={{ width: 'max-content' }} disabled>
+                Configure schedule
+                <Icons name="time" title="time" />
+              </Button>
+            </Tooltip>
+          )}
+        </>
+      )}
+    </>
+  )
+}
+
+export const AnalysisInfoCard = (props: TAnalysisInfoCardProps) => {
   const { analysis, addJob, jobs, dataSourceId } = props
 
   return (
     <>
       <OnRight>
-        <AnalysisCard
-          analysis={analysis}
-          addJob={addJob}
-          jobs={jobs}
+        <DocumentInfoCard
+          document={analysis}
           dataSourceId={dataSourceId}
+          actions={
+            <AnalysisInfoCardActions
+              analysis={analysis}
+              addJob={addJob}
+              jobs={jobs}
+              dataSourceId={dataSourceId}
+            />
+          }
         />
       </OnRight>
     </>
