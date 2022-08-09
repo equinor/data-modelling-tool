@@ -1,11 +1,12 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useDocument, UIPluginSelector } from '@dmt/common'
+import { useDocument, UIPluginSelector, DmtSettings } from '@dmt/common'
 
 import { TValidEntity } from '@dmt/common'
 import { ErrorGroup } from '../components/ErrorGroup'
 
-export const View = () => {
+export const View = (props: { settings: DmtSettings }) => {
+  const { settings } = props
   const { data_source, entity_id } = useParams<{
     data_source: string
     entity_id: string
@@ -38,6 +39,7 @@ export const View = () => {
         <UIPluginSelector
           absoluteDottedId={`${data_source}/${entity_id}`}
           type={document.type}
+          settings={settings}
         />
       )}
     </>
