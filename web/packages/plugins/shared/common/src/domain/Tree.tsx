@@ -281,7 +281,9 @@ export class TreeNode {
     let packageContent = ''
     if (this.type === EBlueprint.PACKAGE) packageContent = '.content'
 
-    const newEntity: any = await this.tree.dmtApi.createEntity(type, name)
+    const newEntity: any = await this.tree.dmtApi.instantiateEntity({
+      basicEntity: { name: name, type: type },
+    })
     const createResponse: AxiosResponse<any> = await this.tree.dmssApi.explorerAdd(
       {
         absoluteRef: `${this.nodeId}${packageContent}`,
