@@ -5,7 +5,8 @@ from pathlib import Path
 from uuid import UUID
 from zipfile import ZipFile
 
-from use_case.import_package import package_tree_from_zip
+
+from utils.import_package import package_tree_from_zip
 
 """
 ROOT

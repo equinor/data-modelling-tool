@@ -16,7 +16,7 @@ from fastapi import APIRouter, FastAPI
 from config import config
 
 from services.dmss import dmss_api
-from use_case.import_package import import_package_tree, package_tree_from_zip
+from utils.import_package import import_package_tree, package_tree_from_zip
 from utils.create_application_utils import zip_all
 from utils.logging import logger
 from store_headers_middleware import StoreHeadersMiddleware
@@ -25,7 +25,10 @@ prefix = "/api/v1"
 
 
 def create_app():
-    from controllers import blueprints, entity, jobs, system
+    from features.system import system
+    from features.jobs import jobs
+    from features.entity import entity
+    from features.blueprints import blueprints
 
     # Using public routes, since authentication is handled by DMSS
     public_routes = APIRouter()

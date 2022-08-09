@@ -6,17 +6,14 @@ from typing import Any, List, Tuple
 from uuid import UUID, uuid4
 from zipfile import ZipFile
 
-from dmss_api import ApiException
 from progress.bar import IncrementalBar
-from starlette.responses import JSONResponse
+
 from domain_classes.package import Package
 from enums import SIMOS
 from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
-from restful import request_object as req
 
-from restful import use_case as uc
 from services.dmss import dmss_api
-from services.document_service import DocumentService
+
 
 keys_to_check = ("type", "attributeType", "_id", "extends")  # These keys may contain a reference
 
@@ -213,51 +210,3 @@ def import_package_tree(root_package: Package, data_source_id: str) -> None:
             document = upload_blobs_in_document(document, data_source_id)
             dmss_api.explorer_add_simple(data_source_id, document)
             bar.next()
-
-
-class ImportPackageRequestObject(req.ValidRequestObject):
-    def __init__(self, data_source_id: str, package_name: str, zip_package: io.BytesIO):
-        self.data_source_id = data_source_id
-        self.package_name = package_name
-        self.zip_package = zip_package
-
-    @classmethod
-    def from_dict(cls, adict):
-        invalid_req = req.InvalidRequestObject()
-
-        if "dataSourceId" not in adict:
-            invalid_req.add_error("dataSourceId", "is missing")
-        if "packageName" not in adict:
-            invalid_req.add_error("packageName", "is missing")
-        if "zipPackage" not in adict:
-            invalid_req.add_error("zipPackage", "is missing")
-
-        if invalid_req.has_errors():
-            return invalid_req
-
-        return cls(adict["dataSourceId"], adict["packageName"], adict["zipPackage"])
-
-
-class ImportPackageUseCase(uc.UseCase):
-    def process_request(self, req: ImportPackageRequestObject):
-        document_service = DocumentService()
-
-        try:  # Test if a package with the same name already exists
-            document_service.document_provider(f"{req.data_source_id}/{req.package_name}")
-        except ApiException as error:
-            if error.status == 404:
-                pass
-        else:
-            raise Exception(
-                f"Failed to import package. Does a package named "
-                f"'{req.package_name}' already exist in data source '{req.data_source_id}'?"
-            )
-
-        try:
-            root_package = package_tree_from_zip(req.data_source_id, req.package_name, req.zip_package)
-        except Exception as error:
-            raise Exception(f"Something went wrong trying to import the package; {error}")
-
-        import_package_tree(root_package, req.data_source_id)
-
-        return JSONResponse("ok")
