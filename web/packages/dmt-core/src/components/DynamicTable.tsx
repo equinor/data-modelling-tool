@@ -12,7 +12,7 @@ const prepareColumns = (columns: Array<string>): Array<Column> => {
   return prepared
 }
 
-const DynamicTable = (props: {
+export const DynamicTable = (props: {
   columns: Array<string>
   rows: Array<any>
   onRowClicked: MouseEventHandler
@@ -45,5 +45,3 @@ const DynamicTable = (props: {
     </>
   )
 }
-
-export default DynamicTable
