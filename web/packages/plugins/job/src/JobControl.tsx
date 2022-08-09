@@ -241,6 +241,7 @@ export const JobControl = (props: {
           {Object.keys(document?.result || {}).length ? (
             <ClickableLabel
               onClick={() =>
+                // TODO: Avoid hardcoded DataSource?
                 window.open(
                   `/${settings.urlPath}/view/AnalysisPlatformDS/${document.result?._id}`,
                   '_blank'
