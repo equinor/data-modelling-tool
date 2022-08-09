@@ -2,7 +2,6 @@ import {
   Button,
   Card,
   Label,
-  Progress,
   Tooltip,
   Typography,
 } from '@equinor/eds-core-react'
@@ -12,19 +11,13 @@ import {
   AccessControlList,
   AuthContext,
   Dialog,
-  DmssAPI,
   hasExpertRole,
-  poorMansUUID,
-  EJobStatus,
-  TJob,
-  EBlueprint,
   hasOperatorRole,
 } from '@dmt/common'
-import { TAnalysis, TTask } from '../Types'
 import { TAnalysisCardProps } from '../Types'
+import { CreateJobButton } from './CreateJobButton'
 import styled from 'styled-components'
 // @ts-ignore
-import { NotificationManager } from 'react-notifications'
 
 const FlexWrapper = styled.div`
   display: flex;
@@ -39,79 +32,6 @@ const CardWrapper = styled.div`
   grid-gap: 32px 32px;
   border-radius: 5px;
 `
-
-const RunAnalysisButton = (props: {
-  analysis: TAnalysis
-  addJob: (job: TJob) => void
-  jobs: any
-  dataSourceId: string
-}) => {
-  const { analysis, addJob, jobs, dataSourceId } = props
-  const [loading, setLoading] = useState<boolean>(false)
-  const { token, tokenData } = useContext(AuthContext)
-  const dmssAPI = new DmssAPI(token)
-
-  const analysisAbsoluteReference = `${dataSourceId}/${analysis._id}`
-
-  const createJob = (task: TTask) => {
-    setLoading(true)
-    const runsSoFar = jobs.length
-
-    if (!task.runner || Object.keys(task.runner).length === 0) {
-      NotificationManager.error(
-        'You must save the job runner before creating the job!'
-      )
-      setLoading(false)
-      return
-    }
-
-    const job: TJob = {
-      label: 'Example local container job',
-      name: `${analysis._id}.jobs.${runsSoFar}-${poorMansUUID(1)}`,
-      type: EBlueprint.JOB,
-      status: EJobStatus.CREATED,
-      triggeredBy: tokenData?.name,
-      applicationInput: task.applicationInput,
-      runner: task.runner,
-      referenceTarget: `${analysis._id}.jobs.${runsSoFar}.result`,
-      started: '',
-    }
-
-    dmssAPI
-      .explorerAdd({
-        absoluteRef: `${analysisAbsoluteReference}.jobs`,
-        updateUncontained: false,
-        body: job,
-      })
-      .then(() => addJob(job))
-      .catch((error: Error) => {
-        console.error(error)
-        NotificationManager.error(`Could not save job (${error})`)
-      })
-
-      .finally(() => {
-        setLoading(false)
-      })
-  }
-
-  return (
-    <div>
-      {loading ? (
-        <Button style={{ width: '130px' }}>
-          <Progress.Dots />
-        </Button>
-      ) : (
-        <Button
-          style={{ width: '130px' }}
-          onClick={() => createJob(analysis.task)}
-        >
-          New job
-          <Icons name="add" title="new job" />
-        </Button>
-      )}
-    </div>
-  )
-}
 
 const AnalysisCard = (props: TAnalysisCardProps) => {
   const { analysis, addJob, jobs, dataSourceId } = props
@@ -159,7 +79,7 @@ const AnalysisCard = (props: TAnalysisCardProps) => {
           <Card.Actions>
             {'task' in analysis && Object.keys(analysis.task).length > 0 && (
               <>
-                <RunAnalysisButton
+                <CreateJobButton
                   analysis={analysis}
                   addJob={addJob}
                   jobs={jobs}
