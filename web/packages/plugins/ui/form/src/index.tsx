@@ -11,7 +11,6 @@ import {
   useDocument,
 } from '@dmt/common'
 import { Form } from './Form'
-import { Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { useFormContext } from 'react-hook-form'
 import { useRegistryContext } from './RegistryContext'

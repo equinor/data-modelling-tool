@@ -53,21 +53,26 @@ export default function Fields(props: any) {
 
   const handleAddObject = () => {
     const name: string = `${namePath}-${fields.length}`
-    dmtApi.createEntity(type, name).then((newEntity: any) => {
-      dmssAPI
-        .documentUpdate({
-          dataSourceId: dataSourceId,
-          documentId: `${documentId}.${namePath}`,
-          data: JSON.stringify([...fields, newEntity]),
-          updateUncontained: true,
-        })
-        .then(() => {
-          append(newEntity)
-        })
-        .catch((error: Error) => {
-          console.error(error)
-        })
-    })
+
+    dmtApi
+      .instantiateEntity({
+        basicEntity: { name: name, type: type as string },
+      })
+      .then((newEntity: any) => {
+        dmssAPI
+          .documentUpdate({
+            dataSourceId: dataSourceId,
+            documentId: `${documentId}.${namePath}`,
+            data: JSON.stringify([...fields, newEntity]),
+            updateUncontained: true,
+          })
+          .then(() => {
+            append(newEntity)
+          })
+          .catch((error: Error) => {
+            console.error(error)
+          })
+      })
   }
 
   if (onOpen && !isPrimitiveType(type)) {

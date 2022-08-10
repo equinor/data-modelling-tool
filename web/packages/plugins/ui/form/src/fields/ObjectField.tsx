@@ -70,23 +70,27 @@ const AddObject = (props: any) => {
       shouldDirty: true,
       shouldTouch: true,
     }
-    const name: string = namePath
-    dmtApi.createEntity(type, name).then((newEntity: any) => {
-      dmssAPI
-        .documentUpdate({
-          dataSourceId: dataSourceId,
-          documentId: contained ? `${documentId}.${namePath}` : namePath,
-          data: JSON.stringify(newEntity),
-          updateUncontained: false,
-        })
-        .then((response: any) => {
-          setValue(namePath, response.data.data, options)
-          onAdd()
-        })
-        .catch((error: Error) => {
-          console.error(error)
-        })
-    })
+
+    dmtApi
+      .instantiateEntity({
+        basicEntity: { name: namePath as string, type: type as string },
+      })
+      .then((newEntity: any) => {
+        dmssAPI
+          .documentUpdate({
+            dataSourceId: dataSourceId,
+            documentId: contained ? `${documentId}.${namePath}` : namePath,
+            data: JSON.stringify(newEntity),
+            updateUncontained: false,
+          })
+          .then((response: any) => {
+            setValue(namePath, response.data.data, options)
+            onAdd()
+          })
+          .catch((error: Error) => {
+            console.error(error)
+          })
+      })
   }
   return (
     <Button

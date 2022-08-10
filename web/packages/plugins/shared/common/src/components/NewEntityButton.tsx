@@ -162,7 +162,12 @@ export function NewEntityButton(props: {
                     })
                 } else {
                   dmtAPI
-                    .createEntity(typeToCreate, newName)
+                    .instantiateEntity({
+                      basicEntity: {
+                        name: newName as string,
+                        type: typeToCreate,
+                      },
+                    })
                     .then((newEntity: any) => {
                       addEntityToPath({ ...newEntity }).then(() =>
                         setShowScrim(false)
