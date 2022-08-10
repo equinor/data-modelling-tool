@@ -24,7 +24,7 @@ type AnalysisJobTableProps = {
   jobs: any
   analysisId: string
   dataSourceId: string
-  setJobs: Function
+  setJobs: (jobs: TJob[]) => void
 }
 
 const ClickableLabel = styled.div`
@@ -38,9 +38,10 @@ const JobRow = (props: {
   index: number
   analysisId: string
   dataSourceId: string
-  removeJob: Function
+  removeJob: () => void
+  setJob: (j: TJob) => void
 }) => {
-  const { job, index, analysisId, dataSourceId, removeJob } = props
+  const { job, index, analysisId, dataSourceId, removeJob, setJob } = props
   const { token, tokenData } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
   const dmssAPI = new DmssAPI(token)
@@ -73,8 +74,10 @@ const JobRow = (props: {
           result.data.message,
           'Simulation job started'
         )
+        const now = new Date().toLocaleString(navigator.language)
         setJobStatus(EJobStatus.STARTING)
-        setStarted(new Date().toLocaleString(navigator.language))
+        setStarted(now)
+        setJob({ ...job, started: now, status: EJobStatus.STARTING })
       })
       .catch((error: AxiosError<any>) => {
         console.error(error)
@@ -97,11 +100,15 @@ const JobRow = (props: {
       removeJob()
       setLoading(false)
     } catch (error) {
-      console.error(error)
-      NotificationManager.error(
-        error?.response?.data?.message || error.message,
-        'Failed to start job'
-      )
+      if (error.status === 404) {
+        removeJob()
+      } else {
+        console.error(error)
+        NotificationManager.error(
+          error?.response?.data?.message || error.message,
+          'Failed to start job'
+        )
+      }
       setLoading(false)
     }
   }
@@ -123,7 +130,8 @@ const JobRow = (props: {
         setJobStatus(job.status)
       })
       .finally(() => setLoading(false))
-  }, [])
+  }, [job, index])
+
   return (
     <Table.Row>
       <Table.Cell onClick={viewJob}>
@@ -206,6 +214,10 @@ export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
               dataSourceId={dataSourceId}
               removeJob={() => {
                 jobs.splice(index, 1)
+                setJobs([...jobs])
+              }}
+              setJob={(job: TJob) => {
+                jobs[index] = job
                 setJobs([...jobs])
               }}
             />

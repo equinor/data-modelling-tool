@@ -35,7 +35,7 @@ export const InspectorView = (props: DmtUIPlugin): JSX.Element => {
         jobs={jobs}
         analysisId={analysis._id}
         dataSourceId={dataSourceId}
-        setJobs={() => {}}
+        setJobs={() => undefined}
       />
     </>
   )

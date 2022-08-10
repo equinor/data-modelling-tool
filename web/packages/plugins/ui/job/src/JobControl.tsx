@@ -99,7 +99,7 @@ export const JobControl = (props: {
       })
       .catch((error: AxiosError<any>) => {
         if (error.response) {
-          setJobLogs(error.response.data?.message || error.message)
+          setJobLogs(error.response.data || error.message)
           setJobStatus(document.status)
         } else setJobLogs('Error occurred when getting status for job')
 
