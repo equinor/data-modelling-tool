@@ -65,9 +65,12 @@ class JobHandler(JobHandlerInterface):
         logger.info("*** Local container job started successfully ***")
         return "Ok"
 
-    def remove(self) -> str:
-        container = self.client.containers.get(self.job.entity["name"])
-        container.remove()
+    def remove(self) -> Tuple[str, str]:
+        try:
+            container = self.client.containers.get(self.job.entity["name"])
+            container.remove()
+        except docker.errors.NotFound:
+            pass
         return JobStatus.REMOVED, "Removed"
 
     def progress(self) -> Tuple[JobStatus, str]:
