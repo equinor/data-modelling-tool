@@ -54,7 +54,9 @@ repos:
       name: API Unit Tests
       entry: sh -c "export PYTHONPATH=./api/src && api/.venv/bin/python -m pytest api/src/tests"
       language: system
+      pass_filenames: false
     - id: eslint
       name: ESlint
       entry: sh -c "cd web; npm run lint:fix"
       language: system
+      pass_filenames: false
