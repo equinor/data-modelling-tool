@@ -4,6 +4,7 @@ import {
   TJobHandler,
   TContainerJobHandler,
   TLocation,
+  TValidEntity,
 } from '@dmt/common'
 
 export type TAsset = {
@@ -45,4 +46,31 @@ export type TTask = {
   outputType: string
   applicationInput: TReference
   runner?: TJobHandler | TContainerJobHandler
+}
+
+export type CreateAnalysisButtonProps = {
+  urlPath: string
+}
+
+export type TDocumentInfoCardProps = {
+  document: TValidEntity
+  dataSourceId: string
+  fields?: { [key: string]: string | number | boolean }
+  actions?: JSX.Element
+  disableDefaultFields?: boolean
+  disableDefaultActions?: boolean
+}
+
+export type TAnalysisInfoCardProps = {
+  analysis: TAnalysis
+  addJob: (job: TJob) => void
+  jobs: any
+  dataSourceId: string
+}
+
+export type TAssetInfoCardProps = {
+  asset: TAsset
+  analyses: any
+  dataSourceId: string
+  urlPath: string
 }

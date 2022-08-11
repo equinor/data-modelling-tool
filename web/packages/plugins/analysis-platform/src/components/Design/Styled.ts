@@ -6,3 +6,8 @@ export const FormWrapper = styled.div`
   grid-gap: 32px;
   grid-template-columns: repeat(1, fit-content(100%));
 `
+
+export const OnRight = styled.div`
+  display: flex;
+  margin-right: 50px;
+`
