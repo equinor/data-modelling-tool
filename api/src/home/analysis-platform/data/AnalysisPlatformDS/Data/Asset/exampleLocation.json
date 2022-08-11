@@ -4,5 +4,5 @@
     "label": "Example Location",
     "type": "AnalysisPlatformDS/Blueprints/Location",
     "lat": 62.466,
-    "long": 2.224
+    "lon": 2.224
 }

@@ -36,7 +36,7 @@ export type TBlob = {
 
 export type TLocation = {
   lat: number
-  long: number
+  lon: number
   name: string
   label?: string
   _id?: string

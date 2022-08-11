@@ -46,7 +46,8 @@
     {
       "name": "responsible",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "string"
+      "attributeType": "string",
+      "optional": true
     },
     {
       "name": "creator",

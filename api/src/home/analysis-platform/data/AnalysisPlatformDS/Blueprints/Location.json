@@ -10,7 +10,7 @@
         "attributeType": "number"
       },
       {
-        "name": "long",
+        "name": "lon",
         "type": "system/SIMOS/BlueprintAttribute",
         "attributeType": "number"
       },
