@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { getUsername } from '../../utils/auth'
 import { AuthContext } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
-import { createAnalysis } from './CRUD'
+import { createAnalysis } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 import { CreateAnalysisForm } from './components'
@@ -14,6 +14,7 @@ export const AnalysisCreate = (): JSX.Element => {
   const { tokenData, token } = useContext(AuthContext)
   const user = getUsername(tokenData) || 'NoLogin'
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const createdAt = new Date().toISOString()
 
   const handleCreateAnalysis = (formData: TAnalysis) => {
     setIsLoading(true)
@@ -21,8 +22,8 @@ export const AnalysisCreate = (): JSX.Element => {
       ...formData,
       type: EBlueprints.ANALYSIS,
       creator: user,
-      created: new Date().toISOString(),
-      updated: new Date().toISOString(),
+      created: createdAt,
+      updated: createdAt,
       task: {
         type: EBlueprints.TASK,
       },
