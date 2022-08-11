@@ -1,8 +1,10 @@
 import React, { useContext, useState } from 'react'
+import { useParams } from 'react-router-dom'
+
 import { getUsername } from '../../utils/auth'
-import { AuthContext } from '@dmt/common'
+import { AuthContext, ApplicationContext } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
-import { createAnalysis } from '../../utils/CRUD'
+import { createAnalysis, addAnalysisToAsset } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 import { CreateAnalysisForm } from './components'
@@ -11,10 +13,24 @@ import { NotificationManager } from 'react-notifications'
 import { TAnalysis } from '../../Types'
 
 export const AnalysisCreate = (): JSX.Element => {
+  const { asset_id } = useParams<{
+    asset_id: string
+  }>()
+  const settings = useContext(ApplicationContext)
   const { tokenData, token } = useContext(AuthContext)
   const user = getUsername(tokenData) || 'NoLogin'
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const createdAt = new Date().toISOString()
+
+  const handleUpdateAsset = (assetId: string, analysis: TAnalysis) => {
+    const newAnalysis = {
+      _id: analysis._id,
+      type: EBlueprints.ANALYSIS,
+      name: analysis.name || '',
+    }
+    const attribute = 'analyses'
+    addAnalysisToAsset(`${assetId}.${attribute}`, newAnalysis, token)
+  }
 
   const handleCreateAnalysis = (formData: TAnalysis) => {
     setIsLoading(true)
@@ -30,9 +46,11 @@ export const AnalysisCreate = (): JSX.Element => {
     }
     createAnalysis(data, token, [])
       .then((documentId: any) => {
+        const newAnalysis = { ...formData, _id: documentId }
+        handleUpdateAsset(asset_id, newAnalysis)
         // TODO: Should we use props.history.push instead?
         //@ts-ignore
-        document.location = `${DEFAULT_DATASOURCE_ID}/${documentId}/`
+        document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${documentId}`
       })
       .catch((error: any) => {
         console.error(error)
