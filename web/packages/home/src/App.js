@@ -85,8 +85,7 @@ function App() {
   useEffect(() => {
     const dmtAPI = new DmtAPI('')
     setLoadingAppSettings(true)
-    dmtAPI
-      .getSystemSettings()
+    dmtAPI.getAppSettings()
       .then((res) =>
         setApplications(
           sortApplications(res.data).filter(
