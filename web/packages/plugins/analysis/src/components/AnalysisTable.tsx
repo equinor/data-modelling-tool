@@ -1,6 +1,6 @@
 import React from 'react'
 import { DynamicTable, formatDate } from '@dmt/common'
-import { TAnalysis } from '../Types'
+import { TAnalysis } from '../../../Types'
 
 const columns: Array<string> = [
   'Analysis name',

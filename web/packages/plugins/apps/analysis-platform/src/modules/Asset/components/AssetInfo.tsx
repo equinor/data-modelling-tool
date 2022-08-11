@@ -5,10 +5,10 @@ import {
   CreateAnalysisButtonProps,
   TAsset,
   TAssetInfoCardProps,
-} from '../Types'
-import { DocumentInfoCard } from './DocumentInfoCard'
-import { CreateAnalysisButton } from './CreateAnalysisButton'
-import { OnRight } from './Design/Styled'
+} from '../../../Types'
+import { DocumentInfoCard } from '../../../components/DocumentInfoCard'
+import { CreateAnalysisButton } from '../../Analysis'
+import { OnRight } from '../../../components/Design/Styled'
 
 const assetInfoCardFields = (asset: TAsset) => {
   return {

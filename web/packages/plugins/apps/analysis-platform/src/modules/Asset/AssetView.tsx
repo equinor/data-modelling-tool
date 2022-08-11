@@ -5,7 +5,8 @@ import {
   useDocument,
   Loading,
 } from '@dmt/common'
-import { AssetInfoCard, AnalysisTable } from './components'
+import { AssetInfoCard } from './components'
+import { AnalysisTable } from '../Analysis'
 
 export const AssetView = (props: DmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props

@@ -2,7 +2,7 @@ import React from 'react'
 import { Link, useLocation, useParams } from 'react-router-dom'
 import { Button } from '@equinor/eds-core-react'
 
-import { CreateAnalysisButtonProps } from '../Types'
+import { CreateAnalysisButtonProps } from '../../../Types'
 
 export const CreateAnalysisButton = (props: CreateAnalysisButtonProps) => {
   const { urlPath } = props
