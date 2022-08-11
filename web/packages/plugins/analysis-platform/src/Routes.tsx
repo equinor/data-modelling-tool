@@ -16,7 +16,7 @@ const Routes: Array<TRoute> = [
     content: AssetCreate,
   },
   {
-    path: '/analysis/new',
+    path: '/analysis/new/:asset_id',
     //@ts-ignore
     content: AnalysisCreate,
   },
