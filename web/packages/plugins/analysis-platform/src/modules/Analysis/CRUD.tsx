@@ -29,13 +29,74 @@ const create = (
       })
       .then((response: any) => {
         const data = response.data
-        console.log(response)
         resolve(data.uid)
       })
       .catch((err: any) => {
         reject(err)
       })
   })
+}
+
+const update = (
+  documentId: string,
+  body: any,
+  attribute: string,
+  token: string,
+  files: Blob[] = [],
+  updateUncontained: boolean = false
+): Promise<string> => {
+  const dmssAPI = new DmssAPI(token)
+
+  return new Promise((resolve, reject) => {
+    dmssAPI
+      .documentUpdate({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        documentId: documentId,
+        updateUncontained: updateUncontained,
+        data: JSON.stringify(body),
+        attribute: attribute,
+        files: files,
+      })
+      .then((response: any) => {
+        const data = response.data
+        resolve(data)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
+  })
+}
+
+const insertReference = (
+  documentDottedId: string,
+  body: any,
+  token: string
+): Promise<any> => {
+  const dmssAPI = new DmssAPI(token)
+
+  return new Promise((resolve, reject) => {
+    dmssAPI
+      .referenceInsert({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        documentDottedId: documentDottedId,
+        reference: body,
+      })
+      .then((response: any) => {
+        const data = response.data
+        resolve(data)
+      })
+      .catch((err: any) => {
+        reject(err)
+      })
+  })
+}
+
+export const addAnalysisToAsset = (
+  documentDottedId: string,
+  body: any,
+  token: string
+): Promise<string> => {
+  return insertReference(documentDottedId, body, token)
 }
 
 /**
@@ -50,7 +111,7 @@ export const createAnalysis = (
   token: string,
   files: Blob[] = []
 ): Promise<string> => {
-  return create(ANALYSIS_PATH, body, token, files)
+  return create(ANALYSIS_PATH, body, token, files, false)
 }
 
 /**
