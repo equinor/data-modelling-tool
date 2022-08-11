@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import { Button, TextField } from '@equinor/eds-core-react'
-import { INPUT_FIELD_WIDTH } from '@dmt/common'
-import { TAnalysis } from '../../../Types'
+import { INPUT_FIELD_WIDTH, TLocation } from '@dmt/common'
+import { TAsset } from '../../../Types'
 import { EBlueprints } from '../../../Enums'
 import { FormWrapper } from '../../../components/Design/Styled'
 
@@ -11,42 +11,37 @@ type Errors = {
 
 type CreateFormProps = {
   data?: any
-  onSubmit: (analysis: TAnalysis) => void
+  onSubmit: (asset: TAsset) => void
 }
 
 const hasErrors = (error: Errors) =>
   error['name'] !== '' || error['description'] !== ''
 
-export const CreateAnalysisForm = (props: CreateFormProps) => {
+export const CreateAssetForm = (props: CreateFormProps) => {
   const { onSubmit, data } = props
   const [error, setError] = useState<Errors>({
     name: '',
     description: '',
   })
-  const [analysis, setAnalysis] = useState<TAnalysis>({
+  const [location, setLocation] = useState<TLocation>({
     _id: '',
-    type: EBlueprints.ANALYSIS,
+    name: data?.location?.name || '',
+    type: EBlueprints.LOCATION,
+    lat: data?.location?.lat || 0.0,
+    lon: data?.location?.lon || 0.0,
+    label: data?.label || '',
+  })
+  const [asset, setAsset] = useState<TAsset>({
+    _id: '',
+    type: EBlueprints.ASSET,
     name: data?.name || '',
     description: data?.description || '',
-    jobs: [],
+    analyses: [],
+    location: location,
     label: '',
     created: '',
     updated: '',
     creator: '',
-    schedule: '',
-    task: {
-      type: EBlueprints.TASK,
-      name: '',
-      description: '',
-      label: '',
-      inputType: '',
-      outputType: '',
-      applicationInput: {
-        _id: '',
-        name: '',
-        type: '',
-      },
-    },
   })
 
   const formHandler = (event: any) => {
@@ -58,21 +53,28 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
     }
 
     const singleWordFormat = new RegExp('^[A-Za-z0-9-_]+$')
-    if (!singleWordFormat.test(analysis.name)) {
+    if (!singleWordFormat.test(asset.name)) {
       formErrors['name'] =
-        'Invalid operation name! (you cannot have empty name or use any special characters).'
+        'Invalid asset name! (you cannot have empty name or use any special characters).'
     }
 
     if (!hasErrors(formErrors)) {
-      onSubmit(analysis)
+      onSubmit(asset)
     } else {
       setError(formErrors)
     }
   }
 
-  const handleInputChange = (event: any) => {
-    setAnalysis({
-      ...analysis,
+  const handleAssetInputChange = (event: any) => {
+    setAsset({
+      ...asset,
+      [event.target.id]: event.target.value,
+    })
+  }
+
+  const handleLocationInputChange = (event: any) => {
+    setLocation({
+      ...location,
       [event.target.id]: event.target.value,
     })
   }
@@ -84,30 +86,43 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
           style={{ width: INPUT_FIELD_WIDTH }}
           id="name"
           label="Name"
-          placeholder="Analysis name"
-          onChange={handleInputChange}
-          helperText={
-            error.name ? error.name : 'Provide the name of the analysis'
-          }
+          placeholder="Asset name"
+          onChange={handleAssetInputChange}
+          helperText={error.name ? error.name : 'Provide the name of the asset'}
           variant={error.name ? 'error' : 'default'}
-          value={analysis.name}
+          value={asset.name}
         />
         <TextField
           style={{ width: INPUT_FIELD_WIDTH }}
           id="description"
           label="Description"
           placeholder="Description"
-          onChange={handleInputChange}
+          onChange={handleAssetInputChange}
           multiline
           rows={1}
           rowsMax={5}
           helperText={
             error.description
               ? error.description
-              : 'Short description about the analysis'
+              : 'Short description about the asset'
           }
           variant={error.description ? 'error' : 'default'}
-          value={analysis.description}
+          value={asset.description}
+        />
+        <TextField
+          style={{ width: INPUT_FIELD_WIDTH }}
+          id="responsible"
+          label="Responsible"
+          placeholder="Asset responsible"
+          onChange={handleAssetInputChange}
+          helperText={
+            error.responsible
+              ? error.responsible
+              : 'Provide the name of the asset point of contact'
+          }
+          variant={error.responsible ? 'error' : 'default'}
+          value={asset.responsible}
+          required={false}
         />
         <div>
           <Button
