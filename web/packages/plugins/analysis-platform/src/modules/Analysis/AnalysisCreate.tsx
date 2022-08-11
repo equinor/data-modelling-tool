@@ -54,8 +54,11 @@ export const AnalysisCreate = (): JSX.Element => {
       })
       .catch((error: any) => {
         console.error(error)
-        const errorMessage =
-          error.response?.data?.message || 'Failed to create new analysis'
+        const errorResponse =
+          typeof error.response?.data == 'object'
+            ? error.response?.data?.message
+            : error.response?.data
+        const errorMessage = errorResponse || 'Failed to create new analysis'
         NotificationManager.error(errorMessage)
       })
       .finally(() => {

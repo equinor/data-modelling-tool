@@ -72,9 +72,14 @@ export function UploadFileButton(props: {
             type: newDocumentBody.type,
           })
         )
-        .catch((error: AxiosError<any>) =>
-          setError(error.response?.data?.message)
-        )
+        .catch((error: AxiosError<any>) => {
+          const errorResponse =
+            typeof error.response?.data == 'object'
+              ? error.response?.data?.message
+              : error.response?.data
+          const errorMessage = errorResponse || 'Failed to upload file'
+          setError(errorMessage)
+        })
         .finally(() => setLoading(false))
     }
   }

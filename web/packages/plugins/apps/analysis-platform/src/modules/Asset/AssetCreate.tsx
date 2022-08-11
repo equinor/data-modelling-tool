@@ -37,8 +37,11 @@ export const AssetCreate = (): JSX.Element => {
       })
       .catch((error: any) => {
         console.error(error)
-        const errorMessage =
-          error.response?.data?.message || 'Failed to create new asset'
+        const errorResponse =
+          typeof error.response?.data == 'object'
+            ? error.response?.data?.message
+            : error.response?.data
+        const errorMessage = errorResponse || 'Failed to create new asset'
         NotificationManager.error(errorMessage)
       })
       .finally(() => {
