@@ -4,7 +4,6 @@ export class DmtAPI extends DMTApi {
   constructor(token: string) {
     const DMTConfiguration = new Configuration({
       accessToken: token,
-      basePath: '/',
     })
     super(DMTConfiguration)
   }

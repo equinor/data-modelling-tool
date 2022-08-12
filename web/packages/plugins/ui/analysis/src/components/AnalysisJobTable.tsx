@@ -167,15 +167,13 @@ const JobRow = (props: {
               <Icon name="play" title="play" />
             </Button>
           ) : (
-            <Tooltip title={'Not implemented'}>
-              <Button
-                variant="ghost_icon"
-                color="danger"
-                onClick={() => deleteJob()}
-              >
-                <Icon name="delete_forever" title="delete" />
-              </Button>
-            </Tooltip>
+            <Button
+              variant="ghost_icon"
+              color="danger"
+              onClick={() => deleteJob()}
+            >
+              <Icon name="delete_forever" title="delete" />
+            </Button>
           )}
         </Table.Cell>
       ) : (
