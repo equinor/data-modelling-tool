@@ -1,8 +1,13 @@
 import { EBlueprints } from '../../../Enums'
 import { Progress } from '@equinor/eds-core-react'
-import React from 'react'
+import React, { useContext } from 'react'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
-import { DynamicTable, useSearch, formatDate } from '@dmt/common'
+import {
+  DynamicTable,
+  useSearch,
+  formatDate,
+  ApplicationContext,
+} from '@dmt/common'
 import { TAsset } from '../../../Types'
 
 const columns: Array<string> = [
@@ -10,7 +15,7 @@ const columns: Array<string> = [
   'Location',
   'Created',
   'Updated',
-  'Responsible',
+  'Contact',
 ]
 
 type TAssetRow = {
@@ -19,13 +24,14 @@ type TAssetRow = {
   location?: string
   created: Date | string
   updated: Date | string
-  responsible?: string
+  contact?: string
+  index: number
+  url: string
 }
 
 const onRowClicked = (event: any) => {
-  const documentId = event.target.parentElement.accessKey
   //@ts-ignore
-  document.location = `${document.location.pathname}/view/${DEFAULT_DATASOURCE_ID}/${documentId}`
+  document.location = event.target.parentElement.accessKey
 }
 
 export const AssetTable = () => {
@@ -35,20 +41,26 @@ export const AssetTable = () => {
     },
     DEFAULT_DATASOURCE_ID
   )
+  const settings = useContext(ApplicationContext)
+
+  const getAccessUrl = (rowDocumentId: string): string =>
+    `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${rowDocumentId}`
 
   if (isLoading) {
     return <Progress.Linear />
   }
 
   const rows: Array<TAssetRow> = []
-  assets?.forEach((asset) => {
+  assets?.forEach((asset, index) => {
     const row: TAssetRow = {
       _id: asset._id,
       name: asset.label || asset.name,
       location: asset.location?.label || asset.location?.name || '',
       created: formatDate(asset.created),
       updated: formatDate(asset.updated),
-      responsible: asset.responsible || '',
+      contact: asset.contact || '',
+      index: index,
+      url: getAccessUrl(asset._id),
     }
     rows.push(row)
   })

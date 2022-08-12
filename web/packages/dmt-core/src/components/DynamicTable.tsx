@@ -19,6 +19,7 @@ export const DynamicTable = (props: {
 }): JSX.Element => {
   const { columns, rows, onRowClicked } = props
   const cols = prepareColumns(columns)
+  const ignoredRows = ['_id', 'index', 'url']
 
   return (
     <>
@@ -32,9 +33,14 @@ export const DynamicTable = (props: {
         </Table.Head>
         <Table.Body onClick={onRowClicked} style={{ cursor: 'pointer' }}>
           {rows?.map((row, index) => (
-            <Table.Row key={row._id} tabIndex={index} accessKey={row._id}>
+            <Table.Row
+              key={row._id}
+              id={row._id}
+              tabIndex={row.index || index}
+              accessKey={row.url || row._id}
+            >
               {Object.keys(row)
-                .filter((key) => key !== '_id')
+                .filter((key) => !ignoredRows.includes(key))
                 .map((attrKey: string) => (
                   <Table.Cell key={attrKey}>{row[attrKey]}</Table.Cell>
                 ))}
