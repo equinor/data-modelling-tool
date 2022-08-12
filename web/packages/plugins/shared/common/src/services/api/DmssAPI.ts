@@ -1,9 +1,9 @@
 import { Configuration, DefaultApi } from './configs/gen'
 
 export class DmssAPI extends DefaultApi {
-  constructor(token: string, basePath: string = '/dmss') {
+  constructor(token: string) {
     const DMSSConfiguration = new Configuration({
-      basePath: basePath,
+      basePath: '/api/dmss',
       accessToken: token,
     })
     super(DMSSConfiguration)
