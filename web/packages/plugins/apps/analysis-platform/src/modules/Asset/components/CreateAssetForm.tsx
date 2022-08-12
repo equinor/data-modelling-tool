@@ -111,17 +111,17 @@ export const CreateAssetForm = (props: CreateFormProps) => {
         />
         <TextField
           style={{ width: INPUT_FIELD_WIDTH }}
-          id="responsible"
-          label="Responsible"
-          placeholder="Asset responsible"
+          id="contact"
+          label="Contact"
+          placeholder="Asset contact"
           onChange={handleAssetInputChange}
           helperText={
-            error.responsible
-              ? error.responsible
+            error.contact
+              ? error.contact
               : 'Provide the name of the asset point of contact'
           }
-          variant={error.responsible ? 'error' : 'default'}
-          value={asset.responsible}
+          variant={error.contact ? 'error' : 'default'}
+          value={asset.contact}
           required={false}
         />
         <div>

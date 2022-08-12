@@ -20,7 +20,7 @@ export type TAsset = {
   location?: TLocation
   start?: string
   end?: string
-  responsible?: string
+  contact?: string
 }
 
 export type TAnalysis = {

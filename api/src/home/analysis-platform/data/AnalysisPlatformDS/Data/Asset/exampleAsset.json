@@ -12,6 +12,12 @@
       "type": "AnalysisPlatformDS/Blueprints/Analysis",
       "name": "exampleAnalysis",
       "contained": false
+    },
+    {
+      "_id": "5583c9b0-d505-46c9-a157-94c79f4d7a6a",
+      "type": "AnalysisPlatformDS/Blueprints/Analysis",
+      "name": "simaJobExampleAnalysis",
+      "contained": false
     }
   ],
   "location": {
@@ -22,5 +28,5 @@
   },
   "start": "2023-01-01T00:01:23.601Z",
   "end": "2024-01-01T00:01:23.601Z",
-  "responsible": "Babak"
+  "contact": "Babak"
 }

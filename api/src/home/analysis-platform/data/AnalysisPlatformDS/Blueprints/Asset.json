@@ -44,7 +44,7 @@
       "optional": true
     },
     {
-      "name": "responsible",
+      "name": "contact",
       "type": "system/SIMOS/BlueprintAttribute",
       "attributeType": "string",
       "optional": true

@@ -12,7 +12,7 @@ import { OnRight } from '../../../components/Design/Styled'
 
 const assetInfoCardFields = (asset: TAsset) => {
   return {
-    Responsible: asset.responsible || '',
+    Contact: asset.contact || '',
     Location: asset.location?.label || asset.location?.name || '',
   }
 }
