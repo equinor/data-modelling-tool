@@ -3,6 +3,8 @@ import json
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Tuple, Union
+from uuid import UUID, uuid4
+
 import redis
 import traceback
 
@@ -43,7 +45,7 @@ def schedule_cron_job(scheduler: BackgroundScheduler, function: Callable, job: J
             day=day,
             month=month,
             day_of_week=day_of_week,
-            id=job.job_id,
+            id=str(job.job_uid),
             replace_existing=True,
         )
         return (
@@ -51,7 +53,7 @@ def schedule_cron_job(scheduler: BackgroundScheduler, function: Callable, job: J
             + f"at {scheduled_job.next_run_time} {scheduled_job.next_run_time.tzinfo}"
         )
     except ValueError as e:
-        raise ValueError(f"Failed to schedule cron job '{job.job_id}'. {e}'")
+        raise ValueError(f"Failed to schedule cron job '{job.job_uid}'. {e}'")
 
 
 class JobService:
@@ -68,17 +70,17 @@ class JobService:
 
     def load_cron_jobs(self):
         for key in self.job_store.scan_iter():
-            job = self._get_job(key.decode())
+            job = self._get_job(UUID(key.decode()))
             if job.cron_job:
-                schedule_cron_job(scheduler, lambda: self._run_job(job.job_id), job)
-                logger.info(f"Loaded and registered job '{job.job_id}' from {config.SCHEDULER_REDIS_HOST}")
+                schedule_cron_job(scheduler, lambda: self._run_job(job.job_uid), job)
+                logger.info(f"Loaded and registered job '{job.job_uid}' from {config.SCHEDULER_REDIS_HOST}")
 
     def _set_job(self, job: Job):
-        return self.job_store.set(job.job_id, json.dumps(job.to_dict()))
+        return self.job_store.set(str(job.job_uid), json.dumps(job.to_dict()))
 
-    def _get_job(self, job_id: str) -> Union[Job, None]:
+    def _get_job(self, job_uid: UUID) -> Union[Job, None]:
         try:
-            if raw_job := self.job_store.get(job_id):
+            if raw_job := self.job_store.get(str(job_uid)):
                 return Job.from_dict(json.loads(raw_job.decode()))
         except AuthenticationError:
             raise ValueError(
@@ -88,8 +90,8 @@ class JobService:
         return None
 
     @staticmethod
-    def _get_job_entity(job_id: str, token: str = None):
-        data_source_id, job_entity_id, attribute = split_absolute_ref(job_id)
+    def _get_job_entity(dmss_id: str, token: str = None):
+        data_source_id, job_entity_id, attribute = split_absolute_ref(dmss_id)
         return get_document_by_uid(data_source_id, job_entity_id, attribute=attribute, token=token, depth=0)
 
     @staticmethod
@@ -101,11 +103,11 @@ class JobService:
         return req.json()
 
     @staticmethod
-    def _update_job_entity(job_id: str, job_entity: dict, token: str):
-        return update_document_by_uid(job_id, {"data": job_entity}, token=token)
+    def _update_job_entity(dmss_id: str, job_entity: dict, token: str):
+        return update_document_by_uid(dmss_id, {"data": job_entity}, token=token)
 
     def _get_job_handler(self, job: Job) -> JobHandlerInterface:
-        data_source_id = job.job_id.split("/", 1)[0]
+        data_source_id = job.dmss_id.split("/", 1)[0]
 
         job_handler_directories = []
         for app in config.APP_NAMES:
@@ -136,8 +138,8 @@ class JobService:
 
         raise NotImplementedError(f"No handler for a job of type '{job.entity['runner']['type']}' is configured")
 
-    def _run_job(self, job_id: str) -> str:
-        job: Job = self._get_job(job_id)
+    def _run_job(self, job_uid: UUID) -> str:
+        job: Job = self._get_job(job_uid)
         try:
             job_handler = self._get_job_handler(job)
             job.started = datetime.now()
@@ -146,7 +148,7 @@ class JobService:
                 job.log = job_handler.start()
             except Exception as error:
                 print(traceback.format_exc())
-                logger.warning(f"Failed to run job; {job_id}")
+                logger.warning(f"Failed to run job; {job_uid}")
                 job.status = JobStatus.FAILED
                 raise error
         except NotImplementedError as error:
@@ -159,27 +161,22 @@ class JobService:
                 f"tried to access a missing attribute: {error}"
             )
         except Exception as error:
-            job.log = f"{job.log}\n\n {error}"
+            job.log = f"{job.log}\n\n{error}"
         finally:
             job.update_entity_attributes()
-            self._update_job_entity(job.job_id, job.entity, job.token)  # Update in DMSS with status etc.
+            self._update_job_entity(job.dmss_id, job.entity, job.token)  # Update in DMSS with status etc.
             self._set_job(job)
             return job.log
 
-    def register_job(self, job_id: str) -> str:
-        if self._get_job(job_id):
-            raise Exception(
-                f"A job with id '{job_id}' is already registered. Create a new job, or delete the old job."
-            )
-
+    def register_job(self, dmss_id: str) -> Tuple[str, str]:
         # A token must be created when there still is a request object.
         token = get_personal_access_token()
-        job_entity = self._get_job_entity(job_id, token)
+        job_entity = self._get_job_entity(dmss_id, token)
 
         if False:  # TODO: Reimplement cron-job support
             # if is_cron_job(job_entity["type"]):
             job = Job(
-                job_id=job_id,
+                dmss_id=dmss_id,
                 started=datetime.now(),
                 status=JobStatus.REGISTERED,
                 entity=job_entity,
@@ -187,49 +184,56 @@ class JobService:
                 token=token,
             )
             self._get_job_handler(job)  # Test for available handler before registering
-            result = schedule_cron_job(scheduler, lambda: self._run_job(job_id), job)
+            result = schedule_cron_job(scheduler, lambda: self._run_job(dmss_id), job)
         else:
             job = Job(
-                job_id=job_id, started=datetime.now(), status=JobStatus.REGISTERED, entity=job_entity, token=token
+                job_uid=uuid4(),
+                dmss_id=dmss_id,
+                started=datetime.now(),
+                status=JobStatus.REGISTERED,
+                entity=job_entity,
+                token=token,
             )
             self._get_job_handler(job)
-            scheduler.add_job(lambda: self._run_job(job_id))
-            result = "Job successfully started"
+            scheduler.add_job(lambda: self._run_job(job.job_uid))
+            result = str(job.job_uid), "Job successfully started"
 
         self._set_job(job)
+        job.update_entity_attributes()
+        self._update_job_entity(job.dmss_id, job.entity, job.token)
         return result
 
-    def status_job(self, job_id: str) -> Tuple[JobStatus, str, str]:
-        job = self._get_job(job_id)
+    def status_job(self, job_uid: UUID) -> Tuple[JobStatus, str, str]:
+        job = self._get_job(job_uid)
         if not job:
-            raise JobNotFoundException(f"No job with id '{job_id}' is registered")
+            raise JobNotFoundException(f"No job with uid '{job_uid}' is registered")
         job_handler = self._get_job_handler(job)
         status, log = job_handler.progress()
         if status is JobStatus.COMPLETED:
-            result_reference = self._get_job_entity(job_id, job.token)["result"]
+            result_reference = self._get_job_entity(job.dmss_id, job.token)["result"]
             job.entity["result"] = result_reference
         job.status = status
         job.log = log
         self._set_job(job)
         job.update_entity_attributes()
-        self._update_job_entity(job.job_id, job.entity, job.token)
+        self._update_job_entity(job.dmss_id, job.entity, job.token)
         if job.cron_job:
-            cron_job = scheduler.get_job(job_id)
+            cron_job = scheduler.get_job(job_uid)
             return status, job.log, f"Next scheduled run @ {cron_job.next_run_time} {cron_job.next_run_time.tzinfo}"
         return status, job.log, f"Started: {job.started.isoformat()}"
 
-    def remove_job(self, job_id: str) -> str:
-        job = self._get_job(job_id)
+    def remove_job(self, job_uid: UUID) -> str:
+        job = self._get_job(job_uid)
         if not job:
-            raise JobNotFoundException(f"No job with id '{job_id}' is registered")
+            raise JobNotFoundException(f"No job with id '{job_uid}' is registered")
         job_handler = self._get_job_handler(job)
         job_status, remove_message = job_handler.remove()
-        self.job_store.delete(job_id)
+        self.job_store.delete(str(job_uid))
         return remove_message
 
-    def get_job_result(self, job_id: str) -> Tuple[str, bytearray]:
-        job = self._get_job(job_id)
+    def get_job_result(self, job_uid: UUID) -> Tuple[str, bytearray]:
+        job = self._get_job(job_uid)
         if not job:
-            raise JobNotFoundException(f"No job with id '{job_id}' is registered")
+            raise JobNotFoundException(f"No job with id '{job_uid}' is registered")
         job_handler = self._get_job_handler(job)
         return job_handler.result()

@@ -4,7 +4,7 @@ from features.jobs.use_cases.delete_job import delete_job_use_case
 from features.jobs.use_cases.get_result_job import get_job_result_use_case, GetJobResultResponse
 from features.jobs.use_cases.status_job import status_job_use_case, StatusJobResponse
 from starlette.responses import JSONResponse, PlainTextResponse
-from features.jobs.use_cases.start_job import start_job_use_case
+from features.jobs.use_cases.start_job import start_job_use_case, StartJobResponse
 from restful.responses import create_response
 
 router = APIRouter(tags=["DMT", "Jobs"], prefix="/job")
@@ -15,33 +15,33 @@ job_service_disabled_error = (
 )
 
 
-@router.post("/{job_id:path}", operation_id="start_job")
-@create_response(PlainTextResponse)
-def start(job_id: str):
-    if not config.JOB_SERVICE_ENABLED:
-        raise Exception(job_service_disabled_error)
-    return start_job_use_case(job_id=job_id)
-
-
-@router.get("/{job_id:path}", operation_id="job_status", response_model=StatusJobResponse)
+@router.post("/{job_dmss_id:path}", operation_id="start_job", response_model=StartJobResponse)
 @create_response(JSONResponse)
-def status(job_id: str):
+def start(job_dmss_id: str):
     if not config.JOB_SERVICE_ENABLED:
         raise Exception(job_service_disabled_error)
-    return status_job_use_case(job_id=job_id).dict()
+    return start_job_use_case(job_dmss_id=job_dmss_id).dict()
 
 
-@router.delete("/{job_id:path}", operation_id="remove_job")
-@create_response(PlainTextResponse)
-def remove(job_id: str):
-    if not config.JOB_SERVICE_ENABLED:
-        raise Exception(job_service_disabled_error)
-    return delete_job_use_case(job_id=job_id)
-
-
-@router.get("/{job_id:path}/result", operation_id="job_result", response_model=GetJobResultResponse)
+@router.get("/{job_uid}", operation_id="job_status", response_model=StatusJobResponse)
 @create_response(JSONResponse)
-def result(job_id: str):
+def status(job_uid: str):
     if not config.JOB_SERVICE_ENABLED:
         raise Exception(job_service_disabled_error)
-    return get_job_result_use_case(job_id=job_id).dict()
+    return status_job_use_case(job_id=job_uid).dict()
+
+
+@router.delete("/{job_uid}", operation_id="remove_job")
+@create_response(PlainTextResponse)
+def remove(job_uid: str):
+    if not config.JOB_SERVICE_ENABLED:
+        raise Exception(job_service_disabled_error)
+    return delete_job_use_case(job_id=job_uid)
+
+
+@router.get("/{job_uid}/result", operation_id="job_result", response_model=GetJobResultResponse)
+@create_response(JSONResponse)
+def result(job_uid: str):
+    if not config.JOB_SERVICE_ENABLED:
+        raise Exception(job_service_disabled_error)
+    return get_job_result_use_case(job_uid=job_uid).dict()

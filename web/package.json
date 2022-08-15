@@ -27,8 +27,8 @@
   },
   "workspaces": [
     "packages/home",
-    "packages/plugins/**",
-    "custom-plugins/*"
+    "packages/dmt-core",
+    "packages/plugins/**"
   ],
   "devDependencies": {
     "eslint": "^8.0.0",
