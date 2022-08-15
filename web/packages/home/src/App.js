@@ -9,7 +9,7 @@ import {
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
-import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
+import { DmtAPI } from '@dmt/common'
 import {
   sortApplications,
   UiPluginContext,

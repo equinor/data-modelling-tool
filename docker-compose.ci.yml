@@ -25,6 +25,7 @@ services:
     image: web-dev
     environment:
       CI: "true"
+      REACT_APP_AUTH: 1
 
   dmss:
     image: datamodelingtool.azurecr.io/dmss
