@@ -43,7 +43,7 @@ export const AssetTable = () => {
   )
   const settings = useContext(ApplicationContext)
 
-  const getAccessUrl = (rowDocumentId: string): string =>
+  const getViewUrl = (rowDocumentId: string): string =>
     `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${rowDocumentId}`
 
   if (isLoading) {
@@ -60,7 +60,7 @@ export const AssetTable = () => {
       updated: formatDate(asset.updated),
       contact: asset.contact || '',
       index: index,
-      url: getAccessUrl(asset._id),
+      url: getViewUrl(asset._id),
     }
     rows.push(row)
   })

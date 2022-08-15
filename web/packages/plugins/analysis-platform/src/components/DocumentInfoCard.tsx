@@ -10,7 +10,6 @@ import {
 } from '@dmt/common'
 import { TDocumentInfoCardProps } from '../Types'
 import styled from 'styled-components'
-// @ts-ignore
 
 const FlexWrapper = styled.div`
   display: flex;

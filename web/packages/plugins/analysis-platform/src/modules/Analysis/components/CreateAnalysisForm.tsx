@@ -70,13 +70,6 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
     }
   }
 
-  const handleInputChange = (event: any) => {
-    setAnalysis({
-      ...analysis,
-      [event.target.id]: event.target.value,
-    })
-  }
-
   return (
     <form onSubmit={formHandler}>
       <FormWrapper>
@@ -85,7 +78,12 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
           id="name"
           label="Name"
           placeholder="Analysis name"
-          onChange={handleInputChange}
+          onChange={(event: any) =>
+            setAnalysis({
+              ...analysis,
+              name: event.target.value,
+            })
+          }
           helperText={
             error.name ? error.name : 'Provide the name of the analysis'
           }
@@ -97,7 +95,12 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
           id="description"
           label="Description"
           placeholder="Description"
-          onChange={handleInputChange}
+          onChange={(event: any) =>
+            setAnalysis({
+              ...analysis,
+              description: event.target.value,
+            })
+          }
           multiline
           rows={1}
           rowsMax={5}

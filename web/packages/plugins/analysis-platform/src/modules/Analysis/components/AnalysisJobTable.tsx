@@ -11,7 +11,6 @@ import {
   DmssAPI,
   EJobStatus,
   hasOperatorRole,
-  ApplicationContext,
   JobApi,
   TJob,
 } from '@dmt/common'
@@ -19,6 +18,7 @@ import styled from 'styled-components'
 import { AxiosError } from 'axios'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { ANALYSIS_PLATFORM_URLPATH } from '../../../const'
 
 type AnalysisJobTableProps = {
   jobs: any
@@ -41,7 +41,6 @@ const JobRow = (props: {
   removeJob: () => void
   setJob: (j: TJob) => void
 }) => {
-  const settings = useContext(ApplicationContext)
   const { job, index, analysisId, dataSourceId, removeJob, setJob } = props
   const { token, tokenData } = useContext(AuthContext)
   const jobAPI = new JobApi(token)
@@ -49,9 +48,9 @@ const JobRow = (props: {
   const [loading, setLoading] = useState<boolean>(false)
   const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
   const [started, setStarted] = useState<string>('')
-  const jobURL: string = `${document.location.pathname}.jobs.${index}`
+  const jobURL: string = `/${ANALYSIS_PLATFORM_URLPATH}/view/${dataSourceId}/${analysisId}.jobs.${index}`
   const resultURL = job.result?._id
-    ? `/${settings.urlPath}/view/${dataSourceId}/${job.result?._id}`
+    ? `/${ANALYSIS_PLATFORM_URLPATH}/view/${dataSourceId}/${job.result?._id}`
     : undefined
 
   const viewJob = () => {

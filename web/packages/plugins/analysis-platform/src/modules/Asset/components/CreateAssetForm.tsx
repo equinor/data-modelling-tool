@@ -28,7 +28,7 @@ export const CreateAssetForm = (props: CreateFormProps) => {
     name: data?.location?.name || '',
     type: EBlueprints.LOCATION,
     lat: data?.location?.lat || 0.0,
-    lon: data?.location?.lon || 0.0,
+    long: data?.location?.long || 0.0,
     label: data?.label || '',
   })
   const [asset, setAsset] = useState<TAsset>({
@@ -65,20 +65,6 @@ export const CreateAssetForm = (props: CreateFormProps) => {
     }
   }
 
-  const handleAssetInputChange = (event: any) => {
-    setAsset({
-      ...asset,
-      [event.target.id]: event.target.value,
-    })
-  }
-
-  const handleLocationInputChange = (event: any) => {
-    setLocation({
-      ...location,
-      [event.target.id]: event.target.value,
-    })
-  }
-
   return (
     <form onSubmit={formHandler}>
       <FormWrapper>
@@ -87,7 +73,9 @@ export const CreateAssetForm = (props: CreateFormProps) => {
           id="name"
           label="Name"
           placeholder="Asset name"
-          onChange={handleAssetInputChange}
+          onChange={(event: any) =>
+            setAsset({ ...asset, name: event.target.value })
+          }
           helperText={error.name ? error.name : 'Provide the name of the asset'}
           variant={error.name ? 'error' : 'default'}
           value={asset.name}
@@ -97,7 +85,9 @@ export const CreateAssetForm = (props: CreateFormProps) => {
           id="description"
           label="Description"
           placeholder="Description"
-          onChange={handleAssetInputChange}
+          onChange={(event: any) =>
+            setAsset({ ...asset, description: event.target.value })
+          }
           multiline
           rows={1}
           rowsMax={5}
@@ -114,7 +104,9 @@ export const CreateAssetForm = (props: CreateFormProps) => {
           id="contact"
           label="Contact"
           placeholder="Asset contact"
-          onChange={handleAssetInputChange}
+          onChange={(event: any) =>
+            setAsset({ ...asset, contact: event.target.value })
+          }
           helperText={
             error.contact
               ? error.contact

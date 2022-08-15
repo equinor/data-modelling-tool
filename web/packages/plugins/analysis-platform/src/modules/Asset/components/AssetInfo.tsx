@@ -1,21 +1,10 @@
 import React, { useContext } from 'react'
 
 import { AuthContext, hasExpertRole } from '@dmt/common'
-import {
-  CreateAnalysisButtonProps,
-  TAsset,
-  TAssetInfoCardProps,
-} from '../../../Types'
+import { CreateAnalysisButtonProps, TAssetInfoCardProps } from '../../../Types'
 import { DocumentInfoCard } from '../../../components/DocumentInfoCard'
 import { CreateAnalysisButton } from '../../Analysis'
 import { OnRight } from '../../../components/Design/Styled'
-
-const assetInfoCardFields = (asset: TAsset) => {
-  return {
-    Contact: asset.contact || '',
-    Location: asset.location?.label || asset.location?.name || '',
-  }
-}
 
 const AssetInfoCardActions = (props: CreateAnalysisButtonProps) => {
   const { urlPath } = props
@@ -36,7 +25,10 @@ export const AssetInfoCard = (props: TAssetInfoCardProps) => {
         <DocumentInfoCard
           document={asset}
           dataSourceId={dataSourceId}
-          fields={assetInfoCardFields(asset)}
+          fields={{
+            Contact: asset.contact || '',
+            Location: asset.location?.label || asset.location?.name || '',
+          }}
           actions={<AssetInfoCardActions urlPath={urlPath} />}
         />
       </OnRight>

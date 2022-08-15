@@ -20,7 +20,6 @@ export const AnalysisCreate = (): JSX.Element => {
   const { tokenData, token } = useContext(AuthContext)
   const user = getUsername(tokenData) || 'NoLogin'
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const createdAt = new Date().toISOString()
 
   const handleUpdateAsset = (assetId: string, analysis: TAnalysis) => {
     const newAnalysis = {
@@ -34,6 +33,7 @@ export const AnalysisCreate = (): JSX.Element => {
 
   const handleCreateAnalysis = (formData: TAnalysis) => {
     setIsLoading(true)
+    const createdAt = new Date().toISOString()
     const data = {
       ...formData,
       type: EBlueprints.ANALYSIS,
