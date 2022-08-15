@@ -1,4 +1,4 @@
-from typing import Optional
+from typing import Optional, List
 
 from domain_classes.dimension import Dimension
 from enums import SIMOS
@@ -12,7 +12,7 @@ class BlueprintAttribute:
         attribute_type: str,
         description: Optional[str] = None,
         label: Optional[str] = None,
-        default: Optional[str] = None,
+        default: Optional[str | List] = None,
         dimensions: Optional[str] = "",
         optional: Optional[bool] = None,
         contained: Optional[bool] = None,

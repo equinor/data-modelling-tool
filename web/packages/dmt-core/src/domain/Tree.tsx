@@ -264,7 +264,10 @@ export class TreeNode {
   }
 
   pathFromRootPackage(): string {
-    return this.getPath().split('/').splice(1).join('/')
+    return this.getPath()
+      .split('/')
+      .splice(1)
+      .join('/')
   }
 
   remove(): void {
@@ -281,9 +284,10 @@ export class TreeNode {
     let packageContent = ''
     if (this.type === EBlueprint.PACKAGE) packageContent = '.content'
 
-    const newEntity: any = await this.tree.dmtApi.instantiateEntity({
+    const response = await this.tree.dmtApi.instantiateEntity({
       basicEntity: { name: name, type: type },
     })
+    const newEntity = response.data
     const createResponse: AxiosResponse<any> = await this.tree.dmssApi.explorerAdd(
       {
         absoluteRef: `${this.nodeId}${packageContent}`,
@@ -331,7 +335,7 @@ export class Tree {
             body: { type: EBlueprint.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],
           })
-          .then((response) => {
+          .then(response => {
             updateRootPackagesInTree(response.data, this, dataSource)
           })
           .catch((error: Error) => {

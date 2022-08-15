@@ -48,6 +48,8 @@ def create_entity(blueprint_provider, entity: dict):
             continue
         if attr.is_array:
             entity[attr.name] = attr.dimensions.create_default_array(blueprint_provider, create_entity)
+            # if type(entity[attr.name] != list):
+            #     raise Exception(f"The entity's list attribute {attr} was not created as a list")
             continue
         # It's complex
         # Can not create entities of unknown 'object' type
