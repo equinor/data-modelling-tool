@@ -86,7 +86,7 @@ function App() {
     const dmtAPI = new DmtAPI('')
     setLoadingAppSettings(true)
     dmtAPI
-      .getSystemSettings()
+      .getAppSettings()
       .then((res) =>
         setApplications(
           sortApplications(res.data).filter(

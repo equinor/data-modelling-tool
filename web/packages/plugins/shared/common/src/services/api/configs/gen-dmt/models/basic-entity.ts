@@ -23,7 +23,7 @@ export interface BasicEntity {
    * @type {string}
    * @memberof BasicEntity
    */
-  name: string
+  name?: string
   /**
    *
    * @type {string}

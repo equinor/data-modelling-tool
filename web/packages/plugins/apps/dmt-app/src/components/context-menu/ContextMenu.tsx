@@ -178,9 +178,7 @@ export const NodeRightClickMenu = (props: {
     await dmssAPI
       .explorerRemoveByPath({
         dataSourceId: node.dataSource,
-        removeByPathRequest: {
-          directory: node.pathFromRootPackage(),
-        },
+        directory: node.pathFromRootPackage(),
       })
       .then(() => {
         node.remove()

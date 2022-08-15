@@ -1,6 +1,5 @@
 .gitignore
 .npmignore
-.openapi-generator-ignore
 api.ts
 api/access-control-api.ts
 api/blob-api.ts
@@ -25,12 +24,10 @@ models/acl.ts
 models/data-source-request.ts
 models/httpvalidation-error.ts
 models/index.ts
-models/move-request.ts
 models/patdata.ts
 models/reference.ts
-models/remove-by-path-request.ts
-models/rename-request.ts
 models/repository-type.ts
 models/repository.ts
 models/storage-data-types.ts
+models/uncontained-entity.ts
 models/validation-error.ts
