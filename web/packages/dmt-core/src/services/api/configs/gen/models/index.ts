@@ -7,5 +7,4 @@ export * from './reference';
 export * from './repository';
 export * from './repository-type';
 export * from './storage-data-types';
-export * from './uncontained-entity';
 export * from './validation-error';

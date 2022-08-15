@@ -29,5 +29,4 @@ models/reference.ts
 models/repository-type.ts
 models/repository.ts
 models/storage-data-types.ts
-models/uncontained-entity.ts
 models/validation-error.ts

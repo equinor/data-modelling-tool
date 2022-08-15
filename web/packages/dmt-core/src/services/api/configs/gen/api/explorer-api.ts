@@ -22,8 +22,6 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
 // @ts-ignore
 import { HTTPValidationError } from '../models';
-// @ts-ignore
-import { UncontainedEntity } from '../models';
 /**
  * ExplorerApi - axios parameter creator
  * @export
@@ -86,15 +84,15 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
          * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
          * @summary Add Raw
          * @param {string} dataSourceId 
-         * @param {UncontainedEntity} uncontainedEntity 
+         * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerAddSimple: async (dataSourceId: string, uncontainedEntity: UncontainedEntity, options: any = {}): Promise<RequestArgs> => {
+        explorerAddSimple: async (dataSourceId: string, body: object, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('explorerAddSimple', 'dataSourceId', dataSourceId)
-            // verify required parameter 'uncontainedEntity' is not null or undefined
-            assertParamExists('explorerAddSimple', 'uncontainedEntity', uncontainedEntity)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('explorerAddSimple', 'body', body)
             const localVarPath = `/api/v1/explorer/{data_source_id}/add-raw`
                 .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -122,7 +120,7 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(uncontainedEntity, localVarRequestOptions, configuration)
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -147,8 +145,9 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
             assertParamExists('explorerAddToPath', 'directory', directory)
             // verify required parameter 'document' is not null or undefined
             assertParamExists('explorerAddToPath', 'document', document)
-            const localVarPath = `/api/v1/explorer/{data_source_id}/add-to-path`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
+            const localVarPath = `/api/v1/explorer/{data_source_id}/add-to-path/{directory}`
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
+                .replace(`{${"directory"}}`, encodeURIComponent(String(directory)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -167,10 +166,6 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
             // authentication OAuth2AuthorizationCodeBearer required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
-
-            if (directory !== undefined) {
-                localVarQueryParameter['directory'] = directory;
-            }
 
             if (updateUncontained !== undefined) {
                 localVarQueryParameter['update_uncontained'] = updateUncontained;
@@ -423,12 +418,12 @@ export const ExplorerApiFp = function(configuration?: Configuration) {
          * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
          * @summary Add Raw
          * @param {string} dataSourceId 
-         * @param {UncontainedEntity} uncontainedEntity 
+         * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerAddSimple(dataSourceId: string, uncontainedEntity: UncontainedEntity, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerAddSimple(dataSourceId, uncontainedEntity, options);
+        async explorerAddSimple(dataSourceId: string, body: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerAddSimple(dataSourceId, body, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -521,12 +516,12 @@ export const ExplorerApiFactory = function (configuration?: Configuration, baseP
          * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
          * @summary Add Raw
          * @param {string} dataSourceId 
-         * @param {UncontainedEntity} uncontainedEntity 
+         * @param {object} body 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerAddSimple(dataSourceId: string, uncontainedEntity: UncontainedEntity, options?: any): AxiosPromise<string> {
-            return localVarFp.explorerAddSimple(dataSourceId, uncontainedEntity, options).then((request) => request(axios, basePath));
+        explorerAddSimple(dataSourceId: string, body: object, options?: any): AxiosPromise<string> {
+            return localVarFp.explorerAddSimple(dataSourceId, body, options).then((request) => request(axios, basePath));
         },
         /**
          * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
@@ -633,10 +628,10 @@ export interface ExplorerApiExplorerAddSimpleRequest {
 
     /**
      * 
-     * @type {UncontainedEntity}
+     * @type {object}
      * @memberof ExplorerApiExplorerAddSimple
      */
-    readonly uncontainedEntity: UncontainedEntity
+    readonly body: object
 }
 
 /**
@@ -800,7 +795,7 @@ export class ExplorerApi extends BaseAPI {
      * @memberof ExplorerApi
      */
     public explorerAddSimple(requestParameters: ExplorerApiExplorerAddSimpleRequest, options?: any) {
-        return ExplorerApiFp(this.configuration).explorerAddSimple(requestParameters.dataSourceId, requestParameters.uncontainedEntity, options).then((request) => request(this.axios, this.basePath));
+        return ExplorerApiFp(this.configuration).explorerAddSimple(requestParameters.dataSourceId, requestParameters.body, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

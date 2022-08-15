@@ -264,10 +264,7 @@ export class TreeNode {
   }
 
   pathFromRootPackage(): string {
-    return this.getPath()
-      .split('/')
-      .splice(1)
-      .join('/')
+    return this.getPath().split('/').splice(1).join('/')
   }
 
   remove(): void {
@@ -335,7 +332,7 @@ export class Tree {
             body: { type: EBlueprint.PACKAGE, isRoot: 'true' },
             dataSources: [dataSource],
           })
-          .then(response => {
+          .then((response) => {
             updateRootPackagesInTree(response.data, this, dataSource)
           })
           .catch((error: Error) => {

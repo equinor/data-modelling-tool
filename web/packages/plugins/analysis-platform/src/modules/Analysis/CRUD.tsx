@@ -5,7 +5,7 @@
  * @param user The username of the authenticated user
  */
 import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI } from '../../../../../dmt-core'
 
 export const createAnalysis = (
   body: any,
@@ -19,7 +19,7 @@ export const createAnalysis = (
       .explorerAddToPath({
         dataSourceId: DEFAULT_DATASOURCE_ID,
         document: JSON.stringify(body),
-        directory: ANALYSIS_PATH,
+        directory: '/' + ANALYSIS_PATH,
         files: files.filter((item: any) => item !== undefined),
       })
       .then((response: any) => {
