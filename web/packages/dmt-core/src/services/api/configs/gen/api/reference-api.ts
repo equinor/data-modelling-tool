@@ -33,19 +33,19 @@ export const ReferenceApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary Delete Reference
-         * @param {string} dataSourceId 
          * @param {string} documentDottedId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        referenceDelete: async (dataSourceId: string, documentDottedId: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('referenceDelete', 'dataSourceId', dataSourceId)
+        referenceDelete: async (documentDottedId: string, dataSourceId: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'documentDottedId' is not null or undefined
             assertParamExists('referenceDelete', 'documentDottedId', documentDottedId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('referenceDelete', 'dataSourceId', dataSourceId)
             const localVarPath = `/api/v1/reference/{data_source_id}/{document_dotted_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(documentDottedId)));
+                .replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(documentDottedId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -78,22 +78,22 @@ export const ReferenceApiAxiosParamCreator = function (configuration?: Configura
         /**
          * 
          * @summary Insert Reference
-         * @param {string} dataSourceId 
          * @param {string} documentDottedId 
+         * @param {string} dataSourceId 
          * @param {Reference} reference 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        referenceInsert: async (dataSourceId: string, documentDottedId: string, reference: Reference, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('referenceInsert', 'dataSourceId', dataSourceId)
+        referenceInsert: async (documentDottedId: string, dataSourceId: string, reference: Reference, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'documentDottedId' is not null or undefined
             assertParamExists('referenceInsert', 'documentDottedId', documentDottedId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('referenceInsert', 'dataSourceId', dataSourceId)
             // verify required parameter 'reference' is not null or undefined
             assertParamExists('referenceInsert', 'reference', reference)
             const localVarPath = `/api/v1/reference/{data_source_id}/{document_dotted_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(documentDottedId)));
+                .replace(`{${"document_dotted_id"}}`, encodeURIComponent(String(documentDottedId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -139,26 +139,26 @@ export const ReferenceApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Delete Reference
-         * @param {string} dataSourceId 
          * @param {string} documentDottedId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async referenceDelete(dataSourceId: string, documentDottedId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.referenceDelete(dataSourceId, documentDottedId, options);
+        async referenceDelete(documentDottedId: string, dataSourceId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.referenceDelete(documentDottedId, dataSourceId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Insert Reference
-         * @param {string} dataSourceId 
          * @param {string} documentDottedId 
+         * @param {string} dataSourceId 
          * @param {Reference} reference 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async referenceInsert(dataSourceId: string, documentDottedId: string, reference: Reference, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.referenceInsert(dataSourceId, documentDottedId, reference, options);
+        async referenceInsert(documentDottedId: string, dataSourceId: string, reference: Reference, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.referenceInsert(documentDottedId, dataSourceId, reference, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -174,25 +174,25 @@ export const ReferenceApiFactory = function (configuration?: Configuration, base
         /**
          * 
          * @summary Delete Reference
-         * @param {string} dataSourceId 
          * @param {string} documentDottedId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        referenceDelete(dataSourceId: string, documentDottedId: string, options?: any): AxiosPromise<object> {
-            return localVarFp.referenceDelete(dataSourceId, documentDottedId, options).then((request) => request(axios, basePath));
+        referenceDelete(documentDottedId: string, dataSourceId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.referenceDelete(documentDottedId, dataSourceId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Insert Reference
-         * @param {string} dataSourceId 
          * @param {string} documentDottedId 
+         * @param {string} dataSourceId 
          * @param {Reference} reference 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        referenceInsert(dataSourceId: string, documentDottedId: string, reference: Reference, options?: any): AxiosPromise<object> {
-            return localVarFp.referenceInsert(dataSourceId, documentDottedId, reference, options).then((request) => request(axios, basePath));
+        referenceInsert(documentDottedId: string, dataSourceId: string, reference: Reference, options?: any): AxiosPromise<object> {
+            return localVarFp.referenceInsert(documentDottedId, dataSourceId, reference, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -208,14 +208,14 @@ export interface ReferenceApiReferenceDeleteRequest {
      * @type {string}
      * @memberof ReferenceApiReferenceDelete
      */
-    readonly dataSourceId: string
+    readonly documentDottedId: string
 
     /**
      * 
      * @type {string}
      * @memberof ReferenceApiReferenceDelete
      */
-    readonly documentDottedId: string
+    readonly dataSourceId: string
 }
 
 /**
@@ -229,14 +229,14 @@ export interface ReferenceApiReferenceInsertRequest {
      * @type {string}
      * @memberof ReferenceApiReferenceInsert
      */
-    readonly dataSourceId: string
+    readonly documentDottedId: string
 
     /**
      * 
      * @type {string}
      * @memberof ReferenceApiReferenceInsert
      */
-    readonly documentDottedId: string
+    readonly dataSourceId: string
 
     /**
      * 
@@ -262,7 +262,7 @@ export class ReferenceApi extends BaseAPI {
      * @memberof ReferenceApi
      */
     public referenceDelete(requestParameters: ReferenceApiReferenceDeleteRequest, options?: any) {
-        return ReferenceApiFp(this.configuration).referenceDelete(requestParameters.dataSourceId, requestParameters.documentDottedId, options).then((request) => request(this.axios, this.basePath));
+        return ReferenceApiFp(this.configuration).referenceDelete(requestParameters.documentDottedId, requestParameters.dataSourceId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -274,6 +274,6 @@ export class ReferenceApi extends BaseAPI {
      * @memberof ReferenceApi
      */
     public referenceInsert(requestParameters: ReferenceApiReferenceInsertRequest, options?: any) {
-        return ReferenceApiFp(this.configuration).referenceInsert(requestParameters.dataSourceId, requestParameters.documentDottedId, requestParameters.reference, options).then((request) => request(this.axios, this.basePath));
+        return ReferenceApiFp(this.configuration).referenceInsert(requestParameters.documentDottedId, requestParameters.dataSourceId, requestParameters.reference, options).then((request) => request(this.axios, this.basePath));
     }
 }

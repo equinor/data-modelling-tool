@@ -31,19 +31,19 @@ export const BlobApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Get By Id
-         * @param {string} dataSourceId 
          * @param {string} blobId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        blobGetById: async (dataSourceId: string, blobId: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('blobGetById', 'dataSourceId', dataSourceId)
+        blobGetById: async (blobId: string, dataSourceId: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'blobId' is not null or undefined
             assertParamExists('blobGetById', 'blobId', blobId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('blobGetById', 'dataSourceId', dataSourceId)
             const localVarPath = `/api/v1/blobs/{data_source_id}/{blob_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"blob_id"}}`, encodeURIComponent(String(blobId)));
+                .replace(`{${"blob_id"}}`, encodeURIComponent(String(blobId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -76,22 +76,22 @@ export const BlobApiAxiosParamCreator = function (configuration?: Configuration)
         /**
          * 
          * @summary Upload
-         * @param {string} dataSourceId 
          * @param {string} blobId 
+         * @param {string} dataSourceId 
          * @param {any} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        blobUpload: async (dataSourceId: string, blobId: string, file: any, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('blobUpload', 'dataSourceId', dataSourceId)
+        blobUpload: async (blobId: string, dataSourceId: string, file: any, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'blobId' is not null or undefined
             assertParamExists('blobUpload', 'blobId', blobId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('blobUpload', 'dataSourceId', dataSourceId)
             // verify required parameter 'file' is not null or undefined
             assertParamExists('blobUpload', 'file', file)
             const localVarPath = `/api/v1/blobs/{data_source_id}/{blob_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"blob_id"}}`, encodeURIComponent(String(blobId)));
+                .replace(`{${"blob_id"}}`, encodeURIComponent(String(blobId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -142,26 +142,26 @@ export const BlobApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get By Id
-         * @param {string} dataSourceId 
          * @param {string} blobId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async blobGetById(dataSourceId: string, blobId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.blobGetById(dataSourceId, blobId, options);
+        async blobGetById(blobId: string, dataSourceId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.blobGetById(blobId, dataSourceId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Upload
-         * @param {string} dataSourceId 
          * @param {string} blobId 
+         * @param {string} dataSourceId 
          * @param {any} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async blobUpload(dataSourceId: string, blobId: string, file: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.blobUpload(dataSourceId, blobId, file, options);
+        async blobUpload(blobId: string, dataSourceId: string, file: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.blobUpload(blobId, dataSourceId, file, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -177,25 +177,25 @@ export const BlobApiFactory = function (configuration?: Configuration, basePath?
         /**
          * 
          * @summary Get By Id
-         * @param {string} dataSourceId 
          * @param {string} blobId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        blobGetById(dataSourceId: string, blobId: string, options?: any): AxiosPromise<any> {
-            return localVarFp.blobGetById(dataSourceId, blobId, options).then((request) => request(axios, basePath));
+        blobGetById(blobId: string, dataSourceId: string, options?: any): AxiosPromise<any> {
+            return localVarFp.blobGetById(blobId, dataSourceId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Upload
-         * @param {string} dataSourceId 
          * @param {string} blobId 
+         * @param {string} dataSourceId 
          * @param {any} file 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        blobUpload(dataSourceId: string, blobId: string, file: any, options?: any): AxiosPromise<string> {
-            return localVarFp.blobUpload(dataSourceId, blobId, file, options).then((request) => request(axios, basePath));
+        blobUpload(blobId: string, dataSourceId: string, file: any, options?: any): AxiosPromise<string> {
+            return localVarFp.blobUpload(blobId, dataSourceId, file, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -211,14 +211,14 @@ export interface BlobApiBlobGetByIdRequest {
      * @type {string}
      * @memberof BlobApiBlobGetById
      */
-    readonly dataSourceId: string
+    readonly blobId: string
 
     /**
      * 
      * @type {string}
      * @memberof BlobApiBlobGetById
      */
-    readonly blobId: string
+    readonly dataSourceId: string
 }
 
 /**
@@ -232,14 +232,14 @@ export interface BlobApiBlobUploadRequest {
      * @type {string}
      * @memberof BlobApiBlobUpload
      */
-    readonly dataSourceId: string
+    readonly blobId: string
 
     /**
      * 
      * @type {string}
      * @memberof BlobApiBlobUpload
      */
-    readonly blobId: string
+    readonly dataSourceId: string
 
     /**
      * 
@@ -265,7 +265,7 @@ export class BlobApi extends BaseAPI {
      * @memberof BlobApi
      */
     public blobGetById(requestParameters: BlobApiBlobGetByIdRequest, options?: any) {
-        return BlobApiFp(this.configuration).blobGetById(requestParameters.dataSourceId, requestParameters.blobId, options).then((request) => request(this.axios, this.basePath));
+        return BlobApiFp(this.configuration).blobGetById(requestParameters.blobId, requestParameters.dataSourceId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -277,6 +277,6 @@ export class BlobApi extends BaseAPI {
      * @memberof BlobApi
      */
     public blobUpload(requestParameters: BlobApiBlobUploadRequest, options?: any) {
-        return BlobApiFp(this.configuration).blobUpload(requestParameters.dataSourceId, requestParameters.blobId, requestParameters.file, options).then((request) => request(this.axios, this.basePath));
+        return BlobApiFp(this.configuration).blobUpload(requestParameters.blobId, requestParameters.dataSourceId, requestParameters.file, options).then((request) => request(this.axios, this.basePath));
     }
 }

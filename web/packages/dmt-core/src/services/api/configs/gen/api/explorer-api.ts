@@ -145,9 +145,8 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
             assertParamExists('explorerAddToPath', 'directory', directory)
             // verify required parameter 'document' is not null or undefined
             assertParamExists('explorerAddToPath', 'document', document)
-            const localVarPath = `/api/v1/explorer/{data_source_id}/add-to-path{directory}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"directory"}}`, encodeURIComponent(String(directory)));
+            const localVarPath = `/api/v1/explorer/{data_source_id}/add-to-path`
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -166,6 +165,10 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
             // authentication OAuth2AuthorizationCodeBearer required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
+
+            if (directory !== undefined) {
+                localVarQueryParameter['directory'] = directory;
+            }
 
             if (updateUncontained !== undefined) {
                 localVarQueryParameter['update_uncontained'] = updateUncontained;
@@ -246,19 +249,19 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @summary Remove
-         * @param {string} dataSourceId 
          * @param {string} dottedId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemove: async (dataSourceId: string, dottedId: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('explorerRemove', 'dataSourceId', dataSourceId)
+        explorerRemove: async (dottedId: string, dataSourceId: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dottedId' is not null or undefined
             assertParamExists('explorerRemove', 'dottedId', dottedId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('explorerRemove', 'dataSourceId', dataSourceId)
             const localVarPath = `/api/v1/explorer/{data_source_id}/{dotted_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"dotted_id"}}`, encodeURIComponent(String(dottedId)));
+                .replace(`{${"dotted_id"}}`, encodeURIComponent(String(dottedId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -456,13 +459,13 @@ export const ExplorerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Remove
-         * @param {string} dataSourceId 
          * @param {string} dottedId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRemove(dataSourceId: string, dottedId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemove(dataSourceId, dottedId, options);
+        async explorerRemove(dottedId: string, dataSourceId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemove(dottedId, dataSourceId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -551,13 +554,13 @@ export const ExplorerApiFactory = function (configuration?: Configuration, baseP
         /**
          * 
          * @summary Remove
-         * @param {string} dataSourceId 
          * @param {string} dottedId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemove(dataSourceId: string, dottedId: string, options?: any): AxiosPromise<string> {
-            return localVarFp.explorerRemove(dataSourceId, dottedId, options).then((request) => request(axios, basePath));
+        explorerRemove(dottedId: string, dataSourceId: string, options?: any): AxiosPromise<string> {
+            return localVarFp.explorerRemove(dottedId, dataSourceId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -708,14 +711,14 @@ export interface ExplorerApiExplorerRemoveRequest {
      * @type {string}
      * @memberof ExplorerApiExplorerRemove
      */
-    readonly dataSourceId: string
+    readonly dottedId: string
 
     /**
      * 
      * @type {string}
      * @memberof ExplorerApiExplorerRemove
      */
-    readonly dottedId: string
+    readonly dataSourceId: string
 }
 
 /**
@@ -831,7 +834,7 @@ export class ExplorerApi extends BaseAPI {
      * @memberof ExplorerApi
      */
     public explorerRemove(requestParameters: ExplorerApiExplorerRemoveRequest, options?: any) {
-        return ExplorerApiFp(this.configuration).explorerRemove(requestParameters.dataSourceId, requestParameters.dottedId, options).then((request) => request(this.axios, this.basePath));
+        return ExplorerApiFp(this.configuration).explorerRemove(requestParameters.dottedId, requestParameters.dataSourceId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

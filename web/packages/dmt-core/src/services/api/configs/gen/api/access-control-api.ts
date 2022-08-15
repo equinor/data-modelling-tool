@@ -33,19 +33,19 @@ export const AccessControlApiAxiosParamCreator = function (configuration?: Confi
         /**
          * 
          * @summary Get Acl
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAcl: async (dataSourceId: string, documentId: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('getAcl', 'dataSourceId', dataSourceId)
+        getAcl: async (documentId: string, dataSourceId: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'documentId' is not null or undefined
             assertParamExists('getAcl', 'documentId', documentId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('getAcl', 'dataSourceId', dataSourceId)
             const localVarPath = `/api/v1/acl/{data_source_id}/{document_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)));
+                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -78,23 +78,23 @@ export const AccessControlApiAxiosParamCreator = function (configuration?: Confi
         /**
          * 
          * @summary Set Acl
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {ACL} aCL 
          * @param {boolean} [recursively] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setAcl: async (dataSourceId: string, documentId: string, aCL: ACL, recursively?: boolean, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('setAcl', 'dataSourceId', dataSourceId)
+        setAcl: async (documentId: string, dataSourceId: string, aCL: ACL, recursively?: boolean, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'documentId' is not null or undefined
             assertParamExists('setAcl', 'documentId', documentId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('setAcl', 'dataSourceId', dataSourceId)
             // verify required parameter 'aCL' is not null or undefined
             assertParamExists('setAcl', 'aCL', aCL)
             const localVarPath = `/api/v1/acl/{data_source_id}/{document_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)));
+                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -144,27 +144,27 @@ export const AccessControlApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get Acl
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async getAcl(dataSourceId: string, documentId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ACL>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.getAcl(dataSourceId, documentId, options);
+        async getAcl(documentId: string, dataSourceId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<ACL>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.getAcl(documentId, dataSourceId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Set Acl
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {ACL} aCL 
          * @param {boolean} [recursively] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async setAcl(dataSourceId: string, documentId: string, aCL: ACL, recursively?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.setAcl(dataSourceId, documentId, aCL, recursively, options);
+        async setAcl(documentId: string, dataSourceId: string, aCL: ACL, recursively?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.setAcl(documentId, dataSourceId, aCL, recursively, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -180,26 +180,26 @@ export const AccessControlApiFactory = function (configuration?: Configuration, 
         /**
          * 
          * @summary Get Acl
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        getAcl(dataSourceId: string, documentId: string, options?: any): AxiosPromise<ACL> {
-            return localVarFp.getAcl(dataSourceId, documentId, options).then((request) => request(axios, basePath));
+        getAcl(documentId: string, dataSourceId: string, options?: any): AxiosPromise<ACL> {
+            return localVarFp.getAcl(documentId, dataSourceId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Set Acl
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {ACL} aCL 
          * @param {boolean} [recursively] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        setAcl(dataSourceId: string, documentId: string, aCL: ACL, recursively?: boolean, options?: any): AxiosPromise<string> {
-            return localVarFp.setAcl(dataSourceId, documentId, aCL, recursively, options).then((request) => request(axios, basePath));
+        setAcl(documentId: string, dataSourceId: string, aCL: ACL, recursively?: boolean, options?: any): AxiosPromise<string> {
+            return localVarFp.setAcl(documentId, dataSourceId, aCL, recursively, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -215,14 +215,14 @@ export interface AccessControlApiGetAclRequest {
      * @type {string}
      * @memberof AccessControlApiGetAcl
      */
-    readonly dataSourceId: string
+    readonly documentId: string
 
     /**
      * 
      * @type {string}
      * @memberof AccessControlApiGetAcl
      */
-    readonly documentId: string
+    readonly dataSourceId: string
 }
 
 /**
@@ -236,14 +236,14 @@ export interface AccessControlApiSetAclRequest {
      * @type {string}
      * @memberof AccessControlApiSetAcl
      */
-    readonly dataSourceId: string
+    readonly documentId: string
 
     /**
      * 
      * @type {string}
      * @memberof AccessControlApiSetAcl
      */
-    readonly documentId: string
+    readonly dataSourceId: string
 
     /**
      * 
@@ -276,7 +276,7 @@ export class AccessControlApi extends BaseAPI {
      * @memberof AccessControlApi
      */
     public getAcl(requestParameters: AccessControlApiGetAclRequest, options?: any) {
-        return AccessControlApiFp(this.configuration).getAcl(requestParameters.dataSourceId, requestParameters.documentId, options).then((request) => request(this.axios, this.basePath));
+        return AccessControlApiFp(this.configuration).getAcl(requestParameters.documentId, requestParameters.dataSourceId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -288,6 +288,6 @@ export class AccessControlApi extends BaseAPI {
      * @memberof AccessControlApi
      */
     public setAcl(requestParameters: AccessControlApiSetAclRequest, options?: any) {
-        return AccessControlApiFp(this.configuration).setAcl(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.aCL, requestParameters.recursively, options).then((request) => request(this.axios, this.basePath));
+        return AccessControlApiFp(this.configuration).setAcl(requestParameters.documentId, requestParameters.dataSourceId, requestParameters.aCL, requestParameters.recursively, options).then((request) => request(this.axios, this.basePath));
     }
 }

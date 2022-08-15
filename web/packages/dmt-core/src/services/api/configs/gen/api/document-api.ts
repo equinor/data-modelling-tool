@@ -31,21 +31,21 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @summary Get By Id
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetById: async (dataSourceId: string, documentId: string, attribute?: string, depth?: number, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('documentGetById', 'dataSourceId', dataSourceId)
+        documentGetById: async (documentId: string, dataSourceId: string, attribute?: string, depth?: number, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'documentId' is not null or undefined
             assertParamExists('documentGetById', 'documentId', documentId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('documentGetById', 'dataSourceId', dataSourceId)
             const localVarPath = `/api/v1/documents/{data_source_id}/{document_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)));
+                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -137,8 +137,8 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @summary Update
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {string} data 
          * @param {boolean} [updateUncontained] 
          * @param {string} [attribute] 
@@ -146,16 +146,16 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentUpdate: async (dataSourceId: string, documentId: string, data: string, updateUncontained?: boolean, attribute?: string, files?: Array<any>, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dataSourceId' is not null or undefined
-            assertParamExists('documentUpdate', 'dataSourceId', dataSourceId)
+        documentUpdate: async (documentId: string, dataSourceId: string, data: string, updateUncontained?: boolean, attribute?: string, files?: Array<any>, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'documentId' is not null or undefined
             assertParamExists('documentUpdate', 'documentId', documentId)
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('documentUpdate', 'dataSourceId', dataSourceId)
             // verify required parameter 'data' is not null or undefined
             assertParamExists('documentUpdate', 'data', data)
             const localVarPath = `/api/v1/documents/{data_source_id}/{document_id}`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
-                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)));
+                .replace(`{${"document_id"}}`, encodeURIComponent(String(documentId)))
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -220,15 +220,15 @@ export const DocumentApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Get By Id
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentGetById(dataSourceId: string, documentId: string, attribute?: string, depth?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetById(dataSourceId, documentId, attribute, depth, options);
+        async documentGetById(documentId: string, dataSourceId: string, attribute?: string, depth?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetById(documentId, dataSourceId, attribute, depth, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -247,8 +247,8 @@ export const DocumentApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Update
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {string} data 
          * @param {boolean} [updateUncontained] 
          * @param {string} [attribute] 
@@ -256,8 +256,8 @@ export const DocumentApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentUpdate(dataSourceId: string, documentId: string, data: string, updateUncontained?: boolean, attribute?: string, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentUpdate(dataSourceId, documentId, data, updateUncontained, attribute, files, options);
+        async documentUpdate(documentId: string, dataSourceId: string, data: string, updateUncontained?: boolean, attribute?: string, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentUpdate(documentId, dataSourceId, data, updateUncontained, attribute, files, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
     }
@@ -273,15 +273,15 @@ export const DocumentApiFactory = function (configuration?: Configuration, baseP
         /**
          * 
          * @summary Get By Id
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetById(dataSourceId: string, documentId: string, attribute?: string, depth?: number, options?: any): AxiosPromise<object> {
-            return localVarFp.documentGetById(dataSourceId, documentId, attribute, depth, options).then((request) => request(axios, basePath));
+        documentGetById(documentId: string, dataSourceId: string, attribute?: string, depth?: number, options?: any): AxiosPromise<object> {
+            return localVarFp.documentGetById(documentId, dataSourceId, attribute, depth, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
@@ -298,8 +298,8 @@ export const DocumentApiFactory = function (configuration?: Configuration, baseP
         /**
          * 
          * @summary Update
-         * @param {string} dataSourceId 
          * @param {string} documentId 
+         * @param {string} dataSourceId 
          * @param {string} data 
          * @param {boolean} [updateUncontained] 
          * @param {string} [attribute] 
@@ -307,8 +307,8 @@ export const DocumentApiFactory = function (configuration?: Configuration, baseP
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentUpdate(dataSourceId: string, documentId: string, data: string, updateUncontained?: boolean, attribute?: string, files?: Array<any>, options?: any): AxiosPromise<any> {
-            return localVarFp.documentUpdate(dataSourceId, documentId, data, updateUncontained, attribute, files, options).then((request) => request(axios, basePath));
+        documentUpdate(documentId: string, dataSourceId: string, data: string, updateUncontained?: boolean, attribute?: string, files?: Array<any>, options?: any): AxiosPromise<any> {
+            return localVarFp.documentUpdate(documentId, dataSourceId, data, updateUncontained, attribute, files, options).then((request) => request(axios, basePath));
         },
     };
 };
@@ -324,14 +324,14 @@ export interface DocumentApiDocumentGetByIdRequest {
      * @type {string}
      * @memberof DocumentApiDocumentGetById
      */
-    readonly dataSourceId: string
+    readonly documentId: string
 
     /**
      * 
      * @type {string}
      * @memberof DocumentApiDocumentGetById
      */
-    readonly documentId: string
+    readonly dataSourceId: string
 
     /**
      * 
@@ -387,14 +387,14 @@ export interface DocumentApiDocumentUpdateRequest {
      * @type {string}
      * @memberof DocumentApiDocumentUpdate
      */
-    readonly dataSourceId: string
+    readonly documentId: string
 
     /**
      * 
      * @type {string}
      * @memberof DocumentApiDocumentUpdate
      */
-    readonly documentId: string
+    readonly dataSourceId: string
 
     /**
      * 
@@ -441,7 +441,7 @@ export class DocumentApi extends BaseAPI {
      * @memberof DocumentApi
      */
     public documentGetById(requestParameters: DocumentApiDocumentGetByIdRequest, options?: any) {
-        return DocumentApiFp(this.configuration).documentGetById(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.attribute, requestParameters.depth, options).then((request) => request(this.axios, this.basePath));
+        return DocumentApiFp(this.configuration).documentGetById(requestParameters.documentId, requestParameters.dataSourceId, requestParameters.attribute, requestParameters.depth, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -465,6 +465,6 @@ export class DocumentApi extends BaseAPI {
      * @memberof DocumentApi
      */
     public documentUpdate(requestParameters: DocumentApiDocumentUpdateRequest, options?: any) {
-        return DocumentApiFp(this.configuration).documentUpdate(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.data, requestParameters.updateUncontained, requestParameters.attribute, requestParameters.files, options).then((request) => request(this.axios, this.basePath));
+        return DocumentApiFp(this.configuration).documentUpdate(requestParameters.documentId, requestParameters.dataSourceId, requestParameters.data, requestParameters.updateUncontained, requestParameters.attribute, requestParameters.files, options).then((request) => request(this.axios, this.basePath));
     }
 }
