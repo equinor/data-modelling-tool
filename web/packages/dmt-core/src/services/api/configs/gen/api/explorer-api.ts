@@ -145,7 +145,7 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
             assertParamExists('explorerAddToPath', 'directory', directory)
             // verify required parameter 'document' is not null or undefined
             assertParamExists('explorerAddToPath', 'document', document)
-            const localVarPath = `/api/v1/explorer/{data_source_id}/add-to-path/{directory}`
+            const localVarPath = `/api/v1/explorer/{data_source_id}/add-to-path{directory}`
                 .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
                 .replace(`{${"directory"}}`, encodeURIComponent(String(directory)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
