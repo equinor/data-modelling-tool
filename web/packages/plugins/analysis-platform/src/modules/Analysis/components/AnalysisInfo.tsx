@@ -1,12 +1,11 @@
 import React, { useContext } from 'react'
 import { Button, Tooltip } from '@equinor/eds-core-react'
-import Icons from './Design/Icons'
+import Icons from '../../../components/Design/Icons'
 
 import { AuthContext, hasExpertRole } from '@dmt/common'
-import { TAnalysisInfoCardProps } from '../Types'
+import { TAnalysisInfoCardProps } from '../../../Types'
 import { CreateJobButton } from './CreateJobButton'
-import { DocumentInfoCard } from './DocumentInfoCard'
-import { OnRight } from './Design/Styled'
+import { DocumentInfoCard, OnRight } from '../../../components'
 
 const AnalysisInfoCardActions = (props: TAnalysisInfoCardProps) => {
   const { analysis, addJob, jobs, dataSourceId } = props

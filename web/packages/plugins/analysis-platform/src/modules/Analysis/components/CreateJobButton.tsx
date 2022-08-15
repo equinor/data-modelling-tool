@@ -1,5 +1,4 @@
 import { Button, Progress } from '@equinor/eds-core-react'
-import Icons from './Design/Icons'
 import React, { useContext, useState } from 'react'
 import {
   AuthContext,
@@ -9,7 +8,8 @@ import {
   TJob,
   EBlueprint,
 } from '@dmt/common'
-import { TAnalysis, TTask } from '../Types'
+import Icons from '../../../components/Design/Icons'
+import { TAnalysis, TTask } from '../../../Types'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 
