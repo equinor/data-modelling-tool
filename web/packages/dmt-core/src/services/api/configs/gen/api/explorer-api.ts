@@ -131,20 +131,20 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
          * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
          * @summary Add To Path
          * @param {string} dataSourceId 
-         * @param {string} directory 
          * @param {string} document 
+         * @param {string} directory 
          * @param {boolean} [updateUncontained] 
          * @param {Array<any>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerAddToPath: async (dataSourceId: string, directory: string, document: string, updateUncontained?: boolean, files?: Array<any>, options: any = {}): Promise<RequestArgs> => {
+        explorerAddToPath: async (dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('explorerAddToPath', 'dataSourceId', dataSourceId)
-            // verify required parameter 'directory' is not null or undefined
-            assertParamExists('explorerAddToPath', 'directory', directory)
             // verify required parameter 'document' is not null or undefined
             assertParamExists('explorerAddToPath', 'document', document)
+            // verify required parameter 'directory' is not null or undefined
+            assertParamExists('explorerAddToPath', 'directory', directory)
             const localVarPath = `/api/v1/explorer/{data_source_id}/add-to-path`
                 .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -166,10 +166,6 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
 
-            if (directory !== undefined) {
-                localVarQueryParameter['directory'] = directory;
-            }
-
             if (updateUncontained !== undefined) {
                 localVarQueryParameter['update_uncontained'] = updateUncontained;
             }
@@ -177,6 +173,10 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
 
             if (document !== undefined) { 
                 localVarFormParams.append('document', document as any);
+            }
+    
+            if (directory !== undefined) { 
+                localVarFormParams.append('directory', directory as any);
             }
                 if (files) {
                 files.forEach((element) => {
@@ -249,19 +249,19 @@ export const ExplorerApiAxiosParamCreator = function (configuration?: Configurat
         /**
          * 
          * @summary Remove
-         * @param {string} dottedId 
          * @param {string} dataSourceId 
+         * @param {string} dottedId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemove: async (dottedId: string, dataSourceId: string, options: any = {}): Promise<RequestArgs> => {
-            // verify required parameter 'dottedId' is not null or undefined
-            assertParamExists('explorerRemove', 'dottedId', dottedId)
+        explorerRemove: async (dataSourceId: string, dottedId: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('explorerRemove', 'dataSourceId', dataSourceId)
+            // verify required parameter 'dottedId' is not null or undefined
+            assertParamExists('explorerRemove', 'dottedId', dottedId)
             const localVarPath = `/api/v1/explorer/{data_source_id}/{dotted_id}`
-                .replace(`{${"dotted_id"}}`, encodeURIComponent(String(dottedId)))
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
+                .replace(`{${"dotted_id"}}`, encodeURIComponent(String(dottedId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -433,15 +433,15 @@ export const ExplorerApiFp = function(configuration?: Configuration) {
          * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
          * @summary Add To Path
          * @param {string} dataSourceId 
-         * @param {string} directory 
          * @param {string} document 
+         * @param {string} directory 
          * @param {boolean} [updateUncontained] 
          * @param {Array<any>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerAddToPath(dataSourceId: string, directory: string, document: string, updateUncontained?: boolean, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerAddToPath(dataSourceId, directory, document, updateUncontained, files, options);
+        async explorerAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerAddToPath(dataSourceId, document, directory, updateUncontained, files, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -459,13 +459,13 @@ export const ExplorerApiFp = function(configuration?: Configuration) {
         /**
          * 
          * @summary Remove
-         * @param {string} dottedId 
          * @param {string} dataSourceId 
+         * @param {string} dottedId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRemove(dottedId: string, dataSourceId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemove(dottedId, dataSourceId, options);
+        async explorerRemove(dataSourceId: string, dottedId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemove(dataSourceId, dottedId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -530,15 +530,15 @@ export const ExplorerApiFactory = function (configuration?: Configuration, baseP
          * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
          * @summary Add To Path
          * @param {string} dataSourceId 
-         * @param {string} directory 
          * @param {string} document 
+         * @param {string} directory 
          * @param {boolean} [updateUncontained] 
          * @param {Array<any>} [files] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerAddToPath(dataSourceId: string, directory: string, document: string, updateUncontained?: boolean, files?: Array<any>, options?: any): AxiosPromise<object> {
-            return localVarFp.explorerAddToPath(dataSourceId, directory, document, updateUncontained, files, options).then((request) => request(axios, basePath));
+        explorerAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): AxiosPromise<object> {
+            return localVarFp.explorerAddToPath(dataSourceId, document, directory, updateUncontained, files, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -554,13 +554,13 @@ export const ExplorerApiFactory = function (configuration?: Configuration, baseP
         /**
          * 
          * @summary Remove
-         * @param {string} dottedId 
          * @param {string} dataSourceId 
+         * @param {string} dottedId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemove(dottedId: string, dataSourceId: string, options?: any): AxiosPromise<string> {
-            return localVarFp.explorerRemove(dottedId, dataSourceId, options).then((request) => request(axios, basePath));
+        explorerRemove(dataSourceId: string, dottedId: string, options?: any): AxiosPromise<string> {
+            return localVarFp.explorerRemove(dataSourceId, dottedId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -655,14 +655,14 @@ export interface ExplorerApiExplorerAddToPathRequest {
      * @type {string}
      * @memberof ExplorerApiExplorerAddToPath
      */
-    readonly directory: string
+    readonly document: string
 
     /**
      * 
      * @type {string}
      * @memberof ExplorerApiExplorerAddToPath
      */
-    readonly document: string
+    readonly directory: string
 
     /**
      * 
@@ -711,14 +711,14 @@ export interface ExplorerApiExplorerRemoveRequest {
      * @type {string}
      * @memberof ExplorerApiExplorerRemove
      */
-    readonly dottedId: string
+    readonly dataSourceId: string
 
     /**
      * 
      * @type {string}
      * @memberof ExplorerApiExplorerRemove
      */
-    readonly dataSourceId: string
+    readonly dottedId: string
 }
 
 /**
@@ -810,7 +810,7 @@ export class ExplorerApi extends BaseAPI {
      * @memberof ExplorerApi
      */
     public explorerAddToPath(requestParameters: ExplorerApiExplorerAddToPathRequest, options?: any) {
-        return ExplorerApiFp(this.configuration).explorerAddToPath(requestParameters.dataSourceId, requestParameters.directory, requestParameters.document, requestParameters.updateUncontained, requestParameters.files, options).then((request) => request(this.axios, this.basePath));
+        return ExplorerApiFp(this.configuration).explorerAddToPath(requestParameters.dataSourceId, requestParameters.document, requestParameters.directory, requestParameters.updateUncontained, requestParameters.files, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -834,7 +834,7 @@ export class ExplorerApi extends BaseAPI {
      * @memberof ExplorerApi
      */
     public explorerRemove(requestParameters: ExplorerApiExplorerRemoveRequest, options?: any) {
-        return ExplorerApiFp(this.configuration).explorerRemove(requestParameters.dottedId, requestParameters.dataSourceId, options).then((request) => request(this.axios, this.basePath));
+        return ExplorerApiFp(this.configuration).explorerRemove(requestParameters.dataSourceId, requestParameters.dottedId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
