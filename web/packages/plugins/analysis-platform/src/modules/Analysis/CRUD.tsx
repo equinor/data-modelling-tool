@@ -5,7 +5,7 @@
  * @param user The username of the authenticated user
  */
 import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
-import { DmssAPI } from '../../../../../dmt-core'
+import { DmssAPI } from '@dmt/common'
 
 export const createAnalysis = (
   body: any,
