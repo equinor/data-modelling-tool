@@ -1,12 +1,10 @@
-import { EBlueprints } from '../../../Enums'
-import { Progress } from '@equinor/eds-core-react'
 import React, { useContext } from 'react'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import {
   DynamicTable,
-  useSearch,
   formatDate,
   ApplicationContext,
+  DmtSettings,
 } from '@dmt/common'
 import { TAsset } from '../../../Types'
 
@@ -29,29 +27,19 @@ type TAssetRow = {
   url: string
 }
 
-const onRowClicked = (event: any) => {
-  //@ts-ignore
-  document.location = event.target.parentElement.accessKey
+type TAssetTableProps = {
+  assets: TAsset[]
 }
 
-export const AssetTable = () => {
-  const [assets, isLoading] = useSearch<TAsset>(
-    {
-      type: EBlueprints.ASSET,
-    },
-    DEFAULT_DATASOURCE_ID
-  )
-  const settings = useContext(ApplicationContext)
+export const AssetTable = (props: TAssetTableProps) => {
+  const { assets } = props
+  const settings: DmtSettings = useContext(ApplicationContext)
 
   const getViewUrl = (rowDocumentId: string): string =>
     `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${rowDocumentId}`
 
-  if (isLoading) {
-    return <Progress.Linear />
-  }
-
   const rows: Array<TAssetRow> = []
-  assets?.forEach((asset, index) => {
+  assets?.forEach((asset: TAsset, index: number) => {
     const row: TAssetRow = {
       _id: asset._id,
       name: asset.label || asset.name,
@@ -65,7 +53,5 @@ export const AssetTable = () => {
     rows.push(row)
   })
 
-  return (
-    <DynamicTable columns={columns} rows={rows} onRowClicked={onRowClicked} />
-  )
+  return <DynamicTable columns={columns} rows={rows} />
 }

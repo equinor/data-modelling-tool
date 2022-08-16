@@ -15,9 +15,12 @@ const prepareColumns = (columns: Array<string>): Array<Column> => {
 export const DynamicTable = (props: {
   columns: Array<string>
   rows: Array<any>
-  onRowClicked: MouseEventHandler
+  onRowClicked?: MouseEventHandler
 }): JSX.Element => {
-  const { columns, rows, onRowClicked } = props
+  const { columns, rows } = props
+  const onRowClicked = props.onRowClicked
+    ? props.onRowClicked
+    : (event: any) => (document.location = event.target.parentElement.accessKey)
   const cols = prepareColumns(columns)
   const ignoredRows = ['_id', 'index', 'url']
 

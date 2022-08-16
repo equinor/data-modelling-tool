@@ -1,5 +1,10 @@
 import React, { useContext } from 'react'
-import { ApplicationContext, DynamicTable, formatDate } from '@dmt/common'
+import {
+  ApplicationContext,
+  DynamicTable,
+  formatDate,
+  DmtSettings,
+} from '@dmt/common'
 import { TAnalysis } from '../../../Types'
 import { useParams } from 'react-router-dom'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
@@ -27,18 +32,13 @@ type TAnalysisTableProps = {
   analyses: TAnalysis[]
 }
 
-const onRowClicked = (event: any) => {
-  //@ts-ignore
-  document.location = event.target.parentElement.accessKey
-}
-
 export const AnalysisTable = (props: TAnalysisTableProps) => {
   const { analyses } = props
   const { data_source, entity_id } = useParams<{
     data_source: string
     entity_id: string
   }>()
-  const settings = useContext(ApplicationContext)
+  const settings: DmtSettings = useContext(ApplicationContext)
 
   const getViewUrl = (index: number, rowDocumentId: string): string => {
     const urlBase = `/${settings.urlPath}/view`
@@ -52,7 +52,7 @@ export const AnalysisTable = (props: TAnalysisTableProps) => {
   }
 
   const rows: Array<TAnalysisRow> = []
-  analyses?.forEach((analysis, index) => {
+  analyses?.forEach((analysis: TAnalysis, index: number) => {
     const row: TAnalysisRow = {
       _id: analysis._id,
       name: analysis.label || analysis.name,
@@ -66,7 +66,5 @@ export const AnalysisTable = (props: TAnalysisTableProps) => {
     rows.push(row)
   })
 
-  return (
-    <DynamicTable columns={columns} rows={rows} onRowClicked={onRowClicked} />
-  )
+  return <DynamicTable columns={columns} rows={rows} />
 }
