@@ -12,7 +12,7 @@ class BlueprintAttribute:
         attribute_type: str,
         description: Optional[str] = None,
         label: Optional[str] = None,
-        default: Optional[str | List] = None,
+        default: Optional[str] = None,
         dimensions: Optional[str] = "",
         optional: Optional[bool] = None,
         contained: Optional[bool] = None,
