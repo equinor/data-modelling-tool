@@ -1,29 +1,19 @@
-import React, { useEffect, useState, useContext } from 'react'
+import React, { useContext } from 'react'
 import {
   ApplicationContext,
   DmtUIPlugin,
   useDocument,
   Loading,
+  DmtSettings,
 } from '@dmt/common'
 import { AssetInfoCard } from './components'
 import { AnalysisTable } from '../Analysis'
 
 export const AssetView = (props: DmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props
-  const settings = useContext(ApplicationContext)
-  const [analyses, setAnalyses] = useState<any[]>([])
-  const [asset, setAsset] = useState<any>()
-  const [document, loading] = useDocument(dataSourceId, documentId)
+  const settings: DmtSettings = useContext(ApplicationContext)
+  const [asset, loading] = useDocument(dataSourceId, documentId)
 
-  useEffect(() => {
-    if (!document) return
-    setAsset(document)
-  }, [document])
-
-  useEffect(() => {
-    if (!asset) return
-    setAnalyses(asset.analyses)
-  }, [asset])
   if (loading) {
     return <Loading />
   }
@@ -31,11 +21,11 @@ export const AssetView = (props: DmtUIPlugin): JSX.Element => {
     <>
       <AssetInfoCard
         asset={asset}
-        analyses={analyses}
+        analyses={asset.analyses}
         dataSourceId={dataSourceId}
         urlPath={settings.urlPath}
       />
-      <AnalysisTable analyses={analyses} />
+      <AnalysisTable analyses={asset.analyses} />
     </>
   )
 }
