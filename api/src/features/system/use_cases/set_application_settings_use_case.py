@@ -9,7 +9,7 @@ def set_application_settings_use_case(request: Request):
     if config.ENVIRONMENT != "local":
         raise SetApplicationSettingsForbidden("Changing systems settings can only be done in local deployments.")
     try:
-        with open(config.APP_SETTINGS.get(application_name).get("file_loc"), "w") as f:
+        with open(config.APP_SETTINGS.get(application_name).get("fileLocation"), "w") as f:
             request_data = json.dumps(request.json)
             f.write(request_data)
         config.load_app_settings()
