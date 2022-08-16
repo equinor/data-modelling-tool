@@ -1581,7 +1581,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRemoveByPath(dataSourceId: string, directory: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+        async explorerRemoveByPath(dataSourceId: string, directory: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemoveByPath(dataSourceId, directory, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1915,7 +1915,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemoveByPath(dataSourceId: string, directory: string, options?: any): AxiosPromise<string> {
+        explorerRemoveByPath(dataSourceId: string, directory: string, options?: any): AxiosPromise<any> {
             return localVarFp.explorerRemoveByPath(dataSourceId, directory, options).then((request) => request(axios, basePath));
         },
         /**
