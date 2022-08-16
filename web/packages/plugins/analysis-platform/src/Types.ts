@@ -48,7 +48,7 @@ export type TTask = {
   runner?: TJobHandler | TContainerJobHandler
 }
 
-export type CreateAnalysisButtonProps = {
+export type TCreateButtonProps = {
   urlPath: string
 }
 

@@ -12,24 +12,25 @@ const AnalysisInfoCardActions = (props: TAnalysisInfoCardProps) => {
   const { tokenData } = useContext(AuthContext)
   return (
     <>
-      {'task' in analysis && Object.keys(analysis.task).length > 0 && (
-        <>
-          <CreateJobButton
-            analysis={analysis}
-            addJob={addJob}
-            jobs={jobs}
-            dataSourceId={dataSourceId}
-          />
-          {hasExpertRole(tokenData) && (
-            <Tooltip title={'Not implemented'}>
-              <Button style={{ width: 'max-content' }} disabled>
-                Configure schedule
-                <Icons name="time" title="time" />
-              </Button>
-            </Tooltip>
-          )}
-        </>
-      )}
+      {Object.prototype.hasOwnProperty.call(analysis, 'task') &&
+        Object.keys(analysis.task).length > 0 && (
+          <>
+            <CreateJobButton
+              analysis={analysis}
+              addJob={addJob}
+              jobs={jobs}
+              dataSourceId={dataSourceId}
+            />
+            {hasExpertRole(tokenData) && (
+              <Tooltip title={'Not implemented'}>
+                <Button style={{ width: 'max-content' }} disabled>
+                  Configure schedule
+                  <Icons name="time" title="time" />
+                </Button>
+              </Tooltip>
+            )}
+          </>
+        )}
     </>
   )
 }

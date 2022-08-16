@@ -1,12 +1,12 @@
 import React, { useContext } from 'react'
 
 import { AuthContext, hasExpertRole } from '@dmt/common'
-import { CreateAnalysisButtonProps, TAssetInfoCardProps } from '../../../Types'
+import { TCreateButtonProps, TAssetInfoCardProps } from '../../../Types'
 import { DocumentInfoCard } from '../../../components/DocumentInfoCard'
 import { CreateAnalysisButton } from '../../Analysis'
 import { OnRight } from '../../../components/Design/Styled'
 
-const AssetInfoCardActions = (props: CreateAnalysisButtonProps) => {
+const AssetInfoCardActions = (props: TCreateButtonProps) => {
   const { urlPath } = props
   const { tokenData } = useContext(AuthContext)
   return (

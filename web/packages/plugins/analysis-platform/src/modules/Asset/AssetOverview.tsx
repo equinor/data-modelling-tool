@@ -21,7 +21,7 @@ export const AssetOverview = (props: AssetOverviewProps): ReactNode => {
   const { settings } = props
   const { tokenData } = useContext(AuthContext)
   const location = useLocation()
-  const to = {
+  const analysisOverviewPage = {
     pathname: `/${settings.urlPath}/analyses`,
     state: location.state,
   }
@@ -48,7 +48,7 @@ export const AssetOverview = (props: AssetOverviewProps): ReactNode => {
         {hasDomainRole(tokenData) && (
           <CreateAssetButton urlPath={settings.urlPath} />
         )}
-        <Link to={to}>
+        <Link to={analysisOverviewPage}>
           <Button>View all analyses</Button>
         </Link>
       </div>

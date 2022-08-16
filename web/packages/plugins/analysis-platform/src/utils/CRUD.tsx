@@ -1,5 +1,6 @@
 import { ANALYSIS_PATH, ASSET_PATH, DEFAULT_DATASOURCE_ID } from '../const'
 import { DmssAPI } from '@dmt/common'
+import { AxiosResponse } from 'axios'
 
 /**
  * Create a new entity
@@ -27,7 +28,7 @@ const create = (
         directory: directory,
         files: files.filter((item: any) => item !== undefined),
       })
-      .then((response: any) => {
+      .then((response: AxiosResponse<any>) => {
         const data = response.data
         resolve(data.uid)
       })
@@ -57,7 +58,7 @@ const update = (
         attribute: attribute,
         files: files,
       })
-      .then((response: any) => {
+      .then((response: AxiosResponse<any>) => {
         const data = response.data
         resolve(data)
       })
@@ -81,7 +82,7 @@ const insertReference = (
         documentDottedId: documentDottedId,
         reference: body,
       })
-      .then((response: any) => {
+      .then((response: AxiosResponse<any>) => {
         const data = response.data
         resolve(data)
       })

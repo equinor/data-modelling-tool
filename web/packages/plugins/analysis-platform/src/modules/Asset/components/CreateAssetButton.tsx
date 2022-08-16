@@ -1,20 +1,17 @@
 import React from 'react'
 import { Link, useLocation } from 'react-router-dom'
 import { Button } from '@equinor/eds-core-react'
+import { TCreateButtonProps } from '../../../Types'
 
-type CreateAssetButtonProps = {
-  urlPath: string
-}
-
-export const CreateAssetButton = (props: CreateAssetButtonProps) => {
+export const CreateAssetButton = (props: TCreateButtonProps) => {
   const { urlPath } = props
   const location = useLocation()
-  const to = {
+  const createNewAssetPage = {
     pathname: `/${urlPath}/asset/new`,
     state: location.state,
   }
   return (
-    <Link to={to}>
+    <Link to={createNewAssetPage}>
       <Button>Create new asset</Button>
     </Link>
   )
