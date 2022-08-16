@@ -13,12 +13,13 @@ const PluginComponent = (props: DmtUIPlugin) => {
     999
   )
   if (loading) return <Loading />
-  if (error)
-    return (
-      <pre style={{ color: 'red' }}>
-        {JSON.stringify(error.response?.data?.message || '', null, 2)}
-      </pre>
-    )
+  if (error) {
+    const errorResponse =
+      typeof error.response?.data == 'object'
+        ? error.response?.data?.message
+        : error.response?.data
+    return <pre style={{ color: 'red' }}>{errorResponse}</pre>
+  }
   return <PreviewPlugin document={document} />
 }
 

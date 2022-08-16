@@ -1,53 +1,36 @@
 import React, { useContext, useState } from 'react'
-import { useParams } from 'react-router-dom'
-
 import { getUsername } from '../../utils/auth'
 import { AuthContext, ApplicationContext } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
-import { createAnalysis, addAnalysisToAsset } from '../../utils/CRUD'
+import { createAsset } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
-import { CreateAnalysisForm } from './components'
+import { CreateAssetForm } from './components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TAnalysis } from '../../Types'
+import { TAsset } from '../../Types'
 
-export const AnalysisCreate = (): JSX.Element => {
-  const { asset_id } = useParams<{
-    asset_id: string
-  }>()
+export const AssetCreate = (): JSX.Element => {
   const settings = useContext(ApplicationContext)
   const { tokenData, token } = useContext(AuthContext)
   const user = getUsername(tokenData) || 'NoLogin'
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const createdAt = new Date().toISOString()
 
-  const handleUpdateAsset = (assetId: string, analysis: TAnalysis) => {
-    const newAnalysis = {
-      _id: analysis._id,
-      type: EBlueprints.ANALYSIS,
-      name: analysis.name || '',
-    }
-    const attribute = 'analyses'
-    addAnalysisToAsset(`${assetId}.${attribute}`, newAnalysis, token)
-  }
-
-  const handleCreateAnalysis = (formData: TAnalysis) => {
+  const handleCreateAsset = (formData: TAsset) => {
     setIsLoading(true)
-    const createdAt = new Date().toISOString()
     const data = {
       ...formData,
-      type: EBlueprints.ANALYSIS,
+      type: EBlueprints.ASSET,
       creator: user,
       created: createdAt,
       updated: createdAt,
-      task: {
-        type: EBlueprints.TASK,
+      location: formData.location || {
+        type: EBlueprints.LOCATION,
       },
     }
-    createAnalysis(data, token, [])
+    createAsset(data, token, [])
       .then((documentId: any) => {
-        const newAnalysis = { ...formData, _id: documentId }
-        handleUpdateAsset(asset_id, newAnalysis)
         // TODO: Should we use props.history.push instead?
         //@ts-ignore
         document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${documentId}`
@@ -58,7 +41,7 @@ export const AnalysisCreate = (): JSX.Element => {
           typeof error.response?.data == 'object'
             ? error.response?.data?.message
             : error.response?.data
-        const errorMessage = errorResponse || 'Failed to create new analysis'
+        const errorMessage = errorResponse || 'Failed to create new asset'
         NotificationManager.error(errorMessage)
       })
       .finally(() => {
@@ -68,5 +51,5 @@ export const AnalysisCreate = (): JSX.Element => {
 
   if (isLoading) return <Progress.Linear />
 
-  return <CreateAnalysisForm onSubmit={handleCreateAnalysis} />
+  return <CreateAssetForm onSubmit={handleCreateAsset} />
 }

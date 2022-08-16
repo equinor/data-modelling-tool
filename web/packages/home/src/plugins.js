@@ -1,5 +1,4 @@
 export default [
-  import('@dmt/analysis'),
   import('@dmt/blueprint'),
   import('@dmt/default-pdf'),
   import('@dmt/default-preview'),
