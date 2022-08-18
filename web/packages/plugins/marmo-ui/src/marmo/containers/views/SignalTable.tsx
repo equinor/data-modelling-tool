@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
 
-import { SignalTable } from './SignalTable_src.js'
+import { SignalTable } from './SignalTable_src'
 
 const SignalTable_Component = (props: DmtUIPlugin) => {
   const { dataSourceId, documentId } = props

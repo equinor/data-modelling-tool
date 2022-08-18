@@ -3,12 +3,20 @@
   "version": "1.0.0",
   "main": "src/index.tsx",
   "dependencies": {
+    "@dmt/common": "1.0.0",
     "highlight.js": "^10.7.2",
     "js-yaml": "^4.1.0",
+    "react": "^17.0.2",
+    "react-copy-to-clipboard": "^5.0.2",
+    "react-dom": "^17.0.2",
+    "react-is": "^18.2.0",
     "styled-components": "^5.3.0"
   },
   "devDependencies": {
+    "@types/highlightjs": "^9.12.2",
     "@types/js-yaml": "^4.0.5",
-    "@types/highlightjs": "^9.12.2"
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11",
+    "@types/styled-components": "^4.1.18"
   }
 }

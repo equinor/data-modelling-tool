@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Loading, useDocument } from '@dmt/common'
 import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 
-import { SIMOSRawView } from './raw.js'
+import { SIMOSRawView } from './raw'
 
 const SIMOSRawView_Component = (props: DmtUIPlugin) => {
   const { dataSourceId, documentId } = props

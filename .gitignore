@@ -158,3 +158,12 @@ api/first-run-false
 /scripts/analysis.json
 /scripts/testSTask.stask
 /web/packages/home/build/
+
+# Yarn stuff
+web/.yarn/*
+!web/.yarn/cache
+!web/.yarn/patches
+!web/.yarn/plugins
+!web/.yarn/releases
+!web/.yarn/sdks
+!web/.yarn/versions

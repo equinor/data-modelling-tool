@@ -1,5 +1,17 @@
 {
   "name": "@dmt/default-pdf",
   "version": "1.0.0",
-  "main": "src/index.tsx"
+  "main": "src/index.tsx",
+  "dependencies": {
+    "@dmt/common": "1.0.0",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-is": "^18.2.0",
+    "styled-components": "^5.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11",
+    "@types/styled-components": "^4.1.18"
+  }
 }

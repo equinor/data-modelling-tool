@@ -6,3 +6,7 @@
 /packages/plugins/marmo-ui/src/*
 /packages/home/src/plugins.js
 /packages/plugins/form/src/test-utils.tsx
+build
+coverage
+**/gen/*
+web/src/api/generated

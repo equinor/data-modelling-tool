@@ -1,19 +1,15 @@
 {
-  "settings": {
-    "react": {
-      "version": "17.0.2"
-    }
-  },
   "env": {
-    "node": true,
     "browser": true,
-    "es6": true
+    "es6": true,
+    "node": true
   },
   "extends": [
-    "prettier",
     "eslint:recommended",
-    "plugin:react/recommended",
-    "plugin:@typescript-eslint/recommended"
+    "plugin:jsx-a11y/recommended",
+    "plugin:@typescript-eslint/recommended",
+    "prettier",
+    "plugin:prettier/recommended"
   ],
   "parser": "@typescript-eslint/parser",
   "parserOptions": {
@@ -23,12 +19,12 @@
     "ecmaVersion": "latest",
     "sourceType": "module"
   },
-  "plugins": ["react", "@typescript-eslint"],
+  "plugins": ["@typescript-eslint", "react-hooks", "jsx-a11y", "prettier"],
   "rules": {
-    "@typescript-eslint/no-explicit-any": "off",
-    "react/display-name": "off",
-    "@typescript-eslint/ban-ts-comment": "off",
-    "react/no-unescaped-entities": "off",
-    "@typescript-eslint/no-inferrable-types": "off"
+    "react-hooks/rules-of-hooks": "error",
+    "react-hooks/exhaustive-deps": "warn",
+    "react/boolean-prop-naming": "warn",
+    "prettier/prettier": "error",
+    "@typescript-eslint/ban-ts-comment": "warn"
   }
 }

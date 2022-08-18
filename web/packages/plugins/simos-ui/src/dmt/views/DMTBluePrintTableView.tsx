@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 
 import { DmtUIPlugin, Loading, useBlueprint, useDocument } from '@dmt/common'
 
-import { DMTBluePrintTableView } from './blueprint.js'
+import { DMTBluePrintTableView } from './blueprint'
 
 const DMTBluePrintTableView_Component = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props

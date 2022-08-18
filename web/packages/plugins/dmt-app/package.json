@@ -5,8 +5,25 @@
   "dependencies": {
     "@dmt/common": "1.0.0",
     "@dmt/default-pdf": "1.0.0",
+    "@equinor/eds-core-react": "^0.20.0",
+    "@equinor/eds-icons": "^0.11.0",
+    "@equinor/eds-tokens": "^0.7.0",
     "@types/react-router-dom": "^5.1.8",
+    "golden-layout": "1.5.9",
+    "jquery": "3.6.0",
     "lodash": "^4.17.19",
+    "prop-types": "15.8.1",
+    "react": "^17.0.2",
+    "react-contextmenu": "^2.11.0",
+    "react-dom": "^17.0.2",
+    "react-icons": "3.11.0",
+    "react-is": "^18.2.0",
+    "react-notifications": "^1.7.4",
+    "react-router-dom": "^5.1.2",
     "styled-components": "^5.2.3"
+  },
+  "devDependencies": {
+    "@types/react": "^17.0.39",
+    "@types/react-dom": "^17.0.11"
   }
 }

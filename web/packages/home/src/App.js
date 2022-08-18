@@ -7,7 +7,7 @@ import {
   useHistory,
 } from 'react-router-dom'
 import { NotificationContainer } from 'react-notifications'
-import { Switch } from 'react-router'
+import { Switch } from 'react-router-dom'
 import { Progress } from '@equinor/eds-core-react'
 import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
 import {

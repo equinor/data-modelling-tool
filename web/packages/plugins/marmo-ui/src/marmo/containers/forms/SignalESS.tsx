@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Loading, useDocument } from '@dmt/common'
 import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 
-import { SignalESSForm } from './signaless_src.js'
+import { SignalESSForm } from './signaless_src'
 
 const SignalESSForm_Component = (props: DmtUIPlugin) => {
   const { dataSourceId, documentId } = props

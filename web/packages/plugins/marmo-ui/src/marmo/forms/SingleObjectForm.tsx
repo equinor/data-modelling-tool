@@ -3,7 +3,7 @@ import * as React from 'react'
 import { Loading, useDocument } from '@dmt/common'
 import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
 
-import { SingleObjectForm } from './SingleObject.js'
+import { SingleObjectForm } from './SingleObject'
 
 const SingleObjectForm_Component = (props: DmtUIPlugin) => {
   const { dataSourceId, documentId } = props
