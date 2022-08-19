@@ -1,11 +1,25 @@
 {
+  "root": true,
+  "settings": {
+    "react": {
+      "version": "detect"
+    }
+  },
   "env": {
     "browser": true,
-    "es6": true,
-    "node": true
+    // Enables browser globals like window and document
+    "es2021": true,
+    "node": true,
+    // Enables Node.js global variables and Node.js scoping
+    "jest": true
+    // Add this line!
   },
   "extends": [
+    //"react-app",
+    //"react-app/jest",
     "eslint:recommended",
+    "plugin:react/recommended",
+    "plugin:react/jsx-runtime",
     "plugin:jsx-a11y/recommended",
     "plugin:@typescript-eslint/recommended",
     "prettier",
@@ -15,11 +29,14 @@
   "parserOptions": {
     "ecmaFeatures": {
       "jsx": true
+      // Enable JSX since we're using React
     },
     "ecmaVersion": "latest",
+    // Use the latest ecmascript standard
     "sourceType": "module"
+    // Allows using import/export statements
   },
-  "plugins": ["@typescript-eslint", "react-hooks", "jsx-a11y", "prettier"],
+  "plugins": ["react", "@typescript-eslint", "react-hooks", "jsx-a11y", "prettier"],
   "rules": {
     "react-hooks/rules-of-hooks": "error",
     "react-hooks/exhaustive-deps": "warn",

@@ -10,3 +10,4 @@ build
 coverage
 **/gen/*
 web/src/api/generated
+**/build/*

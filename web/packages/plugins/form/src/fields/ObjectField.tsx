@@ -61,6 +61,7 @@ const AddExternal = (props: any) => {
 const AddObject = (props: any) => {
   const { type, namePath, onAdd, contained, dataSourceId, documentId } = props
   const { setValue } = useFormContext()
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmtApi = new DmtAPI(token)
   const dmssAPI = new DmssAPI(token)

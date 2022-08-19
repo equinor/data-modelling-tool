@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React from 'react'
 import { DatePicker, Space } from 'antd'
 import { Label } from '@equinor/eds-core-react'

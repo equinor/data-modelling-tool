@@ -17,6 +17,8 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true
-  }
+    "noEmit": true,
+    "types": ["jest", "node", "mocha"]
+  },
+  "exclude": ["node_modules", "src/**/*.spec.ts", "build", "dist", "tests", "**/*.test.tsx"]
 }
