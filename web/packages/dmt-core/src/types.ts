@@ -57,6 +57,14 @@ export type TDocument = {
   [key: string]: any
 }
 
+export type TGenericObject = {
+  [key: string]: any
+}
+
+export type TFilter = {
+  [key: string]: any
+}
+
 export type TEntity = {
   [key: string]: any
 }
