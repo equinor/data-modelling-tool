@@ -7,7 +7,7 @@ import {
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'
 import { Button, Typography } from '@equinor/eds-core-react'

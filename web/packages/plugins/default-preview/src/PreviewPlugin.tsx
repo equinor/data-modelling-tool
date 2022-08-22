@@ -1,5 +1,10 @@
 import React from 'react'
-import { JsonView, Button, useDocument, Loading } from '@dmt/common'
+import {
+  JsonView,
+  Button,
+  useDocument,
+  Loading,
+} from '@data-modelling-tool/core'
 
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'

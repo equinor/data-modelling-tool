@@ -4,7 +4,7 @@ import { Button, Chip, Progress, Tooltip } from '@equinor/eds-core-react'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import styled from 'styled-components'
-import { useDocument, poorMansUUID } from '@dmt/common'
+import { useDocument, poorMansUUID } from '@data-modelling-tool/core'
 
 import ArrowPlots from './Plots/ArrowPlots'
 import { DEFAULT_DATASOURCE_ID } from './const'

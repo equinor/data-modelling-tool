@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-import { AuthContext, DmssAPI, Loading } from '@dmt/common'
+import { AuthContext, DmssAPI, Loading } from '@data-modelling-tool/core'
 
 export const ErrorGroup = styled.div`
   display: flex;

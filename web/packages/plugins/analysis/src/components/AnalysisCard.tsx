@@ -19,7 +19,7 @@ import {
   TJob,
   EBlueprint,
   hasOperatorRole,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { TAnalysis, TTask } from '../Types'
 import { TAnalysisCardProps } from '../Types'
 import styled from 'styled-components'

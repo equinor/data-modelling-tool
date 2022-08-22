@@ -1,12 +1,27 @@
 {
-  "name": "@dmt/common",
-  "version": "1.0.0",
-  "main": "src/index.tsx",
+  "name": "@data-modelling-tool/core",
+  "version": "1.0.2",
   "dependencies": {
     "@equinor/eds-core-react": "^0.20.0",
     "@equinor/eds-icons": "^0.12.0",
     "@equinor/eds-tokens": "^0.7.0",
-    "lodash": "^4.17.19",
+    "react": "^17.2.0",
     "styled-components": "^5.2.3"
-  }
+  },
+  "description": "Package containing the core utilities and components used to create plugins for the Data Modelling Tool",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/equinor/data-modelling-tool.git"
+  },
+  "keywords": [],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/equinor/data-modelling-tool/issues"
+  },
+  "homepage": "https://github.com/equinor/data-modelling-tool#readme",
+  "files": [
+    "dist/"
+  ]
 }

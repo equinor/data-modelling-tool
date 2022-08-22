@@ -158,3 +158,4 @@ api/first-run-false
 /scripts/analysis.json
 /scripts/testSTask.stask
 /web/packages/home/build/
+/web/packages/dmt-core/dist/

@@ -11,7 +11,7 @@ import {
   Dialog,
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'

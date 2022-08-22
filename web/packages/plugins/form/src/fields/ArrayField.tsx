@@ -6,7 +6,7 @@ import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { isPrimitive } from '../utils'
 import { useRegistryContext } from '../RegistryContext'
-import { AuthContext, DmssAPI, DmtAPI } from '@dmt/common'
+import { AuthContext, DmssAPI, DmtAPI } from '@data-modelling-tool/core'
 import DynamicTable from '../components/DynamicTable'
 import { OpenObject } from './ObjectField'
 

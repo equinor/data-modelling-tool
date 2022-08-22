@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { DmtPluginType } from '@dmt/common'
+import { DmtPluginType } from '@data-modelling-tool/core'
 import { FoRResultWrapper } from './ForecastOfResponse'
 
 const PluginComponent = (props: any) => {

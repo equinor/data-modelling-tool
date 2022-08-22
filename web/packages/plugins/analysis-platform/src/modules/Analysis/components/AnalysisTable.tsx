@@ -4,7 +4,7 @@ import React from 'react'
 import DynamicTable from '../../../components/DynamicTable'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
 import { formatDate } from '../../../utils/dateFormater'
-import { useSearch } from '@dmt/common'
+import { useSearch } from '@data-modelling-tool/core'
 import { TAnalysis } from '../../../Types'
 
 const columns: Array<string> = [

@@ -1,4 +1,4 @@
-import { TBlob } from '@dmt/common'
+import { TBlob } from '@data-modelling-tool/core'
 
 export type TSIMAApplicationInput = {
   _id?: string

@@ -1,7 +1,7 @@
 import styled from 'styled-components'
 import React, { useState } from 'react'
 import { Button, TextField } from '@equinor/eds-core-react'
-import { INPUT_FIELD_WIDTH } from '@dmt/common'
+import { INPUT_FIELD_WIDTH } from '@data-modelling-tool/core'
 import { TAnalysis } from '../../../Types'
 import { EBlueprints } from '../../../Enums'
 

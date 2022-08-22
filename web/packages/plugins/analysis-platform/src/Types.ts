@@ -3,7 +3,7 @@ import {
   TJob,
   TJobHandler,
   TContainerJobHandler,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 
 export type TAnalysis = {
   _id: string

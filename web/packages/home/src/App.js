@@ -9,13 +9,13 @@ import {
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
-import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
 import {
   sortApplications,
   UiPluginContext,
   ApplicationContext,
   FSTreeProvider,
-} from '@dmt/common'
+  DmtAPI,
+} from '@data-modelling-tool/core'
 import {
   CardBody,
   CardFieldset,

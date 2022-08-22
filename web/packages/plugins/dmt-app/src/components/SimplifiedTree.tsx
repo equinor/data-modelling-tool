@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { FaRegFileAlt } from 'react-icons/fa'
 
 import { Link } from 'react-router-dom'
-import { TAttribute } from '@dmt/common'
+import { TAttribute } from '@data-modelling-tool/core'
 type SimplifiedTreeProps = {
   datasourceId: string
   document: any

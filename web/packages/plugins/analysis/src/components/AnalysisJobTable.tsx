@@ -13,7 +13,7 @@ import {
   hasOperatorRole,
   JobApi,
   TJob,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import styled from 'styled-components'
 import { AxiosError } from 'axios'
 // @ts-ignore

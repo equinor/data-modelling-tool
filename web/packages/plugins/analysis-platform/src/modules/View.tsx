@@ -1,8 +1,8 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useDocument, UIPluginSelector } from '@dmt/common'
+import { useDocument, UIPluginSelector } from '@data-modelling-tool/core'
 
-import { TValidEntity } from '@dmt/common'
+import { TValidEntity } from '@data-modelling-tool/core'
 import { ErrorGroup } from '../components/ErrorGroup'
 
 export const View = () => {

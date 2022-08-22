@@ -3,7 +3,12 @@ import { FaPlus } from 'react-icons/fa'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
 import DatasourceTypeSelect from './DatasourceTypeSelect'
-import { DmssAPI, Button, AuthContext, UiPluginContext } from '@dmt/common'
+import {
+  DmssAPI,
+  Button,
+  AuthContext,
+  UiPluginContext,
+} from '@data-modelling-tool/core'
 import { useModalContext } from '../../../context/modal/ModalContext'
 
 const constructType = (selectedDatasourceType: string) => {

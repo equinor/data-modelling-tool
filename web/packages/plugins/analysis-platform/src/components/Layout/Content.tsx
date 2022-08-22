@@ -3,7 +3,7 @@ import { Layout } from 'antd'
 import styled from 'styled-components'
 import { useParams } from 'react-router-dom'
 
-import { TContent, DocumentPath } from '@dmt/common'
+import { TContent, DocumentPath } from '@data-modelling-tool/core'
 import { backgroundColorDefault } from '../Design/Colors'
 
 const { Content } = Layout

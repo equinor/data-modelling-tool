@@ -1,4 +1,4 @@
-import { DmtPlugin, DmtPluginType } from '@dmt/common'
+import { DmtPlugin, DmtPluginType } from '@data-modelling-tool/core'
 import { OperatorView } from './OperatorView'
 import { InspectorView } from './InspectorView'
 

@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
 
 export const pluginName = 'ui-plugin-template'
 export const pluginType = DmtPluginType.UI

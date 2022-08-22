@@ -8,7 +8,7 @@ import {
   UIPluginSelector,
   EJobStatus,
   TJob,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { Button, Label, Progress } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'

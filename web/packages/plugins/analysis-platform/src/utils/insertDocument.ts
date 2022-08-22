@@ -1,4 +1,4 @@
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI } from '@data-modelling-tool/core'
 import { DEFAULT_DATASOURCE_ID, ENTITIES } from '../const'
 
 export const addToPath = (

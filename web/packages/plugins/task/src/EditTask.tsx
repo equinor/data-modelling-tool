@@ -10,7 +10,7 @@ import {
   INPUT_FIELD_WIDTH,
   Loading,
   DestinationPicker,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import {

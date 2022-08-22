@@ -1,4 +1,4 @@
-import { TRoute } from '@dmt/common'
+import { TRoute } from '@data-modelling-tool/core'
 import { AnalysisOverview } from './modules/Analysis'
 import { AnalysisCreate } from './modules/Analysis'
 import { View } from './modules'

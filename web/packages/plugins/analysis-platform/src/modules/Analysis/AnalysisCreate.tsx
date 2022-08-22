@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { getUsername } from '../../utils/auth'
-import { AuthContext } from '@dmt/common'
+import { AuthContext } from '@data-modelling-tool/core'
 import { Progress } from '@equinor/eds-core-react'
 import { createAnalysis } from './CRUD'
 import { EBlueprints } from '../../Enums'

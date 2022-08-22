@@ -6,7 +6,7 @@ import {
   useDocument,
   Loading,
   hasDomainRole,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
 import { AuthContext } from 'react-oauth2-code-pkce'
 
