@@ -29,7 +29,7 @@ export type TReference = {
 }
 
 export type TBlob = {
-  _blob_id: string
+  _blob_id?: string
   name: string
   type: string
 }
@@ -69,6 +69,11 @@ export type TEntity = {
   [key: string]: any
 }
 
+export type TSTaskBody = {
+  type: string
+  name: string
+  blob: TBlob
+}
 export type TRunner = { image?: any; type: string }
 
 export type TContainer = {
