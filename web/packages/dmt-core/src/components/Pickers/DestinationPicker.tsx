@@ -25,8 +25,8 @@ import {
 import styled from 'styled-components'
 
 export type DestinationPickerProps = {
-  onChange: (value: any) => void
-  formData: any
+  onChange: (value: string) => void
+  formData: string
   disabled?: boolean
   scope?: string // Path to a folder to limit the view within
   label?: string
