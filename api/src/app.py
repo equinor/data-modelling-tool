@@ -61,7 +61,7 @@ def remove_application():
         for package in settings.get("packages", []):
             data_source_alias, folder = package.split("/", 1)
             actual_data_source = next(
-                (v for k, v in settings["data_source_aliases"].items() if k == data_source_alias), data_source_alias
+                (v for k, v in settings["dataSourceAliases"].items() if k == data_source_alias), data_source_alias
             )
             logger.info(f"Deleting package '{actual_data_source}/{folder}' from DMSS...")
             try:
@@ -142,7 +142,7 @@ def init_application(context):
     logger.info("-------------- IMPORTING PACKAGES ----------------")
 
     def thread_function(settings: dict) -> None:
-        app_directory_name = Path(settings["file_loc"]).parent.name
+        app_directory_name = Path(settings["fileLocation"]).parent.name
         logger.debug(f"Importing data for app '{settings['name']}'")
         logger.debug("_____ importing data sources _____")
         ds_dir = f"{config.APPLICATION_HOME}/{app_directory_name}/{config.APPS_DATASOURCE_SUBFOLDER}/"
@@ -162,7 +162,7 @@ def init_application(context):
         logger.debug(f"_____ importing blueprints and entities {tuple(settings.get('packages', []))}_____")
         for package in settings.get("packages", []):
             data_source_alias, folder = package.split("/", 1)
-            actual_data_source = settings["data_source_aliases"].get(data_source_alias, data_source_alias)
+            actual_data_source = settings["dataSourceAliases"].get(data_source_alias, data_source_alias)
             memory_file = io.BytesIO()
             with ZipFile(memory_file, mode="w") as zip_file:
                 zip_all(

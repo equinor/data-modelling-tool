@@ -64,8 +64,8 @@ export type DmtSettings = {
   packages: any
   models: any
   actions: any
-  file_loc: string
-  data_source_aliases: any
+  fileLocation: string
+  dataSourceAliases: any
   urlPath: string
 }
 
