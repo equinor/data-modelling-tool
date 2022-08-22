@@ -53,6 +53,33 @@ export type TContainerImage = {
   registryName: string
 }
 
+export type TDocument = {
+  [key: string]: any
+}
+
+export type TEntity = {
+  [key: string]: any
+}
+
+export type TRunner = { image?: any; type: string }
+
+export type TContainer = {
+  label?: string
+  image: TContainerImage
+  customCommand?: string
+}
+
+export type TTaskFormData = {
+  applicationInput?: TEntity
+  runner?: TRunner
+  type?: string
+  outputType?: string
+  inputType?: string
+  description?: string
+  label?: string
+  name?: string
+}
+
 export type DmtSettings = {
   name: string
   label: string

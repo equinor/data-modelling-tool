@@ -23,7 +23,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
   return <PreviewPlugin document={document} />
 }
 
-export const plugins: any = [
+export const plugins = [
   {
     pluginName: 'yaml-view',
     pluginType: DmtPluginType.UI,

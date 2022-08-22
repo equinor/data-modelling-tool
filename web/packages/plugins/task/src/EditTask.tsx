@@ -10,6 +10,8 @@ import {
   INPUT_FIELD_WIDTH,
   Loading,
   DestinationPicker,
+  TTaskFormData,
+  TRunner,
 } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
@@ -37,13 +39,13 @@ const HeaderWrapper = styled.div`
 
 export const EditTask = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen, onSubmit } = props
-  const [document, loading, updateDocument] = useDocument<any>(
+  const [document, loading, updateDocument] = useDocument<TTaskFormData>(
     dataSourceId,
     documentId,
     999
   )
 
-  const [formData, setFormData] = useState<any>()
+  const [formData, setFormData] = useState<TTaskFormData | undefined>(undefined)
   const [entityDestination, setEntityDestination] = useState<string>('')
   const runnerTypeHasChanged =
     formData?.runner?.type && formData?.runner?.type === document?.runner?.type
@@ -53,7 +55,7 @@ export const EditTask = (props: DmtUIPlugin) => {
     setFormData({ ...document })
   }, [document])
 
-  if (loading) {
+  if (loading || formData === undefined) {
     return <Loading />
   }
 
@@ -69,7 +71,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, inputType: selectedBlueprint })
                 }
-                formData={formData?.inputType || ''}
+                formData={formData.inputType || ''}
               />
             </Column>
             <Column>
@@ -93,21 +95,21 @@ export const EditTask = (props: DmtUIPlugin) => {
                   style={{ cursor: 'pointer', width: INPUT_FIELD_WIDTH }}
                   type="string"
                   value={
-                    formData?.applicationInput?.name ||
-                    formData?.applicationInput?._id ||
+                    formData.applicationInput?.name ||
+                    formData.applicationInput?._id ||
                     ''
                   }
                   placeholder={
-                    formData?.applicationInput?.name || 'Select or create'
+                    formData.applicationInput?.name || 'Select or create'
                   }
                   onClick={() => {
-                    if (!Object.keys(formData?.applicationInput || {}).length)
+                    if (!Object.keys(formData.applicationInput || {}).length)
                       return
                     if (onOpen)
                       onOpen({
                         attribute: 'applicationInput',
                         entity: formData.applicationInput,
-                        absoluteDottedId: `${dataSourceId}/${formData.applicationInput._id}`,
+                        absoluteDottedId: `${dataSourceId}/${formData.applicationInput?._id}`,
                         // Child entities should use plugins with this category tag, if they have any
                         categories: ['container'],
                         config: { subCategories: ['edit'] },
@@ -147,7 +149,7 @@ export const EditTask = (props: DmtUIPlugin) => {
                 onChange={(selectedBlueprint: string) =>
                   setFormData({ ...formData, outputType: selectedBlueprint })
                 }
-                formData={formData?.outputType || ''}
+                formData={formData.outputType || ''}
               />
             </Column>
           </GroupWrapper>
@@ -165,9 +167,9 @@ export const EditTask = (props: DmtUIPlugin) => {
                     runner: { type: selectedBlueprint },
                   })
                 }}
-                formData={formData?.runner?.type || ''}
+                formData={formData.runner?.type || ''}
               />
-              {formData?.runner?.type && (
+              {formData.runner?.type && (
                 <div
                   style={{
                     margin: '10px 20px',
@@ -187,9 +189,9 @@ export const EditTask = (props: DmtUIPlugin) => {
                         onOpen({
                           attribute: 'runner',
                           categories: ['edit'],
-                          entity: formData?.runner,
+                          entity: formData.runner,
                           absoluteDottedId: `${dataSourceId}/${documentId}.runner`,
-                          onSubmit: (data: any) => {
+                          onSubmit: (data: TRunner) => {
                             setFormData({ ...formData, runner: data })
                           },
                         })
