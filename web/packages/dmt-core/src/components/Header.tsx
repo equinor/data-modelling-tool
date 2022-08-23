@@ -170,7 +170,7 @@ export const Header = (props: {
         isOpen={visibleUserInfo}
         header={'User info'}
         closeScrim={() => setVisibleUserInfo(false)}
-        width={'40vw'}
+        width={'720px'}
       >
         <div style={{ margin: '20px' }}>
           <pre style={{ whiteSpace: 'pre-wrap' }}>
