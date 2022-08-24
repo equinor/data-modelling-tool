@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react'
 import { getUsername } from '../../utils/auth'
-import { AuthContext, ApplicationContext } from '@dmt/common'
+import { AuthContext, ApplicationContext, ErrorResponse } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import { createAsset } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
@@ -9,6 +9,7 @@ import { CreateAssetForm } from './components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { TAsset } from '../../Types'
+import { AxiosError } from 'axios'
 
 export const AssetCreate = (): JSX.Element => {
   const settings = useContext(ApplicationContext)
@@ -35,14 +36,9 @@ export const AssetCreate = (): JSX.Element => {
         //@ts-ignore
         document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${documentId}`
       })
-      .catch((error: any) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
-        const errorResponse =
-          typeof error.response?.data == 'object'
-            ? error.response?.data?.message
-            : error.response?.data
-        const errorMessage = errorResponse || 'Failed to create new asset'
-        NotificationManager.error(errorMessage)
+        NotificationManager.error(error.response?.data.message)
       })
       .finally(() => {
         setIsLoading(false)

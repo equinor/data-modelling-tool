@@ -4,10 +4,10 @@ import importlib
 import io
 import sys
 
-from domain_classes.tree_node import Node
 from config import Config
+from domain_classes.tree_node import Node
 from enums import SIMOS
-from repository.repository_exceptions import PluginNotLoadedException
+from restful.exceptions import NotFoundException
 from services.application_service import ApplicationService
 from services.document_service import DocumentService
 
@@ -29,7 +29,7 @@ def generate_code_with_plugin_use_case(data_source_id: str, plugin_name: str, do
     data_source_id: str = data_source_id
 
     if plugin_name not in Config.APP_SETTINGS["code_generators"]:
-        raise PluginNotLoadedException(plugin_name)
+        raise NotFoundException(f"No plugin named '{plugin_name}' is loaded")
 
     tree_path = "/content/".join(document_path.split("/"))
     raw_document = document_service.document_provider(f"{data_source_id}/{tree_path}")

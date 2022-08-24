@@ -1,7 +1,8 @@
 from uuid import UUID
 
-from services.job_service import JobService
 from pydantic import BaseModel
+
+from services.job_service import JobService
 
 
 class GetJobResultResponse(BaseModel):

@@ -10,10 +10,8 @@ from progress.bar import IncrementalBar
 
 from domain_classes.package import Package
 from enums import SIMOS
-from repository.repository_exceptions import ImportAliasNotFoundException, ImportReferenceNotFoundException
-
+from restful.exceptions import ApplicationException
 from services.dmss import dmss_api
-
 
 keys_to_check = ("type", "attributeType", "_id", "extends")  # These keys may contain a reference
 
@@ -39,7 +37,9 @@ def replace_relative_references(key: str, value, reference_table: dict = None, z
                 try:
                     return next((doc["id"] for doc in reference_table.values() if doc["alias"] == value))
                 except StopIteration:
-                    raise ImportAliasNotFoundException(value)
+                    raise ApplicationException(
+                        f"IMPORT ERROR: No document with the alias '{value}' was found in the reference table."
+                    )
         if key == "extends":  # 'extends' is a list
             extends_list = []
             for i, blueprint in enumerate(value):
@@ -48,7 +48,11 @@ def replace_relative_references(key: str, value, reference_table: dict = None, z
                     try:
                         extends_list.append(reference_table[value[i]]["absolute"])
                     except KeyError:
-                        raise ImportReferenceNotFoundException(value[i], value)
+                        raise ApplicationException(
+                            "Import failed",
+                            debug=f"Failed to find the relative reference '{value[i]}' in the reference table.",
+                            data=value,
+                        )
                 else:
                     extends_list.append(blueprint)
             return extends_list
@@ -56,7 +60,9 @@ def replace_relative_references(key: str, value, reference_table: dict = None, z
             try:
                 return reference_table[value]["absolute"]
             except KeyError:
-                raise ImportReferenceNotFoundException(value) from None
+                raise ApplicationException(
+                    f"IMPORT ERROR: Failed to find the relative reference '{value[i]}' in the reference table."
+                )
 
     # If the value is a complex type, dig down recursively
     if isinstance(value, dict) and value.get("type") == SIMOS.BLOB.value:  # Add blob data to the blob-entity

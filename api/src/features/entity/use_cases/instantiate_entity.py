@@ -1,10 +1,10 @@
 from typing import Optional
 
+from pydantic import BaseModel
 from pydantic.config import Extra
 
-from services.document_service import DocumentService
 from services.application_service import ApplicationService
-from pydantic import BaseModel
+from services.document_service import DocumentService
 
 
 class BasicEntity(BaseModel, extra=Extra.allow):

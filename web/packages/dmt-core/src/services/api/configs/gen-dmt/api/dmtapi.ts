@@ -39,9 +39,11 @@ import {
 // @ts-ignore
 import { BasicEntity } from '../models'
 // @ts-ignore
+import { ErrorResponse } from '../models'
+// @ts-ignore
 import { GetJobResultResponse } from '../models'
 // @ts-ignore
-import { HTTPValidationError } from '../models'
+import { StartJobResponse } from '../models'
 // @ts-ignore
 import { StartJobResponse } from '../models'
 // @ts-ignore

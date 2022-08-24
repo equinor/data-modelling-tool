@@ -4,7 +4,8 @@ import {
   AuthContext,
   Dialog,
   DmssAPI,
-  JobApi,
+  DmtAPI,
+  ErrorResponse,
   UIPluginSelector,
   EJobStatus,
   TJob,
@@ -70,6 +71,10 @@ const SimStatusWrapper = styled.div<ISimStatusWrapper>`
   color: ${(props: ISimStatusWrapper) => colorFromStatus(props.status)};
 `
 
+function isAxiosError(candidate: any): candidate is AxiosError<ErrorResponse> {
+  return candidate.isAxiosError === true
+}
+
 export const JobControl = (props: {
   document: TJob
   jobId: string
@@ -79,8 +84,8 @@ export const JobControl = (props: {
   const [dataSourceId, documentId] = jobId.split('/', 2)
   const { token } = useContext(AuthContext)
   const settings = useContext(ApplicationContext)
-  const jobAPI = new JobApi(token)
-  const dmssAPI = new DmssAPI(token)
+  const dmtApi = new DmtAPI(token)
+  const dmssApi = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobUID, setJobUID] = useState<string | undefined>(document?.uid)
   const [jobLogs, setJobLogs] = useState<any>()
@@ -93,27 +98,24 @@ export const JobControl = (props: {
   useEffect(() => {
     if (!jobUID) return // job has not been started
     setLoading(true)
-    jobAPI
-      .statusJob(jobUID)
+    dmtApi
+      .jobStatus({ jobUid: jobUID })
       .then((result: any) => {
         setJobLogs(result.data.log)
         setJobStatus(result.data.status)
       })
-      .catch((error: AxiosError<any>) => {
-        if (error.response) {
-          setJobLogs(error.response.data || error.message)
-          setJobStatus(document.status)
-        } else setJobLogs('Error occurred when getting status for job')
-
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
+        setJobLogs(error.message)
+        setJobStatus(document.status)
       })
       .finally(() => setLoading(false))
   }, [jobId, refreshCount])
 
   const startJob = () => {
     setLoading(true)
-    jobAPI
-      .startJob(jobId)
+    dmtApi
+      .startJob({ jobDmssId: jobId })
       .then((result: any) => {
         NotificationManager.success(
           JSON.stringify(result.data.message),
@@ -123,10 +125,10 @@ export const JobControl = (props: {
         setJobLogs(result.data.message)
         setJobStatus(EJobStatus.STARTING)
       })
-      .catch((error: AxiosError<any>) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
         NotificationManager.error(
-          (error.response && error.response.data?.message) || error.message,
+          error.response?.data.message,
           'Failed to start job'
         )
       })
@@ -138,17 +140,21 @@ export const JobControl = (props: {
     if (!jobUID) return // job has not been started
     setLoading(true)
     try {
-      await jobAPI.removeJob(jobUID)
-      await dmssAPI.explorerRemove({
+      await dmtApi.removeJob({ jobUid: jobUID })
+      await dmssApi.explorerRemove({
         dataSourceId: dataSourceId,
         dottedId: documentId,
       })
-    } catch (error) {
-      console.error(error)
-      NotificationManager.error(
-        error?.response?.data?.message || error.message,
-        'Failed to remove job'
-      )
+    } catch (error: AxiosError<ErrorResponse> | any) {
+      if (isAxiosError(error)) {
+        console.error(error.response?.data)
+        NotificationManager.error(
+          error.response?.data.message,
+          'Failed to remove job'
+        )
+      } else {
+        console.log(error)
+      }
     }
   }
 

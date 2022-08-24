@@ -5,16 +5,16 @@ from zipfile import ZipFile
 
 from config import Config
 from domain_classes.blueprint import Blueprint
-from repository.repository_exceptions import EntityNotFoundException
+from restful.exceptions import NotFoundException
 from services.document_service import DocumentService
 from utils.create_application_utils import (
     API_DOCKERFILE,
     DOCKER_COMPOSE,
+    WEB_DOCKERFILE,
     generate_plugins,
     generate_plugins_readme,
     generate_runnable_file,
     strip_datasource,
-    WEB_DOCKERFILE,
     zip_all,
     zip_package,
 )
@@ -60,7 +60,7 @@ class ApplicationService:
         raise NotImplementedError("Creating and exporting an application is no longer supported")
         application: dict = self.document_service.uid_document_provider(data_source_id, application_id)
         if not application:
-            raise EntityNotFoundException(uid=application_id)
+            raise NotFoundException(f"The entity with id '{application_id}' was not found")
 
         home_path = Path(Config.APPLICATION_HOME)
 

@@ -1,6 +1,7 @@
-from config import config
 import markupsafe
-from features.system.exceptions import ApplicationNotFoundException
+
+from config import config
+from restful.exceptions import NotFoundException
 
 
 def get_application_settings_use_case(application_name: str):
@@ -12,7 +13,5 @@ def get_application_settings_use_case(application_name: str):
         if application_name in config.APP_SETTINGS:  # Return settings for the specific application
             return config.APP_SETTINGS.get(application_name)
         else:
-            raise ApplicationNotFoundException(
-                f"No application with name {markupsafe.escape(application_name)} is loaded"
-            )
+            raise NotFoundException(f"No application with name {markupsafe.escape(application_name)} is loaded")
     return config.APP_SETTINGS

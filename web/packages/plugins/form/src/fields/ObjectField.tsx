@@ -3,6 +3,7 @@ import {
   DmssAPI,
   DmtAPI,
   EntityPickerButton,
+  ErrorResponse,
   Loading,
   NewEntityButton,
   UIPluginSelector,
@@ -16,6 +17,7 @@ import styled from 'styled-components'
 import { ObjectFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 import { Controller, useFormContext } from 'react-hook-form'
+import { AxiosError } from 'axios'
 
 const Wrapper = styled.div`
   margin-bottom: 20px;
@@ -88,7 +90,7 @@ const AddObject = (props: any) => {
             setValue(namePath, response.data.data, options)
             onAdd()
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError<ErrorResponse>) => {
             console.error(error)
           })
       })

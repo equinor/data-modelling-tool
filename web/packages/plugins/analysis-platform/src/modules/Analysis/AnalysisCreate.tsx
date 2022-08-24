@@ -2,7 +2,7 @@ import React, { useContext, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { getUsername } from '../../utils/auth'
-import { AuthContext, ApplicationContext } from '@dmt/common'
+import { AuthContext, ApplicationContext, ErrorResponse } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import { createAnalysis, addAnalysisToAsset } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
@@ -11,6 +11,7 @@ import { CreateAnalysisForm } from './components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { TAnalysis } from '../../Types'
+import { AxiosError } from 'axios'
 
 export const AnalysisCreate = (): JSX.Element => {
   const { asset_id } = useParams<{
@@ -52,14 +53,9 @@ export const AnalysisCreate = (): JSX.Element => {
         //@ts-ignore
         document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${documentId}`
       })
-      .catch((error: any) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
-        const errorResponse =
-          typeof error.response?.data == 'object'
-            ? error.response?.data?.message
-            : error.response?.data
-        const errorMessage = errorResponse || 'Failed to create new analysis'
-        NotificationManager.error(errorMessage)
+        NotificationManager.error(error.response?.data.message)
       })
       .finally(() => {
         setIsLoading(false)

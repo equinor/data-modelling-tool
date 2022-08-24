@@ -39,7 +39,7 @@ import {
 // @ts-ignore
 import { BasicEntity } from '../models'
 // @ts-ignore
-import { HTTPValidationError } from '../models'
+import { ErrorResponse } from '../models'
 /**
  * EntitiesApi - axios parameter creator
  * @export

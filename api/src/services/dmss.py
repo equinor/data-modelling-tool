@@ -1,11 +1,12 @@
 import json
-from store_headers_middleware import get_auth_header, get_access_key_header
+from typing import Union
+
 import requests
 from dmss_api.apis import DefaultApi
-from typing import Union
 from requests import HTTPError
 
 from config import Config
+from store_headers_middleware import get_access_key_header, get_auth_header
 from utils.logging import logger
 
 dmss_api = DefaultApi()
