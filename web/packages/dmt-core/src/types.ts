@@ -64,6 +64,14 @@ export type TSTaskBody = {
 }
 export type TRunner = { image?: any; type: string }
 
+export type TChildTab = {
+  attribute: string
+  entity: any
+  categories?: string[]
+  absoluteDottedId: string
+  onSubmit: (data: any) => void
+}
+
 export type TContainer = {
   label?: string
   image: TContainerImage
