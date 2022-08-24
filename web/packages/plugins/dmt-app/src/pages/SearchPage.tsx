@@ -17,7 +17,7 @@ import {
   AuthContext,
   useLocalStorage,
   DataSource,
-  TFilter,
+  TGenericObject,
 } from '@dmt/common'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
@@ -168,7 +168,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
           const data = response.data
           setNestedAttributes(data.attributes)
         })
-        .catch((error) => {
+        .catch(error => {
           NotificationManager.error(`${error.message}`)
           console.error(error)
         })
@@ -203,7 +203,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
           expanded={expanded}
           setExpanded={setExpanded}
         >
-          {nestedAttributes.map((attr) => (
+          {nestedAttributes.map(attr => (
             <DynamicAttributeFilter
               // @ts-ignore
               value={value?.[attr.name]}
@@ -230,7 +230,7 @@ function FilterContainer({
 }: {
   search: (query: any) => void
   queryError: string
-  searchFilter: TFilter
+  searchFilter: TGenericObject
   setSearchFilter: (newFilter: any) => void
   sortByAttribute: string
   setSortByAttribute: (newAttribute: string) => void
@@ -252,7 +252,7 @@ function FilterContainer({
           const data = response.data
           setAttributes(data.attributes)
         })
-        .catch((error) => {
+        .catch(error => {
           NotificationManager.error(`${error.message}`)
           console.error(error)
         })
@@ -263,7 +263,7 @@ function FilterContainer({
     <Wrapper>
       <b>Filter</b>
       <form
-        onSubmit={(event) => {
+        onSubmit={event => {
           event.preventDefault()
           event.stopPropagation()
           search(searchFilter)
@@ -460,7 +460,7 @@ export default ({ settings }: any) => {
         const dataSources: DataSources = response.data
         setDataSources(dataSources)
       })
-      .catch((error) => {
+      .catch(error => {
         console.error(error)
         NotificationManager.error(error, 'Failed to fetch datasources', 0)
       })
@@ -499,7 +499,7 @@ export default ({ settings }: any) => {
     <>
       <SelectDataSource
         selectedDataSources={searchSettings.dataSource}
-        setDataSources={(dataSources) =>
+        setDataSources={dataSources =>
           setSearchSettings({ ...searchSettings, dataSources: dataSources })
         }
         allDataSources={dataSources}
@@ -511,11 +511,11 @@ export default ({ settings }: any) => {
           search={search}
           queryError={queryError}
           searchFilter={searchSettings.filter}
-          setSearchFilter={(filter) =>
+          setSearchFilter={filter =>
             setSearchSettings({ ...searchSettings, filter: filter })
           }
           sortByAttribute={searchSettings.sortByAttribute}
-          setSortByAttribute={(sortByAttribute) =>
+          setSortByAttribute={sortByAttribute =>
             setSearchSettings({
               ...searchSettings,
               sortByAttribute: sortByAttribute,

@@ -1,13 +1,13 @@
 import { DmssAPI } from '../services'
 import React, { useContext, useEffect, useRef, useState } from 'react'
-import { AuthContext, TDocument, TReference, TSTaskBody } from '../index'
+import { AuthContext, TGenericObject, TReference, TSTaskBody } from '../index'
 import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { AxiosError, AxiosResponse } from 'axios'
 
 export const addToPath = (
-  body: TDocument,
+  body: TGenericObject,
   token: string,
   files: File[] | undefined[] = [],
   dataSourceId: string,
@@ -21,10 +21,10 @@ export const addToPath = (
       dataSourceId: dataSourceId,
       document: JSON.stringify(body),
       directory: directory, // @ts-ignore
-      files: files.filter((item) => item !== undefined),
+      files: files.filter(item => item !== undefined),
       updateUncontained: updateUncontained,
     })
-    .then((response: AxiosResponse<TDocument>) => response.data.uid)
+    .then((response: AxiosResponse<TGenericObject>) => response.data.uid)
 }
 
 // fileSuffix - A list of strings with allowed file suffixes without '.'. For example to allow yaml uploads; ['yaml', 'yml']
@@ -95,7 +95,7 @@ export function UploadFileButton(props: {
         ref={textInput}
         accept={fileSuffix.map((a: string) => '.' + a).join(',')}
         style={{ display: 'none' }}
-        onChange={(event) => handleUpload(event)}
+        onChange={event => handleUpload(event)}
       />
       {loading ? (
         <Button style={{ margin: '0 10px' }}>

@@ -1,6 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
-import { TDocument, TGenericObject } from '../../types'
+import { TGenericObject } from '../../types'
 
 const Pre = styled.pre`
   white-space: -moz-pre-wrap; /* Mozilla, supported since 1999 */
@@ -14,7 +14,7 @@ export const JsonView = ({
   style,
 }: {
   data: string | TGenericObject
-  style?: any
+  style?: TGenericObject
 }) => {
   return <Pre style={style}>{JSON.stringify(data, null, 2)}</Pre>
 }
