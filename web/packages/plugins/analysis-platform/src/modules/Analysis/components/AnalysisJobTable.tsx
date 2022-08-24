@@ -18,6 +18,7 @@ import styled from 'styled-components'
 import { AxiosError } from 'axios'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { ANALYSIS_PLATFORM_URLPATH } from '../../../const'
 
 type AnalysisJobTableProps = {
   jobs: any
@@ -47,9 +48,9 @@ const JobRow = (props: {
   const [loading, setLoading] = useState<boolean>(false)
   const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
   const [started, setStarted] = useState<string>('')
-  const jobURL: string = `/ap/view/${dataSourceId}/${analysisId}.jobs.${index}`
+  const jobURL: string = `/${ANALYSIS_PLATFORM_URLPATH}/view/${dataSourceId}/${analysisId}.jobs.${index}`
   const resultURL = job.result?._id
-    ? `/ap/view/${dataSourceId}/${job.result?._id}`
+    ? `/${ANALYSIS_PLATFORM_URLPATH}/view/${dataSourceId}/${job.result?._id}`
     : undefined
 
   const viewJob = () => {

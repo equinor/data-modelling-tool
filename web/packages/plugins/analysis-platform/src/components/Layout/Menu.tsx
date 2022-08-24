@@ -12,7 +12,7 @@ export default (props: { appRootPath: string }): JSX.Element => {
   const location = useLocation()
   const [collapsed, setCollapsed] = useLocalStorage('menuCollapsed', false)
   const iconSize: 24 | 16 | 32 | 40 | 48 | undefined = 24
-  const menuUrl: string[] = [`/${appRootPath}`]
+  const menuUrl: string[] = [`/${appRootPath}`, `/${appRootPath}/analyses`]
   return (
     <Sider
       style={{ borderRight: '#E6E6E6 1px solid', minHeight: '100vh' }}
@@ -30,7 +30,10 @@ export default (props: { appRootPath: string }): JSX.Element => {
         mode="inline"
       >
         <Menu.Item key={menuUrl[0]} icon={<Icon name="home" size={iconSize} />}>
-          <Link to={{ pathname: menuUrl[0] }}>Analysis</Link>
+          <Link to={{ pathname: menuUrl[0] }}>Assets</Link>
+        </Menu.Item>
+        <Menu.Item key={menuUrl[1]} icon={<Icon name="list" size={iconSize} />}>
+          <Link to={{ pathname: menuUrl[1] }}>Analyses</Link>
         </Menu.Item>
       </Menu>
     </Sider>

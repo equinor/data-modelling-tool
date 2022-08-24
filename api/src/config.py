@@ -33,7 +33,7 @@ def replace_aliases_in_settings(settings: dict) -> dict:
         reference_data_source = reference.split("/", 1)[0]
         return reference.replace(reference_data_source, aliases.get(reference_data_source, reference_data_source), 1)
 
-    aliases = settings["data_source_aliases"]
+    aliases = settings["dataSourceAliases"]
 
     new_models: List[str] = []
     for model in settings.get("models", []):
@@ -97,14 +97,14 @@ class Config:
             try:
                 with open(f"{self.APPLICATION_HOME}/{app}/settings.json") as json_file:
                     app_settings: dict = json.load(json_file)
-                    app_settings["file_loc"] = json_file.name
-                    app_settings["data_source_aliases"] = parse_alias_file(
+                    app_settings["fileLocation"] = json_file.name
+                    app_settings["dataSourceAliases"] = parse_alias_file(
                         f"{self.APPLICATION_HOME}/{app}/data/_aliases_"
                     )
 
                     code_gen_folder = Path(f"{self.APPLICATION_HOME}/{app}/code_generators")
                     if code_gen_folder.is_dir():
-                        app_settings["code_generators"] = os.listdir(str(code_gen_folder))
+                        app_settings["codeGenerators"] = os.listdir(str(code_gen_folder))
 
                     self.APP_SETTINGS[app_settings["name"]] = replace_aliases_in_settings(app_settings)
             except FileNotFoundError:

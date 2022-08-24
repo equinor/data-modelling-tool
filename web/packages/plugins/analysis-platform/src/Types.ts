@@ -3,7 +3,25 @@ import {
   TJob,
   TJobHandler,
   TContainerJobHandler,
+  TLocation,
+  TValidEntity,
 } from '@dmt/common'
+
+export type TAsset = {
+  _id: string
+  type: string
+  name: string
+  description?: string
+  created: string
+  updated: string
+  label?: string
+  creator: string
+  analyses: TAnalysis[]
+  location?: TLocation
+  start?: string
+  end?: string
+  contact?: string
+}
 
 export type TAnalysis = {
   _id: string
@@ -28,4 +46,31 @@ export type TTask = {
   outputType: string
   applicationInput: TReference
   runner?: TJobHandler | TContainerJobHandler
+}
+
+export type TCreateButtonProps = {
+  urlPath: string
+}
+
+export type TDocumentInfoCardProps = {
+  document: TValidEntity
+  dataSourceId: string
+  fields?: { [key: string]: string | number | boolean }
+  actions?: JSX.Element
+  disableDefaultFields?: boolean
+  disableDefaultActions?: boolean
+}
+
+export type TAnalysisInfoCardProps = {
+  analysis: TAnalysis
+  addJob: (job: TJob) => void
+  jobs: any
+  dataSourceId: string
+}
+
+export type TAssetInfoCardProps = {
+  asset: TAsset
+  analyses: any
+  dataSourceId: string
+  urlPath: string
 }

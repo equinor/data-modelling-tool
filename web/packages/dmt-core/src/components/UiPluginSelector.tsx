@@ -52,22 +52,20 @@ const getHref = (
   index: number
 ): string => {
   // Get the HREF for the document
-  return parts
-    .slice(0, index + 1)
-    .join('.')
-    .replace(`${dataSource}/`, '')
+  return parts.slice(0, index + 1).join('.')
 }
 
 export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
   const { absoluteDottedId } = props
-  const parts = absoluteDottedId.split('.')
-  const dataSource = absoluteDottedId.split('/')[0]
+  const [dataSource, documentDottedId] = absoluteDottedId.split('/')
+  const parts = documentDottedId.split('.')
   return (
     <PathWrapper>
+      <PathPart>{dataSource}</PathPart>
       {parts.map((part: string, index: number) => {
         return (
           <div style={{ display: 'flex', flexWrap: 'nowrap' }} key={part}>
-            {index !== 0 && <PathPart>/</PathPart>}
+            <PathPart>/</PathPart>
             <PathPart
               as={PathPartLink}
               href={getHref(dataSource, parts, index)}

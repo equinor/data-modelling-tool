@@ -210,10 +210,12 @@ export const NodeRightClickMenu = (props: {
       })
       .then(() => node.expand())
       .catch((error: AxiosError<any>) => {
-        NotificationManager.error(
-          JSON.stringify(error.response?.data?.message),
-          'Failed to create new folder'
-        )
+        const errorResponse =
+          typeof error.response?.data == 'object'
+            ? error.response?.data?.message
+            : error.response?.data
+        const errorMessage = errorResponse || 'Failed to create new folder'
+        NotificationManager.error(errorMessage)
       })
   }
 

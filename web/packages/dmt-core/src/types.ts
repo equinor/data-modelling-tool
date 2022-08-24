@@ -38,6 +38,7 @@ export type TLocation = {
   lat: number
   long: number
   name: string
+  label?: string
   _id?: string
   type?: string
 }
@@ -63,8 +64,8 @@ export type DmtSettings = {
   packages: any
   models: any
   actions: any
-  file_loc: string
-  data_source_aliases: any
+  fileLocation: string
+  dataSourceAliases: any
   urlPath: string
 }
 
