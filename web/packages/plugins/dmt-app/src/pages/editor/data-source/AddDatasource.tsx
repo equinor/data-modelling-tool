@@ -20,7 +20,6 @@ const constructType = (selectedDatasourceType: string) => {
 const AddDataSourceComponent = () => {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  // @ts-ignore
   const { getUiPlugin } = useContext(UiPluginContext)
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
     'mongo-db'
@@ -51,10 +50,10 @@ const AddDataSourceComponent = () => {
           selectedDatasourceType={selectedDatasourceType}
           setSelectedDatasourceType={setSelectedDatasourceType}
         />
-        <ExternalPlugin
-          type={constructType(selectedDatasourceType)}
-          onSubmit={handleOnSubmit}
-        />
+        {/*<ExternalPlugin*/}
+        {/*  type={constructType(selectedDatasourceType)}*/}
+        {/*  onSubmit={handleOnSubmit}*/}
+        {/*/>*/}
       </div>
     </>
   )
