@@ -6,12 +6,7 @@ import { error_filled } from '@equinor/eds-icons'
 
 Icon.add({ error_filled })
 
-type TextareaWidgetProps = {
-  label: string
-  onChange: (value: any) => void
-}
-
-const TextareaWidget = (props: TextareaWidgetProps) => {
+const TextareaWidget = (props: any) => {
   const { label, onChange } = props
 
   const _onChange = ({
@@ -19,7 +14,7 @@ const TextareaWidget = (props: TextareaWidgetProps) => {
   }: React.ChangeEvent<HTMLInputElement>) => onChange(value === '' ? '' : value)
   return (
     <TextField
-      id={'TextareaWidget'}
+      {...props}
       multiline={true}
       rows={5}
       onChange={_onChange}
