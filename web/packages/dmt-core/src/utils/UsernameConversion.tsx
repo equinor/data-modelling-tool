@@ -1,4 +1,4 @@
-import { TokenResponse } from '../components/AccessControlList'
+import { TokenResponse } from '../components/AccessControl/AccessControlList'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -75,7 +75,8 @@ export const getUsernameMappingFromUsername = (
     })
     .then((result) => {
       if (result.data.value && result.data.value.length === 0) {
-        throw new Error(`Found no users with username ${username}.`)
+        Promise.reject(`Found no users with username ${username}.`)
+        // throw new Error()
       }
       if (result.data.value.length > 1) {
         throw new Error(

@@ -18,7 +18,7 @@ export const AnalysisCreate = (): JSX.Element => {
   }>()
   const settings = useContext(ApplicationContext)
   const { tokenData, token } = useContext(AuthContext)
-  const user = getUsername(tokenData) || 'NoLogin'
+  const user = getUsername(tokenData)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   const handleUpdateAsset = (assetId: string, analysis: TAnalysis) => {
