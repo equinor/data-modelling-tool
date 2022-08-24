@@ -79,7 +79,7 @@ function App() {
   const [applications, setApplications] = useState(undefined)
   const [loadingAppSettings, setLoadingAppSettings] = useState(false)
   const { loading, getPagePlugin } = useContext(UiPluginContext)
-  const { token } = useContext(AuthContext)
+  const { token, loginInProgress } = useContext(AuthContext)
   const authEnabled = process.env.REACT_APP_AUTH === '1'
 
   useEffect(() => {
@@ -97,6 +97,8 @@ function App() {
       .catch((error) => console.error(error))
       .finally(() => setLoadingAppSettings(false))
   }, [])
+
+  if (loginInProgress) return null
 
   if (authEnabled && !token) {
     // Avoid rendering loading icons if the user is about to be redirected to a login endpoint

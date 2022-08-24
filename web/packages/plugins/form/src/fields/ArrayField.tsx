@@ -6,9 +6,10 @@ import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { isPrimitive } from '../utils'
 import { useRegistryContext } from '../RegistryContext'
-import { AuthContext, DmssAPI, DmtAPI } from '@dmt/common'
+import { AuthContext, DmssAPI, DmtAPI, ErrorResponse } from '@dmt/common'
 import DynamicTable from '../components/DynamicTable'
 import { OpenObject } from './ObjectField'
+import { AxiosError } from 'axios'
 
 const Wrapper = styled.div`
   margin-bottom: 20px;
@@ -69,7 +70,7 @@ export default function Fields(props: any) {
           .then(() => {
             append(newEntity)
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError<ErrorResponse>) => {
             console.error(error)
           })
       })

@@ -11,11 +11,12 @@ import {
   DmssAPI,
   EJobStatus,
   hasOperatorRole,
-  JobApi,
+  DmtAPI,
   TJob,
+  ErrorResponse,
 } from '@dmt/common'
 import styled from 'styled-components'
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { ANALYSIS_PLATFORM_URLPATH } from '../../../const'
@@ -43,7 +44,7 @@ const JobRow = (props: {
 }) => {
   const { job, index, analysisId, dataSourceId, removeJob, setJob } = props
   const { token, tokenData } = useContext(AuthContext)
-  const jobAPI = new JobApi(token)
+  const dmtApi = new DmtAPI(token)
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
@@ -67,9 +68,9 @@ const JobRow = (props: {
 
   const startJob = () => {
     setLoading(true)
-    jobAPI
-      .startJob(`${dataSourceId}/${analysisId}.jobs.${index}`)
-      .then((result: any) => {
+    dmtApi
+      .startJob({ jobDmssId: `${dataSourceId}/${analysisId}.jobs.${index}` })
+      .then((result: AxiosResponse) => {
         NotificationManager.success(
           result.data.message,
           'Simulation job started'
@@ -79,38 +80,34 @@ const JobRow = (props: {
         setStarted(now)
         setJob({ ...job, started: now, status: EJobStatus.STARTING })
       })
-      .catch((error: AxiosError<any>) => {
-        console.error(error)
-        NotificationManager.error(
-          error?.response?.data?.message || error.message,
-          'Failed to start job'
-        )
+      .catch((error: AxiosError<ErrorResponse>) => {
+        console.error(error.response?.data)
+        NotificationManager.error(error.response?.data.message)
       })
       .finally(() => setLoading(false))
   }
 
   async function deleteJob(): Promise<void> {
     setLoading(true)
-    try {
-      await dmssAPI.explorerRemove({
+    await dmssAPI
+      .explorerRemove({
         dataSourceId: dataSourceId,
         dottedId: `${analysisId}.jobs.${index}`,
       })
-      if (job?.uid) await jobAPI.removeJob(job.uid)
-      removeJob()
-      setLoading(false)
-    } catch (error) {
-      if (error.status === 404) {
-        removeJob()
-      } else {
-        console.error(error)
-        NotificationManager.error(
-          error?.response?.data?.message || error.message,
-          'Failed to start job'
-        )
-      }
-      setLoading(false)
-    }
+      .then(() => {
+        if (job?.uid) {
+          dmtApi.removeJob({ jobUid: job.uid }).then(() => removeJob)
+        }
+      })
+      .catch((error: AxiosError<ErrorResponse>) => {
+        if (error.response?.data.status === 404) {
+          removeJob()
+        } else {
+          console.error(error)
+          NotificationManager.error(error.response?.data.message)
+        }
+      })
+      .finally(() => setLoading(false))
   }
 
   useEffect(() => {
@@ -120,12 +117,12 @@ const JobRow = (props: {
       return
     }
     setLoading(true)
-    jobAPI
-      .statusJob(job.uid)
+    dmtApi
+      .jobStatus({ jobUid: job.uid })
       .then((result: any) => {
         setJobStatus(result.data.status)
       })
-      .catch((e: Error) => {
+      .catch((e: AxiosError<ErrorResponse>) => {
         console.error(e)
         setJobStatus(job.status)
       })

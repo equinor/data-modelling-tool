@@ -1,6 +1,6 @@
-from starlette.types import ASGIApp, Receive, Scope, Send
 from contextvars import ContextVar
 
+from starlette.types import ASGIApp, Receive, Scope, Send
 
 AUTH_HEADER_CTX_KEY = "auth_header"
 ACCESS_KEY_HEADER_CTX_KEY = "access_key_header"

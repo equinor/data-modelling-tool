@@ -8,7 +8,6 @@ from jinja2 import Template
 from config import Config
 from enums import SIMOS
 from services.document_service import DocumentService
-
 from utils.logging import logger
 
 

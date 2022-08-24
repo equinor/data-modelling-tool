@@ -1,8 +1,7 @@
 from typing import Optional, Union
 
 from domain_classes.dimension import Dimension
-from enums import SIMOS
-from enums import PRIMITIVES
+from enums import PRIMITIVES, SIMOS
 
 
 class BlueprintAttribute:

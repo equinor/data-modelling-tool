@@ -1,7 +1,8 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-import { AuthContext, DmssAPI, Loading } from '@dmt/common'
+import { AuthContext, DmssAPI, ErrorResponse, Loading } from '@dmt/common'
+import { AxiosError } from 'axios'
 
 export const ErrorGroup = styled.div`
   display: flex;
@@ -29,7 +30,7 @@ export const ViewerPDFPlugin = (props: any) => {
   const { document, dataSourceId } = props
   const [blobUrl, setBlobUrl] = useState('')
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState(null)
+  const [error, setError] = useState<string | null>(null)
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -45,9 +46,9 @@ export const ViewerPDFPlugin = (props: any) => {
         const blob = new Blob([data], { type: 'application/pdf' })
         setBlobUrl(window.URL.createObjectURL(blob))
       })
-      .catch((error: any) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
-        setError(error?.message)
+        setError(error.response?.data.message || 'Failed to fetch PDF')
       })
       .finally(() => setLoading(false))
   }, [props.blob_reference])

@@ -5,30 +5,34 @@ import os
 import traceback
 from pathlib import Path
 from zipfile import ZipFile
-import uvicorn
+
 import click
 import emoji
+import uvicorn
 from dmss_api.exceptions import ApiException
-
-from repository.repository_exceptions import ImportReferenceNotFoundException
-
 from fastapi import APIRouter, FastAPI
-from config import config
+from fastapi.encoders import jsonable_encoder
+from fastapi.exceptions import RequestValidationError
+from starlette import status
+from starlette.requests import Request
+from starlette.responses import JSONResponse
 
+from config import config
+from restful.responses import ErrorResponse
 from services.dmss import dmss_api
-from utils.import_package import import_package_tree, package_tree_from_zip
-from utils.create_application_utils import zip_all
-from utils.logging import logger
 from store_headers_middleware import StoreHeadersMiddleware
+from utils.create_application_utils import zip_all
+from utils.import_package import import_package_tree, package_tree_from_zip
+from utils.logging import logger
 
 prefix = "/api/v1"
 
 
 def create_app():
-    from features.system import system
-    from features.jobs import jobs
-    from features.entity import entity
     from features.blueprints import blueprints
+    from features.entity import entity
+    from features.jobs import jobs
+    from features.system import system
 
     # Using public routes, since authentication is handled by DMSS
     public_routes = APIRouter()
@@ -42,6 +46,20 @@ def create_app():
 
     app.add_middleware(StoreHeadersMiddleware)
 
+    # Intercept FastAPI builtin validation errors, so they can be returned on our standardized format.
+    @app.exception_handler(RequestValidationError)
+    async def validation_exception_handler(request: Request, exc: RequestValidationError):
+        return JSONResponse(
+            ErrorResponse(
+                status=status.HTTP_422_UNPROCESSABLE_ENTITY,
+                type="RequestValidationError",
+                message="The received values are invalid",
+                debug="The received values are invalid according to the endpoints model definition",
+                data=jsonable_encoder({"detail": exc.errors(), "body": exc.body}),
+            ).dict(),
+            status_code=status.HTTP_422_UNPROCESSABLE_ENTITY,
+        )
+
     return app
 
 
@@ -49,7 +67,6 @@ def create_app():
 @click.option("--token", default="no-token", type=str)
 def cli(token: str):
     dmss_api.api_client.default_headers["Authorization"] = "Bearer " + token
-    pass
 
 
 @cli.command()
@@ -69,7 +86,6 @@ def remove_application():
             except ApiException as error:
                 if error.status == 404:
                     logger.warning(emoji.emojize(f":warning: Could not find '{folder}' in DMSS..."))
-                    pass
                 else:
                     raise error
         return True
@@ -93,7 +109,6 @@ def reset_package(src, dst):
     except ApiException as error:
         if error.status == 404:
             logger.warning(emoji.emojize(f":warning: Could not find '{folder}' in DMSS..."))
-            pass
         else:
             raise error
 
@@ -176,9 +191,6 @@ def init_application(context):
                 root_package = package_tree_from_zip(actual_data_source, folder, memory_file)
                 # Import the package into the data source defined in _aliases_, or using the data_source folder name
                 import_package_tree(root_package, actual_data_source)
-            except ImportReferenceNotFoundException as error:
-                logger.error(error.message)
-                raise error
             except ApiException as error:
                 raise ApiException(error.body)
             except Exception as error:

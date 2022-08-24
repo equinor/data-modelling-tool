@@ -1,20 +1,24 @@
 import importlib
 import json
+import traceback
 from datetime import datetime
 from pathlib import Path
 from typing import Callable, Tuple, Union
 from uuid import UUID, uuid4
 
 import redis
-import traceback
-
 import requests
+from apscheduler.schedulers.background import BackgroundScheduler
 from redis import AuthenticationError
 
 from config import config
 from enums import SIMOS
-from repository.repository_exceptions import JobNotFoundException
-from services.dmss import get_document_by_uid, get_personal_access_token, update_document_by_uid
+from restful.exceptions import NotFoundException
+from services.dmss import (
+    get_document_by_uid,
+    get_personal_access_token,
+    update_document_by_uid,
+)
 
 # TODO: Authorization. The only level of authorization at this point is to allow all that
 #  can view the job entity to also run and delete the job.
@@ -23,7 +27,6 @@ from services.job_scheduler import scheduler
 from utils.get_extends_from import get_extends_from
 from utils.logging import logger
 from utils.string_helpers import split_absolute_ref
-from apscheduler.schedulers.background import BackgroundScheduler
 
 
 def is_cron_job(blueprint_ref: str) -> bool:
@@ -206,7 +209,7 @@ class JobService:
     def status_job(self, job_uid: UUID) -> Tuple[JobStatus, str, str]:
         job = self._get_job(job_uid)
         if not job:
-            raise JobNotFoundException(f"No job with uid '{job_uid}' is registered")
+            raise NotFoundException(f"No job with uid '{job_uid}' is registered")
         job_handler = self._get_job_handler(job)
         status, log = job_handler.progress()
         if status is JobStatus.COMPLETED:
@@ -225,7 +228,7 @@ class JobService:
     def remove_job(self, job_uid: UUID) -> str:
         job = self._get_job(job_uid)
         if not job:
-            raise JobNotFoundException(f"No job with id '{job_uid}' is registered")
+            raise NotFoundException(f"No job with id '{job_uid}' is registered")
         job_handler = self._get_job_handler(job)
         job_status, remove_message = job_handler.remove()
         self.job_store.delete(str(job_uid))
@@ -234,6 +237,6 @@ class JobService:
     def get_job_result(self, job_uid: UUID) -> Tuple[str, bytearray]:
         job = self._get_job(job_uid)
         if not job:
-            raise JobNotFoundException(f"No job with id '{job_uid}' is registered")
+            raise NotFoundException(f"No job with id '{job_uid}' is registered")
         job_handler = self._get_job_handler(job)
         return job_handler.result()
