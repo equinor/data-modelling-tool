@@ -159,7 +159,7 @@ export const AccessControlList = (props: {
             .then((newACL: ACL) => {
               setDocumentACL(newACL)
             })
-            .catch(error => {
+            .catch((error) => {
               NotificationManager.error(
                 `Could not convert username ID to username (${error})`
               )
@@ -171,8 +171,9 @@ export const AccessControlList = (props: {
         .catch((error: AxiosError<any>) => {
           if (error.response) {
             NotificationManager.error(
-              `Could not fetch ACL for this document (${error.response.data ||
-                error.message})`
+              `Could not fetch ACL for this document (${
+                error.response.data || error.message
+              })`
             )
           } else {
             console.error(error)
@@ -194,7 +195,7 @@ export const AccessControlList = (props: {
   async function saveACL(acl: ACL) {
     setLoading(true)
     convertACLFromUsernameToUserId(acl)
-      .then(newACL => {
+      .then((newACL) => {
         dmssAPI
           .setAcl({
             dataSourceId: dataSourceId,
@@ -206,7 +207,7 @@ export const AccessControlList = (props: {
             NotificationManager.success('ACL saved!')
           })
       })
-      .catch(error => {
+      .catch((error) => {
         NotificationManager.error(`Could not save ACL (${error})`)
       })
       .finally(() => setLoading(false))

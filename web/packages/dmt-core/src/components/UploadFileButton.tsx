@@ -21,7 +21,7 @@ export const addToPath = (
       dataSourceId: dataSourceId,
       document: JSON.stringify(body),
       directory: directory, // @ts-ignore
-      files: files.filter(item => item !== undefined),
+      files: files.filter((item) => item !== undefined),
       updateUncontained: updateUncontained,
     })
     .then((response: AxiosResponse<TGenericObject>) => response.data.uid)
@@ -95,7 +95,7 @@ export function UploadFileButton(props: {
         ref={textInput}
         accept={fileSuffix.map((a: string) => '.' + a).join(',')}
         style={{ display: 'none' }}
-        onChange={event => handleUpload(event)}
+        onChange={(event) => handleUpload(event)}
       />
       {loading ? (
         <Button style={{ margin: '0 10px' }}>

@@ -9,7 +9,7 @@ export type UserIdMapping = { userId: string; username: string }
 export function postWithFormData(tokenEndpoint: string, formData: FormData) {
   return axios
     .post(tokenEndpoint, formData)
-    .then(response => {
+    .then((response) => {
       return response.data
     })
     .catch((error: any) => {
@@ -48,7 +48,7 @@ export const getUsernameMappingFromUserId = (
     .get(request_url, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then(result => {
+    .then((result) => {
       return {
         username: result.data.mail.split('@')[0],
         userId: userId,
@@ -73,7 +73,7 @@ export const getUsernameMappingFromUsername = (
     .get(request_url, {
       headers: { Authorization: `Bearer ${token}` },
     })
-    .then(result => {
+    .then((result) => {
       if (result.data.value && result.data.value.length === 0) {
         throw new Error(`Found no users with username ${username}.`)
       }

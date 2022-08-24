@@ -38,6 +38,7 @@ const create = (
   })
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const update = (
   documentId: string,
   body: any,

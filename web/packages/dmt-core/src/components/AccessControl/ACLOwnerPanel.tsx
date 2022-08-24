@@ -27,7 +27,7 @@ export const ACLOwnerPanel = ({
       <CenteredRow width={'160px'}>
         Others:
         <ACLSelect
-          value={acl.others!}
+          value={acl.others || AccessLevel.NONE}
           handleChange={(newValue: AccessLevel) =>
             handleChange({ others: newValue })
           }

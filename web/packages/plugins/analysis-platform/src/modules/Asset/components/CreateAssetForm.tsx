@@ -23,6 +23,7 @@ export const CreateAssetForm = (props: CreateFormProps) => {
     name: '',
     description: '',
   })
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [location, setLocation] = useState<TLocation>({
     _id: '',
     name: data?.location?.name || '',
