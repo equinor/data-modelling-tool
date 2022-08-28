@@ -40,6 +40,7 @@ export function NewEntityButton(props: {
   )
   const [typeToCreate, setTypeToCreate] = useState<string>(type || '')
   const [loading, setLoading] = useState<boolean>(false)
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmtAPI = new DmtAPI(token)
 

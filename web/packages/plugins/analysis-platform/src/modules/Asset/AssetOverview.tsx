@@ -15,6 +15,7 @@ import { DEFAULT_DATASOURCE_ID } from '../../const'
 
 export const AssetOverview = (props: { settings: TDmtSettings }): ReactNode => {
   const { settings } = props
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   const location = useLocation()
   const analysisOverviewPage = {

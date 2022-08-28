@@ -19,6 +19,7 @@ export const FSTreeContext = createContext<{
 
 export const FSTreeProvider = (props: { children: ReactNode }) => {
   const { children } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
   const [loading, setLoading] = useState<boolean>(true)

@@ -104,6 +104,7 @@ export const Header = (props: {
 }): JSX.Element => {
   const { appName, urlPath, allApps } = props
   const [version, setVersion] = useState<string>('Version not loaded')
+   // @ts-ignore
   const { tokenData, token, logOut } = useContext(AuthContext)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [visibleUserInfo, setVisibleUserInfo] = useState<boolean>(false)

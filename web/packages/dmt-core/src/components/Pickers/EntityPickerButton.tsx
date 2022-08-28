@@ -23,6 +23,7 @@ export const EntityPickerButton = (props: {
   scope?: string // Path to a folder to limit the view within
 }) => {
   const { onChange, typeFilter, text, variant, scope } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
   const [showModal, setShowModal] = useState<boolean>(false)

@@ -34,6 +34,7 @@ type TDestinationPickerProps = {
 
 export const DestinationPicker = (props: TDestinationPickerProps) => {
   const { onChange, formData, disabled, scope, label } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)
   const [showModal, setShowModal] = useState<boolean>(false)
