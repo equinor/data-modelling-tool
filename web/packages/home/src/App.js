@@ -9,13 +9,13 @@ import {
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
-import { DmtAPI } from '@dmt/common'
+import { DmtAPI } from '@data-modelling-tool/core'
 import {
   sortApplications,
   UiPluginContext,
   ApplicationContext,
   FSTreeProvider,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import {
   CardBody,
   CardFieldset,
@@ -79,6 +79,7 @@ function App() {
   const [applications, setApplications] = useState(undefined)
   const [loadingAppSettings, setLoadingAppSettings] = useState(false)
   const { loading, getPagePlugin } = useContext(UiPluginContext)
+  // @ts-ignore
   const { token, loginInProgress } = useContext(AuthContext)
   const authEnabled = process.env.REACT_APP_AUTH === '1'
 

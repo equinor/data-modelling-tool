@@ -3,7 +3,7 @@ import { Route } from 'react-router-dom'
 import { Layout } from 'antd'
 
 import Routes from './Routes'
-import { Header, TApp, TLayout } from '@dmt/common'
+import { Header, TApp, TLayout } from '@data-modelling-tool/core'
 import { backgroundColorDefault } from './components/Design/Colors'
 import Content from './components/Layout/Content'
 import Menu from './components/Layout/Menu'

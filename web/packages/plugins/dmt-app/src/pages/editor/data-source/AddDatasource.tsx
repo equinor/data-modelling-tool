@@ -9,7 +9,7 @@ import {
   AuthContext,
   UiPluginContext,
   ErrorResponse,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { useModalContext } from '../../../context/modal/ModalContext'
 import { AxiosError } from 'axios'
 
@@ -25,6 +25,7 @@ const constructType = (selectedDatasourceType: string) => {
 }
 
 const AddDataSourceComponent = () => {
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const { getUiPlugin } = useContext(UiPluginContext)

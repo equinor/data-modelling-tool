@@ -13,14 +13,24 @@ jobs:
     steps:
     - name: Checkout code
       uses: actions/checkout@v2
-    - name: Create docs build directory
-      run: mkdir dist && chmod 777 dist      
+
+    - name: Set up Node
+      uses: actions/setup-node@v2
+      with:
+        node-version: "16"
+
+    - name: Install Yarn
+      run: npm install -g yarn
+
     - name: Build docs
-      id: adocbuild
-      uses: equinor/asciidoctor-action@main
+      run: |
+         cd docs
+         yarn install
+         yarn run build
+
     - name: Deploy docs to githu pages
       uses: peaceiris/actions-gh-pages@v3
       with:
         github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_branch: gh-pages
-        publish_dir: ./dist
+        publish_dir: docs/build

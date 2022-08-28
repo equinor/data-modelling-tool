@@ -6,7 +6,7 @@ import {
   TValidEntity,
   UIPluginSelector,
   useDocument,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 
 import { SimplifiedTree } from '../components/SimplifiedTree'
 import { ErrorGroup } from '../components/Wrappers'

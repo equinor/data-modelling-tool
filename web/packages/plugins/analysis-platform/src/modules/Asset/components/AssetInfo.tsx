@@ -1,12 +1,13 @@
 import React, { useContext } from 'react'
 
-import { AuthContext, hasExpertRole } from '@dmt/common'
+import { AuthContext, hasExpertRole } from '@data-modelling-tool/core'
 import { TAssetInfoCardProps } from '../../../Types'
 import { DocumentInfoCard } from '../../../components/DocumentInfoCard'
 import { CreateAnalysisButton } from '../../Analysis'
 import { OnRight } from '../../../components/Design/Styled'
 
 const AssetInfoCardActions = () => {
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   return <>{hasExpertRole(tokenData) && <CreateAnalysisButton />}</>
 }

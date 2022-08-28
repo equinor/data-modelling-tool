@@ -1,0 +1,83 @@
+{
+  "name": "my-website",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "docusaurus": "docusaurus",
+    "start": "docusaurus start",
+    "build": "docusaurus build",
+    "swizzle": "docusaurus swizzle",
+    "deploy": "docusaurus deploy",
+    "clear": "docusaurus clear",
+    "serve": "docusaurus serve",
+    "write-translations": "docusaurus write-translations",
+    "write-heading-ids": "docusaurus write-heading-ids",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@docusaurus/core": "2.0.1",
+    "@docusaurus/preset-classic": "2.0.1",
+    "@docusaurus/theme-live-codeblock": "2.0.1",
+    "@mdx-js/react": "^1.6.22",
+    "clsx": "^1.2.1",
+    "prism-react-renderer": "^1.3.5",
+    "react": "18.2.0",
+    "react-dom": "18.2.0",
+    "@equinor/eds-core-react": "^0.20.0",
+    "@equinor/eds-icons": "^0.12.0",
+    "@equinor/eds-tokens": "^0.7.0",
+    "@data-modelling-tool/core": "link:./../web/packages/dmt-core",
+    "react-oauth2-code-pkce": "^1.3.1",
+    "axios": "^0.27.2",
+    "lodash": "^4.17.19",
+    "prop-types": "^15.8.1",
+    "react-icons": "3.11.0",
+    "react-notifications": "^1.7.4",
+    "react-router-dom": "^5.1.2",
+    "styled-components": "^5.2.3",
+    "pretty-proptypes": "^1.7.0",
+    "react-is": "^17.0.2",
+    "extract-react-types-loader": "1.0.0",
+    "extract-react-types" : "^0.30.2",
+    "kind2string": "0.1.0",
+    "fs-extra": "10.1.0",
+    "path-browserify": "^1.0.1",
+    "react-live": "^2.4.1",
+    "swizzle": "1.1.0"
+  },
+  "devDependencies": {
+    "react-docgen-typescript": "2.2.2",
+    "typedoc": "0.23.11",
+    "@babel/preset-flow" : "^7.18.6",
+    "@types/jest": "^27.4.0",
+    "@types/react": "^18.0.17",
+    "@types/react-dom": "18.0.6",
+    "@types/node": "^18.7.13",
+    "@types/react-router-dom": "^5.3.3",
+    "@types/styled-components": "^4.1.18",
+    "@docusaurus/module-type-aliases": "2.0.1",
+    "@tsconfig/docusaurus": "^1.0.5",
+    "typescript": "^4.7.4",
+    "process": "^0.11.10"
+  },
+  "browserslist": {
+    "production": [
+      ">0.5%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "engines": {
+    "node": ">=16.14"
+  },
+  "env": {
+    "browser": true,
+    "es6": true,
+    "node": true
+  }
+}

@@ -1,3 +1,5 @@
+// @ts-nocheck
+
 import React, { useContext, useEffect, useState } from 'react'
 import {
   TDmtPlugin,
@@ -171,6 +173,7 @@ export function UIPluginSelector(props: {
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(type)
   const { loading, getUiPlugin } = useContext(UiPluginContext)
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   const roles = getRoles(tokenData)
   const [selectedPlugin, setSelectedPlugin] = useState<number>(0)

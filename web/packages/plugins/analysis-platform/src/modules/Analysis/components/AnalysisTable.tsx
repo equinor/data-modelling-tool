@@ -4,7 +4,7 @@ import {
   DynamicTable,
   formatDate,
   DmtSettings,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { TAnalysis } from '../../../Types'
 import { useParams } from 'react-router-dom'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'
@@ -38,6 +38,7 @@ export const AnalysisTable = (props: TAnalysisTableProps) => {
     data_source: string
     entity_id: string
   }>()
+  // @ts-ignore
   const settings: DmtSettings = useContext(ApplicationContext)
 
   const getViewUrl = (index: number, rowDocumentId: string): string => {

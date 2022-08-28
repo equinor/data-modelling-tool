@@ -1,4 +1,9 @@
-import { AuthContext, hasExpertRole, Loading, useSearch } from '@dmt/common'
+import {
+  AuthContext,
+  hasExpertRole,
+  Loading,
+  useSearch,
+} from '@data-modelling-tool/core'
 import React, { ReactNode, useContext } from 'react'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 import { EBlueprints } from '../../Enums'
@@ -7,6 +12,7 @@ import { AnalysisTable, CreateAnalysisButton } from './components'
 import { Divider } from '@equinor/eds-core-react'
 
 export const AnalysisOverview = (): JSX.Element => {
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   const [analyses, isLoading] = useSearch<TAnalysis>(
     {

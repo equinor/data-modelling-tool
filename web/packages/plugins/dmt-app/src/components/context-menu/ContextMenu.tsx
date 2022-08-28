@@ -12,7 +12,7 @@ import {
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
   ErrorResponse,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -163,6 +163,7 @@ export const NodeRightClickMenu = (props: {
   children: any
 }) => {
   const { node, children, removeNode } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const [scrimToShow, setScrimToShow] = useState<string>('')

@@ -5,7 +5,7 @@ import {
   ApplicationContext,
   ErrorResponse,
   DmssAPI,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { Progress } from '@equinor/eds-core-react'
 import { EBlueprints } from '../../Enums'
 import { ASSET_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
@@ -16,7 +16,9 @@ import { TAsset } from '../../Types'
 import { AxiosError } from 'axios'
 
 export const AssetCreate = (): JSX.Element => {
+  // @ts-ignore
   const settings = useContext(ApplicationContext)
+  // @ts-ignore
   const { tokenData, token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const user = getUsername(tokenData)

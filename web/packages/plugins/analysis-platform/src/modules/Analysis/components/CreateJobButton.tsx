@@ -8,7 +8,7 @@ import {
   TJob,
   EBlueprint,
   ErrorResponse,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import Icons from '../../../components/Design/Icons'
 import { TAnalysis, TTask } from '../../../Types'
 // @ts-ignore
@@ -23,6 +23,7 @@ export const CreateJobButton = (props: {
 }) => {
   const { analysis, addJob, jobs, dataSourceId } = props
   const [loading, setLoading] = useState<boolean>(false)
+  // @ts-ignore
   const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

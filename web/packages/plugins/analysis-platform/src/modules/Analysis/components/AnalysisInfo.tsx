@@ -2,13 +2,14 @@ import React, { useContext } from 'react'
 import { Button, Tooltip } from '@equinor/eds-core-react'
 import Icons from '../../../components/Design/Icons'
 
-import { AuthContext, hasExpertRole } from '@dmt/common'
+import { AuthContext, hasExpertRole } from '@data-modelling-tool/core'
 import { TAnalysisInfoCardProps } from '../../../Types'
 import { CreateJobButton } from './CreateJobButton'
 import { DocumentInfoCard, OnRight } from '../../../components'
 
 const AnalysisInfoCardActions = (props: TAnalysisInfoCardProps) => {
   const { analysis, addJob, jobs, dataSourceId } = props
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   return (
     <>

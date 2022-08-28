@@ -8,7 +8,7 @@ import {
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'
@@ -64,6 +64,7 @@ const AddExternal = (props: any) => {
 const AddObject = (props: any) => {
   const { type, namePath, onAdd, contained, dataSourceId, documentId } = props
   const { setValue } = useFormContext()
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmtApi = new DmtAPI(token)
   const dmssAPI = new DmssAPI(token)

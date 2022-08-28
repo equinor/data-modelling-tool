@@ -3,6 +3,7 @@ import { Icon, Radio, TopBar } from '@equinor/eds-core-react'
 import { grid_on, info_circle, account_circle } from '@equinor/eds-icons'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+
 import {
   AuthContext,
   Button,
@@ -103,6 +104,7 @@ export const Header = (props: {
 }): JSX.Element => {
   const { appName, urlPath, allApps } = props
   const [version, setVersion] = useState<string>('Version not loaded')
+  // @ts-ignore
   const { tokenData, token, logOut } = useContext(AuthContext)
   const [aboutOpen, setAboutOpen] = useState(false)
   const [visibleUserInfo, setVisibleUserInfo] = useState<boolean>(false)

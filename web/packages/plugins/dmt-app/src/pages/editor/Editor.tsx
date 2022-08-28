@@ -13,7 +13,7 @@ import {
   TreeNode,
   TreeView,
   UIPluginSelector,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { NodeRightClickMenu } from '../../components/context-menu/ContextMenu'
 
 import { Progress } from '@equinor/eds-core-react'
@@ -56,6 +56,7 @@ const LAYOUT_CONFIG = {
 
 export default () => {
   const dashboard: IDashboard = useDashboard()
+  // @ts-ignore
   const { treeNodes, loading } = useContext(FSTreeContext)
 
   const open = (node: TreeNode) => {

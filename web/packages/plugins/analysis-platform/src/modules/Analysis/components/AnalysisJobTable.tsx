@@ -14,7 +14,7 @@ import {
   DmtAPI,
   TJob,
   ErrorResponse,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import styled from 'styled-components'
 import { AxiosError, AxiosResponse } from 'axios'
 // @ts-ignore
@@ -43,6 +43,7 @@ const JobRow = (props: {
   setJob: (j: TJob) => void
 }) => {
   const { job, index, analysisId, dataSourceId, removeJob, setJob } = props
+  // @ts-ignore
   const { token, tokenData } = useContext(AuthContext)
   const dmtApi = new DmtAPI(token)
   const dmssAPI = new DmssAPI(token)
@@ -178,6 +179,7 @@ const JobRow = (props: {
 
 export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
   const { jobs, analysisId, dataSourceId, setJobs } = props
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
 
   return (

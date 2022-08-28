@@ -4,7 +4,7 @@ import {
   hasDomainRole,
   useSearch,
   Loading,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import React, { ReactNode, useContext } from 'react'
 import { Button, Divider } from '@equinor/eds-core-react'
 import { AssetTable } from './components'
@@ -15,6 +15,7 @@ import { DEFAULT_DATASOURCE_ID } from '../../const'
 
 export const AssetOverview = (props: { settings: DmtSettings }): ReactNode => {
   const { settings } = props
+  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   const location = useLocation()
   const analysisOverviewPage = {

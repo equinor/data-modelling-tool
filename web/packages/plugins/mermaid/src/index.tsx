@@ -8,7 +8,7 @@ import {
   DmtUIPlugin,
   Loading,
   useDocument,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import Mermaid from './Mermaid'
 import { dfs, loader, Node } from './loader'
 import { AttributeType } from './types'
@@ -76,6 +76,7 @@ function useExplorer(dmssAPI: DmssAPI) {
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const explorer = useExplorer(dmssAPI)

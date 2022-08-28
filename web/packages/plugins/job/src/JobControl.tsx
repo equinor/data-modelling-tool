@@ -10,7 +10,7 @@ import {
   EJobStatus,
   TJob,
   ApplicationContext,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { Button, Label, Progress } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'
@@ -82,7 +82,9 @@ export const JobControl = (props: {
 }) => {
   const { jobId, document } = props
   const [dataSourceId, documentId] = jobId.split('/', 2)
+  // @ts-ignore
   const { token } = useContext(AuthContext)
+  // @ts-ignore
   const settings = useContext(ApplicationContext)
   const dmtApi = new DmtAPI(token)
   const dmssApi = new DmssAPI(token)

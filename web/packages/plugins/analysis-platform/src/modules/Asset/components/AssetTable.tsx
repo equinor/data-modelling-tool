@@ -5,7 +5,7 @@ import {
   formatDate,
   ApplicationContext,
   DmtSettings,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { TAsset } from '../../../Types'
 
 const columns: Array<string> = [
@@ -33,6 +33,7 @@ type TAssetTableProps = {
 
 export const AssetTable = (props: TAssetTableProps) => {
   const { assets } = props
+  // @ts-ignore
   const settings: DmtSettings = useContext(ApplicationContext)
 
   const getViewUrl = (rowDocumentId: string): string =>

@@ -6,7 +6,7 @@ import {
   ApplicationContext,
   ErrorResponse,
   DmssAPI,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { Progress } from '@equinor/eds-core-react'
 import { EBlueprints } from '../../Enums'
 import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
@@ -19,7 +19,9 @@ import { AxiosError, AxiosResponse } from 'axios'
 
 export const AnalysisCreate = (): JSX.Element => {
   const { asset_id } = useParams<{ asset_id: string }>()
+  // @ts-ignore
   const settings = useContext(ApplicationContext)
+  // @ts-ignore
   const { tokenData, token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const user = getUsername(tokenData)

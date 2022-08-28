@@ -5,7 +5,7 @@ import {
   useDocument,
   Loading,
   TGenericObject,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
