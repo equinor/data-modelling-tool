@@ -1,9 +1,9 @@
-import { DmtPlugin, DmtPluginType } from '@dmt/common'
+import { TDmtPlugin, DmtPluginType } from '@dmt/common'
 import { EditTask } from './EditTask'
 import { ViewTask } from './ViewTask'
 import { EditInput } from './InputOnly'
 
-export const plugins: DmtPlugin[] = [
+export const plugins: TDmtPlugin[] = [
   {
     pluginName: 'edit-task',
     pluginType: DmtPluginType.UI,

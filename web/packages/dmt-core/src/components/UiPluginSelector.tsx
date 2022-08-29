@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {
-  DmtPlugin,
+  TDmtPlugin,
   DmtUIPlugin,
   ErrorBoundary,
   UiPluginContext,
@@ -106,7 +106,7 @@ function filterPlugins(
   blueprint: any,
   categories: string[],
   roles: string[],
-  getUIPlugin: (name: string) => DmtPlugin
+  getUIPlugin: (name: string) => TDmtPlugin
 ): TSelectablePlugins[] {
   let uiRecipes = blueprint.uiRecipes
   const fallbackPlugin = [
