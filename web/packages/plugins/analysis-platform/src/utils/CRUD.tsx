@@ -115,18 +115,3 @@ export const createAnalysis = (
 ): Promise<string> => {
   return create(ANALYSIS_PATH, body, token, files, false)
 }
-
-/**
- * Create a new asset
- *
- * @param body The asset entity to upload
- * @param token The token to use for authentication
- * @param files The files to upload
- */
-export const createAsset = (
-  body: any,
-  token: string,
-  files: Blob[] = []
-): Promise<string> => {
-  return create(ASSET_PATH, body, token, files, true)
-}
