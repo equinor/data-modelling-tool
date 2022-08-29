@@ -1,7 +1,13 @@
 import * as React from 'react'
 
 import './index.css'
-import { DmtPluginType, DmtUIPlugin, Loading, useDocument } from '@dmt/common'
+import {
+  DmtPluginType,
+  DmtUIPlugin,
+  Loading,
+  TDmtPlugin,
+  useDocument,
+} from '@dmt/common'
 import PreviewPlugin from './YamlPlugin'
 
 const PluginComponent = (props: DmtUIPlugin) => {
@@ -23,7 +29,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
   return <PreviewPlugin document={document} />
 }
 
-export const plugins = [
+export const plugins: TDmtPlugin[] = [
   {
     pluginName: 'yaml-view',
     pluginType: DmtPluginType.UI,

@@ -1,5 +1,11 @@
 import { DmssAPI } from '../services'
-import React, { useContext, useEffect, useRef, useState } from 'react'
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
 import { AuthContext, TGenericObject, TReference, TSTaskBody } from '../index'
 import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
@@ -95,7 +101,7 @@ export function UploadFileButton(props: {
         ref={textInput}
         accept={fileSuffix.map((a: string) => '.' + a).join(',')}
         style={{ display: 'none' }}
-        onChange={(event) => handleUpload(event)}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => handleUpload(event)}
       />
       {loading ? (
         <Button style={{ margin: '0 10px' }}>

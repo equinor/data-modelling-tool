@@ -8,6 +8,7 @@ import {
   UIPluginSelector,
   useBlueprint,
 } from '@dmt/common'
+import { AxiosResponse } from 'axios'
 import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'
 import { Button, Typography } from '@equinor/eds-core-react'
@@ -75,12 +76,12 @@ const AddObject = (props: any) => {
       .instantiateEntity({
         basicEntity: { name: namePath as string, type: type as string },
       })
-      .then((newEntity: any) => {
+      .then((newEntity: AxiosResponse<any>) => {
         dmssAPI
           .documentUpdate({
             dataSourceId: dataSourceId,
             documentId: contained ? `${documentId}.${namePath}` : namePath,
-            data: JSON.stringify(newEntity),
+            data: JSON.stringify(newEntity.data),
             updateUncontained: false,
           })
           .then((response: any) => {
