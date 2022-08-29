@@ -2,15 +2,16 @@ import React, { useContext, useState } from 'react'
 import { useParams } from 'react-router-dom'
 
 import { getUsername } from '../../utils/auth'
-import { AuthContext, ApplicationContext } from '@dmt/common'
+import { DmssAPI, AuthContext, ApplicationContext } from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
-import { createAnalysis, addAnalysisToAsset } from '../../utils/CRUD'
+import { createAnalysis } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 import { CreateAnalysisForm } from './components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { TAnalysis } from '../../Types'
+import { AxiosError } from 'axios'
 
 export const AnalysisCreate = (): JSX.Element => {
   const { asset_id } = useParams<{
@@ -20,6 +21,7 @@ export const AnalysisCreate = (): JSX.Element => {
   const { tokenData, token } = useContext(AuthContext)
   const user = getUsername(tokenData)
   const [isLoading, setIsLoading] = useState<boolean>(false)
+  const dmssAPI = new DmssAPI(token)
 
   const handleUpdateAsset = (assetId: string, analysis: TAnalysis) => {
     const newAnalysis = {
@@ -28,7 +30,17 @@ export const AnalysisCreate = (): JSX.Element => {
       name: analysis.name || '',
     }
     const attribute = 'analyses'
-    addAnalysisToAsset(`${assetId}.${attribute}`, newAnalysis, token)
+    dmssAPI
+      .referenceInsert({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        documentDottedId: `/${assetId}.${attribute}`,
+        reference: newAnalysis,
+      })
+      .catch((error: AxiosError<any>) => {
+        NotificationManager.error(
+          error?.response?.data?.message || error.message
+        )
+      })
   }
 
   const handleCreateAnalysis = (formData: TAnalysis) => {

@@ -1,4 +1,4 @@
-import { ANALYSIS_PATH, ASSET_PATH, DEFAULT_DATASOURCE_ID } from '../const'
+import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../const'
 import { DmssAPI } from '@dmt/common'
 import { AxiosResponse } from 'axios'
 
@@ -91,14 +91,6 @@ const insertReference = (
         reject(err)
       })
   })
-}
-
-export const addAnalysisToAsset = (
-  documentDottedId: string,
-  body: any,
-  token: string
-): Promise<string> => {
-  return insertReference(documentDottedId, body, token)
 }
 
 /**
