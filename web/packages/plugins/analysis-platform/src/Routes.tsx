@@ -26,6 +26,11 @@ const Routes: Array<TRoute> = [
     content: AnalysisCreate,
   },
   {
+    path: '/analysis/new',
+    //@ts-ignore
+    content: AnalysisCreate,
+  },
+  {
     path: '/analysis/:data_source/:entity_id',
     //@ts-ignore
     content: View,

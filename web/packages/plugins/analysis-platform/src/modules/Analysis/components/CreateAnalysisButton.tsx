@@ -1,21 +1,13 @@
 import React from 'react'
-import { Link, useLocation, useParams } from 'react-router-dom'
+import { Link, useParams } from 'react-router-dom'
 import { Button } from '@equinor/eds-core-react'
 
-import { TCreateButtonProps } from '../../../Types'
-
-export const CreateAnalysisButton = (props: TCreateButtonProps) => {
-  const { urlPath } = props
-  const location = useLocation()
+export const CreateAnalysisButton = () => {
   const { entity_id } = useParams<{
     entity_id: string
   }>()
-  const createNewAnalysisPage = {
-    pathname: `/${urlPath}/analysis/new/${entity_id}`,
-    state: location.state,
-  }
   return (
-    <Link to={createNewAnalysisPage}>
+    <Link to={entity_id ? `/ap/analysis/new/${entity_id}` : '/ap/analysis/new'}>
       <Button>Create new analysis</Button>
     </Link>
   )

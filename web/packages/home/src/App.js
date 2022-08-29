@@ -98,10 +98,10 @@ function App() {
       .finally(() => setLoadingAppSettings(false))
   }, [])
 
-  if (loginInProgress) return null
+  // Stops web-page from flickering while the user is being logged in
+  if (authEnabled && loginInProgress) return null
 
   if (authEnabled && !token) {
-    // Avoid rendering loading icons if the user is about to be redirected to a login endpoint
     return <div>You are not logged in. Reload page to login</div>
   }
 
