@@ -33,10 +33,10 @@ export enum DmtPluginType {
 type TUiPluginContext = {
   plugins: UiPluginMap
   loading: boolean
-  getUiPlugin: (uiRecipeName: string) => DmtPlugin
-  getPagePlugin: (uiRecipeName: string) => DmtPlugin
+  getUiPlugin: (uiRecipeName: string) => TDmtPlugin
+  getPagePlugin: (uiRecipeName: string) => TDmtPlugin
 }
-const emtpyDMTPlugin: DmtPlugin = {
+const emtpyDMTPlugin: TDmtPlugin = {
   pluginType: DmtPluginType.PAGE,
   pluginName: '',
   component: () => {
@@ -97,7 +97,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
     }
   }
 
-  function getPagePlugin(uiRecipeName: string): DmtPlugin {
+  function getPagePlugin(uiRecipeName: string): TDmtPlugin {
     const pluginName = uiRecipeName.trim()
     if (pluginName in plugins) {
       return plugins[pluginName]
