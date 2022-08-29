@@ -16,5 +16,6 @@ models/get-job-result-response.ts
 models/httpvalidation-error.ts
 models/index.ts
 models/job-status.ts
+models/start-job-response.ts
 models/status-job-response.ts
 models/validation-error.ts
