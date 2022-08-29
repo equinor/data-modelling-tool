@@ -23,7 +23,7 @@ def set_default(attr: BlueprintAttribute, blueprint_provider):
         return attr.default
 
     # Setting default, default values...
-    match attr.attribute_type:  # noqa E999
+    match attr.attribute_type:
         case "boolean":
             return False
         case "number":
