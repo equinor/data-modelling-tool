@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, ChangeEvent, useEffect, useState } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
@@ -106,7 +106,7 @@ function CollapsibleFilter({
   expanded,
   setExpanded,
 }: {
-  children: any
+  children: React.ReactNode
   title: string
   expanded: boolean
   setExpanded: (newValue: boolean) => void
@@ -148,7 +148,7 @@ function SortByAttribute({
         key="sortByAttribute"
         value={sortByAttribute}
         type={'text'}
-        onChange={(event) => {
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
           setSortByAttribute(event.target.value)
         }}
       />
@@ -166,11 +166,10 @@ function DynamicAttributeFilter({
   attr,
   onChange,
 }: {
-  value: any //string | TGenericObject | undefined
+  value: string | TGenericObject | undefined
   attr: TAttribute
-  onChange: any
+  onChange: (newValue: TGenericObject) => void
 }) {
-  // console.log('value', value)
   const attribute = new BlueprintAttribute(attr)
   const [expanded, setExpanded] = useState<boolean>(false)
   const [nestedAttributes, setNestedAttributes] = useState<TAttribute[]>([])
@@ -182,7 +181,12 @@ function DynamicAttributeFilter({
     if (typeof filterChange === 'string') {
       onChange({ [attribute.getName()]: filterChange })
     } else {
-      onChange({ [attribute.getName()]: { ...value, ...filterChange } })
+      onChange({
+        [attribute.getName()]: {
+          ...(value as TGenericObject),
+          ...filterChange,
+        },
+      })
     }
   }
 
@@ -210,7 +214,7 @@ function DynamicAttributeFilter({
       <FilterGroup>
         <AttributeName>{attribute.getPrettyName()}:</AttributeName>
         <input
-          value={value || ''}
+          value={(value as string) || ''}
           type={'text'}
           onChange={(event) => {
             nestedOnChange(event.target.value)
@@ -231,7 +235,7 @@ function DynamicAttributeFilter({
         >
           {nestedAttributes.map((attr) => (
             <DynamicAttributeFilter
-              value={value?.[attr.name]}
+              value={(value as TGenericObject)?.[attr.name]}
               key={attr.name}
               attr={attr}
               onChange={nestedOnChange}
@@ -328,7 +332,7 @@ function FilterContainer({
                 </QueryInstructions>
               </div>
               <div style={{ flexFlow: 'column' }}>
-                {attributes.map((attribute) => (
+                {attributes.map((attribute: TAttribute) => (
                   <DynamicAttributeFilter
                     value={searchFilter[attribute.name]}
                     attr={attribute}
