@@ -168,8 +168,8 @@ export function NewEntityButton(props: {
                         type: typeToCreate,
                       },
                     })
-                    .then((newEntity: any) => {
-                      addEntityToPath({ ...newEntity }).then(() =>
+                    .then((newEntity) => {
+                      addEntityToPath({ ...newEntity.data }).then(() =>
                         setShowScrim(false)
                       )
                     })

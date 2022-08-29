@@ -13,16 +13,21 @@
  */
 
 /**
- * An enumeration.
+ *
  * @export
- * @enum {string}
+ * @interface StartJobResponse
  */
-export enum JobStatus {
-  Registered = 'registered',
-  Starting = 'starting',
-  Running = 'running',
-  Failed = 'failed',
-  Completed = 'completed',
-  Removed = 'removed',
-  Unknown = 'unknown',
+export interface StartJobResponse {
+  /**
+   *
+   * @type {string}
+   * @memberof StartJobResponse
+   */
+  message: string
+  /**
+   *
+   * @type {string}
+   * @memberof StartJobResponse
+   */
+  uid: string
 }
