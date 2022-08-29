@@ -219,6 +219,7 @@ def run():
         host="0.0.0.0",  # nosec
         port=5000,
         reload=config.ENVIRONMENT == "local",
+        factory=True,
         log_level=config.LOGGER_LEVEL.lower(),
     )
 

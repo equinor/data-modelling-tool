@@ -48,10 +48,6 @@ export type TTask = {
   runner?: TJobHandler | TContainerJobHandler
 }
 
-export type TCreateButtonProps = {
-  urlPath: string
-}
-
 export type TDocumentInfoCardProps = {
   document: TValidEntity
   dataSourceId: string
@@ -72,5 +68,4 @@ export type TAssetInfoCardProps = {
   asset: TAsset
   analyses: any
   dataSourceId: string
-  urlPath: string
 }

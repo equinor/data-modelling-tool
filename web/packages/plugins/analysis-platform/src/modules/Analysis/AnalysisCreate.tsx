@@ -1,35 +1,36 @@
 import React, { useContext, useState } from 'react'
-import { useParams } from 'react-router-dom'
 
 import { getUsername } from '../../utils/auth'
-import { AuthContext, ApplicationContext, ErrorResponse } from '@dmt/common'
+import {AuthContext, ApplicationContext, ErrorResponse, DmssAPI} from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
-import { createAnalysis, addAnalysisToAsset } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
-import { DEFAULT_DATASOURCE_ID } from '../../const'
+import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
 import { CreateAnalysisForm } from './components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { TAnalysis } from '../../Types'
-import { AxiosError } from 'axios'
+import { useParams } from 'react-router-dom'
+import { AxiosError, AxiosResponse } from 'axios'
 
 export const AnalysisCreate = (): JSX.Element => {
-  const { asset_id } = useParams<{
-    asset_id: string
-  }>()
+  const { asset_id } = useParams<{ asset_id: string }>()
   const settings = useContext(ApplicationContext)
   const { tokenData, token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
   const user = getUsername(tokenData)
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  const handleUpdateAsset = (assetId: string, analysis: TAnalysis) => {
+  const handleUpdateAsset = async (assetId: string, analysis: TAnalysis) => {
     const newAnalysis = {
       _id: analysis._id,
       type: EBlueprints.ANALYSIS,
       name: analysis.name || '',
     }
-    const attribute = 'analyses'
-    addAnalysisToAsset(`${assetId}.${attribute}`, newAnalysis, token)
+    return await dmssAPI.referenceInsert({
+      dataSourceId: DEFAULT_DATASOURCE_ID,
+      documentDottedId: `${assetId}.analyses`,
+      reference: newAnalysis,
+    })
   }
 
   const handleCreateAnalysis = (formData: TAnalysis) => {
@@ -45,13 +46,30 @@ export const AnalysisCreate = (): JSX.Element => {
         type: EBlueprints.TASK,
       },
     }
-    createAnalysis(data, token, [])
-      .then((documentId: any) => {
-        const newAnalysis = { ...formData, _id: documentId }
-        handleUpdateAsset(asset_id, newAnalysis)
-        // TODO: Should we use props.history.push instead?
-        //@ts-ignore
-        document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${documentId}`
+    dmssAPI
+      .explorerAddToPath({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        updateUncontained: false,
+        document: JSON.stringify(data),
+        directory: ANALYSIS_PATH,
+      })
+      .then((response: AxiosResponse<any>) => {
+        const newUID = response.data.uid
+        const newAnalysis = { ...formData, _id: newUID }
+        if (asset_id) {
+          handleUpdateAsset(asset_id, newAnalysis)
+            .then(
+              () =>
+                (document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${newUID}`)
+            )
+            .catch((error: AxiosError<any>) => {
+              console.log(error.response?.data)
+              NotificationManager.error(error.response?.data)
+            })
+        } else {
+          // TODO: Should we use props.history.push instead?
+          document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${newUID}`
+        }
       })
       .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
