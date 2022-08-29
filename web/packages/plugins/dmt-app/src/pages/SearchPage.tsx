@@ -18,6 +18,7 @@ import {
   useLocalStorage,
   DataSource,
   TGenericObject,
+  TAttribute,
 } from '@dmt/common'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
@@ -99,7 +100,17 @@ function EyeIcon() {
   return <FaEye style={{ width: '20px', height: '20px', marginLeft: '3px' }} />
 }
 
-function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
+function CollapsibleFilter({
+  children,
+  title,
+  expanded,
+  setExpanded,
+}: {
+  children: any
+  title: string
+  expanded: boolean
+  setExpanded: (newValue: boolean) => void
+}) {
   if (expanded) {
     return (
       <>
@@ -122,7 +133,13 @@ function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
 }
 
 // Creates a text <input> for the sortByAttribute
-function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
+function SortByAttribute({
+  sortByAttribute,
+  setSortByAttribute,
+}: {
+  sortByAttribute: string
+  setSortByAttribute: (newAttribute: string) => void
+}) {
   return (
     <FilterGroup>
       <AttributeName>Sort by:</AttributeName>
@@ -131,7 +148,7 @@ function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
         key="sortByAttribute"
         value={sortByAttribute}
         type={'text'}
-        onChange={(event: any) => {
+        onChange={(event) => {
           setSortByAttribute(event.target.value)
         }}
       />
@@ -144,15 +161,24 @@ function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
 }
 
 // Creates a text <input> with labels based on a BlueprintAttribute
-function DynamicAttributeFilter({ value, attr, onChange }: any) {
+function DynamicAttributeFilter({
+  value,
+  attr,
+  onChange,
+}: {
+  value: any //string | TGenericObject | undefined
+  attr: TAttribute
+  onChange: any
+}) {
+  // console.log('value', value)
   const attribute = new BlueprintAttribute(attr)
-  const [expanded, setExpanded] = useState<boolean>(value)
-  const [nestedAttributes, setNestedAttributes] = useState([])
+  const [expanded, setExpanded] = useState<boolean>(false)
+  const [nestedAttributes, setNestedAttributes] = useState<TAttribute[]>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   // Pass nested object to callback from parent
-  function nestedOnChange(filterChange: any) {
+  function nestedOnChange(filterChange: TGenericObject | string) {
     if (typeof filterChange === 'string') {
       onChange({ [attribute.getName()]: filterChange })
     } else {
@@ -164,7 +190,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
         .blueprintGet({ typeRef: attribute.attr.attributeType })
-        .then((response: any) => {
+        .then((response: AxiosResponse<TGenericObject>) => {
           const data = response.data
           setNestedAttributes(data.attributes)
         })
@@ -186,7 +212,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
         <input
           value={value || ''}
           type={'text'}
-          onChange={(event: any) => {
+          onChange={(event) => {
             nestedOnChange(event.target.value)
           }}
         />
@@ -205,9 +231,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
         >
           {nestedAttributes.map((attr) => (
             <DynamicAttributeFilter
-              // @ts-ignore
               value={value?.[attr.name]}
-              // @ts-ignore
               key={attr.name}
               attr={attr}
               onChange={nestedOnChange}
@@ -228,18 +252,18 @@ function FilterContainer({
   setSortByAttribute,
   resetSearchSettings,
 }: {
-  search: (query: any) => void
+  search: (query: TGenericObject) => void
   queryError: string
   searchFilter: TGenericObject
-  setSearchFilter: (newFilter: any) => void
+  setSearchFilter: (newFilter: TGenericObject) => void
   sortByAttribute: string
   setSortByAttribute: (newAttribute: string) => void
   resetSearchSettings: () => void
 }) {
-  const [attributes, setAttributes] = useState<Array<any>>([])
+  const [attributes, setAttributes] = useState<TAttribute[]>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  function onChange(filterChange: any) {
+  function onChange(filterChange: TGenericObject) {
     setSearchFilter({ ...searchFilter, ...filterChange })
   }
 
@@ -248,7 +272,7 @@ function FilterContainer({
     if (searchFilter?.type) {
       dmssAPI
         .blueprintGet({ typeRef: searchFilter.type })
-        .then((response: any) => {
+        .then((response: AxiosResponse<TGenericObject>) => {
           const data = response.data
           setAttributes(data.attributes)
         })
@@ -274,7 +298,7 @@ function FilterContainer({
             <label style={{ marginRight: '10px' }}>Type: </label>
             <BlueprintPicker
               formData={searchFilter?.type || ''}
-              onChange={(event: any) => setSearchFilter({ type: event })}
+              onChange={(event: string) => setSearchFilter({ type: event })}
             />
           </FilterGroup>
           {attributes.length !== 0 && (
@@ -304,12 +328,10 @@ function FilterContainer({
                 </QueryInstructions>
               </div>
               <div style={{ flexFlow: 'column' }}>
-                {attributes.map((attribute: any) => (
+                {attributes.map((attribute) => (
                   <DynamicAttributeFilter
-                    // @ts-ignore
                     value={searchFilter[attribute.name]}
                     attr={attribute}
-                    // @ts-ignore
                     key={attribute.name}
                     onChange={onChange}
                   />
@@ -351,7 +373,10 @@ function FilterContainer({
 }
 
 // Return a TableRow for an entity. Clickable to toggle view of the raw document
-function EntityRow(props: { entity: any; absoluteId: string }) {
+function EntityRow(props: {
+  entity: { _id: string; name: string; type: string; description: string }
+  absoluteId: string
+}) {
   const { entity, absoluteId } = props
   return (
     <>
@@ -421,9 +446,11 @@ function SelectDataSource(props: {
       <MultiSelect
         label="Select data sources to search"
         initialSelectedItems={selectedDataSources}
-        handleSelectedItemsChange={(event: any) =>
-          setDataSources(event.selectedItems)
-        }
+        handleSelectedItemsChange={(event) => {
+          if (event.selectedItems) {
+            setDataSources(event.selectedItems)
+          }
+        }}
         items={allDataSources.map((dataSource: DataSource) => dataSource.id)}
       ></MultiSelect>
       <FaDatabase
@@ -438,7 +465,7 @@ function SelectDataSource(props: {
   )
 }
 
-export default ({ settings }: any) => {
+export default ({ settings }: TGenericObject) => {
   const [searchSettings, setSearchSettings] = useLocalStorage(
     'searchSettings',
     {
@@ -456,7 +483,8 @@ export default ({ settings }: any) => {
   useEffect(() => {
     dmssAPI
       .dataSourceGetAll()
-      .then((response: any) => {
+      .then((response) => {
+        //@ts-ignore --------- todo requires pr merge in dmss
         const dataSources: DataSources = response.data
         setDataSources(dataSources)
       })
@@ -466,14 +494,14 @@ export default ({ settings }: any) => {
       })
   }, [])
 
-  function search(query: any) {
+  function search(query: TGenericObject) {
     dmssAPI
       .search({
         dataSources: searchSettings.dataSource,
         body: query,
         sortByAttribute: searchSettings.sortByAttribute,
       })
-      .then((response: AxiosResponse<{ [key: string]: any }>) => {
+      .then((response: AxiosResponse<TGenericObject>) => {
         setQueryError('')
         const nResults = Object.keys(response.data).length
         if (nResults === 0) {
@@ -486,7 +514,6 @@ export default ({ settings }: any) => {
             'Search'
           )
         }
-        // @ts-ignore
         setResult(response.data)
       })
       .catch((err: AxiosError<any>) => {
