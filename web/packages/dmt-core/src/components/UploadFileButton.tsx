@@ -1,13 +1,19 @@
 import { DmssAPI } from '../services'
-import React, { useContext, useEffect, useRef, useState } from 'react'
-import { AuthContext, TReference } from '../index'
+import React, {
+  ChangeEvent,
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+} from 'react'
+import { AuthContext, TGenericObject, TReference, TSTaskBody } from '../index'
 import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { AxiosError } from 'axios'
+import { AxiosError, AxiosResponse } from 'axios'
 
 export const addToPath = (
-  body: any,
+  body: TGenericObject,
   token: string,
   files: File[] | undefined[] = [],
   dataSourceId: string,
@@ -21,10 +27,10 @@ export const addToPath = (
       dataSourceId: dataSourceId,
       document: JSON.stringify(body),
       directory: directory, // @ts-ignore
-      files: files.filter((item: any) => item !== undefined),
+      files: files.filter((item) => item !== undefined),
       updateUncontained: updateUncontained,
     })
-    .then((response: any) => response.data.uid)
+    .then((response: AxiosResponse<TGenericObject>) => response.data.uid)
 }
 
 // fileSuffix - A list of strings with allowed file suffixes without '.'. For example to allow yaml uploads; ['yaml', 'yml']
@@ -33,7 +39,7 @@ export const addToPath = (
 // formData - only used to clear 'error' state when the parent form using this component changes
 export function UploadFileButton(props: {
   fileSuffix: string[]
-  getBody: (filename: string) => any
+  getBody: (filename: string) => TSTaskBody
   dataSourceId: string
   onUpload: (createdRef: TReference) => void
   formData: string
@@ -65,7 +71,7 @@ export function UploadFileButton(props: {
         'Data/STasks',
         true
       )
-        .then((createdUUID: any) =>
+        .then((createdUUID: string) =>
           onUpload({
             _id: createdUUID,
             name: newDocumentBody.name,
@@ -95,7 +101,7 @@ export function UploadFileButton(props: {
         ref={textInput}
         accept={fileSuffix.map((a: string) => '.' + a).join(',')}
         style={{ display: 'none' }}
-        onChange={(event: any) => handleUpload(event)}
+        onChange={(event: ChangeEvent<HTMLInputElement>) => handleUpload(event)}
       />
       {loading ? (
         <Button style={{ margin: '0 10px' }}>

@@ -1,5 +1,11 @@
 import React from 'react'
-import { JsonView, Button, useDocument, Loading } from '@dmt/common'
+import {
+  JsonView,
+  Button,
+  useDocument,
+  Loading,
+  TGenericObject,
+} from '@dmt/common'
 
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
@@ -11,7 +17,10 @@ type PreviewProps = {
 
 export default (props: PreviewProps) => {
   const { documentId, dataSourceId } = props
-  const [document, loading] = useDocument(dataSourceId, documentId)
+  const [document, loading] = useDocument<TGenericObject>(
+    dataSourceId,
+    documentId
+  )
   const infoText: string = ''
   if (loading) {
     return <Loading />

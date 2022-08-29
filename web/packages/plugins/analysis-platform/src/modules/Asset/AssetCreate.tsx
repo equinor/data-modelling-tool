@@ -13,7 +13,7 @@ import { TAsset } from '../../Types'
 export const AssetCreate = (): JSX.Element => {
   const settings = useContext(ApplicationContext)
   const { tokenData, token } = useContext(AuthContext)
-  const user = getUsername(tokenData) || 'NoLogin'
+  const user = getUsername(tokenData)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const createdAt = new Date().toISOString()
 

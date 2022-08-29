@@ -17,6 +17,7 @@ import {
   AuthContext,
   useLocalStorage,
   DataSource,
+  TGenericObject,
 } from '@dmt/common'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
@@ -229,7 +230,7 @@ function FilterContainer({
 }: {
   search: (query: any) => void
   queryError: string
-  searchFilter: any
+  searchFilter: TGenericObject
   setSearchFilter: (newFilter: any) => void
   sortByAttribute: string
   setSortByAttribute: (newAttribute: string) => void

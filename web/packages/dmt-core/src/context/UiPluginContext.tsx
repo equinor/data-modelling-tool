@@ -1,17 +1,17 @@
 import React, { createContext, useEffect, useState } from 'react'
 
-export interface DmtPlugin {
+export interface TDmtPlugin {
   pluginType: DmtPluginType
   pluginName: string
   component: (props: DmtUIPlugin) => JSX.Element
 }
 
 export type UiPluginMap = {
-  [key: string]: DmtPlugin
+  [key: string]: TDmtPlugin
 }
 
 export interface LoadedPlugin {
-  plugins: DmtPlugin[]
+  plugins: TDmtPlugin[]
 }
 
 export interface DmtUIPlugin {
@@ -44,12 +44,12 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
       pluginsToLoad.map(
         async (pluginPackage: any) =>
           await pluginPackage.then((loadedPluginPackage: LoadedPlugin) =>
-            loadedPluginPackage.plugins.map((plugin: DmtPlugin) => plugin)
+            loadedPluginPackage.plugins.map((plugin: TDmtPlugin) => plugin)
           )
       )
     )
       .then((pluginPackageList: any[]) => {
-        pluginPackageList.forEach((pluginPackage: DmtPlugin[]) => {
+        pluginPackageList.forEach((pluginPackage: TDmtPlugin[]) => {
           pluginPackage.forEach(
             (plugin) =>
               (newPluginMap = { ...newPluginMap, [plugin.pluginName]: plugin })
@@ -64,7 +64,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
       .finally(() => setLoading(false))
   }, [pluginsToLoad])
 
-  function getUiPlugin(uiRecipeName: string): DmtPlugin {
+  function getUiPlugin(uiRecipeName: string): TDmtPlugin {
     const pluginName = uiRecipeName.trim()
     if (pluginName in plugins) return plugins[pluginName]
     return {

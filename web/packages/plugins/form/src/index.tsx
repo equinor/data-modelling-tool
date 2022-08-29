@@ -6,6 +6,7 @@ import {
   DmtUIPlugin,
   Loading,
   TReference,
+  TSTaskBody,
   UploadFileButton,
   useBlueprint,
   useDocument,
@@ -74,7 +75,7 @@ const widgets = {
     const { getValues } = useFormContext()
     const initialValue = getValues(namePath)
 
-    function getNewSTaskBody(filename: string): any {
+    function getNewSTaskBody(filename: string): TSTaskBody {
       return {
         type: 'AnalysisPlatformDS/Blueprints/STask',
         name: filename.replace('.', '_'),
