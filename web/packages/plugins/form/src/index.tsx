@@ -95,7 +95,6 @@ const widgets = {
         <div>Name: {initialValue.name}</div>
         <div>Uid: {initialValue.uid}</div>
         <UploadFileButton
-          formData={''}
           fileSuffix={['stask']}
           dataSourceId={dataSourceId}
           getBody={(filename: string) => getNewSTaskBody(filename)}

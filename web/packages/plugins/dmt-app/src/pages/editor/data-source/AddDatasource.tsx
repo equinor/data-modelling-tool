@@ -50,10 +50,10 @@ const AddDataSourceComponent = () => {
           selectedDatasourceType={selectedDatasourceType}
           setSelectedDatasourceType={setSelectedDatasourceType}
         />
-        {/*<ExternalPlugin*/}
-        {/*  type={constructType(selectedDatasourceType)}*/}
-        {/*  onSubmit={handleOnSubmit}*/}
-        {/*/>*/}
+        <ExternalPlugin
+          type={constructType(selectedDatasourceType)}
+          onSubmit={handleOnSubmit}
+        />
       </div>
     </>
   )

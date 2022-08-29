@@ -66,7 +66,6 @@ export const TabsContainer = (props: DmtUIPlugin) => {
   if (!entity || Object.keys(formData).length === 0) return null
 
   const handleOpen = (tabData: TChildTab) => {
-    console.log('tabData', tabData)
     setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
     setSelectedTab(tabData.attribute)
   }
