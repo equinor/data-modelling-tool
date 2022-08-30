@@ -43,8 +43,6 @@ import { GetJobResultResponse } from '../models'
 // @ts-ignore
 import { StartJobResponse } from '../models'
 // @ts-ignore
-import { StartJobResponse } from '../models'
-// @ts-ignore
 import { StatusJobResponse } from '../models'
 /**
  * JobsApi - axios parameter creator
