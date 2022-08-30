@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.17">
-<title>Data Modelling Tool</title>
+<title>The Clean Architecture</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,14 +436,243 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge .cm {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cp {
+  color: #999999;
+  font-weight: bold;
+}
+pre.rouge .c1 {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cs {
+  color: #999999;
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+pre.rouge .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+pre.rouge .ge {
+  color: #000000;
+  font-style: italic;
+}
+pre.rouge .gr {
+  color: #aa0000;
+}
+pre.rouge .gh {
+  color: #999999;
+}
+pre.rouge .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+pre.rouge .go {
+  color: #888888;
+}
+pre.rouge .gp {
+  color: #555555;
+}
+pre.rouge .gs {
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #aaaaaa;
+}
+pre.rouge .gt {
+  color: #aa0000;
+}
+pre.rouge .kc {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kd {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kn {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kp {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kr {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kt {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .k, pre.rouge .kv {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .mf {
+  color: #009999;
+}
+pre.rouge .mh {
+  color: #009999;
+}
+pre.rouge .il {
+  color: #009999;
+}
+pre.rouge .mi {
+  color: #009999;
+}
+pre.rouge .mo {
+  color: #009999;
+}
+pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
+  color: #009999;
+}
+pre.rouge .sa {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .sb {
+  color: #d14;
+}
+pre.rouge .sc {
+  color: #d14;
+}
+pre.rouge .sd {
+  color: #d14;
+}
+pre.rouge .s2 {
+  color: #d14;
+}
+pre.rouge .se {
+  color: #d14;
+}
+pre.rouge .sh {
+  color: #d14;
+}
+pre.rouge .si {
+  color: #d14;
+}
+pre.rouge .sx {
+  color: #d14;
+}
+pre.rouge .sr {
+  color: #009926;
+}
+pre.rouge .s1 {
+  color: #d14;
+}
+pre.rouge .ss {
+  color: #990073;
+}
+pre.rouge .s, pre.rouge .dl {
+  color: #d14;
+}
+pre.rouge .na {
+  color: #008080;
+}
+pre.rouge .bp {
+  color: #999999;
+}
+pre.rouge .nb {
+  color: #0086B3;
+}
+pre.rouge .nc {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .no {
+  color: #008080;
+}
+pre.rouge .nd {
+  color: #3c5d5d;
+  font-weight: bold;
+}
+pre.rouge .ni {
+  color: #800080;
+}
+pre.rouge .ne {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nl {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nn {
+  color: #555555;
+}
+pre.rouge .nt {
+  color: #000080;
+}
+pre.rouge .vc {
+  color: #008080;
+}
+pre.rouge .vg {
+  color: #008080;
+}
+pre.rouge .vi {
+  color: #008080;
+}
+pre.rouge .nv, pre.rouge .vm {
+  color: #008080;
+}
+pre.rouge .ow {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .o {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .w {
+  color: #bbbbbb;
+}
+pre.rouge {
+  background-color: #f8f8f8;
+}
+</style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>Data Modelling Tool</h1>
-<div id="toc" class="toc">
+<h1>The Clean Architecture</h1>
+<div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_get_started">Get started</a></li>
+<li><a href="#_what_is_the_clean_architecture">What is the Clean Architecture?</a>
+<ul class="sectlevel2">
+<li><a href="#_what_does_clean_mean">What does clean mean?</a></li>
+<li><a href="#_benefits">Benefits</a></li>
+<li><a href="#_concepts">Concepts</a></li>
+</ul>
+</li>
+<li><a href="#_a_simple_example">A simple example</a>
+<ul class="sectlevel2">
+<li><a href="#_use_case">Use case</a></li>
+<li><a href="#_entity">Entity</a></li>
+<li><a href="#_service">Service</a></li>
+<li><a href="#_repository">Repository</a></li>
+</ul>
+</li>
 </ul>
 </div>
 </div>
@@ -451,28 +680,218 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>An application for modelling, searching, and viewing domain models based on blueprints.</p>
+<p>We follow the <a href="https://blog.cleancoder.com/uncle-bob/2012/08/13/the-clean-architecture.html">the Clean Architecture</a> style and structure the codebase accordingly for our API&#8217;s.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_get_started">Get started</h2>
+<h2 id="_what_is_the_clean_architecture">What is the Clean Architecture?</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>Everything you need to know about Data Modelling Tool.</p>
+<p>It is a layered approach for a <a href="https://www.youtube.com/watch?v=wtCQalq7L-E">more civilized age</a>.</p>
 </div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <a href="user-manual.html">User docs</a> if you want to learn how to use DMT.</p>
-</li>
-<li>
-<p>The <a href="developer-manual.html">Developer docs</a> if you want to start developing.</p>
-</li>
-<li>
-<p>The <a href="contribute-guide.html">Contribute guide</a> if you want to contribute.</p>
-</li>
-</ul>
+<div class="imageblock">
+<div class="content">
+<img src="images/clean-architecture.jpeg" alt="The Clean Architecture">
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Source code dependencies can only point inwards. Nothing in an inner circle can know anything at all about something in an outer circle. In particular, the name of something declared in an outer circle must not be mentioned by the code in the an inner circle. That includes, functions, classes. variables, or any other named software entity.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; The most important rule
+</div>
+</div>
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>Talk inward with simple structures and talk outwards through interfaces.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; The golden rule
+</div>
+</div>
+<div class="paragraph">
+<p>The use cases and entities are the heart of our application and should have a minimal set of external library dependencies.</p>
+</div>
+<div class="sect2">
+<h3 id="_what_does_clean_mean">What does clean mean?</h3>
+<div class="paragraph">
+<p>You know <strong>where</strong> things are, <strong>why</strong> components are there, and <strong>what</strong> something is.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_benefits">Benefits</h3>
+<div class="paragraph">
+<p>Team and product scalability.</p>
+</div>
+<div class="paragraph">
+<p>This architecture is framework independent (or as much as it can be). This means it dosesn’t matter which database, frameworks, UI, external services you are using, the entities and the business logic of the application will always stay the same.</p>
+</div>
+<div class="paragraph">
+<p>It is also designed so that every part of the architecture is easy testable.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_concepts">Concepts</h3>
+<div class="sect3">
+<h4 id="_entities">Entities</h4>
+<div class="paragraph">
+<p>Entities are the enterprise business objects of our application. These should not be affected by any change external to them, and these should be the most stable code within your application.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_use_cases">Use Cases</h4>
+<div class="paragraph">
+<p>Use cases implement and encapsulate all the business rules. Each use case orchestrates all of the logic for a specific business use case.
+* Controllers and Presenters - Our controller, presenters, and gateways are intermediate layers. You can think of them as an entry and exit gates to the use cases .</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_adapters">Adapters</h4>
+<div class="paragraph">
+<p>Interface Adapters - Data is converted from the form most convenient for entities and use cases to the format most convenient for some external agency such as the Database or the Web.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_frameworks_and_drivers">Frameworks and Drivers</h4>
+<div class="paragraph">
+<p>Tools such as the Database, the Web Framework, etc Glue code that communicates to the next circle inwards.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_a_simple_example">A simple example</h2>
+<div class="sectionbody">
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>This simple example is still not complete, but points out the basics.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Work in progress
+</div>
+</div>
+<div class="sect2">
+<h3 id="_use_case">Use case</h3>
+<div class="paragraph">
+<p>Use cases class exists for the sole purpose of injecting adapters like repositories. Use cases use simple entities, and don’t know about framework models.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="c1"># notes/use_cases.py
+</span>
+<span class="kn">from</span> <span class="nn">.entities</span> <span class="kn">import</span> <span class="n">Note</span>
+<span class="kn">from</span> <span class="nn">api.core.shared</span> <span class="kn">import</span> <span class="n">request_object</span> <span class="k">as</span> <span class="n">req</span>
+<span class="kn">from</span> <span class="nn">api.core.shared</span> <span class="kn">import</span> <span class="n">response_object</span> <span class="k">as</span> <span class="n">res</span>
+<span class="kn">from</span> <span class="nn">api.core.shared</span> <span class="kn">import</span> <span class="n">use_case</span> <span class="k">as</span> <span class="n">uc</span>
+
+<span class="k">class</span> <span class="nc">AddNoteRequestObject</span><span class="p">(</span><span class="n">req</span><span class="p">.</span><span class="n">ValidRequestObject</span><span class="p">):</span>
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">description</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+        <span class="bp">self</span><span class="p">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span>
+
+    <span class="o">@</span><span class="nb">classmethod</span>
+    <span class="k">def</span> <span class="nf">from_dict</span><span class="p">(</span><span class="n">cls</span><span class="p">,</span> <span class="n">adict</span><span class="p">):</span>
+        <span class="n">invalid_req</span> <span class="o">=</span> <span class="n">req</span><span class="p">.</span><span class="n">InvalidRequestObject</span><span class="p">()</span>
+
+        <span class="k">if</span> <span class="s">"title"</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">adict</span><span class="p">:</span>
+            <span class="n">invalid_req</span><span class="p">.</span><span class="n">add_error</span><span class="p">(</span><span class="s">"title"</span><span class="p">,</span> <span class="s">"is missing"</span><span class="p">)</span>
+
+        <span class="k">if</span> <span class="n">invalid_req</span><span class="p">.</span><span class="n">has_errors</span><span class="p">():</span>
+            <span class="k">return</span> <span class="n">invalid_req</span>
+
+        <span class="k">return</span> <span class="n">cls</span><span class="p">(</span>
+           <span class="n">uid</span><span class="o">=</span><span class="n">adict</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"title"</span><span class="p">),</span>
+           <span class="n">data</span><span class="o">=</span><span class="n">adict</span><span class="p">.</span><span class="n">get</span><span class="p">(</span><span class="s">"description"</span><span class="p">)</span>
+        <span class="p">)</span>
+
+
+<span class="k">class</span> <span class="nc">AddNoteUseCase</span><span class="p">(</span><span class="n">uc</span><span class="p">.</span><span class="n">UseCase</span><span class="p">):</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">repo</span><span class="p">):</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
+
+  <span class="k">def</span> <span class="nf">execute</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">request_object</span><span class="p">:</span> <span class="n">AddNoteRequestObject</span><span class="p">):</span>
+    <span class="n">note</span> <span class="o">=</span> <span class="n">Note</span><span class="p">(</span>
+      <span class="n">request_object</span><span class="p">.</span><span class="n">title</span><span class="p">,</span>
+      <span class="n">request_object</span><span class="p">.</span><span class="n">description</span>
+    <span class="p">)</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">repo</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">note</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">res</span><span class="p">.</span><span class="n">ResponseSuccess</span><span class="p">(</span><span class="n">note</span><span class="p">)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_entity">Entity</h3>
+<div class="paragraph">
+<p>Entities are just simple classes.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="c1"># notes/entities.py:
+</span>
+<span class="k">class</span> <span class="nc">Note</span><span class="p">():</span>
+  <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">description</span><span class="p">,</span> <span class="nb">id</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="bp">self</span><span class="p">.</span><span class="nb">id</span> <span class="o">=</span> <span class="nb">id</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">title</span> <span class="o">=</span> <span class="n">title</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">description</span> <span class="o">=</span> <span class="n">description</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_service">Service</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="k">class</span> <span class="nc">NoteService</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+    <span class="bp">self</span><span class="p">.</span><span class="n">repo</span> <span class="o">=</span> <span class="n">repo</span>
+
+    <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">note</span><span class="p">):</span>
+       <span class="k">return</span> <span class="bp">self</span><span class="p">.</span><span class="n">repo</span><span class="p">.</span><span class="n">add</span><span class="p">(</span><span class="n">note</span><span class="p">)</span></code></pre>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_repository">Repository</h3>
+<div class="paragraph">
+<p>The storage layer takes entities &amp; returns entities, hides storage details.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="c1"># adapters/orm_storage.py:
+</span>
+<span class="kn">from</span> <span class="nn">notes.models</span> <span class="kn">import</span> <span class="n">Note</span>
+
+<span class="k">class</span> <span class="nc">Repo</span><span class="p">():</span>
+  <span class="k">def</span> <span class="nf">add</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">note</span><span class="p">):</span>
+    <span class="n">orm_note</span> <span class="o">=</span> <span class="n">Note</span><span class="p">.</span><span class="n">from_entity</span><span class="p">(</span><span class="n">note</span><span class="p">)</span>
+    <span class="n">orm_note</span><span class="p">.</span><span class="n">save</span><span class="p">()</span>
+    <span class="k">return</span> <span class="n">orm_note</span><span class="p">.</span><span class="n">to_entity</span><span class="p">()</span></code></pre>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_controllers">Controllers</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="python"><span class="k">def</span> <span class="nf">add_note</span><span class="p">():</span>
+    <span class="n">request_data</span> <span class="o">=</span> <span class="n">request</span><span class="p">.</span><span class="n">get_json</span><span class="p">()</span>
+    <span class="n">use_case</span> <span class="o">=</span> <span class="n">AddNoteUseCase</span><span class="p">()</span>
+    <span class="n">request_object</span> <span class="o">=</span> <span class="n">AddNoteRequestObject</span><span class="p">.</span><span class="n">from_dict</span><span class="p">(</span><span class="n">request_data</span><span class="p">)</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">use_case</span><span class="p">.</span><span class="n">execute</span><span class="p">(</span><span class="n">request_object</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span>
+        <span class="n">json</span><span class="p">.</span><span class="n">dumps</span><span class="p">(</span><span class="n">response</span><span class="p">.</span><span class="n">value</span><span class="p">,</span> <span class="n">cls</span><span class="o">=</span><span class="n">DTOSerializer</span><span class="p">),</span>
+        <span class="n">mimetype</span><span class="o">=</span><span class="s">"application/json"</span><span class="p">,</span>
+        <span class="n">status</span><span class="o">=</span><span class="n">STATUS_CODES</span><span class="p">[</span><span class="n">response</span><span class="p">.</span><span class="nb">type</span><span class="p">]</span>
+    <span class="p">)</span></code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 </div>
