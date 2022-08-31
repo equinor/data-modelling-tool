@@ -48,7 +48,6 @@ const JobRow = (props: {
   const dmssAPI = new DmssAPI(token)
   const [loading, setLoading] = useState<boolean>(false)
   const [jobStatus, setJobStatus] = useState<EJobStatus>(EJobStatus.UNKNOWN)
-  const [started, setStarted] = useState<string>('')
   const jobURL: string = `/${ANALYSIS_PLATFORM_URLPATH}/view/${dataSourceId}/${analysisId}.jobs.${index}`
   const resultURL = job.result?._id
     ? `/${ANALYSIS_PLATFORM_URLPATH}/view/${dataSourceId}/${job.result?._id}`
@@ -77,7 +76,6 @@ const JobRow = (props: {
         )
         const now = new Date().toLocaleString(navigator.language)
         setJobStatus(EJobStatus.STARTING)
-        setStarted(now)
         setJob({ ...job, started: now, status: EJobStatus.STARTING })
       })
       .catch((error: AxiosError<ErrorResponse>) => {
@@ -132,11 +130,7 @@ const JobRow = (props: {
   return (
     <Table.Row>
       <Table.Cell onClick={viewJob}>
-        {jobStatus !== EJobStatus.CREATED
-          ? job.started
-            ? new Date(job.started).toLocaleString(navigator.language)
-            : started
-          : 'Not started'}
+        {jobStatus !== EJobStatus.CREATED ? job.started : 'Not started'}
       </Table.Cell>
       <Table.Cell onClick={viewJob}>{job.triggeredBy}</Table.Cell>
       <Table.Cell onClick={viewJob}>{jobStatus}</Table.Cell>
