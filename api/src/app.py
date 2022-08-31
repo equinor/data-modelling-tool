@@ -10,9 +10,10 @@ import click
 import emoji
 import uvicorn
 from dmss_api.exceptions import ApiException
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Security
 from fastapi.encoders import jsonable_encoder
 from fastapi.exceptions import RequestValidationError
+from fastapi.security import OAuth2AuthorizationCodeBearer
 from starlette import status
 from starlette.requests import Request
 from starlette.responses import JSONResponse
@@ -27,6 +28,14 @@ from utils.logging import logger
 
 prefix = "/api/v1"
 
+oauth2_scheme = OAuth2AuthorizationCodeBearer(authorizationUrl="", tokenUrl="")
+
+
+def auth_with_jwt(jwt_token: str = Security(oauth2_scheme)):
+    # Authentication is handled by DMSS. Adding a security dependenciy is
+    # necessary to generate correct JSON schema for openapi generator.
+    pass
+
 
 def create_app():
     from features.blueprints import blueprints
@@ -34,15 +43,16 @@ def create_app():
     from features.jobs import jobs
     from features.system import system
 
-    # Using public routes, since authentication is handled by DMSS
     public_routes = APIRouter()
+    authenticated_routes = APIRouter()
     public_routes.include_router(blueprints.router)
     public_routes.include_router(entity.router)
-    public_routes.include_router(jobs.router)
+    authenticated_routes.include_router(jobs.router)
     public_routes.include_router(system.router)
 
     app = FastAPI(title="Data Modelling Tool", description="API for Data Modeling Tool (DMT)")
     app.include_router(public_routes, prefix=prefix)
+    app.include_router(authenticated_routes, prefix=prefix, dependencies=[Security(auth_with_jwt)])
 
     app.add_middleware(StoreHeadersMiddleware)
 
