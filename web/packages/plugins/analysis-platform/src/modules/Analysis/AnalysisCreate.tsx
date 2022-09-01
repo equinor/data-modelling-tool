@@ -1,7 +1,12 @@
 import React, { useContext, useState } from 'react'
 
 import { getUsername } from '../../utils/auth'
-import {AuthContext, ApplicationContext, ErrorResponse, DmssAPI} from '@dmt/common'
+import {
+  AuthContext,
+  ApplicationContext,
+  ErrorResponse,
+  DmssAPI,
+} from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
 import { EBlueprints } from '../../Enums'
 import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
