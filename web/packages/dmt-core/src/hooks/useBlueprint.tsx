@@ -2,11 +2,31 @@ import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
 import { AuthContext } from '../index'
 
+/**
+ * Hook to fetch a Blueprint from the DMSS API
+ *
+ * @usage
+ * Code example:
+ * ```
+ * import { useBlueprint } from '@data-modelling-tool/core'
+ *
+ * const [blueprint, isLoading, error] = useBlueprint('someType')
+ * if (isLoading) return <div>Loading...</div>
+ * if (error) return <div>Error getting the blueprint</div>
+ *
+ * if (blueprint) {
+ *   return (<p>Blueprint: {blueprint?.name} ({blueprint?.type})</p>)
+ * }
+ * ```
+ *
+ * @param {str} typeRef - The type of blueprint to retrieve
+ * @returns A list containing the blueprint document, a boolean representing the state, and an Error, if any.
+ */
 export const useBlueprint = (typeRef: string) => {
   const [blueprint, setBlueprint] = useState<any | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
-    // @ts-ignore
+  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

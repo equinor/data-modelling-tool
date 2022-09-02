@@ -24,6 +24,27 @@ export interface Props {
   height?: string
 }
 
+/**
+ * Component which renders a Dialogue in a pop-up
+ *
+ * @usage
+ * Code example:
+ * const [isOpen, setIsOpen] = React.useState(0);
+ * return (
+ *  <>
+ *    <button onClick={() => setIsOpen(1)}>Show</button>
+ *      <Dialog
+ *        isOpen={isOpen}
+ *        header={'The header'}
+ *        closeScrim={() => setIsOpen(0)}>
+ *          Some content
+ *      </Dialog>
+ *  </>
+ * )
+ *
+ * @param {Props} props {@link Props}
+ * @returns A React component
+ */
 export const Dialog = (props: Props) => {
   const { closeScrim, isOpen, children, header, width, height } = props
   return (
