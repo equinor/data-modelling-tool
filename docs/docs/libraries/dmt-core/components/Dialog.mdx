@@ -3,59 +3,9 @@ title: Dialog
 ---
 
 import { Dialog } from 'dmt-core'
-import {ComponentProps} from '@site/src/components/ComponentProps';
-import {
-  LiveProvider,
-  LiveEditor,
-  LiveError,
-  LivePreview
-} from 'react-live'
+import { ComponentDoc } from "@site/src/components/ComponentDoc";
 
-# Loading
+export const componentName = 'Dialog'
+export const scope = {Dialog}
 
-## Properties
-
-<ComponentProps file="/components/Dialog.tsx" />
-
-## Basic usage
-
-```jsx live
-() => {
-  const [isOpen, setIsOpen] = React.useState(0);
-  return (
-    <>
-      <button onClick={() => setIsOpen(1)}>Show</button>
-      <Dialog isOpen={isOpen}
-            header={'The header'}
-            closeScrim={() => setIsOpen(0)}>
-        Some content
-      </Dialog>
-    </>
-  )
- }
-```
-
-<!---
-<LiveProvider code={`
-() => {
-  const [isOpen, setIsOpen] = React.useState(0);
-  return (
-    <>
-      <button onClick={() => setIsOpen(1)}>Show</button>
-      <Dialog isOpen={isOpen}
-            header={'The header'}
-            closeScrim={() => setIsOpen(0)}>
-        Some content
-      </Dialog>
-    </>
-  )
- }
-`} scope={ {Dialog} }>
-  <LiveEditor />
-  <LiveError />
-  <LivePreview />
-</LiveProvider>
--->
-
-## Using different kinds
-
+<ComponentDoc componentName={componentName} codeScope={scope} codePreview={true} codeErrors={true} />
