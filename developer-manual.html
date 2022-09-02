@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 2.0.17">
-<title>Data Modelling Tool</title>
+<title>Developer Docs</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /*! Asciidoctor default stylesheet | MIT License | https://asciidoctor.org */
@@ -436,14 +436,249 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 @media amzn-kf8{#header,#content,#footnotes,#footer{padding:0}}
 </style>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<style>
+pre.rouge table td { padding: 5px; }
+pre.rouge table pre { margin: 0; }
+pre.rouge .cm {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cp {
+  color: #999999;
+  font-weight: bold;
+}
+pre.rouge .c1 {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .cs {
+  color: #999999;
+  font-weight: bold;
+  font-style: italic;
+}
+pre.rouge .c, pre.rouge .ch, pre.rouge .cd, pre.rouge .cpf {
+  color: #999988;
+  font-style: italic;
+}
+pre.rouge .err {
+  color: #a61717;
+  background-color: #e3d2d2;
+}
+pre.rouge .gd {
+  color: #000000;
+  background-color: #ffdddd;
+}
+pre.rouge .ge {
+  color: #000000;
+  font-style: italic;
+}
+pre.rouge .gr {
+  color: #aa0000;
+}
+pre.rouge .gh {
+  color: #999999;
+}
+pre.rouge .gi {
+  color: #000000;
+  background-color: #ddffdd;
+}
+pre.rouge .go {
+  color: #888888;
+}
+pre.rouge .gp {
+  color: #555555;
+}
+pre.rouge .gs {
+  font-weight: bold;
+}
+pre.rouge .gu {
+  color: #aaaaaa;
+}
+pre.rouge .gt {
+  color: #aa0000;
+}
+pre.rouge .kc {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kd {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kn {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kp {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kr {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .kt {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .k, pre.rouge .kv {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .mf {
+  color: #009999;
+}
+pre.rouge .mh {
+  color: #009999;
+}
+pre.rouge .il {
+  color: #009999;
+}
+pre.rouge .mi {
+  color: #009999;
+}
+pre.rouge .mo {
+  color: #009999;
+}
+pre.rouge .m, pre.rouge .mb, pre.rouge .mx {
+  color: #009999;
+}
+pre.rouge .sa {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .sb {
+  color: #d14;
+}
+pre.rouge .sc {
+  color: #d14;
+}
+pre.rouge .sd {
+  color: #d14;
+}
+pre.rouge .s2 {
+  color: #d14;
+}
+pre.rouge .se {
+  color: #d14;
+}
+pre.rouge .sh {
+  color: #d14;
+}
+pre.rouge .si {
+  color: #d14;
+}
+pre.rouge .sx {
+  color: #d14;
+}
+pre.rouge .sr {
+  color: #009926;
+}
+pre.rouge .s1 {
+  color: #d14;
+}
+pre.rouge .ss {
+  color: #990073;
+}
+pre.rouge .s, pre.rouge .dl {
+  color: #d14;
+}
+pre.rouge .na {
+  color: #008080;
+}
+pre.rouge .bp {
+  color: #999999;
+}
+pre.rouge .nb {
+  color: #0086B3;
+}
+pre.rouge .nc {
+  color: #445588;
+  font-weight: bold;
+}
+pre.rouge .no {
+  color: #008080;
+}
+pre.rouge .nd {
+  color: #3c5d5d;
+  font-weight: bold;
+}
+pre.rouge .ni {
+  color: #800080;
+}
+pre.rouge .ne {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nf, pre.rouge .fm {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nl {
+  color: #990000;
+  font-weight: bold;
+}
+pre.rouge .nn {
+  color: #555555;
+}
+pre.rouge .nt {
+  color: #000080;
+}
+pre.rouge .vc {
+  color: #008080;
+}
+pre.rouge .vg {
+  color: #008080;
+}
+pre.rouge .vi {
+  color: #008080;
+}
+pre.rouge .nv, pre.rouge .vm {
+  color: #008080;
+}
+pre.rouge .ow {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .o {
+  color: #000000;
+  font-weight: bold;
+}
+pre.rouge .w {
+  color: #bbbbbb;
+}
+pre.rouge {
+  background-color: #f8f8f8;
+}
+</style>
 </head>
-<body class="article">
+<body class="article toc2 toc-left">
 <div id="header">
-<h1>Data Modelling Tool</h1>
-<div id="toc" class="toc">
+<h1>Developer Docs</h1>
+<div id="toc" class="toc2">
 <div id="toctitle">Table of Contents</div>
 <ul class="sectlevel1">
-<li><a href="#_get_started">Get started</a></li>
+<li><a href="#_repositories">Repositories</a></li>
+<li><a href="#_developing">Developing</a>
+<ul class="sectlevel2">
+<li><a href="#_prerequisites">Prerequisites</a></li>
+<li><a href="#_installation">Installation</a></li>
+</ul>
+</li>
+<li><a href="#_architecture">Architecture</a>
+<ul class="sectlevel2">
+<li><a href="#_level_1_system_context_diagram">Level 1 - System Context diagram</a></li>
+<li><a href="#_level_2_container_diagram">Level 2 - Container diagram</a></li>
+<li><a href="#_level_3_component_diagram">Level 3 - Component diagram</a></li>
+<li><a href="#_current_architecture_status">Current architecture status</a></li>
+</ul>
+</li>
+<li><a href="#_project_structure">Project structure</a>
+<ul class="sectlevel2">
+<li><a href="#_web">Web</a></li>
+</ul>
+</li>
+<li><a href="#_how_to_contribute">How to contribute?</a></li>
 </ul>
 </div>
 </div>
@@ -451,28 +686,302 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="preamble">
 <div class="sectionbody">
 <div class="paragraph">
-<p>An application for modelling, searching, and viewing domain models based on blueprints.</p>
+<p>How to get DMT up and running on your local machine for development and testing purposes.</p>
 </div>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_get_started">Get started</h2>
+<h2 id="_repositories">Repositories</h2>
 <div class="sectionbody">
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://github.com/equinor/data-modelling-tool" class="bare">github.com/equinor/data-modelling-tool</a> - The Data Modelling Tool</p>
+</li>
+<li>
+<p><a href="https://github.com/equinor/data-modelling-storage-service" class="bare">github.com/equinor/data-modelling-storage-service</a> - Storage Service for documents</p>
+</li>
+<li>
+<p><a href="https://github.com/equinor/data-modelling-tool-demo-app" class="bare">github.com/equinor/data-modelling-tool-demo-app</a> - Example of Custom Application</p>
+</li>
+<li>
+<p><a href="https://github.com/equinor/dmt-py" class="bare">github.com/equinor/dmt-py</a> - Library to talk to the Data Modelling Storage Service directly from Python</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_developing">Developing</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_prerequisites">Prerequisites</h3>
 <div class="paragraph">
-<p>Everything you need to know about Data Modelling Tool.</p>
+<p>In order to run DMT you need to have installed:</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The <a href="user-manual.html">User docs</a> if you want to learn how to use DMT.</p>
+<p><a href="https://www.docker.com/">Docker</a></p>
 </li>
 <li>
-<p>The <a href="developer-manual.html">Developer docs</a> if you want to start developing.</p>
+<p><a href="https://docs.docker.com/compose/">Docker Compose</a></p>
 </li>
 <li>
-<p>The <a href="contribute-guide.html">Contribute guide</a> if you want to contribute.</p>
+<p>Git</p>
 </li>
 </ul>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_installation">Installation</h3>
+<div class="paragraph">
+<p>Docker-compose is used for running the project locally.</p>
+</div>
+<div class="paragraph">
+<p>DMT depends on the Data Modelling Storage Service for storing documents and DMSS must be cloned in same directory as DMT, since DMSS is volume mounted inside DMT container at runtime.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code data-lang="bash">git clone git@github.com:equinor/data-modelling-tool.git
+git clone git@github.com:equinor/data-modelling-storage service.git
+<span class="nb">cd </span>data-modelling-tool</code></pre>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_architecture">Architecture</h2>
+<div class="sectionbody">
+<div class="quoteblock">
+<blockquote>
+<div class="paragraph">
+<p>A good architecture emphasis the use-case and decouples them from peripheral concerns.</p>
+</div>
+</blockquote>
+<div class="attribution">
+&#8212; Robert C. Martin
+</div>
+</div>
+<div class="paragraph">
+<p>We are using <a href="https://c4model.com" class="bare">c4model.com</a> for showing architecture diagrams.</p>
+</div>
+<div class="sect2">
+<h3 id="_level_1_system_context_diagram">Level 1 - System Context diagram</h3>
+<div class="paragraph">
+<p>The Context diagram is a good starting point for diagramming and documenting a software system, allowing you to step back and see the big picture. Here we draw a diagram showing the system as a box in the centre, surrounded by its users and the other systems that it interacts with.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-01ca1ed5ee04d4894b86af8ae71f74b5.svg" alt="Diagram" width="679" height="909">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_level_2_container_diagram">Level 2 - Container diagram</h3>
+<div class="paragraph">
+<p>Once you understand how your system fits in to the overall IT environment, a really useful next step is to zoom-in to the system boundary with a Container diagram. A container is something like a server-side web application, single-page application, desktop application, mobile app, database schema, file system, etc. Essentially, a container is a separately runnable/deployable unit (e.g. a separate process space) that executes code or stores data.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-447c7c223cea649b32eeae3e297ed40c.svg" alt="Diagram" width="679" height="1152">
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_level_3_component_diagram">Level 3 - Component diagram</h3>
+<div class="paragraph">
+<p>Following on from a Container Diagram, next you can zoom in and decompose each container further to identify the major structural building blocks and their interactions.</p>
+</div>
+<div class="paragraph">
+<p>The Component diagram shows how a container is made up of a number of components, what each of those components are, their responsibilities and the technology/implementation details.</p>
+</div>
+<div class="sect3">
+<h4 id="_api_architecture">API Architecture</h4>
+<div class="paragraph">
+<p>We follow <a href="clean-architecture.html">the Clean Architecture</a> style and structure the codebase accordingly for our API&#8217;s.</p>
+</div>
+<div class="paragraph">
+<p>This diagram is showing the flow (rather than all) of the components within the APIs.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-e8b88e037fe578cfa003eacb3ec7d47f.svg" alt="Diagram" width="450" height="1193">
+</div>
+</div>
+<div class="paragraph">
+<p>The flow:</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-9b3fec4ce694cfd217b9c4d118a3eed8.png" alt="Diagram" width="784" height="787">
+</div>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_current_architecture_status">Current architecture status</h3>
+<div class="paragraph">
+<p>The long term goal of Data Modelling Tool is to have a federated, standardized, and well defined StorageService that can handle the storing and retrieving of data of different nature and requirements.</p>
+</div>
+<div class="paragraph">
+<p>For this to work, we need some components with responsibility of different layers of abstraction. All these components will need to support basic CRUD (crate, read, update, delete) functionality.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="images/architecture.png" alt="architecture">
+</div>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="diag-be34442a35b3bc3f0efe8d9228bae3f4.svg" alt="Diagram" width="740" height="1039">
+</div>
+</div>
+<div class="paragraph">
+<p><strong>DocumentService (Data Modelling Storage Service):</strong></p>
+</div>
+<div class="paragraph">
+<p>The Data Modelling Storage Service will get requests like <code>Fetch document with id 8962045 from the Data Source A</code>.
+ This can be a complex document, containing references to documents in different DataSources. It will then be Data Modelling Storage Service&#8217;s job to construct this document in it&#8217;s entirety.</p>
+</div>
+<div class="paragraph">
+<p><strong>DataSource:</strong></p>
+</div>
+<div class="paragraph">
+<p>The DataSource, and components to the left of the DataSource, are the "self-hosted" components. Different organizations can setup their own DataSource, which they can control access to.
+The job of the DataSource is to determine which storage backend (Repository) should be used for the data.
+ Here, there are no complex documents, but the DataSource will make choices based on the StorageRecipe tied to the data.
+Requests coming into the DataSource will look something like this; <code>Fetch document with id 8962045</code>.</p>
+</div>
+<div class="paragraph">
+<p><strong>Repository:</strong></p>
+</div>
+<div class="paragraph">
+<p>This is a plugin based component, that has one interface towards the DataSource, and one to the given storage driver(MongoDB, Postgress, AzureFiles, e.g.)</p>
+</div>
+<div class="ulist checklist">
+<ul class="checklist">
+<li>
+<p><i class="fa fa-check-square-o"></i> DocumentService; CRUD on complex documents in the same DataSource</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> Repository; MongoDB Repository plugin</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> DocumentService; CRUD on complex documents from different DataSources</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> DataSource: One DataSource can have more than one Repository</p>
+</li>
+<li>
+<p><i class="fa fa-check-square-o"></i> DataSource: Considers storage preferences based on StorageRecipe</p>
+</li>
+<li>
+<p><i class="fa fa-square-o"></i> DataSource: Supports streaming data</p>
+</li>
+</ul>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_project_structure">Project structure</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_web">Web</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>/web
+└── /src
+    └── /components
+    └── /context
+    └── /fonts
+    └── /hooks
+    └── /pages
+    └── /services
+    └── /utils
+    /plugins</code></pre>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_components">Components</h4>
+<div class="paragraph">
+<p>Re-usable components that only display data and handle user events (from keypresses, button clicks, hover states, etc).</p>
+</div>
+<div class="paragraph">
+<p>The components folder contains a collection of UI components like buttons, custom input fields, modals, etc., that will be shared and used across files in the project.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_context">Context</h4>
+<div class="paragraph">
+<p>Context providers and consumers used in the application.</p>
+</div>
+<div class="paragraph">
+<p>The hooks used by the provider components (e.g. dashboard and index) are different from the hooks found in the hooks/ directory. The hooks in the hooks/ directory can be used anywhere in the application, and they can be used any number of times. The hooks in the context directory are intended to be used by the provider component only. Using these hooks elsewhere in the application may cause problems as these hooks should not be used more than once in an application.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_hooks">Hooks</h4>
+<div class="paragraph">
+<p>At this level, we&#8217;re often handling concerns like auth, logging, or even more domain-specific things like todos, users, calendar, or even chess. Consider an interaction-layer (useChess) React hook that contained all your chess game logic.</p>
+</div>
+<div class="paragraph">
+<p>The hooks are the application logic, that is the logic that makes a decision as to what happens next. Some refer to this layer as app logic, which works as well because these are all of the operations of your app. The interaction layer contains the discrete set of commands and queries that your users will carry out.</p>
+</div>
+<div class="paragraph">
+<p>These are the use cases. Having great visibility into these use cases enables us to get pretty structured with our integration testing as well. We can functionally test every use case with edge cases using Given-When-Then style tests. If you&#8217;re familiar with Domain-Driven Design concepts, this is the Application Service equivalent. For example for the useTodo hook that provides the function createTodoIfNotExists:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="rouge highlight"><code>Given no todos exist,
+when I perform CreateTodo,
+then I should see one todo.</code></pre>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_pages">Pages</h4>
+<div class="paragraph">
+<p>Controllers (containers) are the top-level components that turn on all the features for a particular page. The pages folder reflects the routes of the application. Each component inside this folder has its own route. A page component will contain children from components folder, parts folder, or its own subfolder. It has its own state, and usually call some services as well.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_plugins">Plugins</h4>
+<div class="paragraph">
+<p>See own chapter in <a href="user-manual.html">user docs</a> for how to use plugins.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_services">Services</h4>
+<div class="paragraph">
+<p>Networking and data fetching (infrastructure). Performing API calls and reporting metadata state.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_utils">Utils</h4>
+<div class="paragraph">
+<p>The utils folder is just a place to locate some utility functions that used repeatedly in the project. Files in the utils folder should only contain some functions like date formatting, string conversion, etc.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_parts_currently_not_used">Parts (currently not used)</h4>
+<div class="paragraph">
+<p>It contains a reusable components that used in the pages. The difference is that components in parts folder reflect parts of a page, like footer, sidebar, and header, while the components folder contains standalone UI components like button, form, or input field. Sometime, A component in parts can use some components from the components folder.</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_how_to_contribute">How to contribute?</h2>
+<div class="sectionbody">
+<div class="paragraph">
+<p>We welcome anyone who would like to join and contribute.</p>
+</div>
+<div class="paragraph">
+<p>Please see our <a href="contribute-guide.html">contribute guide</a>.</p>
 </div>
 </div>
 </div>
