@@ -19,7 +19,7 @@ import { AuthContext } from '../index'
  * }
  * ```
  *
- * @param {str} typeRef - The type of blueprint to retrieve
+ * @param typeRef - The type of blueprint to retrieve
  * @returns A list containing the blueprint document, a boolean representing the state, and an Error, if any.
  */
 export const useBlueprint = (typeRef: string) => {

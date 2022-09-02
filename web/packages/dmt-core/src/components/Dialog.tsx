@@ -17,10 +17,15 @@ const ClickableIcon = styled.div`
 export interface Props {
   /** Provides a url for avatars being used as a link. */
   closeScrim: () => void
+  /** Whether the Dialog is open or not */
   isOpen: boolean
+  /** Child components to display inside the Dialog */
   children: any
+  /** The title of the Dialog window */
   header: string
+  /** The width of the Dialog window */
   width?: string
+  /** The height of the Dialog window */
   height?: string
 }
 
@@ -29,18 +34,22 @@ export interface Props {
  *
  * @usage
  * Code example:
- * const [isOpen, setIsOpen] = React.useState(0);
- * return (
- *  <>
- *    <button onClick={() => setIsOpen(1)}>Show</button>
- *      <Dialog
- *        isOpen={isOpen}
- *        header={'The header'}
- *        closeScrim={() => setIsOpen(0)}>
- *          Some content
- *      </Dialog>
- *  </>
- * )
+ * ```
+ * () => {
+ *   const [isOpen, setIsOpen] = React.useState(0);
+ *   return (
+ *     <>
+ *       <button onClick={() => setIsOpen(1)}>Show</button>
+ *        <Dialog
+ *          isOpen={isOpen}
+ *          header={'The header'}
+ *          closeScrim={() => setIsOpen(0)}>
+ *            Some content
+ *        </Dialog>
+ *    </>
+ *   )
+ * }
+ * ```
  *
  * @param {Props} props {@link Props}
  * @returns A React component
