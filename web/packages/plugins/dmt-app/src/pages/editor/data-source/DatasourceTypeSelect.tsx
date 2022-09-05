@@ -1,5 +1,5 @@
 import React from 'react'
-import { DatasourceOption } from './DatasourceSelect'
+import { TDatasourceOption } from './DatasourceSelect'
 
 type Props = {
   selectedDatasourceType: string
@@ -8,7 +8,7 @@ type Props = {
 
 export default (props: Props) => {
   const { selectedDatasourceType, setSelectedDatasourceType } = props
-  const datasourceTypeOptions: DatasourceOption[] = [
+  const datasourceTypeOptions: TDatasourceOption[] = [
     { label: '', value: '' },
     { label: 'mongo db', value: 'mongo-db' },
     { label: 'Azure Blob Storage', value: 'azure-blob-storage' },
@@ -21,7 +21,7 @@ export default (props: Props) => {
       }}
       style={{ margin: '0 10px' }}
     >
-      {datasourceTypeOptions.map((option: DatasourceOption) => (
+      {datasourceTypeOptions.map((option: TDatasourceOption) => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>

@@ -11,12 +11,12 @@ import { Link } from 'react-router-dom'
 import {
   DmssAPI,
   BlueprintPicker,
-  DataSources,
+  TDataSources,
   JsonView,
   ApplicationContext,
   AuthContext,
   useLocalStorage,
-  DataSource,
+  TDataSource,
   TGenericObject,
 } from '@dmt/common'
 
@@ -406,7 +406,7 @@ function ResultContainer(props: { result: { [key: string]: any } }) {
 function SelectDataSource(props: {
   selectedDataSources: string[]
   setDataSources: (ds: string[]) => void
-  allDataSources: DataSources
+  allDataSources: TDataSources
 }) {
   const { selectedDataSources, setDataSources, allDataSources } = props
   return (
@@ -424,7 +424,7 @@ function SelectDataSource(props: {
         handleSelectedItemsChange={(event: any) =>
           setDataSources(event.selectedItems)
         }
-        items={allDataSources.map((dataSource: DataSource) => dataSource.id)}
+        items={allDataSources.map((dataSource: TDataSource) => dataSource.id)}
       ></MultiSelect>
       <FaDatabase
         style={{
@@ -449,7 +449,7 @@ export default ({ settings }: any) => {
   )
   const [result, setResult] = useState<{ [key: string]: any }>({})
   const [queryError, setQueryError] = useState('')
-  const [dataSources, setDataSources] = useState<DataSources>([])
+  const [dataSources, setDataSources] = useState<TDataSources>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
@@ -457,7 +457,7 @@ export default ({ settings }: any) => {
     dmssAPI
       .dataSourceGetAll()
       .then((response: any) => {
-        const dataSources: DataSources = response.data
+        const dataSources: TDataSources = response.data
         setDataSources(dataSources)
       })
       .catch((error) => {

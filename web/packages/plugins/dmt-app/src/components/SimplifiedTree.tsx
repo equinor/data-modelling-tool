@@ -3,12 +3,12 @@ import { FaRegFileAlt } from 'react-icons/fa'
 
 import { Link } from 'react-router-dom'
 import { TAttribute } from '@dmt/common'
-type SimplifiedTreeProps = {
+type TSimplifiedTreeProps = {
   datasourceId: string
   document: any
 }
 
-export const SimplifiedTree = (props: SimplifiedTreeProps) => {
+export const SimplifiedTree = (props: TSimplifiedTreeProps) => {
   const { document, datasourceId } = props
   const [complexTypes, setComplexTypes] = useState<any[]>([])
 

@@ -1,8 +1,8 @@
 import { DmssAPI } from '@dmt/common'
-import { AttributeType, BlueprintType } from './types'
+import { TAttributeType, BlueprintType } from './types'
 
 export class Node {
-  public attribute: AttributeType
+  public attribute: TAttributeType
   public parent: any
   public children: any
   public entity: any
@@ -40,20 +40,20 @@ export function* dfs(node: Node): any {
   }
 }
 
-const isPrimitive = (attribute: AttributeType) => {
+const isPrimitive = (attribute: TAttributeType) => {
   if (attribute.attributeType) {
     return ['string', 'number', 'integer', 'number', 'boolean'].includes(
       attribute.attributeType
     )
   } else return false
 }
-const primitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
-  blueprint.attributes.filter((attribute: AttributeType) =>
+const primitiveAttributes = (blueprint: BlueprintType): TAttributeType[] =>
+  blueprint.attributes.filter((attribute: TAttributeType) =>
     isPrimitive(attribute)
   )
-const isNonPrimitive = (attribute: AttributeType) => !isPrimitive(attribute)
-const nonPrimitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
-  blueprint.attributes.filter((attribute: AttributeType) =>
+const isNonPrimitive = (attribute: TAttributeType) => !isPrimitive(attribute)
+const nonPrimitiveAttributes = (blueprint: BlueprintType): TAttributeType[] =>
+  blueprint.attributes.filter((attribute: TAttributeType) =>
     isNonPrimitive(attribute)
   )
 
@@ -76,7 +76,7 @@ export const loader = async (
 ): Promise<Node> => {
   const node = new Node(document)
   await Promise.all(
-    nonPrimitiveAttributes(document).map(async (attribute: AttributeType) => {
+    nonPrimitiveAttributes(document).map(async (attribute: TAttributeType) => {
       if (attribute['attributeType'] !== 'object') {
         const child: BlueprintType = await explorer.blueprintGet(
           attribute['attributeType']

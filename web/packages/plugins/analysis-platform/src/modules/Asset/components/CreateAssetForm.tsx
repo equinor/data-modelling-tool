@@ -5,21 +5,21 @@ import { TAsset } from '../../../Types'
 import { EBlueprints } from '../../../Enums'
 import { FormWrapper } from '../../../components/Design/Styled'
 
-type Errors = {
+type TErrors = {
   [key: string]: any
 }
 
-type CreateFormProps = {
+type TCreateFormProps = {
   data?: any
   onSubmit: (asset: TAsset) => void
 }
 
-const hasErrors = (error: Errors) =>
+const hasErrors = (error: TErrors) =>
   error['name'] !== '' || error['description'] !== ''
 
-export const CreateAssetForm = (props: CreateFormProps) => {
+export const CreateAssetForm = (props: TCreateFormProps) => {
   const { onSubmit, data } = props
-  const [error, setError] = useState<Errors>({
+  const [error, setError] = useState<TErrors>({
     name: '',
     description: '',
   })
@@ -48,7 +48,7 @@ export const CreateAssetForm = (props: CreateFormProps) => {
   const formHandler = (event: any) => {
     event.preventDefault()
 
-    const formErrors: Errors = {
+    const formErrors: TErrors = {
       name: '',
       description: '',
     }

@@ -1,6 +1,6 @@
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { NumberFieldProps } from '../types'
+import { TNumberFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 
 // Taken from: https://github.com/rjsf-team/react-jsonschema-form/blob/cff979dae5348e9b100447641bcb53374168367f/packages/core/src/utils.js#L436
@@ -30,7 +30,7 @@ export const asNumber = (value: string): number | string => {
   return valid ? n : value
 }
 
-export const NumberField = (props: NumberFieldProps) => {
+export const NumberField = (props: TNumberFieldProps) => {
   const { control } = useFormContext()
   const { namePath, displayLabel, defaultValue, optional, uiAttribute } = props
 

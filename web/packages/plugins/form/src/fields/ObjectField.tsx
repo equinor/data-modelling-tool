@@ -14,7 +14,7 @@ import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'
 import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { ObjectFieldProps } from '../types'
+import { TObjectFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 import { Controller, useFormContext } from 'react-hook-form'
 import { AxiosError } from 'axios'
@@ -434,7 +434,7 @@ export const NonContained = (props: any): JSX.Element => {
   )
 }
 
-export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
+export const ObjectField = (props: TObjectFieldProps): JSX.Element => {
   const { type, namePath, uiAttribute } = props
   const { getValues } = useFormContext()
   const { getWidget } = useRegistryContext()
@@ -455,7 +455,7 @@ export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
   )
 }
 
-export const ObjectTypeSelector = (props: ObjectFieldProps): JSX.Element => {
+export const ObjectTypeSelector = (props: TObjectFieldProps): JSX.Element => {
   const {
     type,
     namePath,

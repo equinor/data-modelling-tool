@@ -21,7 +21,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 import { NotificationManager } from 'react-notifications'
 import { ANALYSIS_PLATFORM_URLPATH } from '../../../const'
 
-type AnalysisJobTableProps = {
+type TAnalysisJobTableProps = {
   jobs: any
   analysisId: string
   dataSourceId: string
@@ -176,7 +176,7 @@ const JobRow = (props: {
   )
 }
 
-export const AnalysisJobTable = (props: AnalysisJobTableProps) => {
+export const AnalysisJobTable = (props: TAnalysisJobTableProps) => {
   const { jobs, analysisId, dataSourceId, setJobs } = props
   const { tokenData } = useContext(AuthContext)
 

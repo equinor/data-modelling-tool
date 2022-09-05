@@ -10,12 +10,12 @@ import {
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-type PreviewProps = {
+type TPreviewProps = {
   documentId: string
   dataSourceId: string
 }
 
-export default (props: PreviewProps) => {
+export default (props: TPreviewProps) => {
   const { documentId, dataSourceId } = props
   const [document, loading] = useDocument<TGenericObject>(
     dataSourceId,
