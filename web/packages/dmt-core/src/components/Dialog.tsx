@@ -32,6 +32,9 @@ export interface Props {
 /**
  * Component which renders a Dialogue in a pop-up
  *
+ * @docs Components
+ * @scope Dialog
+ *
  * @usage
  * Code example:
  * ```

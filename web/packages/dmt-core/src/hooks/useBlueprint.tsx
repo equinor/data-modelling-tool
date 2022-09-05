@@ -5,6 +5,8 @@ import { AuthContext } from '../index'
 /**
  * Hook to fetch a Blueprint from the DMSS API
  *
+ * @docs Hooks
+ *
  * @usage
  * Code example:
  * ```
