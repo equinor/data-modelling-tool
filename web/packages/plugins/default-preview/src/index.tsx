@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, IDmtUIPlugin } from '@dmt/common'
 import PreviewPlugin from './PreviewPlugin'
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: IDmtUIPlugin) => {
   return (
     <PreviewPlugin
       documentId={props.documentId}

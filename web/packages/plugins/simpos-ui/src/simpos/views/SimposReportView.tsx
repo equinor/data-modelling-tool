@@ -1,10 +1,10 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin, Loading, useDocument } from '@dmt/common'
+import { DmtPluginType, IDmtUIPlugin, Loading, useDocument } from '@dmt/common'
 
 import { SimposReportView } from './report.js'
 
-const SimposReportView_Component = (props: DmtUIPlugin) => {
+const SimposReportView_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
   const [document, loading, updateDocument, error] = useDocument(
     dataSourceId,

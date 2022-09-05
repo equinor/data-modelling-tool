@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
+import { useDocument, IDmtUIPlugin, Loading } from '@dmt/common'
 
 import { SignalTable } from './SignalTable_src.js'
 
-const SignalTable_Component = (props: DmtUIPlugin) => {
+const SignalTable_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, IDmtUIPlugin } from '@dmt/common'
 
 //import { SRSEnvTable } from './simpos/srs/view/env.js'
 //import EditDocument from './EditDocument'

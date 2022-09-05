@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, IDmtUIPlugin } from '@dmt/common'
 
 import { DMTBluePrintTableView } from './dmt/views/DMTBluePrintTableView'
 

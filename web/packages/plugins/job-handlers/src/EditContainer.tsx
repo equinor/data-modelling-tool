@@ -1,5 +1,5 @@
 import {
-  DmtUIPlugin,
+  IDmtUIPlugin,
   PATH_INPUT_FIELD_WIDTH,
   Select,
   TContainerImage,
@@ -24,7 +24,7 @@ const HeaderWrapper = styled.div`
   width: 70%;
 `
 
-export const EditContainer = (props: DmtUIPlugin) => {
+export const EditContainer = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId, onSubmit } = props
   const [formData, setFormData] = useState<any>()
   const [document, loadingDocument, updateDocument] = useDocument(

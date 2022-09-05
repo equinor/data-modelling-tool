@@ -3,9 +3,9 @@ import { MakeDiagram } from './Diagram'
 
 import { VerticalTabs, TabProp } from './VerticalTabs'
 
-import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
+import { useDocument, IDmtUIPlugin, Loading } from '@dmt/common'
 
-const WorkflowTask_Component = (props: DmtUIPlugin) => {
+const WorkflowTask_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
+import { useDocument, IDmtUIPlugin, Loading } from '@dmt/common'
 
 import { SIMA_Model_FirstOrderMotionTransferFunction } from './FirstOrderMotionTransferFunction_src.js'
 
-const FirstOrderMotionTransferFunction_Component = (props: DmtUIPlugin) => {
+const FirstOrderMotionTransferFunction_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

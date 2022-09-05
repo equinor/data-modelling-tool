@@ -1,10 +1,10 @@
-import { DmtUIPlugin, Loading, useDocument } from '@dmt/common'
+import { IDmtUIPlugin, Loading, useDocument } from '@dmt/common'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Button, Progress, Typography } from '@equinor/eds-core-react'
 import { EditInputEntity, GroupWrapper } from './components'
 
-export const UpdateInputOnly = (props: DmtUIPlugin) => {
+export const UpdateInputOnly = (props: IDmtUIPlugin) => {
   const { dataSourceId, onOpen, documentId } = props
   const [formData, setFormData] = useState<any>(null)
   const [document, loading, updateDocument] = useDocument(

@@ -1,12 +1,12 @@
 import * as React from 'react'
 
 import { Loading, useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, IDmtUIPlugin } from '@dmt/common'
 
 import { SimposRunOutputView } from './results.js'
 import { SimposStatusView } from './results.js'
 
-const SimposRunOutputView_Component = (props: DmtUIPlugin) => {
+const SimposRunOutputView_Component = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, loading, updateDocument, hasError] = useDocument(
     dataSourceId,
@@ -19,7 +19,7 @@ const SimposRunOutputView_Component = (props: DmtUIPlugin) => {
   return <SimposRunOutputView document={document} />
 }
 
-const SimposStatusView_Component = (props: DmtUIPlugin) => {
+const SimposStatusView_Component = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, loading, updateDocument, hasError] = useDocument(
     dataSourceId,

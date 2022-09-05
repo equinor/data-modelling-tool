@@ -3,18 +3,18 @@ import React, { createContext, useEffect, useState } from 'react'
 export interface TDmtPlugin {
   pluginType: DmtPluginType
   pluginName: string
-  component: (props: DmtUIPlugin) => JSX.Element
+  component: (props: IDmtUIPlugin) => JSX.Element
 }
 
 export type UiPluginMap = {
   [key: string]: TDmtPlugin
 }
 
-export interface LoadedPlugin {
+export interface ILoadedPlugin {
   plugins: TDmtPlugin[]
 }
 
-export interface DmtUIPlugin {
+export interface IDmtUIPlugin {
   type?: string
   categories?: string[]
   dataSourceId: string
@@ -43,7 +43,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
     Promise.all(
       pluginsToLoad.map(
         async (pluginPackage: any) =>
-          await pluginPackage.then((loadedPluginPackage: LoadedPlugin) =>
+          await pluginPackage.then((loadedPluginPackage: ILoadedPlugin) =>
             loadedPluginPackage.plugins.map((plugin: TDmtPlugin) => plugin)
           )
       )

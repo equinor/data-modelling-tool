@@ -1,12 +1,12 @@
 import {
-  DmtUIPlugin,
+  IDmtUIPlugin,
   Loading,
   UIPluginSelector,
   useDocument,
 } from '@dmt/common'
 import * as React from 'react'
 
-export const EditInput = (props: DmtUIPlugin) => {
+export const EditInput = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen } = props
   const [document, loading] = useDocument<any>(dataSourceId, documentId)
   if (loading) {

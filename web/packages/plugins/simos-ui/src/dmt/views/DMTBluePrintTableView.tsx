@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
 
-import { DmtUIPlugin, Loading, useBlueprint, useDocument } from '@dmt/common'
+import { IDmtUIPlugin, Loading, useBlueprint, useDocument } from '@dmt/common'
 
 import { DMTBluePrintTableView } from './blueprint.js'
 
-const DMTBluePrintTableView_Component = (props: DmtUIPlugin) => {
+const DMTBluePrintTableView_Component = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [type, setType] = useState<string>('')
   const [blueprint, loadingBlueprint, error] = useBlueprint(type)

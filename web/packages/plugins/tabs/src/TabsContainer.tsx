@@ -1,5 +1,5 @@
 import {
-  DmtUIPlugin,
+  IDmtUIPlugin,
   Loading,
   UIPluginSelector,
   useDocument,
@@ -54,7 +54,7 @@ type TStringMap = {
   [key: string]: TChildTab
 }
 
-export const TabsContainer = (props: DmtUIPlugin) => {
+export const TabsContainer = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId, config, onSubmit } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
   const [formData, setFormData] = useState<any>({})

@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import { Loading, useDocument } from '@dmt/common'
-import { DmtUIPlugin } from '@dmt/common'
+import { IDmtUIPlugin } from '@dmt/common'
 
 import { LSSceForm } from './sce.js'
 
-const LSSceForm_Component = (props: DmtUIPlugin) => {
+const LSSceForm_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

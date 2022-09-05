@@ -1,10 +1,10 @@
 import React, { useEffect, useState } from 'react'
-import { DmtUIPlugin, TJob, useDocument } from '@dmt/common'
+import { IDmtUIPlugin, TJob, useDocument } from '@dmt/common'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
 
 import { Loading } from '@dmt/common'
 
-export const InspectorView = (props: DmtUIPlugin): JSX.Element => {
+export const InspectorView = (props: IDmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
   const [document, loading] = useDocument(dataSourceId, documentId)

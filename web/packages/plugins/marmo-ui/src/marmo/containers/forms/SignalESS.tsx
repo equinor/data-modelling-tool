@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import { Loading, useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, IDmtUIPlugin } from '@dmt/common'
 
 import { SignalESSForm } from './signaless_src.js'
 
-const SignalESSForm_Component = (props: DmtUIPlugin) => {
+const SignalESSForm_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

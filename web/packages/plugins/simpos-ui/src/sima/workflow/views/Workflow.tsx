@@ -2,9 +2,9 @@ import * as React from 'react'
 import { MakeDiagram } from './Diagram'
 
 //import {useEffect, useState} from 'react'
-import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
+import { useDocument, IDmtUIPlugin, Loading } from '@dmt/common'
 
-const Workflow_Component = (props: DmtUIPlugin) => {
+const Workflow_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(
