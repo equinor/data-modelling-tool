@@ -4,24 +4,9 @@ menu: Components
 ---
 
 import { Loading } from 'dmt-core'
-import {ComponentProps} from '@site/src/components/ComponentProps';
+import { ComponentDoc } from '@site/src/components/ComponentDoc';
 
-import {
-  LiveProvider,
-  LiveEditor,
-  LiveError,
-  LivePreview
-} from 'react-live'
+export const componentName = 'Loading'
+export const scope = {}
 
-
-# Loading
-
-## Properties
-
-<ComponentProps file="/components/Loading.tsx" />
-
-## Basic usage
-
-```jsx live
-<Loading />
-```
+<ComponentDoc componentName={componentName} codeScope={scope} />
