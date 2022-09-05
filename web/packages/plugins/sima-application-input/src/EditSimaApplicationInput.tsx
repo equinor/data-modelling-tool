@@ -62,8 +62,7 @@ const ReadOnlyTextField = (props: { text: string; label: string }) => {
   )
 }
 
-const STaskBlueprint =
-  "Ansole.log('tabData', tabDataalysisPlatformDS/Blueprints/STask"
+const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
   const { dataSourceId, onOpen, documentId, readOnly } = props
