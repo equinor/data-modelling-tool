@@ -46,28 +46,28 @@ const extractParameterInfo = (parameter: TParameterInfo) => {
 }
 
 export const Parameters = (props: TComponentDocPartProps) => {
-  const { typeDoc, typeDocs } = props;
+  const { typeDoc, typeDocs } = props
   const title: JSX.Element = <h2>Parameters</h2>
-  const rows: Array<TTableRow> = [];
+  const rows: Array<TTableRow> = []
 
-  const properties = typeDoc.signatures[0].parameters;
-  properties.forEach((property: any, index: number) => {
-    if (property.type.type === 'reference') {
-      const reference = typeDocs.children.find((child: any) => child.id === property.type.id)
+  const parameters = typeDoc.signatures[0].parameters
+  parameters.forEach((parameter: any, index: number) => {
+    if (parameter.type.type === 'reference') {
+      const reference = typeDocs.children.find((child: any) => child.id === parameter.type.id)
       reference.children.forEach((child: any, _index: number) => {
         let parameterInfo = extractParameterInfo(child)
         let row: TTableRow = {
           _id: `${_index}`,
-          name: child.name,
+          name: `${parameter.name}.${child.name}`,
           ...parameterInfo,
         }
         rows.push(row)
       })
     } else {
-      let parameterInfo = extractParameterInfo(property)
+      let parameterInfo = extractParameterInfo(parameter)
       let row: TTableRow = {
         _id: `${index}`,
-        name: property.name,
+        name: parameter.name,
         ...parameterInfo,
       }
       rows.push(row)
