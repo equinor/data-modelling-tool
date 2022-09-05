@@ -1,7 +1,12 @@
 import React, { useContext, useEffect, useState } from 'react'
 import styled from 'styled-components'
 import { formatBytes } from './formatBytes'
-import { AuthContext, DmssAPI, ErrorResponse, Loading } from '@dmt/common'
+import {
+  AuthContext,
+  DmssAPI,
+  ErrorResponse,
+  Loading,
+} from '@data-modelling-tool/core'
 import { AxiosError } from 'axios'
 export const ErrorGroup = styled.div`
   display: flex;

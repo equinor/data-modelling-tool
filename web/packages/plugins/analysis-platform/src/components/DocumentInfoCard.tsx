@@ -7,7 +7,7 @@ import {
   Dialog,
   hasExpertRole,
   hasOperatorRole,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { TDocumentInfoCardProps } from '../Types'
 import styled from 'styled-components'
 
