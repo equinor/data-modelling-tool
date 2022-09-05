@@ -11,11 +11,26 @@
   "description": "Package containing the core utilities and components used to create plugins for the Data Modelling Tool",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "scripts": {
+    "test": "jest --config jestconfig.json",
+    "build": "tsc",
+    "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
+    "lint": "eslint  --ext .js,.jsx,.tsx,.ts .",
+    "prepare": "npm run build",
+    "prepublishOnly": "npm test && npm run lint",
+    "preversion": "npm run lint",
+    "version": "npm run format && git add -A src",
+    "postversion": "git push && git push --tags"
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/equinor/data-modelling-tool.git"
   },
-  "keywords": [],
+  "keywords": [
+    "data-modelling-tool",
+    "dmt",
+    "Equinor"
+  ],
   "license": "MIT",
   "bugs": {
     "url": "https://github.com/equinor/data-modelling-tool/issues"
@@ -23,5 +38,7 @@
   "homepage": "https://github.com/equinor/data-modelling-tool#readme",
   "files": [
     "dist/"
-  ]
+  ],
+  "devDependencies": {},
+  "author": "kkje"
 }
