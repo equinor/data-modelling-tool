@@ -8,7 +8,7 @@ import {
   Button,
   Dialog,
   DmssAPI,
-  DmtSettings,
+  TDmtSettings,
   sortApplications,
   useLocalStorage,
 } from '../index'
@@ -99,7 +99,7 @@ const StyledLink = styled(Link)`
 export const Header = (props: {
   appName: string
   urlPath: string
-  allApps: DmtSettings[]
+  allApps: TDmtSettings[]
 }): JSX.Element => {
   const { appName, urlPath, allApps } = props
   const [version, setVersion] = useState<string>('Version not loaded')

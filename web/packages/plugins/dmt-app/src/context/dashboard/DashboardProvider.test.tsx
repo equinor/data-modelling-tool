@@ -3,7 +3,7 @@ import { act, renderHook } from '@testing-library/react-hooks'
 import DashboardProvider, { useDashboard } from './DashboardProvider'
 import {
   ApplicationContext,
-  DataSources,
+  TDataSources,
   DmssAPI,
   AuthProvider,
 } from '@dmt/common'

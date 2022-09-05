@@ -1,5 +1,5 @@
 import React from 'react'
-import { DataSource } from '@dmt/common'
+import { TDataSource } from '@dmt/common'
 
 export type DatasourceOption = {
   label: string
@@ -9,7 +9,7 @@ export type DatasourceOption = {
 type Props = {
   selectedDatasource: string
   setSelectedDatasource: (value: string) => void
-  datasources: DataSource[]
+  datasources: TDataSource[]
 }
 
 const defaultDatasources: DatasourceOption[] = [
@@ -22,7 +22,7 @@ const defaultDatasources: DatasourceOption[] = [
 export default (props: Props) => {
   const { selectedDatasource, setSelectedDatasource, datasources } = props
   const datasourceOptions = defaultDatasources.concat(
-    datasources.map((ds: DataSource) => ({
+    datasources.map((ds: TDataSource) => ({
       value: ds.id,
       label: ds.name,
     }))

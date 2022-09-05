@@ -16,7 +16,7 @@ import {
 import { Progress, Tooltip } from '@equinor/eds-core-react'
 import React from 'react'
 
-type StyledTreeNode = {
+type TStyledTreeNode = {
   level: number
 }
 
@@ -28,7 +28,7 @@ const ExpandButton = styled.div`
 const StyledTreeNode = styled.div`
   align-items: center;
   display: flex;
-  padding-left: ${(props: StyledTreeNode) => props.level * 20}px;
+  padding-left: ${(props: TStyledTreeNode) => props.level * 20}px;
   cursor: pointer;
   width: -webkit-fill-available;
   &:hover {
@@ -36,7 +36,7 @@ const StyledTreeNode = styled.div`
   }
 `
 
-export type NodeWrapperProps = {
+type TNodeWrapperProps = {
   node: TreeNode
   removeNode?: () => void
   children: any
@@ -121,7 +121,7 @@ const TreeNodeComponent = (props: {
 export const TreeView = (props: {
   nodes: TreeNode[]
   onSelect: (node: TreeNode) => void
-  NodeWrapper?: React.FunctionComponent<NodeWrapperProps>
+  NodeWrapper?: React.FunctionComponent<TNodeWrapperProps>
   NodeWrapperOnClick?: (node: TreeNode) => void
 }) => {
   const { nodes, onSelect, NodeWrapper, NodeWrapperOnClick } = props

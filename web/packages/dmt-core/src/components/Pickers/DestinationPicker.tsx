@@ -6,7 +6,7 @@ import {
 } from '../../utils/variables'
 import { EBlueprint } from '../../Enums'
 import {
-  NodeWrapperProps,
+  TNodeWrapperProps,
   TreeNode,
   TreeView,
   truncatePathString,
@@ -24,7 +24,7 @@ import {
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 
-export type DestinationPickerProps = {
+type TDestinationPickerProps = {
   onChange: (value: string) => void
   formData: string
   disabled?: boolean
@@ -32,7 +32,7 @@ export type DestinationPickerProps = {
   label?: string
 }
 
-export const DestinationPicker = (props: DestinationPickerProps) => {
+export const DestinationPicker = (props: TDestinationPickerProps) => {
   const { onChange, formData, disabled, scope, label } = props
   const { token } = useContext(AuthContext)
   const appConfig = useContext(ApplicationContext)

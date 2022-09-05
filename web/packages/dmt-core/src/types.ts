@@ -8,18 +8,18 @@ export type TRoute = {
 
 export type TApp = {
   applications: any
-  settings: DmtSettings
+  settings: TDmtSettings
 }
 
 export type TContent = {
   content: ReactNode
-  settings: DmtSettings
+  settings: TDmtSettings
 }
 
 export type TLayout = {
   content: ReactNode
-  settings: DmtSettings
-  allApps: DmtSettings[]
+  settings: TDmtSettings
+  allApps: TDmtSettings[]
 }
 
 export type TReference = {
@@ -81,7 +81,7 @@ export type TTaskFormData = {
   name?: string
 }
 
-export type DmtSettings = {
+export type TDmtSettings = {
   name: string
   label: string
   tabIndex: number
@@ -147,3 +147,5 @@ export type TValidEntity = {
   type: string
   [key: string]: any
 }
+
+export type TUserIdMapping = { userId: string; username: string }
