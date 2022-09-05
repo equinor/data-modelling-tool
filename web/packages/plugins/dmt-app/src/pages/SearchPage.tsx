@@ -4,7 +4,7 @@ import styled from 'styled-components'
 import { NotificationManager } from 'react-notifications'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
-import { MultiSelect } from '@equinor/eds-core-react'
+import { Autocomplete, AutocompleteChanges } from '@equinor/eds-core-react'
 import { AxiosError, AxiosResponse } from 'axios'
 
 import { Link } from 'react-router-dom'
@@ -447,16 +447,17 @@ function SelectDataSource(props: {
         marginTop: '10px',
       }}
     >
-      <MultiSelect
-        label="Select data sources to search"
-        initialSelectedItems={selectedDataSources}
-        handleSelectedItemsChange={(event) => {
+      <Autocomplete
+        options={allDataSources.map((dataSource: DataSource) => dataSource.id)}
+        label={'Select data sources to search'}
+        multiple
+        initialSelectedOptions={selectedDataSources}
+        onOptionsChange={(event: AutocompleteChanges<string>) => {
           if (event.selectedItems) {
             setDataSources(event.selectedItems)
           }
         }}
-        items={allDataSources.map((dataSource: DataSource) => dataSource.id)}
-      ></MultiSelect>
+      />
       <FaDatabase
         style={{
           color: 'gray',
@@ -470,7 +471,7 @@ function SelectDataSource(props: {
 }
 
 export default ({ settings }: TGenericObject) => {
-  const [searchSettings, setSearchSettings] = useLocalStorage(
+  const [searchSettings, setSearchSettings] = useLocalStorage<TGenericObject>(
     'searchSettings',
     {
       dataSources: [],
@@ -529,7 +530,7 @@ export default ({ settings }: TGenericObject) => {
   return (
     <>
       <SelectDataSource
-        selectedDataSources={searchSettings.dataSource}
+        selectedDataSources={searchSettings.dataSources}
         setDataSources={(dataSources) =>
           setSearchSettings({ ...searchSettings, dataSources: dataSources })
         }
