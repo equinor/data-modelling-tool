@@ -13,7 +13,7 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
-    "generate-typedoc": "typedoc ./../web/packages/dmt-core/src/index.tsx --tsconfig ./../web/packages/dmt-core/tsconfig.json --json src/components/typedocs.json",
+    "generate-typedocs": "node generate-typedocs.js",
     "generate-components":  "node generate-components.js",
     "generate-hooks": "typedoc ./../web/packages/dmt-core/src/hooks/index.tsx --tsconfig ./../web/packages/dmt-core/tsconfig.json --json src/components/hooks.json"
   },

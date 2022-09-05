@@ -71,11 +71,13 @@ const config = {
                 configureWebpack(config, isServer, utils) {
                     config.plugins = config.plugins.filter(plugin => !(plugin instanceof ModuleScopePlugin));
                     let rule = config.module.rules[5]
+                    // @ts-ignore
                     rule.exclude = excludeJS
                     config.resolve.roots = [
                         ...config.resolve.roots,
                         path.resolve(__dirname, '../web/packages/dmt-core')
                     ]
+                    // @ts-ignore
                     rule.include = [
                         fs.realpathSync(path.join(__dirname)),
                         fs.realpathSync(path.join(__dirname, 'node_modules/@data-modelling-tool/core/src')),
