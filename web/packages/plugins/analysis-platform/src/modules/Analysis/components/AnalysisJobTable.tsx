@@ -130,7 +130,9 @@ const JobRow = (props: {
   return (
     <Table.Row>
       <Table.Cell onClick={viewJob}>
-        {jobStatus !== EJobStatus.CREATED ? job.started : 'Not started'}
+        {jobStatus !== EJobStatus.CREATED
+          ? new Date(job.started).toLocaleString(navigator.language)
+          : 'Not started'}
       </Table.Cell>
       <Table.Cell onClick={viewJob}>{job.triggeredBy}</Table.Cell>
       <Table.Cell onClick={viewJob}>{jobStatus}</Table.Cell>
