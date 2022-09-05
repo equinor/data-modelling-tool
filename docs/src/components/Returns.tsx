@@ -8,7 +8,7 @@ export const Returns = (props: TComponentDocPartProps) => {
 
   // Find the "@returns" block, if present
   const returnsBlock = findBlockByTag('@returns', typeDoc)
-  if (returnsBlock.content.length < 0) {
+  if (!returnsBlock || returnsBlock.content?.length < 0) {
     return (
       <>
         {title}
@@ -16,9 +16,9 @@ export const Returns = (props: TComponentDocPartProps) => {
       </>
     )
   }
-  const returnsDescription = returnsBlock.content.find(
-    (content: any) => content.kind === "text"
-  )?.text;
+  
+  const returnsDescription = returnsBlock.content.map(
+    (content: { kind: string, text: string }) => content.text).join('')
   return (
     <>
       {title}

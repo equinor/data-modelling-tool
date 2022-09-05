@@ -29,7 +29,7 @@ export const ExampleUsage = (props: ExampleUsageProps) => {
 
   // Find the "@usage" block, if present
   const usageBlock = findBlockByTag('@usage', typeDoc)
-  if (usageBlock.content.length < 0) {
+  if (!usageBlock || usageBlock.content?.length < 0) {
     return (
       <>
         {title}
