@@ -37,6 +37,20 @@ repos:
       files: ^web/.*\.(ts|tsx|js|css|html|json)$
       args: ['--config=web/.prettierrc.js', '--ignore-path=web/.prettierignore']
 
+- repo: https://github.com/hadialqattan/pycln
+  rev: v1.3.5
+  hooks:
+    - id: pycln
+      args: [./api/src, --all]
+      pass_filenames: false
+
+- repo: https://github.com/pycqa/isort
+  rev: 5.10.1
+  hooks:
+    - id: isort
+      name: isort (python)
+      files: ^api/src/.*\.py$
+
 
 - repo: local
   hooks:

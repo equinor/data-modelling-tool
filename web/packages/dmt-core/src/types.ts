@@ -29,7 +29,7 @@ export type TReference = {
 }
 
 export type TBlob = {
-  _blob_id: string
+  _blob_id?: string
   name: string
   type: string
 }
@@ -38,6 +38,7 @@ export type TLocation = {
   lat: number
   long: number
   name: string
+  label?: string
   _id?: string
   type?: string
 }
@@ -52,6 +53,34 @@ export type TContainerImage = {
   registryName: string
 }
 
+export type TGenericObject = {
+  [key: string]: any
+}
+
+export type TSTaskBody = {
+  type: string
+  name: string
+  blob: TBlob
+}
+export type TRunner = { image?: any; type: string }
+
+export type TContainer = {
+  label?: string
+  image: TContainerImage
+  customCommand?: string
+}
+
+export type TTaskFormData = {
+  applicationInput?: TGenericObject
+  runner?: TRunner
+  type?: string
+  outputType?: string
+  inputType?: string
+  description?: string
+  label?: string
+  name?: string
+}
+
 export type DmtSettings = {
   name: string
   label: string
@@ -63,8 +92,8 @@ export type DmtSettings = {
   packages: any
   models: any
   actions: any
-  file_loc: string
-  data_source_aliases: any
+  fileLocation: string
+  dataSourceAliases: any
   urlPath: string
 }
 

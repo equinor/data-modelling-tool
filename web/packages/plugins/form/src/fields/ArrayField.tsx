@@ -6,9 +6,15 @@ import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { isPrimitive } from '../utils'
 import { useRegistryContext } from '../RegistryContext'
-import { AuthContext, DmssAPI, DmtAPI } from '@data-modelling-tool/core'
+import {
+  AuthContext,
+  DmssAPI,
+  DmtAPI,
+  ErrorResponse,
+} from '@data-modelling-tool/core'
 import DynamicTable from '../components/DynamicTable'
 import { OpenObject } from './ObjectField'
+import { AxiosError } from 'axios'
 
 const Wrapper = styled.div`
   margin-bottom: 20px;
@@ -69,7 +75,7 @@ export default function Fields(props: any) {
           .then(() => {
             append(newEntity)
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError<ErrorResponse>) => {
             console.error(error)
           })
       })

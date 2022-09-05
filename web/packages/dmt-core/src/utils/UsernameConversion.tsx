@@ -1,4 +1,4 @@
-import { TokenResponse } from '../components/AccessControlList'
+import { TokenResponse } from '../components/AccessControl/AccessControlList'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'

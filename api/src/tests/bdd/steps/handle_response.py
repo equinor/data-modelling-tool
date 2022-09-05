@@ -1,8 +1,10 @@
-from behave import then
 import json
-from deepdiff import DeepDiff
-from pprint import pprint
 import pprint
+from pprint import pprint
+
+from behave import then
+from deepdiff import DeepDiff
+
 from utils.data_structure.compare import pretty_eq, print_pygments
 from utils.data_structure.find import find
 

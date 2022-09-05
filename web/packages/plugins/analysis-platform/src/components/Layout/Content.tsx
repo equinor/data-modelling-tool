@@ -14,7 +14,7 @@ const PageContent = styled.div`
 `
 
 export default (props: TContent): JSX.Element => {
-  const { content } = props
+  const { content, settings } = props
   const { data_source, entity_id } = useParams<{
     data_source: string
     entity_id: string
@@ -26,7 +26,7 @@ export default (props: TContent): JSX.Element => {
         <DocumentPath absoluteDottedId={`${data_source}/${entity_id}`} />
       )}
       {/*@ts-ignore*/}
-      <PageContent>{content({ settings: props.settings })}</PageContent>
+      <PageContent>{content({ settings: settings })}</PageContent>
     </Content>
   )
 }

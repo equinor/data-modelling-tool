@@ -1,16 +1,15 @@
 from __future__ import annotations
 
+import io
+import zipfile
 from collections import defaultdict
 from pathlib import Path
-from typing import Union, Dict, Optional, List, Set, Sequence
+from typing import Dict, List, Optional, Sequence, Set, Union
 
-from domain_classes.schema import Factory, get_dto
 from domain_classes.dto import DTO
-from restful import request_object as req
-import zipfile
-import io
-
+from domain_classes.schema import Factory, get_dto
 from enums import SIMOS
+from restful import request_object as req
 
 
 def get(obj, attr: str):

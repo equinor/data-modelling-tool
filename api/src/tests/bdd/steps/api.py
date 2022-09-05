@@ -1,6 +1,6 @@
 import json
 
-from behave import when, given
+from behave import given, when
 
 
 def context_response_json(context):

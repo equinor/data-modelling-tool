@@ -4,6 +4,7 @@ import {
   Button,
   useDocument,
   Loading,
+  TGenericObject,
 } from '@data-modelling-tool/core'
 
 // @ts-ignore
@@ -16,7 +17,10 @@ type PreviewProps = {
 
 export default (props: PreviewProps) => {
   const { documentId, dataSourceId } = props
-  const [document, loading] = useDocument(dataSourceId, documentId)
+  const [document, loading] = useDocument<TGenericObject>(
+    dataSourceId,
+    documentId
+  )
   const infoText: string = ''
   if (loading) {
     return <Loading />

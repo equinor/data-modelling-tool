@@ -10,6 +10,7 @@ import {
   UiPluginContext,
 } from '@data-modelling-tool/core'
 import { useModalContext } from '../../../context/modal/ModalContext'
+import { AxiosError } from 'axios'
 
 const constructType = (selectedDatasourceType: string) => {
   let template = ''
@@ -42,7 +43,8 @@ const AddDataSourceComponent = () => {
         // @todo fix when endpoint is ready.
         // dispatch(EntitiesActions.addDatasource(res.data))
       })
-      .catch((e: any) => {
+      .catch((e: AxiosError<ErrorResponse>) => {
+        console.error(e)
         NotificationManager.error(`Failed to create datasource ${data.name}`)
         console.log(e)
       })

@@ -39,9 +39,11 @@ import {
 // @ts-ignore
 import { BasicEntity } from '../models'
 // @ts-ignore
+import { ErrorResponse } from '../models'
+// @ts-ignore
 import { GetJobResultResponse } from '../models'
 // @ts-ignore
-import { HTTPValidationError } from '../models'
+import { StartJobResponse } from '../models'
 // @ts-ignore
 import { StatusJobResponse } from '../models'
 /**
@@ -311,19 +313,19 @@ export const DMTApiAxiosParamCreator = function (
     /**
      *
      * @summary Result
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     jobResult: async (
-      jobId: string,
+      jobUid: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('jobResult', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}/result`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobUid' is not null or undefined
+      assertParamExists('jobResult', 'jobUid', jobUid)
+      const localVarPath = `/api/v1/job/{job_uid}/result`.replace(
+        `{${'job_uid'}}`,
+        encodeURIComponent(String(jobUid))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -339,6 +341,15 @@ export const DMTApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -357,19 +368,19 @@ export const DMTApiAxiosParamCreator = function (
     /**
      *
      * @summary Status
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     jobStatus: async (
-      jobId: string,
+      jobUid: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('jobStatus', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobUid' is not null or undefined
+      assertParamExists('jobStatus', 'jobUid', jobUid)
+      const localVarPath = `/api/v1/job/{job_uid}`.replace(
+        `{${'job_uid'}}`,
+        encodeURIComponent(String(jobUid))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -385,6 +396,15 @@ export const DMTApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -403,19 +423,19 @@ export const DMTApiAxiosParamCreator = function (
     /**
      *
      * @summary Remove
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     removeJob: async (
-      jobId: string,
+      jobUid: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('removeJob', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobUid' is not null or undefined
+      assertParamExists('removeJob', 'jobUid', jobUid)
+      const localVarPath = `/api/v1/job/{job_uid}`.replace(
+        `{${'job_uid'}}`,
+        encodeURIComponent(String(jobUid))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -431,6 +451,15 @@ export const DMTApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -486,19 +515,19 @@ export const DMTApiAxiosParamCreator = function (
     /**
      *
      * @summary Start
-     * @param {string} jobId
+     * @param {string} jobDmssId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     startJob: async (
-      jobId: string,
+      jobDmssId: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('startJob', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobDmssId' is not null or undefined
+      assertParamExists('startJob', 'jobDmssId', jobDmssId)
+      const localVarPath = `/api/v1/job/{job_dmss_id}`.replace(
+        `{${'job_dmss_id'}}`,
+        encodeURIComponent(String(jobDmssId))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -514,6 +543,15 @@ export const DMTApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -671,12 +709,12 @@ export const DMTApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Result
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async jobResult(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): Promise<
       (
@@ -685,7 +723,7 @@ export const DMTApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<GetJobResultResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.jobResult(
-        jobId,
+        jobUid,
         options
       )
       return createRequestFunction(
@@ -698,12 +736,12 @@ export const DMTApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Status
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async jobStatus(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): Promise<
       (
@@ -712,7 +750,7 @@ export const DMTApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<StatusJobResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.jobStatus(
-        jobId,
+        jobUid,
         options
       )
       return createRequestFunction(
@@ -725,18 +763,18 @@ export const DMTApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Remove
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async removeJob(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.removeJob(
-        jobId,
+        jobUid,
         options
       )
       return createRequestFunction(
@@ -770,18 +808,21 @@ export const DMTApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Start
-     * @param {string} jobId
+     * @param {string} jobDmssId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async startJob(
-      jobId: string,
+      jobDmssId: string,
       options?: any
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<StartJobResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.startJob(
-        jobId,
+        jobDmssId,
         options
       )
       return createRequestFunction(
@@ -883,40 +924,40 @@ export const DMTApiFactory = function (
     /**
      *
      * @summary Result
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     jobResult(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): AxiosPromise<GetJobResultResponse> {
       return localVarFp
-        .jobResult(jobId, options)
+        .jobResult(jobUid, options)
         .then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Status
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    jobStatus(jobId: string, options?: any): AxiosPromise<StatusJobResponse> {
+    jobStatus(jobUid: string, options?: any): AxiosPromise<StatusJobResponse> {
       return localVarFp
-        .jobStatus(jobId, options)
+        .jobStatus(jobUid, options)
         .then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Remove
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    removeJob(jobId: string, options?: any): AxiosPromise<any> {
+    removeJob(jobUid: string, options?: any): AxiosPromise<any> {
       return localVarFp
-        .removeJob(jobId, options)
+        .removeJob(jobUid, options)
         .then((request) => request(axios, basePath))
     },
     /**
@@ -933,13 +974,13 @@ export const DMTApiFactory = function (
     /**
      *
      * @summary Start
-     * @param {string} jobId
+     * @param {string} jobDmssId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    startJob(jobId: string, options?: any): AxiosPromise<any> {
+    startJob(jobDmssId: string, options?: any): AxiosPromise<StartJobResponse> {
       return localVarFp
-        .startJob(jobId, options)
+        .startJob(jobDmssId, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -1047,7 +1088,7 @@ export interface DMTApiJobResultRequest {
    * @type {string}
    * @memberof DMTApiJobResult
    */
-  readonly jobId: string
+  readonly jobUid: string
 }
 
 /**
@@ -1061,7 +1102,7 @@ export interface DMTApiJobStatusRequest {
    * @type {string}
    * @memberof DMTApiJobStatus
    */
-  readonly jobId: string
+  readonly jobUid: string
 }
 
 /**
@@ -1075,7 +1116,7 @@ export interface DMTApiRemoveJobRequest {
    * @type {string}
    * @memberof DMTApiRemoveJob
    */
-  readonly jobId: string
+  readonly jobUid: string
 }
 
 /**
@@ -1089,7 +1130,7 @@ export interface DMTApiStartJobRequest {
    * @type {string}
    * @memberof DMTApiStartJob
    */
-  readonly jobId: string
+  readonly jobDmssId: string
 }
 
 /**
@@ -1200,7 +1241,7 @@ export class DMTApi extends BaseAPI {
    */
   public jobResult(requestParameters: DMTApiJobResultRequest, options?: any) {
     return DMTApiFp(this.configuration)
-      .jobResult(requestParameters.jobId, options)
+      .jobResult(requestParameters.jobUid, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -1214,7 +1255,7 @@ export class DMTApi extends BaseAPI {
    */
   public jobStatus(requestParameters: DMTApiJobStatusRequest, options?: any) {
     return DMTApiFp(this.configuration)
-      .jobStatus(requestParameters.jobId, options)
+      .jobStatus(requestParameters.jobUid, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -1228,7 +1269,7 @@ export class DMTApi extends BaseAPI {
    */
   public removeJob(requestParameters: DMTApiRemoveJobRequest, options?: any) {
     return DMTApiFp(this.configuration)
-      .removeJob(requestParameters.jobId, options)
+      .removeJob(requestParameters.jobUid, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -1255,7 +1296,7 @@ export class DMTApi extends BaseAPI {
    */
   public startJob(requestParameters: DMTApiStartJobRequest, options?: any) {
     return DMTApiFp(this.configuration)
-      .startJob(requestParameters.jobId, options)
+      .startJob(requestParameters.jobDmssId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

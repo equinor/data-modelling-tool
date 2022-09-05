@@ -37,9 +37,11 @@ import {
   RequiredError,
 } from '../base'
 // @ts-ignore
+import { ErrorResponse } from '../models'
+// @ts-ignore
 import { GetJobResultResponse } from '../models'
 // @ts-ignore
-import { HTTPValidationError } from '../models'
+import { StartJobResponse } from '../models'
 // @ts-ignore
 import { StatusJobResponse } from '../models'
 /**
@@ -53,19 +55,19 @@ export const JobsApiAxiosParamCreator = function (
     /**
      *
      * @summary Result
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     jobResult: async (
-      jobId: string,
+      jobUid: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('jobResult', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}/result`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobUid' is not null or undefined
+      assertParamExists('jobResult', 'jobUid', jobUid)
+      const localVarPath = `/api/v1/job/{job_uid}/result`.replace(
+        `{${'job_uid'}}`,
+        encodeURIComponent(String(jobUid))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -81,6 +83,15 @@ export const JobsApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -99,19 +110,19 @@ export const JobsApiAxiosParamCreator = function (
     /**
      *
      * @summary Status
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     jobStatus: async (
-      jobId: string,
+      jobUid: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('jobStatus', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobUid' is not null or undefined
+      assertParamExists('jobStatus', 'jobUid', jobUid)
+      const localVarPath = `/api/v1/job/{job_uid}`.replace(
+        `{${'job_uid'}}`,
+        encodeURIComponent(String(jobUid))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -127,6 +138,15 @@ export const JobsApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -145,19 +165,19 @@ export const JobsApiAxiosParamCreator = function (
     /**
      *
      * @summary Remove
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     removeJob: async (
-      jobId: string,
+      jobUid: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('removeJob', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobUid' is not null or undefined
+      assertParamExists('removeJob', 'jobUid', jobUid)
+      const localVarPath = `/api/v1/job/{job_uid}`.replace(
+        `{${'job_uid'}}`,
+        encodeURIComponent(String(jobUid))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -173,6 +193,15 @@ export const JobsApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -191,19 +220,19 @@ export const JobsApiAxiosParamCreator = function (
     /**
      *
      * @summary Start
-     * @param {string} jobId
+     * @param {string} jobDmssId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     startJob: async (
-      jobId: string,
+      jobDmssId: string,
       options: any = {}
     ): Promise<RequestArgs> => {
-      // verify required parameter 'jobId' is not null or undefined
-      assertParamExists('startJob', 'jobId', jobId)
-      const localVarPath = `/api/v1/job/{job_id}`.replace(
-        `{${'job_id'}}`,
-        encodeURIComponent(String(jobId))
+      // verify required parameter 'jobDmssId' is not null or undefined
+      assertParamExists('startJob', 'jobDmssId', jobDmssId)
+      const localVarPath = `/api/v1/job/{job_dmss_id}`.replace(
+        `{${'job_dmss_id'}}`,
+        encodeURIComponent(String(jobDmssId))
       )
       // use dummy base URL string because the URL constructor only accepts absolute URLs.
       const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL)
@@ -219,6 +248,15 @@ export const JobsApiAxiosParamCreator = function (
       }
       const localVarHeaderParameter = {} as any
       const localVarQueryParameter = {} as any
+
+      // authentication OAuth2AuthorizationCodeBearer required
+      // oauth required
+      await setOAuthToObject(
+        localVarHeaderParameter,
+        'OAuth2AuthorizationCodeBearer',
+        [],
+        configuration
+      )
 
       setSearchParams(localVarUrlObj, localVarQueryParameter, options.query)
       let headersFromBaseOptions =
@@ -247,12 +285,12 @@ export const JobsApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Result
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async jobResult(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): Promise<
       (
@@ -261,7 +299,7 @@ export const JobsApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<GetJobResultResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.jobResult(
-        jobId,
+        jobUid,
         options
       )
       return createRequestFunction(
@@ -274,12 +312,12 @@ export const JobsApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Status
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async jobStatus(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): Promise<
       (
@@ -288,7 +326,7 @@ export const JobsApiFp = function (configuration?: Configuration) {
       ) => AxiosPromise<StatusJobResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.jobStatus(
-        jobId,
+        jobUid,
         options
       )
       return createRequestFunction(
@@ -301,18 +339,18 @@ export const JobsApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Remove
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async removeJob(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): Promise<
       (axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.removeJob(
-        jobId,
+        jobUid,
         options
       )
       return createRequestFunction(
@@ -325,18 +363,21 @@ export const JobsApiFp = function (configuration?: Configuration) {
     /**
      *
      * @summary Start
-     * @param {string} jobId
+     * @param {string} jobDmssId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     async startJob(
-      jobId: string,
+      jobDmssId: string,
       options?: any
     ): Promise<
-      (axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>
+      (
+        axios?: AxiosInstance,
+        basePath?: string
+      ) => AxiosPromise<StartJobResponse>
     > {
       const localVarAxiosArgs = await localVarAxiosParamCreator.startJob(
-        jobId,
+        jobDmssId,
         options
       )
       return createRequestFunction(
@@ -363,52 +404,52 @@ export const JobsApiFactory = function (
     /**
      *
      * @summary Result
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
     jobResult(
-      jobId: string,
+      jobUid: string,
       options?: any
     ): AxiosPromise<GetJobResultResponse> {
       return localVarFp
-        .jobResult(jobId, options)
+        .jobResult(jobUid, options)
         .then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Status
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    jobStatus(jobId: string, options?: any): AxiosPromise<StatusJobResponse> {
+    jobStatus(jobUid: string, options?: any): AxiosPromise<StatusJobResponse> {
       return localVarFp
-        .jobStatus(jobId, options)
+        .jobStatus(jobUid, options)
         .then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Remove
-     * @param {string} jobId
+     * @param {string} jobUid
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    removeJob(jobId: string, options?: any): AxiosPromise<any> {
+    removeJob(jobUid: string, options?: any): AxiosPromise<any> {
       return localVarFp
-        .removeJob(jobId, options)
+        .removeJob(jobUid, options)
         .then((request) => request(axios, basePath))
     },
     /**
      *
      * @summary Start
-     * @param {string} jobId
+     * @param {string} jobDmssId
      * @param {*} [options] Override http request option.
      * @throws {RequiredError}
      */
-    startJob(jobId: string, options?: any): AxiosPromise<any> {
+    startJob(jobDmssId: string, options?: any): AxiosPromise<StartJobResponse> {
       return localVarFp
-        .startJob(jobId, options)
+        .startJob(jobDmssId, options)
         .then((request) => request(axios, basePath))
     },
   }
@@ -425,7 +466,7 @@ export interface JobsApiJobResultRequest {
    * @type {string}
    * @memberof JobsApiJobResult
    */
-  readonly jobId: string
+  readonly jobUid: string
 }
 
 /**
@@ -439,7 +480,7 @@ export interface JobsApiJobStatusRequest {
    * @type {string}
    * @memberof JobsApiJobStatus
    */
-  readonly jobId: string
+  readonly jobUid: string
 }
 
 /**
@@ -453,7 +494,7 @@ export interface JobsApiRemoveJobRequest {
    * @type {string}
    * @memberof JobsApiRemoveJob
    */
-  readonly jobId: string
+  readonly jobUid: string
 }
 
 /**
@@ -467,7 +508,7 @@ export interface JobsApiStartJobRequest {
    * @type {string}
    * @memberof JobsApiStartJob
    */
-  readonly jobId: string
+  readonly jobDmssId: string
 }
 
 /**
@@ -487,7 +528,7 @@ export class JobsApi extends BaseAPI {
    */
   public jobResult(requestParameters: JobsApiJobResultRequest, options?: any) {
     return JobsApiFp(this.configuration)
-      .jobResult(requestParameters.jobId, options)
+      .jobResult(requestParameters.jobUid, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -501,7 +542,7 @@ export class JobsApi extends BaseAPI {
    */
   public jobStatus(requestParameters: JobsApiJobStatusRequest, options?: any) {
     return JobsApiFp(this.configuration)
-      .jobStatus(requestParameters.jobId, options)
+      .jobStatus(requestParameters.jobUid, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -515,7 +556,7 @@ export class JobsApi extends BaseAPI {
    */
   public removeJob(requestParameters: JobsApiRemoveJobRequest, options?: any) {
     return JobsApiFp(this.configuration)
-      .removeJob(requestParameters.jobId, options)
+      .removeJob(requestParameters.jobUid, options)
       .then((request) => request(this.axios, this.basePath))
   }
 
@@ -529,7 +570,7 @@ export class JobsApi extends BaseAPI {
    */
   public startJob(requestParameters: JobsApiStartJobRequest, options?: any) {
     return JobsApiFp(this.configuration)
-      .startJob(requestParameters.jobId, options)
+      .startJob(requestParameters.jobDmssId, options)
       .then((request) => request(this.axios, this.basePath))
   }
 }

@@ -1,5 +1,4 @@
-from typing import List, Dict
-
+from typing import Dict, List
 
 from domain_classes.blueprint_attribute import BlueprintAttribute
 

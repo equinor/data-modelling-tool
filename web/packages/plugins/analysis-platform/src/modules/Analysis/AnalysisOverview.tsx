@@ -1,46 +1,36 @@
 import {
   AuthContext,
-  DmtSettings,
-  hasDomainRole,
+  hasExpertRole,
+  Loading,
+  useSearch,
 } from '@data-modelling-tool/core'
 import React, { ReactNode, useContext } from 'react'
-import { AnalysisTable } from './components'
-import { Link, useLocation } from 'react-router-dom'
-import { Button, Divider } from '@equinor/eds-core-react'
+import { DEFAULT_DATASOURCE_ID } from '../../const'
+import { EBlueprints } from '../../Enums'
+import { TAnalysis } from '../../Types'
+import { AnalysisTable, CreateAnalysisButton } from './components'
+import { Divider } from '@equinor/eds-core-react'
 
-type NewAnalysisButtonProps = {
-  urlPath: string
-}
-
-const NewAnalysisButton = (props: NewAnalysisButtonProps) => {
-  const { urlPath } = props
-  const location = useLocation()
-  const to = {
-    pathname: `/${urlPath}/analysis/new`,
-    state: location.state,
-  }
-  return (
-    <Link to={to}>
-      <Button>Create new analysis</Button>
-    </Link>
-  )
-}
-
-type AnalysisOverviewProps = {
-  settings: DmtSettings
-}
-
-export const AnalysisOverview = (props: AnalysisOverviewProps): ReactNode => {
-  const { settings } = props
+export const AnalysisOverview = (): JSX.Element => {
   const { tokenData } = useContext(AuthContext)
+  const [analyses, isLoading] = useSearch<TAnalysis>(
+    {
+      type: EBlueprints.ANALYSIS,
+    },
+    DEFAULT_DATASOURCE_ID
+  )
+
+  if (isLoading) return <Loading />
 
   return (
     <>
-      {hasDomainRole(tokenData) && (
-        <NewAnalysisButton urlPath={settings.urlPath} />
+      {hasExpertRole(tokenData) && (
+        <>
+          <CreateAnalysisButton />
+          <Divider variant="medium" />
+        </>
       )}
-      <Divider variant="medium" />
-      <AnalysisTable />
+      <AnalysisTable analyses={analyses} />
     </>
   )
 }

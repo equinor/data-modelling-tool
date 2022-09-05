@@ -1,8 +1,9 @@
 from uuid import UUID
 
+from pydantic import BaseModel
+
 from services.job_handler_interface import JobStatus
 from services.job_service import JobService
-from pydantic import BaseModel
 
 
 class StatusJobResponse(BaseModel):

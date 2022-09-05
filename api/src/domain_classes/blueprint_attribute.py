@@ -1,8 +1,7 @@
-from typing import Optional
+from typing import Optional, Union
 
 from domain_classes.dimension import Dimension
-from enums import SIMOS
-from enums import PRIMITIVES
+from enums import PRIMITIVES, SIMOS
 
 
 class BlueprintAttribute:
@@ -12,7 +11,7 @@ class BlueprintAttribute:
         attribute_type: str,
         description: Optional[str] = None,
         label: Optional[str] = None,
-        default: Optional[str] = None,
+        default: Optional[Union[str, list]] = None,
         dimensions: Optional[str] = "",
         optional: Optional[bool] = None,
         contained: Optional[bool] = None,

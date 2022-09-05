@@ -11,6 +11,7 @@ import {
   Dialog,
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
+  ErrorResponse,
 } from '@data-modelling-tool/core'
 
 // @ts-ignore
@@ -178,18 +179,16 @@ export const NodeRightClickMenu = (props: {
     await dmssAPI
       .explorerRemoveByPath({
         dataSourceId: node.dataSource,
-        removeByPathRequest: {
-          directory: node.pathFromRootPackage(),
-        },
+        directory: node.pathFromRootPackage(),
       })
       .then(() => {
         node.remove()
         NotificationManager.success('Deleted')
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
         NotificationManager.error(
-          JSON.stringify(error.message),
+          error.response?.data.message,
           'Failed to delete'
         )
       })
@@ -211,11 +210,9 @@ export const NodeRightClickMenu = (props: {
         updateUncontained: true,
       })
       .then(() => node.expand())
-      .catch((error: AxiosError<any>) => {
-        NotificationManager.error(
-          JSON.stringify(error.response?.data?.message),
-          'Failed to create new folder'
-        )
+      .catch((error: AxiosError<ErrorResponse>) => {
+        console.error(error)
+        NotificationManager.error(error.response?.data.message)
       })
   }
 
@@ -236,9 +233,9 @@ export const NodeRightClickMenu = (props: {
       .then(() => {
         node.expand()
       })
-      .catch((error: Error) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         NotificationManager.error(
-          JSON.stringify(error.message),
+          JSON.stringify(error.response?.data.message),
           'Failed to create new root package'
         )
       })
@@ -376,10 +373,10 @@ export const NodeRightClickMenu = (props: {
                     node.expand()
                     setScrimToShow('')
                   })
-                  .catch((error: AxiosError<any>) => {
+                  .catch((error: AxiosError<ErrorResponse>) => {
                     console.error(error)
                     NotificationManager.error(
-                      error?.response?.data?.message,
+                      error.response?.data.message,
                       'Failed to create entity'
                     )
                   })
@@ -431,9 +428,9 @@ export const NodeRightClickMenu = (props: {
                     setScrimToShow('')
                     NotificationManager.success(`New entity created`, 'Success')
                   })
-                  .catch((error: Error) => {
+                  .catch((error: AxiosError<ErrorResponse>) => {
                     console.error(error)
-                    NotificationManager.error('Failed to create entity')
+                    NotificationManager.error(error.response?.data.message)
                   })
                   .finally(() => setLoading(false))
               }}
@@ -485,9 +482,9 @@ export const NodeRightClickMenu = (props: {
                   .then(() => {
                     setScrimToShow('')
                   })
-                  .catch((error: Error) => {
+                  .catch((error: AxiosError<ErrorResponse>) => {
                     console.error(error)
-                    NotificationManager.error('Failed to create blueprint')
+                    NotificationManager.error(error.response?.data.message)
                   })
                   .finally(() => setLoading(false))
               }}

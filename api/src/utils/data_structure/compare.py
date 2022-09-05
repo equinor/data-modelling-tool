@@ -1,8 +1,10 @@
-from utils.data_structure.traverse import traverse_compare
-from pygments import highlight
-from pygments.lexers import JsonLexer
-from pygments.formatters import TerminalFormatter
 import json
+
+from pygments import highlight
+from pygments.formatters import TerminalFormatter
+from pygments.lexers import JsonLexer
+
+from utils.data_structure.traverse import traverse_compare
 
 
 def print_pygments(json_object):

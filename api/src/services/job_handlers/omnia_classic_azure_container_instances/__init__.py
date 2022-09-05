@@ -9,14 +9,14 @@ from typing import List, Tuple
 from azure.core.exceptions import ResourceNotFoundError
 from azure.identity import ClientSecretCredential
 from azure.mgmt.containerinstance import ContainerInstanceManagementClient
-from azure.mgmt.containerinstance.models import (
-    EnvironmentVariable,
-)
+from azure.mgmt.containerinstance.models import EnvironmentVariable
 
 from config import config
-from repository.repository_exceptions import JobNotFoundException
+from restful.exceptions import NotFoundException
 from services.job_handler_interface import JobStatus, ServiceJobHandlerInterface
-from services.job_handlers.omnia_classic_azure_container_instances.ARM_deployer import Deployer
+from services.job_handlers.omnia_classic_azure_container_instances.ARM_deployer import (
+    Deployer,
+)
 from utils.logging import logger
 
 AccessToken = namedtuple("AccessToken", ["token", "expires_on"])
@@ -131,11 +131,9 @@ class JobHandler(ServiceJobHandlerInterface):
             ).content
             logger.setLevel(config.LOGGER_LEVEL)
         except ResourceNotFoundError:
-            raise JobNotFoundException(
-                (
-                    f"The container '{self.azure_valid_container_name}' does not exist. ",
-                    "Either it has not been created, or it's not ready to accept requests.",
-                )
+            raise NotFoundException(
+                f"The container '{self.azure_valid_container_name}' does not exist. "
+                + "Either it has not been created, or it's not ready to accept requests."
             )
         container_group = self.aci_client.container_groups.get(
             config.AZURE_JOB_RESOURCE_GROUP, self.azure_valid_container_name

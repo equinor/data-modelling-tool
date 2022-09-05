@@ -5,6 +5,7 @@ import {
   DmtPluginType,
   DmtUIPlugin,
   Loading,
+  TDmtPlugin,
   useDocument,
 } from '@data-modelling-tool/core'
 import PreviewPlugin from './YamlPlugin'
@@ -18,16 +19,17 @@ const PluginComponent = (props: DmtUIPlugin) => {
     999
   )
   if (loading) return <Loading />
-  if (error)
-    return (
-      <pre style={{ color: 'red' }}>
-        {JSON.stringify(error.response?.data?.message || '', null, 2)}
-      </pre>
-    )
+  if (error) {
+    const errorResponse =
+      typeof error.response?.data == 'object'
+        ? error.response?.data?.message
+        : error.response?.data
+    return <pre style={{ color: 'red' }}>{errorResponse}</pre>
+  }
   return <PreviewPlugin document={document} />
 }
 
-export const plugins: any = [
+export const plugins: TDmtPlugin[] = [
   {
     pluginName: 'yaml-view',
     pluginType: DmtPluginType.UI,

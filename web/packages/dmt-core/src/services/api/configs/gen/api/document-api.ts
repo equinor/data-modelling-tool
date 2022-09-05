@@ -21,7 +21,7 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
 // @ts-ignore
-import { HTTPValidationError } from '../models';
+import { ErrorResponse } from '../models';
 /**
  * DocumentApi - axios parameter creator
  * @export
@@ -33,13 +33,12 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
          * @summary Get By Id
          * @param {string} dataSourceId 
          * @param {string} documentId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetById: async (dataSourceId: string, documentId: string, uiRecipe?: string, attribute?: string, depth?: number, options: any = {}): Promise<RequestArgs> => {
+        documentGetById: async (dataSourceId: string, documentId: string, attribute?: string, depth?: number, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('documentGetById', 'dataSourceId', dataSourceId)
             // verify required parameter 'documentId' is not null or undefined
@@ -65,10 +64,6 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
 
-            if (uiRecipe !== undefined) {
-                localVarQueryParameter['ui_recipe'] = uiRecipe;
-            }
-
             if (attribute !== undefined) {
                 localVarQueryParameter['attribute'] = attribute;
             }
@@ -92,13 +87,12 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
          * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
          * @summary Get By Path
          * @param {string} dataSourceId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {string} [path] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetByPath: async (dataSourceId: string, uiRecipe?: string, attribute?: string, path?: string, options: any = {}): Promise<RequestArgs> => {
+        documentGetByPath: async (dataSourceId: string, attribute?: string, path?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('documentGetByPath', 'dataSourceId', dataSourceId)
             const localVarPath = `/api/v1/documents-by-path/{data_source_id}`
@@ -120,10 +114,6 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
             // authentication OAuth2AuthorizationCodeBearer required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
-
-            if (uiRecipe !== undefined) {
-                localVarQueryParameter['ui_recipe'] = uiRecipe;
-            }
 
             if (attribute !== undefined) {
                 localVarQueryParameter['attribute'] = attribute;
@@ -232,28 +222,26 @@ export const DocumentApiFp = function(configuration?: Configuration) {
          * @summary Get By Id
          * @param {string} dataSourceId 
          * @param {string} documentId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentGetById(dataSourceId: string, documentId: string, uiRecipe?: string, attribute?: string, depth?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetById(dataSourceId, documentId, uiRecipe, attribute, depth, options);
+        async documentGetById(dataSourceId: string, documentId: string, attribute?: string, depth?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetById(dataSourceId, documentId, attribute, depth, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
          * @summary Get By Path
          * @param {string} dataSourceId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {string} [path] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentGetByPath(dataSourceId: string, uiRecipe?: string, attribute?: string, path?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetByPath(dataSourceId, uiRecipe, attribute, path, options);
+        async documentGetByPath(dataSourceId: string, attribute?: string, path?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetByPath(dataSourceId, attribute, path, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -287,27 +275,25 @@ export const DocumentApiFactory = function (configuration?: Configuration, baseP
          * @summary Get By Id
          * @param {string} dataSourceId 
          * @param {string} documentId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetById(dataSourceId: string, documentId: string, uiRecipe?: string, attribute?: string, depth?: number, options?: any): AxiosPromise<object> {
-            return localVarFp.documentGetById(dataSourceId, documentId, uiRecipe, attribute, depth, options).then((request) => request(axios, basePath));
+        documentGetById(dataSourceId: string, documentId: string, attribute?: string, depth?: number, options?: any): AxiosPromise<object> {
+            return localVarFp.documentGetById(dataSourceId, documentId, attribute, depth, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
          * @summary Get By Path
          * @param {string} dataSourceId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {string} [path] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetByPath(dataSourceId: string, uiRecipe?: string, attribute?: string, path?: string, options?: any): AxiosPromise<object> {
-            return localVarFp.documentGetByPath(dataSourceId, uiRecipe, attribute, path, options).then((request) => request(axios, basePath));
+        documentGetByPath(dataSourceId: string, attribute?: string, path?: string, options?: any): AxiosPromise<object> {
+            return localVarFp.documentGetByPath(dataSourceId, attribute, path, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -352,13 +338,6 @@ export interface DocumentApiDocumentGetByIdRequest {
      * @type {string}
      * @memberof DocumentApiDocumentGetById
      */
-    readonly uiRecipe?: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof DocumentApiDocumentGetById
-     */
     readonly attribute?: string
 
     /**
@@ -381,13 +360,6 @@ export interface DocumentApiDocumentGetByPathRequest {
      * @memberof DocumentApiDocumentGetByPath
      */
     readonly dataSourceId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof DocumentApiDocumentGetByPath
-     */
-    readonly uiRecipe?: string
 
     /**
      * 
@@ -469,7 +441,7 @@ export class DocumentApi extends BaseAPI {
      * @memberof DocumentApi
      */
     public documentGetById(requestParameters: DocumentApiDocumentGetByIdRequest, options?: any) {
-        return DocumentApiFp(this.configuration).documentGetById(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.uiRecipe, requestParameters.attribute, requestParameters.depth, options).then((request) => request(this.axios, this.basePath));
+        return DocumentApiFp(this.configuration).documentGetById(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.attribute, requestParameters.depth, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -481,7 +453,7 @@ export class DocumentApi extends BaseAPI {
      * @memberof DocumentApi
      */
     public documentGetByPath(requestParameters: DocumentApiDocumentGetByPathRequest, options?: any) {
-        return DocumentApiFp(this.configuration).documentGetByPath(requestParameters.dataSourceId, requestParameters.uiRecipe, requestParameters.attribute, requestParameters.path, options).then((request) => request(this.axios, this.basePath));
+        return DocumentApiFp(this.configuration).documentGetByPath(requestParameters.dataSourceId, requestParameters.attribute, requestParameters.path, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
