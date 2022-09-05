@@ -1,9 +1,9 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin } from '@dmt/common'
 
 export const pluginName = 'ui-plugin-template'
-export const pluginType = DmtPluginType.UI
+export const pluginType = EDmtPluginType.UI
 
 export const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props

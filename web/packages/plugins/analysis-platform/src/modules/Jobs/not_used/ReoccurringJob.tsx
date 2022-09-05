@@ -5,7 +5,7 @@ import DateRangePicker from '../../../components/DateRangePicker'
 import styled from 'styled-components'
 import { TCronJob } from '@dmt/common'
 
-enum Interval {
+enum EInterval {
   HOURLY = 'Hourly',
   DAILY = 'Daily',
   WEEKLY = 'Weekly',
@@ -47,7 +47,7 @@ export function CreateReoccurringJob(props: {
     null,
     null,
   ])
-  const [interval, setInterval] = useState<Interval>(Interval.HOURLY)
+  const [interval, setInterval] = useState<EInterval>(EInterval.HOURLY)
   const [hour, setHour] = useState<string>('23')
   const [hourStep, setHourStep] = useState<string>('1')
   const [minute, setMinute] = useState<string>('30')
@@ -70,14 +70,14 @@ export function CreateReoccurringJob(props: {
     let dayOfWeek = '*'
 
     switch (interval) {
-      case Interval.WEEKLY:
+      case EInterval.WEEKLY:
         dayOfMonth = '*'
         dayOfWeek = '6'
         break
-      case Interval.MONTHLY:
+      case EInterval.MONTHLY:
         dayOfMonth = '1'
         break
-      case Interval.HOURLY:
+      case EInterval.HOURLY:
         newHour = `*/${hourStep}`
     }
     setSchedule(`${newMinute} ${newHour} ${dayOfMonth} ${month} ${dayOfWeek}`)
@@ -101,14 +101,14 @@ export function CreateReoccurringJob(props: {
               onChange={(e: Event) => setInterval(e.target.value)}
               value={interval}
             >
-              {Object.entries(Interval).map(([key, value]: any) => (
+              {Object.entries(EInterval).map(([key, value]: any) => (
                 <option key={key} value={value}>
                   {value}
                 </option>
               ))}
             </StyledSelect>
           </div>
-          {interval !== Interval.HOURLY && (
+          {interval !== EInterval.HOURLY && (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Label label="Time" />
               <StyledSelect
@@ -127,7 +127,7 @@ export function CreateReoccurringJob(props: {
               </StyledSelect>
             </div>
           )}
-          {interval === Interval.HOURLY && (
+          {interval === EInterval.HOURLY && (
             <div style={{ display: 'flex', flexDirection: 'column' }}>
               <Label label="Hour step" />
               <StyledSelect

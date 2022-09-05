@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { DmtPluginType, DmtUIPlugin, Loading, useDocument } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin, Loading, useDocument } from '@dmt/common'
 
 import { SimposReportView } from './report.js'
 

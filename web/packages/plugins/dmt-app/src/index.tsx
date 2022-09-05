@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { AuthContext, DmssAPI, DmtPluginType, Header } from '@dmt/common'
+import { AuthContext, DmssAPI, EDmtPluginType, Header } from '@dmt/common'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { Route } from 'react-router-dom'
@@ -44,7 +44,7 @@ const PageComponent = (props: any) => {
 export const plugins: any = [
   {
     pluginName: 'DMT',
-    pluginType: DmtPluginType.PAGE,
+    pluginType: EDmtPluginType.PAGE,
     component: PageComponent,
   },
 ]

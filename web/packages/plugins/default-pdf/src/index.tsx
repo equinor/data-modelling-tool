@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { ViewerPDFPlugin } from './PDFViewer'
 
-import { DmtPluginType, DmtUIPlugin, Loading } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin, Loading } from '@dmt/common'
 import { useDocument } from '@dmt/common'
 
 const PluginComponent = (props: DmtUIPlugin) => {
@@ -16,7 +16,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'default-pdf',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: PluginComponent,
   },
 ]

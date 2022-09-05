@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin } from '@dmt/common'
 
 //***********************************************************
 //Forms
@@ -24,19 +24,19 @@ export const plugins: any = [
 
   {
     pluginName: 'marmo-ess-plot-view',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: SignalPlot,
   },
 
   {
     pluginName: 'marmo-ess-table-view',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: SignalTable,
   },
 
   {
     pluginName: 'marmo-ess-edit-form',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: SignalESSForm,
   },
   //********************************************************
@@ -44,7 +44,7 @@ export const plugins: any = [
 
   {
     pluginName: 'marmo-edit-ess',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: SingleObjectForm,
   },
   //********************************************************

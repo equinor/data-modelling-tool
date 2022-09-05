@@ -340,10 +340,10 @@ This is the template for a UI plugin.
 [source, jsx]
 ----
 import * as React from 'react'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin } from '@dmt/common'
 
 export const pluginName = 'custom-plugin'
-export const pluginType = DmtPluginType.UI
+export const pluginType = EDmtPluginType.UI
 
 export const PluginComponent = (props: DmtUIPlugin) => {
   return (

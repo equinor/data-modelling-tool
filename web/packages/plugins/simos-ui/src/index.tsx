@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin } from '@dmt/common'
 
 import { DMTBluePrintTableView } from './dmt/views/DMTBluePrintTableView'
 
@@ -13,7 +13,7 @@ export const plugins: any = [
   //********************************************************
   {
     pluginName: 'dmt-blueprint-table-view',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: DMTBluePrintTableView,
   },
   //********************************************************
@@ -21,7 +21,7 @@ export const plugins: any = [
   //********************************************************
   {
     pluginName: 'simos-raw-view',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: SIMOSRawView,
   },
   //********************************************************

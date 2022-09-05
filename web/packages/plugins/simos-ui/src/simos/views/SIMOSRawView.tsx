@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { Loading, useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin } from '@dmt/common'
 
 import { SIMOSRawView } from './raw.js'
 

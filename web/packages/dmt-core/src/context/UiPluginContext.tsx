@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 
 export interface TDmtPlugin {
-  pluginType: DmtPluginType
+  pluginType: EDmtPluginType
   pluginName: string
   component: (props: DmtUIPlugin) => JSX.Element
 }
@@ -25,7 +25,7 @@ export interface DmtUIPlugin {
   readOnly?: boolean
 }
 
-export enum DmtPluginType {
+export enum EDmtPluginType {
   UI,
   PAGE,
 }
@@ -69,7 +69,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
     if (pluginName in plugins) return plugins[pluginName]
     return {
       pluginName: 'NotFound',
-      pluginType: DmtPluginType.UI,
+      pluginType: EDmtPluginType.UI,
       component: () => <div>Did not find the plugin: {pluginName} </div>,
     }
   }

@@ -1,10 +1,10 @@
-import { DmtPluginType } from '@dmt/common'
+import { EDmtPluginType } from '@dmt/common'
 import { TabsContainer } from './TabsContainer'
 
 export const plugins: any = [
   {
     pluginName: 'tabs',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: TabsContainer,
   },
 ]

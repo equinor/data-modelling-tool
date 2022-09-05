@@ -2,7 +2,7 @@ import * as React from 'react'
 
 import {
   BlueprintPicker,
-  DmtPluginType,
+  EDmtPluginType,
   DmtUIPlugin,
   Loading,
   TReference,
@@ -137,7 +137,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'form',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: PluginComponent,
   },
 ]
