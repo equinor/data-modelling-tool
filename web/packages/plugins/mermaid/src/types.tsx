@@ -17,7 +17,7 @@ export type BaseBlueprint = {
   type: string
 }
 
-export interface BlueprintType extends BaseBlueprint {
+export interface IBlueprintType extends BaseBlueprint {
   abstract: boolean
   description: string
   attributes: AttributeType[]

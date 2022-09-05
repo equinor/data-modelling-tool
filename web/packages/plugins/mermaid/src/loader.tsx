@@ -1,5 +1,5 @@
 import { DmssAPI } from '@dmt/common'
-import { AttributeType, BlueprintType } from './types'
+import { AttributeType, IBlueprintType } from './types'
 
 export class Node {
   public attribute: AttributeType
@@ -47,12 +47,12 @@ const isPrimitive = (attribute: AttributeType) => {
     )
   } else return false
 }
-const primitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
+const primitiveAttributes = (blueprint: IBlueprintType): AttributeType[] =>
   blueprint.attributes.filter((attribute: AttributeType) =>
     isPrimitive(attribute)
   )
 const isNonPrimitive = (attribute: AttributeType) => !isPrimitive(attribute)
-const nonPrimitiveAttributes = (blueprint: BlueprintType): AttributeType[] =>
+const nonPrimitiveAttributes = (blueprint: IBlueprintType): AttributeType[] =>
   blueprint.attributes.filter((attribute: AttributeType) =>
     isNonPrimitive(attribute)
   )
@@ -78,7 +78,7 @@ export const loader = async (
   await Promise.all(
     nonPrimitiveAttributes(document).map(async (attribute: AttributeType) => {
       if (attribute['attributeType'] !== 'object') {
-        const child: BlueprintType = await explorer.blueprintGet(
+        const child: IBlueprintType = await explorer.blueprintGet(
           attribute['attributeType']
         ).data
         const childNode: Node = await loader(token, explorer, child)
@@ -86,13 +86,13 @@ export const loader = async (
         childNode.entity = child
         // If the attribute is abstract, we need to search for concrete definitions.
         if (child['abstract']) {
-          const concreteDefinitions: BlueprintType[] = await search(token, {
+          const concreteDefinitions: IBlueprintType[] = await search(token, {
             type: child['type'],
             extends: attribute['attributeType'],
           })
           await Promise.all(
             concreteDefinitions.map(
-              async (concreteDefinition: BlueprintType) => {
+              async (concreteDefinition: IBlueprintType) => {
                 const concertNode = await loader(
                   token,
                   explorer,

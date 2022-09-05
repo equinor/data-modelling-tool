@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { MakeDiagram } from './Diagram'
 
-import { VerticalTabs, TabProp } from './VerticalTabs'
+import { VerticalTabs, ITabProp } from './VerticalTabs'
 
 import { useDocument, DmtUIPlugin, Loading } from '@dmt/common'
 

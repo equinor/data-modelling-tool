@@ -1,7 +1,7 @@
 import * as React from 'react'
 import styled from '@emotion/styled'
 
-export interface DemoWorkspaceWidgetProps {
+export interface IDemoWorkspaceWidgetProps {
   buttons?: any
 }
 
@@ -43,7 +43,7 @@ export const DemoButton = styled.button`
   }
 `
 
-export class DemoWorkspaceWidget extends React.Component<DemoWorkspaceWidgetProps> {
+export class DemoWorkspaceWidget extends React.Component<IDemoWorkspaceWidgetProps> {
   render() {
     return (
       <S.Container>
