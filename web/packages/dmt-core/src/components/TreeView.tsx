@@ -36,7 +36,7 @@ const StyledTreeNode = styled.div`
   }
 `
 
-type TNodeWrapperProps = {
+export type TNodeWrapperProps = {
   node: TreeNode
   removeNode?: () => void
   children: any

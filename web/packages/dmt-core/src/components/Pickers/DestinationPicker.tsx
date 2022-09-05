@@ -109,7 +109,7 @@ const Wrapper = styled.div`
     background-color: #acb7da;
   }
 `
-export const SelectPackageButton = (props: NodeWrapperProps) => {
+export const SelectPackageButton = (props: TNodeWrapperProps) => {
   const { node, children, onSelect } = props
 
   return (

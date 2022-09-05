@@ -5,8 +5,7 @@ import DataSourceReducer, {
   DocumentActions,
   initialState,
 } from './DataSourcesReducer'
-import { DmssAPI } from '../services'
-import { TDataSource } from '../services'
+import { DmssAPI, TDataSource } from '../services'
 
 export interface IModels {
   dataSources: TDataSource[]
