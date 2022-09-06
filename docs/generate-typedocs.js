@@ -12,7 +12,9 @@ const codePreviewComponentTypes = ['Components']
 // The libraries that should be documented
 const libraries = {
     '@data-modelling-tool/core': {
-        index: './../web/packages/dmt-core/src/index.tsx',
+        entryPoints: [
+            './../web/packages/dmt-core/src/index.tsx',
+        ],
     },
 }
 
@@ -90,8 +92,8 @@ export const scope = { ${componentName} }
 
 async function main() {
     for (library of Object.keys(libraries)) {
-        console.log(`=== Generating docs for '${library}..'`)
-        const entryPoints = [libraries[library].index]
+        console.log(`=== Generating docs for '${library}'...`)
+        const entryPoints = libraries[library].entryPoints
         // Generate typedocs
         await generate_json(entryPoints).catch(console.error)
         // Check for presence of the generated JSON
@@ -99,7 +101,7 @@ async function main() {
             // Import the typeDocs JSON file
             const typeDocs = require(typeDocsOutPath)
             // Loop over each child
-            typeDocs.children.forEach((component) => {
+            typeDocs.children?.forEach((component) => {
                 const componentName = component.name
                 try {
                     // Locate the blockTag with tag '@docs'
