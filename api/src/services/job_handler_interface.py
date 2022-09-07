@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 from datetime import datetime
 from enum import Enum
 from typing import Tuple
-from uuid import uuid4, UUID
+from uuid import UUID, uuid4
 
 
 class JobStatus(str, Enum):

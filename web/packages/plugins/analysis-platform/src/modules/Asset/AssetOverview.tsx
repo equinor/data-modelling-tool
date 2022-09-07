@@ -7,17 +7,13 @@ import {
 } from '@dmt/common'
 import React, { ReactNode, useContext } from 'react'
 import { Button, Divider } from '@equinor/eds-core-react'
-import { AssetTable, CreateAssetButton } from './components'
+import { AssetTable } from './components'
 import { Link, useLocation } from 'react-router-dom'
 import { TAsset } from '../../Types'
 import { EBlueprints } from '../../Enums'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 
-type AssetOverviewProps = {
-  settings: DmtSettings
-}
-
-export const AssetOverview = (props: AssetOverviewProps): ReactNode => {
+export const AssetOverview = (props: { settings: DmtSettings }): ReactNode => {
   const { settings } = props
   const { tokenData } = useContext(AuthContext)
   const location = useLocation()
@@ -46,7 +42,9 @@ export const AssetOverview = (props: AssetOverviewProps): ReactNode => {
         }}
       >
         {hasDomainRole(tokenData) && (
-          <CreateAssetButton urlPath={settings.urlPath} />
+          <Link to={'asset/new'}>
+            <Button>Create new asset</Button>
+          </Link>
         )}
         <Link to={analysisOverviewPage}>
           <Button>View all analyses</Button>

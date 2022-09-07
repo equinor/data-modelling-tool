@@ -25,16 +25,7 @@ services:
     image: web-dev
     environment:
       CI: "true"
-
-  db:
-    image: mongo:3.4
-    command: --quiet
-    restart: unless-stopped
-    logging:
-      driver: "none"
-    environment:
-      MONGO_INITDB_ROOT_USERNAME: maf
-      MONGO_INITDB_ROOT_PASSWORD: maf
+      REACT_APP_AUTH: 1
 
   dmss:
     image: datamodelingtool.azurecr.io/dmss

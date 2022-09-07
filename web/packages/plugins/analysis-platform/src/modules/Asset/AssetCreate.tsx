@@ -1,18 +1,24 @@
 import React, { useContext, useState } from 'react'
 import { getUsername } from '../../utils/auth'
-import { AuthContext, ApplicationContext } from '@dmt/common'
+import {
+  AuthContext,
+  ApplicationContext,
+  ErrorResponse,
+  DmssAPI,
+} from '@dmt/common'
 import { Progress } from '@equinor/eds-core-react'
-import { createAsset } from '../../utils/CRUD'
 import { EBlueprints } from '../../Enums'
-import { DEFAULT_DATASOURCE_ID } from '../../const'
+import { ASSET_PATH, DEFAULT_DATASOURCE_ID } from '../../const'
 import { CreateAssetForm } from './components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { TAsset } from '../../Types'
+import { AxiosError } from 'axios'
 
 export const AssetCreate = (): JSX.Element => {
   const settings = useContext(ApplicationContext)
   const { tokenData, token } = useContext(AuthContext)
+  const dmssAPI = new DmssAPI(token)
   const user = getUsername(tokenData)
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const createdAt = new Date().toISOString()
@@ -29,20 +35,21 @@ export const AssetCreate = (): JSX.Element => {
         type: EBlueprints.LOCATION,
       },
     }
-    createAsset(data, token, [])
+    dmssAPI
+      .explorerAddToPath({
+        dataSourceId: DEFAULT_DATASOURCE_ID,
+        updateUncontained: true,
+        document: JSON.stringify(data),
+        directory: ASSET_PATH,
+      })
       .then((documentId: any) => {
         // TODO: Should we use props.history.push instead?
         //@ts-ignore
         document.location = `/${settings.urlPath}/view/${DEFAULT_DATASOURCE_ID}/${documentId}`
       })
-      .catch((error: any) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
-        const errorResponse =
-          typeof error.response?.data == 'object'
-            ? error.response?.data?.message
-            : error.response?.data
-        const errorMessage = errorResponse || 'Failed to create new asset'
-        NotificationManager.error(errorMessage)
+        NotificationManager.error(error.response?.data.message)
       })
       .finally(() => {
         setIsLoading(false)

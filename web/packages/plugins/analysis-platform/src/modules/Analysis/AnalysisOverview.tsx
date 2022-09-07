@@ -1,11 +1,13 @@
-import { Loading, useSearch } from '@dmt/common'
-import React, { ReactNode } from 'react'
+import { AuthContext, hasExpertRole, Loading, useSearch } from '@dmt/common'
+import React, { ReactNode, useContext } from 'react'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 import { EBlueprints } from '../../Enums'
 import { TAnalysis } from '../../Types'
-import { AnalysisTable } from './components'
+import { AnalysisTable, CreateAnalysisButton } from './components'
+import { Divider } from '@equinor/eds-core-react'
 
-export const AnalysisOverview = (): ReactNode => {
+export const AnalysisOverview = (): JSX.Element => {
+  const { tokenData } = useContext(AuthContext)
   const [analyses, isLoading] = useSearch<TAnalysis>(
     {
       type: EBlueprints.ANALYSIS,
@@ -13,12 +15,16 @@ export const AnalysisOverview = (): ReactNode => {
     DEFAULT_DATASOURCE_ID
   )
 
-  if (isLoading) {
-    return <Loading />
-  }
+  if (isLoading) return <Loading />
 
   return (
     <>
+      {hasExpertRole(tokenData) && (
+        <>
+          <CreateAnalysisButton />
+          <Divider variant="medium" />
+        </>
+      )}
       <AnalysisTable analyses={analyses} />
     </>
   )

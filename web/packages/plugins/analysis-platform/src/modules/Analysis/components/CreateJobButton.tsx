@@ -7,11 +7,13 @@ import {
   EJobStatus,
   TJob,
   EBlueprint,
+  ErrorResponse,
 } from '@dmt/common'
 import Icons from '../../../components/Design/Icons'
 import { TAnalysis, TTask } from '../../../Types'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { AxiosError } from 'axios'
 
 export const CreateJobButton = (props: {
   analysis: TAnalysis
@@ -57,9 +59,9 @@ export const CreateJobButton = (props: {
         body: job,
       })
       .then(() => addJob(job))
-      .catch((error: Error) => {
+      .catch((error: AxiosError<ErrorResponse>) => {
         console.error(error)
-        NotificationManager.error(`Could not save job (${error})`)
+        NotificationManager.error(error.response?.data.message)
       })
 
       .finally(() => {

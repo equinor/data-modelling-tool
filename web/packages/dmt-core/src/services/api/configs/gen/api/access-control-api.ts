@@ -23,7 +23,7 @@ import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } fr
 // @ts-ignore
 import { ACL } from '../models';
 // @ts-ignore
-import { HTTPValidationError } from '../models';
+import { ErrorResponse } from '../models';
 /**
  * AccessControlApi - axios parameter creator
  * @export

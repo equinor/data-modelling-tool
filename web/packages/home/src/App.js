@@ -9,7 +9,7 @@ import {
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
-import { DmtAPI } from '@dmt/common/src/services/api/DmtAPI'
+import { DmtAPI } from '@dmt/common'
 import {
   sortApplications,
   UiPluginContext,
@@ -79,7 +79,7 @@ function App() {
   const [applications, setApplications] = useState(undefined)
   const [loadingAppSettings, setLoadingAppSettings] = useState(false)
   const { loading, getPagePlugin } = useContext(UiPluginContext)
-  const { token } = useContext(AuthContext)
+  const { token, loginInProgress } = useContext(AuthContext)
   const authEnabled = process.env.REACT_APP_AUTH === '1'
 
   useEffect(() => {
@@ -98,8 +98,10 @@ function App() {
       .finally(() => setLoadingAppSettings(false))
   }, [])
 
+  // Stops web-page from flickering while the user is being logged in
+  if (authEnabled && loginInProgress) return null
+
   if (authEnabled && !token) {
-    // Avoid rendering loading icons if the user is about to be redirected to a login endpoint
     return <div>You are not logged in. Reload page to login</div>
   }
 

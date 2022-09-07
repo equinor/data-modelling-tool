@@ -27,7 +27,7 @@ import { AccessLevel } from '../models';
 // @ts-ignore
 import { DataSourceRequest } from '../models';
 // @ts-ignore
-import { HTTPValidationError } from '../models';
+import { ErrorResponse } from '../models';
 // @ts-ignore
 import { PATData } from '../models';
 // @ts-ignore

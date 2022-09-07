@@ -1,10 +1,10 @@
+from fastapi.testclient import TestClient
 from pymongo import MongoClient
 
 from app import create_app
 from config import config
 from tests.bdd.results import print_overview_errors, print_overview_features
 from tests.bdd.steps.data_source import data_source_collection_client
-from fastapi.testclient import TestClient
 
 app = create_app()
 config.TESTING = True
