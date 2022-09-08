@@ -1,4 +1,4 @@
-import { TBlob } from '@dmt/common'
+import { TBlob, TReference } from '@dmt/common'
 
 export type TSIMAApplicationInput = {
   _id?: string
@@ -9,7 +9,10 @@ export type TSIMAApplicationInput = {
   outputType: string
   input: any
   SIMAComputeConfig?: TBlob
-  stask?: TBlob
+  simaOutputFilePath?: string
+  simaInputFilePath?: string
+  inputPresetFolder: string
+  stask?: TReference
   workflow: string
   workflowTask: string
   resultPath: string

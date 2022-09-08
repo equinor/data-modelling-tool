@@ -1,6 +1,8 @@
 import {
   DmtUIPlugin,
   Loading,
+  TChildTab,
+  TGenericObject,
   UIPluginSelector,
   useDocument,
 } from '@dmt/common'
@@ -38,17 +40,9 @@ const ChildTab = styled(Tab as any)`
 `
 
 const HidableWrapper = styled.div<any>`
-display: ${(props: any) => (props.hidden && 'none') || 'flex'}
+display: ${(props: { hidden: boolean }) => (props.hidden && 'none') || 'flex'}
 align-self: normal;
 `
-
-type TChildTab = {
-  attribute: string
-  entity: any
-  categories?: string[]
-  absoluteDottedId: string
-  onSubmit: (data: any) => void
-}
 
 type TStringMap = {
   [key: string]: TChildTab
@@ -57,9 +51,12 @@ type TStringMap = {
 export const TabsContainer = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId, config, onSubmit } = props
   const [selectedTab, setSelectedTab] = useState<string>('home')
-  const [formData, setFormData] = useState<any>({})
+  const [formData, setFormData] = useState<TGenericObject>({})
   const [childTabs, setChildTabs] = useState<TStringMap>({})
-  const [entity, loading] = useDocument<any>(dataSourceId, documentId)
+  const [entity, loading] = useDocument<TGenericObject>(
+    dataSourceId,
+    documentId
+  )
 
   useEffect(() => {
     if (!entity) return
@@ -68,7 +65,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
 
   if (!entity || Object.keys(formData).length === 0) return null
 
-  const handleOpen = (tabData: any) => {
+  const handleOpen = (tabData: TChildTab) => {
     setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
     setSelectedTab(tabData.attribute)
   }
@@ -94,7 +91,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
               <Icon name="home" size={24} />
             </BaseTab>
           </Tooltip>
-          {Object.values(childTabs).map((tabData: any) => (
+          {Object.values(childTabs).map((tabData: TChildTab) => (
             <Tooltip
               key={tabData.attribute}
               enterDelay={600}
@@ -118,11 +115,11 @@ export const TabsContainer = (props: DmtUIPlugin) => {
             categories={config?.subCategories?.filter(
               (c: string) => c !== 'container'
             )} // Cannot render the 'tabs' plugin here. That would cause a recursive loop
-            onOpen={(tabData: any) => {
+            onOpen={(tabData: TChildTab) => {
               setChildTabs({ ...childTabs, [tabData.attribute]: tabData })
               setSelectedTab(tabData.attribute)
             }}
-            onSubmit={(newFormData: any) => {
+            onSubmit={(newFormData: TGenericObject) => {
               setFormData({ ...newFormData })
               if (onSubmit) {
                 onSubmit(newFormData)
@@ -140,7 +137,7 @@ export const TabsContainer = (props: DmtUIPlugin) => {
                 absoluteDottedId={childTab.absoluteDottedId}
                 type={childTab.entity.type}
                 categories={childTab.categories}
-                onSubmit={(data: any) => {
+                onSubmit={(data: TChildTab) => {
                   const newFormData = {
                     ...formData,
                     [childTab.attribute]: data,
