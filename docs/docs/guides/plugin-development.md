@@ -43,7 +43,7 @@ A package.json is required.
   "version": "1.0.0",
   "main": "src/index.tsx",
   "dependencies": {
-    "@dmt/common": "x.x.x"
+    "@data-modelling-tool/core": "x.x.x"
   }
 }
 ```
@@ -54,7 +54,7 @@ This is the template for a UI plugin.
 
 ```jsx
 import * as React from 'react'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
 
 export const pluginName = 'custom-plugin'
 export const pluginType = DmtPluginType.UI

@@ -1,4 +1,4 @@
-import { DmtPluginType } from '@dmt/common'
+import { DmtPluginType } from '@data-modelling-tool/core'
 //import { SRSEnvTable } from './simpos/srs/view/env.js'
 //import EditDocument from './EditDocument'
 //***********************************************************
