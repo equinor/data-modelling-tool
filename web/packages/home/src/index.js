@@ -4,7 +4,7 @@ import 'react-notifications/lib/notifications.css'
 
 import App from './App'
 import ReactDOM from 'react-dom'
-import { AuthProvider, UiPluginProvider } from '@dmt/common'
+import { AuthProvider, UiPluginProvider } from '@data-modelling-tool/core'
 import plugins from './plugins'
 
 const fullCurrentURL = () =>

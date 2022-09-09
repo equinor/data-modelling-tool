@@ -19,7 +19,7 @@ import {
   DataSource,
   TGenericObject,
   TAttribute,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
 

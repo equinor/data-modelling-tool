@@ -1,4 +1,4 @@
-import { TBlob, TReference } from '@dmt/common'
+import { TBlob, TReference } from '@data-modelling-tool/core'
 
 export type TSIMAApplicationInput = {
   _id?: string

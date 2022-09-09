@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react'
-import { TChildTab } from '@dmt/common'
+import { TChildTab } from '@data-modelling-tool/core'
 
 type TabsProviderProps = {
   onOpen: (tabData: TChildTab) => void

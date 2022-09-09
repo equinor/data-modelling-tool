@@ -1,5 +1,5 @@
 import React from 'react'
-import { DmtUIPlugin, useDocument, Loading } from '@dmt/common'
+import { DmtUIPlugin, useDocument, Loading } from '@data-modelling-tool/core'
 import { AssetInfoCard } from './components'
 import { AnalysisTable } from '../Analysis'
 
