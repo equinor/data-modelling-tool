@@ -449,13 +449,13 @@ def main(list_of_blueprints):
    return memory_file
 ----
 
-4. Using docker; mount your python module into  `/code/home/code_generators/`
+4. Using docker; mount your python module into  `/code/src/home/code_generators/`
 
 [source, yaml]
 ----
  ...
  volumes:
-   - ./plugins/awesome_fortran_cg:/code/home/code_generators/awesome_fortran_cg
+   - ./plugins/awesome_fortran_cg:/code/src/home/code_generators/awesome_fortran_cg
 ----
 
 5. When the DMT-API restarts, the plugin is loaded, and offered as an option on "Generate Code".

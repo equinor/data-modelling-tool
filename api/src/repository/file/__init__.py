@@ -15,7 +15,7 @@ class LocalFileRepository:
             )
             print(dev_path)
             print(Path(dev_path).is_dir())
-            location = dev_path if Path(dev_path).is_dir() else "/code/dmss/src/home"
+            location = dev_path if Path(dev_path).is_dir() else "/code/src/dmss/src/home"
         self.path = Path(location)
 
     def get(self, doc_ref: str) -> dict:
