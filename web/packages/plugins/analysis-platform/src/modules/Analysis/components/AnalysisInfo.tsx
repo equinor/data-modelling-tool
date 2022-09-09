@@ -9,7 +9,6 @@ import { DocumentInfoCard, OnRight } from '../../../components'
 
 const AnalysisInfoCardActions = (props: TAnalysisInfoCardProps) => {
   const { analysis, addJob, jobs, dataSourceId } = props
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   return (
     <>

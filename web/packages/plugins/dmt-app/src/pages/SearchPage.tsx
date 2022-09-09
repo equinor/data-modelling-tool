@@ -482,7 +482,6 @@ export default ({ settings }: TGenericObject) => {
   const [result, setResult] = useState<{ [key: string]: any }>({})
   const [queryError, setQueryError] = useState('')
   const [dataSources, setDataSources] = useState<DataSources>([])
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

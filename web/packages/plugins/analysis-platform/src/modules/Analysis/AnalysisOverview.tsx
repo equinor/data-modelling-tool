@@ -12,7 +12,6 @@ import { AnalysisTable, CreateAnalysisButton } from './components'
 import { Divider } from '@equinor/eds-core-react'
 
 export const AnalysisOverview = (): JSX.Element => {
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   const [analyses, isLoading] = useSearch<TAnalysis>(
     {

@@ -23,7 +23,6 @@ export const CreateJobButton = (props: {
 }) => {
   const { analysis, addJob, jobs, dataSourceId } = props
   const [loading, setLoading] = useState<boolean>(false)
-  // @ts-ignore
   const { token, tokenData } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

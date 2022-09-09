@@ -19,9 +19,7 @@ import { AxiosError, AxiosResponse } from 'axios'
 
 export const AnalysisCreate = (): JSX.Element => {
   const { asset_id } = useParams<{ asset_id: string }>()
-  // @ts-ignore
   const settings = useContext(ApplicationContext)
-  // @ts-ignore
   const { tokenData, token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const user = getUsername(tokenData)

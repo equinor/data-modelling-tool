@@ -6,7 +6,6 @@ export const useBlueprint = (typeRef: string) => {
   const [blueprint, setBlueprint] = useState<any | null>(null)
   const [isLoading, setLoading] = useState<boolean>(true)
   const [error, setError] = useState<Error | null>(null)
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

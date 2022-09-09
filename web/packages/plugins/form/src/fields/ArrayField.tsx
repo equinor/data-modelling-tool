@@ -47,7 +47,6 @@ export default function Fields(props: any) {
   const { namePath, displayLabel, type, uiAttribute } = props
 
   const { documentId, dataSourceId, onOpen } = useRegistryContext()
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmtApi = new DmtAPI(token)
   const dmssAPI = new DmssAPI(token)

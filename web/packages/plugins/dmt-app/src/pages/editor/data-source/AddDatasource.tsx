@@ -25,7 +25,6 @@ const constructType = (selectedDatasourceType: string) => {
 }
 
 const AddDataSourceComponent = () => {
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const { getUiPlugin } = useContext(UiPluginContext)

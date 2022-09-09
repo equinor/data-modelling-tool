@@ -33,7 +33,6 @@ type TAssetTableProps = {
 
 export const AssetTable = (props: TAssetTableProps) => {
   const { assets } = props
-  // @ts-ignore
   const settings: DmtSettings = useContext(ApplicationContext)
 
   const getViewUrl = (rowDocumentId: string): string =>

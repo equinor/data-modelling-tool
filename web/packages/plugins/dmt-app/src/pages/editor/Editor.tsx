@@ -56,7 +56,6 @@ const LAYOUT_CONFIG = {
 
 export default () => {
   const dashboard: IDashboard = useDashboard()
-  // @ts-ignore
   const { treeNodes, loading } = useContext(FSTreeContext)
 
   const open = (node: TreeNode) => {

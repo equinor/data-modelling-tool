@@ -35,8 +35,6 @@ export const DocumentInfoCard = (props: TDocumentInfoCardProps) => {
     disableDefaultActions,
   } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
-
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
 
   return (

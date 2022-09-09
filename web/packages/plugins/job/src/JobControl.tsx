@@ -82,9 +82,7 @@ export const JobControl = (props: {
 }) => {
   const { jobId, document } = props
   const [dataSourceId, documentId] = jobId.split('/', 2)
-  // @ts-ignore
   const { token } = useContext(AuthContext)
-  // @ts-ignore
   const settings = useContext(ApplicationContext)
   const dmtApi = new DmtAPI(token)
   const dmssApi = new DmssAPI(token)

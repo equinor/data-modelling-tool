@@ -79,7 +79,6 @@ function App() {
   const [applications, setApplications] = useState(undefined)
   const [loadingAppSettings, setLoadingAppSettings] = useState(false)
   const { loading, getPagePlugin } = useContext(UiPluginContext)
-  // @ts-ignore
   const { token, loginInProgress } = useContext(AuthContext)
   const authEnabled = process.env.REACT_APP_AUTH === '1'
 

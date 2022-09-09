@@ -7,7 +7,6 @@ import { CreateAnalysisButton } from '../../Analysis'
 import { OnRight } from '../../../components/Design/Styled'
 
 const AssetInfoCardActions = () => {
-  // @ts-ignore
   const { tokenData } = useContext(AuthContext)
   return <>{hasExpertRole(tokenData) && <CreateAnalysisButton />}</>
 }

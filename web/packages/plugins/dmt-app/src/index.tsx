@@ -14,7 +14,6 @@ import Editor from './pages/editor/Editor'
 
 const PageComponent = (props: any) => {
   const { applications, settings } = props
-  // @ts-ignore
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 

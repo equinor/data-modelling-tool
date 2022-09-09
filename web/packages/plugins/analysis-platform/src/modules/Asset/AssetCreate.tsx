@@ -16,9 +16,7 @@ import { TAsset } from '../../Types'
 import { AxiosError } from 'axios'
 
 export const AssetCreate = (): JSX.Element => {
-  // @ts-ignore
   const settings = useContext(ApplicationContext)
-  // @ts-ignore
   const { tokenData, token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
   const user = getUsername(tokenData)
