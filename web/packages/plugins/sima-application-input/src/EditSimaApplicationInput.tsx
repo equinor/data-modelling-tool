@@ -8,9 +8,10 @@ import {
   PATH_INPUT_FIELD_WIDTH,
   TReference,
   truncatePathString,
+  TSTaskBody,
   UploadFileButton,
   useDocument,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import {
@@ -30,6 +31,7 @@ import {
   Row,
 } from './components'
 import _ from 'lodash'
+import { TSIMAApplicationInput } from './Types'
 
 const ReadOnlyPathTextField = (props: { path: string; label: string }) => {
   return (
@@ -64,18 +66,19 @@ const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
 export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
   const { dataSourceId, onOpen, documentId, readOnly } = props
-  const [formData, setFormData] = useState<any>(null)
-  const [document, loading, updateDocument] = useDocument(
-    dataSourceId,
-    documentId
-  )
+  const [formData, setFormData] = useState<TSIMAApplicationInput | null>(null)
+  const [
+    document,
+    loading,
+    updateDocument,
+  ] = useDocument<TSIMAApplicationInput>(dataSourceId, documentId)
 
   useEffect(() => {
     if (!document) return
     setFormData(document)
   }, [document])
 
-  function getNewSTaskBody(filename: string): any {
+  function getNewSTaskBody(filename: string): TSTaskBody {
     return {
       type: 'AnalysisPlatformDS/Blueprints/STask',
       name: filename.replace('.', '_'),
@@ -86,7 +89,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
     }
   }
 
-  if (loading) return <Loading />
+  if (loading || formData === null) return <Loading />
   return (
     <Container>
       <div style={{ marginBottom: '10px' }}>
@@ -97,20 +100,20 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
               {readOnly ? (
                 <ReadOnlyPathTextField
                   label={'Blueprint'}
-                  path={formData?.inputType || 'None'}
+                  path={formData.inputType || 'None'}
                 />
               ) : (
                 <BlueprintPicker
                   onChange={(selectedBlueprint: string) =>
                     setFormData({ ...formData, inputType: selectedBlueprint })
                   }
-                  formData={formData?.inputType || ''}
+                  formData={formData.inputType || ''}
                 />
               )}
             </Column>
             {readOnly ? (
               <ReadOnlyTextField
-                text={formData?.input?.name || formData?.input?._id || 'None'}
+                text={formData.input?.name || formData.input?._id || 'None'}
                 label={'Input entity'}
               />
             ) : (
@@ -187,7 +190,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
                       label={'Select Stask'}
                       formData={formData.stask}
                       typeFilter={STaskBlueprint}
-                      onChange={(selectedStask: any) =>
+                      onChange={(selectedStask: TReference) =>
                         setFormData({
                           ...formData,
                           stask: selectedStask,
@@ -281,7 +284,7 @@ export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
             >
               {readOnly ? (
                 <ReadOnlyTextField
-                  text={formData?.simaOutputFilePath || 'None'}
+                  text={formData.simaOutputFilePath || 'None'}
                   label={'Output path'}
                 />
               ) : (

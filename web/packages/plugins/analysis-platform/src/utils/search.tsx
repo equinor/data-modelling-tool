@@ -1,4 +1,4 @@
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI } from '@data-modelling-tool/core'
 
 export const search = async (
   dataSourceId: string,

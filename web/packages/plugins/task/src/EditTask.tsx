@@ -12,7 +12,7 @@ import {
   DestinationPicker,
   TTaskFormData,
   TRunner,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import {

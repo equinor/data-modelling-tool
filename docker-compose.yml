@@ -44,7 +44,7 @@ services:
       SCHEDULER_REDIS_SSL: "false"
       MONGO_INITDB_ROOT_USERNAME: maf
       MONGO_INITDB_ROOT_PASSWORD: maf
-      APPLICATION_HOME: /code/home
+      APPLICATION_HOME: /code/src/home
       API_ENV: development
       DMSS_API: http://dmss:5000
     depends_on:

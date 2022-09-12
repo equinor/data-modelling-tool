@@ -1,6 +1,10 @@
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { useDocument, UIPluginSelector, TValidEntity } from '@dmt/common'
+import {
+  useDocument,
+  UIPluginSelector,
+  TValidEntity,
+} from '@data-modelling-tool/core'
 
 import { ErrorGroup } from '../components/ErrorGroup'
 

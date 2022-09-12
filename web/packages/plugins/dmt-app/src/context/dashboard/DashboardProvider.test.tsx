@@ -6,7 +6,7 @@ import {
   TDataSources,
   DmssAPI,
   AuthProvider,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { mock } from 'jest-mock-extended'
 
 const wrapper: React.FC = ({ children, application, api }: any) => (

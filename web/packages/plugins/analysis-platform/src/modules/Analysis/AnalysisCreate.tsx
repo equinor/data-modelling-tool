@@ -6,7 +6,7 @@ import {
   ApplicationContext,
   ErrorResponse,
   DmssAPI,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { Progress } from '@equinor/eds-core-react'
 import { EBlueprints } from '../../Enums'
 import { ANALYSIS_PATH, DEFAULT_DATASOURCE_ID } from '../../const'

@@ -1,4 +1,4 @@
-import { DmtPluginType } from '@dmt/common'
+import { DmtPluginType } from '@data-modelling-tool/core'
 import { EditBlueprint } from './EditBlueprint'
 
 export const plugins: any = [

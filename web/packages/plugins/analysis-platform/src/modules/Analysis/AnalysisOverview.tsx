@@ -1,4 +1,9 @@
-import { AuthContext, hasExpertRole, Loading, useSearch } from '@dmt/common'
+import {
+  AuthContext,
+  hasExpertRole,
+  Loading,
+  useSearch,
+} from '@data-modelling-tool/core'
 import React, { ReactNode, useContext } from 'react'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 import { EBlueprints } from '../../Enums'
