@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { Loading, useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { Loading, useDocument } from '@data-modelling-tool/core'
+import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
 
 import { SIMOSRawView } from './raw.js'
 

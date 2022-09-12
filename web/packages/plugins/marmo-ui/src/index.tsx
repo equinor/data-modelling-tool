@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { useDocument } from '@dmt/common'
-import { DmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { useDocument } from '@data-modelling-tool/core'
+import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
 
 //***********************************************************
 //Forms

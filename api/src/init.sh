@@ -52,9 +52,9 @@ if [ "$1" = 'reset-app' ]; then
   service_is_ready
   shift
   if [[ -z $TOKEN ]]; then
-    python /code/app.py reset-app "$@"
+    python ./app.py reset-app "$@"
   else
-    python /code/app.py "$TOKEN" reset-app "$@"
+    python ./app.py "$TOKEN" reset-app "$@"
   fi
   exit 0
 fi
@@ -63,9 +63,9 @@ if [ "$1" = 'reset-package' ]; then
   service_is_ready
   shift
   if [[ -z $TOKEN ]]; then
-    python /code/app.py reset-package "$@"
+    python ./app.py reset-package "$@"
   else
-    python /code/app.py "$TOKEN" reset-package "$@"
+    python ./app.py "$TOKEN" reset-package "$@"
   fi
   exit 0
 fi
@@ -74,9 +74,9 @@ if [ "$1" = 'import-data-source' ]; then
   service_is_ready
   shift
   if [[ -z $TOKEN ]]; then
-    python /code/app.py import-data-source "$@"
+    python ./app.py import-data-source "$@"
   else
-    python /code/app.py "$TOKEN" import-data-source "$@"
+    python ./app.py "$TOKEN" import-data-source "$@"
   fi
   exit 0
 fi
@@ -87,7 +87,7 @@ if [ "$1" = 'api' ]; then
     cat version.txt || true
     gunicorn app:create_app --workers 4 --factory --worker-class uvicorn.workers.UvicornWorker --bind 0.0.0.0:5000
   else
-    python3 /code/app.py run
+    python3 ./app.py run
   fi
 elif [ "$1" = 'behave' ]; then
   service_is_ready

@@ -1,6 +1,11 @@
 import React, { useEffect, useState } from 'react'
 
-import { DmtUIPlugin, Loading, useBlueprint, useDocument } from '@dmt/common'
+import {
+  DmtUIPlugin,
+  Loading,
+  useBlueprint,
+  useDocument,
+} from '@data-modelling-tool/core'
 
 import { DMTBluePrintTableView } from './blueprint.js'
 
