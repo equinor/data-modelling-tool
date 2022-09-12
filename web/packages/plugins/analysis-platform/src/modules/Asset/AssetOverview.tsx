@@ -4,7 +4,7 @@ import {
   hasDomainRole,
   useSearch,
   Loading,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import React, { ReactNode, useContext } from 'react'
 import { Button, Divider } from '@equinor/eds-core-react'
 import { AssetTable } from './components'

@@ -7,7 +7,7 @@ import {
   Dialog,
   hasExpertRole,
   hasOperatorRole,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { TDocumentInfoCardProps } from '../Types'
 import styled from 'styled-components'
 
@@ -35,7 +35,6 @@ export const DocumentInfoCard = (props: TDocumentInfoCardProps) => {
     disableDefaultActions,
   } = props
   const [viewACL, setViewACL] = useState<boolean>(false)
-
   const { tokenData } = useContext(AuthContext)
 
   return (

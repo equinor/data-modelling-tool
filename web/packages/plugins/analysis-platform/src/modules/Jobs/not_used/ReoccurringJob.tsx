@@ -3,7 +3,7 @@ import { Button, Label } from '@equinor/eds-core-react'
 import { StyledSelect } from '../../../components/Input'
 import DateRangePicker from '../../../components/DateRangePicker'
 import styled from 'styled-components'
-import { TCronJob } from '@dmt/common'
+import { TCronJob } from '@data-modelling-tool/core'
 
 enum Interval {
   HOURLY = 'Hourly',

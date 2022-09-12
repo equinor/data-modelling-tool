@@ -1,4 +1,4 @@
-import { DmtPluginType } from '@dmt/common'
+import { DmtPluginType } from '@data-modelling-tool/core'
 import { EditSimaApplicationInput } from './EditSimaApplicationInput'
 import { UpdateInputOnly } from './UpdateInputOnly'
 import { ViewSimaApplicationInput } from './ViewSimaApplicationInput'

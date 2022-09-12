@@ -123,7 +123,7 @@ services:
       DMSS_HOST: dmss
       DMSS_PORT: 5000
     volumes:
-      - ./api/home/:/code/home
+      - ./api/home/:/code/src/home
 
   web:
     build:

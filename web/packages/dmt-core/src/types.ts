@@ -62,13 +62,22 @@ export type TSTaskBody = {
   name: string
   blob: TBlob
 }
-export type TRunner = { image?: any; type: string }
 
 export type TContainer = {
   label?: string
   image: TContainerImage
   customCommand?: string
 }
+
+export type TChildTab = {
+  attribute: string
+  entity: any
+  categories?: string[]
+  absoluteDottedId: string
+  onSubmit: (data: any) => void
+}
+
+export type TRunner = { image?: any; type: string }
 
 export type TTaskFormData = {
   applicationInput?: TGenericObject

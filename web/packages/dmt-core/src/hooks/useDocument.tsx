@@ -5,6 +5,14 @@ import { DmssAPI } from '../services/api/DmssAPI'
 import { NotificationManager } from 'react-notifications'
 import { AuthContext } from '../index'
 
+/**
+ * A hook for aasly working with documents.
+ *
+ * @param dataSourceId the data source id
+ * @param documentId the document id
+ * @param depth the max recursion depth
+ * @returns the square root if `x` is non-negative or `NaN` if `x` is negative.
+ */
 export function useDocument<T>(
   dataSourceId: string,
   documentId: string,

@@ -30,7 +30,30 @@ export enum DmtPluginType {
   PAGE,
 }
 
-export const UiPluginContext = createContext({})
+type TUiPluginContext = {
+  plugins: TUiPluginMap
+  loading: boolean
+  getUiPlugin: (uiRecipeName: string) => TDmtPlugin
+  getPagePlugin: (uiRecipeName: string) => TDmtPlugin
+}
+const emtpyDMTPlugin: TDmtPlugin = {
+  pluginType: DmtPluginType.PAGE,
+  pluginName: '',
+  component: () => {
+    return <div></div>
+  },
+}
+const emptyContext: TUiPluginContext = {
+  loading: false,
+  plugins: {},
+  getUiPlugin: (uiRecipeName: string) => {
+    return emtpyDMTPlugin
+  },
+  getPagePlugin: (uiRecipeName: string) => {
+    return emtpyDMTPlugin
+  },
+}
+export const UiPluginContext = createContext<TUiPluginContext>(emptyContext)
 
 export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
   const [loading, setLoading] = useState<boolean>(true)
@@ -51,7 +74,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
       .then((pluginPackageList: any[]) => {
         pluginPackageList.forEach((pluginPackage: TDmtPlugin[]) => {
           pluginPackage.forEach(
-            (plugin) =>
+            plugin =>
               (newPluginMap = { ...newPluginMap, [plugin.pluginName]: plugin })
           )
         })
@@ -74,7 +97,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
     }
   }
 
-  function getPagePlugin(uiRecipeName: string) {
+  function getPagePlugin(uiRecipeName: string): TDmtPlugin {
     const pluginName = uiRecipeName.trim()
     if (pluginName in plugins) {
       return plugins[pluginName]

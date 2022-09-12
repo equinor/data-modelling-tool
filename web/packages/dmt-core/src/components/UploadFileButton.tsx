@@ -42,7 +42,7 @@ export function UploadFileButton(props: {
   getBody: (filename: string) => TSTaskBody
   dataSourceId: string
   onUpload: (createdRef: TReference) => void
-  formData: string
+  formData?: TReference
 }) {
   const { fileSuffix, getBody, dataSourceId, onUpload, formData } = props
   const textInput = useRef<HTMLInputElement>(null)
@@ -68,7 +68,7 @@ export function UploadFileButton(props: {
         token,
         [file],
         dataSourceId,
-        'Data/STasks',
+        '/Data/STasks',
         true
       )
         .then((createdUUID: string) =>
