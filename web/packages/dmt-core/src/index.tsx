@@ -1,7 +1,6 @@
 export * from './components'
 
 export { useDataSources } from './hooks/useDataSources'
-export type { IDataSources } from './hooks/useDataSources'
 export { useDocument } from './hooks/useDocument'
 export { useSearch } from './hooks/useSearch'
 export { useBlueprint } from './hooks/useBlueprint'

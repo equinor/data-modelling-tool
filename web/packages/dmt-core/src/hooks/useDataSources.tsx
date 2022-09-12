@@ -6,17 +6,13 @@ import DataSourceReducer, {
   initialState,
 } from './DataSourcesReducer'
 import { DmssAPI, TDataSource } from '../services'
+import { IDataSources } from '../types'
 
 export interface IModels {
   dataSources: TDataSource[]
 }
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface IOperations {}
-
-export interface IDataSources {
-  models: IModels
-  operations: IOperations
-}
 
 export const useDataSources = (dmssAPI: DmssAPI): IDataSources => {
   const [state, dispatch] = useReducer(DataSourceReducer, initialState)

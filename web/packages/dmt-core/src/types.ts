@@ -1,5 +1,6 @@
 import { ReactNode } from 'react'
 import { EJobStatus } from './Enums'
+import { IModels, IOperations } from './hooks/useDataSources'
 
 export type TRoute = {
   path: string
@@ -75,6 +76,11 @@ export type TChildTab = {
   categories?: string[]
   absoluteDottedId: string
   onSubmit: (data: any) => void
+}
+
+export interface IDataSources {
+  models: IModels
+  operations: IOperations
 }
 
 export type TRunner = { image?: any; type: string }

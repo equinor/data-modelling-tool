@@ -1244,10 +1244,10 @@
   resolved "https://registry.yarnpkg.com/@ctrl/tinycolor/-/tinycolor-3.4.1.tgz#75b4c27948c81e88ccd3a8902047bcd797f38d32"
   integrity sha512-ej5oVy6lykXsvieQtqZxCOaLT+xD4+QNarq78cIYISHmZXshCvROLudpQN3lfL8G0NL7plMSSK+zlyvCaIJ4Iw==
 
-"@data-modelling-tool/core@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@data-modelling-tool/core/-/core-1.0.4.tgz#4a1bbc4790b41893e35157bb3a762ec0ca0e8818"
-  integrity sha512-ZGlIdPpmgXY5Uzy+FfsloPX/o99WSmZCF3rdIiw85fsl5vvahKquUt11+Axfhyf4YFVBjf+LxjVuTUFCimivhQ==
+"@data-modelling-tool/core@1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@data-modelling-tool/core/-/core-1.0.5.tgz#e641ab6e39cef68d1803c7a8159a7b8a30a895e5"
+  integrity sha512-387bnNEXGAJe5OMQ7IJF7d70Xhv7KBCkbSOr3U3H/a7uxSl19TMHV3r61ivgNUgPKXcaLy0dtadJF4m/XuqD4g==
   dependencies:
     "@equinor/eds-core-react" "^0.20.0"
     "@equinor/eds-icons" "^0.12.0"
