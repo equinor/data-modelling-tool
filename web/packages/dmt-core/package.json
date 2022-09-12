@@ -1,6 +1,6 @@
 {
   "name": "@data-modelling-tool/core",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "main": "src/index.tsx",
   "dependencies": {
     "@equinor/eds-core-react": "^0.20.0",
