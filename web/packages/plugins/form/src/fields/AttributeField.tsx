@@ -5,7 +5,7 @@ import { ObjectField } from './ObjectField'
 import { StringField } from './StringField'
 import { isArray, isPrimitive } from '../utils'
 import { BooleanField } from './BooleanField'
-import { AttributeFieldProps } from '../types'
+import { TAttributeFieldProps } from '../types'
 import { NumberField } from './NumberField'
 
 const getFieldType = (attribute: any) => {
@@ -30,7 +30,7 @@ const getDisplayLabel = (attribute: any): string => {
   return optional ? `${displayLabel} (optional)` : displayLabel
 }
 
-export const AttributeField = (props: AttributeFieldProps) => {
+export const AttributeField = (props: TAttributeFieldProps) => {
   const { namePath, attribute, uiAttribute } = props
 
   const fieldType = getFieldType(attribute)

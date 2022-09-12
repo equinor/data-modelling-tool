@@ -1,7 +1,7 @@
 import React from 'react'
 import { TDataSource } from '@data-modelling-tool/core'
 
-export type DatasourceOption = {
+export type TDatasourceOption = {
   label: string
   value: string
 }
@@ -12,7 +12,7 @@ type Props = {
   datasources: TDataSource[]
 }
 
-const defaultDatasources: DatasourceOption[] = [
+const defaultDatasources: TDatasourceOption[] = [
   {
     value: '',
     label: '',
@@ -35,7 +35,7 @@ export default (props: Props) => {
       }}
       style={{ margin: '0 10px' }}
     >
-      {datasourceOptions.map((option: DatasourceOption) => (
+      {datasourceOptions.map((option: TDatasourceOption) => (
         <option key={option.value} value={option.value}>
           {option.label}
         </option>
