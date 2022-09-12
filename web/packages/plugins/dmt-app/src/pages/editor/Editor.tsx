@@ -3,7 +3,7 @@ import {
   IDashboard,
   useDashboard,
 } from '../../context/dashboard/DashboardProvider'
-import { LayoutComponents } from '../../context/dashboard/useLayout'
+import { ELayoutComponents } from '../../context/dashboard/useLayout'
 import { ModalProvider } from '../../context/modal/ModalContext'
 import { GoldenLayoutComponent } from '../../components/golden-layout/GoldenLayoutComponent'
 import GoldenLayoutPanel from '../../components/golden-layout/GoldenLayoutPanel'
@@ -65,7 +65,7 @@ export default () => {
     dashboard.models.layout.operations.add(
       node.nodeId,
       node?.name || 'None',
-      LayoutComponents.blueprint,
+      ELayoutComponents.blueprint,
       {
         absoluteDottedId: node.nodeId,
         type: node.entity.type,
@@ -96,7 +96,7 @@ export default () => {
           config={LAYOUT_CONFIG}
           registerComponents={(myLayout: any) => {
             myLayout.registerComponent(
-              LayoutComponents.blueprint,
+              ELayoutComponents.blueprint,
               wrapComponent(UIPluginSelector)
             )
             dashboard.models.layout.operations.registerLayout({

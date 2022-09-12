@@ -1,7 +1,7 @@
 import React, { createContext, useEffect, useState } from 'react'
 
 export interface TDmtPlugin {
-  pluginType: DmtPluginType
+  pluginType: EDmtPluginType
   pluginName: string
   component: (props: IDmtUIPlugin) => JSX.Element
 }
@@ -25,7 +25,7 @@ export interface IDmtUIPlugin {
   readOnly?: boolean
 }
 
-export enum DmtPluginType {
+export enum EDmtPluginType {
   UI,
   PAGE,
 }
@@ -37,7 +37,7 @@ type TUiPluginContext = {
   getPagePlugin: (uiRecipeName: string) => TDmtPlugin
 }
 const emtpyDMTPlugin: TDmtPlugin = {
-  pluginType: DmtPluginType.PAGE,
+  pluginType: EDmtPluginType.PAGE,
   pluginName: '',
   component: () => {
     return <div></div>
@@ -92,7 +92,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
     if (pluginName in plugins) return plugins[pluginName]
     return {
       pluginName: 'NotFound',
-      pluginType: DmtPluginType.UI,
+      pluginType: EDmtPluginType.UI,
       component: () => <div>Did not find the plugin: {pluginName} </div>,
     }
   }

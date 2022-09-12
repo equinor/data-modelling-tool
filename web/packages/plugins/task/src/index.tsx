@@ -1,4 +1,4 @@
-import { TDmtPlugin, DmtPluginType } from '@data-modelling-tool/core'
+import { TDmtPlugin, EDmtPluginType } from '@data-modelling-tool/core'
 import { EditTask } from './EditTask'
 import { ViewTask } from './ViewTask'
 import { EditInput } from './InputOnly'
@@ -6,17 +6,17 @@ import { EditInput } from './InputOnly'
 export const plugins: TDmtPlugin[] = [
   {
     pluginName: 'edit-task',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: EditTask,
   },
   {
     pluginName: 'view-task',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: ViewTask,
   },
   {
     pluginName: 'edit-task-operator',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: EditInput,
   },
 ]

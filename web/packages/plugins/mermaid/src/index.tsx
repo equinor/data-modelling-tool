@@ -4,7 +4,7 @@ import { useContext, useEffect, useState } from 'react'
 import {
   AuthContext,
   DmssAPI,
-  DmtPluginType,
+  EDmtPluginType,
   IDmtUIPlugin,
   Loading,
   useDocument,
@@ -105,7 +105,7 @@ const PluginComponent = (props: IDmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'mermaid',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: PluginComponent,
   },
 ]

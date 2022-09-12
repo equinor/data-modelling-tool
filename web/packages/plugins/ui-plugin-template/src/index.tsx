@@ -1,9 +1,9 @@
 import * as React from 'react'
 
-import { DmtPluginType, IDmtUIPlugin } from '@data-modelling-tool/core'
+import { EDmtPluginType, IDmtUIPlugin } from '@data-modelling-tool/core'
 
 export const pluginName = 'ui-plugin-template'
-export const pluginType = DmtPluginType.UI
+export const pluginType = EDmtPluginType.UI
 
 export const PluginComponent = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props

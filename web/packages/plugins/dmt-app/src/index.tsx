@@ -2,7 +2,7 @@ import * as React from 'react'
 import {
   AuthContext,
   DmssAPI,
-  DmtPluginType,
+  EDmtPluginType,
   Header,
 } from '@data-modelling-tool/core'
 import SearchPage from './pages/SearchPage'
@@ -49,7 +49,7 @@ const PageComponent = (props: any) => {
 export const plugins: any = [
   {
     pluginName: 'DMT',
-    pluginType: DmtPluginType.PAGE,
+    pluginType: EDmtPluginType.PAGE,
     component: PageComponent,
   },
 ]

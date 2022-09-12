@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import {
-  DmtPluginType,
+  EDmtPluginType,
   IDmtUIPlugin,
   useDocument,
   TJob,
@@ -37,12 +37,12 @@ const JobControlWrapper = (props: IDmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'jobControl',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: JobControlWrapper,
   },
   {
     pluginName: 'jobInputEdit',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: JobInputEdit,
   },
 ]

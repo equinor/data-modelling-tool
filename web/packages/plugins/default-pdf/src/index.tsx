@@ -1,7 +1,11 @@
 import * as React from 'react'
 import { ViewerPDFPlugin } from './PDFViewer'
 
-import { DmtPluginType, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
+import {
+  EDmtPluginType,
+  IDmtUIPlugin,
+  Loading,
+} from '@data-modelling-tool/core'
 import { useDocument } from '@data-modelling-tool/core'
 
 const PluginComponent = (props: IDmtUIPlugin) => {
@@ -16,7 +20,7 @@ const PluginComponent = (props: IDmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'default-pdf',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: PluginComponent,
   },
 ]
