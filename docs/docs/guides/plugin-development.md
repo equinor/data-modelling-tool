@@ -54,12 +54,12 @@ This is the template for a UI plugin.
 
 ```jsx
 import * as React from 'react'
-import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
+import { DmtPluginType, IDmtUIPlugin } from '@data-modelling-tool/core'
 
 export const pluginName = 'custom-plugin'
 export const pluginType = DmtPluginType.UI
 
-export const PluginComponent = (props: DmtUIPlugin) => {
+export const PluginComponent = (props: IDmtUIPlugin) => {
   return (
     <div>
       Plugin content goes here!

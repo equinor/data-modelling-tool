@@ -5,7 +5,7 @@ import { ACLSelect } from './ACLSelect'
 import { CenteredRow } from './AccessControlList'
 import styled from 'styled-components'
 
-interface URPanelProps {
+interface IURPanelProps {
   entities: { [key: string]: AccessLevel }
   handleChange: (data: Partial<ACL>) => void
   aclKey: string
@@ -50,7 +50,7 @@ export const ACLUserRolesPanel = ({
   entities,
   handleChange,
   aclKey,
-}: URPanelProps): JSX.Element => {
+}: IURPanelProps): JSX.Element => {
   const [newRole, setNewRole] = useState<string>('')
   const getPlaceholderText = () => {
     if (aclKey === 'users') {
