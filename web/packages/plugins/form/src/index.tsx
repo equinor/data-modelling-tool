@@ -3,7 +3,7 @@ import * as React from 'react'
 import {
   BlueprintPicker,
   EDmtPluginType,
-  DmtUIPlugin,
+  IDmtUIPlugin,
   Loading,
   TReference,
   TSTaskBody,
@@ -105,7 +105,7 @@ const widgets = {
   },
 }
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: IDmtUIPlugin) => {
   const { config, onOpen } = props
   const { documentId, dataSourceId } = props
   const [document, loading, updateDocument] = useDocument<any>(

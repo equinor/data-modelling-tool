@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, DmtUIPlugin, Loading } from '@data-modelling-tool/core'
+import { useDocument, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
 
 import { SIMA_Model_SIMOBody } from './SIMOBody_src.js'
 
-export const SIMA_Model_SIMOBody_Component = (props: DmtUIPlugin) => {
+export const SIMA_Model_SIMOBody_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

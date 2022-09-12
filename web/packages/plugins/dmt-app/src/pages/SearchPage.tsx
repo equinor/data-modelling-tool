@@ -11,14 +11,15 @@ import { Link } from 'react-router-dom'
 import {
   DmssAPI,
   BlueprintPicker,
-  DataSources,
+  TDataSources,
   JsonView,
   ApplicationContext,
   AuthContext,
   useLocalStorage,
-  DataSource,
+  TDataSource,
   TGenericObject,
   TAttribute,
+  DataSourceInformation,
 } from '@data-modelling-tool/core'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
@@ -435,7 +436,7 @@ function ResultContainer(props: { result: { [key: string]: any } }) {
 function SelectDataSource(props: {
   selectedDataSources: string[]
   setDataSources: (ds: string[]) => void
-  allDataSources: DataSources
+  allDataSources: TDataSources
 }) {
   const { selectedDataSources, setDataSources, allDataSources } = props
   return (
@@ -448,7 +449,7 @@ function SelectDataSource(props: {
       }}
     >
       <Autocomplete
-        options={allDataSources.map((dataSource: DataSource) => dataSource.id)}
+        options={allDataSources.map((dataSource: TDataSource) => dataSource.id)}
         label={'Select data sources to search'}
         multiple
         initialSelectedOptions={selectedDataSources}
@@ -481,16 +482,15 @@ export default ({ settings }: TGenericObject) => {
   )
   const [result, setResult] = useState<{ [key: string]: any }>({})
   const [queryError, setQueryError] = useState('')
-  const [dataSources, setDataSources] = useState<DataSources>([])
+  const [dataSources, setDataSources] = useState<TDataSources>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
     dmssAPI
       .dataSourceGetAll()
-      .then((response) => {
-        //@ts-ignore --------- todo requires pr merge in dmss
-        const dataSources: DataSources = response.data
+      .then((response: AxiosResponse<DataSourceInformation[]>) => {
+        const dataSources: TDataSources = response.data
         setDataSources(dataSources)
       })
       .catch((error) => {
@@ -519,6 +519,7 @@ export default ({ settings }: TGenericObject) => {
             'Search'
           )
         }
+        // @ts-ignore
         setResult(response.data)
       })
       .catch((err: AxiosError<any>) => {

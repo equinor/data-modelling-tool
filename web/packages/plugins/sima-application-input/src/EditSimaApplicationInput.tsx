@@ -1,7 +1,7 @@
 import {
   BlueprintPicker,
   DestinationPicker,
-  DmtUIPlugin,
+  IDmtUIPlugin,
   EntityPickerInput,
   INPUT_FIELD_WIDTH,
   Loading,
@@ -64,7 +64,7 @@ const ReadOnlyTextField = (props: { text: string; label: string }) => {
 
 const STaskBlueprint = 'AnalysisPlatformDS/Blueprints/STask'
 
-export const EditSimaApplicationInput = (props: DmtUIPlugin) => {
+export const EditSimaApplicationInput = (props: IDmtUIPlugin) => {
   const { dataSourceId, onOpen, documentId, readOnly } = props
   const [formData, setFormData] = useState<TSIMAApplicationInput | null>(null)
   const [

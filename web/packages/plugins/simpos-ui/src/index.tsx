@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { useDocument } from '@data-modelling-tool/core'
-import { EDmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
+import { EDmtPluginType } from '@data-modelling-tool/core'
 
 //import { SRSEnvTable } from './simpos/srs/view/env.js'
 //import EditDocument from './EditDocument'

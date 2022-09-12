@@ -4,18 +4,18 @@ import Tab from '@mui/material/Tab'
 import Typography from '@mui/material/Typography'
 import Box from '@mui/material/Box'
 
-interface TabPanelProps {
+interface ITabPanelProps {
   children?: React.ReactNode
   index: number
   value: number
 }
 
-export interface TabProp {
+export interface ITabProp {
   label: string
   content: React.ReactNode
 }
 
-function TabPanel(props: TabPanelProps) {
+function TabPanel(props: ITabPanelProps) {
   const { children, value, index, ...other } = props
 
   return (
@@ -88,4 +88,4 @@ function VerticalTabs({ tabProps }: any) {
   )
 }
 
-export { VerticalTabs as VerticalTabs }
+export { VerticalTabs }

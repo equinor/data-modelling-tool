@@ -1,6 +1,6 @@
 import {
   AuthContext,
-  DmtSettings,
+  TDmtSettings,
   hasDomainRole,
   useSearch,
   Loading,
@@ -13,7 +13,7 @@ import { TAsset } from '../../Types'
 import { EBlueprints } from '../../Enums'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 
-export const AssetOverview = (props: { settings: DmtSettings }): ReactNode => {
+export const AssetOverview = (props: { settings: TDmtSettings }): ReactNode => {
   const { settings } = props
   const { tokenData } = useContext(AuthContext)
   const location = useLocation()
