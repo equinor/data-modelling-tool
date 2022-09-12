@@ -199,7 +199,7 @@ function DynamicAttributeFilter({
           const data = response.data
           setNestedAttributes(data.attributes)
         })
-        .catch(error => {
+        .catch((error) => {
           NotificationManager.error(`${error.message}`)
           console.error(error)
         })
@@ -217,7 +217,7 @@ function DynamicAttributeFilter({
         <input
           value={(value as string) || ''}
           type={'text'}
-          onChange={event => {
+          onChange={(event) => {
             nestedOnChange(event.target.value)
           }}
         />
@@ -234,7 +234,7 @@ function DynamicAttributeFilter({
           expanded={expanded}
           setExpanded={setExpanded}
         >
-          {nestedAttributes.map(attr => (
+          {nestedAttributes.map((attr) => (
             <DynamicAttributeFilter
               value={(value as TGenericObject)?.[attr.name]}
               key={attr.name}
@@ -281,7 +281,7 @@ function FilterContainer({
           const data = response.data
           setAttributes(data.attributes)
         })
-        .catch(error => {
+        .catch((error) => {
           NotificationManager.error(`${error.message}`)
           console.error(error)
         })
@@ -292,7 +292,7 @@ function FilterContainer({
     <Wrapper>
       <b>Filter</b>
       <form
-        onSubmit={event => {
+        onSubmit={(event) => {
           event.preventDefault()
           event.stopPropagation()
           search(searchFilter)
@@ -493,7 +493,7 @@ export default ({ settings }: TGenericObject) => {
         const dataSources: TDataSources = response.data
         setDataSources(dataSources)
       })
-      .catch(error => {
+      .catch((error) => {
         console.error(error)
         NotificationManager.error(error, 'Failed to fetch datasources', 0)
       })
@@ -532,7 +532,7 @@ export default ({ settings }: TGenericObject) => {
     <>
       <SelectDataSource
         selectedDataSources={searchSettings.dataSources}
-        setDataSources={dataSources =>
+        setDataSources={(dataSources) =>
           setSearchSettings({ ...searchSettings, dataSources: dataSources })
         }
         allDataSources={dataSources}
@@ -544,11 +544,11 @@ export default ({ settings }: TGenericObject) => {
           search={search}
           queryError={queryError}
           searchFilter={searchSettings.filter}
-          setSearchFilter={filter =>
+          setSearchFilter={(filter) =>
             setSearchSettings({ ...searchSettings, filter: filter })
           }
           sortByAttribute={searchSettings.sortByAttribute}
-          setSortByAttribute={sortByAttribute =>
+          setSortByAttribute={(sortByAttribute) =>
             setSearchSettings({
               ...searchSettings,
               sortByAttribute: sortByAttribute,
