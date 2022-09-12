@@ -1,29 +1,29 @@
-import { DataSource, DataSources } from '../index'
+import { TDataSource, TDataSources } from '../index'
 
 const ADD_DATA_SOURCES = 'ADD_DATA_SOURCES'
 const ADD_DATA_SOURCE = 'ADD_DATA_SOURCE'
 
-export type DataSourcesState = {
-  dataSources: DataSource[]
+type TDataSourcesState = {
+  dataSources: TDataSource[]
 }
 
-export const initialState: DataSourcesState = {
+export const initialState: TDataSourcesState = {
   dataSources: [],
 }
 
 export const DocumentActions = {
-  addDataSources: (value: DataSources): object => ({
+  addDataSources: (value: TDataSources): object => ({
     type: ADD_DATA_SOURCES,
     value,
   }),
 
-  addDataSource: (value: DataSource) => ({
+  addDataSource: (value: TDataSource) => ({
     type: ADD_DATA_SOURCE,
     value,
   }),
 }
 
-export default (state: DataSourcesState, action: any) => {
+export default (state: TDataSourcesState, action: any) => {
   switch (action.type) {
     case ADD_DATA_SOURCES:
       return {

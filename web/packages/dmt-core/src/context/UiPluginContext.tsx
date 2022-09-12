@@ -6,7 +6,7 @@ export interface TDmtPlugin {
   component: (props: DmtUIPlugin) => JSX.Element
 }
 
-export type UiPluginMap = {
+type TUiPluginMap = {
   [key: string]: TDmtPlugin
 }
 
@@ -31,7 +31,7 @@ export enum DmtPluginType {
 }
 
 type TUiPluginContext = {
-  plugins: UiPluginMap
+  plugins: TUiPluginMap
   loading: boolean
   getUiPlugin: (uiRecipeName: string) => TDmtPlugin
   getPagePlugin: (uiRecipeName: string) => TDmtPlugin
@@ -57,12 +57,12 @@ export const UiPluginContext = createContext<TUiPluginContext>(emptyContext)
 
 export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
   const [loading, setLoading] = useState<boolean>(true)
-  const [plugins, setPlugins] = useState<UiPluginMap>({})
+  const [plugins, setPlugins] = useState<TUiPluginMap>({})
 
   // Async load all the javascript packages defined in packages.json
   // Iterate every package, and adding all the UiPlugins contained in each package to the context
   useEffect(() => {
-    let newPluginMap: UiPluginMap
+    let newPluginMap: TUiPluginMap
     Promise.all(
       pluginsToLoad.map(
         async (pluginPackage: any) =>

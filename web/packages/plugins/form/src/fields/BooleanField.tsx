@@ -1,9 +1,9 @@
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { BooleanFieldProps } from '../types'
+import { TBooleanFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 
-export const BooleanField = (props: BooleanFieldProps) => {
+export const BooleanField = (props: TBooleanFieldProps) => {
   const { control } = useFormContext()
   const { namePath, displayLabel, defaultValue, uiAttribute } = props
 

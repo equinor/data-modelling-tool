@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button, Checkbox, Icon, Progress, Tabs } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-import { AccessLevel, ACL, AuthContext } from '../../index'
+import { AccessLevel, ACL, AuthContext, TUserIdMapping } from '../../index'
 import DmssAPI from '../../services/api/DmssAPI'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 //@ts-ignore
@@ -11,22 +11,12 @@ import {
   getTokenWithUserReadAccess,
   getUsernameMappingFromUserId,
   getUsernameMappingFromUsername,
-  UserIdMapping,
 } from '../../utils/UsernameConversion'
 import { AxiosError, AxiosResponse } from 'axios'
 import { ACLUserRolesPanel } from './ACLUserRolesPanel'
 import { ACLOwnerPanel } from './ACLOwnerPanel'
 
 Icon.add({ edit_text, save })
-
-export type TokenResponse = {
-  token_type: string
-  scope: string
-  expires_in: number
-  ext_expires_in: number
-  access_token: string
-  refresh_token: string
-}
 
 const ACLWrapper = styled.div`
   max-width: 650px;
@@ -89,8 +79,8 @@ export const AccessControlList = (props: {
           return getUsernameMappingFromUserId(usernameId, tokenWithReadAccess)
         })
       )
-        .then((userIdMappings: UserIdMapping[]) => {
-          userIdMappings.map((userIdMapping: UserIdMapping) => {
+        .then((userIdMappings: TUserIdMapping[]) => {
+          userIdMappings.map((userIdMapping: TUserIdMapping) => {
             newUsers[userIdMapping.username] = users[userIdMapping.userId]
           })
           aclCopy.users = newUsers
@@ -99,7 +89,7 @@ export const AccessControlList = (props: {
           return getUsernameMappingFromUserId(
             aclCopy.owner,
             tokenWithReadAccess
-          ).then((userIdMapping: UserIdMapping) => {
+          ).then((userIdMapping: TUserIdMapping) => {
             if (userIdMapping.username) {
               aclCopy.owner = userIdMapping.username
             } else {
@@ -125,15 +115,15 @@ export const AccessControlList = (props: {
         Object.keys(users).map((username: string) => {
           return getUsernameMappingFromUsername(username, tokenWithReadAccess)
         })
-      ).then((userIdMappings: UserIdMapping[]) => {
-        userIdMappings.map((userIdMapping: UserIdMapping) => {
+      ).then((userIdMappings: TUserIdMapping[]) => {
+        userIdMappings.map((userIdMapping: TUserIdMapping) => {
           newUsers[userIdMapping.userId] = users[userIdMapping.username]
         })
         aclCopy.users = newUsers
         return getUsernameMappingFromUsername(
           aclCopy.owner,
           tokenWithReadAccess
-        ).then((userIdMapping: UserIdMapping) => {
+        ).then((userIdMapping: TUserIdMapping) => {
           if (userIdMapping.userId) {
             aclCopy.owner = userIdMapping.userId
           } else {

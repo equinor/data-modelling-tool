@@ -1,4 +1,4 @@
-export type FormProps = {
+export type TFormProps = {
   documentId?: string
   dataSourceId?: string
   type?: string
@@ -9,7 +9,7 @@ export type FormProps = {
   onOpen?: (data: any) => void
 }
 
-export type ObjectFieldProps = {
+export type TObjectFieldProps = {
   contained?: boolean
   // plugin: string
   namePath: string
@@ -20,13 +20,13 @@ export type ObjectFieldProps = {
   uiRecipeName?: string
   uiAttribute?: any
 }
-export type AttributeFieldProps = {
+export type TAttributeFieldProps = {
   namePath: string
   attribute: any
   uiAttribute?: any
 }
 
-export type StringFieldProps = {
+export type TStringFieldProps = {
   namePath: string
   displayLabel: string
   defaultValue: string
@@ -34,7 +34,7 @@ export type StringFieldProps = {
   uiAttribute?: any
 }
 
-export type NumberFieldProps = {
+export type TNumberFieldProps = {
   namePath: string
   displayLabel: string
   defaultValue: string
@@ -42,7 +42,7 @@ export type NumberFieldProps = {
   uiAttribute?: any
 }
 
-export type BooleanFieldProps = {
+export type TBooleanFieldProps = {
   namePath: string
   displayLabel: string
   defaultValue: string

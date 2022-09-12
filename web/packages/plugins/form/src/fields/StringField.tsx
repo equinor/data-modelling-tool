@@ -1,13 +1,13 @@
 import React from 'react'
 import { Controller, useFormContext } from 'react-hook-form'
-import { StringFieldProps } from '../types'
+import { TStringFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 
 const formatDate = (date: string) => {
   return new Date(date).toLocaleString(navigator.language)
 }
 
-export const StringField = (props: StringFieldProps) => {
+export const StringField = (props: TStringFieldProps) => {
   const { control } = useFormContext()
   const { namePath, displayLabel, defaultValue, optional, uiAttribute } = props
 
