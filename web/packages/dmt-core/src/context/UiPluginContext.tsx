@@ -37,7 +37,7 @@ type TUiPluginContext = {
   getPagePlugin: (uiRecipeName: string) => TDmtPlugin
 }
 const emtpyDMTPlugin: TDmtPlugin = {
-  pluginType: DmtPluginType.PAGE,
+  pluginType: EDmtPluginType.PAGE,
   pluginName: '',
   component: () => {
     return <div></div>
@@ -74,7 +74,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
       .then((pluginPackageList: any[]) => {
         pluginPackageList.forEach((pluginPackage: TDmtPlugin[]) => {
           pluginPackage.forEach(
-            (plugin) =>
+            plugin =>
               (newPluginMap = { ...newPluginMap, [plugin.pluginName]: plugin })
           )
         })
