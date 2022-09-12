@@ -8,7 +8,7 @@ import {
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'

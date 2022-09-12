@@ -21,6 +21,7 @@ git_push.sh
 index.ts
 models/access-level.ts
 models/acl.ts
+models/data-source-information.ts
 models/data-source-request.ts
 models/error-response.ts
 models/index.ts

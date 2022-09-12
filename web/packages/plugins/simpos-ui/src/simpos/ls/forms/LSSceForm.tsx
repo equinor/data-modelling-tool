@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { Loading, useDocument } from '@dmt/common'
-import { IDmtUIPlugin } from '@dmt/common'
+import { Loading, useDocument } from '@data-modelling-tool/core'
+import { IDmtUIPlugin } from '@data-modelling-tool/core'
 
 import { LSSceForm } from './sce.js'
 

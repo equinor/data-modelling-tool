@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, IDmtUIPlugin, Loading } from '@dmt/common'
+import { useDocument, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
 
 import { SIMA_Model_SIMOBody } from './SIMOBody_src.js'
 

@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { IDmtUIPlugin, TJob, useDocument } from '@dmt/common'
+import { IDmtUIPlugin, TJob, useDocument } from '@data-modelling-tool/core'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
 
-import { Loading } from '@dmt/common'
+import { Loading } from '@data-modelling-tool/core'
 
 export const InspectorView = (props: IDmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props

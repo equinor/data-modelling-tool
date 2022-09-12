@@ -1,4 +1,4 @@
-import { IDmtUIPlugin, Loading, useDocument } from '@dmt/common'
+import { IDmtUIPlugin, Loading, useDocument } from '@data-modelling-tool/core'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 import { Button, Progress, Typography } from '@equinor/eds-core-react'

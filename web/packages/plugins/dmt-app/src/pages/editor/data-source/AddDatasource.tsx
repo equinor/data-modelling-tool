@@ -9,7 +9,7 @@ import {
   AuthContext,
   UiPluginContext,
   ErrorResponse,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { useModalContext } from '../../../context/modal/ModalContext'
 import { AxiosError } from 'axios'
 
@@ -27,7 +27,6 @@ const constructType = (selectedDatasourceType: string) => {
 const AddDataSourceComponent = () => {
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  // @ts-ignore
   const { getUiPlugin } = useContext(UiPluginContext)
   const [selectedDatasourceType, setSelectedDatasourceType] = useState(
     'mongo-db'

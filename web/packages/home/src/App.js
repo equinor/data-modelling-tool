@@ -9,13 +9,14 @@ import {
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
-import { DmtAPI } from '@dmt/common'
+import { DmtAPI } from '@data-modelling-tool/core'
 import {
+  AuthContext,
   sortApplications,
   UiPluginContext,
   ApplicationContext,
   FSTreeProvider,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import {
   CardBody,
   CardFieldset,
@@ -23,7 +24,6 @@ import {
   CardHeading,
   CardWrapper,
 } from './components/Card'
-import { AuthContext } from 'react-oauth2-code-pkce'
 
 const GlobalStyle = createGlobalStyle`
   body {
@@ -99,7 +99,7 @@ function App() {
   }, [])
 
   // Stops web-page from flickering while the user is being logged in
-  if (authEnabled && loginInProgress) return null
+  // if (authEnabled && loginInProgress) return null
 
   if (authEnabled && !token) {
     return <div>You are not logged in. Reload page to login</div>

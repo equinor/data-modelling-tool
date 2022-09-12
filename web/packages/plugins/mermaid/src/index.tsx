@@ -8,7 +8,7 @@ import {
   IDmtUIPlugin,
   Loading,
   useDocument,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import Mermaid from './Mermaid'
 import { dfs, loader, Node } from './loader'
 import { AttributeType } from './types'

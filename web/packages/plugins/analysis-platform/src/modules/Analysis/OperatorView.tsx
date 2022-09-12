@@ -1,14 +1,14 @@
 import React, { useEffect, useState, useContext } from 'react'
 import {
+  AuthContext,
   IDmtUIPlugin,
   UIPluginSelector,
   TJob,
   useDocument,
   Loading,
   hasDomainRole,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
-import { AuthContext } from 'react-oauth2-code-pkce'
 
 export const OperatorView = (props: IDmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props

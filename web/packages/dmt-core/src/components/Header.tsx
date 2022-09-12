@@ -3,6 +3,7 @@ import { Icon, Radio, TopBar } from '@equinor/eds-core-react'
 import { grid_on, info_circle, account_circle } from '@equinor/eds-icons'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+
 import {
   AuthContext,
   Button,

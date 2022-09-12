@@ -1,4 +1,4 @@
-import { TDmtPlugin, DmtPluginType } from '@dmt/common'
+import { TDmtPlugin, DmtPluginType } from '@data-modelling-tool/core'
 import { EditTask } from './EditTask'
 import { ViewTask } from './ViewTask'
 import { EditInput } from './InputOnly'

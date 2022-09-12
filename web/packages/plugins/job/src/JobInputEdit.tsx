@@ -5,7 +5,7 @@ import {
   TJob,
   UIPluginSelector,
   useDocument,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 

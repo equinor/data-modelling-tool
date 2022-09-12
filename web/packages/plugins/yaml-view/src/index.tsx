@@ -7,7 +7,7 @@ import {
   Loading,
   TDmtPlugin,
   useDocument,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import PreviewPlugin from './YamlPlugin'
 
 const PluginComponent = (props: IDmtUIPlugin) => {

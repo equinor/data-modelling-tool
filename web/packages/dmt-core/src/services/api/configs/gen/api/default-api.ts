@@ -25,6 +25,8 @@ import { ACL } from '../models';
 // @ts-ignore
 import { AccessLevel } from '../models';
 // @ts-ignore
+import { DataSourceInformation } from '../models';
+// @ts-ignore
 import { DataSourceRequest } from '../models';
 // @ts-ignore
 import { ErrorResponse } from '../models';
@@ -1450,7 +1452,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
+        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DataSourceInformation>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.dataSourceGetAll(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1794,7 +1796,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        dataSourceGetAll(options?: any): AxiosPromise<Array<object>> {
+        dataSourceGetAll(options?: any): AxiosPromise<Array<DataSourceInformation>> {
             return localVarFp.dataSourceGetAll(options).then((request) => request(axios, basePath));
         },
         /**

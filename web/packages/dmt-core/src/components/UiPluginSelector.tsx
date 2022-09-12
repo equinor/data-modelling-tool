@@ -170,7 +170,6 @@ export function UIPluginSelector(props: {
     documentId = absoluteDottedId.split('/', 2)[1]
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(type)
-  // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
   const roles = getRoles(tokenData)

@@ -3,7 +3,7 @@ import { MakeDiagram } from './Diagram'
 
 import { VerticalTabs, TabProp } from './VerticalTabs'
 
-import { useDocument, IDmtUIPlugin, Loading } from '@dmt/common'
+import { useDocument, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
 
 const WorkflowTask_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props

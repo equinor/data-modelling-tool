@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { Loading, useDocument } from '@dmt/common'
-import { DmtPluginType, IDmtUIPlugin } from '@dmt/common'
+import { Loading, useDocument } from '@data-modelling-tool/core'
+import { DmtPluginType, IDmtUIPlugin } from '@data-modelling-tool/core'
 
 import { SimposRunOutputView } from './results.js'
 import { SimposStatusView } from './results.js'
