@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "main": "src/index.tsx",
   "dependencies": {
-    "@data-modelling-tool/core": "1.0.3",
+    "@data-modelling-tool/core": "1.0.4",
     "react-copy-to-clipboard": "^5.0.2"
   }
 }
