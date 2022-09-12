@@ -47,12 +47,12 @@ const isPrimitive = (attribute: TAttributeType) => {
     )
   } else return false
 }
-const primitiveAttributes = (blueprint: BlueprintType): TAttributeType[] =>
+const primitiveAttributes = (blueprint: IBlueprintType): TAttributeType[] =>
   blueprint.attributes.filter((attribute: TAttributeType) =>
     isPrimitive(attribute)
   )
 const isNonPrimitive = (attribute: TAttributeType) => !isPrimitive(attribute)
-const nonPrimitiveAttributes = (blueprint: BlueprintType): TAttributeType[] =>
+const nonPrimitiveAttributes = (blueprint: IBlueprintType): TAttributeType[] =>
   blueprint.attributes.filter((attribute: TAttributeType) =>
     isNonPrimitive(attribute)
   )
