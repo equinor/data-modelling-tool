@@ -1,6 +1,11 @@
 import { Dialog as EdsDialog, Icon } from '@equinor/eds-core-react'
 import React from 'react'
 import styled from 'styled-components'
+import { close } from '@equinor/eds-icons'
+
+Icon.add({
+  close,
+})
 
 const ClickableIcon = styled.div`
   &:hover {
@@ -9,14 +14,17 @@ const ClickableIcon = styled.div`
   }
 `
 
-export const Dialog = (props: {
+export interface Props {
+  /** Provides a url for avatars being used as a link. */
   closeScrim: () => void
   isOpen: boolean
   children: any
   header: string
   width?: string
   height?: string
-}) => {
+}
+
+export const Dialog = (props: Props) => {
   const { closeScrim, isOpen, children, header, width, height } = props
   return (
     <EdsDialog

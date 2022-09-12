@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {
   TDmtPlugin,
-  DmtUIPlugin,
+  IDmtUIPlugin,
   ErrorBoundary,
   UiPluginContext,
   useBlueprint,
@@ -98,7 +98,7 @@ const SelectPluginButton = styled.div<ISPButton>`
 
 type TSelectablePlugins = {
   name: string
-  component: (props: DmtUIPlugin) => JSX.Element
+  component: (props: IDmtUIPlugin) => JSX.Element
   config: any
 }
 
@@ -170,7 +170,6 @@ export function UIPluginSelector(props: {
     documentId = absoluteDottedId.split('/', 2)[1]
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(type)
-  // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
   const roles = getRoles(tokenData)
@@ -202,7 +201,7 @@ export function UIPluginSelector(props: {
   if (!selectablePlugins.length)
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
 
-  const UiPlugin: (props: DmtUIPlugin) => JSX.Element =
+  const UiPlugin: (props: IDmtUIPlugin) => JSX.Element =
     selectablePlugins[selectedPlugin].component
   const config: any = selectablePlugins[selectedPlugin].config
 

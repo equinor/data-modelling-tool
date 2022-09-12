@@ -1,6 +1,7 @@
 import React, { useEffect, useState, useContext } from 'react'
 import {
-  DmtUIPlugin,
+  AuthContext,
+  IDmtUIPlugin,
   UIPluginSelector,
   TJob,
   useDocument,
@@ -8,9 +9,8 @@ import {
   hasDomainRole,
 } from '@data-modelling-tool/core'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
-import { AuthContext } from 'react-oauth2-code-pkce'
 
-export const OperatorView = (props: DmtUIPlugin): JSX.Element => {
+export const OperatorView = (props: IDmtUIPlugin): JSX.Element => {
   const { documentId, dataSourceId } = props
   const [jobs, setJobs] = useState<any[]>([])
   const [analysis, setAnalysis] = useState<any>()

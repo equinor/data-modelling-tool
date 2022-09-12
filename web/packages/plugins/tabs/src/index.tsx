@@ -1,10 +1,10 @@
-import { DmtPluginType } from '@data-modelling-tool/core'
+import { EDmtPluginType } from '@data-modelling-tool/core'
 import { TabsContainer } from './TabsContainer'
 
 export const plugins: any = [
   {
     pluginName: 'tabs',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: TabsContainer,
   },
 ]

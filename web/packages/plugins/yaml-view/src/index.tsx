@@ -2,15 +2,15 @@ import * as React from 'react'
 
 import './index.css'
 import {
-  DmtPluginType,
-  DmtUIPlugin,
+  EDmtPluginType,
+  IDmtUIPlugin,
   Loading,
   TDmtPlugin,
   useDocument,
 } from '@data-modelling-tool/core'
 import PreviewPlugin from './YamlPlugin'
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   // eslint-disable-next-line
   const [document, loading, updateDocument, error] = useDocument(
@@ -32,7 +32,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 export const plugins: TDmtPlugin[] = [
   {
     pluginName: 'yaml-view',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: PluginComponent,
   },
 ]

@@ -1,9 +1,9 @@
 import React from 'react'
 
-import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
+import { EDmtPluginType, IDmtUIPlugin } from '@data-modelling-tool/core'
 import PreviewPlugin from './PreviewPlugin'
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: IDmtUIPlugin) => {
   return (
     <PreviewPlugin
       documentId={props.documentId}
@@ -15,7 +15,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'default-preview',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: PluginComponent,
   },
 ]

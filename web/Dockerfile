@@ -1,4 +1,4 @@
-FROM node:14-alpine as base
+FROM node:16-alpine AS base
 
 ARG AUTH_ENABLED=0
 ARG REDIRECT_URI=http://localhost/
@@ -21,11 +21,10 @@ COPY --chown=1000 ./packages ./packages
 RUN rm -rf ./packages/dmt-core
 RUN yarn install --ignore-scripts  --frozen-lockfile --link-duplicates
 
-FROM base as development
+FROM base AS development
 CMD ["yarn", "start"]
-USER 1000
 
-FROM base as prod
+FROM base AS prod
 RUN npm install -g serve
 RUN yarn build
 WORKDIR /code/packages/home

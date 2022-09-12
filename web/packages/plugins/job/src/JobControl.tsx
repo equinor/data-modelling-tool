@@ -11,7 +11,6 @@ import {
   TJob,
   ApplicationContext,
 } from '@data-modelling-tool/core'
-
 import { Button, Label, Progress } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'

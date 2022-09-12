@@ -3,7 +3,7 @@ import {
   ApplicationContext,
   DynamicTable,
   formatDate,
-  DmtSettings,
+  TDmtSettings,
 } from '@data-modelling-tool/core'
 import { TAnalysis } from '../../../Types'
 import { useParams } from 'react-router-dom'
@@ -38,7 +38,7 @@ export const AnalysisTable = (props: TAnalysisTableProps) => {
     data_source: string
     entity_id: string
   }>()
-  const settings: DmtSettings = useContext(ApplicationContext)
+  const settings: TDmtSettings = useContext(ApplicationContext)
 
   const getViewUrl = (index: number, rowDocumentId: string): string => {
     const urlBase = `/${settings.urlPath}/view`

@@ -1,6 +1,7 @@
 import { TRoute } from '@data-modelling-tool/core'
-import { AnalysisOverview } from './modules/Analysis'
-import { AnalysisCreate } from './modules/Analysis'
+import { AssetOverview } from './modules/Asset'
+import { AssetCreate } from './modules/Asset'
+import { AnalysisCreate, AnalysisOverview } from './modules/Analysis'
 import { View } from './modules'
 
 const Routes: Array<TRoute> = [

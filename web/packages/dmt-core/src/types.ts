@@ -8,18 +8,18 @@ export type TRoute = {
 
 export type TApp = {
   applications: any
-  settings: DmtSettings
+  settings: TDmtSettings
 }
 
 export type TContent = {
   content: ReactNode
-  settings: DmtSettings
+  settings: TDmtSettings
 }
 
 export type TLayout = {
   content: ReactNode
-  settings: DmtSettings
-  allApps: DmtSettings[]
+  settings: TDmtSettings
+  allApps: TDmtSettings[]
 }
 
 export type TReference = {
@@ -62,13 +62,22 @@ export type TSTaskBody = {
   name: string
   blob: TBlob
 }
-export type TRunner = { image?: any; type: string }
 
 export type TContainer = {
   label?: string
   image: TContainerImage
   customCommand?: string
 }
+
+export type TChildTab = {
+  attribute: string
+  entity: any
+  categories?: string[]
+  absoluteDottedId: string
+  onSubmit: (data: any) => void
+}
+
+export type TRunner = { image?: any; type: string }
 
 export type TTaskFormData = {
   applicationInput?: TGenericObject
@@ -81,7 +90,7 @@ export type TTaskFormData = {
   name?: string
 }
 
-export type DmtSettings = {
+export type TDmtSettings = {
   name: string
   label: string
   tabIndex: number
@@ -147,3 +156,5 @@ export type TValidEntity = {
   type: string
   [key: string]: any
 }
+
+export type TUserIdMapping = { userId: string; username: string }

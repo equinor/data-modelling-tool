@@ -5,13 +5,13 @@ import { ACLSelect } from './ACLSelect'
 import { CenteredRow } from './AccessControlList'
 import styled from 'styled-components'
 
-interface URPanelProps {
+interface IURPanelProps {
   entities: { [key: string]: AccessLevel }
   handleChange: (data: Partial<ACL>) => void
   aclKey: string
 }
 
-type GridContainerType = {
+type TGridContainerType = {
   even?: boolean
 }
 
@@ -21,7 +21,7 @@ const ListRow = styled.div`
   align-items: center;
   padding: 5px;
   justify-content: space-around;
-  background-color: ${(props: GridContainerType) => {
+  background-color: ${(props: TGridContainerType) => {
     if (props.even) return '#F7F7F7'
     return 'inherit'
   }};
@@ -35,12 +35,12 @@ const TableWrapper = styled.div`
   margin-bottom: 10px;
 `
 
-const GridContainer = styled.div<GridContainerType>`
+const GridContainer = styled.div<TGridContainerType>`
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   justify-items: center;
   align-items: center;
-  background-color: ${(props: GridContainerType) => {
+  background-color: ${(props: TGridContainerType) => {
     if (props.even) return '#F7F7F7'
     return 'inherit'
   }};
@@ -50,7 +50,7 @@ export const ACLUserRolesPanel = ({
   entities,
   handleChange,
   aclKey,
-}: URPanelProps): JSX.Element => {
+}: IURPanelProps): JSX.Element => {
   const [newRole, setNewRole] = useState<string>('')
   const getPlaceholderText = () => {
     if (aclKey === 'users') {

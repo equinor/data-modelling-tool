@@ -2,7 +2,7 @@ import * as React from 'react'
 import styled from '@emotion/styled'
 import { css, Global } from '@emotion/react'
 
-export interface DemoCanvasWidgetProps {
+export interface IDemoCanvasWidgetProps {
   color?: string
   background?: string
 }
@@ -58,7 +58,7 @@ namespace S {
 }
 
 export class DemoCanvasWidget extends React.Component<
-  DemoCanvasWidgetProps | any
+  IDemoCanvasWidgetProps | any
 > {
   render() {
     return (

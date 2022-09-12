@@ -1,10 +1,10 @@
-import { DmtPluginType } from '@data-modelling-tool/core'
+import { EDmtPluginType } from '@data-modelling-tool/core'
 import { EditContainer } from './EditContainer'
 
 export const plugins: any = [
   {
     pluginName: 'edit-container-job',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: EditContainer,
   },
 ]

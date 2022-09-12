@@ -3,12 +3,13 @@ import { Icon, Radio, TopBar } from '@equinor/eds-core-react'
 import { grid_on, info_circle, account_circle } from '@equinor/eds-icons'
 import styled from 'styled-components'
 import { Link } from 'react-router-dom'
+
 import {
   AuthContext,
   Button,
   Dialog,
   DmssAPI,
-  DmtSettings,
+  TDmtSettings,
   sortApplications,
   useLocalStorage,
 } from '../index'
@@ -99,7 +100,7 @@ const StyledLink = styled(Link)`
 export const Header = (props: {
   appName: string
   urlPath: string
-  allApps: DmtSettings[]
+  allApps: TDmtSettings[]
 }): JSX.Element => {
   const { appName, urlPath, allApps } = props
   const [version, setVersion] = useState<string>('Version not loaded')

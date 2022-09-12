@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "license": "MIT",
   "dependencies": {
-    "@data-modelling-tool/core": "1.0.2",
+    "@data-modelling-tool/core": "1.0.0",
     "@dmt/default-pdf": "1.0.0",
     "@loadable/component": "^5.14.1",
     "axios": "^0.27.2",
@@ -17,7 +17,6 @@
     "react-dom": "^17.0.2",
     "react-icons": "3.11.0",
     "react-notifications": "^1.4.3",
-    "react-oauth2-code-pkce": "^1.4.2",
     "react-router-dom": "^5.1.2",
     "react-scripts": "^5.0.0",
     "react-styled-flexboxgrid": "3.2.1",

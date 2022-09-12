@@ -1,15 +1,10 @@
 import * as React from 'react'
 
-import {
-  DmtPluginType,
-  DmtUIPlugin,
-  Loading,
-  useDocument,
-} from '@data-modelling-tool/core'
+import { IDmtUIPlugin, Loading, useDocument } from '@data-modelling-tool/core'
 
 import { SimposReportView } from './report.js'
 
-const SimposReportView_Component = (props: DmtUIPlugin) => {
+const SimposReportView_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
   const [document, loading, updateDocument, error] = useDocument(
     dataSourceId,

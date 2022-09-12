@@ -1,6 +1,6 @@
 import {
   BlueprintPicker,
-  DmtUIPlugin,
+  IDmtUIPlugin,
   INPUT_FIELD_WIDTH,
   Loading,
   Select,
@@ -26,7 +26,7 @@ const Spacer = styled.div`
 type TAttribute = {
   type: string
   name: string
-  attributeType: AttributeTypes | string
+  attributeType: EAttributeTypes | string
   dimensions: string
   label: string
   default?: string
@@ -34,7 +34,7 @@ type TAttribute = {
   contained: boolean
 }
 
-enum AttributeTypes {
+enum EAttributeTypes {
   string = 'string',
   number = 'number',
   boolean = 'boolean',
@@ -141,7 +141,7 @@ const BlueprintAttribute = (props: {
               })
             }
           >
-            {Object.keys(AttributeTypes).map((key) => {
+            {Object.keys(EAttributeTypes).map((key) => {
               // Avoid duplication, as we are explicitly adding the formData value as well
               if (key === attribute.attributeType) return null
               return <option key={key}>{key}</option>
@@ -207,7 +207,7 @@ const BlueprintAttribute = (props: {
   )
 }
 
-export const EditBlueprint = (props: DmtUIPlugin) => {
+export const EditBlueprint = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, _loading, updateDocument] = useDocument<any>(
     dataSourceId,

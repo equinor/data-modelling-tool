@@ -1,6 +1,6 @@
 import { useState } from 'react'
 
-export enum LayoutComponents {
+export enum ELayoutComponents {
   blueprint = 'blueprint',
   document = 'document',
 }
@@ -13,7 +13,7 @@ export interface IOperations {
   add(
     id: string,
     title: string,
-    component: LayoutComponents,
+    component: ELayoutComponents,
     data: object
   ): void
 
@@ -48,7 +48,7 @@ export const useLayout = (): ILayout => {
   const add = (
     id: string,
     title: string,
-    component: LayoutComponents,
+    component: ELayoutComponents,
     data: object
   ) => {
     if (!isOpen(id)) {

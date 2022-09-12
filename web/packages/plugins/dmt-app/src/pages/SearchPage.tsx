@@ -1,23 +1,25 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, ChangeEvent, useEffect, useState } from 'react'
 import styled from 'styled-components'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { BlueprintAttribute } from '../domain/BlueprintAttribute'
 import { FaChevronDown, FaDatabase, FaEye, FaPlus } from 'react-icons/fa'
-import { MultiSelect } from '@equinor/eds-core-react'
+import { Autocomplete, AutocompleteChanges } from '@equinor/eds-core-react'
 import { AxiosError, AxiosResponse } from 'axios'
 
 import { Link } from 'react-router-dom'
 import {
   DmssAPI,
   BlueprintPicker,
-  DataSources,
+  TDataSources,
   JsonView,
   ApplicationContext,
   AuthContext,
   useLocalStorage,
-  DataSource,
+  TDataSource,
   TGenericObject,
+  TAttribute,
+  DataSourceInformation,
 } from '@data-modelling-tool/core'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
@@ -99,7 +101,17 @@ function EyeIcon() {
   return <FaEye style={{ width: '20px', height: '20px', marginLeft: '3px' }} />
 }
 
-function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
+function CollapsibleFilter({
+  children,
+  title,
+  expanded,
+  setExpanded,
+}: {
+  children: React.ReactNode
+  title: string
+  expanded: boolean
+  setExpanded: (newValue: boolean) => void
+}) {
   if (expanded) {
     return (
       <>
@@ -122,7 +134,13 @@ function CollapsibleFilter({ children, title, expanded, setExpanded }: any) {
 }
 
 // Creates a text <input> for the sortByAttribute
-function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
+function SortByAttribute({
+  sortByAttribute,
+  setSortByAttribute,
+}: {
+  sortByAttribute: string
+  setSortByAttribute: (newAttribute: string) => void
+}) {
   return (
     <FilterGroup>
       <AttributeName>Sort by:</AttributeName>
@@ -131,7 +149,7 @@ function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
         key="sortByAttribute"
         value={sortByAttribute}
         type={'text'}
-        onChange={(event: any) => {
+        onChange={(event: ChangeEvent<HTMLInputElement>) => {
           setSortByAttribute(event.target.value)
         }}
       />
@@ -144,19 +162,32 @@ function SortByAttribute({ sortByAttribute, setSortByAttribute }: any) {
 }
 
 // Creates a text <input> with labels based on a BlueprintAttribute
-function DynamicAttributeFilter({ value, attr, onChange }: any) {
+function DynamicAttributeFilter({
+  value,
+  attr,
+  onChange,
+}: {
+  value: string | TGenericObject | undefined
+  attr: TAttribute
+  onChange: (newValue: TGenericObject) => void
+}) {
   const attribute = new BlueprintAttribute(attr)
-  const [expanded, setExpanded] = useState<boolean>(value)
-  const [nestedAttributes, setNestedAttributes] = useState([])
+  const [expanded, setExpanded] = useState<boolean>(false)
+  const [nestedAttributes, setNestedAttributes] = useState<TAttribute[]>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   // Pass nested object to callback from parent
-  function nestedOnChange(filterChange: any) {
+  function nestedOnChange(filterChange: TGenericObject | string) {
     if (typeof filterChange === 'string') {
       onChange({ [attribute.getName()]: filterChange })
     } else {
-      onChange({ [attribute.getName()]: { ...value, ...filterChange } })
+      onChange({
+        [attribute.getName()]: {
+          ...(value as TGenericObject),
+          ...filterChange,
+        },
+      })
     }
   }
 
@@ -164,7 +195,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
     if (expanded && !attribute.isPrimitive()) {
       dmssAPI
         .blueprintGet({ typeRef: attribute.attr.attributeType })
-        .then((response: any) => {
+        .then((response: AxiosResponse<TGenericObject>) => {
           const data = response.data
           setNestedAttributes(data.attributes)
         })
@@ -184,9 +215,9 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
       <FilterGroup>
         <AttributeName>{attribute.getPrettyName()}:</AttributeName>
         <input
-          value={value || ''}
+          value={(value as string) || ''}
           type={'text'}
-          onChange={(event: any) => {
+          onChange={(event) => {
             nestedOnChange(event.target.value)
           }}
         />
@@ -205,9 +236,7 @@ function DynamicAttributeFilter({ value, attr, onChange }: any) {
         >
           {nestedAttributes.map((attr) => (
             <DynamicAttributeFilter
-              // @ts-ignore
-              value={value?.[attr.name]}
-              // @ts-ignore
+              value={(value as TGenericObject)?.[attr.name]}
               key={attr.name}
               attr={attr}
               onChange={nestedOnChange}
@@ -228,18 +257,18 @@ function FilterContainer({
   setSortByAttribute,
   resetSearchSettings,
 }: {
-  search: (query: any) => void
+  search: (query: TGenericObject) => void
   queryError: string
-  searchFilter: any
-  setSearchFilter: (newFilter: any) => void
+  searchFilter: TGenericObject
+  setSearchFilter: (newFilter: TGenericObject) => void
   sortByAttribute: string
   setSortByAttribute: (newAttribute: string) => void
   resetSearchSettings: () => void
 }) {
-  const [attributes, setAttributes] = useState<Array<any>>([])
+  const [attributes, setAttributes] = useState<TAttribute[]>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
-  function onChange(filterChange: any) {
+  function onChange(filterChange: TGenericObject) {
     setSearchFilter({ ...searchFilter, ...filterChange })
   }
 
@@ -248,7 +277,7 @@ function FilterContainer({
     if (searchFilter?.type) {
       dmssAPI
         .blueprintGet({ typeRef: searchFilter.type })
-        .then((response: any) => {
+        .then((response: AxiosResponse<TGenericObject>) => {
           const data = response.data
           setAttributes(data.attributes)
         })
@@ -274,7 +303,7 @@ function FilterContainer({
             <label style={{ marginRight: '10px' }}>Type: </label>
             <BlueprintPicker
               formData={searchFilter?.type || ''}
-              onChange={(event: any) => setSearchFilter({ type: event })}
+              onChange={(event: string) => setSearchFilter({ type: event })}
             />
           </FilterGroup>
           {attributes.length !== 0 && (
@@ -304,12 +333,10 @@ function FilterContainer({
                 </QueryInstructions>
               </div>
               <div style={{ flexFlow: 'column' }}>
-                {attributes.map((attribute: any) => (
+                {attributes.map((attribute: TAttribute) => (
                   <DynamicAttributeFilter
-                    // @ts-ignore
                     value={searchFilter[attribute.name]}
                     attr={attribute}
-                    // @ts-ignore
                     key={attribute.name}
                     onChange={onChange}
                   />
@@ -351,7 +378,10 @@ function FilterContainer({
 }
 
 // Return a TableRow for an entity. Clickable to toggle view of the raw document
-function EntityRow(props: { entity: any; absoluteId: string }) {
+function EntityRow(props: {
+  entity: { _id: string; name: string; type: string; description: string }
+  absoluteId: string
+}) {
   const { entity, absoluteId } = props
   return (
     <>
@@ -406,7 +436,7 @@ function ResultContainer(props: { result: { [key: string]: any } }) {
 function SelectDataSource(props: {
   selectedDataSources: string[]
   setDataSources: (ds: string[]) => void
-  allDataSources: DataSources
+  allDataSources: TDataSources
 }) {
   const { selectedDataSources, setDataSources, allDataSources } = props
   return (
@@ -418,14 +448,17 @@ function SelectDataSource(props: {
         marginTop: '10px',
       }}
     >
-      <MultiSelect
-        label="Select data sources to search"
-        initialSelectedItems={selectedDataSources}
-        handleSelectedItemsChange={(event: any) =>
-          setDataSources(event.selectedItems)
-        }
-        items={allDataSources.map((dataSource: DataSource) => dataSource.id)}
-      ></MultiSelect>
+      <Autocomplete
+        options={allDataSources.map((dataSource: TDataSource) => dataSource.id)}
+        label={'Select data sources to search'}
+        multiple
+        initialSelectedOptions={selectedDataSources}
+        onOptionsChange={(event: AutocompleteChanges<string>) => {
+          if (event.selectedItems) {
+            setDataSources(event.selectedItems)
+          }
+        }}
+      />
       <FaDatabase
         style={{
           color: 'gray',
@@ -438,8 +471,8 @@ function SelectDataSource(props: {
   )
 }
 
-export default ({ settings }: any) => {
-  const [searchSettings, setSearchSettings] = useLocalStorage(
+export default ({ settings }: TGenericObject) => {
+  const [searchSettings, setSearchSettings] = useLocalStorage<TGenericObject>(
     'searchSettings',
     {
       dataSources: [],
@@ -449,15 +482,15 @@ export default ({ settings }: any) => {
   )
   const [result, setResult] = useState<{ [key: string]: any }>({})
   const [queryError, setQueryError] = useState('')
-  const [dataSources, setDataSources] = useState<DataSources>([])
+  const [dataSources, setDataSources] = useState<TDataSources>([])
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)
 
   useEffect(() => {
     dmssAPI
       .dataSourceGetAll()
-      .then((response: any) => {
-        const dataSources: DataSources = response.data
+      .then((response: AxiosResponse<DataSourceInformation[]>) => {
+        const dataSources: TDataSources = response.data
         setDataSources(dataSources)
       })
       .catch((error) => {
@@ -466,14 +499,14 @@ export default ({ settings }: any) => {
       })
   }, [])
 
-  function search(query: any) {
+  function search(query: TGenericObject) {
     dmssAPI
       .search({
         dataSources: searchSettings.dataSource,
         body: query,
         sortByAttribute: searchSettings.sortByAttribute,
       })
-      .then((response: AxiosResponse<{ [key: string]: any }>) => {
+      .then((response: AxiosResponse<TGenericObject>) => {
         setQueryError('')
         const nResults = Object.keys(response.data).length
         if (nResults === 0) {
@@ -498,7 +531,7 @@ export default ({ settings }: any) => {
   return (
     <>
       <SelectDataSource
-        selectedDataSources={searchSettings.dataSource}
+        selectedDataSources={searchSettings.dataSources}
         setDataSources={(dataSources) =>
           setSearchSettings({ ...searchSettings, dataSources: dataSources })
         }

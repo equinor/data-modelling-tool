@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import { Loading, useDocument } from '@data-modelling-tool/core'
-import { DmtUIPlugin } from '@data-modelling-tool/core'
+import { IDmtUIPlugin } from '@data-modelling-tool/core'
 
 import { RAOSceForm } from './raoSce.js'
 
-const RAOSceForm_Component = (props: DmtUIPlugin) => {
+const RAOSceForm_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(
