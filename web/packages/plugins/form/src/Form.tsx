@@ -3,7 +3,7 @@ import * as React from 'react'
 import { useForm, FormProvider } from 'react-hook-form'
 import { Button } from '@equinor/eds-core-react'
 import { ObjectField } from './fields/ObjectField'
-import { FormProps } from './types'
+import { TFormProps } from './types'
 import { RegistryProvider } from './RegistryContext'
 import styled from 'styled-components'
 
@@ -11,7 +11,7 @@ const Wrapper = styled.div`
   max-width: 650px;
 `
 
-export const Form = (props: FormProps) => {
+export const Form = (props: TFormProps) => {
   const {
     type,
     formData,

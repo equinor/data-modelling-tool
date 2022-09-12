@@ -1,6 +1,6 @@
 import {
   BlueprintPicker,
-  DmtUIPlugin,
+  IDmtUIPlugin,
   JobHandlerPicker,
   TReference,
   UIPluginSelector,
@@ -37,7 +37,7 @@ const HeaderWrapper = styled.div`
   margin-top: 8px;
 `
 
-export const EditTask = (props: DmtUIPlugin) => {
+export const EditTask = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId, onOpen, onSubmit } = props
   const [document, loading, updateDocument] = useDocument<TTaskFormData>(
     dataSourceId,

@@ -1,10 +1,10 @@
 import React, { MouseEventHandler } from 'react'
 import { Table } from '@equinor/eds-core-react'
 
-type Column = { name: string; accessor: string }
+type TColumn = { name: string; accessor: string }
 
-const prepareColumns = (columns: Array<string>): Array<Column> => {
-  const prepared: Array<Column> = []
+const prepareColumns = (columns: Array<string>): Array<TColumn> => {
+  const prepared: Array<TColumn> = []
   columns.forEach((col) => {
     prepared.push({ name: col, accessor: col.replace(/ /g, '') })
   })

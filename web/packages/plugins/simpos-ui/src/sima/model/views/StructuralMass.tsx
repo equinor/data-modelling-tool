@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, DmtUIPlugin, Loading } from '@data-modelling-tool/core'
+import { useDocument, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
 
 import { SIMA_Model_StructuralMass } from './StructuralMass_src.js'
 
-const StructuralMass_Component = (props: DmtUIPlugin) => {
+const StructuralMass_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

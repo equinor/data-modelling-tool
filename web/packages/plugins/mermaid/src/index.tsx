@@ -5,19 +5,19 @@ import {
   AuthContext,
   DmssAPI,
   DmtPluginType,
-  DmtUIPlugin,
+  IDmtUIPlugin,
   Loading,
   useDocument,
 } from '@data-modelling-tool/core'
 import Mermaid from './Mermaid'
 import { dfs, loader, Node } from './loader'
-import { AttributeType } from './types'
+import { TAttributeType } from './types'
 
 const classElement = (node: Node) => {
   const primitiveAttributeElements = node
     .primitiveAttributes()
     .map(
-      (attribute: AttributeType) =>
+      (attribute: TAttributeType) =>
         `${attribute.attributeType} ${attribute.name}`
     )
   return `
@@ -74,7 +74,7 @@ function useExplorer(dmssAPI: DmssAPI) {
   }
 }
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const { token } = useContext(AuthContext)
   const dmssAPI = new DmssAPI(token)

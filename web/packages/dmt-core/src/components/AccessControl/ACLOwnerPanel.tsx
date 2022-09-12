@@ -4,7 +4,7 @@ import { AccessLevel, ACL } from '../../services'
 import React from 'react'
 import { CenteredRow } from './AccessControlList'
 
-interface ACLOwnerPanelProps {
+interface IACLOwnerPanelProps {
   acl: ACL
   handleChange: (data: Partial<ACL>) => void
 }
@@ -12,7 +12,7 @@ interface ACLOwnerPanelProps {
 export const ACLOwnerPanel = ({
   acl,
   handleChange,
-}: ACLOwnerPanelProps): JSX.Element => {
+}: IACLOwnerPanelProps): JSX.Element => {
   return (
     <>
       <CenteredRow width={'230px'}>
