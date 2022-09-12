@@ -449,7 +449,7 @@ function SelectDataSource(props: {
       }}
     >
       <Autocomplete
-        options={allDataSources.map((dataSource: DataSource) => dataSource.id)}
+        options={allDataSources.map((dataSource: TDataSource) => dataSource.id)}
         label={'Select data sources to search'}
         multiple
         initialSelectedOptions={selectedDataSources}
@@ -490,7 +490,7 @@ export default ({ settings }: TGenericObject) => {
     dmssAPI
       .dataSourceGetAll()
       .then((response: AxiosResponse<DataSourceInformation[]>) => {
-        const dataSources: DataSources = response.data
+        const dataSources: TDataSources = response.data
         setDataSources(dataSources)
       })
       .catch(error => {
