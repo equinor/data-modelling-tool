@@ -32,12 +32,12 @@ export const useDashboard = () => {
   return context
 }
 
-interface DashboardProviderProps {
+interface IDashboardProviderProps {
   dmssAPI: DmssAPI
   children?: ReactNode
 }
 
-const DashboardProvider = ({ dmssAPI, children }: DashboardProviderProps) => {
+const DashboardProvider = ({ dmssAPI, children }: IDashboardProviderProps) => {
   const layout: ILayout = useLayout()
   const dataSources: IDataSources = useDataSources(dmssAPI)
 
