@@ -74,7 +74,7 @@ export const UiPluginProvider = ({ pluginsToLoad, children }: any) => {
       .then((pluginPackageList: any[]) => {
         pluginPackageList.forEach((pluginPackage: TDmtPlugin[]) => {
           pluginPackage.forEach(
-            plugin =>
+            (plugin) =>
               (newPluginMap = { ...newPluginMap, [plugin.pluginName]: plugin })
           )
         })
