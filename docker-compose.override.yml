@@ -1,16 +1,12 @@
 version: "3.4"
 
 services:
-  nginx:
-    networks:
-      - data-modelling-storage-service_default
-
   api:
     build:
       target: development
     image: api-dev
     volumes:
-      - ./api/src/:/code
+      - ./api/src/:/code/src
       - /var/run/docker.sock:/var/run/docker.sock # Needed for docker-in-docker jobs
     #      - ../data-modelling-storage-service/gen/dmss_api:/dmss_api
     #      - ../data-modelling-storage-service:/data-modelling-storage-service
@@ -31,11 +27,10 @@ services:
       - job-store
     ports:
       - "5000:5000"
-    networks:
-      - data-modelling-storage-service_default
-    external_links:
-      - dmss
-      - db
+
+  db:
+    volumes:
+       - ./data/db:/data/db
 
   web:
     build:
@@ -49,16 +44,5 @@ services:
     stdin_open: true
     volumes:
       - ./web/packages:/code/packages
-
     environment:
       - NODE_ENV=development
-    networks:
-      - data-modelling-storage-service_default
-
-  job-store:
-    networks:
-      - data-modelling-storage-service_default
-
-networks:
-  data-modelling-storage-service_default:
-    external: true

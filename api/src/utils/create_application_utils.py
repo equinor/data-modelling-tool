@@ -8,7 +8,6 @@ from jinja2 import Template
 from config import Config
 from enums import SIMOS
 from services.document_service import DocumentService
-
 from utils.logging import logger
 
 
@@ -124,7 +123,7 @@ services:
       DMSS_HOST: dmss
       DMSS_PORT: 5000
     volumes:
-      - ./api/home/:/code/home
+      - ./api/home/:/code/src/home
 
   web:
     build:

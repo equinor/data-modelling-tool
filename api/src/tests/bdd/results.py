@@ -1,5 +1,5 @@
-from terminaltables import AsciiTable
 from colorclass import Color
+from terminaltables import AsciiTable
 
 
 def colored_status(status, text):

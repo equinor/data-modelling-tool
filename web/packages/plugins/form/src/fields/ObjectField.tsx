@@ -3,18 +3,21 @@ import {
   DmssAPI,
   DmtAPI,
   EntityPickerButton,
+  ErrorResponse,
   Loading,
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
 } from '@data-modelling-tool/core'
+import { AxiosResponse } from 'axios'
 import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'
 import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
-import { ObjectFieldProps } from '../types'
+import { TObjectFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 import { Controller, useFormContext } from 'react-hook-form'
+import { AxiosError } from 'axios'
 
 const Wrapper = styled.div`
   margin-bottom: 20px;
@@ -75,19 +78,19 @@ const AddObject = (props: any) => {
       .instantiateEntity({
         basicEntity: { name: namePath as string, type: type as string },
       })
-      .then((newEntity: any) => {
+      .then((newEntity: AxiosResponse<any>) => {
         dmssAPI
           .documentUpdate({
             dataSourceId: dataSourceId,
             documentId: contained ? `${documentId}.${namePath}` : namePath,
-            data: JSON.stringify(newEntity),
+            data: JSON.stringify(newEntity.data),
             updateUncontained: false,
           })
           .then((response: any) => {
             setValue(namePath, response.data.data, options)
             onAdd()
           })
-          .catch((error: Error) => {
+          .catch((error: AxiosError<ErrorResponse>) => {
             console.error(error)
           })
       })
@@ -431,7 +434,7 @@ export const NonContained = (props: any): JSX.Element => {
   )
 }
 
-export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
+export const ObjectField = (props: TObjectFieldProps): JSX.Element => {
   const { type, namePath, uiAttribute } = props
   const { getValues } = useFormContext()
   const { getWidget } = useRegistryContext()
@@ -452,7 +455,7 @@ export const ObjectField = (props: ObjectFieldProps): JSX.Element => {
   )
 }
 
-export const ObjectTypeSelector = (props: ObjectFieldProps): JSX.Element => {
+export const ObjectTypeSelector = (props: TObjectFieldProps): JSX.Element => {
   const {
     type,
     namePath,

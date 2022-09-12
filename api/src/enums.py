@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 PRIMITIVES = {"string", "number", "integer", "boolean"}
 
 

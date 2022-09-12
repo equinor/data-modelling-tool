@@ -7,7 +7,7 @@ export const search = async (
 ) => {
   const dmssAPI = new DmssAPI(token)
 
-  const response = await dmssAPI.searchDocuments({
+  const response = await dmssAPI.search({
     dataSources: [dataSourceId],
     body: query,
     sortByAttribute: 'name',

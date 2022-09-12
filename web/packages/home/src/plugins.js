@@ -1,12 +1,10 @@
 export default [
-  import('@dmt/analysis'),
   import('@dmt/blueprint'),
   import('@dmt/default-pdf'),
   import('@dmt/default-preview'),
   import('@dmt/yaml-view'),
   import('@dmt/dmt-app'),
   import('@dmt/analysis-platform'),
-  import('for-weather-plots'),
   import('@dmt/mermaid'),
   import('@dmt/sima-application-input'),
   import('@dmt/task'),

@@ -1,11 +1,11 @@
 import * as React from 'react'
 
 import { Loading, useDocument } from '@data-modelling-tool/core'
-import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
+import { IDmtUIPlugin } from '@data-modelling-tool/core'
 
 import { SRSSceForm } from './sce.js'
 
-const SRSSceForm_Component = (props: DmtUIPlugin) => {
+const SRSSceForm_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

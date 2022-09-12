@@ -4,19 +4,23 @@ import {
   Button,
   useDocument,
   Loading,
+  TGenericObject,
 } from '@data-modelling-tool/core'
 
 // @ts-ignore
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 
-type PreviewProps = {
+type TPreviewProps = {
   documentId: string
   dataSourceId: string
 }
 
-export default (props: PreviewProps) => {
+export default (props: TPreviewProps) => {
   const { documentId, dataSourceId } = props
-  const [document, loading] = useDocument(dataSourceId, documentId)
+  const [document, loading] = useDocument<TGenericObject>(
+    dataSourceId,
+    documentId
+  )
   const infoText: string = ''
   if (loading) {
     return <Loading />

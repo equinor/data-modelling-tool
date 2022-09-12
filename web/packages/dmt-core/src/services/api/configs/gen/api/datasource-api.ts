@@ -21,9 +21,11 @@ import { DUMMY_BASE_URL, assertParamExists, setApiKeyToObject, setBasicAuthToObj
 // @ts-ignore
 import { BASE_PATH, COLLECTION_FORMATS, RequestArgs, BaseAPI, RequiredError } from '../base';
 // @ts-ignore
+import { DataSourceInformation } from '../models';
+// @ts-ignore
 import { DataSourceRequest } from '../models';
 // @ts-ignore
-import { HTTPValidationError } from '../models';
+import { ErrorResponse } from '../models';
 /**
  * DatasourceApi - axios parameter creator
  * @export
@@ -182,7 +184,7 @@ export const DatasourceApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
+        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DataSourceInformation>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.dataSourceGetAll(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -224,7 +226,7 @@ export const DatasourceApiFactory = function (configuration?: Configuration, bas
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        dataSourceGetAll(options?: any): AxiosPromise<Array<object>> {
+        dataSourceGetAll(options?: any): AxiosPromise<Array<DataSourceInformation>> {
             return localVarFp.dataSourceGetAll(options).then((request) => request(axios, basePath));
         },
         /**

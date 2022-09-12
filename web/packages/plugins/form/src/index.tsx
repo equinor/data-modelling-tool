@@ -2,10 +2,11 @@ import * as React from 'react'
 
 import {
   BlueprintPicker,
-  DmtPluginType,
-  DmtUIPlugin,
+  EDmtPluginType,
+  IDmtUIPlugin,
   Loading,
   TReference,
+  TSTaskBody,
   UploadFileButton,
   useBlueprint,
   useDocument,
@@ -74,7 +75,7 @@ const widgets = {
     const { getValues } = useFormContext()
     const initialValue = getValues(namePath)
 
-    function getNewSTaskBody(filename: string): any {
+    function getNewSTaskBody(filename: string): TSTaskBody {
       return {
         type: 'AnalysisPlatformDS/Blueprints/STask',
         name: filename.replace('.', '_'),
@@ -94,7 +95,6 @@ const widgets = {
         <div>Name: {initialValue.name}</div>
         <div>Uid: {initialValue.uid}</div>
         <UploadFileButton
-          formData={''}
           fileSuffix={['stask']}
           dataSourceId={dataSourceId}
           getBody={(filename: string) => getNewSTaskBody(filename)}
@@ -105,7 +105,7 @@ const widgets = {
   },
 }
 
-const PluginComponent = (props: DmtUIPlugin) => {
+const PluginComponent = (props: IDmtUIPlugin) => {
   const { config, onOpen } = props
   const { documentId, dataSourceId } = props
   const [document, loading, updateDocument] = useDocument<any>(
@@ -136,7 +136,7 @@ const PluginComponent = (props: DmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'form',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: PluginComponent,
   },
 ]

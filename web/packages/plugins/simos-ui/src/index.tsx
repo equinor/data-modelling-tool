@@ -1,7 +1,7 @@
 import * as React from 'react'
 
 import { useDocument } from '@data-modelling-tool/core'
-import { DmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
+import { EDmtPluginType } from '@data-modelling-tool/core'
 
 import { DMTBluePrintTableView } from './dmt/views/DMTBluePrintTableView'
 
@@ -13,7 +13,7 @@ export const plugins: any = [
   //********************************************************
   {
     pluginName: 'dmt-blueprint-table-view',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: DMTBluePrintTableView,
   },
   //********************************************************
@@ -21,7 +21,7 @@ export const plugins: any = [
   //********************************************************
   {
     pluginName: 'simos-raw-view',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: SIMOSRawView,
   },
   //********************************************************

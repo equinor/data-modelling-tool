@@ -8,18 +8,18 @@ export type TRoute = {
 
 export type TApp = {
   applications: any
-  settings: DmtSettings
+  settings: TDmtSettings
 }
 
 export type TContent = {
   content: ReactNode
-  settings: DmtSettings
+  settings: TDmtSettings
 }
 
 export type TLayout = {
   content: ReactNode
-  settings: DmtSettings
-  allApps: DmtSettings[]
+  settings: TDmtSettings
+  allApps: TDmtSettings[]
 }
 
 export type TReference = {
@@ -29,7 +29,7 @@ export type TReference = {
 }
 
 export type TBlob = {
-  _blob_id: string
+  _blob_id?: string
   name: string
   type: string
 }
@@ -38,6 +38,7 @@ export type TLocation = {
   lat: number
   long: number
   name: string
+  label?: string
   _id?: string
   type?: string
 }
@@ -52,7 +53,44 @@ export type TContainerImage = {
   registryName: string
 }
 
-export type DmtSettings = {
+export type TGenericObject = {
+  [key: string]: any
+}
+
+export type TSTaskBody = {
+  type: string
+  name: string
+  blob: TBlob
+}
+
+export type TContainer = {
+  label?: string
+  image: TContainerImage
+  customCommand?: string
+}
+
+export type TChildTab = {
+  attribute: string
+  entity: any
+  categories?: string[]
+  absoluteDottedId: string
+  onSubmit: (data: any) => void
+}
+
+export type TRunner = { image?: any; type: string }
+
+export type TTaskFormData = {
+  applicationInput?: TGenericObject
+  runner?: TRunner
+  type?: string
+  outputType?: string
+  inputType?: string
+  description?: string
+  label?: string
+  name?: string
+}
+
+export type TDmtSettings = {
   name: string
   label: string
   tabIndex: number
@@ -63,8 +101,8 @@ export type DmtSettings = {
   packages: any
   models: any
   actions: any
-  file_loc: string
-  data_source_aliases: any
+  fileLocation: string
+  dataSourceAliases: any
   urlPath: string
 }
 
@@ -118,3 +156,5 @@ export type TValidEntity = {
   type: string
   [key: string]: any
 }
+
+export type TUserIdMapping = { userId: string; username: string }

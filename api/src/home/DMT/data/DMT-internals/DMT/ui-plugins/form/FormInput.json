@@ -7,7 +7,7 @@
     {
       "name": "attributes",
       "type": "system/SIMOS/BlueprintAttribute",
-      "attributeType": "DMT-Internal/DMT/ui-plugins/fields/Field",
+      "attributeType": "DMT-Internal/DMT/ui-plugins/form/fields/Field",
       "dimensions": "*",
       "optional": true,
       "contained": true

@@ -4,7 +4,7 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import jsyaml from 'js-yaml'
 import styled, { keyframes } from 'styled-components'
-import { Button } from '@data-modelling-tool/core'
+import { Button, TGenericObject } from '@data-modelling-tool/core'
 
 hljs.registerLanguage('yaml', yaml)
 
@@ -31,7 +31,7 @@ const TooltipText = styled.div`
   animation: ${tempVisible} 2s;
 `
 
-export default (props: { document: any }) => {
+export default (props: { document: TGenericObject }) => {
   const { document } = props
   const [showTooltip, setShowTooltip] = useState<boolean>(false)
   const asYAML: string = jsyaml.dump(document)

@@ -1,9 +1,9 @@
-import styled from 'styled-components'
 import React, { useState } from 'react'
 import { Button, TextField } from '@equinor/eds-core-react'
 import { INPUT_FIELD_WIDTH } from '@data-modelling-tool/core'
 import { TAnalysis } from '../../../Types'
 import { EBlueprints } from '../../../Enums'
+import { FormWrapper } from '../../../components/Design/Styled'
 
 type Errors = {
   [key: string]: any
@@ -13,13 +13,6 @@ type CreateFormProps = {
   data?: any
   onSubmit: (analysis: TAnalysis) => void
 }
-
-const Wrapper = styled.div`
-  margin: 32px;
-  display: grid;
-  grid-gap: 32px;
-  grid-template-columns: repeat(1, fit-content(100%));
-`
 
 const hasErrors = (error: Errors) =>
   error['name'] !== '' || error['description'] !== ''
@@ -77,22 +70,20 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
     }
   }
 
-  const handleInputChange = (event: any) => {
-    setAnalysis({
-      ...analysis,
-      [event.target.id]: event.target.value,
-    })
-  }
-
   return (
     <form onSubmit={formHandler}>
-      <Wrapper>
+      <FormWrapper>
         <TextField
           style={{ width: INPUT_FIELD_WIDTH }}
           id="name"
           label="Name"
           placeholder="Analysis name"
-          onChange={handleInputChange}
+          onChange={(event: any) =>
+            setAnalysis({
+              ...analysis,
+              name: event.target.value,
+            })
+          }
           helperText={
             error.name ? error.name : 'Provide the name of the analysis'
           }
@@ -104,7 +95,12 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
           id="description"
           label="Description"
           placeholder="Description"
-          onChange={handleInputChange}
+          onChange={(event: any) =>
+            setAnalysis({
+              ...analysis,
+              description: event.target.value,
+            })
+          }
           multiline
           rows={1}
           rowsMax={5}
@@ -125,7 +121,7 @@ export const CreateAnalysisForm = (props: CreateFormProps) => {
             Create
           </Button>
         </div>
-      </Wrapper>
+      </FormWrapper>
     </form>
   )
 }

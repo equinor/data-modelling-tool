@@ -18,7 +18,7 @@ from azure.mgmt.containerinstance.models import (
 )
 
 from config import config
-from repository.repository_exceptions import JobNotFoundException
+from restful.exceptions import NotFoundException
 from services.job_handler_interface import JobHandlerInterface, JobStatus
 from utils.logging import logger
 
@@ -145,11 +145,9 @@ class JobHandler(JobHandlerInterface):
             ).content
             logger.setLevel(config.LOGGER_LEVEL)
         except ResourceNotFoundError:
-            raise JobNotFoundException(
-                (
-                    f"The container '{self.azure_valid_container_name}' does not exist. ",
-                    "Either it has not been created, or it's not ready to accept requests.",
-                )
+            raise NotFoundException(
+                f"The container '{self.azure_valid_container_name}' does not exist. "
+                + "Either it has not been created, or it's not ready to accept requests."
             )
         container_group = self.aci_client.container_groups.get(
             config.AZURE_JOB_RESOURCE_GROUP, self.azure_valid_container_name

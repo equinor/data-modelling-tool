@@ -25,19 +25,15 @@ import { ACL } from '../models';
 // @ts-ignore
 import { AccessLevel } from '../models';
 // @ts-ignore
+import { DataSourceInformation } from '../models';
+// @ts-ignore
 import { DataSourceRequest } from '../models';
 // @ts-ignore
-import { HTTPValidationError } from '../models';
-// @ts-ignore
-import { MoveRequest } from '../models';
+import { ErrorResponse } from '../models';
 // @ts-ignore
 import { PATData } from '../models';
 // @ts-ignore
 import { Reference } from '../models';
-// @ts-ignore
-import { RemoveByPathRequest } from '../models';
-// @ts-ignore
-import { RenameRequest } from '../models';
 /**
  * DefaultApi - axios parameter creator
  * @export
@@ -398,13 +394,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * @summary Get By Id
          * @param {string} dataSourceId 
          * @param {string} documentId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetById: async (dataSourceId: string, documentId: string, uiRecipe?: string, attribute?: string, depth?: number, options: any = {}): Promise<RequestArgs> => {
+        documentGetById: async (dataSourceId: string, documentId: string, attribute?: string, depth?: number, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('documentGetById', 'dataSourceId', dataSourceId)
             // verify required parameter 'documentId' is not null or undefined
@@ -430,10 +425,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
 
-            if (uiRecipe !== undefined) {
-                localVarQueryParameter['ui_recipe'] = uiRecipe;
-            }
-
             if (attribute !== undefined) {
                 localVarQueryParameter['attribute'] = attribute;
             }
@@ -457,13 +448,12 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
          * @summary Get By Path
          * @param {string} dataSourceId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {string} [path] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetByPath: async (dataSourceId: string, uiRecipe?: string, attribute?: string, path?: string, options: any = {}): Promise<RequestArgs> => {
+        documentGetByPath: async (dataSourceId: string, attribute?: string, path?: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('documentGetByPath', 'dataSourceId', dataSourceId)
             const localVarPath = `/api/v1/documents-by-path/{data_source_id}`
@@ -485,10 +475,6 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // authentication OAuth2AuthorizationCodeBearer required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
-
-            if (uiRecipe !== undefined) {
-                localVarQueryParameter['ui_recipe'] = uiRecipe;
-            }
 
             if (attribute !== undefined) {
                 localVarQueryParameter['attribute'] = attribute;
@@ -756,15 +742,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Move
          * @param {string} dataSourceId 
-         * @param {MoveRequest} moveRequest 
+         * @param {any} requestData 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerMove: async (dataSourceId: string, moveRequest: MoveRequest, options: any = {}): Promise<RequestArgs> => {
+        explorerMove: async (dataSourceId: string, requestData: any, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('explorerMove', 'dataSourceId', dataSourceId)
-            // verify required parameter 'moveRequest' is not null or undefined
-            assertParamExists('explorerMove', 'moveRequest', moveRequest)
+            // verify required parameter 'requestData' is not null or undefined
+            assertParamExists('explorerMove', 'requestData', requestData)
             const localVarPath = `/api/v1/explorer/{data_source_id}/move`
                 .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -785,14 +771,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
 
+            if (requestData !== undefined) {
+                localVarQueryParameter['request_data'] = requestData;
+            }
+
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(moveRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -848,15 +835,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Remove By Path
          * @param {string} dataSourceId 
-         * @param {RemoveByPathRequest} removeByPathRequest 
+         * @param {string} directory 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemoveByPath: async (dataSourceId: string, removeByPathRequest: RemoveByPathRequest, options: any = {}): Promise<RequestArgs> => {
+        explorerRemoveByPath: async (dataSourceId: string, directory: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('explorerRemoveByPath', 'dataSourceId', dataSourceId)
-            // verify required parameter 'removeByPathRequest' is not null or undefined
-            assertParamExists('explorerRemoveByPath', 'removeByPathRequest', removeByPathRequest)
+            // verify required parameter 'directory' is not null or undefined
+            assertParamExists('explorerRemoveByPath', 'directory', directory)
             const localVarPath = `/api/v1/explorer/{data_source_id}/remove-by-path`
                 .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -877,14 +864,15 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
 
+            if (directory !== undefined) {
+                localVarQueryParameter['directory'] = directory;
+            }
+
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(removeByPathRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -895,15 +883,18 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
          * 
          * @summary Rename
          * @param {string} dataSourceId 
-         * @param {RenameRequest} renameRequest 
+         * @param {string} documentId 
+         * @param {string} parentId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRename: async (dataSourceId: string, renameRequest: RenameRequest, options: any = {}): Promise<RequestArgs> => {
+        explorerRename: async (dataSourceId: string, documentId: string, parentId: string, options: any = {}): Promise<RequestArgs> => {
             // verify required parameter 'dataSourceId' is not null or undefined
             assertParamExists('explorerRename', 'dataSourceId', dataSourceId)
-            // verify required parameter 'renameRequest' is not null or undefined
-            assertParamExists('explorerRename', 'renameRequest', renameRequest)
+            // verify required parameter 'documentId' is not null or undefined
+            assertParamExists('explorerRename', 'documentId', documentId)
+            // verify required parameter 'parentId' is not null or undefined
+            assertParamExists('explorerRename', 'parentId', parentId)
             const localVarPath = `/api/v1/explorer/{data_source_id}/rename`
                 .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
@@ -924,14 +915,19 @@ export const DefaultApiAxiosParamCreator = function (configuration?: Configurati
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
 
+            if (documentId !== undefined) {
+                localVarQueryParameter['document_id'] = documentId;
+            }
+
+            if (parentId !== undefined) {
+                localVarQueryParameter['parent_id'] = parentId;
+            }
+
 
     
-            localVarHeaderParameter['Content-Type'] = 'application/json';
-
             setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
             let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
             localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
-            localVarRequestOptions.data = serializeDataIfNeeded(renameRequest, localVarRequestOptions, configuration)
 
             return {
                 url: toPathString(localVarUrlObj),
@@ -1456,7 +1452,7 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<object>>> {
+        async dataSourceGetAll(options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<Array<DataSourceInformation>>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.dataSourceGetAll(options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
@@ -1477,28 +1473,26 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * @summary Get By Id
          * @param {string} dataSourceId 
          * @param {string} documentId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentGetById(dataSourceId: string, documentId: string, uiRecipe?: string, attribute?: string, depth?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetById(dataSourceId, documentId, uiRecipe, attribute, depth, options);
+        async documentGetById(dataSourceId: string, documentId: string, attribute?: string, depth?: number, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetById(dataSourceId, documentId, attribute, depth, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
          * @summary Get By Path
          * @param {string} dataSourceId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {string} [path] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async documentGetByPath(dataSourceId: string, uiRecipe?: string, attribute?: string, path?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetByPath(dataSourceId, uiRecipe, attribute, path, options);
+        async documentGetByPath(dataSourceId: string, attribute?: string, path?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetByPath(dataSourceId, attribute, path, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1561,12 +1555,12 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Move
          * @param {string} dataSourceId 
-         * @param {MoveRequest} moveRequest 
+         * @param {any} requestData 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerMove(dataSourceId: string, moveRequest: MoveRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerMove(dataSourceId, moveRequest, options);
+        async explorerMove(dataSourceId: string, requestData: any, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerMove(dataSourceId, requestData, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1585,24 +1579,25 @@ export const DefaultApiFp = function(configuration?: Configuration) {
          * 
          * @summary Remove By Path
          * @param {string} dataSourceId 
-         * @param {RemoveByPathRequest} removeByPathRequest 
+         * @param {string} directory 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRemoveByPath(dataSourceId: string, removeByPathRequest: RemoveByPathRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemoveByPath(dataSourceId, removeByPathRequest, options);
+        async explorerRemoveByPath(dataSourceId: string, directory: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRemoveByPath(dataSourceId, directory, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
          * 
          * @summary Rename
          * @param {string} dataSourceId 
-         * @param {RenameRequest} renameRequest 
+         * @param {string} documentId 
+         * @param {string} parentId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        async explorerRename(dataSourceId: string, renameRequest: RenameRequest, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
-            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRename(dataSourceId, renameRequest, options);
+        async explorerRename(dataSourceId: string, documentId: string, parentId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.explorerRename(dataSourceId, documentId, parentId, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -1801,7 +1796,7 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        dataSourceGetAll(options?: any): AxiosPromise<Array<object>> {
+        dataSourceGetAll(options?: any): AxiosPromise<Array<DataSourceInformation>> {
             return localVarFp.dataSourceGetAll(options).then((request) => request(axios, basePath));
         },
         /**
@@ -1820,27 +1815,25 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * @summary Get By Id
          * @param {string} dataSourceId 
          * @param {string} documentId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {number} [depth] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetById(dataSourceId: string, documentId: string, uiRecipe?: string, attribute?: string, depth?: number, options?: any): AxiosPromise<object> {
-            return localVarFp.documentGetById(dataSourceId, documentId, uiRecipe, attribute, depth, options).then((request) => request(axios, basePath));
+        documentGetById(dataSourceId: string, documentId: string, attribute?: string, depth?: number, options?: any): AxiosPromise<object> {
+            return localVarFp.documentGetById(dataSourceId, documentId, attribute, depth, options).then((request) => request(axios, basePath));
         },
         /**
          * Get a document by it\'s path in the form \"{dataSource}/{rootPackage}/{subPackage(s)?/{name}
          * @summary Get By Path
          * @param {string} dataSourceId 
-         * @param {string} [uiRecipe] 
          * @param {string} [attribute] 
          * @param {string} [path] 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        documentGetByPath(dataSourceId: string, uiRecipe?: string, attribute?: string, path?: string, options?: any): AxiosPromise<object> {
-            return localVarFp.documentGetByPath(dataSourceId, uiRecipe, attribute, path, options).then((request) => request(axios, basePath));
+        documentGetByPath(dataSourceId: string, attribute?: string, path?: string, options?: any): AxiosPromise<object> {
+            return localVarFp.documentGetByPath(dataSourceId, attribute, path, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1898,12 +1891,12 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * 
          * @summary Move
          * @param {string} dataSourceId 
-         * @param {MoveRequest} moveRequest 
+         * @param {any} requestData 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerMove(dataSourceId: string, moveRequest: MoveRequest, options?: any): AxiosPromise<string> {
-            return localVarFp.explorerMove(dataSourceId, moveRequest, options).then((request) => request(axios, basePath));
+        explorerMove(dataSourceId: string, requestData: any, options?: any): AxiosPromise<string> {
+            return localVarFp.explorerMove(dataSourceId, requestData, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -1920,23 +1913,24 @@ export const DefaultApiFactory = function (configuration?: Configuration, basePa
          * 
          * @summary Remove By Path
          * @param {string} dataSourceId 
-         * @param {RemoveByPathRequest} removeByPathRequest 
+         * @param {string} directory 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRemoveByPath(dataSourceId: string, removeByPathRequest: RemoveByPathRequest, options?: any): AxiosPromise<string> {
-            return localVarFp.explorerRemoveByPath(dataSourceId, removeByPathRequest, options).then((request) => request(axios, basePath));
+        explorerRemoveByPath(dataSourceId: string, directory: string, options?: any): AxiosPromise<any> {
+            return localVarFp.explorerRemoveByPath(dataSourceId, directory, options).then((request) => request(axios, basePath));
         },
         /**
          * 
          * @summary Rename
          * @param {string} dataSourceId 
-         * @param {RenameRequest} renameRequest 
+         * @param {string} documentId 
+         * @param {string} parentId 
          * @param {*} [options] Override http request option.
          * @throws {RequiredError}
          */
-        explorerRename(dataSourceId: string, renameRequest: RenameRequest, options?: any): AxiosPromise<object> {
-            return localVarFp.explorerRename(dataSourceId, renameRequest, options).then((request) => request(axios, basePath));
+        explorerRename(dataSourceId: string, documentId: string, parentId: string, options?: any): AxiosPromise<object> {
+            return localVarFp.explorerRename(dataSourceId, documentId, parentId, options).then((request) => request(axios, basePath));
         },
         /**
          * 
@@ -2199,13 +2193,6 @@ export interface DefaultApiDocumentGetByIdRequest {
      * @type {string}
      * @memberof DefaultApiDocumentGetById
      */
-    readonly uiRecipe?: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof DefaultApiDocumentGetById
-     */
     readonly attribute?: string
 
     /**
@@ -2228,13 +2215,6 @@ export interface DefaultApiDocumentGetByPathRequest {
      * @memberof DefaultApiDocumentGetByPath
      */
     readonly dataSourceId: string
-
-    /**
-     * 
-     * @type {string}
-     * @memberof DefaultApiDocumentGetByPath
-     */
-    readonly uiRecipe?: string
 
     /**
      * 
@@ -2406,10 +2386,10 @@ export interface DefaultApiExplorerMoveRequest {
 
     /**
      * 
-     * @type {MoveRequest}
+     * @type {any}
      * @memberof DefaultApiExplorerMove
      */
-    readonly moveRequest: MoveRequest
+    readonly requestData: any
 }
 
 /**
@@ -2448,10 +2428,10 @@ export interface DefaultApiExplorerRemoveByPathRequest {
 
     /**
      * 
-     * @type {RemoveByPathRequest}
+     * @type {string}
      * @memberof DefaultApiExplorerRemoveByPath
      */
-    readonly removeByPathRequest: RemoveByPathRequest
+    readonly directory: string
 }
 
 /**
@@ -2469,10 +2449,17 @@ export interface DefaultApiExplorerRenameRequest {
 
     /**
      * 
-     * @type {RenameRequest}
+     * @type {string}
      * @memberof DefaultApiExplorerRename
      */
-    readonly renameRequest: RenameRequest
+    readonly documentId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DefaultApiExplorerRename
+     */
+    readonly parentId: string
 }
 
 /**
@@ -2754,7 +2741,7 @@ export class DefaultApi extends BaseAPI {
      * @memberof DefaultApi
      */
     public documentGetById(requestParameters: DefaultApiDocumentGetByIdRequest, options?: any) {
-        return DefaultApiFp(this.configuration).documentGetById(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.uiRecipe, requestParameters.attribute, requestParameters.depth, options).then((request) => request(this.axios, this.basePath));
+        return DefaultApiFp(this.configuration).documentGetById(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.attribute, requestParameters.depth, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2766,7 +2753,7 @@ export class DefaultApi extends BaseAPI {
      * @memberof DefaultApi
      */
     public documentGetByPath(requestParameters: DefaultApiDocumentGetByPathRequest, options?: any) {
-        return DefaultApiFp(this.configuration).documentGetByPath(requestParameters.dataSourceId, requestParameters.uiRecipe, requestParameters.attribute, requestParameters.path, options).then((request) => request(this.axios, this.basePath));
+        return DefaultApiFp(this.configuration).documentGetByPath(requestParameters.dataSourceId, requestParameters.attribute, requestParameters.path, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2826,7 +2813,7 @@ export class DefaultApi extends BaseAPI {
      * @memberof DefaultApi
      */
     public explorerMove(requestParameters: DefaultApiExplorerMoveRequest, options?: any) {
-        return DefaultApiFp(this.configuration).explorerMove(requestParameters.dataSourceId, requestParameters.moveRequest, options).then((request) => request(this.axios, this.basePath));
+        return DefaultApiFp(this.configuration).explorerMove(requestParameters.dataSourceId, requestParameters.requestData, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2850,7 +2837,7 @@ export class DefaultApi extends BaseAPI {
      * @memberof DefaultApi
      */
     public explorerRemoveByPath(requestParameters: DefaultApiExplorerRemoveByPathRequest, options?: any) {
-        return DefaultApiFp(this.configuration).explorerRemoveByPath(requestParameters.dataSourceId, requestParameters.removeByPathRequest, options).then((request) => request(this.axios, this.basePath));
+        return DefaultApiFp(this.configuration).explorerRemoveByPath(requestParameters.dataSourceId, requestParameters.directory, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
@@ -2862,7 +2849,7 @@ export class DefaultApi extends BaseAPI {
      * @memberof DefaultApi
      */
     public explorerRename(requestParameters: DefaultApiExplorerRenameRequest, options?: any) {
-        return DefaultApiFp(this.configuration).explorerRename(requestParameters.dataSourceId, requestParameters.renameRequest, options).then((request) => request(this.axios, this.basePath));
+        return DefaultApiFp(this.configuration).explorerRename(requestParameters.dataSourceId, requestParameters.documentId, requestParameters.parentId, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**

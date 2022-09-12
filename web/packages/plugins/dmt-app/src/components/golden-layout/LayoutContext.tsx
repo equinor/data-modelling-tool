@@ -2,7 +2,7 @@ import React from 'react'
 
 export const LayoutContext = React.createContext({})
 
-export enum LayoutComponents {
+export enum ELayoutComponents {
   blueprint = 'blueprint',
   document = 'document',
 }
@@ -22,7 +22,7 @@ export const LayoutProvider = ({ children, layout }: Props) => {
   const add = (
     id: string,
     title: string,
-    component: LayoutComponents,
+    component: ELayoutComponents,
     data: object
   ) => {
     const config = {

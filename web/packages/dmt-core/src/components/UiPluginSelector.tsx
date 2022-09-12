@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from 'react'
 import {
-  DmtPlugin,
-  DmtUIPlugin,
+  TDmtPlugin,
+  IDmtUIPlugin,
   ErrorBoundary,
   UiPluginContext,
   useBlueprint,
@@ -52,22 +52,20 @@ const getHref = (
   index: number
 ): string => {
   // Get the HREF for the document
-  return parts
-    .slice(0, index + 1)
-    .join('.')
-    .replace(`${dataSource}/`, '')
+  return parts.slice(0, index + 1).join('.')
 }
 
 export function DocumentPath(props: { absoluteDottedId: string }): JSX.Element {
   const { absoluteDottedId } = props
-  const parts = absoluteDottedId.split('.')
-  const dataSource = absoluteDottedId.split('/')[0]
+  const [dataSource, documentDottedId] = absoluteDottedId.split('/')
+  const parts = documentDottedId.split('.')
   return (
     <PathWrapper>
+      <PathPart>{dataSource}</PathPart>
       {parts.map((part: string, index: number) => {
         return (
           <div style={{ display: 'flex', flexWrap: 'nowrap' }} key={part}>
-            {index !== 0 && <PathPart>/</PathPart>}
+            <PathPart>/</PathPart>
             <PathPart
               as={PathPartLink}
               href={getHref(dataSource, parts, index)}
@@ -100,7 +98,7 @@ const SelectPluginButton = styled.div<ISPButton>`
 
 type TSelectablePlugins = {
   name: string
-  component: (props: DmtUIPlugin) => JSX.Element
+  component: (props: IDmtUIPlugin) => JSX.Element
   config: any
 }
 
@@ -108,7 +106,7 @@ function filterPlugins(
   blueprint: any,
   categories: string[],
   roles: string[],
-  getUIPlugin: (name: string) => DmtPlugin
+  getUIPlugin: (name: string) => TDmtPlugin
 ): TSelectablePlugins[] {
   let uiRecipes = blueprint.uiRecipes
   const fallbackPlugin = [
@@ -172,7 +170,6 @@ export function UIPluginSelector(props: {
     documentId = absoluteDottedId.split('/', 2)[1]
   }
   const [blueprint, loadingBlueprint, error] = useBlueprint(type)
-  // @ts-ignore
   const { loading, getUiPlugin } = useContext(UiPluginContext)
   const { tokenData } = useContext(AuthContext)
   const roles = getRoles(tokenData)
@@ -204,7 +201,7 @@ export function UIPluginSelector(props: {
   if (!selectablePlugins.length)
     return <Wrapper>No compatible uiRecipes for entity</Wrapper>
 
-  const UiPlugin: (props: DmtUIPlugin) => JSX.Element =
+  const UiPlugin: (props: IDmtUIPlugin) => JSX.Element =
     selectablePlugins[selectedPlugin].component
   const config: any = selectablePlugins[selectedPlugin].config
 

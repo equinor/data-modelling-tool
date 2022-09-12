@@ -4,7 +4,7 @@ import { TAttribute, TBlueprint } from './types'
 import { TReference } from '../types'
 import { AxiosResponse } from 'axios'
 
-export type TreeMap = {
+type TTreeMap = {
   [nodeId: string]: TreeNode
 }
 
@@ -30,8 +30,8 @@ const createContainedChildren = (
   document: any,
   parentNode: TreeNode,
   blueprint: TBlueprint
-): TreeMap => {
-  const newChildren: TreeMap = {}
+): TTreeMap => {
+  const newChildren: TTreeMap = {}
   Object.entries(document).forEach(([key, value]: [string, any]) => {
     let attribute = blueprint.attributes.find(
       (attr: TAttribute) => attr.name === key
@@ -64,8 +64,11 @@ const createContainedChildren = (
   return newChildren
 }
 
-const createFolderChildren = (document: any, parentNode: TreeNode): TreeMap => {
-  const newChildren: TreeMap = {}
+const createFolderChildren = (
+  document: any,
+  parentNode: TreeNode
+): TTreeMap => {
+  const newChildren: TTreeMap = {}
   document.content.forEach((ref: TReference) => {
     const newChildId = `${parentNode.dataSource}/${ref?._id}`
     newChildren[newChildId] = new TreeNode(
@@ -115,7 +118,7 @@ const updateRootPackagesInTree = (
         true,
         false
       )
-      const children: TreeMap = {}
+      const children: TTreeMap = {}
       rootPackage?.content.forEach(
         (
           ref: any // Add the rootPackages children
@@ -145,7 +148,7 @@ export class TreeNode {
   nodeId: string
   level: number
   dataSource: string
-  children: TreeMap = {}
+  children: TTreeMap = {}
   attribute: TAttribute
   parent?: TreeNode
   isRoot: boolean = false
@@ -164,7 +167,7 @@ export class TreeNode {
     name: string | undefined = undefined,
     isRoot = false,
     isDataSource = false,
-    children: TreeMap = {}
+    children: TTreeMap = {}
   ) {
     this.tree = tree
     this.nodeId = nodeId
@@ -281,9 +284,10 @@ export class TreeNode {
     let packageContent = ''
     if (this.type === EBlueprint.PACKAGE) packageContent = '.content'
 
-    const newEntity: any = await this.tree.dmtApi.instantiateEntity({
+    const response = await this.tree.dmtApi.instantiateEntity({
       basicEntity: { name: name, type: type },
     })
+    const newEntity = response.data
     const createResponse: AxiosResponse<any> = await this.tree.dmssApi.explorerAdd(
       {
         absoluteRef: `${this.nodeId}${packageContent}`,
@@ -297,7 +301,7 @@ export class TreeNode {
 }
 
 export class Tree {
-  index: TreeMap = {}
+  index: TTreeMap = {}
   dmssApi: DmssAPI
   dmtApi: DmtAPI
   updateCallback: (t: Tree) => void

@@ -1,5 +1,5 @@
 import {
-  DmtUIPlugin,
+  IDmtUIPlugin,
   EJobStatus,
   Loading,
   TJob,
@@ -9,7 +9,7 @@ import {
 import * as React from 'react'
 import { useEffect, useState } from 'react'
 
-export const JobInputEdit = (props: DmtUIPlugin) => {
+export const JobInputEdit = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
@@ -23,13 +23,18 @@ export const JobInputEdit = (props: DmtUIPlugin) => {
   }, [document])
 
   if (documentLoading) return <Loading />
-  if (error)
+  if (error) {
+    const errorResponse =
+      typeof error.response?.data == 'object'
+        ? error.response?.data?.message
+        : error.response?.data
     return (
       <div>
         <div>Something went wrong when fetching document: </div>
-        {JSON.stringify(error.response?.data?.message)}
+        {errorResponse}
       </div>
     )
+  }
   if (!formData) return <div>The job document is empty</div>
 
   if (formData.status !== EJobStatus.CREATED) {

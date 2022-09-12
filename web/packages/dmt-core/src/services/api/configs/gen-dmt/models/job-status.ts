@@ -20,7 +20,6 @@
 export enum JobStatus {
   Registered = 'registered',
   Starting = 'starting',
-  Waiting = 'Waiting',
   Running = 'running',
   Failed = 'failed',
   Completed = 'completed',

@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, DmtUIPlugin, Loading } from '@data-modelling-tool/core'
+import { useDocument, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
 
 import { SIMA_Model_QuadCurrentCoeffPlot } from './QuadCurrentCoeffPlot_src.js'
 
-export const SignalPlot_Component = (props: DmtUIPlugin) => {
+export const SignalPlot_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props
 
   const [document, loading, updateDocument, hasError] = useDocument(

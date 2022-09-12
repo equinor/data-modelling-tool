@@ -37,7 +37,7 @@ import {
   RequiredError,
 } from '../base'
 // @ts-ignore
-import { HTTPValidationError } from '../models'
+import { ErrorResponse } from '../models'
 /**
  * SystemApi - axios parameter creator
  * @export

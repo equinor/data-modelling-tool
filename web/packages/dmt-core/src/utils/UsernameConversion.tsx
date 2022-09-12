@@ -1,10 +1,18 @@
-import { TokenResponse } from '../components/AccessControlList'
 import axios from 'axios'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { TUserIdMapping } from '../types'
 
 const GRAPH_API = 'https://graph.microsoft.com/v1.0'
-export type UserIdMapping = { userId: string; username: string }
+
+type TTokenResponse = {
+  token_type: string
+  scope: string
+  expires_in: number
+  ext_expires_in: number
+  access_token: string
+  refresh_token: string
+}
 
 export function postWithFormData(tokenEndpoint: string, formData: FormData) {
   return axios
@@ -29,7 +37,7 @@ export const getTokenWithUserReadAccess = (
 
   const tokenEndpoint: string = process.env.REACT_APP_TOKEN_ENDPOINT || ''
   return postWithFormData(tokenEndpoint, formData).then(
-    (response: TokenResponse) => {
+    (response: TTokenResponse) => {
       return response.access_token
     }
   )
@@ -38,7 +46,7 @@ export const getTokenWithUserReadAccess = (
 export const getUsernameMappingFromUserId = (
   userId: string,
   token: string
-): Promise<UserIdMapping> => {
+): Promise<TUserIdMapping> => {
   // Find username from username id.
   // Only works with azure AD.
   // the supplied token needs the access level: User.ReadBasic.All
@@ -63,7 +71,7 @@ export const getUsernameMappingFromUserId = (
 export const getUsernameMappingFromUsername = (
   username: string,
   token: string
-): Promise<UserIdMapping> => {
+): Promise<TUserIdMapping> => {
   // Find username id from username.
   // Only works with azure AD.
   // the supplied token needs the access level: User.ReadBasic.All

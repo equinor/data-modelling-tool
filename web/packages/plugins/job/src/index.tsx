@@ -1,8 +1,8 @@
 import * as React from 'react'
 
 import {
-  DmtPluginType,
-  DmtUIPlugin,
+  EDmtPluginType,
+  IDmtUIPlugin,
   useDocument,
   TJob,
   Loading,
@@ -10,15 +10,20 @@ import {
 import { JobControl } from './JobControl'
 import { JobInputEdit } from './JobInputEdit'
 
-const JobControlWrapper = (props: DmtUIPlugin) => {
+const JobControlWrapper = (props: IDmtUIPlugin) => {
   const { documentId, dataSourceId } = props
   const [document, documentLoading, updateDocument, error] = useDocument<TJob>(
     dataSourceId,
     documentId
   )
   if (documentLoading) return <Loading />
-  if (error)
-    return <div>Something went wrong; {error.response?.data?.message}</div>
+  if (error) {
+    const errorResponse =
+      typeof error.response?.data == 'object'
+        ? error.response?.data?.message
+        : error.response?.data
+    return <div>Something went wrong; {errorResponse}</div>
+  }
   if (!document) return <div>The job document is empty</div>
   return (
     <JobControl
@@ -32,12 +37,12 @@ const JobControlWrapper = (props: DmtUIPlugin) => {
 export const plugins: any = [
   {
     pluginName: 'jobControl',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: JobControlWrapper,
   },
   {
     pluginName: 'jobInputEdit',
-    pluginType: DmtPluginType.UI,
+    pluginType: EDmtPluginType.UI,
     component: JobInputEdit,
   },
 ]

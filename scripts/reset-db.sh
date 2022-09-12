@@ -141,7 +141,7 @@ fi
 SCRIPT_DIR=$(cd "$(dirname "${BASH_SOURCE[0]}")" &>/dev/null && pwd -P)
 BASE_DIR=$(cd "$SCRIPT_DIR/.." &>/dev/null && pwd -P)
 DS_DIR=$BASE_DIR/api/src/home
-CONTAINER_DS_DIR=/code/home
+CONTAINER_DS_DIR=/code/src/home
 DMSS_DIR=$(cd "$BASE_DIR/../data-modelling-storage-service" &>/dev/null && pwd -P)
 DMSS_DS_DIR=$DMSS_DIR/src/home
 

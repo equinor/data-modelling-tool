@@ -1,4 +1,4 @@
-export type AttributeType = {
+export type TAttributeType = {
   type: string
   name: string
   attributeType?: string
@@ -12,15 +12,15 @@ export type AttributeType = {
   value?: string
 }
 
-export type BaseBlueprint = {
+export type TBaseBlueprint = {
   name: string
   type: string
 }
 
-export interface BlueprintType extends BaseBlueprint {
+export interface IBlueprintType extends TBaseBlueprint {
   abstract: boolean
   description: string
-  attributes: AttributeType[]
+  attributes: TAttributeType[]
   uiRecipes?: any[]
   storageRecipes?: any[]
 }
