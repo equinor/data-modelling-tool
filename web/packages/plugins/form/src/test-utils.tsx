@@ -1,4 +1,4 @@
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI } from '@data-modelling-tool/core'
 
 export const mockBlueprintGet = (blueprints: Array<any>) => {
   const mock = jest.spyOn(DmssAPI.prototype, 'blueprintGet')

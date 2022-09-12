@@ -14,7 +14,7 @@ import {
   DmtAPI,
   TJob,
   ErrorResponse,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import styled from 'styled-components'
 import { AxiosError, AxiosResponse } from 'axios'
 // @ts-ignore

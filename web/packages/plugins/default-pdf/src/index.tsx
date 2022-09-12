@@ -1,8 +1,8 @@
 import * as React from 'react'
 import { ViewerPDFPlugin } from './PDFViewer'
 
-import { EDmtPluginType, DmtUIPlugin, Loading } from '@dmt/common'
-import { useDocument } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin, Loading } from '@data-modelling-tool/core'
+import { useDocument } from '@data-modelling-tool/core'
 
 const PluginComponent = (props: DmtUIPlugin) => {
   const { documentId, dataSourceId } = props

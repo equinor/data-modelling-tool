@@ -1,4 +1,4 @@
-import { DmssAPI } from '@dmt/common'
+import { DmssAPI } from '@data-modelling-tool/core'
 import { AttributeType, BlueprintType } from './types'
 
 export class Node {

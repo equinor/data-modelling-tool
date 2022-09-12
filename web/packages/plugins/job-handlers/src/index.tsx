@@ -1,4 +1,4 @@
-import { EDmtPluginType } from '@dmt/common'
+import { EDmtPluginType } from '@data-modelling-tool/core'
 import { EditContainer } from './EditContainer'
 
 export const plugins: any = [

@@ -10,7 +10,7 @@ import {
   UploadFileButton,
   useBlueprint,
   useDocument,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { Form } from './Form'
 import styled from 'styled-components'
 import { useFormContext } from 'react-hook-form'
@@ -95,7 +95,6 @@ const widgets = {
         <div>Name: {initialValue.name}</div>
         <div>Uid: {initialValue.uid}</div>
         <UploadFileButton
-          formData={''}
           fileSuffix={['stask']}
           dataSourceId={dataSourceId}
           getBody={(filename: string) => getNewSTaskBody(filename)}

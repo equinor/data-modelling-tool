@@ -6,7 +6,7 @@ import {
   useDocument,
   TJob,
   Loading,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 import { JobControl } from './JobControl'
 import { JobInputEdit } from './JobInputEdit'
 

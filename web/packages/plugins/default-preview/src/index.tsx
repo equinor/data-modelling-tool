@@ -1,6 +1,6 @@
 import React from 'react'
 
-import { EDmtPluginType, DmtUIPlugin } from '@dmt/common'
+import { EDmtPluginType, DmtUIPlugin } from '@data-modelling-tool/core'
 import PreviewPlugin from './PreviewPlugin'
 
 const PluginComponent = (props: DmtUIPlugin) => {

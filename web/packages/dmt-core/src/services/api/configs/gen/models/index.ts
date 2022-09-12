@@ -1,5 +1,6 @@
 export * from './acl';
 export * from './access-level';
+export * from './data-source-information';
 export * from './data-source-request';
 export * from './error-response';
 export * from './patdata';

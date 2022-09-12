@@ -5,7 +5,7 @@ import {
   TContainerJobHandler,
   TLocation,
   TValidEntity,
-} from '@dmt/common'
+} from '@data-modelling-tool/core'
 
 export type TAsset = {
   _id: string

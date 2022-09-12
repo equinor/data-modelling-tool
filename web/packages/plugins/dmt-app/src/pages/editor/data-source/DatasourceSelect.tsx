@@ -1,5 +1,5 @@
 import React from 'react'
-import { DataSource } from '@dmt/common'
+import { DataSource } from '@data-modelling-tool/core'
 
 export type DatasourceOption = {
   label: string
