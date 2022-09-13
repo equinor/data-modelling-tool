@@ -1,3 +1,4 @@
+// @ts-ignore
 import { DmssAPI } from '@data-modelling-tool/core'
 
 export const mockBlueprintGet = (blueprints: Array<any>) => {

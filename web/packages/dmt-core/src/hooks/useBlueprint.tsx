@@ -1,6 +1,6 @@
 import { useContext, useEffect, useState } from 'react'
 import { DmssAPI } from '../services/api/DmssAPI'
-import { AuthContext } from '../index'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 /**
  * Hook to fetch a Blueprint from the DMSS API

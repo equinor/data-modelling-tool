@@ -5,7 +5,9 @@ import React, {
   useEffect,
   useState,
 } from 'react'
-import { ApplicationContext, AuthContext, Tree, TreeNode } from '../index'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { ApplicationContext } from './ApplicationContext'
+import { Tree, TreeNode } from '../domain/Tree'
 
 export const FSTreeContext = createContext<{
   tree: null | Tree

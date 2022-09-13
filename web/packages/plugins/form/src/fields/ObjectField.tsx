@@ -1,5 +1,5 @@
+// @ts-ignore
 import {
-  AuthContext,
   DmssAPI,
   DmtAPI,
   EntityPickerButton,
@@ -18,6 +18,7 @@ import { TObjectFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 import { Controller, useFormContext } from 'react-hook-form'
 import { AxiosError } from 'axios'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 const Wrapper = styled.div`
   margin-bottom: 20px;

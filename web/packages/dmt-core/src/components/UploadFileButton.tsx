@@ -6,11 +6,12 @@ import React, {
   useRef,
   useState,
 } from 'react'
-import { AuthContext, TGenericObject, TReference, TSTaskBody } from '../index'
 import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
 import { AxiosError, AxiosResponse } from 'axios'
+import { TGenericObject, TReference, TSTaskBody } from '../types'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 export const addToPath = (
   body: TGenericObject,

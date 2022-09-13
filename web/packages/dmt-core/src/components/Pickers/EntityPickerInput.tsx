@@ -1,17 +1,18 @@
 import React, { useContext, useState } from 'react'
-import {
-  Dialog,
-  FSTreeContext,
-  TREE_DIALOG_HEIGHT,
-  TREE_DIALOG_WIDTH,
-  TreeNode,
-  TreeView,
-  TReference,
-} from '../../index'
+
 import { Input, Label } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { INPUT_FIELD_WIDTH } from '../../utils/variables'
+import {
+  INPUT_FIELD_WIDTH,
+  TREE_DIALOG_HEIGHT,
+  TREE_DIALOG_WIDTH,
+} from '../../utils/variables'
+import { TReference } from '../../types'
+import { Dialog } from '../Dialog'
+import { TreeView } from '../TreeView'
+import { TreeNode } from '../../domain/Tree'
+import { FSTreeContext } from '../../context/FileSystemTreeContext'
 
 export const EntityPickerInput = (props: {
   onChange: (ref: TReference) => void
