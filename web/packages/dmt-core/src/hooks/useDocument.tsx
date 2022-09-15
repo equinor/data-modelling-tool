@@ -42,7 +42,7 @@ export function useDocument<T>(
   documentId: string,
   depth?: number | undefined
 ): [
-  T | null,
+  any | null,
   boolean,
   (newDocument: T, notify: boolean) => void,
   AxiosError<any> | null
