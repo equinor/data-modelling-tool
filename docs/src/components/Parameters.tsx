@@ -1,7 +1,7 @@
 import React from "react";
-import { DynamicTable } from "dmt-core";
 import { TComponentDocPartProps } from "../types";
 import { extractParameterInfo } from "../utils";
+import { Table } from "./Table";
 
 const columns: Array<string> = ["Name", "Type", "Optional", "Description"];
 
@@ -21,16 +21,25 @@ export const Parameters = (props: TComponentDocPartProps) => {
   const parameters = typeDoc.signatures[0].parameters ?? []
   parameters.forEach((parameter: any, index: number) => {
     if (parameter.type.type === 'reference') {
-      const reference = typeDocs.children.find((child: any) => child.id === parameter.type.id)
-      reference.children.forEach((child: any, _index: number) => {
-        let parameterInfo = extractParameterInfo(child)
-        let row: TTableRow = {
-          _id: `${_index}`,
-          name: `${parameter.name}.${child.name}`,
-          ...parameterInfo,
-        }
-        rows.push(row)
-      })
+      try {
+        const reference = typeDocs.children.find((child: any) => child.id === parameter.type.id)
+        const referenceChildren = reference.hasOwnProperty('children')
+          ? reference.children
+          : reference.type.declaration.children
+          ?? []
+        referenceChildren.forEach((child: any, _index: number) => {
+          let parameterInfo = extractParameterInfo(child)
+          let row: TTableRow = {
+            _id: `${_index}`,
+            name: `${parameter.name}.${child.name}`,
+            ...parameterInfo,
+          }
+          rows.push(row)
+        })
+      } catch (refErr) {
+        console.error('Something went wrong while fetching the reference')
+        console.error(refErr)
+      }
     } else {
       let parameterInfo = extractParameterInfo(parameter)
       let row: TTableRow = {
@@ -45,7 +54,7 @@ export const Parameters = (props: TComponentDocPartProps) => {
   return (
     <>
       {title}
-      <DynamicTable columns={columns} rows={rows} />
+      <Table columns={columns} rows={rows} onRowClicked={() => {}} />
     </>
   )
 };
