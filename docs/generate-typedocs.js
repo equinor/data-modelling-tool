@@ -59,7 +59,7 @@ async function write_mdx_file(libraryName, componentName, componentType, scope=[
 title: ${componentName}
 ---
 
-import { ${componentName} } from 'dmt-core'
+import { ${componentName} } from '${libraryName}'
 import { ComponentDoc } from '@site/src/components/ComponentDoc'
 
 export const componentName = '${componentName}'
