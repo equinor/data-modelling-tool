@@ -1,5 +1,6 @@
 const TypeDoc = require('typedoc')
 const fs = require('fs')
+const { exit } = require('process')
 
 // Path to write the typedocs to
 const typeDocsOutPath = './src/components/typedocs.json'
@@ -15,6 +16,7 @@ const libraries = {
         entryPoints: [
             './../web/packages/dmt-core/src/index.tsx',
         ],
+        tsConfig: './../web/packages/dmt-core/tsconfig.json'
     },
 }
 
@@ -22,8 +24,9 @@ const libraries = {
  * Generate a JSON structure representing the library using typedoc
  * 
  * @param {string[]} entryPoints A list of entrypoints (e.g. index.ts) for the given library
+ * @param {string} tsConfig Path to the tsconfig.json for the given library
  */
-async function generate_json(entryPoints) {
+async function generate_json(entryPoints, tsConfig) {
     const app = new TypeDoc.Application()
 
     // Add reader for tsconfig
@@ -31,16 +34,21 @@ async function generate_json(entryPoints) {
     
     app.bootstrap({
         entryPoints: entryPoints,
-        json: true
+        tsconfig: tsConfig,
+        json: true,
     })
 
-    const project = app.convert()
-
-    if (project) {
-        // Generate JSON output
-        await app.generateJson(project, typeDocsOutPath)
-    } else {
-        console.error(`Failed to generate typedocs for '${entryPoints}'`)
+    try {
+        const project = app.convert()
+        if (project) {
+            // Generate JSON output
+            await app.generateJson(project, typeDocsOutPath)
+        } else {
+            throw new Error(`Failed to generate typedocs for '${entryPoints}'`)
+        }
+    } catch (err) {
+        console.error(err)
+        exit(1)
     }
 }
 
@@ -94,8 +102,10 @@ async function main() {
     for (library of Object.keys(libraries)) {
         console.log(`=== Generating docs for '${library}'...`)
         const entryPoints = libraries[library].entryPoints
+        const tsConfig = libraries[library].tsConfig
+
         // Generate typedocs
-        await generate_json(entryPoints).catch(console.error)
+        await generate_json(entryPoints, tsConfig).catch(console.error)
         // Check for presence of the generated JSON
         if (fs.existsSync(typeDocsOutPath)) {
             // Import the typeDocs JSON file
