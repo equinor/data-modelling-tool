@@ -18,8 +18,23 @@ export const extractParameterInfo = (parameter: TParameterInfo) => {
     type = parameter.type.declaration.signatures[0].type.name
     description = parameter.type.declaration.signatures[0].comment?.summary[0]?.text
   } else {
-    type = parameter.type.name
+    type = parameter.type.name ?? parameter.kindString
     description = parameter.comment?.summary[0]?.text
   }
   return { type, optional, description }
+}
+
+export const getParameters = (typeDoc: any) => {
+  let parameters = []
+  if (typeDoc.signatures && typeDoc.signatures.length >= 1) {
+    // Functions
+    return typeDoc.signatures[0].parameters
+  } else if (typeDoc.type?.declaration?.children) {
+    // Types
+    return typeDoc.type.declaration.children
+  } else if (typeDoc.children) {
+    // Enums
+    return typeDoc.children
+  }
+  return parameters
 }

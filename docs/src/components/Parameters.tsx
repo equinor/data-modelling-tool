@@ -1,6 +1,6 @@
 import React from "react";
 import { TComponentDocPartProps } from "../types";
-import { extractParameterInfo } from "../utils";
+import { extractParameterInfo, getParameters } from "../utils";
 import { Table } from "./Table";
 
 const columns: Array<string> = ["Name", "Type", "Optional", "Description"];
@@ -18,11 +18,7 @@ export const Parameters = (props: TComponentDocPartProps) => {
   const title: JSX.Element = <h2>Parameters</h2>
   const rows: Array<TTableRow> = []
 
-  let parameters = typeDoc.signatures && typeDoc.signatures.length > 0
-    ? typeDoc.signatures[0].parameters
-    : typeDoc.type?.declaration?.children
-      ? typeDoc.type.declaration.children
-      : []
+  const parameters = getParameters(typeDoc)
   
   parameters.forEach((parameter: any, index: number) => {
     if (parameter.type.type === 'reference') {
@@ -46,7 +42,6 @@ export const Parameters = (props: TComponentDocPartProps) => {
         console.error(refErr)
       }
     } else {
-      console.log(parameter)
       let parameterInfo = extractParameterInfo(parameter)
       let row: TTableRow = {
         _id: `${index}`,

@@ -18,6 +18,7 @@ export type TParameterInfo = {
     declaration?: {
       signatures?: any[];
     };
+    value?: any
   };
   comment?: any;
   [key: string]: any;
