@@ -48,7 +48,6 @@ export function UploadFileButton(props: {
   const textInput = useRef<HTMLInputElement>(null)
   const [error, setError] = useState<string | undefined>()
   const [loading, setLoading] = useState<boolean>(false)
-  // @ts-ignore
   const { token } = useContext(AuthContext)
 
   useEffect(() => setError(undefined), [formData])
