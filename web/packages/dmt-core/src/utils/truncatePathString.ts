@@ -20,7 +20,7 @@ export function truncatePathString(
     //truncatedPath = truncatedPath.replace(
     //  '...',
     //  `${splitTextOnFolders[counter]}/...`
-   // )
+    // )
     if (truncatedPath.length >= maxLength) {
       truncatedPath = previousPath
       break

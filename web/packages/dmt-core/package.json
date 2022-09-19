@@ -32,6 +32,6 @@
   },
   "scripts": {
     "docs": "react-docgen-typescript --ignore src/components/index.ts --resolver findAllComponentDefinitions src/* -o files.json",
-    "generate-markdown":  "node generate-markdown.js"
+    "generate-markdown": "node generate-markdown.js"
   }
 }
