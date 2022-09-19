@@ -4,12 +4,12 @@
   "private": true,
   "scripts": {
     "lint:fix": "eslint --fix --ext .js,.jsx,.tsx,.ts .",
-    "start": "yarn workspace dmt-core run start",
-    "build": "yarn workspace dmt-core run build",
+    "start": "yarn workspace @data-modelling-tool/core run start",
+    "build": "yarn workspace @data-modelling-tool/core run build",
     "test": "jest test",
     "test:watch": "jest --watch --coverage --no-cache",
     "test:watchAll": "yarn build && jest --watchAll --coverage --notify",
-    "tsc": "yarn workspace dmt-core run tsc"
+    "tsc": "yarn workspace @data-modelling-tool/core run tsc"
   },
   "main": "dist/index",
   "types": "dist/index",
