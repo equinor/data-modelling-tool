@@ -177,7 +177,7 @@ export const NodeRightClickMenu = (props: {
   const DeleteAction = async (node: TreeNode) => {
     setLoading(true)
     await dmssAPI
-      .explorerRemoveByPath({
+      .documentRemoveByPath({
         dataSourceId: node.dataSource,
         directory: node.pathFromRootPackage(),
       })
@@ -204,7 +204,7 @@ export const NodeRightClickMenu = (props: {
     }
     const ref = `${node.nodeId}.content`
     dmssAPI
-      .explorerAdd({
+      .documentAdd({
         absoluteRef: ref,
         body: newFolder,
         updateUncontained: true,
@@ -225,7 +225,7 @@ export const NodeRightClickMenu = (props: {
     }
     const ref: string = node.dataSource
     dmssAPI
-      .explorerAdd({
+      .documentAdd({
         absoluteRef: ref,
         body: newPackage,
         updateUncontained: true,

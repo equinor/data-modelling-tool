@@ -362,8 +362,9 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
             assertParamExists('documentRemoveByPath', 'dataSourceId', dataSourceId)
             // verify required parameter 'directory' is not null or undefined
             assertParamExists('documentRemoveByPath', 'directory', directory)
-            const localVarPath = `/api/v1/documents/{data_source_id}/remove-by-path`
-                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
+            const localVarPath = `/api/v1/documents/{data_source_id}/remove-by-path/{directory}`
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
+                .replace(`{${"directory"}}`, encodeURIComponent(String(directory)));
             // use dummy base URL string because the URL constructor only accepts absolute URLs.
             const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
             let baseOptions;
@@ -371,7 +372,7 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
                 baseOptions = configuration.baseOptions;
             }
 
-            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
             const localVarHeaderParameter = {} as any;
             const localVarQueryParameter = {} as any;
 
@@ -381,10 +382,6 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
             // authentication OAuth2AuthorizationCodeBearer required
             // oauth required
             await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
-
-            if (directory !== undefined) {
-                localVarQueryParameter['directory'] = directory;
-            }
 
 
     

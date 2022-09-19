@@ -36,7 +36,7 @@ export const AssetCreate = (): JSX.Element => {
       },
     }
     dmssAPI
-      .explorerAddToPath({
+      .documentAddToPath({
         dataSourceId: DEFAULT_DATASOURCE_ID,
         updateUncontained: true,
         document: JSON.stringify(data),
