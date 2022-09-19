@@ -18,7 +18,12 @@ export const Parameters = (props: TComponentDocPartProps) => {
   const title: JSX.Element = <h2>Parameters</h2>
   const rows: Array<TTableRow> = []
 
-  const parameters = typeDoc.signatures[0].parameters ?? []
+  let parameters = typeDoc.signatures && typeDoc.signatures.length > 0
+    ? typeDoc.signatures[0].parameters
+    : typeDoc.type?.declaration?.children
+      ? typeDoc.type.declaration.children
+      : []
+  
   parameters.forEach((parameter: any, index: number) => {
     if (parameter.type.type === 'reference') {
       try {
@@ -41,6 +46,7 @@ export const Parameters = (props: TComponentDocPartProps) => {
         console.error(refErr)
       }
     } else {
+      console.log(parameter)
       let parameterInfo = extractParameterInfo(parameter)
       let row: TTableRow = {
         _id: `${index}`,

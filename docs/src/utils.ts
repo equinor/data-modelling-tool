@@ -1,7 +1,8 @@
 import { TParameterInfo } from "./types";
 
 export const findBlockByTag = (tag: string, typeDoc: any): any => {
-  return typeDoc.signatures[0]?.comment?.blockTags.find(
+  const comment = typeDoc.comment ?? typeDoc.signatures[0]?.comment ?? {}
+  return comment?.blockTags.find(
     (child: any) => child.tag === tag
   );
 };

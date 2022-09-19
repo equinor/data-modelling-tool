@@ -114,9 +114,15 @@ async function main() {
             typeDocs.children?.forEach((component) => {
                 const componentName = component.name
                 try {
+                    if (!component.signatures && !component.comment) return
+
+                    // Get the comment
+                    const comment = component.comment ?? component.signatures[0]?.comment ?? {}
+
                     // Locate the blockTag with tag '@docs'
-                    const docsBlockTag = component.signatures[0].comment.blockTags.find((blockTag) => blockTag.tag === '@docs')
+                    const docsBlockTag = comment.blockTags.find((blockTag) => blockTag.tag === '@docs')
                     if (!docsBlockTag) return
+
                     // Retrieve the string value of the @docs tag, representing the directory in which the component should be
                     const componentType = docsBlockTag.content.find((content) => content.kind === 'text')?.text
                     // Write the MDX to disk
