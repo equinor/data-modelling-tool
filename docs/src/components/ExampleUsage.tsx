@@ -63,7 +63,12 @@ export const ExampleUsage = (props: ExampleUsageProps) => {
       >
         <LiveEditor />
         {showErrors && <LiveError />}
-        {preview && <LivePreview />}
+        {preview && (
+          <>
+            <h4>Preview:</h4>
+            <LivePreview />
+          </>
+        )}
       </LiveProvider>
     </>
   );
