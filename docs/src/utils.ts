@@ -10,7 +10,10 @@ export const extractParameterInfo = (parameter: TParameterInfo) => {
   let type: string
   let description: string
   let optional: string = parameter.flags?.isOptional ? "True" : "False"
-  if (parameter.type.declaration) {
+  if (parameter.type.type === 'union') {
+    type = parameter.type.types.map((type) => type.name).join(' | ')
+    description = parameter.comment?.summary?.map((comment: { kind: string, text: string }) => comment.text).join() ?? ''
+  } else if (parameter.type.declaration) {
     type = parameter.type.declaration.signatures[0].type.name
     description = parameter.type.declaration.signatures[0].comment?.summary[0]?.text
   } else {

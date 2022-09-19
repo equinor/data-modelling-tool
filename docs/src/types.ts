@@ -13,6 +13,7 @@ export type TParameterInfo = {
   };
   type: {
     type: string;
+    types?: { type: string, name: string }[]
     name: string;
     declaration?: {
       signatures?: any[];
