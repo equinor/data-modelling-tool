@@ -18,7 +18,7 @@ export const Parameters = (props: TComponentDocPartProps) => {
   const title: JSX.Element = <h2>Parameters</h2>
   const rows: Array<TTableRow> = []
 
-  const parameters = typeDoc.signatures[0].parameters || []
+  const parameters = typeDoc.signatures[0].parameters ?? []
   parameters.forEach((parameter: any, index: number) => {
     if (parameter.type.type === 'reference') {
       const reference = typeDocs.children.find((child: any) => child.id === parameter.type.id)
