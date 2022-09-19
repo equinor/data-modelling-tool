@@ -13,9 +13,7 @@
     "write-translations": "docusaurus write-translations",
     "write-heading-ids": "docusaurus write-heading-ids",
     "typecheck": "tsc",
-    "generate-typedocs": "node generate-typedocs.js",
-    "generate-components":  "node generate-components.js",
-    "generate-hooks": "typedoc ./../web/packages/dmt-core/src/hooks/index.tsx --tsconfig ./../web/packages/dmt-core/tsconfig.json --json src/components/hooks.json"
+    "generate-typedocs": "node generate-typedocs.js"
   },
   "dependencies": {
     "@data-modelling-tool/core": "link:./../web/packages/dmt-core",

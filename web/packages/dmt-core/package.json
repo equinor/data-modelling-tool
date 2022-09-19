@@ -29,9 +29,5 @@
     "ts-loader": "^9.3.1",
     "fs-extra": "10.1.0",
     "path-browserify": "^1.0.1"
-  },
-  "scripts": {
-    "docs": "react-docgen-typescript --ignore src/components/index.ts --resolver findAllComponentDefinitions src/* -o files.json",
-    "generate-markdown": "node generate-markdown.js"
   }
 }
