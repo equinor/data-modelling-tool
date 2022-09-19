@@ -47,7 +47,7 @@ export const ExampleUsage = (props: ExampleUsageProps) => {
   )?.text;
   if (!exampleCodeRaw) return errorGroup
   const exampleCode = exampleCodeRaw
-    .replaceAll("`", "") // replace ticks
+    .replaceAll(/(^```|```$)/g, '') // replace prefix/suffix ticks
     .trim(); // remove leading whitespace
 
   return (
