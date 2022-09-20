@@ -73,7 +73,12 @@ import { ComponentDoc } from '@site/src/components/ComponentDoc'
 export const componentName = '${componentName}'
 export const scope = { ${componentName} }
 
-<ComponentDoc componentName={componentName} codeScope={scope} ${codePreviewEnabled ? 'codePreview={true} codeErrors={true}' : ''} />
+<ComponentDoc
+    componentName={componentName}
+    componentType='${componentType}'
+    codeScope={scope}
+    ${codePreviewEnabled ? 'codePreview={true} codeErrors={true}' : ''}
+/>
 `
     // File path to write the MDX file to
     const libraryDirectory = `${mdxBaseDirectory}/${libraryName}`
