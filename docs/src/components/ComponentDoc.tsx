@@ -13,13 +13,17 @@ import typeDocs from "./typedocs.json";
 
 type ComponentDocProps = {
   componentName: string
+  componentType?: string
   codeScope?: any
   codePreview?: boolean
   codeErrors?: boolean
 };
 
 export const ComponentDoc = (props: ComponentDocProps) => {
-  const { componentName, codeScope, codePreview, codeErrors } = props;
+  const { componentName, componentType, codeScope, codePreview, codeErrors } = props;
+  let parametersTitle = 'Parameters'
+  if (componentType === 'Components') parametersTitle = 'Props'
+  else if (['Types', 'Enums'].includes(componentType)) parametersTitle = 'Attributes'
   const typeDoc = typeDocs.children.find(
     (child: any) => child.name === componentName
   );
@@ -28,7 +32,7 @@ export const ComponentDoc = (props: ComponentDocProps) => {
   return (
     <>
       <Summary typeDoc={typeDoc} />
-      <Parameters typeDoc={typeDoc} typeDocs={typeDocs} />
+      <Parameters title={parametersTitle} typeDoc={typeDoc} typeDocs={typeDocs} />
       <Returns typeDoc={typeDoc} />
       <ExampleUsage typeDoc={typeDoc} scope={codeScope} preview={codePreview} showErrors={codeErrors} />
     </>

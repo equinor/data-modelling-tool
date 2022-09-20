@@ -14,8 +14,8 @@ type TTableRow = {
 };
 
 export const Parameters = (props: TComponentDocPartProps) => {
-  const { typeDoc, typeDocs } = props
-  const title: JSX.Element = <h2>Parameters</h2>
+  const { typeDoc, typeDocs, title } = props
+  const header: JSX.Element = <h2>{title ?? 'Parameters'}</h2>
   const rows: Array<TTableRow> = []
 
   const parameters = getParameters(typeDoc)
@@ -32,7 +32,7 @@ export const Parameters = (props: TComponentDocPartProps) => {
           let parameterInfo = extractParameterInfo(child)
           let row: TTableRow = {
             _id: `${_index}`,
-            name: `${parameter.name}.${child.name}`,
+            name: `${child.name}`,
             ...parameterInfo,
           }
           rows.push(row)
@@ -54,7 +54,7 @@ export const Parameters = (props: TComponentDocPartProps) => {
 
   return (
     <>
-      {title}
+      {header}
       <Table columns={columns} rows={rows} onRowClicked={() => {}} />
     </>
   )

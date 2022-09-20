@@ -1,6 +1,7 @@
 export type TComponentDocPartProps = {
   typeDoc: any;
   typeDocs?: any;
+  title?: string;
 };
 
 export type TParameterInfo = {
