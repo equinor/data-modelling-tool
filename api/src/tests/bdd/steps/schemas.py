@@ -27,4 +27,4 @@ def step_impl(context):
 def step_impl_2(context, uid: str, data_source_id: str):
     document: dict = json.loads(context.text)
     document["_id"] = uid
-    dmss_api.explorer_add_simple(data_source_id, document)
+    dmss_api.document_add_simple(data_source_id, document)
