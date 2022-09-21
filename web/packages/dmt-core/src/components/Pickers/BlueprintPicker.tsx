@@ -29,7 +29,7 @@ export type TBlueprintPickerProps = {
 
 /**
  * Component which renders a blueprint picker,
- * allowing the user to select a blueprint
+ * allowing the user to select a reference to a blueprint
  *
  * @docs Components
  * @scope BlueprintPicker Dialog

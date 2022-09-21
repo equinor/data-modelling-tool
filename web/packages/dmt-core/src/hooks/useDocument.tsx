@@ -34,8 +34,8 @@ import { AuthContext } from '../index'
  *
  * @param dataSourceId The ID of the data source
  * @param documentId The ID of the document
- * @param depth The maximum recursion depth
- * @returns A list containing the document, a boolean representing the state, a function to update the document, and an Error, if any.
+ * @param depth The maximum depth level of nested objects to resolve
+ * @returns A list containing the document, a boolean representing the loading state, a function to update the document, and an Error, if any.
  */
 export function useDocument<T>(
   dataSourceId: string,
