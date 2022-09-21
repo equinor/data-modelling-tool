@@ -25,7 +25,9 @@ jobs:
 
     - name: Generate typedocs
       run: |
-        cd docs
+        cd web/packages/dmt-core
+        yarn install
+        cd ../../../docs
         yarn install
         yarn run generate-typedocs
 
