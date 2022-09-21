@@ -3,15 +3,17 @@
 import { DmssAPI } from '../services/api/DmssAPI'
 import React from 'react'
 
-export const mockGetDocument = (result: Array<any>, shouldFail: boolean) => {
+export const mockGetDocument = (documents: any) => {
   const mock = jest.spyOn(DmssAPI.prototype, 'documentGetById')
   //@ts-ignore
-  !shouldFail
-    ? mock.mockImplementation(() =>
-        Promise.resolve({
-          data: result,
+  mock.mockImplementation((parameters) => {
+    return documents.some(
+      (document: any) => document.documentId === parameters['documentId']
+    )
+      ? Promise.resolve({
+          data: documents,
         })
-      )
-    : mock.mockImplementation(() => Promise.reject('error'))
+      : Promise.reject('error')
+  })
   return mock
 }
