@@ -53,10 +53,6 @@ Unit tests:
 `docker-compose run --rm api pytest`  
 `docker-compose run --rm web yarn test`
 
-Integration tests:
-
-`docker-compose run --rm api behave`
-
 ### Pre-commit
 
 We use pre-commit to do a minimum of checks on the developer pc before committing. The same checks, plus a few more are

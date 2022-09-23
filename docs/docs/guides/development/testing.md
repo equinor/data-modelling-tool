@@ -17,14 +17,6 @@ The unit tests can be found under `src/tests/unit`.
 
 As a general rule, unit tests should not have any external dependencies - especially on the file system.
 
-#### Integration tests 
-
-The integrations tests can be found under `src/tests/integration`.
-
-`docker-compose run --rm api behave`
-
-These tests depends on mongodb and that it's running.
-
 ### Web
 
 #### Unit tests 
