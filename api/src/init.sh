@@ -89,10 +89,6 @@ if [ "$1" = 'api' ]; then
   else
     python3 ./app.py run
   fi
-elif [ "$1" = 'behave' ]; then
-  service_is_ready
-  shift
-  behave "$@"
 else
   exec "$@"
 fi
