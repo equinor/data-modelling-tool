@@ -5,7 +5,7 @@ import {
   AccessControlList,
   AuthContext,
   Dialog,
-  hasExpertRole,
+  @data-modelling-tool/core,
   hasOperatorRole,
 } from '@data-modelling-tool/core'
 import { TDocumentInfoCardProps } from '../Types'
