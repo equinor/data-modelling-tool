@@ -23,7 +23,7 @@ export const addToPath = (
   const dmssAPI = new DmssAPI(token)
 
   return dmssAPI
-    .explorerAddToPath({
+    .documentAddToPath({
       dataSourceId: dataSourceId,
       document: JSON.stringify(body),
       directory: directory, // @ts-ignore

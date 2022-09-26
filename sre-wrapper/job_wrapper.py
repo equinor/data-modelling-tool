@@ -173,7 +173,7 @@ def upload_result(reference_target: str = None):
 
         result_entity["name"] = result_entity["name"] + "-" + timestamp
         dmss_api.api_client.default_headers["Access-Key"] = settings.DMSS_TOKEN
-        response = dmss_api.explorer_add_to_path(document=json.dumps(result_entity),
+        response = dmss_api.document_add_to_path(document=json.dumps(result_entity),
                                                  directory=target_directory,
                                                  data_source_id=target_data_source)
         print(

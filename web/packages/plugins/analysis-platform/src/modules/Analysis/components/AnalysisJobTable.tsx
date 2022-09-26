@@ -88,7 +88,7 @@ const JobRow = (props: {
   async function deleteJob(): Promise<void> {
     setLoading(true)
     await dmssAPI
-      .explorerRemove({
+      .documentRemove({
         dataSourceId: dataSourceId,
         dottedId: `${analysisId}.jobs.${index}`,
       })

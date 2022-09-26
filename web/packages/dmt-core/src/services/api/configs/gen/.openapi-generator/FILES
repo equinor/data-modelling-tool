@@ -7,7 +7,6 @@ api/blueprint-api.ts
 api/datasource-api.ts
 api/default-api.ts
 api/document-api.ts
-api/explorer-api.ts
 api/export-api.ts
 api/health-check-api.ts
 api/personal-access-token-api.ts
