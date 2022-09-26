@@ -10,30 +10,3 @@ services:
       API_DEBUG: 1
       API_ENV: testing
       ENVIRONMENT: local
-    depends_on:
-      - dmss
-
-  web:
-    build:
-      context: ./web
-      target: base
-      args:
-        AUTH_ENABLED: 0
-        AUTH_SCOPE: api://97a6b5bd-63fb-42c6-bb75-7e5de2394ba0/dmss
-        CLIENT_ID: 97a6b5bd-63fb-42c6-bb75-7e5de2394ba0
-        TENANT_ID: 3aa4a235-b6e2-48d5-9195-7fcf05b459b0
-    image: web-dev
-    environment:
-      CI: "true"
-      REACT_APP_AUTH: 1
-
-  dmss:
-    image: datamodelingtool.azurecr.io/dmss
-    restart: unless-stopped
-    environment:
-      ENVIRONMENT: local
-      MONGO_INITDB_ROOT_USERNAME: maf
-      MONGO_INITDB_ROOT_PASSWORD: maf
-      SECRET_KEY: sg9aeUM5i1JO4gNN8fQadokJa3_gXQMLBjSGGYcfscs= # Don't reuse this in production...
-    depends_on:
-      - db
