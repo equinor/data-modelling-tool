@@ -1,8 +1,0 @@
-{
-  "name": "@dmt/mermaid",
-  "version": "1.0.0",
-  "main": "src/index.tsx",
-  "dependencies": {
-    "mermaid": "^9.1.3"
-  }
-}

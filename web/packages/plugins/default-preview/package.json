@@ -1,9 +1,0 @@
-{
-  "name": "@dmt/default-preview",
-  "version": "1.0.0",
-  "main": "src/index.tsx",
-  "dependencies": {
-    "@data-modelling-tool/core": "1.0.0",
-    "react-copy-to-clipboard": "^5.0.2"
-  }
-}

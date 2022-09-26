@@ -1,6 +1,0 @@
-export * from './Design'
-export * from './DateRangePicker'
-export * from './DocumentInfoCard'
-export * from './ErrorGroup'
-export * from './Input'
-export * from './SearchInput'
