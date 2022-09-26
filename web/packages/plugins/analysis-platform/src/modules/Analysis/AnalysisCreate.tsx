@@ -52,7 +52,7 @@ export const AnalysisCreate = (): JSX.Element => {
       },
     }
     dmssAPI
-      .explorerAddToPath({
+      .documentAddToPath({
         dataSourceId: DEFAULT_DATASOURCE_ID,
         updateUncontained: false,
         document: JSON.stringify(data),

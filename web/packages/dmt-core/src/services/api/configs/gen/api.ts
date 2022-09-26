@@ -20,7 +20,6 @@ export * from './api/blueprint-api';
 export * from './api/datasource-api';
 export * from './api/default-api';
 export * from './api/document-api';
-export * from './api/explorer-api';
 export * from './api/export-api';
 export * from './api/health-check-api';
 export * from './api/personal-access-token-api';

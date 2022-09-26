@@ -53,7 +53,7 @@ export const CreateJobButton = (props: {
     }
 
     dmssAPI
-      .explorerAdd({
+      .documentAdd({
         absoluteRef: `${analysisAbsoluteReference}.jobs`,
         updateUncontained: false,
         body: job,

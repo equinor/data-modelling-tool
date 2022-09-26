@@ -92,7 +92,7 @@ def remove_application():
             )
             logger.info(f"Deleting package '{actual_data_source}/{folder}' from DMSS...")
             try:
-                dmss_api.explorer_remove_by_path(actual_data_source, directory=folder)
+                dmss_api.document_remove_by_path(actual_data_source, directory=folder)
             except ApiException as error:
                 if error.status == 404:
                     logger.warning(emoji.emojize(f":warning: Could not find '{folder}' in DMSS..."))
@@ -115,7 +115,7 @@ def reset_package(src, dst):
         raise ValueError(f"'{src}' is not a directory. Current working directory is '{os.getcwd()}'")
     data_source, folder = dst.split("/", 1)
     try:
-        dmss_api.explorer_remove_by_path(data_source, directory=folder)
+        dmss_api.document_remove_by_path(data_source, directory=folder)
     except ApiException as error:
         if error.status == 404:
             logger.warning(emoji.emojize(f":warning: Could not find '{folder}' in DMSS..."))

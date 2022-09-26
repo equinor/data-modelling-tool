@@ -29,6 +29,176 @@ import { ErrorResponse } from '../models';
 export const DocumentApiAxiosParamCreator = function (configuration?: Configuration) {
     return {
         /**
+         * Add a new document to absolute ref (root of data source, or another document). If added to another document, a valid attribute type check is done. Select parent with format \'data_source/document_id.attribute.index.attribute\'
+         * @summary Add By Parent Id
+         * @param {string} absoluteRef 
+         * @param {object} body 
+         * @param {boolean} [updateUncontained] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentAdd: async (absoluteRef: string, body: object, updateUncontained?: boolean, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'absoluteRef' is not null or undefined
+            assertParamExists('documentAdd', 'absoluteRef', absoluteRef)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('documentAdd', 'body', body)
+            const localVarPath = `/api/v1/documents/{absolute_ref}`
+                .replace(`{${"absolute_ref"}}`, encodeURIComponent(String(absoluteRef)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication APIKeyHeader required
+            await setApiKeyToObject(localVarHeaderParameter, "Access-Key", configuration)
+
+            // authentication OAuth2AuthorizationCodeBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
+
+            if (updateUncontained !== undefined) {
+                localVarQueryParameter['update_uncontained'] = updateUncontained;
+            }
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
+         * @summary Add Raw
+         * @param {string} dataSourceId 
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentAddSimple: async (dataSourceId: string, body: object, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('documentAddSimple', 'dataSourceId', dataSourceId)
+            // verify required parameter 'body' is not null or undefined
+            assertParamExists('documentAddSimple', 'body', body)
+            const localVarPath = `/api/v1/documents/{data_source_id}/add-raw`
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication APIKeyHeader required
+            await setApiKeyToObject(localVarHeaderParameter, "Access-Key", configuration)
+
+            // authentication OAuth2AuthorizationCodeBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
+
+
+    
+            localVarHeaderParameter['Content-Type'] = 'application/json';
+
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = serializeDataIfNeeded(body, localVarRequestOptions, configuration)
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
+         * @summary Add To Path
+         * @param {string} dataSourceId 
+         * @param {string} document 
+         * @param {string} directory 
+         * @param {boolean} [updateUncontained] 
+         * @param {Array<any>} [files] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentAddToPath: async (dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('documentAddToPath', 'dataSourceId', dataSourceId)
+            // verify required parameter 'document' is not null or undefined
+            assertParamExists('documentAddToPath', 'document', document)
+            // verify required parameter 'directory' is not null or undefined
+            assertParamExists('documentAddToPath', 'directory', directory)
+            const localVarPath = `/api/v1/documents/{data_source_id}/add-to-path`
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'POST', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+            const localVarFormParams = new ((configuration && configuration.formDataCtor) || FormData)();
+
+            // authentication APIKeyHeader required
+            await setApiKeyToObject(localVarHeaderParameter, "Access-Key", configuration)
+
+            // authentication OAuth2AuthorizationCodeBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
+
+            if (updateUncontained !== undefined) {
+                localVarQueryParameter['update_uncontained'] = updateUncontained;
+            }
+
+
+            if (document !== undefined) { 
+                localVarFormParams.append('document', document as any);
+            }
+    
+            if (directory !== undefined) { 
+                localVarFormParams.append('directory', directory as any);
+            }
+                if (files) {
+                files.forEach((element) => {
+                    localVarFormParams.append('files', element as any);
+                })
+            }
+
+    
+    
+            localVarHeaderParameter['Content-Type'] = 'multipart/form-data';
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+            localVarRequestOptions.data = localVarFormParams;
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
          * 
          * @summary Get By Id
          * @param {string} dataSourceId 
@@ -136,6 +306,96 @@ export const DocumentApiAxiosParamCreator = function (configuration?: Configurat
         },
         /**
          * 
+         * @summary Remove
+         * @param {string} dataSourceId 
+         * @param {string} dottedId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentRemove: async (dataSourceId: string, dottedId: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('documentRemove', 'dataSourceId', dataSourceId)
+            // verify required parameter 'dottedId' is not null or undefined
+            assertParamExists('documentRemove', 'dottedId', dottedId)
+            const localVarPath = `/api/v1/documents/{data_source_id}/{dotted_id}`
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
+                .replace(`{${"dotted_id"}}`, encodeURIComponent(String(dottedId)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication APIKeyHeader required
+            await setApiKeyToObject(localVarHeaderParameter, "Access-Key", configuration)
+
+            // authentication OAuth2AuthorizationCodeBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
+         * @summary Remove By Path
+         * @param {string} dataSourceId 
+         * @param {string} directory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentRemoveByPath: async (dataSourceId: string, directory: string, options: any = {}): Promise<RequestArgs> => {
+            // verify required parameter 'dataSourceId' is not null or undefined
+            assertParamExists('documentRemoveByPath', 'dataSourceId', dataSourceId)
+            // verify required parameter 'directory' is not null or undefined
+            assertParamExists('documentRemoveByPath', 'directory', directory)
+            const localVarPath = `/api/v1/documents/{data_source_id}/remove-by-path/{directory}`
+                .replace(`{${"data_source_id"}}`, encodeURIComponent(String(dataSourceId)))
+                .replace(`{${"directory"}}`, encodeURIComponent(String(directory)));
+            // use dummy base URL string because the URL constructor only accepts absolute URLs.
+            const localVarUrlObj = new URL(localVarPath, DUMMY_BASE_URL);
+            let baseOptions;
+            if (configuration) {
+                baseOptions = configuration.baseOptions;
+            }
+
+            const localVarRequestOptions = { method: 'DELETE', ...baseOptions, ...options};
+            const localVarHeaderParameter = {} as any;
+            const localVarQueryParameter = {} as any;
+
+            // authentication APIKeyHeader required
+            await setApiKeyToObject(localVarHeaderParameter, "Access-Key", configuration)
+
+            // authentication OAuth2AuthorizationCodeBearer required
+            // oauth required
+            await setOAuthToObject(localVarHeaderParameter, "OAuth2AuthorizationCodeBearer", [], configuration)
+
+
+    
+            setSearchParams(localVarUrlObj, localVarQueryParameter, options.query);
+            let headersFromBaseOptions = baseOptions && baseOptions.headers ? baseOptions.headers : {};
+            localVarRequestOptions.headers = {...localVarHeaderParameter, ...headersFromBaseOptions, ...options.headers};
+
+            return {
+                url: toPathString(localVarUrlObj),
+                options: localVarRequestOptions,
+            };
+        },
+        /**
+         * 
          * @summary Update
          * @param {string} dataSourceId 
          * @param {string} documentId 
@@ -218,6 +478,46 @@ export const DocumentApiFp = function(configuration?: Configuration) {
     const localVarAxiosParamCreator = DocumentApiAxiosParamCreator(configuration)
     return {
         /**
+         * Add a new document to absolute ref (root of data source, or another document). If added to another document, a valid attribute type check is done. Select parent with format \'data_source/document_id.attribute.index.attribute\'
+         * @summary Add By Parent Id
+         * @param {string} absoluteRef 
+         * @param {object} body 
+         * @param {boolean} [updateUncontained] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentAdd(absoluteRef: string, body: object, updateUncontained?: boolean, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentAdd(absoluteRef, body, updateUncontained, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
+         * @summary Add Raw
+         * @param {string} dataSourceId 
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentAddSimple(dataSourceId: string, body: object, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentAddSimple(dataSourceId, body, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
+         * @summary Add To Path
+         * @param {string} dataSourceId 
+         * @param {string} document 
+         * @param {string} directory 
+         * @param {boolean} [updateUncontained] 
+         * @param {Array<any>} [files] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentAddToPath(dataSourceId, document, directory, updateUncontained, files, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
          * 
          * @summary Get By Id
          * @param {string} dataSourceId 
@@ -242,6 +542,30 @@ export const DocumentApiFp = function(configuration?: Configuration) {
          */
         async documentGetByPath(dataSourceId: string, attribute?: string, path?: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<object>> {
             const localVarAxiosArgs = await localVarAxiosParamCreator.documentGetByPath(dataSourceId, attribute, path, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Remove
+         * @param {string} dataSourceId 
+         * @param {string} dottedId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentRemove(dataSourceId: string, dottedId: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<string>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentRemove(dataSourceId, dottedId, options);
+            return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
+        },
+        /**
+         * 
+         * @summary Remove By Path
+         * @param {string} dataSourceId 
+         * @param {string} directory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        async documentRemoveByPath(dataSourceId: string, directory: string, options?: any): Promise<(axios?: AxiosInstance, basePath?: string) => AxiosPromise<any>> {
+            const localVarAxiosArgs = await localVarAxiosParamCreator.documentRemoveByPath(dataSourceId, directory, options);
             return createRequestFunction(localVarAxiosArgs, globalAxios, BASE_PATH, configuration);
         },
         /**
@@ -271,6 +595,43 @@ export const DocumentApiFactory = function (configuration?: Configuration, baseP
     const localVarFp = DocumentApiFp(configuration)
     return {
         /**
+         * Add a new document to absolute ref (root of data source, or another document). If added to another document, a valid attribute type check is done. Select parent with format \'data_source/document_id.attribute.index.attribute\'
+         * @summary Add By Parent Id
+         * @param {string} absoluteRef 
+         * @param {object} body 
+         * @param {boolean} [updateUncontained] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentAdd(absoluteRef: string, body: object, updateUncontained?: boolean, options?: any): AxiosPromise<object> {
+            return localVarFp.documentAdd(absoluteRef, body, updateUncontained, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
+         * @summary Add Raw
+         * @param {string} dataSourceId 
+         * @param {object} body 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentAddSimple(dataSourceId: string, body: object, options?: any): AxiosPromise<string> {
+            return localVarFp.documentAddSimple(dataSourceId, body, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
+         * @summary Add To Path
+         * @param {string} dataSourceId 
+         * @param {string} document 
+         * @param {string} directory 
+         * @param {boolean} [updateUncontained] 
+         * @param {Array<any>} [files] 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentAddToPath(dataSourceId: string, document: string, directory: string, updateUncontained?: boolean, files?: Array<any>, options?: any): AxiosPromise<object> {
+            return localVarFp.documentAddToPath(dataSourceId, document, directory, updateUncontained, files, options).then((request) => request(axios, basePath));
+        },
+        /**
          * 
          * @summary Get By Id
          * @param {string} dataSourceId 
@@ -297,6 +658,28 @@ export const DocumentApiFactory = function (configuration?: Configuration, baseP
         },
         /**
          * 
+         * @summary Remove
+         * @param {string} dataSourceId 
+         * @param {string} dottedId 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentRemove(dataSourceId: string, dottedId: string, options?: any): AxiosPromise<string> {
+            return localVarFp.documentRemove(dataSourceId, dottedId, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
+         * @summary Remove By Path
+         * @param {string} dataSourceId 
+         * @param {string} directory 
+         * @param {*} [options] Override http request option.
+         * @throws {RequiredError}
+         */
+        documentRemoveByPath(dataSourceId: string, directory: string, options?: any): AxiosPromise<any> {
+            return localVarFp.documentRemoveByPath(dataSourceId, directory, options).then((request) => request(axios, basePath));
+        },
+        /**
+         * 
          * @summary Update
          * @param {string} dataSourceId 
          * @param {string} documentId 
@@ -312,6 +695,97 @@ export const DocumentApiFactory = function (configuration?: Configuration, baseP
         },
     };
 };
+
+/**
+ * Request parameters for documentAdd operation in DocumentApi.
+ * @export
+ * @interface DocumentApiDocumentAddRequest
+ */
+export interface DocumentApiDocumentAddRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentAdd
+     */
+    readonly absoluteRef: string
+
+    /**
+     * 
+     * @type {object}
+     * @memberof DocumentApiDocumentAdd
+     */
+    readonly body: object
+
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DocumentApiDocumentAdd
+     */
+    readonly updateUncontained?: boolean
+}
+
+/**
+ * Request parameters for documentAddSimple operation in DocumentApi.
+ * @export
+ * @interface DocumentApiDocumentAddSimpleRequest
+ */
+export interface DocumentApiDocumentAddSimpleRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentAddSimple
+     */
+    readonly dataSourceId: string
+
+    /**
+     * 
+     * @type {object}
+     * @memberof DocumentApiDocumentAddSimple
+     */
+    readonly body: object
+}
+
+/**
+ * Request parameters for documentAddToPath operation in DocumentApi.
+ * @export
+ * @interface DocumentApiDocumentAddToPathRequest
+ */
+export interface DocumentApiDocumentAddToPathRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentAddToPath
+     */
+    readonly dataSourceId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentAddToPath
+     */
+    readonly document: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentAddToPath
+     */
+    readonly directory: string
+
+    /**
+     * 
+     * @type {boolean}
+     * @memberof DocumentApiDocumentAddToPath
+     */
+    readonly updateUncontained?: boolean
+
+    /**
+     * 
+     * @type {Array<any>}
+     * @memberof DocumentApiDocumentAddToPath
+     */
+    readonly files?: Array<any>
+}
 
 /**
  * Request parameters for documentGetById operation in DocumentApi.
@@ -377,6 +851,48 @@ export interface DocumentApiDocumentGetByPathRequest {
 }
 
 /**
+ * Request parameters for documentRemove operation in DocumentApi.
+ * @export
+ * @interface DocumentApiDocumentRemoveRequest
+ */
+export interface DocumentApiDocumentRemoveRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentRemove
+     */
+    readonly dataSourceId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentRemove
+     */
+    readonly dottedId: string
+}
+
+/**
+ * Request parameters for documentRemoveByPath operation in DocumentApi.
+ * @export
+ * @interface DocumentApiDocumentRemoveByPathRequest
+ */
+export interface DocumentApiDocumentRemoveByPathRequest {
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentRemoveByPath
+     */
+    readonly dataSourceId: string
+
+    /**
+     * 
+     * @type {string}
+     * @memberof DocumentApiDocumentRemoveByPath
+     */
+    readonly directory: string
+}
+
+/**
  * Request parameters for documentUpdate operation in DocumentApi.
  * @export
  * @interface DocumentApiDocumentUpdateRequest
@@ -433,6 +949,42 @@ export interface DocumentApiDocumentUpdateRequest {
  */
 export class DocumentApi extends BaseAPI {
     /**
+     * Add a new document to absolute ref (root of data source, or another document). If added to another document, a valid attribute type check is done. Select parent with format \'data_source/document_id.attribute.index.attribute\'
+     * @summary Add By Parent Id
+     * @param {DocumentApiDocumentAddRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentApi
+     */
+    public documentAdd(requestParameters: DocumentApiDocumentAddRequest, options?: any) {
+        return DocumentApiFp(this.configuration).documentAdd(requestParameters.absoluteRef, requestParameters.body, requestParameters.updateUncontained, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Adds the document \'as-is\' to the datasource. NOTE: The \'explorer-add\' operation is to be preferred. This is mainly for bootstrapping and imports. Blueprint need not exist, and so there is no validation or splitting of entities. Posted document must be a valid Entity.
+     * @summary Add Raw
+     * @param {DocumentApiDocumentAddSimpleRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentApi
+     */
+    public documentAddSimple(requestParameters: DocumentApiDocumentAddSimpleRequest, options?: any) {
+        return DocumentApiFp(this.configuration).documentAddSimple(requestParameters.dataSourceId, requestParameters.body, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * Same as \'add_to_parent\', but reference parent by path instead of ID. Also supports files.
+     * @summary Add To Path
+     * @param {DocumentApiDocumentAddToPathRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentApi
+     */
+    public documentAddToPath(requestParameters: DocumentApiDocumentAddToPathRequest, options?: any) {
+        return DocumentApiFp(this.configuration).documentAddToPath(requestParameters.dataSourceId, requestParameters.document, requestParameters.directory, requestParameters.updateUncontained, requestParameters.files, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
      * 
      * @summary Get By Id
      * @param {DocumentApiDocumentGetByIdRequest} requestParameters Request parameters.
@@ -454,6 +1006,30 @@ export class DocumentApi extends BaseAPI {
      */
     public documentGetByPath(requestParameters: DocumentApiDocumentGetByPathRequest, options?: any) {
         return DocumentApiFp(this.configuration).documentGetByPath(requestParameters.dataSourceId, requestParameters.attribute, requestParameters.path, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Remove
+     * @param {DocumentApiDocumentRemoveRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentApi
+     */
+    public documentRemove(requestParameters: DocumentApiDocumentRemoveRequest, options?: any) {
+        return DocumentApiFp(this.configuration).documentRemove(requestParameters.dataSourceId, requestParameters.dottedId, options).then((request) => request(this.axios, this.basePath));
+    }
+
+    /**
+     * 
+     * @summary Remove By Path
+     * @param {DocumentApiDocumentRemoveByPathRequest} requestParameters Request parameters.
+     * @param {*} [options] Override http request option.
+     * @throws {RequiredError}
+     * @memberof DocumentApi
+     */
+    public documentRemoveByPath(requestParameters: DocumentApiDocumentRemoveByPathRequest, options?: any) {
+        return DocumentApiFp(this.configuration).documentRemoveByPath(requestParameters.dataSourceId, requestParameters.directory, options).then((request) => request(this.axios, this.basePath));
     }
 
     /**
