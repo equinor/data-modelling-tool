@@ -41,10 +41,4 @@ jobs:
     secrets:
       ACR_SECRET: ${{ secrets.ACR_SECRET }}
 
-  deploy:
-    needs: publish-prod-tag
-    uses: ./.github/workflows/deploy.yaml
-    with:
-      radix-environment: 'prod'
-    secrets:
-      APP_SERVICE_ACCOUNT_TOKEN: ${{ secrets.APP_SERVICE_ACCOUNT_TOKEN }}
+

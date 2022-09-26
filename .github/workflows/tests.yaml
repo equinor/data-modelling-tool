@@ -12,7 +12,6 @@ on:
 env:
   IMAGE_REGISTRY: datamodelingtool.azurecr.io
   API_IMAGE: datamodelingtool.azurecr.io/dmt/api
-  WEB_IMAGE: datamodelingtool.azurecr.io/dmt/web
 
 jobs:
   test-api:
@@ -50,28 +49,3 @@ jobs:
 
       - name: "API UnitTests"
         run: docker run --rm api-development pytest tests
-
-  test-web:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@master
-
-      - name: Install Precommit
-        run: pip install pre-commit
-      - name: Run prettier formatting
-        run: pre-commit run prettier --all-files
-
-      - name: "Build Web Image"
-        run: |
-          docker login -u datamodelingtool -p ${{ secrets.ACR_SECRET }} $IMAGE_REGISTRY
-          docker pull $WEB_IMAGE
-          docker build --cache-from $WEB_IMAGE --target development --tag web-dev ./web
-
-      - name: "Web Tests"
-        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run --rm web yarn test
-
-      - name: "Test for typescript errors"
-        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run --rm web yarn tsc
-
-      - name: "Run ESlint"
-        run: docker-compose -f docker-compose.yml  -f docker-compose.ci.yml run --rm web npm run lint:fix

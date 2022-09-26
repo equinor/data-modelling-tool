@@ -30,12 +30,6 @@ repos:
       args: [-l, --recursive, -x, tests]
       files: ^api/.*\.py$
 
-- repo: https://github.com/pre-commit/mirrors-prettier
-  rev: v2.2.1
-  hooks:
-    - id: prettier
-      files: ^web/.*\.(ts|tsx|js|css|html|json)$
-      args: ['--config=web/.prettierrc.js', '--ignore-path=web/.prettierignore']
 
 - repo: https://github.com/hadialqattan/pycln
   rev: v1.3.5
@@ -59,18 +53,9 @@ repos:
       name: Python style checking
       entry: sh -c "api/.venv/bin/python -m flake8 --config=api/.flake8 api/src"
       language: system
-    - id: yarntest
-      name: Yarn tests
-      entry: sh -c "cd web && CI=true yarn test -coverage=false"
-      language: system
-      files: ^web/.*\.(test.ts|test.tsx|test.js)$
     - id: pytest
       name: API Unit Tests
       entry: sh -c "export PYTHONPATH=./api/src && api/.venv/bin/python -m pytest api/src/tests"
       language: system
       pass_filenames: false
-    - id: eslint
-      name: ESlint
-      entry: sh -c "cd web; npm run lint:fix"
-      language: system
-      pass_filenames: false
+
