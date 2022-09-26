@@ -1,8 +1,0 @@
-{
-  "_id": "a2b9762a-8976-4f04-9a9b-49f452eb97c9",
-  "imageName": "dmt-job/srs",
-  "description": "",
-  "type": "AnalysisPlatformDS/Blueprints/ContainerImage",
-  "version": "latest",
-  "registryName": "datamodelingtool.azurecr.io"
-}

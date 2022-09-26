@@ -1,8 +1,0 @@
-{
-    "_id": "4483c9b0-d505-46c9-a157-94c79f4d7a6c",
-    "name": "exampleLocation",
-    "label": "Example Location",
-    "type": "AnalysisPlatformDS/Blueprints/Location",
-    "lat": 62.466,
-    "long": 2.224
-}

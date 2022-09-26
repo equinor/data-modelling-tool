@@ -1,7 +1,0 @@
-{
- "name" : "PointStyle",
- "type" : "system/SIMOS/Enum",
- "values" : ["NONE", "POINT", "CIRCLE", "SQUARE"],
- "labels" : ["None", "Point", "Circle", "Square"]
-}
-

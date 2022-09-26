@@ -1,7 +1,0 @@
-{
-  "type": "system/SIMOS/Blueprint",
-  "name": "AzureContainer",
-  "description": "Description of a executable job running as an Azure Container Instance",
-  "extends": ["system/SIMOS/DefaultUiRecipes", "/jobHandlers/Container", "/jobHandlers/JobHandler"],
-  "attributes": []
-}

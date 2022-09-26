@@ -1,7 +1,0 @@
-# This file describes the mapping between folders located
-# at $APPLICATION_HOME/{name-of-application}/data/{data_source_alias},
-# and which data source that data should be uploaded to.
-# Format:
-# myLocalAlias=ActualNameOfDataSource
-demoDSAlias=DemoDS
-DMT-internals=DMT-Internal

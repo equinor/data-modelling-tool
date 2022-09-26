@@ -1,7 +1,0 @@
-{
-  "name": "Platforms",
-  "type": "system/SIMOS/Enum",
-  "description": "",
-  "labels": ["Åsgard B", "Kristin", "Aasta Hansteen"],
-  "values": ["asgardb", "kristin", "aastaHansteen"]
-}

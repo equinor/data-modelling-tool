@@ -1,6 +1,0 @@
-{
-  "_id": "429cb3da-ebbe-4ea6-80a6-b6bca0f67aaa",
-  "type": "/subtypes/Comment",
-  "description": "an example comment entity with no name",
-  "text": "This is the comment text"
-}
