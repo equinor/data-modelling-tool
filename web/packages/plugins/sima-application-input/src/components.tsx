@@ -5,7 +5,7 @@ import {
   NewEntityButton,
   TReference,
   UIPluginSelector,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import * as React from 'react'
 import styled from 'styled-components'
 

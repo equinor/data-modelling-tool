@@ -1,4 +1,3 @@
-// @ts-ignore
 import {
   DmssAPI,
   DmtAPI,
@@ -8,7 +7,8 @@ import {
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
-} from '@data-modelling-tool/core'
+  // @ts-ignore
+} from '@development-framework/dm-core'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'

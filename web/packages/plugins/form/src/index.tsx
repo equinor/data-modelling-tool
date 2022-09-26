@@ -10,7 +10,7 @@ import {
   UploadFileButton,
   useBlueprint,
   useDocument,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { Form } from './Form'
 import styled from 'styled-components'
 import { useFormContext } from 'react-hook-form'

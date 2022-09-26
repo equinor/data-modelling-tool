@@ -4,7 +4,7 @@ import {
   DynamicTable,
   formatDate,
   TDmtSettings,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { TAnalysis } from '../../../Types'
 import { useParams } from 'react-router-dom'
 import { DEFAULT_DATASOURCE_ID } from '../../../const'

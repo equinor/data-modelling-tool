@@ -3,7 +3,7 @@ import {
   Loading,
   UIPluginSelector,
   useDocument,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import * as React from 'react'
 
 export const EditInput = (props: IDmtUIPlugin) => {

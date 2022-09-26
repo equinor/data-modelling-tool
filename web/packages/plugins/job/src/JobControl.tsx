@@ -10,7 +10,7 @@ import {
   EJobStatus,
   TJob,
   ApplicationContext,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { Button, Label, Progress } from '@equinor/eds-core-react'
 import Icons from './Icons'
 import { AxiosError } from 'axios'

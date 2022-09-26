@@ -1,11 +1,11 @@
 import React, { createContext, ReactNode, useContext } from 'react'
 import { ILayout, useLayout } from './useLayout'
-// @ts-ignore
 import {
   DmssAPI,
   useDataSources,
   IDataSources,
-} from '@data-modelling-tool/core'
+  // @ts-ignore
+} from '@development-framework/dm-core'
 
 export interface IModels {
   layout: ILayout

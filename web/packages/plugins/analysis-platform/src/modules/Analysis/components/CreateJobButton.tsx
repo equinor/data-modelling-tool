@@ -8,7 +8,7 @@ import {
   TJob,
   EBlueprint,
   ErrorResponse,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import Icons from '../../../components/Design/Icons'
 import { TAnalysis, TTask } from '../../../Types'
 // @ts-ignore

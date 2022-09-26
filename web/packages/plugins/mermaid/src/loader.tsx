@@ -1,4 +1,4 @@
-import { DmssAPI } from '@data-modelling-tool/core'
+import { DmssAPI } from '@development-framework/dm-core'
 import { TAttributeType, IBlueprintType } from './types'
 
 export class Node {

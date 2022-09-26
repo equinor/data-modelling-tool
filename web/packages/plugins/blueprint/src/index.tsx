@@ -1,4 +1,4 @@
-import { EDmtPluginType } from '@data-modelling-tool/core'
+import { EDmtPluginType } from '@development-framework/dm-core'
 import { EditBlueprint } from './EditBlueprint'
 
 export const plugins: any = [

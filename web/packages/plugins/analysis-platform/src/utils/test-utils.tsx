@@ -5,7 +5,7 @@ import {
   AuthContext,
   DMSS_ADMIN_ROLE,
   DmssAPI,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { MemoryRouter } from 'react-router-dom'
 import React, { ReactNode } from 'react'
 

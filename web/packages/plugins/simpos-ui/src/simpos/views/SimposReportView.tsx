@@ -1,6 +1,10 @@
 import * as React from 'react'
 
-import { IDmtUIPlugin, Loading, useDocument } from '@data-modelling-tool/core'
+import {
+  IDmtUIPlugin,
+  Loading,
+  useDocument,
+} from '@development-framework/dm-core'
 
 import { SimposReportView } from './report.js'
 

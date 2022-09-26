@@ -1,4 +1,4 @@
-import { IDmtUIPlugin } from '@data-modelling-tool/core'
+import { IDmtUIPlugin } from '@development-framework/dm-core'
 import * as React from 'react'
 
 import { EditSimaApplicationInput } from './EditSimaApplicationInput'

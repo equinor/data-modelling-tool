@@ -4,7 +4,7 @@ import yaml from 'highlight.js/lib/languages/yaml'
 import { CopyToClipboard } from 'react-copy-to-clipboard'
 import jsyaml from 'js-yaml'
 import styled, { keyframes } from 'styled-components'
-import { Button, TGenericObject } from '@data-modelling-tool/core'
+import { Button, TGenericObject } from '@development-framework/dm-core'
 
 hljs.registerLanguage('yaml', yaml)
 

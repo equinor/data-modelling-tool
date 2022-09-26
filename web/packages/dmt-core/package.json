@@ -52,8 +52,7 @@
   "files": [
     "dist",
     "package.json",
-    "README.md",
-    "src"
+    "README.md"
   ],
   "types": "dist/index.d.ts",
   "scripts": {

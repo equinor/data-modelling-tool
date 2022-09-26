@@ -7,7 +7,7 @@ import {
   getFullContainerImageName,
   useSearch,
   Loading,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import { Button, Progress, Typography } from '@equinor/eds-core-react'

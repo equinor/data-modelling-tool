@@ -4,7 +4,7 @@ import {
   useDocument,
   UIPluginSelector,
   TValidEntity,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 
 import { ErrorGroup } from '../components/ErrorGroup'
 

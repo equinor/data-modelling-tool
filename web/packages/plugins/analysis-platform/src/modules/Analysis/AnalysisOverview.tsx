@@ -1,5 +1,9 @@
-// @ts-ignore
-import { hasExpertRole, Loading, useSearch } from '@data-modelling-tool/core'
+import {
+  hasExpertRole,
+  Loading,
+  useSearch,
+  // @ts-ignore
+} from '@development-framework/dm-core'
 import React, { ReactNode, useContext } from 'react'
 import { DEFAULT_DATASOURCE_ID } from '../../const'
 import { EBlueprints } from '../../Enums'
@@ -10,7 +14,6 @@ import { AuthContext } from 'react-oauth2-code-pkce'
 
 export const AnalysisOverview = (): JSX.Element => {
   const { tokenData } = useContext(AuthContext)
-  // @ts-ignore
   const [analyses, isLoading] = useSearch<TAnalysis>(
     {
       type: EBlueprints.ANALYSIS,

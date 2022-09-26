@@ -1,4 +1,4 @@
-import { TAttribute } from '@data-modelling-tool/core'
+import { TAttribute } from '@development-framework/dm-core'
 
 export class BlueprintAttribute {
   public attr: TAttribute

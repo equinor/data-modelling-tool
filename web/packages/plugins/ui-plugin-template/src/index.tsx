@@ -1,6 +1,6 @@
 import * as React from 'react'
 
-import { EDmtPluginType, IDmtUIPlugin } from '@data-modelling-tool/core'
+import { EDmtPluginType, IDmtUIPlugin } from '@development-framework/dm-core'
 
 export const pluginName = 'ui-plugin-template'
 export const pluginType = EDmtPluginType.UI

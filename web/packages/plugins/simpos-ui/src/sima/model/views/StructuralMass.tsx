@@ -1,5 +1,9 @@
 import React, { useEffect, useState } from 'react'
-import { useDocument, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
+import {
+  useDocument,
+  IDmtUIPlugin,
+  Loading,
+} from '@development-framework/dm-core'
 
 import { SIMA_Model_StructuralMass } from './StructuralMass_src.js'
 

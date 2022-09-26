@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { Loading, useDocument } from '@data-modelling-tool/core'
-import { IDmtUIPlugin } from '@data-modelling-tool/core'
+import { Loading, useDocument } from '@development-framework/dm-core'
+import { IDmtUIPlugin } from '@development-framework/dm-core'
 
 import { SRSSceSimulationForm } from './sce_simulation.js'
 
