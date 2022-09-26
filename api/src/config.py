@@ -7,18 +7,11 @@ from typing import Dict, List, Union
 
 
 class Config:
-    MONGO_USERNAME = os.getenv("MONGO_INITDB_ROOT_USERNAME", "maf")
-    MONGO_PASSWORD = os.getenv("MONGO_INITDB_ROOT_PASSWORD", "maf")
-    MONGO_URI = os.getenv("MONGO_URI", "")
-    MONGO_DB = os.getenv("ENVIRONMENT", os.getenv("RADIX_ENVIRONMENT", "local"))
     LOGGER_LEVEL = os.getenv("LOGGING_LEVEL", "INFO")
     MAX_ENTITY_RECURSION_DEPTH = os.getenv("MAX_ENTITY_RECURSION_DEPTH", 50)
     API_DEBUG = os.getenv("API_DEBUG", 0)
     ENVIRONMENT = os.getenv("ENVIRONMENT", "local")
-    DYNAMIC_MODELS = "dynamic_models"
-    CACHE_MAX_SIZE = 200
     APPLICATION_HOME = os.getenv("APPLICATION_HOME", f"{Path(__file__).parent}/home")
-    VERIFY_IMPORTS = os.getenv("DMT_VERIFY_IMPORTS", False)
     DMSS_API = os.getenv("DMSS_API", "http://dmss:5000")
 
     # Azure stuff
