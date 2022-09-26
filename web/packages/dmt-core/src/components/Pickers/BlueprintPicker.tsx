@@ -14,13 +14,38 @@ import {
 import { Input, Label, Progress, Tooltip } from '@equinor/eds-core-react'
 import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types'
 
-export const BlueprintPicker = (props: {
+export type TBlueprintPickerProps = {
+  /** A function to trigger with the onChange event */
   onChange: (type: string) => void
+  /** The value of the input field */
   formData: string | undefined
+  /** The variant to use for the input ('error', 'warning', 'success', 'default') */
   variant?: Variants
+  /** Whether the input should be disabled */
   disabled?: boolean
+  /** A title for the picker */
   label?: string
-}) => {
+}
+
+/**
+ * Component which renders a blueprint picker,
+ * allowing the user to select a reference to a blueprint
+ *
+ * @docs Components
+ * @scope BlueprintPicker Dialog
+ *
+ * @usage
+ * ```
+ * <BlueprintPicker
+ *   label={'Select a Blueprint'}
+ *   disabled={false}
+ *   onChange={(selectedType) => console.log(`Selected blueprint of type '${selectedType}'`)} />
+ * ```
+ *
+ * @param {TBlueprintPickerProps} props {@link TBlueprintPickerProps}
+ * @returns A React component
+ */
+export const BlueprintPicker = (props: TBlueprintPickerProps) => {
   const { onChange, formData, variant, disabled, label } = props
   const [showModal, setShowModal] = useState<boolean>(false)
   const { treeNodes, loading } = useContext(FSTreeContext)

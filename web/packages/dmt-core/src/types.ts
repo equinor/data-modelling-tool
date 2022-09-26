@@ -90,19 +90,37 @@ export type TTaskFormData = {
   name?: string
 }
 
+/**
+ * A type representing settings for a DMT application
+ *
+ * @docs Types
+ */
 export type TDmtSettings = {
+  /** Name of the application. Only alphanumerical characters are allowed. */
   name: string
+  /** An optional label. Whitespace allowed.*/
   label: string
+  /** The index of the application, determining the order by which it is displayed */
   tabIndex: number
+  /** Whether the application should be displayed in the app selector */
   hidden: boolean
+  /** A list of dataSourceId's available to the app */
   visibleDataSources: any
+  /** The blueprint type */
   type: string
+  /** A description for the app */
   description: string
+  /** A list of packages available to the app */
   packages: any
+  /** A list of models available to the app */
   models: any
+  /** A list of actions available to the app */
   actions: any
+  /** Path to the JSON file on disk */
   fileLocation: string
+  /** A mapping between datasources and aliases */
   dataSourceAliases: any
+  /** The base path at which the application is accessible */
   urlPath: string
 }
 

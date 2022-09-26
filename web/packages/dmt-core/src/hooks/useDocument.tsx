@@ -6,12 +6,36 @@ import { NotificationManager } from 'react-notifications'
 import { AuthContext } from '../index'
 
 /**
- * A hook for aasly working with documents.
+ * A hook for asynchronously working with documents.
  *
- * @param dataSourceId the data source id
- * @param documentId the document id
- * @param depth the max recursion depth
- * @returns the square root if `x` is non-negative or `NaN` if `x` is negative.
+ * @docs Hooks
+ *
+ * @usage
+ * Code example:
+ * ```
+ * import { useDocument } from '@data-modelling-tool/core'
+ *
+ * const [
+ *   document,
+ *   loading,
+ *   updateDocument,
+ *   error,
+ * ] = useDocument(dataSourceId, documentId)
+ *
+ * if (loading) return <div>Loading...</div>
+ *
+ * if (error) {
+ *   console.error(error)
+ *   return <div>Error getting the document</div>
+ * }
+ *
+ * <DisplayDocument document={document} />
+ * ```
+ *
+ * @param dataSourceId The ID of the data source
+ * @param documentId The ID of the document
+ * @param depth The maximum depth level of nested objects to resolve
+ * @returns A list containing the document, a boolean representing the loading state, a function to update the document, and an Error, if any.
  */
 export function useDocument<T>(
   dataSourceId: string,

@@ -22,6 +22,14 @@ jobs:
     - name: Install Yarn
       run: npm install -g yarn
 
+    - name: Generate typedocs
+      run: |
+        cd web/packages/dmt-core
+        yarn install
+        cd ../../../docs
+        yarn install
+        yarn run generate-typedocs
+
     - name: Build docs
       run: |
          cd docs
