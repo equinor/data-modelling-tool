@@ -12,7 +12,7 @@ const codePreviewComponentTypes = ['Components']
 
 // The libraries that should be documented
 const libraries = {
-    '@data-modelling-tool/core': {
+    '@development-framework/dm-core': {
         entryPoints: [
             './../web/packages/dmt-core/src/index.tsx',
         ],

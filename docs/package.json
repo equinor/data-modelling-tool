@@ -16,7 +16,7 @@
     "generate-typedocs": "node generate-typedocs.js"
   },
   "dependencies": {
-    "@data-modelling-tool/core": "link:./../web/packages/dmt-core",
+    "@development-framework/dm-core": "link:./../web/packages/dmt-core",
     "@docusaurus/core": "2.0.1",
     "@docusaurus/preset-classic": "2.0.1",
     "@docusaurus/theme-live-codeblock": "2.0.1",
@@ -43,7 +43,8 @@
     "react-notifications": "^1.7.4",
     "react-router-dom": "^5.1.2",
     "styled-components": "^5.2.3",
-    "swizzle": "1.1.0"
+    "swizzle": "1.1.0",
+    "docusaurus-node-polyfills": "1.0.0"
   },
   "devDependencies": {
     "@babel/preset-flow": "^7.18.6",
@@ -78,6 +79,11 @@
   "env": {
     "browser": true,
     "es6": true,
-    "node": true
+    "node": true,
+    "http": false,
+    "https": false,
+    "fs": false,
+  "path": false,
+  "os": false
   }
 }

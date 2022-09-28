@@ -11,7 +11,7 @@ const clientDir = path.join(__dirname, '..', 'client');
 
 const LibrariesToTranspile = [
     'copy-text-to-clipboard',
-    '@data-modelling-tool/core'
+    // '@development-framework/dm-core'
 ];
 
 const LibrariesToTranspileRegex = new RegExp(
@@ -57,6 +57,7 @@ const config = {
     themes: ['@docusaurus/theme-live-codeblock'],
 
     plugins: [
+        'docusaurus-node-polyfills',
         [
             '@docusaurus/plugin-content-docs',
             {
@@ -68,6 +69,7 @@ const config = {
         function (context, options) {
             return {
                 name: 'webpack-configuration-plugin',
+
                 configureWebpack(config, isServer, utils) {
                     config.plugins = config.plugins.filter(plugin => !(plugin instanceof ModuleScopePlugin));
                     let rule = config.module.rules[5]
@@ -75,13 +77,14 @@ const config = {
                     rule.exclude = excludeJS
                     config.resolve.roots = [
                         ...config.resolve.roots,
-                        path.resolve(__dirname, '../web/packages/dmt-core')
+                        // path.resolve(__dirname, '../web/packages/dmt-core')
                     ]
+                    config.externals = ['tls', 'net', 'fs']
                     // @ts-ignore
                     rule.include = [
                         fs.realpathSync(path.join(__dirname)),
-                        fs.realpathSync(path.join(__dirname, 'node_modules/@data-modelling-tool/core/src')),
-                        fs.realpathSync(path.join(__dirname, '../web/packages/dmt-core')),
+                        // fs.realpathSync(path.join(__dirname, 'node_modules/@development-framework/dm-core/src')),
+                        //fs.realpathSync(path.join(__dirname, '../web/packages/dmt-core')),
                     ]
                     config.resolve.alias["react"] = path.resolve(__dirname, './node_modules/react')
                     config.resolve.alias["react-dom"] = path.resolve(__dirname, './node_modules/react-dom')
