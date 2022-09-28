@@ -4,7 +4,6 @@ import {
   DmssAPI,
   useDataSources,
   IDataSources,
-  // @ts-ignore
 } from '@development-framework/dm-core'
 
 export interface IModels {

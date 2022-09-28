@@ -2,7 +2,6 @@ import {
   hasExpertRole,
   Loading,
   useSearch,
-  // @ts-ignore
 } from '@development-framework/dm-core'
 import React, { ReactNode, useContext } from 'react'
 import { DEFAULT_DATASOURCE_ID } from '../../const'

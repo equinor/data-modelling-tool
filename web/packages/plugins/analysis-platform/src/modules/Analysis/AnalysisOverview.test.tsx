@@ -1,7 +1,6 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import React from 'react'
 import { AnalysisOverview } from './AnalysisOverview'
-// @ts-ignore
 import { DMSS_ADMIN_ROLE, DOMAIN_ROLES } from '@development-framework/dm-core'
 import { mockSearch, TestWrapper } from '../../utils/test-utils'
 

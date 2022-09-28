@@ -6,7 +6,6 @@ import { Button, Typography } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { isPrimitive } from '../utils'
 import { useRegistryContext } from '../RegistryContext'
-// @ts-ignore
 import {
   AuthContext,
   DmssAPI,

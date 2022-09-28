@@ -7,7 +7,6 @@ import {
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
-  // @ts-ignore
 } from '@development-framework/dm-core'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useState } from 'react'
