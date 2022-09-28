@@ -12,10 +12,9 @@ module.exports = function (config, env) {
     override(
       removeModuleScopePlugin(),
       babelInclude([
-        /* transpile (converting to es5) code in src/ and shared component library */
+        /* transpile (converting to es5) code in src/ and plugins */
         path.resolve('src'),
         path.resolve('../plugins'),
-        path.resolve('../dmt-core/src'),
       ])
     )(config, env)
   )

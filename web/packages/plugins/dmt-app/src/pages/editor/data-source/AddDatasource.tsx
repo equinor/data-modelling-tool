@@ -46,6 +46,7 @@ const AddDataSourceComponent = () => {
       .catch((e: AxiosError<ErrorResponse>) => {
         console.error(e)
         NotificationManager.error(`Failed to create datasource ${data.name}`)
+        console.log(e)
       })
   }
 

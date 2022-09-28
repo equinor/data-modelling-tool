@@ -1,6 +1,9 @@
 {
-  "extends": "../../tsconfig.json",
   "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "jsx": "react",
+    "declaration": true,
     "outDir": "dist",
     "rootDir": "src",
     "lib": ["dom", "dom.iterable", "esnext"],
@@ -8,8 +11,8 @@
     "forceConsistentCasingInFileNames": true,
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "noEmit": true,
-    "downlevelIteration": true
+    "downlevelIteration": true,
+    "skipLibCheck": true
   },
   "include": ["src"],
   "exclude": ["node_modules", "src/**/*.spec.ts", "dist"]

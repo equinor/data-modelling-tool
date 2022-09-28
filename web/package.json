@@ -29,7 +29,6 @@
   },
   "workspaces": [
     "packages/home",
-    "packages/dmt-core",
     "packages/plugins/**"
   ],
   "devDependencies": {
