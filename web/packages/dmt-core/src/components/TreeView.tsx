@@ -1,6 +1,5 @@
 import { TreeNode } from '../domain/Tree'
 import { useEffect, useState } from 'react'
-import { EBlueprint } from '../index'
 import styled from 'styled-components'
 
 import {
@@ -15,6 +14,7 @@ import {
 } from 'react-icons/fa'
 import { Progress, Tooltip } from '@equinor/eds-core-react'
 import React from 'react'
+import { EBlueprint } from '../Enums'
 
 type TStyledTreeNode = {
   level: number

@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from 'react'
 import { Button, Checkbox, Icon, Progress, Tabs } from '@equinor/eds-core-react'
 import styled from 'styled-components'
 import { edit_text, save } from '@equinor/eds-icons'
-import { AccessLevel, ACL, AuthContext, TUserIdMapping } from '../../index'
+
 import DmssAPI from '../../services/api/DmssAPI'
 import { useLocalStorage } from '../../hooks/useLocalStorage'
 //@ts-ignore
@@ -15,6 +15,9 @@ import {
 import { AxiosError, AxiosResponse } from 'axios'
 import { ACLUserRolesPanel } from './ACLUserRolesPanel'
 import { ACLOwnerPanel } from './ACLOwnerPanel'
+import { TUserIdMapping } from '../../types'
+import { AccessLevel, ACL } from '../../services'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 Icon.add({ edit_text, save })
 

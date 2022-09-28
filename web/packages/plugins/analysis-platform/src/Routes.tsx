@@ -1,4 +1,4 @@
-import { TRoute } from '@data-modelling-tool/core'
+import { TRoute } from '@development-framework/dm-core'
 import { AssetOverview } from './modules/Asset'
 import { AssetCreate } from './modules/Asset'
 import { AnalysisCreate, AnalysisOverview } from './modules/Analysis'

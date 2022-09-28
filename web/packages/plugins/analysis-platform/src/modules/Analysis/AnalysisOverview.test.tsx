@@ -1,7 +1,7 @@
 import { render, screen, waitFor, within } from '@testing-library/react'
 import React from 'react'
 import { AnalysisOverview } from './AnalysisOverview'
-import { DMSS_ADMIN_ROLE, DOMAIN_ROLES } from '@data-modelling-tool/core'
+import { DMSS_ADMIN_ROLE, DOMAIN_ROLES } from '@development-framework/dm-core'
 import { mockSearch, TestWrapper } from '../../utils/test-utils'
 
 const settings = {

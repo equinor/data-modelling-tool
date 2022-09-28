@@ -6,7 +6,7 @@ import {
   DmssAPI,
   ErrorResponse,
   Loading,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { AxiosError } from 'axios'
 
 export const ErrorGroup = styled.div`

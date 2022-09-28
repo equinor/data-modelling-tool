@@ -5,7 +5,7 @@ import {
   formatDate,
   ApplicationContext,
   TDmtSettings,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { TAsset } from '../../../Types'
 
 const columns: Array<string> = [

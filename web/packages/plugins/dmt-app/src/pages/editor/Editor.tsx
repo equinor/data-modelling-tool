@@ -13,7 +13,7 @@ import {
   TreeNode,
   TreeView,
   UIPluginSelector,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { NodeRightClickMenu } from '../../components/context-menu/ContextMenu'
 
 import { Progress } from '@equinor/eds-core-react'

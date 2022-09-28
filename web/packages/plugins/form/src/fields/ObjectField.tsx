@@ -1,5 +1,4 @@
 import {
-  AuthContext,
   DmssAPI,
   DmtAPI,
   EntityPickerButton,
@@ -8,7 +7,7 @@ import {
   NewEntityButton,
   UIPluginSelector,
   useBlueprint,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { AxiosResponse } from 'axios'
 import React, { useContext, useState } from 'react'
 import { AttributeField } from './AttributeField'
@@ -18,6 +17,7 @@ import { TObjectFieldProps } from '../types'
 import { useRegistryContext } from '../RegistryContext'
 import { Controller, useFormContext } from 'react-hook-form'
 import { AxiosError } from 'axios'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 const Wrapper = styled.div`
   margin-bottom: 20px;

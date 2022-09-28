@@ -3,7 +3,7 @@ import { Link, useLocation } from 'react-router-dom'
 import { Layout, Menu } from 'antd'
 import Icon from '../Design/Icons'
 import './Menu.css'
-import { useLocalStorage } from '@data-modelling-tool/core'
+import { useLocalStorage } from '@development-framework/dm-core'
 
 const { Sider } = Layout
 

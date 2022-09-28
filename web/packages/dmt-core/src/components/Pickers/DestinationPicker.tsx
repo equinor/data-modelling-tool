@@ -5,16 +5,8 @@ import {
   TREE_DIALOG_WIDTH,
 } from '../../utils/variables'
 import { EBlueprint } from '../../Enums'
-import {
-  TNodeWrapperProps,
-  TreeNode,
-  TreeView,
-  truncatePathString,
-  Dialog,
-  AuthContext,
-  ApplicationContext,
-  Tree,
-} from '../../index'
+import { TNodeWrapperProps, TreeView } from '../TreeView'
+
 import {
   Button,
   Input,
@@ -23,6 +15,11 @@ import {
   Tooltip,
 } from '@equinor/eds-core-react'
 import styled from 'styled-components'
+import { ApplicationContext } from '../../context/ApplicationContext'
+import { truncatePathString } from '../../utils/truncatePathString'
+import { AuthContext, AuthProvider } from 'react-oauth2-code-pkce'
+import { Tree, TreeNode } from '../../domain/Tree'
+import { Dialog } from '../Dialog'
 
 type TDestinationPickerProps = {
   onChange: (value: string) => void

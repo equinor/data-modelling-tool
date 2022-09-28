@@ -5,7 +5,7 @@ import {
   Loading,
   useBlueprint,
   useDocument,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 
 import { DMTBluePrintTableView } from './blueprint.js'
 

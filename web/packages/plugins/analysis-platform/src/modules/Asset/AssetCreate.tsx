@@ -5,7 +5,7 @@ import {
   ApplicationContext,
   ErrorResponse,
   DmssAPI,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { Progress } from '@equinor/eds-core-react'
 import { EBlueprints } from '../../Enums'
 import { ASSET_PATH, DEFAULT_DATASOURCE_ID } from '../../const'

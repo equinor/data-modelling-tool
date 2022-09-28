@@ -1,4 +1,4 @@
-import { DmssAPI } from '@data-modelling-tool/core'
+import { DmssAPI } from '@development-framework/dm-core'
 
 export const search = async (
   dataSourceId: string,

@@ -3,7 +3,7 @@ import { AxiosError } from 'axios'
 import { DmssAPI } from '../services/api/DmssAPI'
 //@ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { AuthContext } from '../index'
+import { AuthContext } from 'react-oauth2-code-pkce'
 
 /**
  * A hook for asynchronously working with documents.

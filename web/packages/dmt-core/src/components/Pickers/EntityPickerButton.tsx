@@ -1,19 +1,16 @@
 import React, { useContext, useEffect, useState } from 'react'
-import {
-  ApplicationContext,
-  AuthContext,
-  Dialog,
-  Tree,
-  TREE_DIALOG_HEIGHT,
-  TREE_DIALOG_WIDTH,
-  TreeNode,
-  TreeView,
-  TReference,
-  truncatePathString,
-} from '../../index'
+
 import { Button, Progress } from '@equinor/eds-core-react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { TReference } from '../../types'
+import { ApplicationContext } from '../../context/ApplicationContext'
+import { Tree, TreeNode } from '../../domain/Tree'
+import { Dialog } from '../Dialog'
+import { TREE_DIALOG_HEIGHT, TREE_DIALOG_WIDTH } from '../../utils/variables'
+import { TreeView } from '../TreeView'
+import { truncatePathString } from '../../utils/truncatePathString'
 
 export const EntityPickerButton = (props: {
   onChange: (ref: TReference) => void

@@ -1,18 +1,20 @@
 import React, { useContext, useState } from 'react'
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'
-import { TREE_DIALOG_HEIGHT, TREE_DIALOG_WIDTH } from '../../utils/variables'
-import { EBlueprint } from '../../Enums'
 import {
-  Dialog,
-  FSTreeContext,
-  TreeNode,
-  TreeView,
   PATH_INPUT_FIELD_WIDTH,
-  truncatePathString,
-} from '../../index'
+  TREE_DIALOG_HEIGHT,
+  TREE_DIALOG_WIDTH,
+} from '../../utils/variables'
+import { EBlueprint } from '../../Enums'
+
 import { Input, Label, Progress, Tooltip } from '@equinor/eds-core-react'
 import { Variants } from '@equinor/eds-core-react/dist/types/components/TextField/types'
+import { FSTreeContext } from '../../context/FileSystemTreeContext'
+import { truncatePathString } from '../../utils/truncatePathString'
+import { Dialog } from '../Dialog'
+import { TreeView } from '../TreeView'
+import { TreeNode } from '../../domain/Tree'
 
 export type TBlueprintPickerProps = {
   /** A function to trigger with the onChange event */

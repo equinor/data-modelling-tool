@@ -6,7 +6,7 @@ import {
   Select,
   truncatePathString,
   useDocument,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import * as React from 'react'
 import { ChangeEvent, useEffect, useState } from 'react'
 import {

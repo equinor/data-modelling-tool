@@ -20,7 +20,7 @@ import {
   TGenericObject,
   TAttribute,
   DataSourceInformation,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 
 const DEFAULT_SORT_BY_ATTRIBUTE = 'name'
 

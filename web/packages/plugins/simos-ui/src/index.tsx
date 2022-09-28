@@ -1,7 +1,7 @@
 import * as React from 'react'
 
-import { useDocument } from '@data-modelling-tool/core'
-import { EDmtPluginType } from '@data-modelling-tool/core'
+import { useDocument } from '@development-framework/dm-core'
+import { EDmtPluginType } from '@development-framework/dm-core'
 
 import { DMTBluePrintTableView } from './dmt/views/DMTBluePrintTableView'
 

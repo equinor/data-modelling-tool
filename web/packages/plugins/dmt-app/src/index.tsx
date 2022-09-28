@@ -4,7 +4,7 @@ import {
   DmssAPI,
   EDmtPluginType,
   Header,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import SearchPage from './pages/SearchPage'
 import ViewPage from './pages/ViewPage'
 import { Route } from 'react-router-dom'

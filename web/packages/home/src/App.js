@@ -9,14 +9,14 @@ import {
 import { NotificationContainer } from 'react-notifications'
 import { Switch } from 'react-router'
 import { Progress } from '@equinor/eds-core-react'
-import { DmtAPI } from '@data-modelling-tool/core'
+import { DmtAPI } from '@development-framework/dm-core'
 import {
   AuthContext,
   sortApplications,
   UiPluginContext,
   ApplicationContext,
   FSTreeProvider,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import {
   CardBody,
   CardFieldset,

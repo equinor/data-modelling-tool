@@ -1,5 +1,6 @@
 import { useEffect, useState, useContext } from 'react'
-import { DmssAPI, AuthContext } from '../index'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { DmssAPI } from '../services'
 
 export function useSearch<T>(
   body: any,

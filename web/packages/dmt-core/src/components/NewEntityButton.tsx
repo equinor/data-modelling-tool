@@ -9,9 +9,12 @@ import {
   EntityPickerButton,
 } from './Pickers'
 import { addToPath } from './UploadFileButton'
-import { AuthContext, DmtAPI, INPUT_FIELD_WIDTH, TReference } from '../index'
 import { AxiosError } from 'axios'
 import styled from 'styled-components'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { TReference } from '../types'
+import { INPUT_FIELD_WIDTH } from '../utils/variables'
+import { DmtAPI } from '../services'
 
 const DialogWrapper = styled.div`
   display: flex;

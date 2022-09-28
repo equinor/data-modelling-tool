@@ -7,7 +7,7 @@ import {
   useDocument,
   Loading,
   hasDomainRole,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { AnalysisInfoCard, AnalysisJobTable } from './components'
 
 export const OperatorView = (props: IDmtUIPlugin): JSX.Element => {

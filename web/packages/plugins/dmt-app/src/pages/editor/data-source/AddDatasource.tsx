@@ -9,7 +9,7 @@ import {
   AuthContext,
   UiPluginContext,
   ErrorResponse,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import { useModalContext } from '../../../context/modal/ModalContext'
 import { AxiosError } from 'axios'
 

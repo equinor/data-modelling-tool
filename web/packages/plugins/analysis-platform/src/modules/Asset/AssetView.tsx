@@ -1,5 +1,9 @@
 import React from 'react'
-import { IDmtUIPlugin, useDocument, Loading } from '@data-modelling-tool/core'
+import {
+  IDmtUIPlugin,
+  useDocument,
+  Loading,
+} from '@development-framework/dm-core'
 import { AssetInfoCard } from './components'
 import { AnalysisTable } from '../Analysis'
 

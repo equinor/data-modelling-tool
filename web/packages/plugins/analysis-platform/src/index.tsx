@@ -1,4 +1,4 @@
-import { EDmtPluginType } from '@data-modelling-tool/core'
+import { EDmtPluginType } from '@development-framework/dm-core'
 
 import App from './App'
 import { InspectorView, OperatorView } from './modules/Analysis'

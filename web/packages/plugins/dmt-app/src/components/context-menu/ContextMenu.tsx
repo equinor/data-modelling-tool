@@ -12,7 +12,7 @@ import {
   BlueprintPicker,
   INPUT_FIELD_WIDTH,
   ErrorResponse,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 
 // @ts-ignore
 import { NotificationManager } from 'react-notifications'

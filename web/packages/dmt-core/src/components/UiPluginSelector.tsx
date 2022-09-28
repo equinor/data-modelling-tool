@@ -1,17 +1,18 @@
 // @ts-nocheck
 
 import React, { useContext, useEffect, useState } from 'react'
-import {
-  TDmtPlugin,
-  IDmtUIPlugin,
-  ErrorBoundary,
-  UiPluginContext,
-  useBlueprint,
-  AuthContext,
-  getRoles,
-} from '../index'
+
 import styled from 'styled-components'
 import { CircularProgress } from '@equinor/eds-core-react'
+import {
+  IDmtUIPlugin,
+  TDmtPlugin,
+  UiPluginContext,
+} from '../context/UiPluginContext'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { getRoles } from '../utils/appRoles'
+import { ErrorBoundary } from '../utils/ErrorBoundary'
+import { useBlueprint } from '../hooks'
 
 const lightGray = '#d3d3d3'
 

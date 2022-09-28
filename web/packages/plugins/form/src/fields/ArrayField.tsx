@@ -11,7 +11,7 @@ import {
   DmssAPI,
   DmtAPI,
   ErrorResponse,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 import DynamicTable from '../components/DynamicTable'
 import { OpenObject } from './ObjectField'
 import { AxiosError } from 'axios'

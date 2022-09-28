@@ -1,4 +1,4 @@
-import { TDataSource, TDataSources } from '../index'
+import { TDataSource, TDataSources } from '../services'
 
 const ADD_DATA_SOURCES = 'ADD_DATA_SOURCES'
 const ADD_DATA_SOURCE = 'ADD_DATA_SOURCE'

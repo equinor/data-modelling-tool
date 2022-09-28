@@ -2,7 +2,11 @@ import * as React from 'react'
 import { MakeDiagram } from './Diagram'
 
 //import {useEffect, useState} from 'react'
-import { useDocument, IDmtUIPlugin, Loading } from '@data-modelling-tool/core'
+import {
+  useDocument,
+  IDmtUIPlugin,
+  Loading,
+} from '@development-framework/dm-core'
 
 const Workflow_Component = (props: IDmtUIPlugin) => {
   const { dataSourceId, documentId } = props

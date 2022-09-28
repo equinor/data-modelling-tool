@@ -5,7 +5,7 @@ import {
   TContainerJobHandler,
   TLocation,
   TValidEntity,
-} from '@data-modelling-tool/core'
+} from '@development-framework/dm-core'
 
 export type TAsset = {
   _id: string

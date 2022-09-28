@@ -1,6 +1,8 @@
 import React, { ChangeEvent, useContext } from 'react'
-import { useSearch, Select, AuthContext } from '../../index'
 import DmssAPI from '../../services/api/DmssAPI'
+import { AuthContext } from 'react-oauth2-code-pkce'
+import { useSearch } from '../../hooks/useSearch'
+import { Select } from '../Select'
 
 export const JobHandlerPicker = (props: {
   onChange: (data: string) => void
