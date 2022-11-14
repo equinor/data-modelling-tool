@@ -1,3 +1,5 @@
+NOTE: This repository has been archived in favour of  https://github.com/equinor/dm-app-dmt
+
 # Data Modelling Tool
 [![License][license-badge]][license]
 [![On master push][on-master-push-branch-badge]][on-master-push-branch-action]
